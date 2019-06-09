@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityStandardAssets.CrossPlatformInput;
+using DG.Tweening;
 //using MecanimStateDefine;
 //using ActorStatusDefine;
 
@@ -11,9 +12,14 @@ public class ScreenJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 {
 	public static ScreenJoystick instance;
 
-	public Image joystickImage;
-	public Image centerImage;
-	public Image lineImage;
+	public Transform joystickImageTransform;
+	public Transform centerImageTransform;
+	public Transform centerRotationImageTransform;
+	public RectTransform lineImageRectTransform;
+
+	public float centerRotationSlerpPower = 5.0f;
+	public float lineStartOffset = 15.0f;
+	public float lineEndOffset = 30.0f;
 
 	public string horizontalAxisName = "Horizontal"; // The name given to the horizontal axis for the cross platform input
 	public string verticalAxisName = "Vertical"; // The name given to the vertical axis for the cross platform input
@@ -34,6 +40,11 @@ public class ScreenJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 		_touchEventResultList = new List<bool>();
 		for (int i = 0; i < (int)Control.eInputType.Amount; ++i)
 			_touchEventResultList.Add(false);
+	}
+
+	void Start()
+	{
+		DOTween.Init();
 	}
 
 	#region VirtualAxis
@@ -122,6 +133,11 @@ public class ScreenJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 		{
 			e.Current.Value.Update();
 		}
+
+		if (centerRotationImageTransform != null && centerRotationImageTransform.gameObject.activeSelf)
+		{
+			centerRotationImageTransform.rotation = Quaternion.Slerp(centerRotationImageTransform.rotation, lineImageRectTransform.rotation, Time.deltaTime * centerRotationSlerpPower);
+		}
 	}
 
 	void LateUpdate()
@@ -130,33 +146,47 @@ public class ScreenJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 			_touchEventResultList[i] = false;
 	}
 
+	int _lastDragPointerId = -1;
 	public void OnDragAction(PointerEventData eventData)
 	{
+		// for multi touch
+		if (eventData.pointerId < _lastDragPointerId)
+			return;
+
 		#region VirtualAxis
 		Vector3 newPos = Vector3.zero;
 		newPos.x = (int)(eventData.position.x - eventData.pressPosition.x);
 		newPos.y = (int)(eventData.position.y - eventData.pressPosition.y);
-		//transform.position = new Vector3(m_StartPos.x + newPos.x, m_StartPos.y + newPos.y, m_StartPos.z + newPos.z);
 		UpdateVirtualAxes(newPos);
 		#endregion
 
-		joystickImage.gameObject.SetActive(true);
-		centerImage.gameObject.SetActive(true);
-		lineImage.gameObject.SetActive(true);
+		joystickImageTransform.gameObject.SetActive(true);
+		centerImageTransform.gameObject.SetActive(true);
+		if (centerRotationImageTransform != null) centerRotationImageTransform.gameObject.SetActive(true);
 
-		centerImage.transform.position = eventData.pressPosition;
-		lineImage.transform.position = eventData.pressPosition;
-		joystickImage.transform.position = eventData.position;
+		centerImageTransform.transform.position = eventData.pressPosition;
+		if (centerRotationImageTransform != null) centerRotationImageTransform.position = eventData.pressPosition;
+		joystickImageTransform.transform.position = eventData.position;
 
-		lineImage.GetComponent<RectTransform>().sizeDelta = new Vector2(1.0f, Vector3.Distance(eventData.position, eventData.pressPosition) * (512.0f / Screen.height));
-		Vector3 diff = eventData.position - eventData.pressPosition;
-		diff.x = -diff.x;
-		lineImage.transform.rotation = Quaternion.Euler(0.0f, 0.0f, Mathf.Atan2(diff.x, diff.y) * Mathf.Rad2Deg);		
+		float lineLength = Vector3.Distance(eventData.position, eventData.pressPosition);
+		lineLength = lineLength * (512.0f / Screen.height);
+		if (lineStartOffset > 0.0f) lineLength -= lineStartOffset;
+		if (lineEndOffset > 0.0f) lineLength -= lineEndOffset;
+		if (lineLength > 0.0f)
+		{
+			lineImageRectTransform.gameObject.SetActive(true);
+			lineImageRectTransform.sizeDelta = new Vector2(1.0f, lineLength);
+			Vector2 diff = eventData.position - eventData.pressPosition;
+			lineImageRectTransform.transform.position = eventData.pressPosition + new Vector2(diff.normalized.x * lineStartOffset * (Screen.height / 512.0f), diff.normalized.y * lineStartOffset * (Screen.height / 512.0f));
+			diff.x = -diff.x;
+			lineImageRectTransform.transform.rotation = Quaternion.Euler(0.0f, 0.0f, Mathf.Atan2(diff.x, diff.y) * Mathf.Rad2Deg);
+		}
+
+		_lastDragPointerId = eventData.pointerId;
 	}
 
 	public void OnDragging(Vector2 delta)
 	{
-
 		/*
 		Vector3 direction = CameraManager.Instance.GetMovementAxis(delta.x, delta.y);
 		direction.y = 0.0f;
@@ -178,13 +208,17 @@ public class ScreenJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 	public void OnEndDrag()
 	{
 		#region VirtualAxis
-		//transform.position = m_StartPos;
 		UpdateVirtualAxes(Vector3.zero);
 		#endregion
 
-		joystickImage.gameObject.SetActive(false);
-		centerImage.gameObject.SetActive(false);
-		lineImage.gameObject.SetActive(false);
+		joystickImageTransform.gameObject.SetActive(false);
+		centerImageTransform.gameObject.SetActive(false);
+		if (centerRotationImageTransform != null) centerRotationImageTransform.gameObject.SetActive(false);
+		lineImageRectTransform.gameObject.SetActive(false);
+
+		// for multi touch
+		if (Input.touchCount == 0)
+			_lastDragPointerId = -1;
 
 		/*
 		//_movementBase.MoveDirection(Vector2.zero, 2.0f);
@@ -220,8 +254,6 @@ public class ScreenJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 	{
 		//_actionController.PlayActionByControl(Control.eControllerType.ScreenController, Control.eInputType.Press);
 		_touchEventResultList[(int)Control.eInputType.Press] = true;
-
-		
 	}
 
 	public void OnRelease()

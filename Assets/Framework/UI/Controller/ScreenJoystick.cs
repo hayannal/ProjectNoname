@@ -42,11 +42,6 @@ public class ScreenJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 			_touchEventResultList.Add(false);
 	}
 
-	void Start()
-	{
-		DOTween.Init();
-	}
-
 	#region VirtualAxis
 	void OnEnable()
 	{

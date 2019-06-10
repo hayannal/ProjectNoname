@@ -1,6 +1,7 @@
 ﻿using ECM.Common;
 using ECM.Controllers;
 using UnityEngine;
+using MecanimStateDefine;
 
 public sealed class LocalPlayerController : BaseCharacterController
 {
@@ -12,7 +13,67 @@ public sealed class LocalPlayerController : BaseCharacterController
 
 	#endregion
 
+	#region FIELDS
+
+	ActionController _actionController;
+
+	#endregion
+
+	#region PROPERTIES
+
+	/// <summary>
+	/// The character's walk speed.
+	/// </summary>
+	/// 
+
+	public ActionController actionController
+	{
+		get
+		{
+			if (_actionController != null)
+				return _actionController;
+			_actionController = GetComponentInChildren<ActionController>();
+			return _actionController;
+		}
+}
+
+	#endregion
+
 	#region METHODS
+
+	/// <summary>
+	/// Overrides 'BaseCharacterController' Animate method.
+	/// 
+	/// This shows how to handle your characters' animation states using the Animate method.
+	/// The use of this method is optional, for example you can use a separate script to manage your
+	/// animations completely separate of movement controller.
+	/// 
+	/// </summary>
+
+	protected override void Animate()
+	{
+		// If no animator, return
+
+		if (animator == null)
+			return;
+
+		// Compute move vector in local space - not needed
+
+		//var move = transform.InverseTransformDirection(moveDirection);
+
+		// Update the animator parameters
+
+		var moveAmount = moveDirection.sqrMagnitude;
+		//animator.SetFloat("Move", moveAmount, 0.1f, Time.deltaTime);
+
+		if (moveAmount > 0.0f)
+			actionController.PlayActionByActionName("Move");
+		else
+		{
+			if (actionController.mecanimState.IsState((int)eMecanimState.Move))
+				actionController.PlayActionByActionName("Idle");
+		}
+	}
 
 	/// <summary>
 	/// Overrides 'BaseCharacterController' HandleInput,

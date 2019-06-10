@@ -261,7 +261,6 @@ public class ScreenJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 	{
 		switch (eInputType)
 		{
-			case Control.eInputType.Drag:
 			case Control.eInputType.Tab:
 			case Control.eInputType.Hold:
 			case Control.eInputType.Swipe:

@@ -6,7 +6,6 @@ namespace Control
 	public enum eInputType
 	{
 		None,
-		Drag,
 		Tab,
 		Hold,
 		Swipe,

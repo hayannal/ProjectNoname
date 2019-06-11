@@ -27,10 +27,7 @@ public class ScreenJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 	CrossPlatformInputManager.VirtualAxis m_HorizontalVirtualAxis; // Reference to the joystick in the cross platform input
 	CrossPlatformInputManager.VirtualAxis m_VerticalVirtualAxis; // Reference to the joystick in the cross platform input
 
-	//ActionController _actionController = null;
-	//ActorStatus _actorStatus = null;
 	List<bool> _touchEventResultList = null;
-
 	Dictionary<int, InputProcessor> _dicInputProcessor = new Dictionary<int, InputProcessor>();
 
 	void Awake()
@@ -40,6 +37,14 @@ public class ScreenJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 		_touchEventResultList = new List<bool>();
 		for (int i = 0; i < (int)Control.eInputType.Amount; ++i)
 			_touchEventResultList.Add(false);
+	}
+
+	float _canvasHeight = 512.0f;
+	void Start()
+	{
+		CanvasScaler parentCanvasScaler = GetComponentInParent<CanvasScaler>();
+		if (parentCanvasScaler != null)
+			_canvasHeight = parentCanvasScaler.referenceResolution.y;
 	}
 
 	#region VirtualAxis
@@ -80,7 +85,6 @@ public class ScreenJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 		InputProcessor inputProcessor = new InputProcessor();
 		inputProcessor.tabAction = OnTab;
 		inputProcessor.holdAction = OnHold;
-		inputProcessor.dragAction = OnDragAction;
 		inputProcessor.draggingAction = OnDragging;
 		inputProcessor.endDragAction = OnEndDrag;
 		inputProcessor.swipeAction = OnSwipe;
@@ -103,23 +107,23 @@ public class ScreenJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 	public void OnBeginDrag(PointerEventData eventData)
 	{
 		GetInputProcessor(eventData.pointerId).OnBeginDrag(eventData);
+
+		OnBeginDragJoystick(eventData);
 	}
 
 	public void OnDrag(PointerEventData eventData)
 	{
 		GetInputProcessor(eventData.pointerId).OnDrag(eventData);
+
+		OnDragJoystick(eventData);
 	}
 
 	public void OnEndDrag(PointerEventData eventData)
 	{
 		GetInputProcessor(eventData.pointerId).OnEndDrag(eventData);
-	}
 
-	//public void Initialize(ActionController actionController, ActorStatus actorStatus)
-	//{
-	//	_actionController = actionController;
-	//	_actorStatus = actorStatus;
-	//}
+		OnEndDragJoystick(eventData);
+	}
 
 	void Update()
 	{
@@ -131,7 +135,7 @@ public class ScreenJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 
 		if (centerRotationImageTransform != null && centerRotationImageTransform.gameObject.activeSelf)
 		{
-			centerRotationImageTransform.rotation = Quaternion.Slerp(centerRotationImageTransform.rotation, lineImageRectTransform.rotation, Time.deltaTime * centerRotationSlerpPower);
+			centerRotationImageTransform.rotation = Quaternion.Slerp(centerRotationImageTransform.rotation, _lastDirectionQuaternion, Time.deltaTime * centerRotationSlerpPower);
 		}
 	}
 
@@ -141,11 +145,20 @@ public class ScreenJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 			_touchEventResultList[i] = false;
 	}
 
-	int _lastDragPointerId = -1;
-	public void OnDragAction(PointerEventData eventData)
+	void OnBeginDragJoystick(PointerEventData eventData)
 	{
 		// for multi touch
-		if (eventData.pointerId < _lastDragPointerId)
+		++_draggingCount;
+	}
+
+	// for multi touch
+	int _lastDragPointerId = -1;
+	int _draggingCount = 0;
+	Quaternion _lastDirectionQuaternion;
+	void OnDragJoystick(PointerEventData eventData)
+	{
+		// for multi touch
+		if (_lastDragPointerId != -1 && eventData.pointerId < _lastDragPointerId)
 			return;
 
 		#region VirtualAxis
@@ -163,72 +176,70 @@ public class ScreenJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 		if (centerRotationImageTransform != null) centerRotationImageTransform.position = eventData.pressPosition;
 		joystickImageTransform.transform.position = eventData.position;
 
+		Vector2 diff = eventData.position - eventData.pressPosition;
+		_lastDirectionQuaternion = Quaternion.Euler(0.0f, 0.0f, Mathf.Atan2(-diff.x, diff.y) * Mathf.Rad2Deg);
+
 		float lineLength = Vector3.Distance(eventData.position, eventData.pressPosition);
-		lineLength = lineLength * (512.0f / Screen.height);
+		lineLength = lineLength * (_canvasHeight / Screen.height);
 		if (lineStartOffset > 0.0f) lineLength -= lineStartOffset;
 		if (lineEndOffset > 0.0f) lineLength -= lineEndOffset;
 		if (lineLength > 0.0f)
 		{
 			lineImageRectTransform.gameObject.SetActive(true);
 			lineImageRectTransform.sizeDelta = new Vector2(1.0f, lineLength);
-			Vector2 diff = eventData.position - eventData.pressPosition;
-			lineImageRectTransform.transform.position = eventData.pressPosition + new Vector2(diff.normalized.x * lineStartOffset * (Screen.height / 512.0f), diff.normalized.y * lineStartOffset * (Screen.height / 512.0f));
-			diff.x = -diff.x;
-			lineImageRectTransform.transform.rotation = Quaternion.Euler(0.0f, 0.0f, Mathf.Atan2(diff.x, diff.y) * Mathf.Rad2Deg);
+			lineImageRectTransform.transform.position = eventData.pressPosition + diff.normalized * lineStartOffset * (Screen.height / _canvasHeight);
+			lineImageRectTransform.transform.rotation = _lastDirectionQuaternion;
+		}
+		else
+		{
+			lineImageRectTransform.gameObject.SetActive(false);
 		}
 
+		// for multi touch
 		_lastDragPointerId = eventData.pointerId;
+	}
+
+	void OnEndDragJoystick(PointerEventData eventData)
+	{
+		if (eventData.pointerId >= _lastDragPointerId)
+		{
+			#region VirtualAxis
+			UpdateVirtualAxes(Vector3.zero);
+			#endregion
+
+			joystickImageTransform.gameObject.SetActive(false);
+			centerImageTransform.gameObject.SetActive(false);
+			if (centerRotationImageTransform != null) centerRotationImageTransform.gameObject.SetActive(false);
+			lineImageRectTransform.gameObject.SetActive(false);
+		}
+
+		// for multi touch
+		--_draggingCount;
+		if (_draggingCount == 0)
+			_lastDragPointerId = -1;
 	}
 
 	public void OnDragging(Vector2 delta)
 	{
-		/*
-		Vector3 direction = CameraManager.Instance.GetMovementAxis(delta.x, delta.y);
-		direction.y = 0.0f;
+		//Vector3 direction = CameraManager.Instance.GetMovementAxis(delta.x, delta.y);
+		//direction.y = 0.0f;
 
-		_actionController.PlayActionByControl(Control.eControllerType.ScreenController, Control.eInputType.Drag);
+		//_actionController.PlayActionByControl(Control.eControllerType.ScreenController, Control.eInputType.Drag);
 
-		if (_actionController.mecanimState.IsState((int)eMecanimState.Move))
-		{
-			_movementController.MoveDirection(direction, _actorStatus.GetValue(eActorStatus.MoveSpeed));
-			_movementController.RotateToDirection(direction, 15.0f, true);
-		}
-		*/
-
-
-		//if (!MecanimStateUtil.IsMovable(_actionController.mecanimState))
-		//	direction = Vector2.zero;
+		//if (_actionController.mecanimState.IsState((int)eMecanimState.Move))
+		//{
+		//	_movementController.MoveDirection(direction, _actorStatus.GetValue(eActorStatus.MoveSpeed));
+		//	_movementController.RotateToDirection(direction, 15.0f, true);
+		//}
 	}
 
 	public void OnEndDrag()
 	{
-		#region VirtualAxis
-		UpdateVirtualAxes(Vector3.zero);
-		#endregion
 
-		joystickImageTransform.gameObject.SetActive(false);
-		centerImageTransform.gameObject.SetActive(false);
-		if (centerRotationImageTransform != null) centerRotationImageTransform.gameObject.SetActive(false);
-		lineImageRectTransform.gameObject.SetActive(false);
-
-		// for multi touch
-		if (Input.touchCount == 0)
-			_lastDragPointerId = -1;
-
-		/*
-		//_movementBase.MoveDirection(Vector2.zero, 2.0f);
-		if (_actionController.mecanimState.IsState((int)eMecanimState.Move))
-		{
-			_actionController.PlayActionByActionName("Idle", true);
-		}
-		*/
 	}
 
 	public void OnHold()
 	{
-		/*
-		_actionController.PlayActionByControl(Control.eControllerType.ScreenController, Control.eInputType.Hold);
-		*/
 		_touchEventResultList[(int)Control.eInputType.Hold] = true;
 	}
 
@@ -239,21 +250,19 @@ public class ScreenJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 
 	public void OnTab()
 	{
-		/*
-		_actionController.PlayActionByControl(Control.eControllerType.ScreenController, Control.eInputType.Tab);
-		*/
+		//_actionController.PlayActionByControl(Control.eControllerType.ScreenController, Control.eInputType.Tab);
 		_touchEventResultList[(int)Control.eInputType.Tab] = true;
 	}
 
 	public void OnPress()
 	{
-		//_actionController.PlayActionByControl(Control.eControllerType.ScreenController, Control.eInputType.Press);
+		////_actionController.PlayActionByControl(Control.eControllerType.ScreenController, Control.eInputType.Press);
 		_touchEventResultList[(int)Control.eInputType.Press] = true;
 	}
 
 	public void OnRelease()
 	{
-		//_actionController.PlayActionByControl(Control.eControllerType.ScreenController, Control.eInputType.Release);
+		////_actionController.PlayActionByControl(Control.eControllerType.ScreenController, Control.eInputType.Release);
 		_touchEventResultList[(int)Control.eInputType.Release] = true;
 	}
 

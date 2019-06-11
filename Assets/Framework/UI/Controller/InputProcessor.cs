@@ -11,7 +11,6 @@ public class InputProcessor
 	public Action holdAction;
 	public Action swipeAction;
 	public Action<Vector2> draggingAction;
-	public Action<PointerEventData> dragAction;
 	public Action pressAction;
 	public Action releaseAction;
 	
@@ -76,9 +75,6 @@ public class InputProcessor
 		if (!_enabled) return;
 
 		_position = eventData.position;
-
-		if (dragAction != null)
-			dragAction(eventData);
 	}
 
 	public void OnEndDrag(PointerEventData eventData)

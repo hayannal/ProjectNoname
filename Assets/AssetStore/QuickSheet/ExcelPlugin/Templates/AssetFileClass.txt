@@ -1,0 +1,20 @@
+using UnityEngine;
+using UnityEditor;
+using System.IO;
+using UnityQuickSheet;
+
+///
+/// !!! Machine generated code !!!
+/// 
+public partial class ExcelDataAssetUtility
+{
+    [MenuItem("Assets/Create/QuickSheet/ExcelData/$ClassName", false, 500)]
+    public static void $AssetFileCreateFuncName()
+    {
+        $ClassName asset = CustomAssetUtility.CreateAsset<$ClassName>();
+        asset.SheetName = "$IMPORT_PATH";
+        asset.WorksheetName = "$ClassName";
+        EditorUtility.SetDirty(asset);        
+    }
+    
+}

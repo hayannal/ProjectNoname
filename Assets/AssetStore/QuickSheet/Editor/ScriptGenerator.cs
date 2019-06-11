@@ -230,7 +230,7 @@ namespace UnityQuickSheet
                     tmp += "public " + field.Type + " " + propertyName + " ";
             }
 
-            tmp += "{ get {return " + fieldName + "; } set { " + fieldName + " = value;} }";
+            tmp += "{ get { return " + fieldName + "; } set { " + fieldName + " = value; } }";
 
             m_Writer.WriteLine (m_Indentation + tmp);
         }
@@ -240,7 +240,8 @@ namespace UnityQuickSheet
         /// </summary>
         protected virtual string GetFieldNameForField(MemberFieldData field)
         {
-            return field.Name.ToLower();
+			//return field.Name.ToLower();
+			return "_" + field.Name;
         }
 
         /// <summary>
@@ -248,13 +249,14 @@ namespace UnityQuickSheet
         /// </summary>
         protected virtual string GetPropertyNameForField(MemberFieldData field)
         {
-            if (field.type == CellType.Enum)
-                return field.Name.ToUpper();
+			//if (field.type == CellType.Enum)
+			//    return field.Name.ToUpper();
 
-            // To prevent an error can happen when the name of the column header has all lower case characters.
-            TextInfo ti = new CultureInfo("en-US", false).TextInfo;
-            return ti.ToTitleCase(field.Name);
-        }
+			// To prevent an error can happen when the name of the column header has all lower case characters.
+			//TextInfo ti = new CultureInfo("en-US", false).TextInfo;
+			//return ti.ToTitleCase(field.Name);
+			return field.Name;
+		}
 
         /// <summary>
         /// Write a blank line.

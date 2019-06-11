@@ -17,6 +17,9 @@ public class $ClassName : BaseExcelEditor<$WorkSheetClassName>
         $WorkSheetClassName targetData = target as $WorkSheetClassName;
 
         string path = targetData.SheetName;
+
+		path = ExcelMachineEditor.CheckRootPath(path);
+
         if (!File.Exists(path))
             return false;
 

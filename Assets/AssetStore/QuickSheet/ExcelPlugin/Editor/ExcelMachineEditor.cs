@@ -1,4 +1,6 @@
-﻿///////////////////////////////////////////////////////////////////////////////
+﻿#define CUSTOM_PATH
+
+///////////////////////////////////////////////////////////////////////////////
 ///
 /// ExcelMachineEditor.cs
 ///
@@ -66,7 +68,13 @@ namespace UnityQuickSheet
 
                     // the path should be relative not absolute one to make it work on any platform.
                     int index = path.IndexOf("Assets");
-                    if (index >= 0)
+#if CUSTOM_PATH
+					string dataPathRoot = Application.dataPath;
+					int lastDataPathIndex = dataPathRoot.LastIndexOf("/Assets");
+					dataPathRoot = dataPathRoot.Substring(0, lastDataPathIndex);
+					int dataPathIndex = path.IndexOf(dataPathRoot);
+#endif
+					if (index >= 0)
                     {
                         // set relative path
                         machine.excelFilePath = path.Substring(index);
@@ -74,8 +82,17 @@ namespace UnityQuickSheet
                         // pass absolute path
                         machine.SheetNames = new ExcelQuery(path).GetSheetNames();
                     }
-                    else
-                    {
+#if CUSTOM_PATH
+					else if (dataPathIndex >= 0)
+					{
+						machine.excelFilePath = path.Replace(dataPathRoot, "..");
+
+						// pass absolute path
+						machine.SheetNames = new ExcelQuery(path).GetSheetNames();
+					}
+#endif
+					else
+					{
                         EditorUtility.DisplayDialog("Error",
                             @"Wrong folder is selected.
                         Set a folder under the 'Assets' folder! \n
@@ -109,12 +126,17 @@ namespace UnityQuickSheet
 
                 if (GUILayout.Button("Refresh", GUILayout.Width(60)))
                 {
-                    // reopen the excel file e.g) new worksheet is added so need to reopen.
-                    machine.SheetNames = new ExcelQuery(machine.excelFilePath).GetSheetNames();
+					// reopen the excel file e.g) new worksheet is added so need to reopen.
+#if CUSTOM_PATH
+					string convertPath = CheckRootPath(machine.excelFilePath);
+					machine.SheetNames = new ExcelQuery(convertPath).GetSheetNames();
+#else
+					machine.SheetNames = new ExcelQuery(machine.excelFilePath).GetSheetNames();
+#endif
 
-                    // one of worksheet was removed, so reset the selected worksheet index
-                    // to prevent the index out of range error.
-                    if (machine.SheetNames.Length <= machine.CurrentSheetIndex)
+					// one of worksheet was removed, so reset the selected worksheet index
+					// to prevent the index out of range error.
+					if (machine.SheetNames.Length <= machine.CurrentSheetIndex)
                     {
                         machine.CurrentSheetIndex = 0;
 
@@ -203,7 +225,11 @@ namespace UnityQuickSheet
                 return;
             }
 
-            if (!File.Exists(path))
+#if CUSTOM_PATH
+			path = CheckRootPath(path);
+#endif
+
+			if (!File.Exists(path))
             {
                 string msg = string.Format("File at {0} does not exist.",path);
                 EditorUtility.DisplayDialog("Error", msg, "OK");
@@ -279,6 +305,26 @@ namespace UnityQuickSheet
         /// </summary>
         protected override void CreateAssetCreationScript(BaseMachine m, ScriptPrescription sp)
         {
+#if CUSTOM_PATH
+			ExcelMachine machine = target as ExcelMachine;
+
+			sp.className = machine.WorkSheetName;
+			sp.dataClassName = machine.WorkSheetName + "Data";
+			sp.worksheetClassName = machine.WorkSheetName;
+
+			// where the imported excel file is.
+			sp.importedFilePath = machine.excelFilePath;
+
+			sp.assetFileCreateFuncName = "Create" + machine.WorkSheetName + "AssetFile";
+			sp.template = GetTemplate("AssetFileClass");
+
+			// write a script to the given folder.		
+			using (var writer = new StreamWriter(TargetPathForAssetFileCreateFunc(machine.WorkSheetName)))
+			{
+				writer.Write(new ScriptGenerator(sp).ToString());
+				writer.Close();
+			}
+#else
             ExcelMachine machine = target as ExcelMachine;
 
             sp.className = machine.WorkSheetName;
@@ -301,6 +347,20 @@ namespace UnityQuickSheet
                 writer.Write(new ScriptGenerator(sp).ToString());
                 writer.Close();
             }
+#endif
         }
-    }
+#if CUSTOM_PATH
+		public static string CheckRootPath(string path)
+		{
+			if (path.IndexOf("../") == 0)
+			{
+				string dataPathRoot = Application.dataPath;
+				int lastDataPathIndex = dataPathRoot.LastIndexOf("/Assets");
+				dataPathRoot = dataPathRoot.Substring(0, lastDataPathIndex);
+				path = path.Replace("..", dataPathRoot);
+			}
+			return path;
+		}
+#endif
+	}
 }

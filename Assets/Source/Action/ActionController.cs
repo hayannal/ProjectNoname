@@ -48,26 +48,25 @@ public class ActionController : MonoBehaviour {
 
 		_listActionInfo = new List<ActionInfo>();
 
-		// todo
-		/*
-		for (int i = 0; i < Google2u.ActionTable.Instance.Rows.Count; ++i)
+		for (int i = 0; i < TableDataManager.instance.actionTable.dataArray.Length; ++i)
 		{
-			Google2u.ActionTableRow actionTableRow = Google2u.ActionTable.Instance.GetRow((Google2u.ActionTable.rowIds)i);
-			if (actionTableRow._actorID != actorID) continue;
+			ActionTableData actionTableData = TableDataManager.instance.actionTable.dataArray[i];
+			if (actionTableData.actorId != actorID) continue;
 
-			if (!string.IsNullOrEmpty(actionTableRow._SkillID))
+			if (!string.IsNullOrEmpty(actionTableData.skillId))
 			{
 				//if (actor.CheckSkillLearn(actionTableRow._SkillID) == false)
 				//	continue;
 			}
 
 			ActionInfo info = new ActionInfo();
-			info.actionName = actionTableRow._actionName;
-			info.listAllowingState = actionTableRow._listAllowingState;
-			info.listNotAllowingState = actionTableRow._listNotAllowingState;
-			info.actionNameHash = Animator.StringToHash(actionTableRow._mecanimName);
-			info.fadeDuration = actionTableRow._fadeDuration;
+			info.actionName = actionTableData.actionName;
+			StringUtil.SplitIntList(actionTableData.listAllowingState, ref info.listAllowingState);
+			StringUtil.SplitIntList(actionTableData.listNotAllowingState, ref info.listNotAllowingState);
+			info.actionNameHash = Animator.StringToHash(actionTableData.mecanimName);
+			info.fadeDuration = actionTableData.fadeDuration;
 
+			/*
 			if (!string.IsNullOrEmpty(actionTableRow._SkillID))
 			{
 				Google2u.SkillTableRow skillTableRow = Google2u.SkillTable.Instance.GetRow(actionTableRow._SkillID);
@@ -121,10 +120,10 @@ public class ActionController : MonoBehaviour {
 				if (castingTableRow != null)
 					info.castingID = actionTableRow._CastingID;
 			}
+			*/
 
 			_listActionInfo.Add(info);
 		}
-		*/
 
 		/*
 		ActionPlayInfo info = new ActionPlayInfo();
@@ -153,7 +152,6 @@ public class ActionController : MonoBehaviour {
 		info.eInputType = ControllerUI.eTouchInput.Drag;
 		info.fadeDuration = 0.25f;
 		m_listActionPlayInfo.Add(info);
-		*/
 
 		ActionInfo info = new ActionInfo();
 		info.actionName = "Idle";
@@ -175,7 +173,6 @@ public class ActionController : MonoBehaviour {
 		info.fadeDuration = 0.1f;
 		_listActionInfo.Add(info);
 
-		/*
 		// after delay Move cancel
 		string[] moveActionID = {"Left", "Right", "Front", "Back"};
 		for (int i = 0; i < 4; ++i)

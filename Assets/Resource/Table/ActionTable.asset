@@ -1,0 +1,117 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc0eeebf891e58f4ba1e0ce0fd3537da, type: 3}
+  m_Name: ActionTable
+  m_EditorClassIdentifier: 
+  SheetName: ../Excel/Action.xlsx
+  WorksheetName: ActionTable
+  dataArray:
+  - _id: Action00101
+    _actorId: 1
+    _actionName: Idle
+    _listAllowingState: 
+    _listNotAllowingState: 
+    _mecanimName: Base Layer.Idle
+    _fadeDuration: 0.2
+    _controlId: 
+    _castingId: 
+    _skillId: 
+  - _id: Action00102
+    _actorId: 1
+    _actionName: Move
+    _listAllowingState: 
+    _listNotAllowingState: 3, 4
+    _mecanimName: Base Layer.Move
+    _fadeDuration: 0.1
+    _controlId: 
+    _castingId: 
+    _skillId: 
+  - _id: Action00103
+    _actorId: 3
+    _actionName: 
+    _listAllowingState: 
+    _listNotAllowingState: 3, 4
+    _mecanimName: Base Layer.Attack.attack1
+    _fadeDuration: 0.05
+    _controlId: Control102
+    _castingId: 
+    _skillId: 
+  - _id: Action00104
+    _actorId: 3
+    _actionName: 
+    _listAllowingState: 
+    _listNotAllowingState: 3, 4
+    _mecanimName: Base Layer.Attack.skill1
+    _fadeDuration: 0.05
+    _controlId: Control205
+    _castingId: Casting1002
+    _skillId: ActiveOne001
+  - _id: Action00105
+    _actorId: 3
+    _actionName: 
+    _listAllowingState: 
+    _listNotAllowingState: 3, 4
+    _mecanimName: Base Layer.Attack.skill2
+    _fadeDuration: 0.05
+    _controlId: Control302
+    _castingId: 
+    _skillId: ActiveTwo001
+  - _id: Action00201
+    _actorId: 2
+    _actionName: Idle
+    _listAllowingState: 
+    _listNotAllowingState: 
+    _mecanimName: Base Layer.Idle
+    _fadeDuration: 0.1
+    _controlId: 
+    _castingId: 
+    _skillId: 
+  - _id: Action00202
+    _actorId: 2
+    _actionName: Move
+    _listAllowingState: 
+    _listNotAllowingState: 3, 4
+    _mecanimName: Base Layer.Move
+    _fadeDuration: 0.1
+    _controlId: 
+    _castingId: 
+    _skillId: 
+  - _id: Action00203
+    _actorId: 2
+    _actionName: 
+    _listAllowingState: 
+    _listNotAllowingState: 3, 4
+    _mecanimName: Base Layer.Attack.attack1
+    _fadeDuration: 0.05
+    _controlId: Control102
+    _castingId: 
+    _skillId: 
+  - _id: Action00204
+    _actorId: 2
+    _actionName: 
+    _listAllowingState: 
+    _listNotAllowingState: 3, 4
+    _mecanimName: Base Layer.Attack.skill1
+    _fadeDuration: 0.05
+    _controlId: Control202
+    _castingId: 
+    _skillId: ActiveOne002
+  - _id: Action00205
+    _actorId: 2
+    _actionName: 
+    _listAllowingState: 
+    _listNotAllowingState: 3, 4
+    _mecanimName: Base Layer.Attack.skill2
+    _fadeDuration: 0.05
+    _controlId: Control302
+    _castingId: 
+    _skillId: ActiveTwo002

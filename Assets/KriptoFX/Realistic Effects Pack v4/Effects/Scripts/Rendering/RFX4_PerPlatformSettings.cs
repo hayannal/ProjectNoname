@@ -1,3 +1,5 @@
+#define USE_CUSTOM_RENDERER
+
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -39,10 +41,14 @@ public class RFX4_PerPlatformSettings : MonoBehaviour
         if (RenderMobileDistortion && !DisableOnMobiles && isMobile)
         {
 #if !KRIPTO_FX_LWRP_RENDERING && !KRIPTO_FX_HDRP_RENDERING
-            var mobileDistortion = cam.GetComponent<RFX4_MobileDistortion>();
+#if USE_CUSTOM_RENDERER
+			++CustomRenderer.instance.needGrab_refCount;
+#else
+			var mobileDistortion = cam.GetComponent<RFX4_MobileDistortion>();
             if (mobileDistortion == null) cam.gameObject.AddComponent<RFX4_MobileDistortion>();
 #endif
-        }
+#endif
+		}
 
         LWRP_Rendering();
     }
@@ -70,16 +76,20 @@ public class RFX4_PerPlatformSettings : MonoBehaviour
         {
 
 #if !KRIPTO_FX_LWRP_RENDERING && !KRIPTO_FX_HDRP_RENDERING
+#if USE_CUSTOM_RENDERER
+			--CustomRenderer.instance.needGrab_refCount;
+#else
             var mobileDistortion = cam.GetComponent<RFX4_MobileDistortion>();
             if (mobileDistortion != null) DestroyImmediate(mobileDistortion);
 #endif
-        }
+#endif
+		}
 
 #if KRIPTO_FX_LWRP_RENDERING
         var mobileLwrpDistortion = cam.GetComponent<RFX4_RenderTransparentDistortion>();
         if (mobileLwrpDistortion != null) mobileLwrpDistortion.IsActive = false;
 #endif
-    }
+	}
 
     bool IsMobilePlatform()
     {

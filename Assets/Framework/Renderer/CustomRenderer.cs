@@ -35,10 +35,18 @@ public class CustomRenderer : MonoBehaviour
         Camera.main.targetTexture = m_firstRT;
     }
 
+	public int needGrab_refCount { get; set; }
     void OnPostRender()
     {
         Camera.main.targetTexture = null;
 		m_bloomComponent.UpdateBloom(m_firstRT);
+
+		// 원래라면 grab 하나 새로 파서 들고있어야하는게 맞는데 티가 안나는거 같아서 이렇게 firstRT를 넘겨본다.
+		if (needGrab_refCount > 0)
+		{
+			Shader.SetGlobalTexture("_GrabTexture", m_firstRT);
+			Shader.SetGlobalTexture("_GrabTextureMobile", m_firstRT);
+		}
 
 		PostProcess();
 

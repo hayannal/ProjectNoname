@@ -2,9 +2,10 @@
 using UnityEditor;
 using UnityEngine;
 
+#if UNITY_EDITOR
 namespace BoneTool.Script.Runtime
 {
-    [ExecuteInEditMode]
+	[ExecuteInEditMode]
     public class BoneVisualiser : MonoBehaviour
     {
         public Transform RootNode;
@@ -36,7 +37,7 @@ namespace BoneTool.Script.Runtime
             }
         }
 
-        private void OnScene(SceneView sceneview) {
+		private void OnScene(SceneView sceneview) {
             if (RootNode != null) {
                 if (_childNodes == null || _childNodes.Length == 0 || _previousTransforms == null || _previousTransforms.Length == 0)
                     PopulateChildren();
@@ -64,7 +65,7 @@ namespace BoneTool.Script.Runtime
             }
         }
 
-        public void PopulateChildren() {
+		public void PopulateChildren() {
             if (!RootNode) return;
             _preRootNode = RootNode;
             _childNodes = RootNode.GetComponentsInChildren<Transform>();
@@ -101,3 +102,4 @@ namespace BoneTool.Script.Runtime
         }
     }
 }
+#endif

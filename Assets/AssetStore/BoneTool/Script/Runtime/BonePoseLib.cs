@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
+#if UNITY_EDITOR
 namespace BoneTool.Script.Runtime
 {
     [RequireComponent(typeof(BoneVisualiser))]
@@ -81,3 +82,4 @@ namespace BoneTool.Script.Runtime
         }
     }
 }
+#endif

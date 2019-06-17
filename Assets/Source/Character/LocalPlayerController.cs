@@ -73,6 +73,9 @@ public sealed class LocalPlayerController : BaseCharacterController
 			if (actionController.mecanimState.IsState((int)eMecanimState.Move))
 				actionController.PlayActionByActionName("Idle");
 		}
+
+		if (ScreenJoystick.instance.CheckInput(Control.eInputType.Tab))
+			actionController.PlayActionByControl(Control.eControllerType.ScreenController, Control.eInputType.Tab);
 	}
 
 	/// <summary>

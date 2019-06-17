@@ -103,17 +103,19 @@ public class ActionController : MonoBehaviour {
 					info.skillInfo = skillInfo;
 				}
 			}
+			*/
 
-			if (!string.IsNullOrEmpty(actionTableRow._ControlID))
+			if (!string.IsNullOrEmpty(actionTableData.controlId))
 			{
-				Google2u.ControlTableRow controlTableRow = Google2u.ControlTable.Instance.GetRow(actionTableRow._ControlID);
-				if (controlTableRow != null)
+				ControlTableData controlTableData = TableDataManager.instance.FindControlTableData(actionTableData.controlId);
+				if (controlTableData != null)
 				{
-					info.eControllerType = (Control.eControllerType)controlTableRow._ControlType;
-					info.eInputType = (Control.eInputType)controlTableRow._InputType;
+					info.eControllerType = (Control.eControllerType)controlTableData.controlType;
+					info.eInputType = (Control.eInputType)controlTableData.inputType;
 				}
 			}
 
+			/*
 			if (!string.IsNullOrEmpty(actionTableRow._CastingID))
 			{
 				Google2u.CastingTableRow castingTableRow = Google2u.CastingTable.Instance.GetRow(actionTableRow._CastingID);

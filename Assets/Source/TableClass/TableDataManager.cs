@@ -9,6 +9,7 @@ public class TableDataManager : MonoBehaviour
 	// temp 
 	public ActionTable actionTable;
 	public ControlTable controlTable;
+	public AffectorValueTable affectorValueTable;
 
 	void Awake()
 	{
@@ -21,6 +22,16 @@ public class TableDataManager : MonoBehaviour
 		{
 			if (controlTable.dataArray[i].id == controlId)
 				return controlTable.dataArray[i];
+		}
+		return null;
+	}
+
+	public AffectorValueTableData FindAffectorValueTableData(string affectorValueId)
+	{
+		for (int i = 0; i < affectorValueTable.dataArray.Length; ++i)
+		{
+			if (affectorValueTable.dataArray[i].id == affectorValueId)
+				return affectorValueTable.dataArray[i];
 		}
 		return null;
 	}

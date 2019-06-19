@@ -41,7 +41,7 @@ public class HitObject : MonoBehaviour
 			if (meHit.lifeTime > 0.0f && meHit.movable)
 			{
 				HitObjectMovement hitObjectMovementComponent = hitObject.AddComponent<HitObjectMovement>();
-				hitObjectMovementComponent.InitializeSignal(meHit, parentTransform);
+				hitObjectMovementComponent.InitializeSignal(meHit, parentActor.cachedTransform);
 			}
 		}
 
@@ -53,7 +53,7 @@ public class HitObject : MonoBehaviour
 		switch(meHit.targetDetectType)
 		{
 		case HitObject.eTargetDetectType.Preset:
-			TargetingProcessor targetSystem = parentTransform.GetComponent<TargetingProcessor>();
+			TargetingProcessor targetSystem = parentActor.GetComponent<TargetingProcessor>();
 			if (targetSystem != null)
 			{
 				for (int i = 0; i < targetSystem.GetTargetCount(); ++i)
@@ -71,8 +71,8 @@ public class HitObject : MonoBehaviour
 						continue;
 
 					HitParameter hitParameter = new HitParameter();
-					hitParameter.hitNormal = parentTransform.forward;
-					hitParameter.contactNormal = (targetCollider.transform.position - parentTransform.position).normalized;
+					hitParameter.hitNormal = parentActor.cachedTransform.forward;
+					hitParameter.contactNormal = (targetCollider.transform.position - parentActor.cachedTransform.position).normalized;
 					hitParameter.contactPoint = targetCollider.transform.position + (-hitParameter.contactNormal * colliderRadius * 0.7f);
 					hitParameter.contactPoint.y += targetCollider.bounds.size.y * 0.5f;
 					hitParameter.statusBase = parentActor.actorStatus.statusBase;
@@ -81,7 +81,7 @@ public class HitObject : MonoBehaviour
 					ApplyAffectorValue(affectorProcessor, meHit.affectorValueIDList, hitParameter);
 
 					if (meHit.showHitEffect)
-						HitEffect.ShowHitEffect(affectorProcessor, meHit, hitParameter.contactPoint, weaponIDAtCreation);
+						HitEffect.ShowHitEffect(meHit, hitParameter.contactPoint, hitParameter.contactNormal, weaponIDAtCreation);
 					if (meHit.showHitBlink)
 						HitBlink.ShowHitBlink(targetCollider.transform);
 					if (meHit.showHitRimBlink)
@@ -153,7 +153,7 @@ public class HitObject : MonoBehaviour
 			ApplyAffectorValue(affectorProcessor, meHit.affectorValueIDList, hitParameter);
 
 			if (meHit.showHitEffect)
-				HitEffect.ShowHitEffect(affectorProcessor, meHit, hitParameter.contactPoint, weaponIDAtCreation);
+				HitEffect.ShowHitEffect(meHit, hitParameter.contactPoint, hitParameter.contactNormal, weaponIDAtCreation);
 			if (meHit.showHitBlink)
 				HitBlink.ShowHitBlink(result[i].transform);
 			if (meHit.showHitRimBlink)
@@ -217,38 +217,66 @@ public class HitObject : MonoBehaviour
 	}
 
 	//List<Collider> _listEnteredCollider = new List<Collider>();
-	void OnTriggerEnter(Collider col)
+	//void OnTriggerEnter(Collider col)
+	void OnCollisionEnter(Collision collision)
 	{
-		AffectorProcessor affectorProcessor = col.GetComponent<AffectorProcessor>();
-		if (affectorProcessor == null)
-			return;
+		bool collided = false;
+		foreach (ContactPoint contact in collision.contacts)
+		{
+			Collider col = contact.otherCollider;
+			if (col == null)
+				continue;
 
-		if (!Team.CheckTeamFilter(_statusStructForHitObject.teamID, col, _signal.teamCheckType))
-			return;
+			collided = true;
 
-		// object radius
-		float colliderRadius = ColliderUtil.GetRadius(col);
-		if (colliderRadius == -1.0f)
-			return;
+			AffectorProcessor affectorProcessor = col.GetComponent<AffectorProcessor>();
+			if (affectorProcessor == null)
+			{
+				if (_signal.showHitEffect)
+					HitEffect.ShowHitEffect(_signal, contact.point, contact.normal, _weaponIDAtCreation);
+				continue;
+			}
 
-		// find target
-		//target = col.target;
-		Debug.Log("dasfasfasfds");
+			if (!Team.CheckTeamFilter(_statusStructForHitObject.teamID, col, _signal.teamCheckType))
+				continue;
 
-		// Reaction
-		HitParameter hitParameter = new HitParameter();
-		hitParameter.hitNormal = transform.forward;
-		hitParameter.contactNormal = (col.transform.position - transform.position).normalized;
-		hitParameter.contactPoint = col.ClosestPointOnBounds(col.transform.position) + (hitParameter.contactNormal * colliderRadius * 0.3f);
-		hitParameter.statusBase = _statusBase;
-		hitParameter.statusStructForHitObject = _statusStructForHitObject;
-		ApplyAffectorValue(affectorProcessor, _signal.affectorValueIDList, hitParameter);
+			// object radius
+			float colliderRadius = ColliderUtil.GetRadius(col);
+			if (colliderRadius == -1.0f)
+				continue;
 
-		if (_signal.showHitEffect)
-			HitEffect.ShowHitEffect(affectorProcessor, _signal, hitParameter.contactPoint, _weaponIDAtCreation);
-		if (_signal.showHitBlink)
-			HitBlink.ShowHitBlink(col.transform);
-		if (_signal.showHitRimBlink)
-			HitRimBlink.ShowHitRimBlink(col.transform);
+			// find target
+			//target = col.target;
+			Debug.Log("dasfasfasfds");
+
+			// Reaction
+			HitParameter hitParameter = new HitParameter();
+			hitParameter.hitNormal = transform.forward;
+			hitParameter.contactNormal = contact.normal;
+			hitParameter.contactPoint = contact.point;
+			//hitParameter.contactNormal = (col.transform.position - transform.position).normalized;
+			//hitParameter.contactPoint = col.ClosestPointOnBounds(col.transform.position) + (hitParameter.contactNormal * colliderRadius * 0.3f);
+			hitParameter.statusBase = _statusBase;
+			hitParameter.statusStructForHitObject = _statusStructForHitObject;
+			ApplyAffectorValue(affectorProcessor, _signal.affectorValueIDList, hitParameter);
+
+			if (_signal.showHitEffect)
+				HitEffect.ShowHitEffect(_signal, hitParameter.contactPoint, hitParameter.contactNormal, _weaponIDAtCreation);
+			if (_signal.showHitBlink)
+				HitBlink.ShowHitBlink(col.transform);
+			if (_signal.showHitRimBlink)
+				HitRimBlink.ShowHitRimBlink(col.transform);
+		}
+
+		if (collided)
+			DestroyRigidbody();
+	}
+
+	void DestroyRigidbody()
+	{
+		Rigidbody rigidbody = GetComponent<Rigidbody>();
+		Collider collider = GetComponent<Collider>();
+		if (rigidbody != null) Destroy(rigidbody);
+		if (collider != null) Destroy(collider);
 	}
 }

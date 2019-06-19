@@ -31,7 +31,7 @@ public class Actor : MonoBehaviour {
 		if (ACTOR_LAYER == 0) ACTOR_LAYER = LayerMask.NameToLayer("Actor");
 		//ObjectUtil.ChangeLayer(gameObject, ACTOR_LAYER);
 
-		actionController = GetComponent<ActionController>();
+		actionController = GetComponentInChildren<ActionController>();
 		if (actionController == null) actionController = gameObject.AddComponent<ActionController>();
 
 		//movementController = GetComponent<MovementController>();
@@ -61,6 +61,17 @@ public class Actor : MonoBehaviour {
 	{
 		actionController.InitializeActionPlayInfo(actorID);
 		actorStatus.InitializeActorStatus(actorID);
+	}
+
+	Transform _transform;
+	public Transform cachedTransform
+	{
+		get
+		{
+			if (_transform == null)
+				_transform = GetComponent<Transform>();
+			return _transform;
+		}
 	}
 
 	/*

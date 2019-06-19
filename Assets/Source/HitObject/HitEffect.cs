@@ -5,7 +5,7 @@ using UnityEngine;
 public class HitEffect : MonoBehaviour {
 
 	#region staticFunction
-	public static void ShowHitEffect(AffectorProcessor affectorProcessor, MeHitObject meHit, Vector3 contactPoint, int weaponIDAtCreation)
+	public static void ShowHitEffect(MeHitObject meHit, Vector3 contactPoint, Vector3 contactNormal, int weaponIDAtCreation)
 	{
 		if (meHit.useWeaponHitEffect && weaponIDAtCreation != 0)
 		{
@@ -31,7 +31,11 @@ public class HitEffect : MonoBehaviour {
 		else
 		{
 			if (meHit.hitEffectObject != null)
-				Instantiate(meHit.hitEffectObject, contactPoint, Quaternion.identity);
+			{
+				var instance = Instantiate(meHit.hitEffectObject, contactPoint, Quaternion.identity);
+				if (meHit.hitEffectLookAtNormal)
+					instance.transform.LookAt(contactPoint + contactNormal);
+			}
 		}
 	}
 	#endregion

@@ -34,7 +34,8 @@ public class MeHitObject : MecanimEventBase {
 
 	public string affectorValueIDList;
 	public bool showHitEffect;
-	public GameObject hitEffectObject;	//Google2u.HitEffectRow
+	public GameObject hitEffectObject;  //Google2u.HitEffectRow
+	public bool hitEffectLookAtNormal;
 	public bool useWeaponHitEffect;
 	public string weaponDummyName;
 	public bool showHitBlink;
@@ -74,9 +75,12 @@ public class MeHitObject : MecanimEventBase {
 			movementType = (HitObjectMovement.eMovementType)EditorGUILayout.EnumPopup("Movement Type :", movementType);
 			startDirectionType = (HitObjectMovement.eStartDirectionType)EditorGUILayout.EnumPopup("Start Direction Type :", startDirectionType);
 			speed = EditorGUILayout.FloatField("Speed :", speed);
-			curve = EditorGUILayout.FloatField("Curve Power :", curve);
-			curveAdd = EditorGUILayout.FloatField("Curve Power Add :", curveAdd);
-			curveLockY = EditorGUILayout.Toggle("Curve Lock Y :", curveLockY);
+			if (movementType == HitObjectMovement.eMovementType.FollowTarget)
+			{
+				curve = EditorGUILayout.FloatField("Curve Power :", curve);
+				curveAdd = EditorGUILayout.FloatField("Curve Power Add :", curveAdd);
+				curveLockY = EditorGUILayout.Toggle("Curve Lock Y :", curveLockY);
+			}
 			EditorGUILayout.LabelField("-----------------------------------------------------------------");
 		}
 
@@ -151,12 +155,23 @@ public class MeHitObject : MecanimEventBase {
 	#endif
 
 	Actor actor;
+	DummyFinder _dummyFinder = null;
 	override public void OnSignal(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
 		if (MecanimEventBase.s_bForceCallUpdate) return;
 
 		if (actor == null)
-			actor = animator.GetComponent<Actor>();
-		HitObject.InitializeHit(animator.transform, this, actor);
+			actor = animator.transform.parent.GetComponent<Actor>();
+		Transform spawnTransform = actor.transform;
+		if (createPositionType == HitObject.eCreatePositionType.Bone && !string.IsNullOrEmpty(boneName))
+		{
+			if (_dummyFinder == null) _dummyFinder = animator.GetComponent<DummyFinder>();
+			if (_dummyFinder == null) _dummyFinder = animator.gameObject.AddComponent<DummyFinder>();
+
+			Transform attachTransform = _dummyFinder.FindTransform(boneName);
+			if (attachTransform != null)
+				spawnTransform = attachTransform;
+		}
+		HitObject.InitializeHit(spawnTransform, this, actor);
 	}
 
 }

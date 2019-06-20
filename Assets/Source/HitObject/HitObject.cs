@@ -247,7 +247,7 @@ public class HitObject : MonoBehaviour
 
 			// find target
 			//target = col.target;
-			Debug.Log("dasfasfasfds");
+			//Debug.Log("dasfasfasfds");
 
 			// Reaction
 			HitParameter hitParameter = new HitParameter();

@@ -1,116 +1,326 @@
 fileFormatVersion: 2
 guid: 1cb8dad3ef3dedc4cadf09aefe7d5aad
-timeCreated: 1522178800
-licenseType: Store
 ModelImporter:
-  serializedVersion: 22
-  fileIDToRecycleName:
-    100000: CTRL_BerryLeft
-    100002: CTRL_BerryRight
-    100004: CTRL_Body
-    100006: CTRL_Flower
-    100008: CTRL_FootLeft
-    100010: CTRL_FootRight
-    100012: CTRL_Hip
-    100014: CTRL_LeftElbow
-    100016: CTRL_LeftKnee
-    100018: CTRL_PetalBottom
-    100020: CTRL_PetalLeft
-    100022: CTRL_PetalRight
-    100024: CTRL_PetalTop
-    100026: CTRL_RightElbow
-    100028: CTRL_RightKnee
-    100030: CTRL_Root
-    100032: CTRL_Stamen
-    100034: geo_Rosehip
-    100036: ikHandle
-    100038: ikHandle 1
-    100040: ikHandle 2
-    100042: ikHandle 3
-    100044: jnt_ElbowLeft
-    100046: jnt_ElbowRight
-    100048: jnt_flower
-    100050: jnt_flowerLeft
-    100052: jnt_flowerRight
-    100054: jnt_footLeft
-    100056: jnt_footRight
-    100058: jnt_hip
-    100060: jnt_kneeLeft
-    100062: jnt_kneeRight
-    100064: jnt_legLeft
-    100066: jnt_legRight
-    100068: jnt_petalsBottom
-    100070: jnt_petalsLeft
-    100072: jnt_petalsRight
-    100074: jnt_petalsTop
-    100076: jnt_root
-    100078: jnt_shoulderLeft
-    100080: jnt_shoulderRight
-    100082: jnt_spine
-    100084: jnt_stamen
-    100086: jnt_wristLeft
-    100088: jnt_wristRight
-    100090: //RootNode
-    400000: CTRL_BerryLeft
-    400002: CTRL_BerryRight
-    400004: CTRL_Body
-    400006: CTRL_Flower
-    400008: CTRL_FootLeft
-    400010: CTRL_FootRight
-    400012: CTRL_Hip
-    400014: CTRL_LeftElbow
-    400016: CTRL_LeftKnee
-    400018: CTRL_PetalBottom
-    400020: CTRL_PetalLeft
-    400022: CTRL_PetalRight
-    400024: CTRL_PetalTop
-    400026: CTRL_RightElbow
-    400028: CTRL_RightKnee
-    400030: CTRL_Root
-    400032: CTRL_Stamen
-    400034: geo_Rosehip
-    400036: ikHandle
-    400038: ikHandle 1
-    400040: ikHandle 2
-    400042: ikHandle 3
-    400044: jnt_ElbowLeft
-    400046: jnt_ElbowRight
-    400048: jnt_flower
-    400050: jnt_flowerLeft
-    400052: jnt_flowerRight
-    400054: jnt_footLeft
-    400056: jnt_footRight
-    400058: jnt_hip
-    400060: jnt_kneeLeft
-    400062: jnt_kneeRight
-    400064: jnt_legLeft
-    400066: jnt_legRight
-    400068: jnt_petalsBottom
-    400070: jnt_petalsLeft
-    400072: jnt_petalsRight
-    400074: jnt_petalsTop
-    400076: jnt_root
-    400078: jnt_shoulderLeft
-    400080: jnt_shoulderRight
-    400082: jnt_spine
-    400084: jnt_stamen
-    400086: jnt_wristLeft
-    400088: jnt_wristRight
-    400090: //RootNode
-    4300000: geo_Rosehip
-    7400000: Walk
-    7400002: Attack1 (punch + slam)
-    7400004: Attack2 (slam) (string2)
-    7400006: Emote1 (giggle)
-    7400008: Idle
-    7400010: Emote2 (cheer)
-    7400012: Attack2 (seedgun)
-    7400014: Emote3 (fighter)
-    7400016: Hurt
-    7400018: Dying
-    9500000: //RootNode
-    11100000: //RootNode
-    13700000: geo_Rosehip
+  serializedVersion: 25
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: CTRL_BerryLeft
+  - first:
+      1: 100002
+    second: CTRL_BerryRight
+  - first:
+      1: 100004
+    second: CTRL_Body
+  - first:
+      1: 100006
+    second: CTRL_Flower
+  - first:
+      1: 100008
+    second: CTRL_FootLeft
+  - first:
+      1: 100010
+    second: CTRL_FootRight
+  - first:
+      1: 100012
+    second: CTRL_Hip
+  - first:
+      1: 100014
+    second: CTRL_LeftElbow
+  - first:
+      1: 100016
+    second: CTRL_LeftKnee
+  - first:
+      1: 100018
+    second: CTRL_PetalBottom
+  - first:
+      1: 100020
+    second: CTRL_PetalLeft
+  - first:
+      1: 100022
+    second: CTRL_PetalRight
+  - first:
+      1: 100024
+    second: CTRL_PetalTop
+  - first:
+      1: 100026
+    second: CTRL_RightElbow
+  - first:
+      1: 100028
+    second: CTRL_RightKnee
+  - first:
+      1: 100030
+    second: CTRL_Root
+  - first:
+      1: 100032
+    second: CTRL_Stamen
+  - first:
+      1: 100034
+    second: geo_Rosehip
+  - first:
+      1: 100036
+    second: ikHandle
+  - first:
+      1: 100038
+    second: ikHandle 1
+  - first:
+      1: 100040
+    second: ikHandle 2
+  - first:
+      1: 100042
+    second: ikHandle 3
+  - first:
+      1: 100044
+    second: jnt_ElbowLeft
+  - first:
+      1: 100046
+    second: jnt_ElbowRight
+  - first:
+      1: 100048
+    second: jnt_flower
+  - first:
+      1: 100050
+    second: jnt_flowerLeft
+  - first:
+      1: 100052
+    second: jnt_flowerRight
+  - first:
+      1: 100054
+    second: jnt_footLeft
+  - first:
+      1: 100056
+    second: jnt_footRight
+  - first:
+      1: 100058
+    second: jnt_hip
+  - first:
+      1: 100060
+    second: jnt_kneeLeft
+  - first:
+      1: 100062
+    second: jnt_kneeRight
+  - first:
+      1: 100064
+    second: jnt_legLeft
+  - first:
+      1: 100066
+    second: jnt_legRight
+  - first:
+      1: 100068
+    second: jnt_petalsBottom
+  - first:
+      1: 100070
+    second: jnt_petalsLeft
+  - first:
+      1: 100072
+    second: jnt_petalsRight
+  - first:
+      1: 100074
+    second: jnt_petalsTop
+  - first:
+      1: 100076
+    second: jnt_root
+  - first:
+      1: 100078
+    second: jnt_shoulderLeft
+  - first:
+      1: 100080
+    second: jnt_shoulderRight
+  - first:
+      1: 100082
+    second: jnt_spine
+  - first:
+      1: 100084
+    second: jnt_stamen
+  - first:
+      1: 100086
+    second: jnt_wristLeft
+  - first:
+      1: 100088
+    second: jnt_wristRight
+  - first:
+      1: 100090
+    second: //RootNode
+  - first:
+      4: 400000
+    second: CTRL_BerryLeft
+  - first:
+      4: 400002
+    second: CTRL_BerryRight
+  - first:
+      4: 400004
+    second: CTRL_Body
+  - first:
+      4: 400006
+    second: CTRL_Flower
+  - first:
+      4: 400008
+    second: CTRL_FootLeft
+  - first:
+      4: 400010
+    second: CTRL_FootRight
+  - first:
+      4: 400012
+    second: CTRL_Hip
+  - first:
+      4: 400014
+    second: CTRL_LeftElbow
+  - first:
+      4: 400016
+    second: CTRL_LeftKnee
+  - first:
+      4: 400018
+    second: CTRL_PetalBottom
+  - first:
+      4: 400020
+    second: CTRL_PetalLeft
+  - first:
+      4: 400022
+    second: CTRL_PetalRight
+  - first:
+      4: 400024
+    second: CTRL_PetalTop
+  - first:
+      4: 400026
+    second: CTRL_RightElbow
+  - first:
+      4: 400028
+    second: CTRL_RightKnee
+  - first:
+      4: 400030
+    second: CTRL_Root
+  - first:
+      4: 400032
+    second: CTRL_Stamen
+  - first:
+      4: 400034
+    second: geo_Rosehip
+  - first:
+      4: 400036
+    second: ikHandle
+  - first:
+      4: 400038
+    second: ikHandle 1
+  - first:
+      4: 400040
+    second: ikHandle 2
+  - first:
+      4: 400042
+    second: ikHandle 3
+  - first:
+      4: 400044
+    second: jnt_ElbowLeft
+  - first:
+      4: 400046
+    second: jnt_ElbowRight
+  - first:
+      4: 400048
+    second: jnt_flower
+  - first:
+      4: 400050
+    second: jnt_flowerLeft
+  - first:
+      4: 400052
+    second: jnt_flowerRight
+  - first:
+      4: 400054
+    second: jnt_footLeft
+  - first:
+      4: 400056
+    second: jnt_footRight
+  - first:
+      4: 400058
+    second: jnt_hip
+  - first:
+      4: 400060
+    second: jnt_kneeLeft
+  - first:
+      4: 400062
+    second: jnt_kneeRight
+  - first:
+      4: 400064
+    second: jnt_legLeft
+  - first:
+      4: 400066
+    second: jnt_legRight
+  - first:
+      4: 400068
+    second: jnt_petalsBottom
+  - first:
+      4: 400070
+    second: jnt_petalsLeft
+  - first:
+      4: 400072
+    second: jnt_petalsRight
+  - first:
+      4: 400074
+    second: jnt_petalsTop
+  - first:
+      4: 400076
+    second: jnt_root
+  - first:
+      4: 400078
+    second: jnt_shoulderLeft
+  - first:
+      4: 400080
+    second: jnt_shoulderRight
+  - first:
+      4: 400082
+    second: jnt_spine
+  - first:
+      4: 400084
+    second: jnt_stamen
+  - first:
+      4: 400086
+    second: jnt_wristLeft
+  - first:
+      4: 400088
+    second: jnt_wristRight
+  - first:
+      4: 400090
+    second: //RootNode
+  - first:
+      43: 4300000
+    second: geo_Rosehip
+  - first:
+      74: 7400000
+    second: Walk
+  - first:
+      74: 7400002
+    second: Attack1 (punch + slam)
+  - first:
+      74: 7400004
+    second: Attack2 (slam) (string2)
+  - first:
+      74: 7400006
+    second: Emote1 (giggle)
+  - first:
+      74: 7400008
+    second: Idle
+  - first:
+      74: 7400010
+    second: Emote2 (cheer)
+  - first:
+      74: 7400012
+    second: Attack2 (seedgun)
+  - first:
+      74: 7400014
+    second: Emote3 (fighter)
+  - first:
+      74: 7400016
+    second: Hurt
+  - first:
+      74: 7400018
+    second: Dying
+  - first:
+      95: 9500000
+    second: //RootNode
+  - first:
+      111: 11100000
+    second: //RootNode
+  - first:
+      137: 13700000
+    second: geo_Rosehip
   externalObjects: {}
   materials:
     importMaterials: 0
@@ -130,6 +340,7 @@ ModelImporter:
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 3
     animationRotationError: 0.5
     animationPositionError: 0.5
@@ -141,6 +352,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Walk
       takeName: Take 001
+      internalID: 7400000
       firstFrame: 1
       lastFrame: 19
       wrapMode: 2
@@ -169,6 +381,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Attack1 (punch + slam)
       takeName: Take 001
+      internalID: 7400002
       firstFrame: 21
       lastFrame: 60
       wrapMode: 1
@@ -197,6 +410,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Emote1 (giggle)
       takeName: Take 001
+      internalID: 7400006
       firstFrame: 61
       lastFrame: 108
       wrapMode: 1
@@ -225,6 +439,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Idle
       takeName: Take 001
+      internalID: 7400008
       firstFrame: 111
       lastFrame: 186
       wrapMode: 2
@@ -253,6 +468,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Emote2 (cheer)
       takeName: Take 001
+      internalID: 7400010
       firstFrame: 191
       lastFrame: 230
       wrapMode: 1
@@ -289,6 +505,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Attack2 (seedgun)
       takeName: Take 001
+      internalID: 7400012
       firstFrame: 230
       lastFrame: 270
       wrapMode: 1
@@ -317,6 +534,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Emote3 (fighter)
       takeName: Take 001
+      internalID: 7400014
       firstFrame: 270
       lastFrame: 330
       wrapMode: 1
@@ -345,6 +563,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Hurt
       takeName: Take 001
+      internalID: 7400016
       firstFrame: 340
       lastFrame: 364
       wrapMode: 1
@@ -373,6 +592,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Dying
       takeName: Take 001
+      internalID: 7400018
       firstFrame: 371
       lastFrame: 420
       wrapMode: 1
@@ -401,9 +621,10 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: 0.15
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1
@@ -411,9 +632,14 @@ ModelImporter:
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    meshOptimizationFlags: -1
+    indexFormat: 0
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
@@ -424,10 +650,14 @@ ModelImporter:
     normalImportMode: 0
     tangentImportMode: 3
     normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
-    serializedVersion: 2
+    serializedVersion: 3
     human: []
     skeleton: []
     armTwist: 0.5
@@ -437,8 +667,8 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 0.15
     rootMotionBoneName: jnt_root
-    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1

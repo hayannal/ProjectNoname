@@ -248,10 +248,12 @@ public class ScreenJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 		_touchEventResultList[(int)Control.eInputType.Swipe] = true;
 	}
 
-	public void OnTab()
+	public Vector2 tabPosition { get; private set; }
+	public void OnTab(Vector2 position)
 	{
 		//_actionController.PlayActionByControl(Control.eControllerType.ScreenController, Control.eInputType.Tab);
 		_touchEventResultList[(int)Control.eInputType.Tab] = true;
+		tabPosition = position;
 	}
 
 	public void OnPress()

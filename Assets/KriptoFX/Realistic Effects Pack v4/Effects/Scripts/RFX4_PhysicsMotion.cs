@@ -1,3 +1,5 @@
+#define USE_HITOBJECT_MOVEMENT
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -42,6 +44,8 @@ public class RFX4_PhysicsMotion : MonoBehaviour
     float currentSpeedOffset;
     private RFX4_EffectSettings effectSettings;
 
+#if USE_HITOBJECT_MOVEMENT
+#else
     void OnEnable ()
     {
         effectSettings = GetComponentInParent<RFX4_EffectSettings>();
@@ -154,6 +158,7 @@ public class RFX4_PhysicsMotion : MonoBehaviour
             transform.rotation = targetAnchor.transform.rotation;
         }
     }
+#endif
 
     public class RFX4_CollisionInfo : EventArgs
     {

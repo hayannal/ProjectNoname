@@ -35,12 +35,6 @@ public class ActionController : MonoBehaviour {
 		if (idleAnimator == null) idleAnimator = animator.gameObject.AddComponent<IdleAnimator>();
 	}
 
-	// temp code
-	private void Start()
-	{
-		InitializeActionPlayInfo(1);
-	}
-
 	public void InitializeActionPlayInfo(int actorID)
 	{
 		cooltimeProcessor = GetComponent<CooltimeProcessor>();

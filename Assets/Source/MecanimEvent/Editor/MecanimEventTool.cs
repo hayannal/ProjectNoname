@@ -208,7 +208,6 @@ public class MecanimEventTool : EditorWindow
 
 	void SaveLastMeshData()
 	{
-		return;
 		string szAC = AssetDatabase.GetAssetPath(m_AC);
 		string szMeshData = AssetDatabase.GetAssetPath(m_OrigMeshObject);
 

@@ -241,7 +241,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 300090112}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.7, y: 0.6, z: 7.99}
+  m_LocalPosition: {x: 0.528, y: 0.6, z: 7.99}
   m_LocalScale: {x: 1, y: 1.2, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -312,6 +312,12 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: b0ba5fcc862696042af2798f68da116c, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 07e2cbbf6d66b844bb3b416cb21b1677, type: 3}
+--- !u!4 &354550976 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 400076, guid: 07e2cbbf6d66b844bb3b416cb21b1677,
+    type: 3}
+  m_PrefabInstance: {fileID: 354550975}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &468728402
 GameObject:
   m_ObjectHideFlags: 0
@@ -1525,6 +1531,7 @@ GameObject:
   - component: {fileID: 1096817669}
   - component: {fileID: 1096817668}
   - component: {fileID: 1096817667}
+  - component: {fileID: 1096817673}
   m_Layer: 0
   m_Name: ECM_Character
   m_TagString: Untagged
@@ -1647,6 +1654,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1096817673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1096817666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41b5ba3322f0bc44e9d5f95b53c1d004, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actorID: 1
 --- !u!4 &1123292030 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400132, guid: 07e2cbbf6d66b844bb3b416cb21b1677,
@@ -3562,6 +3582,36 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: c7ee890604cad254aadc4acac82a79b8, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e86e4968da2df194b9877b9d14201a19, type: 3}
+--- !u!1 &1923837413
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1923837414}
+  m_Layer: 0
+  m_Name: RightHandDummy
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1923837414
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1923837413}
+  m_LocalRotation: {x: 0.596706, y: 0.43485558, z: 0.1579726, w: 0.6556579}
+  m_LocalPosition: {x: 0.08500008, y: -0.027999965, z: -0.0029999902}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 354550976}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 40.172, y: 96.788, z: 71.854004}
 --- !u!1 &2033018327
 GameObject:
   m_ObjectHideFlags: 0
@@ -3593,6 +3643,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actionTable: {fileID: 11400000, guid: 2bb9ccddc2d499e4794a0785210cd22f, type: 2}
   controlTable: {fileID: 11400000, guid: 9aec06439260390468ce92f3e3385d0b, type: 2}
+  affectorValueTable: {fileID: 0}
 --- !u!4 &2033018329
 Transform:
   m_ObjectHideFlags: 0

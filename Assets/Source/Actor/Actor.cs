@@ -31,7 +31,7 @@ public class Actor : MonoBehaviour {
 		if (ACTOR_LAYER == 0) ACTOR_LAYER = LayerMask.NameToLayer("Actor");
 		//ObjectUtil.ChangeLayer(gameObject, ACTOR_LAYER);
 
-		actionController = GetComponentInChildren<ActionController>();
+		actionController = GetComponent<ActionController>();
 		if (actionController == null) actionController = gameObject.AddComponent<ActionController>();
 
 		//movementController = GetComponent<MovementController>();

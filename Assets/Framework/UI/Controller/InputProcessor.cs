@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 public class InputProcessor
 {
-	public Action tabAction;
+	public Action<Vector2> tabAction;
 	public Action endDragAction;
 	public Action holdAction;
 	public Action swipeAction;
@@ -49,7 +49,7 @@ public class InputProcessor
 		if (_beginDrag == false && _beginHold == false)
 		{
 			if (tabAction != null)
-				tabAction();
+				tabAction(eventData.position);
 		}
 
 		if (_beginDrag == true)

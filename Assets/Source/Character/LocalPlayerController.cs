@@ -11,6 +11,10 @@ public sealed class LocalPlayerController : BaseCharacterController
 	[Tooltip("The character's follow camera.")]
 	public Transform playerCamera;
 
+	[Tooltip("Layers to be considered as ground (picking). Used by ground click detection.")]
+	[SerializeField]
+	public LayerMask groundMask = 1;            // Default layer
+
 	#endregion
 
 	#region FIELDS
@@ -75,7 +79,13 @@ public sealed class LocalPlayerController : BaseCharacterController
 		}
 
 		if (ScreenJoystick.instance.CheckInput(Control.eInputType.Tab))
+		{
+			Ray ray = Camera.main.ScreenPointToRay(ScreenJoystick.instance.tabPosition);
+			RaycastHit hitInfo;
+			if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, groundMask.value))
+				RotateTowards(hitInfo.point - transform.position);
 			actionController.PlayActionByControl(Control.eControllerType.ScreenController, Control.eInputType.Tab);
+		}
 	}
 
 	/// <summary>

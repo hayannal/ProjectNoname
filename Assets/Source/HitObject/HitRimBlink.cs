@@ -15,7 +15,7 @@ public class HitRimBlink : MonoBehaviour {
 	float _currentTime;
 
 	#region staticFunction
-	public static void ShowHitRimBlink(Transform rootTransform)
+	public static void ShowHitRimBlink(Transform rootTransform, Vector3 hitNormal)
 	{
 		if (HIT_RIM_ADD_DIR == 0) HIT_RIM_ADD_DIR = Shader.PropertyToID("_RimDirAdjust");
 		if (HIT_COLOR_INTENSITY == 0) HIT_COLOR_INTENSITY = Shader.PropertyToID("_Color");
@@ -27,24 +27,23 @@ public class HitRimBlink : MonoBehaviour {
 
 		HitRimBlink hitRimBlink = rootTransform.GetComponent<HitRimBlink>();
 		if (hitRimBlink == null) hitRimBlink = rootTransform.gameObject.AddComponent<HitRimBlink>();
-		hitRimBlink.Blink();
+		hitRimBlink.Blink(hitNormal);
 	}
 	#endregion
 
 
-	public void Blink()
+	public void Blink(Vector3 rimDir)
 	{
 		if (!_caching)
 			CachingMaterials();
 		_currentTime = 0.0f;
 		enabled = true;
 
-		Vector4 adjustDir = new Vector4(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f), 0.0f, 0.0f);
 		for (int i = 0; i < _cachedMaterials.Count; ++i)
 		{
 			if (_cachedMaterials[i] == null)
 				continue;
-			_cachedMaterials[i].SetVector(HIT_RIM_ADD_DIR, adjustDir);
+			_cachedMaterials[i].SetVector(HIT_RIM_ADD_DIR, rimDir);
 		}
 	}
 

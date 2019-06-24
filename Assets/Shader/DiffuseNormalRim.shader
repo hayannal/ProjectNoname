@@ -1,4 +1,8 @@
-﻿Shader "FrameworkPV/DiffuseRimNormal" {
+﻿// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
+
+// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
+
+Shader "FrameworkPV/DiffuseRimNormal" {
 	Properties {
 		_MainTex ("Albedo (RGB)", 2D) = "white" {}
 		_Color ("Main Color", Color) = (1.0, 1.0, 1.0)
@@ -28,17 +32,19 @@
 		// surf 함수로 호출될 때마다 해당 정점의 관련 데이터가 연산에 적용됩니다.
 		struct Input {
 			float2 uv_MainTex;	// uv는 해당 텍스처의 텍스처 좌표를 의미합니다.
+			float2 uv_RimNormalTex;
 			float3 viewDir;	// 관찰자의 위치를 향하는 방향 벡타입니다. Normal Vector와 내적하기 위해서 추가합니다.
 		};
 
 		void surf (Input IN, inout SurfaceOutput o) {
 			o.Albedo = tex2D(_MainTex, IN.uv_MainTex).rgb * _Color;
 
-			float3 rimNormal = UnpackNormal(tex2D(_RimNormalTex, IN.uv_MainTex));
-			float3 vNormal = normalize(o.Normal * 2.0f + rimNormal);
+			float3 rimNormal = UnpackNormal(tex2D(_RimNormalTex, IN.uv_RimNormalTex));
+			float3 vNormal = normalize(o.Normal + rimNormal);
+			//_RimDirAdjust.xyz = mul(_RimDirAdjust, unity_WorldToObject).xyz;
 			float3 viewNormal = normalize(IN.viewDir + _RimDirAdjust.xyz);
 			half rim = 1.0 - dot(viewNormal, vNormal);
-			o.Emission = _RimColor.rgb * saturate(rim - _RimPower) * 2.0f;
+			o.Emission = _RimColor.rgb * saturate(rim - _RimPower);
 		}
 		ENDCG
 	}

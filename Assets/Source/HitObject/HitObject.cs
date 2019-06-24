@@ -85,7 +85,7 @@ public class HitObject : MonoBehaviour
 					if (meHit.showHitBlink)
 						HitBlink.ShowHitBlink(targetCollider.transform);
 					if (meHit.showHitRimBlink)
-						HitRimBlink.ShowHitRimBlink(targetCollider.transform);
+						HitRimBlink.ShowHitRimBlink(targetCollider.transform, hitParameter.contactNormal);
 				}
 			}
 			break;
@@ -157,7 +157,7 @@ public class HitObject : MonoBehaviour
 			if (meHit.showHitBlink)
 				HitBlink.ShowHitBlink(result[i].transform);
 			if (meHit.showHitRimBlink)
-				HitRimBlink.ShowHitRimBlink(result[i].transform);
+				HitRimBlink.ShowHitRimBlink(result[i].transform, hitParameter.contactNormal);
 		}
 	}
 
@@ -265,7 +265,7 @@ public class HitObject : MonoBehaviour
 			if (_signal.showHitBlink)
 				HitBlink.ShowHitBlink(col.transform);
 			if (_signal.showHitRimBlink)
-				HitRimBlink.ShowHitRimBlink(col.transform);
+				HitRimBlink.ShowHitRimBlink(col.transform, hitParameter.contactNormal);
 		}
 
 		if (collided)

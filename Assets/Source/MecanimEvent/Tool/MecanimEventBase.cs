@@ -47,12 +47,6 @@ public class MecanimEventBase : StateMachineBehaviour {
 		float lastNormalizedTime = _lastNormalizeTime - lastLoop;
 		float currentNormalizedTime = stateInfo.normalizedTime - currentLoop;	//	0.0 ~ 0.99999
 
-		if (animator.IsInTransition(0))
-		{
-			AnimatorStateInfo nextAnimatorStateInfo = animator.GetNextAnimatorStateInfo(0);
-			currentNormalizedTime = nextAnimatorStateInfo.normalizedTime;
-		}
-
 		if (RangeSignal)
 		{
 			if (StartTime <= currentNormalizedTime && currentNormalizedTime < EndTime)
@@ -75,17 +69,33 @@ public class MecanimEventBase : StateMachineBehaviour {
 		}
 		else
 		{
+			if (animator.IsInTransition(0))
+			{
+				AnimatorStateInfo nextAnimatorStateInfo = animator.GetNextAnimatorStateInfo(0);
+				if (stateInfo.fullPathHash == nextAnimatorStateInfo.fullPathHash)
+					currentNormalizedTime = nextAnimatorStateInfo.normalizedTime;
+			}
+
 			if (lastNormalizedTime <= currentNormalizedTime)
 			{
 				if (lastNormalizedTime <= StartTime && StartTime < currentNormalizedTime)
+				{
 					OnSignal(animator, stateInfo, layerIndex);
+					//Debug.Log("3333333333");
+				}
 			}
 			else
 			{
 				if (lastNormalizedTime <= StartTime && StartTime <= 1.0f)
+				{
 					OnSignal(animator, stateInfo, layerIndex);
+					//Debug.LogFormat("22222 : lastTime = {0} / startTime = {1}", lastNormalizedTime, StartTime);
+				}
 				else if (0.0f <= StartTime && StartTime < currentNormalizedTime)
+				{
 					OnSignal(animator, stateInfo, layerIndex);
+					//Debug.Log("111111111111");
+				}
 			}
 		}
 		_lastNormalizeTime = stateInfo.normalizedTime;

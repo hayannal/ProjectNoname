@@ -13,6 +13,9 @@ public class CustomRenderer : MonoBehaviour
 	[Tooltip("Camera render texture resolution")]
 	public float RenderTextureResolutionFactor = 0.5f;
 
+	[Tooltip("Auto Adjust Resolution Factor On Start Function")]
+	public bool autoAdjustFactorByDpi = true;
+
 	RFX4_MobileBloom m_bloomComponent;
 	PostProcessBase[] m_postProcessList;
 
@@ -23,6 +26,69 @@ public class CustomRenderer : MonoBehaviour
 		instance = this;
 		m_bloomComponent = GetComponent<RFX4_MobileBloom>();
 		m_postProcessList = GetComponents<PostProcessBase>();
+	}
+
+	float[] _dpiList = { 240.0f, 320.0f, 480.0f, 640.0f };
+	float[] _ratioList = { 0.9f, 0.75f, 0.5f, 0.4f };
+	void Start()
+	{
+		#region AUTO_ADJUST_BY_DPI
+#if UNITY_EDITOR
+		if (Application.isPlaying == false)
+			return;
+#endif
+		if (autoAdjustFactorByDpi == false)
+			return;
+
+		float dpi = Screen.dpi;
+		if (dpi == 0.0f)
+			return;
+		int dpiInt = Mathf.RoundToInt(dpi);
+
+		float selectedRatio = 0.0f;
+		for (int i = 0; i < _dpiList.Length; ++i)
+		{
+			int rountToInt = Mathf.RoundToInt(_dpiList[i]);
+			if (dpiInt == rountToInt)
+			{
+				selectedRatio = _ratioList[i];
+				break;
+			}
+		}
+		if (selectedRatio != 0.0f)
+		{
+			RenderTextureResolutionFactor = selectedRatio;
+			return;
+		}
+
+		for (int i = 0; i < _dpiList.Length; ++i)
+		{
+			if (i == 0 && dpi < _dpiList[i])
+			{
+				selectedRatio = _ratioList[i];
+				break;
+			}
+			if (i == _dpiList.Length - 1 && dpi > _dpiList[i])
+			{
+				selectedRatio = _ratioList[i];
+				break;
+			}
+
+			if (i == _dpiList.Length - 1)
+				continue;
+
+			if (dpi > _dpiList[i] && dpi < _dpiList[i + 1])
+			{
+				selectedRatio = Mathf.Lerp(_ratioList[i], _ratioList[i + 1], (dpi - _dpiList[i]) / (_dpiList[i + 1] - _dpiList[i]));
+				break;
+			}
+		}
+		if (selectedRatio != 0.0f)
+		{
+			RenderTextureResolutionFactor = selectedRatio;
+			return;
+		}
+		#endregion
 	}
 
 	RenderTexture m_firstRT;
@@ -54,7 +120,7 @@ public class CustomRenderer : MonoBehaviour
 		RenderTexture.ReleaseTemporary(m_firstRT);
     }
 
-	#region PostProcess
+		#region PostProcess
 
 	RenderTexture m_secondRT;
 	void PostProcess()
@@ -93,6 +159,6 @@ public class CustomRenderer : MonoBehaviour
 		}
 	}
 
-	#endregion
+		#endregion
 #endif
-}
+	}

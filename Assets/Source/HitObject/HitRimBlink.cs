@@ -27,7 +27,7 @@ public class HitRimBlink : MonoBehaviour {
 
 		HitRimBlink hitRimBlink = rootTransform.GetComponent<HitRimBlink>();
 		if (hitRimBlink == null) hitRimBlink = rootTransform.gameObject.AddComponent<HitRimBlink>();
-		hitRimBlink.Blink(hitNormal);
+		hitRimBlink.Blink(-hitNormal);
 	}
 	#endregion
 

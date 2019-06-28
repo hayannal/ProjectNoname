@@ -22,7 +22,7 @@ SubShader {
 CGPROGRAM
 #pragma surface surf MobileBlinnPhong exclude_path:prepass nolightmap noforwardadd halfasview interpolateview
 
-inline fixed4 LightingMobileBlinnPhong (SurfaceOutput s, fixed3 lightDir, fixed3 halfDir, fixed atten)
+inline fixed4 LightingMobileBlinnPhong (SurfaceOutput s, fixed3 lightDir, float3 halfDir, fixed atten)
 {
     fixed diff = max (0, dot (s.Normal, lightDir));
     fixed nh = max (0, dot (s.Normal, halfDir));

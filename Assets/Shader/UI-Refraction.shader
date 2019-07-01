@@ -60,7 +60,6 @@ Shader "FrameworkNG/UI/Refraction"
 
 			#pragma multi_compile __ UNITY_UI_ALPHACLIP
 
-			#pragma shader_feature _FLOW
 			#pragma shader_feature _REFRACTION
 			
 			struct appdata_t

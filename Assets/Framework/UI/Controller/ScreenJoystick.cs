@@ -20,6 +20,7 @@ public class ScreenJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 	public float centerRotationSlerpPower = 5.0f;
 	public float lineStartOffset = 15.0f;
 	public float lineEndOffset = 30.0f;
+	public float moveDragThresholdLength = 25.0f;
 
 	public string horizontalAxisName = "Horizontal"; // The name given to the horizontal axis for the cross platform input
 	public string verticalAxisName = "Vertical"; // The name given to the vertical axis for the cross platform input
@@ -157,6 +158,9 @@ public class ScreenJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 	Quaternion _lastDirectionQuaternion;
 	void OnDragJoystick(PointerEventData eventData)
 	{
+		if (_lastDragPointerId == -1 && CheckThreshold(eventData) == false)
+			return;
+
 		// for multi touch
 		if (_lastDragPointerId != -1 && eventData.pointerId < _lastDragPointerId)
 			return;
@@ -217,6 +221,15 @@ public class ScreenJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 		--_draggingCount;
 		if (_draggingCount == 0)
 			_lastDragPointerId = -1;
+	}
+
+	bool CheckThreshold(PointerEventData eventData)
+	{
+		float lineLength = Vector3.Distance(eventData.position, eventData.pressPosition);
+		lineLength = lineLength * (_canvasHeight / Screen.height);
+		if (lineLength < moveDragThresholdLength)
+			return false;
+		return true;
 	}
 
 	public void OnDragging(Vector2 delta)

@@ -16,6 +16,7 @@ namespace Ferr {
 		static GUIContent _tools    = new GUIContent("Tools", "Yo, this sections is just miscellaneous stuff, but I'm glad you found the tooltips :)");
 		static GUIContent _fill     = new GUIContent(VertexPainterIcons.Instance.fill, "Fills the entire mesh with the same vertex color");
 		static GUIContent _help     = new GUIContent("Help?", "Shortcut reference, links, email, hopefully useful things");
+		static GUIContent _exportmesh = new GUIContent("Export Mesh", "Export current painted mesh with color");
 		static string _backfaceTip = "Toggle for excluding or including verts that face away from the camera";
 
 		internal static void RenderGUI(IBlendPaintType aPainter) {

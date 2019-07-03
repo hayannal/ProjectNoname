@@ -14,6 +14,9 @@ Properties {
     //[PowerSlider(5.0)] _Shininess ("Shininess", Range (0.03, 1)) = 0.078125
 	_Shininess("Shininess", Range(0.25, 15)) = 0.5
     _MainTex ("Base (RGB) Gloss (A)", 2D) = "white" {}
+
+	[Toggle(_GLOSSPOWER)] _UseGlossPower("========== Use Gloss Power ==========", Float) = 0
+	_GlossPower("Gloss Power", Range(0.0, 50)) = 1.0
 }
 SubShader {
     Tags { "RenderType"="Opaque" }
@@ -21,6 +24,7 @@ SubShader {
 
 CGPROGRAM
 #pragma surface surf MobileBlinnPhong exclude_path:prepass nolightmap noforwardadd halfasview interpolateview
+#pragma shader_feature _GLOSSPOWER
 
 inline fixed4 LightingMobileBlinnPhong (SurfaceOutput s, fixed3 lightDir, float3 halfDir, fixed atten)
 {
@@ -36,6 +40,9 @@ inline fixed4 LightingMobileBlinnPhong (SurfaceOutput s, fixed3 lightDir, float3
 
 sampler2D _MainTex;
 half _Shininess;
+#if _GLOSSPOWER
+fixed _GlossPower;
+#endif
 
 struct Input {
     float2 uv_MainTex;
@@ -45,6 +52,9 @@ void surf (Input IN, inout SurfaceOutput o) {
     fixed4 tex = tex2D(_MainTex, IN.uv_MainTex);
     o.Albedo = tex.rgb;
     o.Gloss = tex.a;
+#if _GLOSSPOWER
+	o.Gloss *= _GlossPower;
+#endif
 	o.Alpha = tex.a;
     o.Specular = _Shininess;
 }

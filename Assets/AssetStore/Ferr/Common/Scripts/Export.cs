@@ -20,9 +20,22 @@ namespace Ferr {
 		    GameObject selected = UnityEditor.Selection.gameObjects[0];
 		    SavePLY(selected.GetComponent<MeshFilter>().sharedMesh, /*UnityEditor.AssetDatabase.GetAssetPath(selected)*/ "Assets\\" + selected.name + ".ply");
 	    }
+		[UnityEditor.MenuItem("Tools/Ferr/Utility/Export .asset")]
+		public static void MenuSaveMeshAsAsset()
+		{
+			if (UnityEditor.Selection.gameObjects.Length <= 0)
+			{
+				return;
+			}
+			GameObject selected = UnityEditor.Selection.gameObjects[0];
+			MeshFilter meshFilter = selected.GetComponent<MeshFilter>();
+			if (meshFilter == null)
+				return;
+			SaveAsset(meshFilter);
+		}
     #endif
 
-	    public static void SaveOBJ(Mesh aMesh, string aFileName) {
+		public static void SaveOBJ(Mesh aMesh, string aFileName) {
             Vector3[] verts = aMesh.vertices;
 		    Vector2[] uvs   = aMesh.uv;
 		    int    [] inds  = aMesh.triangles;
@@ -83,5 +96,48 @@ end_header
 		    writer.Close();
 		    Debug.Log(aFileName);
 	    }
-    }
+
+    #if UNITY_EDITOR
+		public static void SaveAsset(MeshFilter meshFilter)
+		{
+			if (meshFilter == null)
+				return;
+
+			Mesh mesh = meshFilter.sharedMesh;
+			string name = mesh.name;
+			string path = UnityEditor.EditorUtility.SaveFilePanel("Export to Asset", "Assets", name, "asset");
+
+			if (string.IsNullOrEmpty(path))
+				return;
+
+			string directory = Path.GetDirectoryName(path);
+			name = Path.GetFileNameWithoutExtension(path);
+			string meshPath = string.Format("{0}/{1}.asset", directory, mesh.name).Replace("\\", "/");
+
+			// If a file dialog was presented that means the user has already been asked to overwrite.
+			if (File.Exists(meshPath))
+				UnityEditor.AssetDatabase.DeleteAsset(meshPath.Replace(Application.dataPath, "Assets"));
+
+			//res = DoExport(path, first);
+			directory = Path.GetDirectoryName(path).Replace("\\", "/");
+			string relativeDirectory = string.Format("Assets{0}", directory.Replace(Application.dataPath, ""));
+			meshPath = UnityEditor.AssetDatabase.GenerateUniqueAssetPath(string.Format("{0}/{1}.asset", relativeDirectory, name));
+			UnityEditor.AssetDatabase.CreateAsset(mesh, meshPath);
+			UnityEditor.AssetDatabase.Refresh();
+
+			/*
+			Mesh meshAsset = (Mesh)UnityEditor.AssetDatabase.LoadAssetAtPath(meshPath, typeof(Mesh));
+			var go = Object.Instantiate(pb.gameObject);
+			var dup = go.GetComponent<ProBuilderMesh>();
+			var entity = go.GetComponent<Entity>();
+			if (entity != null)
+				Object.DestroyImmediate(entity);
+			dup.preserveMeshAssetOnDestroy = true;
+			Object.DestroyImmediate(dup);
+			go.GetComponent<MeshFilter>().sharedMesh = meshAsset;
+			Object.DestroyImmediate(go);
+			*/
+		}
+	}
+    #endif
 }

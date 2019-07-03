@@ -91,6 +91,10 @@ namespace Ferr {
 			if (GUILayout.Button(_help, VertexPainterIcons.Instance.button, GUILayout.Height(cButtonHeight))) {
 				EditorWindow.GetWindow<Ferr.VertexPainterHelp>("Help");
 			}
+			if (GUILayout.Button(_exportmesh, VertexPainterIcons.Instance.button, GUILayout.Height(cButtonHeight)))
+			{
+				Ferr.Export.MenuSaveMeshAsAsset();
+			}
 		}
 
 		private static void DrawBrushPreview(IBlendPaintType aPainter) {

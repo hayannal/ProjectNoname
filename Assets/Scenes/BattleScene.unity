@@ -399,6 +399,7 @@ GameObject:
   m_Component:
   - component: {fileID: 363291708}
   - component: {fileID: 363291707}
+  - component: {fileID: 363291709}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -433,6 +434,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &363291709
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 363291706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb494d5547fb8f340819242ba7f44115, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playChapter: 1
+  playStage: 1
+  lastClearChapter: 0
+  lastClearStage: 0
 --- !u!1001 &381308933
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3661,6 +3678,8 @@ MonoBehaviour:
   actionTable: {fileID: 11400000, guid: 2bb9ccddc2d499e4794a0785210cd22f, type: 2}
   controlTable: {fileID: 11400000, guid: 9aec06439260390468ce92f3e3385d0b, type: 2}
   affectorValueTable: {fileID: 0}
+  stageTable: {fileID: 11400000, guid: 70d7918c7d2e52b40ad2691300ad265b, type: 2}
+  monsterTable: {fileID: 11400000, guid: b16f84784353cf9409c791fca639775a, type: 2}
 --- !u!4 &2033018329
 Transform:
   m_ObjectHideFlags: 0

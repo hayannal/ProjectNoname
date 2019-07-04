@@ -10,6 +10,8 @@ public class TableDataManager : MonoBehaviour
 	public ActionTable actionTable;
 	public ControlTable controlTable;
 	public AffectorValueTable affectorValueTable;
+	public StageTable stageTable;
+	public MonsterTable monsterTable;
 
 	void Awake()
 	{
@@ -32,6 +34,16 @@ public class TableDataManager : MonoBehaviour
 		{
 			if (affectorValueTable.dataArray[i].id == affectorValueId)
 				return affectorValueTable.dataArray[i];
+		}
+		return null;
+	}
+
+	public StageTableData FindStageTableData(int chapter, int stage)
+	{
+		for (int i = 0; i < stageTable.dataArray.Length; ++i)
+		{
+			if (stageTable.dataArray[i].chapter == chapter && stageTable.dataArray[i].stage == stage)
+				return stageTable.dataArray[i];
 		}
 		return null;
 	}

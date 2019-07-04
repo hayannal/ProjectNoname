@@ -9,7 +9,8 @@ public class Plane : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+		if (CustomFollowCamera.instance != null)
+			CustomFollowCamera.instance.OnLoadPlaneObject(quadRootObject);
     }
 
     // Update is called once per frame

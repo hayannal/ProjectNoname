@@ -502,31 +502,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 306bec7a425f8034cb576a74aef12f86, type: 3}
---- !u!1 &381308934 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2131442788532371913, guid: 306bec7a425f8034cb576a74aef12f86,
-    type: 3}
-  m_PrefabInstance: {fileID: 381308933}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &381308935 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5880546141999176172, guid: 306bec7a425f8034cb576a74aef12f86,
-    type: 3}
-  m_PrefabInstance: {fileID: 381308933}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &381308936
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 381308934}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0c17dae942e21d4186774c62095ffe7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  quadRootObject: {fileID: 381308935}
 --- !u!1 &468728402
 GameObject:
   m_ObjectHideFlags: 0
@@ -1324,9 +1299,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 963194225}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ddd3af1f60b8174e9f33abad954fec6, type: 3}
+  m_Script: {fileID: 11500000, guid: a64f338ab35c3894f90bc239b4df8a4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  checkPlaneLeftRightQuad: 1
+  checkPlaneUpDownQuad: 0
   _targetTransform: {fileID: 1096817672}
   _distanceToTarget: 30
   _followSpeed: 3
@@ -1579,7 +1556,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bca52de557b2aa43ba3e18ac858ceaa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 3
+  _speed: 4
   _angularSpeed: 3600
   _acceleration: 50
   _deceleration: 20

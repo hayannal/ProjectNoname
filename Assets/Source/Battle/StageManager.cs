@@ -4,17 +4,36 @@ using UnityEngine;
 
 public class StageManager : MonoBehaviour
 {
+	public static StageManager instance;
+
 	public int playChapter = 1;
 	public int playStage = 1;
 	public int lastClearChapter = 0;
 	public int lastClearStage = 0;
+
+	void Awake()
+	{
+		instance = this;
+	}
 
     // Start is called before the first frame update
     void Start()
     {
 		string currentMap = CalcStageInfo();
 		Debug.LogFormat("CurrentMap = {0}", currentMap);
+
+		StageTestCanvas.instance.RefreshCurrentMapText(playChapter, playStage, currentMap);
     }
+
+	public void NextStage()
+	{
+		playStage += 1;
+
+		string currentMap = CalcStageInfo();
+		Debug.LogFormat("CurrentMap = {0}", currentMap);
+
+		StageTestCanvas.instance.RefreshCurrentMapText(playChapter, playStage, currentMap);
+	}
 
 	Dictionary<int, List<string>> _dicStageInfoByGrouping = new Dictionary<int, List<string>>();
 	Dictionary<int, int> _dicCurrentIndexByGrouping = new Dictionary<int, int>();
@@ -59,7 +78,7 @@ public class StageManager : MonoBehaviour
 				if (listStageId.Contains(diffData.firstFixedMap) == false)
 					listStageId.Add(diffData.firstFixedMap);
 
-				if (listStageId.Contains(diffData.addRandomMap) == false)
+				if (string.IsNullOrEmpty(diffData.addRandomMap) == false && listStageId.Contains(diffData.addRandomMap) == false)
 					listStageId.Add(diffData.addRandomMap);
 			}
 

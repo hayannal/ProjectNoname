@@ -43,7 +43,7 @@ public class CustomFollowCamera : MonoBehaviour
 		get
 		{
 			Vector3 result = targetTransform.position - transform.forward * distanceToTarget;
-			if (checkPlaneLeftRightQuad)
+			if (_quadLoaded && checkPlaneLeftRightQuad)
 			{
 				if (result.x < _quadLeft - LEFT_LIMIT)
 					result.x = _quadLeft - LEFT_LIMIT;
@@ -85,6 +85,7 @@ public class CustomFollowCamera : MonoBehaviour
 	float _quadDown;
 	float _quadLeft;
 	float _quadRight;
+	bool _quadLoaded = false;
 	public void OnLoadPlaneObject(GameObject quadRootObject)
 	{
 		Transform quadRootTransform = quadRootObject.transform;
@@ -92,5 +93,6 @@ public class CustomFollowCamera : MonoBehaviour
 		_quadDown = quadRootTransform.Find("QuadDown").localPosition.z;
 		_quadLeft = quadRootTransform.Find("QuadLeft").localPosition.x;
 		_quadRight = quadRootTransform.Find("QuadRight").localPosition.x;
+		_quadLoaded = true;
 	}
 }

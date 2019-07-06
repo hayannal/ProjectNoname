@@ -28,9 +28,9 @@
 			uniform half _BlurStrength;
 			uniform half _BlurWidth;
 			
-			half4 frag (v2f_img i) : COLOR
+			fixed4 frag (v2f_img i) : COLOR
 			{
-				half4 color = tex2D(_MainTex, i.uv);
+				fixed4 color = tex2D(_MainTex, i.uv);
 				
 				// some sample positions
 				half samples[10] = {-0.08,-0.05,-0.03,-0.02,-0.01,0.01,0.02,0.03,0.05,0.08};
@@ -45,7 +45,7 @@
 				dir = dir/dist;
 				
 				//additional samples towards center of screen
-				half4 sum = color;
+				fixed4 sum = color;
 				for(int n = 0; n < 10; n++)
 				{
 					sum += tex2D(_MainTex, i.uv + dir * samples[n] * _BlurWidth);

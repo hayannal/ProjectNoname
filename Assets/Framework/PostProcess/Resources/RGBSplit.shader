@@ -27,9 +27,9 @@
 			uniform half _SplitPower;
 			uniform half4 _SplitValue;
 			
-			half4 frag (v2f_img i) : COLOR
+			fixed4 frag (v2f_img i) : COLOR
 			{
-				half4 color = tex2D(_MainTex, i.uv);
+				fixed4 color = tex2D(_MainTex, i.uv);
 				
 				// some sample positions
 				half samples[4] = {-0.06,-0.03,0.03,0.06};
@@ -44,8 +44,8 @@
 				dir = dir/dist;
 				
 				//additional samples towards center of screen
-				half4 sum = color;
-				half3 rgbSplit = 0;
+				fixed4 sum = color;
+				fixed3 rgbSplit = 0;
 				for(int n = 0; n < 4; n++)
 				{
 					rgbSplit.r = tex2D(_MainTex, i.uv + dir * samples[n] * _SplitValue.x).r;

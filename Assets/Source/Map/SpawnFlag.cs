@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
+using UnityEditor.Experimental.SceneManagement;
 #endif
 
 [ExecuteInEditMode]
@@ -27,6 +28,9 @@ public class SpawnFlag : MonoBehaviour
 	void Awake()
 	{
 #if UNITY_EDITOR
+		if (PrefabStageUtility.GetCurrentPrefabStage() != null)
+			return;
+
 		if (Application.isPlaying == false)
 		{
 			Spawn(true);
@@ -39,6 +43,9 @@ public class SpawnFlag : MonoBehaviour
 	void Start()
     {
 #if UNITY_EDITOR
+		if (PrefabStageUtility.GetCurrentPrefabStage() != null)
+			return;
+
 		if (_editorSpawned)
 			return;
 #endif

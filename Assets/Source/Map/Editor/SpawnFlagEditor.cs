@@ -63,6 +63,20 @@ public class SpawnFlagEditor : Editor
 				spawnFlagPrefabComponent._listSpawnInfo.Add(info);
 			}
 
+			if (targetComponent.playerSpawnTransform == null)
+			{
+				EditorUtility.DisplayDialog("Error", "Not found PlayerSpawnTransform in the memory", "Ok");
+			}
+			if (targetComponent.playerSpawnTransform != null)
+			{
+				if (spawnFlagPrefabComponent.playerSpawnTransform == null)
+				{
+					EditorUtility.DisplayDialog("Error", "Not found PlayerSpawnTransform in the prefab", "Ok");
+				}
+				else
+					spawnFlagPrefabComponent.playerSpawnTransform.localPosition = targetComponent.playerSpawnTransform.localPosition;
+			}
+
 			PrefabUtility.SavePrefabAsset(prefab);
 		}
 	}

@@ -112,7 +112,7 @@ end_header
 
 			string directory = Path.GetDirectoryName(path);
 			name = Path.GetFileNameWithoutExtension(path);
-			string meshPath = string.Format("{0}/{1}.asset", directory, mesh.name).Replace("\\", "/");
+			string meshPath = string.Format("{0}/{1}.asset", directory, name).Replace("\\", "/");
 
 			// If a file dialog was presented that means the user has already been asked to overwrite.
 			if (File.Exists(meshPath))

@@ -138,6 +138,6 @@ end_header
 			Object.DestroyImmediate(go);
 			*/
 		}
+	#endif
 	}
-    #endif
 }

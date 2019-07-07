@@ -54,6 +54,16 @@ public class SpawnFlag : MonoBehaviour
 
 	void Spawn(bool editorSpawn = false)
 	{
+#if UNITY_EDITOR
+		for (int i = cachedTransform.childCount - 1; i >= 0; --i)
+		{
+			Transform childTransform = cachedTransform.GetChild(i);
+			if (childTransform == playerSpawnTransform)
+				continue;
+			DestroyImmediate(childTransform.gameObject);
+		}
+#endif
+
 		if (_listSpawnInfo == null)
 			return;
 

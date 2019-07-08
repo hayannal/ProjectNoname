@@ -24,7 +24,7 @@ public class Team : MonoBehaviour
 	{
 		if (filter == eTeamCheckFilter.Any)
 			return true;
-		Team targetTeam = target.GetComponentInParent<Team>();
+		Team targetTeam = BattleInstanceManager.instance.GetTeamFromCollider(target);
 		if (targetTeam == null)
 			return true;
 

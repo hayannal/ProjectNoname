@@ -6,8 +6,13 @@ public class StageManager : MonoBehaviour
 {
 	public static StageManager instance;
 
+	public GameObject defaultGroundSceneObject;
+	public GameObject[] groundPrefabList;
+	public GameObject[] wallPrefabList;
+	public GameObject[] spawnFlagPrefabList;
+
 	public int playChapter = 1;
-	public int playStage = 1;
+	public int playStage = 0;
 	public int lastClearChapter = 0;
 	public int lastClearStage = 0;
 
@@ -15,15 +20,6 @@ public class StageManager : MonoBehaviour
 	{
 		instance = this;
 	}
-
-    // Start is called before the first frame update
-    void Start()
-    {
-		string currentMap = CalcStageInfo();
-		Debug.LogFormat("CurrentMap = {0}", currentMap);
-
-		StageTestCanvas.instance.RefreshCurrentMapText(playChapter, playStage, currentMap);
-    }
 
 	public void NextStage()
 	{

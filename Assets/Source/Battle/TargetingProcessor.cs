@@ -42,7 +42,7 @@ public class TargetingProcessor : MonoBehaviour {
 		for (int i = 0; i < result.Length; ++i)
 		{
 			// affector processor
-			AffectorProcessor affectorProcessor = result[i].GetComponentInParent<AffectorProcessor>();
+			AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(result[i]);
 			if (affectorProcessor == null)
 				continue;
 
@@ -54,7 +54,7 @@ public class TargetingProcessor : MonoBehaviour {
 			}
 
 			// hp
-			Actor actor = result[i].GetComponentInParent<Actor>();
+			Actor actor = affectorProcessor.actor;
 			if (actor != null)
 			{
 				if (actor.actorStatus.GetHP() == 0)

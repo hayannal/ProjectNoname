@@ -6,7 +6,8 @@ using ActorStatusDefine;
 public struct StatusStructForHitObject
 {
 	public int teamID;
-	public float hp;
+	public int weaponIDAtCreation;
+	//public float hp;	// hp is in StatusBase
 	//public int level;
 	//public int liveComradeCount;
 }

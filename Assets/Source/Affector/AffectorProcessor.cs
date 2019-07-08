@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class AffectorProcessor : MonoBehaviour {
 
-	Dictionary<eAffectorType, AffectorBase> _dicAffector;
+	Dictionary<int, AffectorBase> _dicAffector;
 	List<AffectorBase> _listContinuousAffector;
 
-	Actor _actor;
+	public Actor actor { get; set; }
 
 	void Awake()
 	{
-		_actor = GetComponent<Actor>();
+		actor = GetComponent<Actor>();
 	}
 
 	public void ExcuteAffectorValue(string affectorValueId, HitParameter hitParameter, bool syncAffector)
@@ -39,7 +39,7 @@ public class AffectorProcessor : MonoBehaviour {
 			AffectorBase affectorBase = AffectorCustomCreator.CreateAffector(affectorType);
 			if (affectorBase != null)
 			{
-				if (affectorBase.Initialize(_actor, this) == false)
+				if (affectorBase.Initialize(actor, this) == false)
 					return;
 				_listContinuousAffector.Add(affectorBase);
 				affectorBase.ExcuteAffector(affectorValueID, data, hitParameter);
@@ -48,16 +48,16 @@ public class AffectorProcessor : MonoBehaviour {
 		else
 		{
 			AffectorBase affectorBase = null;
-			if (_dicAffector == null) _dicAffector = new Dictionary<eAffectorType, AffectorBase>();
-			if (_dicAffector.ContainsKey(affectorType)) affectorBase = _dicAffector[affectorType];
+			if (_dicAffector == null) _dicAffector = new Dictionary<int, AffectorBase>();
+			if (_dicAffector.ContainsKey((int)affectorType)) affectorBase = _dicAffector[(int)affectorType];
 			else
 			{
 				affectorBase = AffectorCustomCreator.CreateAffector(affectorType);
 				if (affectorBase != null)
 				{
-					if (affectorBase.Initialize(_actor, this) == false)
+					if (affectorBase.Initialize(actor, this) == false)
 						return;
-					_dicAffector.Add(affectorType, affectorBase);
+					_dicAffector.Add((int)affectorType, affectorBase);
 				}
 			}
 			if (affectorBase != null) affectorBase.ExcuteAffector(affectorValueID, data, hitParameter);
@@ -76,6 +76,38 @@ public class AffectorProcessor : MonoBehaviour {
 		{
 			if (_listContinuousAffector[i].finalized)
 				_listContinuousAffector.RemoveAt(i);
+		}
+	}
+
+	void OnCollisionEnter(Collision collision)
+	{
+		//Debug.Log("hitted object collision enter");
+
+		bool collided = false;
+		foreach (ContactPoint contact in collision.contacts)
+		{
+			Collider col = contact.otherCollider;
+			if (col == null)
+				continue;
+
+			collided = true;
+
+			HitObject hitObject = BattleInstanceManager.instance.GetHitObjectFromCollider(col);
+			if (hitObject == null)
+				continue;
+
+			hitObject.OnCollisionEnterAffectorProcessor(this, contact);
+		}
+	}
+
+	Transform _transform;
+	public Transform cachedTransform
+	{
+		get
+		{
+			if (_transform == null)
+				_transform = GetComponent<Transform>();
+			return _transform;
 		}
 	}
 

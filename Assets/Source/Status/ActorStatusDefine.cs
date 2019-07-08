@@ -11,6 +11,10 @@ namespace ActorStatusDefine {
 		Defense,
 		MoveSpeed,
 
+		MonsterStatusAmount,
+
+		AttackSpeedStep,
+
 		BaseAmount,
 
 		AttackRatio = BaseAmount,
@@ -21,6 +25,9 @@ namespace ActorStatusDefine {
 
 	public class StatusBase
 	{
+		public float _hp;	// EncriptedFloat
+		// public float _mp;
+
 		public float[] valueList;
 
 		public StatusBase()
@@ -31,6 +38,18 @@ namespace ActorStatusDefine {
 		public virtual void Initialize()
 		{
 			valueList = new float[(int)eActorStatus.BaseAmount];
+		}
+
+		public bool isPlayerBaseStatus { get { return valueList.Length == (int)eActorStatus.BaseAmount; } }
+		public bool IsPlayerExStatus { get { return valueList.Length == (int)eActorStatus.ExAmount; } }
+		public bool IsMonsterStatus { get { return valueList.Length == (int)eActorStatus.MonsterStatusAmount; } }
+	}
+
+	public class MonsterStatusList : StatusBase
+	{
+		public override void Initialize()
+		{
+			valueList = new float[(int)eActorStatus.MonsterStatusAmount];
 		}
 	}
 

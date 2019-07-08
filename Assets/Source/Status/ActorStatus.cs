@@ -6,46 +6,67 @@ using ActorStatusDefine;
 
 public class ActorStatus : MonoBehaviour
 {
+	// 네트워크가 알아서 맞춰주는 SyncVar같은거로 동기화 하기엔 너무 위험하다. 타이밍을 재기 위해 더이상 이런식으로 하진 않는다.
 	//[SyncVar(hook = "OnChangeHp")]
-	float _hp;
+	//float _hp;
 
-	ActorStatusList _actorStatus = new ActorStatusList();
-	public StatusBase statusBase { get { return _actorStatus; } }
+	StatusBase _statusBase;
+	public StatusBase statusBase { get { return _statusBase; } }
 
-	public void InitializeActorStatus(int actorID)
+	public void InitializeActorStatus(int actorId)
 	{
+		_statusBase = new ActorStatusList();
+
 		//string key = string.Format("id{0}", actorID);
 		//m_ActorStatus.InitializeByTable(key);
-		_actorStatus.valueList[(int)eActorStatus.Attack] = 10.0f;
-		_actorStatus.valueList[(int)eActorStatus.MaxHP] = 100.0f;
-		_actorStatus.valueList[(int)eActorStatus.MoveSpeed] = 3.0f;
+		_statusBase.valueList[(int)eActorStatus.Attack] = 10.0f;
+		_statusBase.valueList[(int)eActorStatus.MaxHP] = 100.0f;
+		_statusBase.valueList[(int)eActorStatus.MoveSpeed] = 3.0f;
 
 		//if (isServer)
-			_hp = GetValue(eActorStatus.MaxHP);
+		_statusBase._hp = GetValue(eActorStatus.MaxHP);
 	}
-	
+
+	public void InitializeMonsterStatus(int monsterActorId)
+	{
+		_statusBase = new MonsterStatusList();
+
+		//string key = string.Format("id{0}", actorID);
+		//m_ActorStatus.InitializeByTable(key);
+		_statusBase.valueList[(int)eActorStatus.Attack] = 10.0f;
+		_statusBase.valueList[(int)eActorStatus.MaxHP] = 100.0f;
+		_statusBase.valueList[(int)eActorStatus.MoveSpeed] = 3.0f;
+
+		//if (isServer)
+		_statusBase._hp = GetValue(eActorStatus.MaxHP);
+	}
+
 	public float GetValue(eActorStatus eType)
 	{
-		return _actorStatus.valueList[(int)eType];
+		return _statusBase.valueList[(int)eType];
 	}
 
 	public float GetHP()
 	{
-		return _hp;
+		return _statusBase._hp;
 	}
 
-	void OnChangeHp(float hp)
-	{
-		Debug.Log("OnChange HP : " + hp.ToString());
-	}
+	//void OnChangeHp(float hp)
+	//{
+	//	Debug.Log("OnChange HP : " + hp.ToString());
+	//}
 
 
 	#region For HitObject
 	public void CopyStatusBase(ref StatusBase targetStatusBase)
 	{
 		//if (targetStatusBase == null) targetStatusBase = new StatusBase();
-		for (int i = 0; i < (int)eActorStatus.BaseAmount; ++i)
+
+		int minLength = Mathf.Min(_statusBase.valueList.Length, targetStatusBase.valueList.Length);
+		for (int i = 0; i < minLength; ++i)
 			targetStatusBase.valueList[i] = GetValue((eActorStatus)i);
+
+		targetStatusBase._hp = _statusBase._hp;
 	}
 	#endregion
 

@@ -26,7 +26,7 @@ public class HitObject : MonoBehaviour
 		GameObject hitObject = null;
 		if (meHit.hitObjectPrefab != null)
 		{
-			hitObject = BattleInstanceManager.instance.GetCachedHitObject(meHit.hitObjectPrefab, parentTransform.TransformPoint(meHit.offset), parentTransform.rotation);
+			hitObject = BattleInstanceManager.instance.GetCachedObject(meHit.hitObjectPrefab, parentTransform.TransformPoint(meHit.offset), parentTransform.rotation);
 			//hitObject = (GameObject)Instantiate(meHit.hitObjectPrefab, , );
 		}
 		else if (meHit.lifeTime > 0.0f)
@@ -219,10 +219,17 @@ public class HitObject : MonoBehaviour
 		// for life time 0.0f
 		if (createTime + _signal.lifeTime < Time.time)
 		{
-			//Destroy(gameObject);
-			gameObject.SetActive(false);
+			FinalizeHitObject();
 			return;
 		}
+	}
+
+	void FinalizeHitObject()
+	{
+		BattleInstanceManager.instance.OnFinalizeHitObject(_collider);
+
+		//Destroy(gameObject);
+		gameObject.SetActive(false);
 	}
 
 	//List<Collider> _listEnteredCollider = new List<Collider>();

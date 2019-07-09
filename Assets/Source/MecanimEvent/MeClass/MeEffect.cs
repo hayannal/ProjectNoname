@@ -39,7 +39,7 @@ public class MeEffect : MecanimEventBase {
 
 			Transform attachTransform = _dummyFinder.FindTransform(parentName);
 			if (attachTransform != null)
-				Instantiate(effectData, attachTransform.position, attachTransform.rotation, attachTransform);
+				BattleInstanceManager.instance.GetCachedObject(effectData, attachTransform.position, attachTransform.rotation, attachTransform);
 		}
 	}
 }

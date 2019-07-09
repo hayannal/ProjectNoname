@@ -19,23 +19,24 @@ public class BattleInstanceManager : MonoBehaviour
 
 	#endregion
 
-	#region HitObject
-	Dictionary<GameObject, List<GameObject>> _dicHitObjectPool = new Dictionary<GameObject, List<GameObject>>();
-	public GameObject GetCachedHitObject(GameObject prefab, Vector3 position, Quaternion rotation)
+	#region Object Pool
+	Dictionary<GameObject, List<GameObject>> _dicInstancePool = new Dictionary<GameObject, List<GameObject>>();
+	public GameObject GetCachedObject(GameObject prefab, Vector3 position, Quaternion rotation, Transform parentTransform = null)
 	{
 		List<GameObject> listCachedGameObject = null;
-		if (_dicHitObjectPool.ContainsKey(prefab))
-			listCachedGameObject = _dicHitObjectPool[prefab];
+		if (_dicInstancePool.ContainsKey(prefab))
+			listCachedGameObject = _dicInstancePool[prefab];
 		else
 		{
 			listCachedGameObject = new List<GameObject>();
-			_dicHitObjectPool.Add(prefab, listCachedGameObject);
+			_dicInstancePool.Add(prefab, listCachedGameObject);
 		}
 
 		for (int i = 0; i < listCachedGameObject.Count; ++i)
 		{
 			if (!listCachedGameObject[i].activeSelf)
 			{
+				listCachedGameObject[i].transform.parent = parentTransform;
 				listCachedGameObject[i].transform.position = position;
 				listCachedGameObject[i].transform.rotation = rotation;
 				listCachedGameObject[i].SetActive(true);
@@ -43,9 +44,35 @@ public class BattleInstanceManager : MonoBehaviour
 			}
 		}
 
-		GameObject newHitObject = Instantiate(prefab, position, rotation) as GameObject;
-		listCachedGameObject.Add(newHitObject);
-		return newHitObject;
+		GameObject newObject = Instantiate<GameObject>(prefab, position, rotation, parentTransform);
+		listCachedGameObject.Add(newObject);
+		return newObject;
+	}
+
+	public GameObject GetCachedObject(GameObject prefab, Transform parentTransform)
+	{
+		List<GameObject> listCachedGameObject = null;
+		if (_dicInstancePool.ContainsKey(prefab))
+			listCachedGameObject = _dicInstancePool[prefab];
+		else
+		{
+			listCachedGameObject = new List<GameObject>();
+			_dicInstancePool.Add(prefab, listCachedGameObject);
+		}
+
+		for (int i = 0; i < listCachedGameObject.Count; ++i)
+		{
+			if (!listCachedGameObject[i].activeSelf)
+			{
+				listCachedGameObject[i].transform.parent = parentTransform;
+				listCachedGameObject[i].SetActive(true);
+				return listCachedGameObject[i];
+			}
+		}
+
+		GameObject newObject = Instantiate<GameObject>(prefab, parentTransform);
+		listCachedGameObject.Add(newObject);
+		return newObject;
 	}
 	#endregion
 
@@ -112,9 +139,9 @@ public class BattleInstanceManager : MonoBehaviour
 		}
 	}
 
-	public void OnFinalizeHitObject(HitObject hitObject, Collider collider)
+	public void OnFinalizeHitObject(Collider collider)
 	{
-
+		_dicHitObjectByCollider.Remove(collider);
 	}
 	#endregion
 

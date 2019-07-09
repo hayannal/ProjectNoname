@@ -74,7 +74,7 @@ public class SpawnFlag : MonoBehaviour
 			if (editorSpawn)
 				newObject = PrefabUtility.InstantiatePrefab((UnityEngine.Object)_listSpawnInfo[i].prefab, cachedTransform) as GameObject;
 			else
-				newObject = Instantiate(_listSpawnInfo[i].prefab, cachedTransform);
+				newObject = BattleInstanceManager.instance.GetCachedObject(_listSpawnInfo[i].prefab, cachedTransform);
 #else
 			GameObject newObject = Instantiate(_listSpawnInfo[i].prefab, cachedTransform);
 #endif

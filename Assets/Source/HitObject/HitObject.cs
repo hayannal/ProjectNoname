@@ -26,7 +26,8 @@ public class HitObject : MonoBehaviour
 		GameObject hitObject = null;
 		if (meHit.hitObjectPrefab != null)
 		{
-			hitObject = (GameObject)Instantiate(meHit.hitObjectPrefab, parentTransform.TransformPoint(meHit.offset), parentTransform.rotation);
+			hitObject = BattleInstanceManager.instance.GetCachedHitObject(meHit.hitObjectPrefab, parentTransform.TransformPoint(meHit.offset), parentTransform.rotation);
+			//hitObject = (GameObject)Instantiate(meHit.hitObjectPrefab, , );
 		}
 		else if (meHit.lifeTime > 0.0f)
 		{
@@ -36,12 +37,14 @@ public class HitObject : MonoBehaviour
 		}
 		if (hitObject != null)
 		{
-			HitObject hitObjectComponent = hitObject.AddComponent<HitObject>();
+			HitObject hitObjectComponent = hitObject.GetComponent<HitObject>();
+			if (hitObjectComponent == null) hitObjectComponent = hitObject.AddComponent<HitObject>();
 			hitObjectComponent.InitializeHitObject(meHit, parentActor);
 			if (meHit.lifeTime > 0.0f && meHit.movable)
 			{
-				HitObjectMovement hitObjectMovementComponent = hitObject.AddComponent<HitObjectMovement>();
-				hitObjectMovementComponent.InitializeSignal(meHit, parentActor.cachedTransform);
+				HitObjectMovement hitObjectMovementComponent = hitObject.GetComponent<HitObjectMovement>();
+				if (hitObjectMovementComponent == null) hitObjectMovementComponent = hitObject.AddComponent<HitObjectMovement>();
+				hitObjectMovementComponent.InitializeSignal(meHit, parentActor.cachedTransform, hitObjectComponent._rigidbody);
 			}
 		}
 
@@ -178,6 +181,8 @@ public class HitObject : MonoBehaviour
 	float createTime;
 	StatusBase _statusBase = new StatusBase();
 	StatusStructForHitObject _statusStructForHitObject;
+	Rigidbody _rigidbody { get; set; }
+	Collider _collider { get; set; }
 
 
 	public void InitializeHitObject(MeHitObject meHit, Actor parentActor)
@@ -187,13 +192,16 @@ public class HitObject : MonoBehaviour
 		parentActor.actorStatus.CopyStatusBase(ref _statusBase);
 		CopyStatusForHitObject(ref _statusStructForHitObject, parentActor, meHit);
 
+		if (_rigidbody == null) _rigidbody = GetComponent<Rigidbody>();
+		if (_collider == null) _collider = GetComponent<Collider>();
+		EnableRigidbodyAndCollider(true);
+
 		if (_signal.targetDetectType != eTargetDetectType.Collider)
 		{
-			Collider col = GetComponent<Collider>();
-			if (col != null) col.enabled = false;
+			if (_collider != null) _collider.enabled = false;
 		}
 
-		BattleInstanceManager.instance.OnInitializeHitObject(this, GetComponent<Collider>());
+		BattleInstanceManager.instance.OnInitializeHitObject(this, _collider);
 	}
 
 	void Update()
@@ -211,7 +219,8 @@ public class HitObject : MonoBehaviour
 		// for life time 0.0f
 		if (createTime + _signal.lifeTime < Time.time)
 		{
-			Destroy(gameObject);
+			//Destroy(gameObject);
+			gameObject.SetActive(false);
 			return;
 		}
 	}
@@ -235,15 +244,17 @@ public class HitObject : MonoBehaviour
 		}
 
 		if (collided)
-			DestroyRigidbody();
+			EnableRigidbodyAndCollider(false);
 	}
 
-	void DestroyRigidbody()
+	void EnableRigidbodyAndCollider(bool enable)
 	{
-		Rigidbody rigidbody = GetComponent<Rigidbody>();
-		Collider collider = GetComponent<Collider>();
-		if (rigidbody != null) Destroy(rigidbody);
-		if (collider != null) Destroy(collider);
+		if (_rigidbody != null)
+		{
+			_rigidbody.detectCollisions = enable;
+			if (!enable) _rigidbody.velocity = Vector3.zero;
+		}
+		if (_collider != null) _collider.enabled = enable;
 	}
 
 	public void OnCollisionEnterAffectorProcessor(AffectorProcessor affectorProcessor, ContactPoint contact)

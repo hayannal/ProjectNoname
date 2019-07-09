@@ -1,3 +1,4 @@
+#define USE_EFFECT_POOL
 using UnityEngine;
 #if KRIPTO_FX_LWRP_RENDERING
 using UnityEngine.Experimental.Rendering.LightweightPipeline;
@@ -14,7 +15,10 @@ public class RFX4_Decal : MonoBehaviour
     private MaterialPropertyBlock props;
     MeshRenderer rend;
 
-    private void OnEnable()
+#if USE_EFFECT_POOL
+	bool _offsetApplied = false;
+#endif
+	private void OnEnable()
     {
         //if (Application.isPlaying) mat = GetComponent<Renderer>().material;
         //else mat = GetComponent<Renderer>().sharedMaterial;
@@ -37,14 +41,22 @@ public class RFX4_Decal : MonoBehaviour
             sharedMaterial.SetInt("_ZTest1", (int)UnityEngine.Rendering.CompareFunction.LessEqual);
             if (Application.isPlaying)
             {
-                var pos = transform.localPosition;
+#if USE_EFFECT_POOL
+				if (_offsetApplied == false)
+				{
+#endif
+				var pos = transform.localPosition;
                 pos.z += 0.1f;
                 transform.localPosition = pos;
                 var scale = transform.localScale;
                 scale.y = 0.001f;
                 transform.localScale = scale;
-            }
-        }
+#if USE_EFFECT_POOL
+				_offsetApplied = true;
+				}
+#endif
+			}
+		}
         else
         {
             var sharedMaterial = GetComponent<Renderer>().sharedMaterial;

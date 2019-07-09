@@ -20,7 +20,33 @@ public class BattleInstanceManager : MonoBehaviour
 	#endregion
 
 	#region HitObject
+	Dictionary<GameObject, List<GameObject>> _dicHitObjectPool = new Dictionary<GameObject, List<GameObject>>();
+	public GameObject GetCachedHitObject(GameObject prefab, Vector3 position, Quaternion rotation)
+	{
+		List<GameObject> listCachedGameObject = null;
+		if (_dicHitObjectPool.ContainsKey(prefab))
+			listCachedGameObject = _dicHitObjectPool[prefab];
+		else
+		{
+			listCachedGameObject = new List<GameObject>();
+			_dicHitObjectPool.Add(prefab, listCachedGameObject);
+		}
 
+		for (int i = 0; i < listCachedGameObject.Count; ++i)
+		{
+			if (!listCachedGameObject[i].activeSelf)
+			{
+				listCachedGameObject[i].transform.position = position;
+				listCachedGameObject[i].transform.rotation = rotation;
+				listCachedGameObject[i].SetActive(true);
+				return listCachedGameObject[i];
+			}
+		}
+
+		GameObject newHitObject = Instantiate(prefab, position, rotation) as GameObject;
+		listCachedGameObject.Add(newHitObject);
+		return newHitObject;
+	}
 	#endregion
 
 	#region AffectorProcessor
@@ -108,4 +134,23 @@ public class BattleInstanceManager : MonoBehaviour
 		return splitList;
 	}
 	#endregion
+
+
+
+
+
+
+
+
+
+	Transform _transform;
+	public Transform cachedTransform
+	{
+		get
+		{
+			if (_transform == null)
+				_transform = GetComponent<Transform>();
+			return _transform;
+		}
+	}
 }

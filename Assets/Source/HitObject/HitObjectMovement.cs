@@ -25,10 +25,10 @@ public class HitObjectMovement : MonoBehaviour {
 	float _currentCurve;
 
 
-	public void InitializeSignal(MeHitObject meHit, Transform parentTransform)
+	public void InitializeSignal(MeHitObject meHit, Transform parentTransform, Rigidbody rigidbody)
 	{
 		_signal = meHit;
-		_rigidbody = GetComponent<Rigidbody>();
+		_rigidbody = rigidbody;
 		_rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
 
 		switch(_signal.movementType)

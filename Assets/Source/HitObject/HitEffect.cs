@@ -32,7 +32,7 @@ public class HitEffect : MonoBehaviour {
 		{
 			if (meHit.hitEffectObject != null)
 			{
-				var instance = Instantiate(meHit.hitEffectObject, contactPoint, Quaternion.identity);
+				var instance = BattleInstanceManager.instance.GetCachedHitObject(meHit.hitEffectObject, contactPoint, Quaternion.identity);
 				if (meHit.hitEffectLookAtNormal)
 					instance.transform.LookAt(contactPoint + contactNormal);
 			}

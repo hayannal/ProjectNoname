@@ -13,28 +13,28 @@ public class ActorStatus : MonoBehaviour
 	StatusBase _statusBase;
 	public StatusBase statusBase { get { return _statusBase; } }
 
-	public void InitializeActorStatus(int actorId)
+	public void InitializeActorStatus(string actorId)
 	{
 		_statusBase = new ActorStatusList();
 
-		//string key = string.Format("id{0}", actorID);
-		//m_ActorStatus.InitializeByTable(key);
-		_statusBase.valueList[(int)eActorStatus.Attack] = 10.0f;
-		_statusBase.valueList[(int)eActorStatus.MaxHP] = 100.0f;
-		_statusBase.valueList[(int)eActorStatus.MoveSpeed] = 3.0f;
+		ActorPowerLevelTableData actorPowerLevelTableData = TableDataManager.instance.FindActorPowerLevelTableData(actorId, 1);
+		_statusBase.valueList[(int)eActorStatus.MaxHP] = actorPowerLevelTableData.hp;
+		_statusBase.valueList[(int)eActorStatus.Attack] = actorPowerLevelTableData.atk;
+		_statusBase.valueList[(int)eActorStatus.Defense] = actorPowerLevelTableData.def;
+		_statusBase.valueList[(int)eActorStatus.MoveSpeed] = 4.0f;
 
 		//if (isServer)
 		_statusBase._hp = GetValue(eActorStatus.MaxHP);
 	}
 
-	public void InitializeMonsterStatus(int monsterActorId)
+	public void InitializeMonsterStatus(string monsterActorId)
 	{
 		_statusBase = new MonsterStatusList();
 
-		//string key = string.Format("id{0}", actorID);
-		//m_ActorStatus.InitializeByTable(key);
-		_statusBase.valueList[(int)eActorStatus.Attack] = 10.0f;
-		_statusBase.valueList[(int)eActorStatus.MaxHP] = 100.0f;
+		MonsterTableData monsterTableData = TableDataManager.instance.FindMonsterTableData(monsterActorId);
+		_statusBase.valueList[(int)eActorStatus.MaxHP] = StageManager.instance.currentMonstrStandardHp * monsterTableData.multiHp;
+		_statusBase.valueList[(int)eActorStatus.Attack] = StageManager.instance.currentMonstrStandardAtk * monsterTableData.multiAtk;
+		_statusBase.valueList[(int)eActorStatus.Defense] = StageManager.instance.currentMonstrStandardDef * monsterTableData.multiDef;
 		_statusBase.valueList[(int)eActorStatus.MoveSpeed] = 3.0f;
 
 		//if (isServer)

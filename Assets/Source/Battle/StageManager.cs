@@ -21,6 +21,11 @@ public class StageManager : MonoBehaviour
 		instance = this;
 	}
 
+	void Start()
+	{
+		_currentGroundObject = defaultGroundSceneObject;
+	}
+
 	public void NextStage()
 	{
 		playStage += 1;
@@ -29,8 +34,18 @@ public class StageManager : MonoBehaviour
 		Debug.LogFormat("CurrentMap = {0}", currentMap);
 
 		StageTestCanvas.instance.RefreshCurrentMapText(playChapter, playStage, currentMap);
+
+		MapTableData mapTableData = TableDataManager.instance.FindMapTableData(currentMap);
+		if (mapTableData != null)
+		{
+			//defaultGroundSceneObject.SetActive(false);
+			InstantiateMap(mapTableData);
+		}
 	}
 
+	public float currentMonstrStandardHp { get; private set; }
+	public float currentMonstrStandardAtk { get; private set; }
+	public float currentMonstrStandardDef { get; private set; }
 	Dictionary<int, List<string>> _dicStageInfoByGrouping = new Dictionary<int, List<string>>();
 	Dictionary<int, int> _dicCurrentIndexByGrouping = new Dictionary<int, int>();
 	string CalcStageInfo()
@@ -38,6 +53,10 @@ public class StageManager : MonoBehaviour
 		StageTableData currentStageTableData = TableDataManager.instance.FindStageTableData(playChapter, playStage);
 		if (currentStageTableData == null)
 			return "";
+
+		currentMonstrStandardHp = currentStageTableData.standardHp;
+		currentMonstrStandardAtk = currentStageTableData.standardAtk;
+		currentMonstrStandardDef = currentStageTableData.standardDef;
 
 		if (string.IsNullOrEmpty(currentStageTableData.overridingMap) == false)
 			return currentStageTableData.overridingMap;
@@ -91,5 +110,47 @@ public class StageManager : MonoBehaviour
 		}
 
 		return listStageId[currentIndex];
+	}
+
+	GameObject _currentGroundObject;
+	GameObject _currentWallObject;
+	GameObject _currentSpawnFlagObject;
+	void InstantiateMap(MapTableData mapTableData)
+	{
+		for (int i = 0; i < groundPrefabList.Length; ++i)
+		{
+			if (groundPrefabList[i].name.ToLower() == mapTableData.ground.ToLower())
+			{
+				GameObject newObject = Instantiate<GameObject>(groundPrefabList[i]);
+				if (_currentGroundObject != null)
+					_currentGroundObject.SetActive(false);
+				_currentGroundObject = newObject;
+				break;
+			}
+		}
+
+		for (int i = 0; i < wallPrefabList.Length; ++i)
+		{
+			if (wallPrefabList[i].name.ToLower() == mapTableData.wall.ToLower())
+			{
+				GameObject newObject = Instantiate<GameObject>(wallPrefabList[i]);
+				if (_currentWallObject != null)
+					_currentWallObject.SetActive(false);
+				_currentWallObject = newObject;
+				break;
+			}
+		}
+
+		for (int i = 0; i < spawnFlagPrefabList.Length; ++i)
+		{
+			if (spawnFlagPrefabList[i].name.ToLower() == mapTableData.spawnFlag.ToLower())
+			{
+				GameObject newObject = Instantiate<GameObject>(spawnFlagPrefabList[i]);
+				if (_currentSpawnFlagObject != null)
+					_currentSpawnFlagObject.SetActive(false);
+				_currentSpawnFlagObject = newObject;
+				break;
+			}
+		}
 	}
 }

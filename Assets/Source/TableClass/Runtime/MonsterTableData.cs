@@ -9,8 +9,8 @@ using System.Collections;
 public class MonsterTableData
 {
   [SerializeField]
-  string _id;
-  public string id { get { return _id; } set { _id = value; } }
+  string _monsterId;
+  public string monsterId { get { return _monsterId; } set { _monsterId = value; } }
   
   [SerializeField]
   float _multiHp;

@@ -10,59 +10,33 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 80e14a72067f1ad408ec8d661bc560ce, type: 3}
-  m_Name: ActionTableImporter
+  m_Name: MapTableImporter
   m_EditorClassIdentifier: 
   templatePath: AssetStore/QuickSheet/ExcelPlugin/Templates
   scriptFilePath: Source/TableClass/Runtime
   editorScriptFilePath: Source/TableClass/Editor
-  sheetName: Action.xlsx
-  workSheetName: ActionTable
+  sheetName: Stage.xlsx
+  workSheetName: MapTable
   columnHeaderList:
   - type: 1
-    name: id
+    name: mapId
     isEnable: 0
     isArray: 0
   - type: 1
-    name: actorId
+    name: ground
     isEnable: 0
     isArray: 0
   - type: 1
-    name: actionName
+    name: wall
     isEnable: 0
     isArray: 0
   - type: 1
-    name: listAllowingState
+    name: spawnFlag
     isEnable: 0
     isArray: 0
-  - type: 1
-    name: listNotAllowingState
-    isEnable: 0
-    isArray: 0
-  - type: 1
-    name: mecanimName
-    isEnable: 0
-    isArray: 0
-  - type: 5
-    name: fadeDuration
-    isEnable: 0
-    isArray: 0
-  - type: 1
-    name: controlId
-    isEnable: 0
-    isArray: 0
-  - type: 1
-    name: castingId
-    isEnable: 0
-    isArray: 0
-  - type: 1
-    name: skillId
-    isEnable: 0
-    isArray: 0
-  excelFilePath: ../Excel/Action.xlsx
+  excelFilePath: ../Excel/Stage.xlsx
   SheetNames:
-  - ActionTable
-  - ControlTable
-  - CastingTable
-  - SkillTable
-  - SkillLevelTable
-  currentSelectedSheet: 0
+  - StageTable
+  - MapTable
+  - MonsterTable
+  currentSelectedSheet: 1

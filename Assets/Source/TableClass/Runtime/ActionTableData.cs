@@ -13,8 +13,8 @@ public class ActionTableData
   public string id { get { return _id; } set { _id = value; } }
   
   [SerializeField]
-  int _actorId;
-  public int actorId { get { return _actorId; } set { _actorId = value; } }
+  string _actorId;
+  public string actorId { get { return _actorId; } set { _actorId = value; } }
   
   [SerializeField]
   string _actionName;

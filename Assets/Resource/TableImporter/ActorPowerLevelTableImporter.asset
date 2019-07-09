@@ -10,59 +10,40 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 80e14a72067f1ad408ec8d661bc560ce, type: 3}
-  m_Name: ActionTableImporter
+  m_Name: ActorPowerLevelTableImporter
   m_EditorClassIdentifier: 
   templatePath: AssetStore/QuickSheet/ExcelPlugin/Templates
   scriptFilePath: Source/TableClass/Runtime
   editorScriptFilePath: Source/TableClass/Editor
-  sheetName: Action.xlsx
-  workSheetName: ActionTable
+  sheetName: Actor.xlsx
+  workSheetName: ActorPowerLevelTable
   columnHeaderList:
   - type: 1
-    name: id
+    name: actorPowerLevelId
     isEnable: 0
     isArray: 0
   - type: 1
     name: actorId
     isEnable: 0
     isArray: 0
-  - type: 1
-    name: actionName
-    isEnable: 0
-    isArray: 0
-  - type: 1
-    name: listAllowingState
-    isEnable: 0
-    isArray: 0
-  - type: 1
-    name: listNotAllowingState
-    isEnable: 0
-    isArray: 0
-  - type: 1
-    name: mecanimName
+  - type: 3
+    name: powerLevel
     isEnable: 0
     isArray: 0
   - type: 5
-    name: fadeDuration
+    name: hp
     isEnable: 0
     isArray: 0
-  - type: 1
-    name: controlId
+  - type: 5
+    name: atk
     isEnable: 0
     isArray: 0
-  - type: 1
-    name: castingId
+  - type: 5
+    name: def
     isEnable: 0
     isArray: 0
-  - type: 1
-    name: skillId
-    isEnable: 0
-    isArray: 0
-  excelFilePath: ../Excel/Action.xlsx
+  excelFilePath: ../Excel/Actor.xlsx
   SheetNames:
-  - ActionTable
-  - ControlTable
-  - CastingTable
-  - SkillTable
-  - SkillLevelTable
-  currentSelectedSheet: 0
+  - ActorTable
+  - ActorPowerLevelTable
+  currentSelectedSheet: 1

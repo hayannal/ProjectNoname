@@ -331,6 +331,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1467935026}
     m_Modifications:
+    - target: {fileID: 100090, guid: 1cb8dad3ef3dedc4cadf09aefe7d5aad, type: 3}
+      propertyPath: m_Name
+      value: Rosehips
+      objectReference: {fileID: 0}
     - target: {fileID: 400090, guid: 1cb8dad3ef3dedc4cadf09aefe7d5aad, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -374,10 +378,6 @@ PrefabInstance:
     - target: {fileID: 400090, guid: 1cb8dad3ef3dedc4cadf09aefe7d5aad, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 100090, guid: 1cb8dad3ef3dedc4cadf09aefe7d5aad, type: 3}
-      propertyPath: m_Name
-      value: Rosehips
       objectReference: {fileID: 0}
     - target: {fileID: 9500000, guid: 1cb8dad3ef3dedc4cadf09aefe7d5aad, type: 3}
       propertyPath: m_Controller
@@ -1844,7 +1844,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41b5ba3322f0bc44e9d5f95b53c1d004, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actorID: 1
+  actorId: Actor001
 --- !u!4 &1123292030 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400132, guid: 07e2cbbf6d66b844bb3b416cb21b1677,
@@ -2911,7 +2911,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41b5ba3322f0bc44e9d5f95b53c1d004, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actorID: 2
+  actorId: 
 --- !u!1 &1504380891
 GameObject:
   m_ObjectHideFlags: 0
@@ -4021,7 +4021,10 @@ MonoBehaviour:
   controlTable: {fileID: 11400000, guid: 9aec06439260390468ce92f3e3385d0b, type: 2}
   affectorValueTable: {fileID: 0}
   stageTable: {fileID: 11400000, guid: 70d7918c7d2e52b40ad2691300ad265b, type: 2}
+  mapTable: {fileID: 11400000, guid: 95970f3f855b7ef4595d93e55ad15687, type: 2}
   monsterTable: {fileID: 11400000, guid: b16f84784353cf9409c791fca639775a, type: 2}
+  actorPowerLevelTable: {fileID: 11400000, guid: b8ef25e63aa9fc5498d3b5724ae30811,
+    type: 2}
 --- !u!4 &2033018329
 Transform:
   m_ObjectHideFlags: 0

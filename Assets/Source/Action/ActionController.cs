@@ -35,7 +35,7 @@ public class ActionController : MonoBehaviour {
 		if (idleAnimator == null) idleAnimator = animator.gameObject.AddComponent<IdleAnimator>();
 	}
 
-	public void InitializeActionPlayInfo(int actorID)
+	public void InitializeActionPlayInfo(string actorId)
 	{
 		cooltimeProcessor = GetComponent<CooltimeProcessor>();
 		if (cooltimeProcessor == null) cooltimeProcessor = gameObject.AddComponent<CooltimeProcessor>();
@@ -45,7 +45,7 @@ public class ActionController : MonoBehaviour {
 		for (int i = 0; i < TableDataManager.instance.actionTable.dataArray.Length; ++i)
 		{
 			ActionTableData actionTableData = TableDataManager.instance.actionTable.dataArray[i];
-			if (actionTableData.actorId != actorID) continue;
+			if (actionTableData.actorId != actorId) continue;
 
 			if (!string.IsNullOrEmpty(actionTableData.skillId))
 			{

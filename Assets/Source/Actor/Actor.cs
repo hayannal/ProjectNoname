@@ -6,7 +6,7 @@ public class Actor : MonoBehaviour {
 
 	public static int ACTOR_LAYER;
 
-	public int actorID;
+	public string actorId;
 	public ActionController actionController { get; set; }
 	//public MovementController movementController { get; set; }
 	//public CastingProcessor castingProcessor { get; set; }
@@ -57,10 +57,11 @@ public class Actor : MonoBehaviour {
 	}
 
 	//public void InitializeActor(DBData)
-	protected void InitializeActor()
+	protected virtual void InitializeActor()
 	{
-		actionController.InitializeActionPlayInfo(actorID);
-		actorStatus.InitializeActorStatus(actorID);
+		actionController.InitializeActionPlayInfo(actorId);
+		actorStatus.InitializeActorStatus(actorId);
+		team.teamID = (int)Team.eTeamID.DefaultArmy;
 	}
 
 	Transform _transform;

@@ -12,10 +12,19 @@ public class ActorStatus : MonoBehaviour
 
 	StatusBase _statusBase;
 	public StatusBase statusBase { get { return _statusBase; } }
+	public Actor actor { get; set; }
+
+	void Awake()
+	{
+		actor = GetComponent<Actor>();
+	}
 
 	public void InitializeActorStatus(string actorId)
 	{
-		_statusBase = new ActorStatusList();
+		if (_statusBase == null)
+			_statusBase = new ActorStatusList();
+		else
+			_statusBase.ClearValue();
 
 		ActorPowerLevelTableData actorPowerLevelTableData = TableDataManager.instance.FindActorPowerLevelTableData(actorId, 1);
 		_statusBase.valueList[(int)eActorStatus.MaxHP] = actorPowerLevelTableData.hp;
@@ -29,7 +38,10 @@ public class ActorStatus : MonoBehaviour
 
 	public void InitializeMonsterStatus(string monsterActorId)
 	{
-		_statusBase = new MonsterStatusList();
+		if (_statusBase == null)
+			_statusBase = new MonsterStatusList();
+		else
+			_statusBase.ClearValue();
 
 		MonsterTableData monsterTableData = TableDataManager.instance.FindMonsterTableData(monsterActorId);
 		_statusBase.valueList[(int)eActorStatus.MaxHP] = StageManager.instance.currentMonstrStandardHp * monsterTableData.multiHp;
@@ -100,18 +112,21 @@ public class ActorStatus : MonoBehaviour
 			return m_ActorStatus.Values[(int)eType];
 		return 0.0f;
 	}
+	*/
 
 	public virtual void AddHP(float addHP)
 	{
-		m_ActorStatus.HP += addHP;
-		m_ActorStatus.HP = Mathf.Clamp(m_ActorStatus.HP, 0, GetStatus(BaseStatus.eStatus.MaxHP));
-		if (m_ActorStatus.HP == 0)
-			OnDie();
+		_statusBase._hp += addHP;
+		_statusBase._hp = Mathf.Clamp(_statusBase._hp, 0, GetValue(eActorStatus.MaxHP));
+		if (_statusBase._hp <= 0)
+		{
+			_statusBase._hp = 0.0f;
+			actor.OnDie();
+		}
 	}
 
 	public float GetHPRatio()
 	{
-		return GetHP() / GetStatus(BaseStatus.eStatus.MaxHP);
+		return GetHP() / GetValue(eActorStatus.MaxHP);
 	}
-	*/
 }

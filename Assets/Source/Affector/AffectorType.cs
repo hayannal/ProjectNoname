@@ -5,8 +5,7 @@ using UnityEngine;
 #region USER_CODE
 public enum eAffectorType
 {
-	MecanimPlay = 1,
-	ChangeAction,
+	ChangeAction = 1,
 	AddForce,
 	BaseDamage,
 	ChangeState,

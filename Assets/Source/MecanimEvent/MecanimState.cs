@@ -14,6 +14,16 @@ public class MecanimState : MonoBehaviour {
 	}
 	List<StateInfo> m_listStateInfo = new List<StateInfo>();
 
+	void OnEnable()
+	{
+		m_listStateInfo.Clear();
+	}
+
+	void Start()
+	{
+		m_Animator = GetComponent<Animator>();
+	}
+
 	StateInfo _stateInfo = new StateInfo();
 	public void StartState(int stateID, int fullPathHash)
 	{
@@ -47,11 +57,6 @@ public class MecanimState : MonoBehaviour {
 				return true;
 		}
 		return false;
-	}
-
-	void Start()
-	{
-		m_Animator = GetComponent<Animator>();
 	}
 
 	int _lastFullPathHash = 0;

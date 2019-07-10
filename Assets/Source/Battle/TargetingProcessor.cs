@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class TargetingProcessor : MonoBehaviour {
 
+	void OnEnable()
+	{
+		_targetList.Clear();
+	}
+
 	public int GetTargetCount()
 	{
 		return _targetList.Count;
@@ -57,7 +62,7 @@ public class TargetingProcessor : MonoBehaviour {
 			Actor actor = affectorProcessor.actor;
 			if (actor != null)
 			{
-				if (actor.actorStatus.GetHP() == 0)
+				if (actor.actorStatus.GetHP() <= 0)
 					continue;
 			}
 

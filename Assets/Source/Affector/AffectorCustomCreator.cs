@@ -10,10 +10,9 @@ public static class AffectorCustomCreator
 		switch(affectorType)
 		{
 			#region USER_CODE
-			//case eAffectorType.MecanimPlay: affectorBase = new MecanimPlayAffector(); break;
 			//case eAffectorType.ChangeAction: affectorBase = new ChangeActionAffector(); break;
 			//case eAffectorType.AddForce: affectorBase = new AddForceAffector(); break;
-			//case eAffectorType.BaseDamage: affectorBase = new BaseDamageAffector(); break;
+			case eAffectorType.BaseDamage: affectorBase = new BaseDamageAffector(); break;
 			//case eAffectorType.ChangeState: affectorBase = new ChangeStateAffector(); break;
 			//case eAffectorType.MoveToTarget: affectorBase = new MoveToTargetAffector(); break;
 			#endregion

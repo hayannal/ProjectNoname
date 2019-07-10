@@ -14,6 +14,15 @@ public class AffectorProcessor : MonoBehaviour {
 		actor = GetComponent<Actor>();
 	}
 
+	void OnEnable()
+	{
+		if (_listContinuousAffector == null)
+			return;
+
+		for (int i = _listContinuousAffector.Count - 1; i >= 0; --i)
+			_listContinuousAffector.RemoveAt(i);
+	}
+
 	public void ExcuteAffectorValue(string affectorValueId, HitParameter hitParameter, bool syncAffector)
 	{
 		AffectorValueTableData data = TableDataManager.instance.FindAffectorValueTableData(affectorValueId);
@@ -21,15 +30,13 @@ public class AffectorProcessor : MonoBehaviour {
 
 		ExcuteAffector(affectorValueId, data, hitParameter);
 
-		/*
-		#region Network Sync
-		if (syncAffector)
-			SyncAffectorInfo(affectorValueID, hitParameter);
-		#endregion
-		*/
+		//#region Network Sync
+		//if (syncAffector)
+		//	SyncAffectorInfo(affectorValueID, hitParameter);
+		//#endregion
 	}
 
-	public void ExcuteAffector(string affectorValueID, AffectorValueTableData data, HitParameter hitParameter)
+	public void ExcuteAffector(string affectorValueId, AffectorValueTableData data, HitParameter hitParameter)
 	{
 		eAffectorType affectorType = (eAffectorType)data.affectorId;
 		if (AffectorCustomCreator.IsContinuousAffector(affectorType))
@@ -42,7 +49,7 @@ public class AffectorProcessor : MonoBehaviour {
 				if (affectorBase.Initialize(actor, this) == false)
 					return;
 				_listContinuousAffector.Add(affectorBase);
-				affectorBase.ExcuteAffector(affectorValueID, data, hitParameter);
+				affectorBase.ExecuteAffector(affectorValueId, data, hitParameter);
 			}
 		}
 		else
@@ -60,7 +67,7 @@ public class AffectorProcessor : MonoBehaviour {
 					_dicAffector.Add((int)affectorType, affectorBase);
 				}
 			}
-			if (affectorBase != null) affectorBase.ExcuteAffector(affectorValueID, data, hitParameter);
+			if (affectorBase != null) affectorBase.ExecuteAffector(affectorValueId, data, hitParameter);
 		}
 	}
 

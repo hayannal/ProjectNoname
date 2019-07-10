@@ -16,6 +16,9 @@ public class Actor : MonoBehaviour {
 	public Team team { get; set; }
 	public TargetingProcessor targetingSystem { get; set; }
 
+	protected Rigidbody _rigidbody { get; set; }
+	protected Collider _collider { get; set; }
+
 	void Awake()
 	{
 		InitializeComponent();
@@ -26,10 +29,13 @@ public class Actor : MonoBehaviour {
 		InitializeActor();
 	}
 
-	protected void InitializeComponent()
+	protected virtual void InitializeComponent()
 	{
 		if (ACTOR_LAYER == 0) ACTOR_LAYER = LayerMask.NameToLayer("Actor");
 		//ObjectUtil.ChangeLayer(gameObject, ACTOR_LAYER);
+
+		if (_rigidbody == null) _rigidbody = GetComponent<Rigidbody>();
+		if (_collider == null) _collider = GetComponent<Collider>();
 
 		actionController = GetComponent<ActionController>();
 		if (actionController == null) actionController = gameObject.AddComponent<ActionController>();
@@ -37,14 +43,8 @@ public class Actor : MonoBehaviour {
 		//movementController = GetComponent<MovementController>();
 		//if (movementController == null) movementController = gameObject.AddComponent<MovementController>();
 
-		//castingProcessor = GetComponent<CastingProcessor>();
-		//if (castingProcessor == null) castingProcessor = gameObject.AddComponent<CastingProcessor>();
-
 		cooltimeProcessor = GetComponent<CooltimeProcessor>();
 		if (cooltimeProcessor == null) cooltimeProcessor = gameObject.AddComponent<CooltimeProcessor>();
-
-		actorStatus = GetComponent<ActorStatus>();
-		if (actorStatus == null) actorStatus = gameObject.AddComponent<ActorStatus>();
 
 		affectorProcessor = GetComponent<AffectorProcessor>();
 		if (affectorProcessor == null) affectorProcessor = gameObject.AddComponent<AffectorProcessor>();
@@ -56,12 +56,9 @@ public class Actor : MonoBehaviour {
 		if (targetingSystem == null) targetingSystem = gameObject.AddComponent<TargetingProcessor>();
 	}
 
-	//public void InitializeActor(DBData)
 	protected virtual void InitializeActor()
 	{
 		actionController.InitializeActionPlayInfo(actorId);
-		actorStatus.InitializeActorStatus(actorId);
-		team.teamID = (int)Team.eTeamID.DefaultArmy;
 	}
 
 	Transform _transform;
@@ -75,23 +72,14 @@ public class Actor : MonoBehaviour {
 		}
 	}
 
-	/*
 	public virtual void OnDie()
 	{
-		m_Animator.CrossFade(GetDieAnimationHash(), Default_Transition_Duration);
-
+		actionController.PlayActionByActionName("Die");
 		actionController.idleAnimator.enabled = false;
-		BehaviorDesigner.Runtime.BehaviorTree bt = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
-		if (bt != null) bt.enabled = false;
-		CharacterController cc = GetComponent<CharacterController>();
-		if (cc != null) cc.enabled = false;
+		HitObject.EnableRigidbodyAndCollider(false, _rigidbody, _collider, false);
 	}
 
-	protected virtual int GetDieAnimationHash()
-	{
-		return Hash_Die;
-	}
-
+	/*
 	// Team
 	public int TeamID
 	{

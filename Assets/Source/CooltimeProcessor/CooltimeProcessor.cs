@@ -6,6 +6,13 @@ public class CooltimeProcessor : MonoBehaviour {
 
 	Dictionary<string, Cooltime> m_dicCoolTimeInfo = new Dictionary<string, Cooltime>();
 
+	void OnEnable()
+	{
+		Dictionary<string, Cooltime>.Enumerator e = m_dicCoolTimeInfo.GetEnumerator();
+		while (e.MoveNext())
+			e.Current.Value.cooltime = 0.0f;
+	}
+
 	public Cooltime InitializeCoolTime(string cooltimeID, float maxCoolTime, float initCoolTime = 0.0f)
 	{
 		Cooltime coolTimeInfo = null;

@@ -40,6 +40,15 @@ namespace ActorStatusDefine {
 			valueList = new float[(int)eActorStatus.BaseAmount];
 		}
 
+		public void ClearValue()
+		{
+			if (valueList == null)
+				return;
+
+			for (int i = 0; i < valueList.Length; ++i)
+				valueList[i] = 0.0f;
+		}
+
 		public bool isPlayerBaseStatus { get { return valueList.Length == (int)eActorStatus.BaseAmount; } }
 		public bool IsPlayerExStatus { get { return valueList.Length == (int)eActorStatus.ExAmount; } }
 		public bool IsMonsterStatus { get { return valueList.Length == (int)eActorStatus.MonsterStatusAmount; } }

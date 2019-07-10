@@ -256,12 +256,17 @@ public class HitObject : MonoBehaviour
 
 	void EnableRigidbodyAndCollider(bool enable)
 	{
-		if (_rigidbody != null)
+		EnableRigidbodyAndCollider(enable, _rigidbody, _collider);
+	}
+
+	public static void EnableRigidbodyAndCollider(bool enable, Rigidbody rigidbody, Collider collider, bool resetVelocityOnDisable = true)
+	{
+		if (rigidbody != null)
 		{
-			_rigidbody.detectCollisions = enable;
-			if (!enable) _rigidbody.velocity = Vector3.zero;
+			rigidbody.detectCollisions = enable;
+			if (!enable && resetVelocityOnDisable) rigidbody.velocity = Vector3.zero;
 		}
-		if (_collider != null) _collider.enabled = enable;
+		if (collider != null) collider.enabled = enable;
 	}
 
 	public void OnCollisionEnterAffectorProcessor(AffectorProcessor affectorProcessor, ContactPoint contact)

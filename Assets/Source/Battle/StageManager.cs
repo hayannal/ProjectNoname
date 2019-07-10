@@ -152,5 +152,7 @@ public class StageManager : MonoBehaviour
 				break;
 			}
 		}
+
+		BattleManager.instance.OnLoadedMap();
 	}
 }

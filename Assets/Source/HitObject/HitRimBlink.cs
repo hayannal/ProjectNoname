@@ -51,16 +51,20 @@ public class HitRimBlink : MonoBehaviour {
 	void Update()
 	{
 		_currentTime += Time.deltaTime;
-		float resultRim = s_HitRimCurveAsset.curve.Evaluate(_currentTime);
-		float resultColor = s_HitColorCurveAsset.curve.Evaluate(_currentTime);
 
-		for (int i = 0; i < _cachedMaterials.Count; ++i)
+		if (_cachedMaterials.Count > 0)
 		{
-			if (_cachedMaterials[i] == null)
-				continue;
-			_cachedMaterials[i].SetFloat(HIT_RIM_POWER, resultRim);
-			_cachedMaterials[i].SetFloat(HIT_COLOR_INTENSITY, resultColor);
-			//_cachedMaterials[i].SetTextureOffset(HIT_RIM_UV_NORMAL, new Vector2(Random.value, Random.value));
+			float resultRim = s_HitRimCurveAsset.curve.Evaluate(_currentTime);
+			float resultColor = s_HitColorCurveAsset.curve.Evaluate(_currentTime);
+
+			for (int i = 0; i < _cachedMaterials.Count; ++i)
+			{
+				if (_cachedMaterials[i] == null)
+					continue;
+				_cachedMaterials[i].SetFloat(HIT_RIM_POWER, resultRim);
+				_cachedMaterials[i].SetFloat(HIT_COLOR_INTENSITY, resultColor);
+				//_cachedMaterials[i].SetTextureOffset(HIT_RIM_UV_NORMAL, new Vector2(Random.value, Random.value));
+			}
 		}
 
 		if (_currentTime > s_HitRimCurveAsset.curve.keys[s_HitRimCurveAsset.curve.length-1].time)

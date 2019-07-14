@@ -1,15 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using SubjectNerd.Utilities;
 
 public class StageManager : MonoBehaviour
 {
 	public static StageManager instance;
 
 	public GameObject defaultGroundSceneObject;
-	public GameObject[] groundPrefabList;
-	public GameObject[] wallPrefabList;
-	public GameObject[] spawnFlagPrefabList;
+	[Reorderable] public GameObject[] groundPrefabList;
+	[Reorderable] public GameObject[] wallPrefabList;
+	[Reorderable] public GameObject[] spawnFlagPrefabList;
 
 	public int playChapter = 1;
 	public int playStage = 0;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
+using UnityEditorInternal;
 #endif
 
 public class MeHitObject : MecanimEventBase {
@@ -32,7 +33,7 @@ public class MeHitObject : MecanimEventBase {
 	public float curveAdd;
 	public bool curveLockY;
 
-	public string affectorValueIDList;
+	public List<string> affectorValueIdList;
 	public bool showHitEffect;
 	public GameObject hitEffectObject;  //Google2u.HitEffectRow
 	public bool hitEffectLookAtNormal;
@@ -43,6 +44,8 @@ public class MeHitObject : MecanimEventBase {
 
 
 	#if UNITY_EDITOR
+	SerializedObject so = null;
+	ReorderableList reorderableList = null;
 	override public void OnGUI_PropertyWindow()
 	{
 		hitObjectPrefab = (GameObject)EditorGUILayout.ObjectField("Object :", hitObjectPrefab, typeof(GameObject), false);
@@ -84,7 +87,26 @@ public class MeHitObject : MecanimEventBase {
 			EditorGUILayout.LabelField("-----------------------------------------------------------------");
 		}
 
-		affectorValueIDList = EditorGUILayout.TextField("Affector Value ID List :", affectorValueIDList);
+		if (reorderableList == null)
+		{
+			so = new SerializedObject(this);
+			reorderableList = new ReorderableList(so, so.FindProperty("affectorValueIdList"), true, true, true, true);
+			reorderableList.drawHeaderCallback = (rect) => EditorGUI.LabelField(rect, "Affector Value ID List");
+			reorderableList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
+			{
+				var element = reorderableList.serializedProperty.GetArrayElementAtIndex(index);
+				rect.y += 2;
+				rect.height = EditorGUIUtility.singleLineHeight;
+				EditorGUI.PropertyField(rect, reorderableList.serializedProperty.GetArrayElementAtIndex(index));
+			};
+		}
+		if (reorderableList != null)
+		{
+			//so.Update();
+			reorderableList.DoLayoutList();
+			//so.ApplyModifiedProperties();
+		}
+
 		showHitEffect = EditorGUILayout.Toggle("Show HitEffect :", showHitEffect);
 		if (showHitEffect)
 		{

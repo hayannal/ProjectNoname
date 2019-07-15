@@ -149,19 +149,6 @@ public class BattleInstanceManager : MonoBehaviour
 	#region HitParameter
 	#endregion
 
-	#region AffectorValueId
-	Dictionary<string, string[]> _dicAffectorValueIdList = new Dictionary<string, string[]>();
-	public string[] GetAffectorValueIdList(string affectorValueIdList)
-	{
-		if (_dicAffectorValueIdList.ContainsKey(affectorValueIdList))
-			return _dicAffectorValueIdList[affectorValueIdList];
-
-		string[] splitList = affectorValueIdList.Split(',');
-		_dicAffectorValueIdList.Add(affectorValueIdList, splitList);
-		return splitList;
-	}
-	#endregion
-
 
 
 

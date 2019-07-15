@@ -80,7 +80,7 @@ public class HitObject : MonoBehaviour
 					hitParameter.statusBase = parentActor.actorStatus.statusBase;
 					CopyStatusForHitObject(ref hitParameter.statusStructForHitObject, parentActor, meHit);
 
-					ApplyAffectorValue(affectorProcessor, meHit.affectorValueIDList, hitParameter);
+					ApplyAffectorValue(affectorProcessor, meHit.affectorValueIdList, hitParameter);
 
 					if (meHit.showHitEffect)
 						HitEffect.ShowHitEffect(meHit, hitParameter.contactPoint, hitParameter.contactNormal, hitParameter.statusStructForHitObject.weaponIDAtCreation);
@@ -154,7 +154,7 @@ public class HitObject : MonoBehaviour
 			hitParameter.statusBase = statusBase;
 			hitParameter.statusStructForHitObject = statusForHitObject;
 
-			ApplyAffectorValue(affectorProcessor, meHit.affectorValueIDList, hitParameter);
+			ApplyAffectorValue(affectorProcessor, meHit.affectorValueIdList, hitParameter);
 
 			if (meHit.showHitEffect)
 				HitEffect.ShowHitEffect(meHit, hitParameter.contactPoint, hitParameter.contactNormal, statusForHitObject.weaponIDAtCreation);
@@ -165,14 +165,13 @@ public class HitObject : MonoBehaviour
 		}
 	}
 
-	static void ApplyAffectorValue(AffectorProcessor affectorProcessor, string affectorValueIDList, HitParameter hitParameter)
+	static void ApplyAffectorValue(AffectorProcessor affectorProcessor, List<string> listAffectorValueId, HitParameter hitParameter)
 	{
-		if (string.IsNullOrEmpty(affectorValueIDList)) return;
+		if (listAffectorValueId == null || listAffectorValueId.Count == 0) return;
 		if (affectorProcessor == null) return;
 
-		string[] affectorValueID = BattleInstanceManager.instance.GetAffectorValueIdList(affectorValueIDList);
-		for (int j = 0; j < affectorValueID.Length; ++j)
-			affectorProcessor.ExcuteAffectorValue(affectorValueID[j], hitParameter, true);
+		for (int i = 0; i < listAffectorValueId.Count; ++i)
+			affectorProcessor.ExcuteAffectorValue(listAffectorValueId[i], hitParameter, true);
 	}
 	#endregion
 
@@ -293,7 +292,7 @@ public class HitObject : MonoBehaviour
 		//hitParameter.contactPoint = col.ClosestPointOnBounds(col.transform.position) + (hitParameter.contactNormal * colliderRadius * 0.3f);
 		hitParameter.statusBase = _statusBase;
 		hitParameter.statusStructForHitObject = _statusStructForHitObject;
-		ApplyAffectorValue(affectorProcessor, _signal.affectorValueIDList, hitParameter);
+		ApplyAffectorValue(affectorProcessor, _signal.affectorValueIdList, hitParameter);
 		
 		if (_signal.showHitBlink)
 			HitBlink.ShowHitBlink(affectorProcessor.cachedTransform);

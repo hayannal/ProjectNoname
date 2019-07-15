@@ -2,20 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using SubjectNerd.Utilities;
 
 [CustomEditor(typeof(SpawnFlag))]
-public class SpawnFlagEditor : Editor
+public class SpawnFlagEditor : ReorderableArrayInspector
 {
 	SerializedProperty playerSpawnTransformProperty;
 
-	void OnEnable()
+	protected override void InitInspector()
 	{
+		base.InitInspector();
+
+		alwaysDrawInspector = true;
+
 		playerSpawnTransformProperty = serializedObject.FindProperty("playerSpawnTransform");
 	}
 
-	public override void OnInspectorGUI()
+	protected override void DrawInspector()
 	{
-		base.OnInspectorGUI();
+		base.DrawInspector();
 
 		if (GUILayout.Button("Save Spawn Flag Data"))
 		{

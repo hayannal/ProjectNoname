@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.Experimental.SceneManagement;
 #endif
+using SubjectNerd.Utilities;
 
 [ExecuteInEditMode]
 public class SpawnFlag : MonoBehaviour
@@ -20,6 +21,7 @@ public class SpawnFlag : MonoBehaviour
 		public Vector3 localRotation;
 		public Vector3 localScale;
 	}
+	[Reorderable]
 	public List<SpawnInfo> _listSpawnInfo;
 
 #if UNITY_EDITOR

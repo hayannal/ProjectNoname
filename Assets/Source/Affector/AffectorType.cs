@@ -8,8 +8,17 @@ public enum eAffectorType
 	ChangeAction = 1,
 	AddForce,
 	BaseDamage,
-	ChangeState,
+	DotDamage,
 	MoveToTarget,
-
+	AddActorState,
+	ChangeActorStatus,
+	DropItem,
+	CannotAction,
+	CannotMove,
+	DefaultContainer,
+	Heal,
+	PiercingHitObject,
+	AddAffectorHitObject,
+	GetLevelPack,
 }
 #endregion

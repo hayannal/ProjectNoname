@@ -10,48 +10,64 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 80e14a72067f1ad408ec8d661bc560ce, type: 3}
-  m_Name: ActionTableImporter
+  m_Name: SkillTableImporter
   m_EditorClassIdentifier: 
   templatePath: AssetStore/QuickSheet/ExcelPlugin/Templates
   scriptFilePath: Source/TableClass/Runtime
   editorScriptFilePath: Source/TableClass/Editor
   sheetName: Action.xlsx
-  workSheetName: ActionTable
+  workSheetName: SkillTable
   columnHeaderList:
+  - type: 1
+    name: id
+    isEnable: 0
+    isArray: 0
   - type: 1
     name: actorId
     isEnable: 0
     isArray: 0
-  - type: 1
-    name: actionName
+  - type: 8
+    name: passiveSkill
     isEnable: 0
     isArray: 0
   - type: 1
-    name: listAllowingState
-    isEnable: 0
-    isArray: 0
-  - type: 1
-    name: listNotAllowingState
-    isEnable: 0
-    isArray: 0
-  - type: 1
-    name: mecanimName
+    name: icon
     isEnable: 0
     isArray: 0
   - type: 5
-    name: fadeDuration
+    name: cooltime
     isEnable: 0
     isArray: 0
   - type: 1
-    name: controlId
+    name: passiveAffectorValueId
+    isEnable: 0
+    isArray: 1
+  - type: 1
+    name: nameId
     isEnable: 0
     isArray: 0
   - type: 1
-    name: castingId
+    name: descriptionId
     isEnable: 0
     isArray: 0
-  - type: 1
-    name: skillId
+  - type: 8
+    name: useCooltimeOverriding
+    isEnable: 0
+    isArray: 0
+  - type: 8
+    name: useMecanimNameOverriding
+    isEnable: 0
+    isArray: 0
+  - type: 8
+    name: usePassiveAffectorValueIdOverriding
+    isEnable: 0
+    isArray: 0
+  - type: 8
+    name: useNameIdOverriding
+    isEnable: 0
+    isArray: 0
+  - type: 8
+    name: useDescriptionIdOverriding
     isEnable: 0
     isArray: 0
   excelFilePath: ../Excel/Action.xlsx
@@ -61,4 +77,4 @@ MonoBehaviour:
   - CastingTable
   - SkillTable
   - SkillLevelTable
-  currentSelectedSheet: 0
+  currentSelectedSheet: 3

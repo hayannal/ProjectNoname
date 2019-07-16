@@ -10,24 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 80e14a72067f1ad408ec8d661bc560ce, type: 3}
-  m_Name: AffectorValueTableImporter
+  m_Name: ActorStateTableImporter
   m_EditorClassIdentifier: 
   templatePath: AssetStore/QuickSheet/ExcelPlugin/Templates
   scriptFilePath: Source/TableClass/Runtime
   editorScriptFilePath: Source/TableClass/Editor
   sheetName: AffectorValue.xlsx
-  workSheetName: AffectorValueTable
+  workSheetName: ActorStateTable
   columnHeaderList:
   - type: 1
-    name: id
+    name: actorStateId
     isEnable: 0
     isArray: 0
   - type: 3
-    name: affectorId
-    isEnable: 0
-    isArray: 0
-  - type: 1
-    name: skillLevel2AffectorLevel
+    name: continuousAffectorId
     isEnable: 0
     isArray: 0
   excelFilePath: ../Excel/AffectorValue.xlsx
@@ -36,4 +32,4 @@ MonoBehaviour:
   - AffectorValueLevelTable
   - ActorStateTable
   - ConditionValueTable
-  currentSelectedSheet: 0
+  currentSelectedSheet: 2

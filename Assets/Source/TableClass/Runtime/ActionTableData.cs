@@ -9,10 +9,6 @@ using System.Collections;
 public class ActionTableData
 {
   [SerializeField]
-  string _id;
-  public string id { get { return _id; } set { _id = value; } }
-  
-  [SerializeField]
   string _actorId;
   public string actorId { get { return _actorId; } set { _actorId = value; } }
   

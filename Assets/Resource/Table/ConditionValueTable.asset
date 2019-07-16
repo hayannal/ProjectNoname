@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a319b56e1e68b9f41953556c88dcdefc, type: 3}
+  m_Name: ConditionValueTable
+  m_EditorClassIdentifier: 
+  SheetName: ../Excel/AffectorValue.xlsx
+  WorksheetName: ConditionValueTable
+  dataArray:
+  - _id: AttackerHp<=10Percent
+    _conditionId: 1
+    _compareType: 5
+    _value: 0.1
+  - _id: AttackerHp<=20Percent
+    _conditionId: 1
+    _compareType: 5
+    _value: 0.2
+  - _id: AttackerHp<=30Percent
+    _conditionId: 1
+    _compareType: 5
+    _value: 0.3

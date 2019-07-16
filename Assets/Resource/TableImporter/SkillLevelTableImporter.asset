@@ -10,30 +10,51 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 80e14a72067f1ad408ec8d661bc560ce, type: 3}
-  m_Name: AffectorValueTableImporter
+  m_Name: SkillLevelTableImporter
   m_EditorClassIdentifier: 
   templatePath: AssetStore/QuickSheet/ExcelPlugin/Templates
   scriptFilePath: Source/TableClass/Runtime
   editorScriptFilePath: Source/TableClass/Editor
-  sheetName: AffectorValue.xlsx
-  workSheetName: AffectorValueTable
+  sheetName: Action.xlsx
+  workSheetName: SkillLevelTable
   columnHeaderList:
   - type: 1
-    name: id
+    name: skillId
     isEnable: 0
     isArray: 0
   - type: 3
-    name: affectorId
+    name: level
+    isEnable: 0
+    isArray: 0
+  - type: 5
+    name: cooltime
     isEnable: 0
     isArray: 0
   - type: 1
-    name: skillLevel2AffectorLevel
+    name: mecanimName
     isEnable: 0
     isArray: 0
-  excelFilePath: ../Excel/AffectorValue.xlsx
+  - type: 1
+    name: passiveAffectorValueId
+    isEnable: 0
+    isArray: 1
+  - type: 1
+    name: nameId
+    isEnable: 0
+    isArray: 0
+  - type: 1
+    name: descriptionId
+    isEnable: 0
+    isArray: 0
+  - type: 1
+    name: parameter
+    isEnable: 0
+    isArray: 1
+  excelFilePath: ../Excel/Action.xlsx
   SheetNames:
-  - AffectorValueTable
-  - AffectorValueLevelTable
-  - ActorStateTable
-  - ConditionValueTable
-  currentSelectedSheet: 0
+  - ActionTable
+  - ControlTable
+  - CastingTable
+  - SkillTable
+  - SkillLevelTable
+  currentSelectedSheet: 4

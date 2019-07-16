@@ -178,7 +178,7 @@ public class HitObject : MonoBehaviour
 				continue;
 			int skillLevel = hitParameter.statusStructForHitObject.skillLevel;
 			int affectorValueLevel = 1;
-			if (skillLevel != 1)
+			if (skillLevel != 0)
 			{
 				if (string.IsNullOrEmpty(data.skillLevel2AffectorLevel))
 					affectorValueLevel = skillLevel;

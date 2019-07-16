@@ -4,10 +4,10 @@ using System.Collections.Generic;
 
 public class ActionController : MonoBehaviour {
 
-	public Animator animator { get; set; }
-	public IdleAnimator idleAnimator { get; set; }
-	public MecanimState mecanimState { get; set; }
-	public CooltimeProcessor cooltimeProcessor { get; set; }
+	public Animator animator { get; private set; }
+	public IdleAnimator idleAnimator { get; private set; }
+	public MecanimState mecanimState { get; private set; }
+	public CooltimeProcessor cooltimeProcessor { get; private set; }
 
 	public class ActionInfo
 	{

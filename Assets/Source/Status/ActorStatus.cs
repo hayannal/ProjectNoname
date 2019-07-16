@@ -12,7 +12,7 @@ public class ActorStatus : MonoBehaviour
 
 	StatusBase _statusBase;
 	public StatusBase statusBase { get { return _statusBase; } }
-	public Actor actor { get; set; }
+	public Actor actor { get; private set; }
 
 	void Awake()
 	{

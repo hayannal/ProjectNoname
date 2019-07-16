@@ -7,7 +7,7 @@ public class AffectorProcessor : MonoBehaviour {
 	Dictionary<int, AffectorBase> _dicAffector;
 	List<AffectorBase> _listContinuousAffector;
 
-	public Actor actor { get; set; }
+	public Actor actor { get; private set; }
 
 	void Awake()
 	{

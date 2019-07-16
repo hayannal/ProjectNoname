@@ -7,17 +7,17 @@ public class Actor : MonoBehaviour {
 	public static int ACTOR_LAYER;
 
 	public string actorId;
-	public ActionController actionController { get; set; }
-	//public MovementController movementController { get; set; }
-	//public CastingProcessor castingProcessor { get; set; }
-	public CooltimeProcessor cooltimeProcessor { get; set; }
-	public ActorStatus actorStatus { get; set; }
-	public AffectorProcessor affectorProcessor { get; set; }
-	public Team team { get; set; }
-	public TargetingProcessor targetingSystem { get; set; }
+	public ActionController actionController { get; private set; }
+	//public MovementController movementController { get; private set; }
+	//public CastingProcessor castingProcessor { get; private set; }
+	public CooltimeProcessor cooltimeProcessor { get; private set; }
+	public ActorStatus actorStatus { get; protected set; }
+	public AffectorProcessor affectorProcessor { get; private set; }
+	public Team team { get; private set; }
+	public TargetingProcessor targetingSystem { get; private set; }
 
-	protected Rigidbody _rigidbody { get; set; }
-	protected Collider _collider { get; set; }
+	protected Rigidbody _rigidbody { get; private set; }
+	protected Collider _collider { get; private set; }
 
 	void Awake()
 	{

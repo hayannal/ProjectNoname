@@ -24,4 +24,8 @@ public class MonsterTableData
   float _multiDef;
   public float multiDef { get { return _multiDef; } set { _multiDef = value; } }
   
+  [SerializeField]
+  float _attackDelay;
+  public float attackDelay { get { return _attackDelay; } set { _attackDelay = value; } }
+  
 }

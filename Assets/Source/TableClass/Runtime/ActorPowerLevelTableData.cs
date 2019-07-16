@@ -9,10 +9,6 @@ using System.Collections;
 public class ActorPowerLevelTableData
 {
   [SerializeField]
-  string _actorPowerLevelId;
-  public string actorPowerLevelId { get { return _actorPowerLevelId; } set { _actorPowerLevelId = value; } }
-  
-  [SerializeField]
   string _actorId;
   public string actorId { get { return _actorId; } set { _actorId = value; } }
   

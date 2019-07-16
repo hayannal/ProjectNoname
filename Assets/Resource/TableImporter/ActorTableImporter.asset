@@ -10,36 +10,32 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 80e14a72067f1ad408ec8d661bc560ce, type: 3}
-  m_Name: ActorPowerLevelTableImporter
+  m_Name: ActorTableImporter
   m_EditorClassIdentifier: 
   templatePath: AssetStore/QuickSheet/ExcelPlugin/Templates
   scriptFilePath: Source/TableClass/Runtime
   editorScriptFilePath: Source/TableClass/Editor
   sheetName: Actor.xlsx
-  workSheetName: ActorPowerLevelTable
+  workSheetName: ActorTable
   columnHeaderList:
   - type: 1
     name: actorId
     isEnable: 0
     isArray: 0
   - type: 3
-    name: powerLevel
+    name: grade
+    isEnable: 0
+    isArray: 0
+  - type: 3
+    name: mainWeaponType
     isEnable: 0
     isArray: 0
   - type: 5
-    name: hp
-    isEnable: 0
-    isArray: 0
-  - type: 5
-    name: atk
-    isEnable: 0
-    isArray: 0
-  - type: 5
-    name: def
+    name: attackDelay
     isEnable: 0
     isArray: 0
   excelFilePath: ../Excel/Actor.xlsx
   SheetNames:
   - ActorTable
   - ActorPowerLevelTable
-  currentSelectedSheet: 1
+  currentSelectedSheet: 0

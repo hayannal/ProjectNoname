@@ -26,9 +26,11 @@ public class ActorStatus : MonoBehaviour
 		else
 			_statusBase.ClearValue();
 
+		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(actorId);
 		ActorPowerLevelTableData actorPowerLevelTableData = TableDataManager.instance.FindActorPowerLevelTableData(actorId, 1);
 		_statusBase.valueList[(int)eActorStatus.MaxHP] = actorPowerLevelTableData.hp;
 		_statusBase.valueList[(int)eActorStatus.Attack] = actorPowerLevelTableData.atk;
+		_statusBase.valueList[(int)eActorStatus.AttackDelay] = actorTableData.attackDelay;
 		_statusBase.valueList[(int)eActorStatus.Defense] = actorPowerLevelTableData.def;
 		_statusBase.valueList[(int)eActorStatus.MoveSpeed] = 4.0f;
 
@@ -46,6 +48,7 @@ public class ActorStatus : MonoBehaviour
 		MonsterTableData monsterTableData = TableDataManager.instance.FindMonsterTableData(monsterActorId);
 		_statusBase.valueList[(int)eActorStatus.MaxHP] = StageManager.instance.currentMonstrStandardHp * monsterTableData.multiHp;
 		_statusBase.valueList[(int)eActorStatus.Attack] = StageManager.instance.currentMonstrStandardAtk * monsterTableData.multiAtk;
+		_statusBase.valueList[(int)eActorStatus.AttackDelay] = StageManager.instance.currentMonstrStandardAtk * monsterTableData.attackDelay;
 		_statusBase.valueList[(int)eActorStatus.Defense] = StageManager.instance.currentMonstrStandardDef * monsterTableData.multiDef;
 		_statusBase.valueList[(int)eActorStatus.MoveSpeed] = 3.0f;
 

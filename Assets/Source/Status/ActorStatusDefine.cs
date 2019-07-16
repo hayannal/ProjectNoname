@@ -8,12 +8,13 @@ namespace ActorStatusDefine {
 	{
 		MaxHP,
 		Attack,
+		AttackDelay,
 		Defense,
 		MoveSpeed,
 
 		MonsterStatusAmount,
 
-		AttackSpeedStep,
+		AttackSpeedStep = MonsterStatusAmount,
 
 		BaseAmount,
 

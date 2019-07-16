@@ -14,6 +14,7 @@ public class TableDataManager : MonoBehaviour
 	public StageTable stageTable;
 	public MapTable mapTable;
 	public MonsterTable monsterTable;
+	public ActorTable actorTable;
 	public ActorPowerLevelTable actorPowerLevelTable;
 
 	void Awake()
@@ -77,6 +78,16 @@ public class TableDataManager : MonoBehaviour
 		{
 			if (monsterTable.dataArray[i].monsterId == monsterId)
 				return monsterTable.dataArray[i];
+		}
+		return null;
+	}
+
+	public ActorTableData FindActorTableData(string actorId)
+	{
+		for (int i = 0; i < actorTable.dataArray.Length; ++i)
+		{
+			if (actorTable.dataArray[i].actorId == actorId)
+				return actorTable.dataArray[i];
 		}
 		return null;
 	}

@@ -4,7 +4,7 @@ using ActorStatusDefine;
 
 public class BaseDamageAffector : AffectorBase {
 
-	public override void ExecuteAffector(string affectorValueId, AffectorValueTableData affectorValueTableData, HitParameter hitParameter)
+	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueTableData, HitParameter hitParameter)
 	{
 		if (_actor == null)
 		{

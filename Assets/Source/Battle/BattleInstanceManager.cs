@@ -149,6 +149,29 @@ public class BattleInstanceManager : MonoBehaviour
 	#region HitParameter
 	#endregion
 
+	#region SkillLevel2AffectorLevel
+	Dictionary<string, Dictionary<int, int>> _dicSkillLevel2AffectorLevelInfo = new Dictionary<string, Dictionary<int, int>>();
+	public Dictionary<int, int> GetCachedSkillLevel2AffectorLevelData(string skillLevel2AffectorLevel)
+	{
+		if (_dicSkillLevel2AffectorLevelInfo.ContainsKey(skillLevel2AffectorLevel))
+			return _dicSkillLevel2AffectorLevelInfo[skillLevel2AffectorLevel];
+
+		Dictionary<int, int> dicConvertData = new Dictionary<int, int>();
+		string[] split = skillLevel2AffectorLevel.Split(',');
+		for (int i = 0; i < split.Length; ++i)
+		{
+			string[] matchInfo = split[i].Split(':');
+			if (matchInfo.Length != 2)
+				continue;
+			int key = int.Parse(matchInfo[0]);
+			int value = int.Parse(matchInfo[1]);
+			if (!dicConvertData.ContainsKey(key))
+				dicConvertData.Add(key, value);
+		}
+		_dicSkillLevel2AffectorLevelInfo.Add(skillLevel2AffectorLevel, dicConvertData);
+		return dicConvertData;
+	}
+	#endregion
 
 
 

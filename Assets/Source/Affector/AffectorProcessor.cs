@@ -23,22 +23,33 @@ public class AffectorProcessor : MonoBehaviour {
 			_listContinuousAffector.RemoveAt(i);
 	}
 
-	public void ExcuteAffectorValue(string affectorValueId, HitParameter hitParameter, bool syncAffector)
+	public void ExcuteAffectorValue(string affectorValueId, int affectorValueLevel, HitParameter hitParameter)
 	{
 		AffectorValueTableData data = TableDataManager.instance.FindAffectorValueTableData(affectorValueId);
 		if (data == null) return;
 
-		ExcuteAffector(affectorValueId, data, hitParameter);
+		ExcuteAffectorValue(data, affectorValueLevel, hitParameter, false);
+	}
+
+	public void ExcuteAffectorValue(AffectorValueTableData data, int affectorValueLevel, HitParameter hitParameter, bool syncAffector)
+	{
+		AffectorValueLevelTableData levelData = TableDataManager.instance.FindAffectorValueLevelTableData(data.id, affectorValueLevel);
+		if (levelData == null)
+		{
+			Debug.LogErrorFormat("Not found AffectorValueLevelTableData. AffectorValueId = {0} / level = {1}", data.id, affectorValueLevel);
+			return;
+		}
+
+		ExcuteAffector((eAffectorType)data.affectorId, levelData, hitParameter);
 
 		//#region Network Sync
 		//if (syncAffector)
-		//	SyncAffectorInfo(affectorValueID, hitParameter);
+		//	SyncAffectorInfo(data.id, leve, hitParameter);
 		//#endregion
 	}
 
-	public void ExcuteAffector(string affectorValueId, AffectorValueTableData data, HitParameter hitParameter)
+	void ExcuteAffector(eAffectorType affectorType, AffectorValueLevelTableData levelData, HitParameter hitParameter)
 	{
-		eAffectorType affectorType = (eAffectorType)data.affectorId;
 		if (AffectorCustomCreator.IsContinuousAffector(affectorType))
 		{
 			// to update
@@ -49,7 +60,7 @@ public class AffectorProcessor : MonoBehaviour {
 				if (affectorBase.Initialize(actor, this) == false)
 					return;
 				_listContinuousAffector.Add(affectorBase);
-				affectorBase.ExecuteAffector(affectorValueId, data, hitParameter);
+				affectorBase.ExecuteAffector(levelData, hitParameter);
 			}
 		}
 		else
@@ -67,7 +78,7 @@ public class AffectorProcessor : MonoBehaviour {
 					_dicAffector.Add((int)affectorType, affectorBase);
 				}
 			}
-			if (affectorBase != null) affectorBase.ExecuteAffector(affectorValueId, data, hitParameter);
+			if (affectorBase != null) affectorBase.ExecuteAffector(levelData, hitParameter);
 		}
 	}
 
@@ -120,21 +131,21 @@ public class AffectorProcessor : MonoBehaviour {
 
 	/*
 	#region Network Sync
-	void SyncAffectorInfo(string affectorValueID, HitParameter hitParameter)
+	void SyncAffectorInfo(string affectorValueId, int level, HitParameter hitParameter)
 	{
 		if (isServer)
 		{
-			RpcExcuteAffector(affectorValueID, hitParameter);
+			RpcExcuteAffector(affectorValueId, level, hitParameter);
 		}
 	}
 
 	[ClientRpc]
-	void RpcExcuteAffector(string affectorValueID, HitParameter hitParameter)
+	void RpcExcuteAffector(string affectorValueId, int level, HitParameter hitParameter)
 	{
 		if (isServer)
 			return;
 
-		ExcuteAffectorValue(affectorValueID, hitParameter, false);
+		ExcuteAffectorValue(affectorValueId, level, hitParameter, false);
 	}
 	#endregion
 	*/

@@ -10,6 +10,7 @@ public class TableDataManager : MonoBehaviour
 	public ActionTable actionTable;
 	public ControlTable controlTable;
 	public AffectorValueTable affectorValueTable;
+	public AffectorValueLevelTable affectorValueLevelTable;
 	public StageTable stageTable;
 	public MapTable mapTable;
 	public MonsterTable monsterTable;
@@ -36,6 +37,16 @@ public class TableDataManager : MonoBehaviour
 		{
 			if (affectorValueTable.dataArray[i].id == affectorValueId)
 				return affectorValueTable.dataArray[i];
+		}
+		return null;
+	}
+
+	public AffectorValueLevelTableData FindAffectorValueLevelTableData(string affectorValueId, int level)
+	{
+		for (int i = 0; i < affectorValueLevelTable.dataArray.Length; ++i)
+		{
+			if (affectorValueLevelTable.dataArray[i].affectorValueId == affectorValueId && affectorValueLevelTable.dataArray[i].level == level)
+				return affectorValueLevelTable.dataArray[i];
 		}
 		return null;
 	}

@@ -78,7 +78,7 @@ public class HitObject : MonoBehaviour
 					hitParameter.contactPoint = targetCollider.transform.position + (-hitParameter.contactNormal * colliderRadius * 0.7f);
 					hitParameter.contactPoint.y += targetCollider.bounds.size.y * 0.5f;
 					hitParameter.statusBase = parentActor.actorStatus.statusBase;
-					CopyStatusForHitObject(ref hitParameter.statusStructForHitObject, parentActor, meHit);
+					CopyEtcStatusForHitObject(ref hitParameter.statusStructForHitObject, parentActor, meHit);
 
 					ApplyAffectorValue(affectorProcessor, meHit.affectorValueIdList, hitParameter);
 
@@ -94,7 +94,7 @@ public class HitObject : MonoBehaviour
 		case HitObject.eTargetDetectType.Area:
 			Vector3 areaPosition = parentTransform.TransformPoint(meHit.offset);	// meHit.offset * parentTransform.localScale
 			StatusStructForHitObject statusStructForHitObject = new StatusStructForHitObject();
-			CopyStatusForHitObject(ref statusStructForHitObject, parentActor, meHit);
+			CopyEtcStatusForHitObject(ref statusStructForHitObject, parentActor, meHit);
 			CheckHitArea(areaPosition, parentTransform.forward, meHit, parentActor.actorStatus.statusBase, statusStructForHitObject);
 			break;
 		case HitObject.eTargetDetectType.Collider:
@@ -102,12 +102,13 @@ public class HitObject : MonoBehaviour
 		}
 	}
 
-	static void CopyStatusForHitObject(ref StatusStructForHitObject statusStructForHitObject, Actor actor, MeHitObject meHit)
+	static void CopyEtcStatusForHitObject(ref StatusStructForHitObject statusStructForHitObject, Actor actor, MeHitObject meHit)
 	{
 		statusStructForHitObject.teamID = actor.team.teamID;
 		statusStructForHitObject.weaponIDAtCreation = 0;
 		//if (meHit.useWeaponHitEffect)
 		//	statusStructForHitObject.weaponIDAtCreation = actor.GetWeaponID(meHit.weaponDummyName);
+		statusStructForHitObject.skillLevel = 0;    // actor.GetCurrentActionSkillLevel();
 	}
 
 	static void CheckHitArea(Vector3 areaPosition, Vector3 areaForward, MeHitObject meHit, StatusBase statusBase, StatusStructForHitObject statusForHitObject)
@@ -171,7 +172,33 @@ public class HitObject : MonoBehaviour
 		if (affectorProcessor == null) return;
 
 		for (int i = 0; i < listAffectorValueId.Count; ++i)
-			affectorProcessor.ExcuteAffectorValue(listAffectorValueId[i], hitParameter, true);
+		{
+			AffectorValueTableData data = TableDataManager.instance.FindAffectorValueTableData(listAffectorValueId[i]);
+			if (data == null)
+				continue;
+			int skillLevel = hitParameter.statusStructForHitObject.skillLevel;
+			int affectorValueLevel = 1;
+			if (skillLevel != 1)
+			{
+				if (string.IsNullOrEmpty(data.skillLevel2AffectorLevel))
+					affectorValueLevel = skillLevel;
+				else
+				{
+					Dictionary<int, int> dicConvertData = BattleInstanceManager.instance.GetCachedSkillLevel2AffectorLevelData(data.skillLevel2AffectorLevel);
+					if (dicConvertData != null)
+					{
+						if (dicConvertData.ContainsKey(skillLevel))
+							affectorValueLevel = dicConvertData[skillLevel];
+						else
+						{
+							Debug.LogErrorFormat("No SkillLevel in SkillLevel2AffectorLevel. AffectorValueId = {0} / SkillLevel = {1}", data.id, skillLevel);
+							affectorValueLevel = skillLevel;
+						}
+					}
+				}
+			}
+			affectorProcessor.ExcuteAffectorValue(data, affectorValueLevel, hitParameter, true);
+		}
 	}
 	#endregion
 
@@ -189,7 +216,7 @@ public class HitObject : MonoBehaviour
 		_signal = meHit;
 		createTime = Time.time;
 		parentActor.actorStatus.CopyStatusBase(ref _statusBase);
-		CopyStatusForHitObject(ref _statusStructForHitObject, parentActor, meHit);
+		CopyEtcStatusForHitObject(ref _statusStructForHitObject, parentActor, meHit);
 
 		if (_rigidbody == null) _rigidbody = GetComponent<Rigidbody>();
 		if (_collider == null) _collider = GetComponent<Collider>();

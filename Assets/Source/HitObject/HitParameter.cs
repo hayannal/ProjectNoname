@@ -7,6 +7,7 @@ public struct StatusStructForHitObject
 {
 	public int teamID;
 	public int weaponIDAtCreation;
+	public int skillLevel;	// current action skill level
 	//public float hp;	// hp is in StatusBase
 	//public int level;
 	//public int liveComradeCount;

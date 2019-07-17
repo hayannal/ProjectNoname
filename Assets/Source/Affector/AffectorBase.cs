@@ -20,7 +20,7 @@ public class AffectorBase
 		return true;
 	}
 
-	public virtual void ExecuteAffector(AffectorValueLevelTableData affectorValueTableData, HitParameter hitParameter)
+	public virtual void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
 	}
 

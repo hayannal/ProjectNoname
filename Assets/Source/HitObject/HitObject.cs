@@ -20,7 +20,7 @@ public class HitObject : MonoBehaviour
 	}
 
 	#region staticFunction
-	static public void InitializeHit(Transform parentTransform, MeHitObject meHit, Actor parentActor)
+	static public void InitializeHit(Transform parentTransform, MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction)
 	{
 		// step 1. 
 		GameObject hitObject = null;
@@ -39,7 +39,7 @@ public class HitObject : MonoBehaviour
 		{
 			HitObject hitObjectComponent = hitObject.GetComponent<HitObject>();
 			if (hitObjectComponent == null) hitObjectComponent = hitObject.AddComponent<HitObject>();
-			hitObjectComponent.InitializeHitObject(meHit, parentActor);
+			hitObjectComponent.InitializeHitObject(meHit, parentActor, hitSignalIndexInAction);
 			if (meHit.lifeTime > 0.0f && meHit.movable)
 			{
 				HitObjectMovement hitObjectMovementComponent = hitObject.GetComponent<HitObjectMovement>();
@@ -78,7 +78,7 @@ public class HitObject : MonoBehaviour
 					hitParameter.contactPoint = targetCollider.transform.position + (-hitParameter.contactNormal * colliderRadius * 0.7f);
 					hitParameter.contactPoint.y += targetCollider.bounds.size.y * 0.5f;
 					hitParameter.statusBase = parentActor.actorStatus.statusBase;
-					CopyEtcStatusForHitObject(ref hitParameter.statusStructForHitObject, parentActor, meHit);
+					CopyEtcStatusForHitObject(ref hitParameter.statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction);
 
 					ApplyAffectorValue(affectorProcessor, meHit.affectorValueIdList, hitParameter);
 
@@ -94,7 +94,7 @@ public class HitObject : MonoBehaviour
 		case HitObject.eTargetDetectType.Area:
 			Vector3 areaPosition = parentTransform.TransformPoint(meHit.offset);	// meHit.offset * parentTransform.localScale
 			StatusStructForHitObject statusStructForHitObject = new StatusStructForHitObject();
-			CopyEtcStatusForHitObject(ref statusStructForHitObject, parentActor, meHit);
+			CopyEtcStatusForHitObject(ref statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction);
 			CheckHitArea(areaPosition, parentTransform.forward, meHit, parentActor.actorStatus.statusBase, statusStructForHitObject);
 			break;
 		case HitObject.eTargetDetectType.Collider:
@@ -102,13 +102,14 @@ public class HitObject : MonoBehaviour
 		}
 	}
 
-	static void CopyEtcStatusForHitObject(ref StatusStructForHitObject statusStructForHitObject, Actor actor, MeHitObject meHit)
+	static void CopyEtcStatusForHitObject(ref StatusStructForHitObject statusStructForHitObject, Actor actor, MeHitObject meHit, int hitSignalIndexInAction)
 	{
 		statusStructForHitObject.teamID = actor.team.teamID;
 		statusStructForHitObject.weaponIDAtCreation = 0;
 		//if (meHit.useWeaponHitEffect)
 		//	statusStructForHitObject.weaponIDAtCreation = actor.GetWeaponID(meHit.weaponDummyName);
 		statusStructForHitObject.skillLevel = actor.actionController.GetCurrentSkillLevelByCurrentAction();
+		statusStructForHitObject.hitSignalIndexInAction = hitSignalIndexInAction;
 	}
 
 	static void CheckHitArea(Vector3 areaPosition, Vector3 areaForward, MeHitObject meHit, StatusBase statusBase, StatusStructForHitObject statusForHitObject)
@@ -214,12 +215,12 @@ public class HitObject : MonoBehaviour
 	Collider _collider { get; set; }
 
 
-	public void InitializeHitObject(MeHitObject meHit, Actor parentActor)
+	public void InitializeHitObject(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction)
 	{
 		_signal = meHit;
 		createTime = Time.time;
 		parentActor.actorStatus.CopyStatusBase(ref _statusBase);
-		CopyEtcStatusForHitObject(ref _statusStructForHitObject, parentActor, meHit);
+		CopyEtcStatusForHitObject(ref _statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction);
 
 		if (_rigidbody == null) _rigidbody = GetComponent<Rigidbody>();
 		if (_collider == null) _collider = GetComponent<Collider>();

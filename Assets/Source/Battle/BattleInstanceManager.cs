@@ -173,6 +173,22 @@ public class BattleInstanceManager : MonoBehaviour
 	}
 	#endregion
 
+	#region MultiHit DamageRatioList
+	Dictionary<string, float[]> _dicMultiHitDamageRatioList = new Dictionary<string, float[]>();
+	public float[] GetCachedMultiHitDamageRatioList(string sValue1)
+	{
+		if (_dicMultiHitDamageRatioList.ContainsKey(sValue1))
+			return _dicMultiHitDamageRatioList[sValue1];
+		
+		string[] split = sValue1.Split(',');
+		float[] damageRatioList = new float[split.Length];
+		for (int i = 0; i < split.Length; ++i)
+			damageRatioList[i] = float.Parse(split[i]);
+		_dicMultiHitDamageRatioList.Add(sValue1, damageRatioList);
+		return damageRatioList;
+	}
+	#endregion
+
 
 
 

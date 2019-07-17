@@ -215,6 +215,13 @@ public class ActionController : MonoBehaviour {
 		if (cooltimeInfo != null)
 			cooltimeInfo.ApplyCooltime();
 
+		#region HitSignal Index
+		if (_dicHitSignalIndexInfo.ContainsKey(actionNameHash))
+			_dicHitSignalIndexInfo[actionNameHash] = 0;
+		else
+			_dicHitSignalIndexInfo.Add(actionNameHash, 0);
+		#endregion
+
 		return true;
 	}
 
@@ -253,6 +260,7 @@ public class ActionController : MonoBehaviour {
 		return bCheckState;
 	}
 
+	#region Current Action
 	public ActionInfo GetCurrentActionInfo()
 	{
 		AnimatorStateInfo animatorStateInfo = animator.GetCurrentAnimatorStateInfo(0);
@@ -279,6 +287,23 @@ public class ActionController : MonoBehaviour {
 		}
 		return skillLevel;
 	}
+	#endregion
+
+	#region HitSignal Index
+	Dictionary<int, int> _dicHitSignalIndexInfo = new Dictionary<int, int>();
+	public int OnHitObjectSignal(int fullPathHash)
+	{
+		int hitSignalIndexInAction = 0;
+		if (_dicHitSignalIndexInfo.ContainsKey(fullPathHash))
+		{
+			int lastValue = _dicHitSignalIndexInfo[fullPathHash];
+			hitSignalIndexInAction = lastValue;
+			lastValue += 1;
+			_dicHitSignalIndexInfo[fullPathHash] = lastValue;
+		}
+		return hitSignalIndexInAction;
+	}
+	#endregion
 
 	/*
 	void Update()

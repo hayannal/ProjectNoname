@@ -177,12 +177,19 @@ public class MeHitObject : MecanimEventBase {
 	#endif
 
 	Actor actor;
+	ActionController actionController;
 	DummyFinder _dummyFinder = null;
 	override public void OnSignal(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
 		if (MecanimEventBase.s_bForceCallUpdate) return;
 
 		if (actor == null)
+		{
 			actor = animator.transform.parent.GetComponent<Actor>();
+			actionController = actor.actionController;
+		}
+		int hitSignalIndexInAction = 0;
+		if (actionController != null)
+			hitSignalIndexInAction = actionController.OnHitObjectSignal(stateInfo.fullPathHash);
 		Transform spawnTransform = actor.transform;
 		if (createPositionType == HitObject.eCreatePositionType.Bone && !string.IsNullOrEmpty(boneName))
 		{
@@ -193,7 +200,7 @@ public class MeHitObject : MecanimEventBase {
 			if (attachTransform != null)
 				spawnTransform = attachTransform;
 		}
-		HitObject.InitializeHit(spawnTransform, this, actor);
+		HitObject.InitializeHit(spawnTransform, this, actor, hitSignalIndexInAction);
 	}
 
 }

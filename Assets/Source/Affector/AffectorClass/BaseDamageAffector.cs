@@ -4,7 +4,7 @@ using ActorStatusDefine;
 
 public class BaseDamageAffector : AffectorBase {
 
-	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueTableData, HitParameter hitParameter)
+	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
 		if (_actor == null)
 		{
@@ -14,8 +14,27 @@ public class BaseDamageAffector : AffectorBase {
 
 		//float damage = hitParameter.statusBase.valueList[(int)eActorStatus.Attack] * 1000.0f / (_actor.actorStatus.GetValue(eActorStatus.Defense) + 1000.0f);
 		float damage = hitParameter.statusBase.valueList[(int)eActorStatus.Attack] - _actor.actorStatus.GetValue(eActorStatus.Defense);
+		switch (affectorValueLevelTableData.iValue1)
+		{
+			case 0:
+				damage *= affectorValueLevelTableData.fValue1;
+				break;
+			case 1:
+				int hitSignalIndexInAction = hitParameter.statusStructForHitObject.hitSignalIndexInAction;
+				float[] damageRatioList = BattleInstanceManager.instance.GetCachedMultiHitDamageRatioList(affectorValueLevelTableData.sValue1);
+				if (hitSignalIndexInAction < damageRatioList.Length)
+					damage *= damageRatioList[hitSignalIndexInAction];
+				else
+					Debug.LogErrorFormat("Invalid hitSignalIndexInAction. index = {0}", hitSignalIndexInAction);
+				break;
+		}
+
 		int intDamage = (int)damage;
 		_actor.actorStatus.AddHP(-intDamage);
+
+		bool useOnkill = (affectorValueLevelTableData.iValue2 == 1 && !string.IsNullOrEmpty(affectorValueLevelTableData.sValue2));
+		if (useOnkill && _actor.actorStatus.GetHP() <= 0)
+			HitObject.ApplyAffectorValue(_affectorProcessor, affectorValueLevelTableData.sValue2, hitParameter);
 
 		//Collider col = m_Actor.GetComponent<Collider>();
 		//DamageFloaterManager.Instance.ShowDamage(intDamage, m_Actor.transform.position + new Vector3(0.0f, ColliderUtil.GetHeight(col), 0.0f));

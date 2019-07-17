@@ -160,6 +160,7 @@ public class SkillProcessor : MonoBehaviour
 		//if (meHit.useWeaponHitEffect)
 		//	statusStructForHitObject.weaponIDAtCreation = actor.GetWeaponID(meHit.weaponDummyName);
 		statusStructForHitObject.skillLevel = 0;
+		statusStructForHitObject.hitSignalIndexInAction = 0;
 	}
 	
 

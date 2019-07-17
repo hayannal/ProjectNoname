@@ -77,12 +77,12 @@ namespace BoneTool.Script.Runtime
         }
 
         private void OnEnable() {
-            SceneView.onSceneGUIDelegate += OnScene;
+            SceneView.duringSceneGui += OnScene;
         }
 
         private void OnDisable() {
             // ReSharper disable once DelegateSubtraction
-            SceneView.onSceneGUIDelegate -= OnScene;
+            SceneView.duringSceneGui -= OnScene;
         }
 
         [Serializable]

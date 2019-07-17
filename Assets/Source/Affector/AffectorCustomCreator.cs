@@ -15,6 +15,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.BaseDamage: affectorBase = new BaseDamageAffector(); break;
 			//case eAffectorType.DotDamage: affectorBase = new DotDamageAffector(); break;
 			//case eAffectorType.MoveToTarget: affectorBase = new MoveToTargetAffector(); break;
+			case eAffectorType.AddActorState: affectorBase = new AddActorStateAffector(); break;
 			#endregion
 		}
 		return affectorBase;

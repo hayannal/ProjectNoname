@@ -48,7 +48,7 @@ public class AffectorProcessor : MonoBehaviour {
 		//#endregion
 	}
 
-	AffectorBase ExcuteAffector(eAffectorType affectorType, AffectorValueLevelTableData levelData, HitParameter hitParameter)
+	public AffectorBase ExcuteAffector(eAffectorType affectorType, AffectorValueLevelTableData levelData, HitParameter hitParameter)
 	{
 		AffectorBase affectorBase = null;
 		if (AffectorCustomCreator.IsContinuousAffector(affectorType))

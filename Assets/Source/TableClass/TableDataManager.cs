@@ -11,6 +11,7 @@ public class TableDataManager : MonoBehaviour
 	public ControlTable controlTable;
 	public AffectorValueTable affectorValueTable;
 	public AffectorValueLevelTable affectorValueLevelTable;
+	public ActorStateTable actorStateTable;
 	public StageTable stageTable;
 	public MapTable mapTable;
 	public MonsterTable monsterTable;
@@ -50,6 +51,16 @@ public class TableDataManager : MonoBehaviour
 		{
 			if (affectorValueLevelTable.dataArray[i].affectorValueId == affectorValueId && affectorValueLevelTable.dataArray[i].level == level)
 				return affectorValueLevelTable.dataArray[i];
+		}
+		return null;
+	}
+
+	public ActorStateTableData FindActorStateTableData(string actorStateId)
+	{
+		for (int i = 0; i < actorStateTable.dataArray.Length; ++i)
+		{
+			if (actorStateTable.dataArray[i].actorStateId == actorStateId)
+				return actorStateTable.dataArray[i];
 		}
 		return null;
 	}

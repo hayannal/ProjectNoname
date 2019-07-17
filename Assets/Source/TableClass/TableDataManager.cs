@@ -19,6 +19,7 @@ public class TableDataManager : MonoBehaviour
 	public ActorPowerLevelTable actorPowerLevelTable;
 	public SkillTable skillTable;
 	public SkillLevelTable skillLevelTable;
+	public ConditionValueTable conditionValueTable;
 
 	void Awake()
 	{
@@ -131,6 +132,16 @@ public class TableDataManager : MonoBehaviour
 		{
 			if (skillLevelTable.dataArray[i].skillId == skillId && skillLevelTable.dataArray[i].level == level)
 				return skillLevelTable.dataArray[i];
+		}
+		return null;
+	}
+
+	public ConditionValueTableData FindConditionValueTableData(string id)
+	{
+		for (int i = 0; i < conditionValueTable.dataArray.Length; ++i)
+		{
+			if (conditionValueTable.dataArray[i].id == id)
+				return conditionValueTable.dataArray[i];
 		}
 		return null;
 	}

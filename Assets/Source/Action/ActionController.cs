@@ -253,6 +253,33 @@ public class ActionController : MonoBehaviour {
 		return bCheckState;
 	}
 
+	public ActionInfo GetCurrentActionInfo()
+	{
+		AnimatorStateInfo animatorStateInfo = animator.GetCurrentAnimatorStateInfo(0);
+		for (int i = 0; i < _listActionInfo.Count; ++i)
+		{
+			if (_listActionInfo[i].actionNameHash == animatorStateInfo.fullPathHash)
+				return _listActionInfo[i];
+		}
+		return null;
+	}
+
+	public int GetCurrentSkillLevelByCurrentAction()
+	{
+		int skillLevel = 0;
+		ActionInfo currentActionInfo = GetCurrentActionInfo();
+		if (currentActionInfo != null)
+		{
+			if (!string.IsNullOrEmpty(currentActionInfo.skillId) && skillProcessor != null)
+			{
+				SkillProcessor.SkillInfo skillInfo = skillProcessor.GetSkillInfo(currentActionInfo.skillId);
+				if (skillInfo != null)
+					skillLevel = skillInfo.skillLevel;
+			}
+		}
+		return skillLevel;
+	}
+
 	/*
 	void Update()
 	{

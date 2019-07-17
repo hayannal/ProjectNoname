@@ -7,7 +7,7 @@ public class ActionController : MonoBehaviour {
 	public Animator animator { get; private set; }
 	public IdleAnimator idleAnimator { get; private set; }
 	public MecanimState mecanimState { get; private set; }
-	public CooltimeProcessor cooltimeProcessor { get; private set; }
+	public SkillProcessor skillProcessor { get; private set; }
 
 	public class ActionInfo
 	{
@@ -18,9 +18,8 @@ public class ActionController : MonoBehaviour {
 		public Control.eControllerType eControllerType;
 		public Control.eInputType eInputType;
 		public float fadeDuration;
-		//public Skill skillInfo;	// todo
-		public string castingID;
-		public Cooltime cooltimeInfo;
+		public string skillId;	// only Id. Find skillinfo when use skill.
+		public string castingId;
 	}
 
 	List<ActionInfo> _listActionInfo;
@@ -37,8 +36,8 @@ public class ActionController : MonoBehaviour {
 
 	public void InitializeActionPlayInfo(string actorId)
 	{
-		cooltimeProcessor = GetComponent<CooltimeProcessor>();
-		if (cooltimeProcessor == null) cooltimeProcessor = gameObject.AddComponent<CooltimeProcessor>();
+		skillProcessor = GetComponent<SkillProcessor>();
+		//if (skillProcessor == null) skillProcessor = gameObject.AddComponent<SkillProcessor>();	// no addcomponent. for monster actor
 
 		_listActionInfo = new List<ActionInfo>();
 
@@ -47,11 +46,12 @@ public class ActionController : MonoBehaviour {
 			ActionTableData actionTableData = TableDataManager.instance.actionTable.dataArray[i];
 			if (actionTableData.actorId != actorId) continue;
 
-			if (!string.IsNullOrEmpty(actionTableData.skillId))
-			{
-				//if (actor.CheckSkillLearn(actionTableRow._SkillID) == false)
-				//	continue;
-			}
+			// not needed
+			//if (!string.IsNullOrEmpty(actionTableData.skillId))
+			//{
+			//	if (actor.CheckSkillLearn(actionTableRow._SkillID) == false)
+			//		continue;
+			//}
 
 			ActionInfo info = new ActionInfo();
 			info.actionName = actionTableData.actionName;
@@ -59,45 +59,7 @@ public class ActionController : MonoBehaviour {
 			StringUtil.SplitIntList(actionTableData.listNotAllowingState, ref info.listNotAllowingState);
 			info.actionNameHash = Animator.StringToHash(actionTableData.mecanimName);
 			info.fadeDuration = actionTableData.fadeDuration;
-
-			/*
-			if (!string.IsNullOrEmpty(actionTableRow._SkillID))
-			{
-				Google2u.SkillTableRow skillTableRow = Google2u.SkillTable.Instance.GetRow(actionTableRow._SkillID);
-				if (skillTableRow != null)
-				{
-					int skillLevel = 0;	// actor.GetSkillLevel(skillInfo.skillID);
-					Skill skillInfo = new Skill();
-					skillInfo.skillID = Google2u.SkillTable.Instance.rowNames[i];
-					skillInfo.skillLevel = skillLevel;
-					skillInfo.passiveSkill = skillTableRow._passiveSkill;
-					skillInfo.iconName = skillTableRow._icon;
-					skillInfo.cooltime = skillTableRow._cooltime;
-					skillInfo.damageFactor = skillTableRow._damageFactor;
-
-					bool useTableOverriding = (skillTableRow._useCooltimeOverriding || skillTableRow._useDamageFactorOverriding || skillTableRow._useMecanimNameOverriding);
-					if (skillLevel > 0 && useTableOverriding)
-					{
-						string skillLevelID = string.Format("{0}{1:00}", skillInfo.skillID, skillLevel);
-						Google2u.SkillLevelTableRow skillLevelTableRow = Google2u.SkillLevelTable.Instance.GetRow(skillLevelID);
-						if (skillLevelTableRow != null)
-						{
-							if (skillTableRow._useCooltimeOverriding)
-								skillInfo.cooltime = skillLevelTableRow._cooltime;
-							if (skillTableRow._useDamageFactorOverriding)
-								skillInfo.damageFactor = skillLevelTableRow._damageFactor;
-							if (skillTableRow._useMecanimNameOverriding)
-								info.actionNameHash = Animator.StringToHash(skillLevelTableRow._mecanimName);
-						}
-					}
-
-					if (skillInfo.cooltime > 0.0f)
-						info.cooltimeInfo = cooltimeProcessor.InitializeCoolTime(actionTableRow._SkillID, skillInfo.cooltime);
-
-					info.skillInfo = skillInfo;
-				}
-			}
-			*/
+			info.skillId = actionTableData.skillId;
 
 			if (!string.IsNullOrEmpty(actionTableData.controlId))
 			{
@@ -221,22 +183,37 @@ public class ActionController : MonoBehaviour {
 
 	bool PlayAction(ActionInfo actionPlayInfo)
 	{
-		if (actionPlayInfo.cooltimeInfo != null && actionPlayInfo.cooltimeInfo.CheckCooltime())
-			return false;
-
 		if (!CheckMecanimState(actionPlayInfo.listNotAllowingState, actionPlayInfo.listAllowingState))
 			return false;
+
+		int actionNameHash = actionPlayInfo.actionNameHash;
+		Cooltime cooltimeInfo = null;
+		if (!string.IsNullOrEmpty(actionPlayInfo.skillId) && skillProcessor != null)
+		{
+			SkillProcessor.SkillInfo skillInfo = skillProcessor.GetSkillInfo(actionPlayInfo.skillId);
+			if (skillInfo != null)
+			{
+				if (skillInfo.cooltimeInfo != null)
+				{
+					cooltimeInfo = skillInfo.cooltimeInfo;
+					if (cooltimeInfo.CheckCooltime())
+						return false;
+				}
+				if (skillInfo.actionNameHash != 0)
+					actionNameHash = skillInfo.actionNameHash;
+			}
+		}
 
 		// Play Action
 		if (actionPlayInfo.fadeDuration > 0.0f)
 		{	
-			if (animator.GetNextAnimatorStateInfo(0).fullPathHash == actionPlayInfo.actionNameHash)
+			if (animator.GetNextAnimatorStateInfo(0).fullPathHash == actionNameHash)
 				return false;
 		}
-		animator.CrossFade(actionPlayInfo.actionNameHash, actionPlayInfo.fadeDuration);
+		animator.CrossFade(actionNameHash, actionPlayInfo.fadeDuration);
 
-		if (actionPlayInfo.cooltimeInfo != null)
-			actionPlayInfo.cooltimeInfo.ApplyCooltime();
+		if (cooltimeInfo != null)
+			cooltimeInfo.ApplyCooltime();
 
 		return true;
 	}

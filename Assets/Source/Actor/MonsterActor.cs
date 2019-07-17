@@ -37,8 +37,8 @@ public class MonsterActor : Actor
 	{
 		base.InitializeActor();
 
-		actorStatus.InitializeMonsterStatus(actorId);
 		team.teamID = (int)Team.eTeamID.DefaultMonster;
+		actorStatus.InitializeMonsterStatus(actorId);
 
 		BattleManager.instance.OnSpawnMonster(this);
 	}

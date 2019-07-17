@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerActor : Actor
 {
+	public SkillProcessor skillProcessor { get; private set; }
+
 	void Awake()
 	{
 		InitializeComponent();
@@ -21,6 +23,9 @@ public class PlayerActor : Actor
 		actorStatus = GetComponent<ActorStatus>();
 		if (actorStatus == null) actorStatus = gameObject.AddComponent<ActorStatus>();
 
+		skillProcessor = GetComponent<SkillProcessor>();
+		if (skillProcessor == null) skillProcessor = gameObject.AddComponent<SkillProcessor>();
+
 		//castingProcessor = GetComponent<CastingProcessor>();
 		//if (castingProcessor == null) castingProcessor = gameObject.AddComponent<CastingProcessor>();
 	}
@@ -29,8 +34,9 @@ public class PlayerActor : Actor
 	{
 		base.InitializeActor();
 
-		actorStatus.InitializeActorStatus(actorId);
 		team.teamID = (int)Team.eTeamID.DefaultArmy;
+		skillProcessor.InitializeSkill(actorId);
+		actorStatus.InitializeActorStatus(actorId);
 	}
 
 	public override void OnDie()

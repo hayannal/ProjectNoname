@@ -4,40 +4,40 @@ using UnityEngine;
 
 public class CooltimeProcessor : MonoBehaviour {
 
-	Dictionary<string, Cooltime> m_dicCoolTimeInfo = new Dictionary<string, Cooltime>();
+	Dictionary<string, Cooltime> _dicCoolTimeInfo = new Dictionary<string, Cooltime>();
 
 	void OnEnable()
 	{
-		Dictionary<string, Cooltime>.Enumerator e = m_dicCoolTimeInfo.GetEnumerator();
+		Dictionary<string, Cooltime>.Enumerator e = _dicCoolTimeInfo.GetEnumerator();
 		while (e.MoveNext())
 			e.Current.Value.cooltime = 0.0f;
 	}
 
-	public Cooltime InitializeCoolTime(string cooltimeID, float maxCoolTime, float initCoolTime = 0.0f)
+	public Cooltime InitializeCoolTime(string cooltimeId, float maxCoolTime, float initCoolTime = 0.0f)
 	{
 		Cooltime coolTimeInfo = null;
-		if (m_dicCoolTimeInfo.ContainsKey(cooltimeID))
-			coolTimeInfo = m_dicCoolTimeInfo[cooltimeID];
+		if (_dicCoolTimeInfo.ContainsKey(cooltimeId))
+			coolTimeInfo = _dicCoolTimeInfo[cooltimeId];
 		else
 		{
 			coolTimeInfo = new Cooltime();
-			m_dicCoolTimeInfo.Add(cooltimeID, coolTimeInfo);
+			_dicCoolTimeInfo.Add(cooltimeId, coolTimeInfo);
 		}
 		coolTimeInfo.maxCooltime = maxCoolTime;
 		coolTimeInfo.cooltime = initCoolTime;
 		return coolTimeInfo;
 	}
 
-	public Cooltime GetCoolTime(string cooltimeID)
+	public Cooltime GetCoolTime(string cooltimeId)
 	{
-		if (m_dicCoolTimeInfo.ContainsKey(cooltimeID))
-			return m_dicCoolTimeInfo[cooltimeID];
+		if (_dicCoolTimeInfo.ContainsKey(cooltimeId))
+			return _dicCoolTimeInfo[cooltimeId];
 		return null;
 	}
 
 	void Update()
 	{
-		Dictionary<string, Cooltime>.Enumerator e = m_dicCoolTimeInfo.GetEnumerator();
+		Dictionary<string, Cooltime>.Enumerator e = _dicCoolTimeInfo.GetEnumerator();
 		while(e.MoveNext())
 			e.Current.Value.UpdateCooltime(Time.deltaTime);
 	}

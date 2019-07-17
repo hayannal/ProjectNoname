@@ -27,11 +27,12 @@ public static class AffectorCustomCreator
 			#region USER_CODE
 			case eAffectorType.DotDamage:
 			case eAffectorType.MoveToTarget:
-			case eAffectorType.AddActorState:
 			case eAffectorType.ChangeActorStatus:
 			case eAffectorType.CannotAction:
 			case eAffectorType.CannotMove:
 			case eAffectorType.DefaultContainer:
+			case eAffectorType.PiercingHitObject:
+			case eAffectorType.AddAffectorHitObject:
 				return true;
 			#endregion
 		}

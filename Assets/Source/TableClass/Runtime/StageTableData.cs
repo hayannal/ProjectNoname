@@ -9,10 +9,6 @@ using System.Collections;
 public class StageTableData
 {
   [SerializeField]
-  string _id;
-  public string id { get { return _id; } set { _id = value; } }
-  
-  [SerializeField]
   int _chapter;
   public int chapter { get { return _chapter; } set { _chapter = value; } }
   
@@ -45,7 +41,7 @@ public class StageTableData
   public string firstFixedMap { get { return _firstFixedMap; } set { _firstFixedMap = value; } }
   
   [SerializeField]
-  string _addRandomMap;
-  public string addRandomMap { get { return _addRandomMap; } set { _addRandomMap = value; } }
+  string[] _addRandomMap = new string[0];
+  public string[] addRandomMap { get { return _addRandomMap; } set { _addRandomMap = value; } }
   
 }

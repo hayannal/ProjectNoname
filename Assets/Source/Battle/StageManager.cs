@@ -94,8 +94,12 @@ public class StageManager : MonoBehaviour
 				if (listStageId.Contains(diffData.firstFixedMap) == false)
 					listStageId.Add(diffData.firstFixedMap);
 
-				if (string.IsNullOrEmpty(diffData.addRandomMap) == false && listStageId.Contains(diffData.addRandomMap) == false)
-					listStageId.Add(diffData.addRandomMap);
+				for (int j = 0; j < diffData.addRandomMap.Length; ++j)
+				{
+					string addRandomMap = diffData.addRandomMap[j];
+					if (string.IsNullOrEmpty(addRandomMap) == false && listStageId.Contains(addRandomMap) == false)
+						listStageId.Add(addRandomMap);
+				}
 			}
 
 			for (int i = 0; i < listStageId.Count; ++i)

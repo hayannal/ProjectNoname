@@ -50,6 +50,14 @@ public class AffectorProcessor : MonoBehaviour {
 
 	AffectorBase ExcuteAffector(eAffectorType affectorType, AffectorValueLevelTableData levelData, HitParameter hitParameter)
 	{
+		for (int i = 0; i < levelData.conditionValueId.Length; ++i)
+		{
+			if (string.IsNullOrEmpty(levelData.conditionValueId[i]))
+				continue;
+			if (Condition.CheckCondition(levelData.conditionValueId[i], hitParameter, this, actor) == false)
+				return null;
+		}
+
 		AffectorBase affectorBase = null;
 		if (AffectorCustomCreator.IsContinuousAffector(affectorType))
 		{

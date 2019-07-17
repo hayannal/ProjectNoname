@@ -6,11 +6,12 @@ public class AddActorStateAffector : AffectorBase {
 
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
-		ActorStateTableData data = TableDataManager.instance.FindActorStateTableData(affectorValueLevelTableData.sValue2);
+		string actorStateId = affectorValueLevelTableData.sValue2;
+		ActorStateTableData data = TableDataManager.instance.FindActorStateTableData(actorStateId);
 		if (data == null)
 			return;
 
 		eAffectorType affectorType = (eAffectorType)data.continuousAffectorId;
-		_affectorProcessor.ExcuteAffector(affectorType, affectorValueLevelTableData, hitParameter);
+		_affectorProcessor.AddActorState(actorStateId, affectorType, affectorValueLevelTableData, hitParameter);
 	}
 }

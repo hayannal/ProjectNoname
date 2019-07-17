@@ -27,4 +27,7 @@ public class AffectorBase
 	public virtual void Update()
 	{
 	}
+
+	// Etc
+	public virtual float GetRemainTime() { return -1.0f; }
 }

@@ -48,7 +48,7 @@ public class AffectorProcessor : MonoBehaviour {
 		//#endregion
 	}
 
-	public AffectorBase ExcuteAffector(eAffectorType affectorType, AffectorValueLevelTableData levelData, HitParameter hitParameter)
+	AffectorBase ExcuteAffector(eAffectorType affectorType, AffectorValueLevelTableData levelData, HitParameter hitParameter)
 	{
 		AffectorBase affectorBase = null;
 		if (AffectorCustomCreator.IsContinuousAffector(affectorType))
@@ -118,6 +118,75 @@ public class AffectorProcessor : MonoBehaviour {
 			hitObject.OnCollisionEnterAffectorProcessor(this, contact);
 		}
 	}
+
+
+	#region ActorState
+	Dictionary<string, AffectorBase> _dicActorStateInfo;
+	public void AddActorState(string actorStateId, eAffectorType affectorType, AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
+	{
+		if (_dicActorStateInfo == null)
+			_dicActorStateInfo = new Dictionary<string, AffectorBase>();
+
+		if (_dicActorStateInfo.ContainsKey(actorStateId) == false)
+		{
+			AffectorBase newAffector = ExcuteAffector(affectorType, affectorValueLevelTableData, hitParameter);
+			_dicActorStateInfo.Add(actorStateId, newAffector);
+			return;
+		}
+
+		AffectorBase existAffector = _dicActorStateInfo[actorStateId];
+		if (existAffector.finalized)
+		{
+			AffectorBase newAffector = ExcuteAffector(affectorType, affectorValueLevelTableData, hitParameter);
+			_dicActorStateInfo[actorStateId] = newAffector;
+			return;
+		}
+
+		// compare time with exist affector
+		switch (affectorType)
+		{
+			case eAffectorType.MoveToTarget:
+				break;
+			default:
+				float remainTime = existAffector.GetRemainTime();
+				if (remainTime != -1.0f)
+				{
+					if (affectorValueLevelTableData.fValue1 < remainTime)
+					{
+						Debug.LogErrorFormat("ActorState duplicate time error! / actorStateId = {0}", actorStateId);
+						return;
+					}
+				}
+				break;
+		}
+
+		// compare value with exist affector
+		switch (affectorType)
+		{
+			case eAffectorType.DotDamage:
+				break;
+		}
+
+		AffectorBase overrideAffector = ExcuteAffector(affectorType, affectorValueLevelTableData, hitParameter);
+		_dicActorStateInfo[actorStateId] = overrideAffector;
+	}
+
+	public bool IsActorState(string actorStateId)
+	{
+		if (_dicActorStateInfo == null)
+			return false;
+
+		if (_dicActorStateInfo.ContainsKey(actorStateId) == false)
+			return false;
+
+		AffectorBase existAffector = _dicActorStateInfo[actorStateId];
+		if (existAffector.finalized)
+			return false;
+
+		return true;
+	}
+	#endregion
+
 
 	Transform _transform;
 	public Transform cachedTransform

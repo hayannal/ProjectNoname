@@ -11,9 +11,9 @@ public class Condition : MonoBehaviour
 		DefenderHpRatio,
 		AttackerActorState,
 		DefenderActorState,
-		AttackerSpecialGaugeRatio,
+		AttackerUltimateSkillGaugeRatio,
 		AttackerUniqueGaugeRatio,
-		Distance,
+		DistanceOnFire,
 	}
 
 	enum eCompareType
@@ -30,7 +30,10 @@ public class Condition : MonoBehaviour
 	{
 		ConditionValueTableData data = TableDataManager.instance.FindConditionValueTableData(conditionValueId);
 		if (data == null)
+		{
+			Debug.LogErrorFormat("Not Found ConditionValueId = {0}", conditionValueId);
 			return false;
+		}
 
 		eConditionType conditionType = (eConditionType)data.conditionId;
 		eCompareType compareType = (eCompareType)data.compareType;
@@ -55,11 +58,11 @@ public class Condition : MonoBehaviour
 				if (defenderAffectorProcessor.IsActorState(data.value))
 					return true;
 				break;
-			case eConditionType.AttackerSpecialGaugeRatio:
+			case eConditionType.AttackerUltimateSkillGaugeRatio:
 				break;
 			case eConditionType.AttackerUniqueGaugeRatio:
 				break;
-			case eConditionType.Distance:
+			case eConditionType.DistanceOnFire:
 				useFloatCompare = true;
 				break;
 		}

@@ -13,7 +13,7 @@ public class ActorStateTableData
   public string actorStateId { get { return _actorStateId; } set { _actorStateId = value; } }
   
   [SerializeField]
-  int _continuousAffectorId;
-  public int continuousAffectorId { get { return _continuousAffectorId; } set { _continuousAffectorId = value; } }
+  string[] _continuousAffectorValueId = new string[0];
+  public string[] continuousAffectorValueId { get { return _continuousAffectorValueId; } set { _continuousAffectorValueId = value; } }
   
 }

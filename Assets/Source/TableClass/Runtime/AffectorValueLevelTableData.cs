@@ -45,11 +45,19 @@ public class AffectorValueLevelTableData
   public int iValue2 { get { return _iValue2; } set { _iValue2 = value; } }
   
   [SerializeField]
+  int _iValue3;
+  public int iValue3 { get { return _iValue3; } set { _iValue3 = value; } }
+  
+  [SerializeField]
   string _sValue1;
   public string sValue1 { get { return _sValue1; } set { _sValue1 = value; } }
   
   [SerializeField]
   string _sValue2;
   public string sValue2 { get { return _sValue2; } set { _sValue2 = value; } }
+  
+  [SerializeField]
+  string _sValue3;
+  public string sValue3 { get { return _sValue3; } set { _sValue3 = value; } }
   
 }

@@ -173,36 +173,7 @@ public class HitObject : MonoBehaviour
 		if (affectorProcessor == null) return;
 
 		for (int i = 0; i < listAffectorValueId.Count; ++i)
-			ApplyAffectorValue(affectorProcessor, listAffectorValueId[i], hitParameter);
-	}
-
-	public static AffectorBase ApplyAffectorValue(AffectorProcessor affectorProcessor, string affectorValueId, HitParameter hitParameter)
-	{
-		AffectorValueTableData data = TableDataManager.instance.FindAffectorValueTableData(affectorValueId);
-		if (data == null)
-			return null;
-		int skillLevel = hitParameter.statusStructForHitObject.skillLevel;
-		int affectorValueLevel = 1;
-		if (skillLevel != 0)
-		{
-			if (string.IsNullOrEmpty(data.skillLevel2AffectorLevel))
-				affectorValueLevel = skillLevel;
-			else
-			{
-				Dictionary<int, int> dicConvertData = BattleInstanceManager.instance.GetCachedSkillLevel2AffectorLevelData(data.skillLevel2AffectorLevel);
-				if (dicConvertData != null)
-				{
-					if (dicConvertData.ContainsKey(skillLevel))
-						affectorValueLevel = dicConvertData[skillLevel];
-					else
-					{
-						Debug.LogErrorFormat("No SkillLevel in SkillLevel2AffectorLevel. AffectorValueId = {0} / SkillLevel = {1}", data.id, skillLevel);
-						affectorValueLevel = skillLevel;
-					}
-				}
-			}
-		}
-		return affectorProcessor.ExcuteAffectorValue(data, affectorValueLevel, hitParameter, true);
+			affectorProcessor.ApplyAffectorValue(listAffectorValueId[i], hitParameter, true);
 	}
 	#endregion
 

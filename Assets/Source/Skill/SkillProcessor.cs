@@ -121,7 +121,7 @@ public class SkillProcessor : MonoBehaviour
 
 		for (int i = 0; i < info.passiveAffectorValueId.Length; ++i)
 		{
-			AffectorBase passiveAffector = HitObject.ApplyAffectorValue(affectorProcessor, info.passiveAffectorValueId[i], hitParameter);
+			AffectorBase passiveAffector = affectorProcessor.ApplyAffectorValue(info.passiveAffectorValueId[i], hitParameter);
 			if (passiveAffector == null)
 				continue;
 

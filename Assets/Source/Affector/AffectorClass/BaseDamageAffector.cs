@@ -34,7 +34,7 @@ public class BaseDamageAffector : AffectorBase {
 
 		bool useOnkill = (affectorValueLevelTableData.iValue2 == 1 && !string.IsNullOrEmpty(affectorValueLevelTableData.sValue2));
 		if (useOnkill && _actor.actorStatus.GetHP() <= 0)
-			_affectorProcessor.ApplyAffectorValue(affectorValueLevelTableData.sValue2, hitParameter);
+			_affectorProcessor.ApplyAffectorValue(affectorValueLevelTableData.sValue2, hitParameter, false);
 
 		//Collider col = m_Actor.GetComponent<Collider>();
 		//DamageFloaterManager.Instance.ShowDamage(intDamage, m_Actor.transform.position + new Vector3(0.0f, ColliderUtil.GetHeight(col), 0.0f));

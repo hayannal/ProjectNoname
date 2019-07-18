@@ -173,7 +173,7 @@ public class HitObject : MonoBehaviour
 		if (affectorProcessor == null) return;
 
 		for (int i = 0; i < listAffectorValueId.Count; ++i)
-			affectorProcessor.ApplyAffectorValue(listAffectorValueId[i], hitParameter, true);
+			affectorProcessor.ApplyAffectorValue(listAffectorValueId[i], hitParameter, false, true);
 	}
 	#endregion
 

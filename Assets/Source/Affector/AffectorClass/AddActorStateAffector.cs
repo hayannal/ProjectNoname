@@ -17,6 +17,6 @@ public class AddActorStateAffector : AffectorBase {
 		if (data == null)
 			return;
 
-		_affectorProcessor.actorStateProcessor.AddActorState(actorStateId, data.continuousAffectorValueId, hitParameter);
+		_affectorProcessor.AddActorState(actorStateId, data.continuousAffectorValueId, hitParameter);
 	}
 }

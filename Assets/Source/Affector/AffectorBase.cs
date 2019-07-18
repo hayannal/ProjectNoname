@@ -26,6 +26,9 @@ public class AffectorBase
 		}
 	}
 
+	// 매니지드로 체크된 애들은 컨티뉴어스 리스트 돌때 다른 곳에서 관리되는 애들이니 AffectorValueId 가 같은지 체크하지 않는다.
+	public bool managed { get; set; }
+
 	public eAffectorType affectorType { get { return _affectorType; } }
 	public string affectorValueId { get; set; }
 

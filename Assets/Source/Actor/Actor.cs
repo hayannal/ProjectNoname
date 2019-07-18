@@ -13,7 +13,6 @@ public class Actor : MonoBehaviour {
 	public CooltimeProcessor cooltimeProcessor { get; private set; }
 	public ActorStatus actorStatus { get; protected set; }
 	public AffectorProcessor affectorProcessor { get; private set; }
-	public ActorStateProcessor actorStateProcessor { get; private set; }
 	public Team team { get; private set; }
 	public TargetingProcessor targetingSystem { get; private set; }
 
@@ -49,9 +48,6 @@ public class Actor : MonoBehaviour {
 
 		affectorProcessor = GetComponent<AffectorProcessor>();
 		if (affectorProcessor == null) affectorProcessor = gameObject.AddComponent<AffectorProcessor>();
-
-		actorStateProcessor = GetComponent<ActorStateProcessor>();
-		if (actorStateProcessor == null) actorStateProcessor = gameObject.AddComponent<ActorStateProcessor>();
 
 		team = GetComponent<Team>();
 		if (team == null) team = gameObject.AddComponent<Team>();

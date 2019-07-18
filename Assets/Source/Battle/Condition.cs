@@ -28,7 +28,7 @@ public class Condition : MonoBehaviour
 		GreaterOrEqual,
 	}
 
-	public static bool CheckCondition(string conditionValueId, HitParameter hitParameter, AffectorProcessor defenderAffectorProcessor, ActorStateProcessor defenderActorStateProcessor, Actor defenderActor)
+	public static bool CheckCondition(string conditionValueId, HitParameter hitParameter, AffectorProcessor defenderAffectorProcessor, Actor defenderActor)
 	{
 		ConditionValueTableData data = TableDataManager.instance.FindConditionValueTableData(conditionValueId);
 		if (data == null)
@@ -57,7 +57,7 @@ public class Condition : MonoBehaviour
 
 				break;
 			case eConditionType.DefenderActorState:
-				if (defenderActorStateProcessor.IsActorState(data.value))
+				if (defenderAffectorProcessor.IsActorState(data.value))
 					return true;
 				break;
 			case eConditionType.AttackerAffectorValueId:

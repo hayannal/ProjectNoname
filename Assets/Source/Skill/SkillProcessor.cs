@@ -162,9 +162,113 @@ public class SkillProcessor : MonoBehaviour
 		statusStructForHitObject.skillLevel = 0;
 		statusStructForHitObject.hitSignalIndexInAction = 0;
 	}
-	
+
+
+
+
+
+
 
 	#region Level Pack
-	Dictionary<string, List<AffectorBase>> _dicLevelPack = null;
+
+	public class LevelPackInfo
+	{
+		public int level;
+		public int maxLevel;
+		public string iconName;
+		public string[] affectorValueId;
+		public string nameId;
+		public string descriptionId;
+		public string[] descriptionParameterList;
+		public List<AffectorBase> listAffector;
+	}
+
+	// 형태가 패시브와 매우 유사하여 스킬 프로세서에 넣는다. 게임 구조가 다르다면 하단은 삭제.
+	Dictionary<string, LevelPackInfo> _dicLevelPack = null;
+	public void AddLevelPack(string levelPackId)
+	{
+		if (actor == null)
+			return;
+
+		if (_dicLevelPack == null)
+			_dicLevelPack = new Dictionary<string, LevelPackInfo>();
+
+		LevelPackTableData levelPackTableData = TableDataManager.instance.FindLevelPackTableData(levelPackId);
+		if (levelPackTableData == null)
+			return;
+
+		LevelPackInfo info = null;
+		int nextlevel = 0;
+		bool createAffector = false;
+		if (_dicLevelPack.ContainsKey(levelPackId) == false)
+		{
+			info = new LevelPackInfo();
+			nextlevel = 1;
+			info.maxLevel = levelPackTableData.defaultMax;
+			ActorLevelPackTableData actorLevelPackTableData = TableDataManager.instance.FindActorLevelPackTableData(actor.actorId, levelPackId);
+			if (actorLevelPackTableData != null)
+				info.maxLevel = actorLevelPackTableData.overridingMax;
+			info.iconName = levelPackTableData.icon;
+			if (levelPackTableData.useAffectorValueIdOverriding == false)
+				info.affectorValueId = levelPackTableData.affectorValueId;
+			info.nameId = levelPackTableData.nameId;
+			info.descriptionId = levelPackTableData.descriptionId;
+			createAffector = true;
+			_dicLevelPack.Add(levelPackId, info);
+		}
+		else
+		{
+			info = _dicLevelPack[levelPackId];
+			nextlevel = info.level + 1;
+		}
+
+		LevelPackLevelTableData levelPackLevelTableData = TableDataManager.instance.FindLevelPackLevelTableData(levelPackId, nextlevel);
+		if (levelPackLevelTableData != null)
+		{
+			if (levelPackTableData.useAffectorValueIdOverriding)
+			{
+				info.affectorValueId = levelPackLevelTableData.affectorValueId;
+				createAffector = true;
+			}
+			info.descriptionParameterList = levelPackLevelTableData.parameter;
+		}
+
+		if (createAffector)
+		{
+			CreateLevelPackAffector(levelPackId, info);
+		}
+	}
+
+	void CreateLevelPackAffector(string levelPackId, LevelPackInfo info)
+	{
+		if (actor == null)
+			return;
+		if (info.affectorValueId.Length == 0)
+			return;
+
+		if (info.listAffector == null)
+			info.listAffector = new List<AffectorBase>();
+
+		for (int i = 0; i < info.listAffector.Count; ++i)
+			info.listAffector[i].finalized = true;
+		info.listAffector.Clear();
+
+		HitParameter hitParameter = new HitParameter();
+		hitParameter.statusBase = actor.actorStatus.statusBase;
+		CopyEtcStatus(ref hitParameter.statusStructForHitObject, actor);
+		hitParameter.statusStructForHitObject.skillLevel = info.level;
+
+		for (int i = 0; i < info.affectorValueId.Length; ++i)
+		{
+			AffectorBase newAffector = affectorProcessor.ApplyAffectorValue(info.affectorValueId[i], hitParameter, true);
+			if (newAffector == null)
+				continue;
+
+			if (AffectorCustomCreator.IsContinuousAffector(newAffector.affectorType))
+				info.listAffector.Add(newAffector);
+			else
+				Debug.LogErrorFormat("Non-continuous affector in a levelPack! / LevelPackId = {0} / AffectorValueId = {1}", levelPackId, info.affectorValueId[i]);
+		}
+	}
 	#endregion
 }

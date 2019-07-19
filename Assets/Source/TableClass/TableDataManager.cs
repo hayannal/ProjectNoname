@@ -20,6 +20,9 @@ public class TableDataManager : MonoBehaviour
 	public SkillTable skillTable;
 	public SkillLevelTable skillLevelTable;
 	public ConditionValueTable conditionValueTable;
+	public LevelPackTable levelPackTable;
+	public LevelPackLevelTable levelPackLevelTable;
+	public ActorLevelPackTable actorLevelPackTable;
 
 	void Awake()
 	{
@@ -142,6 +145,36 @@ public class TableDataManager : MonoBehaviour
 		{
 			if (conditionValueTable.dataArray[i].id == id)
 				return conditionValueTable.dataArray[i];
+		}
+		return null;
+	}
+
+	public LevelPackTableData FindLevelPackTableData(string levelPackId)
+	{
+		for (int i = 0; i < levelPackTable.dataArray.Length; ++i)
+		{
+			if (levelPackTable.dataArray[i].levelPackId == levelPackId)
+				return levelPackTable.dataArray[i];
+		}
+		return null;
+	}
+
+	public LevelPackLevelTableData FindLevelPackLevelTableData(string levelPackId, int level)
+	{
+		for (int i = 0; i < levelPackLevelTable.dataArray.Length; ++i)
+		{
+			if (levelPackLevelTable.dataArray[i].levelPackId == levelPackId && levelPackLevelTable.dataArray[i].level == level)
+				return levelPackLevelTable.dataArray[i];
+		}
+		return null;
+	}
+
+	public ActorLevelPackTableData FindActorLevelPackTableData(string actorId, string levelPackId)
+	{
+		for (int i = 0; i < actorLevelPackTable.dataArray.Length; ++i)
+		{
+			if (actorLevelPackTable.dataArray[i].actorId == actorId && actorLevelPackTable.dataArray[i].levelPackId == levelPackId)
+				return actorLevelPackTable.dataArray[i];
 		}
 		return null;
 	}

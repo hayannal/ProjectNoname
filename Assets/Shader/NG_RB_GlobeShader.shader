@@ -25,6 +25,7 @@
 
 		CGPROGRAM
 		#pragma surface surf NoLighting alpha:blend
+		#pragma target 3.5
 		//alpha:blend is key because shader uses mask texture's alpha for "filling" mechanism
 
 		//Custom lightning function to prevent any light from affecting the globe

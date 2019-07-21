@@ -20,5 +20,6 @@ public enum eAffectorType
 	PiercingHitObject,
 	AddAffectorHitObject,
 	GetLevelPack,
+	CallAffectorValue,
 }
 #endregion

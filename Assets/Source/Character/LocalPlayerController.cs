@@ -83,8 +83,10 @@ public sealed class LocalPlayerController : BaseCharacterController
 			Ray ray = Camera.main.ScreenPointToRay(ScreenJoystick.instance.tabPosition);
 			RaycastHit hitInfo;
 			if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, groundMask.value))
-				RotateTowards(hitInfo.point - transform.position);
-			actionController.PlayActionByControl(Control.eControllerType.ScreenController, Control.eInputType.Tab);
+			{
+				if (actionController.PlayActionByControl(Control.eControllerType.ScreenController, Control.eInputType.Tab))
+					RotateTowards(hitInfo.point - transform.position);
+			}
 		}
 	}
 

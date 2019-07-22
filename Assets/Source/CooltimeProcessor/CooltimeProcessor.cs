@@ -4,40 +4,48 @@ using UnityEngine;
 
 public class CooltimeProcessor : MonoBehaviour {
 
-	Dictionary<string, Cooltime> _dicCoolTimeInfo = new Dictionary<string, Cooltime>();
+	Dictionary<string, Cooltime> _dicCooltimeInfo = new Dictionary<string, Cooltime>();
 
 	void OnEnable()
 	{
-		Dictionary<string, Cooltime>.Enumerator e = _dicCoolTimeInfo.GetEnumerator();
+		Dictionary<string, Cooltime>.Enumerator e = _dicCooltimeInfo.GetEnumerator();
 		while (e.MoveNext())
 			e.Current.Value.cooltime = 0.0f;
 	}
 
-	public Cooltime InitializeCoolTime(string cooltimeId, float maxCoolTime, float initCoolTime = 0.0f)
+	public Cooltime ApplyCooltime(string cooltimeId, float maxCooltime)
 	{
-		Cooltime coolTimeInfo = null;
-		if (_dicCoolTimeInfo.ContainsKey(cooltimeId))
-			coolTimeInfo = _dicCoolTimeInfo[cooltimeId];
+		Cooltime cooltimeInfo = null;
+		if (_dicCooltimeInfo.ContainsKey(cooltimeId))
+			cooltimeInfo = _dicCooltimeInfo[cooltimeId];
 		else
 		{
-			coolTimeInfo = new Cooltime();
-			_dicCoolTimeInfo.Add(cooltimeId, coolTimeInfo);
+			cooltimeInfo = new Cooltime();
+			_dicCooltimeInfo.Add(cooltimeId, cooltimeInfo);
 		}
-		coolTimeInfo.maxCooltime = maxCoolTime;
-		coolTimeInfo.cooltime = initCoolTime;
-		return coolTimeInfo;
+		cooltimeInfo.maxCooltime = maxCooltime;
+		cooltimeInfo.ApplyCooltime();
+		return cooltimeInfo;
 	}
 
-	public Cooltime GetCoolTime(string cooltimeId)
+	public bool CheckCooltime(string cooltimeId)
 	{
-		if (_dicCoolTimeInfo.ContainsKey(cooltimeId))
-			return _dicCoolTimeInfo[cooltimeId];
+		Cooltime cooltime = GetCooltime(cooltimeId);
+		if (cooltime == null)
+			return false;
+		return cooltime.CheckCooltime();
+	}
+
+	public Cooltime GetCooltime(string cooltimeId)
+	{
+		if (_dicCooltimeInfo.ContainsKey(cooltimeId))
+			return _dicCooltimeInfo[cooltimeId];
 		return null;
 	}
 
 	void Update()
 	{
-		Dictionary<string, Cooltime>.Enumerator e = _dicCoolTimeInfo.GetEnumerator();
+		Dictionary<string, Cooltime>.Enumerator e = _dicCooltimeInfo.GetEnumerator();
 		while(e.MoveNext())
 			e.Current.Value.UpdateCooltime(Time.deltaTime);
 	}

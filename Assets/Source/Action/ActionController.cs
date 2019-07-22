@@ -7,7 +7,10 @@ public class ActionController : MonoBehaviour {
 	public Animator animator { get; private set; }
 	public IdleAnimator idleAnimator { get; private set; }
 	public MecanimState mecanimState { get; private set; }
+	public Actor actor { get; private set; }
+
 	public SkillProcessor skillProcessor { get; private set; }
+	public CooltimeProcessor cooltimeProcessor { get; private set; }
 
 	public class ActionInfo
 	{
@@ -32,12 +35,17 @@ public class ActionController : MonoBehaviour {
 
 		idleAnimator = animator.GetComponent<IdleAnimator>();
 		if (idleAnimator == null) idleAnimator = animator.gameObject.AddComponent<IdleAnimator>();
+
+		actor = GetComponent<Actor>();
 	}
 
 	public void InitializeActionPlayInfo(string actorId)
 	{
 		skillProcessor = GetComponent<SkillProcessor>();
 		//if (skillProcessor == null) skillProcessor = gameObject.AddComponent<SkillProcessor>();	// no addcomponent. for monster actor
+
+		cooltimeProcessor = GetComponent<CooltimeProcessor>();
+		if (cooltimeProcessor == null) cooltimeProcessor = gameObject.AddComponent<CooltimeProcessor>();
 
 		_listActionInfo = new List<ActionInfo>();
 
@@ -186,21 +194,25 @@ public class ActionController : MonoBehaviour {
 		if (!CheckMecanimState(actionPlayInfo.listNotAllowingState, actionPlayInfo.listAllowingState))
 			return false;
 
+		bool normalAttack = false;
+		if (actionPlayInfo.actionName == "Attack")
+		{
+			normalAttack = true;
+			if (cooltimeProcessor.CheckCooltime(actionPlayInfo.actionName))
+				return false;
+		}
+
+		SkillProcessor.SkillInfo selectedSkillInfo = null;
 		int actionNameHash = actionPlayInfo.actionNameHash;
-		Cooltime cooltimeInfo = null;
 		if (!string.IsNullOrEmpty(actionPlayInfo.skillId) && skillProcessor != null)
 		{
-			SkillProcessor.SkillInfo skillInfo = skillProcessor.GetSkillInfo(actionPlayInfo.skillId);
-			if (skillInfo != null)
+			selectedSkillInfo = skillProcessor.GetSkillInfo(actionPlayInfo.skillId);
+			if (selectedSkillInfo != null)
 			{
-				if (skillInfo.cooltimeInfo != null)
-				{
-					cooltimeInfo = skillInfo.cooltimeInfo;
-					if (cooltimeInfo.CheckCooltime())
-						return false;
-				}
-				if (skillInfo.actionNameHash != 0)
-					actionNameHash = skillInfo.actionNameHash;
+				if (cooltimeProcessor.CheckCooltime(selectedSkillInfo.skillId))
+					return false;
+				if (selectedSkillInfo.actionNameHash != 0)
+					actionNameHash = selectedSkillInfo.actionNameHash;
 			}
 		}
 
@@ -212,8 +224,10 @@ public class ActionController : MonoBehaviour {
 		}
 		animator.CrossFade(actionNameHash, actionPlayInfo.fadeDuration);
 
-		if (cooltimeInfo != null)
-			cooltimeInfo.ApplyCooltime();
+		if (normalAttack && actor != null)
+			cooltimeProcessor.ApplyCooltime(actionPlayInfo.actionName, actor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.AttackDelay));
+		if (selectedSkillInfo != null)
+			cooltimeProcessor.ApplyCooltime(selectedSkillInfo.skillId, selectedSkillInfo.cooltime);
 
 		#region HitSignal Index
 		if (_dicHitSignalIndexInfo.ContainsKey(actionNameHash))

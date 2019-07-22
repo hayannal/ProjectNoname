@@ -26,7 +26,6 @@ public class SkillProcessor : MonoBehaviour
 		public string nameId;
 		public string descriptionId;
 		public List<AffectorBase> listPassiveAffector;
-		public Cooltime cooltimeInfo;
 	}
 
 	void Awake()
@@ -79,9 +78,6 @@ public class SkillProcessor : MonoBehaviour
 						info.descriptionId = skillLevelTableData.descriptionId;
 				}
 			}
-
-			if (info.cooltime > 0.0f)
-				info.cooltimeInfo = cooltimeProcessor.InitializeCoolTime(info.skillId, info.cooltime);
 
 			#region Passive Skill
 			if (info.passiveSkill)

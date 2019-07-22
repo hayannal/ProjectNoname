@@ -32,8 +32,8 @@ public class BaseDamageAffector : AffectorBase {
 		int intDamage = (int)damage;
 		_actor.actorStatus.AddHP(-intDamage);
 
-		bool useOnkill = (affectorValueLevelTableData.iValue2 == 1 && !string.IsNullOrEmpty(affectorValueLevelTableData.sValue2));
-		if (useOnkill && _actor.actorStatus.GetHP() <= 0)
+		bool useOnkill = (affectorValueLevelTableData.iValue2 == 1 && !string.IsNullOrEmpty(affectorValueLevelTableData.sValue2) && !_actor.actorStatus.IsDie());
+		if (useOnkill && _actor.actorStatus.IsDie())
 			_affectorProcessor.ApplyAffectorValue(affectorValueLevelTableData.sValue2, hitParameter, false);
 
 		//Collider col = m_Actor.GetComponent<Collider>();

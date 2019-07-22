@@ -1,28 +1,35 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MecanimStateDefine;
+using ECM.Controllers;
 
 public class PlayerAI : MonoBehaviour
 {
+	const float TargetFindDelay = 0.1f;
+
 	Collider targetCollider;
 
-	const float TargetFindDelay = 0.1f;
-	float _currentFindDelay = 0.0f;
-
-	public TargetingProcessor targetingProcessor { get; private set; }
+	Actor actor { get; set; }
+	TargetingProcessor targetingProcessor { get; set; }
+	BaseCharacterController baseCharacterController { get; set; }
 
 	// Start is called before the first frame update
 	void Start()
     {
+		actor = GetComponent<Actor>();
 		targetingProcessor = GetComponent<TargetingProcessor>();
+		baseCharacterController = GetComponent<BaseCharacterController>();
 	}
 
     // Update is called once per frame
     void Update()
     {
 		UpdateTargeting();
+		UpdateAttack();
     }
 
+	float _currentFindDelay;
 	Transform _cachedTargetingObjectTransform = null;
 	//List<GameObject> _listCachedTargetingObject = null;
 	void UpdateTargeting()
@@ -68,5 +75,47 @@ public class PlayerAI : MonoBehaviour
 
 		_cachedTargetingObjectTransform.gameObject.SetActive(true);
 		_cachedTargetingObjectTransform.position = targetTransform.position;
+	}
+
+	float _currentAttackDelay;
+	string NormalAttackName = "Attack";
+	void UpdateAttack()
+	{
+		// Attack Delay?
+		// 이미 쿨타임 프로세서가 알아서 처리하고 있지 않나.
+		// 연산 최적화를 위해? 혹은 처리 위치에 따라 스턴중에 딜레이 안흐르게 할수도 있다. CannotAction보다 아래.
+		if (_currentAttackDelay > 0.0f)
+		{
+			_currentAttackDelay -= Time.deltaTime;
+			if (_currentAttackDelay > 0.0f)
+				return;
+		}
+
+		// ContinuousAffector 검사
+		if (actor.affectorProcessor.IsContinuousAffectorType(eAffectorType.CannotAction))
+			return;
+
+		// 시즈탱크 퉁퉁포처럼 플레이어가 이동하는 동안에도 포탑은 알아서 쏘는 거까지 커버하려면
+		// 인풋이 없는거나 Move가 아닌거로 체크해선 안된다.
+		// Idle 혹은 Attackable 같은 뭔가가 필요해보인다.
+		bool autoAttackable = false;
+		if (actor.actionController.mecanimState.IsState((int)eMecanimState.Idle))
+			autoAttackable = true;
+
+		// no target
+		if (targetCollider == null)
+			autoAttackable = false;
+
+		if (!autoAttackable)
+			return;
+
+		Transform targetTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
+		baseCharacterController.RotateTowards(targetTransform.position - actor.cachedTransform.position);
+		if (actor.actionController.PlayActionByActionName(NormalAttackName))
+		{
+			Cooltime cooltime = actor.cooltimeProcessor.GetCooltime(NormalAttackName);
+			if (cooltime != null)
+				_currentAttackDelay = cooltime.cooltime;
+		}
 	}
 }

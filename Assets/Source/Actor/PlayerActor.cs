@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerActor : Actor
 {
 	public SkillProcessor skillProcessor { get; private set; }
+	public PlayerAI playerAI { get; private set; }
 
 	void Awake()
 	{
@@ -28,6 +29,9 @@ public class PlayerActor : Actor
 
 		//castingProcessor = GetComponent<CastingProcessor>();
 		//if (castingProcessor == null) castingProcessor = gameObject.AddComponent<CastingProcessor>();
+
+		playerAI = GetComponent<PlayerAI>();
+		if (playerAI == null) playerAI = gameObject.AddComponent<PlayerAI>();
 	}
 
 	protected override void InitializeActor()

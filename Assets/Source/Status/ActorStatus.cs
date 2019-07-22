@@ -61,6 +61,11 @@ public class ActorStatus : MonoBehaviour
 		return _statusBase.valueList[(int)eType];
 	}
 
+	public bool IsDie()
+	{
+		return GetHP() <= 0;
+	}
+
 	public float GetHP()
 	{
 		return _statusBase._hp;

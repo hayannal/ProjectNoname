@@ -145,6 +145,22 @@ public class BattleInstanceManager : MonoBehaviour
 	}
 	#endregion
 
+	#region Collider Transform
+	Dictionary<Collider, Transform> _dicTransformByCollider = new Dictionary<Collider, Transform>();
+	public Transform GetTransformFromCollider(Collider collider)
+	{
+		if (collider == null)
+			return null;
+
+		if (_dicTransformByCollider.ContainsKey(collider))
+			return _dicTransformByCollider[collider];
+
+		Transform _transform = collider.transform;
+		_dicTransformByCollider.Add(collider, _transform);
+		return _transform;
+	}
+	#endregion
+
 
 	#region HitParameter
 	#endregion

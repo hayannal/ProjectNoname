@@ -20,13 +20,17 @@ public class Team : MonoBehaviour
 		//Alliance,
 	}
 
-	static public bool CheckTeamFilter(int teamID, Collider target, eTeamCheckFilter filter)
+	static public bool CheckTeamFilter(int teamID, Collider target, eTeamCheckFilter filter, bool nullIsEnemy = true)
 	{
 		if (filter == eTeamCheckFilter.Any)
 			return true;
 		Team targetTeam = BattleInstanceManager.instance.GetTeamFromCollider(target);
 		if (targetTeam == null)
-			return true;
+		{
+			if (nullIsEnemy && filter == eTeamCheckFilter.Enemy)
+				return true;
+			return false;
+		}
 
 		eTeamCheckFilter filterResult = eTeamCheckFilter.Any;
 		if (targetTeam.teamID == teamID)

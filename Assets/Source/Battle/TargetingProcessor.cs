@@ -14,13 +14,21 @@ public class TargetingProcessor : MonoBehaviour {
 		return _targetList.Count;
 	}
 
-	public Vector3 GetTargetPosition()
+	public Collider GetTarget()
 	{
 		if (_targetList.Count > 1)
 		{
 		}
 		else if (_targetList.Count == 1)
-			return _targetList[0].transform.position;
+			return _targetList[0];
+		return null;
+	}
+
+	public Vector3 GetTargetPosition()
+	{
+		Collider collider = GetTarget();
+		if (collider != null)
+			return collider.transform.position;
 		return Vector3.zero;
 	}
 
@@ -54,7 +62,7 @@ public class TargetingProcessor : MonoBehaviour {
 			// team check
 			if (_teamComponent != null)
 			{
-				if (!Team.CheckTeamFilter(_teamComponent.teamID, result[i], teamFilter))
+				if (!Team.CheckTeamFilter(_teamComponent.teamID, result[i], teamFilter, false))
 					continue;
 			}
 
@@ -62,7 +70,7 @@ public class TargetingProcessor : MonoBehaviour {
 			Actor actor = affectorProcessor.actor;
 			if (actor != null)
 			{
-				if (actor.actorStatus.GetHP() <= 0)
+				if (actor.actorStatus.IsDie())
 					continue;
 			}
 

@@ -16,6 +16,7 @@ public class BattleManager : MonoBehaviour
 	static BattleManager _instance = null;
 
 	public GameObject targetCircleObject;
+	public GameObject monsterDisableEffectObject;
 
 	void Awake()
 	{

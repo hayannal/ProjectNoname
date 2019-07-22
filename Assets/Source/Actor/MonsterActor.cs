@@ -70,6 +70,7 @@ public class MonsterActor : Actor
 
 	void DisableObject()
 	{
+		BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.monsterDisableEffectObject, cachedTransform.position + Vector3.up, Quaternion.identity);
 		gameObject.SetActive(false);
 	}
 }

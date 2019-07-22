@@ -185,22 +185,42 @@ public class AffectorProcessor : MonoBehaviour {
 		return affectorBase;
 	}
 
+	List<AffectorBase> GetContinuousAffectorList(eAffectorType affectorType)
+	{
+		if (_dicContinuousAffector == null)
+			return null;
+		if (_dicContinuousAffector.ContainsKey((int)affectorType) == false)
+			return null;
+
+		return _dicContinuousAffector[(int)affectorType];
+	}
+
 	public bool IsContinuousAffectorValueId(string affectorValueId)
 	{
 		AffectorValueTableData data = TableDataManager.instance.FindAffectorValueTableData(affectorValueId);
 		if (data == null)
 			return false;
-		if (_dicContinuousAffector == null)
-			return false;
-		if (_dicContinuousAffector.ContainsKey(data.affectorId) == false)
-			return false;
 
-		List<AffectorBase> listContinuousAffector = _dicContinuousAffector[data.affectorId];
+		List<AffectorBase> listContinuousAffector = GetContinuousAffectorList((eAffectorType)data.affectorId);
 		for (int i = 0; i < listContinuousAffector.Count; ++i)
 		{
 			if (listContinuousAffector[i].finalized)
 				continue;
 			if (listContinuousAffector[i].affectorValueId == affectorValueId)
+				return true;
+		}
+		return false;
+	}
+
+	public bool IsContinuousAffectorType(eAffectorType affectorType)
+	{
+		List<AffectorBase> listContinuousAffector = GetContinuousAffectorList(affectorType);
+		if (listContinuousAffector == null)
+			return false;
+
+		for (int i = 0; i < listContinuousAffector.Count; ++i)
+		{
+			if (listContinuousAffector[i].finalized == false)
 				return true;
 		}
 		return false;

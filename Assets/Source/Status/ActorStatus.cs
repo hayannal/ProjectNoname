@@ -58,7 +58,16 @@ public class ActorStatus : MonoBehaviour
 
 	public float GetValue(eActorStatus eType)
 	{
-		return _statusBase.valueList[(int)eType];
+		float value = _statusBase.valueList[(int)eType];
+		switch (eType)
+		{
+			case eActorStatus.Attack:
+				break;
+			case eActorStatus.AttackDelay:
+				value = value / GetValue(eActorStatus.AttackSpeedRatio);
+				break;
+		}
+		return value;
 	}
 
 	public bool IsDie()

@@ -9,6 +9,7 @@ namespace ActorStatusDefine {
 		MaxHP,
 		Attack,
 		AttackDelay,
+		AttackSpeedRatio,
 		Defense,
 		MoveSpeed,
 

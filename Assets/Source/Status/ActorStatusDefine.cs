@@ -40,7 +40,6 @@ namespace ActorStatusDefine {
 		public virtual void Initialize()
 		{
 			valueList = new float[(int)eActorStatus.BaseAmount];
-			ClearValue();
 		}
 
 		public void ClearValue()
@@ -50,7 +49,6 @@ namespace ActorStatusDefine {
 
 			for (int i = 0; i < valueList.Length; ++i)
 				valueList[i] = 0.0f;
-			valueList[(int)eActorStatus.AttackSpeedRatio] = 1.0f;
 		}
 
 		public bool isPlayerBaseStatus { get { return valueList.Length == (int)eActorStatus.BaseAmount; } }

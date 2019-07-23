@@ -63,14 +63,14 @@ public class MonsterActor : Actor
 		//BehaviorDesigner.Runtime.BehaviorTree bt = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
 		//if (bt != null) bt.enabled = false;
 
-		Invoke("DisableObject", 2.0f);
+		Invoke("DisableObject", 1.2f);
 
 		BattleManager.instance.OnDieMonster(this);
 	}
 
 	void DisableObject()
 	{
-		BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.monsterDisableEffectObject, cachedTransform.position + Vector3.up, Quaternion.identity);
+		BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.monsterDisableEffectObject, cachedTransform.position, Quaternion.identity);
 		gameObject.SetActive(false);
 	}
 }

@@ -28,4 +28,8 @@ public class MonsterTableData
   float _attackDelay;
   public float attackDelay { get { return _attackDelay; } set { _attackDelay = value; } }
   
+  [SerializeField]
+  float _moveSpeed;
+  public float moveSpeed { get { return _moveSpeed; } set { _moveSpeed = value; } }
+  
 }

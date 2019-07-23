@@ -137,7 +137,7 @@ public class MecanimEventTool : EditorWindow
 
 			if (m_OrigMeshObject != null)
 			{
-				if (m_OrigMeshObject.GetComponent<Animator>() == null)
+				if (m_OrigMeshObject.GetComponentInChildren<Animator>() == null)
 					m_OrigMeshObject = null;
 			}
 			_selectedMeshData = (m_OrigMeshObject != null);
@@ -152,7 +152,7 @@ public class MecanimEventTool : EditorWindow
 				if (m_OrigMeshObject != null)
 				{
 					m_ToolGameObject = Instantiate(m_OrigMeshObject) as GameObject;
-					m_ToolAnimator = m_ToolGameObject.GetComponent<Animator>();
+					m_ToolAnimator = m_ToolGameObject.GetComponentInChildren<Animator>();
 
 					string szAC = AssetDatabase.GetAssetPath(m_AC);
 					if (AssetDatabase.CopyAsset(szAC, m_szToolAnimatorControllerPathname))

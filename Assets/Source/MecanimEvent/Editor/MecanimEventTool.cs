@@ -20,6 +20,7 @@ public class MecanimEventTool : EditorWindow
 	private MecanimEventGizmos m_Gizmos;
 
 	private bool m_bPlay = false;
+	private bool m_bLoop = true;
 
 
 	[MenuItem("Window/Open Mecanim Editor Window _F4")]
@@ -483,11 +484,21 @@ public class MecanimEventTool : EditorWindow
 		{
 			GUI.color = Color.green;
 			GUILayout.Space(110);
+			bool needResetNormalizedTime = false;
 			if (GUILayout.Button (m_bPlay?"Pause":"Play", EditorStyles.toolbarButton, GUILayout.Width(80)))
 			{
+				if (m_bPlay == false && m_bLoop == false && asi.normalizedTime == 1.0f)
+					needResetNormalizedTime = true;
+
 				m_bPlay = !m_bPlay;
 				MecanimEventBase.s_bDisableMecanimEvent = !m_bPlay;
 				MecanimEventBase.s_bForceCallUpdate = m_bPlay;
+			}
+			GUI.color = m_bLoop?Color.gray:Color.white;
+			GUILayout.Space(4);
+			if (GUILayout.Button("∞", EditorStyles.toolbarButton))
+			{
+				m_bLoop = !m_bLoop;
 			}
 			GUI.color = Color.white;
 			GUILayout.Space(4);
@@ -509,8 +520,18 @@ public class MecanimEventTool : EditorWindow
 
 			if (m_bPlay)
 			{
+				if (needResetNormalizedTime) asiCurrentTime = 0.0f;
 				asiCurrentTime += Time.deltaTime;
-				if (asiCurrentTime >= clipLength) asiCurrentTime -= clipLength;
+				if (asiCurrentTime >= clipLength)
+				{
+					if (m_bLoop)
+						asiCurrentTime -= clipLength;
+					else
+					{
+						asiCurrentTime = clipLength;
+						m_bPlay = false;
+					}
+				}
 				_playSliderValue = asiCurrentTime / clipLength;
 				Repaint();
 

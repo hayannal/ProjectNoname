@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿#define USE_HITOBJECT_MOVEMENT
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,6 +21,8 @@ public class ProjectileMoveScript : MonoBehaviour {
 	private bool collided;
 	private Rigidbody rb;
 
+#if USE_HITOBJECT_MOVEMENT
+#else
 	void Start () {	
 		rb = GetComponent <Rigidbody> ();
 
@@ -127,4 +131,5 @@ public class ProjectileMoveScript : MonoBehaviour {
 		yield return new WaitForSeconds (waitTime);
 		Destroy (gameObject);
 	}
+#endif
 }

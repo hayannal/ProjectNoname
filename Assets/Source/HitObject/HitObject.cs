@@ -26,7 +26,7 @@ public class HitObject : MonoBehaviour
 		GameObject hitObject = null;
 		if (meHit.hitObjectPrefab != null)
 		{
-			hitObject = BattleInstanceManager.instance.GetCachedObject(meHit.hitObjectPrefab, parentTransform.TransformPoint(meHit.offset), parentTransform.rotation);
+			hitObject = BattleInstanceManager.instance.GetCachedObject(meHit.hitObjectPrefab, parentTransform.TransformPoint(meHit.offset), Quaternion.identity);
 			//hitObject = (GameObject)Instantiate(meHit.hitObjectPrefab, , );
 		}
 		else if (meHit.lifeTime > 0.0f)
@@ -265,7 +265,7 @@ public class HitObject : MonoBehaviour
 		if (rigidbody != null)
 		{
 			rigidbody.detectCollisions = enable;
-			if (!enable && resetVelocityOnDisable) rigidbody.velocity = Vector3.zero;
+			if (!enable && resetVelocityOnDisable) rigidbody.velocity = rigidbody.angularVelocity = Vector3.zero;
 		}
 		if (collider != null) collider.enabled = enable;
 	}

@@ -180,13 +180,22 @@ public class MeHitObject : MecanimEventBase {
 	ActionController actionController;
 	DummyFinder _dummyFinder = null;
 	override public void OnSignal(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-		if (MecanimEventBase.s_bForceCallUpdate) return;
+		//f (MecanimEventBase.s_bForceCallUpdate) return;
 
 		if (actor == null)
 		{
-			actor = animator.transform.parent.GetComponent<Actor>();
-			actionController = actor.actionController;
+			if (animator.transform.parent != null)
+				actor = animator.transform.parent.GetComponent<Actor>();
+			if (actor == null)
+				actor = animator.transform.GetComponent<Actor>();
+			if (actor == null)
+			{
+				Debug.LogError("HitObject not created. Not Found Actor!");
+				return;
+			}
 		}
+
+		actionController = actor.actionController;
 		int hitSignalIndexInAction = 0;
 		if (actionController != null)
 			hitSignalIndexInAction = actionController.OnHitObjectSignal(stateInfo.fullPathHash);

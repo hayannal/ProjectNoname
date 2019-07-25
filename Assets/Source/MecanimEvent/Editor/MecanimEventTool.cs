@@ -474,16 +474,18 @@ public class MecanimEventTool : EditorWindow
 
 	float _playSliderValue = 0.0f;
 	bool _forcePlayAnimator = false;
+	float _speedMultiplier = 1.0f;
 	void OnGUI_DrawPlayPanel()
 	{
 		AnimatorStateInfo asi = m_ToolAnimator.GetCurrentAnimatorStateInfo(_selectedLayer);
 		AnimatorClipInfo[] acis = m_ToolAnimator.GetCurrentAnimatorClipInfo(_selectedLayer);
 		float clipLength = 0.0f;
 		if (acis.Length > 0 && acis[0].clip != null) clipLength = acis[0].clip.length;
+		float clipLengthWithSpeed = clipLength / asi.speed;
 		GUILayout.BeginHorizontal();
 		{
 			GUI.color = Color.green;
-			GUILayout.Space(110);
+			GUILayout.Space(50);
 			bool needResetNormalizedTime = false;
 			if (GUILayout.Button (m_bPlay?"Pause":"Play", EditorStyles.toolbarButton, GUILayout.Width(80)))
 			{
@@ -502,26 +504,25 @@ public class MecanimEventTool : EditorWindow
 			}
 			GUI.color = Color.white;
 			GUILayout.Space(4);
-			if (GUILayout.Button("<", EditorStyles.toolbarButton))
-			{
-			}
-			GUILayout.Space(4);
-			if (GUILayout.Button(">", EditorStyles.toolbarButton))
-			{
-			}
+			float defaultLabelWidth = EditorGUIUtility.labelWidth;
+			EditorGUIUtility.labelWidth = 100.0f;
+			_speedMultiplier = EditorGUILayout.FloatField("Speed Multiplier", _speedMultiplier, GUILayout.Width(140));
+			EditorGUIUtility.labelWidth = defaultLabelWidth;
 			GUI.color = m_DefaultToolColor;
 
 			float asiCurrentTime = asi.normalizedTime * clipLength;
-			GUI.backgroundColor = Color.yellow;
 			GUILayout.FlexibleSpace();
-			string szPlayTime = string.Format("{0:0.00}s / {1:0.00}s ({2:000.0}%)", asiCurrentTime, clipLength, _playSliderValue * 100.0f);
+			GUI.backgroundColor = Color.white;
+			GUILayout.Label(string.Format("Tool Speed : {0:0.00}", asi.speed), EditorStyles.textField, GUILayout.Width(110));
+			GUI.backgroundColor = Color.yellow;
+			string szPlayTime = string.Format("{0:0.00}s / {1:0.00}s ({2:000.0}%)", asiCurrentTime / asi.speed / _speedMultiplier, clipLength / asi.speed / _speedMultiplier, _playSliderValue * 100.0f);
 			GUILayout.Label (szPlayTime, EditorStyles.textField, GUILayout.Width(140));
 			GUI.backgroundColor = m_DefaultToolBackgroundColor;
 
 			if (m_bPlay)
 			{
 				if (needResetNormalizedTime) asiCurrentTime = 0.0f;
-				asiCurrentTime += Time.deltaTime;
+				asiCurrentTime += Time.deltaTime * asi.speed * _speedMultiplier;
 				if (asiCurrentTime >= clipLength)
 				{
 					if (m_bLoop)

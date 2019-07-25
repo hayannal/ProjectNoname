@@ -122,6 +122,12 @@ public class MeHitObject : MecanimEventBase {
 
 	override public void OnDrawGizmo(Transform t)
 	{
+		OnDrawGizmoArea(t);
+		OnDrawGizmoDirection(t);
+	}
+
+	void OnDrawGizmoArea(Transform t)
+	{
 		if (targetDetectType != HitObject.eTargetDetectType.Area)
 			return;
 
@@ -173,6 +179,54 @@ public class MeHitObject : MecanimEventBase {
 			prevC = C;
 			prevD = D;
 		}
+	}
+
+	void OnDrawGizmoDirection(Transform t)
+	{
+		if (targetDetectType == HitObject.eTargetDetectType.Area)
+			return;
+		if (movable == false)
+			return;
+
+		Transform spawnTransform = t;
+		if (createPositionType == HitObject.eCreatePositionType.Bone && !string.IsNullOrEmpty(boneName))
+		{
+			Animator animator = t.gameObject.GetComponentInChildren<Animator>();
+			if (_dummyFinder == null) _dummyFinder = animator.GetComponent<DummyFinder>();
+			if (_dummyFinder == null) _dummyFinder = animator.gameObject.AddComponent<DummyFinder>();
+
+			Transform attachTransform = _dummyFinder.FindTransform(boneName);
+			if (attachTransform != null)
+				spawnTransform = attachTransform;
+		}
+
+		Vector3 direction = t.TransformDirection(Vector3.forward) * 1.5f;
+		Vector3 offsetPosition = spawnTransform.TransformPoint(offset);
+
+		Color defaultColor = Gizmos.color;
+		Gizmos.color = new Color(1.0f, 0.1f, 0.0f, 0.9f);
+		Gizmos.DrawSphere(offsetPosition, 0.1f);
+		Gizmos.color = new Color(1.0f, 1.0f, 1.0f, 0.9f);
+		Gizmos.DrawRay(offsetPosition, direction);
+
+		float arrowHeadAngle = 20.0f;
+		float arrowHeadLength = 0.25f;
+		Vector3 right = Quaternion.LookRotation(direction) * Quaternion.Euler(0, 180 + arrowHeadAngle, 0) * new Vector3(0, 0, 1);
+		Vector3 left = Quaternion.LookRotation(direction) * Quaternion.Euler(0, 180 - arrowHeadAngle, 0) * new Vector3(0, 0, 1);
+		Vector3 down = Quaternion.LookRotation(direction) * Quaternion.Euler(180 + arrowHeadAngle, 0, 0) * new Vector3(0, 0, 1);
+		Vector3 up = Quaternion.LookRotation(direction) * Quaternion.Euler(180 - arrowHeadAngle, 0, 0) * new Vector3(0, 0, 1);
+		Gizmos.DrawRay(offsetPosition + direction, right * arrowHeadLength);
+		Gizmos.DrawRay(offsetPosition + direction, left * arrowHeadLength);
+		Gizmos.DrawRay(offsetPosition + direction, down * arrowHeadLength);
+		Gizmos.DrawRay(offsetPosition + direction, up * arrowHeadLength);
+
+		Gizmos.DrawLine(offsetPosition + direction + right * arrowHeadLength, offsetPosition + direction + left * arrowHeadLength);
+		Gizmos.DrawLine(offsetPosition + direction + down * arrowHeadLength, offsetPosition + direction + up * arrowHeadLength);
+		Gizmos.DrawLine(offsetPosition + direction + right * arrowHeadLength, offsetPosition + direction + up * arrowHeadLength);
+		Gizmos.DrawLine(offsetPosition + direction + up * arrowHeadLength, offsetPosition + direction + left * arrowHeadLength);
+		Gizmos.DrawLine(offsetPosition + direction + left * arrowHeadLength, offsetPosition + direction + down * arrowHeadLength);
+		Gizmos.DrawLine(offsetPosition + direction + down * arrowHeadLength, offsetPosition + direction + right * arrowHeadLength);
+		Gizmos.color = defaultColor;
 	}
 	#endif
 

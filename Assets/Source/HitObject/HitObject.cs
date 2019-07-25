@@ -55,7 +55,7 @@ public class HitObject : MonoBehaviour
 		switch(meHit.targetDetectType)
 		{
 		case HitObject.eTargetDetectType.Preset:
-			TargetingProcessor targetSystem = parentActor.GetComponent<TargetingProcessor>();
+			TargetingProcessor targetSystem = parentActor.targetingProcessor;
 			if (targetSystem != null)
 			{
 				for (int i = 0; i < targetSystem.GetTargetCount(); ++i)

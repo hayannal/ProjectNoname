@@ -14,7 +14,7 @@ public class Actor : MonoBehaviour {
 	public ActorStatus actorStatus { get; protected set; }
 	public AffectorProcessor affectorProcessor { get; private set; }
 	public Team team { get; private set; }
-	public TargetingProcessor targetingSystem { get; private set; }
+	public TargetingProcessor targetingProcessor { get; private set; }
 
 	protected Rigidbody _rigidbody { get; private set; }
 	protected Collider _collider { get; private set; }
@@ -52,8 +52,8 @@ public class Actor : MonoBehaviour {
 		team = GetComponent<Team>();
 		if (team == null) team = gameObject.AddComponent<Team>();
 
-		targetingSystem = GetComponent<TargetingProcessor>();
-		if (targetingSystem == null) targetingSystem = gameObject.AddComponent<TargetingProcessor>();
+		targetingProcessor = GetComponent<TargetingProcessor>();
+		if (targetingProcessor == null) targetingProcessor = gameObject.AddComponent<TargetingProcessor>();
 	}
 
 	protected virtual void InitializeActor()

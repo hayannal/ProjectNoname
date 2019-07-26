@@ -14,6 +14,12 @@ public class PlayerAI : MonoBehaviour
 	TargetingProcessor targetingProcessor { get; set; }
 	BaseCharacterController baseCharacterController { get; set; }
 
+	void OnDisable()
+	{
+		if (_cachedTargetingObjectTransform != null)
+			_cachedTargetingObjectTransform.gameObject.SetActive(false);
+	}
+
 	// Start is called before the first frame update
 	void Start()
     {

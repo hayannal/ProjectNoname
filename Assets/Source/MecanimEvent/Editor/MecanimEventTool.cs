@@ -465,7 +465,67 @@ public class MecanimEventTool : EditorWindow
 						}
 					}
 				}
-			}	
+			}
+			GUILayout.Space(4);
+			GUI.color = (_selectedEventBase != null) ? Color.white : Color.gray;
+			if (GUILayout.Button("Dupl", GUILayout.Width(100), GUILayout.Height(24)))
+			{
+				StateMachineBehaviour[] behaviours = m_TargetState.behaviours;
+				int findIndex = -1;
+				for (int i = 0; i < behaviours.Length; ++i)
+				{
+					if (behaviours[i] == _selectedEventBase)
+					{
+						findIndex = i;
+						break;
+					}
+				}
+				if (findIndex != -1)
+				{
+					MecanimEventBase newEventBase = MecanimEventCustomCreator.CreateMecanimEvent(m_TargetState, MecanimEventCustomCreator.GetMecanimEventType(_selectedEventBase));
+					EditorUtility.CopySerialized(_selectedEventBase, newEventBase);
+				}
+			}
+			if (GUILayout.Button("Up", GUILayout.Width(100), GUILayout.Height(24)))
+			{
+				StateMachineBehaviour[] behaviours = m_TargetState.behaviours;
+				int findIndex = -1;
+				for (int i = 0; i < behaviours.Length; ++i)
+				{
+					if (behaviours[i] == _selectedEventBase)
+					{
+						findIndex = i;
+						break;
+					}
+				}
+				if (findIndex != -1 && findIndex != 0)
+				{
+					StateMachineBehaviour t = behaviours[findIndex - 1];
+					behaviours[findIndex - 1] = _selectedEventBase;
+					behaviours[findIndex] = t;
+					m_TargetState.behaviours = behaviours;
+				}
+			}
+			if (GUILayout.Button("Down", GUILayout.Width(100), GUILayout.Height(24)))
+			{
+				StateMachineBehaviour[] behaviours = m_TargetState.behaviours;
+				int findIndex = -1;
+				for (int i = 0; i < behaviours.Length; ++i)
+				{
+					if (behaviours[i] == _selectedEventBase)
+					{
+						findIndex = i;
+						break;
+					}
+				}
+				if (findIndex != -1 && findIndex != behaviours.Length - 1)
+				{
+					StateMachineBehaviour t = behaviours[findIndex + 1];
+					behaviours[findIndex + 1] = _selectedEventBase;
+					behaviours[findIndex] = t;
+					m_TargetState.behaviours = behaviours;
+				}
+			}
 			GUILayout.FlexibleSpace();
 		}
 		GUILayout.EndHorizontal();

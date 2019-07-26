@@ -43,7 +43,7 @@ public class HitObjectMovement : MonoBehaviour {
 			break;
 		}
 
-		_rigidbody.velocity = GetStartDirection(meHit, parentActor.cachedTransform);
+		_rigidbody.velocity = GetStartDirection(meHit, parentActor.cachedTransform) * _signal.speed;
 		cachedTransform.forward = _rigidbody.velocity.normalized;
 	}
 
@@ -63,9 +63,11 @@ public class HitObjectMovement : MonoBehaviour {
 		}
 		if (applyRange)
 		{
-			if (meHit.startDirectionOffsetRange.x != 0.0f) result.x += Random.Range(-meHit.startDirectionOffsetRange.x, meHit.startDirectionOffsetRange.x);
-			if (meHit.startDirectionOffsetRange.y != 0.0f) result.y += Random.Range(-meHit.startDirectionOffsetRange.y, meHit.startDirectionOffsetRange.y);
-			if (meHit.startDirectionOffsetRange.z != 0.0f) result.z += Random.Range(-meHit.startDirectionOffsetRange.z, meHit.startDirectionOffsetRange.z);
+			bool needNormalize = false;
+			if (meHit.startDirectionOffsetRange.x != 0.0f) { result.x += Random.Range(-meHit.startDirectionOffsetRange.x, meHit.startDirectionOffsetRange.x); needNormalize = true; }
+			if (meHit.startDirectionOffsetRange.y != 0.0f) { result.y += Random.Range(-meHit.startDirectionOffsetRange.y, meHit.startDirectionOffsetRange.y); needNormalize = true; }
+			if (meHit.startDirectionOffsetRange.z != 0.0f) { result.z += Random.Range(-meHit.startDirectionOffsetRange.z, meHit.startDirectionOffsetRange.z); needNormalize = true; }
+			if (needNormalize) result = result.normalized;
 		}
 		return parentActorTransform.TransformDirection(result);
 	}

@@ -29,6 +29,8 @@ public class MeHitObject : MecanimEventBase {
 
 	public HitObjectMovement.eMovementType movementType;
 	public HitObjectMovement.eStartDirectionType startDirectionType;
+	public Vector3 startDirection = Vector3.forward;
+	public Vector3 startDirectionOffsetRange;
 	public float speed;
 	public float curve;
 	public float curveAdd;
@@ -81,14 +83,19 @@ public class MeHitObject : MecanimEventBase {
 		if (movable)
 		{
 			movementType = (HitObjectMovement.eMovementType)EditorGUILayout.EnumPopup("Movement Type :", movementType);
-			startDirectionType = (HitObjectMovement.eStartDirectionType)EditorGUILayout.EnumPopup("Start Direction Type :", startDirectionType);
-			speed = EditorGUILayout.FloatField("Speed :", speed);
 			if (movementType == HitObjectMovement.eMovementType.FollowTarget)
 			{
 				curve = EditorGUILayout.FloatField("Curve Power :", curve);
 				curveAdd = EditorGUILayout.FloatField("Curve Power Add :", curveAdd);
 				curveLockY = EditorGUILayout.Toggle("Curve Lock Y :", curveLockY);
 			}
+			startDirectionType = (HitObjectMovement.eStartDirectionType)EditorGUILayout.EnumPopup("Start Direction Type :", startDirectionType);
+			if (startDirectionType == HitObjectMovement.eStartDirectionType.Direction)
+			{
+				startDirection = EditorGUILayout.Vector3Field("Direction :", startDirection);
+			}
+			startDirectionOffsetRange = EditorGUILayout.Vector3Field("Offset Range :", startDirectionOffsetRange);
+			speed = EditorGUILayout.FloatField("Speed :", speed);
 			EditorGUILayout.LabelField("-----------------------------------------------------------------");
 		}
 
@@ -205,7 +212,7 @@ public class MeHitObject : MecanimEventBase {
 				spawnTransform = attachTransform;
 		}
 
-		Vector3 direction = t.TransformDirection(Vector3.forward) * 1.5f;
+		Vector3 direction = HitObjectMovement.GetStartDirection(this, t) * 1.5f;
 		Vector3 offsetPosition = HitObject.GetSpawnPosition(spawnTransform, this, t);
 
 		Color defaultColor = Gizmos.color;

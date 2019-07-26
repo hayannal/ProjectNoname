@@ -44,7 +44,7 @@ public class HitObject : MonoBehaviour
 			{
 				HitObjectMovement hitObjectMovementComponent = hitObject.GetComponent<HitObjectMovement>();
 				if (hitObjectMovementComponent == null) hitObjectMovementComponent = hitObject.AddComponent<HitObjectMovement>();
-				hitObjectMovementComponent.InitializeSignal(meHit, parentActor.cachedTransform, hitObjectComponent._rigidbody);
+				hitObjectMovementComponent.InitializeSignal(meHit, parentActor, hitObjectComponent._rigidbody);
 			}
 		}
 

@@ -65,7 +65,8 @@ AnimatorState:
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
-  m_StateMachineBehaviours: []
+  m_StateMachineBehaviours:
+  - {fileID: 1622190826957887976}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -134,3 +135,47 @@ AnimatorController:
     m_IKPass: 0
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
+--- !u!114 &1622190826957887976
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.19829424
+  EndTime: 1
+  hitObjectPrefab: {fileID: 739923753698809896, guid: 89636a1cd26f2e34b9c7af3dd11d9285,
+    type: 3}
+  lifeTime: 5
+  movable: 1
+  targetDetectType: 2
+  teamCheckType: 0
+  createPositionType: 1
+  boneName: jnt_flowerRight
+  offset: {x: 0, y: 0, z: 0}
+  useBoneRotation: 0
+  areaRotationY: 0
+  areaDistanceMin: 0
+  areaDistanceMax: 0
+  areaHeightMin: 0
+  areaHeightMax: 0
+  areaAngle: 0
+  movementType: 0
+  startDirectionType: 0
+  speed: 2
+  curve: 0
+  curveAdd: 0
+  curveLockY: 0
+  affectorValueIdList: []
+  showHitEffect: 0
+  hitEffectObject: {fileID: 0}
+  hitEffectLookAtNormal: 0
+  useWeaponHitEffect: 0
+  weaponDummyName: 
+  showHitBlink: 0
+  showHitRimBlink: 0

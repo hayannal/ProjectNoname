@@ -201,6 +201,9 @@ public class HitObject : MonoBehaviour
 	StatusStructForHitObject _statusStructForHitObject;
 	Rigidbody _rigidbody { get; set; }
 	Collider _collider { get; set; }
+	List<TrailRenderer> _listTrailRendererAfterCollision;
+	List<GameObject> _listDisableObjectAfterCollision;
+	bool _disableSelfObjectAfterCollision;
 
 
 	public void InitializeHitObject(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction)
@@ -213,6 +216,7 @@ public class HitObject : MonoBehaviour
 		if (_rigidbody == null) _rigidbody = GetComponent<Rigidbody>();
 		if (_collider == null) _collider = GetComponent<Collider>();
 		EnableRigidbodyAndCollider(true);
+		InitializeDisableObject();
 
 		if (_signal.targetDetectType != eTargetDetectType.Collider)
 		{
@@ -220,6 +224,45 @@ public class HitObject : MonoBehaviour
 		}
 
 		BattleInstanceManager.instance.OnInitializeHitObject(this, _collider);
+	}
+
+	void InitializeDisableObject()
+	{
+		if (_listDisableObjectAfterCollision == null)
+		{
+			_listDisableObjectAfterCollision = new List<GameObject>();
+			_listTrailRendererAfterCollision = new List<TrailRenderer>();
+
+			RFX4_PhysicsMotion physicsMotion = GetComponentInChildren<RFX4_PhysicsMotion>();
+			if (physicsMotion != null)
+			{
+				for (int i = 0; i < physicsMotion.DeactivateObjectsAfterCollision.Length; ++i)
+					_listDisableObjectAfterCollision.Add(physicsMotion.DeactivateObjectsAfterCollision[i]);
+			}
+
+			ProjectileMoveScript projectileMoveScript = GetComponent<ProjectileMoveScript>();
+			if (projectileMoveScript != null)
+			{
+				for (int i = 0; i < projectileMoveScript.trails.Count; ++i)
+				{
+					TrailRenderer trailRenderer = projectileMoveScript.trails[i].GetComponent<TrailRenderer>();
+					if (trailRenderer != null)
+						_listTrailRendererAfterCollision.Add(trailRenderer);
+					else
+						_listDisableObjectAfterCollision.Add(projectileMoveScript.trails[i]);
+				}
+				// self?
+				_disableSelfObjectAfterCollision = true;
+			}
+		}
+		else
+		{
+			// Reactive by pool
+			for (int i = 0; i < _listDisableObjectAfterCollision.Count; ++i)
+				_listDisableObjectAfterCollision[i].SetActive(true);
+			for (int i = 0; i < _listTrailRendererAfterCollision.Count; ++i)
+				_listTrailRendererAfterCollision[i].Clear();
+		}
 	}
 
 	void Update()
@@ -269,7 +312,15 @@ public class HitObject : MonoBehaviour
 		}
 
 		if (collided)
+		{
 			EnableRigidbodyAndCollider(false);
+
+			for (int i = 0; i < _listDisableObjectAfterCollision.Count; ++i)
+				_listDisableObjectAfterCollision[i].SetActive(false);
+
+			if (_disableSelfObjectAfterCollision)
+				FinalizeHitObject();
+		}
 	}
 
 	void EnableRigidbodyAndCollider(bool enable)

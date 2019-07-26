@@ -44,9 +44,9 @@ public class StageManager : MonoBehaviour
 		}
 	}
 
-	public float currentMonstrStandardHp { get; private set; }
-	public float currentMonstrStandardAtk { get; private set; }
-	public float currentMonstrStandardDef { get; private set; }
+	public float currentMonstrStandardHp { get; set; }
+	public float currentMonstrStandardAtk { get; set; }
+	public float currentMonstrStandardDef { get; set; }
 	Dictionary<int, List<string>> _dicStageInfoByGrouping = new Dictionary<int, List<string>>();
 	Dictionary<int, int> _dicCurrentIndexByGrouping = new Dictionary<int, int>();
 	string CalcStageInfo()

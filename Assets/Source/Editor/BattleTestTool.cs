@@ -3,6 +3,7 @@ using UnityEditor;
 using UnityEditor.Animations;
 using System.Collections;
 using System.Collections.Generic;
+using ECM.Controllers;
 
 public class BattleTestTool : EditorWindow
 {
@@ -85,6 +86,8 @@ public class BattleTestTool : EditorWindow
 	GameObject monsterPrefab;
 	GameObject monsterInstance;
 	GameObject prevMonsterInstance;
+	bool lookAtMe = false;
+	BaseCharacterController monsterBaseCharacterController;
 	Animator monsterAnimator;
 	AnimatorStateMachine targetStateMachine;
 	AnimatorState loopTargetState;
@@ -95,6 +98,7 @@ public class BattleTestTool : EditorWindow
 	PlayerAI _monsterAI = null;
 	void OnGUI_Monster()
 	{
+		bool needRepaint = false;
 		GUILayout.BeginVertical("box");
 		{
 			Color defaultColor = GUI.color;
@@ -120,6 +124,7 @@ public class BattleTestTool : EditorWindow
 			{
 				if (!monsterInstance.activeSelf)
 				{
+					monsterBaseCharacterController = null;
 					loopTargetState = null;
 					targetStateMachine = null;
 					monsterAnimator = null;
@@ -137,6 +142,9 @@ public class BattleTestTool : EditorWindow
 					{
 						if (monsterInstance != null)
 						{
+							// controller
+							monsterBaseCharacterController = monsterInstance.GetComponent<BaseCharacterController>();
+
 							// Load State Machine
 							monsterAnimator = monsterInstance.GetComponentInChildren<Animator>();
 							AnimatorController ac = monsterAnimator.runtimeAnimatorController as AnimatorController;
@@ -159,6 +167,16 @@ public class BattleTestTool : EditorWindow
 
 					if (useMonsterAI == false)
 					{
+						if (monsterInstance != null)
+						{
+							lookAtMe = EditorGUILayout.Toggle("Look At Me:", lookAtMe);
+							if (lookAtMe && _playerAI != null)
+							{
+								monsterBaseCharacterController.RotateTowards(_playerAI.transform.position - monsterInstance.transform.position);
+								needRepaint = true;
+							}
+						}
+
 						if (targetStateMachine != null)
 						{
 							loopMonsterState = EditorGUILayout.Toggle("Toggle Loop:", loopMonsterState);
@@ -221,7 +239,9 @@ public class BattleTestTool : EditorWindow
 				_nextLoopActionTime = Time.time + loopStateDelay;
 				monsterAnimator.CrossFade(loopTargetState.name, 0.05f);
 			}
-			Repaint();
+			needRepaint = true;
 		}
+		if (needRepaint)
+			Repaint();
 	}
 }

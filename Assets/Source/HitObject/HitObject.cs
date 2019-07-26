@@ -26,14 +26,14 @@ public class HitObject : MonoBehaviour
 		GameObject hitObject = null;
 		if (meHit.hitObjectPrefab != null)
 		{
-			hitObject = BattleInstanceManager.instance.GetCachedObject(meHit.hitObjectPrefab, parentTransform.TransformPoint(meHit.offset), Quaternion.identity);
+			hitObject = BattleInstanceManager.instance.GetCachedObject(meHit.hitObjectPrefab, GetSpawnPosition(parentTransform, meHit, parentActor.cachedTransform), parentActor.cachedTransform.rotation);
 			//hitObject = (GameObject)Instantiate(meHit.hitObjectPrefab, , );
 		}
 		else if (meHit.lifeTime > 0.0f)
 		{
 			hitObject = new GameObject();
 			hitObject.transform.position = parentTransform.TransformPoint(meHit.offset);
-			hitObject.transform.rotation = parentTransform.rotation;
+			hitObject.transform.rotation = parentActor.cachedTransform.rotation;
 		}
 		if (hitObject != null)
 		{
@@ -100,6 +100,23 @@ public class HitObject : MonoBehaviour
 		case HitObject.eTargetDetectType.Collider:
 			break;
 		}
+	}
+
+	public static Vector3 GetSpawnPosition(Transform parentTransform, MeHitObject meHit, Transform parentActorTransform)
+	{
+		if (meHit.offset == Vector3.zero)
+			return parentTransform.position;
+
+		if (meHit.createPositionType != eCreatePositionType.Bone)
+			return parentTransform.TransformPoint(meHit.offset);    // meHit.offset * parentTransform.localScale
+
+		if (meHit.useBoneRotation)
+			return parentTransform.TransformPoint(meHit.offset);    // meHit.offset * parentTransform.localScale
+
+		Vector3 parentActorPosition = parentActorTransform.position;
+		Vector3 offsetPosition = parentActorTransform.TransformPoint(meHit.offset);
+		offsetPosition -= parentActorPosition;
+		return parentTransform.position + offsetPosition;
 	}
 
 	static void CopyEtcStatusForHitObject(ref StatusStructForHitObject statusStructForHitObject, Actor actor, MeHitObject meHit, int hitSignalIndexInAction)

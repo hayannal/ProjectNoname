@@ -19,6 +19,7 @@ public class MeHitObject : MecanimEventBase {
 	public HitObject.eCreatePositionType createPositionType;
 	public string boneName;
 	public Vector3 offset;
+	public bool useBoneRotation;
 	public float areaRotationY;
 	public float areaDistanceMin;
 	public float areaDistanceMax;
@@ -58,7 +59,11 @@ public class MeHitObject : MecanimEventBase {
 		EditorGUILayout.LabelField("-----------------------------------------------------------------");
 
 		createPositionType = (HitObject.eCreatePositionType)EditorGUILayout.EnumPopup("Create Position :", createPositionType);
-		if (createPositionType == HitObject.eCreatePositionType.Bone) boneName = EditorGUILayout.TextField("Bone Name :", boneName);
+		if (createPositionType == HitObject.eCreatePositionType.Bone)
+		{
+			boneName = EditorGUILayout.TextField("Bone Name :", boneName);
+			useBoneRotation = EditorGUILayout.Toggle("Apply Bone Rotation :", useBoneRotation);
+		}
 		offset = EditorGUILayout.Vector3Field("Offset :", offset);
 
 		if (targetDetectType == HitObject.eTargetDetectType.Area)
@@ -201,7 +206,7 @@ public class MeHitObject : MecanimEventBase {
 		}
 
 		Vector3 direction = t.TransformDirection(Vector3.forward) * 1.5f;
-		Vector3 offsetPosition = spawnTransform.TransformPoint(offset);
+		Vector3 offsetPosition = HitObject.GetSpawnPosition(spawnTransform, this, t);
 
 		Color defaultColor = Gizmos.color;
 		Gizmos.color = new Color(1.0f, 0.1f, 0.0f, 0.9f);

@@ -14,27 +14,24 @@ public class TargetingProcessor : MonoBehaviour {
 		return _targetList.Count;
 	}
 
-	public Collider GetTarget()
-	{
-		if (_targetList.Count > 1)
-		{
-		}
-		else if (_targetList.Count == 1)
-			return _targetList[0];
-		return null;
-	}
-
-	public Vector3 GetTargetPosition()
-	{
-		Collider collider = GetTarget();
-		if (collider != null)
-			return collider.transform.position;
-		return Vector3.zero;
-	}
-
 	public List<Collider> GetTargetList()
 	{
 		return _targetList;
+	}
+
+	public Collider GetTarget(int index = 0)
+	{
+		if (index < _targetList.Count)
+			return _targetList[index];	
+		return null;
+	}
+
+	public Vector3 GetTargetPosition(int index = 0)
+	{
+		Collider collider = GetTarget(index);
+		if (collider == null)
+			return Vector3.zero;
+		return BattleInstanceManager.instance.GetTransformFromCollider(collider).position;
 	}
 
 	List<Collider> _targetList = new List<Collider>();
@@ -97,4 +94,47 @@ public class TargetingProcessor : MonoBehaviour {
 		}
 		return false;
 	}
+
+
+	#region Custom Position
+	public bool IsRegisteredCustomTargetPosition()
+	{
+		return _registeredCustomTargetPositionCount > 0;
+	}
+
+	int _registeredCustomTargetPositionCount = 0;
+	List<Vector3> _listCustomTargetPosition;
+	public Vector3 GetCustomTargetPosition(int index)
+	{
+		if (_listCustomTargetPosition == null)
+			return Vector3.zero;
+
+		if (!IsRegisteredCustomTargetPosition())
+			return Vector3.zero;
+
+		_registeredCustomTargetPositionCount -= 1;
+		if (index < _listCustomTargetPosition.Count)
+			return _listCustomTargetPosition[index];
+		return Vector3.zero;
+	}
+
+	public void SetCustomTargetPosition(Vector3 position)
+	{
+		if (_listCustomTargetPosition == null)
+			_listCustomTargetPosition = new List<Vector3>();
+		_listCustomTargetPosition.Clear();
+		_listCustomTargetPosition.Add(position);
+		_registeredCustomTargetPositionCount = 1;
+	}
+
+	public void SetCustomTargetPosition(List<Collider> listTarget)
+	{
+		if (_listCustomTargetPosition == null)
+			_listCustomTargetPosition = new List<Vector3>();
+		_listCustomTargetPosition.Clear();
+		for (int i = 0; i < listTarget.Count; ++i)
+			_listCustomTargetPosition.Add(BattleInstanceManager.instance.GetTransformFromCollider(listTarget[i]).position);
+		_registeredCustomTargetPositionCount = listTarget.Count;
+	}
+	#endregion
 }

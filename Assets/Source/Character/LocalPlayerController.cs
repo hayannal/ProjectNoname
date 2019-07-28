@@ -19,6 +19,7 @@ public sealed class LocalPlayerController : BaseCharacterController
 
 	#region FIELDS
 
+	Actor _actor;
 	ActionController _actionController;
 
 	#endregion
@@ -30,16 +31,27 @@ public sealed class LocalPlayerController : BaseCharacterController
 	/// </summary>
 	/// 
 
+	public Actor actor
+	{
+		get
+		{
+			if (_actor != null)
+				return _actor;
+			_actor = GetComponent<Actor>();
+			return _actor;
+		}
+	}
+
 	public ActionController actionController
 	{
 		get
 		{
 			if (_actionController != null)
 				return _actionController;
-			_actionController = GetComponentInChildren<ActionController>();
+			_actionController = GetComponent<ActionController>();
 			return _actionController;
 		}
-}
+	}
 
 	#endregion
 
@@ -85,7 +97,10 @@ public sealed class LocalPlayerController : BaseCharacterController
 			if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, groundMask.value))
 			{
 				if (actionController.PlayActionByControl(Control.eControllerType.ScreenController, Control.eInputType.Tab))
+				{
+					actor.targetingProcessor.SetCustomTargetPosition(hitInfo.point);
 					RotateTowards(hitInfo.point - transform.position);
+				}
 			}
 		}
 	}

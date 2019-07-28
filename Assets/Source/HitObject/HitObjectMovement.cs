@@ -6,15 +6,17 @@ public class HitObjectMovement : MonoBehaviour {
 
 	public enum eMovementType
 	{
-		UseVelocity,
+		Direct,
 		FollowTarget,
+		//Howitzer,
 	}
 
 	public enum eStartDirectionType
 	{
 		Forward,
 		Direction,
-		ToTarget,
+		ToFirstTarget,
+		ToMultiTarget,
 	}
 
 	MeHitObject _signal;
@@ -23,8 +25,7 @@ public class HitObjectMovement : MonoBehaviour {
 	Transform _followTargetTransform;
 	float _currentCurve;
 
-
-	public void InitializeSignal(MeHitObject meHit, Actor parentActor, Rigidbody rigidbody)
+	public void InitializeSignal(MeHitObject meHit, Actor parentActor, Rigidbody rigidbody, int hitSignalIndexInAction)
 	{
 		_signal = meHit;
 		_rigidbody = rigidbody;
@@ -43,11 +44,35 @@ public class HitObjectMovement : MonoBehaviour {
 			break;
 		}
 
-		_rigidbody.velocity = GetStartDirection(meHit, parentActor.cachedTransform) * _signal.speed;
+		Vector3 targetPosition = Vector3.zero;
+		if (_signal.startDirectionType == eStartDirectionType.ToFirstTarget || _signal.startDirectionType == eStartDirectionType.ToMultiTarget)
+		{
+			int targetIndex = -1;
+			if (_signal.startDirectionType == eStartDirectionType.ToFirstTarget)
+				targetIndex = 0;
+			else if (_signal.startDirectionType == eStartDirectionType.ToMultiTarget)
+				targetIndex = hitSignalIndexInAction;
+
+			TargetingProcessor targetingProcessor = parentActor.targetingProcessor;
+			if (targetingProcessor.IsRegisteredCustomTargetPosition())
+				targetPosition = targetingProcessor.GetCustomTargetPosition(targetIndex);
+			else if (targetingProcessor.GetTarget() != null)
+				targetPosition = targetingProcessor.GetTargetPosition(targetIndex);
+			else
+				targetPosition = GetFallbackTargetPosition(parentActor.cachedTransform);
+		}
+
+		_rigidbody.velocity = GetStartDirection(meHit, cachedTransform.position, parentActor.cachedTransform, hitSignalIndexInAction, targetPosition) * _signal.speed;
 		cachedTransform.forward = _rigidbody.velocity.normalized;
 	}
 
-	public static Vector3 GetStartDirection(MeHitObject meHit, Transform parentActorTransform, bool applyRange = true)
+	public static Vector3 GetFallbackTargetPosition(Transform t)
+	{
+		Vector3 fallbackPosition = new Vector3(0.0f, 0.0f, 4.0f);
+		return t.TransformPoint(fallbackPosition);
+	}
+
+	public static Vector3 GetStartDirection(MeHitObject meHit, Vector3 spawnPosition, Transform parentActorTransform, int hitSignalIndexInAction, Vector3 targetPosition, bool applyRange = true)
 	{
 		Vector3 result = Vector3.zero;
 		switch (meHit.startDirectionType)
@@ -58,7 +83,13 @@ public class HitObjectMovement : MonoBehaviour {
 			case eStartDirectionType.Direction:
 				result = meHit.startDirection;
 				break;
-			case eStartDirectionType.ToTarget:
+			case eStartDirectionType.ToFirstTarget:
+			case eStartDirectionType.ToMultiTarget:
+				Vector3 diffToTargetPosition = targetPosition - spawnPosition;
+				// 땅에 쏘는 직사를 구현할땐 이 라인을 패스하면 된다.
+				diffToTargetPosition.y = 0.0f;
+				// world to local
+				result = parentActorTransform.InverseTransformDirection(diffToTargetPosition.normalized);
 				break;
 		}
 		if (applyRange)

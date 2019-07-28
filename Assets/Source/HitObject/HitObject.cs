@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using ActorStatusDefine;
@@ -206,8 +206,13 @@ public class HitObject : MonoBehaviour
 	bool _disableSelfObjectAfterCollision;
 
 
+	static int HITOBJECT_LAYER;
 	public void InitializeHitObject(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction)
 	{
+		if (HITOBJECT_LAYER == 0) HITOBJECT_LAYER = LayerMask.NameToLayer("HitObject");
+		if (gameObject.layer == 0)
+			ObjectUtil.ChangeLayer(gameObject, HITOBJECT_LAYER);
+
 		_signal = meHit;
 		createTime = Time.time;
 		parentActor.actorStatus.CopyStatusBase(ref _statusBase);

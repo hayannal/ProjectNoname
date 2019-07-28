@@ -6,6 +6,7 @@ using ECM.Controllers;
 
 public class PlayerAI : MonoBehaviour
 {
+	public const float FindTargetRange = 50.0f;
 	const float TargetFindDelay = 0.1f;
 
 	Collider targetCollider;
@@ -47,7 +48,7 @@ public class PlayerAI : MonoBehaviour
 		if (_currentFindDelay <= 0.0f)
 		{
 			_currentFindDelay += TargetFindDelay;
-			if (targetingProcessor.FindNearestTarget(Team.eTeamCheckFilter.Enemy, 50.0f))
+			if (targetingProcessor.FindNearestTarget(Team.eTeamCheckFilter.Enemy, FindTargetRange))
 				targetCollider = targetingProcessor.GetTarget();
 			else
 				targetCollider = null;

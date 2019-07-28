@@ -88,6 +88,8 @@ public class BattleTestTool : EditorWindow
 	GameObject prevMonsterInstance;
 	bool lookAtMe = false;
 	BaseCharacterController monsterBaseCharacterController;
+	TargetingProcessor monsterTargetingProcessor;
+	GameObject monsterTargetObject;
 	Animator monsterAnimator;
 	AnimatorStateMachine targetStateMachine;
 	AnimatorState loopTargetState;
@@ -125,6 +127,7 @@ public class BattleTestTool : EditorWindow
 				if (!monsterInstance.activeSelf)
 				{
 					monsterBaseCharacterController = null;
+					monsterTargetingProcessor = null;
 					loopTargetState = null;
 					targetStateMachine = null;
 					monsterAnimator = null;
@@ -144,6 +147,7 @@ public class BattleTestTool : EditorWindow
 						{
 							// controller
 							monsterBaseCharacterController = monsterInstance.GetComponent<BaseCharacterController>();
+							monsterTargetingProcessor = monsterInstance.GetComponent<TargetingProcessor>();
 
 							// Load State Machine
 							monsterAnimator = monsterInstance.GetComponentInChildren<Animator>();
@@ -175,11 +179,22 @@ public class BattleTestTool : EditorWindow
 								monsterBaseCharacterController.RotateTowards(_playerAI.transform.position - monsterInstance.transform.position);
 								needRepaint = true;
 							}
+
+							GUI.color = Color.white;
+							if (GUILayout.Button("Find Target"))
+								monsterTargetingProcessor.FindNearestTarget(Team.eTeamCheckFilter.Enemy, PlayerAI.FindTargetRange);
+							GUI.color = defaultColor;
+
+							if (monsterTargetingProcessor.GetTarget() != null)
+							{
+								monsterTargetObject = monsterTargetingProcessor.GetTarget().gameObject;
+								monsterTargetObject = (GameObject)EditorGUILayout.ObjectField("Target :", monsterTargetObject, typeof(GameObject), true);
+							}
 						}
 
 						if (targetStateMachine != null)
 						{
-							loopMonsterState = EditorGUILayout.Toggle("Toggle Loop:", loopMonsterState);
+							loopMonsterState = EditorGUILayout.Toggle("Toggle Loop Attack:", loopMonsterState);
 							if (loopMonsterState)
 								loopStateDelay = EditorGUILayout.FloatField("Attack Delay :", loopStateDelay);
 

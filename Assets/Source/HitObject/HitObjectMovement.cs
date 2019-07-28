@@ -81,7 +81,7 @@ public class HitObjectMovement : MonoBehaviour {
 				result = Vector3.forward;
 				break;
 			case eStartDirectionType.Direction:
-				result = meHit.startDirection;
+				result = meHit.startDirection.normalized;
 				break;
 			case eStartDirectionType.ToFirstTarget:
 			case eStartDirectionType.ToMultiTarget:
@@ -94,11 +94,24 @@ public class HitObjectMovement : MonoBehaviour {
 		}
 		if (applyRange)
 		{
-			bool needNormalize = false;
-			if (meHit.startDirectionOffsetRange.x != 0.0f) { result.x += Random.Range(-meHit.startDirectionOffsetRange.x, meHit.startDirectionOffsetRange.x); needNormalize = true; }
-			if (meHit.startDirectionOffsetRange.y != 0.0f) { result.y += Random.Range(-meHit.startDirectionOffsetRange.y, meHit.startDirectionOffsetRange.y); needNormalize = true; }
-			if (meHit.startDirectionOffsetRange.z != 0.0f) { result.z += Random.Range(-meHit.startDirectionOffsetRange.z, meHit.startDirectionOffsetRange.z); needNormalize = true; }
-			if (needNormalize) result = result.normalized;
+			if (meHit.leftRightRandomAngle != 0.0f || meHit.upDownRandomAngle != 0.0f)
+			{
+				Vector3 tempUp = Vector3.up;
+				if (result == tempUp) tempUp = -Vector3.forward;
+				Vector3 right = Vector3.Cross(-tempUp, result);
+				Vector3 up = Vector3.Cross(right, result);
+
+				if (meHit.leftRightRandomAngle != 0.0f)
+				{
+					Quaternion rotation = Quaternion.AngleAxis(Random.Range(-meHit.leftRightRandomAngle, meHit.leftRightRandomAngle), up);
+					result = rotation * result;
+				}
+				if (meHit.upDownRandomAngle != 0.0f)
+				{
+					Quaternion rotation = Quaternion.AngleAxis(Random.Range(-meHit.upDownRandomAngle, meHit.upDownRandomAngle), right);
+					result = rotation * result;
+				}
+			}
 		}
 		return parentActorTransform.TransformDirection(result);
 	}

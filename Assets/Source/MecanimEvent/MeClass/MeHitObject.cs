@@ -30,7 +30,8 @@ public class MeHitObject : MecanimEventBase {
 	public HitObjectMovement.eMovementType movementType;
 	public HitObjectMovement.eStartDirectionType startDirectionType;
 	public Vector3 startDirection = Vector3.forward;
-	public Vector3 startDirectionOffsetRange;
+	public float leftRightRandomAngle;
+	public float upDownRandomAngle;
 	public float speed;
 	public float curve;
 	public float curveAdd;
@@ -94,7 +95,8 @@ public class MeHitObject : MecanimEventBase {
 			{
 				startDirection = EditorGUILayout.Vector3Field("Direction :", startDirection);
 			}
-			startDirectionOffsetRange = EditorGUILayout.Vector3Field("Offset Range :", startDirectionOffsetRange);
+			leftRightRandomAngle = EditorGUILayout.FloatField("LeftRight Random Angle :", leftRightRandomAngle);
+			upDownRandomAngle = EditorGUILayout.FloatField("UpDown Random Angle :", upDownRandomAngle);
 			speed = EditorGUILayout.FloatField("Speed :", speed);
 			EditorGUILayout.LabelField("-----------------------------------------------------------------");
 		}

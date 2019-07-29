@@ -47,6 +47,8 @@ public class MecanimEventTool : EditorWindow
 			AssetDatabase.DeleteAsset(m_szToolAnimatorControllerPathname);
 		if (m_PropertyWindow != null)
 			m_PropertyWindow.Close();
+
+		m_bPlay = false;
 	}
 
 	Color m_DefaultToolColor = new Color(0.8f, 0.8f, 0.8f);
@@ -374,6 +376,7 @@ public class MecanimEventTool : EditorWindow
 				_playSliderValue = 0.0f;
 				_forcePlayAnimator = true;
 				_selectedEventBase = null;
+				m_bPlay = false;
 			}
 
 			/*

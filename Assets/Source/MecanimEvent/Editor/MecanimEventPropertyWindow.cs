@@ -4,6 +4,7 @@ using System.Collections;
 
 public class MecanimEventPropertyWindow : EditorWindow
 {
+	MecanimEventTool m_MecanimEventTool;
 	MecanimEventBase m_MecanimEventBase;
 
 	GUIContent guiContentTitle = new GUIContent("Event Property");
@@ -13,13 +14,14 @@ public class MecanimEventPropertyWindow : EditorWindow
 		minSize = new Vector2(400, 400);
 	}
 
-	public void SetMecanimEvent(MecanimEventBase eventBase)
+	public void SetMecanimEvent(MecanimEventTool mecanimEventTool, MecanimEventBase eventBase)
 	{
 		if (m_MecanimEventBase != eventBase)
 		{
 			m_MecanimEventBase = eventBase;
 			Repaint();
 		}
+		m_MecanimEventTool = mecanimEventTool;
 	}
 
 	void OnGUI()
@@ -44,6 +46,23 @@ public class MecanimEventPropertyWindow : EditorWindow
 				EditorGUILayout.LabelField("Event Time :", m_MecanimEventBase.StartTime.ToString(), EditorStyles.textField);
 			}
 			GUI.color = defaultColor;
+			if (!m_MecanimEventBase.RangeSignal)
+			{
+				GUILayout.BeginHorizontal();
+				{
+					if (GUILayout.Button("Get Timeline"))
+					{
+						m_MecanimEventBase.StartTime = m_MecanimEventTool.timelineSliderValue;
+						m_MecanimEventTool.Repaint();
+					}
+					if (GUILayout.Button("Set Timeline"))
+					{
+						m_MecanimEventTool.timelineSliderValue = m_MecanimEventBase.StartTime;
+						m_MecanimEventTool.Repaint();
+					}
+				}
+			}
+			GUILayout.EndHorizontal();
 		}
 		GUILayout.EndVertical();
 

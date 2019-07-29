@@ -533,6 +533,9 @@ public class MecanimEventTool : EditorWindow
 	}
 
 	float _playSliderValue = 0.0f;
+	bool _needSetPlaySlider = false;
+	float _needSetPlaySliderValue = 0.0f;
+	public float timelineSliderValue { get { return _playSliderValue; } set { _needSetPlaySlider = true; _needSetPlaySliderValue = value; } }
 	bool _forcePlayAnimator = false;
 	float _speedMultiplier = 1.0f;
 	void OnGUI_DrawPlayPanel()
@@ -615,6 +618,12 @@ public class MecanimEventTool : EditorWindow
 			{
 				m_ToolAnimator.Play (m_TargetState.name, 0, _playSliderValue);
 				_forcePlayAnimator = false;
+			}
+			if (_needSetPlaySlider)
+			{
+				_playSliderValue = _needSetPlaySliderValue;
+				_needSetPlaySliderValue = 0.0f;
+				_needSetPlaySlider = false;
 			}
 			GUI.color = Color.gray;
 			GUILayout.Label("", EditorStyles.textArea, GUILayout.Width(_timelineItemTimeTextWitdh+4));
@@ -700,7 +709,7 @@ public class MecanimEventTool : EditorWindow
 			m_PropertyWindow = EditorWindow.GetWindow<MecanimEventPropertyWindow>();
 
 		if (m_PropertyWindow != null)
-			m_PropertyWindow.SetMecanimEvent(_selectedEventBase);
+			m_PropertyWindow.SetMecanimEvent(this, _selectedEventBase);
 
 		m_Gizmos.SetMecanimEvent(_selectedEventBase);
 	}

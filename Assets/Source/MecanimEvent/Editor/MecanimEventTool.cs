@@ -143,7 +143,7 @@ public class MecanimEventTool : EditorWindow
 			}
 			_selectedMeshData = (m_OrigMeshObject != null);
 
-			if (m_OrigMeshObject != oldGameObject)
+			if (m_OrigMeshObject != oldGameObject || m_ToolGameObject == null)
 			{
 				if (m_ToolGameObject != null)
 					GameObject.DestroyImmediate(m_ToolGameObject);

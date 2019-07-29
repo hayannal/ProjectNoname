@@ -126,9 +126,9 @@ public class MeHitObject : MecanimEventBase {
 		}
 		if (reorderableList != null)
 		{
-			//so.Update();
+			so.Update();
 			reorderableList.DoLayoutList();
-			//so.ApplyModifiedProperties();
+			so.ApplyModifiedProperties();
 		}
 
 		showHitEffect = EditorGUILayout.Toggle("Show HitEffect :", showHitEffect);

@@ -61,8 +61,8 @@ public class MecanimEventPropertyWindow : EditorWindow
 						m_MecanimEventTool.Repaint();
 					}
 				}
+				GUILayout.EndHorizontal();
 			}
-			GUILayout.EndHorizontal();
 		}
 		GUILayout.EndVertical();
 

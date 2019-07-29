@@ -18,6 +18,8 @@ public class BattleTestTool : EditorWindow
 	{
 		titleContent = guiContentTitle;
 		minSize = new Vector2(200, 400);
+
+		Reinitialize();
 	}
 
 	Color m_DefaultToolColor = new Color(0.8f, 0.8f, 0.8f);
@@ -81,6 +83,11 @@ public class BattleTestTool : EditorWindow
 			playStage = EditorGUILayout.IntField("Stage :", playStage);
 		}
 		GUILayout.EndVertical();
+	}
+
+	void Reinitialize()
+	{
+		_nextLoopActionTime = 0.0f;
 	}
 
 	GameObject monsterPrefab;
@@ -252,7 +259,8 @@ public class BattleTestTool : EditorWindow
 			if (Time.time > _nextLoopActionTime)
 			{
 				_nextLoopActionTime = Time.time + loopStateDelay;
-				monsterAnimator.CrossFade(loopTargetState.name, 0.05f);
+				if (monsterTargetingProcessor.GetComponent<Actor>().actorStatus.IsDie() == false)
+					monsterAnimator.CrossFade(loopTargetState.name, 0.05f);
 			}
 			needRepaint = true;
 		}

@@ -94,17 +94,28 @@ public class HitObjectMovement : MonoBehaviour {
 		}
 		if (applyRange)
 		{
-			if (meHit.leftRightRandomAngle != 0.0f || meHit.upDownRandomAngle != 0.0f)
+			if (meHit.leftRightRandomAngle != 0.0f || meHit.upDownRandomAngle != 0.0f || meHit.leftRandomAngle != 0.0f || meHit.rightRandomAngle != 0.0f)
 			{
 				Vector3 tempUp = Vector3.up;
 				if (result == tempUp) tempUp = -Vector3.forward;
 				Vector3 right = Vector3.Cross(-tempUp, result);
 				Vector3 up = Vector3.Cross(right, result);
 
-				if (meHit.leftRightRandomAngle != 0.0f)
+				if (meHit.bothRandomAngle)
 				{
-					Quaternion rotation = Quaternion.AngleAxis(Random.Range(-meHit.leftRightRandomAngle, meHit.leftRightRandomAngle), up);
-					result = rotation * result;
+					if (meHit.leftRightRandomAngle != 0.0f)
+					{
+						Quaternion rotation = Quaternion.AngleAxis(Random.Range(-meHit.leftRightRandomAngle, meHit.leftRightRandomAngle), up);
+						result = rotation * result;
+					}
+				}
+				else
+				{
+					if (meHit.leftRandomAngle != 0.0f || meHit.rightRandomAngle != 0.0f)
+					{
+						Quaternion rotation = Quaternion.AngleAxis(Random.Range(-meHit.leftRandomAngle, meHit.rightRandomAngle), up);
+						result = rotation * result;
+					}
 				}
 				if (meHit.upDownRandomAngle != 0.0f)
 				{

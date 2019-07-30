@@ -36,6 +36,7 @@ public class MecanimEventTool : EditorWindow
 		MecanimEventBase.s_bDisableMecanimEvent = true;
 		titleContent = guiContentTitle;
 		minSize = new Vector2(1000, 400);
+		_standbyLoadLastController = true;
 	}
 
 	void OnDisable()
@@ -103,6 +104,7 @@ public class MecanimEventTool : EditorWindow
 		}
 	}
 
+	bool _standbyLoadLastController = false;
 	void OnGUI_SelectController()
 	{
 		GUILayout.BeginVertical("box", GUILayout.Width(300));
@@ -112,16 +114,20 @@ public class MecanimEventTool : EditorWindow
 			GUI.color = m_DefaultToolColor;
 
 			AnimatorController oldController = m_AC;
+			LoadLastController();
 			m_AC = EditorGUILayout.ObjectField (m_AC, typeof(AnimatorController), false) as AnimatorController;
 			_selectedController = (m_AC != null);
 
 			if (m_AC != null && m_AC != oldController)
-				_loadLastMeshData = true;
+			{
+				SaveLastController();
+				_standbyLoadLastMeshData = true;
+			}
 		}
 		GUILayout.EndVertical();
 	}
 
-	bool _loadLastMeshData;
+	bool _standbyLoadLastMeshData;
 	void OnGUI_MeshData()
 	{
 		if (_selectedController)
@@ -191,9 +197,32 @@ public class MecanimEventTool : EditorWindow
 		}
 	}
 
+	void LoadLastController()
+	{
+		if (!_standbyLoadLastController) return;
+
+		string szKey = "_MecanimEventTool_LastController";
+		if (PlayerPrefs.HasKey(szKey))
+		{
+			string szValue = PlayerPrefs.GetString(szKey);
+			m_AC = (AnimatorController)AssetDatabase.LoadAssetAtPath(szValue, typeof(AnimatorController));
+		}
+		else
+		{
+			m_AC = null;
+		}
+		_standbyLoadLastController = false;
+	}
+
+	void SaveLastController()
+	{
+		string szValue = AssetDatabase.GetAssetPath(m_AC);
+		PlayerPrefs.SetString("_MecanimEventTool_LastController", szValue);
+	}
+
 	void LoadLastMeshData()
 	{
-		if (!_loadLastMeshData) return;
+		if (!_standbyLoadLastMeshData) return;
 
 		string szAC = AssetDatabase.GetAssetPath(m_AC);
 		string szKey = string.Format("_MecanimEventTool_ToolData_{0}", szAC);
@@ -206,7 +235,7 @@ public class MecanimEventTool : EditorWindow
 		{
 			m_OrigMeshObject = null;
 		}
-		_loadLastMeshData = false;
+		_standbyLoadLastMeshData = false;
 	}
 
 	void SaveLastMeshData()

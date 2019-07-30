@@ -2,20 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Plane : MonoBehaviour
+namespace MapObject
 {
-	public GameObject quadRootObject;
+	public class Plane : MonoBehaviour
+	{
+		public GameObject quadRootObject;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-		if (CustomFollowCamera.instance != null)
-			CustomFollowCamera.instance.OnLoadPlaneObject(quadRootObject);
-    }
+		// Start is called before the first frame update
+		void Start()
+		{
+			if (CustomFollowCamera.instance != null)
+				CustomFollowCamera.instance.OnLoadPlaneObject(quadRootObject);
+		}
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+		// Update is called once per frame
+		void Update()
+		{
+
+		}
+	}
 }

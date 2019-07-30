@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class MonsterActor : Actor
 {
+	public PathFinderController pathFinderController { get; private set; }
+	public MonsterAI monsterAI { get; private set; }
+
 	void Awake()
 	{
 		InitializeComponent();
@@ -31,6 +34,12 @@ public class MonsterActor : Actor
 		// for monster status?
 		actorStatus = GetComponent<ActorStatus>();
 		if (actorStatus == null) actorStatus = gameObject.AddComponent<ActorStatus>();
+
+		pathFinderController = GetComponent<PathFinderController>();
+		if (pathFinderController == null) pathFinderController = gameObject.AddComponent<PathFinderController>();
+
+		monsterAI = GetComponent<MonsterAI>();
+		if (monsterAI == null) monsterAI = gameObject.AddComponent<MonsterAI>();
 	}
 
 	protected override void InitializeActor()
@@ -41,6 +50,7 @@ public class MonsterActor : Actor
 		actorStatus.InitializeMonsterStatus(actorId);
 
 		BattleManager.instance.OnSpawnMonster(this);
+		BattleInstanceManager.instance.OnInitializePathFinderAgent(pathFinderController.agent);
 	}
 
 	#region ObjectPool
@@ -53,6 +63,7 @@ public class MonsterActor : Actor
 		actorStatus.InitializeMonsterStatus(actorId);
 
 		BattleManager.instance.OnSpawnMonster(this);
+		BattleInstanceManager.instance.OnInitializePathFinderAgent(pathFinderController.agent);
 	}
 	#endregion
 
@@ -66,6 +77,7 @@ public class MonsterActor : Actor
 		Invoke("DisableObject", 1.2f);
 
 		BattleManager.instance.OnDieMonster(this);
+		BattleInstanceManager.instance.OnFinalizePathFinderAgent(pathFinderController.agent);
 	}
 
 	void DisableObject()

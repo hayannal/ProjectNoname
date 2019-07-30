@@ -44,6 +44,7 @@ public class BattleTestTool : EditorWindow
 		OnGUI_Player();
 		OnGUI_Stage();
 		OnGUI_Monster();
+		OnGUI_Map();
 	}
 
 	PlayerAI _playerAI = null;
@@ -104,7 +105,7 @@ public class BattleTestTool : EditorWindow
 	float loopStateDelay = 1.0f;
 	float _nextLoopActionTime = 0.0f;
 	bool useMonsterAI = false;
-	PlayerAI _monsterAI = null;
+	MonsterAI _monsterAI = null;
 	void OnGUI_Monster()
 	{
 		bool needRepaint = false;
@@ -244,7 +245,7 @@ public class BattleTestTool : EditorWindow
 					{
 						useMonsterAI = EditorGUILayout.Toggle("Toggle Monster AI :", useMonsterAI);
 						if (_monsterAI == null)
-							_monsterAI = monsterInstance.GetComponent<PlayerAI>();
+							_monsterAI = monsterInstance.GetComponent<MonsterAI>();
 						if (_monsterAI != null)
 							_monsterAI.enabled = useMonsterAI;
 					}
@@ -266,5 +267,23 @@ public class BattleTestTool : EditorWindow
 		}
 		if (needRepaint)
 			Repaint();
+	}
+
+	void OnGUI_Map()
+	{
+		GUILayout.BeginVertical("box");
+		{
+			Color defaultColor = GUI.color;
+			GUI.color = Color.cyan;
+			string szDesc = string.Format("Map");
+			EditorGUILayout.LabelField(szDesc, EditorStyles.textField);
+			GUI.color = defaultColor;
+
+			if (GUILayout.Button("Force Rebake NavMesh"))
+			{
+				BattleInstanceManager.instance.BakeNavMesh();
+			}
+		}
+		GUILayout.EndVertical();
 	}
 }

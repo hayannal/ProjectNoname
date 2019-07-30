@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using K_PathFinder;
 
 public class BattleInstanceManager : MonoBehaviour
 {
@@ -14,6 +15,11 @@ public class BattleInstanceManager : MonoBehaviour
 		}
 	}
 	static BattleInstanceManager _instance = null;
+
+	#region Common
+	public Actor targetOfMonster { get; set; }
+	#endregion
+
 
 	#region EffectObject
 
@@ -206,7 +212,54 @@ public class BattleInstanceManager : MonoBehaviour
 	#endregion
 
 
+	#region PathFinder Agent
+	Dictionary<PathFinderAgent, int> _dicPathFinderAgentRefCount = new Dictionary<PathFinderAgent, int>();
+	public void OnInitializePathFinderAgent(PathFinderAgent agent)
+	{
+		if (_dicPathFinderAgentRefCount.ContainsKey(agent) == false)
+		{
+			_dicPathFinderAgentRefCount.Add(agent, 1);
 
+			// map center?
+			Vector3 mapCenterPosition = Vector3.zero;
+			PathFinder.QueueGraph(new Bounds(mapCenterPosition, Vector3.one * PlayerAI.FindTargetRange), agent.properties);
+			return;
+		}
+
+		_dicPathFinderAgentRefCount[agent] += 1;
+	}
+
+	public void OnFinalizePathFinderAgent(PathFinderAgent agent)
+	{
+		if (_dicPathFinderAgentRefCount.ContainsKey(agent) == false)
+			return;
+
+		_dicPathFinderAgentRefCount[agent] -= 1;
+		if (_dicPathFinderAgentRefCount[agent] <= 0)
+		{
+			_dicPathFinderAgentRefCount.Remove(agent);
+
+			// 마지막 몹 사라질때 지우니 웨이브 넘어갈땐 굳이 안지워도 되는데 지워진다. 웨이브는 거의 없으니 상관없으려나
+			Vector3 mapCenterPosition = Vector3.zero;
+			PathFinder.RemoveGraph(new Bounds(mapCenterPosition, Vector3.one * PlayerAI.FindTargetRange), agent.properties, false);
+		}
+	}
+
+	public void BakeNavMesh()
+	{
+		//queue navmesh
+		Dictionary<PathFinderAgent, int>.Enumerator e = _dicPathFinderAgentRefCount.GetEnumerator();
+		while (e.MoveNext())
+		{
+			if (e.Current.Value <= 0)
+				continue;
+
+			// map center?
+			Vector3 mapCenterPosition = Vector3.zero;
+			PathFinder.RemoveGraph(new Bounds(mapCenterPosition, Vector3.one * PlayerAI.FindTargetRange), e.Current.Key.properties, true);
+		}
+	}
+	#endregion
 
 
 

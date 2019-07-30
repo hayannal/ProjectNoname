@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 1559865429882821469}
   - component: {fileID: 1559865429882821468}
   - component: {fileID: 1559865429882821471}
-  - component: {fileID: 8698299870935111537}
+  - component: {fileID: 4285130500715263297}
+  - component: {fileID: 6467836422145228450}
   - component: {fileID: 7783738493359109748}
   m_Layer: 0
   m_Name: Rosehips
@@ -109,7 +110,7 @@ MonoBehaviour:
   _slideGravityMultiplier: 2
   _snapToGround: 1
   _snapStrength: 0.5
---- !u!114 &8698299870935111537
+--- !u!114 &4285130500715263297
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -118,10 +119,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1559865429882821465}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19ca60fcb1c82ff4e90a3d2ba9e485e9, type: 3}
+  m_Script: {fileID: 11500000, guid: e4dca2616f5a79a47945d3968c962936, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 5
+  _speed: 2
   _angularSpeed: 540
   _acceleration: 50
   _deceleration: 20
@@ -136,6 +137,35 @@ MonoBehaviour:
   _jumpToleranceTime: 0.15
   _maxMidAirJumps: 1
   _useRootMotion: 0
+--- !u!114 &6467836422145228450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1559865429882821465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2094593f742fc40438581bb633429322, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _properties: {fileID: 11400000, guid: 8fa1a3f36725e67408e715f795857fcc, type: 2}
+  PFlayerMask:
+    value: 1
+  PFmodifierMask:
+    value: 0
+  _velocityObstacle: 0
+  _maxAgentVelocity: 2
+  _avoidanceResponsibility: 0.5
+  _careDistance: 0.75
+  _maxNeighbors: 10
+  _maxNeighbourDistance: 10
+  _useDeadLockFailsafe: 0
+  _deadLockVelocityThreshold: 0.025
+  _deadLockFailsafeVelocity: 0.3
+  _deadLockFailsafeTime: 2
+  _preferOneSideEvasion: 0
+  _preferOneSideEvasionOffset: 2
 --- !u!114 &7783738493359109748
 MonoBehaviour:
   m_ObjectHideFlags: 0

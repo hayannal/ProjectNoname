@@ -108,8 +108,10 @@ namespace K_PathFinder.Settings {
 #endif
 
         public static PathFinderSettings LoadSettings() {
-            AssetDatabase.Refresh();
-            PathFinderSettings loadedSettings = Resources.Load<PathFinderSettings>(SETTINGS_ASSET_NAME);
+#if UNITY_EDITOR
+			AssetDatabase.Refresh();
+#endif
+			PathFinderSettings loadedSettings = Resources.Load<PathFinderSettings>(SETTINGS_ASSET_NAME);
 
 #if UNITY_EDITOR
             if (loadedSettings == null) {

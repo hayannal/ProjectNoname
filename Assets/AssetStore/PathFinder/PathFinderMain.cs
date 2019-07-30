@@ -354,10 +354,12 @@ namespace K_PathFinder {
             if (resourcesInit) return;
             resourcesInit = true;
 
-            //Debug.Log("InitResources");
-            AssetDatabase.Refresh();
+			//Debug.Log("InitResources");
+#if UNITY_EDITOR
+			AssetDatabase.Refresh();
+#endif
 
-            settings = PathFinderSettings.LoadSettings();
+			settings = PathFinderSettings.LoadSettings();
             rasterization2D = Resources.Load<ComputeShader>("ComputeShaderRasterization2D");
             rasterization3D = Resources.Load<ComputeShader>("ComputeShaderRasterization3D");
 

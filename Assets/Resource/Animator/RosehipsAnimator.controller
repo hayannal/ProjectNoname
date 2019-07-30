@@ -1,5 +1,109 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8294824679920733592
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.5020917
+  EndTime: 1
+  hitObjectPrefab: {fileID: 739923753698809896, guid: 89636a1cd26f2e34b9c7af3dd11d9285,
+    type: 3}
+  lifeTime: 5
+  movable: 1
+  targetDetectType: 2
+  teamCheckType: 0
+  createPositionType: 1
+  boneName: jnt_flowerRight
+  offset: {x: 0.05, y: -0.07, z: 0.7}
+  useBoneRotation: 0
+  areaRotationY: 0
+  areaDistanceMin: 0
+  areaDistanceMax: 0
+  areaHeightMin: 0
+  areaHeightMax: 0
+  areaAngle: 0
+  movementType: 0
+  startDirectionType: 1
+  startDirection: {x: 0.35, y: 0, z: 1}
+  bothRandomAngle: 1
+  leftRightRandomAngle: 0
+  leftRandomAngle: 0
+  rightRandomAngle: 0
+  upDownRandomAngle: 0
+  speed: 3.5
+  curve: 0
+  curveAdd: 0
+  curveLockY: 0
+  affectorValueIdList:
+  - NormalAttack01
+  showHitEffect: 1
+  hitEffectObject: {fileID: 1124335935880280, guid: b6d68723f7e26204d8f14d607141cc13,
+    type: 3}
+  hitEffectLookAtNormal: 0
+  useWeaponHitEffect: 0
+  weaponDummyName: 
+  showHitBlink: 0
+  showHitRimBlink: 0
+--- !u!114 &-8287723043571048235
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.35019296
+  EndTime: 1
+  hitObjectPrefab: {fileID: 739923753698809896, guid: 89636a1cd26f2e34b9c7af3dd11d9285,
+    type: 3}
+  lifeTime: 5
+  movable: 1
+  targetDetectType: 2
+  teamCheckType: 0
+  createPositionType: 1
+  boneName: jnt_flowerRight
+  offset: {x: 0.06, y: -0.07, z: 0.7}
+  useBoneRotation: 0
+  areaRotationY: 0
+  areaDistanceMin: 0
+  areaDistanceMax: 0
+  areaHeightMin: 0
+  areaHeightMax: 0
+  areaAngle: 0
+  movementType: 0
+  startDirectionType: 1
+  startDirection: {x: 0, y: 0, z: 1}
+  bothRandomAngle: 1
+  leftRightRandomAngle: 0
+  leftRandomAngle: 0
+  rightRandomAngle: 0
+  upDownRandomAngle: 0
+  speed: 4
+  curve: 0
+  curveAdd: 0
+  curveLockY: 0
+  affectorValueIdList:
+  - NormalAttack01
+  showHitEffect: 1
+  hitEffectObject: {fileID: 1124335935880280, guid: b6d68723f7e26204d8f14d607141cc13,
+    type: 3}
+  hitEffectLookAtNormal: 0
+  useWeaponHitEffect: 0
+  weaponDummyName: 
+  showHitBlink: 0
+  showHitRimBlink: 0
 --- !u!1102 &-7870688956108488034
 AnimatorState:
   serializedVersion: 5
@@ -54,6 +158,58 @@ AnimatorStateMachine:
   m_ExitPosition: {x: 460, y: 100, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
   m_DefaultState: {fileID: -7870688956108488034}
+--- !u!114 &-6372513070158109379
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.30377948
+  EndTime: 1
+  hitObjectPrefab: {fileID: 739923753698809896, guid: 89636a1cd26f2e34b9c7af3dd11d9285,
+    type: 3}
+  lifeTime: 5
+  movable: 1
+  targetDetectType: 2
+  teamCheckType: 0
+  createPositionType: 1
+  boneName: jnt_flowerLeft
+  offset: {x: 0.01, y: -0.07, z: 0.7}
+  useBoneRotation: 0
+  areaRotationY: 0
+  areaDistanceMin: 0
+  areaDistanceMax: 0
+  areaHeightMin: 0
+  areaHeightMax: 0
+  areaAngle: 0
+  movementType: 0
+  startDirectionType: 2
+  startDirection: {x: 0.25, y: 0, z: 1}
+  bothRandomAngle: 1
+  leftRightRandomAngle: 0
+  leftRandomAngle: 0
+  rightRandomAngle: 0
+  upDownRandomAngle: 0
+  speed: 4.5
+  curve: 0
+  curveAdd: 0
+  curveLockY: 0
+  affectorValueIdList:
+  - NormalAttack01
+  showHitEffect: 1
+  hitEffectObject: {fileID: 1124335935880280, guid: b6d68723f7e26204d8f14d607141cc13,
+    type: 3}
+  hitEffectLookAtNormal: 0
+  useWeaponHitEffect: 0
+  weaponDummyName: 
+  showHitBlink: 0
+  showHitRimBlink: 0
 --- !u!1102 &-4817427863211959166
 AnimatorState:
   serializedVersion: 5
@@ -66,12 +222,12 @@ AnimatorState:
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours:
-  - {fileID: -1743631765320864642}
-  - {fileID: -290814719184467815}
-  - {fileID: -14033602405117961}
-  - {fileID: -4537131836663312633}
-  - {fileID: -1035826646959802196}
-  - {fileID: 9191159786859394946}
+  - {fileID: -3833123110798071804}
+  - {fileID: -6372513070158109379}
+  - {fileID: -8287723043571048235}
+  - {fileID: 5619835014105847619}
+  - {fileID: -8294824679920733592}
+  - {fileID: -3842668368485887355}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -86,7 +242,7 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: AttackAniSpeedRatio
---- !u!114 &-4537131836663312633
+--- !u!114 &-3842668368485887355
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -98,7 +254,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.4514588
+  StartTime: 0.6033575
   EndTime: 1
   hitObjectPrefab: {fileID: 739923753698809896, guid: 89636a1cd26f2e34b9c7af3dd11d9285,
     type: 3}
@@ -118,14 +274,18 @@ MonoBehaviour:
   areaAngle: 0
   movementType: 0
   startDirectionType: 1
-  startDirection: {x: 0, y: 0, z: 1}
+  startDirection: {x: -0.35, y: 0, z: 1}
+  bothRandomAngle: 1
   leftRightRandomAngle: 0
+  leftRandomAngle: 0
+  rightRandomAngle: 0
   upDownRandomAngle: 0
-  speed: 4
+  speed: 3.5
   curve: 0
   curveAdd: 0
   curveLockY: 0
-  affectorValueIdList: []
+  affectorValueIdList:
+  - NormalAttack01
   showHitEffect: 1
   hitEffectObject: {fileID: 1124335935880280, guid: b6d68723f7e26204d8f14d607141cc13,
     type: 3}
@@ -134,7 +294,7 @@ MonoBehaviour:
   weaponDummyName: 
   showHitBlink: 0
   showHitRimBlink: 0
---- !u!114 &-1743631765320864642
+--- !u!114 &-3833123110798071804
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -167,13 +327,17 @@ MonoBehaviour:
   movementType: 0
   startDirectionType: 2
   startDirection: {x: 0, y: 0, z: 1}
+  bothRandomAngle: 1
   leftRightRandomAngle: 0
+  leftRandomAngle: 0
+  rightRandomAngle: 0
   upDownRandomAngle: 0
   speed: 4.5
   curve: 0
   curveAdd: 0
   curveLockY: 0
-  affectorValueIdList: []
+  affectorValueIdList:
+  - NormalAttack01
   showHitEffect: 1
   hitEffectObject: {fileID: 1124335935880280, guid: b6d68723f7e26204d8f14d607141cc13,
     type: 3}
@@ -208,150 +372,6 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!114 &-1035826646959802196
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTime: 0.5020917
-  EndTime: 1
-  hitObjectPrefab: {fileID: 739923753698809896, guid: 89636a1cd26f2e34b9c7af3dd11d9285,
-    type: 3}
-  lifeTime: 5
-  movable: 1
-  targetDetectType: 2
-  teamCheckType: 0
-  createPositionType: 1
-  boneName: jnt_flowerRight
-  offset: {x: 0.05, y: -0.07, z: 0.7}
-  useBoneRotation: 0
-  areaRotationY: 0
-  areaDistanceMin: 0
-  areaDistanceMax: 0
-  areaHeightMin: 0
-  areaHeightMax: 0
-  areaAngle: 0
-  movementType: 0
-  startDirectionType: 1
-  startDirection: {x: 0.35, y: 0, z: 1}
-  leftRightRandomAngle: 0
-  upDownRandomAngle: 0
-  speed: 3.5
-  curve: 0
-  curveAdd: 0
-  curveLockY: 0
-  affectorValueIdList: []
-  showHitEffect: 1
-  hitEffectObject: {fileID: 1124335935880280, guid: b6d68723f7e26204d8f14d607141cc13,
-    type: 3}
-  hitEffectLookAtNormal: 0
-  useWeaponHitEffect: 0
-  weaponDummyName: 
-  showHitBlink: 0
-  showHitRimBlink: 0
---- !u!114 &-290814719184467815
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTime: 0.30377948
-  EndTime: 1
-  hitObjectPrefab: {fileID: 739923753698809896, guid: 89636a1cd26f2e34b9c7af3dd11d9285,
-    type: 3}
-  lifeTime: 5
-  movable: 1
-  targetDetectType: 2
-  teamCheckType: 0
-  createPositionType: 1
-  boneName: jnt_flowerLeft
-  offset: {x: 0.01, y: -0.07, z: 0.7}
-  useBoneRotation: 0
-  areaRotationY: 0
-  areaDistanceMin: 0
-  areaDistanceMax: 0
-  areaHeightMin: 0
-  areaHeightMax: 0
-  areaAngle: 0
-  movementType: 0
-  startDirectionType: 2
-  startDirection: {x: 0.25, y: 0, z: 1}
-  leftRightRandomAngle: 0
-  upDownRandomAngle: 0
-  speed: 4.5
-  curve: 0
-  curveAdd: 0
-  curveLockY: 0
-  affectorValueIdList: []
-  showHitEffect: 1
-  hitEffectObject: {fileID: 1124335935880280, guid: b6d68723f7e26204d8f14d607141cc13,
-    type: 3}
-  hitEffectLookAtNormal: 0
-  useWeaponHitEffect: 0
-  weaponDummyName: 
-  showHitBlink: 0
-  showHitRimBlink: 0
---- !u!114 &-14033602405117961
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTime: 0.35019296
-  EndTime: 1
-  hitObjectPrefab: {fileID: 739923753698809896, guid: 89636a1cd26f2e34b9c7af3dd11d9285,
-    type: 3}
-  lifeTime: 5
-  movable: 1
-  targetDetectType: 2
-  teamCheckType: 0
-  createPositionType: 1
-  boneName: jnt_flowerRight
-  offset: {x: 0.06, y: -0.07, z: 0.7}
-  useBoneRotation: 0
-  areaRotationY: 0
-  areaDistanceMin: 0
-  areaDistanceMax: 0
-  areaHeightMin: 0
-  areaHeightMax: 0
-  areaAngle: 0
-  movementType: 0
-  startDirectionType: 1
-  startDirection: {x: 0, y: 0, z: 1}
-  leftRightRandomAngle: 0
-  upDownRandomAngle: 0
-  speed: 4
-  curve: 0
-  curveAdd: 0
-  curveLockY: 0
-  affectorValueIdList: []
-  showHitEffect: 1
-  hitEffectObject: {fileID: 1124335935880280, guid: b6d68723f7e26204d8f14d607141cc13,
-    type: 3}
-  hitEffectLookAtNormal: 0
-  useWeaponHitEffect: 0
-  weaponDummyName: 
-  showHitBlink: 0
-  showHitRimBlink: 0
 --- !u!91 &9100000
 AnimatorController:
   m_ObjectHideFlags: 0
@@ -380,7 +400,7 @@ AnimatorController:
     m_IKPass: 0
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
---- !u!114 &9191159786859394946
+--- !u!114 &5619835014105847619
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -392,7 +412,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.6033575
+  StartTime: 0.4514588
   EndTime: 1
   hitObjectPrefab: {fileID: 739923753698809896, guid: 89636a1cd26f2e34b9c7af3dd11d9285,
     type: 3}
@@ -412,14 +432,18 @@ MonoBehaviour:
   areaAngle: 0
   movementType: 0
   startDirectionType: 1
-  startDirection: {x: -0.35, y: 0, z: 1}
+  startDirection: {x: 0, y: 0, z: 1}
+  bothRandomAngle: 1
   leftRightRandomAngle: 0
+  leftRandomAngle: 0
+  rightRandomAngle: 0
   upDownRandomAngle: 0
-  speed: 3.5
+  speed: 4
   curve: 0
   curveAdd: 0
   curveLockY: 0
-  affectorValueIdList: []
+  affectorValueIdList:
+  - NormalAttack01
   showHitEffect: 1
   hitEffectObject: {fileID: 1124335935880280, guid: b6d68723f7e26204d8f14d607141cc13,
     type: 3}

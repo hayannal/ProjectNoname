@@ -41,6 +41,7 @@ namespace MapObject
 				navMeshSurface.agentTypeID = agentTypeID;
 				navMeshSurface.collectObjects = CollectObjects.Volume;
 				navMeshSurface.center = _bounds.center;
+				// 쿼드만큼 딱 볼륨 잡아서 구으면 경계면이 이쁘게 안나와서 1씩 더해서 뽑는다.
 				navMeshSurface.size = _bounds.size + Vector3.one;
 				_dicNavMeshSurface.Add(agentTypeID, navMeshSurface);
 			}

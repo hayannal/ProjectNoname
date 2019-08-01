@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using K_PathFinder;
 
 public class BattleInstanceManager : MonoBehaviour
 {
@@ -18,6 +17,7 @@ public class BattleInstanceManager : MonoBehaviour
 
 	#region Common
 	public Actor targetOfMonster { get; set; }
+	public MapObject.Plane currentPlane { get; set; }
 	#endregion
 
 
@@ -213,50 +213,45 @@ public class BattleInstanceManager : MonoBehaviour
 
 
 	#region PathFinder Agent
-	Dictionary<PathFinderAgent, int> _dicPathFinderAgentRefCount = new Dictionary<PathFinderAgent, int>();
-	public void OnInitializePathFinderAgent(PathFinderAgent agent)
+	Dictionary<int, int> _dicPathFinderAgentRefCount = new Dictionary<int, int>();
+	public void OnInitializePathFinderAgent(int agentTypeID)
 	{
-		if (_dicPathFinderAgentRefCount.ContainsKey(agent) == false)
+		if (_dicPathFinderAgentRefCount.ContainsKey(agentTypeID) == false)
 		{
-			_dicPathFinderAgentRefCount.Add(agent, 1);
-
-			// map center?
-			Vector3 mapCenterPosition = Vector3.zero;
-			PathFinder.QueueGraph(new Bounds(mapCenterPosition, Vector3.one * PlayerAI.FindTargetRange), agent.properties);
+			_dicPathFinderAgentRefCount.Add(agentTypeID, 1);
+			BattleInstanceManager.instance.currentPlane.BakeNavMesh(agentTypeID);
 			return;
 		}
 
-		_dicPathFinderAgentRefCount[agent] += 1;
+		_dicPathFinderAgentRefCount[agentTypeID] += 1;
 	}
 
-	public void OnFinalizePathFinderAgent(PathFinderAgent agent)
+	// 어차피 NavMeshSurface는 컴포넌트라서 맵 지워질때 날아갈텐데 바닥판 안바뀔걸 대비해서 지워두는게 나으려나
+	public void OnFinalizePathFinderAgent(int agentTypeID)
 	{
-		if (_dicPathFinderAgentRefCount.ContainsKey(agent) == false)
+		if (_dicPathFinderAgentRefCount.ContainsKey(agentTypeID) == false)
 			return;
 
-		_dicPathFinderAgentRefCount[agent] -= 1;
-		if (_dicPathFinderAgentRefCount[agent] <= 0)
+		_dicPathFinderAgentRefCount[agentTypeID] -= 1;
+		if (_dicPathFinderAgentRefCount[agentTypeID] <= 0)
 		{
-			_dicPathFinderAgentRefCount.Remove(agent);
+			_dicPathFinderAgentRefCount.Remove(agentTypeID);
 
 			// 마지막 몹 사라질때 지우니 웨이브 넘어갈땐 굳이 안지워도 되는데 지워진다. 웨이브는 거의 없으니 상관없으려나
-			Vector3 mapCenterPosition = Vector3.zero;
-			PathFinder.RemoveGraph(new Bounds(mapCenterPosition, Vector3.one * PlayerAI.FindTargetRange), agent.properties, false);
+			BattleInstanceManager.instance.currentPlane.ClearNavMesh(agentTypeID);
 		}
 	}
 
 	public void BakeNavMesh()
 	{
 		//queue navmesh
-		Dictionary<PathFinderAgent, int>.Enumerator e = _dicPathFinderAgentRefCount.GetEnumerator();
+		Dictionary<int, int>.Enumerator e = _dicPathFinderAgentRefCount.GetEnumerator();
 		while (e.MoveNext())
 		{
 			if (e.Current.Value <= 0)
 				continue;
 
-			// map center?
-			Vector3 mapCenterPosition = Vector3.zero;
-			PathFinder.RemoveGraph(new Bounds(mapCenterPosition, Vector3.one * PlayerAI.FindTargetRange), e.Current.Key.properties, true);
+			BattleInstanceManager.instance.currentPlane.BakeNavMesh(e.Current.Key);
 		}
 	}
 	#endregion

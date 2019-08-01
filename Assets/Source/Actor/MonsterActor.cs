@@ -50,7 +50,7 @@ public class MonsterActor : Actor
 		actorStatus.InitializeMonsterStatus(actorId);
 
 		BattleManager.instance.OnSpawnMonster(this);
-		BattleInstanceManager.instance.OnInitializePathFinderAgent(pathFinderController.agent);
+		BattleInstanceManager.instance.OnInitializePathFinderAgent(pathFinderController.agent.agentTypeID);
 	}
 
 	#region ObjectPool
@@ -63,7 +63,7 @@ public class MonsterActor : Actor
 		actorStatus.InitializeMonsterStatus(actorId);
 
 		BattleManager.instance.OnSpawnMonster(this);
-		BattleInstanceManager.instance.OnInitializePathFinderAgent(pathFinderController.agent);
+		BattleInstanceManager.instance.OnInitializePathFinderAgent(pathFinderController.agent.agentTypeID);
 	}
 	#endregion
 
@@ -77,7 +77,7 @@ public class MonsterActor : Actor
 		Invoke("DisableObject", 1.2f);
 
 		BattleManager.instance.OnDieMonster(this);
-		BattleInstanceManager.instance.OnFinalizePathFinderAgent(pathFinderController.agent);
+		BattleInstanceManager.instance.OnFinalizePathFinderAgent(pathFinderController.agent.agentTypeID);
 	}
 
 	void DisableObject()

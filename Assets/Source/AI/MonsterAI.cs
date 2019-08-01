@@ -88,14 +88,13 @@ public class MonsterAI : MonoBehaviour
 
 		if (_lastGoalPosition != targetActor.cachedTransform.position)
 		{
-			pathFinderController.agent.SetGoalMoveHere(targetActor.cachedTransform.position, collectPathContent: true);//order path to current target and also collect path content
+			pathFinderController.agent.destination = targetActor.cachedTransform.position;
 			_lastGoalPosition = targetActor.cachedTransform.position;
 		}
 
 		if (sqrDiff <= sqrRadius)
 		{
-			//pathFinderController.agent.RemoveNextNodeIfCloserSqrVector2(targetRadius * 1.2f);
-			pathFinderController.agent.RemoveNextNode(false);
+			pathFinderController.agent.ResetPath();
 		}
 	}
 }

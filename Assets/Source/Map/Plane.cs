@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace MapObject
 {
@@ -8,17 +9,55 @@ namespace MapObject
 	{
 		public GameObject quadRootObject;
 
+		Bounds _bounds = new Bounds();
+
 		// Start is called before the first frame update
 		void Start()
 		{
+			Transform quadRootTransform = quadRootObject.transform;
+			_bounds.max = new Vector3(quadRootTransform.Find("QuadRight").localPosition.x, 10.0f, quadRootTransform.Find("QuadUp").localPosition.z);
+			_bounds.min = new Vector3(quadRootTransform.Find("QuadLeft").localPosition.x, -10.0f, quadRootTransform.Find("QuadDown").localPosition.z);
+
 			if (CustomFollowCamera.instance != null)
-				CustomFollowCamera.instance.OnLoadPlaneObject(quadRootObject);
+				CustomFollowCamera.instance.OnLoadPlaneObject(_bounds.max.z, _bounds.min.z, _bounds.min.x, _bounds.max.x);
+			BattleInstanceManager.instance.currentPlane = this;
 		}
 
-		// Update is called once per frame
-		void Update()
+		#region Runtime NavMesh
+		Dictionary<int, NavMeshSurface> _dicNavMeshSurface = null;
+		public void BakeNavMesh(int agentTypeID)
 		{
+			if (_dicNavMeshSurface == null)
+				_dicNavMeshSurface = new Dictionary<int, NavMeshSurface>();
 
+			NavMeshSurface navMeshSurface = null;
+			if (_dicNavMeshSurface.ContainsKey(agentTypeID))
+			{
+				navMeshSurface = _dicNavMeshSurface[agentTypeID];
+			}
+			else
+			{
+				navMeshSurface = gameObject.AddComponent<NavMeshSurface>();
+				navMeshSurface.agentTypeID = agentTypeID;
+				navMeshSurface.collectObjects = CollectObjects.Volume;
+				navMeshSurface.center = _bounds.center;
+				navMeshSurface.size = _bounds.size + Vector3.one;
+				_dicNavMeshSurface.Add(agentTypeID, navMeshSurface);
+			}
+			navMeshSurface.BuildNavMesh();
 		}
+
+		public void ClearNavMesh(int agentTypeID)
+		{
+			if (_dicNavMeshSurface == null)
+				return;
+			if (_dicNavMeshSurface.ContainsKey(agentTypeID) == false)
+				return;
+
+			NavMeshSurface navMeshSurface = _dicNavMeshSurface[agentTypeID];
+			if (navMeshSurface != null)
+				navMeshSurface.RemoveData();
+		}
+		#endregion
 	}
 }

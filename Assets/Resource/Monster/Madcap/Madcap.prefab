@@ -9,13 +9,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3888353693095683117}
+  - component: {fileID: 795230693025451698}
   - component: {fileID: 3888353693095683119}
   - component: {fileID: 3888353693095683120}
   - component: {fileID: 3888353693095683121}
   - component: {fileID: 3888353693095683122}
-  - component: {fileID: 8100207454959801070}
-  - component: {fileID: 6257038392054622142}
-  - component: {fileID: 5500743039174052121}
+  - component: {fileID: -1384411542460216806}
+  - component: {fileID: 557526428445533820}
   m_Layer: 0
   m_Name: Madcap
   m_TagString: Untagged
@@ -38,6 +38,28 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!195 &795230693025451698
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3888353693095683124}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!54 &3888353693095683119
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -110,7 +132,7 @@ MonoBehaviour:
   _slideGravityMultiplier: 2
   _snapToGround: 1
   _snapStrength: 0.5
---- !u!114 &8100207454959801070
+--- !u!114 &-1384411542460216806
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -137,36 +159,13 @@ MonoBehaviour:
   _jumpToleranceTime: 0.15
   _maxMidAirJumps: 1
   _useRootMotion: 0
---- !u!114 &6257038392054622142
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3888353693095683124}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2094593f742fc40438581bb633429322, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _properties: {fileID: 11400000, guid: 8fa1a3f36725e67408e715f795857fcc, type: 2}
-  PFlayerMask:
-    value: 1
-  PFmodifierMask:
-    value: 0
-  _velocityObstacle: 0
-  _maxAgentVelocity: 2
-  _avoidanceResponsibility: 0.5
-  _careDistance: 0.75
-  _maxNeighbors: 10
-  _maxNeighbourDistance: 10
-  _useDeadLockFailsafe: 0
-  _deadLockVelocityThreshold: 0.025
-  _deadLockFailsafeVelocity: 0.3
-  _deadLockFailsafeTime: 2
-  _preferOneSideEvasion: 0
-  _preferOneSideEvasionOffset: 2
---- !u!114 &5500743039174052121
+  _autoBraking: 1
+  _brakingDistance: 2
+  _stoppingDistance: 1
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 1
+--- !u!114 &557526428445533820
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

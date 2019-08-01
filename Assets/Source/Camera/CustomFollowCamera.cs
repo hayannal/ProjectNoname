@@ -86,13 +86,12 @@ public class CustomFollowCamera : MonoBehaviour
 	float _quadLeft;
 	float _quadRight;
 	bool _quadLoaded = false;
-	public void OnLoadPlaneObject(GameObject quadRootObject)
+	public void OnLoadPlaneObject(float quadUp, float quadDown, float quadLeft, float quadRight)
 	{
-		Transform quadRootTransform = quadRootObject.transform;
-		_quadUp = quadRootTransform.Find("QuadUp").localPosition.z;
-		_quadDown = quadRootTransform.Find("QuadDown").localPosition.z;
-		_quadLeft = quadRootTransform.Find("QuadLeft").localPosition.x;
-		_quadRight = quadRootTransform.Find("QuadRight").localPosition.x;
+		_quadUp = quadUp;
+		_quadDown = quadDown;
+		_quadLeft = quadLeft;
+		_quadRight = quadRight;
 		_quadLoaded = true;
 	}
 }

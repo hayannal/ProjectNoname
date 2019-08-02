@@ -192,6 +192,11 @@ public class MecanimEventTool : EditorWindow
 					m_Gizmos = m_ToolGameObject.GetComponent<MecanimEventGizmos>();
 					if (m_Gizmos == null) m_Gizmos = m_ToolGameObject.AddComponent<MecanimEventGizmos>();
 					m_Gizmos.SetMecanimEventTransform(m_ToolGameObject.transform);
+
+					PlayerAI playerAI = m_ToolGameObject.GetComponent<PlayerAI>();
+					if (playerAI != null) playerAI.enabled = false;
+					MonsterAI monsterAI = m_ToolGameObject.GetComponent<MonsterAI>();
+					if (monsterAI != null) monsterAI.enabled = false;
 				}
 			}
 		}

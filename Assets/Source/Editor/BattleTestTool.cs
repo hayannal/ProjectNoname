@@ -211,7 +211,7 @@ public class BattleTestTool : EditorWindow
 
 							for (int i = 0; i < targetStateMachine.states.Length; ++i)
 							{
-								if (targetStateMachine.states[i].state.name == "Idle" || targetStateMachine.states[i].state.name == "Die")
+								if (targetStateMachine.states[i].state.name == "Idle" || targetStateMachine.states[i].state.name == "Move" || targetStateMachine.states[i].state.name == "Die")
 									continue;
 
 								GUI.color = Color.white;

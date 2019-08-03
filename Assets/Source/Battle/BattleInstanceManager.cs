@@ -256,6 +256,19 @@ public class BattleInstanceManager : MonoBehaviour
 	}
 	#endregion
 
+	#region ActionNameHash
+	Dictionary<string, int> _dicActionNameHash = new Dictionary<string, int>();
+	public int GetActionNameHash(string actionName)
+	{
+		if (_dicActionNameHash.ContainsKey(actionName))
+			return _dicActionNameHash[actionName];
+
+		int hash = Animator.StringToHash(actionName);
+		_dicActionNameHash.Add(actionName, hash);
+		return hash;
+	}
+	#endregion
+
 
 
 

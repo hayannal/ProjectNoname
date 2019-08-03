@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using MecanimStateDefine;
+using UnityEngine.AI;
 
 public class MonsterAI : MonoBehaviour
 {
@@ -62,6 +63,7 @@ public class MonsterAI : MonoBehaviour
 		_startDelayRemainTime = startDelay;
 		_currentState = startState;
 
+		ResetRandomMoveStateInfo();
 		ResetCustomActionStateInfo();
 		ResetChaseStateInfo();
 		ResetAttackActionStateInfo();
@@ -168,9 +170,62 @@ public class MonsterAI : MonoBehaviour
 	public float moveTime;
 	public float refreshTickTime;
 	public float desireDistance = 5.0f;
+	float _moveRemainTime = 0.0f;
+	float _moveRefreshRemainTime = 0.0f;
 	void UpdateRandomMove()
 	{
+		if (_moveRemainTime == 0.0f)
+		{
+			_moveRemainTime = moveTime;
+			_moveRefreshRemainTime = refreshTickTime;
+			MoveRandomPosition();
+		}
 
+		if (_moveRemainTime > 0.0f)
+		{
+			_moveRemainTime -= Time.deltaTime;
+			_moveRefreshRemainTime -= Time.deltaTime;
+			if (_moveRemainTime <= 0.0f)
+			{
+				if (pathFinderController.agent.hasPath)
+					pathFinderController.agent.ResetPath();
+				ResetRandomMoveStateInfo();
+				NextStep();
+				return;
+			}
+			if (_moveRefreshRemainTime <= 0.0f)
+			{
+				_moveRefreshRemainTime += refreshTickTime;
+				MoveRandomPosition();
+			}
+		}
+	}
+
+	void MoveRandomPosition()
+	{
+		Vector3 randomPosition = Vector3.zero;
+		Vector3 result = Vector3.zero;
+		while (true)
+		{
+			Vector2 randomCircle = Random.insideUnitCircle.normalized;
+			Vector3 randomOffset = new Vector3(randomCircle.x * desireDistance, 0.0f, randomCircle.y * desireDistance);
+			randomPosition = actor.cachedTransform.position + randomOffset;
+
+			NavMeshHit hit;
+			if (NavMesh.SamplePosition(randomPosition, out hit, 1.0f, NavMesh.AllAreas))
+			{
+				result = hit.position;
+				break;
+			}
+		}
+
+		pathFinderController.agent.destination = result;
+	}
+
+	void ResetRandomMoveStateInfo()
+	{
+		_moveRemainTime = 0.0f;
+		_moveRefreshRemainTime = 0.0f;
 	}
 	#endregion
 

@@ -14,12 +14,22 @@ public class MonsterAIEditor : Editor
 		t.startDelay = EditorGUILayout.FloatField("Start Delay Time", t.startDelay);
 		t.startState = (MonsterAI.eStateType)EditorGUILayout.EnumPopup("Start State Type", t.startState);
 
+		if (t.useStateList[(int)t.startState] == false)
+		{
+			Color defaultColor = GUI.color;
+			GUI.color = Color.red;
+			EditorGUILayout.LabelField("Start State is disabled", EditorStyles.whiteLabel);
+			GUI.color = defaultColor;
+		}
+
 		DrawUILine(Color.grey);
 
 		t.useStateList[0] = EditorGUILayout.Toggle("Use Random Move State", t.useStateList[0]);
 		if (t.useStateList[0])
 		{
-
+			t.moveTime = EditorGUILayout.FloatField("Move Total Time", t.moveTime);
+			t.refreshTickTime = EditorGUILayout.FloatField("Refresh Tick Time", t.refreshTickTime);
+			t.desireDistance = EditorGUILayout.FloatField("Disire Distance", t.desireDistance);
 		}
 
 		DrawUILine(Color.grey);

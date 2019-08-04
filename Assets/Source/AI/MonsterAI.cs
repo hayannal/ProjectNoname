@@ -350,7 +350,7 @@ public class MonsterAI : MonoBehaviour
 			if (actor.actionController.PlayActionByActionName(attackActionName))
 			{
 				if (lookAtTargetBeforeAttack)
-					pathFinderController.RotateTowards(targetActor.cachedTransform.position - actor.cachedTransform.position);
+					pathFinderController.movement.rotation = Quaternion.LookRotation(targetActor.cachedTransform.position - actor.cachedTransform.position);
 				_attackPlayed = true;
 			}
 		}
@@ -358,7 +358,7 @@ public class MonsterAI : MonoBehaviour
 		{
 			actor.actionController.animator.CrossFade(BattleInstanceManager.instance.GetActionNameHash(attackActionName), attackActionFadeDuration);
 			if (lookAtTargetBeforeAttack)
-				pathFinderController.RotateTowards(targetActor.cachedTransform.position - actor.cachedTransform.position);
+				pathFinderController.movement.rotation = Quaternion.LookRotation(targetActor.cachedTransform.position - actor.cachedTransform.position);
 			_attackPlayed = true;
 		}
 	}

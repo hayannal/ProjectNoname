@@ -91,7 +91,7 @@ Shader "JFekb/DistortionAdditive" {
 			}
 
 			GrabPass {							
-				//"_GrabTexture"
+				"_GrabTexture"
 			}
 			Pass {
 				//Name "BASE"

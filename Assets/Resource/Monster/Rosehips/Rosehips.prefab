@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 1559865429882821471}
   - component: {fileID: 4285130500715263297}
   - component: {fileID: 7783738493359109748}
+  - component: {fileID: -6861453615015986072}
   m_Layer: 0
   m_Name: Rosehips
   m_TagString: Untagged
@@ -178,6 +179,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actorId: Rosehips
+--- !u!114 &-6861453615015986072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1559865429882821465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16c7fbc98e43a374b85a6a2909d657eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startDelay: 0
+  startState: 0
+  useStateList: 0100000100
+  moveTime: 4
+  refreshTickTime: 2
+  desireDistance: 5
+  useTableCustomActionName: 0
+  customActionName: 
+  customActionFadeDuration: 0.05
+  chaseDistance: 2
+  useTableAttackActionName: 1
+  attackActionName: Attack
+  attackActionFadeDuration: 0.05
+  lookAtTargetBeforeAttack: 1
+  attackDelayTime: 0
 --- !u!1001 &1559865430987797191
 PrefabInstance:
   m_ObjectHideFlags: 0

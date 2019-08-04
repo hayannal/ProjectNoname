@@ -97,6 +97,7 @@ public class BattleTestTool : EditorWindow
 	bool lookAtMe = false;
 	BaseCharacterController monsterBaseCharacterController;
 	TargetingProcessor monsterTargetingProcessor;
+	MonsterAI monsterAI;
 	GameObject monsterTargetObject;
 	Animator monsterAnimator;
 	AnimatorStateMachine targetStateMachine;
@@ -104,8 +105,9 @@ public class BattleTestTool : EditorWindow
 	bool loopMonsterState = false;
 	float loopStateDelay = 1.0f;
 	float _nextLoopActionTime = 0.0f;
+	bool standbyLoadAttackDelay = false;
 	bool useMonsterAI = false;
-	MonsterAI _monsterAI = null;
+	
 	void OnGUI_Monster()
 	{
 		bool needRepaint = false;
@@ -128,7 +130,6 @@ public class BattleTestTool : EditorWindow
 					StageManager.instance.currentMonstrStandardDef = currentStageTableData.standardDef;
 				}
 				monsterInstance = BattleInstanceManager.instance.GetCachedObject(monsterPrefab, Vector3.forward, Quaternion.identity);
-				return;
 			}
 			if (monsterInstance != null)
 			{
@@ -153,9 +154,10 @@ public class BattleTestTool : EditorWindow
 					{
 						if (monsterInstance != null)
 						{
-							// controller
+							// component
 							monsterBaseCharacterController = monsterInstance.GetComponent<BaseCharacterController>();
 							monsterTargetingProcessor = monsterInstance.GetComponent<TargetingProcessor>();
+							monsterAI = monsterInstance.GetComponent<MonsterAI>();
 
 							// Load State Machine
 							monsterAnimator = monsterInstance.GetComponentInChildren<Animator>();
@@ -163,10 +165,8 @@ public class BattleTestTool : EditorWindow
 							if (ac != null)
 								targetStateMachine = ac.layers[0].stateMachine;
 
-							// Load Attack Delay
-							MonsterActor monsterActor = monsterInstance.GetComponent<MonsterActor>();
-							if (monsterActor != null)
-								loopStateDelay = monsterActor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.AttackDelay);
+							// for load status
+							standbyLoadAttackDelay = true;
 						}
 						else
 						{
@@ -175,6 +175,17 @@ public class BattleTestTool : EditorWindow
 						useMonsterAI = false;
 
 						prevMonsterInstance = monsterInstance;
+					}
+
+					if (monsterInstance != null && standbyLoadAttackDelay)
+					{
+						// Load Attack Delay
+						MonsterActor monsterActor = monsterInstance.GetComponent<MonsterActor>();
+						if (monsterActor != null && monsterActor.actorStatus != null && monsterActor.actorStatus.statusBase != null)
+						{
+							loopStateDelay = monsterActor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.AttackDelay);
+							standbyLoadAttackDelay = false;
+						}
 					}
 
 					if (useMonsterAI == false)
@@ -244,10 +255,8 @@ public class BattleTestTool : EditorWindow
 					if (monsterInstance != null)
 					{
 						useMonsterAI = EditorGUILayout.Toggle("Toggle Monster AI :", useMonsterAI);
-						if (_monsterAI == null)
-							_monsterAI = monsterInstance.GetComponent<MonsterAI>();
-						if (_monsterAI != null)
-							_monsterAI.enabled = useMonsterAI;
+						if (monsterAI != null)
+							monsterAI.enabled = useMonsterAI;
 					}
 				}
 				GUILayout.EndVertical();

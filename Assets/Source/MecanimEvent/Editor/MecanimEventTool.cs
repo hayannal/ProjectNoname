@@ -59,6 +59,7 @@ public class MecanimEventTool : EditorWindow
 	bool _selectedMeshData = false;
 	string _notificationMsg = "Runs in Play mode!";
 	GUIContent _notification = new GUIContent("Runs in Play mode!");
+	GUIStyle _centeredTextStyle = new GUIStyle("label");
 	void OnGUI()
 	{
 		if (EditorApplication.isPlayingOrWillChangePlaymode)
@@ -72,6 +73,8 @@ public class MecanimEventTool : EditorWindow
 			ShowNotification(_notification);
 			return;
 		}
+
+		_centeredTextStyle.alignment = TextAnchor.MiddleCenter;
 
 		GUILayout.BeginHorizontal();
 		{
@@ -392,12 +395,12 @@ public class MecanimEventTool : EditorWindow
 			// sub stateMachine states
 			for (int i = 0; i < m_TargetStateMachine.stateMachines.Length; ++i)
 			{
-				GUILayout.Label("▼" + m_TargetStateMachine.stateMachines[i].stateMachine.name);
+				GUILayout.Label(string.Format("<{0}>", m_TargetStateMachine.stateMachines[i].stateMachine.name), _centeredTextStyle);
 				for (int j = 0; j < m_TargetStateMachine.stateMachines[i].stateMachine.states.Length; ++j)
 				{
 					GUI.color = Color.white;
 					if (m_TargetState == m_TargetStateMachine.stateMachines[i].stateMachine.states[j].state) GUI.color = Color.gray;
-					if (GUILayout.Button(m_TargetStateMachine.stateMachines[i].stateMachine.states[j].state.name))
+					if (GUILayout.Button(string.Format("ㄴ{0}", m_TargetStateMachine.stateMachines[i].stateMachine.states[j].state.name)))
 						m_TargetState = m_TargetStateMachine.stateMachines[i].stateMachine.states[j].state;
 				}
 			}

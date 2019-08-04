@@ -11,16 +11,20 @@ namespace MapObject
 
 		Bounds _bounds = new Bounds();
 
-		// Start is called before the first frame update
-		void Start()
+		void Awake()
 		{
 			Transform quadRootTransform = quadRootObject.transform;
 			_bounds.max = new Vector3(quadRootTransform.Find("QuadRight").localPosition.x, 10.0f, quadRootTransform.Find("QuadUp").localPosition.z);
 			_bounds.min = new Vector3(quadRootTransform.Find("QuadLeft").localPosition.x, -10.0f, quadRootTransform.Find("QuadDown").localPosition.z);
 
+			BattleInstanceManager.instance.currentPlane = this;
+		}
+
+		// Start is called before the first frame update
+		void Start()
+		{
 			if (CustomFollowCamera.instance != null)
 				CustomFollowCamera.instance.OnLoadPlaneObject(_bounds.max.z, _bounds.min.z, _bounds.min.x, _bounds.max.x);
-			BattleInstanceManager.instance.currentPlane = this;
 		}
 
 		#region Runtime NavMesh

@@ -21,6 +21,9 @@ public class BattleManager : MonoBehaviour
 	void Awake()
 	{
 		_instance = this;
+
+		if (_currentBattleMode == null)
+			Initialize(eBattleMode.DefaultMode);
 	}
 
 	public enum eBattleMode
@@ -29,12 +32,6 @@ public class BattleManager : MonoBehaviour
 	}
 
 	BattleModeProcessorBase _currentBattleMode = null;
-
-	void Start()
-	{
-		if (_currentBattleMode == null)
-			Initialize(eBattleMode.DefaultMode);
-	}
 
 	public void Initialize(eBattleMode battleMode = eBattleMode.DefaultMode)
 	{

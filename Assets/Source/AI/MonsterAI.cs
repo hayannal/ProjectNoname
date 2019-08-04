@@ -214,17 +214,39 @@ public class MonsterAI : MonoBehaviour
 	{
 		Vector3 randomPosition = Vector3.zero;
 		Vector3 result = Vector3.zero;
+		float maxDistance = 1.0f;
+		int tryCount = 0;
 		while (true)
 		{
 			Vector2 randomCircle = Random.insideUnitCircle.normalized;
 			Vector3 randomOffset = new Vector3(randomCircle.x * desireDistance, 0.0f, randomCircle.y * desireDistance);
 			randomPosition = actor.cachedTransform.position + randomOffset;
 
+			// 겹쳐서 생성될 경우 y가 높게 올라가서 무한루프에 빠지게 된다. 강제로 0으로 만들어준다.
+			// 사실 엄청 고생하다가 찾은건데
+			// 첨엔 NavMeshSurface가 안구워진 상태에서 길찾기를 호출할 경우 유니티가 멈춰버리는줄 알았는데 (절대 유니티가 그럴일이 없었다..)
+			// 사실은 맵과 몹의 호출 순서로 인해 안구워진 상태에서 이렇게 while 돌면서 SamplePosition 하니 while문을 못빠져나갔던 것이었다.
+			// 설상가상으로 몹이 겹쳐진채로 스폰되면 자리가 겹쳐있기 때문에 어느 하나가 다른 몹 위로 올라가게 되는데
+			// 이때 y값이 땅보다 2나 높은 상태에서 SamplePosition을 호출하게 된거고
+			// 당연히 실패하면서 while문을 못빠져나갔던 것 두 이슈가 동시에 터지니 정말로 NavMeshSurface의 문제인줄 알았던 것이다.
+			// 그러나 내 코드가 문제였다..
+			//
+			// 암튼 땅의 위치가 0이 아닐 경우도 문제가 되긴 하니 10번이상 실패할 경우 distance값을 증가시키는 코드가 더 안전할거 같다.
+			randomPosition.y = 0.0f;
+
 			NavMeshHit hit;
-			if (NavMesh.SamplePosition(randomPosition, out hit, 1.0f, NavMesh.AllAreas))
+			if (NavMesh.SamplePosition(randomPosition, out hit, maxDistance, NavMesh.AllAreas))
 			{
 				result = hit.position;
 				break;
+			}
+
+			// exception handling
+			++tryCount;
+			if (tryCount > 20)
+			{
+				tryCount = 0;
+				maxDistance += 1.0f;
 			}
 		}
 

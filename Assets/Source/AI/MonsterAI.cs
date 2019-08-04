@@ -78,6 +78,13 @@ public class MonsterAI : MonoBehaviour
 	// Update is called once per frame
 	void Update()
     {
+		UpdateTargeting();
+	}
+
+	// 다른 클래스들의 Update에서 PlayAction 한게 있어도 덮어야하므로 LateUpdate에서 처리한다.
+	// 대표적으로 PathFinderController의 Animate 함수.
+	void LateUpdate()
+	{
 		if (_startDelayRemainTime > 0.0f)
 		{
 			_startDelayRemainTime -= Time.deltaTime;
@@ -85,8 +92,6 @@ public class MonsterAI : MonoBehaviour
 				_startDelayRemainTime = 0.0f;
 			return;
 		}
-
-		UpdateTargeting();
 
 		switch (_currentState)
 		{

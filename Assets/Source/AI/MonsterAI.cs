@@ -63,6 +63,10 @@ public class MonsterAI : MonoBehaviour
 		_startDelayRemainTime = startDelay;
 		_currentState = startState;
 
+		// exception handling
+		if (useStateList[(int)_currentState] == false)
+			_currentState = eStateType.TypeAmount;
+
 		ResetRandomMoveStateInfo();
 		ResetCustomActionStateInfo();
 		ResetChaseStateInfo();

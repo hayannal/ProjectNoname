@@ -32,25 +32,15 @@ public class MonsterAI : MonoBehaviour
 	public eStateType startState = eStateType.RandomMove;
 	public bool[] useStateList = new bool[(int)eStateType.TypeAmount];
 
-	bool _started = false;
 	void Start()
 	{
 		actor = GetComponent<Actor>();
 		actorRadius = ColliderUtil.GetRadius(GetComponent<Collider>());
 		targetingProcessor = GetComponent<TargetingProcessor>();
 		pathFinderController = GetComponent<PathFinderController>();
-
-		InitializeAI();
-		_started = true;
 	}
 
 	#region ObjectPool
-	void OnEnable()
-	{
-		if (_started)
-			InitializeAI();
-	}
-
 	void OnDisable()
 	{
 		targetActor = null;
@@ -58,7 +48,11 @@ public class MonsterAI : MonoBehaviour
 	}
 	#endregion
 
-	void InitializeAI()
+	// 같은 프리팹에 MonsterActor와 MonsterAI가 붙어있는데
+	// MosnterAI의 Start와 Update가 호출되고나서 MonsterActor의 Start가 호출되는 경우도 발생하길래
+	// 아예 순서를 MonsterActor가 제어하도록 한다.
+	bool _initialized = false;
+	public void InitializeAI()
 	{
 		_startDelayRemainTime = startDelay;
 		_currentState = startState;
@@ -72,10 +66,10 @@ public class MonsterAI : MonoBehaviour
 		ResetChaseStateInfo();
 		ResetAttackActionStateInfo();
 		ResetAttackDelayStateInfo();
+
+		_initialized = true;
 	}
 
-	float _startDelayRemainTime;
-	// Update is called once per frame
 	void Update()
     {
 		UpdateTargeting();
@@ -83,8 +77,11 @@ public class MonsterAI : MonoBehaviour
 
 	// 다른 클래스들의 Update에서 PlayAction 한게 있어도 덮어야하므로 LateUpdate에서 처리한다.
 	// 대표적으로 PathFinderController의 Animate 함수.
+	float _startDelayRemainTime;
 	void LateUpdate()
 	{
+		if (!_initialized)
+			return;
 		if (actor.actorStatus.IsDie())
 			return;
 

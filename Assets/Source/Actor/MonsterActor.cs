@@ -48,6 +48,7 @@ public class MonsterActor : Actor
 
 		team.teamID = (int)Team.eTeamID.DefaultMonster;
 		actorStatus.InitializeMonsterStatus(actorId);
+		monsterAI.InitializeAI();
 
 		BattleManager.instance.OnSpawnMonster(this);
 		BattleInstanceManager.instance.OnInitializePathFinderAgent(pathFinderController.agent.agentTypeID);
@@ -61,6 +62,7 @@ public class MonsterActor : Actor
 		HitObject.EnableRigidbodyAndCollider(true, _rigidbody, _collider);
 
 		actorStatus.InitializeMonsterStatus(actorId);
+		monsterAI.InitializeAI();
 
 		BattleManager.instance.OnSpawnMonster(this);
 		BattleInstanceManager.instance.OnInitializePathFinderAgent(pathFinderController.agent.agentTypeID);

@@ -59,7 +59,7 @@ public class MecanimEventTool : EditorWindow
 	bool _selectedMeshData = false;
 	string _notificationMsg = "Runs in Play mode!";
 	GUIContent _notification = new GUIContent("Runs in Play mode!");
-	GUIStyle _centeredTextStyle = new GUIStyle("label");
+	GUIStyle _centeredTextStyle = new GUIStyle();
 	void OnGUI()
 	{
 		if (EditorApplication.isPlayingOrWillChangePlaymode)

@@ -253,6 +253,8 @@ public class MonsterAI : MonoBehaviour
 			++tryBreakCount;
 			if (tryBreakCount > 400)
 			{
+				Debug.LogError("MonsterAI Random Move Error. Not found valid random position.");
+
 				if (pathFinderController.agent.hasPath)
 					pathFinderController.agent.ResetPath();
 				ResetRandomMoveStateInfo();

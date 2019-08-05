@@ -71,6 +71,8 @@ public class MonsterActor : Actor
 	{
 		base.OnDie();
 
+		if (pathFinderController.agent.hasPath)
+			pathFinderController.agent.ResetPath();
 		//BehaviorDesigner.Runtime.BehaviorTree bt = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
 		//if (bt != null) bt.enabled = false;
 

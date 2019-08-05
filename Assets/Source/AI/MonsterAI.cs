@@ -85,6 +85,9 @@ public class MonsterAI : MonoBehaviour
 	// 대표적으로 PathFinderController의 Animate 함수.
 	void LateUpdate()
 	{
+		if (actor.actorStatus.IsDie())
+			return;
+
 		if (_startDelayRemainTime > 0.0f)
 		{
 			_startDelayRemainTime -= Time.deltaTime;

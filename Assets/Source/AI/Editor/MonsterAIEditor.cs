@@ -27,8 +27,8 @@ public class MonsterAIEditor : Editor
 		t.useStateList[0] = EditorGUILayout.Toggle("Use Random Move State", t.useStateList[0]);
 		if (t.useStateList[0])
 		{
-			t.moveTime = EditorGUILayout.FloatField("Move Total Time", t.moveTime);
-			t.refreshTickTime = EditorGUILayout.FloatField("Refresh Tick Time", t.refreshTickTime);
+			t.moveTimeRange = EditorGUILayout.Vector2Field("Move Total Time", t.moveTimeRange);
+			t.refreshTickTimeRange = EditorGUILayout.Vector2Field("Refresh Tick Time", t.refreshTickTimeRange);
 			t.desireDistance = EditorGUILayout.FloatField("Disire Distance", t.desireDistance);
 		}
 
@@ -80,7 +80,7 @@ public class MonsterAIEditor : Editor
 		t.useStateList[4] = EditorGUILayout.Toggle("Use Attack Delay State", t.useStateList[4]);
 		if (t.useStateList[4])
 		{
-			t.attackDelayTime = EditorGUILayout.FloatField("Attack Delay Time", t.attackDelayTime);
+			t.attackDelayTimeRange = EditorGUILayout.Vector2Field("Attack Delay Time", t.attackDelayTimeRange);
 		}
 
 		if (GUI.changed)

@@ -176,8 +176,8 @@ public class MonsterAI : MonoBehaviour
 	}
 
 	#region RandomMove
-	public float moveTime;
-	public float refreshTickTime;
+	public Vector2 moveTimeRange;
+	public Vector2 refreshTickTimeRange;
 	public float desireDistance = 5.0f;
 	float _moveRemainTime = 0.0f;
 	float _moveRefreshRemainTime = 0.0f;
@@ -185,8 +185,8 @@ public class MonsterAI : MonoBehaviour
 	{
 		if (_moveRemainTime == 0.0f)
 		{
-			_moveRemainTime = moveTime;
-			_moveRefreshRemainTime = refreshTickTime;
+			_moveRemainTime = Random.Range(moveTimeRange.x, moveTimeRange.y);
+			_moveRefreshRemainTime = Random.Range(refreshTickTimeRange.x, refreshTickTimeRange.y);
 			MoveRandomPosition();
 		}
 
@@ -204,7 +204,7 @@ public class MonsterAI : MonoBehaviour
 			}
 			if (_moveRefreshRemainTime <= 0.0f)
 			{
-				_moveRefreshRemainTime += refreshTickTime;
+				_moveRefreshRemainTime += Random.Range(refreshTickTimeRange.x, refreshTickTimeRange.y);
 				MoveRandomPosition();
 			}
 		}
@@ -410,13 +410,13 @@ public class MonsterAI : MonoBehaviour
 	#endregion
 
 	#region AttackDelay
-	public float attackDelayTime = 0.0f;
+	public Vector2 attackDelayTimeRange;
 	float _attackDelayRemainTime;
 	void UpdateAttackDelay()
 	{
 		if (_attackDelayRemainTime == 0.0f)
 		{
-			_attackDelayRemainTime = attackDelayTime;
+			_attackDelayRemainTime = Random.Range(attackDelayTimeRange.x, attackDelayTimeRange.y);
 		}
 
 		if (_attackDelayRemainTime > 0.0f)

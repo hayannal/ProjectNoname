@@ -364,7 +364,7 @@ public class MonsterAI : MonoBehaviour
 
 		if (_attackPlayed)
 		{
-			if (actor.actionController.mecanimState.IsState((int)eMecanimState.Idle))
+			if (actor.actionController.mecanimState.IsState((int)eMecanimState.Idle) && actor.actionController.mecanimState.IsState((int)eMecanimState.Attack) == false)
 			{
 				ResetAttackActionStateInfo();
 				NextStep();

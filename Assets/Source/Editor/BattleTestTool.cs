@@ -245,6 +245,11 @@ public class BattleTestTool : EditorWindow
 								}
 								GUI.color = defaultColor;
 							}
+
+							for (int i = 0; i < targetStateMachine.stateMachines.Length; ++i)
+								RecursiveDraw(targetStateMachine.stateMachines[i]);
+
+							GUI.color = defaultColor;
 						}
 					}
 					else
@@ -276,6 +281,43 @@ public class BattleTestTool : EditorWindow
 		}
 		if (needRepaint)
 			Repaint();
+	}
+
+	void RecursiveDraw(ChildAnimatorStateMachine childAnimatorStateMachine)
+	{
+		if (childAnimatorStateMachine.stateMachine.states.Length > 0)
+		{
+			GUI.color = Color.white;
+			GUI.enabled = !loopMonsterState;
+			if (GUILayout.Button(string.Format("<{0}>", childAnimatorStateMachine.stateMachine.name)))
+				monsterAnimator.SetTrigger(childAnimatorStateMachine.stateMachine.name);
+
+			GUI.enabled = true;
+			for (int i = 0; i < childAnimatorStateMachine.stateMachine.states.Length; ++i)
+			{
+				GUI.color = Color.white;
+				if (loopMonsterState && loopTargetState == childAnimatorStateMachine.stateMachine.states[i].state) GUI.color = Color.gray;
+				if (GUILayout.Button(string.Format("ㄴ{0}", childAnimatorStateMachine.stateMachine.states[i].state.name)))
+				{
+					if (loopMonsterState)
+					{
+						if (loopTargetState == childAnimatorStateMachine.stateMachine.states[i].state)
+							loopTargetState = null;
+						else
+						{
+							loopTargetState = childAnimatorStateMachine.stateMachine.states[i].state;
+							monsterAnimator.CrossFade(loopTargetState.name, 0.05f);
+							_nextLoopActionTime = Time.time + loopStateDelay;
+						}
+					}
+					else
+						monsterAnimator.CrossFade(childAnimatorStateMachine.stateMachine.states[i].state.name, 0.05f);
+				}
+			}
+		}
+
+		for (int i = 0; i < childAnimatorStateMachine.stateMachine.stateMachines.Length; ++i)
+			RecursiveDraw(childAnimatorStateMachine.stateMachine.stateMachines[i]);
 	}
 
 	void OnGUI_Map()

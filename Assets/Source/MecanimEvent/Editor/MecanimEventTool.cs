@@ -292,6 +292,10 @@ public class MecanimEventTool : EditorWindow
 
 					for (int j = 0; j < m_AC.layers[i].stateMachine.stateMachines.Length; ++j)
 					{
+						RecursiveCopy(m_AC.layers[i].stateMachine.stateMachines[j], m_ToolAnimatorController.layers[i].stateMachine.stateMachines[j]);
+
+						// 안전할때까지 삭제하지 않는다.
+						/*
 						for (int k = 0; k < m_AC.layers[i].stateMachine.stateMachines[j].stateMachine.states.Length; ++k)
 						{
 							for (int l = 0; l < m_AC.layers[i].stateMachine.stateMachines[j].stateMachine.states[k].state.behaviours.Length; ++l)
@@ -306,6 +310,7 @@ public class MecanimEventTool : EditorWindow
 								EditorUtility.CopySerialized(m_ToolAnimatorController.layers[i].stateMachine.stateMachines[j].stateMachine.states[k].state.behaviours[l], copyEventBase);
 							}
 						}
+						*/
 					}
 				}
 				EditorUtility.SetDirty(m_AC);
@@ -313,6 +318,27 @@ public class MecanimEventTool : EditorWindow
 			}
 			GUI.color = m_DefaultToolColor;
 		}
+	}
+
+	void RecursiveCopy(ChildAnimatorStateMachine childAnimatorStateMachine, ChildAnimatorStateMachine toolChildAnimatorStateMachine)
+	{
+		for (int k = 0; k < childAnimatorStateMachine.stateMachine.states.Length; ++k)
+		{
+			for (int l = 0; l < childAnimatorStateMachine.stateMachine.states[k].state.behaviours.Length; ++l)
+			{
+				Object.DestroyImmediate(childAnimatorStateMachine.stateMachine.states[k].state.behaviours[l], true);
+			}
+			for (int l = 0; l < toolChildAnimatorStateMachine.stateMachine.states[k].state.behaviours.Length; ++l)
+			{
+				MecanimEventBase eventBase = toolChildAnimatorStateMachine.stateMachine.states[k].state.behaviours[l] as MecanimEventBase;
+				if (eventBase == null) continue;
+				MecanimEventBase copyEventBase = MecanimEventCustomCreator.CreateMecanimEvent(childAnimatorStateMachine.stateMachine.states[k].state, MecanimEventCustomCreator.GetMecanimEventType(eventBase));
+				EditorUtility.CopySerialized(toolChildAnimatorStateMachine.stateMachine.states[k].state.behaviours[l], copyEventBase);
+			}
+		}
+
+		for (int i = 0; i < childAnimatorStateMachine.stateMachine.stateMachines.Length; ++i)
+			RecursiveCopy(childAnimatorStateMachine.stateMachine.stateMachines[i], toolChildAnimatorStateMachine.stateMachine.stateMachines[i]);
 	}
 
 	Vector2 _layerPanelScrollPos;
@@ -394,16 +420,8 @@ public class MecanimEventTool : EditorWindow
 
 			// sub stateMachine states
 			for (int i = 0; i < m_TargetStateMachine.stateMachines.Length; ++i)
-			{
-				GUILayout.Label(string.Format("<{0}>", m_TargetStateMachine.stateMachines[i].stateMachine.name), _centeredTextStyle);
-				for (int j = 0; j < m_TargetStateMachine.stateMachines[i].stateMachine.states.Length; ++j)
-				{
-					GUI.color = Color.white;
-					if (m_TargetState == m_TargetStateMachine.stateMachines[i].stateMachine.states[j].state) GUI.color = Color.gray;
-					if (GUILayout.Button(string.Format("ㄴ{0}", m_TargetStateMachine.stateMachines[i].stateMachine.states[j].state.name)))
-						m_TargetState = m_TargetStateMachine.stateMachines[i].stateMachine.states[j].state;
-				}
-			}
+				RecursiveDraw(m_TargetStateMachine.stateMachines[i]);
+
 			GUI.color = m_DefaultToolColor;
 
 			if (m_TargetState != oldAnimatorState && m_ToolAnimator != null)
@@ -448,6 +466,25 @@ public class MecanimEventTool : EditorWindow
 		GUILayout.Space(5);
 		
 		GUILayout.EndVertical();
+	}
+
+	void RecursiveDraw(ChildAnimatorStateMachine childAnimatorStateMachine)
+	{
+		if (childAnimatorStateMachine.stateMachine.states.Length > 0)
+		{
+			GUI.color = Color.gray;
+			GUILayout.Label(string.Format("<{0}>", childAnimatorStateMachine.stateMachine.name), _centeredTextStyle);
+			for (int i = 0; i < childAnimatorStateMachine.stateMachine.states.Length; ++i)
+			{
+				GUI.color = Color.white;
+				if (m_TargetState == childAnimatorStateMachine.stateMachine.states[i].state) GUI.color = Color.gray;
+				if (GUILayout.Button(string.Format("ㄴ{0}", childAnimatorStateMachine.stateMachine.states[i].state.name)))
+					m_TargetState = childAnimatorStateMachine.stateMachine.states[i].state;
+			}
+		}
+
+		for (int i = 0; i < childAnimatorStateMachine.stateMachine.stateMachines.Length; ++i)
+			RecursiveDraw(childAnimatorStateMachine.stateMachine.stateMachines[i]);
 	}
 
 	void OnGUI_DrawEventPlayPanel() {

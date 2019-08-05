@@ -219,7 +219,7 @@ public class BattleInstanceManager : MonoBehaviour
 		if (_dicPathFinderAgentRefCount.ContainsKey(agentTypeID) == false)
 		{
 			_dicPathFinderAgentRefCount.Add(agentTypeID, 1);
-			BattleInstanceManager.instance.currentPlane.BakeNavMesh(agentTypeID);
+			currentPlane.BakeNavMesh(agentTypeID);
 			return;
 		}
 
@@ -238,7 +238,7 @@ public class BattleInstanceManager : MonoBehaviour
 			_dicPathFinderAgentRefCount.Remove(agentTypeID);
 
 			// 마지막 몹 사라질때 지우니 웨이브 넘어갈땐 굳이 안지워도 되는데 지워진다. 웨이브는 거의 없으니 상관없으려나
-			BattleInstanceManager.instance.currentPlane.ClearNavMesh(agentTypeID);
+			currentPlane.ClearNavMesh(agentTypeID);
 		}
 	}
 
@@ -251,7 +251,7 @@ public class BattleInstanceManager : MonoBehaviour
 			if (e.Current.Value <= 0)
 				continue;
 
-			BattleInstanceManager.instance.currentPlane.BakeNavMesh(e.Current.Key);
+			currentPlane.BakeNavMesh(e.Current.Key);
 		}
 	}
 	#endregion

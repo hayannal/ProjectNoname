@@ -216,6 +216,7 @@ public class MonsterAI : MonoBehaviour
 		Vector3 result = Vector3.zero;
 		float maxDistance = 1.0f;
 		int tryCount = 0;
+		int tryBreakCount = 0;
 		while (true)
 		{
 			Vector2 randomCircle = Random.insideUnitCircle.normalized;
@@ -247,6 +248,16 @@ public class MonsterAI : MonoBehaviour
 			{
 				tryCount = 0;
 				maxDistance += 1.0f;
+			}
+
+			++tryBreakCount;
+			if (tryBreakCount > 400)
+			{
+				if (pathFinderController.agent.hasPath)
+					pathFinderController.agent.ResetPath();
+				ResetRandomMoveStateInfo();
+				NextStep();
+				return;
 			}
 		}
 

@@ -274,7 +274,7 @@ public class MonsterAI : MonoBehaviour
 	#endregion
 
 	#region CustomAction
-	public bool useTableCustomActionName = false;
+	public eActionPlayType customActionPlayType = eActionPlayType.State;
 	public string customActionName;
 	public float customActionFadeDuration = 0.05f;
 	bool _customActionPlayed = false;
@@ -282,6 +282,7 @@ public class MonsterAI : MonoBehaviour
 	{
 		if (_customActionPlayed)
 		{
+			// Idle 하나만 남아있는지를 검사해야 더 정확하지 않을까?
 			if (actor.actionController.mecanimState.IsState((int)eMecanimState.Idle))
 			{
 				ResetCustomActionStateInfo();
@@ -290,17 +291,23 @@ public class MonsterAI : MonoBehaviour
 			return;
 		}
 
-		if (useTableCustomActionName)
+		if (_customActionPlayed == false)
 		{
-			if (actor.actionController.PlayActionByActionName(customActionName))
+			switch (customActionPlayType)
 			{
-				_customActionPlayed = true;
+				case eActionPlayType.Table:
+					if (actor.actionController.PlayActionByActionName(customActionName))
+						_customActionPlayed = true;
+					break;
+				case eActionPlayType.State:
+					actor.actionController.animator.CrossFade(BattleInstanceManager.instance.GetActionNameHash(customActionName), customActionFadeDuration);
+					_customActionPlayed = true;
+					break;
+				case eActionPlayType.Trigger:
+					actor.actionController.animator.SetTrigger(BattleInstanceManager.instance.GetActionNameHash(customActionName));
+					_customActionPlayed = true;
+					break;
 			}
-		}
-		else
-		{
-			actor.actionController.animator.CrossFade(BattleInstanceManager.instance.GetActionNameHash(customActionName), customActionFadeDuration);
-			_customActionPlayed = true;
 		}
 	}
 
@@ -347,7 +354,13 @@ public class MonsterAI : MonoBehaviour
 	#endregion
 
 	#region AttackAction
-	public bool useTableAttackActionName = true;
+	public enum eActionPlayType
+	{
+		Table,
+		State,
+		Trigger,
+	}
+	public eActionPlayType attackActionPlayType = eActionPlayType.Table;
 	public string attackActionName;
 	public float attackActionFadeDuration = 0.05f;
 	public bool lookAtTargetBeforeAttack = true;
@@ -367,21 +380,28 @@ public class MonsterAI : MonoBehaviour
 			return;
 		}
 
-		if (useTableAttackActionName)
+		if (_attackPlayed == false)
 		{
-			if (actor.actionController.PlayActionByActionName(attackActionName))
+			switch (attackActionPlayType)
+			{
+				case eActionPlayType.Table:
+					if (actor.actionController.PlayActionByActionName(attackActionName))
+						_attackPlayed = true;
+					break;
+				case eActionPlayType.State:
+					actor.actionController.animator.CrossFade(BattleInstanceManager.instance.GetActionNameHash(attackActionName), attackActionFadeDuration);
+					_attackPlayed = true;
+					break;
+				case eActionPlayType.Trigger:
+					actor.actionController.animator.SetTrigger(BattleInstanceManager.instance.GetActionNameHash(attackActionName));
+					_attackPlayed = true;
+					break;
+			}
+			if (_attackPlayed)
 			{
 				if (lookAtTargetBeforeAttack)
 					pathFinderController.movement.rotation = Quaternion.LookRotation(targetActor.cachedTransform.position - actor.cachedTransform.position);
-				_attackPlayed = true;
 			}
-		}
-		else
-		{
-			actor.actionController.animator.CrossFade(BattleInstanceManager.instance.GetActionNameHash(attackActionName), attackActionFadeDuration);
-			if (lookAtTargetBeforeAttack)
-				pathFinderController.movement.rotation = Quaternion.LookRotation(targetActor.cachedTransform.position - actor.cachedTransform.position);
-			_attackPlayed = true;
 		}
 
 		// Start State를 Attack Action으로 해두면 무조건 Attack 한번 시작하고 나가야 할거 같은데
@@ -396,6 +416,7 @@ public class MonsterAI : MonoBehaviour
 			if (enable)
 			{
 				UpdateChase(true);
+				// 정확히는 다음 프레임에 hasPath가 true로 된다. 그냥 이렇게 처리해도 괜찮은건가
 				if (pathFinderController.agent.hasPath)
 				{
 					_currentState = eStateType.Chase;

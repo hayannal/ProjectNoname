@@ -37,15 +37,19 @@ public class MonsterAIEditor : Editor
 		t.useStateList[1] = EditorGUILayout.Toggle("Use Custom Action State", t.useStateList[1]);
 		if (t.useStateList[1])
 		{
-			t.useTableCustomActionName = EditorGUILayout.Toggle("Use Table Action Name", t.useTableCustomActionName);
-			if (t.useTableCustomActionName)
+			t.customActionPlayType = (MonsterAI.eActionPlayType)EditorGUILayout.EnumPopup("Custom Action Play Type", t.customActionPlayType);
+			switch (t.customActionPlayType)
 			{
-				t.customActionName = EditorGUILayout.TextField("Table Action Name", t.customActionName);
-			}
-			else
-			{
-				t.customActionName = EditorGUILayout.TextField("State Name", t.customActionName);
-				t.customActionFadeDuration = EditorGUILayout.FloatField("Fade Duration", t.customActionFadeDuration);
+				case MonsterAI.eActionPlayType.Table:
+					t.customActionName = EditorGUILayout.TextField("Table Action Name", t.customActionName);
+					break;
+				case MonsterAI.eActionPlayType.State:
+					t.customActionName = EditorGUILayout.TextField("State Name", t.customActionName);
+					t.customActionFadeDuration = EditorGUILayout.FloatField("Fade Duration", t.customActionFadeDuration);
+					break;
+				case MonsterAI.eActionPlayType.Trigger:
+					t.customActionName = EditorGUILayout.TextField("Trigger Name", t.customActionName);
+					break;
 			}
 		}
 
@@ -62,15 +66,19 @@ public class MonsterAIEditor : Editor
 		t.useStateList[3] = EditorGUILayout.Toggle("Use Attack Action State", t.useStateList[3]);
 		if (t.useStateList[3])
 		{
-			t.useTableAttackActionName = EditorGUILayout.Toggle("Use Table Action Name", t.useTableAttackActionName);
-			if (t.useTableAttackActionName)
+			t.attackActionPlayType = (MonsterAI.eActionPlayType)EditorGUILayout.EnumPopup("Attack Action Play Type", t.attackActionPlayType);
+			switch (t.attackActionPlayType)
 			{
-				t.attackActionName = EditorGUILayout.TextField("Table Action Name", t.attackActionName);
-			}
-			else
-			{
-				t.attackActionName = EditorGUILayout.TextField("State Name", t.attackActionName);
-				t.attackActionFadeDuration = EditorGUILayout.FloatField("Fade Duration", t.attackActionFadeDuration);
+				case MonsterAI.eActionPlayType.Table:
+					t.attackActionName = EditorGUILayout.TextField("Table Action Name", t.attackActionName);
+					break;
+				case MonsterAI.eActionPlayType.State:
+					t.attackActionName = EditorGUILayout.TextField("State Name", t.attackActionName);
+					t.attackActionFadeDuration = EditorGUILayout.FloatField("Fade Duration", t.attackActionFadeDuration);
+					break;
+				case MonsterAI.eActionPlayType.Trigger:
+					t.attackActionName = EditorGUILayout.TextField("Trigger Name", t.attackActionName);
+					break;
 			}
 			t.lookAtTargetBeforeAttack = EditorGUILayout.Toggle("Look At Target Before Attack", t.lookAtTargetBeforeAttack);
 		}

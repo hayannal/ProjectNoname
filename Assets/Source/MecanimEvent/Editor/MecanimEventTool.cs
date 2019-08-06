@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEditor;
 using UnityEditor.Animations;
 using System.Collections;
 using System.Collections.Generic;
+using ECM.Controllers;
 
 public class MecanimEventTool : EditorWindow
 {
@@ -200,6 +201,8 @@ public class MecanimEventTool : EditorWindow
 					if (playerAI != null) playerAI.enabled = false;
 					MonsterAI monsterAI = m_ToolGameObject.GetComponent<MonsterAI>();
 					if (monsterAI != null) monsterAI.enabled = false;
+					BaseCharacterController baseCharacterController = m_ToolGameObject.GetComponent<BaseCharacterController>();
+					if (baseCharacterController != null) baseCharacterController.enabled = false;
 				}
 			}
 		}

@@ -176,9 +176,9 @@ public class ScreenJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 		centerImageTransform.gameObject.SetActive(true);
 		if (centerRotationImageTransform != null) centerRotationImageTransform.gameObject.SetActive(true);
 
-		centerImageTransform.transform.position = eventData.pressPosition;
+		centerImageTransform.position = eventData.pressPosition;
 		if (centerRotationImageTransform != null) centerRotationImageTransform.position = eventData.pressPosition;
-		joystickImageTransform.transform.position = eventData.position;
+		joystickImageTransform.position = eventData.position;
 
 		Vector2 diff = eventData.position - eventData.pressPosition;
 		_lastDirectionQuaternion = Quaternion.Euler(0.0f, 0.0f, Mathf.Atan2(-diff.x, diff.y) * Mathf.Rad2Deg);
@@ -191,8 +191,8 @@ public class ScreenJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 		{
 			lineImageRectTransform.gameObject.SetActive(true);
 			lineImageRectTransform.sizeDelta = new Vector2(1.0f, lineLength);
-			lineImageRectTransform.transform.position = eventData.pressPosition + diff.normalized * lineStartOffset * (Screen.height / _canvasHeight);
-			lineImageRectTransform.transform.rotation = _lastDirectionQuaternion;
+			lineImageRectTransform.position = eventData.pressPosition + diff.normalized * lineStartOffset * (Screen.height / _canvasHeight);
+			lineImageRectTransform.rotation = _lastDirectionQuaternion;
 		}
 		else
 		{

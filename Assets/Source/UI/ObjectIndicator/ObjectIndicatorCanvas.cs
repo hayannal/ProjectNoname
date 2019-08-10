@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class ObjectIndicatorCanvas : MonoBehaviour
 {
@@ -73,7 +74,8 @@ public class ObjectIndicatorCanvas : MonoBehaviour
 
 		if (_targetPrevPosition != targetTransform.position)
 		{
-			_immediatelyUpdate = true;
+			// 3D 포지션 Lerp로 바꾸면서 타겟 위치가 바뀌었다고 즉시 갱신할 필요가 없어졌다.
+			//_immediatelyUpdate = true;
 			_targetPrevPosition = targetTransform.position;
 		}
 	}
@@ -90,17 +92,10 @@ public class ObjectIndicatorCanvas : MonoBehaviour
 
 		Vector3 desiredPosition = targetTransform.position;
 		desiredPosition.y += _targetHeight;
-		desiredPosition.x += _lastRightPosition ? _targetRadius : -_targetRadius;
-		lineImageRectTransform.position = desiredPosition;
-
-		// 선은 rightPosition으로 바로 체크하지 않고
-		// 마지막으로 설정된걸 쓰다가 수직정도로 이동이 이루어질때 자동으로 바꾸게 한다.
-		Vector2 diff = (_lastRightPosition ? textBottomLeftEndRectTransform.position : textBottomRightEndRectTransform.position) - lineImageRectTransform.position;
-		lineImageRectTransform.rotation = Quaternion.Euler(0.0f, 0.0f, Mathf.Atan2(-diff.x, diff.y) * Mathf.Rad2Deg);
-		lineImageRectTransform.sizeDelta = new Vector2(lineImageRectTransform.sizeDelta.x, diff.magnitude);
+		lineImageRectTransform.position = desiredPosition + new Vector3(_lastRightPosition ? _targetRadius : -_targetRadius, 0.0f);
 
 		desiredPosition.y += offsetY;
-		float deltaX = offsetX + textBackImageRectTransform.sizeDelta.x * 0.5f;
+		float deltaX = _targetRadius + offsetX + textBackImageRectTransform.sizeDelta.x * 0.5f;
 		desiredPosition.x += rightPosition ? deltaX : -deltaX;
 
 		if (_immediatelyUpdate)
@@ -111,8 +106,20 @@ public class ObjectIndicatorCanvas : MonoBehaviour
 		}
 		else
 		{
-			textGroupRectTransform.position = Vector3.Lerp(textGroupRectTransform.position, desiredPosition, Time.deltaTime * 5.0f);
+			// z값을 고정시켜서 하는 방법도 있겠지만
+			// 이렇게 x, y, z 전부다 Lerp해야 진짜 3D 공간처럼 보인다.
+			//textGroupRectTransform.position = new Vector3(textGroupRectTransform.position.x, textGroupRectTransform.position.y, desiredPosition.z);
+
+			// 상황별 체크를 위해 분기
+			SetTargetPosition(desiredPosition);
 		}
+
+		// 선은 rightPosition으로 바로 체크하지 않고
+		// 마지막으로 설정된걸 쓰다가 수직정도로 이동이 이루어질때 자동으로 바꾸게 한다.
+		Vector3 diff = (_lastRightPosition ? textBottomLeftEndRectTransform.position : textBottomRightEndRectTransform.position) - lineImageRectTransform.position;
+		// 일반적 방향벡터와 달리 여기서 쓰는 lineImage는 y축(0, 1, 0)을 바라보는 벡터이기 때문에 LookRotation을 쓰고난 후 90를 돌려줘야 맞아떨어진다.
+		lineImageRectTransform.rotation = Quaternion.LookRotation(diff) * Quaternion.Euler(90.0f, 0.0f, 0.0f);
+		lineImageRectTransform.sizeDelta = new Vector2(lineImageRectTransform.sizeDelta.x, diff.magnitude);
 
 		#region Change RightPosition
 		if (_lastRightPosition != rightPosition)
@@ -142,5 +149,37 @@ public class ObjectIndicatorCanvas : MonoBehaviour
 			lineImage.color = new Color(lineImage.color.r, lineImage.color.g, lineImage.color.b, 1.0f);
 		}
 		#endregion
+	}
+
+	void SetTargetPosition(Vector3 desiredPosition)
+	{
+		Vector3 diff = textGroupRectTransform.position - desiredPosition;
+		if (diff.sqrMagnitude < 2.0f * 2.0f)
+		{
+			bool useLerp = false;
+			if (_isTweening == false) useLerp = true;
+			if (_isTweening && _lastTweenDesiredPosition != desiredPosition) useLerp = true;
+			if (useLerp)
+			{
+				textGroupRectTransform.position = Vector3.Lerp(textGroupRectTransform.position, desiredPosition, Time.deltaTime * 5.0f);
+			}
+		}
+		else
+		{
+			if (_isTweening && _lastTweenDesiredPosition == desiredPosition)
+				return;
+
+			textGroupRectTransform.DOKill();
+			textGroupRectTransform.DOMove(desiredPosition, 1.2f).SetEase(Ease.OutBack, 2.0f, 0.0f).OnComplete(OnEaseComplete);
+			_lastTweenDesiredPosition = desiredPosition;
+			_isTweening = true;
+		}
+	}
+
+	Vector3 _lastTweenDesiredPosition = -Vector3.up;
+	bool _isTweening = false;
+	void OnEaseComplete()
+	{
+		_isTweening = false;
 	}
 }

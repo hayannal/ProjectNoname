@@ -14,9 +14,9 @@ public class ObjectIndicatorCanvas : MonoBehaviour
 	public RectTransform textBottomRightEndRectTransform;
 	public RectTransform lineImageRectTransform;
 	public Image lineImage;
+	public Vector2 lineOffset = new Vector2(0.0f, 0.0f);
 	public Text contextText;
-	public float offsetY = 1.0f;
-	public float offsetX = 0.75f;
+	public Vector2 contentOffset = new Vector2(0.75f, 1.0f);
 	public bool rightPosition = true;
 	bool useTweenOutBack = false;
 	public bool useLeftRightSwapByAxisX = false;
@@ -100,13 +100,12 @@ public class ObjectIndicatorCanvas : MonoBehaviour
 
 		Vector3 desiredPosition = targetTransform.position;
 		desiredPosition.y += _targetHeight;
-		lineImageRectTransform.position = desiredPosition + new Vector3(_lastRightPosition ? _targetRadius : -_targetRadius, 0.0f);
+		desiredPosition.y += lineOffset.y;
+		float deltaX = _targetRadius + lineOffset.x;
+		lineImageRectTransform.position = desiredPosition + new Vector3(_lastRightPosition ? deltaX : -deltaX, 0.0f);
 
 		if (useLeftRightSwapByAxisX)
 		{
-			desiredPosition = targetTransform.position;
-			desiredPosition.y += _targetHeight;
-
 			if (rightPosition)
 			{
 				if (desiredPosition.x > right2LeftSwapThreshold - swapSuppressingRange)
@@ -119,8 +118,8 @@ public class ObjectIndicatorCanvas : MonoBehaviour
 			}
 		}
 
-		desiredPosition.y += offsetY;
-		float deltaX = _targetRadius + offsetX + textBackImageRectTransform.sizeDelta.x * 0.5f;
+		desiredPosition.y += contentOffset.y;
+		deltaX = _targetRadius + lineOffset.x + contentOffset.x + textBackImageRectTransform.sizeDelta.x * 0.5f;
 		desiredPosition.x += rightPosition ? deltaX : -deltaX;
 
 		if (_immediatelyUpdate)

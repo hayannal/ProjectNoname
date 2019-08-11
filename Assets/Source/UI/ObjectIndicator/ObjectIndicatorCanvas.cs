@@ -18,6 +18,11 @@ public class ObjectIndicatorCanvas : MonoBehaviour
 	public float offsetY = 1.0f;
 	public float offsetX = 0.75f;
 	public bool rightPosition = true;
+	bool useTweenOutBack = false;
+	public bool useLeftRightSwapByAxisX = false;
+	public float right2LeftSwapThreshold = 6.0f;
+	public float left2RightSwapThreshold = -6.0f;
+	public float swapSuppressingRange = 2.5f;
 
 	// Start is called before the first frame update
 	void Start()
@@ -54,7 +59,10 @@ public class ObjectIndicatorCanvas : MonoBehaviour
 
 		UpdateTargetPosition();
 		UpdateTextImagePosition();
-    }
+
+		if (useLeftRightSwapByAxisX)
+			UpdateLeftRightSwapByAxisX();
+	}
 
 	void GetTargetHeightAndRadius(Transform t)
 	{
@@ -93,6 +101,23 @@ public class ObjectIndicatorCanvas : MonoBehaviour
 		Vector3 desiredPosition = targetTransform.position;
 		desiredPosition.y += _targetHeight;
 		lineImageRectTransform.position = desiredPosition + new Vector3(_lastRightPosition ? _targetRadius : -_targetRadius, 0.0f);
+
+		if (useLeftRightSwapByAxisX)
+		{
+			desiredPosition = targetTransform.position;
+			desiredPosition.y += _targetHeight;
+
+			if (rightPosition)
+			{
+				if (desiredPosition.x > right2LeftSwapThreshold - swapSuppressingRange)
+					desiredPosition.x = right2LeftSwapThreshold - swapSuppressingRange;
+			}
+			else
+			{
+				if (desiredPosition.x < left2RightSwapThreshold + swapSuppressingRange)
+					desiredPosition.x = left2RightSwapThreshold + swapSuppressingRange;
+			}
+		}
 
 		desiredPosition.y += offsetY;
 		float deltaX = _targetRadius + offsetX + textBackImageRectTransform.sizeDelta.x * 0.5f;
@@ -154,11 +179,12 @@ public class ObjectIndicatorCanvas : MonoBehaviour
 	void SetTargetPosition(Vector3 desiredPosition)
 	{
 		Vector3 diff = textGroupRectTransform.position - desiredPosition;
-		if (diff.sqrMagnitude < 2.0f * 2.0f)
+		if (diff.sqrMagnitude < 2.0f * 2.0f || useTweenOutBack == false)
 		{
 			bool useLerp = false;
 			if (_isTweening == false) useLerp = true;
 			if (_isTweening && _lastTweenDesiredPosition != desiredPosition) useLerp = true;
+			if (useTweenOutBack == false) useLerp = true;
 			if (useLerp)
 			{
 				textGroupRectTransform.position = Vector3.Lerp(textGroupRectTransform.position, desiredPosition, Time.deltaTime * 5.0f);
@@ -181,5 +207,19 @@ public class ObjectIndicatorCanvas : MonoBehaviour
 	void OnEaseComplete()
 	{
 		_isTweening = false;
+	}
+
+	void UpdateLeftRightSwapByAxisX()
+	{
+		if (rightPosition)
+		{
+			if (_targetPrevPosition.x > right2LeftSwapThreshold)
+				rightPosition = false;
+		}
+		else
+		{
+			if (_targetPrevPosition.x < left2RightSwapThreshold)
+				rightPosition = true;
+		}
 	}
 }

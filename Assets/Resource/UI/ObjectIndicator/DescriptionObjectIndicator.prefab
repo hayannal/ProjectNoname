@@ -33,13 +33,13 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4143959213422209873}
-  - {fileID: 5114600644301988418}
+  - {fileID: 19443840661746950}
   m_Father: {fileID: 3905212389136971648}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0.1}
+  m_AnchoredPosition: {x: 0, y: 0.2}
   m_SizeDelta: {x: 4, y: 0.8}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &7603748290894208038
@@ -140,7 +140,7 @@ MonoBehaviour:
   tweenTargetIsTargetGO: 1
   delay: 0
   duration: 1.2
-  easeType: 3
+  easeType: 4
   easeCurve:
     serializedVersion: 2
     m_Curve:
@@ -181,7 +181,7 @@ MonoBehaviour:
   autoPlay: 1
   useTargetAsV3: 0
   endValueFloat: 0
-  endValueV3: {x: 0, y: 0.2, z: 0}
+  endValueV3: {x: 0, y: 0.5, z: 0}
   endValueV2: {x: 0, y: 0}
   endValueColor: {r: 1, g: 1, b: 1, a: 1}
   endValueString: 
@@ -257,7 +257,7 @@ MonoBehaviour:
   targetIsSelf: 1
   targetGO: {fileID: 0}
   tweenTargetIsTargetGO: 1
-  delay: 1
+  delay: 0.8
   duration: 0.5
   easeType: 6
   easeCurve:
@@ -397,12 +397,12 @@ RectTransform:
   m_Children:
   - {fileID: 8252813023515896632}
   - {fileID: 2726311131589159254}
-  m_Father: {fileID: 7356413476419527467}
-  m_RootOrder: 1
+  m_Father: {fileID: 19443840661746950}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: -0.07}
+  m_AnchoredPosition: {x: 0, y: -0.13999878}
   m_SizeDelta: {x: 0, y: 0.030000001}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &3076456033898068095
@@ -501,7 +501,7 @@ MonoBehaviour:
   targetIsSelf: 1
   targetGO: {fileID: 0}
   tweenTargetIsTargetGO: 1
-  delay: 0.5
+  delay: 0.3
   duration: 0.5
   easeType: 1
   easeCurve:
@@ -607,6 +607,42 @@ RectTransform:
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &5398184292464800296
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 19443840661746950}
+  m_Layer: 5
+  m_Name: BottomLineRect
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &19443840661746950
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5398184292464800296}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 5114600644301988418}
+  m_Father: {fileID: 7356413476419527467}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0.16, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &6417037900227296099
 GameObject:
@@ -780,7 +816,7 @@ MonoBehaviour:
   targetGO: {fileID: 0}
   tweenTargetIsTargetGO: 1
   delay: 0
-  duration: 0.5
+  duration: 0.3
   easeType: 1
   easeCurve:
     serializedVersion: 2
@@ -991,7 +1027,7 @@ MonoBehaviour:
   targetIsSelf: 1
   targetGO: {fileID: 0}
   tweenTargetIsTargetGO: 1
-  delay: 1
+  delay: 0.8
   duration: 0.5
   easeType: 6
   easeCurve:
@@ -1187,4 +1223,8 @@ MonoBehaviour:
   contextText: {fileID: 7731371419327906060}
   offsetY: 1
   offsetX: 0.75
-  rightPosition: 1
+  rightPosition: 0
+  useLeftRightSwapByAxisX: 0
+  right2LeftSwapThreshold: 6
+  left2RightSwapThreshold: -6
+  swapSuppressingRange: 2.5

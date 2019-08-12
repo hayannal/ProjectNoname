@@ -166,4 +166,6 @@ public class StageManager : MonoBehaviour
 
 		BattleManager.instance.OnLoadedMap();
 	}
+
+	public Vector3 currentGatePillarSpawnPosition { get; set; }
 }

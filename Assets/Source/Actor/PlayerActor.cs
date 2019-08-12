@@ -41,6 +41,8 @@ public class PlayerActor : Actor
 		team.teamID = (int)Team.eTeamID.DefaultArmy;
 		skillProcessor.InitializeSkill(actorId);
 		actorStatus.InitializeActorStatus(actorId);
+
+		BattleManager.instance.OnSpawnPlayer(this);
 	}
 
 	public override void OnDie()

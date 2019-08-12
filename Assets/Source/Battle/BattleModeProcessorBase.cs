@@ -17,6 +17,7 @@ public class BattleModeProcessorBase
 
 	public void OnSpawnPlayer(PlayerActor playerActor)
 	{
+		BattleInstanceManager.instance.playerActor = playerActor;
 	}
 
 	public void OnSpawnMonster(MonsterActor monsterActor)
@@ -35,6 +36,7 @@ public class BattleModeProcessorBase
 		if (_mapLoaded && _monsterSpawned && _monsterSpawnCount == 0)
 		{
 			// all kill monster
+			BattleInstanceManager.instance.GetCachedObject(StageManager.instance.gatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
 		}
 	}
 }

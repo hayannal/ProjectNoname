@@ -89,6 +89,13 @@ public class SpawnFlag : MonoBehaviour
 			newObject.transform.localRotation = Quaternion.Euler(_listSpawnInfo[i].localRotation);
 			newObject.transform.localScale = _listSpawnInfo[i].localScale;
 		}
+
+		if (editorSpawn == false)
+		{
+			BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.playerSpawnEffectPrefab, playerStartSpawnTransform.position, Quaternion.identity);
+			BattleInstanceManager.instance.playerActor.cachedTransform.position = playerStartSpawnTransform.position;
+			StageManager.instance.currentGatePillarSpawnPosition = gatePillarSpawnTransform.position;
+		}
 	}
 
 

@@ -279,6 +279,10 @@ public class BattleInstanceManager : MonoBehaviour
 	}
 	#endregion
 
+	#region PlayerActor
+	public PlayerActor playerActor { get; set; }
+	#endregion
+
 
 
 

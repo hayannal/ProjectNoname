@@ -17,6 +17,7 @@ public class BattleManager : MonoBehaviour
 
 	public GameObject targetCircleObject;
 	public GameObject monsterDisableEffectObject;
+	public GameObject playerSpawnEffectPrefab;
 
 	void Awake()
 	{

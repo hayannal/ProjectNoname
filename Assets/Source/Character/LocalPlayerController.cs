@@ -96,10 +96,18 @@ public sealed class LocalPlayerController : BaseCharacterController
 			RaycastHit hitInfo;
 			if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, groundMask.value))
 			{
+				Vector3 targetPosition = hitInfo.point;
+
+				if (GatePillar.instance != null && GatePillar.instance.gameObject.activeSelf)
+				{
+					if (hitInfo.collider != null && hitInfo.collider.gameObject == GatePillar.instance.meshColliderObject)
+						targetPosition = GatePillar.instance.cachedTransform.position;
+				}
+
 				if (actionController.PlayActionByControl(Control.eControllerType.ScreenController, Control.eInputType.Tab))
 				{
-					actor.targetingProcessor.SetCustomTargetPosition(hitInfo.point);
-					RotateTowards(hitInfo.point - transform.position);
+					actor.targetingProcessor.SetCustomTargetPosition(targetPosition);
+					RotateTowards(targetPosition - transform.position);
 				}
 			}
 		}

@@ -7,7 +7,11 @@ public class StageManager : MonoBehaviour
 {
 	public static StageManager instance;
 
+	// temp code
 	public GameObject defaultGroundSceneObject;
+	public GameObject gatePillarPrefab;
+	public GameObject fadeCanvasPrefab;
+
 	[Reorderable] public GameObject[] groundPrefabList;
 	[Reorderable] public GameObject[] wallPrefabList;
 	[Reorderable] public GameObject[] spawnFlagPrefabList;
@@ -24,7 +28,9 @@ public class StageManager : MonoBehaviour
 
 	void Start()
 	{
+		// temp code
 		_currentGroundObject = defaultGroundSceneObject;
+		BattleInstanceManager.instance.GetCachedObject(gatePillarPrefab, new Vector3(3.0f, 0.0f, 1.0f), Quaternion.identity);
 	}
 
 	public void NextStage()

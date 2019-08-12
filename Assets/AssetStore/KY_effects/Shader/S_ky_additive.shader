@@ -11,8 +11,6 @@ Shader "KY/additive" {
         _emissivePower ("emissivePower", Float ) = 1
         _texDensity ("texDensity", Float ) = 1
         [MaterialToggle] _useTexColor ("useTexColor", Float ) = 0
-        _depthBlend ("depthBlend", Float ) = 0
-        [MaterialToggle] _notUseDepthBlend ("notUseDepthBlend", Float ) = 0
     }
     SubShader {
         Tags {
@@ -35,15 +33,12 @@ Shader "KY/additive" {
             #include "UnityCG.cginc"
             #pragma multi_compile_fwdbase
             #pragma multi_compile_fog
-            #pragma exclude_renderers gles3 metal d3d11_9x xbox360 xboxone ps3 ps4 psp2 
+            #pragma exclude_renderers metal d3d11_9x xbox360 xboxone ps3 ps4 psp2 
             #pragma target 3.0
-            uniform sampler2D _CameraDepthTexture;
             uniform sampler2D _MainTex; uniform float4 _MainTex_ST;
             uniform float _emissivePower;
             uniform float _texDensity;
             uniform fixed _useTexColor;
-            uniform float _depthBlend;
-            uniform fixed _notUseDepthBlend;
             struct VertexInput {
                 float4 vertex : POSITION;
                 float2 texcoord0 : TEXCOORD0;
@@ -53,29 +48,21 @@ Shader "KY/additive" {
                 float4 pos : SV_POSITION;
                 float2 uv0 : TEXCOORD0;
                 float4 vertexColor : COLOR;
-                float4 projPos : TEXCOORD1;
-                UNITY_FOG_COORDS(2)
             };
             VertexOutput vert (VertexInput v) {
                 VertexOutput o = (VertexOutput)0;
                 o.uv0 = v.texcoord0;
                 o.vertexColor = v.vertexColor;
                 o.pos = UnityObjectToClipPos(v.vertex );
-                UNITY_TRANSFER_FOG(o,o.pos);
-                o.projPos = ComputeScreenPos (o.pos);
-                COMPUTE_EYEDEPTH(o.projPos.z);
                 return o;
             }
             float4 frag(VertexOutput i) : COLOR {
-                float sceneZ = max(0,LinearEyeDepth (UNITY_SAMPLE_DEPTH(tex2Dproj(_CameraDepthTexture, UNITY_PROJ_COORD(i.projPos)))) - _ProjectionParams.g);
-                float partZ = max(0,i.projPos.z - _ProjectionParams.g);
 ////// Lighting:
 ////// Emissive:
                 float4 _MainTex_var = tex2D(_MainTex,TRANSFORM_TEX(i.uv0, _MainTex));
-                float3 emissive = (pow(lerp( saturate(((_MainTex_var.r+_MainTex_var.g)+_MainTex_var.b)), _MainTex_var.rgb, _useTexColor ),_texDensity)*i.vertexColor.rgb*_emissivePower*i.vertexColor.a*lerp( saturate((sceneZ-partZ)/_depthBlend), 1.0, _notUseDepthBlend ));
+                float3 emissive = (pow(lerp( saturate(((_MainTex_var.r+_MainTex_var.g)+_MainTex_var.b)), _MainTex_var.rgb, _useTexColor ),_texDensity)*i.vertexColor.rgb*_emissivePower*i.vertexColor.a);
                 float3 finalColor = emissive;
                 fixed4 finalRGBA = fixed4(finalColor,1);
-                UNITY_APPLY_FOG_COLOR(i.fogCoord, finalRGBA, fixed4(0,0,0,1));
                 return finalRGBA;
             }
             ENDCG

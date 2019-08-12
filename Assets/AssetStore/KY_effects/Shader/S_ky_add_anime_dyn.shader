@@ -20,8 +20,6 @@ Shader "KY/add_anime_dyn" {
         _color ("color", Color) = (1,1,1,1)
         _uvDynCorrect ("uvDynCorrect", Float ) = 1
         [MaterialToggle] _haveAlpha ("haveAlpha", Float ) = 0
-        _depthBlend ("depthBlend", Float ) = 1
-        [MaterialToggle] _useDepthBlend ("useDepthBlend", Float ) = 1
     }
     SubShader {
         Tags {
@@ -44,9 +42,8 @@ Shader "KY/add_anime_dyn" {
             #include "UnityCG.cginc"
             #pragma multi_compile_fwdbase
             #pragma multi_compile_fog
-            #pragma exclude_renderers gles3 metal d3d11_9x xbox360 xboxone ps3 ps4 psp2 
+            #pragma exclude_renderers metal d3d11_9x xbox360 xboxone ps3 ps4 psp2 
             #pragma target 3.0
-            uniform sampler2D _CameraDepthTexture;
             uniform sampler2D _MainTex; uniform float4 _MainTex_ST;
             uniform fixed _pickupCh;
             uniform float _emissive;
@@ -60,8 +57,6 @@ Shader "KY/add_anime_dyn" {
             uniform float4 _color;
             uniform float _uvDynCorrect;
             uniform fixed _haveAlpha;
-            uniform float _depthBlend;
-            uniform fixed _useDepthBlend;
             struct VertexInput {
                 float4 vertex : POSITION;
                 float2 texcoord0 : TEXCOORD0;
@@ -71,22 +66,15 @@ Shader "KY/add_anime_dyn" {
                 float4 pos : SV_POSITION;
                 float2 uv0 : TEXCOORD0;
                 float4 vertexColor : COLOR;
-                float4 projPos : TEXCOORD1;
-                UNITY_FOG_COORDS(2)
             };
             VertexOutput vert (VertexInput v) {
                 VertexOutput o = (VertexOutput)0;
                 o.uv0 = v.texcoord0;
                 o.vertexColor = v.vertexColor;
                 o.pos = UnityObjectToClipPos(v.vertex );
-                UNITY_TRANSFER_FOG(o,o.pos);
-                o.projPos = ComputeScreenPos (o.pos);
-                COMPUTE_EYEDEPTH(o.projPos.z);
                 return o;
             }
             float4 frag(VertexOutput i) : COLOR {
-                float sceneZ = max(0,LinearEyeDepth (UNITY_SAMPLE_DEPTH(tex2Dproj(_CameraDepthTexture, UNITY_PROJ_COORD(i.projPos)))) - _ProjectionParams.g);
-                float partZ = max(0,i.projPos.z - _ProjectionParams.g);
 ////// Lighting:
 ////// Emissive:
                 float node_1439 = (i.vertexColor.r*_uvDynCorrect);
@@ -117,10 +105,9 @@ Shader "KY/add_anime_dyn" {
                 float3 node_5708 = pow(_MainTex_var.rgb,_texDensity).rgb;
                 float node_516 = 0.0;
                 float node_5474 = lerp((node_5474_if_leA*lerp((node_335_if_leA*lerp( node_5708.r, ((lerp( node_516, node_5708.r, _useR )+lerp( node_516, node_5708.g, _useG ))+lerp( node_516, node_5708.b, _useB )), _pickupCh ))+(node_335_if_leB*node_5708.g),node_5708.g,node_335_if_leA*node_335_if_leB))+(node_5474_if_leB*node_5708.b),node_5708.b,node_5474_if_leA*node_5474_if_leB);
-                float3 emissive = (node_5474*_color.rgb*_emissive*(pow(i.vertexColor.a,_vertColorDensity)*(pow(lerp( node_5474, _MainTex_var.a, _haveAlpha ),_alphaDensity)*_alphaPower)*lerp( 1.0, saturate((sceneZ-partZ)/_depthBlend), _useDepthBlend )));
+                float3 emissive = (node_5474*_color.rgb*_emissive*(pow(i.vertexColor.a,_vertColorDensity)*(pow(lerp( node_5474, _MainTex_var.a, _haveAlpha ),_alphaDensity)*_alphaPower)));
                 float3 finalColor = emissive;
                 fixed4 finalRGBA = fixed4(finalColor,1);
-                UNITY_APPLY_FOG_COLOR(i.fogCoord, finalRGBA, fixed4(0,0,0,1));
                 return finalRGBA;
             }
             ENDCG

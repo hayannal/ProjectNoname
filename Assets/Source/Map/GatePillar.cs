@@ -23,7 +23,8 @@ public class GatePillar : MonoBehaviour
 
 	void OnEnable()
 	{
-		_descriptionObjectIndicatorShowRemainTime = descriptionObjectIndicatorShowDelayTime;
+		if (string.IsNullOrEmpty(StageManager.instance.currentGatePillarPreview))
+			_descriptionObjectIndicatorShowRemainTime = descriptionObjectIndicatorShowDelayTime;
 	}
 
 	void OnDisable()

@@ -11,7 +11,10 @@ using SubjectNerd.Utilities;
 [ExecuteInEditMode]
 public class SpawnFlag : MonoBehaviour
 {
-	public Transform playerSpawnTransform;
+	public Transform playerStartSpawnTransform;
+	public Transform playerClearSpawnTransform;
+	public Transform gatePillarSpawnTransform;
+	public Transform powerSourceSpawnTransform;
 
 	[Serializable]
 	public class SpawnInfo
@@ -60,7 +63,9 @@ public class SpawnFlag : MonoBehaviour
 		for (int i = cachedTransform.childCount - 1; i >= 0; --i)
 		{
 			Transform childTransform = cachedTransform.GetChild(i);
-			if (childTransform == playerSpawnTransform)
+			if (childTransform == playerStartSpawnTransform || childTransform == playerClearSpawnTransform)
+				continue;
+			if (childTransform == gatePillarSpawnTransform || childTransform == powerSourceSpawnTransform)
 				continue;
 			DestroyImmediate(childTransform.gameObject);
 		}

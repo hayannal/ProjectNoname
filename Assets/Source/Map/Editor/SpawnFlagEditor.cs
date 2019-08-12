@@ -7,7 +7,10 @@ using SubjectNerd.Utilities;
 [CustomEditor(typeof(SpawnFlag))]
 public class SpawnFlagEditor : ReorderableArrayInspector
 {
-	SerializedProperty playerSpawnTransformProperty;
+	SerializedProperty playerStartSpawnTransformProperty;
+	SerializedProperty playerClearSpawnTransformProperty;
+	SerializedProperty gatePillarSpawnTransformProperty;
+	SerializedProperty powerSourceSpawnTransformProperty;
 
 	protected override void InitInspector()
 	{
@@ -15,7 +18,10 @@ public class SpawnFlagEditor : ReorderableArrayInspector
 
 		alwaysDrawInspector = true;
 
-		playerSpawnTransformProperty = serializedObject.FindProperty("playerSpawnTransform");
+		playerStartSpawnTransformProperty = serializedObject.FindProperty("playerStartSpawnTransform");
+		playerClearSpawnTransformProperty = serializedObject.FindProperty("playerClearSpawnTransform");
+		gatePillarSpawnTransformProperty = serializedObject.FindProperty("gatePillarSpawnTransform");
+		powerSourceSpawnTransformProperty = serializedObject.FindProperty("powerSourceSpawnTransform");
 	}
 
 	protected override void DrawInspector()
@@ -48,7 +54,9 @@ public class SpawnFlagEditor : ReorderableArrayInspector
 			for (int i = 0; i < childCount; ++i)
 			{
 				Transform childTransform = targetComponent.cachedTransform.GetChild(i);
-				if (childTransform == targetComponent.playerSpawnTransform)
+				if (childTransform == targetComponent.playerStartSpawnTransform || childTransform == targetComponent.playerClearSpawnTransform)
+					continue;
+				if (childTransform == targetComponent.gatePillarSpawnTransform || childTransform == targetComponent.powerSourceSpawnTransform)
 					continue;
 
 				GameObject monsterPrefab = PrefabUtility.GetCorrespondingObjectFromSource<GameObject>(childTransform.gameObject);
@@ -68,18 +76,60 @@ public class SpawnFlagEditor : ReorderableArrayInspector
 				spawnFlagPrefabComponent._listSpawnInfo.Add(info);
 			}
 
-			if (targetComponent.playerSpawnTransform == null)
+			if (targetComponent.playerStartSpawnTransform == null)
 			{
-				EditorUtility.DisplayDialog("Error", "Not found PlayerSpawnTransform in the memory", "Ok");
+				EditorUtility.DisplayDialog("Error", "Not found PlayerStartSpawnTransform in the memory", "Ok");
 			}
-			if (targetComponent.playerSpawnTransform != null)
+			if (targetComponent.playerStartSpawnTransform != null)
 			{
-				if (spawnFlagPrefabComponent.playerSpawnTransform == null)
+				if (spawnFlagPrefabComponent.playerStartSpawnTransform == null)
 				{
-					EditorUtility.DisplayDialog("Error", "Not found PlayerSpawnTransform in the prefab", "Ok");
+					EditorUtility.DisplayDialog("Error", "Not found PlayerStartSpawnTransform in the prefab", "Ok");
 				}
 				else
-					spawnFlagPrefabComponent.playerSpawnTransform.localPosition = targetComponent.playerSpawnTransform.localPosition;
+					spawnFlagPrefabComponent.playerStartSpawnTransform.localPosition = targetComponent.playerStartSpawnTransform.localPosition;
+			}
+
+			if (targetComponent.playerClearSpawnTransform == null)
+			{
+				EditorUtility.DisplayDialog("Error", "Not found PlayerClearSpawnTransform in the memory", "Ok");
+			}
+			if (targetComponent.playerClearSpawnTransform != null)
+			{
+				if (spawnFlagPrefabComponent.playerClearSpawnTransform == null)
+				{
+					EditorUtility.DisplayDialog("Error", "Not found PlayerClearSpawnTransform in the prefab", "Ok");
+				}
+				else
+					spawnFlagPrefabComponent.playerClearSpawnTransform.localPosition = targetComponent.playerClearSpawnTransform.localPosition;
+			}
+
+			if (targetComponent.gatePillarSpawnTransform == null)
+			{
+				EditorUtility.DisplayDialog("Error", "Not found GatePillarSpawnTransform in the memory", "Ok");
+			}
+			if (targetComponent.gatePillarSpawnTransform != null)
+			{
+				if (spawnFlagPrefabComponent.gatePillarSpawnTransform == null)
+				{
+					EditorUtility.DisplayDialog("Error", "Not found GatePillarSpawnTransform in the prefab", "Ok");
+				}
+				else
+					spawnFlagPrefabComponent.gatePillarSpawnTransform.localPosition = targetComponent.gatePillarSpawnTransform.localPosition;
+			}
+
+			if (targetComponent.powerSourceSpawnTransform == null)
+			{
+				EditorUtility.DisplayDialog("Error", "Not found PowerSourceSpawnTransform in the memory", "Ok");
+			}
+			if (targetComponent.powerSourceSpawnTransform != null)
+			{
+				if (spawnFlagPrefabComponent.powerSourceSpawnTransform == null)
+				{
+					EditorUtility.DisplayDialog("Error", "Not found PowerSourceSpawnTransform in the prefab", "Ok");
+				}
+				else
+					spawnFlagPrefabComponent.powerSourceSpawnTransform.localPosition = targetComponent.powerSourceSpawnTransform.localPosition;
 			}
 
 			PrefabUtility.SavePrefabAsset(prefab);

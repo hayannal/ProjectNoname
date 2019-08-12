@@ -89,20 +89,19 @@ public class GatePillar : MonoBehaviour
 			_waitForSeconds0dot2 = new WaitForSeconds(0.2f);
 		if (_waitForSeconds0dot5 == null)
 			_waitForSeconds0dot5 = new WaitForSeconds(0.5f);
-		if (_waitForSeconds0dot8 == null)
-			_waitForSeconds0dot8 = new WaitForSeconds(0.8f);
 
 		yield return _waitForSeconds0dot2;
 		changeEffectParticleRootObject.SetActive(true);
 
-		FadeCanvas.instance.FadeOut(0.8f);
-		yield return _waitForSeconds0dot8;
+		yield return _waitForSeconds0dot5;
+
+		FadeCanvas.instance.FadeOut(0.2f);
+		yield return _waitForSeconds0dot2;
 
 		StageManager.instance.NextStage();
 		gameObject.SetActive(false);
 
 		FadeCanvas.instance.FadeIn(0.4f);
-
 
 		_processing = false;
 	}

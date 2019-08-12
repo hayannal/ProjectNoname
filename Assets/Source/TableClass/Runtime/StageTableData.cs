@@ -37,6 +37,10 @@ public class StageTableData
   public int grouping { get { return _grouping; } set { _grouping = value; } }
   
   [SerializeField]
+  bool _swap;
+  public bool swap { get { return _swap; } set { _swap = value; } }
+  
+  [SerializeField]
   string _firstFixedMap;
   public string firstFixedMap { get { return _firstFixedMap; } set { _firstFixedMap = value; } }
   

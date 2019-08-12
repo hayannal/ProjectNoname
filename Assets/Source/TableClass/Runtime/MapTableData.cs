@@ -24,4 +24,8 @@ public class MapTableData
   string _spawnFlag;
   public string spawnFlag { get { return _spawnFlag; } set { _spawnFlag = value; } }
   
+  [SerializeField]
+  string _gatePillarPreview;
+  public string gatePillarPreview { get { return _gatePillarPreview; } set { _gatePillarPreview = value; } }
+  
 }

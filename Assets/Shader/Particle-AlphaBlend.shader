@@ -9,6 +9,7 @@ Shader "FrameworkNG/Particle/AlphaBlend"
 
 		[Enum(UnityEngine.Rendering.BlendMode)] _SrcBlend ("SrcBlend Mode", Float) = 1
 		[Enum(UnityEngine.Rendering.BlendMode)] _DstBlend ("DstBlend Mode", Float) = 1
+		[Enum(UnityEngine.Rendering.CompareFunction)] _ZTestMode("ZTest", Float) = 4
 
 		[KeywordEnum(None, Default, Fmod)] _Flow("========== Use Flow ==========", Float) = 0
 		_FlowSpeed ("Main (XY)", Vector) = (0, 0, 0, 0)
@@ -26,6 +27,7 @@ Shader "FrameworkNG/Particle/AlphaBlend"
 		Pass
 		{
 			Blend [_SrcBlend] [_DstBlend]
+			ZTest [_ZTestMode]
 			ColorMask RGB
 			Cull Off
 			Lighting Off

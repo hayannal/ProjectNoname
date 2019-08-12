@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MEC;
 
 public class GatePillar : MonoBehaviour
 {
@@ -67,36 +68,26 @@ public class GatePillar : MonoBehaviour
 			if (hitObject == null)
 				continue;
 
-			StartCoroutine(NextMapProcess());
+			Timing.RunCoroutine(NextMapProcess());
 			break;
 		}
 	}
 
 	bool _processing = false;
-	WaitForSeconds _waitForSeconds0dot2;
-	WaitForSeconds _waitForSeconds0dot5;
-	WaitForSeconds _waitForSeconds0dot8;
-	IEnumerator NextMapProcess()
+	IEnumerator<float> NextMapProcess()
 	{
 		if (_processing)
 			yield break;
 
 		_processing = true;
 
-		//yield return new WaitForSeconds(2.2f);
-
-		if (_waitForSeconds0dot2 == null)
-			_waitForSeconds0dot2 = new WaitForSeconds(0.2f);
-		if (_waitForSeconds0dot5 == null)
-			_waitForSeconds0dot5 = new WaitForSeconds(0.5f);
-
-		yield return _waitForSeconds0dot2;
+		yield return Timing.WaitForSeconds(0.2f);
 		changeEffectParticleRootObject.SetActive(true);
 
-		yield return _waitForSeconds0dot5;
+		yield return Timing.WaitForSeconds(0.5f);
 
 		FadeCanvas.instance.FadeOut(0.2f);
-		yield return _waitForSeconds0dot2;
+		yield return Timing.WaitForSeconds(0.2f);
 
 		StageManager.instance.NextStage();
 		gameObject.SetActive(false);

@@ -42,7 +42,7 @@ public class CustomFollowCamera : MonoBehaviour
 	{
 		get
 		{
-			Vector3 result = targetTransform.position - transform.forward * distanceToTarget;
+			Vector3 result = targetTransform.position - cachedTransform.forward * distanceToTarget;
 			if (_quadLoaded && checkPlaneLeftRightQuad)
 			{
 				if (result.x < _quadLeft - LEFT_LIMIT)
@@ -67,11 +67,20 @@ public class CustomFollowCamera : MonoBehaviour
 	public void Awake()
 	{
 		instance = this;
-		transform.position = cameraRelativePosition;
+		cachedTransform.position = cameraRelativePosition;
 	}
 
+	public bool immediatelyUpdate { set { _immediatelyUpdate = value; } }
+	bool _immediatelyUpdate;
 	public void LateUpdate()
 	{
+		if (_immediatelyUpdate)
+		{
+			cachedTransform.position = cameraRelativePosition;
+			_immediatelyUpdate = false;
+			return;
+		}
+
 		transform.position = Vector3.Lerp(transform.position, cameraRelativePosition, followSpeed * Time.deltaTime);
 	}
 
@@ -93,5 +102,23 @@ public class CustomFollowCamera : MonoBehaviour
 		_quadLeft = quadLeft;
 		_quadRight = quadRight;
 		_quadLoaded = true;
+	}
+
+
+
+
+
+
+
+
+	Transform _transform;
+	public Transform cachedTransform
+	{
+		get
+		{
+			if (_transform == null)
+				_transform = GetComponent<Transform>();
+			return _transform;
+		}
 	}
 }

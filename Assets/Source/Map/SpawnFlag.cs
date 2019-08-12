@@ -94,6 +94,7 @@ public class SpawnFlag : MonoBehaviour
 		{
 			BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.playerSpawnEffectPrefab, playerStartSpawnTransform.position, Quaternion.identity);
 			BattleInstanceManager.instance.playerActor.cachedTransform.position = playerStartSpawnTransform.position;
+			CustomFollowCamera.instance.immediatelyUpdate = true;
 			StageManager.instance.currentGatePillarSpawnPosition = gatePillarSpawnTransform.position;
 		}
 	}

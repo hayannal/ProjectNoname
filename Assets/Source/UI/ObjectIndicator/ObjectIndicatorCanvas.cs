@@ -7,15 +7,13 @@ using DG.Tweening;
 public class ObjectIndicatorCanvas : MonoBehaviour
 {
 	public Transform targetTransform;
-	public RectTransform textGroupRectTransform;
-	public RectTransform textBackImageRectTransform;
-	public RectTransform textBottomLineRectTransform;
-	public RectTransform textBottomLeftEndRectTransform;
-	public RectTransform textBottomRightEndRectTransform;
+	public RectTransform contentGroupRectTransform;
+	public RectTransform bottomLineImageRectTransform;
+	public RectTransform bottomLeftEndRectTransform;
+	public RectTransform bottomRightEndRectTransform;
 	public RectTransform lineImageRectTransform;
 	public Image lineImage;
 	public Vector2 lineOffset = new Vector2(0.0f, 0.0f);
-	public Text contextText;
 	public Vector2 contentOffset = new Vector2(0.75f, 1.0f);
 	public bool rightPosition = true;
 	bool useTweenOutBack = false;
@@ -28,31 +26,36 @@ public class ObjectIndicatorCanvas : MonoBehaviour
 	void Start()
     {
 		GetComponent<Canvas>().worldCamera = BattleInstanceManager.instance.GetCachedCameraMain();
-
-		if (targetTransform != null)
-			InitializeTarget(targetTransform);
+		InitializeTarget(targetTransform);
     }
 
-	void InitializeTarget(Transform t)
+	protected void InitializeTarget(Transform t)
 	{
+		if (t == null)
+			return;
+
 		_prevTargetTransform = targetTransform = t;
 		GetTargetHeightAndRadius(targetTransform);
-		textBottomLineRectTransform.pivot = new Vector2(rightPosition ? 0.0f : 1.0f, textBottomLineRectTransform.pivot.y);
+		bottomLineImageRectTransform.pivot = new Vector2(rightPosition ? 0.0f : 1.0f, bottomLineImageRectTransform.pivot.y);
 		_immediatelyUpdate = true;
 		_lastRightPosition = rightPosition;
 	}
 
 	void OnEnable()
 	{
-		if (targetTransform != null)
-			InitializeTarget(targetTransform);
+		InitializeTarget(targetTransform);
 	}
 
 	// Update is called once per frame
-	Transform _prevTargetTransform;
     void Update()
     {
-        if (_prevTargetTransform != targetTransform && targetTransform != null)
+		UpdateObjectIndicator();
+	}
+
+	Transform _prevTargetTransform;
+	protected void UpdateObjectIndicator()
+	{
+		if (_prevTargetTransform != targetTransform && targetTransform != null)
 		{
 			InitializeTarget(targetTransform);
 		}
@@ -119,14 +122,14 @@ public class ObjectIndicatorCanvas : MonoBehaviour
 		}
 
 		desiredPosition.y += contentOffset.y;
-		deltaX = _targetRadius + lineOffset.x + contentOffset.x + textBackImageRectTransform.sizeDelta.x * 0.5f;
+		deltaX = _targetRadius + lineOffset.x + contentOffset.x + contentGroupRectTransform.sizeDelta.x * 0.5f;
 		desiredPosition.x += rightPosition ? deltaX : -deltaX;
 
 		if (_immediatelyUpdate)
 		{
-			textGroupRectTransform.position = desiredPosition;
+			contentGroupRectTransform.position = desiredPosition;
 			_immediatelyUpdate = false;
-			_immediatelyAlphaDistance = Mathf.Abs(textGroupRectTransform.position.x - targetTransform.position.x);
+			_immediatelyAlphaDistance = Mathf.Abs(contentGroupRectTransform.position.x - targetTransform.position.x);
 		}
 		else
 		{
@@ -140,7 +143,7 @@ public class ObjectIndicatorCanvas : MonoBehaviour
 
 		// 선은 rightPosition으로 바로 체크하지 않고
 		// 마지막으로 설정된걸 쓰다가 수직정도로 이동이 이루어질때 자동으로 바꾸게 한다.
-		Vector3 diff = (_lastRightPosition ? textBottomLeftEndRectTransform.position : textBottomRightEndRectTransform.position) - lineImageRectTransform.position;
+		Vector3 diff = (_lastRightPosition ? bottomLeftEndRectTransform.position : bottomRightEndRectTransform.position) - lineImageRectTransform.position;
 		// 일반적 방향벡터와 달리 여기서 쓰는 lineImage는 y축(0, 1, 0)을 바라보는 벡터이기 때문에 LookRotation을 쓰고난 후 90를 돌려줘야 맞아떨어진다.
 		lineImageRectTransform.rotation = Quaternion.LookRotation(diff) * Quaternion.Euler(90.0f, 0.0f, 0.0f);
 		lineImageRectTransform.sizeDelta = new Vector2(lineImageRectTransform.sizeDelta.x, diff.magnitude);
@@ -150,19 +153,19 @@ public class ObjectIndicatorCanvas : MonoBehaviour
 		{
 			if (_lastRightPosition)
 			{
-				if (textGroupRectTransform.position.x - targetTransform.position.x < 0.0f)
+				if (contentGroupRectTransform.position.x - targetTransform.position.x < 0.0f)
 					_lastRightPosition = rightPosition;
 			}
 			else
 			{
-				if (textGroupRectTransform.position.x - targetTransform.position.x > 0.0f)
+				if (contentGroupRectTransform.position.x - targetTransform.position.x > 0.0f)
 					_lastRightPosition = rightPosition;
 			}
 		}
 		#endregion
 
 		#region lineImage Alpha
-		float lineAlphaDistance = Mathf.Abs(textGroupRectTransform.position.x - targetTransform.position.x);
+		float lineAlphaDistance = Mathf.Abs(contentGroupRectTransform.position.x - targetTransform.position.x);
 		if (lineAlphaDistance < _immediatelyAlphaDistance - 0.5f)
 		{
 			float alpha = Mathf.Lerp(0.0f, 1.0f, (lineAlphaDistance / (_immediatelyAlphaDistance - 0.5f)));
@@ -177,7 +180,7 @@ public class ObjectIndicatorCanvas : MonoBehaviour
 
 	void SetTargetPosition(Vector3 desiredPosition)
 	{
-		Vector3 diff = textGroupRectTransform.position - desiredPosition;
+		Vector3 diff = contentGroupRectTransform.position - desiredPosition;
 		if (diff.sqrMagnitude < 2.0f * 2.0f || useTweenOutBack == false)
 		{
 			bool useLerp = false;
@@ -186,7 +189,7 @@ public class ObjectIndicatorCanvas : MonoBehaviour
 			if (useTweenOutBack == false) useLerp = true;
 			if (useLerp)
 			{
-				textGroupRectTransform.position = Vector3.Lerp(textGroupRectTransform.position, desiredPosition, Time.deltaTime * 5.0f);
+				contentGroupRectTransform.position = Vector3.Lerp(contentGroupRectTransform.position, desiredPosition, Time.deltaTime * 5.0f);
 			}
 		}
 		else
@@ -194,8 +197,8 @@ public class ObjectIndicatorCanvas : MonoBehaviour
 			if (_isTweening && _lastTweenDesiredPosition == desiredPosition)
 				return;
 
-			textGroupRectTransform.DOKill();
-			textGroupRectTransform.DOMove(desiredPosition, 1.2f).SetEase(Ease.OutBack, 2.0f, 0.0f).OnComplete(OnEaseComplete);
+			contentGroupRectTransform.DOKill();
+			contentGroupRectTransform.DOMove(desiredPosition, 1.2f).SetEase(Ease.OutBack, 2.0f, 0.0f).OnComplete(OnEaseComplete);
 			_lastTweenDesiredPosition = desiredPosition;
 			_isTweening = true;
 		}

@@ -269,16 +269,6 @@ public class BattleInstanceManager : MonoBehaviour
 	}
 	#endregion
 
-	#region Camera
-	Camera _cachedCameraMain = null;
-	public Camera GetCachedCameraMain()
-	{
-		if (_cachedCameraMain == null)
-			_cachedCameraMain = Camera.main;
-		return _cachedCameraMain;
-	}
-	#endregion
-
 	#region PlayerActor
 	public PlayerActor playerActor { get; set; }
 	#endregion

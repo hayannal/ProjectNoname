@@ -25,7 +25,7 @@ public class ObjectIndicatorCanvas : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
     {
-		GetComponent<Canvas>().worldCamera = BattleInstanceManager.instance.GetCachedCameraMain();
+		GetComponent<Canvas>().worldCamera = UIInstanceManager.instance.GetCachedCameraMain();
 		InitializeTarget(targetTransform);
     }
 

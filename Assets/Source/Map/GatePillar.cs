@@ -14,7 +14,8 @@ public class GatePillar : MonoBehaviour
 	// 이건 나중에 동적 로드하는 구조로 바꿔야할듯 싶다.
 	public GameObject descriptionObjectIndicatorPrefab;
 	public float descriptionObjectIndicatorShowDelayTime = 5.0f;
-	GameObject _indicatorObject;
+	ObjectIndicatorCanvas _objectIndicatorCanvas;
+	public GameObject imageObjectIndicatorPrefab;
 
 	void Awake()
 	{
@@ -25,6 +26,11 @@ public class GatePillar : MonoBehaviour
 	{
 		if (string.IsNullOrEmpty(StageManager.instance.currentGatePillarPreview))
 			_descriptionObjectIndicatorShowRemainTime = descriptionObjectIndicatorShowDelayTime;
+		else
+		{
+			_objectIndicatorCanvas = UIInstanceManager.instance.GetCachedObjectIndicatorCanvas(imageObjectIndicatorPrefab);
+			_objectIndicatorCanvas.GetComponent<ObjectIndicatorCanvas>().targetTransform = cachedTransform;
+		}
 	}
 
 	void OnDisable()
@@ -32,10 +38,10 @@ public class GatePillar : MonoBehaviour
 		particleRootObject.SetActive(false);
 		changeEffectParticleRootObject.SetActive(false);
 
-		if (_indicatorObject != null)
+		if (_objectIndicatorCanvas != null)
 		{
-			_indicatorObject.SetActive(false);
-			_indicatorObject = null;
+			_objectIndicatorCanvas.gameObject.SetActive(false);
+			_objectIndicatorCanvas = null;
 		}
 	}
 
@@ -48,8 +54,8 @@ public class GatePillar : MonoBehaviour
 			if (_descriptionObjectIndicatorShowRemainTime <= 0.0f)
 			{
 				_descriptionObjectIndicatorShowRemainTime = 0.0f;
-				_indicatorObject = BattleInstanceManager.instance.GetCachedObject(descriptionObjectIndicatorPrefab, Vector3.zero, Quaternion.identity);
-				_indicatorObject.GetComponent<ObjectIndicatorCanvas>().targetTransform = cachedTransform;
+				_objectIndicatorCanvas = UIInstanceManager.instance.GetCachedObjectIndicatorCanvas(descriptionObjectIndicatorPrefab);
+				_objectIndicatorCanvas.targetTransform = cachedTransform;
 			}
 		}
 	}

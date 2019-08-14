@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class PlayerIndicatorCanvas : ObjectIndicatorCanvas
 {
+	public GameObject buttonRootObject;
 	public Button buttonGroup;
 
 	// Start is called before the first frame update
@@ -18,6 +19,11 @@ public class PlayerIndicatorCanvas : ObjectIndicatorCanvas
 	void OnEnable()
 	{
 		InitializeTarget(targetTransform);
+	}
+
+	void OnDisable()
+	{
+		buttonRootObject.SetActive(false);
 	}
 
 	// Update is called once per frame

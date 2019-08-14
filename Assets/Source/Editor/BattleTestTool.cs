@@ -122,13 +122,9 @@ public class BattleTestTool : EditorWindow
 			monsterPrefab = (GameObject)EditorGUILayout.ObjectField("Monster Prefab :", monsterPrefab, typeof(GameObject), false);
 			if (GUILayout.Button("Spawn"))
 			{
-				StageTableData currentStageTableData = TableDataManager.instance.FindStageTableData(playChapter, playStage);
-				if (currentStageTableData != null)
-				{
-					StageManager.instance.currentMonstrStandardHp = currentStageTableData.standardHp;
-					StageManager.instance.currentMonstrStandardAtk = currentStageTableData.standardAtk;
-					StageManager.instance.currentMonstrStandardDef = currentStageTableData.standardDef;
-				}
+				StageTableData stageTableData = TableDataManager.instance.FindStageTableData(playChapter, playStage);
+				if (stageTableData != null)
+					StageManager.instance.currentStageTableData = stageTableData;
 				monsterInstance = BattleInstanceManager.instance.GetCachedObject(monsterPrefab, Vector3.forward, Quaternion.identity);
 			}
 			if (monsterInstance != null)

@@ -11,6 +11,7 @@ public class StageManager : MonoBehaviour
 	public GameObject defaultGroundSceneObject;
 	public GameObject gatePillarPrefab;
 	public GameObject fadeCanvasPrefab;
+	public GameObject playerIndicatorPrefab;
 
 	[Reorderable] public GameObject[] groundPrefabList;
 	[Reorderable] public GameObject[] wallPrefabList;
@@ -31,13 +32,42 @@ public class StageManager : MonoBehaviour
 		// temp code
 		_currentGroundObject = defaultGroundSceneObject;
 		BattleInstanceManager.instance.GetCachedObject(gatePillarPrefab, new Vector3(3.0f, 0.0f, 1.0f), Quaternion.identity);
+
+		// get next stage info
+		GetNextStageInfo();
 	}
 
-	public void NextStage()
+	void GetNextStageInfo()
 	{
+		int nextStage = playStage + 1;
+		_reservedNextMap = CalcNextStageInfo(playChapter, nextStage);
+
+		if (_nextStageTableData != null)
+		{
+			MapTableData mapTableData = TableDataManager.instance.FindMapTableData(_reservedNextMap);
+			if (mapTableData != null)
+				currentGatePillarPreview = mapTableData.gatePillarPreview;
+		}
+	}
+
+	public float currentMonstrStandardHp { get { return _currentStageTableData.standardHp; } }
+	public float currentMonstrStandardAtk { get { return _currentStageTableData.standardAtk; } }
+	public float currentMonstrStandardDef { get { return _currentStageTableData.standardDef; } }
+	public bool currentStageSwappable { get { return _currentStageTableData.swap; } }
+	StageTableData _currentStageTableData = null;
+	public StageTableData currentStageTableData { get { return _currentStageTableData; } set { _currentStageTableData = value; } }
+	public void MoveToNextStage()
+	{
+		if (existNextStageInfo == false)
+			return;
+
 		playStage += 1;
 
-		string currentMap = CalcStageInfo();
+		_currentStageTableData = _nextStageTableData;
+		_nextStageTableData = null;
+
+		string currentMap = _reservedNextMap;
+		_reservedNextMap = "";
 		Debug.LogFormat("CurrentMap = {0}", currentMap);
 
 		StageTestCanvas.instance.RefreshCurrentMapText(playChapter, playStage, currentMap);
@@ -46,37 +76,34 @@ public class StageManager : MonoBehaviour
 		if (mapTableData != null)
 		{
 			//defaultGroundSceneObject.SetActive(false);
-			currentGatePillarPreview = mapTableData.gatePillarPreview;
 			InstantiateMap(mapTableData);
 		}
+
+		GetNextStageInfo();
 	}
 
-	public float currentMonstrStandardHp { get; set; }
-	public float currentMonstrStandardAtk { get; set; }
-	public float currentMonstrStandardDef { get; set; }
-	public bool currentStageSwappable { get; set; }
+	public bool existNextStageInfo { get { return (_nextStageTableData != null && string.IsNullOrEmpty(_reservedNextMap) == false); } }
+	StageTableData _nextStageTableData = null;
+	string _reservedNextMap = "";
 	Dictionary<int, List<string>> _dicStageInfoByGrouping = new Dictionary<int, List<string>>();
 	Dictionary<int, int> _dicCurrentIndexByGrouping = new Dictionary<int, int>();
-	string CalcStageInfo()
+	string CalcNextStageInfo(int chapter, int stage)
 	{
-		StageTableData currentStageTableData = TableDataManager.instance.FindStageTableData(playChapter, playStage);
-		if (currentStageTableData == null)
+		_nextStageTableData = null;
+		StageTableData stageTableData = TableDataManager.instance.FindStageTableData(chapter, stage);
+		if (stageTableData == null)
 			return "";
+		_nextStageTableData = stageTableData;
 
-		currentMonstrStandardHp = currentStageTableData.standardHp;
-		currentMonstrStandardAtk = currentStageTableData.standardAtk;
-		currentMonstrStandardDef = currentStageTableData.standardDef;
-		currentStageSwappable = currentStageTableData.swap;
+		if (string.IsNullOrEmpty(stageTableData.overridingMap) == false)
+			return stageTableData.overridingMap;
 
-		if (string.IsNullOrEmpty(currentStageTableData.overridingMap) == false)
-			return currentStageTableData.overridingMap;
-
-		if (currentStageTableData.chapter > lastClearChapter || currentStageTableData.stage > lastClearStage)
-			return currentStageTableData.firstFixedMap;
+		if (stageTableData.chapter > lastClearChapter || stageTableData.stage > lastClearStage)
+			return stageTableData.firstFixedMap;
 
 		List<string> listStageId = null;
 		int currentIndex = 0;
-		int currentGrouping = currentStageTableData.grouping;
+		int currentGrouping = stageTableData.grouping;
 		if (_dicStageInfoByGrouping.ContainsKey(currentGrouping))
 		{
 			listStageId = _dicStageInfoByGrouping[currentGrouping];
@@ -92,9 +119,9 @@ public class StageManager : MonoBehaviour
 			for (int i = 0; i < TableDataManager.instance.stageTable.dataArray.Length; ++i)
 			{
 				StageTableData diffData = TableDataManager.instance.stageTable.dataArray[i];
-				if (currentStageTableData.chapter != diffData.chapter)
+				if (stageTableData.chapter != diffData.chapter)
 					continue;
-				if (currentStageTableData.grouping != diffData.grouping)
+				if (stageTableData.grouping != diffData.grouping)
 					continue;
 
 				if (diffData.chapter > lastClearChapter || diffData.stage > lastClearStage)
@@ -172,4 +199,12 @@ public class StageManager : MonoBehaviour
 
 	public Vector3 currentGatePillarSpawnPosition { get; set; }
 	public string currentGatePillarPreview { get; set; }
+
+
+
+	// temp code
+	public GameObject GetCurrentPowerSourcePrefab()
+	{
+		return null;
+	}
 }

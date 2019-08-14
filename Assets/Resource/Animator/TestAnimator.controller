@@ -1,5 +1,20 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-5308632335577584704
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebaa29644feeec143b4ef6156771ef54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0
+  EndTime: 1
+  state: 1
 --- !u!1102 &-4713780209319880699
 AnimatorState:
   serializedVersion: 5
@@ -12,7 +27,7 @@ AnimatorState:
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours:
-  - {fileID: 7641303024685208548}
+  - {fileID: 7890388024733355878}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -67,8 +82,8 @@ AnimatorState:
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours:
-  - {fileID: 8384262242418666}
-  - {fileID: 1652846384788400911}
+  - {fileID: 3609708685782898426}
+  - {fileID: 3392519660024912241}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -97,7 +112,7 @@ AnimatorController:
     m_DefaultFloat: 1
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -111,26 +126,7 @@ AnimatorController:
     m_IKPass: 0
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
---- !u!114 &8384262242418666
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTime: 0.1423
-  EndTime: 1
-  effectData: {fileID: 8331450023444192633, guid: 7b14a648f451dea4aaf232213110e7f1,
-    type: 3}
-  offset: {x: 0, y: 0, z: 0}
-  direction: {x: 0, y: 0, z: 1}
-  parentName: RightHandDummy
---- !u!114 &1652846384788400911
+--- !u!114 &3392519660024912241
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -153,6 +149,7 @@ MonoBehaviour:
   createPositionType: 1
   boneName: RightHandDummy
   offset: {x: 0, y: 0, z: 0}
+  useBoneRotation: 0
   areaRotationY: 0
   areaDistanceMin: 0
   areaDistanceMax: 0
@@ -160,7 +157,13 @@ MonoBehaviour:
   areaHeightMax: 0
   areaAngle: 0
   movementType: 0
-  startDirectionType: 0
+  startDirectionType: 2
+  startDirection: {x: 0, y: 0, z: 1}
+  bothRandomAngle: 1
+  leftRightRandomAngle: 0
+  leftRandomAngle: 0
+  rightRandomAngle: 0
+  upDownRandomAngle: 0
   speed: 80
   curve: 0
   curveAdd: 0
@@ -175,7 +178,7 @@ MonoBehaviour:
   weaponDummyName: 
   showHitBlink: 0
   showHitRimBlink: 1
---- !u!114 &4684102575178471670
+--- !u!114 &3609708685782898426
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -184,13 +187,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ebaa29644feeec143b4ef6156771ef54, type: 3}
+  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0
+  StartTime: 0.1423
   EndTime: 1
-  state: 1
---- !u!114 &7641303024685208548
+  effectData: {fileID: 8331450023444192633, guid: 7b14a648f451dea4aaf232213110e7f1,
+    type: 3}
+  offset: {x: 0, y: 0, z: 0}
+  direction: {x: 0, y: 0, z: 1}
+  parentName: RightHandDummy
+--- !u!114 &7890388024733355878
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -217,7 +224,7 @@ AnimatorState:
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours:
-  - {fileID: 4684102575178471670}
+  - {fileID: -5308632335577584704}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1

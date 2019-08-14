@@ -96,7 +96,7 @@ public class GatePillar : MonoBehaviour
 		FadeCanvas.instance.FadeOut(0.2f);
 		yield return Timing.WaitForSeconds(0.2f);
 
-		StageManager.instance.NextStage();
+		StageManager.instance.MoveToNextStage();
 		gameObject.SetActive(false);
 
 		FadeCanvas.instance.FadeIn(0.4f);

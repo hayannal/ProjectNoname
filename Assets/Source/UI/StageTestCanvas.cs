@@ -18,9 +18,4 @@ public class StageTestCanvas : MonoBehaviour
 	{
 		currentMapText.text = string.Format("chapter = {0} / stage = {1} / map = {2}", chapter, stage, map);
 	}
-
-	public void OnClickNextStage()
-	{
-		StageManager.instance.NextStage();
-	}
 }

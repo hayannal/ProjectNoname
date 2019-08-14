@@ -13,6 +13,12 @@ public class BattleModeProcessorBase
 		_mapLoaded = true;
 		_monsterSpawned = false;
 		_monsterSpawnCount = 0;
+
+		if (_playerIndicatorCanvas != null)
+		{
+			_playerIndicatorCanvas.gameObject.SetActive(false);
+			_playerIndicatorCanvas = null;
+		}
 	}
 
 	public void OnSpawnPlayer(PlayerActor playerActor)
@@ -30,6 +36,7 @@ public class BattleModeProcessorBase
 	{
 	}
 
+	PlayerIndicatorCanvas _playerIndicatorCanvas;
 	public void OnDieMonster(MonsterActor monsterActor)
 	{
 		--_monsterSpawnCount;
@@ -37,6 +44,12 @@ public class BattleModeProcessorBase
 		{
 			// all kill monster
 			BattleInstanceManager.instance.GetCachedObject(StageManager.instance.gatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
+
+			if (StageManager.instance.currentStageSwappable)
+			{
+				_playerIndicatorCanvas = (PlayerIndicatorCanvas)UIInstanceManager.instance.GetCachedObjectIndicatorCanvas(StageManager.instance.playerIndicatorPrefab);
+				_playerIndicatorCanvas.targetTransform = BattleInstanceManager.instance.playerActor.cachedTransform;
+			}
 		}
 	}
 }

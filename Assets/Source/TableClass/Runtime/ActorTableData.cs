@@ -28,4 +28,8 @@ public class ActorTableData
   float _moveSpeed;
   public float moveSpeed { get { return _moveSpeed; } set { _moveSpeed = value; } }
   
+  [SerializeField]
+  int _powerSource;
+  public int powerSource { get { return _powerSource; } set { _powerSource = value; } }
+  
 }

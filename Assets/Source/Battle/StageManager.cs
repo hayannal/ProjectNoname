@@ -203,8 +203,18 @@ public class StageManager : MonoBehaviour
 
 
 	// temp code
+	public GameObject[] powerSourcePrefabList;
 	public GameObject GetCurrentPowerSourcePrefab()
 	{
+		int playerPowerSourceIndex = 0;
+		if (BattleInstanceManager.instance.playerActor != null)
+		{
+			ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(BattleInstanceManager.instance.playerActor.actorId);
+			if (actorTableData != null)
+				playerPowerSourceIndex = actorTableData.powerSource;
+		}
+		if (playerPowerSourceIndex <= powerSourcePrefabList.Length)
+			return powerSourcePrefabList[playerPowerSourceIndex];
 		return null;
 	}
 }

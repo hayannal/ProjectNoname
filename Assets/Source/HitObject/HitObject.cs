@@ -195,6 +195,8 @@ public class HitObject : MonoBehaviour
 	#endregion
 
 
+	public StatusStructForHitObject statusStructForHitObject { get { return _statusStructForHitObject; } }
+
 	MeHitObject _signal;
 	float createTime;
 	StatusBase _statusBase = new StatusBase();

@@ -70,9 +70,10 @@ public class GatePillar : MonoBehaviour
 			Collider col = contact.otherCollider;
 			if (col == null)
 				continue;
-
 			HitObject hitObject = BattleInstanceManager.instance.GetHitObjectFromCollider(col);
 			if (hitObject == null)
+				continue;
+			if (hitObject.statusStructForHitObject.teamID == (int)Team.eTeamID.DefaultMonster)
 				continue;
 
 			Timing.RunCoroutine(NextMapProcess());

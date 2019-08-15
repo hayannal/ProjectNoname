@@ -67,13 +67,34 @@ public class CustomFollowCamera : MonoBehaviour
 	public void Awake()
 	{
 		instance = this;
-		cachedTransform.position = cameraRelativePosition;
+
+		if (targetTransform != null)
+			cachedTransform.position = cameraRelativePosition;
+	}
+
+	Transform _prevTargetTransform;
+	void Update()
+	{
+		if (_targetTransform == null)
+		{
+			if (BattleInstanceManager.instance.playerActor != null)
+				_targetTransform = BattleInstanceManager.instance.playerActor.cachedTransform;
+		}
+
+		if (_prevTargetTransform != targetTransform && targetTransform != null)
+		{
+			_immediatelyUpdate = true;
+			_prevTargetTransform = targetTransform;
+		}
 	}
 
 	public bool immediatelyUpdate { set { _immediatelyUpdate = value; } }
 	bool _immediatelyUpdate;
 	public void LateUpdate()
 	{
+		if (targetTransform == null)
+			return;
+
 		if (_immediatelyUpdate)
 		{
 			cachedTransform.position = cameraRelativePosition;
@@ -81,7 +102,7 @@ public class CustomFollowCamera : MonoBehaviour
 			return;
 		}
 
-		transform.position = Vector3.Lerp(transform.position, cameraRelativePosition, followSpeed * Time.deltaTime);
+		cachedTransform.position = Vector3.Lerp(cachedTransform.position, cameraRelativePosition, followSpeed * Time.deltaTime);
 	}
 
 	#endregion

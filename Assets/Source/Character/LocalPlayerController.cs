@@ -7,10 +7,6 @@ public sealed class LocalPlayerController : BaseCharacterController
 {
 	#region EDITOR EXPOSED FIELDS
 
-	[Header("CUSTOM CONTROLLER")]
-	[Tooltip("The character's follow camera.")]
-	public Transform playerCamera;
-
 	[Tooltip("Layers to be considered as ground (picking). Used by ground click detection.")]
 	[SerializeField]
 	public LayerMask groundMask = 1;            // Default layer
@@ -21,6 +17,7 @@ public sealed class LocalPlayerController : BaseCharacterController
 
 	Actor _actor;
 	ActionController _actionController;
+	Transform _cameraTransform;
 
 	#endregion
 
@@ -50,6 +47,19 @@ public sealed class LocalPlayerController : BaseCharacterController
 				return _actionController;
 			_actionController = GetComponent<ActionController>();
 			return _actionController;
+		}
+	}
+
+	public Transform cameraTransform
+	{
+		get
+		{
+			if (_cameraTransform != null)
+				return _cameraTransform;
+			Camera mainCamera = UIInstanceManager.instance.GetCachedCameraMain();
+			if (mainCamera != null)
+				_cameraTransform = mainCamera.transform;
+			return _cameraTransform;
 		}
 	}
 
@@ -131,7 +141,7 @@ public sealed class LocalPlayerController : BaseCharacterController
 
 		// Transform moveDirection vector to be relative to camera view direction
 
-		moveDirection = moveDirection.relativeTo(playerCamera);
+		moveDirection = moveDirection.relativeTo(cameraTransform);
 	}
 
 	#endregion

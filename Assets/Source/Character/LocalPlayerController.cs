@@ -82,6 +82,8 @@ public sealed class LocalPlayerController : BaseCharacterController
 
 		if (animator == null)
 			return;
+		if (actor.actorStatus.IsDie())
+			return;
 
 		// Compute move vector in local space - not needed
 

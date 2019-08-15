@@ -7,11 +7,23 @@ public class PathFinderController : BaseAgentController
 {
 	#region FIELDS
 
+	Actor _actor;
 	ActionController _actionController;
 
 	#endregion
 
 	#region PROPERTIES
+
+	public Actor actor
+	{
+		get
+		{
+			if (_actor != null)
+				return _actor;
+			_actor = GetComponent<Actor>();
+			return _actor;
+		}
+	}
 
 	public ActionController actionController
 	{
@@ -42,6 +54,8 @@ public class PathFinderController : BaseAgentController
 		// If no animator, return
 
 		if (animator == null)
+			return;
+		if (actor.actorStatus.IsDie())
 			return;
 
 		// Compute move vector in local space - not needed

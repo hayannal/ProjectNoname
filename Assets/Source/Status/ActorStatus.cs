@@ -60,9 +60,12 @@ public class ActorStatus : MonoBehaviour
 		OnChangedStatus();
 	}
 
-	void OnChangedStatus()
+	void OnChangedStatus(eActorStatus eType = eActorStatus.ExAmount)
 	{
-		actor.baseCharacterController.speed = GetValue(eActorStatus.MoveSpeed);
+		if (eType == eActorStatus.MoveSpeed || eType == eActorStatus.ExAmount)
+			actor.baseCharacterController.speed = GetValue(eActorStatus.MoveSpeed);
+		if (eType == eActorStatus.AttackSpeedAddRatio || eType == eActorStatus.ExAmount)
+			actor.actionController.OnChangedAttackSpeedAddRatio(GetValue(eActorStatus.AttackSpeedAddRatio));
 	}
 
 	public float GetValue(eActorStatus eType)

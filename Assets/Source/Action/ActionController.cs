@@ -319,6 +319,18 @@ public class ActionController : MonoBehaviour {
 	}
 	#endregion
 
+	#region Attack Ani Speed Ratio
+	int _attackAniSpeedRatioHash = 0;
+	public void OnChangedAttackSpeedAddRatio(float attackSpeedAddRatio)
+	{
+		if (_attackAniSpeedRatioHash == 0)
+			_attackAniSpeedRatioHash = BattleInstanceManager.instance.GetActionNameHash("AttackAniSpeedRatio");
+
+		float attackAniSpeedRatio = 1.0f + attackSpeedAddRatio * 0.3333f;
+		animator.SetFloat(_attackAniSpeedRatioHash, attackAniSpeedRatio);
+	}
+	#endregion
+
 	/*
 	void Update()
 	{

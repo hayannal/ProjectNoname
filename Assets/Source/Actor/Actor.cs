@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using ECM.Controllers;
 
 public class Actor : MonoBehaviour {
 
@@ -8,6 +9,7 @@ public class Actor : MonoBehaviour {
 
 	public string actorId;
 	public ActionController actionController { get; private set; }
+	public BaseCharacterController baseCharacterController { get; private set; }
 	//public MovementController movementController { get; private set; }
 	//public CastingProcessor castingProcessor { get; private set; }
 	public CooltimeProcessor cooltimeProcessor { get; private set; }
@@ -40,6 +42,7 @@ public class Actor : MonoBehaviour {
 		actionController = GetComponent<ActionController>();
 		if (actionController == null) actionController = gameObject.AddComponent<ActionController>();
 
+		baseCharacterController = GetComponent<BaseCharacterController>();
 		//movementController = GetComponent<MovementController>();
 		//if (movementController == null) movementController = gameObject.AddComponent<MovementController>();
 

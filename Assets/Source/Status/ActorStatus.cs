@@ -36,6 +36,8 @@ public class ActorStatus : MonoBehaviour
 
 		//if (isServer)
 		_statusBase._hp = GetValue(eActorStatus.MaxHP);
+
+		OnChangedStatus();
 	}
 
 	public void InitializeMonsterStatus(string monsterActorId)
@@ -54,6 +56,13 @@ public class ActorStatus : MonoBehaviour
 
 		//if (isServer)
 		_statusBase._hp = GetValue(eActorStatus.MaxHP);
+
+		OnChangedStatus();
+	}
+
+	void OnChangedStatus()
+	{
+		actor.baseCharacterController.speed = GetValue(eActorStatus.MoveSpeed);
 	}
 
 	public float GetValue(eActorStatus eType)

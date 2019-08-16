@@ -50,6 +50,9 @@ public class MonsterActor : Actor
 	{
 		base.InitializeActor();
 
+		MonsterTableData monsterTableData = TableDataManager.instance.FindMonsterTableData(actorId);
+		bossMonster = monsterTableData.boss;
+
 		team.teamID = (int)Team.eTeamID.DefaultMonster;
 		actorStatus.InitializeMonsterStatus(actorId);
 		monsterAI.InitializeAI();
@@ -94,10 +97,16 @@ public class MonsterActor : Actor
 	{
 		base.OnDie();
 
-		if (_monsterHPGauge != null)
+		if (bossMonster)
 		{
-			_monsterHPGauge.gameObject.SetActive(false);
-			_monsterHPGauge = null;
+		}
+		else
+		{
+			if (_monsterHPGauge != null)
+			{
+				_monsterHPGauge.gameObject.SetActive(false);
+				_monsterHPGauge = null;
+			}
 		}
 
 		if (pathFinderController.agent.hasPath)

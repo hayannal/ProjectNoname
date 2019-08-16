@@ -32,4 +32,8 @@ public class MonsterTableData
   float _moveSpeed;
   public float moveSpeed { get { return _moveSpeed; } set { _moveSpeed = value; } }
   
+  [SerializeField]
+  bool _boss;
+  public bool boss { get { return _boss; } set { _boss = value; } }
+  
 }

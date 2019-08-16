@@ -45,6 +45,11 @@ public class PlayerActor : Actor
 		BattleManager.instance.OnSpawnPlayer(this);
 	}
 
+	public override void OnChangedHP()
+	{
+		
+	}
+
 	public override void OnDie()
 	{
 		base.OnDie();

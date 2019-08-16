@@ -147,6 +147,7 @@ public class ActorStatus : MonoBehaviour
 	{
 		_statusBase._hp += addHP;
 		_statusBase._hp = Mathf.Clamp(_statusBase._hp, 0, GetValue(eActorStatus.MaxHP));
+		actor.OnChangedHP();
 		if (_statusBase._hp <= 0)
 		{
 			_statusBase._hp = 0.0f;

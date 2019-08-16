@@ -19,6 +19,11 @@ public class BattleManager : MonoBehaviour
 	public GameObject monsterDisableEffectObject;
 	public GameObject playerSpawnEffectPrefab;
 
+	public GameObject monsterHPGaugeRootCanvasPrefab;
+	public GameObject monsterHPGaugePrefab;
+	public GameObject bossMonsterHPGaugePrefab;
+	public GameObject playerHPGaugePrefab;
+
 	void Awake()
 	{
 		_instance = this;

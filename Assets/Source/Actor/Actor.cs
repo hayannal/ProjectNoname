@@ -75,6 +75,11 @@ public class Actor : MonoBehaviour {
 		}
 	}
 
+	public virtual void OnChangedHP()
+	{
+
+	}
+
 	public virtual void OnDie()
 	{
 		actionController.PlayActionByActionName("Die");

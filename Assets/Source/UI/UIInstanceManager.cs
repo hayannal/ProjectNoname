@@ -25,16 +25,16 @@ public class UIInstanceManager : MonoBehaviour
 	}
 	#endregion
 
-	Dictionary<GameObject, List<ObjectIndicatorCanvas>> _dicInstancePool = new Dictionary<GameObject, List<ObjectIndicatorCanvas>>();
+	Dictionary<GameObject, List<ObjectIndicatorCanvas>> _dicObjectIndicatorInstancePool = new Dictionary<GameObject, List<ObjectIndicatorCanvas>>();
 	public ObjectIndicatorCanvas GetCachedObjectIndicatorCanvas(GameObject prefab, Transform parentTransform = null)
 	{
 		List<ObjectIndicatorCanvas> listCachedObjectIndicatorCanvas = null;
-		if (_dicInstancePool.ContainsKey(prefab))
-			listCachedObjectIndicatorCanvas = _dicInstancePool[prefab];
+		if (_dicObjectIndicatorInstancePool.ContainsKey(prefab))
+			listCachedObjectIndicatorCanvas = _dicObjectIndicatorInstancePool[prefab];
 		else
 		{
 			listCachedObjectIndicatorCanvas = new List<ObjectIndicatorCanvas>();
-			_dicInstancePool.Add(prefab, listCachedObjectIndicatorCanvas);
+			_dicObjectIndicatorInstancePool.Add(prefab, listCachedObjectIndicatorCanvas);
 		}
 
 		for (int i = 0; i < listCachedObjectIndicatorCanvas.Count; ++i)
@@ -52,4 +52,41 @@ public class UIInstanceManager : MonoBehaviour
 		listCachedObjectIndicatorCanvas.Add(objectIndicatorCanvas);
 		return objectIndicatorCanvas;
 	}
+
+	#region Monster Gauge
+	MonsterHPGaugeRootCanvas _cachedMonsterHPGaugeRootCanvas = null;
+	MonsterHPGaugeRootCanvas GetCachedMonsterHPGaugeRootCanvas()
+	{
+		if (_cachedMonsterHPGaugeRootCanvas == null)
+			_cachedMonsterHPGaugeRootCanvas = Instantiate<GameObject>(BattleManager.instance.monsterHPGaugeRootCanvasPrefab).GetComponent<MonsterHPGaugeRootCanvas>();
+		return _cachedMonsterHPGaugeRootCanvas;
+	}
+
+	Dictionary<GameObject, List<MonsterHPGauge>> _dicMonsterHPGaugeInstancePool = new Dictionary<GameObject, List<MonsterHPGauge>>();
+	public MonsterHPGauge GetCachedMonsterHPgauge(GameObject prefab)
+	{
+		List<MonsterHPGauge> listCachedMonsterHPGauge = null;
+		if (_dicMonsterHPGaugeInstancePool.ContainsKey(prefab))
+			listCachedMonsterHPGauge = _dicMonsterHPGaugeInstancePool[prefab];
+		else
+		{
+			listCachedMonsterHPGauge = new List<MonsterHPGauge>();
+			_dicMonsterHPGaugeInstancePool.Add(prefab, listCachedMonsterHPGauge);
+		}
+
+		for (int i = 0; i < listCachedMonsterHPGauge.Count; ++i)
+		{
+			if (!listCachedMonsterHPGauge[i].gameObject.activeSelf)
+			{
+				listCachedMonsterHPGauge[i].gameObject.SetActive(true);
+				return listCachedMonsterHPGauge[i];
+			}
+		}
+
+		GameObject newObject = Instantiate<GameObject>(prefab, GetCachedMonsterHPGaugeRootCanvas().cachedTransform);
+		MonsterHPGauge monsterHPGauge = newObject.GetComponent<MonsterHPGauge>();
+		listCachedMonsterHPGauge.Add(monsterHPGauge);
+		return monsterHPGauge;
+	}
+	#endregion
 }

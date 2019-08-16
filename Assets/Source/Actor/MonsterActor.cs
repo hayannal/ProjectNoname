@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class MonsterActor : Actor
 {
+	public float monsterHpGaugeWidth = 1.0f;
+	public float monsterHpGaugeOffsetY = 0.0f;
+
+	public bool bossMonster { get; private set; }
 	public PathFinderController pathFinderController { get; private set; }
 	public MonsterAI monsterAI { get; private set; }
 
@@ -69,9 +73,32 @@ public class MonsterActor : Actor
 	}
 	#endregion
 
+	MonsterHPGauge _monsterHPGauge;
+	public override void OnChangedHP()
+	{
+		if (bossMonster)
+		{
+		}
+		else
+		{
+			if (_monsterHPGauge == null)
+			{
+				_monsterHPGauge = UIInstanceManager.instance.GetCachedMonsterHPgauge(BattleManager.instance.monsterHPGaugePrefab);
+				_monsterHPGauge.InitializeGauge(this);
+			}
+			_monsterHPGauge.OnChangedHP(actorStatus.GetHPRatio());
+		}
+	}
+
 	public override void OnDie()
 	{
 		base.OnDie();
+
+		if (_monsterHPGauge != null)
+		{
+			_monsterHPGauge.gameObject.SetActive(false);
+			_monsterHPGauge = null;
+		}
 
 		if (pathFinderController.agent.hasPath)
 			pathFinderController.agent.ResetPath();

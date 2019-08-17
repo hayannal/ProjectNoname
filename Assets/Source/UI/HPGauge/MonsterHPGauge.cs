@@ -20,6 +20,7 @@ public class MonsterHPGauge : MonoBehaviour
 	{
 		_lateFillDelayRemainTime = 0.0f;
 		_lateFillLerpStarted = false;
+		_prevTargetPosition = -Vector3.up;
 	}
 
 	public void InitializeGauge(MonsterActor monsterActor)
@@ -34,10 +35,19 @@ public class MonsterHPGauge : MonoBehaviour
 	}
 
 	// Update is called once per frame
+	Vector3 _prevTargetPosition = -Vector3.up;
 	void Update()
 	{
-		UpdateGaugePosition();
-		UpdateGaugeRotation();
+		if (_targetTransform != null)
+		{
+			if (_targetTransform.position != _prevTargetPosition)
+			{
+				UpdateGaugePosition();
+				UpdateGaugeRotation();
+				_prevTargetPosition = _targetTransform.position;
+			}			
+		}
+		
 		UpdateLateFill();
 	}
 
@@ -55,9 +65,6 @@ public class MonsterHPGauge : MonoBehaviour
 	float _offsetY;
 	void UpdateGaugePosition()
 	{
-		if (_targetTransform == null)
-			return;
-
 		Vector3 desiredPosition = _targetTransform.position;
 		desiredPosition.y += _targetHeight;
 		desiredPosition.y += _offsetY;
@@ -109,7 +116,10 @@ public class MonsterHPGauge : MonoBehaviour
 		lateFillRectTransform.anchorMax = Vector2.Lerp(lateFillRectTransform.anchorMax, hpFillRectTransform.anchorMax, Time.deltaTime * 4.0f);
 
 		if (Mathf.Abs(lateFillRectTransform.anchorMax.x - hpFillRectTransform.anchorMax.x) < 0.005f)
+		{
+			lateFillRectTransform.anchorMax = hpFillRectTransform.anchorMax;
 			_lateFillLerpStarted = false;
+		}
 	}
 
 

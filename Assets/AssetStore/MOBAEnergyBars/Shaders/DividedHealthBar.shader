@@ -4,9 +4,9 @@ Shader "UI/DividedHealthBar"
 {
 	Properties
 	{
-		_MainTex("Main (RGB)", 2D) = "white" { }
+		_MainTex("Main (RGB) Not Use", 2D) = "white" { }
 		_CellTex("Cell (RGB)", 2D) = "white" { }
-		_BurnTex("Cell (RGB)", 2D) = "white" { }
+		_BurnTex("Burn (RGB)", 2D) = "white" { }
 		_FullColour ("FullColour", Color) = (1.0, 1.0, 1.0, 1.0)
 		_EmptyColour("EmptyColour", Color) = (1.0, 1.0, 1.0, 1.0)
 		_GapColour("GapColour", Color) = (1.0, 1.0, 1.0, 1.0)
@@ -21,7 +21,7 @@ Shader "UI/DividedHealthBar"
 		_Value("Value", Float) = 1.0
 		_MaxValue("MaxValue", Float) = 1.0
 		_DamageValue("Damage Value", Float) = 0.0
-		_Flip("Flip", Float) = 0.0
+		//_Flip("Flip", Float) = 0.0
 
 		_AAF("Anti Aliasing Factor", Float) = 0.0
 	}
@@ -52,7 +52,7 @@ Shader "UI/DividedHealthBar"
 			{
 				float2 uv : TEXCOORD0;
 				float4 vertex : SV_POSITION;
-				float2 screenPos : TEXCOORD1;
+				//float2 screenPos : TEXCOORD1;
 			};
 
 			fixed4 _FullColour;
@@ -69,7 +69,7 @@ Shader "UI/DividedHealthBar"
 			float _Value;
 			float _MaxValue;
 			float _DamageValue;
-			float _Flip;
+			//float _Flip;
 
 			float _AAF;
 			float _AAFX;
@@ -89,30 +89,41 @@ Shader "UI/DividedHealthBar"
 				v2f o;
 				o.vertex = UnityObjectToClipPos(v.vertex);
 				o.uv = TRANSFORM_TEX(v.uv, _CellTex);
-				if (_Flip > 0.5) o.uv.x = o.uv.x*-1.0 + 1.0;
-				o.screenPos = ComputeScreenPos(o.vertex);
+				//if (_Flip > 0.5) o.uv.x = o.uv.x*-1.0 + 1.0;
+				//o.screenPos = ComputeScreenPos(o.vertex);
 				return o;
 			}
 			
 			inline fixed4 smallPattern(float2 uv)
 			{
-				return lerp(
+				fixed4 c = lerp(
 					cellColour,
 					_GapColour,
 					smoothstep(cellSize - _AAFX, cellSize + _AAFX, uv.x));
+				if (uv.y < 0.5f)
+					c = cellColour;
+				return c;
+				//return lerp(
+				//	cellColour,
+				//	_GapColour,
+				//	smoothstep(cellSize - _AAFX, cellSize + _AAFX, uv.x));
 			}
 
 			inline fixed4 pattern(float2 uv)
 			{
 				fixed4 c = lerp(
-					_GapColour,
-					lerp(
-						smallPattern(float2(smlPatternU, uv.y)),
-						cellColour,
-						smoothstep(cellSize + _GapSize - _AAFX, cellSize + _GapSize + _AAFX, smlPatternU)
-					),
-					smoothstep(-_AAFX, _AAFX, smlPatternU)
-				);
+					smallPattern(float2(smlPatternU, uv.y)),
+					cellColour,
+					smoothstep(cellSize + _GapSize - _AAFX, cellSize + _GapSize + _AAFX, smlPatternU));
+				//fixed4 c = lerp(
+				//	_GapColour,
+				//	lerp(
+				//		smallPattern(float2(smlPatternU, uv.y)),
+				//		cellColour,
+				//		smoothstep(cellSize + _GapSize - _AAFX, cellSize + _GapSize + _AAFX, smlPatternU)
+				//	),
+				//	smoothstep(-_AAFX, _AAFX, smlPatternU)
+				//);
 				c = lerp(
 					c,
 					_BigGapColour,
@@ -148,7 +159,8 @@ Shader "UI/DividedHealthBar"
 				patternSize = _BigGapSize + (_BigGapInterval-1)*_GapSize + _BigGapInterval*cellSize;
 				float patternX = fmod(i.uv.x, patternSize);
 				smlPatternU = fmod(patternX, cellSize + _GapSize);
-				float cellUV = float2(i.uv.y, clamp(smlPatternU, 0, cellSize) / cellSize);
+				//float cellUV = float2(i.uv.y, clamp(smlPatternU, 0, cellSize) / cellSize);
+				float cellUV = i.uv.y;
 
 				// Only calculate cell colours here once, avoid multiple texture lookups
 				cellColour = _FullColour*tex2D(_CellTex, cellUV);

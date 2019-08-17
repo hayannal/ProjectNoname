@@ -42,12 +42,14 @@ public class PlayerActor : Actor
 		skillProcessor.InitializeSkill(actorId);
 		actorStatus.InitializeActorStatus(actorId);
 
+		PlayerGaugeCanvas.instance.InitializeGauge(this);
+
 		BattleManager.instance.OnSpawnPlayer(this);
 	}
 
 	public override void OnChangedHP()
 	{
-		
+		PlayerGaugeCanvas.instance.OnChangedHP(this);
 	}
 
 	public override void OnDie()

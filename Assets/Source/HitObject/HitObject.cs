@@ -274,6 +274,8 @@ public class HitObject : MonoBehaviour
 
 	void Update()
 	{
+		UpdatePhysic();
+
 		if (_signal.lifeTime > 0.0f && _signal.targetDetectType == eTargetDetectType.Area)
 		{
 			CheckHitArea(transform.position, transform.forward, _signal, _statusBase, _statusStructForHitObject);
@@ -326,7 +328,22 @@ public class HitObject : MonoBehaviour
 				_listDisableObjectAfterCollision[i].SetActive(false);
 
 			if (_disableSelfObjectAfterCollision)
-				FinalizeHitObject();
+				_finalizeHitObjectOnCollision = true;
+				//FinalizeHitObject();
+		}
+	}
+
+	// HitObject의 OnCollisionEnter가 제일 먼저 호출되면서 FinalizeHitObject해버리면
+	// 같은 프레임의 AffectorProcessor의 OnCollisionEnter 가 제대로 동작하지 않을 수 있다.
+	// 그래서 즉시 FinalizeHitObject하는게 아니라 해당 프레임의 Update에서 처리하기로 한다.
+	// Unity 호출 순서상 OnCollision 계열 함수 - Update - LateUpdate 순서다.
+	bool _finalizeHitObjectOnCollision;
+	void UpdatePhysic()
+	{
+		if (_finalizeHitObjectOnCollision)
+		{
+			FinalizeHitObject();
+			_finalizeHitObjectOnCollision = false;
 		}
 	}
 

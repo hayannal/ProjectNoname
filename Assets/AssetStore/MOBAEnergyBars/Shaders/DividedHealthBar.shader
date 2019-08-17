@@ -45,6 +45,7 @@ Shader "UI/DividedHealthBar"
 			struct appdata
 			{
 				float4 vertex : POSITION;
+				float4 color : COLOR;
 				float2 uv : TEXCOORD0;
 			};
 
@@ -52,6 +53,7 @@ Shader "UI/DividedHealthBar"
 			{
 				float2 uv : TEXCOORD0;
 				float4 vertex : SV_POSITION;
+				fixed4 color : COLOR;
 				//float2 screenPos : TEXCOORD1;
 			};
 
@@ -89,6 +91,7 @@ Shader "UI/DividedHealthBar"
 				v2f o;
 				o.vertex = UnityObjectToClipPos(v.vertex);
 				o.uv = TRANSFORM_TEX(v.uv, _CellTex);
+				o.color = v.color;
 				//if (_Flip > 0.5) o.uv.x = o.uv.x*-1.0 + 1.0;
 				//o.screenPos = ComputeScreenPos(o.vertex);
 				return o;
@@ -194,6 +197,7 @@ Shader "UI/DividedHealthBar"
 				float a = smoothstep(0, _AAFY, i.uv.y) * (1-  smoothstep(1 - _AAFY, 1, i.uv.y));
 				a *= smoothstep(0, _AAFX, i.uv.x) * (1 - smoothstep(1 - _AAFX, 1, i.uv.x));
 				c.a *= a;
+				c *= i.color;
 
 				return c;
 			}

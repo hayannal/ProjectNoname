@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+#define USE_LERP_DAMAGE
+#define USE_ADD_RENDER_QUEUE
+
+using UnityEngine;
 using UnityEngine.UI;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -75,7 +78,10 @@ public class MOBAEnergyBar : MonoBehaviour {
         {
             SetValueNoBurn(MaxValue);
         }
-        damage = Mathf.Max(0, damage - BurnRate * MaxValue * Time.deltaTime);
+#if USE_LERP_DAMAGE
+#else
+		damage = Mathf.Max(0, damage - BurnRate * MaxValue * Time.deltaTime);
+#endif
 #if UNITY_EDITOR
         if (EditorApplication.isPlaying && lastValue > Value)
         {
@@ -98,7 +104,21 @@ public class MOBAEnergyBar : MonoBehaviour {
         updatePropertiesIfChanged();
     }
 
-    void OnValidate()
+#if USE_LERP_DAMAGE
+	public bool UpdateLerpDamage()
+	{
+		damage = Mathf.Lerp(damage, 0.0f, Time.deltaTime * 4.0f);
+
+		if (Mathf.Abs(damage) < MaxValue * 0.01f)
+		{
+			damage = 0.0f;
+			return true;
+		}
+		return false;
+	}
+#endif
+
+	void OnValidate()
     {
         if (enabled)
             setProperties();
@@ -120,7 +140,10 @@ public class MOBAEnergyBar : MonoBehaviour {
     {
         img = GetComponent<Image>();
         m = new Material(___AHBShader);
-        m.SetFloat("_AAF", 1.0f);
+#if USE_ADD_RENDER_QUEUE
+		m.renderQueue += 10;
+#endif
+		m.SetFloat("_AAF", 1.0f);
         img.material = m;
     }
     

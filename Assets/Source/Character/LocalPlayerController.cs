@@ -132,6 +132,10 @@ public sealed class LocalPlayerController : BaseCharacterController
 
 	protected override void HandleInput()
 	{
+		// moveDirection 도 막아야 회전을 안한다.
+		if (actor.actorStatus.IsDie())
+			return;
+
 		// Handle your custom input here...
 
 		moveDirection = new Vector3

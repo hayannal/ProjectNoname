@@ -19,6 +19,7 @@ public class PlayerGaugeCanvas : MonoBehaviour
 	static PlayerGaugeCanvas _instance = null;
 
 	public CanvasGroup canvasGroup;
+	public GameObject offsetRootObject;
 	public RectTransform widthRectTransform;
 	public MOBAEnergyBar mobaEnergyBar;
 	public Text levelText;
@@ -112,7 +113,7 @@ public class PlayerGaugeCanvas : MonoBehaviour
 				_lateFillDelayRemainTime = LateFillDelay;
 		}
 
-		_lastRatio = playerActor.actorStatus.GetHPRatio();
+		_lastRatio = hpRatio;
 	}
 
 	const float LateFillDelay = 0.9f;
@@ -146,6 +147,8 @@ public class PlayerGaugeCanvas : MonoBehaviour
 	{
 		if (_lastRatio < 1.0f)
 		{
+			if (!offsetRootObject.activeSelf)
+				offsetRootObject.SetActive(true);
 			canvasGroup.alpha = DEFAULT_CANVAS_GROUP_ALPHA;
 			_alphaRemainTime = 0.0f;
 			return;
@@ -168,7 +171,10 @@ public class PlayerGaugeCanvas : MonoBehaviour
 		{
 			_alphaFadeRemainTime -= Time.deltaTime;
 			if (_alphaFadeRemainTime <= 0.0f)
+			{
+				offsetRootObject.SetActive(false);
 				_alphaFadeRemainTime = 0.0f;
+			}
 			canvasGroup.alpha = _alphaFadeRemainTime * (1.0f / ALPHA_FADE_TIME) * DEFAULT_CANVAS_GROUP_ALPHA;
 		}
 	}

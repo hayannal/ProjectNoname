@@ -124,10 +124,7 @@ public class StageManager : MonoBehaviour
 				if (stageTableData.grouping != diffData.grouping)
 					continue;
 
-				if (diffData.chapter > lastClearChapter || diffData.stage > lastClearStage)
-					break;
-
-				if (listStageId.Contains(diffData.firstFixedMap) == false)
+				if (listStageId.Contains(diffData.firstFixedMap) == false && (diffData.chapter < lastClearChapter && diffData.stage < lastClearStage))
 					listStageId.Add(diffData.firstFixedMap);
 
 				for (int j = 0; j < diffData.addRandomMap.Length; ++j)

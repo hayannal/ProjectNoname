@@ -48,4 +48,8 @@ public class StageTableData
   string[] _addRandomMap = new string[0];
   public string[] addRandomMap { get { return _addRandomMap; } set { _addRandomMap = value; } }
   
+  [SerializeField]
+  float _bossHpRatioPer1Line;
+  public float bossHpRatioPer1Line { get { return _bossHpRatioPer1Line; } set { _bossHpRatioPer1Line = value; } }
+  
 }

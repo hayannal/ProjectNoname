@@ -82,6 +82,22 @@ public class BattleTestTool : EditorWindow
 
 			playChapter = EditorGUILayout.IntField("Chapter :", playChapter);
 			playStage = EditorGUILayout.IntField("Stage :", playStage);
+
+			GUILayout.BeginHorizontal();
+			{
+				if (GUILayout.Button("Get Stage"))
+				{
+					playChapter = StageManager.instance.playChapter;
+					playStage = StageManager.instance.playStage;
+				}
+				if (GUILayout.Button("Set Next Stage"))
+				{
+					StageManager.instance.playChapter = playChapter;
+					StageManager.instance.playStage = playStage - 1;
+					StageManager.instance.GetNextStageInfo();
+				}
+			}
+			GUILayout.EndHorizontal();
 		}
 		GUILayout.EndVertical();
 	}

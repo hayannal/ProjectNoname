@@ -37,7 +37,7 @@ public class StageManager : MonoBehaviour
 		GetNextStageInfo();
 	}
 
-	void GetNextStageInfo()
+	public void GetNextStageInfo()
 	{
 		int nextStage = playStage + 1;
 		_reservedNextMap = CalcNextStageInfo(playChapter, nextStage);

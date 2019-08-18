@@ -57,6 +57,9 @@ public class MonsterActor : Actor
 		actorStatus.InitializeMonsterStatus(actorId);
 		monsterAI.InitializeAI();
 
+		if (bossMonster)
+			BossMonsterGaugeCanvas.instance.InitializeGauge(this);
+
 		BattleManager.instance.OnSpawnMonster(this);
 		BattleInstanceManager.instance.OnInitializePathFinderAgent(pathFinderController.agent.agentTypeID);
 	}
@@ -71,6 +74,9 @@ public class MonsterActor : Actor
 		actorStatus.InitializeMonsterStatus(actorId);
 		monsterAI.InitializeAI();
 
+		if (bossMonster)
+			BossMonsterGaugeCanvas.instance.InitializeGauge(this);
+
 		BattleManager.instance.OnSpawnMonster(this);
 		BattleInstanceManager.instance.OnInitializePathFinderAgent(pathFinderController.agent.agentTypeID);
 	}
@@ -81,6 +87,7 @@ public class MonsterActor : Actor
 	{
 		if (bossMonster)
 		{
+			BossMonsterGaugeCanvas.instance.OnChangedHP(this);
 		}
 		else
 		{
@@ -99,6 +106,7 @@ public class MonsterActor : Actor
 
 		if (bossMonster)
 		{
+			BossMonsterGaugeCanvas.instance.gameObject.SetActive(false);
 		}
 		else
 		{

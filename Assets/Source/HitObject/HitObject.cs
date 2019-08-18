@@ -274,7 +274,8 @@ public class HitObject : MonoBehaviour
 
 	void Update()
 	{
-		UpdatePhysic();
+		if (UpdatePhysic() == false)
+			return;
 
 		if (_signal.lifeTime > 0.0f && _signal.targetDetectType == eTargetDetectType.Area)
 		{
@@ -338,13 +339,15 @@ public class HitObject : MonoBehaviour
 	// 그래서 즉시 FinalizeHitObject하는게 아니라 해당 프레임의 Update에서 처리하기로 한다.
 	// Unity 호출 순서상 OnCollision 계열 함수 - Update - LateUpdate 순서다.
 	bool _finalizeHitObjectOnCollision;
-	void UpdatePhysic()
+	bool UpdatePhysic()
 	{
 		if (_finalizeHitObjectOnCollision)
 		{
 			FinalizeHitObject();
 			_finalizeHitObjectOnCollision = false;
+			return true;
 		}
+		return false;
 	}
 
 	void EnableRigidbodyAndCollider(bool enable)

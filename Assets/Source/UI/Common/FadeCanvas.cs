@@ -23,6 +23,9 @@ public class FadeCanvas : MonoBehaviour
 	
 	public void FadeOut(float duration)
 	{
+		if (!gameObject.activeSelf)
+			gameObject.SetActive(true);
+
 		fadeImage.color = new Color(1.0f, 1.0f, 1.0f, 0.0f);
 		fadeImage.DOFade(1.0f, duration);
 	}
@@ -31,5 +34,20 @@ public class FadeCanvas : MonoBehaviour
 	{
 		//fadeImage.color = Color.white;
 		fadeImage.DOFade(0.0f, duration);
+		_duration = duration;
+	}
+
+	float _duration;
+	void Update()
+	{
+		if (_duration > 0.0f)
+		{
+			_duration -= Time.deltaTime;
+			if (_duration <= 0.0f)
+			{
+				_duration = 0.0f;
+				gameObject.SetActive(false);
+			}
+		}
 	}
 }

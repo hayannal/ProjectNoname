@@ -29,6 +29,11 @@ public class PlayerGaugeCanvas : MonoBehaviour
 		_defaultWidth = widthRectTransform.sizeDelta.x;
 	}
 
+	void Start()
+	{
+		canvasGroup.alpha = DEFAULT_CANVAS_GROUP_ALPHA;
+	}
+
 	void OnEnable()
 	{
 		_lateFillDelayRemainTime = 0.0f;
@@ -132,6 +137,7 @@ public class PlayerGaugeCanvas : MonoBehaviour
 			_lateFillLerpStarted = false;
 	}
 
+	const float DEFAULT_CANVAS_GROUP_ALPHA = 0.78125f;
 	float ALPHA_DELAY_TIME = 5.0f;
 	float _alphaRemainTime = 0.0f;
 	float ALPHA_FADE_TIME = 0.5f;
@@ -140,7 +146,7 @@ public class PlayerGaugeCanvas : MonoBehaviour
 	{
 		if (_lastRatio < 1.0f)
 		{
-			canvasGroup.alpha = 1.0f;
+			canvasGroup.alpha = DEFAULT_CANVAS_GROUP_ALPHA;
 			_alphaRemainTime = 0.0f;
 			return;
 		}
@@ -163,7 +169,7 @@ public class PlayerGaugeCanvas : MonoBehaviour
 			_alphaFadeRemainTime -= Time.deltaTime;
 			if (_alphaFadeRemainTime <= 0.0f)
 				_alphaFadeRemainTime = 0.0f;
-			canvasGroup.alpha = _alphaFadeRemainTime * (1.0f / ALPHA_FADE_TIME);
+			canvasGroup.alpha = _alphaFadeRemainTime * (1.0f / ALPHA_FADE_TIME) * DEFAULT_CANVAS_GROUP_ALPHA;
 		}
 	}
 

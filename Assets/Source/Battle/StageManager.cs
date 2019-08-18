@@ -98,7 +98,7 @@ public class StageManager : MonoBehaviour
 		if (string.IsNullOrEmpty(stageTableData.overridingMap) == false)
 			return stageTableData.overridingMap;
 
-		if (stageTableData.chapter > lastClearChapter || stageTableData.stage > lastClearStage)
+		if (string.IsNullOrEmpty(stageTableData.firstFixedMap) == false && (stageTableData.chapter > lastClearChapter || stageTableData.stage > lastClearStage))
 			return stageTableData.firstFixedMap;
 
 		List<string> listStageId = null;

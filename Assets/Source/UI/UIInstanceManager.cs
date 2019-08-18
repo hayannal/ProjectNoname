@@ -26,7 +26,7 @@ public class UIInstanceManager : MonoBehaviour
 	#endregion
 
 	Dictionary<GameObject, List<ObjectIndicatorCanvas>> _dicObjectIndicatorInstancePool = new Dictionary<GameObject, List<ObjectIndicatorCanvas>>();
-	public ObjectIndicatorCanvas GetCachedObjectIndicatorCanvas(GameObject prefab, Transform parentTransform = null)
+	public ObjectIndicatorCanvas GetCachedObjectIndicatorCanvas(GameObject prefab)
 	{
 		List<ObjectIndicatorCanvas> listCachedObjectIndicatorCanvas = null;
 		if (_dicObjectIndicatorInstancePool.ContainsKey(prefab))
@@ -41,13 +41,12 @@ public class UIInstanceManager : MonoBehaviour
 		{
 			if (!listCachedObjectIndicatorCanvas[i].gameObject.activeSelf)
 			{
-				listCachedObjectIndicatorCanvas[i].transform.parent = parentTransform;
 				listCachedObjectIndicatorCanvas[i].gameObject.SetActive(true);
 				return listCachedObjectIndicatorCanvas[i];
 			}
 		}
 
-		GameObject newObject = Instantiate<GameObject>(prefab, parentTransform);
+		GameObject newObject = Instantiate<GameObject>(prefab);
 		ObjectIndicatorCanvas objectIndicatorCanvas = newObject.GetComponent<ObjectIndicatorCanvas>();
 		listCachedObjectIndicatorCanvas.Add(objectIndicatorCanvas);
 		return objectIndicatorCanvas;

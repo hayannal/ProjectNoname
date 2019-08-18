@@ -151,7 +151,7 @@ public class PlayerGaugeCanvas : MonoBehaviour
 			return;
 		}
 
-		if (_alphaRemainTime == 0.0f && canvasGroup.alpha == 1.0f)
+		if (_alphaRemainTime == 0.0f && canvasGroup.alpha == DEFAULT_CANVAS_GROUP_ALPHA)
 			_alphaRemainTime = ALPHA_DELAY_TIME;
 
 		if (_alphaRemainTime > 0.0f)

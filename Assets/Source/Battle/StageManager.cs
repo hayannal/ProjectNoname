@@ -19,7 +19,7 @@ public class StageManager : MonoBehaviour
 
 	public int playChapter = 1;
 	public int playStage = 0;
-	public int lastClearChapter = 0;
+	public int lastClearChapter = 1;
 	public int lastClearStage = 0;
 
 	void Awake()
@@ -33,18 +33,33 @@ public class StageManager : MonoBehaviour
 		_currentGroundObject = defaultGroundSceneObject;
 		BattleInstanceManager.instance.GetCachedObject(gatePillarPrefab, new Vector3(3.0f, 0.0f, 1.0f), Quaternion.identity);
 
-		// get next stage info
+		// 차후에는 챕터의 0스테이지에서 시작하게 될텐데 0스테이지에서 쓸 맵을 알아내려면
+		// 진입전에 아래 함수를 수행해서 캐싱할 수 있어야한다.
+		// 방법은 세가지인데,
+		// 1. static으로 빼서 데이터 처리만 먼저 할 수 있게 하는 방법
+		// 2. DataManager 를 분리해서 데이터만 처리할 수 있게 하는 방법
+		// 3. 스테이지 매니저가 언제나 살아있는 싱글톤 클래스가 되는 방법
+		// 3은 다른 리소스도 들고있는데 살려둘 순 없으니 패스고 1은 너무 어거지다.
+		// 결국 재부팅시 데이터 캐싱등의 처리까지 하려면 2번이 제일 낫다.
+		bool result = StageDataManager.instance.CalcNextStageInfo(playChapter, playStage, lastClearChapter, lastClearStage);
+		if (result)
+		{
+			string startMap = StageDataManager.instance.reservedNextMap;
+			Debug.Log(startMap);
+		}
+
+		// get next stage info		
 		GetNextStageInfo();
 	}
 
 	public void GetNextStageInfo()
 	{
 		int nextStage = playStage + 1;
-		_reservedNextMap = CalcNextStageInfo(playChapter, nextStage);
+		StageDataManager.instance.CalcNextStageInfo(playChapter, nextStage, lastClearChapter, lastClearStage);
 
-		if (_nextStageTableData != null)
+		if (StageDataManager.instance.existNextStageInfo)
 		{
-			MapTableData mapTableData = TableDataManager.instance.FindMapTableData(_reservedNextMap);
+			MapTableData mapTableData = TableDataManager.instance.FindMapTableData(StageDataManager.instance.reservedNextMap);
 			if (mapTableData != null)
 				currentGatePillarPreview = mapTableData.gatePillarPreview;
 		}
@@ -59,17 +74,17 @@ public class StageManager : MonoBehaviour
 	public StageTableData currentStageTableData { get { return _currentStageTableData; } set { _currentStageTableData = value; } }
 	public void MoveToNextStage()
 	{
-		if (existNextStageInfo == false)
+		if (StageDataManager.instance.existNextStageInfo == false)
 			return;
 
 		playStage += 1;
 
-		_currentStageTableData = _nextStageTableData;
-		_nextStageTableData = null;
+		_currentStageTableData = StageDataManager.instance.nextStageTableData;
+		StageDataManager.instance.nextStageTableData = null;
 
-		string currentMap = _reservedNextMap;
-		_reservedNextMap = "";
-		Debug.LogFormat("CurrentMap = {0}", currentMap);
+		string currentMap = StageDataManager.instance.reservedNextMap;
+		StageDataManager.instance.reservedNextMap = "";
+		//Debug.LogFormat("CurrentMap = {0}", currentMap);
 
 		StageTestCanvas.instance.RefreshCurrentMapText(playChapter, playStage, currentMap);
 
@@ -81,81 +96,6 @@ public class StageManager : MonoBehaviour
 		}
 
 		GetNextStageInfo();
-	}
-
-	public bool existNextStageInfo { get { return (_nextStageTableData != null && string.IsNullOrEmpty(_reservedNextMap) == false); } }
-	StageTableData _nextStageTableData = null;
-	string _reservedNextMap = "";
-	Dictionary<int, List<string>> _dicStageInfoByGrouping = new Dictionary<int, List<string>>();
-	Dictionary<int, int> _dicCurrentIndexByGrouping = new Dictionary<int, int>();
-	string CalcNextStageInfo(int chapter, int stage)
-	{
-		_nextStageTableData = null;
-		StageTableData stageTableData = TableDataManager.instance.FindStageTableData(chapter, stage);
-		if (stageTableData == null)
-			return "";
-		_nextStageTableData = stageTableData;
-
-		if (string.IsNullOrEmpty(stageTableData.overridingMap) == false)
-			return stageTableData.overridingMap;
-
-		if (stageTableData.chapter > lastClearChapter || stageTableData.stage > lastClearStage)
-		{
-			if (string.IsNullOrEmpty(stageTableData.firstFixedMap) == false)
-				return stageTableData.firstFixedMap;
-			return stageTableData.addRandomMap[Random.Range(0, stageTableData.addRandomMap.Length)];
-		}
-
-		List<string> listStageId = null;
-		int currentIndex = 0;
-		int currentGrouping = stageTableData.grouping;
-		if (_dicStageInfoByGrouping.ContainsKey(currentGrouping))
-		{
-			listStageId = _dicStageInfoByGrouping[currentGrouping];
-			currentIndex = _dicCurrentIndexByGrouping[currentGrouping];
-			++currentIndex;
-			if (currentIndex > listStageId.Count)
-				currentIndex = 0;
-			_dicCurrentIndexByGrouping[currentGrouping] = currentIndex;
-		}
-		else
-		{
-			listStageId = new List<string>();
-			for (int i = 0; i < TableDataManager.instance.stageTable.dataArray.Length; ++i)
-			{
-				StageTableData diffData = TableDataManager.instance.stageTable.dataArray[i];
-				if (stageTableData.chapter != diffData.chapter)
-					continue;
-				if (stageTableData.grouping != diffData.grouping)
-					continue;
-
-				if (diffData.chapter > lastClearChapter || diffData.stage > lastClearStage)
-					break;
-
-				if (string.IsNullOrEmpty(stageTableData.firstFixedMap) == false && listStageId.Contains(diffData.firstFixedMap) == false)
-					listStageId.Add(diffData.firstFixedMap);
-
-				for (int j = 0; j < diffData.addRandomMap.Length; ++j)
-				{
-					string addRandomMap = diffData.addRandomMap[j];
-					if (string.IsNullOrEmpty(addRandomMap) == false && listStageId.Contains(addRandomMap) == false)
-						listStageId.Add(addRandomMap);
-				}
-			}
-
-			for (int i = 0; i < listStageId.Count; ++i)
-			{
-				string temp = listStageId[i];
-				int randomIndex = Random.Range(i, listStageId.Count);
-				listStageId[i] = listStageId[randomIndex];
-				listStageId[randomIndex] = temp;
-			}
-
-			_dicStageInfoByGrouping.Add(currentGrouping, listStageId);
-			_dicCurrentIndexByGrouping.Add(currentGrouping, currentIndex);
-		}
-
-		return listStageId[currentIndex];
 	}
 
 	GameObject _currentGroundObject;

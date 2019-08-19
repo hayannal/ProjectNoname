@@ -96,9 +96,11 @@ public class SpawnFlag : MonoBehaviour
 			BattleInstanceManager.instance.playerActor.cachedTransform.position = playerStartSpawnTransform.position;
 			CustomFollowCamera.instance.immediatelyUpdate = true;
 			StageManager.instance.currentGatePillarSpawnPosition = gatePillarSpawnTransform.position;
+			StageManager.instance.spawnPowerSourcePrefab = powerSourceSpawnTransform.gameObject.activeSelf;
+			if (StageManager.instance.spawnPowerSourcePrefab)
+				StageManager.instance.currentPowerSourceSpawnPosition = powerSourceSpawnTransform.position;
 
-			if (powerSourceSpawnTransform.gameObject.activeSelf)
-				BattleInstanceManager.instance.GetCachedObject(StageManager.instance.GetCurrentPowerSourcePrefab(), powerSourceSpawnTransform.position, Quaternion.identity);
+			BattleManager.instance.OnSpawnFlag();
 		}
 	}
 

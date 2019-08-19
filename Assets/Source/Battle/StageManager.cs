@@ -144,6 +144,8 @@ public class StageManager : MonoBehaviour
 
 	public Vector3 currentGatePillarSpawnPosition { get; set; }
 	public string currentGatePillarPreview { get; set; }
+	public bool spawnPowerSourcePrefab { get; set; }
+	public Vector3 currentPowerSourceSpawnPosition { get; set; }
 
 
 

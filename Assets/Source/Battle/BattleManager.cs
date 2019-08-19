@@ -54,6 +54,11 @@ public class BattleManager : MonoBehaviour
 		_currentBattleMode.OnLoadedMap();
 	}
 
+	public void OnSpawnFlag()
+	{
+		_currentBattleMode.OnSpawnFlag();
+	}
+
 	public void OnSpawnPlayer(PlayerActor playerActor)
 	{
 		_currentBattleMode.OnSpawnPlayer(playerActor);

@@ -21,6 +21,12 @@ public class BattleModeProcessorBase
 		}
 	}
 
+	public void OnSpawnFlag()
+	{
+		if (StageManager.instance.spawnPowerSourcePrefab)
+			BattleInstanceManager.instance.GetCachedObject(StageManager.instance.GetCurrentPowerSourcePrefab(), StageManager.instance.currentPowerSourceSpawnPosition, Quaternion.identity);
+	}
+
 	public void OnSpawnPlayer(PlayerActor playerActor)
 	{
 		BattleInstanceManager.instance.playerActor = playerActor;

@@ -60,6 +60,8 @@ public class MonsterActor : Actor
 		if (bossMonster)
 			BossMonsterGaugeCanvas.instance.InitializeGauge(this);
 
+		monsterAI.OnEventAnimatorParameter(MonsterAI.eAnimatorParameterForAI.fHpRatio, actorStatus.GetHPRatio());
+
 		BattleManager.instance.OnSpawnMonster(this);
 		BattleInstanceManager.instance.OnInitializePathFinderAgent(pathFinderController.agent.agentTypeID);
 	}
@@ -76,6 +78,8 @@ public class MonsterActor : Actor
 
 		if (bossMonster)
 			BossMonsterGaugeCanvas.instance.InitializeGauge(this);
+
+		monsterAI.OnEventAnimatorParameter(MonsterAI.eAnimatorParameterForAI.fHpRatio, actorStatus.GetHPRatio());
 
 		BattleManager.instance.OnSpawnMonster(this);
 		BattleInstanceManager.instance.OnInitializePathFinderAgent(pathFinderController.agent.agentTypeID);
@@ -98,6 +102,8 @@ public class MonsterActor : Actor
 			}
 			_monsterHPGauge.OnChangedHP(actorStatus.GetHPRatio());
 		}
+
+		monsterAI.OnEventAnimatorParameter(MonsterAI.eAnimatorParameterForAI.fHpRatio, actorStatus.GetHPRatio());
 	}
 
 	public override void OnDie()

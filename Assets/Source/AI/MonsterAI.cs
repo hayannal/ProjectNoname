@@ -33,12 +33,16 @@ public class MonsterAI : MonoBehaviour
 	public eStateType startState = eStateType.RandomMove;
 	public bool[] useStateList = new bool[(int)eStateType.TypeAmount];
 
-	void Start()
+	void Awake()
 	{
 		actor = GetComponent<Actor>();
-		actorRadius = ColliderUtil.GetRadius(GetComponent<Collider>());
 		targetingProcessor = GetComponent<TargetingProcessor>();
 		pathFinderController = GetComponent<PathFinderController>();
+	}
+
+	void Start()
+	{
+		actorRadius = ColliderUtil.GetRadius(GetComponent<Collider>());
 	}
 
 	#region ObjectPool
@@ -464,11 +468,63 @@ public class MonsterAI : MonoBehaviour
 	#region Animator Parameter
 	public enum eAnimatorParameterForAI
 	{
-		HpRatio,
-		Distance,
+		fHpRatio,
+		fDistance,
+		iMonsterCount,
+		bMySummonAlive
 	}
+	string[] _animatorParameterNameList = { "fHpRatio", "fDistance", "iMonsterCount", "bMySummonAlive" };
 	public bool useAnimatorParameterForAI = false;
 	[Reorderable]
 	public List<eAnimatorParameterForAI> listAnimatorParameterForAI;
+
+	bool CheckAnimatorParameter(eAnimatorParameterForAI parameterType)
+	{
+		if (listAnimatorParameterForAI == null)
+			return false;
+		if (listAnimatorParameterForAI.Contains(parameterType) == false)
+			return false;
+		return true;
+	}
+
+	public void OnEventAnimatorParameter(eAnimatorParameterForAI parameterType, float value)
+	{
+		if (CheckAnimatorParameter(parameterType) == false)
+			return;
+
+		switch (parameterType)
+		{
+			case eAnimatorParameterForAI.fHpRatio:
+			case eAnimatorParameterForAI.fDistance:
+				actor.actionController.animator.SetFloat(BattleInstanceManager.instance.GetActionNameHash(_animatorParameterNameList[(int)parameterType]), value);
+				break;
+		}
+	}
+
+	public void OnEventAnimatorParameter(eAnimatorParameterForAI parameterType, int value)
+	{
+		if (CheckAnimatorParameter(parameterType) == false)
+			return;
+
+		switch (parameterType)
+		{
+			case eAnimatorParameterForAI.iMonsterCount:
+				actor.actionController.animator.SetInteger(BattleInstanceManager.instance.GetActionNameHash(_animatorParameterNameList[(int)parameterType]), value);
+				break;
+		}
+	}
+
+	public void OnEventAnimatorParameter(eAnimatorParameterForAI parameterType, bool value)
+	{
+		if (CheckAnimatorParameter(parameterType) == false)
+			return;
+
+		switch (parameterType)
+		{
+			case eAnimatorParameterForAI.bMySummonAlive:
+				actor.actionController.animator.SetBool(BattleInstanceManager.instance.GetActionNameHash(_animatorParameterNameList[(int)parameterType]), value);
+				break;
+		}
+	}
 	#endregion
 }

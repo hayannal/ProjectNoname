@@ -99,8 +99,12 @@ public class StageManager : MonoBehaviour
 		if (string.IsNullOrEmpty(stageTableData.overridingMap) == false)
 			return stageTableData.overridingMap;
 
-		if (string.IsNullOrEmpty(stageTableData.firstFixedMap) == false && (stageTableData.chapter > lastClearChapter || stageTableData.stage > lastClearStage))
-			return stageTableData.firstFixedMap;
+		if (stageTableData.chapter > lastClearChapter || stageTableData.stage > lastClearStage)
+		{
+			if (string.IsNullOrEmpty(stageTableData.firstFixedMap) == false)
+				return stageTableData.firstFixedMap;
+			return stageTableData.addRandomMap[Random.Range(0, stageTableData.addRandomMap.Length)];
+		}
 
 		List<string> listStageId = null;
 		int currentIndex = 0;
@@ -125,7 +129,10 @@ public class StageManager : MonoBehaviour
 				if (stageTableData.grouping != diffData.grouping)
 					continue;
 
-				if (listStageId.Contains(diffData.firstFixedMap) == false && (diffData.chapter < lastClearChapter && diffData.stage < lastClearStage))
+				if (diffData.chapter > lastClearChapter || diffData.stage > lastClearStage)
+					break;
+
+				if (string.IsNullOrEmpty(stageTableData.firstFixedMap) == false && listStageId.Contains(diffData.firstFixedMap) == false)
 					listStageId.Add(diffData.firstFixedMap);
 
 				for (int j = 0; j < diffData.addRandomMap.Length; ++j)

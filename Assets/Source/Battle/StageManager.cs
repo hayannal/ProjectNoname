@@ -92,6 +92,8 @@ public class StageManager : MonoBehaviour
 		if (mapTableData != null)
 		{
 			//defaultGroundSceneObject.SetActive(false);
+			BattleManager.instance.OnPreInstantiateMap();
+			
 			InstantiateMap(mapTableData);
 		}
 

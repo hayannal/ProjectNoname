@@ -8,23 +8,33 @@ public class BattleModeProcessorBase
 	bool _monsterSpawned = false;
 	int _monsterSpawnCount = 0;
 
-	public void OnLoadedMap()
+	public void OnPreInstantiateMap()
 	{
-		_mapLoaded = true;
-		_monsterSpawned = false;
-		_monsterSpawnCount = 0;
-
 		if (_playerIndicatorCanvas != null)
 		{
 			_playerIndicatorCanvas.gameObject.SetActive(false);
 			_playerIndicatorCanvas = null;
 		}
+
+		if (_powerSourceObject != null)
+		{
+			_powerSourceObject.gameObject.SetActive(false);
+			_powerSourceObject = null;
+		}
 	}
 
+	public void OnLoadedMap()
+	{
+		_mapLoaded = true;
+		_monsterSpawned = false;
+		_monsterSpawnCount = 0;
+	}
+
+	GameObject _powerSourceObject;
 	public void OnSpawnFlag()
 	{
 		if (StageManager.instance.spawnPowerSourcePrefab)
-			BattleInstanceManager.instance.GetCachedObject(StageManager.instance.GetCurrentPowerSourcePrefab(), StageManager.instance.currentPowerSourceSpawnPosition, Quaternion.identity);
+			_powerSourceObject = BattleInstanceManager.instance.GetCachedObject(StageManager.instance.GetCurrentPowerSourcePrefab(), StageManager.instance.currentPowerSourceSpawnPosition, Quaternion.identity);
 	}
 
 	public void OnSpawnPlayer(PlayerActor playerActor)

@@ -106,7 +106,7 @@ public class MonsterActor : Actor
 
 		if (bossMonster)
 		{
-			BossMonsterGaugeCanvas.instance.gameObject.SetActive(false);
+			BossMonsterGaugeCanvas.instance.OnDie();
 		}
 		else
 		{

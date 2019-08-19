@@ -26,15 +26,12 @@ public class BossMonsterGaugeCanvas : MonoBehaviour
 	public RectTransform lateFill2RectTransform;
 	public Text questionText;
 
-	void OnEnable()
-	{
-		_lateFillDelayRemainTime = 0.0f;
-		_lateFillLerpStarted = false;
-	}
-
 	void OnDisable()
 	{
 		_listMonsterActor.Clear();
+		_dieCount = 0;
+		_lateFillDelayRemainTime = 0.0f;
+		_lateFillLerpStarted = false;
 	}
 
 	List<MonsterActor> _listMonsterActor = new List<MonsterActor>();
@@ -185,5 +182,13 @@ public class BossMonsterGaugeCanvas : MonoBehaviour
 		}
 		lateFill1RectTransform.anchorMax = new Vector2(value1, lateFill1RectTransform.anchorMax.y);
 		lateFill2RectTransform.anchorMax = new Vector2(value2, lateFill1RectTransform.anchorMax.y);
+	}
+
+	int _dieCount = 0;
+	public void OnDie()
+	{
+		++_dieCount;
+		if (_dieCount >= _listMonsterActor.Count)
+			gameObject.SetActive(false);
 	}
 }

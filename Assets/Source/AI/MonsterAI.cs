@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using MecanimStateDefine;
 using UnityEngine.AI;
+using SubjectNerd.Utilities;
 
 public class MonsterAI : MonoBehaviour
 {
@@ -458,5 +459,16 @@ public class MonsterAI : MonoBehaviour
 	{
 		_attackDelayRemainTime = 0.0f;
 	}
+	#endregion
+
+	#region Animator Parameter
+	public enum eAnimatorParameterForAI
+	{
+		HpRatio,
+		Distance,
+	}
+	public bool useAnimatorParameterForAI = false;
+	[Reorderable]
+	public List<eAnimatorParameterForAI> listAnimatorParameterForAI;
 	#endregion
 }

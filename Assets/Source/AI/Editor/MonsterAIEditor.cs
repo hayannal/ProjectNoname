@@ -5,9 +5,19 @@ using UnityEditor;
 using SubjectNerd.Utilities;
 
 [CustomEditor(typeof(MonsterAI))]
-public class MonsterAIEditor : Editor
+public class MonsterAIEditor : ReorderableArrayInspector
 {
-	public override void OnInspectorGUI()
+	protected override void InitInspector()
+	{
+		base.InitInspector();
+
+		// Always call DrawInspector function
+		alwaysDrawInspector = true;
+
+		// Do other initializations here
+	}
+
+	protected override void DrawInspector()
 	{
 		MonsterAI t = (MonsterAI)target;
 
@@ -89,6 +99,14 @@ public class MonsterAIEditor : Editor
 		if (t.useStateList[4])
 		{
 			t.attackDelayTimeRange = EditorGUILayout.Vector2Field("Attack Delay Time", t.attackDelayTimeRange);
+		}
+
+		DrawUILine(Color.grey);
+
+		t.useAnimatorParameterForAI = EditorGUILayout.Toggle("Use Animator Parameter", t.useAnimatorParameterForAI);
+		if (t.useAnimatorParameterForAI)
+		{
+			DrawPropertiesFrom("listAnimatorParameterForAI");
 		}
 
 		if (GUI.changed)

@@ -129,7 +129,10 @@ public class SpawnFlagEditor : ReorderableArrayInspector
 					EditorUtility.DisplayDialog("Error", "Not found PowerSourceSpawnTransform in the prefab", "Ok");
 				}
 				else
+				{
 					spawnFlagPrefabComponent.powerSourceSpawnTransform.localPosition = targetComponent.powerSourceSpawnTransform.localPosition;
+					spawnFlagPrefabComponent.powerSourceSpawnTransform.gameObject.SetActive(targetComponent.powerSourceSpawnTransform.gameObject.activeSelf);
+				}
 			}
 
 			PrefabUtility.SavePrefabAsset(prefab);

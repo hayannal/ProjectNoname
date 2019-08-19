@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerActor : Actor
 {
+	public float playerGaugeOffsetY = 0.0f;
+
 	public SkillProcessor skillProcessor { get; private set; }
 	public PlayerAI playerAI { get; private set; }
 

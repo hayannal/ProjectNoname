@@ -44,7 +44,7 @@ public class PlayerGaugeCanvas : MonoBehaviour
 
 	public void InitializeGauge(PlayerActor playerActor)
 	{
-		//_offsetY = monsterActor.monsterHpGaugeOffsetY;
+		_offsetY = playerActor.playerGaugeOffsetY;
 		//widthRectTransform.sizeDelta = new Vector2(monsterActor.monsterHpGaugeWidth * _defaultWidth, widthRectTransform.sizeDelta.y);
 		mobaEnergyBar.MaxValue = playerActor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MaxHP);
 		mobaEnergyBar.Value = playerActor.actorStatus.GetHP();

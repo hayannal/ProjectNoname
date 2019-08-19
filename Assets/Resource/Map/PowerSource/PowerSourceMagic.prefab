@@ -1,19 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!136 &1673989990470716765
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 696320174405859999}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  m_Radius: 1.5
-  m_Height: 4
-  m_Direction: 1
-  m_Center: {x: 0, y: 1, z: 0}
 --- !u!136 &1531448190756802980
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -39,6 +25,7 @@ GameObject:
   - component: {fileID: 5895556504222561837}
   - component: {fileID: 6339575620907440798}
   - component: {fileID: 1994592232228190290}
+  - component: {fileID: 6958963028359769112}
   m_Layer: 0
   m_Name: PowerSourceMagic
   m_TagString: Untagged
@@ -93,6 +80,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c29295432282a32469e9e286a860fcdc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!136 &6958963028359769112
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4874765979154111986}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 2.5
+  m_Height: 5.75
+  m_Direction: 1
+  m_Center: {x: 0, y: 2, z: 0}
 --- !u!1001 &696320174405776219
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -114,7 +115,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 402878, guid: 6bbbaf03993f2a645b745e6aec37e54c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 402878, guid: 6bbbaf03993f2a645b745e6aec37e54c, type: 3}
       propertyPath: m_LocalRotation.x
@@ -195,7 +196,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 450146, guid: 1f0d2fbae8424b94bb1cd51911883867, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.27
+      value: -0.73
       objectReference: {fileID: 0}
     - target: {fileID: 450146, guid: 1f0d2fbae8424b94bb1cd51911883867, type: 3}
       propertyPath: m_LocalRotation.x
@@ -298,7 +299,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 422944, guid: 9b4fe9761b20fb547b28507afcbb7c2b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 422944, guid: 9b4fe9761b20fb547b28507afcbb7c2b, type: 3}
       propertyPath: m_LocalRotation.x
@@ -373,7 +374,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 422944, guid: 9b4fe9761b20fb547b28507afcbb7c2b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 422944, guid: 9b4fe9761b20fb547b28507afcbb7c2b, type: 3}
       propertyPath: m_LocalRotation.x
@@ -448,7 +449,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 450146, guid: 1f0d2fbae8424b94bb1cd51911883867, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.27
+      value: -0.73
       objectReference: {fileID: 0}
     - target: {fileID: 450146, guid: 1f0d2fbae8424b94bb1cd51911883867, type: 3}
       propertyPath: m_LocalRotation.x

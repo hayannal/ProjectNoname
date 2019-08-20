@@ -35,7 +35,7 @@ Shader "FrameworkNG/Diffuse"
 			CGPROGRAM
 
 			#pragma exclude_renderers xbox360
-			#pragma surface surf Lambert exclude_path:deferred exclude_path:prepass noshadow nolightmap noforwardadd interpolateview approxview
+			#pragma surface surf Lambert exclude_path:deferred exclude_path:prepass nolightmap noforwardadd interpolateview approxview
 			#pragma vertex vert
 
 			// shader_feature의 개수가 많아지다보니 컴파일이 꽤 느려졌다.

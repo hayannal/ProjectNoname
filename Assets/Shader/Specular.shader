@@ -38,7 +38,7 @@ Shader "FrameworkNG/Specular"
 
 		#pragma target 3.0
 		#pragma exclude_renderers xbox360
-		#pragma surface surf BlinnPhong exclude_path:deferred exclude_path:prepass noshadow nolightmap noforwardadd interpolateview approxview
+		#pragma surface surf BlinnPhong exclude_path:deferred exclude_path:prepass nolightmap noforwardadd interpolateview approxview
 		#pragma vertex vert
 		#pragma shader_feature _NORMAL
 		#pragma shader_feature _RIMLIGHT

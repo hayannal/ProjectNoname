@@ -77,7 +77,7 @@ public class EmissiveUpdater : MonoBehaviour {
 		float fTime = Time.time - startTime;
 
 		Color resultColor = Color.white;
-		float value = Mathf.Cos(fTime * emissiveSpeed) * emissiveRange + emissiveBase;
+		float value = Mathf.PingPong(fTime / emissiveSpeed, 1.0f) * emissiveRange + emissiveBase;
 		resultColor = emissiveColor * value;
 
 		for (int i = 0; i < cachedMaterials.Count; ++i)

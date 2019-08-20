@@ -21,7 +21,7 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 		Tags { "RenderType"="Opaque" }
 		
 		CGPROGRAM
-		#pragma surface surf Lambert exclude_path:prepass nolightmap noforwardadd
+		#pragma surface surf Lambert exclude_path:prepass nolightmap noforwardadd addshadow
 		#pragma multi_compile _DISSOLVE
 
 		// Use shader model 3.0 target, to get nicer looking lighting

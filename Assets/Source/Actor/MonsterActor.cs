@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MEC;
 
 public class MonsterActor : Actor
 {
@@ -30,6 +31,11 @@ public class MonsterActor : Actor
 			ReinitializeActor();
 	}
 	#endregion
+
+	void Update()
+	{
+		UpdateDieDissolve();
+	}
 
 	protected override void InitializeComponent()
 	{
@@ -128,7 +134,8 @@ public class MonsterActor : Actor
 		//BehaviorDesigner.Runtime.BehaviorTree bt = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
 		//if (bt != null) bt.enabled = false;
 
-		Invoke("DisableObject", 1.2f);
+		//Invoke("DisableObject", 1.2f);
+		Timing.RunCoroutine(DieProcess());
 
 		BattleManager.instance.OnDieMonster(this);
 		BattleInstanceManager.instance.OnFinalizePathFinderAgent(pathFinderController.agent.agentTypeID);
@@ -139,4 +146,83 @@ public class MonsterActor : Actor
 		BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.monsterDisableEffectObject, cachedTransform.position, Quaternion.identity);
 		gameObject.SetActive(false);
 	}
+
+	#region Die Dissolve
+	static int s_dissolvePropertyID;
+	static int s_cutoffPropertyID;
+	List<Material> _listCachedMaterial;
+	float _dissolveStartTime;
+	IEnumerator<float> DieProcess()
+	{
+		yield return Timing.WaitForSeconds(1.2f);
+
+		if (s_dissolvePropertyID == 0) s_dissolvePropertyID = Shader.PropertyToID("_UseDissolve");
+		if (s_cutoffPropertyID == 0) s_cutoffPropertyID = Shader.PropertyToID("_Cutoff");
+
+		if (_listCachedMaterial == null)
+		{
+			_listCachedMaterial = new List<Material>();
+			Renderer[] renderers = GetComponentsInChildren<Renderer>();
+			for (int i = 0; i < renderers.Length; ++i)
+			{
+				for (int j = 0; j < renderers[i].materials.Length; ++j)
+				{
+					if (renderers[i].materials[j].HasProperty(s_dissolvePropertyID))
+						_listCachedMaterial.Add(renderers[i].materials[j]);
+				}
+			}
+		}
+
+		for (int i = 0; i < _listCachedMaterial.Count; ++i)
+		{
+			if (_listCachedMaterial[i] == null)
+				continue;
+			_listCachedMaterial[i].EnableKeyword("_DISSOLVE");
+		}
+
+		_dissolveStartTime = Time.time;
+		_updateDissolveCutoff = true;
+		yield break;
+	}
+
+	bool _updateDissolveCutoff = false;
+	void UpdateDieDissolve()
+	{
+		if (!_updateDissolveCutoff)
+			return;
+
+		float fTime = Time.time - _dissolveStartTime;
+
+		AnimationCurveAsset curveAsset = bossMonster ? BattleManager.instance.bossMonsterDieDissolveCurve : BattleManager.instance.monsterDieDissolveCurve;
+		if (fTime > curveAsset.curve.keys[curveAsset.curve.length-1].time)
+		{
+			ResetDissolve();
+			gameObject.SetActive(false);
+			return;
+		}
+		float result = curveAsset.curve.Evaluate(fTime);
+
+		for (int i = 0; i < _listCachedMaterial.Count; ++i)
+		{
+			if (_listCachedMaterial[i] == null)
+				continue;
+			_listCachedMaterial[i].SetFloat(s_cutoffPropertyID, result);
+		}
+	}
+
+	void ResetDissolve()
+	{
+		if (_listCachedMaterial == null)
+			return;
+
+		for (int i = 0; i < _listCachedMaterial.Count; ++i)
+		{
+			if (_listCachedMaterial[i] == null)
+				continue;
+			_listCachedMaterial[i].DisableKeyword("_DISSOLVE");
+			_listCachedMaterial[i].SetFloat(s_cutoffPropertyID, 0.0f);
+		}
+		_updateDissolveCutoff = false;
+	}
+	#endregion
 }

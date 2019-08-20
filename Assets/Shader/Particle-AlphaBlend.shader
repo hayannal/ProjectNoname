@@ -10,7 +10,10 @@ Shader "FrameworkNG/Particle/AlphaBlend"
 		[Enum(UnityEngine.Rendering.BlendMode)] _SrcBlend ("SrcBlend Mode", Float) = 1
 		[Enum(UnityEngine.Rendering.BlendMode)] _DstBlend ("DstBlend Mode", Float) = 1
 		//[Enum(UnityEngine.Rendering.CompareFunction)] _ZTestMode("ZTest", Float) = 4
+		[Enum(UnityEngine.Rendering.CullMode)] _Cull("Cull Mode", Float) = 0
 
+		[Toggle(_CUTOFF)] _UseCutoff("========== Use Cutoff ==========", Float) = 0
+		_Cutoff("Cutoff", Range(0, 1)) = 0.5
 		[KeywordEnum(None, Default, Fmod)] _Flow("========== Use Flow ==========", Float) = 0
 		_FlowSpeed ("Main (XY)", Vector) = (0, 0, 0, 0)
 		[Toggle(_MASK)] _UseMask("========== Use Mask ==========", Float) = 0
@@ -29,7 +32,7 @@ Shader "FrameworkNG/Particle/AlphaBlend"
 			Blend [_SrcBlend] [_DstBlend]
 			//ZTest [_ZTestMode]
 			ColorMask RGB
-			Cull Off
+			Cull [_Cull]
 			Lighting Off
 			ZWrite Off
 			Fog {Mode Off}
@@ -39,6 +42,7 @@ Shader "FrameworkNG/Particle/AlphaBlend"
 			#pragma vertex vert
 			#pragma fragment frag
 			//#pragma multi_compile_fog
+			#pragma shader_feature _CUTOFF
 			#pragma shader_feature _FLOW_NONE _FLOW_DEFAULT _FLOW_FMOD
 			#pragma shader_feature _MASK
 			#pragma shader_feature _SECONDUV
@@ -49,6 +53,9 @@ Shader "FrameworkNG/Particle/AlphaBlend"
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
 			fixed4 _TintColor;
+			#if _CUTOFF
+				fixed _Cutoff;
+			#endif
 			#if _FLOW_DEFAULT || _FLOW_FMOD
 				half4 _FlowSpeed;
 			#endif
@@ -133,6 +140,9 @@ Shader "FrameworkNG/Particle/AlphaBlend"
 				fixed4 col = 2.0f * i.color * _TintColor * tex2D(_MainTex, i.texcoord);
 				#if _MASK
 					col.a *= tex2D(_MaskTex, i.maskUV).r;
+				#endif
+				#if _CUTOFF
+					clip(col.a - _Cutoff);
 				#endif
 				//UNITY_APPLY_FOG_COLOR(i.fogCoord, col, fixed4(0,0,0,0)); // fog towards black due to our blend mode
 				return col;

@@ -16,7 +16,7 @@ public class BattleManager : MonoBehaviour
 	static BattleManager _instance = null;
 
 	public GameObject targetCircleObject;
-	public GameObject monsterDisableEffectObject;
+	public GameObject monsterDieAshParticlePrefab;
 	public AnimationCurveAsset monsterDieDissolveCurve;
 	public AnimationCurveAsset bossMonsterDieDissolveCurve;
 	public GameObject playerSpawnEffectPrefab;

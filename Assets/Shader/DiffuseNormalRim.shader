@@ -22,7 +22,7 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 		
 		CGPROGRAM
 		#pragma surface surf Lambert exclude_path:prepass nolightmap noforwardadd addshadow
-		#pragma multi_compile _DISSOLVE
+		#pragma multi_compile _ _DISSOLVE
 
 		// Use shader model 3.0 target, to get nicer looking lighting
 		#pragma target 3.0

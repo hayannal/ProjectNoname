@@ -21,7 +21,7 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 		Tags { "RenderType"="Opaque" }
 		
 		CGPROGRAM
-		#pragma surface surf Lambert exclude_path:prepass nolightmap noforwardadd addshadow
+		#pragma surface surf Lambert exclude_path:prepass nolightmap noforwardadd
 		#pragma multi_compile _ _DISSOLVE
 
 		// Use shader model 3.0 target, to get nicer looking lighting
@@ -49,7 +49,7 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 			float2 uv_RimNormalTex;
 			float3 viewDir;	// 관찰자의 위치를 향하는 방향 벡타입니다. Normal Vector와 내적하기 위해서 추가합니다.
 #if _DISSOLVE
-			float2 uv_Noise;
+			half2 uv_Noise;
 #endif
 		};
 
@@ -57,10 +57,10 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 			o.Albedo = tex2D(_MainTex, IN.uv_MainTex).rgb * _Color;
 
 #if _DISSOLVE
-			half3 Noise = tex2D(_Noise, IN.uv_Noise);
-			Noise.r = lerp(0, 1, Noise.r);
+			half Noise = tex2D(_Noise, IN.uv_Noise).r;
+			Noise = lerp(0, 1, Noise);
 			_Cutoff = lerp(0, _Cutoff + _EdgeSize, _Cutoff);
-			half Edge = smoothstep(_Cutoff + _EdgeSize, _Cutoff, clamp(Noise.r, _EdgeSize, 1));
+			half Edge = smoothstep(_Cutoff + _EdgeSize, _Cutoff, clamp(Noise, _EdgeSize, 1));
 			o.Emission = _EdgeColor1 * Edge;
 			clip(Noise - _Cutoff);
 #else
@@ -73,6 +73,70 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 #endif
 		}
 		ENDCG
+
+		// shadow caster rendering pass, implemented manually
+		// using macros from UnityCG.cginc
+		Pass
+		{
+			Tags { "LightMode" = "ShadowCaster" }
+
+			CGPROGRAM
+			#pragma vertex vert
+			#pragma fragment frag
+			#pragma multi_compile_shadowcaster
+			#pragma multi_compile _ _DISSOLVE
+			#include "UnityCG.cginc"
+
+			sampler2D _MainTex;
+			float4 _MainTex_ST;
+
+#if _DISSOLVE
+			half _EdgeSize;
+			sampler2D _Noise;
+			half4 _Noise_ST;
+			half _Cutoff;
+
+			struct appdata_t
+			{
+				float4 vertex : POSITION;
+				half2 texcoord : TEXCOORD0;
+			};
+#endif
+
+			struct v2f {
+				V2F_SHADOW_CASTER;
+#if _DISSOLVE
+				half2 uv_Noise : TEXCOORD1;
+#endif
+			};
+
+#if _DISSOLVE
+			v2f vert(appdata_t v)
+#else
+			v2f vert(appdata_base v)
+#endif
+			{
+				v2f o;
+				TRANSFER_SHADOW_CASTER(o)
+#if _DISSOLVE
+				o.uv_Noise = TRANSFORM_TEX(v.texcoord, _Noise);
+#endif
+				return o;
+			}
+
+			fixed frag(v2f i) : SV_Target
+			{
+#if _DISSOLVE
+				fixed Noise = tex2D(_Noise, i.uv_Noise).r;
+				Noise = lerp(0, 1, Noise);
+				_Cutoff = lerp(0, _Cutoff + _EdgeSize, _Cutoff);
+				clip(Noise - _Cutoff);
+#endif
+
+				SHADOW_CASTER_FRAGMENT(i)
+			}
+			ENDCG
+		}
 	}
 	FallBack "Diffuse"
 }

@@ -20,6 +20,8 @@ public class RFX4_MobileBloom : MonoBehaviour
 	[Tooltip("Lens Dirt Texture. The texture that controls per-channel light scattering amount.")]
 	public Texture2D DirtTexture;
 	public float DirtIntensity = 3.0f;
+	[Range(0.0f, 20)]
+	public float DirtMaskIntensity = 0.3f;
 #else
 	static float Threshold = 1.3f;
 #endif
@@ -50,6 +52,7 @@ public class RFX4_MobileBloom : MonoBehaviour
 #if USE_CUSTOM_RENDERER
 				_bloomMaterial.SetTexture("_DirtTex", DirtTexture);
 				_bloomMaterial.SetFloat("_DirtIntensity", DirtIntensity);
+				_bloomMaterial.SetFloat("_DirtMaskIntensity", DirtMaskIntensity);
 #endif
 			}
 

@@ -13,6 +13,7 @@ half _Intensity;
 
 sampler2D _DirtTex;
 half _DirtIntensity;
+half _DirtMaskIntensity;
 
 // Brightness function
 half Brightness(half3 c)
@@ -161,8 +162,21 @@ half4 frag_additive_final(v2f_img i) : SV_Target
 	half3 blur = tex2D(_MainTex, i.uv);
 
 	half3 dirt = tex2D(_DirtTex, i.uv).rgb;
-	blur.rgb = blur.rgb * dirt.rgb * _DirtIntensity;
+	
+	// prev code
+	//blur.rgb = blur.rgb * dirt.rgb * _DirtIntensity;
+	//source.rgb += blur.rgb;
 
-	source.rgb += blur;
+	// renewal code
+	source.rgb += blur.rgb;
+
+	half luminance = blur.r;
+	luminance += blur.g;
+	luminance += blur.b;
+	luminance *= _DirtMaskIntensity;
+	luminance = saturate(luminance);
+
+	source.rgb += luminance * blur.rgb * dirt.rgb * _DirtIntensity;
+
 	return source;
 }

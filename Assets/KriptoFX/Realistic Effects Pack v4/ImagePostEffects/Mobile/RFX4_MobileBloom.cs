@@ -1,4 +1,5 @@
 #define USE_CUSTOM_RENDERER
+#define USE_ADJUST_DIRT_INTENSITY
 
 using UnityEngine;
 
@@ -60,6 +61,9 @@ public class RFX4_MobileBloom : MonoBehaviour
 
     void Start()
     {
+#if USE_ADJUST_DIRT_INTENSITY
+		SaveDefaultDirtIntensity();
+#endif
 	}
 
 #if USE_CUSTOM_RENDERER
@@ -180,6 +184,37 @@ public class RFX4_MobileBloom : MonoBehaviour
 	{
 		bloomMaterial.SetTexture("_BaseTex", source);
 		Graphics.Blit(finalBloom, dest, bloomMaterial, 4);
+	}
+#endif
+
+#if USE_ADJUST_DIRT_INTENSITY
+	float _defaultDirtIntensity;
+	int _adjustDirtIntensityRefCount = 0;
+	public void SaveDefaultDirtIntensity()
+	{
+		_defaultDirtIntensity = DirtIntensity;
+	}
+
+	public void AdjustDirtIntensity(float adjust, bool useRefCount = true)
+	{
+		if (useRefCount)
+			++_adjustDirtIntensityRefCount;
+
+		DirtIntensity = _defaultDirtIntensity + adjust;
+		_bloomMaterial.SetFloat("_DirtIntensity", DirtIntensity);
+	}
+
+	public void ResetDirtIntensity(bool useRefCount = true)
+	{
+		if (useRefCount)
+		{
+			_adjustDirtIntensityRefCount -= 1;
+			if (_adjustDirtIntensityRefCount > 0)
+				return;
+		}
+
+		DirtIntensity = _defaultDirtIntensity;
+		_bloomMaterial.SetFloat("_DirtIntensity", DirtIntensity);
 	}
 #endif
 }

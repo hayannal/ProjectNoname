@@ -91,12 +91,14 @@ public class GatePillar : MonoBehaviour
 
 		yield return Timing.WaitForSeconds(0.2f);
 		changeEffectParticleRootObject.SetActive(true);
+		CustomRenderer.instance.bloom.AdjustDirtIntensity(2.0f);
 
 		yield return Timing.WaitForSeconds(0.5f);
 
 		FadeCanvas.instance.FadeOut(0.2f);
 		yield return Timing.WaitForSeconds(0.2f);
 
+		CustomRenderer.instance.bloom.ResetDirtIntensity();
 		StageManager.instance.MoveToNextStage();
 		gameObject.SetActive(false);
 

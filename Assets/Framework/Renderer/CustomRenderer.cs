@@ -19,6 +19,8 @@ public class CustomRenderer : MonoBehaviour
 	RFX4_MobileBloom m_bloomComponent;
 	PostProcessBase[] m_postProcessList;
 
+	public RFX4_MobileBloom bloom { get { return m_bloomComponent; } }
+
 #if USE_CUSTOM_RENDERER
 
 	void Awake()

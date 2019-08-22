@@ -221,7 +221,7 @@ public class HitObject : MonoBehaviour
 		CopyEtcStatusForHitObject(ref _statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction);
 
 		if (_rigidbody == null) _rigidbody = GetComponent<Rigidbody>();
-		if (_collider == null) _collider = GetComponent<Collider>();
+		if (_collider == null) _collider = GetComponentInChildren<Collider>();
 		EnableRigidbodyAndCollider(true);
 		InitializeDisableObject();
 

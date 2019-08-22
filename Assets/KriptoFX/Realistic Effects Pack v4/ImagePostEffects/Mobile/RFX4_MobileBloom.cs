@@ -10,18 +10,17 @@ public class RFX4_MobileBloom : MonoBehaviour
 
     [Range(0.05f, 2)]
     [Tooltip("Blend factor of the result image.")]
-    public float Intensity = 0.5f;
+    public float bloomIntensity = 0.5f;
 
 #if USE_CUSTOM_RENDERER
 	[Range(0.1f, 3)]
 	[Tooltip("Filters out pixels under this level of brightness.")]
-	public float Threshold = 1.3f;
+	public float bloomThreshold = 1.3f;
 
 	[Tooltip("Lens Dirt Texture. The texture that controls per-channel light scattering amount.")]
 	public Texture2D DirtTexture;
 	public float DirtIntensity = 3.0f;
-	[Range(0.0f, 20)]
-	public float DirtMaskIntensity = 0.3f;
+	
 #else
 	static float Threshold = 1.3f;
 #endif
@@ -52,7 +51,6 @@ public class RFX4_MobileBloom : MonoBehaviour
 #if USE_CUSTOM_RENDERER
 				_bloomMaterial.SetTexture("_DirtTex", DirtTexture);
 				_bloomMaterial.SetFloat("_DirtIntensity", DirtIntensity);
-				_bloomMaterial.SetFloat("_DirtMaskIntensity", DirtMaskIntensity);
 #endif
 			}
 
@@ -120,14 +118,14 @@ public class RFX4_MobileBloom : MonoBehaviour
         var iterations = Mathf.Clamp(logh_i, 1, kMaxIterations);
 
         //// update the shader properties
-        var threshold = Mathf.GammaToLinearSpace(Threshold);
+        var threshold = Mathf.GammaToLinearSpace(bloomThreshold);
 
         bloomMaterial.SetFloat("_Threshold", threshold);
       
         var sampleScale = 0.5f + logh - logh_i;
      
         bloomMaterial.SetFloat("_SampleScale",  sampleScale * 0.5f);
-        bloomMaterial.SetFloat("_Intensity", Mathf.Max(0.0f, Intensity));
+        bloomMaterial.SetFloat("_Intensity", Mathf.Max(0.0f, bloomIntensity));
 
         var prefiltered = RenderTexture.GetTemporary(tw, th, 0, rtFormat);
  

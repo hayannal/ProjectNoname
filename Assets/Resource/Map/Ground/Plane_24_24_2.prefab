@@ -139,7 +139,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   quadRootObject: {fileID: 2711089570990030801}
---- !u!114 &8633426072125532871
+--- !u!114 &3028109678945039662
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -148,13 +148,34 @@ MonoBehaviour:
   m_GameObject: {fileID: 8634415078619363087}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3417eb07376fcb64d87afa71334df49a, type: 3}
+  m_Script: {fileID: 11500000, guid: 42be1333196b01d4998a895e26b123a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  emissiveColor: {r: 0.043137256, g: 0.19215688, b: 0.24313727, a: 1}
-  emissiveSpeed: 2
-  emissiveBase: 0.6
-  emissiveRange: 0.4
+  propertyName: _ColorIntensity
+  curve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1.5
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 0
+    m_PostInfinity: 0
+    m_RotationOrder: 4
   useSharedMaterials: 1
 --- !u!1001 &4827221332201723104
 PrefabInstance:

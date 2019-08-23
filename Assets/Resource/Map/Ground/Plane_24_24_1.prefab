@@ -1,23 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &1257225961
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1000010525535898}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3417eb07376fcb64d87afa71334df49a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  emissiveColor: {r: 0.043137256, g: 0.19215688, b: 0.24313727, a: 1}
-  emissiveSpeed: 2
-  emissiveBase: 0.6
-  emissiveRange: 0.4
-  useSharedMaterials: 1
---- !u!114 &1333756708
+--- !u!114 &2785832041562659260
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -26,13 +9,34 @@ MonoBehaviour:
   m_GameObject: {fileID: 1000011542224620}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3417eb07376fcb64d87afa71334df49a, type: 3}
+  m_Script: {fileID: 11500000, guid: 42be1333196b01d4998a895e26b123a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  emissiveColor: {r: 0.043137256, g: 0.19215688, b: 0.24313727, a: 1}
-  emissiveSpeed: 2
-  emissiveBase: 0.6
-  emissiveRange: 0.4
+  propertyName: _ColorIntensity
+  curve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1.5
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 0
+    m_PostInfinity: 0
+    m_RotationOrder: 4
   useSharedMaterials: 1
 --- !u!1 &8427428467741090708
 GameObject:
@@ -300,12 +304,6 @@ PrefabInstance:
 --- !u!4 &4000010066317812 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4000010147552064, guid: 6903f4c9629ec35429500da99b782029,
-    type: 3}
-  m_PrefabInstance: {fileID: 82348724}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1000010525535898 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1000010603684910, guid: 6903f4c9629ec35429500da99b782029,
     type: 3}
   m_PrefabInstance: {fileID: 82348724}
   m_PrefabAsset: {fileID: 0}

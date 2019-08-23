@@ -179,6 +179,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actorId: Rosehips
+  monsterHpGaugeWidth: 1
+  monsterHpGaugeOffsetY: 0
 --- !u!114 &-6861453615015986072
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -192,7 +194,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startDelay: 0
-  startState: 0
+  startState: 3
   useStateList: 0100000100
   moveTimeRange: {x: 4, y: 4}
   refreshTickTimeRange: {x: 2, y: 2}
@@ -206,6 +208,8 @@ MonoBehaviour:
   attackActionFadeDuration: 0.05
   lookAtTargetBeforeAttack: 1
   attackDelayTimeRange: {x: 0, y: 0}
+  useAnimatorParameterForAI: 0
+  listAnimatorParameterForAI: 
 --- !u!1001 &1559865430987797191
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -123,7 +123,9 @@ public class BattleTestTool : EditorWindow
 	float _nextLoopActionTime = 0.0f;
 	bool standbyLoadAttackDelay = false;
 	bool useMonsterAI = false;
-	
+	GroupMonster groupMonster;
+	bool useGroupMonsterAI = false;
+
 	void OnGUI_Monster()
 	{
 		bool needRepaint = false;
@@ -141,7 +143,20 @@ public class BattleTestTool : EditorWindow
 				StageTableData stageTableData = TableDataManager.instance.FindStageTableData(playChapter, playStage);
 				if (stageTableData != null)
 					StageManager.instance.currentStageTableData = stageTableData;
-				monsterInstance = BattleInstanceManager.instance.GetCachedObject(monsterPrefab, Vector3.forward, Quaternion.identity);
+				GameObject newObject = BattleInstanceManager.instance.GetCachedObject(monsterPrefab, Vector3.forward, Quaternion.identity);
+				MonsterActor newMonsterActor = newObject.GetComponent<MonsterActor>();
+				if (newMonsterActor != null)
+				{
+					monsterInstance = newObject;
+					groupMonster = null;
+				}
+				GroupMonster newGroupMonster = newObject.GetComponent<GroupMonster>();
+				if (newGroupMonster != null)
+				{
+					monsterInstance = null;
+					groupMonster = newGroupMonster;
+					useGroupMonsterAI = false;
+				}
 			}
 			if (monsterInstance != null)
 			{
@@ -274,6 +289,24 @@ public class BattleTestTool : EditorWindow
 						useMonsterAI = EditorGUILayout.Toggle("Toggle Monster AI :", useMonsterAI);
 						if (monsterAI != null)
 							monsterAI.enabled = useMonsterAI;
+					}
+				}
+				GUILayout.EndVertical();
+			}
+			if (groupMonster != null)
+			{
+				if (!groupMonster.gameObject.activeSelf)
+				{
+					groupMonster = null;
+				}
+
+				GUILayout.BeginVertical("box");
+				{
+					if (groupMonster != null)
+					{
+						useGroupMonsterAI = EditorGUILayout.Toggle("Toggle GroupMonster AI :", useGroupMonsterAI);
+						for (int i = 0; i < groupMonster.listMonsterActor.Count; ++i)
+							groupMonster.listMonsterActor[i].monsterAI.enabled = useGroupMonsterAI;
 					}
 				}
 				GUILayout.EndVertical();

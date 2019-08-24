@@ -33,9 +33,11 @@ public class ActorStatus : MonoBehaviour
 		_statusBase.valueList[(int)eActorStatus.Defense] = actorPowerLevelTableData.def;
 		_statusBase.valueList[(int)eActorStatus.AttackDelay] = actorTableData.attackDelay;
 		_statusBase.valueList[(int)eActorStatus.MoveSpeed] = actorTableData.moveSpeed;
+		_statusBase.valueList[(int)eActorStatus.MaxSP] = actorTableData.sp;
 
 		//if (isServer)
 		_statusBase._hp = GetValue(eActorStatus.MaxHP);
+		_statusBase._sp = GetValue(eActorStatus.MaxSP);
 
 		OnChangedStatus();
 	}
@@ -70,6 +72,9 @@ public class ActorStatus : MonoBehaviour
 
 	public float GetValue(eActorStatus eType)
 	{
+		if ((int)eType >= _statusBase.valueList.Length)
+			return 0.0f;
+
 		float value = _statusBase.valueList[(int)eType];
 		switch (eType)
 		{
@@ -92,6 +97,11 @@ public class ActorStatus : MonoBehaviour
 		return _statusBase._hp;
 	}
 
+	public float GetSP()
+	{
+		return _statusBase._sp;
+	}
+
 	//void OnChangeHp(float hp)
 	//{
 	//	Debug.Log("OnChange HP : " + hp.ToString());
@@ -108,6 +118,7 @@ public class ActorStatus : MonoBehaviour
 			targetStatusBase.valueList[i] = GetValue((eActorStatus)i);
 
 		targetStatusBase._hp = _statusBase._hp;
+		targetStatusBase._sp = _statusBase._sp;
 	}
 	#endregion
 
@@ -158,5 +169,20 @@ public class ActorStatus : MonoBehaviour
 	public float GetHPRatio()
 	{
 		return GetHP() / GetValue(eActorStatus.MaxHP);
+	}
+
+
+	public virtual void AddSP(float addSP)
+	{
+		_statusBase._sp += addSP;
+		_statusBase._sp = Mathf.Clamp(_statusBase._sp, 0, GetValue(eActorStatus.MaxSP));
+		actor.OnChangedSP();
+		if (_statusBase._sp <= 0)
+			_statusBase._sp = 0.0f;
+	}
+
+	public float GetSPRatio()
+	{
+		return GetSP() / GetValue(eActorStatus.MaxSP);
 	}
 }

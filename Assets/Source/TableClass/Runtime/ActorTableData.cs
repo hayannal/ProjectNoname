@@ -32,4 +32,8 @@ public class ActorTableData
   int _powerSource;
   public int powerSource { get { return _powerSource; } set { _powerSource = value; } }
   
+  [SerializeField]
+  float _sp;
+  public float sp { get { return _sp; } set { _sp = value; } }
+  
 }

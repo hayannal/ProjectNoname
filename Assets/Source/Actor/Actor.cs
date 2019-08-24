@@ -80,6 +80,11 @@ public class Actor : MonoBehaviour {
 
 	}
 
+	public virtual void OnChangedSP()
+	{
+
+	}
+
 	public virtual void OnDie()
 	{
 		actionController.PlayActionByActionName("Die");

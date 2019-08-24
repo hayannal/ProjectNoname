@@ -15,7 +15,8 @@ namespace ActorStatusDefine {
 
 		MonsterStatusAmount,
 
-		AttackSpeedStep = MonsterStatusAmount,
+		MaxSP = MonsterStatusAmount,
+		AttackSpeedStep,
 
 		BaseAmount,
 
@@ -28,7 +29,7 @@ namespace ActorStatusDefine {
 	public class StatusBase
 	{
 		public float _hp;	// EncriptedFloat
-		// public float _mp;
+		public float _sp;
 
 		public float[] valueList;
 

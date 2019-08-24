@@ -8,9 +8,11 @@ public class MonsterActor : Actor
 	public float monsterHpGaugeWidth = 1.0f;
 	public float monsterHpGaugeOffsetY = 0.0f;
 
-	public bool bossMonster { get; private set; }
 	public PathFinderController pathFinderController { get; private set; }
 	public MonsterAI monsterAI { get; private set; }
+	public bool bossMonster { get; private set; }
+	public GroupMonster group { get; private set; }
+	public bool groupMonster { get { return group != null; } }
 
 	void Awake()
 	{
@@ -29,6 +31,12 @@ public class MonsterActor : Actor
 	{
 		if (_started)
 			ReinitializeActor();
+	}
+
+	void OnDisable()
+	{
+		if (groupMonster)
+			group.CheckAllDisable();
 	}
 	#endregion
 
@@ -51,10 +59,18 @@ public class MonsterActor : Actor
 	{
 		base.InitializeActor();
 
+		team.teamID = (int)Team.eTeamID.DefaultMonster;
 		MonsterTableData monsterTableData = TableDataManager.instance.FindMonsterTableData(actorId);
 		bossMonster = monsterTableData.boss;
+		if (cachedTransform.parent != null)
+			group = cachedTransform.parent.GetComponent<GroupMonster>();
 
-		team.teamID = (int)Team.eTeamID.DefaultMonster;
+		// common
+		InitializeMonster();
+	}
+
+	void InitializeMonster()
+	{
 		actorStatus.InitializeMonsterStatus(actorId);
 		monsterAI.InitializeAI();
 
@@ -74,16 +90,7 @@ public class MonsterActor : Actor
 		actionController.idleAnimator.enabled = true;
 		HitObject.EnableRigidbodyAndCollider(true, _rigidbody, _collider);
 
-		actorStatus.InitializeMonsterStatus(actorId);
-		monsterAI.InitializeAI();
-
-		if (bossMonster)
-			BossMonsterGaugeCanvas.instance.InitializeGauge(this);
-
-		monsterAI.OnEventAnimatorParameter(MonsterAI.eAnimatorParameterForAI.fHpRatio, actorStatus.GetHPRatio());
-
-		BattleManager.instance.OnSpawnMonster(this);
-		BattleInstanceManager.instance.OnInitializePathFinderAgent(pathFinderController.agent.agentTypeID);
+		InitializeMonster();
 	}
 	#endregion
 

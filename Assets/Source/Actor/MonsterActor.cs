@@ -60,8 +60,7 @@ public class MonsterActor : Actor
 		base.InitializeActor();
 
 		team.teamID = (int)Team.eTeamID.DefaultMonster;
-		MonsterTableData monsterTableData = TableDataManager.instance.FindMonsterTableData(actorId);
-		bossMonster = monsterTableData.boss;
+		bossMonster = cachedMonsterTableData.boss;
 		if (cachedTransform.parent != null)
 			group = cachedTransform.parent.GetComponent<GroupMonster>();
 
@@ -79,6 +78,11 @@ public class MonsterActor : Actor
 
 		monsterAI.OnEventAnimatorParameter(MonsterAI.eAnimatorParameterForAI.fHpRatio, actorStatus.GetHPRatio());
 
+		#region Drop SP
+		_dropSpValue = cachedMonsterTableData.initialDropSp;
+		_nextDropSpRefreshTime = Time.time + BattleInstanceManager.instance.GetCachedGlobalConstantFloat("SpDecrease_Period");
+		#endregion
+
 		BattleManager.instance.OnSpawnMonster(this);
 		BattleInstanceManager.instance.OnInitializePathFinderAgent(pathFinderController.agent.agentTypeID);
 	}
@@ -93,6 +97,13 @@ public class MonsterActor : Actor
 		InitializeMonster();
 	}
 	#endregion
+
+	void Update()
+	{
+		#region Drop SP
+		UpdateDropSp();
+		#endregion
+	}
 
 	MonsterHPGauge _monsterHPGauge;
 	public override void OnChangedHP()
@@ -117,6 +128,8 @@ public class MonsterActor : Actor
 	public override void OnDie()
 	{
 		base.OnDie();
+
+		Drop();
 
 		if (bossMonster)
 		{
@@ -151,5 +164,73 @@ public class MonsterActor : Actor
 		DieAshParticle.ShowParticle(cachedTransform, bossMonster);
 
 		yield break;
+	}
+
+	#region Drop Item
+	float _dropSpValue;
+	float _nextDropSpRefreshTime;
+
+	void UpdateDropSp()
+	{
+		if (_dropSpValue == 0.0f)
+			return;
+
+		if (Time.time > _nextDropSpRefreshTime)
+		{
+			_dropSpValue *= BattleInstanceManager.instance.GetCachedGlobalConstantFloat("SpDecrease_Rate");
+			_nextDropSpRefreshTime += BattleInstanceManager.instance.GetCachedGlobalConstantFloat("SpDecrease_Period");
+		}
+	}
+
+	void Drop()
+	{
+		// 보스 몬스터는 보스몬스터끼리만 검사해서 마지막 보스몹에서만 드랍되게 해야한다.
+		// 이래야 혹시 여러 그룹의 보스들을 소환해도 마지막 보스한테서만 드랍이 1회 발동되게 된다.
+		if (bossMonster)
+		{
+			// 리스트로 들고있는게 이 gaugeCanvas밖에 없어서 여기에 물어본다.
+			if (BossMonsterGaugeCanvas.instance.IsLastAliveMonster(this) == false)
+				return;
+		}
+		else
+		{
+			// 보스가 아닌 몹들 중에서 그룹이라면 그룹 내 마지막 몹만 드랍해야한다.
+			if (groupMonster)
+			{
+				if (group.IsLastAliveMonster(this) == false)
+					return;
+			}
+		}
+
+		// drop
+		string dropId = "";
+		if (cachedMonsterTableData.defaultDropUse && StageManager.instance.currentStageTableData != null)
+		{
+			if (bossMonster) dropId = StageManager.instance.currentStageTableData.defaultBossDropId;
+			else dropId = StageManager.instance.currentStageTableData.defaultNormalDropId;
+		}
+		string addDropId = cachedMonsterTableData.addDropId;
+		DropObject.Drop(cachedTransform, dropId, addDropId);
+
+		// sp drop
+		DropObject.DropSp(cachedTransform, _dropSpValue);
+	}
+	#endregion
+
+
+
+
+
+
+
+	MonsterTableData _cachedMonsterTableData = null;
+	MonsterTableData cachedMonsterTableData
+	{
+		get
+		{
+			if (_cachedMonsterTableData == null)
+				_cachedMonsterTableData = TableDataManager.instance.FindMonsterTableData(actorId);
+			return _cachedMonsterTableData;
+		}
 	}
 }

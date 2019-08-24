@@ -191,4 +191,21 @@ public class BossMonsterGaugeCanvas : MonoBehaviour
 		if (_dieCount >= _listMonsterActor.Count)
 			gameObject.SetActive(false);
 	}
+
+	public bool IsLastAliveMonster(MonsterActor monsterActor)
+	{
+		bool allDie = true;
+		for (int i = 0; i < _listMonsterActor.Count; ++i)
+		{
+			if (_listMonsterActor[i] == monsterActor)
+				continue;
+
+			if (_listMonsterActor[i].actorStatus.IsDie() == false)
+			{
+				allDie = false;
+				break;
+			}
+		}
+		return allDie;
+	}
 }

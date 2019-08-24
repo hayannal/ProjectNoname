@@ -74,4 +74,28 @@ public class GroupMonster : MonoBehaviour
 			_reservedDisable = true;
 	}
 	#endregion
+
+	public bool IsLastAliveMonster(MonsterActor monsterActor)
+	{
+		bool allDie = true;
+		for (int i = 0; i < _listMonsterActor.Count; ++i)
+		{
+			if (_listMonsterActor[i] == monsterActor)
+				continue;
+
+			// 보스와 함께 그룹이 묶였을때를 대비해서
+			// 같은 그룹내 보스는 live체크를 하지 않는다.
+			// 검사하는 대상이 보스인지는 검사하지 않아도 되는게
+			// 보스일 경우는 별도로 보스들만 모아서 처리하기 때문에 여기서 할필요가 없다.
+			if (monsterActor.bossMonster == false && _listMonsterActor[i].bossMonster)
+				continue;
+
+			if (_listMonsterActor[i].actorStatus.IsDie() == false)
+			{
+				allDie = false;
+				break;
+			}
+		}
+		return allDie;
+	}
 }

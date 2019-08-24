@@ -269,6 +269,19 @@ public class BattleInstanceManager : MonoBehaviour
 	}
 	#endregion
 
+	#region Global Constant
+	Dictionary<string, float> _dicGlobalConstantFloat = new Dictionary<string, float>();
+	public float GetCachedGlobalConstantFloat(string id)
+	{
+		if (_dicGlobalConstantFloat.ContainsKey(id))
+			return _dicGlobalConstantFloat[id];
+
+		float value = TableDataManager.instance.GetGlobalConstant(id);
+		_dicGlobalConstantFloat.Add(id, value);
+		return value;
+	}
+	#endregion
+
 	#region PlayerActor
 	public PlayerActor playerActor { get; set; }
 	#endregion

@@ -49,6 +49,14 @@ public class StageTableData
   public string[] addRandomMap { get { return _addRandomMap; } set { _addRandomMap = value; } }
   
   [SerializeField]
+  string _defaultNormalDropId;
+  public string defaultNormalDropId { get { return _defaultNormalDropId; } set { _defaultNormalDropId = value; } }
+  
+  [SerializeField]
+  string _defaultBossDropId;
+  public string defaultBossDropId { get { return _defaultBossDropId; } set { _defaultBossDropId = value; } }
+  
+  [SerializeField]
   float _bossHpRatioPer1Line;
   public float bossHpRatioPer1Line { get { return _bossHpRatioPer1Line; } set { _bossHpRatioPer1Line = value; } }
   

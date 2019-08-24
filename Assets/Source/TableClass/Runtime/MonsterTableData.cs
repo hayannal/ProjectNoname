@@ -36,4 +36,16 @@ public class MonsterTableData
   bool _boss;
   public bool boss { get { return _boss; } set { _boss = value; } }
   
+  [SerializeField]
+  bool _defaultDropUse;
+  public bool defaultDropUse { get { return _defaultDropUse; } set { _defaultDropUse = value; } }
+  
+  [SerializeField]
+  string _addDropId;
+  public string addDropId { get { return _addDropId; } set { _addDropId = value; } }
+  
+  [SerializeField]
+  float _initialDropSp;
+  public float initialDropSp { get { return _initialDropSp; } set { _initialDropSp = value; } }
+  
 }

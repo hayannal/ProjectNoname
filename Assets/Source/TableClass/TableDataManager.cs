@@ -23,6 +23,8 @@ public class TableDataManager : MonoBehaviour
 	public LevelPackTable levelPackTable;
 	public LevelPackLevelTable levelPackLevelTable;
 	public ActorLevelPackTable actorLevelPackTable;
+	public GlobalConstantFloatTable globalConstantFloatTable;
+	public DropTable dropTable;
 
 	void Awake()
 	{
@@ -175,6 +177,26 @@ public class TableDataManager : MonoBehaviour
 		{
 			if (actorLevelPackTable.dataArray[i].actorId == actorId && actorLevelPackTable.dataArray[i].levelPackId == levelPackId)
 				return actorLevelPackTable.dataArray[i];
+		}
+		return null;
+	}
+
+	public float GetGlobalConstant(string id)
+	{
+		for (int i = 0; i < globalConstantFloatTable.dataArray.Length; ++i)
+		{
+			if (globalConstantFloatTable.dataArray[i].id == id)
+				return globalConstantFloatTable.dataArray[i].value;
+		}
+		return 0.0f;
+	}
+
+	public DropTableData FindDropTableData(string dropId)
+	{
+		for (int i = 0; i < dropTable.dataArray.Length; ++i)
+		{
+			if (dropTable.dataArray[i].dropId == dropId)
+				return dropTable.dataArray[i];
 		}
 		return null;
 	}

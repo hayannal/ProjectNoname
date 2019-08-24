@@ -10,57 +10,39 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 80e14a72067f1ad408ec8d661bc560ce, type: 3}
-  m_Name: MonsterTableImporter
+  m_Name: DropTableImporter
   m_EditorClassIdentifier: 
   templatePath: AssetStore/QuickSheet/ExcelPlugin/Templates
   scriptFilePath: Source/TableClass/Runtime
   editorScriptFilePath: Source/TableClass/Editor
-  sheetName: Stage.xlsx
-  workSheetName: MonsterTable
+  sheetName: Drop.xlsx
+  workSheetName: DropTable
   columnHeaderList:
   - type: 1
-    name: monsterId
+    name: dropId
     isEnable: 0
     isArray: 0
-  - type: 5
-    name: multiHp
+  - type: 3
+    name: dropEnum
     isEnable: 0
-    isArray: 0
-  - type: 5
-    name: multiAtk
-    isEnable: 0
-    isArray: 0
-  - type: 5
-    name: multiDef
-    isEnable: 0
-    isArray: 0
-  - type: 5
-    name: attackDelay
-    isEnable: 0
-    isArray: 0
-  - type: 5
-    name: moveSpeed
-    isEnable: 0
-    isArray: 0
-  - type: 8
-    name: boss
-    isEnable: 0
-    isArray: 0
-  - type: 8
-    name: defaultDropUse
-    isEnable: 0
-    isArray: 0
+    isArray: 1
   - type: 1
-    name: addDropId
+    name: subValue
     isEnable: 0
-    isArray: 0
+    isArray: 1
   - type: 5
-    name: initialDropSp
+    name: probability
     isEnable: 0
-    isArray: 0
-  excelFilePath: ../Excel/Stage.xlsx
+    isArray: 1
+  - type: 5
+    name: minValue
+    isEnable: 0
+    isArray: 1
+  - type: 5
+    name: maxValue
+    isEnable: 0
+    isArray: 1
+  excelFilePath: ../Excel/Drop.xlsx
   SheetNames:
-  - StageTable
-  - MapTable
-  - MonsterTable
-  currentSelectedSheet: 2
+  - DropTable
+  currentSelectedSheet: 0

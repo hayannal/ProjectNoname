@@ -61,7 +61,7 @@ public class BattleModeProcessorBase
 			// all kill monster
 			BattleInstanceManager.instance.GetCachedObject(StageManager.instance.gatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
 
-			if (StageManager.instance.currentStageSwappable)
+			if (StageManager.instance.currentStageTableData != null && StageManager.instance.currentStageTableData.swap)
 			{
 				_playerIndicatorCanvas = (PlayerIndicatorCanvas)UIInstanceManager.instance.GetCachedObjectIndicatorCanvas(StageManager.instance.playerIndicatorPrefab);
 				_playerIndicatorCanvas.targetTransform = BattleInstanceManager.instance.playerActor.cachedTransform;

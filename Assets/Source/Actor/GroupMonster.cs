@@ -5,6 +5,7 @@ using UnityEngine;
 public class GroupMonster : MonoBehaviour
 {
 	List<MonsterActor> _listMonsterActor = new List<MonsterActor>();
+	public List<MonsterActor> listMonsterActor { get { return _listMonsterActor; } }
 
 	void Awake()
 	{

@@ -80,7 +80,8 @@ public class MonsterActor : Actor
 
 		#region Drop SP
 		_dropSpValue = cachedMonsterTableData.initialDropSp;
-		_nextDropSpRefreshTime = Time.time + BattleInstanceManager.instance.GetCachedGlobalConstantFloat("SpDecrease_Period");
+		_dropSpRefreshPeriod = (StageManager.instance.currentStageTableData != null) ? StageManager.instance.currentStageTableData.spDecreasePeriod : 0.0f;
+		_nextDropSpRefreshTime = Time.time + _dropSpRefreshPeriod;
 		#endregion
 
 		BattleManager.instance.OnSpawnMonster(this);
@@ -168,17 +169,18 @@ public class MonsterActor : Actor
 
 	#region Drop Item
 	float _dropSpValue;
+	float _dropSpRefreshPeriod;
 	float _nextDropSpRefreshTime;
 
 	void UpdateDropSp()
 	{
-		if (_dropSpValue == 0.0f)
+		if (_dropSpValue == 0.0f || _dropSpRefreshPeriod == 0.0f)
 			return;
 
 		if (Time.time > _nextDropSpRefreshTime)
 		{
-			_dropSpValue *= BattleInstanceManager.instance.GetCachedGlobalConstantFloat("SpDecrease_Rate");
-			_nextDropSpRefreshTime += BattleInstanceManager.instance.GetCachedGlobalConstantFloat("SpDecrease_Period");
+			_dropSpValue *= BattleInstanceManager.instance.GetCachedGlobalConstantFloat("SpDecreaseRate");
+			_nextDropSpRefreshTime += _dropSpRefreshPeriod;
 		}
 	}
 

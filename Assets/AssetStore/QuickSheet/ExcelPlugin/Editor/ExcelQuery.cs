@@ -1,4 +1,4 @@
-﻿///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 ///
 /// ExcelQuery.cs
 ///
@@ -290,23 +290,29 @@ namespace UnityQuickSheet
             else if (t.IsArray)
             {
                 if (t.GetElementType() == typeof(float))
-                    return ConvertExt.ToSingleArray((string)value);
+					//return ConvertExt.ToSingleArray((string)value);
+					return ConvertExt.ToSingleArray(value.ToString());
 
-                if (t.GetElementType() == typeof(double))
-                    return ConvertExt.ToDoubleArray((string)value);
+				if (t.GetElementType() == typeof(double))
+					//return ConvertExt.ToDoubleArray((string)value);
+					return ConvertExt.ToDoubleArray(value.ToString());
 
-                if (t.GetElementType() == typeof(short))
-                    return ConvertExt.ToInt16Array((string)value);
+				if (t.GetElementType() == typeof(short))
+					//return ConvertExt.ToInt16Array((string)value);
+					return ConvertExt.ToInt16Array(value.ToString());
 
-                if (t.GetElementType() == typeof(int))
-                    return ConvertExt.ToInt32Array((string)value);
+				if (t.GetElementType() == typeof(int))
+					//return ConvertExt.ToInt32Array((string)value);
+					return ConvertExt.ToInt32Array(value.ToString());
 
-                if (t.GetElementType() == typeof(long))
-                    return ConvertExt.ToInt64Array((string)value);
+				if (t.GetElementType() == typeof(long))
+					//return ConvertExt.ToInt64Array((string)value);
+					return ConvertExt.ToInt64Array(value.ToString());
 
-                if (t.GetElementType() == typeof(string))
-                    return ConvertExt.ToStringArray((string)value);
-            }
+				if (t.GetElementType() == typeof(string))
+				    //return ConvertExt.ToStringArray((string)value);
+				    return ConvertExt.ToStringArray(value.ToString());
+			}
 
             // for all other types, convert its corresponding type.
             return Convert.ChangeType(value, t);

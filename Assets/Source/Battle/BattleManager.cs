@@ -4,16 +4,7 @@ using UnityEngine;
 
 public class BattleManager : MonoBehaviour
 {
-	public static BattleManager instance
-	{
-		get
-		{
-			if (_instance == null)
-				_instance = (new GameObject("BattleManager")).AddComponent<BattleManager>();
-			return _instance;
-		}
-	}
-	static BattleManager _instance = null;
+	public static BattleManager instance;
 
 	public GameObject targetCircleObject;
 	public GameObject monsterDieAshParticlePrefab;
@@ -28,7 +19,7 @@ public class BattleManager : MonoBehaviour
 
 	void Awake()
 	{
-		_instance = this;
+		instance = this;
 
 		if (_currentBattleMode == null)
 			Initialize(eBattleMode.DefaultMode);

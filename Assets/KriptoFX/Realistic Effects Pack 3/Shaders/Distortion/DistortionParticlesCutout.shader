@@ -20,8 +20,8 @@ Category {
 	Fog { Mode Off}
 
 	SubShader {
-		GrabPass {							
-			Name "_GrabTexture"
+		GrabPass {
+			"_GrabTexture"
  		}
 		Pass {
 			Name "BASE"

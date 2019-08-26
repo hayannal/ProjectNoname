@@ -37,7 +37,7 @@ public class ActorStatus : MonoBehaviour
 
 		//if (isServer)
 		_statusBase._hp = GetValue(eActorStatus.MaxHP);
-		_statusBase._sp = GetValue(eActorStatus.MaxSP);
+		_statusBase._sp = 0.0f;
 
 		OnChangedStatus();
 	}

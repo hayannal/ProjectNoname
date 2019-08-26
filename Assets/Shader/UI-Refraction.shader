@@ -19,7 +19,7 @@ Shader "FrameworkNG/UI/Refraction"
 
 		[Toggle(_REFRACTION)] _UseRefraction("========== Use Refraction ==========", Float) = 0
 		_BumpMap("Normalmap", 2D) = "bump" {}
-		_BumpAmt("Distortion", range(0,128)) = 10
+		_BumpAmt("Distortion", range(0,512)) = 10
 	}
 
 	SubShader

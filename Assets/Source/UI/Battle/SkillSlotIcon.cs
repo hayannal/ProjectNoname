@@ -6,8 +6,17 @@ using UnityEngine.EventSystems;
 
 public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
+	public Image powerSourceIconImage;
+	public GameObject activeAlarmObject;
+	public Image activeSkillOutlineImage;
+	public GameObject spGaugeObject;
+	public Image spGaugeValueImage;
+	public GameObject blinkObject;
+
 	public Image cooltimeImage;
 	public Text cooltimeText;
+
+	Color _disableColor = new Color(0.0f, 0.0f, 0.0f, 0.65f);
 
 	PlayerActor _playerActor;
 	ActionController.ActionInfo _actionInfo = null;
@@ -82,6 +91,13 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 		//	else
 		//		OnEndCooltime();
 		//}
+
+		int playerPowerSourceIndex = 0;
+		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(playerActor.actorId);
+		if (actorTableData != null)
+			playerPowerSourceIndex = actorTableData.powerSource;
+		powerSourceIconImage.sprite = SkillSlotCanvas.instance.powerSourceIconSpriteList[playerPowerSourceIndex];
+		OnChangedSP(playerActor, true);
 	}
 
 	void Update()
@@ -122,11 +138,17 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 
 	public void OnHold()
 	{
+		if (_actionInfo.eInputType == Control.eInputType.Hold)
+			_playerActor.actionController.PlayActionByControl(_actionInfo.eControllerType, _actionInfo.eInputType);
+
 		_touchEventResultList[(int)Control.eInputType.Hold] = true;
 	}
 
 	public void OnSwipe()
 	{
+		if (_actionInfo.eInputType == Control.eInputType.Swipe)
+			_playerActor.actionController.PlayActionByControl(_actionInfo.eControllerType, _actionInfo.eInputType);
+
 		_touchEventResultList[(int)Control.eInputType.Swipe] = true;
 	}
 
@@ -232,6 +254,46 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 		// 쿨타임은 나중에
 		//cooltimeImage.fillAmount = _actionInfo.cooltimeInfo.cooltimeRatio;
 		//cooltimeText.text = _actionInfo.cooltimeInfo.cooltimeRatioText;
+	}
+	#endregion
+
+	#region SP
+	public void OnChangedSP(PlayerActor playerActor, bool ignoreBlink = false)
+	{
+		float spRatio = playerActor.actorStatus.GetSPRatio();
+		if (spRatio >= 1.0f)
+		{
+			if (!spGaugeObject.activeSelf)
+				ignoreBlink = true;
+			
+			// check active?
+			if (_actionInfo != null)
+			{
+				activeAlarmObject.SetActive(true);
+				activeSkillOutlineImage.gameObject.SetActive(true);
+			}
+			powerSourceIconImage.color = Color.white;
+			spGaugeObject.SetActive(false);
+			_inputProcessor.enabled = true;
+		}
+		else
+		{
+			// 사용할때도 반짝 해주나
+			//if (!spGaugeObject.activeSelf)
+			//	ignoreBlink = true;
+
+			activeAlarmObject.SetActive(false);
+			activeSkillOutlineImage.gameObject.SetActive(false);
+			powerSourceIconImage.color = _disableColor;
+			spGaugeObject.SetActive(true);
+			spGaugeValueImage.fillAmount = spRatio;
+			_inputProcessor.enabled = false;
+		}
+		if (!ignoreBlink)
+		{
+			blinkObject.SetActive(false);
+			blinkObject.SetActive(true);
+		}
 	}
 	#endregion
 }

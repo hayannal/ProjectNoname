@@ -77,6 +77,11 @@ public class DropObject : MonoBehaviour
 
 	static void Drop(Transform rootTransform, eDropType dropType, float floatValue, int intValue)
 	{
-
+		switch (dropType)
+		{
+			case eDropType.Ultimate:
+				BattleInstanceManager.instance.playerActor.actorStatus.AddSP(floatValue);
+				break;
+		}
 	}
 }

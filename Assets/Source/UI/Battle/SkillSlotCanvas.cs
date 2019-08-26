@@ -21,17 +21,28 @@ public class SkillSlotCanvas : MonoBehaviour
 	public GameObject skillSlotIconPrefab;
 	//public GameObject castingControllerPrefab;
 	public Transform ultimateSkillSlotTransform;
+	public Sprite[] powerSourceIconSpriteList;
 
 	CustomItemContainer _container = new CustomItemContainer();
 
+	SkillSlotIcon _ultimateSkillSlotIcon;
 	public void InitializeSkillSlot(PlayerActor playerActor)
 	{
-		ActionController.ActionInfo actionInfo = playerActor.actionController.GetActionInfoByControllerType(Control.eControllerType.UltimateSkillSlot);
+		if (_ultimateSkillSlotIcon != null)
+			_ultimateSkillSlotIcon.gameObject.SetActive(false);
+
+		ActionController.ActionInfo actionInfo = playerActor.actionController.GetActionInfoByName("Ultimate");
 		if (actionInfo != null)
 		{
-			SkillSlotIcon skillSlotIcon = _container.GetCachedItem(skillSlotIconPrefab, ultimateSkillSlotTransform);
-			skillSlotIcon.Initialize(playerActor, actionInfo);
+			_ultimateSkillSlotIcon = _container.GetCachedItem(skillSlotIconPrefab, ultimateSkillSlotTransform);
+			_ultimateSkillSlotIcon.Initialize(playerActor, actionInfo);
 		}
+	}
+
+	public void OnChangedSP(PlayerActor playerActor)
+	{
+		if (_ultimateSkillSlotIcon != null)
+			_ultimateSkillSlotIcon.OnChangedSP(playerActor);
 	}
 }
 

@@ -224,6 +224,9 @@ public class ActionController : MonoBehaviour {
 		}
 		animator.CrossFade(actionNameHash, actionPlayInfo.fadeDuration);
 
+		if (actionPlayInfo.actionName == "Ultimate")
+			actor.actorStatus.AddSP(-actor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MaxSP));
+
 		if (normalAttack && actor != null)
 			cooltimeProcessor.ApplyCooltime(actionPlayInfo.actionName, actor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.AttackDelay));
 		if (selectedSkillInfo != null)
@@ -244,6 +247,16 @@ public class ActionController : MonoBehaviour {
 		for (int i = 0; i < _listActionInfo.Count; ++i)
 		{
 			if (_listActionInfo[i].eControllerType == eControllerType)
+				return _listActionInfo[i];
+		}
+		return null;
+	}
+
+	public ActionInfo GetActionInfoByName(string actionName)
+	{
+		for (int i = 0; i < _listActionInfo.Count; ++i)
+		{
+			if (_listActionInfo[i].actionName == actionName)
 				return _listActionInfo[i];
 		}
 		return null;

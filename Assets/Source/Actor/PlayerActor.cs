@@ -58,6 +58,11 @@ public class PlayerActor : Actor
 		PlayerGaugeCanvas.instance.OnChangedHP(this);
 	}
 
+	public override void OnChangedSP()
+	{
+		SkillSlotCanvas.instance.OnChangedSP(this);
+	}
+
 	public override void OnDie()
 	{
 		base.OnDie();

@@ -22,7 +22,7 @@ public class ActionController : MonoBehaviour {
 		public Control.eInputType eInputType;
 		public float fadeDuration;
 		public string skillId;	// only Id. Find skillinfo when use skill.
-		public string castingId;
+		//public string castingId;
 	}
 
 	List<ActionInfo> _listActionInfo;

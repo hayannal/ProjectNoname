@@ -11,7 +11,6 @@ public class Actor : MonoBehaviour {
 	public ActionController actionController { get; private set; }
 	public BaseCharacterController baseCharacterController { get; private set; }
 	//public MovementController movementController { get; private set; }
-	//public CastingProcessor castingProcessor { get; private set; }
 	public CooltimeProcessor cooltimeProcessor { get; private set; }
 	public ActorStatus actorStatus { get; protected set; }
 	public AffectorProcessor affectorProcessor { get; private set; }

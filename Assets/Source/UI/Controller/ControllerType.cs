@@ -7,11 +7,8 @@ namespace Control
 	{
 		None,
 		ScreenController,
-
 		ActiveSkillSlot1,
 		ActiveSkillSlot2,
 		UltimateSkillSlot,
-
-		Amount,
 	}
 }

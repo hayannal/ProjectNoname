@@ -16,6 +16,7 @@ public class BattleManager : MonoBehaviour
 	public GameObject monsterHPGaugePrefab;
 	public GameObject bossMonsterHPGaugePrefab;
 	public GameObject playerHPGaugePrefab;
+	public GameObject skillSlotCanvasPrefab;
 
 	void Awake()
 	{

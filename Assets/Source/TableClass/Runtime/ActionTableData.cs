@@ -37,10 +37,6 @@ public class ActionTableData
   public string controlId { get { return _controlId; } set { _controlId = value; } }
   
   [SerializeField]
-  string _castingId;
-  public string castingId { get { return _castingId; } set { _castingId = value; } }
-  
-  [SerializeField]
   string _skillId;
   public string skillId { get { return _skillId; } set { _skillId = value; } }
   

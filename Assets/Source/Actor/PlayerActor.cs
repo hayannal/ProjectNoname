@@ -8,6 +8,7 @@ public class PlayerActor : Actor
 
 	public SkillProcessor skillProcessor { get; private set; }
 	public PlayerAI playerAI { get; private set; }
+	//public CastingProcessor castingProcessor { get; private set; }
 
 	void Awake()
 	{
@@ -29,11 +30,11 @@ public class PlayerActor : Actor
 		skillProcessor = GetComponent<SkillProcessor>();
 		if (skillProcessor == null) skillProcessor = gameObject.AddComponent<SkillProcessor>();
 
-		//castingProcessor = GetComponent<CastingProcessor>();
-		//if (castingProcessor == null) castingProcessor = gameObject.AddComponent<CastingProcessor>();
-
 		playerAI = GetComponent<PlayerAI>();
 		if (playerAI == null) playerAI = gameObject.AddComponent<PlayerAI>();
+
+		//castingProcessor = GetComponent<CastingProcessor>();
+		//if (castingProcessor == null) castingProcessor = gameObject.AddComponent<CastingProcessor>();
 	}
 
 	protected override void InitializeActor()
@@ -47,6 +48,7 @@ public class PlayerActor : Actor
 		if (BattleManager.instance != null)
 		{
 			PlayerGaugeCanvas.instance.InitializeGauge(this);
+			SkillSlotCanvas.instance.InitializeSkillSlot(this);
 			BattleManager.instance.OnSpawnPlayer(this);
 		}
 	}

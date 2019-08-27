@@ -136,8 +136,7 @@ public class DropObject : MonoBehaviour
 			return;
 
 		Vector3 playerPosition = BattleInstanceManager.instance.playerActor.cachedTransform.position;
-		//BattleInstanceManager.instance.GetPlayerCollider
-		float playerRadius = 0.5f;
+		float playerRadius = BattleInstanceManager.instance.playerActor.actorRadius;
 		Vector3 position = cachedTransform.position;
 		Vector2 diff;
 		diff.x = playerPosition.x - position.x;

@@ -59,7 +59,7 @@ public class BattleModeProcessorBase
 		--_monsterSpawnCount;
 		if (_mapLoaded && _monsterSpawned && _monsterSpawnCount == 0)
 		{
-			BattleInstanceManager.instance.GetDropItemOnAfterBattle();
+			//BattleInstanceManager.instance.GetDropItemOnAfterBattle();
 
 			// all kill monster
 			BattleInstanceManager.instance.GetCachedObject(StageManager.instance.gatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
@@ -70,5 +70,10 @@ public class BattleModeProcessorBase
 				_playerIndicatorCanvas.targetTransform = BattleInstanceManager.instance.playerActor.cachedTransform;
 			}
 		}
+	}
+
+	public int GetSpawnedMonsterCount()
+	{
+		return _monsterSpawnCount;
 	}
 }

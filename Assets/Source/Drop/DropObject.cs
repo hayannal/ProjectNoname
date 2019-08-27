@@ -107,6 +107,7 @@ public class DropObject : MonoBehaviour
 			if (_lastJump)
 			{
 				_jumpRemainTime = 0.0f;
+				BattleInstanceManager.instance.CheckFinishJumpAllDropObject();
 				CheckPull();
 			}
 			else
@@ -116,6 +117,16 @@ public class DropObject : MonoBehaviour
 				_jumpRemainTime = secondJumpDuration;
 				_lastJump = true;
 			}
+		}
+	}
+
+	public bool jumpFinished
+	{
+		get
+		{
+			if (useJump == false)
+				return true;
+			return (_jumpRemainTime <= 0.0f);
 		}
 	}
 

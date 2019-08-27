@@ -360,6 +360,24 @@ public class BattleInstanceManager : MonoBehaviour
 	{
 		cachedDropItemOnAfterBattle = false;
 	}
+
+	public void CheckFinishJumpAllDropObject()
+	{
+		if (BattleManager.instance.GetSpawnedMonsterCount() != 0)
+			return;
+
+		bool finished = true;
+		for (int i = 0; i < _listDropObject.Count; ++i)
+		{
+			if (_listDropObject[i].jumpFinished == false)
+			{
+				finished = false;
+				break;
+			}
+		}
+		if (finished)
+			GetDropItemOnAfterBattle();
+	}
 	#endregion
 
 

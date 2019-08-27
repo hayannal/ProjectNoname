@@ -77,4 +77,9 @@ public class BattleManager : MonoBehaviour
 	{
 		_currentBattleMode.OnDieMonster(monsterActor);
 	}
+
+	public int GetSpawnedMonsterCount()
+	{
+		return _currentBattleMode.GetSpawnedMonsterCount();
+	}
 }

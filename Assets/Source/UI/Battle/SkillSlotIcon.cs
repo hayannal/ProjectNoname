@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using DG.Tweening;
 
 public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
@@ -12,6 +13,7 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 	public GameObject spGaugeObject;
 	public Image spGaugeValueImage;
 	public GameObject blinkObject;
+	public DOTweenAnimation useTweenAnimation;
 
 	public Image cooltimeImage;
 	public Text cooltimeText;
@@ -92,6 +94,8 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 		//		OnEndCooltime();
 		//}
 
+		useTweenAnimation.transform.localScale = Vector3.one;
+
 		int playerPowerSourceIndex = 0;
 		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(playerActor.actorId);
 		if (actorTableData != null)
@@ -139,7 +143,7 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 	public void OnHold()
 	{
 		if (_actionInfo.eInputType == Control.eInputType.Hold)
-			_playerActor.actionController.PlayActionByControl(_actionInfo.eControllerType, _actionInfo.eInputType);
+			PlayAction();
 
 		_touchEventResultList[(int)Control.eInputType.Hold] = true;
 	}
@@ -147,7 +151,7 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 	public void OnSwipe()
 	{
 		if (_actionInfo.eInputType == Control.eInputType.Swipe)
-			_playerActor.actionController.PlayActionByControl(_actionInfo.eControllerType, _actionInfo.eInputType);
+			PlayAction();
 
 		_touchEventResultList[(int)Control.eInputType.Swipe] = true;
 	}
@@ -155,7 +159,7 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 	public void OnTab(Vector2 position)
 	{
 		if (_actionInfo.eInputType == Control.eInputType.Tab)
-			_playerActor.actionController.PlayActionByControl(_actionInfo.eControllerType, _actionInfo.eInputType);
+			PlayAction();
 
 		_touchEventResultList[(int)Control.eInputType.Tab] = true;
 	}
@@ -163,7 +167,7 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 	public void OnPress()
 	{
 		if (_actionInfo.eInputType == Control.eInputType.Press)
-			_playerActor.actionController.PlayActionByControl(_actionInfo.eControllerType, _actionInfo.eInputType);
+			PlayAction();
 
 		_touchEventResultList[(int)Control.eInputType.Press] = true;
 	}
@@ -171,7 +175,7 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 	public void OnRelease()
 	{
 		if (_actionInfo.eInputType == Control.eInputType.Release)
-			_playerActor.actionController.PlayActionByControl(_actionInfo.eControllerType, _actionInfo.eInputType);
+			PlayAction();
 
 		_touchEventResultList[(int)Control.eInputType.Release] = true;
 	}
@@ -188,6 +192,12 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 				return _touchEventResultList[(int)eInputType];
 		}
 		return false;
+	}
+
+	void PlayAction()
+	{
+		if (_playerActor.actionController.PlayActionByControl(_actionInfo.eControllerType, _actionInfo.eInputType))
+			useTweenAnimation.DORestart();
 	}
 
 	/*
@@ -278,9 +288,9 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 		}
 		else
 		{
-			// 사용할때도 반짝 해주나
-			//if (!spGaugeObject.activeSelf)
-			//	ignoreBlink = true;
+			// 사용할때도 반짝 해주려나
+			if (!spGaugeObject.activeSelf)
+				ignoreBlink = true;
 
 			activeAlarmObject.SetActive(false);
 			activeSkillOutlineImage.gameObject.SetActive(false);

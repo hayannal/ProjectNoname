@@ -196,6 +196,9 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 
 	void PlayAction()
 	{
+		if (_playerActor.actorStatus.IsDie())
+			return;
+
 		if (_playerActor.actionController.PlayActionByControl(_actionInfo.eControllerType, _actionInfo.eInputType))
 			useTweenAnimation.DORestart();
 	}

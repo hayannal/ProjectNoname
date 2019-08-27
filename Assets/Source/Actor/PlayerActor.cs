@@ -9,6 +9,7 @@ public class PlayerActor : Actor
 	public SkillProcessor skillProcessor { get; private set; }
 	public PlayerAI playerAI { get; private set; }
 	//public CastingProcessor castingProcessor { get; private set; }
+	public float actorRadius { get; private set; }
 
 	void Awake()
 	{
@@ -17,6 +18,7 @@ public class PlayerActor : Actor
 
 	void Start()
 	{
+		actorRadius = ColliderUtil.GetRadius(_collider);
 		InitializeActor();
 	}
 

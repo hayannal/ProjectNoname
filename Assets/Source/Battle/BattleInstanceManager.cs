@@ -286,6 +286,82 @@ public class BattleInstanceManager : MonoBehaviour
 	public PlayerActor playerActor { get; set; }
 	#endregion
 
+	#region Drop
+	List<DropProcessor> _listCachedDropProcessor = new List<DropProcessor>();
+	public DropProcessor GetCachedDropProcessor(Vector3 position)
+	{
+		for (int i = 0; i < _listCachedDropProcessor.Count; ++i)
+		{
+			if (!_listCachedDropProcessor[i].gameObject.activeSelf)
+			{
+				_listCachedDropProcessor[i].cachedTransform.position = position;
+				_listCachedDropProcessor[i].gameObject.SetActive(true);
+				return _listCachedDropProcessor[i];
+			}
+		}
+
+		GameObject newObject = new GameObject();
+		newObject.name = "DropProcessor";
+		DropProcessor dropProcessor = newObject.AddComponent<DropProcessor>();
+		dropProcessor.cachedTransform.position = position;
+		_listCachedDropProcessor.Add(dropProcessor);
+		return dropProcessor;
+	}
+
+	Dictionary<GameObject, List<DropObject>> _dicDropObjectPool = new Dictionary<GameObject, List<DropObject>>();
+	public DropObject GetCachedDropObject(GameObject prefab, Vector3 position, Quaternion rotation)
+	{
+		List<DropObject> listCachedDropObject = null;
+		if (_dicDropObjectPool.ContainsKey(prefab))
+			listCachedDropObject = _dicDropObjectPool[prefab];
+		else
+		{
+			listCachedDropObject = new List<DropObject>();
+			_dicDropObjectPool.Add(prefab, listCachedDropObject);
+		}
+
+		for (int i = 0; i < listCachedDropObject.Count; ++i)
+		{
+			if (!listCachedDropObject[i].gameObject.activeSelf)
+			{
+				listCachedDropObject[i].cachedTransform.position = position;
+				listCachedDropObject[i].cachedTransform.rotation = rotation;
+				listCachedDropObject[i].gameObject.SetActive(true);
+				return listCachedDropObject[i];
+			}
+		}
+
+		GameObject newObject = Instantiate<GameObject>(prefab, position, rotation);
+		DropObject dropObject = newObject.GetComponent<DropObject>();
+		listCachedDropObject.Add(dropObject);
+		return dropObject;
+	}
+
+	List<DropObject> _listDropObject = new List<DropObject>();
+	public void OnInitializeDropObject(DropObject dropObject)
+	{
+		_listDropObject.Add(dropObject);
+	}
+
+	public void OnFinalizeDropObject(DropObject dropObject)
+	{
+		_listDropObject.Remove(dropObject);
+	}
+
+	public bool cachedDropItemOnAfterBattle { get; private set; }
+	public void GetDropItemOnAfterBattle()
+	{
+		cachedDropItemOnAfterBattle = true;
+		for (int i = 0; i < _listDropObject.Count; ++i)
+			_listDropObject[i].OnAfterBattle();
+	}
+
+	public void ResetDropItemOnAfterBattle()
+	{
+		cachedDropItemOnAfterBattle = false;
+	}
+	#endregion
+
 
 
 

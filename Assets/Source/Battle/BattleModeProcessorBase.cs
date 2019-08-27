@@ -28,6 +28,7 @@ public class BattleModeProcessorBase
 		_mapLoaded = true;
 		_monsterSpawned = false;
 		_monsterSpawnCount = 0;
+		BattleInstanceManager.instance.ResetDropItemOnAfterBattle();
 	}
 
 	GameObject _powerSourceObject;
@@ -58,6 +59,8 @@ public class BattleModeProcessorBase
 		--_monsterSpawnCount;
 		if (_mapLoaded && _monsterSpawned && _monsterSpawnCount == 0)
 		{
+			BattleInstanceManager.instance.GetDropItemOnAfterBattle();
+
 			// all kill monster
 			BattleInstanceManager.instance.GetCachedObject(StageManager.instance.gatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
 

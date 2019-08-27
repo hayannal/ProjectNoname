@@ -166,4 +166,6 @@ public class StageManager : MonoBehaviour
 			return powerSourcePrefabList[playerPowerSourceIndex];
 		return null;
 	}
+
+	public GameObject[] dropObjectPrefabList;
 }

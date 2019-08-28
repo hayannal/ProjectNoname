@@ -9,6 +9,7 @@ namespace MecanimStateDefine {
 		Move = 2,
 		Attack = 3,
 		Attacked = 4,
+		Ultimate = 5,
 	}
 }
 

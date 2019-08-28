@@ -14,6 +14,7 @@ public class DropObject : MonoBehaviour
 	public Transform rotateTransform;
 	public float jumpPower = 1.0f;
 	public float jumpStartY = 0.5f;
+	public float jumpEndY = 0.0f;
 	public float jumpDuration = 1.0f;
 	public float secondJumpPower = 0.5f;
 	public float secondJumpDuration = 0.5f;
@@ -29,9 +30,12 @@ public class DropObject : MonoBehaviour
 
 	[Space(10)]
 	public bool useLootEffect = false;
+	public GameObject lootEffectPrefab;
+	public GameObject lootEndEffectPrefab;
 	public bool useIncreaseSearchRange = false;
 	public float searchRangeAddSpeed = 2.0f;
 
+	GameObject _lootEffectObject;
 	public void Initialize(DropProcessor.eDropType dropType, float floatValue, int intValue)
 	{
 		_onAfterBattle = false;
@@ -42,11 +46,26 @@ public class DropObject : MonoBehaviour
 
 		rotateTransform.localRotation = Quaternion.identity;
 
+		if (dropType == DropProcessor.eDropType.Gacha)
+		{
+			// create item prefab
+			// temp code
+			GameObject itemObject = rotateTransform.GetChild(0).gameObject;
+
+			// object height
+			float itemHeight = ColliderUtil.GetHeight(itemObject.GetComponent<Collider>());
+			rotateTransform.localPosition = new Vector3(0.0f, itemHeight * 0.5f, 0.0f);
+			if (trailObject != null) trailObject.transform.localPosition = new Vector3(0.0f, itemHeight * 0.5f, 0.0f);
+		}
+
+		if (useLootEffect && lootEffectPrefab != null)
+			_lootEffectObject = BattleInstanceManager.instance.GetCachedObject(lootEffectPrefab, cachedTransform.position, Quaternion.identity);
+
 		if (useJump)
 		{
 			jumpTransform.localPosition = new Vector3(0.0f, jumpStartY, 0.0f);
-			jumpTransform.DOLocalJump(Vector3.zero, jumpPower, 1, jumpDuration).SetEase(Ease.InSine);
-			_lastJump = false;
+			jumpTransform.DOLocalJump(new Vector3(0.0f, jumpEndY, 0.0f), jumpPower, 1, jumpDuration).SetEase(Ease.InSine);
+			_lastJump = (secondJumpPower == 0.0f || secondJumpDuration == 0.0f) ? true : false;
 			_jumpRemainTime = jumpDuration;
 			_rotateEuler.x = Random.Range(360.0f, 720.0f) * (Random.value > 0.5f ? 1.0f : -1.0f);
 			_rotateEuler.z = Random.Range(360.0f, 720.0f) * (Random.value > 0.5f ? 1.0f : -1.0f);
@@ -72,14 +91,21 @@ public class DropObject : MonoBehaviour
 			if (_increaseSearchRangeStarted == false)
 			{
 				_increaseSearchRangeStarted = true;
+				_onSearchRange = false;
 				return;
 			}
+			if (_onSearchRange == false)
+				return;
 		}
 
 		_pullStarted = true;
 		_pullDelay = pullStartDelay;
 		_pullSpeed = pullStartSpeed;
 		if (trailObject != null) trailObject.SetActive(true);
+		//if (_lootEffectObject != null) SafeDestroyParticle.Set(_lootEffectObject);
+		if (_lootEffectObject != null) _lootEffectObject.SetActive(false);
+		if (useLootEffect && lootEndEffectPrefab != null)
+			BattleInstanceManager.instance.GetCachedObject(lootEndEffectPrefab, cachedTransform.position, Quaternion.identity);
 	}
 
 	void Update()
@@ -108,6 +134,7 @@ public class DropObject : MonoBehaviour
 
 		if (_jumpRemainTime <= 0.0f)
 		{
+			rotateTransform.rotation = Quaternion.identity;
 			if (_lastJump)
 			{
 				_jumpRemainTime = 0.0f;
@@ -116,8 +143,7 @@ public class DropObject : MonoBehaviour
 			}
 			else
 			{
-				rotateTransform.rotation = Quaternion.identity;
-				jumpTransform.DOLocalJump(Vector3.zero, secondJumpPower, 1, secondJumpDuration).SetEase(Ease.Linear);
+				jumpTransform.DOLocalJump(new Vector3(0.0f, jumpEndY, 0.0f), secondJumpPower, 1, secondJumpDuration).SetEase(Ease.Linear);
 				_jumpRemainTime = secondJumpDuration;
 				_lastJump = true;
 			}
@@ -208,6 +234,7 @@ public class DropObject : MonoBehaviour
 
 	bool _increaseSearchRangeStarted = false;
 	float _searchRange = 0.0f;
+	bool _onSearchRange = false;
 	void UpdateSearchRange()
 	{
 		if (useIncreaseSearchRange == false)
@@ -225,7 +252,10 @@ public class DropObject : MonoBehaviour
 		diff.x = playerPosition.x - position.x;
 		diff.y = playerPosition.z - position.z;
 		if (diff.x * diff.x + diff.y * diff.y < _searchRange * _searchRange)
+		{
+			_onSearchRange = true;
 			CheckPull();
+		}
 	}
 
 

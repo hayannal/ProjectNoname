@@ -25,6 +25,7 @@ public class DropObject : MonoBehaviour
 	public float pullStartDelay = 0.5f;
 	public float pullStartSpeed = 3.0f;
 	public float pullAcceleration = 2.0f;
+	public GameObject trailObject;
 
 	[Space(10)]
 	public bool useLootEffect = false;
@@ -37,6 +38,7 @@ public class DropObject : MonoBehaviour
 		_pullStarted = false;
 		_increaseSearchRangeStarted = false;
 		_searchRange = 0.0f;
+		if (trailObject != null) trailObject.SetActive(false);
 
 		rotateTransform.localRotation = Quaternion.identity;
 
@@ -77,6 +79,7 @@ public class DropObject : MonoBehaviour
 		_pullStarted = true;
 		_pullDelay = pullStartDelay;
 		_pullSpeed = pullStartSpeed;
+		if (trailObject != null) trailObject.SetActive(true);
 	}
 
 	void Update()

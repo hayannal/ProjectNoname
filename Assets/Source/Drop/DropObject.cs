@@ -41,7 +41,7 @@ public class DropObject : MonoBehaviour
 	public RectTransform nameCanvasRectTransform;
 	public Text nameText;
 
-	GameObject _lootEffectObject;
+	Transform _lootEffectTransform;
 	public void Initialize(DropProcessor.eDropType dropType, float floatValue, int intValue)
 	{
 		_onAfterBattle = false;
@@ -67,7 +67,7 @@ public class DropObject : MonoBehaviour
 		}
 
 		if (useLootEffect && lootEffectPrefab != null)
-			_lootEffectObject = BattleInstanceManager.instance.GetCachedObject(lootEffectPrefab, cachedTransform.position, Quaternion.identity);
+			_lootEffectTransform = BattleInstanceManager.instance.GetCachedObject(lootEffectPrefab, cachedTransform.position, Quaternion.identity).transform;
 
 		if (nameCanvasRectTransform != null)
 			nameCanvasRectTransform.gameObject.SetActive(false);
@@ -218,10 +218,10 @@ public class DropObject : MonoBehaviour
 
 	void DiableEffectObject()
 	{
-		//if (_lootEffectObject != null) SafeDestroyParticle.Set(_lootEffectObject);
-		if (_lootEffectObject != null) _lootEffectObject.SetActive(false);
+		if (_lootEffectTransform != null)
+			DisableParticleEmission.DisableEmission(_lootEffectTransform);
 		if (useLootEffect && lootEndEffectPrefab != null)
-			BattleInstanceManager.instance.GetCachedObject(lootEndEffectPrefab, cachedTransform.position, Quaternion.identity);
+			BattleInstanceManager.instance.GetCachedObject(lootEndEffectPrefab, (_lootEffectTransform != null) ? _lootEffectTransform.position : cachedTransform.position, Quaternion.identity);
 	}
 
 	bool _onAfterBattle = false;

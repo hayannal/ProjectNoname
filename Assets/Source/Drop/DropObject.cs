@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using DG.Tweening;
 
 public class DropObject : MonoBehaviour
@@ -26,7 +27,7 @@ public class DropObject : MonoBehaviour
 	public float pullStartDelay = 0.5f;
 	public float pullStartSpeed = 3.0f;
 	public float pullAcceleration = 2.0f;
-	public GameObject trailObject;
+	public Transform trailTransform;
 
 	[Space(10)]
 	public bool useLootEffect = false;
@@ -35,6 +36,10 @@ public class DropObject : MonoBehaviour
 	public bool useIncreaseSearchRange = false;
 	public float searchRangeAddSpeed = 2.0f;
 
+	[Space(10)]
+	public RectTransform nameCanvasRectTransform;
+	public Text nameText;
+
 	GameObject _lootEffectObject;
 	public void Initialize(DropProcessor.eDropType dropType, float floatValue, int intValue)
 	{
@@ -42,7 +47,7 @@ public class DropObject : MonoBehaviour
 		_pullStarted = false;
 		_increaseSearchRangeStarted = false;
 		_searchRange = 0.0f;
-		if (trailObject != null) trailObject.SetActive(false);
+		if (trailTransform != null) trailTransform.gameObject.SetActive(false);
 
 		rotateTransform.localRotation = Quaternion.identity;
 
@@ -55,11 +60,15 @@ public class DropObject : MonoBehaviour
 			// object height
 			float itemHeight = ColliderUtil.GetHeight(itemObject.GetComponent<Collider>());
 			rotateTransform.localPosition = new Vector3(0.0f, itemHeight * 0.5f, 0.0f);
-			if (trailObject != null) trailObject.transform.localPosition = new Vector3(0.0f, itemHeight * 0.5f, 0.0f);
+			if (trailTransform != null) trailTransform.localPosition = new Vector3(0.0f, itemHeight * 0.5f, 0.0f);
+			if (nameCanvasRectTransform != null) nameCanvasRectTransform.localPosition = new Vector3(0.0f, itemHeight, 0.0f);
 		}
 
 		if (useLootEffect && lootEffectPrefab != null)
 			_lootEffectObject = BattleInstanceManager.instance.GetCachedObject(lootEffectPrefab, cachedTransform.position, Quaternion.identity);
+
+		if (nameCanvasRectTransform != null)
+			nameCanvasRectTransform.gameObject.SetActive(false);
 
 		if (useJump)
 		{
@@ -71,7 +80,10 @@ public class DropObject : MonoBehaviour
 			_rotateEuler.z = Random.Range(360.0f, 720.0f) * (Random.value > 0.5f ? 1.0f : -1.0f);
 		}
 		else
+		{
+			CheckShowNameCanvas();
 			CheckPull();
+		}
 
 		BattleInstanceManager.instance.OnInitializeDropObject(this);
 	}
@@ -101,11 +113,9 @@ public class DropObject : MonoBehaviour
 		_pullStarted = true;
 		_pullDelay = pullStartDelay;
 		_pullSpeed = pullStartSpeed;
-		if (trailObject != null) trailObject.SetActive(true);
-		//if (_lootEffectObject != null) SafeDestroyParticle.Set(_lootEffectObject);
-		if (_lootEffectObject != null) _lootEffectObject.SetActive(false);
-		if (useLootEffect && lootEndEffectPrefab != null)
-			BattleInstanceManager.instance.GetCachedObject(lootEndEffectPrefab, cachedTransform.position, Quaternion.identity);
+		if (trailTransform != null) trailTransform.gameObject.SetActive(true);
+		if (nameCanvasRectTransform != null) nameCanvasRectTransform.gameObject.SetActive(false);
+		DiableEffectObject();
 	}
 
 	void Update()
@@ -139,6 +149,7 @@ public class DropObject : MonoBehaviour
 			{
 				_jumpRemainTime = 0.0f;
 				BattleInstanceManager.instance.CheckFinishJumpAllDropObject();
+				CheckShowNameCanvas();
 				CheckPull();
 			}
 			else
@@ -188,8 +199,17 @@ public class DropObject : MonoBehaviour
 
 	void GetDropObject()
 	{
+		DiableEffectObject();
 		BattleInstanceManager.instance.OnFinalizeDropObject(this);
 		gameObject.SetActive(false);
+	}
+
+	void DiableEffectObject()
+	{
+		//if (_lootEffectObject != null) SafeDestroyParticle.Set(_lootEffectObject);
+		if (_lootEffectObject != null) _lootEffectObject.SetActive(false);
+		if (useLootEffect && lootEndEffectPrefab != null)
+			BattleInstanceManager.instance.GetCachedObject(lootEndEffectPrefab, cachedTransform.position, Quaternion.identity);
 	}
 
 	bool _onAfterBattle = false;
@@ -258,6 +278,14 @@ public class DropObject : MonoBehaviour
 		}
 	}
 
+	void CheckShowNameCanvas()
+	{
+		if (nameCanvasRectTransform == null || nameText == null)
+			return;
+
+		//nameText.text = GetItemName();
+		nameCanvasRectTransform.gameObject.SetActive(true);
+	}
 
 
 	Transform _transform;

@@ -174,8 +174,10 @@ public class DropProcessor : MonoBehaviour
 		}
 
 		_listDropObjectInfo.Clear();
+		gameObject.SetActive(false);
 	}
 
+	// temp code
 	GameObject GetDropObjectPrefab(eDropType dropType)
 	{
 		string name = string.Format("Drop{0}", dropType.ToString());

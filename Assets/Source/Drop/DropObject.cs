@@ -36,6 +36,7 @@ public class DropObject : MonoBehaviour
 		_onAfterBattle = false;
 		_pullStarted = false;
 		_increaseSearchRangeStarted = false;
+		_searchRange = 0.0f;
 
 		rotateTransform.localRotation = Quaternion.identity;
 
@@ -165,8 +166,11 @@ public class DropObject : MonoBehaviour
 	bool _onAfterBattle = false;
 	public void OnAfterBattle()
 	{
-		_onAfterBattle = true;
-		CheckPull();
+		if (getAfterBattle)
+		{
+			_onAfterBattle = true;
+			CheckPull();
+		}
 	}
 
 	bool _pullStarted = false;

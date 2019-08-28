@@ -43,7 +43,7 @@ public class DropObject : MonoBehaviour
 		if (useJump)
 		{
 			jumpTransform.localPosition = new Vector3(0.0f, jumpStartY, 0.0f);
-			jumpTransform.DOLocalJump(Vector3.zero, jumpPower, 1, jumpDuration);
+			jumpTransform.DOLocalJump(Vector3.zero, jumpPower, 1, jumpDuration).SetEase(Ease.InSine);
 			_lastJump = false;
 			_jumpRemainTime = jumpDuration;
 			_rotateEuler.x = Random.Range(360.0f, 720.0f) * (Random.value > 0.5f ? 1.0f : -1.0f);
@@ -114,7 +114,7 @@ public class DropObject : MonoBehaviour
 			else
 			{
 				rotateTransform.rotation = Quaternion.identity;
-				jumpTransform.DOLocalJump(Vector3.zero, secondJumpPower, 1, secondJumpDuration);
+				jumpTransform.DOLocalJump(Vector3.zero, secondJumpPower, 1, secondJumpDuration).SetEase(Ease.Linear);
 				_jumpRemainTime = secondJumpDuration;
 				_lastJump = true;
 			}

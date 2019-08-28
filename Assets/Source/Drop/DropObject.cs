@@ -8,6 +8,7 @@ public class DropObject : MonoBehaviour
 {
 	public float getRange = 0.2f;
 	public bool getAfterBattle = true;
+	public float getDelay = 0.0f;
 
 	[Space(10)]
 	public bool useJump = false;
@@ -50,6 +51,7 @@ public class DropObject : MonoBehaviour
 		if (trailTransform != null) trailTransform.gameObject.SetActive(false);
 
 		rotateTransform.localRotation = Quaternion.identity;
+		_getDelay = getDelay;
 
 		if (dropType == DropProcessor.eDropType.Gacha)
 		{
@@ -118,10 +120,20 @@ public class DropObject : MonoBehaviour
 		DiableEffectObject();
 	}
 
+	float _getDelay = 0.0f;
 	void Update()
 	{
 		UpdateJump();
 		UpdateRotationY();
+
+		if (_getDelay > 0.0f)
+		{
+			_getDelay -= Time.deltaTime;
+			if (_getDelay <= 0.0f)
+				_getDelay = 0.0f;
+			return;
+		}
+
 		UpdatePull();
 		UpdateSearchRange();
 		UpdateDistance();

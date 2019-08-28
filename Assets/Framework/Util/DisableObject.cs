@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using MEC;
 
 public class DisableObject : MonoBehaviour {
 
@@ -9,19 +11,19 @@ public class DisableObject : MonoBehaviour {
 	void Start()
 	{
 		started = true;
-		StartCoroutine(Disable(delayTime));
+		Timing.RunCoroutine(Disable());
 	}
 
 	void OnEnable()
 	{
 		if (!started)
 			return;
-		StartCoroutine(Disable(delayTime));
+		Timing.RunCoroutine(Disable());
 	}
 
-	IEnumerator Disable(float delayTime)
+	IEnumerator<float> Disable()
 	{
-		yield return new WaitForSeconds(delayTime);
+		yield return Timing.WaitForSeconds(delayTime);
 		gameObject.SetActive(false);
 	}
 }

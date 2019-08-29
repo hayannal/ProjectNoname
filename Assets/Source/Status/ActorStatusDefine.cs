@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using CodeStage.AntiCheat.ObscuredTypes;
 
 namespace ActorStatusDefine {
 	
@@ -28,10 +29,10 @@ namespace ActorStatusDefine {
 
 	public class StatusBase
 	{
-		public float _hp;	// EncriptedFloat
-		public float _sp;
+		public ObscuredFloat _hp;
+		public ObscuredFloat _sp;
 
-		public float[] valueList;
+		public ObscuredFloat[] valueList;
 
 		public StatusBase()
 		{
@@ -40,7 +41,7 @@ namespace ActorStatusDefine {
 
 		public virtual void Initialize()
 		{
-			valueList = new float[(int)eActorStatus.BaseAmount];
+			valueList = new ObscuredFloat[(int)eActorStatus.BaseAmount];
 		}
 
 		public void ClearValue()
@@ -61,7 +62,7 @@ namespace ActorStatusDefine {
 	{
 		public override void Initialize()
 		{
-			valueList = new float[(int)eActorStatus.MonsterStatusAmount];
+			valueList = new ObscuredFloat[(int)eActorStatus.MonsterStatusAmount];
 		}
 	}
 
@@ -69,7 +70,7 @@ namespace ActorStatusDefine {
 	{
 		public override void Initialize()
 		{
-			valueList = new float[(int)eActorStatus.ExAmount];
+			valueList = new ObscuredFloat[(int)eActorStatus.ExAmount];
 		}
 	}
 }

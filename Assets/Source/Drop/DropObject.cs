@@ -60,11 +60,10 @@ public class DropObject : MonoBehaviour
 		{
 			// create item prefab
 			// temp code
-			GameObject itemObject = rotateTransform.GetChild(0).gameObject;
+			//GameObject itemObject = rotateTransform.GetChild(0).gameObject;
 
 			// object height
-			float itemHeight = ColliderUtil.GetHeight(itemObject.GetComponent<Collider>());
-			rotateTransform.localPosition = new Vector3(0.0f, itemHeight * 0.5f, 0.0f);
+			float itemHeight = ColliderUtil.GetHeight(GetComponentInChildren<Collider>());
 			if (trailTransform != null) trailTransform.localPosition = new Vector3(0.0f, itemHeight * 0.5f, 0.0f);
 			if (nameCanvasRectTransform != null) nameCanvasRectTransform.localPosition = new Vector3(0.0f, itemHeight, 0.0f);
 		}
@@ -220,7 +219,11 @@ public class DropObject : MonoBehaviour
 
 	void GetDropObject()
 	{
-		DiableEffectObject();
+		// 드랍되자마자 먹으면 EndEffect가 호출 안될 수 있어서 pullStart시키는 곳 말고 획득하는 곳에서도 호출하게 해놨다.
+		// 두번 나오지 않게 pullStart 체크를 추가로 한다.
+		if (_pullStarted == false)
+			DiableEffectObject();
+
 		BattleInstanceManager.instance.OnFinalizeDropObject(this);
 		gameObject.SetActive(false);
 	}
@@ -228,13 +231,14 @@ public class DropObject : MonoBehaviour
 	Transform _lootEffectTransform;
 	void DiableEffectObject()
 	{
+		if (useLootEffect && lootEndEffectPrefab != null)
+			BattleInstanceManager.instance.GetCachedObject(lootEndEffectPrefab, (_lootEffectTransform != null) ? _lootEffectTransform.position : cachedTransform.position, Quaternion.identity);
+
 		if (_lootEffectTransform != null)
 		{
 			DisableParticleEmission.DisableEmission(_lootEffectTransform);
 			_lootEffectTransform = null;
 		}
-		if (useLootEffect && lootEndEffectPrefab != null)
-			BattleInstanceManager.instance.GetCachedObject(lootEndEffectPrefab, (_lootEffectTransform != null) ? _lootEffectTransform.position : cachedTransform.position, Quaternion.identity);
 	}
 
 	bool _pullStarted = false;

@@ -196,9 +196,10 @@ public class HitObject : MonoBehaviour
 
 
 	public StatusStructForHitObject statusStructForHitObject { get { return _statusStructForHitObject; } }
+	public float createTime { get { return _createTime; } }
 
 	MeHitObject _signal;
-	float createTime;
+	float _createTime;
 	StatusBase _statusBase = new StatusBase();
 	StatusStructForHitObject _statusStructForHitObject;
 	Rigidbody _rigidbody { get; set; }
@@ -216,7 +217,7 @@ public class HitObject : MonoBehaviour
 			ObjectUtil.ChangeLayer(gameObject, HITOBJECT_LAYER);
 
 		_signal = meHit;
-		createTime = Time.time;
+		_createTime = Time.time;
 		parentActor.actorStatus.CopyStatusBase(ref _statusBase);
 		CopyEtcStatusForHitObject(ref _statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction);
 
@@ -288,7 +289,7 @@ public class HitObject : MonoBehaviour
 	void FixedUpdate()
 	{
 		// for life time 0.0f
-		if (createTime + _signal.lifeTime < Time.time)
+		if (_createTime + _signal.lifeTime < Time.time)
 		{
 			FinalizeHitObject();
 			return;

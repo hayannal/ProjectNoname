@@ -22,6 +22,7 @@ public class GatePillar : MonoBehaviour
 		instance = this;
 	}
 
+	float _spawnTime;
 	void OnEnable()
 	{
 		if (string.IsNullOrEmpty(StageManager.instance.currentGatePillarPreview))
@@ -31,6 +32,7 @@ public class GatePillar : MonoBehaviour
 			_objectIndicatorCanvas = UIInstanceManager.instance.GetCachedObjectIndicatorCanvas(imageObjectIndicatorPrefab);
 			_objectIndicatorCanvas.GetComponent<ObjectIndicatorCanvas>().targetTransform = cachedTransform;
 		}
+		_spawnTime = Time.time;
 	}
 
 	void OnDisable()
@@ -74,6 +76,8 @@ public class GatePillar : MonoBehaviour
 			if (hitObject == null)
 				continue;
 			if (hitObject.statusStructForHitObject.teamID == (int)Team.eTeamID.DefaultMonster)
+				continue;
+			if (hitObject.createTime < _spawnTime)
 				continue;
 
 			Timing.RunCoroutine(NextMapProcess());

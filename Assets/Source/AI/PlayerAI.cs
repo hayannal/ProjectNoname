@@ -33,6 +33,7 @@ public class PlayerAI : MonoBehaviour
     void Update()
     {
 		UpdateTargeting();
+		UpdateTargetingObject();
 		UpdateAttack();
     }
 
@@ -67,7 +68,10 @@ public class PlayerAI : MonoBehaviour
 				targetCollider = null;
 			}
 		}
+	}
 
+	void UpdateTargetingObject()
+	{
 		if (targetCollider == null)
 		{
 			if (_cachedTargetingObjectTransform != null)

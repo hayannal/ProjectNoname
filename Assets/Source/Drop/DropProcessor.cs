@@ -73,10 +73,10 @@ public class DropProcessor : MonoBehaviour
 			switch (dropType)
 			{
 				case eDropType.Exp:
-					dropProcessor.Add(dropType, floatValue, intValue);
+					DropExp(intValue);
 					break;
 				case eDropType.Gold:
-					DropGold(intValue);
+					dropProcessor.Add(dropType, floatValue, intValue);
 					break;
 				case eDropType.LevelPack:
 					dropProcessor.Add(dropType, floatValue, intValue);
@@ -104,14 +104,14 @@ public class DropProcessor : MonoBehaviour
 		BattleInstanceManager.instance.playerActor.actorStatus.AddSP(dropSpValue);
 	}
 
-	public static void DropGold(int dropGoldValue)
+	public static void DropExp(int dropExpValue)
 	{
-		if (dropGoldValue == 0)
+		if (dropExpValue == 0)
 			return;
 
-		Debug.Log("dropGold : " + dropGoldValue);
+		Debug.Log("dropGold : " + dropExpValue);
 
-		//StageManager.instance.StackDropGold(dropGoldValue);
+		BattleManager.instance.StackDropExp(dropExpValue);
 	}
 	#endregion
 
@@ -129,6 +129,8 @@ public class DropProcessor : MonoBehaviour
 		switch (dropType)
 		{
 			case eDropType.Exp:
+				break;
+			case eDropType.Gold:
 				int randomCount = Random.Range(4, 7);
 				int quotient = intValue / randomCount;
 				int remainder = intValue % randomCount;
@@ -140,8 +142,6 @@ public class DropProcessor : MonoBehaviour
 					newInfo.intValue = currentCount;
 					_listDropObjectInfo.Add(newInfo);
 				}
-				break;
-			case eDropType.Gold:
 				break;
 			case eDropType.LevelPack:
 			case eDropType.Heart:

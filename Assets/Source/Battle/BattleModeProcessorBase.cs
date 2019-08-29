@@ -59,8 +59,6 @@ public class BattleModeProcessorBase
 		if (_mapLoaded && _monsterSpawned && _monsterSpawnCount == 0)
 		{
 			BattleManager.instance.GetStackedDropExp();
-			// 경험치 얻는 처리를 한다.
-			// 이펙트가 먼저 나오고 곧바로 렙업창이 뜬다. 두번 이상 렙업 되는걸 처리하기 위해 업데이트 돌면서 스택에 쌓아둔채 꺼내쓰는 방법으로 해야할거다.
 
 			// all kill monster
 			BattleInstanceManager.instance.GetCachedObject(StageManager.instance.gatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);

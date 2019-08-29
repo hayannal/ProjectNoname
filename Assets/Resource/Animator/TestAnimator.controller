@@ -15,6 +15,21 @@ MonoBehaviour:
   StartTime: 0
   EndTime: 1
   state: 2
+--- !u!114 &-6653136661969782176
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebaa29644feeec143b4ef6156771ef54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0
+  EndTime: 0.85
+  state: 3
 --- !u!114 &-6045772475917017261
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -202,6 +217,7 @@ AnimatorState:
   m_StateMachineBehaviours:
   - {fileID: 2560330415284888410}
   - {fileID: -6045772475917017261}
+  - {fileID: -6653136661969782176}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1

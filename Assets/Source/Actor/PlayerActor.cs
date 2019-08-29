@@ -53,16 +53,22 @@ public class PlayerActor : Actor
 			SkillSlotCanvas.instance.InitializeSkillSlot(this);
 			BattleManager.instance.OnSpawnPlayer(this);
 		}
+
+		StageTestCanvas.instance.RefreshCurrentStatText(actorStatus.GetHP(), actorStatus.GetSP());
 	}
 
 	public override void OnChangedHP()
 	{
 		PlayerGaugeCanvas.instance.OnChangedHP(this);
+
+		StageTestCanvas.instance.RefreshCurrentStatText(actorStatus.GetHP(), actorStatus.GetSP());
 	}
 
 	public override void OnChangedSP()
 	{
 		SkillSlotCanvas.instance.OnChangedSP(this);
+
+		StageTestCanvas.instance.RefreshCurrentStatText(actorStatus.GetHP(), actorStatus.GetSP());
 	}
 
 	public override void OnDie()

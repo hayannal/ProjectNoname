@@ -44,6 +44,10 @@ public class PlayerAI : MonoBehaviour
 		if (targetingProcessor == null)
 			return;
 
+		// 여기서 리턴할지 아니면 find만 안할지 고민중이다
+		if (actor.actionController.mecanimState.IsState((int)eMecanimState.Attack) || actor.actionController.mecanimState.IsState((int)eMecanimState.Ultimate))
+			return;
+
 		_currentFindDelay -= Time.deltaTime;
 		if (_currentFindDelay <= 0.0f)
 		{

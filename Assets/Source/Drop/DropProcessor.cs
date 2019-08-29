@@ -27,11 +27,12 @@ public class DropProcessor : MonoBehaviour
 		return false;
 	}
 
-	public static void Drop(Transform rootTransform, string dropId, string addDropId)
+	public static void Drop(Transform rootTransform, string dropId, string addDropId, bool onAfterBattle)
 	{
 		Debug.Log("dropId : " + dropId + " / addDropId : " + addDropId);
 
 		DropProcessor dropProcess = BattleInstanceManager.instance.GetCachedDropProcessor(rootTransform.position);
+		dropProcess.onAfterBattle = onAfterBattle;
 
 		if (!string.IsNullOrEmpty(dropId))
 		{
@@ -169,8 +170,9 @@ public class DropProcessor : MonoBehaviour
 				continue;
 
 			DropObject cachedItem = BattleInstanceManager.instance.GetCachedDropObject(dropObjectPrefab, GetRandomDropPosition(), Quaternion.identity);
-			cachedItem.Initialize(_listDropObjectInfo[i].dropType, _listDropObjectInfo[i].floatValue, _listDropObjectInfo[i].intValue);
-			yield return Timing.WaitForSeconds(0.2f);
+			bool lastDropObject = (i == (_listDropObjectInfo.Count - 1) && BattleInstanceManager.instance.IsLastDropProcessorInStage(this));
+			cachedItem.Initialize(_listDropObjectInfo[i].dropType, _listDropObjectInfo[i].floatValue, _listDropObjectInfo[i].intValue, onAfterBattle, lastDropObject);
+			yield return Timing.WaitForSeconds(1.2f);
 		}
 
 		_listDropObjectInfo.Clear();
@@ -195,6 +197,9 @@ public class DropProcessor : MonoBehaviour
 		return cachedTransform.position + new Vector3(randomOffset.x, 0.0f, randomOffset.y);
 	}
 
+	// 마지막 몹을 잡을때 기존몹의 드랍 프로세서가 진행중일 수 있다.
+	// 이땐 afterBattle을 전달받아서 기록해두고 전달한다.
+	public bool onAfterBattle { get; set; }
 
 
 

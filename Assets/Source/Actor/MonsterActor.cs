@@ -204,7 +204,11 @@ public class MonsterActor : Actor
 			}
 		}
 
-		// drop
+		// 마지막 몹을 죽여서 드랍하는 순간에
+		// 기존 드랍템들에 회수 표시를 걸어두고 해당 몹이 드랍할 템들에도 회수 표시를 걸어둔다. 이래야 다음판 드랍템과 섞여도 현재판 드랍템들만 회수할 수 있다.
+		bool lastMonsterInStage = (BattleManager.instance.GetSpawnedMonsterCount() == 1);
+		BattleInstanceManager.instance.OnDropLastMonsterInStage();
+
 		string dropId = "";
 		if (cachedMonsterTableData.defaultDropUse && StageManager.instance.currentStageTableData != null)
 		{
@@ -212,7 +216,7 @@ public class MonsterActor : Actor
 			else dropId = StageManager.instance.currentStageTableData.defaultNormalDropId;
 		}
 		string addDropId = cachedMonsterTableData.addDropId;
-		DropProcessor.Drop(cachedTransform, dropId, addDropId);
+		DropProcessor.Drop(cachedTransform, dropId, addDropId, lastMonsterInStage);
 
 		// sp drop
 		DropProcessor.DropSp(_dropSpValue);

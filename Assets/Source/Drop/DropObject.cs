@@ -7,11 +7,13 @@ using DG.Tweening;
 public class DropObject : MonoBehaviour
 {
 	public float getRange = 0.2f;
-	public bool getAfterBattle = true;
+	//public bool getAfterBattle = true;
+	// 스테이지가 끝나고 나서 해당 스테이지에서 드랍된 템들의 애니가 전부다 끝나면 습득된다. 가장 자연스러움.
+	// 이걸 위해 onAfterBattle와 
+	public bool getAfterAllDropAnimationInStage = true;
 	public float getDelay = 0.0f;
 
 	[Space(10)]
-	public bool useJump = false;
 	public Transform jumpTransform;
 	public Transform rotateTransform;
 	public float jumpPower = 1.0f;
@@ -41,10 +43,11 @@ public class DropObject : MonoBehaviour
 	public RectTransform nameCanvasRectTransform;
 	public Text nameText;
 
-	Transform _lootEffectTransform;
-	public void Initialize(DropProcessor.eDropType dropType, float floatValue, int intValue)
+	public void Initialize(DropProcessor.eDropType dropType, float floatValue, int intValue, bool forceAfterBattle, bool lastDropObject)
 	{
-		_onAfterBattle = false;
+		_onAfterBattle = forceAfterBattle ? forceAfterBattle : false;
+		_onAfterDropAnimation = false;
+		_lastDropObject = lastDropObject;
 		_pullStarted = false;
 		_increaseSearchRangeStarted = false;
 		_searchRange = 0.0f;
@@ -72,31 +75,45 @@ public class DropObject : MonoBehaviour
 		if (nameCanvasRectTransform != null)
 			nameCanvasRectTransform.gameObject.SetActive(false);
 
-		if (useJump)
-		{
-			jumpTransform.localPosition = new Vector3(0.0f, jumpStartY, 0.0f);
-			jumpTransform.DOLocalJump(new Vector3(0.0f, jumpEndY, 0.0f), jumpPower, 1, jumpDuration).SetEase(Ease.InSine);
-			_lastJump = (secondJumpPower == 0.0f || secondJumpDuration == 0.0f) ? true : false;
-			_jumpRemainTime = jumpDuration;
-			_rotateEuler.x = Random.Range(360.0f, 720.0f) * (Random.value > 0.5f ? 1.0f : -1.0f);
-			_rotateEuler.z = Random.Range(360.0f, 720.0f) * (Random.value > 0.5f ? 1.0f : -1.0f);
-		}
-		else
-		{
-			CheckShowNameCanvas();
-			CheckPull();
-		}
+		jumpTransform.localPosition = new Vector3(0.0f, jumpStartY, 0.0f);
+		jumpTransform.DOLocalJump(new Vector3(0.0f, jumpEndY, 0.0f), jumpPower, 1, jumpDuration).SetEase(Ease.InSine);
+		_lastJump = (secondJumpPower == 0.0f || secondJumpDuration == 0.0f) ? true : false;
+		_jumpRemainTime = jumpDuration;
+		_rotateEuler.x = Random.Range(360.0f, 720.0f) * (Random.value > 0.5f ? 1.0f : -1.0f);
+		_rotateEuler.z = Random.Range(360.0f, 720.0f) * (Random.value > 0.5f ? 1.0f : -1.0f);
 
 		BattleInstanceManager.instance.OnInitializeDropObject(this);
 	}
 
+	#region state flag
+	bool _onAfterBattle = false;
+	public bool onAfterBattle { get { return _onAfterBattle; } }
+	public void OnAfterBattle()
+	{
+		if (getAfterAllDropAnimationInStage)
+			_onAfterBattle = true;
+	}
+
+	bool _onAfterDropAnimation;
+	public void OnAfterAllDropAnimation()
+	{
+		if (getAfterAllDropAnimationInStage)
+		{
+			_onAfterDropAnimation = true;
+			CheckPull();
+		}
+	}
+	bool _lastDropObject;
+	#endregion
+
 	void CheckPull()
 	{
+		if (_pullStarted)
+			return;
+
 		bool nextStep = false;
-		if (getAfterBattle == false) nextStep = true;
-		if (getAfterBattle && BattleInstanceManager.instance.cachedDropItemOnAfterBattle)
-			_onAfterBattle = true;
-		if (getAfterBattle && _onAfterBattle) nextStep = true;
+		if (getAfterAllDropAnimationInStage == false) nextStep = true;
+		if (getAfterAllDropAnimationInStage && _onAfterBattle && _onAfterDropAnimation) nextStep = true;
 		if (!nextStep)
 			return;
 
@@ -151,8 +168,6 @@ public class DropObject : MonoBehaviour
 
 		if (_lastJump == false)
 			rotateTransform.Rotate(_rotateEuler * Time.deltaTime, Space.Self);
-		//else
-		//	rotateTransform.rotation = Quaternion.Slerp(rotateTransform.rotation, Quaternion.identity, Time.deltaTime * 10.0f);
 
 		if (_jumpRemainTime <= 0.0f)
 		{
@@ -160,7 +175,8 @@ public class DropObject : MonoBehaviour
 			if (_lastJump)
 			{
 				_jumpRemainTime = 0.0f;
-				BattleInstanceManager.instance.CheckFinishJumpAllDropObject();
+				if (getAfterAllDropAnimationInStage && _onAfterBattle && _lastDropObject)
+					BattleInstanceManager.instance.OnFinishLastDropAnimation();
 				CheckShowNameCanvas();
 				CheckPull();
 			}
@@ -170,16 +186,6 @@ public class DropObject : MonoBehaviour
 				_jumpRemainTime = secondJumpDuration;
 				_lastJump = true;
 			}
-		}
-	}
-
-	public bool jumpFinished
-	{
-		get
-		{
-			if (useJump == false)
-				return true;
-			return (_jumpRemainTime <= 0.0f);
 		}
 	}
 
@@ -196,8 +202,11 @@ public class DropObject : MonoBehaviour
 		if (_jumpRemainTime > 0.0f)
 			return;
 
-		if (getAfterBattle && _onAfterBattle == false)
-			return;
+		if (getAfterAllDropAnimationInStage)
+		{
+			if (_onAfterBattle == false || _onAfterDropAnimation == false)
+				return;
+		}
 
 		Vector3 playerPosition = BattleInstanceManager.instance.playerActor.cachedTransform.position;
 		float playerRadius = BattleInstanceManager.instance.playerActor.actorRadius;
@@ -216,22 +225,16 @@ public class DropObject : MonoBehaviour
 		gameObject.SetActive(false);
 	}
 
+	Transform _lootEffectTransform;
 	void DiableEffectObject()
 	{
 		if (_lootEffectTransform != null)
+		{
 			DisableParticleEmission.DisableEmission(_lootEffectTransform);
+			_lootEffectTransform = null;
+		}
 		if (useLootEffect && lootEndEffectPrefab != null)
 			BattleInstanceManager.instance.GetCachedObject(lootEndEffectPrefab, (_lootEffectTransform != null) ? _lootEffectTransform.position : cachedTransform.position, Quaternion.identity);
-	}
-
-	bool _onAfterBattle = false;
-	public void OnAfterBattle()
-	{
-		if (getAfterBattle)
-		{
-			_onAfterBattle = true;
-			CheckPull();
-		}
 	}
 
 	bool _pullStarted = false;

@@ -348,35 +348,50 @@ public class BattleInstanceManager : MonoBehaviour
 		_listDropObject.Remove(dropObject);
 	}
 
-	public bool cachedDropItemOnAfterBattle { get; private set; }
-	public void GetDropItemOnAfterBattle()
+	public void OnDropLastMonsterInStage()
 	{
-		cachedDropItemOnAfterBattle = true;
+		// 막타 이전에 죽은 몬스터의 DropProcessor에서 아직 스폰되지 않은 아이템이 남아있을 수 있으니
+		// 스폰된 드랍템에 적용 후 DropProcessor에도 적용해야한다.
 		for (int i = 0; i < _listDropObject.Count; ++i)
 			_listDropObject[i].OnAfterBattle();
+
+		for (int i = 0; i < _listCachedDropProcessor.Count; ++i)
+		{
+			if (!_listCachedDropProcessor[i].gameObject.activeSelf)
+				continue;
+			_listCachedDropProcessor[i].onAfterBattle = true;
+		}
 	}
 
-	public void ResetDropItemOnAfterBattle()
+	public bool IsLastDropProcessorInStage(DropProcessor dropProcessor)
 	{
-		cachedDropItemOnAfterBattle = false;
+		// 해당 시점에서 활성화 중인 DropProcessor 중 유일하게 onAfterBattle가 켜져있다면 스테이지 내 마지막 드랍 프로세서로 판단한다.
+		bool lastDropProcessor = true;
+		for (int i = 0; i < _listCachedDropProcessor.Count; ++i)
+		{
+			if (!_listCachedDropProcessor[i].gameObject.activeSelf)
+				continue;
+			if (_listCachedDropProcessor[i].onAfterBattle == false)
+				continue;
+			if (_listCachedDropProcessor[i] == dropProcessor)
+				continue;
+
+			lastDropProcessor = false;
+			break;
+		}
+		return lastDropProcessor;
 	}
 
-	public void CheckFinishJumpAllDropObject()
+	public void OnFinishLastDropAnimation()
 	{
-		if (BattleManager.instance.GetSpawnedMonsterCount() != 0)
-			return;
-
-		bool finished = true;
 		for (int i = 0; i < _listDropObject.Count; ++i)
 		{
-			if (_listDropObject[i].jumpFinished == false)
-			{
-				finished = false;
-				break;
-			}
+			// 다음 스테이지에 드랍된 템들은 켜져있지 않을거다. 패스.
+			if (_listDropObject[i].onAfterBattle == false)
+				continue;
+
+			_listDropObject[i].OnAfterAllDropAnimation();
 		}
-		if (finished)
-			GetDropItemOnAfterBattle();
 	}
 	#endregion
 

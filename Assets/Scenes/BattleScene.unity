@@ -496,6 +496,123 @@ MonoBehaviour:
   dropObjectPrefabList:
   - {fileID: 9030083785615646100, guid: e74e35b4a741fd14489eb9a39031fd1e, type: 3}
   - {fileID: 1129119652213920025, guid: f78c46e7c01d1914c9feebfb5ebbded0, type: 3}
+--- !u!1 &436095921
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 436095925}
+  - component: {fileID: 436095924}
+  - component: {fileID: 436095923}
+  - component: {fileID: 436095922}
+  m_Layer: 0
+  m_Name: Anti-Cheat Toolkit Detectors
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &436095922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 436095921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee05a44c52da9f34987776fba23e68a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &436095923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 436095921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0d04994c2cd96140a8cf16a1ede4fb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoStart: 1
+  keepAlive: 1
+  autoDispose: 1
+  detectionEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 436095922}
+        m_MethodName: OnDetect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  detectionEventHasListener: 1
+  interval: 1
+  maxFalsePositives: 3
+  coolDown: 30
+--- !u!114 &436095924
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 436095921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a30ad7dd9c3245a488e57ae755cf870e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoStart: 1
+  keepAlive: 1
+  autoDispose: 1
+  detectionEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 436095922}
+        m_MethodName: OnDetect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  detectionEventHasListener: 1
+  doubleEpsilon: 0.0001
+  floatEpsilon: 0.0001
+  vector2Epsilon: 0.1
+  vector3Epsilon: 0.1
+  quaternionEpsilon: 0.1
+--- !u!4 &436095925
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 436095921}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 13
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &468728402
 GameObject:
   m_ObjectHideFlags: 0

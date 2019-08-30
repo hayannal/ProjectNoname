@@ -170,7 +170,7 @@ public class DropProcessor : MonoBehaviour
 				continue;
 
 			DropObject cachedItem = BattleInstanceManager.instance.GetCachedDropObject(dropObjectPrefab, GetRandomDropPosition(), Quaternion.identity);
-			bool lastDropObject = (i == (_listDropObjectInfo.Count - 1) && BattleInstanceManager.instance.IsLastDropProcessorInStage(this));
+			bool lastDropObject = (onAfterBattle && i == (_listDropObjectInfo.Count - 1) && BattleInstanceManager.instance.IsLastDropProcessorInStage(this));
 			cachedItem.Initialize(_listDropObjectInfo[i].dropType, _listDropObjectInfo[i].floatValue, _listDropObjectInfo[i].intValue, onAfterBattle, lastDropObject);
 			yield return Timing.WaitForSeconds(0.2f);
 		}

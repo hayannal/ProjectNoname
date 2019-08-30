@@ -178,7 +178,7 @@ public class DropProcessor : MonoBehaviour
 
 			// 마지막 드랍이 끝날땐 바로 사라지게 yield return 하지 않는다.
 			if (i < _listDropObjectInfo.Count - 1)
-				yield return Timing.WaitForSeconds(0.5f);
+				yield return Timing.WaitForSeconds(0.2f);
 		}
 
 		_listDropObjectInfo.Clear();

@@ -18,6 +18,9 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 	public Image cooltimeImage;
 	public Text cooltimeText;
 
+	public bool movable;
+	public bool cachingLastMovedPosition;
+
 	Color _disableColor = new Color(0.0f, 0.0f, 0.0f, 0.65f);
 
 	PlayerActor _playerActor;
@@ -41,6 +44,12 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 		_inputProcessor.releaseAction = OnRelease;
 	}
 
+	void Start()
+	{
+		if (movable && cachingLastMovedPosition)
+			LoadLastMovedPosition();
+	}
+
 	public void OnPointerDown(PointerEventData eventData)
 	{
 		_inputProcessor.OnPointerDown(eventData);
@@ -61,6 +70,9 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 		_inputProcessor.OnDrag(eventData);
 
 		//OnDragAction(eventData);
+
+		if (movable)
+			OnDragIcon(eventData);
 	}
 
 	public void OnEndDrag(PointerEventData eventData)
@@ -131,6 +143,38 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 	//		}
 	//	}
 	//}
+
+	#region Drag Slot Icon
+	void OnDragIcon(PointerEventData eventData)
+	{
+		//if (CheckThreshold(eventData) == false)
+		//	return;
+
+		cachedTransform.position = eventData.position;
+
+		if (cachingLastMovedPosition)
+			SaveLastMovedPosition();
+	}
+
+	const string LastMovedPositionXKey = "_LastMovedSkillSlotPositionX";
+	const string LastMovedPositionYKey = "_LastMovedSkillSlotPositionY";
+	void SaveLastMovedPosition()
+	{
+		PlayerPrefs.SetFloat(LastMovedPositionXKey, cachedTransform.localPosition.x);
+		PlayerPrefs.SetFloat(LastMovedPositionYKey, cachedTransform.localPosition.y);
+	}
+
+	void LoadLastMovedPosition()
+	{
+		if (PlayerPrefs.HasKey(LastMovedPositionXKey) == false)
+			return;
+
+		Vector3 cachedPosition = cachedTransform.localPosition;
+		cachedPosition.x = PlayerPrefs.GetFloat(LastMovedPositionXKey);
+		cachedPosition.y = PlayerPrefs.GetFloat(LastMovedPositionYKey);
+		cachedTransform.localPosition = cachedPosition;
+	}
+	#endregion
 
 	public void OnDragging(Vector2 delta)
 	{
@@ -309,4 +353,17 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 		}
 	}
 	#endregion
+
+
+
+	Transform _transform;
+	public Transform cachedTransform
+	{
+		get
+		{
+			if (_transform == null)
+				_transform = GetComponent<Transform>();
+			return _transform;
+		}
+	}
 }

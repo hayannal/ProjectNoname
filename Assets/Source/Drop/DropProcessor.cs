@@ -161,6 +161,12 @@ public class DropProcessor : MonoBehaviour
 
 	public void StartDrop()
 	{
+		if (_listDropObjectInfo.Count == 0)
+		{
+			gameObject.SetActive(false);
+			return;
+		}
+
 		Timing.RunCoroutine(DropProcess());
 	}
 
@@ -173,13 +179,23 @@ public class DropProcessor : MonoBehaviour
 				continue;
 
 			DropObject cachedItem = BattleInstanceManager.instance.GetCachedDropObject(dropObjectPrefab, GetRandomDropPosition(), Quaternion.identity);
-			bool lastDropObject = (onAfterBattle && i == (_listDropObjectInfo.Count - 1) && BattleInstanceManager.instance.IsLastDropProcessorInStage(this));
-			cachedItem.Initialize(_listDropObjectInfo[i].dropType, _listDropObjectInfo[i].floatValue, _listDropObjectInfo[i].intValue, onAfterBattle, lastDropObject);
+			cachedItem.Initialize(_listDropObjectInfo[i].dropType, _listDropObjectInfo[i].floatValue, _listDropObjectInfo[i].intValue, onAfterBattle);
 
-			// 마지막 드랍이 끝날땐 바로 사라지게 yield return 하지 않는다.
+			// 여러개의 드랍프로세서가 서로 다른 드랍오브젝트를 만들고 있을때는 누가 마지막 골드 드랍인지를 알수가 없게된다.
+			// 그래서 생성시 라스트를 등록하고 있다가
+			if (cachedItem.getAfterAllDropAnimationInStage && cachedItem.useIncreaseSearchRange == false)
+				BattleInstanceManager.instance.ReserveLastDropObject(cachedItem);
+
+			// 마지막 스폰이 끝날땐 드랍프로세서가 바로 사라지게 yield return 하지 않는다.
 			if (i < _listDropObjectInfo.Count - 1)
 				yield return Timing.WaitForSeconds(0.2f);
 		}
+
+		// 스테이지 내의 마지막 드랍 프로세서가 종료될때
+		// 마지막으로 등록된 드랍 오브젝트를 진짜 라스트 드랍으로 지정하기로 한다.
+		// 그럼 이게 발동될때 떨어져있던 골드나 레벨팩이 흡수될거다.
+		if (BattleInstanceManager.instance.IsLastDropProcessorInStage(this))
+			BattleInstanceManager.instance.ApplyLastDropObject();
 
 		_listDropObjectInfo.Clear();
 		gameObject.SetActive(false);

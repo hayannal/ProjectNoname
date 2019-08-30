@@ -9,7 +9,7 @@ public class DropObject : MonoBehaviour
 	public float getRange = 0.2f;
 	//public bool getAfterBattle = true;
 	// 스테이지가 끝나고 나서 해당 스테이지에서 드랍된 템들의 애니가 전부다 끝나면 습득된다. 가장 자연스러움.
-	// 이걸 위해 onAfterBattle와 
+	// 이걸 위해 onAfterBattle와 onAfterDropAnimation 두개를 써서 관리한다.
 	public bool getAfterAllDropAnimationInStage = true;
 	public float getDelay = 0.0f;
 
@@ -43,11 +43,11 @@ public class DropObject : MonoBehaviour
 	public RectTransform nameCanvasRectTransform;
 	public Text nameText;
 
-	public void Initialize(DropProcessor.eDropType dropType, float floatValue, int intValue, bool forceAfterBattle, bool lastDropObject)
+	public void Initialize(DropProcessor.eDropType dropType, float floatValue, int intValue, bool forceAfterBattle)
 	{
 		_onAfterBattle = forceAfterBattle ? forceAfterBattle : false;
 		_onAfterDropAnimation = false;
-		_lastDropObject = lastDropObject;
+		_lastDropObject = false;
 		_pullStarted = false;
 		_increaseSearchRangeStarted = false;
 		_searchRange = 0.0f;
@@ -81,10 +81,12 @@ public class DropObject : MonoBehaviour
 		_rotateEuler.x = Random.Range(360.0f, 720.0f) * (Random.value > 0.5f ? 1.0f : -1.0f);
 		_rotateEuler.z = Random.Range(360.0f, 720.0f) * (Random.value > 0.5f ? 1.0f : -1.0f);
 
+		_initialized = true;
 		BattleInstanceManager.instance.OnInitializeDropObject(this);
 	}
 
 	#region state flag
+	bool _initialized = false;
 	bool _onAfterBattle = false;
 	public bool onAfterBattle { get { return _onAfterBattle; } }
 	public void OnAfterBattle()
@@ -102,7 +104,21 @@ public class DropObject : MonoBehaviour
 			CheckPull();
 		}
 	}
+
 	bool _lastDropObject;
+	public void ApplyLastDropObject()
+	{
+		_lastDropObject = true;
+
+		// 드랍시에 설정되는게 아니고 이미 생성되어있는 상태에서 셋팅되는 경우 점프 여부를 판단해서
+		// 이미 점프가 끝났다면 드랍 회수를 알려야한다.
+		// 이렇게 해야 점프애니가 끝난 lastDropObject도 회수할 수 있게 된다.
+		if (_initialized && _jumpRemainTime <= 0.0f)
+		{
+			if (getAfterAllDropAnimationInStage && _onAfterBattle)
+				BattleInstanceManager.instance.OnFinishLastDropAnimation();
+		}
+	}
 	#endregion
 
 	void CheckPull()
@@ -224,6 +240,7 @@ public class DropObject : MonoBehaviour
 		if (_pullStarted == false)
 			DiableEffectObject();
 
+		_initialized = false;
 		BattleInstanceManager.instance.OnFinalizeDropObject(this);
 		gameObject.SetActive(false);
 	}

@@ -363,23 +363,43 @@ public class BattleInstanceManager : MonoBehaviour
 		}
 	}
 
+	DropObject _reservedLastDropObject;
+	public void ReserveLastDropObject(DropObject dropObject)
+	{
+		_reservedLastDropObject = dropObject;
+	}
+
+	public void ApplyLastDropObject()
+	{
+		if (_reservedLastDropObject != null)
+		{
+			_reservedLastDropObject.ApplyLastDropObject();
+			_reservedLastDropObject = null;
+		}
+	}
+
 	public bool IsLastDropProcessorInStage(DropProcessor dropProcessor)
 	{
 		// 해당 시점에서 활성화 중인 DropProcessor 중 유일하게 onAfterBattle가 켜져있다면 스테이지 내 마지막 드랍 프로세서로 판단한다.
-		bool lastDropProcessor = true;
+		int aliveCount = 0;
+		bool exist = false;
 		for (int i = 0; i < _listCachedDropProcessor.Count; ++i)
 		{
 			if (!_listCachedDropProcessor[i].gameObject.activeSelf)
 				continue;
 			if (_listCachedDropProcessor[i].onAfterBattle == false)
-				continue;
-			if (_listCachedDropProcessor[i] == dropProcessor)
-				continue;
+				return false;
+			++aliveCount;
+			if (aliveCount > 1)
+				return false;
 
-			lastDropProcessor = false;
-			break;
+			if (_listCachedDropProcessor[i] == dropProcessor)
+			{
+				exist = true;
+				continue;
+			}
 		}
-		return lastDropProcessor;
+		return exist;
 	}
 
 	public void OnFinishLastDropAnimation()

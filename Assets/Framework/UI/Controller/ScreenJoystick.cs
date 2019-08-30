@@ -40,7 +40,7 @@ public class ScreenJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 			_touchEventResultList.Add(false);
 	}
 
-	float _canvasHeight = 512.0f;
+	float _canvasHeight = 1024.0f;
 	void Start()
 	{
 		CanvasScaler parentCanvasScaler = GetComponentInParent<CanvasScaler>();

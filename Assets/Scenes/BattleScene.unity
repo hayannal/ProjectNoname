@@ -399,6 +399,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 844ce25cc18dd684ba4e47b52ead9b79, type: 3}
+--- !u!1 &107117264 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8280080458833314705, guid: 844ce25cc18dd684ba4e47b52ead9b79,
+    type: 3}
+  m_PrefabInstance: {fileID: 107117263}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &266810825
 GameObject:
   m_ObjectHideFlags: 0
@@ -548,10 +554,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb494d5547fb8f340819242ba7f44115, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultPlaneSceneObject: {fileID: 3896961553916062822, guid: e44b4b28dff3330469a6cf6037b1d76c,
-    type: 3}
-  defaultGroundSceneObject: {fileID: 8280080458833314705, guid: 844ce25cc18dd684ba4e47b52ead9b79,
-    type: 3}
+  defaultPlaneSceneObject: {fileID: 730957143}
+  defaultGroundSceneObject: {fileID: 107117264}
   gatePillarPrefab: {fileID: 3325874705248193124, guid: c420ec3ae676f304887232e59a232d6d,
     type: 3}
   fadeCanvasPrefab: {fileID: 5808278950118106818, guid: 939411a8d608caf44bb27d3ce183a02b,
@@ -559,26 +563,25 @@ MonoBehaviour:
   playerIndicatorPrefab: {fileID: 4637444971815004563, guid: a04cacfe13c3d9a40a3cd590caee9c01,
     type: 3}
   planePrefabList:
-  - {fileID: 4295701341462017968, guid: cc0344118ba834d46ad2fb7cb41d3279, type: 3}
-  - {fileID: 226352951925672567, guid: 891c6d8ad29d0a3488f67de3d3aec6e0, type: 3}
-  - {fileID: 8965682978511910231, guid: cb5bf766e6c72884ca0e31173cb05742, type: 3}
+  - {fileID: 3896961553916062822, guid: e44b4b28dff3330469a6cf6037b1d76c, type: 3}
+  - {fileID: 8608147889564029456, guid: fe259a9554c932b49b9068d41745d43a, type: 3}
+  - {fileID: 689383516128435919, guid: 541c9d11bd657ef4ea3743ee7fd1e80c, type: 3}
   groundPrefabList:
-  - {fileID: 8280080458833314705, guid: 57d2d65b88d97134eae2238029467a78, type: 3}
-  - {fileID: 2009252186011047527, guid: c2d125bbcdf9b32489360d3c08ad50ea, type: 3}
+  - {fileID: 8280080458833314705, guid: 844ce25cc18dd684ba4e47b52ead9b79, type: 3}
   wallPrefabList:
   - {fileID: 5152394217873367696, guid: 0e09377c28838004c9076c781ba336a9, type: 3}
-  - {fileID: 6845497800719747595, guid: 8ce64809640d677458dca929f83c92b1, type: 3}
-  - {fileID: 7993013453232600147, guid: 5fea859b09d1e1846bf1d91c5d1169bb, type: 3}
-  - {fileID: 7993013453232600147, guid: f819e45ff865b444380edb98bb1b35a9, type: 3}
-  - {fileID: 7993013453232600147, guid: 3ae32e6ad756c6e42a033e55b63158b5, type: 3}
+  - {fileID: 6845497800719747595, guid: f541e5ed167e95248907c83dc7c390fc, type: 3}
+  - {fileID: 7993013453232600147, guid: 32b754a896e4cf34bb2e44469ea74d0f, type: 3}
+  - {fileID: 8959635818442759151, guid: d55e7fe80965adb4684cb43350fe2132, type: 3}
+  - {fileID: 7993013453232600147, guid: cf497109224de4045b542459a8e9d579, type: 3}
   spawnFlagPrefabList:
-  - {fileID: 3723020214160948160, guid: cca704fdca4102140991679587cb264d, type: 3}
-  - {fileID: 3723020214160948160, guid: d321b6770467d3149bae791b57d5fbbb, type: 3}
-  - {fileID: 3723020214160948160, guid: 323f0aa19461e874aab730df4722e13e, type: 3}
-  - {fileID: 3723020214160948160, guid: e2e6974c60b88544f9e77ea1164ecf6b, type: 3}
-  - {fileID: 3723020214160948160, guid: 02e2ee8482f3fc04daf78941348eee39, type: 3}
-  - {fileID: 3723020214160948160, guid: 8140bc1d3c708be45b2284b6df0940b1, type: 3}
-  - {fileID: 3723020214160948160, guid: 3623b6fe464df164b969c4cb484d901b, type: 3}
+  - {fileID: 3723020214160948160, guid: 76cf6f58f181b034f95ed7867799263b, type: 3}
+  - {fileID: 3723020214160948160, guid: c93702d7b16a0234f8267fce3345a19d, type: 3}
+  - {fileID: 3723020214160948160, guid: 2b3b2eabfc4e45d45a2ed2600da6c4ae, type: 3}
+  - {fileID: 3723020214160948160, guid: ea4ca9a5cd515d94b806a9f7505fbf32, type: 3}
+  - {fileID: 3723020214160948160, guid: 20a75312f40822b45ab3902be9d9915a, type: 3}
+  - {fileID: 3723020214160948160, guid: 636f3d555fe72d74bb147ae9576b5d2b, type: 3}
+  - {fileID: 3723020214160948160, guid: f91c867e5716ae741bd32182e2ccccf7, type: 3}
   playChapter: 1
   playStage: 0
   lastClearChapter: 1
@@ -1170,6 +1173,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e44b4b28dff3330469a6cf6037b1d76c, type: 3}
+--- !u!1 &730957143 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3896961553916062822, guid: e44b4b28dff3330469a6cf6037b1d76c,
+    type: 3}
+  m_PrefabInstance: {fileID: 730957142}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &859163694
 GameObject:
   m_ObjectHideFlags: 0

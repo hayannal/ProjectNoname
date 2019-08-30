@@ -13,6 +13,10 @@ public class MapTableData
   public string mapId { get { return _mapId; } set { _mapId = value; } }
   
   [SerializeField]
+  string _plane;
+  public string plane { get { return _plane; } set { _plane = value; } }
+  
+  [SerializeField]
   string _ground;
   public string ground { get { return _ground; } set { _ground = value; } }
   

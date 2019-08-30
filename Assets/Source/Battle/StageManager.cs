@@ -8,11 +8,14 @@ public class StageManager : MonoBehaviour
 	public static StageManager instance;
 
 	// temp code
+	public GameObject defaultPlaneSceneObject;
 	public GameObject defaultGroundSceneObject;
+
 	public GameObject gatePillarPrefab;
 	public GameObject fadeCanvasPrefab;
 	public GameObject playerIndicatorPrefab;
 
+	[Reorderable] public GameObject[] planePrefabList;
 	[Reorderable] public GameObject[] groundPrefabList;
 	[Reorderable] public GameObject[] wallPrefabList;
 	[Reorderable] public GameObject[] spawnFlagPrefabList;
@@ -30,6 +33,7 @@ public class StageManager : MonoBehaviour
 	void Start()
 	{
 		// temp code
+		_currentPlaneObject = defaultPlaneSceneObject;
 		_currentGroundObject = defaultGroundSceneObject;
 		BattleInstanceManager.instance.GetCachedObject(gatePillarPrefab, new Vector3(3.0f, 0.0f, 1.0f), Quaternion.identity);
 
@@ -100,11 +104,24 @@ public class StageManager : MonoBehaviour
 		GetNextStageInfo();
 	}
 
+	GameObject _currentPlaneObject;
 	GameObject _currentGroundObject;
 	GameObject _currentWallObject;
 	GameObject _currentSpawnFlagObject;
 	void InstantiateMap(MapTableData mapTableData)
 	{
+		for (int i = 0; i < planePrefabList.Length; ++i)
+		{
+			if (planePrefabList[i].name.ToLower() == mapTableData.plane.ToLower())
+			{
+				GameObject newObject = Instantiate<GameObject>(planePrefabList[i]);
+				if (_currentPlaneObject != null)
+					_currentPlaneObject.SetActive(false);
+				_currentPlaneObject = newObject;
+				break;
+			}
+		}
+
 		for (int i = 0; i < groundPrefabList.Length; ++i)
 		{
 			if (groundPrefabList[i].name.ToLower() == mapTableData.ground.ToLower())

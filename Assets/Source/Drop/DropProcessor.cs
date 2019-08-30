@@ -146,10 +146,13 @@ public class DropProcessor : MonoBehaviour
 			case eDropType.LevelPack:
 			case eDropType.Heart:
 			case eDropType.Gacha:
-				newInfo = new DropObjectInfo();
-				newInfo.dropType = dropType;
-				newInfo.intValue = intValue;
-				_listDropObjectInfo.Add(newInfo);
+				for (int i = 0; i < intValue; ++i)
+				{
+					newInfo = new DropObjectInfo();
+					newInfo.dropType = dropType;
+					newInfo.intValue = 1;
+					_listDropObjectInfo.Add(newInfo);
+				}
 				break;
 			case eDropType.Ultimate:
 				break;
@@ -172,7 +175,10 @@ public class DropProcessor : MonoBehaviour
 			DropObject cachedItem = BattleInstanceManager.instance.GetCachedDropObject(dropObjectPrefab, GetRandomDropPosition(), Quaternion.identity);
 			bool lastDropObject = (onAfterBattle && i == (_listDropObjectInfo.Count - 1) && BattleInstanceManager.instance.IsLastDropProcessorInStage(this));
 			cachedItem.Initialize(_listDropObjectInfo[i].dropType, _listDropObjectInfo[i].floatValue, _listDropObjectInfo[i].intValue, onAfterBattle, lastDropObject);
-			yield return Timing.WaitForSeconds(0.2f);
+
+			// 마지막 드랍이 끝날땐 바로 사라지게 yield return 하지 않는다.
+			if (i < _listDropObjectInfo.Count - 1)
+				yield return Timing.WaitForSeconds(0.2f);
 		}
 
 		_listDropObjectInfo.Clear();

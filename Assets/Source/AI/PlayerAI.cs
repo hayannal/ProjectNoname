@@ -125,7 +125,7 @@ public class PlayerAI : MonoBehaviour
 			return;
 
 		Transform targetTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
-		baseCharacterController.RotateTowards(targetTransform.position - actor.cachedTransform.position);
+		baseCharacterController.movement.rotation = Quaternion.LookRotation(targetTransform.position - actor.cachedTransform.position);
 		if (actor.actionController.PlayActionByActionName(NormalAttackName))
 		{
 			Cooltime cooltime = actor.cooltimeProcessor.GetCooltime(NormalAttackName);

@@ -18,8 +18,8 @@ public class ObjectIndicatorCanvas : MonoBehaviour
 	public bool rightPosition = true;
 	bool useTweenOutBack = false;
 	public bool useLeftRightSwapByAxisX = false;
-	public float right2LeftSwapThreshold = 6.0f;
-	public float left2RightSwapThreshold = -6.0f;
+	public float right2LeftSwapThreshold = 3.0f;
+	public float left2RightSwapThreshold = -3.0f;
 	public float swapSuppressingRange = 2.5f;
 
 	// Start is called before the first frame update

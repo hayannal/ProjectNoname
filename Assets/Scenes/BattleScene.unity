@@ -1408,6 +1408,7 @@ GameObject:
   - component: {fileID: 963194228}
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
+  - component: {fileID: 963194233}
   - component: {fileID: 963194229}
   - component: {fileID: 963194230}
   - component: {fileID: 963194232}
@@ -1452,7 +1453,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 14.172664
+  field of view: 16
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -1539,7 +1540,7 @@ MonoBehaviour:
   bloomIntensity: 0.5
   bloomThreshold: 1.9
   DirtTexture: {fileID: 2800000, guid: 2f7a16ddcb2ee2740899c244fa30dd29, type: 3}
-  DirtIntensity: 3
+  DirtIntensity: 2
 --- !u!114 &963194232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1554,6 +1555,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RenderTextureResolutionFactor: 1
   autoAdjustFactorByDpi: 1
+--- !u!114 &963194233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe0b2ed600cf92640b225ecc37f05545, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  horizontalFov: 8
 --- !u!1 &1071669351
 GameObject:
   m_ObjectHideFlags: 0

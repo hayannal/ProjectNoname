@@ -16,6 +16,7 @@ public class CustomRenderer : MonoBehaviour
 	[Tooltip("Auto Adjust Resolution Factor On Start Function")]
 	public bool autoAdjustFactorByDpi = true;
 
+	Camera m_mainCamera;
 	RFX4_MobileBloom m_bloomComponent;
 	PostProcessBase[] m_postProcessList;
 
@@ -26,6 +27,7 @@ public class CustomRenderer : MonoBehaviour
 	void Awake()
     {
 		instance = this;
+		m_mainCamera = GetComponent<Camera>();
 		m_bloomComponent = GetComponent<RFX4_MobileBloom>();
 		m_postProcessList = GetComponents<PostProcessBase>();
 	}
@@ -100,13 +102,13 @@ public class CustomRenderer : MonoBehaviour
 		int width = Mathf.RoundToInt(Screen.width * RenderTextureResolutionFactor);
 		int height = Mathf.RoundToInt(Screen.height * RenderTextureResolutionFactor);
 		m_firstRT = RenderTexture.GetTemporary(width, height, 24, m_bloomComponent.SupportedHdrFormat());
-        Camera.main.targetTexture = m_firstRT;
+        m_mainCamera.targetTexture = m_firstRT;
     }
 
 	public int needGrab_refCount { get; set; }
     void OnPostRender()
     {
-        Camera.main.targetTexture = null;
+		m_mainCamera.targetTexture = null;
 		m_bloomComponent.UpdateBloom(m_firstRT);
 
 		// 원래라면 grab 하나 새로 파서 들고있어야하는게 맞는데 티가 안나는거 같아서 이렇게 firstRT를 넘겨본다.
@@ -177,9 +179,8 @@ public class CustomRenderer : MonoBehaviour
 		m_bloomComponent.OnPostRenderAdditiveBloom(m_firstRT, null as RenderTexture);
 		RenderTexture.ReleaseTemporary(m_firstRT);
     }
-
-		#region PostProcess
-
+	
+	#region PostProcess
 	RenderTexture m_secondRT;
 	void PostProcess()
 	{
@@ -216,7 +217,6 @@ public class CustomRenderer : MonoBehaviour
 			}
 		}
 	}
-
-		#endregion
+	#endregion
 #endif
 	}

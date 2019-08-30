@@ -104,7 +104,7 @@ public sealed class LocalPlayerController : BaseCharacterController
 
 		if (ScreenJoystick.instance.CheckInput(Control.eInputType.Tab) && BattleManager.instance != null)
 		{
-			Ray ray = Camera.main.ScreenPointToRay(ScreenJoystick.instance.tabPosition);
+			Ray ray = UIInstanceManager.instance.GetCachedCameraMain().ScreenPointToRay(ScreenJoystick.instance.tabPosition);
 			RaycastHit hitInfo;
 			if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, groundMask.value))
 			{

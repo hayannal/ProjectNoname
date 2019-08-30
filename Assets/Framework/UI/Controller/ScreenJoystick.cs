@@ -40,12 +40,27 @@ public class ScreenJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 			_touchEventResultList.Add(false);
 	}
 
-	float _canvasHeight = 1024.0f;
+	float _canvasMatchWidthOrHeightSize = 1024.0f;
+	float _lineLengthRatio;
+	float _lineOffsetRatio;
 	void Start()
 	{
 		CanvasScaler parentCanvasScaler = GetComponentInParent<CanvasScaler>();
-		if (parentCanvasScaler != null)
-			_canvasHeight = parentCanvasScaler.referenceResolution.y;
+		if (parentCanvasScaler == null)
+			return;
+
+		if (parentCanvasScaler.matchWidthOrHeight == 0.0f)
+		{
+			_canvasMatchWidthOrHeightSize = parentCanvasScaler.referenceResolution.x;
+			_lineLengthRatio = _canvasMatchWidthOrHeightSize / Screen.width;
+			_lineOffsetRatio = Screen.width / _canvasMatchWidthOrHeightSize;
+		}
+		else
+		{
+			_canvasMatchWidthOrHeightSize = parentCanvasScaler.referenceResolution.y;
+			_lineLengthRatio = _canvasMatchWidthOrHeightSize / Screen.height;
+			_lineOffsetRatio = Screen.height / _canvasMatchWidthOrHeightSize;
+		}
 	}
 
 	#region VirtualAxis
@@ -184,14 +199,14 @@ public class ScreenJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 		_lastDirectionQuaternion = Quaternion.Euler(0.0f, 0.0f, Mathf.Atan2(-diff.x, diff.y) * Mathf.Rad2Deg);
 
 		float lineLength = Vector3.Distance(eventData.position, eventData.pressPosition);
-		lineLength = lineLength * (_canvasHeight / Screen.height);
+		lineLength = lineLength * _lineLengthRatio;
 		if (lineStartOffset > 0.0f) lineLength -= lineStartOffset;
 		if (lineEndOffset > 0.0f) lineLength -= lineEndOffset;
 		if (lineLength > 0.0f)
 		{
 			lineImageRectTransform.gameObject.SetActive(true);
 			lineImageRectTransform.sizeDelta = new Vector2(1.0f, lineLength);
-			lineImageRectTransform.position = eventData.pressPosition + diff.normalized * lineStartOffset * (Screen.height / _canvasHeight);
+			lineImageRectTransform.position = eventData.pressPosition + diff.normalized * lineStartOffset * _lineOffsetRatio;
 			lineImageRectTransform.rotation = _lastDirectionQuaternion;
 		}
 		else
@@ -226,7 +241,7 @@ public class ScreenJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 	bool CheckThreshold(PointerEventData eventData)
 	{
 		float lineLength = Vector3.Distance(eventData.position, eventData.pressPosition);
-		lineLength = lineLength * (_canvasHeight / Screen.height);
+		lineLength = lineLength * _lineLengthRatio;
 		if (lineLength < moveDragThresholdLength)
 			return false;
 		return true;

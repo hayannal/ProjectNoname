@@ -18,8 +18,7 @@ public class ObjectIndicatorCanvas : MonoBehaviour
 	public bool rightPosition = true;
 	bool useTweenOutBack = false;
 	public bool useLeftRightSwapByAxisX = false;
-	public float right2LeftSwapThreshold = 3.0f;
-	public float left2RightSwapThreshold = -3.0f;
+	public float leftRightSwapThreshold = 1.5f;
 	public float swapSuppressingRange = 2.5f;
 
 	// Start is called before the first frame update
@@ -111,13 +110,13 @@ public class ObjectIndicatorCanvas : MonoBehaviour
 		{
 			if (rightPosition)
 			{
-				if (desiredPosition.x > right2LeftSwapThreshold - swapSuppressingRange)
-					desiredPosition.x = right2LeftSwapThreshold - swapSuppressingRange;
+				if (desiredPosition.x > CustomFollowCamera.instance.cachedQuadRight - leftRightSwapThreshold - swapSuppressingRange)
+					desiredPosition.x = CustomFollowCamera.instance.cachedQuadRight - leftRightSwapThreshold - swapSuppressingRange;
 			}
 			else
 			{
-				if (desiredPosition.x < left2RightSwapThreshold + swapSuppressingRange)
-					desiredPosition.x = left2RightSwapThreshold + swapSuppressingRange;
+				if (desiredPosition.x < CustomFollowCamera.instance.cachedQuadLeft + leftRightSwapThreshold + swapSuppressingRange)
+					desiredPosition.x = CustomFollowCamera.instance.cachedQuadLeft + leftRightSwapThreshold + swapSuppressingRange;
 			}
 		}
 
@@ -215,12 +214,12 @@ public class ObjectIndicatorCanvas : MonoBehaviour
 	{
 		if (rightPosition)
 		{
-			if (_targetPrevPosition.x > right2LeftSwapThreshold)
+			if (_targetPrevPosition.x > CustomFollowCamera.instance.cachedQuadRight - leftRightSwapThreshold)
 				rightPosition = false;
 		}
 		else
 		{
-			if (_targetPrevPosition.x < left2RightSwapThreshold)
+			if (_targetPrevPosition.x < CustomFollowCamera.instance.cachedQuadLeft + leftRightSwapThreshold)
 				rightPosition = true;
 		}
 	}

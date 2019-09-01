@@ -116,6 +116,8 @@ public class CustomFollowCamera : MonoBehaviour
 	float _quadLeft;
 	float _quadRight;
 	bool _quadLoaded = false;
+	public float cachedQuadLeft { get { return _quadLeft; } }
+	public float cachedQuadRight { get { return _quadRight; } }
 	public void OnLoadPlaneObject(float quadUp, float quadDown, float quadLeft, float quadRight)
 	{
 		_quadUp = quadUp;

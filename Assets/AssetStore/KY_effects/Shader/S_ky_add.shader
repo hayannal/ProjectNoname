@@ -23,8 +23,6 @@ Shader "KY/add" {
         [MaterialToggle] _notUseGch ("notUseGch", Float ) = 0
         [MaterialToggle] _notUseBch ("notUseBch", Float ) = 0
         _channelDivid ("channelDivid", Float ) = 3
-        [MaterialToggle] _useDepthBlend ("useDepthBlend", Float ) = 1
-        _depthBlend ("depthBlend", Float ) = 1
         _fresPower ("fresPower", Float ) = 1
         [MaterialToggle] _fresInv ("fresInv", Float ) = 0
         [MaterialToggle] _useFresnel ("useFresnel", Float ) = 0
@@ -46,12 +44,10 @@ Shader "KY/add" {
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #define UNITY_PASS_FORWARDBASE
             #include "UnityCG.cginc"
             #pragma multi_compile_fwdbase
-            #pragma exclude_renderers gles3 metal d3d11_9x xbox360 xboxone ps3 ps4 psp2 
+            #pragma exclude_renderers metal d3d11_9x xbox360 xboxone ps3 ps4 psp2 
             #pragma target 3.0
-            uniform sampler2D _CameraDepthTexture;
             uniform float4 _TimeEditor;
             uniform sampler2D _MainTex; uniform float4 _MainTex_ST;
             uniform float _emissive;
@@ -67,8 +63,6 @@ Shader "KY/add" {
             uniform fixed _notUseGch;
             uniform fixed _notUseBch;
             uniform float _channelDivid;
-            uniform fixed _useDepthBlend;
-            uniform float _depthBlend;
             uniform float _fresPower;
             uniform fixed _fresInv;
             uniform fixed _useFresnel;
@@ -84,7 +78,6 @@ Shader "KY/add" {
                 float4 posWorld : TEXCOORD1;
                 float3 normalDir : TEXCOORD2;
                 float4 vertexColor : COLOR;
-                float4 projPos : TEXCOORD3;
             };
             VertexOutput vert (VertexInput v) {
                 VertexOutput o = (VertexOutput)0;
@@ -93,16 +86,12 @@ Shader "KY/add" {
                 o.normalDir = UnityObjectToWorldNormal(v.normal);
                 o.posWorld = mul(unity_ObjectToWorld, v.vertex);
                 o.pos = UnityObjectToClipPos(v.vertex );
-                o.projPos = ComputeScreenPos (o.pos);
-                COMPUTE_EYEDEPTH(o.projPos.z);
                 return o;
             }
             float4 frag(VertexOutput i) : COLOR {
                 i.normalDir = normalize(i.normalDir);
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
                 float3 normalDirection = i.normalDir;
-                float sceneZ = max(0,LinearEyeDepth (UNITY_SAMPLE_DEPTH(tex2Dproj(_CameraDepthTexture, UNITY_PROJ_COORD(i.projPos)))) - _ProjectionParams.g);
-                float partZ = max(0,i.projPos.z - _ProjectionParams.g);
 ////// Lighting:
 ////// Emissive:
                 float4 node_2775 = _Time + _TimeEditor;
@@ -111,7 +100,7 @@ Shader "KY/add" {
                 float node_1439 = 0.0;
                 float node_7000 = ((lerp( _MainTex_var.r, node_1439, _notUseRch )+lerp( _MainTex_var.g, node_1439, _notUseGch )+lerp( _MainTex_var.b, node_1439, _notUseBch ))/_channelDivid);
                 float node_3520 = pow(1.0-max(0,dot(normalDirection, viewDirection)),_fresPower);
-                float3 emissive = (lerp( pow(node_7000,_baseTexDensity), pow(_MainTex_var.rgb,_baseTexDensity), _useTexColor )*_emissive*i.vertexColor.rgb*((pow(lerp( node_7000, _MainTex_var.a, _haveAlpha ),_alphaDensity)*_alphaPower)*i.vertexColor.a*saturate(pow((i.vertexColor.r+i.vertexColor.g+i.vertexColor.b),_vertColorDensity))*lerp( 1.0, saturate((sceneZ-partZ)/_depthBlend), _useDepthBlend )*lerp( 1.0, lerp( node_3520, (1.0 - node_3520), _fresInv ), _useFresnel )));
+                float3 emissive = (lerp( pow(node_7000,_baseTexDensity), pow(_MainTex_var.rgb,_baseTexDensity), _useTexColor )*_emissive*i.vertexColor.rgb*((pow(lerp( node_7000, _MainTex_var.a, _haveAlpha ),_alphaDensity)*_alphaPower)*i.vertexColor.a*saturate(pow((i.vertexColor.r+i.vertexColor.g+i.vertexColor.b),_vertColorDensity))*lerp( 1.0, lerp( node_3520, (1.0 - node_3520), _fresInv ), _useFresnel )));
                 float3 finalColor = emissive;
                 return fixed4(finalColor,1);
             }

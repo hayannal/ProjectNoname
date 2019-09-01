@@ -114,10 +114,9 @@ public class StageManager : MonoBehaviour
 		{
 			if (planePrefabList[i].name.ToLower() == mapTableData.plane.ToLower())
 			{
-				GameObject newObject = Instantiate<GameObject>(planePrefabList[i]);
 				if (_currentPlaneObject != null)
 					_currentPlaneObject.SetActive(false);
-				_currentPlaneObject = newObject;
+				_currentPlaneObject = BattleInstanceManager.instance.GetCachedObject(planePrefabList[i], Vector3.zero, Quaternion.identity);
 				break;
 			}
 		}
@@ -126,10 +125,9 @@ public class StageManager : MonoBehaviour
 		{
 			if (groundPrefabList[i].name.ToLower() == mapTableData.ground.ToLower())
 			{
-				GameObject newObject = Instantiate<GameObject>(groundPrefabList[i]);
 				if (_currentGroundObject != null)
 					_currentGroundObject.SetActive(false);
-				_currentGroundObject = newObject;
+				_currentGroundObject = BattleInstanceManager.instance.GetCachedObject(groundPrefabList[i], Vector3.zero, Quaternion.identity);
 				break;
 			}
 		}
@@ -138,10 +136,9 @@ public class StageManager : MonoBehaviour
 		{
 			if (wallPrefabList[i].name.ToLower() == mapTableData.wall.ToLower())
 			{
-				GameObject newObject = Instantiate<GameObject>(wallPrefabList[i]);
 				if (_currentWallObject != null)
 					_currentWallObject.SetActive(false);
-				_currentWallObject = newObject;
+				_currentWallObject = BattleInstanceManager.instance.GetCachedObject(wallPrefabList[i], Vector3.zero, Quaternion.identity);
 				break;
 			}
 		}
@@ -150,10 +147,9 @@ public class StageManager : MonoBehaviour
 		{
 			if (spawnFlagPrefabList[i].name.ToLower() == mapTableData.spawnFlag.ToLower())
 			{
-				GameObject newObject = Instantiate<GameObject>(spawnFlagPrefabList[i]);
 				if (_currentSpawnFlagObject != null)
 					_currentSpawnFlagObject.SetActive(false);
-				_currentSpawnFlagObject = newObject;
+				_currentSpawnFlagObject = Instantiate<GameObject>(spawnFlagPrefabList[i]);
 				break;
 			}
 		}

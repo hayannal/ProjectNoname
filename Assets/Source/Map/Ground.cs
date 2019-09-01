@@ -17,16 +17,21 @@ public class Ground : MonoBehaviour
 	}
 
 	// Start is called before the first frame update
+	bool _started = false;
 	void Start()
 	{
 		StaticBatchingUtility.Combine(gameObject);
+
+		if (CustomFollowCamera.instance != null)
+			CustomFollowCamera.instance.OnLoadPlaneObject(_bounds.max.z, _bounds.min.z, _bounds.min.x, _bounds.max.x);
+		_started = true;
 	}
 
 	void OnEnable()
 	{
 		BattleInstanceManager.instance.currentGround = this;
 
-		if (CustomFollowCamera.instance != null)
+		if (_started && CustomFollowCamera.instance != null)
 			CustomFollowCamera.instance.OnLoadPlaneObject(_bounds.max.z, _bounds.min.z, _bounds.min.x, _bounds.max.x);
 	}
 

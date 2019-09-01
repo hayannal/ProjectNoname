@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using ECM.Controllers;
 
 public class Actor : MonoBehaviour {
@@ -16,6 +17,7 @@ public class Actor : MonoBehaviour {
 	public AffectorProcessor affectorProcessor { get; private set; }
 	public Team team { get; private set; }
 	public TargetingProcessor targetingProcessor { get; private set; }
+	public NavMeshModifier navMeshModifier { get; private set; }
 
 	protected Rigidbody _rigidbody { get; private set; }
 	protected Collider _collider { get; private set; }
@@ -56,6 +58,13 @@ public class Actor : MonoBehaviour {
 
 		targetingProcessor = GetComponent<TargetingProcessor>();
 		if (targetingProcessor == null) targetingProcessor = gameObject.AddComponent<TargetingProcessor>();
+
+		navMeshModifier = GetComponent<NavMeshModifier>();
+		if (navMeshModifier == null)
+		{
+			navMeshModifier = gameObject.AddComponent<NavMeshModifier>();
+			navMeshModifier.ignoreFromBuild = true;
+		}
 	}
 
 	protected virtual void InitializeActor()

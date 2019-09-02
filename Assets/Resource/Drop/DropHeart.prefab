@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3042555647336670732}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.3, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5789281795296699328}
@@ -213,19 +213,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   getRange: 0.1
-  getAfterAllDropAnimationInStage: 1
-  getDelay: 0
+  getAfterAllDropAnimationInStage: 0
+  getDelay: 1.5
   jumpTransform: {fileID: 5789281795296699328}
   rotateTransform: {fileID: 4261223704862109695}
-  jumpPower: 3
+  jumpPower: 3.5
   jumpStartY: 1.5
   jumpEndY: 0
-  jumpDuration: 0.8
+  jumpDuration: 1
   secondJumpPower: 0.7
   secondJumpDuration: 0.4
   rotationY: 210
   pullStartDelay: 0
-  pullStartSpeed: 25
+  pullStartSpeed: 15
   pullAcceleration: 10
   trailTransform: {fileID: 4938451768729761529}
   useLootEffect: 0
@@ -263,34 +263,6 @@ PrefabInstance:
       value: PowerUpContainerRed
       objectReference: {fileID: 0}
     - target: {fileID: 400008, guid: 879451a5e2214f143a7edf5dd3e32020, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 33.19978
-      objectReference: {fileID: 0}
-    - target: {fileID: 400008, guid: 879451a5e2214f143a7edf5dd3e32020, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -4.3997126
-      objectReference: {fileID: 0}
-    - target: {fileID: 400008, guid: 879451a5e2214f143a7edf5dd3e32020, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 49.32073
-      objectReference: {fileID: 0}
-    - target: {fileID: 400008, guid: 879451a5e2214f143a7edf5dd3e32020, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400008, guid: 879451a5e2214f143a7edf5dd3e32020, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400008, guid: 879451a5e2214f143a7edf5dd3e32020, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400008, guid: 879451a5e2214f143a7edf5dd3e32020, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 400008, guid: 879451a5e2214f143a7edf5dd3e32020, type: 3}
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
@@ -306,7 +278,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 400008, guid: 879451a5e2214f143a7edf5dd3e32020, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 3440248648733950575, guid: 879451a5e2214f143a7edf5dd3e32020, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 879451a5e2214f143a7edf5dd3e32020, type: 3}
 --- !u!4 &4261223704862109695 stripped
 Transform:

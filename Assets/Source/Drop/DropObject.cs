@@ -75,7 +75,7 @@ public class DropObject : MonoBehaviour
 			nameCanvasRectTransform.gameObject.SetActive(false);
 
 		jumpTransform.localPosition = new Vector3(0.0f, jumpStartY, 0.0f);
-		jumpTransform.DOLocalJump(new Vector3(0.0f, jumpEndY, 0.0f), jumpPower, 1, jumpDuration).SetEase(Ease.InSine);
+		jumpTransform.DOLocalJump(new Vector3(0.0f, jumpEndY, 0.0f), jumpPower, 1, jumpDuration).SetEase(Ease.Linear);
 		_lastJump = (secondJumpPower == 0.0f || secondJumpDuration == 0.0f) ? true : false;
 		_jumpRemainTime = jumpDuration;
 		_rotateEuler.x = Random.Range(360.0f, 720.0f) * (Random.value > 0.5f ? 1.0f : -1.0f);

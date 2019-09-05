@@ -4,6 +4,18 @@ using UnityEngine;
 
 public class PowerSource : MonoBehaviour
 {
+	public static string Index2Name(int powerSource)
+	{
+		switch (powerSource)
+		{
+			case 0: return "PowerSourceMagic";
+			case 1: return "PowerSourceMachine";
+			case 2: return "PowerSourceNature";
+			case 3: return "PowerSourceQigong";
+		}
+		return "";
+	}
+
 	void OnEnable()
 	{
 		_spawnedGatePillar = false;

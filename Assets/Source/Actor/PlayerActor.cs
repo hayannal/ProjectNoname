@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerActor : Actor
 {
 	public float playerGaugeOffsetY = 0.0f;
+	public GameObject[] cachingObjectList;
 
 	public SkillProcessor skillProcessor { get; private set; }
 	public PlayerAI playerAI { get; private set; }
@@ -47,14 +48,19 @@ public class PlayerActor : Actor
 		skillProcessor.InitializeSkill(actorId);
 		actorStatus.InitializeActorStatus(actorId);
 
-		if (BattleManager.instance != null)
-		{
-			PlayerGaugeCanvas.instance.InitializeGauge(this);
-			SkillSlotCanvas.instance.InitializeSkillSlot(this);
-			BattleManager.instance.OnSpawnPlayer(this);
-		}
+		if (MainSceneBuilder.instance.lobby == false)
+			InitializeCanvas();
+
+		BattleInstanceManager.instance.playerActor = this;
+		StageManager.instance.PreparePowerSource();
 
 		StageTestCanvas.instance.RefreshCurrentStatText(actorStatus.GetHP(), actorStatus.GetSP());
+	}
+
+	public void InitializeCanvas()
+	{
+		PlayerGaugeCanvas.instance.InitializeGauge(this);
+		SkillSlotCanvas.instance.InitializeSkillSlot(this);
 	}
 
 	public override void OnChangedHP()

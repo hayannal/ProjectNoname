@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+#if UNITY_EDITOR
+using UnityEditor.AddressableAssets;
+using UnityEditor.AddressableAssets.Settings;
+#endif
 
 public class PlayerGaugeCanvas : MonoBehaviour
 {
@@ -12,6 +16,11 @@ public class PlayerGaugeCanvas : MonoBehaviour
 			if (_instance == null)
 			{
 				_instance = Instantiate<GameObject>(BattleManager.instance.playerHPGaugePrefab).GetComponent<PlayerGaugeCanvas>();
+#if UNITY_EDITOR
+				AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+				if (settings.ActivePlayModeDataBuilderIndex == 2)
+					ObjectUtil.ReloadShader(_instance.gameObject);
+#endif
 			}
 			return _instance;
 		}

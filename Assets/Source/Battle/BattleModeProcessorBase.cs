@@ -10,11 +10,7 @@ public class BattleModeProcessorBase
 
 	public void OnPreInstantiateMap()
 	{
-		if (_playerIndicatorCanvas != null)
-		{
-			_playerIndicatorCanvas.gameObject.SetActive(false);
-			_playerIndicatorCanvas = null;
-		}
+		PlayerIndicatorCanvas.Show(false, null);
 
 		if (_powerSourceObject != null)
 		{
@@ -34,12 +30,7 @@ public class BattleModeProcessorBase
 	public void OnSpawnFlag()
 	{
 		if (StageManager.instance.spawnPowerSourcePrefab)
-			_powerSourceObject = BattleInstanceManager.instance.GetCachedObject(StageManager.instance.GetCurrentPowerSourcePrefab(), StageManager.instance.currentPowerSourceSpawnPosition, Quaternion.identity);
-	}
-
-	public void OnSpawnPlayer(PlayerActor playerActor)
-	{
-		BattleInstanceManager.instance.playerActor = playerActor;
+			_powerSourceObject = BattleInstanceManager.instance.GetCachedObject(StageManager.instance.GetPreparedPowerSourcePrefab(), StageManager.instance.currentPowerSourceSpawnPosition, Quaternion.identity);
 	}
 
 	public void OnSpawnMonster(MonsterActor monsterActor)
@@ -64,10 +55,7 @@ public class BattleModeProcessorBase
 			BattleInstanceManager.instance.GetCachedObject(StageManager.instance.gatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
 
 			if (StageManager.instance.currentStageTableData != null && StageManager.instance.currentStageTableData.swap)
-			{
-				_playerIndicatorCanvas = (PlayerIndicatorCanvas)UIInstanceManager.instance.GetCachedObjectIndicatorCanvas(StageManager.instance.playerIndicatorPrefab);
-				_playerIndicatorCanvas.targetTransform = BattleInstanceManager.instance.playerActor.cachedTransform;
-			}
+				PlayerIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform);
 		}
 	}
 

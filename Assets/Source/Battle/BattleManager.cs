@@ -18,6 +18,8 @@ public class BattleManager : MonoBehaviour
 	public GameObject playerHPGaugePrefab;
 	public GameObject skillSlotCanvasPrefab;
 
+	public GameObject[] dropObjectPrefabList;
+
 	void Awake()
 	{
 		instance = this;
@@ -56,11 +58,6 @@ public class BattleManager : MonoBehaviour
 	public void OnSpawnFlag()
 	{
 		_currentBattleMode.OnSpawnFlag();
-	}
-
-	public void OnSpawnPlayer(PlayerActor playerActor)
-	{
-		_currentBattleMode.OnSpawnPlayer(playerActor);
 	}
 
 	public void OnSpawnMonster(MonsterActor monsterActor)

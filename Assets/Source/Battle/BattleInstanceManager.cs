@@ -1,6 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor.AddressableAssets;
+using UnityEditor.AddressableAssets.Settings;
+#endif
 
 public class BattleInstanceManager : MonoBehaviour
 {
@@ -51,6 +55,11 @@ public class BattleInstanceManager : MonoBehaviour
 		}
 
 		GameObject newObject = Instantiate<GameObject>(prefab, position, rotation, parentTransform);
+#if UNITY_EDITOR
+		AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+		if (settings.ActivePlayModeDataBuilderIndex == 2)
+			ObjectUtil.ReloadShader(newObject);
+#endif
 		listCachedGameObject.Add(newObject);
 		return newObject;
 	}
@@ -77,8 +86,24 @@ public class BattleInstanceManager : MonoBehaviour
 		}
 
 		GameObject newObject = Instantiate<GameObject>(prefab, parentTransform);
+#if UNITY_EDITOR
+		AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+		if (settings.ActivePlayModeDataBuilderIndex == 2)
+			ObjectUtil.ReloadShader(newObject);
+#endif
 		listCachedGameObject.Add(newObject);
 		return newObject;
+	}
+
+	public void DisableAllCachedObject()
+	{
+		Dictionary<GameObject, List<GameObject>>.Enumerator e = _dicInstancePool.GetEnumerator();
+		while (e.MoveNext())
+		{
+			List<GameObject> listCachedGameObject = e.Current.Value;
+			for (int i = 0; i < listCachedGameObject.Count; ++i)
+				listCachedGameObject[i].SetActive(false);
+		}
 	}
 	#endregion
 
@@ -332,6 +357,11 @@ public class BattleInstanceManager : MonoBehaviour
 		}
 
 		GameObject newObject = Instantiate<GameObject>(prefab, position, rotation);
+#if UNITY_EDITOR
+		AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+		if (settings.ActivePlayModeDataBuilderIndex == 2)
+			ObjectUtil.ReloadShader(newObject);
+#endif
 		DropObject dropObject = newObject.GetComponent<DropObject>();
 		listCachedDropObject.Add(dropObject);
 		return dropObject;

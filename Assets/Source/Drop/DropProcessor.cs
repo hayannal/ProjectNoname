@@ -205,10 +205,10 @@ public class DropProcessor : MonoBehaviour
 	GameObject GetDropObjectPrefab(eDropType dropType)
 	{
 		string name = string.Format("Drop{0}", dropType.ToString());
-		for (int i = 0; i < StageManager.instance.dropObjectPrefabList.Length; ++i)
+		for (int i = 0; i < BattleManager.instance.dropObjectPrefabList.Length; ++i)
 		{
-			if (StageManager.instance.dropObjectPrefabList[i].name == name)
-				return StageManager.instance.dropObjectPrefabList[i];
+			if (BattleManager.instance.dropObjectPrefabList[i].name == name)
+				return BattleManager.instance.dropObjectPrefabList[i];
 		}
 		return null;
 	}

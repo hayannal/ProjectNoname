@@ -71,9 +71,6 @@ public class SpawnFlag : MonoBehaviour
 		}
 #endif
 
-		if (_listSpawnInfo == null)
-			return;
-
 		for (int i = 0; i < _listSpawnInfo.Count; ++i)
 		{
 #if UNITY_EDITOR
@@ -92,7 +89,9 @@ public class SpawnFlag : MonoBehaviour
 
 		if (editorSpawn == false)
 		{
-			BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.playerSpawnEffectPrefab, playerStartSpawnTransform.position, Quaternion.identity);
+			if (MainSceneBuilder.instance == null || MainSceneBuilder.instance.mainSceneBuilding == false)
+				BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.playerSpawnEffectPrefab, playerStartSpawnTransform.position, Quaternion.identity);
+
 			BattleInstanceManager.instance.playerActor.cachedTransform.position = playerStartSpawnTransform.position;
 			CustomFollowCamera.instance.immediatelyUpdate = true;
 			StageManager.instance.currentGatePillarSpawnPosition = gatePillarSpawnTransform.position;
@@ -100,7 +99,10 @@ public class SpawnFlag : MonoBehaviour
 			if (StageManager.instance.spawnPowerSourcePrefab)
 				StageManager.instance.currentPowerSourceSpawnPosition = powerSourceSpawnTransform.position;
 
-			BattleManager.instance.OnSpawnFlag();
+			if (BattleManager.instance != null)
+				BattleManager.instance.OnSpawnFlag();
+			if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.mainSceneBuilding)
+				MainSceneBuilder.instance.waitSpawnFlag = true;
 		}
 	}
 

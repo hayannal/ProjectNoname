@@ -102,7 +102,7 @@ public sealed class LocalPlayerController : BaseCharacterController
 				actionController.PlayActionByActionName("Idle");
 		}
 
-		if (ScreenJoystick.instance.CheckInput(Control.eInputType.Tab) && BattleManager.instance != null)
+		if (ScreenJoystick.instance.CheckInput(Control.eInputType.Tab))
 		{
 			Ray ray = UIInstanceManager.instance.GetCachedCameraMain().ScreenPointToRay(ScreenJoystick.instance.tabPosition);
 			RaycastHit hitInfo;

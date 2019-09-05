@@ -1,6 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor.AddressableAssets;
+using UnityEditor.AddressableAssets.Settings;
+#endif
 
 public class UIInstanceManager : MonoBehaviour
 {
@@ -47,6 +51,11 @@ public class UIInstanceManager : MonoBehaviour
 		}
 
 		GameObject newObject = Instantiate<GameObject>(prefab);
+#if UNITY_EDITOR
+		AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+		if (settings.ActivePlayModeDataBuilderIndex == 2)
+			ObjectUtil.ReloadShader(newObject);
+#endif
 		ObjectIndicatorCanvas objectIndicatorCanvas = newObject.GetComponent<ObjectIndicatorCanvas>();
 		listCachedObjectIndicatorCanvas.Add(objectIndicatorCanvas);
 		return objectIndicatorCanvas;

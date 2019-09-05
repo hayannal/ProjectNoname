@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class StageTestCanvas : MonoBehaviour
 {
@@ -13,6 +14,11 @@ public class StageTestCanvas : MonoBehaviour
 	void Awake()
 	{
 		instance = this;
+	}
+
+	public void OnClickButton()
+	{
+		SceneManager.LoadScene(0);
 	}
 
 	public void RefreshCurrentMapText(int chapter, int stage, string map)

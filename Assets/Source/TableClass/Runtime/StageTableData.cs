@@ -29,6 +29,10 @@ public class StageTableData
   public float standardDef { get { return _standardDef; } set { _standardDef = value; } }
   
   [SerializeField]
+  string _environmentSetting;
+  public string environmentSetting { get { return _environmentSetting; } set { _environmentSetting = value; } }
+  
+  [SerializeField]
   string _overridingMap;
   public string overridingMap { get { return _overridingMap; } set { _overridingMap = value; } }
   

@@ -6,6 +6,8 @@ using UnityEngine.UI;
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.Callbacks;
+using UnityEditor.AddressableAssets;
+using UnityEditor.AddressableAssets.Settings;
 #endif
 using System.Collections;
 
@@ -145,9 +147,14 @@ public class MOBAEnergyBar : MonoBehaviour {
 #endif
 		m.SetFloat("_AAF", 1.0f);
         img.material = m;
-    }
-    
-    void setProperties()
+#if UNITY_EDITOR
+		AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+		if (settings.ActivePlayModeDataBuilderIndex == 2)
+			m.shader = Shader.Find(m.shader.name);
+#endif
+	}
+
+	void setProperties()
     {
         if (isDirty()) fix();
         m.SetColor("_FullColour", FullColour);          oldFullColour = FullColour;

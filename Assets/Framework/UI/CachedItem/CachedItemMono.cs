@@ -1,6 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor.AddressableAssets;
+using UnityEditor.AddressableAssets.Settings;
+#endif
 
 public class CachedItemMono<T> : MonoBehaviour where T : MonoBehaviour
 {
@@ -17,6 +21,11 @@ public class CachedItemMono<T> : MonoBehaviour where T : MonoBehaviour
 		}
 
 		GameObject newObject = Instantiate(cachedObjectPrefab, parentTransform);
+#if UNITY_EDITOR
+		AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+		if (settings.ActivePlayModeDataBuilderIndex == 2)
+			ObjectUtil.ReloadShader(newObject);
+#endif
 		T newItem = newObject.GetComponent<T>();
 		_listCachedItem.Add(newItem);
 		return newItem;

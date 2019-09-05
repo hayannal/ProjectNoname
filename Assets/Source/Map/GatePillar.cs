@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using MEC;
+#if UNITY_EDITOR
+using UnityEditor.AddressableAssets;
+using UnityEditor.AddressableAssets.Settings;
+#endif
 
 public class GatePillar : MonoBehaviour
 {
@@ -95,6 +99,11 @@ public class GatePillar : MonoBehaviour
 
 		yield return Timing.WaitForSeconds(0.2f);
 		changeEffectParticleRootObject.SetActive(true);
+#if UNITY_EDITOR
+		AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+		if (settings.ActivePlayModeDataBuilderIndex == 2)
+			ObjectUtil.ReloadShader(gameObject);
+#endif
 		CustomRenderer.instance.bloom.AdjustDirtIntensity(1.5f);
 
 		yield return Timing.WaitForSeconds(0.5f);
@@ -102,6 +111,14 @@ public class GatePillar : MonoBehaviour
 		FadeCanvas.instance.FadeOut(0.2f);
 		yield return Timing.WaitForSeconds(0.2f);
 
+		if (MainSceneBuilder.instance.lobby)
+		{
+			while (MainSceneBuilder.instance.IsDoneLateInitialized() == false)
+				yield return Timing.WaitForOneFrame;
+			MainSceneBuilder.instance.OnExitLobby();
+		}
+		while (StageManager.instance.IsDoneLoadAsyncNextStage() == false)
+			yield return Timing.WaitForOneFrame;
 		CustomRenderer.instance.bloom.ResetDirtIntensity();
 		StageManager.instance.MoveToNextStage();
 		gameObject.SetActive(false);

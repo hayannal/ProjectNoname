@@ -58,6 +58,7 @@ public class MainSceneBuilder : MonoBehaviour
 		LoadingCanvas.instance.gameObject.SetActive(true);
 		// 2번은 호출해야 로딩화면이 온전히 보인다.
 		yield return new WaitForEndOfFrame();
+		LoadingCanvas.instance.SetProgressBarPoint(0.1f, 0.0f, true);
 		yield return new WaitForEndOfFrame();
 
 		// 초기화 해야할 항목들은 다음과 같다.
@@ -90,6 +91,7 @@ public class MainSceneBuilder : MonoBehaviour
 
 		// step 1. 테이블 임시 로드
 		// 지금은 우선 apk넣고 하지만 나중에 서버에서 받는거로 바꿔야한다. 이땐 확인창 안띄운다.
+		LoadingCanvas.instance.SetProgressBarPoint(0.3f);
 		_handleTableDataManager = Addressables.LoadAssetAsync<GameObject>("TableDataManager");
 		yield return _handleTableDataManager;
 		Instantiate<GameObject>(_handleTableDataManager.Result);
@@ -107,6 +109,7 @@ public class MainSceneBuilder : MonoBehaviour
 
 		// step 5, 6, 7
 		// 차후에 5는 캐릭터 아이디에 따라 번들에서 로드해야할거다.
+		LoadingCanvas.instance.SetProgressBarPoint(0.6f);
 		_handleStageManager = Addressables.LoadAssetAsync<GameObject>("StageManager");
 		_handleStartCharacter = Addressables.LoadAssetAsync<GameObject>("Ganfaul");
 		while (!_handleStageManager.IsDone || !_handleStartCharacter.IsDone) yield return null;
@@ -134,6 +137,7 @@ public class MainSceneBuilder : MonoBehaviour
 		// 3. 스테이지 매니저가 언제나 살아있는 싱글톤 클래스가 되는 방법
 		// 3은 다른 리소스도 들고있는데 살려둘 순 없으니 패스고 1은 너무 어거지다.
 		// 결국 재부팅시 데이터 캐싱등의 처리까지 하려면 2번이 제일 낫다.
+		LoadingCanvas.instance.SetProgressBarPoint(0.9f);
 		StageManager.instance.InitializeStage(playChapter, playStage, lastClearChapter, lastClearStage);
 		while (StageManager.instance.IsDoneLoadAsyncNextStage() == false)
 			yield return null;
@@ -148,6 +152,7 @@ public class MainSceneBuilder : MonoBehaviour
 		StageManager.instance.GetNextStageInfo();
 
 		// step 10. player hit object caching
+		LoadingCanvas.instance.SetProgressBarPoint(1.0f, 0.0f, true);
 		if (BattleInstanceManager.instance.playerActor.cachingObjectList != null && BattleInstanceManager.instance.playerActor.cachingObjectList.Length > 0)
 		{
 			_listCachingObject = new List<GameObject>();
@@ -189,7 +194,7 @@ public class MainSceneBuilder : MonoBehaviour
 						_listCachingObject[i].SetActive(false);
 					_listCachingObject.Clear();
 				}
-				LoadingCanvas.instance.gameObject.SetActive(false);
+				LoadingCanvas.instance.FadeOut();
 				StartCoroutine(LateInitialize());
 			}
 		}

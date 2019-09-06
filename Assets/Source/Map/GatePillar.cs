@@ -115,6 +115,8 @@ public class GatePillar : MonoBehaviour
 		{
 			while (MainSceneBuilder.instance.IsDoneLateInitialized() == false)
 				yield return Timing.WaitForOneFrame;
+			if (TitleCanvas.instance != null)
+				TitleCanvas.instance.gameObject.SetActive(false);
 			MainSceneBuilder.instance.OnExitLobby();
 		}
 		while (StageManager.instance.IsDoneLoadAsyncNextStage() == false)

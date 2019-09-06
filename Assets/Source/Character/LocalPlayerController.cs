@@ -95,7 +95,12 @@ public sealed class LocalPlayerController : BaseCharacterController
 		//animator.SetFloat("Move", moveAmount, 0.1f, Time.deltaTime);
 
 		if (moveAmount > 0.0f)
+		{
 			actionController.PlayActionByActionName("Move");
+
+			if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null)
+				TitleCanvas.instance.FadeTitle();
+		}
 		else
 		{
 			if (actionController.mecanimState.IsState((int)eMecanimState.Move))
@@ -104,6 +109,9 @@ public sealed class LocalPlayerController : BaseCharacterController
 
 		if (ScreenJoystick.instance.CheckInput(Control.eInputType.Tab))
 		{
+			if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null)
+				TitleCanvas.instance.FadeTitle();
+
 			Ray ray = UIInstanceManager.instance.GetCachedCameraMain().ScreenPointToRay(ScreenJoystick.instance.tabPosition);
 			RaycastHit hitInfo;
 			if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, groundMask.value))

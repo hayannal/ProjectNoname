@@ -49,6 +49,7 @@ public class MainSceneBuilder : MonoBehaviour
 	AsyncOperationHandle<GameObject> _handleStageManager;
 	AsyncOperationHandle<GameObject> _handleBattleManager;
 	AsyncOperationHandle<GameObject> _handleStartCharacter;
+	AsyncOperationHandle<GameObject> _handleTitleCanvas;
 	IEnumerator Start()
     {
 		// 씬 빌더는 항상 이 씬이 시작될때 1회만 동작하며 로딩씬을 띄워놓고 현재 상황에 맞춰서 스텝을 진행한다.
@@ -106,6 +107,8 @@ public class MainSceneBuilder : MonoBehaviour
 
 		// step 4. set lobby
 		lobby = true;
+		if (s_firstTimeAfterLaunch)
+			_handleTitleCanvas = Addressables.LoadAssetAsync<GameObject>("TitleCanvas");
 
 		// step 5, 6, 7
 		// 차후에 5는 캐릭터 아이디에 따라 번들에서 로드해야할거다.
@@ -169,7 +172,9 @@ public class MainSceneBuilder : MonoBehaviour
 			// step 13. title ui
 			if (s_firstTimeAfterLaunch)
 			{
-
+				LoadingCanvas.instance.onlyObjectFade = true;
+				yield return _handleTitleCanvas;
+				Instantiate<GameObject>(_handleTitleCanvas.Result);
 			}
 		}
 
@@ -214,6 +219,11 @@ public class MainSceneBuilder : MonoBehaviour
 	public bool IsDoneLateInitialized()
 	{
 		return _handleBattleManager.IsValid();
+	}
+
+	public void OnFinishTitleCanvas()
+	{
+		Addressables.Release<GameObject>(_handleTitleCanvas);
 	}
 
 	public void OnExitLobby()

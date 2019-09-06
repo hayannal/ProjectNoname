@@ -74,7 +74,11 @@ public class LoadingCanvas : MonoBehaviour
 	public void OnCompleteObjectFade()
 	{
 		if (onlyObjectFade)
+		{
+			if (TitleCanvas.instance != null)
+				TitleCanvas.instance.ShowTitle();
 			gameObject.SetActive(false);
+		}
 		else
 			backgroundFadeTweenAnimation.DOPlay();
 	}

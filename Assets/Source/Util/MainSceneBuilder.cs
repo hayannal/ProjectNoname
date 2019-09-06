@@ -35,6 +35,7 @@ public class MainSceneBuilder : MonoBehaviour
 		Addressables.Release<GameObject>(_handleTableDataManager);
 		Addressables.Release<GameObject>(_handleStageManager);
 		Addressables.Release<GameObject>(_handleStartCharacter);
+		Addressables.Release<GameObject>(_handleLobbyCanvas);
 
 		// 로딩속도를 위해 배틀매니저는 천천히 로딩한다. 그래서 다른 로딩 오브젝트와 달리 Valid 검사를 해야한다.
 		if (_handleBattleManager.IsValid())
@@ -50,6 +51,7 @@ public class MainSceneBuilder : MonoBehaviour
 	AsyncOperationHandle<GameObject> _handleBattleManager;
 	AsyncOperationHandle<GameObject> _handleStartCharacter;
 	AsyncOperationHandle<GameObject> _handleTitleCanvas;
+	AsyncOperationHandle<GameObject> _handleLobbyCanvas;
 	IEnumerator Start()
     {
 		// 씬 빌더는 항상 이 씬이 시작될때 1회만 동작하며 로딩씬을 띄워놓고 현재 상황에 맞춰서 스텝을 진행한다.
@@ -107,6 +109,7 @@ public class MainSceneBuilder : MonoBehaviour
 
 		// step 4. set lobby
 		lobby = true;
+		_handleLobbyCanvas = Addressables.LoadAssetAsync<GameObject>("LobbyCanvas");
 		if (s_firstTimeAfterLaunch)
 			_handleTitleCanvas = Addressables.LoadAssetAsync<GameObject>("TitleCanvas");
 
@@ -153,6 +156,10 @@ public class MainSceneBuilder : MonoBehaviour
 		// 현재맵의 로딩이 끝나면 다음맵의 프리팹을 로딩해놔야 게이트 필라로 이동시 곧바로 이동할 수 있게 된다.
 		// 원래라면 몹 다 죽이고 호출되는 함수인데 초기 씬 구축에선 할 타이밍이 로비맵 로딩 직후밖에 없다.
 		StageManager.instance.GetNextStageInfo();
+
+		// step 10. lobby ui
+		yield return _handleLobbyCanvas;
+		Instantiate<GameObject>(_handleLobbyCanvas.Result);
 
 		// step 10. player hit object caching
 		LoadingCanvas.instance.SetProgressBarPoint(1.0f, 0.0f, true);

@@ -36,6 +36,7 @@ public class MainSceneBuilder : MonoBehaviour
 		Addressables.Release<GameObject>(_handleStageManager);
 		Addressables.Release<GameObject>(_handleStartCharacter);
 		Addressables.Release<GameObject>(_handleLobbyCanvas);
+		Addressables.Release<GameObject>(_handleCommonCanvasGroup);
 
 		// 로딩속도를 위해 배틀매니저는 천천히 로딩한다. 그래서 다른 로딩 오브젝트와 달리 Valid 검사를 해야한다.
 		if (_handleBattleManager.IsValid())
@@ -52,6 +53,7 @@ public class MainSceneBuilder : MonoBehaviour
 	AsyncOperationHandle<GameObject> _handleStartCharacter;
 	AsyncOperationHandle<GameObject> _handleTitleCanvas;
 	AsyncOperationHandle<GameObject> _handleLobbyCanvas;
+	AsyncOperationHandle<GameObject> _handleCommonCanvasGroup;
 	IEnumerator Start()
     {
 		// 씬 빌더는 항상 이 씬이 시작될때 1회만 동작하며 로딩씬을 띄워놓고 현재 상황에 맞춰서 스텝을 진행한다.
@@ -113,6 +115,7 @@ public class MainSceneBuilder : MonoBehaviour
 		// step 4. set lobby
 		lobby = true;
 		_handleLobbyCanvas = Addressables.LoadAssetAsync<GameObject>("LobbyCanvas");
+		_handleCommonCanvasGroup = Addressables.LoadAssetAsync<GameObject>("CommonCanvasGroup");
 		if (s_firstTimeAfterLaunch)
 			_handleTitleCanvas = Addressables.LoadAssetAsync<GameObject>("TitleCanvas");
 
@@ -164,8 +167,9 @@ public class MainSceneBuilder : MonoBehaviour
 		while (UIString.instance.IsDoneLoadAsyncFont() == false)
 			yield return null;
 		// step 10-2. lobby ui
-		yield return _handleLobbyCanvas;
+		while (!_handleLobbyCanvas.IsDone || !_handleCommonCanvasGroup.IsDone) yield return null;
 		Instantiate<GameObject>(_handleLobbyCanvas.Result);
+		Instantiate<GameObject>(_handleCommonCanvasGroup.Result);
 
 		// step 10. player hit object caching
 		LoadingCanvas.instance.SetProgressBarPoint(1.0f, 0.0f, true);

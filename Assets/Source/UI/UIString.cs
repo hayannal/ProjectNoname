@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class UIString : MonoBehaviour
 {
@@ -70,7 +72,6 @@ public class UIString : MonoBehaviour
 		string value = GetString(key);
 		return string.Format(value, arg);
 	}
-	
 
 
 	InApkStringTableData FindInApkStringTableData(string id)
@@ -84,34 +85,117 @@ public class UIString : MonoBehaviour
 	}
 
 
-	/*
-	Font _regionFont = null;
+
+	#region Font
+	bool _initializedFont = false;
+	public void InitializeFont(string overrideInitialRegion = "")
+	{
+		if (_initializedFont)
+			return;
+
+		// 옵션매니저 같이 외부에서 받은 초기화 정보가 있다면 그걸로 덮어서 초기화한다.
+		if (string.IsNullOrEmpty(overrideInitialRegion) == false)
+			_currentRegion = overrideInitialRegion;
+
+		ReloadRegionFont();
+
+		_initializedFont = true;
+	}
+
+	bool _ignoreUnlocalizedFont = false;
+	AsyncOperationHandle<Font> _handleLocalizedFont;
+	AsyncOperationHandle<Font> _handleUnlocalizedFont;
+	bool _useSystemLocalizedFont;
+	bool _useSystemUnlocalizedFont;
+	Font _systemFont = null;
+	// 로드중에는 화면 락같은거로 막힐거라 중복 호출되진 않을거다.
 	public void ReloadRegionFont()
 	{
-		switch (UIString.instance.currentRegion)
-		{
-		case "KR":
-			_regionFont = Resources.Load<Font>("Font/SeoulNamsanEB");
-			break;
-		case "US":
-			_regionFont = Resources.GetBuiltinResource<Font>("Arial.ttf");
-			break;
-		case "JP":
-			_regionFont = Resources.Load<Font>("Font/Meiryo");
-			break;
-		}
-	}
+		if (_handleLocalizedFont.IsValid())
+			Addressables.Release<Font>(_handleLocalizedFont);
+		if (_handleUnlocalizedFont.IsValid())
+			Addressables.Release<Font>(_handleUnlocalizedFont);
 
-	public void CheckFont(Text textComponent)
-	{
-		if (_regionFont == null)
-			return;
+		// 현재 언어에 맞는 로컬 언어와 Unlocalized 폰트 하나. 이렇게 두개 들고있어야한다.
+		// 폰트를 Resources에 넣으면 번들과 중복로딩이 될거라서 Resouces에 두면 안된다. 그래서 async로딩을 쓸 수 밖에 없으니 로딩할때 유의할것.
+		_useSystemLocalizedFont = _useSystemUnlocalizedFont = false;
+		bool result = LoadFont(_currentRegion);
+		if (result == false)
+			_useSystemLocalizedFont = true;
 		
-		if (textComponent.font.name.Contains("PoetsenOne"))
-			return;
+		if (_ignoreUnlocalizedFont == false)
+		{
+			result = LoadFont("Unlocalized");
+			if (result == false)
+				_useSystemUnlocalizedFont = true;
+		}
 
-		if (textComponent.font != _regionFont)
-			textComponent.font = _regionFont;
+		if (_useSystemLocalizedFont || _useSystemUnlocalizedFont)
+			_systemFont = Resources.GetBuiltinResource<Font>("Arial.ttf");
+		else
+			_systemFont = null;
 	}
-	*/
+
+	bool LoadFont(string fontTableId)
+	{
+		FontTableData fontTableData = TableDataManager.instance.FindFontTableData(fontTableId);
+		if (fontTableData == null)
+			return false;
+
+		bool loadable = false;
+		if (fontTableData.haveInApk) loadable = true;
+		//if (fontTableData.haveInApk == false && bundleReceived) loadable = true;
+
+		if (loadable == false)
+			return false;
+
+		if (fontTableId == "Unlocalized")
+		{
+			_handleUnlocalizedFont = Addressables.LoadAssetAsync<Font>(fontTableData.fontName);
+		}
+		else
+		{
+			_handleLocalizedFont = Addressables.LoadAssetAsync<Font>(fontTableData.fontName);
+			_ignoreUnlocalizedFont = fontTableData.ignoreUnlocalizedFont;
+		}
+
+		return true;
+	}
+
+	public bool IsDoneLoadAsyncFont()
+	{
+		if (_useSystemLocalizedFont == false)
+		{
+			if (_handleLocalizedFont.IsValid() == false || _handleLocalizedFont.IsDone == false)
+				return false;
+		}
+
+		if (_useSystemUnlocalizedFont == false && _ignoreUnlocalizedFont == false)
+		{
+			if (_handleUnlocalizedFont.IsValid() == false || _handleUnlocalizedFont.IsDone == false)
+				return false;
+		}
+
+		return true;
+	}
+
+	public Font GetLocalizedFont()
+	{
+		if (_useSystemLocalizedFont)
+			return _systemFont;
+
+		return _handleLocalizedFont.Result;
+	}
+
+	public Font GetUnlocalizedFont()
+	{
+		if (_useSystemUnlocalizedFont)
+			return _systemFont;
+
+		if (_ignoreUnlocalizedFont)
+			return _handleLocalizedFont.Result;
+
+		return _handleUnlocalizedFont.Result;
+	}
+	#endregion
 }

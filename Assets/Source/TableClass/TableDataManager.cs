@@ -25,6 +25,7 @@ public class TableDataManager : MonoBehaviour
 	public ActorLevelPackTable actorLevelPackTable;
 	public GlobalConstantFloatTable globalConstantFloatTable;
 	public DropTable dropTable;
+	public FontTable fontTable;
 
 	void Awake()
 	{
@@ -197,6 +198,16 @@ public class TableDataManager : MonoBehaviour
 		{
 			if (dropTable.dataArray[i].dropId == dropId)
 				return dropTable.dataArray[i];
+		}
+		return null;
+	}
+
+	public FontTableData FindFontTableData(string condition)
+	{
+		for (int i = 0; i < fontTable.dataArray.Length; ++i)
+		{
+			if (fontTable.dataArray[i].id == condition)
+				return fontTable.dataArray[i];
 		}
 		return null;
 	}

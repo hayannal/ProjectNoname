@@ -9,9 +9,9 @@ public static class TextExtension
 	// This is the extension method.
 	// The first parameter takes the "this" modifier
 	// and specifies the type for which the method is defined.
-	public static void SetText(this Text textComponent, string text)
+	public static void SetLocalizedText(this Text textComponent, string text)
 	{
-		//UIString.instance.CheckFont(textComponent);
+		textComponent.font = UIString.instance.GetLocalizedFont();
 		textComponent.text = text;
 	}
 }
@@ -33,7 +33,7 @@ public class LocalizedText : MonoBehaviour {
 			return;
 		
 		if (string.IsNullOrEmpty(uiStringKey) == false)
-			_text.SetText(UIString.instance.GetString(uiStringKey));
+			_text.SetLocalizedText(UIString.instance.GetString(uiStringKey));
 	}
 
 

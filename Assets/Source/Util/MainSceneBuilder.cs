@@ -99,7 +99,10 @@ public class MainSceneBuilder : MonoBehaviour
 		yield return _handleTableDataManager;
 		Instantiate<GameObject>(_handleTableDataManager.Result);
 
-		// step 2. string
+		// step 1-2. 옵션 매니저
+
+		// step 2. font & string
+		UIString.instance.InitializeFont();
 
 		// step 3. temp login
 		if (PlayerData.instance.loginned == false)
@@ -157,7 +160,10 @@ public class MainSceneBuilder : MonoBehaviour
 		// 원래라면 몹 다 죽이고 호출되는 함수인데 초기 씬 구축에선 할 타이밍이 로비맵 로딩 직후밖에 없다.
 		StageManager.instance.GetNextStageInfo();
 
-		// step 10. lobby ui
+		// step 10-1. 첫번재 UI를 소환하기 전에 UIString Font의 로드가 완료되어있는지 체크해야한다.
+		while (UIString.instance.IsDoneLoadAsyncFont() == false)
+			yield return null;
+		// step 10-2. lobby ui
 		yield return _handleLobbyCanvas;
 		Instantiate<GameObject>(_handleLobbyCanvas.Result);
 

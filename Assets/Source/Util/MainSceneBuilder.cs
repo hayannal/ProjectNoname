@@ -71,28 +71,25 @@ public class MainSceneBuilder : MonoBehaviour
 		// 2. 테이블매니저에는 타이틀 스트링만 있을거다. 일반 스트링은 최초 1회는 물어보지 않고 받아야하고(애플) 이후부터는 물어보고 받아야할거다.
 		// 3. 로그인을 해야한다. 최초 기동시엔 자동으로 게스트로 들어가고 이후 연동을 하고나면 해당 로그인으로 진행해서 플레이어 데이터를 받는다. 현재는 임시로 처리.
 		// - 플레이할 캐릭터와 마지막 스테이지 정보를 받았으면 이 정보를 가지고 데이터 로딩을 시작한다.
-		// 4. 데이터들을 로드하기전에 우선 이곳이 로비라는 것을 알려둔다.(그러나 강종되서 복구하는 중이라면 false로 체크한다.)
+		// 4. 데이터들을 로드하기전에 우선 이곳이 로비라는 것을 알려둔다.(강종되서 복구하는 중이더라도 로비에서 시작하고 복구 팝업을 띄우는게 맞다.)
 		// 5. 이미 씬에 컨트롤러 캔버스 같은건 다 들어있다. 로컬 플레이어 캐릭터를 만들어야한다.
 		// 6. 맵도 로드해야하는데 맵을 알기 위해선 StageManager도 필요하다.
 		// - 5, 6번 스탭은 이전의 로드와 달리 동시에 이뤄져도 상관없는 항목들이다. 조금이라도 로딩 시간을 줄이기 위해 한번에 로드한다.
 		// 7. 스테이지 매니저가 만들어지면 맵을 생성할 수 있으므로 로비맵을 로드한다.
 		// 8. 게임에 진입할 수 있게 게이트 필라를 소환한다.(원래 몬스터 다 잡고 나오는거라 SceneBuild중에는 이렇게 직접 호출해야한다.)
-		// 9. 플레이어의 첫공격 렉을 없애기 위해 플레이어 액터에 등록된 캐시 오브젝트들을 하나씩 만들어낸다.
+		// 9. 로비 UI를 구축한다.
+		// 10. 플레이어의 첫공격 렉을 없애기 위해 플레이어 액터에 등록된 캐시 오브젝트들을 하나씩 만들어낸다.
 		// - 바로 다음에 오는 Update는 렌더하기 전이기 때문에 다다음에 오는 Update가 지나야 렌더링이 되었다고 판단할 수 있다. 2번 기다리자.
 		// - 이제부터 하단은 로비인지 아닌지를 판단해서 처리해야한다.(강종 복구라면 로비가 아니다.)
-		// 11. 좌하단 메뉴 진입 UI를 보여준다.
-		// 12. 설정버튼은 우상단이다.(이 안에 연동버튼도 있다.)
-		// 13. 필수로딩은 끝. 가운데 돌고있는 로딩과 하단 로딩게이지를 페이드로 지우고
-		// 14. 앱을 켰을때인지 판단해서 (s_firstTimeAfterLaunch 사용) 타이틀 UI를 띄워준다. 페이드 연출 처리도 같이 한다. 회사 로고도 이때 같이 띄워준다.
+		// 11. 앱을 켰을때인지 판단해서 (s_firstTimeAfterLaunch 사용) 타이틀 UI를 띄워준다. 페이드 연출 처리도 같이 한다. 회사 로고도 이때 같이 띄워준다.
+		// 12. 필수로딩은 끝. 가운데 돌고있는 로딩과 하단 로딩게이지를 페이드로 지우고
 		//
-		// 15. 상자를 어싱크로 로딩해서 등장 연출과 함께 나온다. 만약에 이때 너무 이동이 느려지면 위로 올릴 수도 있다.
-		// 16. 번들이 없는 채로 상자를 열려고 하거나 좌하단 메뉴를 누르면 튜토중이라거나 번들을 받아야함을 알린다.
-		// 17. 현재 로비의 다음판을 미리 어싱크로 로딩한다. 1-0이라면 1-1의 Plane, Ground, Wall등 맵 정보를 모두 로딩해놔야한다.
-		// 18. 게이트필라를 치는 순간 배틀매니저를 어싱크로 로딩하고 화면이 하얗게 된 상태에서 배틀매니저 및 다음판 로딩이 끝남을 체크한다. 끝나면 페이드인되면서 전투가 시작된다.
+		// 13. 상자를 어싱크로 로딩해서 등장 연출과 함께 나온다. 만약에 이때 너무 이동이 느려지면 위로 올릴 수도 있다.
+		// 14. 번들이 없는 채로 상자를 열려고 하거나 좌하단 메뉴를 누르면 튜토중이라거나 번들을 받아야함을 알린다.
+		// 15. 현재 로비의 다음판을 미리 어싱크로 로딩한다. 1-0이라면 1-1의 Plane, Ground, Wall등 맵 정보를 모두 로딩해놔야한다.
+		// 16. 게이트필라를 치는 순간 배틀매니저를 어싱크로 로딩하고 화면이 하얗게 된 상태에서 배틀매니저 및 다음판 로딩이 끝남을 체크한다. 끝나면 페이드인되면서 전투가 시작된다.
 		// - 만약 이 로딩이 오래 걸려서 1초를 넘어가면 우하단에 작게 로딩중을 표시해준다.
 		// - 매판 몹을 다 죽이고 게이트필라가 뜨는 순간마다 다음판의 맵 정보를 어싱크로 로딩해둔다.
-		// - 근데 만약 도중플레이를 끊어먹을정도로 느리면 초반에 전부다 로딩하는 구조로 바꿔야한다.
-		// 19. 교체 가능은 이동후에 뜬다.
 
 		// step 1. 테이블 임시 로드
 		// 지금은 우선 apk넣고 하지만 나중에 서버에서 받는거로 바꿔야한다. 이땐 확인창 안띄운다.
@@ -120,7 +117,7 @@ public class MainSceneBuilder : MonoBehaviour
 		if (s_firstTimeAfterLaunch)
 			_handleTitleCanvas = Addressables.LoadAssetAsync<GameObject>("TitleCanvas");
 
-		// step 5, 6, 7
+		// step 5, 6
 		// 차후에 5는 캐릭터 아이디에 따라 번들에서 로드해야할거다.
 		LoadingCanvas.instance.SetProgressBarPoint(0.6f);
 		_handleStageManager = Addressables.LoadAssetAsync<GameObject>("StageManager");
@@ -141,7 +138,7 @@ public class MainSceneBuilder : MonoBehaviour
 		//Instantiate<GameObject>(Resources.Load<GameObject>("Manager"));
 		//Instantiate<GameObject>(Resources.Load<GameObject>("Character/Ganfaul"));
 
-		// step 8. 스테이지
+		// step 7. 스테이지
 		// 차후에는 챕터의 0스테이지에서 시작하게 될텐데 0스테이지에서 쓸 맵을 알아내려면
 		// 진입전에 아래 함수를 수행해서 캐싱할 수 있어야한다.
 		// 방법은 세가지인데,
@@ -156,7 +153,7 @@ public class MainSceneBuilder : MonoBehaviour
 			yield return null;
 		StageManager.instance.MoveToNextStage(true);
 
-		// step 9. gate pillar
+		// step 8. gate pillar
 		yield return new WaitUntil(() => waitSpawnFlag);
 		BattleInstanceManager.instance.GetCachedObject(StageManager.instance.gatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
 
@@ -164,10 +161,10 @@ public class MainSceneBuilder : MonoBehaviour
 		// 원래라면 몹 다 죽이고 호출되는 함수인데 초기 씬 구축에선 할 타이밍이 로비맵 로딩 직후밖에 없다.
 		StageManager.instance.GetNextStageInfo();
 
-		// step 10-1. 첫번재 UI를 소환하기 전에 UIString Font의 로드가 완료되어있는지 체크해야한다.
+		// step 9-1. 첫번재 UI를 소환하기 전에 UIString Font의 로드가 완료되어있는지 체크해야한다.
 		while (UIString.instance.IsDoneLoadAsyncFont() == false)
 			yield return null;
-		// step 10-2. lobby ui
+		// step 9-2. lobby ui
 		while (!_handleLobbyCanvas.IsDone || !_handleCommonCanvasGroup.IsDone) yield return null;
 		Instantiate<GameObject>(_handleLobbyCanvas.Result);
 		Instantiate<GameObject>(_handleCommonCanvasGroup.Result);
@@ -181,21 +178,15 @@ public class MainSceneBuilder : MonoBehaviour
 				_listCachingObject.Add(BattleInstanceManager.instance.GetCachedObject(BattleInstanceManager.instance.playerActor.cachingObjectList[i], null));
 		}
 
-		if (lobby)
+		// step 11. title ui
+		if (s_firstTimeAfterLaunch)
 		{
-			// step 11. main ui
-
-			// step 12. box
-
-			// step 13. title ui
-			if (s_firstTimeAfterLaunch)
-			{
-				LoadingCanvas.instance.onlyObjectFade = true;
-				yield return _handleTitleCanvas;
-				Instantiate<GameObject>(_handleTitleCanvas.Result);
-			}
+			LoadingCanvas.instance.onlyObjectFade = true;
+			yield return _handleTitleCanvas;
+			Instantiate<GameObject>(_handleTitleCanvas.Result);
 		}
 
+		// 마무리 셋팅
 		_waitUpdateRemainCount = 2;
 		mainSceneBuilding = false;
 		s_firstTimeAfterLaunch = false;
@@ -217,6 +208,7 @@ public class MainSceneBuilder : MonoBehaviour
 						_listCachingObject[i].SetActive(false);
 					_listCachingObject.Clear();
 				}
+				// step 12. fade out
 				LoadingCanvas.instance.FadeOut();
 				StartCoroutine(LateInitialize());
 			}
@@ -230,8 +222,7 @@ public class MainSceneBuilder : MonoBehaviour
 		Instantiate<GameObject>(_handleBattleManager.Result);
 
 		yield return new WaitForSeconds(3.0f);
-		if (lobby)
-			PlayerIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform);
+		PlayerIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform);
 	}
 
 	public bool IsDoneLateInitialized()

@@ -161,6 +161,10 @@ public class MonsterActor : Actor
 	{
 		yield return Timing.WaitForSeconds(1.2f);
 
+		// avoid gc
+		if (this == null)
+			yield break;
+
 		DieDissolve.ShowDieDissolve(cachedTransform, bossMonster);
 		DieAshParticle.ShowParticle(cachedTransform, bossMonster);
 

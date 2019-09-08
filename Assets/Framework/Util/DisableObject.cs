@@ -41,6 +41,10 @@ public class DisableObject : MonoBehaviour {
 	{
 #if USE_MEC
 		yield return Timing.WaitForSeconds(delayTime);
+
+		// avoid gc
+		if (this == null)
+			yield break;
 #else
 		yield return new WaitForSeconds(delayTime);
 #endif

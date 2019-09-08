@@ -189,6 +189,9 @@ public class DropProcessor : MonoBehaviour
 			// 마지막 스폰이 끝날땐 드랍프로세서가 바로 사라지게 yield return 하지 않는다.
 			if (i < _listDropObjectInfo.Count - 1)
 				yield return Timing.WaitForSeconds(0.2f);
+
+			if (this == null)
+				yield break;
 		}
 
 		// 스테이지 내의 마지막 드랍 프로세서가 종료될때

@@ -25,8 +25,18 @@ public class UIString : MonoBehaviour
 	string _currentRegion = "KOR";
 	public string currentRegion
 	{
-		get { return _currentRegion; }
-		set { _currentRegion = value; }
+		get
+		{
+			return _currentRegion;
+		}
+		set
+		{
+			if (_currentRegion != value)
+			{
+				_currentRegion = value;
+				_dicString.Clear();
+			}
+		}
 	}
 
 	// 스트링 비교는 많이 할수록 오래 걸릴테니 한번 찾을때마다 캐싱해서 넣어둔다.

@@ -17,6 +17,10 @@ public class LobbyCanvas : MonoBehaviour
 	{
 		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null)
 			TitleCanvas.instance.FadeTitle();
+
+		//UIInstanceManager.instance.ShowCanvasAsync("OptionCanvas", () =>
+		//{
+		//});
 	}
 
 	public void OnClickBackButton()

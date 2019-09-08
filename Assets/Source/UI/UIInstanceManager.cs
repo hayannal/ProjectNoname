@@ -19,6 +19,11 @@ public class UIInstanceManager : MonoBehaviour
 	}
 	static UIInstanceManager _instance = null;
 
+	void Update()
+	{
+		UpdateAsyncOperation();
+	}
+
 	#region Camera
 	Camera _cachedCameraMain = null;
 	public Camera GetCachedCameraMain()
@@ -97,4 +102,74 @@ public class UIInstanceManager : MonoBehaviour
 		return monsterHPGauge;
 	}
 	#endregion
+
+
+	#region Async Load
+	class LoadCanvasAsync
+	{
+		public string canvasAddress;
+		public AsyncOperationResult handleCanvasPrefab;
+		public System.Action calllback;
+	}
+	List<LoadCanvasAsync> _listAsyncOperationResult = new List<LoadCanvasAsync>();
+	Dictionary<string, GameObject> _dicCanvasPool = new Dictionary<string, GameObject>();
+	public void ShowCanvasAsync(string canvasAddress)
+	{
+		if (_dicCanvasPool.ContainsKey(canvasAddress))
+		{
+			_dicCanvasPool[canvasAddress].SetActive(true);
+			return;
+		}
+
+		ShowCanvasAsync(canvasAddress, null);
+	}
+
+	public void ShowCanvasAsync(string canvasAddress, System.Action callback)
+	{
+		if (_dicCanvasPool.ContainsKey(canvasAddress))
+		{
+			_dicCanvasPool[canvasAddress].SetActive(true);
+			if (callback != null)
+				callback();
+			return;
+		}
+
+		LoadCanvasAsync loadCanvasAsync = new LoadCanvasAsync();
+		loadCanvasAsync.canvasAddress = canvasAddress;
+		loadCanvasAsync.handleCanvasPrefab = AddressableAssetLoadManager.GetAddressableAsset(canvasAddress, "Canvas");
+		loadCanvasAsync.calllback = null;
+		_listAsyncOperationResult.Add(loadCanvasAsync);
+
+		DelayedLoadingCanvas.instance.gameObject.SetActive(true);
+	}
+
+	void UpdateAsyncOperation()
+	{
+		bool loadFinish = false;
+		for (int i = _listAsyncOperationResult.Count - 1; i >= 0; --i)
+		{
+			if (_listAsyncOperationResult[i].handleCanvasPrefab.IsDone == false)
+				continue;
+
+			// 중복호출 했다면 이미 딕셔너리에 들어있을 수 있다.
+			if (_dicCanvasPool.ContainsKey(_listAsyncOperationResult[i].canvasAddress))
+			{
+				_dicCanvasPool[_listAsyncOperationResult[i].canvasAddress].SetActive(true);
+			}
+			else
+			{
+				GameObject newObject = Instantiate<GameObject>(_listAsyncOperationResult[i].handleCanvasPrefab.Result);
+				_dicCanvasPool.Add(_listAsyncOperationResult[i].canvasAddress, newObject);
+			}
+			if (_listAsyncOperationResult[i].calllback != null)
+				_listAsyncOperationResult[i].calllback();
+			_listAsyncOperationResult.Remove(_listAsyncOperationResult[i]);
+			loadFinish = true;
+		}
+
+		if (loadFinish && _listAsyncOperationResult.Count == 0)
+			DelayedLoadingCanvas.instance.gameObject.SetActive(false);
+	}
+	#endregion
+
 }

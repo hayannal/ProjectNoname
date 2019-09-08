@@ -9,6 +9,7 @@ public class CommonCanvasGroup : MonoBehaviour
 	public GameObject toastCanvasPrefab;
 	public GameObject yesNoCanvasPrefab;
 	public GameObject okCanvasPrefab;
+	public GameObject delayedLoadingCanvasPrefab;
 
 	void Awake()
 	{

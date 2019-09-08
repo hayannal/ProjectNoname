@@ -140,12 +140,12 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 		UpdateCooltime();
 
 		#region ButtonScale
-		if (_transform.localScale.x != _targetScale && _ignoreLerp == false)
+		if (cachedTransform.localScale.x != _targetScale && _ignoreLerp == false)
 		{
-			_transform.localScale = Vector3.Lerp(_transform.localScale, new Vector3(_targetScale, _targetScale, 1.0f), Time.deltaTime * _lerpSpeed);
+			cachedTransform.localScale = Vector3.Lerp(cachedTransform.localScale, new Vector3(_targetScale, _targetScale, 1.0f), Time.deltaTime * _lerpSpeed);
 
-			if (Mathf.Abs(_transform.localScale.x - _targetScale) < 0.01f)
-				_transform.localScale = new Vector3(_targetScale, _targetScale, 1.0f);
+			if (Mathf.Abs(cachedTransform.localScale.x - _targetScale) < 0.01f)
+				cachedTransform.localScale = new Vector3(_targetScale, _targetScale, 1.0f);
 		}
 		#endregion
 	}

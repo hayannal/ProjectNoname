@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -102,6 +102,7 @@ public class MainSceneBuilder : MonoBehaviour
 		Instantiate<GameObject>(_handleTableDataManager.Result);
 
 		// step 1-2. 옵션 매니저
+		if (OptionManager.instance != null) { }
 
 		// step 2. font & string
 		UIString.instance.InitializeFont();

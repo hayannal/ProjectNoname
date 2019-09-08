@@ -13,7 +13,11 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 	public GameObject spGaugeObject;
 	public Image spGaugeValueImage;
 	public GameObject blinkObject;
-	public DOTweenAnimation useTweenAnimation;
+	#region ButtonScale
+	public float downScale = 0.9f;
+	public float clickScale = 1.1f;
+	public float clickAnimationDuration = 0.2f;
+	#endregion
 
 	public Image cooltimeImage;
 	public Text cooltimeText;
@@ -48,16 +52,27 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 	{
 		if (movable && cachingLastMovedPosition)
 			LoadLastMovedPosition();
+		#region ButtonScale
+		_targetScale = 1.0f;
+		#endregion
 	}
 
 	public void OnPointerDown(PointerEventData eventData)
 	{
 		_inputProcessor.OnPointerDown(eventData);
+
+		#region ButtonScale
+		_targetScale = downScale;
+		#endregion
 	}
 
 	public void OnPointerUp(PointerEventData eventData)
 	{
 		_inputProcessor.OnPointerUp(eventData);
+
+		#region ButtonScale
+		_targetScale = 1.0f;
+		#endregion
 	}
 
 	public void OnBeginDrag(PointerEventData eventData)
@@ -106,8 +121,6 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 		//		OnEndCooltime();
 		//}
 
-		useTweenAnimation.transform.localScale = Vector3.one;
-
 		int playerPowerSourceIndex = 0;
 		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(playerActor.actorId);
 		if (actorTableData != null)
@@ -116,10 +129,25 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 		OnChangedSP(playerActor, true);
 	}
 
+	#region ButtonScale
+	float _targetScale;
+	float _lerpSpeed = 10.0f;
+	bool _ignoreLerp = false;
+	#endregion
 	void Update()
 	{
 		_inputProcessor.Update();
 		UpdateCooltime();
+
+		#region ButtonScale
+		if (_transform.localScale.x != _targetScale && _ignoreLerp == false)
+		{
+			_transform.localScale = Vector3.Lerp(_transform.localScale, new Vector3(_targetScale, _targetScale, 1.0f), Time.deltaTime * _lerpSpeed);
+
+			if (Mathf.Abs(_transform.localScale.x - _targetScale) < 0.01f)
+				_transform.localScale = new Vector3(_targetScale, _targetScale, 1.0f);
+		}
+		#endregion
 	}
 
 	void LateUpdate()
@@ -244,8 +272,25 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 			return;
 
 		if (_playerActor.actionController.PlayActionByControl(_actionInfo.eControllerType, _actionInfo.eInputType))
-			useTweenAnimation.DORestart();
+		{
+			#region ButtonScale
+			PlayAnimation();
+			#endregion
+		}
 	}
+
+	#region ButtonScale
+	public void PlayAnimation()
+	{
+		_ignoreLerp = true;
+		cachedTransform.DOScale(clickScale, clickAnimationDuration * 0.5f).SetEase(Ease.OutQuad).OnComplete(OnCompleteScale);
+	}
+
+	void OnCompleteScale()
+	{
+		cachedTransform.DOScale(1.0f, clickAnimationDuration * 0.5f).SetEase(Ease.OutQuad).onComplete += () => { _ignoreLerp = false; };
+	}
+	#endregion
 
 	/*
 	#region Casting Controller UI

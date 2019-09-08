@@ -19,4 +19,6 @@ public class PlayerData : MonoBehaviour
 	static PlayerData _instance = null;
 
 	public bool loginned { get; private set; }
+
+	public bool tutorialChapter { get { return true; } }
 }

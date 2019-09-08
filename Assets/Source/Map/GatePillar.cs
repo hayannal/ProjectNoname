@@ -15,11 +15,11 @@ public class GatePillar : MonoBehaviour
 	public GameObject particleRootObject;
 	public GameObject changeEffectParticleRootObject;
 
-	// 이건 나중에 동적 로드하는 구조로 바꿔야할듯 싶다.
+	// 동적 로드하는 것들을 외부로 뺄까 했는데 크기가 크지 않고 자주 쓰이는거라면 굳이 뺄필요가 없어서 안빼기로 한다.
+	ObjectIndicatorCanvas _objectIndicatorCanvas;
 	public GameObject descriptionObjectIndicatorPrefab;
 	public float descriptionObjectIndicatorShowDelayTime = 5.0f;
-	ObjectIndicatorCanvas _objectIndicatorCanvas;
-	public GameObject imageObjectIndicatorPrefab;
+	public float energyGaugeShowDelayTime = 2.0f;
 
 	void Awake()
 	{
@@ -29,14 +29,23 @@ public class GatePillar : MonoBehaviour
 	float _spawnTime;
 	void OnEnable()
 	{
-		if (string.IsNullOrEmpty(StageManager.instance.currentGatePillarPreview))
-			_descriptionObjectIndicatorShowRemainTime = descriptionObjectIndicatorShowDelayTime;
-		else
-		{
-			_objectIndicatorCanvas = UIInstanceManager.instance.GetCachedObjectIndicatorCanvas(imageObjectIndicatorPrefab);
-			_objectIndicatorCanvas.GetComponent<ObjectIndicatorCanvas>().targetTransform = cachedTransform;
-		}
 		_spawnTime = Time.time;
+		if (string.IsNullOrEmpty(StageManager.instance.currentGatePillarPreview) == false)
+		{
+			AddressableAssetLoadManager.GetAddressableAsset("ImageObjectIndicator", "Object", (prefab) =>
+			{
+				_objectIndicatorCanvas = UIInstanceManager.instance.GetCachedObjectIndicatorCanvas(prefab);
+				_objectIndicatorCanvas.targetTransform = cachedTransform;
+			});
+			return;
+		}
+		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && PlayerData.instance.tutorialChapter == false)
+		{
+			// 일부러 조금 뒤에 보이게 한다. 초기 로딩 줄이기 위해.
+			_energyGaugeShowRemainTime = energyGaugeShowDelayTime;
+			return;
+		}
+		_descriptionObjectIndicatorShowRemainTime = descriptionObjectIndicatorShowDelayTime;
 	}
 
 	void OnDisable()
@@ -52,6 +61,7 @@ public class GatePillar : MonoBehaviour
 	}
 
 	float _descriptionObjectIndicatorShowRemainTime;
+	float _energyGaugeShowRemainTime;
 	void Update()
 	{
 		if (_descriptionObjectIndicatorShowRemainTime > 0.0f)
@@ -62,6 +72,19 @@ public class GatePillar : MonoBehaviour
 				_descriptionObjectIndicatorShowRemainTime = 0.0f;
 				_objectIndicatorCanvas = UIInstanceManager.instance.GetCachedObjectIndicatorCanvas(descriptionObjectIndicatorPrefab);
 				_objectIndicatorCanvas.targetTransform = cachedTransform;
+			}
+		}
+		if (_energyGaugeShowRemainTime > 0.0f)
+		{
+			_energyGaugeShowRemainTime -= Time.deltaTime;
+			if (_energyGaugeShowRemainTime <= 0.0f)
+			{
+				_energyGaugeShowRemainTime = 0.0f;
+				AddressableAssetLoadManager.GetAddressableAsset("EnergyGauge", "Object", (prefab) =>
+				{
+					BattleInstanceManager.instance.GetCachedObject(prefab, null);
+				});
+				return;
 			}
 		}
 	}

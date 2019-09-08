@@ -200,6 +200,20 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 		Vector3 cachedPosition = cachedTransform.localPosition;
 		cachedPosition.x = PlayerPrefs.GetFloat(LastMovedPositionXKey);
 		cachedPosition.y = PlayerPrefs.GetFloat(LastMovedPositionYKey);
+
+		// check screen rect
+		CanvasScaler canvasScaler = GetComponentInParent<CanvasScaler>();
+		Vector2 rootAnchoredPosition = cachedTransform.parent.GetComponent<RectTransform>().anchoredPosition;
+		if (cachedPosition.x > canvasScaler.referenceResolution.x - rootAnchoredPosition.x)
+			cachedPosition.x = canvasScaler.referenceResolution.x - rootAnchoredPosition.x;
+		if (cachedPosition.x < -rootAnchoredPosition.x)
+			cachedPosition.x = -rootAnchoredPosition.x;
+		float screenRatio = (float)Screen.height / Screen.width;
+		if (cachedPosition.y > (canvasScaler.referenceResolution.x * screenRatio) - rootAnchoredPosition.y)
+			cachedPosition.y = (canvasScaler.referenceResolution.x * screenRatio) - rootAnchoredPosition.y;
+		if (cachedPosition.y < -rootAnchoredPosition.y)
+			cachedPosition.y = -rootAnchoredPosition.y;
+
 		cachedTransform.localPosition = cachedPosition;
 	}
 	#endregion

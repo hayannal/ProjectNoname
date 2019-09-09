@@ -239,6 +239,8 @@ public class MainSceneBuilder : MonoBehaviour
 	{
 		lobby = false;
 		LobbyCanvas.instance.mainMenu9DotButton.gameObject.SetActive(false);
+		if (EnergyGaugeCanvas.instance != null)
+			EnergyGaugeCanvas.instance.gameObject.SetActive(false);
 		if (BattleInstanceManager.instance.playerActor != null)
 			BattleInstanceManager.instance.playerActor.InitializeCanvas();
 	}

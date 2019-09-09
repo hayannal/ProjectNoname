@@ -57,7 +57,6 @@ public class PlayerActor : Actor
 
 	public void InitializeCanvas()
 	{
-		LobbyCanvas.instance.mainMenu9DotButton.gameObject.SetActive(false);
 		PlayerGaugeCanvas.instance.InitializeGauge(this);
 		SkillSlotCanvas.instance.InitializeSkillSlot(this);
 	}

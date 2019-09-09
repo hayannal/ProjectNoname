@@ -238,6 +238,7 @@ public class MainSceneBuilder : MonoBehaviour
 	public void OnExitLobby()
 	{
 		lobby = false;
+		LobbyCanvas.instance.mainMenu9DotButton.gameObject.SetActive(false);
 		if (BattleInstanceManager.instance.playerActor != null)
 			BattleInstanceManager.instance.playerActor.InitializeCanvas();
 	}

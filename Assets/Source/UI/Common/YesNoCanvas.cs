@@ -31,7 +31,7 @@ public class YesNoCanvas : MonoBehaviour
 		animator.Play("Modal Dialog In");
 	}
 
-	public void ShowCanvas(bool show, string title, string message, System.Action yesAction, System.Action noAction)
+	public void ShowCanvas(bool show, string title, string message, System.Action yesAction, System.Action noAction = null)
 	{
 		gameObject.SetActive(show);
 		if (show == false)

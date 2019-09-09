@@ -33,7 +33,6 @@ public class LobbyCanvas : MonoBehaviour
 
 		YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_Play"), UIString.instance.GetString("MenuUI_ExitGame"), () => {
 			Application.Quit();
-		}, () => {
 		});
 	}
 }

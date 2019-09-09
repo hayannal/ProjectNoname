@@ -53,12 +53,11 @@ public class PlayerActor : Actor
 
 		BattleInstanceManager.instance.playerActor = this;
 		StageManager.instance.PreparePowerSource();
-
-		StageTestCanvas.instance.RefreshCurrentStatText(actorStatus.GetHP(), actorStatus.GetSP());
 	}
 
 	public void InitializeCanvas()
 	{
+		LobbyCanvas.instance.mainMenu9DotButton.gameObject.SetActive(false);
 		PlayerGaugeCanvas.instance.InitializeGauge(this);
 		SkillSlotCanvas.instance.InitializeSkillSlot(this);
 	}
@@ -66,15 +65,11 @@ public class PlayerActor : Actor
 	public override void OnChangedHP()
 	{
 		PlayerGaugeCanvas.instance.OnChangedHP(this);
-
-		StageTestCanvas.instance.RefreshCurrentStatText(actorStatus.GetHP(), actorStatus.GetSP());
 	}
 
 	public override void OnChangedSP()
 	{
 		SkillSlotCanvas.instance.OnChangedSP(this);
-
-		StageTestCanvas.instance.RefreshCurrentStatText(actorStatus.GetHP(), actorStatus.GetSP());
 	}
 
 	public override void OnDie()

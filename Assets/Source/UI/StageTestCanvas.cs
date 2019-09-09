@@ -18,7 +18,7 @@ public class StageTestCanvas : MonoBehaviour
 
 	public void OnClickButton()
 	{
-		SceneManager.LoadScene(0);
+		//SceneManager.LoadScene(0);
 	}
 
 	public void RefreshCurrentMapText(int chapter, int stage, string map)

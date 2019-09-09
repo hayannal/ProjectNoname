@@ -129,7 +129,7 @@ public class StageManager : MonoBehaviour
 		StageDataManager.instance.reservedNextMap = "";
 		//Debug.LogFormat("CurrentMap = {0}", currentMap);
 
-		StageTestCanvas.instance.RefreshCurrentMapText(playChapter, playStage, currentMap);
+		//StageTestCanvas.instance.RefreshCurrentMapText(playChapter, playStage, currentMap);
 
 		MapTableData mapTableData = TableDataManager.instance.FindMapTableData(currentMap);
 		if (mapTableData != null)

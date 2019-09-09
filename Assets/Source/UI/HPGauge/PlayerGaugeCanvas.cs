@@ -41,6 +41,7 @@ public class PlayerGaugeCanvas : MonoBehaviour
 
 	void Start()
 	{
+		GetComponent<Canvas>().worldCamera = UIInstanceManager.instance.GetCachedCameraMain();
 		canvasGroup.alpha = DEFAULT_CANVAS_GROUP_ALPHA;
 	}
 

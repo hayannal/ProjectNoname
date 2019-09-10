@@ -319,7 +319,8 @@ public class DropObject : MonoBehaviour
 		if (nameCanvasRectTransform == null || nameText == null)
 			return;
 
-		//nameText.text = GetItemName();
+		// 우선 임시로 LocalizedText 함수만 호출해둔다.
+		nameText.SetLocalizedText(nameText.text);
 		nameCanvasRectTransform.gameObject.SetActive(true);
 	}
 

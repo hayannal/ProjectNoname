@@ -12,6 +12,7 @@ public static class TextExtension
 	public static void SetLocalizedText(this Text textComponent, string text)
 	{
 		textComponent.font = UIString.instance.GetLocalizedFont();
+		textComponent.fontStyle = UIString.instance.useSystemLocalizedFont ? FontStyle.Bold : FontStyle.Normal;
 		textComponent.text = text;
 	}
 }

@@ -20,5 +20,6 @@ public class UnlocalizedText : MonoBehaviour
 			return;
 
 		_text.font = UIString.instance.GetUnlocalizedFont();
+		_text.fontStyle = UIString.instance.useSystemUnlocalizedFont ? FontStyle.Bold : FontStyle.Normal;
 	}
 }

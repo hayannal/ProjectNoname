@@ -115,6 +115,8 @@ public class UIString : MonoBehaviour
 	bool _ignoreUnlocalizedFont = false;
 	AsyncOperationHandle<Font> _handleLocalizedFont;
 	AsyncOperationHandle<Font> _handleUnlocalizedFont;
+	public bool useSystemLocalizedFont { get { return _useSystemLocalizedFont; } }
+	public bool useSystemUnlocalizedFont { get { return _useSystemUnlocalizedFont; } }
 	bool _useSystemLocalizedFont;
 	bool _useSystemUnlocalizedFont;
 	Font _systemFont = null;

@@ -37,6 +37,7 @@ public class MainSceneBuilder : MonoBehaviour
 		Addressables.Release<GameObject>(_handleStartCharacter);
 		Addressables.Release<GameObject>(_handleLobbyCanvas);
 		Addressables.Release<GameObject>(_handleCommonCanvasGroup);
+		Addressables.Release<GameObject>(_handleTreasureChest);
 
 		// 로딩속도를 위해 배틀매니저는 천천히 로딩한다. 그래서 다른 로딩 오브젝트와 달리 Valid 검사를 해야한다.
 		if (_handleBattleManager.IsValid())
@@ -54,6 +55,7 @@ public class MainSceneBuilder : MonoBehaviour
 	AsyncOperationHandle<GameObject> _handleTitleCanvas;
 	AsyncOperationHandle<GameObject> _handleLobbyCanvas;
 	AsyncOperationHandle<GameObject> _handleCommonCanvasGroup;
+	AsyncOperationHandle<GameObject> _handleTreasureChest;
 	IEnumerator Start()
     {
 		// 씬 빌더는 항상 이 씬이 시작될때 1회만 동작하며 로딩씬을 띄워놓고 현재 상황에 맞춰서 스텝을 진행한다.
@@ -148,14 +150,17 @@ public class MainSceneBuilder : MonoBehaviour
 		// 3은 다른 리소스도 들고있는데 살려둘 순 없으니 패스고 1은 너무 어거지다.
 		// 결국 재부팅시 데이터 캐싱등의 처리까지 하려면 2번이 제일 낫다.
 		LoadingCanvas.instance.SetProgressBarPoint(0.9f);
+		_handleTreasureChest = Addressables.LoadAssetAsync<GameObject>("TreasureChest");
 		StageManager.instance.InitializeStage(playChapter, playStage, lastClearChapter, lastClearStage);
 		while (StageManager.instance.IsDoneLoadAsyncNextStage() == false)
 			yield return null;
 		StageManager.instance.MoveToNextStage(true);
 
-		// step 8. gate pillar
+		// step 8. gate pillar & TreasureChest
 		yield return new WaitUntil(() => waitSpawnFlag);
 		BattleInstanceManager.instance.GetCachedObject(StageManager.instance.gatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
+		yield return _handleTreasureChest;
+		Instantiate<GameObject>(_handleTreasureChest.Result);
 
 		// 현재맵의 로딩이 끝나면 다음맵의 프리팹을 로딩해놔야 게이트 필라로 이동시 곧바로 이동할 수 있게 된다.
 		// 원래라면 몹 다 죽이고 호출되는 함수인데 초기 씬 구축에선 할 타이밍이 로비맵 로딩 직후밖에 없다.
@@ -238,6 +243,7 @@ public class MainSceneBuilder : MonoBehaviour
 	public void OnExitLobby()
 	{
 		lobby = false;
+		TreasureChest.instance.gameObject.SetActive(false);
 		LobbyCanvas.instance.mainMenu9DotButton.gameObject.SetActive(false);
 		if (EnergyGaugeCanvas.instance != null)
 			EnergyGaugeCanvas.instance.gameObject.SetActive(false);

@@ -49,7 +49,6 @@ public class PlayerIndicatorCanvas : ObjectIndicatorCanvas
 	void Start()
 	{
 		GetComponent<Canvas>().worldCamera = UIInstanceManager.instance.GetCachedCameraMain();
-
 		InitializeTarget(targetTransform);
 	}
 

@@ -248,5 +248,5 @@ Shader "FXV/FXVShieldEffectMobile_D" {
 	}
 	CustomEditor "FXVShieldMaterialEditor"
 
-	Fallback "Mobile/VertexLit"
+	//Fallback "Mobile/VertexLit"
 }

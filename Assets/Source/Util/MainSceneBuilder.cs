@@ -126,11 +126,13 @@ public class MainSceneBuilder : MonoBehaviour
 		_handleStartCharacter = Addressables.LoadAssetAsync<GameObject>("Ganfaul");
 		while (!_handleStageManager.IsDone || !_handleStartCharacter.IsDone) yield return null;
 		Instantiate<GameObject>(_handleStageManager.Result);
-		GameObject newObject = Instantiate<GameObject>(_handleStartCharacter.Result);
 #if UNITY_EDITOR
+		GameObject newObject = Instantiate<GameObject>(_handleStartCharacter.Result);
 		AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
 		if (settings.ActivePlayModeDataBuilderIndex == 2)
 			ObjectUtil.ReloadShader(newObject);
+#else
+		Instantiate<GameObject>(_handleStartCharacter.Result);
 #endif
 
 		// 흠.. 어드레서블 에셋으로 뺐더니 5.7초까지 늘어났다. 번들에서 읽으니 어쩔 수 없는건가.
@@ -160,7 +162,13 @@ public class MainSceneBuilder : MonoBehaviour
 		yield return new WaitUntil(() => waitSpawnFlag);
 		BattleInstanceManager.instance.GetCachedObject(StageManager.instance.gatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
 		yield return _handleTreasureChest;
+#if UNITY_EDITOR
+		newObject = Instantiate<GameObject>(_handleTreasureChest.Result);
+		if (settings.ActivePlayModeDataBuilderIndex == 2)
+			ObjectUtil.ReloadShader(newObject);
+#else
 		Instantiate<GameObject>(_handleTreasureChest.Result);
+#endif
 
 		// 현재맵의 로딩이 끝나면 다음맵의 프리팹을 로딩해놔야 게이트 필라로 이동시 곧바로 이동할 수 있게 된다.
 		// 원래라면 몹 다 죽이고 호출되는 함수인데 초기 씬 구축에선 할 타이밍이 로비맵 로딩 직후밖에 없다.

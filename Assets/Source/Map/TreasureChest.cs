@@ -22,6 +22,27 @@ public class TreasureChest : MonoBehaviour
 		}
 	}
 
+	void Start()
+	{
+		// 차후 알람이 들어가게되면 자동으로 보여주게 처리해야한다.
+		bool alarmInShop = false;
+		if (alarmInShop)
+		{
+			ShowIndicator();
+		}
+	}
+
+	void ShowIndicator()
+	{
+		AddressableAssetLoadManager.GetAddressableAsset("TreasureChestIndicator", "Object", (prefab) =>
+		{
+			_objectIndicatorCanvas = UIInstanceManager.instance.GetCachedObjectIndicatorCanvas(prefab);
+			_objectIndicatorCanvas.targetTransform = transform;
+		});
+
+		_spawnedIndicator = true;
+	}
+
 	ObjectIndicatorCanvas _objectIndicatorCanvas;
 	bool _spawnedIndicator;
 	void OnTriggerEnter(Collider other)
@@ -37,12 +58,6 @@ public class TreasureChest : MonoBehaviour
 		if (affectorProcessor.actor.team.teamID == (int)Team.eTeamID.DefaultMonster)
 			return;
 
-		AddressableAssetLoadManager.GetAddressableAsset("TreasureChestIndicator", "Object", (prefab) =>
-		{
-			_objectIndicatorCanvas = UIInstanceManager.instance.GetCachedObjectIndicatorCanvas(prefab);
-			_objectIndicatorCanvas.targetTransform = transform;
-		});
-
-		_spawnedIndicator = true;
+		ShowIndicator();
 	}
 }

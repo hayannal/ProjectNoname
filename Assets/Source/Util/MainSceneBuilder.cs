@@ -233,12 +233,6 @@ public class MainSceneBuilder : MonoBehaviour
 		_handleBattleManager = Addressables.LoadAssetAsync<GameObject>("BattleManager");
 		yield return _handleBattleManager;
 		Instantiate<GameObject>(_handleBattleManager.Result);
-
-		if (PlayerData.instance.swappable)
-		{
-			yield return new WaitForSeconds(3.0f);
-			PlayerIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform);
-		}
 	}
 
 	public bool IsDoneLateInitialized()

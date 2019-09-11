@@ -45,7 +45,14 @@ public class MecanimEventBase : StateMachineBehaviour {
 		int lastLoop = (int)_lastNormalizeTime;
 		int currentLoop = (int)stateInfo.normalizedTime;
 		float lastNormalizedTime = _lastNormalizeTime - lastLoop;
-		float currentNormalizedTime = stateInfo.normalizedTime - currentLoop;	//	0.0 ~ 0.99999
+		float currentNormalizedTime = stateInfo.normalizedTime - currentLoop;   //	0.0 ~ 0.99999
+
+		if (animator.IsInTransition(0))
+		{
+			AnimatorStateInfo nextAnimatorStateInfo = animator.GetNextAnimatorStateInfo(0);
+			if (stateInfo.fullPathHash == nextAnimatorStateInfo.fullPathHash)
+				currentNormalizedTime = nextAnimatorStateInfo.normalizedTime;
+		}
 
 		if (RangeSignal)
 		{
@@ -69,13 +76,6 @@ public class MecanimEventBase : StateMachineBehaviour {
 		}
 		else
 		{
-			if (animator.IsInTransition(0))
-			{
-				AnimatorStateInfo nextAnimatorStateInfo = animator.GetNextAnimatorStateInfo(0);
-				if (stateInfo.fullPathHash == nextAnimatorStateInfo.fullPathHash)
-					currentNormalizedTime = nextAnimatorStateInfo.normalizedTime;
-			}
-
 			if (lastNormalizedTime <= currentNormalizedTime)
 			{
 				if (lastNormalizedTime <= StartTime && StartTime < currentNormalizedTime)

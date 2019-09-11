@@ -6,6 +6,11 @@ public class TargetingProcessor : MonoBehaviour {
 
 	void OnEnable()
 	{
+		ClearTarget();
+	}
+
+	public void ClearTarget()
+	{
 		_targetList.Clear();
 	}
 
@@ -38,7 +43,7 @@ public class TargetingProcessor : MonoBehaviour {
 
 	Transform _transform = null;
 	Team _teamComponent = null;
-	public bool FindNearestTarget(Team.eTeamCheckFilter teamFilter, float range)
+	public bool FindNearestTarget(Team.eTeamCheckFilter teamFilter, float range, float changeThreshold = 0.0f)
 	{
 		if (_transform == null)
 			_transform = GetComponent<Transform>();
@@ -76,7 +81,7 @@ public class TargetingProcessor : MonoBehaviour {
 			if (colliderRadius == -1.0f) continue;
 
 			// distance
-			Vector3 diff = result[i].transform.position - position;
+			Vector3 diff = BattleInstanceManager.instance.GetTransformFromCollider(result[i]).position - position;
 			diff.y = 0.0f;
 			float distance = diff.magnitude - colliderRadius;
 			if (distance < nearestDistance)
@@ -86,10 +91,28 @@ public class TargetingProcessor : MonoBehaviour {
 			}
 		}
 
-		_targetList.Clear();
-		if (nearestDistance != float.MaxValue && nearestCollider != null)
+		if (changeThreshold == 0.0f || _targetList.Count == 0 || _targetList[0] == null || nearestCollider == null)
 		{
-			_targetList.Add(nearestCollider);
+			_targetList.Clear();
+			if (nearestDistance != float.MaxValue && nearestCollider != null)
+			{
+				_targetList.Add(nearestCollider);
+				return true;
+			}
+		}
+		else
+		{
+			Vector3 prevTargetDiff = BattleInstanceManager.instance.GetTransformFromCollider(_targetList[0]).position - position;
+			prevTargetDiff.y = 0.0f;
+			float prevDistance = prevTargetDiff.magnitude - ColliderUtil.GetRadius(_targetList[0]);
+			Vector3 currentTargetDiff = BattleInstanceManager.instance.GetTransformFromCollider(nearestCollider).position - position;
+			currentTargetDiff.y = 0.0f;
+			float currentDistance = currentTargetDiff.magnitude - ColliderUtil.GetRadius(nearestCollider);
+			if (currentDistance <= prevDistance - changeThreshold)
+			{
+				_targetList.Clear();
+				_targetList.Add(nearestCollider);
+			}
 			return true;
 		}
 		return false;

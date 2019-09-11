@@ -8,6 +8,7 @@ public class PlayerAI : MonoBehaviour
 {
 	public const float FindTargetRange = 50.0f;
 	const float TargetFindDelay = 0.1f;
+	const float TargetChangeThreshold = 2.0f;
 
 	Collider targetCollider;
 
@@ -53,7 +54,7 @@ public class PlayerAI : MonoBehaviour
 		if (_currentFindDelay <= 0.0f)
 		{
 			_currentFindDelay += TargetFindDelay;
-			if (targetingProcessor.FindNearestTarget(Team.eTeamCheckFilter.Enemy, FindTargetRange))
+			if (targetingProcessor.FindNearestTarget(Team.eTeamCheckFilter.Enemy, FindTargetRange, actor.actionController.mecanimState.IsState((int)eMecanimState.Move) ? 0.0f : TargetChangeThreshold))
 				targetCollider = targetingProcessor.GetTarget();
 			else
 				targetCollider = null;
@@ -66,6 +67,7 @@ public class PlayerAI : MonoBehaviour
 			{
 				_currentFindDelay = 0.0f;
 				targetCollider = null;
+				targetingProcessor.ClearTarget();
 			}
 		}
 	}

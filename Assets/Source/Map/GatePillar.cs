@@ -19,7 +19,7 @@ public class GatePillar : MonoBehaviour
 	ObjectIndicatorCanvas _objectIndicatorCanvas;
 	public GameObject descriptionObjectIndicatorPrefab;
 	public float descriptionObjectIndicatorShowDelayTime = 5.0f;
-	public float energyGaugeShowDelayTime = 0.5f;
+	public float energyGaugeShowDelayTime = 0.2f;
 
 	void Awake()
 	{
@@ -64,19 +64,7 @@ public class GatePillar : MonoBehaviour
 	float _energyGaugeShowRemainTime;
 	void Update()
 	{
-		if (TitleCanvas.instance != null && TitleCanvas.instance.gameObject.activeSelf && TitleCanvas.instance.maskObject.activeSelf)
-			return;
-
-		if (_descriptionObjectIndicatorShowRemainTime > 0.0f)
-		{
-			_descriptionObjectIndicatorShowRemainTime -= Time.deltaTime;
-			if (_descriptionObjectIndicatorShowRemainTime <= 0.0f)
-			{
-				_descriptionObjectIndicatorShowRemainTime = 0.0f;
-				_objectIndicatorCanvas = UIInstanceManager.instance.GetCachedObjectIndicatorCanvas(descriptionObjectIndicatorPrefab);
-				_objectIndicatorCanvas.targetTransform = cachedTransform;
-			}
-		}
+		// 타이틀 캔버스와 상관없이 에너지 게이지를 띄워야한다면 시간 체크 후 띄운다.
 		if (_energyGaugeShowRemainTime > 0.0f)
 		{
 			_energyGaugeShowRemainTime -= Time.deltaTime;
@@ -88,6 +76,21 @@ public class GatePillar : MonoBehaviour
 					BattleInstanceManager.instance.GetCachedObject(prefab, null);
 				});
 				return;
+			}
+		}
+
+		if (TitleCanvas.instance != null && TitleCanvas.instance.gameObject.activeSelf && TitleCanvas.instance.maskObject.activeSelf)
+			return;
+
+		// 설명 인디케이터는 타이틀 있을 경우엔 검은화면 지나가고 시간 재는게 맞다.
+		if (_descriptionObjectIndicatorShowRemainTime > 0.0f)
+		{
+			_descriptionObjectIndicatorShowRemainTime -= Time.deltaTime;
+			if (_descriptionObjectIndicatorShowRemainTime <= 0.0f)
+			{
+				_descriptionObjectIndicatorShowRemainTime = 0.0f;
+				_objectIndicatorCanvas = UIInstanceManager.instance.GetCachedObjectIndicatorCanvas(descriptionObjectIndicatorPrefab);
+				_objectIndicatorCanvas.targetTransform = cachedTransform;
 			}
 		}
 	}

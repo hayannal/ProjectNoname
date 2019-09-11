@@ -19,7 +19,7 @@ public class GatePillar : MonoBehaviour
 	ObjectIndicatorCanvas _objectIndicatorCanvas;
 	public GameObject descriptionObjectIndicatorPrefab;
 	public float descriptionObjectIndicatorShowDelayTime = 5.0f;
-	public float energyGaugeShowDelayTime = 2.0f;
+	public float energyGaugeShowDelayTime = 0.5f;
 
 	void Awake()
 	{
@@ -64,6 +64,9 @@ public class GatePillar : MonoBehaviour
 	float _energyGaugeShowRemainTime;
 	void Update()
 	{
+		if (TitleCanvas.instance != null && TitleCanvas.instance.gameObject.activeSelf && TitleCanvas.instance.maskObject.activeSelf)
+			return;
+
 		if (_descriptionObjectIndicatorShowRemainTime > 0.0f)
 		{
 			_descriptionObjectIndicatorShowRemainTime -= Time.deltaTime;

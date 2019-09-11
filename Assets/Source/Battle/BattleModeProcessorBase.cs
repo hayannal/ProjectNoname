@@ -54,7 +54,7 @@ public class BattleModeProcessorBase
 			// all kill monster
 			BattleInstanceManager.instance.GetCachedObject(StageManager.instance.gatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
 
-			if (StageManager.instance.currentStageTableData != null && StageManager.instance.currentStageTableData.swap)
+			if (StageManager.instance.currentStageTableData != null && StageManager.instance.currentStageTableData.swap && PlayerData.instance.swappable)
 				PlayerIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform);
 		}
 	}

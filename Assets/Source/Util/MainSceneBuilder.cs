@@ -234,8 +234,11 @@ public class MainSceneBuilder : MonoBehaviour
 		yield return _handleBattleManager;
 		Instantiate<GameObject>(_handleBattleManager.Result);
 
-		yield return new WaitForSeconds(3.0f);
-		PlayerIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform);
+		if (PlayerData.instance.swappable)
+		{
+			yield return new WaitForSeconds(3.0f);
+			PlayerIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform);
+		}
 	}
 
 	public bool IsDoneLateInitialized()

@@ -16,6 +16,9 @@ Properties {
     _MainTex ("Main Texture (RGB) Gloss (A)", 2D) = "white" {}
 	_MainTex2("Sub Texture (RGB) Gloss (A)", 2D) = "white" {}
 
+	[Toggle(_ADJUSTSHININESS)] _AdjustShininess("========== Adust Shininess ==========", Float) = 0
+	_DotHalfDirAdjust("Adjust Shininess", Range(0.0, 0.05)) = 0.0
+
 	[Toggle(_SUBSPECULAR)] _UseSubSpecular("========== Use Sub Specular ==========", Float) = 0
 	_Shininess2("Sub Shininess", Range(0.25, 15)) = 0.5
 }
@@ -25,12 +28,21 @@ SubShader {
 
 CGPROGRAM
 #pragma surface surf MobileBlinnPhong exclude_path:prepass nolightmap noforwardadd halfasview interpolateview
+#pragma shader_feature _ADJUSTSHININESS
 #pragma shader_feature _SUBSPECULAR
+
+#if _ADJUSTSHININESS
+fixed _DotHalfDirAdjust;
+#endif
 
 inline fixed4 LightingMobileBlinnPhong (SurfaceOutput s, fixed3 lightDir, float3 halfDir, fixed atten)
 {
     fixed diff = max (0, dot (s.Normal, lightDir));
     fixed nh = max (0, dot (s.Normal, halfDir));
+#if _ADJUSTSHININESS
+	nh += _DotHalfDirAdjust;
+	nh = saturate(nh);
+#endif
     fixed spec = pow (nh, s.Specular*128) * s.Gloss;
 
     fixed4 c;

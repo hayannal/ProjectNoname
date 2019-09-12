@@ -17,6 +17,9 @@ Properties {
 
 	[Toggle(_GLOSSPOWER)] _UseGlossPower("========== Use Gloss Power ==========", Float) = 0
 	_GlossPower("Gloss Power", Range(0.0, 50)) = 1.0
+
+	[Toggle(_ADJUSTSHININESS)] _AdjustShininess("========== Adust Shininess ==========", Float) = 0
+	_DotHalfDirAdjust("Adjust Shininess", Range(0.0, 0.05)) = 0.0
 }
 SubShader {
     Tags { "RenderType"="Opaque" }
@@ -25,11 +28,20 @@ SubShader {
 CGPROGRAM
 #pragma surface surf MobileBlinnPhong exclude_path:prepass nolightmap noforwardadd halfasview interpolateview
 #pragma shader_feature _GLOSSPOWER
+#pragma shader_feature _ADJUSTSHININESS
+
+#if _ADJUSTSHININESS
+fixed _DotHalfDirAdjust;
+#endif
 
 inline fixed4 LightingMobileBlinnPhong (SurfaceOutput s, fixed3 lightDir, float3 halfDir, fixed atten)
 {
     fixed diff = max (0, dot (s.Normal, lightDir));
     fixed nh = max (0, dot (s.Normal, halfDir));
+#if _ADJUSTSHININESS
+	nh += _DotHalfDirAdjust;
+	nh = saturate(nh);
+#endif
     fixed spec = pow (nh, s.Specular*128) * s.Gloss;
 
     fixed4 c;

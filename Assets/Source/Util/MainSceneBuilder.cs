@@ -161,6 +161,7 @@ public class MainSceneBuilder : MonoBehaviour
 		// step 8. gate pillar & TreasureChest
 		yield return new WaitUntil(() => waitSpawnFlag);
 		BattleInstanceManager.instance.GetCachedObject(StageManager.instance.gatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
+		HitRimBlink.ShowHitRimBlink(GatePillar.instance.cachedTransform, Vector3.forward, true);
 		yield return _handleTreasureChest;
 #if UNITY_EDITOR
 		newObject = Instantiate<GameObject>(_handleTreasureChest.Result);

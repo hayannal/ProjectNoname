@@ -255,26 +255,6 @@ public class AffectorProcessor : MonoBehaviour {
 		}
 	}
 
-	void OnCollisionEnter(Collision collision)
-	{
-		//Debug.Log("hitted object collision enter");
-
-		bool collided = false;
-		foreach (ContactPoint contact in collision.contacts)
-		{
-			Collider col = contact.otherCollider;
-			if (col == null)
-				continue;
-
-			collided = true;
-
-			HitObject hitObject = BattleInstanceManager.instance.GetHitObjectFromCollider(col);
-			if (hitObject == null)
-				continue;
-
-			hitObject.OnCollisionEnterAffectorProcessor(this, contact);
-		}
-	}
 
 
 	Transform _transform;

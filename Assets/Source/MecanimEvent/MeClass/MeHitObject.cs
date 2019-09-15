@@ -40,6 +40,23 @@ public class MeHitObject : MecanimEventBase {
 	public float curveAdd;
 	public bool curveLockY;
 
+	public bool contactAll;
+	public int throughCount;
+	public int bounceWallCount;
+	public int ricochetCount;
+	public bool useHitStay;
+	public float hitStayInterval;
+	public int hitStayGroupNumber = 0;
+	public bool collisionHitStay = false;
+	public bool oneHitPerTarget = false;
+	
+
+	// 부채꼴을 쓸때 저 위가 되냐 - 안쓸거다
+	// 폭발형 문제가 편집창이 하나라 폭발시 어떻게 될지에 대해 적을 공간이 없다. - 고민중
+	// Wall투과를 어떤식으로 셋팅할거냐
+	// 레이저형은 어떤식으로 셋팅할거지
+
+
 	public List<string> affectorValueIdList;
 	public bool showHitEffect;
 	public GameObject hitEffectObject;  //Google2u.HitEffectRow
@@ -108,6 +125,28 @@ public class MeHitObject : MecanimEventBase {
 			}
 			upDownRandomAngle = EditorGUILayout.FloatField("UpDown Random Angle :", upDownRandomAngle);
 			speed = EditorGUILayout.FloatField("Speed :", speed);
+			EditorGUILayout.LabelField("-----------------------------------------------------------------");
+		}
+
+		if (targetDetectType == HitObject.eTargetDetectType.Collider)
+		{
+			contactAll = EditorGUILayout.Toggle("Contact All :", contactAll);
+			throughCount = EditorGUILayout.IntField("Through Count :", throughCount);
+			bounceWallCount = EditorGUILayout.IntField("Bounce Wall Count :", bounceWallCount);
+			ricochetCount = EditorGUILayout.IntField("Ricochet Count :", ricochetCount);
+
+			if (oneHitPerTarget == false)
+				useHitStay = EditorGUILayout.Toggle("Use Hit Stay :", useHitStay);
+			if (useHitStay)
+			{
+				hitStayInterval = EditorGUILayout.FloatField("Hit Stay Interval :", hitStayInterval);
+				hitStayGroupNumber = EditorGUILayout.IntField("Hit Stay Group Number", hitStayGroupNumber);
+				collisionHitStay = EditorGUILayout.Toggle("Collision Hit Stay :", collisionHitStay);
+			}
+			if (useHitStay == false)
+			{
+				oneHitPerTarget = EditorGUILayout.Toggle("One Hit Per Target :", oneHitPerTarget);
+			}
 			EditorGUILayout.LabelField("-----------------------------------------------------------------");
 		}
 

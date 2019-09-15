@@ -9,6 +9,7 @@ public class HitObjectMovement : MonoBehaviour {
 		Direct,
 		FollowTarget,
 		//Howitzer,
+		//Homing
 	}
 
 	public enum eStartDirectionType
@@ -62,8 +63,17 @@ public class HitObjectMovement : MonoBehaviour {
 				targetPosition = GetFallbackTargetPosition(parentActor.cachedTransform);
 		}
 
-		_rigidbody.velocity = GetStartDirection(meHit, cachedTransform.position, parentActor.cachedTransform, hitSignalIndexInAction, targetPosition) * _signal.speed;
-		cachedTransform.forward = _rigidbody.velocity.normalized;
+		_velocity = _rigidbody.velocity = GetStartDirection(meHit, cachedTransform.position, parentActor.cachedTransform, hitSignalIndexInAction, targetPosition) * _signal.speed;
+		_forward = cachedTransform.forward = _rigidbody.velocity.normalized;		
+	}
+
+	Vector3 _velocity;
+	Vector3 _forward;
+	public void ReinitializeForThrough()
+	{
+		_rigidbody.velocity = _velocity;
+		_rigidbody.angularVelocity = Vector3.zero;
+		cachedTransform.forward = _forward;
 	}
 
 	public static Vector3 GetFallbackTargetPosition(Transform t)

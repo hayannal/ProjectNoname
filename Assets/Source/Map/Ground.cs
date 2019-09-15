@@ -14,6 +14,7 @@ public class Ground : MonoBehaviour
 		Transform quadRootTransform = quadRootObject.transform;
 		_bounds.max = new Vector3(quadRootTransform.Find("QuadRight").localPosition.x, 10.0f, quadRootTransform.Find("QuadUp").localPosition.z);
 		_bounds.min = new Vector3(quadRootTransform.Find("QuadLeft").localPosition.x, -10.0f, quadRootTransform.Find("QuadDown").localPosition.z);
+		_colliderList = quadRootTransform.GetComponentsInChildren<Collider>();
 	}
 
 	// Start is called before the first frame update
@@ -73,4 +74,17 @@ public class Ground : MonoBehaviour
 			navMeshSurface.RemoveData();
 	}
 	#endregion
+
+	Collider[] _colliderList;
+	public bool CheckQuadCollider(Collider col)
+	{
+		if (_colliderList == null)
+			return false;
+		for (int i = 0; i < _colliderList.Length; ++i)
+		{
+			if (_colliderList[i] == col)
+				return true;
+		}
+		return false;
+	}
 }

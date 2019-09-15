@@ -45,6 +45,7 @@ public class HitObject : MonoBehaviour
 				HitObjectMovement hitObjectMovementComponent = hitObject.GetComponent<HitObjectMovement>();
 				if (hitObjectMovementComponent == null) hitObjectMovementComponent = hitObject.AddComponent<HitObjectMovement>();
 				hitObjectMovementComponent.InitializeSignal(meHit, parentActor, hitObjectComponent._rigidbody, hitSignalIndexInAction);
+				hitObjectComponent.SetHitObjectMovement(hitObjectMovementComponent);
 			}
 		}
 
@@ -208,6 +209,14 @@ public class HitObject : MonoBehaviour
 	List<GameObject> _listDisableObjectAfterCollision;
 	bool _disableSelfObjectAfterCollision;
 
+	// Í∞ÅÏ¢Ö ÌîÑÎ°úÌçºÌã∞Ïóê Îî∞Îùº Ï†ÅÏ†àÌïòÍ≤å collisionÍ≥º triggerÏ§ë ÌïòÎÇòÎ•º ÏÑ†ÌÉùÌïòÍ≤å ÌïúÎã§. ÏãúÏûëÎ∂ÄÌÑ∞ triggerÏù∏ ÌûàÌä∏Ïò§Î∏åÏ†ùÌä∏Îäî Ï≤¥ÌÅ¨Ìï¥ÎëîÎã§.
+	bool _triggerOnStart;
+	// Ïª¨Î¶¨Ï†ºÏúºÎ°ú ÏãúÏûëÌñàÎã§Í∞Ä Ï∂©ÎèåÏãú Ïû†Ïãú Ìä∏Î¶¨Í±∞Î°ú Î∞îÎÄåÎäî ÌòïÌÉúÎ•º ÏúÑÌï¥ ÏûÑÏãúÎ≥ÄÏàò Í∏∞Ïñµ.
+	bool _tempTriggerOnCollision;
+
+	int _remainThroughCount;
+	int _remainBounceWallCount;
+
 
 	static int HITOBJECT_LAYER;
 	public void InitializeHitObject(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction)
@@ -230,6 +239,16 @@ public class HitObject : MonoBehaviour
 		{
 			if (_collider != null) _collider.enabled = false;
 		}
+
+		// hitStayÎ•º Ïì∞Î©¥ÏÑú collisionHitStayÍ∞Ä falseÏù∏ ÌûàÌä∏Ïò§Î∏åÏ†ùÌä∏Îäî ÏãúÏûëÎ∂ÄÌÑ∞ Ìä∏Î¶¨Í±∞Î°ú ÏãúÏûëÌïúÎã§. Í∏ÅÍ≥† ÏßÄÎÇòÍ∞ÄÎäî Ìà¨Í≥ºÌòï Îã§Îã®ÌûàÌä∏ Ïò§Î∏åÏ†ùÌä∏.
+		_triggerOnStart = false;
+		if (_signal.useHitStay && _signal.collisionHitStay == false)
+			_triggerOnStart = true;
+		_tempTriggerOnCollision = false;
+		if (_collider != null) _collider.isTrigger = _triggerOnStart;
+
+		_remainThroughCount = _signal.throughCount;	// + level pack through count
+		_remainBounceWallCount = _signal.bounceWallCount;
 
 		BattleInstanceManager.instance.OnInitializeHitObject(this, _collider);
 	}
@@ -273,11 +292,14 @@ public class HitObject : MonoBehaviour
 		}
 	}
 
+	HitObjectMovement _hitObjectMovement;
+	public void SetHitObjectMovement(HitObjectMovement hitObjectMovement)
+	{
+		_hitObjectMovement = hitObjectMovement;
+	}
+
 	void Update()
 	{
-		if (UpdatePhysic() == false)
-			return;
-
 		if (_signal.lifeTime > 0.0f && _signal.targetDetectType == eTargetDetectType.Area)
 		{
 			CheckHitArea(transform.position, transform.forward, _signal, _statusBase, _statusStructForHitObject);
@@ -304,12 +326,30 @@ public class HitObject : MonoBehaviour
 		gameObject.SetActive(false);
 	}
 
+	void OnFinalizeByCollision()
+	{
+		EnableRigidbodyAndCollider(false);
+
+		for (int i = 0; i < _listDisableObjectAfterCollision.Count; ++i)
+			_listDisableObjectAfterCollision[i].SetActive(false);
+
+		if (_disableSelfObjectAfterCollision)
+			FinalizeHitObject();
+	}
+
+	// Ïù¥Îü∞ Ìï®ÏàòÎì§ÎèÑ Ï∂îÍ∞ÄÌï¥ÏïºÌïòÏßÄ ÏïäÏùÑÍπå.
+	void OnFinalizeByLifeTime()
+	{
+	}
+
+
+
 	//List<Collider> _listEnteredCollider = new List<Collider>();
-	//void OnTriggerEnter(Collider col)
 	void OnCollisionEnter(Collision collision)
 	{
 		//Debug.Log("hit object collision enter");
 		bool collided = false;
+		bool groundQuadCollided = false;
 		foreach (ContactPoint contact in collision.contacts)
 		{
 			Collider col = contact.otherCollider;
@@ -317,38 +357,72 @@ public class HitObject : MonoBehaviour
 				continue;
 
 			collided = true;
-
 			if (_signal.showHitEffect)
 				HitEffect.ShowHitEffect(_signal, contact.point, contact.normal, _statusStructForHitObject.weaponIDAtCreation);
+
+			AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(col);
+			if (affectorProcessor != null)
+				OnCollisionEnterAffectorProcessor(affectorProcessor, contact);
+
+			if (BattleInstanceManager.instance.currentGround != null && BattleInstanceManager.instance.currentGround.CheckQuadCollider(col))
+				groundQuadCollided = true;
+
+			if (_signal.contactAll == false)
+				break;
 		}
 
-		if (collided)
+		if (collided == false)
+			return;
+
+		if (groundQuadCollided)
 		{
-			EnableRigidbodyAndCollider(false);
-
-			for (int i = 0; i < _listDisableObjectAfterCollision.Count; ++i)
-				_listDisableObjectAfterCollision[i].SetActive(false);
-
-			if (_disableSelfObjectAfterCollision)
-				_finalizeHitObjectOnCollision = true;
-				//FinalizeHitObject();
+			OnFinalizeByCollision();
+			return;
 		}
+
+		// Check End of HitObject
+		if (_remainThroughCount > 0)
+		{
+			_remainThroughCount -= 1;
+			_tempTriggerOnCollision = true;
+			_collider.isTrigger = true;
+			if (_hitObjectMovement != null)
+				_hitObjectMovement.ReinitializeForThrough();
+			return;
+		}
+
+		if (_remainBounceWallCount > 0)
+		{
+
+		}
+
+		OnFinalizeByCollision();
 	}
 
-	// HitObject¿« OnCollisionEnter∞° ¡¶¿œ ∏’¿˙ »£√‚µ«∏Èº≠ FinalizeHitObject«ÿπˆ∏Æ∏È
-	// ∞∞¿∫ «¡∑π¿”¿« AffectorProcessor¿« OnCollisionEnter ∞° ¡¶¥Î∑Œ µø¿€«œ¡ˆ æ ¿ª ºˆ ¿÷¥Ÿ.
-	// ±◊∑°º≠ ¡ÔΩ√ FinalizeHitObject«œ¥¬∞‘ æ∆¥œ∂Û «ÿ¥Á «¡∑π¿”¿« Updateø°º≠ √≥∏Æ«œ±‚∑Œ «—¥Ÿ.
-	// Unity »£√‚ º¯º≠ªÛ OnCollision ∞Ëø≠ «‘ºˆ - Update - LateUpdate º¯º≠¥Ÿ.
-	bool _finalizeHitObjectOnCollision;
-	bool UpdatePhysic()
+	void OnTriggerEnter(Collider collider)
 	{
-		if (_finalizeHitObjectOnCollision)
+		if (_tempTriggerOnCollision && _collider.isTrigger)
+			return;
+		if (_triggerOnStart == false || _collider.isTrigger == false)
+			return;
+
+		// Ground Quad ÎÇòÍ∞àÎïå ÌûàÌä∏ Ìè¨Ïù∏Ìä∏ Ï≤òÎ¶¨ Ïñ¥ÎñªÍ≤å Ìï†Í±∞ÏßÄ? ÏßÅÏ†ë Íµ¨Ìï†Í±¥Í∞Ä?
+		// ÌòπÏùÄ ÎπîÏùò Í∏∏Ïù¥Í∞Ä Î≤ΩÏùÑ ÎÑòÏñ¥ÏÑúÏßÄ ÏïäÍ≤å ÌïòÎ†§Î©¥ Ïñ¥ÎñªÍ≤å Ìï†Í±∞ÏßÄ?
+	}
+
+	void OnCollisionExit(Collision collision)
+	{
+		if (_tempTriggerOnCollision && _collider.isTrigger)
+			return;
+	}
+
+	void OnTriggerExit(Collider collider)
+	{
+		if (_tempTriggerOnCollision && _collider.isTrigger)
 		{
-			FinalizeHitObject();
-			_finalizeHitObjectOnCollision = false;
-			return true;
+			_collider.isTrigger = false;
+			_tempTriggerOnCollision = false;
 		}
-		return false;
 	}
 
 	void EnableRigidbodyAndCollider(bool enable)
@@ -396,5 +470,24 @@ public class HitObject : MonoBehaviour
 			HitBlink.ShowHitBlink(affectorProcessor.cachedTransform);
 		if (_signal.showHitRimBlink)
 			HitRimBlink.ShowHitRimBlink(affectorProcessor.cachedTransform, hitParameter.contactNormal);
+	}
+
+
+
+
+
+
+
+
+
+	Transform _transform;
+	public Transform cachedTransform
+	{
+		get
+		{
+			if (_transform == null)
+				_transform = GetComponent<Transform>();
+			return _transform;
+		}
 	}
 }

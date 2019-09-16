@@ -95,6 +95,30 @@ public class GatePillar : MonoBehaviour
 		}
 	}
 
+	bool CheckCollider(Collider collider)
+	{
+		if (collider == null)
+			return false;
+		HitObject hitObject = BattleInstanceManager.instance.GetHitObjectFromCollider(collider);
+		if (hitObject == null)
+			return false;
+		if (hitObject.statusStructForHitObject.teamID == (int)Team.eTeamID.DefaultMonster)
+			return false;
+		if (hitObject.createTime < _spawnTime)
+			return false;
+		return true;
+	}
+
+	void OnTriggerEnter(Collider collider)
+	{
+		if (_processing)
+			return;
+		if (CheckCollider(collider) == false)
+			return;
+
+		Timing.RunCoroutine(NextMapProcess());
+	}
+
 	void OnCollisionEnter(Collision collision)
 	{
 		if (_processing)
@@ -102,15 +126,7 @@ public class GatePillar : MonoBehaviour
 
 		foreach (ContactPoint contact in collision.contacts)
 		{
-			Collider col = contact.otherCollider;
-			if (col == null)
-				continue;
-			HitObject hitObject = BattleInstanceManager.instance.GetHitObjectFromCollider(col);
-			if (hitObject == null)
-				continue;
-			if (hitObject.statusStructForHitObject.teamID == (int)Team.eTeamID.DefaultMonster)
-				continue;
-			if (hitObject.createTime < _spawnTime)
+			if (CheckCollider(contact.otherCollider) == false)
 				continue;
 
 			Timing.RunCoroutine(NextMapProcess());

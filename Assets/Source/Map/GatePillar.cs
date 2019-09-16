@@ -95,30 +95,6 @@ public class GatePillar : MonoBehaviour
 		}
 	}
 
-	bool CheckCollider(Collider collider)
-	{
-		if (collider == null)
-			return false;
-		HitObject hitObject = BattleInstanceManager.instance.GetHitObjectFromCollider(collider);
-		if (hitObject == null)
-			return false;
-		if (hitObject.statusStructForHitObject.teamID == (int)Team.eTeamID.DefaultMonster)
-			return false;
-		if (hitObject.createTime < _spawnTime)
-			return false;
-		return true;
-	}
-
-	void OnTriggerEnter(Collider collider)
-	{
-		if (_processing)
-			return;
-		if (CheckCollider(collider) == false)
-			return;
-
-		Timing.RunCoroutine(NextMapProcess());
-	}
-
 	void OnCollisionEnter(Collision collision)
 	{
 		if (_processing)
@@ -132,6 +108,30 @@ public class GatePillar : MonoBehaviour
 			Timing.RunCoroutine(NextMapProcess());
 			break;
 		}
+	}
+
+	void OnTriggerEnter(Collider other)
+	{
+		if (_processing)
+			return;
+		if (CheckCollider(other) == false)
+			return;
+
+		Timing.RunCoroutine(NextMapProcess());
+	}
+
+	bool CheckCollider(Collider collider)
+	{
+		if (collider == null)
+			return false;
+		HitObject hitObject = BattleInstanceManager.instance.GetHitObjectFromCollider(collider);
+		if (hitObject == null)
+			return false;
+		if (hitObject.statusStructForHitObject.teamID == (int)Team.eTeamID.DefaultMonster)
+			return false;
+		if (hitObject.createTime < _spawnTime)
+			return false;
+		return true;
 	}
 
 	bool _processing = false;

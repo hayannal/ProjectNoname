@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -57,4 +59,30 @@ public class ObjectUtil : MonoBehaviour
 		}
 	}
 #endif
+
+
+	public static T CopyComponent<T>(T original, GameObject targetObject) where T : Component
+	{
+		Type type = original.GetType();
+		Component comp = targetObject.AddComponent(type);
+		BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Default | BindingFlags.DeclaredOnly;
+		PropertyInfo[] pinfos = type.GetProperties(flags);
+		foreach (var pinfo in pinfos)
+		{
+			if (pinfo.CanWrite)
+			{
+				try
+				{
+					pinfo.SetValue(comp, pinfo.GetValue(original, null), null);
+				}
+				catch { } // In case of NotImplementedException being thrown. For some reason specifying that exception didn't seem to catch it, so I didn't catch anything specific.
+			}
+		}
+		FieldInfo[] finfos = type.GetFields(flags);
+		foreach (var finfo in finfos)
+		{
+			finfo.SetValue(comp, finfo.GetValue(original));
+		}
+		return comp as T;
+	}
 }

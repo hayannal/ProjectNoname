@@ -97,7 +97,7 @@ public class Actor : MonoBehaviour {
 	{
 		actionController.PlayActionByActionName("Die");
 		actionController.idleAnimator.enabled = false;
-		HitObject.EnableRigidbodyAndCollider(false, _rigidbody, _collider, false);
+		HitObject.EnableRigidbodyAndCollider(false, _rigidbody, _collider, null, false);
 	}
 
 	/*

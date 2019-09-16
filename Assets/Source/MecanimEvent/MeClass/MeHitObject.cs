@@ -41,21 +41,20 @@ public class MeHitObject : MecanimEventBase {
 	public bool curveLockY;
 
 	public bool contactAll;
-	public int throughCount;
+	public int monsterThroughCount;
+	public bool wallThrough;
+	public bool quadThrough;
 	public int bounceWallCount;
 	public int ricochetCount;
 	public bool useHitStay;
 	public float hitStayInterval;
 	public int hitStayGroupNumber = 0;
-	public bool collisionHitStay = false;
 	public bool oneHitPerTarget = false;
 	
 
 	// 부채꼴을 쓸때 저 위가 되냐 - 안쓸거다
 	// 폭발형 문제가 편집창이 하나라 폭발시 어떻게 될지에 대해 적을 공간이 없다. - 고민중
-	// Wall투과를 어떤식으로 셋팅할거냐
-	// 레이저형은 어떤식으로 셋팅할거지
-
+	// 레이저형은 어떤식으로 셋팅할거지 - hitStay에서 파생 형태로 할듯
 
 	public List<string> affectorValueIdList;
 	public bool showHitEffect;
@@ -131,7 +130,9 @@ public class MeHitObject : MecanimEventBase {
 		if (targetDetectType == HitObject.eTargetDetectType.Collider)
 		{
 			contactAll = EditorGUILayout.Toggle("Contact All :", contactAll);
-			throughCount = EditorGUILayout.IntField("Through Count :", throughCount);
+			monsterThroughCount = EditorGUILayout.IntField("Monster Through Count :", monsterThroughCount);
+			wallThrough = EditorGUILayout.Toggle("Wall Through :", wallThrough);
+			quadThrough = EditorGUILayout.Toggle("Quad Through :", quadThrough);
 			bounceWallCount = EditorGUILayout.IntField("Bounce Wall Count :", bounceWallCount);
 			ricochetCount = EditorGUILayout.IntField("Ricochet Count :", ricochetCount);
 
@@ -141,7 +142,6 @@ public class MeHitObject : MecanimEventBase {
 			{
 				hitStayInterval = EditorGUILayout.FloatField("Hit Stay Interval :", hitStayInterval);
 				hitStayGroupNumber = EditorGUILayout.IntField("Hit Stay Group Number", hitStayGroupNumber);
-				collisionHitStay = EditorGUILayout.Toggle("Collision Hit Stay :", collisionHitStay);
 			}
 			if (useHitStay == false)
 			{

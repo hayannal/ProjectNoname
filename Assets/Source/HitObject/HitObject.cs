@@ -396,24 +396,26 @@ public class HitObject : MonoBehaviour
 				ignoreAffectorProcessor = true;
 
 			AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(col);
-			if (affectorProcessor != null)
+			if (affectorProcessor != null && Team.CheckTeamFilter(_statusStructForHitObject.teamID, col, _signal.teamCheckType))
 			{
-				if (Team.CheckTeamFilter(_statusStructForHitObject.teamID, col, _signal.teamCheckType))
+				if (_signal.oneHitPerTarget)
 				{
-					monsterCollided = true;
+					if (_listOneHitPerTarget == null) _listOneHitPerTarget = new List<AffectorProcessor>();
+					if (_listOneHitPerTarget.Contains(affectorProcessor))
+						ignoreAffectorProcessor = true;
+				}
 
-					if (_signal.oneHitPerTarget)
-					{
-						if (_listOneHitPerTarget == null) _listOneHitPerTarget = new List<AffectorProcessor>();
-						if (_listOneHitPerTarget.Contains(affectorProcessor))
-							ignoreAffectorProcessor = true;
-					}
-					if (ignoreAffectorProcessor == false && _signal.useHitStay == false)
+				if (ignoreAffectorProcessor == false)
+				{
+					if (_signal.useHitStay == false)
 					{
 						OnCollisionEnterAffectorProcessor(affectorProcessor, contact.point, contact.normal);
 						if (_signal.oneHitPerTarget)
 							_listOneHitPerTarget.Add(affectorProcessor);
+						if (_remainRicochetCount > 0 && _hitObjectMovement != null)
+							_hitObjectMovement.AddRicochet(col, _remainRicochetCount == _signal.ricochetCount);
 					}
+					monsterCollided = true;
 				}
 			}
 			else if (groundQuadCollided == false)
@@ -439,12 +441,31 @@ public class HitObject : MonoBehaviour
 		bool useBounce = false;
 		if (monsterCollided)
 		{
-			if (_remainRicochetCount > 0)
+			bool ricochetApplied = false;
+			if (_remainRicochetCount > 0 && _hitObjectMovement != null && _hitObjectMovement.IsEnableRicochet(_statusStructForHitObject.teamID))
 			{
-
+				// 리코세를 하기 위해선 각도에 따라 몹을 관통하기도 관통 안하기도 한다.
+				// 그렇다고 이걸 일일이 각도 체크하면서 하기엔 위험부담이 있어서
+				// 차라리 리코세 적용시에 몹의 몸 중심으로 옮겨놓고 트리거로 임시로 바꿔둔채(Through 하듯) 발사하는 식으로 풀게 되었다.
+				// 그렇데 이렇게 할 경우 몹이 죽을때는 컬리더랑 리지드바디까지 다 끄기때문에 trigger로 해둔게 풀리지 않게 된다.
+				// 그래서 해당몹의 컬리더 상태를 확인해서 처리하도록 한다.
+				bool colliderEnabled = false;
+				if (_hitObjectMovement.ApplyRicochet(ref colliderEnabled))
+				{
+					ricochetApplied = true;
+					_remainRicochetCount -= 1;
+					if (colliderEnabled)
+						useThrough = true;
+					else
+						return;
+				}
 			}
 
-			if (_remainMonsterThroughCount > 0 || _remainMonsterThroughCount == -1)
+			if (ricochetApplied)
+			{
+				// nothing
+			}
+			else if ((_remainMonsterThroughCount > 0 || _remainMonsterThroughCount == -1))
 			{
 				if (_remainMonsterThroughCount > 0) _remainMonsterThroughCount -= 1;
 				useThrough = true;
@@ -502,11 +523,6 @@ public class HitObject : MonoBehaviour
 			if (_hitObjectMovement != null)
 				_hitObjectMovement.ReinitializeForThrough();
 			return;
-		}
-
-		if (_remainBounceWallQuadCount > 0)
-		{
-
 		}
 
 		OnFinalizeByCollision();

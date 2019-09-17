@@ -220,7 +220,8 @@ public class HitObject : MonoBehaviour
 	Collider _triggerForHitStay;
 
 	int _remainMonsterThroughCount;
-	int _remainBounceWallCount;
+	int _remainBounceWallQuadCount;
+	int _remainRicochetCount;
 
 
 	static int HITOBJECT_LAYER;
@@ -258,7 +259,8 @@ public class HitObject : MonoBehaviour
 		}
 
 		_remainMonsterThroughCount = _signal.monsterThroughCount;	// + level pack through count
-		_remainBounceWallCount = _signal.bounceWallCount;
+		_remainBounceWallQuadCount = _signal.bounceWallQuadCount;
+		_remainRicochetCount = _signal.ricochetCount;
 
 		BattleInstanceManager.instance.OnInitializeHitObject(this, _collider);
 	}
@@ -372,6 +374,7 @@ public class HitObject : MonoBehaviour
 		bool groundQuadCollided = false;
 		bool wallCollided = false;
 		bool monsterCollided = false;
+		Vector3 wallNormal = Vector3.forward;
 		foreach (ContactPoint contact in collision.contacts)
 		{
 			Collider col = contact.otherCollider;
@@ -383,7 +386,10 @@ public class HitObject : MonoBehaviour
 				HitEffect.ShowHitEffect(_signal, contact.point, contact.normal, _statusStructForHitObject.weaponIDAtCreation);
 
 			if (BattleInstanceManager.instance.currentGround != null && BattleInstanceManager.instance.currentGround.CheckQuadCollider(col))
+			{
 				groundQuadCollided = true;
+				wallNormal = contact.normal;
+			}
 
 			bool ignoreAffectorProcessor = false;
 			if (_triggerForHitStay != null && contact.thisCollider == _collider)
@@ -411,46 +417,33 @@ public class HitObject : MonoBehaviour
 				}
 			}
 			else if (groundQuadCollided == false)
+			{
 				wallCollided = true;
+				wallNormal = contact.normal;
+			}
 
 			if (_signal.contactAll == false)
 				break;
 		}
 
-		OnPostCollided(collided, groundQuadCollided, wallCollided, monsterCollided);
+		OnPostCollided(collided, groundQuadCollided, wallCollided, monsterCollided, wallNormal);
 	}
 
-	void OnPostCollided(bool collided, bool groundQuadCollided, bool wallCollided, bool monsterCollided)
+	void OnPostCollided(bool collided, bool groundQuadCollided, bool wallCollided, bool monsterCollided, Vector3 wallNormal)
 	{
 		if (collided == false)
 			return;
 
-		bool useThrough = false;
-		if (groundQuadCollided)
-		{
-			if (_signal.quadThrough)
-				useThrough = true;
-			else
-			{
-				OnFinalizeByCollision();
-				return;
-			}
-		}
-
-		if (wallCollided)
-		{
-			if (_signal.wallThrough)
-				useThrough = true;
-			else
-			{
-				OnFinalizeByCollision();
-				return;
-			}
-		}
-
 		// Check End of HitObject
+		bool useThrough = false;
+		bool useBounce = false;
 		if (monsterCollided)
 		{
+			if (_remainRicochetCount > 0)
+			{
+
+			}
+
 			if (_remainMonsterThroughCount > 0 || _remainMonsterThroughCount == -1)
 			{
 				if (_remainMonsterThroughCount > 0) _remainMonsterThroughCount -= 1;
@@ -463,6 +456,45 @@ public class HitObject : MonoBehaviour
 			}
 		}
 
+		if (wallCollided)
+		{
+			if (_remainBounceWallQuadCount > 0)
+			{
+				_remainBounceWallQuadCount -= 1;
+				useBounce = true;
+			}
+			else if (_signal.wallThrough)
+				useThrough = true;
+			else
+			{
+				OnFinalizeByCollision();
+				return;
+			}
+		}
+
+		if (groundQuadCollided)
+		{
+			if (_remainBounceWallQuadCount > 0)
+			{
+				_remainBounceWallQuadCount -= 1;
+				useBounce = true;
+			}
+			else if (_signal.quadThrough)
+				useThrough = true;
+			else
+			{
+				OnFinalizeByCollision();
+				return;
+			}
+		}
+
+		if (useBounce)
+		{
+			if (_hitObjectMovement != null)
+				_hitObjectMovement.Bounce(wallNormal);
+			return;
+		}
+
 		if (useThrough)
 		{
 			_tempTriggerOnCollision = true;
@@ -472,7 +504,7 @@ public class HitObject : MonoBehaviour
 			return;
 		}
 
-		if (_remainBounceWallCount > 0)
+		if (_remainBounceWallQuadCount > 0)
 		{
 
 		}

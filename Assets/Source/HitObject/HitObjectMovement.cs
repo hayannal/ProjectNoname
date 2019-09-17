@@ -64,7 +64,7 @@ public class HitObjectMovement : MonoBehaviour {
 		}
 
 		_velocity = _rigidbody.velocity = GetStartDirection(meHit, cachedTransform.position, parentActor.cachedTransform, hitSignalIndexInAction, targetPosition) * _signal.speed;
-		_forward = cachedTransform.forward = _rigidbody.velocity.normalized;		
+		_forward = cachedTransform.forward = _rigidbody.velocity.normalized;
 	}
 
 	Vector3 _velocity;
@@ -74,6 +74,14 @@ public class HitObjectMovement : MonoBehaviour {
 		_rigidbody.velocity = _velocity;
 		_rigidbody.angularVelocity = Vector3.zero;
 		cachedTransform.forward = _forward;
+	}
+
+	public void Bounce(Vector3 wallNormal)
+	{
+		_velocity = Vector3.Reflect(_velocity, wallNormal);
+		_rigidbody.velocity = _velocity;
+		_rigidbody.angularVelocity = Vector3.zero;
+		_forward = cachedTransform.forward = _rigidbody.velocity.normalized;
 	}
 
 	public static Vector3 GetFallbackTargetPosition(Transform t)

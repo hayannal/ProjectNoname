@@ -44,7 +44,7 @@ public class MeHitObject : MecanimEventBase {
 	public int monsterThroughCount;
 	public bool wallThrough;
 	public bool quadThrough;
-	public int bounceWallCount;
+	public int bounceWallQuadCount;
 	public int ricochetCount;
 	public bool useHitStay;
 	public float hitStayInterval;
@@ -133,7 +133,7 @@ public class MeHitObject : MecanimEventBase {
 			monsterThroughCount = EditorGUILayout.IntField("Monster Through Count :", monsterThroughCount);
 			wallThrough = EditorGUILayout.Toggle("Wall Through :", wallThrough);
 			quadThrough = EditorGUILayout.Toggle("Quad Through :", quadThrough);
-			bounceWallCount = EditorGUILayout.IntField("Bounce Wall Count :", bounceWallCount);
+			bounceWallQuadCount = EditorGUILayout.IntField("Bounce Wall Quad Count :", bounceWallQuadCount);
 			ricochetCount = EditorGUILayout.IntField("Ricochet Count :", ricochetCount);
 
 			if (oneHitPerTarget == false)

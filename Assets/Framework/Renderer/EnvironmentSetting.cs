@@ -125,16 +125,16 @@ public class EnvironmentSetting : MonoBehaviour
 
 
 	#region Global Effect
-	public static int s_globalRefCount = 0;
-	public static float s_currentGlobalLightIntensityRatio = 1.0f;
-	public static float s_targetGlobalLightIntensityRatio = 1.0f;
-	public static float s_resetTime = 0.0f;
+	static int s_globalRefCount = 0;
+	static float s_currentGlobalLightIntensityRatio = 1.0f;
+	static float s_targetGlobalLightIntensityRatio = 1.0f;
+	static float s_resetTime = 0.0f;
 	public static void SetGlobalLightIntensityRatio(float intensityRatio, float resetTimer)
 	{
 		++s_globalRefCount;
 		s_targetGlobalLightIntensityRatio = intensityRatio;
 
-		if (s_resetTime < Time.time + resetTimer)
+		if (resetTimer > 0.0f && s_resetTime < Time.time + resetTimer)
 			s_resetTime = Time.time + resetTimer;
 	}
 
@@ -154,7 +154,7 @@ public class EnvironmentSetting : MonoBehaviour
 		s_resetTime = 0.0f;
 	}
 
-	public static void UpdateGlobalLightIntensityRatio()
+	static void UpdateGlobalLightIntensityRatio()
 	{
 		if (s_globalRefCount > 0 && s_resetTime != 0.0f && Time.time > s_resetTime)
 		{

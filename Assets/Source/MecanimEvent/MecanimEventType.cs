@@ -12,5 +12,6 @@ public enum eMecanimEventType
 	ApplyAffector,
 	AnimatorSpeed,
 	HitObject,
+	GlobalLight,
 }
 #endregion

@@ -113,7 +113,7 @@ public class EnvironmentSetting : MonoBehaviour
 	{
 		// EnvironmentSetting 이 여러개 만들어 질 수는 있어도 동시에 두개이상이 켜있을순 없다.
 		// 그러니 스태틱 함수를 호출해도 1회만 될거라 괜찮다.
-		UpdateLerpGlobalLightIntensityRatio();
+		UpdateGlobalLightIntensityRatio();
 
 		if (_lastGlobalLightIntensityRatio != s_currentGlobalLightIntensityRatio)
 		{
@@ -128,10 +128,14 @@ public class EnvironmentSetting : MonoBehaviour
 	public static int s_globalRefCount = 0;
 	public static float s_currentGlobalLightIntensityRatio = 1.0f;
 	public static float s_targetGlobalLightIntensityRatio = 1.0f;
-	public static void SetGlobalLightIntensityRatio(float intensityRatio)
+	public static float s_resetTime = 0.0f;
+	public static void SetGlobalLightIntensityRatio(float intensityRatio, float resetTimer)
 	{
 		++s_globalRefCount;
 		s_targetGlobalLightIntensityRatio = intensityRatio;
+
+		if (s_resetTime < Time.time + resetTimer)
+			s_resetTime = Time.time + resetTimer;
 	}
 
 	public static void ResetGlobalLightIntensityRatio()
@@ -147,10 +151,19 @@ public class EnvironmentSetting : MonoBehaviour
 
 		// Reset
 		s_targetGlobalLightIntensityRatio = 1.0f;
+		s_resetTime = 0.0f;
 	}
 
-	public static void UpdateLerpGlobalLightIntensityRatio()
+	public static void UpdateGlobalLightIntensityRatio()
 	{
+		if (s_globalRefCount > 0 && s_resetTime != 0.0f && Time.time > s_resetTime)
+		{
+			// 강제 리셋이 될땐 레퍼런스 카운터도 완전히 초기화 시켜야한다.
+			s_globalRefCount = 0;
+			s_targetGlobalLightIntensityRatio = 1.0f;
+			s_resetTime = 0.0f;
+		}
+
 		if (s_currentGlobalLightIntensityRatio == s_targetGlobalLightIntensityRatio)
 			return;
 

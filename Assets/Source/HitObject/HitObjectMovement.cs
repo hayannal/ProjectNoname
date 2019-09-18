@@ -31,7 +31,7 @@ public class HitObjectMovement : MonoBehaviour {
 		_signal = meHit;
 		_rigidbody = rigidbody;
 		_rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
-		_rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
+		_rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
 
 		switch(_signal.movementType)
 		{

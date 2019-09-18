@@ -69,7 +69,7 @@ public class SkillProcessor : MonoBehaviour
 					if (skillTableData.useCooltimeOverriding)
 						info.cooltime = skillLevelTableData.cooltime;
 					if (skillTableData.useMecanimNameOverriding)
-						info.actionNameHash = Animator.StringToHash(skillLevelTableData.mecanimName);
+						info.actionNameHash = BattleInstanceManager.instance.GetActionNameHash(skillLevelTableData.mecanimName);
 					if (skillTableData.usePassiveAffectorValueIdOverriding)
 						info.passiveAffectorValueId = skillLevelTableData.passiveAffectorValueId;
 					if (skillTableData.useNameIdOverriding)

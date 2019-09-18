@@ -71,8 +71,10 @@ public class MeHitObject : MecanimEventBase {
 	#if UNITY_EDITOR
 	SerializedObject so = null;
 	ReorderableList reorderableList = null;
+	Vector2 _propertyScrollPosition;
 	override public void OnGUI_PropertyWindow()
 	{
+		_propertyScrollPosition = EditorGUILayout.BeginScrollView(_propertyScrollPosition);
 		hitObjectPrefab = (GameObject)EditorGUILayout.ObjectField("Object :", hitObjectPrefab, typeof(GameObject), false);
 		lifeTime = EditorGUILayout.FloatField("LifeTime :", lifeTime);
 		if (lifeTime > 0.0f) movable = EditorGUILayout.Toggle("Movable :", movable);
@@ -184,6 +186,7 @@ public class MeHitObject : MecanimEventBase {
 		}
 		showHitBlink = EditorGUILayout.Toggle("Show HitBlink :", showHitBlink);
 		showHitRimBlink = EditorGUILayout.Toggle("Show HitRimBlink :", showHitRimBlink);
+		EditorGUILayout.EndScrollView();
 	}
 
 	override public void OnDrawGizmo(Transform t)

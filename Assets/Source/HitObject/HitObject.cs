@@ -293,6 +293,8 @@ public class HitObject : MonoBehaviour
 					if (_hitObjectAnimator == null) _hitObjectAnimator = gameObject.AddComponent<HitObjectAnimator>();
 				}
 				_hitObjectAnimator.InitializeSignal(parentActor, _animator);
+				_hitObjectAnimatorStarted = false;
+				_waitHitObjectAnimatorUpdateCount = 0;
 			}
 		}
 
@@ -376,6 +378,7 @@ public class HitObject : MonoBehaviour
 
 	int HitObjectAnimatorUpdateWaitCount = 3;
 	int _waitHitObjectAnimatorUpdateCount = 0;
+	bool _hitObjectAnimatorStarted = false;
 	void FinalizeHitObject()
 	{
 		if (_listOneHitPerTarget != null)
@@ -384,8 +387,12 @@ public class HitObject : MonoBehaviour
 			_dicHitStayTime.Clear();
 
 		// 히트 오브젝트 애니메이터를 발동시켜놨으면 첫번째 프레임이 호출될때까지는 기다려야한다.
-		if (_waitHitObjectAnimatorUpdateCount > 0)
+		if (_hitObjectAnimatorStarted)
+		{
+			_hitObjectAnimatorStarted = false;
+			_waitHitObjectAnimatorUpdateCount = HitObjectAnimatorUpdateWaitCount;
 			return;
+		}
 
 		BattleInstanceManager.instance.OnFinalizeHitObject(_collider);
 		//Destroy(gameObject);
@@ -402,7 +409,7 @@ public class HitObject : MonoBehaviour
 		if (_hitObjectLineRenderer != null)
 			_hitObjectLineRenderer.DisableLineRenderer(false);
 		if (_hitObjectAnimator != null && _hitObjectAnimator.OnFinalizeByCollision())
-			_waitHitObjectAnimatorUpdateCount = HitObjectAnimatorUpdateWaitCount;
+			_hitObjectAnimatorStarted = true;
 
 		if (_disableSelfObjectAfterCollision)
 			FinalizeHitObject();
@@ -416,7 +423,7 @@ public class HitObject : MonoBehaviour
 		EnableRigidbodyAndCollider(false);
 
 		if (_hitObjectAnimator != null && _hitObjectAnimator.OnFinalizeByLifeTime())
-			_waitHitObjectAnimatorUpdateCount = HitObjectAnimatorUpdateWaitCount;
+			_hitObjectAnimatorStarted = true;
 
 		FinalizeHitObject();
 	}

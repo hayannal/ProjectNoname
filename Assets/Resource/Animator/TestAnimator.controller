@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-8174393631572126927
+--- !u!114 &-8720467840872966620
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -13,9 +13,72 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartTime: 0
+  EndTime: 0.7
+  state: 5
+--- !u!114 &-7607978171596164749
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.43442622
   EndTime: 1
-  state: 1
---- !u!114 &-6105936153387512364
+  hitObjectPrefab: {fileID: 3024574136435083412, guid: a1a5458f04d3fbc4eb5cf432a20702d8,
+    type: 3}
+  lifeTime: 3
+  movable: 1
+  targetDetectType: 2
+  teamCheckType: 0
+  createPositionType: 0
+  boneName: 
+  offset: {x: 0, y: 1, z: 1}
+  useBoneRotation: 0
+  areaRotationY: 0
+  areaDistanceMin: 0
+  areaDistanceMax: 0
+  areaHeightMin: 0
+  areaHeightMax: 0
+  areaAngle: 0
+  movementType: 0
+  startDirectionType: 2
+  startDirection: {x: 0, y: 0, z: 1}
+  bothRandomAngle: 1
+  leftRightRandomAngle: 0
+  leftRandomAngle: 0
+  rightRandomAngle: 0
+  upDownRandomAngle: 0
+  speed: 40
+  curve: 0
+  curveAdd: 0
+  curveLockY: 0
+  contactAll: 1
+  monsterThroughCount: -1
+  wallThrough: 0
+  quadThrough: 0
+  bounceWallQuadCount: 0
+  ricochetCount: 0
+  useHitStay: 0
+  hitStayInterval: 0
+  hitStayGroupNumber: 0
+  hitStayLineRendererTrigger: 0
+  oneHitPerTarget: 1
+  useLineRenderer: 1
+  affectorValueIdList: []
+  showHitEffect: 1
+  hitEffectObject: {fileID: 2454282025452705989, guid: f670a7b7b994dc44bbd06f075012c53b,
+    type: 3}
+  hitEffectLookAtNormal: 0
+  useWeaponHitEffect: 0
+  weaponDummyName: 
+  showHitBlink: 0
+  showHitRimBlink: 1
+--- !u!114 &-5166451977334223947
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -27,9 +90,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.23606557
+  StartTime: 0.25785124
   EndTime: 1
-  effectData: {fileID: 100000, guid: 0d802e1a08bc890489e1b3d70d6dd69f, type: 3}
+  effectData: {fileID: 2107271655324038936, guid: 7c3ec32c2f5983a46ae6d3dce045704d,
+    type: 3}
   offset: {x: 0, y: 1, z: 1}
   direction: {x: 0, y: 0, z: 1}
   parentName: 
@@ -45,7 +109,7 @@ AnimatorState:
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours:
-  - {fileID: 3977944348358794165}
+  - {fileID: 6462538942246335411}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -60,40 +124,6 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!114 &-4388830517027017318
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTime: 0.1423
-  EndTime: 1
-  effectData: {fileID: 8331450023444192633, guid: 7b14a648f451dea4aaf232213110e7f1,
-    type: 3}
-  offset: {x: 0, y: 0, z: 0}
-  direction: {x: 0, y: 0, z: 1}
-  parentName: RightHandDummy
---- !u!114 &-3625824859869221687
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ebaa29644feeec143b4ef6156771ef54, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTime: 0
-  EndTime: 0.7
-  state: 5
 --- !u!1107 &-1805817263514781681
 AnimatorStateMachine:
   serializedVersion: 5
@@ -167,9 +197,9 @@ AnimatorState:
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours:
-  - {fileID: -4388830517027017318}
-  - {fileID: 405881166067820029}
-  - {fileID: 7028529284032636994}
+  - {fileID: 483839115278214995}
+  - {fileID: 3736330741308070820}
+  - {fileID: 2969096480977488055}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -212,7 +242,70 @@ AnimatorController:
     m_IKPass: 0
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
---- !u!114 &405881166067820029
+--- !u!114 &483839115278214995
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.1423
+  EndTime: 1
+  effectData: {fileID: 8331450023444192633, guid: 7b14a648f451dea4aaf232213110e7f1,
+    type: 3}
+  offset: {x: 0, y: 0, z: 0}
+  direction: {x: 0, y: 0, z: 1}
+  parentName: RightHandDummy
+--- !u!114 &2969096480977488055
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebaa29644feeec143b4ef6156771ef54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0
+  EndTime: 0.85
+  state: 3
+--- !u!1102 &3551446579252125196
+AnimatorState:
+  serializedVersion: 5
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Ultimate1
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours:
+  - {fileID: -8720467840872966620}
+  - {fileID: -7607978171596164749}
+  - {fileID: -5166451977334223947}
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 7400000, guid: dbc0459d16c5c484d83acd76eaf8d3f5, type: 2}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
+--- !u!114 &3736330741308070820
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -254,6 +347,18 @@ MonoBehaviour:
   curve: 0
   curveAdd: 0
   curveLockY: 0
+  contactAll: 0
+  monsterThroughCount: -1
+  wallThrough: 0
+  quadThrough: 0
+  bounceWallQuadCount: 0
+  ricochetCount: 0
+  useHitStay: 0
+  hitStayInterval: 0
+  hitStayGroupNumber: 0
+  hitStayLineRendererTrigger: 0
+  oneHitPerTarget: 0
+  useLineRenderer: 0
   affectorValueIdList:
   - NormalAttack01
   showHitEffect: 1
@@ -264,35 +369,7 @@ MonoBehaviour:
   weaponDummyName: 
   showHitBlink: 0
   showHitRimBlink: 1
---- !u!1102 &3551446579252125196
-AnimatorState:
-  serializedVersion: 5
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Ultimate1
-  m_Speed: 1
-  m_CycleOffset: 0
-  m_Transitions: []
-  m_StateMachineBehaviours:
-  - {fileID: -6105936153387512364}
-  - {fileID: -3625824859869221687}
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 1
-  m_Mirror: 0
-  m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: dbc0459d16c5c484d83acd76eaf8d3f5, type: 2}
-  m_Tag: 
-  m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: 
---- !u!114 &3977944348358794165
+--- !u!114 &6462538942246335411
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -307,21 +384,6 @@ MonoBehaviour:
   StartTime: 0
   EndTime: 1
   state: 2
---- !u!114 &7028529284032636994
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ebaa29644feeec143b4ef6156771ef54, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTime: 0
-  EndTime: 0.85
-  state: 3
 --- !u!1102 &8503796429965771016
 AnimatorState:
   serializedVersion: 5
@@ -334,7 +396,7 @@ AnimatorState:
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours:
-  - {fileID: -8174393631572126927}
+  - {fileID: 8545782176362163255}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -349,3 +411,18 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!114 &8545782176362163255
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebaa29644feeec143b4ef6156771ef54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0
+  EndTime: 1
+  state: 1

@@ -40,13 +40,6 @@ public class HitObject : MonoBehaviour
 			HitObject hitObjectComponent = hitObject.GetComponent<HitObject>();
 			if (hitObjectComponent == null) hitObjectComponent = hitObject.AddComponent<HitObject>();
 			hitObjectComponent.InitializeHitObject(meHit, parentActor, hitSignalIndexInAction);
-			if (meHit.lifeTime > 0.0f && meHit.movable)
-			{
-				HitObjectMovement hitObjectMovementComponent = hitObject.GetComponent<HitObjectMovement>();
-				if (hitObjectMovementComponent == null) hitObjectMovementComponent = hitObject.AddComponent<HitObjectMovement>();
-				hitObjectMovementComponent.InitializeSignal(meHit, parentActor, hitObjectComponent._rigidbody, hitSignalIndexInAction);
-				hitObjectComponent.SetHitObjectMovement(hitObjectMovementComponent);
-			}
 		}
 
 		// step 2. Find Target and Reaction
@@ -223,6 +216,10 @@ public class HitObject : MonoBehaviour
 	int _remainBounceWallQuadCount;
 	int _remainRicochetCount;
 
+	HitObjectMovement _hitObjectMovement;
+	HitObjectLineRenderer _hitObjectLineRenderer;
+	HitObjectAnimator _hitObjectAnimator;
+
 
 	static int HITOBJECT_LAYER;
 	public void InitializeHitObject(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction)
@@ -261,6 +258,39 @@ public class HitObject : MonoBehaviour
 		_remainMonsterThroughCount = _signal.monsterThroughCount;	// + level pack through count
 		_remainBounceWallQuadCount = _signal.bounceWallQuadCount;
 		_remainRicochetCount = _signal.ricochetCount;
+
+		// Sub Component
+		if (meHit.lifeTime > 0.0f)
+		{
+			if (meHit.movable)
+			{
+				if (_hitObjectMovement == null)
+				{
+					_hitObjectMovement = GetComponent<HitObjectMovement>();
+					if (_hitObjectMovement == null) _hitObjectMovement = gameObject.AddComponent<HitObjectMovement>();
+				}
+				_hitObjectMovement.InitializeSignal(meHit, parentActor, _rigidbody, hitSignalIndexInAction);
+			}
+			if (meHit.useLineRenderer)
+			{
+				if (_hitObjectLineRenderer == null)
+				{
+					_hitObjectLineRenderer = GetComponent<HitObjectLineRenderer>();
+					if (_hitObjectLineRenderer == null) _hitObjectLineRenderer = gameObject.AddComponent<HitObjectLineRenderer>();
+				}
+				_hitObjectLineRenderer.InitializeSignal(meHit, parentActor);
+			}
+			Animator animator = GetComponent<Animator>();
+			if (animator != null)
+			{
+				if (_hitObjectAnimator == null)
+				{
+					_hitObjectAnimator = GetComponent<HitObjectAnimator>();
+					if (_hitObjectAnimator == null) _hitObjectAnimator = gameObject.AddComponent<HitObjectAnimator>();
+				}
+				_hitObjectAnimator.InitializeSignal(meHit, parentActor, animator);
+			}
+		}
 
 		BattleInstanceManager.instance.OnInitializeHitObject(this, _collider);
 	}
@@ -302,12 +332,6 @@ public class HitObject : MonoBehaviour
 			for (int i = 0; i < _listTrailRendererAfterCollision.Count; ++i)
 				_listTrailRendererAfterCollision[i].Clear();
 		}
-	}
-
-	HitObjectMovement _hitObjectMovement;
-	public void SetHitObjectMovement(HitObjectMovement hitObjectMovement)
-	{
-		_hitObjectMovement = hitObjectMovement;
 	}
 
 	void Update()
@@ -356,6 +380,9 @@ public class HitObject : MonoBehaviour
 
 		if (_disableSelfObjectAfterCollision)
 			FinalizeHitObject();
+
+		if (_hitObjectLineRenderer != null)
+			_hitObjectLineRenderer.DisableLineRenderer(false);
 	}
 
 	// 이런 함수들도 추가해야하지 않을까.

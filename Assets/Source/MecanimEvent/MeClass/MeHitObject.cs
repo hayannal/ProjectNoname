@@ -49,7 +49,9 @@ public class MeHitObject : MecanimEventBase {
 	public bool useHitStay;
 	public float hitStayInterval;
 	public int hitStayGroupNumber = 0;
+	public bool hitStayLineRendererTrigger;
 	public bool oneHitPerTarget = false;
+	public bool useLineRenderer;
 	
 
 	// 부채꼴을 쓸때 저 위가 되냐 - 안쓸거다
@@ -147,6 +149,7 @@ public class MeHitObject : MecanimEventBase {
 			{
 				oneHitPerTarget = EditorGUILayout.Toggle("One Hit Per Target :", oneHitPerTarget);
 			}
+			useLineRenderer = EditorGUILayout.Toggle("Use LineRenderer :", useLineRenderer);
 			EditorGUILayout.LabelField("-----------------------------------------------------------------");
 		}
 

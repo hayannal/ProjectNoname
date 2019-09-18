@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class HitObjectAnimator : MonoBehaviour
 {
+	public Actor parentActor { get; private set; }
 	Animator _animator;
 
 	const string ByLifeTimeStateName = "ByLifeTime";
@@ -28,8 +29,9 @@ public class HitObjectAnimator : MonoBehaviour
 	}
 
 	bool _played = false;
-	public void InitializeSignal(Actor parentActor, Animator animator)
+	public void InitializeSignal(Actor actor, Animator animator)
 	{
+		parentActor = actor;
 		_animator = animator;
 		_animator.Play(BattleInstanceManager.instance.GetActionNameHash("Standby"), 0, 0.0f);
 		_played = false;
@@ -69,5 +71,18 @@ public class HitObjectAnimator : MonoBehaviour
 		_animator.Play(BattleInstanceManager.instance.GetActionNameHash(OnCollisionPlaneStateName), 0, 0.0f);
 		_played = true;
 		return true;
+	}
+
+
+
+	Transform _transform;
+	public Transform cachedTransform
+	{
+		get
+		{
+			if (_transform == null)
+				_transform = GetComponent<Transform>();
+			return _transform;
+		}
 	}
 }

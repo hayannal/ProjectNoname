@@ -300,6 +300,7 @@ public class MeHitObject : MecanimEventBase {
 	#endif
 
 	Actor actor;
+	HitObjectAnimator hitObjectAnimator;
 	ActionController actionController;
 	DummyFinder _dummyFinder = null;
 	override public void OnSignal(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
@@ -310,7 +311,13 @@ public class MeHitObject : MecanimEventBase {
 			if (animator.transform.parent != null)
 				actor = animator.transform.parent.GetComponent<Actor>();
 			if (actor == null)
-				actor = animator.transform.GetComponent<Actor>();
+				actor = animator.GetComponent<Actor>();
+			if (actor == null)
+			{
+				hitObjectAnimator = animator.GetComponent<HitObjectAnimator>();
+				if (hitObjectAnimator != null)
+					actor = hitObjectAnimator.parentActor;
+			}
 			if (actor == null)
 			{
 				Debug.LogError("HitObject not created. Not Found Actor!");
@@ -318,11 +325,23 @@ public class MeHitObject : MecanimEventBase {
 			}
 		}
 
+		Transform spawnTransform = null;
+		Transform parentTransform = null;
+		if (hitObjectAnimator != null)
+		{
+			spawnTransform = hitObjectAnimator.cachedTransform;
+			parentTransform = hitObjectAnimator.cachedTransform;
+		}
+		else
+		{
+			spawnTransform = actor.cachedTransform;
+			parentTransform = actor.cachedTransform;
+		}
+
 		actionController = actor.actionController;
 		int hitSignalIndexInAction = 0;
 		if (actionController != null)
 			hitSignalIndexInAction = actionController.OnHitObjectSignal(stateInfo.fullPathHash);
-		Transform spawnTransform = actor.transform;
 		if (createPositionType == HitObject.eCreatePositionType.Bone && !string.IsNullOrEmpty(boneName))
 		{
 			if (_dummyFinder == null) _dummyFinder = animator.GetComponent<DummyFinder>();
@@ -332,7 +351,7 @@ public class MeHitObject : MecanimEventBase {
 			if (attachTransform != null)
 				spawnTransform = attachTransform;
 		}
-		HitObject.InitializeHit(spawnTransform, this, actor, hitSignalIndexInAction);
+		HitObject.InitializeHit(spawnTransform, this, actor, parentTransform, hitSignalIndexInAction);
 	}
 
 }

@@ -20,20 +20,20 @@ public class HitObject : MonoBehaviour
 	}
 
 	#region staticFunction
-	static public void InitializeHit(Transform parentTransform, MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction)
+	static public void InitializeHit(Transform spawnTransform, MeHitObject meHit, Actor parentActor, Transform parentTransform, int hitSignalIndexInAction)
 	{
 		// step 1. 
 		GameObject hitObject = null;
 		if (meHit.hitObjectPrefab != null)
 		{
-			hitObject = BattleInstanceManager.instance.GetCachedObject(meHit.hitObjectPrefab, GetSpawnPosition(parentTransform, meHit, parentActor.cachedTransform), parentActor.cachedTransform.rotation);
+			hitObject = BattleInstanceManager.instance.GetCachedObject(meHit.hitObjectPrefab, GetSpawnPosition(spawnTransform, meHit, parentTransform), parentTransform.rotation);
 			//hitObject = (GameObject)Instantiate(meHit.hitObjectPrefab, , );
 		}
 		else if (meHit.lifeTime > 0.0f)
 		{
 			hitObject = new GameObject();
-			hitObject.transform.position = parentTransform.TransformPoint(meHit.offset);
-			hitObject.transform.rotation = parentActor.cachedTransform.rotation;
+			hitObject.transform.position = spawnTransform.TransformPoint(meHit.offset);
+			hitObject.transform.rotation = parentTransform.rotation;
 		}
 		if (hitObject != null)
 		{
@@ -67,8 +67,8 @@ public class HitObject : MonoBehaviour
 						continue;
 
 					HitParameter hitParameter = new HitParameter();
-					hitParameter.hitNormal = parentActor.cachedTransform.forward;
-					hitParameter.contactNormal = (targetCollider.transform.position - parentActor.cachedTransform.position).normalized;
+					hitParameter.hitNormal = parentTransform.forward;
+					hitParameter.contactNormal = (targetCollider.transform.position - parentTransform.position).normalized;
 					hitParameter.contactPoint = targetCollider.transform.position + (-hitParameter.contactNormal * colliderRadius * 0.7f);
 					hitParameter.contactPoint.y += targetCollider.bounds.size.y * 0.5f;
 					hitParameter.statusBase = parentActor.actorStatus.statusBase;
@@ -86,31 +86,31 @@ public class HitObject : MonoBehaviour
 			}
 			break;
 		case HitObject.eTargetDetectType.Area:
-			Vector3 areaPosition = parentTransform.TransformPoint(meHit.offset);	// meHit.offset * parentTransform.localScale
+			Vector3 areaPosition = spawnTransform.TransformPoint(meHit.offset);	// meHit.offset * parentTransform.localScale
 			StatusStructForHitObject statusStructForHitObject = new StatusStructForHitObject();
 			CopyEtcStatusForHitObject(ref statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction);
-			CheckHitArea(areaPosition, parentTransform.forward, meHit, parentActor.actorStatus.statusBase, statusStructForHitObject);
+			CheckHitArea(areaPosition, spawnTransform.forward, meHit, parentActor.actorStatus.statusBase, statusStructForHitObject);
 			break;
 		case HitObject.eTargetDetectType.Collider:
 			break;
 		}
 	}
 
-	public static Vector3 GetSpawnPosition(Transform parentTransform, MeHitObject meHit, Transform parentActorTransform)
+	public static Vector3 GetSpawnPosition(Transform spawnTransform, MeHitObject meHit, Transform parentActorTransform)
 	{
 		if (meHit.offset == Vector3.zero)
-			return parentTransform.position;
+			return spawnTransform.position;
 
 		if (meHit.createPositionType != eCreatePositionType.Bone)
-			return parentTransform.TransformPoint(meHit.offset);    // meHit.offset * parentTransform.localScale
+			return spawnTransform.TransformPoint(meHit.offset);    // meHit.offset * parentTransform.localScale
 
 		if (meHit.useBoneRotation)
-			return parentTransform.TransformPoint(meHit.offset);    // meHit.offset * parentTransform.localScale
+			return spawnTransform.TransformPoint(meHit.offset);    // meHit.offset * parentTransform.localScale
 
 		Vector3 parentActorPosition = parentActorTransform.position;
 		Vector3 offsetPosition = parentActorTransform.TransformPoint(meHit.offset);
 		offsetPosition -= parentActorPosition;
-		return parentTransform.position + offsetPosition;
+		return spawnTransform.position + offsetPosition;
 	}
 
 	static void CopyEtcStatusForHitObject(ref StatusStructForHitObject statusStructForHitObject, Actor actor, MeHitObject meHit, int hitSignalIndexInAction)

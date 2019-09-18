@@ -49,6 +49,8 @@ public class BattleTestTool : EditorWindow
 
 	PlayerAI _playerAI = null;
 	bool usePlayerAI = true;
+	PlayerActor _playerActor = null;
+	bool spFull = false;
 	void OnGUI_Player()
 	{
 		GUILayout.BeginVertical("box");
@@ -64,6 +66,12 @@ public class BattleTestTool : EditorWindow
 				_playerAI = GameObject.FindObjectOfType<PlayerAI>();
 			if (_playerAI != null)
 				_playerAI.enabled = usePlayerAI;
+
+			spFull = EditorGUILayout.Toggle("SP Full :", spFull);
+			if (_playerActor == null)
+				_playerActor = GameObject.FindObjectOfType<PlayerActor>();
+			if (spFull && _playerActor != null && _playerActor.actorStatus.GetSPRatio() != 1.0f)
+				_playerActor.actorStatus.AddSP(_playerActor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MaxSP));
 		}
 		GUILayout.EndVertical();	
 	}

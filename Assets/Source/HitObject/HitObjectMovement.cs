@@ -143,6 +143,8 @@ public class HitObjectMovement : MonoBehaviour {
 				}
 			}
 		}
+		if (meHit.startDirectionType == eStartDirectionType.Direction && meHit.useWorldSpaceDirection)
+			return result;
 		return parentActorTransform.TransformDirection(result);
 	}
 

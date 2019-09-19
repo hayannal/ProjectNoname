@@ -30,6 +30,7 @@ public class MeHitObject : MecanimEventBase {
 	public HitObjectMovement.eMovementType movementType;
 	public HitObjectMovement.eStartDirectionType startDirectionType;
 	public Vector3 startDirection = Vector3.forward;
+	public bool useWorldSpaceDirection;
 	public bool bothRandomAngle = true;
 	public float leftRightRandomAngle;
 	public float leftRandomAngle;
@@ -116,6 +117,7 @@ public class MeHitObject : MecanimEventBase {
 			startDirectionType = (HitObjectMovement.eStartDirectionType)EditorGUILayout.EnumPopup("Start Direction Type :", startDirectionType);
 			if (startDirectionType == HitObjectMovement.eStartDirectionType.Direction)
 			{
+				useWorldSpaceDirection = EditorGUILayout.Toggle("Use World Space :", useWorldSpaceDirection);
 				startDirection = EditorGUILayout.Vector3Field("Direction :", startDirection);
 			}
 			bothRandomAngle = EditorGUILayout.Toggle("Both Random Angle :", bothRandomAngle);

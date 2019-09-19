@@ -5118,98 +5118,6 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
---- !u!1 &4225582290400697937
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4225582290400697918}
-  - component: {fileID: 4225582290400697878}
-  m_Layer: 0
-  m_Name: CamShake
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4225582290400697918
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4225582290400697937}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4225582290400697889}
-  m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4225582290400697878
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4225582290400697937}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92d823863b34e4648afb042b39991109, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShakeCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 7.0203147
-      outSlope: 7.0203147
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.061838463
-      value: 0.9978678
-      inSlope: -0.038008716
-      outSlope: -0.038008716
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.23835821
-      value: 0.4172902
-      inSlope: -1.6209341
-      outSlope: -1.6209341
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: -0.15367037
-      outSlope: -0.15367037
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 0
-  Duration: 3
-  Speed: 15
-  Magnitude: 0.5
-  DistanceForce: 82
-  RotationDamper: 3
-  IsEnabled: 1
-  canUpdate: 0
 --- !u!1 &4225582290400697938
 GameObject:
   m_ObjectHideFlags: 0
@@ -5291,7 +5199,7 @@ Transform:
   - {fileID: 4225582290400697891}
   - {fileID: 4225582290400697890}
   - {fileID: 4225582290400697919}
-  - {fileID: 4225582290400697918}
+  - {fileID: 9170253260112958969}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 270, z: 0}
@@ -9949,3 +9857,56 @@ MonoBehaviour:
   DisableOnMobiles: 1
   RenderMobileDistortion: 0
   ParticleBudgetForMobiles: 0.5
+--- !u!1 &7573978455682617544
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9170253260112958969}
+  - component: {fileID: 6425103443887034907}
+  m_Layer: 0
+  m_Name: CameraShake
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9170253260112958969
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7573978455682617544}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4225582290400697889}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6425103443887034907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7573978455682617544}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da6612240c354cb4abb66363c62ab797, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  numberOfShakes: 3
+  shakeAmountMin: {x: 0, y: 0, z: 0}
+  shakeAmountMax: {x: 0.4, y: 0.4, z: 0.4}
+  rotationAmountMin: {x: 0, y: 0, z: 0.01}
+  rotationAmountMax: {x: 0, y: 0, z: 0.08}
+  distanceMin: 0.01
+  distanceMax: 0.12
+  speedMin: 15
+  speedMax: 20
+  decay: 0.75

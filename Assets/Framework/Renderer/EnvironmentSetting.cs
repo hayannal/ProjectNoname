@@ -105,8 +105,8 @@ public class EnvironmentSetting : MonoBehaviour
 			SetDirtIntensity();
 			_prevDirtIntensity = dirtIntensity;
 		}
-	}
 #endif
+	}
 
 	float _lastGlobalLightIntensityRatio = 1.0f;
 	void UpdateApplyGlobalLightIntensity()

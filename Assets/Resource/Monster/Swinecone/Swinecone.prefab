@@ -76,7 +76,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 112
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!136 &1559865429882821469
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -179,6 +179,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actorId: Swinecone
+  monsterHpGaugeWidth: 1
+  monsterHpGaugeOffsetY: 0
 --- !u!114 &-6861453615015986072
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -206,6 +208,8 @@ MonoBehaviour:
   attackActionFadeDuration: 0.05
   lookAtTargetBeforeAttack: 1
   attackDelayTimeRange: {x: 0, y: 0}
+  useAnimatorParameterForAI: 0
+  listAnimatorParameterForAI: 
 --- !u!1001 &8679901940519602017
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -213,6 +217,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1559865429882821440}
     m_Modifications:
+    - target: {fileID: 100052, guid: 24a7c0fc9af8fbe4e91451cc57602d62, type: 3}
+      propertyPath: m_Name
+      value: Swinecone
+      objectReference: {fileID: 0}
     - target: {fileID: 400052, guid: 24a7c0fc9af8fbe4e91451cc57602d62, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0
@@ -256,10 +264,6 @@ PrefabInstance:
     - target: {fileID: 400052, guid: 24a7c0fc9af8fbe4e91451cc57602d62, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 100052, guid: 24a7c0fc9af8fbe4e91451cc57602d62, type: 3}
-      propertyPath: m_Name
-      value: Swinecone
       objectReference: {fileID: 0}
     - target: {fileID: 9500000, guid: 24a7c0fc9af8fbe4e91451cc57602d62, type: 3}
       propertyPath: m_Controller

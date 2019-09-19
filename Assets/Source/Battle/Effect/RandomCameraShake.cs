@@ -37,9 +37,17 @@ public class RandomCameraShake : MonoBehaviour
 
     void Shake()
 	{
-		_cameraShake.Shake(Thinksquirrel.CShake.CameraShake.ShakeType.CameraMatrix, numberOfShakes,
-			new Vector3(Random.Range(shakeAmountMin.x, shakeAmountMax.x), Random.Range(shakeAmountMin.y, shakeAmountMax.y), Random.Range(shakeAmountMin.z, shakeAmountMax.z)),
+		_cameraShake.Shake(Thinksquirrel.CShake.CameraShake.ShakeType.CameraMatrix,
+			numberOfShakes,
+			new Vector3(
+				RandomFromDistribution.RandomRangeExponential(shakeAmountMin.x, shakeAmountMax.x, 1.5f, RandomFromDistribution.Direction_e.Right),
+				RandomFromDistribution.RandomRangeExponential(shakeAmountMin.y, shakeAmountMax.y, 1.5f, RandomFromDistribution.Direction_e.Right),
+				RandomFromDistribution.RandomRangeExponential(shakeAmountMin.z, shakeAmountMax.z, 1.5f, RandomFromDistribution.Direction_e.Right)
+				),
 			new Vector3(Random.Range(rotationAmountMin.x, rotationAmountMax.x), Random.Range(rotationAmountMin.y, rotationAmountMax.y), Random.Range(rotationAmountMin.z, rotationAmountMax.z)),
-			Random.Range(distanceMin, distanceMax), Random.Range(speedMin, speedMax), decay, 1.0f, true);
+			Random.Range(distanceMin, distanceMax),
+			Random.Range(speedMin, speedMax),
+			decay,
+			1.0f, true);
 	}
 }

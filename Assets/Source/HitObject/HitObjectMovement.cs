@@ -35,37 +35,23 @@ public class HitObjectMovement : MonoBehaviour {
 
 		switch(_signal.movementType)
 		{
-		case eMovementType.FollowTarget:
-			_currentCurve = _signal.curve;
+			case eMovementType.FollowTarget:
+				_currentCurve = _signal.curve;
 
-			//TargetSystem targetSystem = parentTransform.GetComponent<TargetSystem>();
+				//TargetSystem targetSystem = parentTransform.GetComponent<TargetSystem>();
 
-			// temp code
-			GameObject tempObject = GameObject.Find("GoblinB(Clone)");
-			if (tempObject != null) _followTargetTransform = tempObject.transform;
-			break;
+				// temp code
+				GameObject tempObject = GameObject.Find("GoblinB(Clone)");
+				if (tempObject != null) _followTargetTransform = tempObject.transform;
+				break;
+			case eMovementType.Direct:
+				// 생성 방향이 곧 날아가는 방향이다. 냅둔다.
+				//Vector3 targetPosition = HitObject.GetTargetPosition(_signal, parentActor, hitSignalIndexInAction);
+				//_rigidbody.velocity = HitObject.GetStartDirection(cachedTransform.position, meHit, parentActor.cachedTransform, targetPosition) * _signal.speed;
+				_velocity = _rigidbody.velocity = cachedTransform.forward * _signal.speed;
+				_forward = cachedTransform.forward;
+				break;
 		}
-
-		Vector3 targetPosition = Vector3.zero;
-		if (_signal.startDirectionType == eStartDirectionType.ToFirstTarget || _signal.startDirectionType == eStartDirectionType.ToMultiTarget)
-		{
-			int targetIndex = -1;
-			if (_signal.startDirectionType == eStartDirectionType.ToFirstTarget)
-				targetIndex = 0;
-			else if (_signal.startDirectionType == eStartDirectionType.ToMultiTarget)
-				targetIndex = hitSignalIndexInAction;
-
-			TargetingProcessor targetingProcessor = parentActor.targetingProcessor;
-			if (targetingProcessor.IsRegisteredCustomTargetPosition())
-				targetPosition = targetingProcessor.GetCustomTargetPosition(targetIndex);
-			else if (targetingProcessor.GetTarget() != null)
-				targetPosition = targetingProcessor.GetTargetPosition(targetIndex);
-			else
-				targetPosition = GetFallbackTargetPosition(parentActor.cachedTransform);
-		}
-
-		_velocity = _rigidbody.velocity = GetStartDirection(meHit, cachedTransform.position, parentActor.cachedTransform, hitSignalIndexInAction, targetPosition) * _signal.speed;
-		_forward = cachedTransform.forward = _rigidbody.velocity.normalized;
 	}
 
 	Vector3 _velocity;
@@ -83,69 +69,6 @@ public class HitObjectMovement : MonoBehaviour {
 		_rigidbody.velocity = _velocity;
 		_rigidbody.angularVelocity = Vector3.zero;
 		_forward = cachedTransform.forward = _rigidbody.velocity.normalized;
-	}
-
-	public static Vector3 GetFallbackTargetPosition(Transform t)
-	{
-		Vector3 fallbackPosition = new Vector3(0.0f, 0.0f, 4.0f);
-		return t.TransformPoint(fallbackPosition);
-	}
-
-	public static Vector3 GetStartDirection(MeHitObject meHit, Vector3 spawnPosition, Transform parentActorTransform, int hitSignalIndexInAction, Vector3 targetPosition, bool applyRange = true)
-	{
-		Vector3 result = Vector3.zero;
-		switch (meHit.startDirectionType)
-		{
-			case eStartDirectionType.Forward:
-				result = Vector3.forward;
-				break;
-			case eStartDirectionType.Direction:
-				result = meHit.startDirection.normalized;
-				break;
-			case eStartDirectionType.ToFirstTarget:
-			case eStartDirectionType.ToMultiTarget:
-				Vector3 diffToTargetPosition = targetPosition - spawnPosition;
-				// 땅에 쏘는 직사를 구현할땐 이 라인을 패스하면 된다.
-				diffToTargetPosition.y = 0.0f;
-				// world to local
-				result = parentActorTransform.InverseTransformDirection(diffToTargetPosition.normalized);
-				break;
-		}
-		if (applyRange)
-		{
-			if (meHit.leftRightRandomAngle != 0.0f || meHit.upDownRandomAngle != 0.0f || meHit.leftRandomAngle != 0.0f || meHit.rightRandomAngle != 0.0f)
-			{
-				Vector3 tempUp = Vector3.up;
-				if (result == tempUp) tempUp = -Vector3.forward;
-				Vector3 right = Vector3.Cross(-tempUp, result);
-				Vector3 up = Vector3.Cross(right, result);
-
-				if (meHit.bothRandomAngle)
-				{
-					if (meHit.leftRightRandomAngle != 0.0f)
-					{
-						Quaternion rotation = Quaternion.AngleAxis(Random.Range(-meHit.leftRightRandomAngle, meHit.leftRightRandomAngle), up);
-						result = rotation * result;
-					}
-				}
-				else
-				{
-					if (meHit.leftRandomAngle != 0.0f || meHit.rightRandomAngle != 0.0f)
-					{
-						Quaternion rotation = Quaternion.AngleAxis(Random.Range(-meHit.leftRandomAngle, meHit.rightRandomAngle), up);
-						result = rotation * result;
-					}
-				}
-				if (meHit.upDownRandomAngle != 0.0f)
-				{
-					Quaternion rotation = Quaternion.AngleAxis(Random.Range(-meHit.upDownRandomAngle, meHit.upDownRandomAngle), right);
-					result = rotation * result;
-				}
-			}
-		}
-		if (meHit.startDirectionType == eStartDirectionType.Direction && meHit.useWorldSpaceDirection)
-			return result;
-		return parentActorTransform.TransformDirection(result);
 	}
 
 	void Update()

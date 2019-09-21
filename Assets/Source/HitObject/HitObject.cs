@@ -20,35 +20,12 @@ public class HitObject : MonoBehaviour
 	}
 
 	#region staticFunction
-	static public void InitializeHit(Transform spawnTransform, MeHitObject meHit, Actor parentActor, Transform parentTransform, int hitSignalIndexInAction)
+	public static void InitializeHit(Transform spawnTransform, MeHitObject meHit, Actor parentActor, Transform parentTransform, int hitSignalIndexInAction, int repeatIndex)
 	{
-		// step 1. 
-		GameObject hitObject = null;
-		if (meHit.hitObjectPrefab != null)
+		// step 1. Find Target and Reaction
+		if (meHit.targetDetectType == eTargetDetectType.Preset)
 		{
-			hitObject = BattleInstanceManager.instance.GetCachedObject(meHit.hitObjectPrefab, GetSpawnPosition(spawnTransform, meHit, parentTransform), parentTransform.rotation);
-			//hitObject = (GameObject)Instantiate(meHit.hitObjectPrefab, , );
-		}
-		else if (meHit.lifeTime > 0.0f)
-		{
-			hitObject = new GameObject();
-			hitObject.transform.position = spawnTransform.TransformPoint(meHit.offset);
-			hitObject.transform.rotation = parentTransform.rotation;
-		}
-		if (hitObject != null)
-		{
-			HitObject hitObjectComponent = hitObject.GetComponent<HitObject>();
-			if (hitObjectComponent == null) hitObjectComponent = hitObject.AddComponent<HitObject>();
-			hitObjectComponent.InitializeHitObject(meHit, parentActor, hitSignalIndexInAction);
-		}
-
-		// step 2. Find Target and Reaction
-		/*
-		
-		*/
-		switch(meHit.targetDetectType)
-		{
-		case HitObject.eTargetDetectType.Preset:
+			// Preset은 hitObject객체를 만들지 않는다.
 			TargetingProcessor targetSystem = parentActor.targetingProcessor;
 			if (targetSystem != null)
 			{
@@ -72,7 +49,7 @@ public class HitObject : MonoBehaviour
 					hitParameter.contactPoint = targetCollider.transform.position + (-hitParameter.contactNormal * colliderRadius * 0.7f);
 					hitParameter.contactPoint.y += targetCollider.bounds.size.y * 0.5f;
 					hitParameter.statusBase = parentActor.actorStatus.statusBase;
-					CopyEtcStatusForHitObject(ref hitParameter.statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction);
+					CopyEtcStatusForHitObject(ref hitParameter.statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction, repeatIndex);
 
 					ApplyAffectorValue(affectorProcessor, meHit.affectorValueIdList, hitParameter);
 
@@ -84,16 +61,84 @@ public class HitObject : MonoBehaviour
 						HitRimBlink.ShowHitRimBlink(affectorProcessor.cachedTransform, hitParameter.contactNormal);
 				}
 			}
-			break;
-		case HitObject.eTargetDetectType.Area:
-			Vector3 areaPosition = spawnTransform.TransformPoint(meHit.offset);	// meHit.offset * parentTransform.localScale
-			StatusStructForHitObject statusStructForHitObject = new StatusStructForHitObject();
-			CopyEtcStatusForHitObject(ref statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction);
-			CheckHitArea(areaPosition, spawnTransform.forward, meHit, parentActor.actorStatus.statusBase, statusStructForHitObject);
-			break;
-		case HitObject.eTargetDetectType.Collider:
-			break;
+			return;
 		}
+		else if (meHit.targetDetectType == eTargetDetectType.Area)
+		{
+			Vector3 areaPosition = spawnTransform.TransformPoint(meHit.offset); // meHit.offset * parentTransform.localScale
+			StatusStructForHitObject statusStructForHitObject = new StatusStructForHitObject();
+			CopyEtcStatusForHitObject(ref statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction, repeatIndex);
+			CheckHitArea(areaPosition, spawnTransform.forward, meHit, parentActor.actorStatus.statusBase, statusStructForHitObject);
+
+			// HitObject 프리팹이 있거나 lifeTime이 있다면 생성하고 아니면 패스.
+			Vector3 position = GetSpawnPosition(spawnTransform, meHit, parentTransform);
+			Quaternion rotation = Quaternion.LookRotation(GetSpawnDirection(position, meHit, parentTransform, GetTargetPosition(meHit, parentActor, hitSignalIndexInAction)));
+			GetCachedHitObject(spawnTransform, meHit, position, rotation);
+			return;
+		}
+
+		// step2. Collider타입은 상황에 맞게 1개 혹은 여러개 만들어야한다.
+		Vector3 targetPosition = GetTargetPosition(meHit, parentActor, hitSignalIndexInAction);
+		if (meHit.parallelCount > 0)
+		{
+			Vector3 defaultPosition = GetSpawnPosition(spawnTransform, meHit, parentTransform);
+			for (int i = 0; i < meHit.parallelCount; ++i)
+			{
+				Vector3 position = GetParallelSpawnPosition(spawnTransform, meHit, parentTransform, i);
+				Quaternion rotation = Quaternion.LookRotation(GetSpawnDirection(defaultPosition, meHit, parentTransform, targetPosition));
+				HitObject parallelHitObject = GetCachedHitObject(spawnTransform, meHit, position, rotation);
+				if (parallelHitObject == null)
+					continue;
+				parallelHitObject.InitializeHitObject(meHit, parentActor, hitSignalIndexInAction, repeatIndex);
+			}
+		}
+
+		for (int i = 0; i < meHit.circularSectorCount; ++i)
+		{
+			// 이렇게 하는게 최선인가? circularSector는 리스트로 해야할 가능성이 높지 않나?
+			Vector3 position = GetSpawnPosition(spawnTransform, meHit, parentTransform);
+			Quaternion rotation = Quaternion.LookRotation(GetSpawnDirection(position, meHit, parentTransform, targetPosition));
+			HitObject circularSectorHitObject = GetCachedHitObject(spawnTransform, meHit, position, rotation);
+			if (circularSectorHitObject == null)
+				continue;
+			circularSectorHitObject.InitializeHitObject(meHit, parentActor, hitSignalIndexInAction, repeatIndex);
+		}
+
+		// useContinuousGenerator
+
+		bool createMainHitObject = true;
+		if (meHit.ignoreMainHitObjectByParallel || meHit.ignoreMainHitObjectByCircularSector)
+			createMainHitObject = false;
+		if (createMainHitObject)
+		{
+			Vector3 position = GetSpawnPosition(spawnTransform, meHit, parentTransform);
+			Quaternion rotation = Quaternion.LookRotation(GetSpawnDirection(position, meHit, parentTransform, targetPosition));
+			HitObject hitObject = GetCachedHitObject(spawnTransform, meHit, position, rotation);
+			if (hitObject != null)
+				hitObject.InitializeHitObject(meHit, parentActor, hitSignalIndexInAction, repeatIndex);
+		}
+	}
+
+	static HitObject GetCachedHitObject(Transform spawnTransform, MeHitObject meHit, Vector3 position, Quaternion rotation)
+	{
+		GameObject hitObject = null;
+		if (meHit.hitObjectPrefab != null)
+		{
+			hitObject = BattleInstanceManager.instance.GetCachedObject(meHit.hitObjectPrefab, position, rotation);
+		}
+		else if (meHit.lifeTime > 0.0f)
+		{
+			hitObject = new GameObject();
+			hitObject.transform.position = spawnTransform.TransformPoint(meHit.offset);
+			hitObject.transform.rotation = rotation;
+		}
+		if (hitObject != null)
+		{
+			HitObject hitObjectComponent = hitObject.GetComponent<HitObject>();
+			if (hitObjectComponent == null) hitObjectComponent = hitObject.AddComponent<HitObject>();
+			return hitObjectComponent;
+		}
+		return null;
 	}
 
 	public static Vector3 GetSpawnPosition(Transform spawnTransform, MeHitObject meHit, Transform parentActorTransform)
@@ -113,7 +158,104 @@ public class HitObject : MonoBehaviour
 		return spawnTransform.position + offsetPosition;
 	}
 
-	static void CopyEtcStatusForHitObject(ref StatusStructForHitObject statusStructForHitObject, Actor actor, MeHitObject meHit, int hitSignalIndexInAction)
+	static Vector3 GetParallelSpawnPosition(Transform spawnTransform, MeHitObject meHit, Transform parentActorTransform, int parallelIndex)
+	{
+		Vector3 baseSpawnPosition = GetSpawnPosition(spawnTransform, meHit, parentActorTransform);
+
+		Vector3 parentActorPosition = parentActorTransform.position;
+		Vector3 parallelOffset = Vector3.zero;
+		parallelOffset.x = ((meHit.parallelCount - 1) * 0.5f * meHit.parallelDistance) * -1.0f + meHit.parallelDistance * parallelIndex;
+		Vector3 offsetPosition = parentActorTransform.TransformPoint(parallelOffset);
+		offsetPosition -= parentActorPosition;
+		return baseSpawnPosition + offsetPosition;
+	}
+
+	public static Vector3 GetTargetPosition(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction)
+	{
+		Vector3 targetPosition = Vector3.zero;
+		if (meHit.startDirectionType == HitObjectMovement.eStartDirectionType.ToFirstTarget || meHit.startDirectionType == HitObjectMovement.eStartDirectionType.ToMultiTarget)
+		{
+			int targetIndex = -1;
+			if (meHit.startDirectionType == HitObjectMovement.eStartDirectionType.ToFirstTarget)
+				targetIndex = 0;
+			else if (meHit.startDirectionType == HitObjectMovement.eStartDirectionType.ToMultiTarget)
+				targetIndex = hitSignalIndexInAction;
+
+			TargetingProcessor targetingProcessor = parentActor.targetingProcessor;
+			if (targetingProcessor.IsRegisteredCustomTargetPosition())
+				targetPosition = targetingProcessor.GetCustomTargetPosition(targetIndex);
+			else if (targetingProcessor.GetTarget() != null)
+				targetPosition = targetingProcessor.GetTargetPosition(targetIndex);
+			else
+				targetPosition = GetFallbackTargetPosition(parentActor.cachedTransform);
+		}
+		return targetPosition;
+	}
+
+	public static Vector3 GetFallbackTargetPosition(Transform t)
+	{
+		Vector3 fallbackPosition = new Vector3(0.0f, 0.0f, 4.0f);
+		return t.TransformPoint(fallbackPosition);
+	}
+
+	public static Vector3 GetSpawnDirection(Vector3 spawnPosition, MeHitObject meHit, Transform parentActorTransform, Vector3 targetPosition, bool applyRange = true)
+	{
+		Vector3 result = Vector3.zero;
+		switch (meHit.startDirectionType)
+		{
+			case HitObjectMovement.eStartDirectionType.Forward:
+				result = Vector3.forward;
+				break;
+			case HitObjectMovement.eStartDirectionType.Direction:
+				result = meHit.startDirection.normalized;
+				break;
+			case HitObjectMovement.eStartDirectionType.ToFirstTarget:
+			case HitObjectMovement.eStartDirectionType.ToMultiTarget:
+				Vector3 diffToTargetPosition = targetPosition - spawnPosition;
+				// 땅에 쏘는 직사를 구현할땐 이 라인을 패스하면 된다.
+				diffToTargetPosition.y = 0.0f;
+				// world to local
+				result = parentActorTransform.InverseTransformDirection(diffToTargetPosition.normalized);
+				break;
+		}
+		if (applyRange)
+		{
+			if (meHit.leftRightRandomAngle != 0.0f || meHit.upDownRandomAngle != 0.0f || meHit.leftRandomAngle != 0.0f || meHit.rightRandomAngle != 0.0f)
+			{
+				Vector3 tempUp = Vector3.up;
+				if (result == tempUp) tempUp = -Vector3.forward;
+				Vector3 right = Vector3.Cross(-tempUp, result);
+				Vector3 up = Vector3.Cross(right, result);
+
+				if (meHit.bothRandomAngle)
+				{
+					if (meHit.leftRightRandomAngle != 0.0f)
+					{
+						Quaternion rotation = Quaternion.AngleAxis(Random.Range(-meHit.leftRightRandomAngle, meHit.leftRightRandomAngle), up);
+						result = rotation * result;
+					}
+				}
+				else
+				{
+					if (meHit.leftRandomAngle != 0.0f || meHit.rightRandomAngle != 0.0f)
+					{
+						Quaternion rotation = Quaternion.AngleAxis(Random.Range(-meHit.leftRandomAngle, meHit.rightRandomAngle), up);
+						result = rotation * result;
+					}
+				}
+				if (meHit.upDownRandomAngle != 0.0f)
+				{
+					Quaternion rotation = Quaternion.AngleAxis(Random.Range(-meHit.upDownRandomAngle, meHit.upDownRandomAngle), right);
+					result = rotation * result;
+				}
+			}
+		}
+		if (meHit.startDirectionType == HitObjectMovement.eStartDirectionType.Direction && meHit.useWorldSpaceDirection)
+			return result;
+		return parentActorTransform.TransformDirection(result);
+	}
+
+	static void CopyEtcStatusForHitObject(ref StatusStructForHitObject statusStructForHitObject, Actor actor, MeHitObject meHit, int hitSignalIndexInAction, int repeatIndex)
 	{
 		statusStructForHitObject.teamID = actor.team.teamID;
 		statusStructForHitObject.weaponIDAtCreation = 0;
@@ -121,6 +263,7 @@ public class HitObject : MonoBehaviour
 		//	statusStructForHitObject.weaponIDAtCreation = actor.GetWeaponID(meHit.weaponDummyName);
 		statusStructForHitObject.skillLevel = actor.actionController.GetCurrentSkillLevelByCurrentAction();
 		statusStructForHitObject.hitSignalIndexInAction = hitSignalIndexInAction;
+		statusStructForHitObject.repeatIndex = repeatIndex;
 	}
 
 	static void CheckHitArea(Vector3 areaPosition, Vector3 areaForward, MeHitObject meHit, StatusBase statusBase, StatusStructForHitObject statusForHitObject)
@@ -227,7 +370,7 @@ public class HitObject : MonoBehaviour
 	}
 
 	static int HITOBJECT_LAYER;
-	public void InitializeHitObject(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction)
+	public void InitializeHitObject(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction, int repeatIndex)
 	{
 		if (HITOBJECT_LAYER == 0) HITOBJECT_LAYER = LayerMask.NameToLayer("HitObject");
 		if (gameObject.layer == 0)
@@ -236,7 +379,7 @@ public class HitObject : MonoBehaviour
 		_signal = meHit;
 		_createTime = Time.time;
 		parentActor.actorStatus.CopyStatusBase(ref _statusBase);
-		CopyEtcStatusForHitObject(ref _statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction);
+		CopyEtcStatusForHitObject(ref _statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction, repeatIndex);
 
 		if (_rigidbody == null) _rigidbody = GetComponent<Rigidbody>();
 		if (_collider == null) _collider = GetComponentInChildren<Collider>();

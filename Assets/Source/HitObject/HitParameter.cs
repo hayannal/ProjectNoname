@@ -9,6 +9,7 @@ public struct StatusStructForHitObject
 	public int weaponIDAtCreation;
 	public int skillLevel;  // current action skill level
 	public int hitSignalIndexInAction;
+	public int repeatIndex;
 	//public float hp;	// hp is in StatusBase
 	//public int level;
 	//public int liveComradeCount;

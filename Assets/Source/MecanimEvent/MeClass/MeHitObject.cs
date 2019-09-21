@@ -5,15 +5,16 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditorInternal;
 #endif
+using MEC;
 
 public class MeHitObject : MecanimEventBase {
 
 	override public bool RangeSignal { get { return false; } }
 
+	public HitObject.eTargetDetectType targetDetectType;
 	public GameObject hitObjectPrefab;
 	public float lifeTime;
 	public bool movable;
-	public HitObject.eTargetDetectType targetDetectType;
 	public Team.eTeamCheckFilter teamCheckType;
 
 	public HitObject.eCreatePositionType createPositionType;
@@ -26,6 +27,9 @@ public class MeHitObject : MecanimEventBase {
 	public float areaHeightMin;
 	public float areaHeightMax;
 	public float areaAngle;
+
+	public int repeatCount;
+	public float repeatInterval;
 
 	public HitObjectMovement.eMovementType movementType;
 	public HitObjectMovement.eStartDirectionType startDirectionType;
@@ -40,6 +44,19 @@ public class MeHitObject : MecanimEventBase {
 	public float curve;
 	public float curveAdd;
 	public bool curveLockY;
+
+	public int parallelCount;
+	public float parallelDistance;
+	public bool ignoreMainHitObjectByParallel;
+
+	public int circularSectorCount;
+	public float circularSectorRange;
+	public float circularSectorRangeMax;
+	public bool ignoreMainHitObjectByCircularSector;
+
+	#region CircularSector Preset
+
+	#endregion
 
 	public bool contactAll;
 	public int monsterThroughCount;
@@ -76,11 +93,11 @@ public class MeHitObject : MecanimEventBase {
 	override public void OnGUI_PropertyWindow()
 	{
 		_propertyScrollPosition = EditorGUILayout.BeginScrollView(_propertyScrollPosition);
+		targetDetectType = (HitObject.eTargetDetectType)EditorGUILayout.EnumPopup("Target Find Type :", targetDetectType);
 		hitObjectPrefab = (GameObject)EditorGUILayout.ObjectField("Object :", hitObjectPrefab, typeof(GameObject), false);
-		lifeTime = EditorGUILayout.FloatField("LifeTime :", lifeTime);
+		if (targetDetectType != HitObject.eTargetDetectType.Preset) lifeTime = EditorGUILayout.FloatField("LifeTime :", lifeTime);
 		if (lifeTime > 0.0f) movable = EditorGUILayout.Toggle("Movable :", movable);
 		else movable = false;
-		targetDetectType = (HitObject.eTargetDetectType)EditorGUILayout.EnumPopup("Target Find Type :", targetDetectType);
 		teamCheckType = (Team.eTeamCheckFilter)EditorGUILayout.EnumPopup("Team Check Type :", teamCheckType);
 
 		EditorGUILayout.LabelField("-----------------------------------------------------------------");
@@ -102,6 +119,12 @@ public class MeHitObject : MecanimEventBase {
 			areaHeightMax = EditorGUILayout.FloatField("Area HeightMax :", areaHeightMax);
 			areaAngle = EditorGUILayout.FloatField("Area Angle :", areaAngle);
 		}
+
+		EditorGUILayout.LabelField("-----------------------------------------------------------------");
+
+		repeatCount = EditorGUILayout.IntField("Repeat Count :", repeatCount);
+		if (repeatCount > 0)
+			repeatInterval = EditorGUILayout.FloatField("Repeat Interval :", repeatInterval);
 
 		EditorGUILayout.LabelField("-----------------------------------------------------------------");
 
@@ -135,6 +158,15 @@ public class MeHitObject : MecanimEventBase {
 
 		if (targetDetectType == HitObject.eTargetDetectType.Collider)
 		{
+			parallelCount = EditorGUILayout.IntField("Parallel Count", parallelCount);
+			if (parallelCount > 0)
+			{
+				parallelDistance = EditorGUILayout.FloatField("Parallel Distance :", parallelDistance);
+				ignoreMainHitObjectByParallel = EditorGUILayout.Toggle("Ignore Main HitObject :", ignoreMainHitObjectByParallel);
+			}
+
+			EditorGUILayout.LabelField("-----------------------------------------------------------------");
+
 			contactAll = EditorGUILayout.Toggle("Contact All :", contactAll);
 			monsterThroughCount = EditorGUILayout.IntField("Monster Through Count :", monsterThroughCount);
 			wallThrough = EditorGUILayout.Toggle("Wall Through :", wallThrough);
@@ -154,6 +186,22 @@ public class MeHitObject : MecanimEventBase {
 				oneHitPerTarget = EditorGUILayout.Toggle("One Hit Per Target :", oneHitPerTarget);
 			}
 			useLineRenderer = EditorGUILayout.Toggle("Use LineRenderer :", useLineRenderer);
+			EditorGUILayout.LabelField("-----------------------------------------------------------------");
+		}
+		else if (targetDetectType == HitObject.eTargetDetectType.Area)
+		{
+			// Area에서도 HitStay는 비슷하게 처리할 수 있을거 같다. lifeTime이 있는 부채꼴이라 다단히트 처리가 되는 것.
+			if (oneHitPerTarget == false)
+				useHitStay = EditorGUILayout.Toggle("Use Hit Stay :", useHitStay);
+			if (useHitStay)
+			{
+				hitStayInterval = EditorGUILayout.FloatField("Hit Stay Interval :", hitStayInterval);
+				hitStayGroupNumber = EditorGUILayout.IntField("Hit Stay Group Number", hitStayGroupNumber);
+			}
+			if (useHitStay == false)
+			{
+				oneHitPerTarget = EditorGUILayout.Toggle("One Hit Per Target :", oneHitPerTarget);
+			}
 			EditorGUILayout.LabelField("-----------------------------------------------------------------");
 		}
 
@@ -272,7 +320,7 @@ public class MeHitObject : MecanimEventBase {
 		}
 
 		Vector3 offsetPosition = HitObject.GetSpawnPosition(spawnTransform, this, t);
-		Vector3 direction = HitObjectMovement.GetStartDirection(this, offsetPosition, t, 0, HitObjectMovement.GetFallbackTargetPosition(t)) * 1.5f;
+		Vector3 direction = HitObject.GetSpawnDirection(offsetPosition, this, t, HitObject.GetFallbackTargetPosition(t)) * 1.5f;
 
 		Color defaultColor = Gizmos.color;
 		Gizmos.color = new Color(1.0f, 0.1f, 0.0f, 0.9f);
@@ -353,7 +401,23 @@ public class MeHitObject : MecanimEventBase {
 			if (attachTransform != null)
 				spawnTransform = attachTransform;
 		}
-		HitObject.InitializeHit(spawnTransform, this, actor, parentTransform, hitSignalIndexInAction);
+
+		// Repeat처리가 가장 먼저다.
+		// 그런데 상황에 따라 메인 발사체를 스폰하지 않을 수 있다.
+		HitObject.InitializeHit(spawnTransform, this, actor, parentTransform, hitSignalIndexInAction, 0);
+
+		if (repeatCount > 0)
+		{
+			Timing.RunCoroutine(RepeatProcess(spawnTransform, this, actor, parentTransform, hitSignalIndexInAction));
+		}
 	}
 
+	IEnumerator<float> RepeatProcess(Transform spawnTransform, MeHitObject meHit, Actor parentActor, Transform parentTransform, int hitSignalIndexInAction)
+	{
+		for (int i = 1; i <= meHit.repeatCount; ++i)
+		{
+			yield return Timing.WaitForSeconds(meHit.repeatInterval);
+			HitObject.InitializeHit(spawnTransform, this, actor, parentTransform, hitSignalIndexInAction, i);
+		}
+	}
 }

@@ -414,10 +414,20 @@ public class MeHitObject : MecanimEventBase {
 
 	IEnumerator<float> RepeatProcess(Transform spawnTransform, MeHitObject meHit, Actor parentActor, Transform parentTransform, int hitSignalIndexInAction)
 	{
+		// Repeat 하기전 트랜스폼들을 복제해서 캐싱해야한다. 이래야 본 포지션 및 캐릭터 방향까지 기억할 수 있다.
+		Transform duplicatedSpawnTransform = BattleInstanceManager.instance.GetDuplicatedTransform(spawnTransform);
+		Transform duplicatedParentTransform = BattleInstanceManager.instance.GetDuplicatedTransform(parentTransform);
 		for (int i = 1; i <= meHit.repeatCount; ++i)
 		{
 			yield return Timing.WaitForSeconds(meHit.repeatInterval);
-			HitObject.InitializeHit(spawnTransform, this, actor, parentTransform, hitSignalIndexInAction, i);
+
+			// avoid gc
+			if (this == null)
+				yield break;
+
+			HitObject.InitializeHit(duplicatedSpawnTransform, this, actor, duplicatedParentTransform, hitSignalIndexInAction, i);
 		}
+		duplicatedSpawnTransform.gameObject.SetActive(false);
+		duplicatedParentTransform.gameObject.SetActive(false);
 	}
 }

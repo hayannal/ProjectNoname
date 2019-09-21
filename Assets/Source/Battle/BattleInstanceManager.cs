@@ -176,6 +176,33 @@ public class BattleInstanceManager : MonoBehaviour
 	}
 	#endregion
 
+	#region Repeater for HitObject
+	List<Transform> _listDuplicatedTransform = new List<Transform>();
+	public Transform GetDuplicatedTransform(Transform targetTransform)
+	{
+		for (int i = 0; i < _listDuplicatedTransform.Count; ++i)
+		{
+			if (!_listDuplicatedTransform[i].gameObject.activeSelf)
+			{
+				_listDuplicatedTransform[i].position = targetTransform.position;
+				_listDuplicatedTransform[i].rotation = targetTransform.rotation;
+				//_listDuplicatedTransform[i].localScale = targetTransform.localScale;
+				_listDuplicatedTransform[i].gameObject.SetActive(true);
+				return _listDuplicatedTransform[i];
+			}
+		}
+
+		GameObject newObject = new GameObject();
+		newObject.name = "DuplicatedObject";
+		Transform duplicatedTransform = newObject.transform;
+		duplicatedTransform.position = targetTransform.position;
+		duplicatedTransform.rotation = targetTransform.rotation;
+		//duplicatedTransform.localScale = targetTransform.localScale;
+		_listDuplicatedTransform.Add(duplicatedTransform);
+		return duplicatedTransform;
+	}
+	#endregion
+
 	#region Collider Transform
 	Dictionary<Collider, Transform> _dicTransformByCollider = new Dictionary<Collider, Transform>();
 	public Transform GetTransformFromCollider(Collider collider)

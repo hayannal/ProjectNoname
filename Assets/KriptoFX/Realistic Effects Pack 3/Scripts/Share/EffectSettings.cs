@@ -169,18 +169,6 @@ public class EffectSettings : MonoBehaviour
       inactive_Key[i].SetActive(false);
     }
     deactivatedIsWait = false;
-
-		////////////////////////////////////////////////
-		// temp code !!!!!
-		if (Target == null)
-		{
-			GameObject newObject = new GameObject();
-			newObject.transform.position = BattleInstanceManager.instance.playerActor.cachedTransform.position;
-			newObject.transform.rotation = BattleInstanceManager.instance.playerActor.cachedTransform.rotation;
-			newObject.transform.Translate(0.0f, 0.0f, 30.0f, Space.Self);
-			Target = newObject;
-		}
-		////////////////////////////////////////////////
   }
 
   public void OnDisable()

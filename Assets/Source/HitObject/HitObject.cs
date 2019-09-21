@@ -73,7 +73,7 @@ public class HitObject : MonoBehaviour
 			// HitObject 프리팹이 있거나 lifeTime이 있다면 생성하고 아니면 패스.
 			Vector3 position = GetSpawnPosition(spawnTransform, meHit, parentTransform);
 			Quaternion rotation = Quaternion.LookRotation(GetSpawnDirection(position, meHit, parentTransform, GetTargetPosition(meHit, parentActor, hitSignalIndexInAction)));
-			GetCachedHitObject(spawnTransform, meHit, position, rotation);
+			GetCachedHitObject(meHit, position, rotation);
 			return;
 		}
 
@@ -86,7 +86,7 @@ public class HitObject : MonoBehaviour
 			{
 				Vector3 position = GetParallelSpawnPosition(spawnTransform, meHit, parentTransform, i);
 				Quaternion rotation = Quaternion.LookRotation(GetSpawnDirection(defaultPosition, meHit, parentTransform, targetPosition));
-				HitObject parallelHitObject = GetCachedHitObject(spawnTransform, meHit, position, rotation);
+				HitObject parallelHitObject = GetCachedHitObject(meHit, position, rotation);
 				if (parallelHitObject == null)
 					continue;
 				parallelHitObject.InitializeHitObject(meHit, parentActor, hitSignalIndexInAction, repeatIndex);
@@ -98,13 +98,14 @@ public class HitObject : MonoBehaviour
 			// 이렇게 하는게 최선인가? circularSector는 리스트로 해야할 가능성이 높지 않나?
 			Vector3 position = GetSpawnPosition(spawnTransform, meHit, parentTransform);
 			Quaternion rotation = Quaternion.LookRotation(GetSpawnDirection(position, meHit, parentTransform, targetPosition));
-			HitObject circularSectorHitObject = GetCachedHitObject(spawnTransform, meHit, position, rotation);
+			HitObject circularSectorHitObject = GetCachedHitObject(meHit, position, rotation);
 			if (circularSectorHitObject == null)
 				continue;
 			circularSectorHitObject.InitializeHitObject(meHit, parentActor, hitSignalIndexInAction, repeatIndex);
 		}
 
 		// useContinuousGenerator
+		//for ()
 
 		bool createMainHitObject = true;
 		if (meHit.ignoreMainHitObjectByParallel || meHit.ignoreMainHitObjectByCircularSector)
@@ -113,13 +114,13 @@ public class HitObject : MonoBehaviour
 		{
 			Vector3 position = GetSpawnPosition(spawnTransform, meHit, parentTransform);
 			Quaternion rotation = Quaternion.LookRotation(GetSpawnDirection(position, meHit, parentTransform, targetPosition));
-			HitObject hitObject = GetCachedHitObject(spawnTransform, meHit, position, rotation);
+			HitObject hitObject = GetCachedHitObject(meHit, position, rotation);
 			if (hitObject != null)
 				hitObject.InitializeHitObject(meHit, parentActor, hitSignalIndexInAction, repeatIndex);
 		}
 	}
 
-	static HitObject GetCachedHitObject(Transform spawnTransform, MeHitObject meHit, Vector3 position, Quaternion rotation)
+	static HitObject GetCachedHitObject(MeHitObject meHit, Vector3 position, Quaternion rotation)
 	{
 		GameObject hitObject = null;
 		if (meHit.hitObjectPrefab != null)
@@ -128,9 +129,7 @@ public class HitObject : MonoBehaviour
 		}
 		else if (meHit.lifeTime > 0.0f)
 		{
-			hitObject = new GameObject();
-			hitObject.transform.position = spawnTransform.TransformPoint(meHit.offset);
-			hitObject.transform.rotation = rotation;
+			hitObject = BattleInstanceManager.instance.GetEmptyTransform(position, rotation).gameObject;
 		}
 		if (hitObject != null)
 		{
@@ -143,6 +142,9 @@ public class HitObject : MonoBehaviour
 
 	public static Vector3 GetSpawnPosition(Transform spawnTransform, MeHitObject meHit, Transform parentActorTransform)
 	{
+		if (meHit.hitObjectPrefab == null && meHit.lifeTime > 0.0f)
+			return spawnTransform.TransformPoint(meHit.offset);
+
 		if (meHit.offset == Vector3.zero)
 			return spawnTransform.position;
 

@@ -176,29 +176,29 @@ public class BattleInstanceManager : MonoBehaviour
 	}
 	#endregion
 
-	#region Repeater for HitObject
-	List<Transform> _listDuplicatedTransform = new List<Transform>();
-	public Transform GetDuplicatedTransform(Transform targetTransform)
+	#region for HitObject
+	List<Transform> _listCachedTransform = new List<Transform>();
+	public Transform GetEmptyTransform(Vector3 position, Quaternion rotation)
 	{
-		for (int i = 0; i < _listDuplicatedTransform.Count; ++i)
+		for (int i = 0; i < _listCachedTransform.Count; ++i)
 		{
-			if (!_listDuplicatedTransform[i].gameObject.activeSelf)
+			if (!_listCachedTransform[i].gameObject.activeSelf)
 			{
-				_listDuplicatedTransform[i].position = targetTransform.position;
-				_listDuplicatedTransform[i].rotation = targetTransform.rotation;
-				//_listDuplicatedTransform[i].localScale = targetTransform.localScale;
-				_listDuplicatedTransform[i].gameObject.SetActive(true);
-				return _listDuplicatedTransform[i];
+				_listCachedTransform[i].position = position;
+				_listCachedTransform[i].rotation = rotation;
+				//_listCachedTransform[i].localScale = localScale;
+				_listCachedTransform[i].gameObject.SetActive(true);
+				return _listCachedTransform[i];
 			}
 		}
 
 		GameObject newObject = new GameObject();
 		newObject.name = "DuplicatedObject";
 		Transform duplicatedTransform = newObject.transform;
-		duplicatedTransform.position = targetTransform.position;
-		duplicatedTransform.rotation = targetTransform.rotation;
-		//duplicatedTransform.localScale = targetTransform.localScale;
-		_listDuplicatedTransform.Add(duplicatedTransform);
+		duplicatedTransform.position = position;
+		duplicatedTransform.rotation = rotation;
+		//duplicatedTransform.localScale = localScale;
+		_listCachedTransform.Add(duplicatedTransform);
 		return duplicatedTransform;
 	}
 	#endregion

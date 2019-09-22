@@ -144,6 +144,42 @@ public class BattleInstanceManager : MonoBehaviour
 	#endregion
 
 	#region HitObject
+	Dictionary<GameObject, List<HitObject>> _dicHitObjectInstancePool = new Dictionary<GameObject, List<HitObject>>();
+	public HitObject GetCachedHitObject(GameObject prefab, Vector3 position, Quaternion rotation, Transform parentTransform = null)
+	{
+		List<HitObject> listCachedHitObject = null;
+		if (_dicHitObjectInstancePool.ContainsKey(prefab))
+			listCachedHitObject = _dicHitObjectInstancePool[prefab];
+		else
+		{
+			listCachedHitObject = new List<HitObject>();
+			_dicHitObjectInstancePool.Add(prefab, listCachedHitObject);
+		}
+
+		for (int i = 0; i < listCachedHitObject.Count; ++i)
+		{
+			if (!listCachedHitObject[i].gameObject.activeSelf)
+			{
+				listCachedHitObject[i].cachedTransform.parent = parentTransform;
+				listCachedHitObject[i].cachedTransform.position = position;
+				listCachedHitObject[i].cachedTransform.rotation = rotation;
+				listCachedHitObject[i].gameObject.SetActive(true);
+				return listCachedHitObject[i];
+			}
+		}
+
+		GameObject newObject = Instantiate<GameObject>(prefab, position, rotation, parentTransform);
+#if UNITY_EDITOR
+		AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+		if (settings.ActivePlayModeDataBuilderIndex == 2)
+			ObjectUtil.ReloadShader(newObject);
+#endif
+		HitObject hitObject = newObject.GetComponent<HitObject>();
+		if (hitObject == null) hitObject = newObject.AddComponent<HitObject>();
+		listCachedHitObject.Add(hitObject);
+		return hitObject;
+	}
+
 	Dictionary<Collider, HitObject> _dicHitObjectByCollider = new Dictionary<Collider, HitObject>();
 	public HitObject GetHitObjectFromCollider(Collider collider)
 	{
@@ -174,9 +210,72 @@ public class BattleInstanceManager : MonoBehaviour
 	{
 		_dicHitObjectByCollider.Remove(collider);
 	}
+
+	List<HitObject> _listCachedEmptyHitObject = new List<HitObject>();
+	public HitObject GetEmptyHitObject(Vector3 position, Quaternion rotation)
+	{
+		for (int i = 0; i < _listCachedEmptyHitObject.Count; ++i)
+		{
+			if (!_listCachedEmptyHitObject[i].gameObject.activeSelf)
+			{
+				_listCachedEmptyHitObject[i].cachedTransform.position = position;
+				_listCachedEmptyHitObject[i].cachedTransform.rotation = rotation;
+				//_listCachedEmptyHitObject[i].cachedTransform.localScale = localScale;
+				_listCachedEmptyHitObject[i].gameObject.SetActive(true);
+				return _listCachedEmptyHitObject[i];
+			}
+		}
+
+		GameObject newObject = new GameObject();
+		newObject.name = "EmptyHitObject";
+		Transform newTransform = newObject.transform;
+		newTransform.position = position;
+		newTransform.rotation = rotation;
+		//newTransform.localScale = localScale;
+		HitObject hitObject = newObject.AddComponent<HitObject>();
+		_listCachedEmptyHitObject.Add(hitObject);
+		return hitObject;
+	}
 	#endregion
 
-	#region for HitObject
+	#region HitObject Generator
+	Dictionary<GameObject, List<ContinuousHitObjectGeneratorBase>> _dicContinuousHitObjectGeneratorePool = new Dictionary<GameObject, List<ContinuousHitObjectGeneratorBase>>();
+	public ContinuousHitObjectGeneratorBase GetContinuousHitObjectGenerator(GameObject prefab, Vector3 position, Quaternion rotation, Transform parentTransform = null)
+	{
+		List<ContinuousHitObjectGeneratorBase> listCachedContinuousHitObjectGenerator = null;
+		if (_dicContinuousHitObjectGeneratorePool.ContainsKey(prefab))
+			listCachedContinuousHitObjectGenerator = _dicContinuousHitObjectGeneratorePool[prefab];
+		else
+		{
+			listCachedContinuousHitObjectGenerator = new List<ContinuousHitObjectGeneratorBase>();
+			_dicContinuousHitObjectGeneratorePool.Add(prefab, listCachedContinuousHitObjectGenerator);
+		}
+
+		for (int i = 0; i < listCachedContinuousHitObjectGenerator.Count; ++i)
+		{
+			if (!listCachedContinuousHitObjectGenerator[i].gameObject.activeSelf)
+			{
+				listCachedContinuousHitObjectGenerator[i].cachedTransform.parent = parentTransform;
+				listCachedContinuousHitObjectGenerator[i].cachedTransform.position = position;
+				listCachedContinuousHitObjectGenerator[i].cachedTransform.rotation = rotation;
+				listCachedContinuousHitObjectGenerator[i].gameObject.SetActive(true);
+				return listCachedContinuousHitObjectGenerator[i];
+			}
+		}
+
+		GameObject newObject = Instantiate<GameObject>(prefab, position, rotation, parentTransform);
+#if UNITY_EDITOR
+		AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+		if (settings.ActivePlayModeDataBuilderIndex == 2)
+			ObjectUtil.ReloadShader(newObject);
+#endif
+		ContinuousHitObjectGeneratorBase continuousHitObjectGeneratorBase = newObject.GetComponent<ContinuousHitObjectGeneratorBase>();
+		listCachedContinuousHitObjectGenerator.Add(continuousHitObjectGeneratorBase);
+		return continuousHitObjectGeneratorBase;
+	}
+	#endregion
+
+	#region for EmptyObject
 	List<Transform> _listCachedTransform = new List<Transform>();
 	public Transform GetEmptyTransform(Vector3 position, Quaternion rotation)
 	{

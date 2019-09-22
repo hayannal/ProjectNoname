@@ -58,6 +58,8 @@ public class MeHitObject : MecanimEventBase {
 
 	#endregion
 
+	public List<ContinuousHitObjectGeneratorBase> continuousHitObjectGeneratorBaseList;
+
 	public bool contactAll;
 	public int monsterThroughCount;
 	public bool wallThrough;

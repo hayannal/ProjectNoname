@@ -79,9 +79,10 @@ public class HitObject : MonoBehaviour
 
 		// step2. Collider타입은 상황에 맞게 1개 혹은 여러개 만들어야한다.
 		Vector3 targetPosition = GetTargetPosition(meHit, parentActor, hitSignalIndexInAction);
+		Vector3 defaultPosition = GetSpawnPosition(spawnTransform, meHit, parentTransform);
+		Quaternion defaultRotation = Quaternion.LookRotation(GetSpawnDirection(defaultPosition, meHit, parentTransform, targetPosition));
 		if (meHit.parallelCount > 0)
 		{
-			Vector3 defaultPosition = GetSpawnPosition(spawnTransform, meHit, parentTransform);
 			for (int i = 0; i < meHit.parallelCount; ++i)
 			{
 				Vector3 position = GetParallelSpawnPosition(spawnTransform, meHit, parentTransform, i);
@@ -104,40 +105,40 @@ public class HitObject : MonoBehaviour
 			circularSectorHitObject.InitializeHitObject(meHit, parentActor, hitSignalIndexInAction, repeatIndex);
 		}
 
-		// useContinuousGenerator
-		//for ()
+		bool ignoreMainHitObjectByGenerator = false;
+		if (meHit.continuousHitObjectGeneratorBaseList != null)
+		{
+			for (int i = 0; i < meHit.continuousHitObjectGeneratorBaseList.Count; ++i)
+			{
+				ContinuousHitObjectGeneratorBase continuousHitObjectGenerator = BattleInstanceManager.instance.GetContinuousHitObjectGenerator(meHit.continuousHitObjectGeneratorBaseList[i].gameObject, defaultPosition, defaultRotation);
+				ignoreMainHitObjectByGenerator |= continuousHitObjectGenerator.ignoreMainHitObject;
+				continuousHitObjectGenerator.InitializeGenerator(meHit, parentActor, hitSignalIndexInAction, repeatIndex, spawnTransform, parentTransform);
+			}
+		}
 
 		bool createMainHitObject = true;
-		if (meHit.ignoreMainHitObjectByParallel || meHit.ignoreMainHitObjectByCircularSector)
+		if (meHit.ignoreMainHitObjectByParallel || meHit.ignoreMainHitObjectByCircularSector || ignoreMainHitObjectByGenerator)
 			createMainHitObject = false;
 		if (createMainHitObject)
 		{
-			Vector3 position = GetSpawnPosition(spawnTransform, meHit, parentTransform);
-			Quaternion rotation = Quaternion.LookRotation(GetSpawnDirection(position, meHit, parentTransform, targetPosition));
-			HitObject hitObject = GetCachedHitObject(meHit, position, rotation);
+			HitObject hitObject = GetCachedHitObject(meHit, defaultPosition, defaultRotation);
 			if (hitObject != null)
 				hitObject.InitializeHitObject(meHit, parentActor, hitSignalIndexInAction, repeatIndex);
 		}
 	}
 
-	static HitObject GetCachedHitObject(MeHitObject meHit, Vector3 position, Quaternion rotation)
+	public static HitObject GetCachedHitObject(MeHitObject meHit, Vector3 position, Quaternion rotation)
 	{
-		GameObject hitObject = null;
+		HitObject hitObject = null;
 		if (meHit.hitObjectPrefab != null)
 		{
-			hitObject = BattleInstanceManager.instance.GetCachedObject(meHit.hitObjectPrefab, position, rotation);
+			hitObject = BattleInstanceManager.instance.GetCachedHitObject(meHit.hitObjectPrefab, position, rotation);
 		}
 		else if (meHit.lifeTime > 0.0f)
 		{
-			hitObject = BattleInstanceManager.instance.GetEmptyTransform(position, rotation).gameObject;
+			hitObject = BattleInstanceManager.instance.GetEmptyHitObject(position, rotation);
 		}
-		if (hitObject != null)
-		{
-			HitObject hitObjectComponent = hitObject.GetComponent<HitObject>();
-			if (hitObjectComponent == null) hitObjectComponent = hitObject.AddComponent<HitObject>();
-			return hitObjectComponent;
-		}
-		return null;
+		return hitObject;
 	}
 
 	public static Vector3 GetSpawnPosition(Transform spawnTransform, MeHitObject meHit, Transform parentActorTransform)

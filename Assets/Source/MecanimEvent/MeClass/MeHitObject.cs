@@ -89,8 +89,10 @@ public class MeHitObject : MecanimEventBase {
 
 
 	#if UNITY_EDITOR
-	SerializedObject so = null;
-	ReorderableList reorderableList = null;
+	SerializedObject serializedObjectForAffector = null;
+	ReorderableList reorderableListForAffector = null;
+	SerializedObject serializedObjectForGenerator = null;
+	ReorderableList reorderableListForGenerator = null;
 	Vector2 _propertyScrollPosition;
 	override public void OnGUI_PropertyWindow()
 	{
@@ -167,6 +169,26 @@ public class MeHitObject : MecanimEventBase {
 				ignoreMainHitObjectByParallel = EditorGUILayout.Toggle("Ignore Main HitObject :", ignoreMainHitObjectByParallel);
 			}
 
+			if (reorderableListForGenerator == null)
+			{
+				serializedObjectForGenerator = new SerializedObject(this);
+				reorderableListForGenerator = new ReorderableList(serializedObjectForGenerator, serializedObjectForGenerator.FindProperty("continuousHitObjectGeneratorBaseList"), true, true, true, true);
+				reorderableListForGenerator.drawHeaderCallback = (rect) => EditorGUI.LabelField(rect, "Continuous Generator List");
+				reorderableListForGenerator.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
+				{
+					var element = reorderableListForGenerator.serializedProperty.GetArrayElementAtIndex(index);
+					rect.y += 2;
+					rect.height = EditorGUIUtility.singleLineHeight;
+					EditorGUI.PropertyField(rect, reorderableListForGenerator.serializedProperty.GetArrayElementAtIndex(index));
+				};
+			}
+			if (reorderableListForGenerator != null)
+			{
+				serializedObjectForGenerator.Update();
+				reorderableListForGenerator.DoLayoutList();
+				serializedObjectForGenerator.ApplyModifiedProperties();
+			}
+
 			EditorGUILayout.LabelField("-----------------------------------------------------------------");
 
 			contactAll = EditorGUILayout.Toggle("Contact All :", contactAll);
@@ -207,24 +229,24 @@ public class MeHitObject : MecanimEventBase {
 			EditorGUILayout.LabelField("-----------------------------------------------------------------");
 		}
 
-		if (reorderableList == null)
+		if (reorderableListForAffector == null)
 		{
-			so = new SerializedObject(this);
-			reorderableList = new ReorderableList(so, so.FindProperty("affectorValueIdList"), true, true, true, true);
-			reorderableList.drawHeaderCallback = (rect) => EditorGUI.LabelField(rect, "Affector Value ID List");
-			reorderableList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
+			serializedObjectForAffector = new SerializedObject(this);
+			reorderableListForAffector = new ReorderableList(serializedObjectForAffector, serializedObjectForAffector.FindProperty("affectorValueIdList"), true, true, true, true);
+			reorderableListForAffector.drawHeaderCallback = (rect) => EditorGUI.LabelField(rect, "Affector Value ID List");
+			reorderableListForAffector.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
 			{
-				var element = reorderableList.serializedProperty.GetArrayElementAtIndex(index);
+				var element = reorderableListForAffector.serializedProperty.GetArrayElementAtIndex(index);
 				rect.y += 2;
 				rect.height = EditorGUIUtility.singleLineHeight;
-				EditorGUI.PropertyField(rect, reorderableList.serializedProperty.GetArrayElementAtIndex(index));
+				EditorGUI.PropertyField(rect, reorderableListForAffector.serializedProperty.GetArrayElementAtIndex(index));
 			};
 		}
-		if (reorderableList != null)
+		if (reorderableListForAffector != null)
 		{
-			so.Update();
-			reorderableList.DoLayoutList();
-			so.ApplyModifiedProperties();
+			serializedObjectForAffector.Update();
+			reorderableListForAffector.DoLayoutList();
+			serializedObjectForAffector.ApplyModifiedProperties();
 		}
 
 		showHitEffect = EditorGUILayout.Toggle("Show HitEffect :", showHitEffect);

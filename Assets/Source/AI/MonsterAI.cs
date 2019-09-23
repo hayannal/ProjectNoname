@@ -150,6 +150,7 @@ public class MonsterAI : MonoBehaviour
 					targetRadius = ColliderUtil.GetRadius(targetCollider);
 					AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(targetCollider);
 					BattleInstanceManager.instance.targetOfMonster = affectorProcessor.actor;
+					BattleInstanceManager.instance.targetColliderOfMonster = targetCollider;
 					targetActor = affectorProcessor.actor;
 				}
 				else
@@ -157,7 +158,9 @@ public class MonsterAI : MonoBehaviour
 			}
 			else
 			{
+				targetingProcessor.ForceSetTarget(BattleInstanceManager.instance.targetColliderOfMonster);
 				targetActor = BattleInstanceManager.instance.targetOfMonster;
+				targetRadius = ColliderUtil.GetRadius(BattleInstanceManager.instance.targetColliderOfMonster);
 			}
 		}
 	}

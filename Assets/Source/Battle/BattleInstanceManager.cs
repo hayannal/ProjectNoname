@@ -20,7 +20,8 @@ public class BattleInstanceManager : MonoBehaviour
 	static BattleInstanceManager _instance = null;
 
 	#region Common
-	public Actor targetOfMonster { get; set; }	
+	public Collider targetColliderOfMonster { get; set; }
+	public Actor targetOfMonster { get; set; }
 	public Ground currentGround { get; set; }
 	#endregion
 

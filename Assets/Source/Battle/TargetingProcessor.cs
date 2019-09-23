@@ -118,6 +118,12 @@ public class TargetingProcessor : MonoBehaviour {
 		return false;
 	}
 
+	public void ForceSetTarget(Collider collider)
+	{
+		ClearTarget();
+		_targetList.Add(collider);
+	}
+
 
 	#region Custom Position
 	public bool IsRegisteredCustomTargetPosition()

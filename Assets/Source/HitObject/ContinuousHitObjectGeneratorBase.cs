@@ -11,9 +11,9 @@ public class ContinuousHitObjectGeneratorBase : MonoBehaviour
 
 	int _fullPathHash;
 
-	MeHitObject _signal;
-	Actor _parentActor;
-	int _hitSignalIndexInAction;
+	protected MeHitObject _signal;
+	protected Actor _parentActor;
+	protected int _hitSignalIndexInAction;
 	int _repeatIndex;
 
 	public virtual void InitializeGenerator(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction, int repeatIndex, Transform spawnTransform)

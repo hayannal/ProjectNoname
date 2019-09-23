@@ -7,7 +7,6 @@ public class FollowingFirstShotGenerator : ContinuousHitObjectGeneratorBase
 	[Header("FollowingFirstShotGenerator")]
 	public float interval;
 
-	Vector3 _firstShotPosition;
 	Quaternion _firstShotRotation;
 	int _remainCreateCount;
 	float _remainIntervalTime;
@@ -40,14 +39,11 @@ public class FollowingFirstShotGenerator : ContinuousHitObjectGeneratorBase
 			{
 				HitObject hitObject = DuplicateHitObject();
 				if (hitObject != null)
-				{
-					_firstShotPosition = hitObject.cachedTransform.position;
 					_firstShotRotation = hitObject.cachedTransform.rotation;
-				}
 			}
 			else
 			{
-				Generate(_firstShotPosition, _firstShotRotation);
+				Generate(cachedTransform.position, _firstShotRotation);
 			}
 		}
 

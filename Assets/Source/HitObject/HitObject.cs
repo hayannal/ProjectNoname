@@ -96,10 +96,11 @@ public class HitObject : MonoBehaviour
 
 		for (int i = 0; i < meHit.circularSectorCount; ++i)
 		{
-			// 이렇게 하는게 최선인가? circularSector는 리스트로 해야할 가능성이 높지 않나?
 			Vector3 position = GetSpawnPosition(spawnTransform, meHit, parentTransform);
-			Quaternion rotation = Quaternion.LookRotation(GetSpawnDirection(position, meHit, parentTransform, targetPosition));
-			HitObject circularSectorHitObject = GetCachedHitObject(meHit, position, rotation);
+			float centerAngleY = meHit.circularSectorUseWorldSpace ? meHit.circularSectorWorldSpaceCenterAngleY : defaultRotation.eulerAngles.y;
+			float baseAngle = meHit.circularSectorCount % 2 == 0 ? centerAngleY - (meHit.circularSectorBetweenAngle / 2f) : centerAngleY;
+			float angle = WavingNwayGenerator.GetShiftedAngle(i, baseAngle, meHit.circularSectorBetweenAngle);
+			HitObject circularSectorHitObject = GetCachedHitObject(meHit, position, Quaternion.Euler(0.0f, angle, 0.0f));
 			if (circularSectorHitObject == null)
 				continue;
 			circularSectorHitObject.InitializeHitObject(meHit, parentActor, hitSignalIndexInAction, repeatIndex);

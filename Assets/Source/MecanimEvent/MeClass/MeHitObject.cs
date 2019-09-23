@@ -49,13 +49,12 @@ public class MeHitObject : MecanimEventBase {
 	public float parallelDistance;
 	public bool ignoreMainHitObjectByParallel;
 
-	public int circularSectorCount;
-	public float circularSectorRange;
-	public float circularSectorRangeMax;
-	public bool ignoreMainHitObjectByCircularSector;
-
 	#region CircularSector Preset
-
+	public int circularSectorCount;
+	public float circularSectorBetweenAngle;
+	public bool circularSectorUseWorldSpace;
+	public float circularSectorWorldSpaceCenterAngleY;
+	public bool ignoreMainHitObjectByCircularSector;
 	#endregion
 
 	public List<ContinuousHitObjectGeneratorBase> continuousHitObjectGeneratorBaseList;
@@ -167,6 +166,16 @@ public class MeHitObject : MecanimEventBase {
 			{
 				parallelDistance = EditorGUILayout.FloatField("Parallel Distance :", parallelDistance);
 				ignoreMainHitObjectByParallel = EditorGUILayout.Toggle("Ignore Main HitObject :", ignoreMainHitObjectByParallel);
+			}
+
+			circularSectorCount = EditorGUILayout.IntField("Circular Sector Count", circularSectorCount);
+			if (circularSectorCount > 0)
+			{
+				circularSectorBetweenAngle = EditorGUILayout.FloatField("Between Angle :", circularSectorBetweenAngle);
+				circularSectorUseWorldSpace = EditorGUILayout.Toggle("Use World Space :", circularSectorUseWorldSpace);
+				if (circularSectorUseWorldSpace)
+					circularSectorWorldSpaceCenterAngleY = EditorGUILayout.FloatField("World Space Angle Y:", circularSectorWorldSpaceCenterAngleY);
+				ignoreMainHitObjectByCircularSector = EditorGUILayout.Toggle("Ignore Main HitObject :", ignoreMainHitObjectByCircularSector);
 			}
 
 			if (reorderableListForGenerator == null)

@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class ContinuousHitObjectGeneratorBase : MonoBehaviour
 {
-	public bool disableOnChangeState;
-	public bool ignoreMainHitObject;
-	public bool attachChild;
+	public bool disableOnChangeState = true;
+	public bool ignoreMainHitObject = true;
+	public bool attachChild = true;
 	public int createCount;
 
 	int _fullPathHash;
@@ -15,17 +15,13 @@ public class ContinuousHitObjectGeneratorBase : MonoBehaviour
 	Actor _parentActor;
 	int _hitSignalIndexInAction;
 	int _repeatIndex;
-	Transform _spawnTransform;
-	Transform _parentTransform;
 
-	public virtual void InitializeGenerator(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction, int repeatIndex, Transform spawnTransform, Transform parentTransform)
+	public virtual void InitializeGenerator(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction, int repeatIndex, Transform spawnTransform)
 	{
 		_signal = meHit;
 		_parentActor = parentActor;
 		_hitSignalIndexInAction = hitSignalIndexInAction;
 		_repeatIndex = repeatIndex;
-		_spawnTransform = spawnTransform;
-		_parentTransform = parentTransform;
 
 		_fullPathHash = 0;
 		if (disableOnChangeState)
@@ -33,20 +29,26 @@ public class ContinuousHitObjectGeneratorBase : MonoBehaviour
 			if (parentActor.actionController.animator != null)
 				_fullPathHash = parentActor.actionController.animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
 		}
-
-		if (attachChild)
-		{
-
-		}
+		cachedTransform.parent = attachChild ? spawnTransform : null;
 	}
 
-	// 완벽한 복제를 위해선 spawnTransform 및 parentTransform까지 가져와야한다.
+	
 	protected HitObject DuplicateHitObject()
 	{
+		// 완벽한 복제를 위해선 spawnTransform 및 parentTransform까지 가져와야한다.
+		//Vector3 targetPosition = HitObject.GetTargetPosition(_signal, _parentActor, _hitSignalIndexInAction);
+		//Vector3 defaultPosition = HitObject.GetSpawnPosition(_spawnTransform, _signal, _parentTransform);
+		//Quaternion defaultRotation = Quaternion.LookRotation(HitObject.GetSpawnDirection(defaultPosition, _signal, _parentTransform, targetPosition));
+		//
+		// 위 코드가 제일 정확하긴 한데
+		// 사실 발생기는 발생을 위임받은거라 저렇게 발사하는 액터의 트랜스폼을 갖는게 구조적으로 이상해보인다.
+		// 그래서 원래 의미대로 발생기의 포지션에서 발생하며
+		// 각도만 현재 타겟에 따라 달라질 수 있게 바꿔본다.
+		// AttachChild해놨으면 알아서 밀려나갈때 발생기도 밀려날거고 그렇지 않다면 생성된 자리에서 만들어낼거다.
 		Vector3 targetPosition = HitObject.GetTargetPosition(_signal, _parentActor, _hitSignalIndexInAction);
-		Vector3 defaultPosition = HitObject.GetSpawnPosition(_spawnTransform, _signal, _parentTransform);
-		Quaternion defaultRotation = Quaternion.LookRotation(HitObject.GetSpawnDirection(defaultPosition, _signal, _parentTransform, targetPosition));
-		return Generate(defaultPosition, defaultRotation);
+		Vector3 position = cachedTransform.position;
+		Quaternion rotation = Quaternion.LookRotation(HitObject.GetSpawnDirection(position, _signal, cachedTransform, targetPosition));
+		return Generate(position, rotation);
 	}
 
 	// 본체 기준에서 만들어내는 Generate

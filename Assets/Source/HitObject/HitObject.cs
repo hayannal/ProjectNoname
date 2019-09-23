@@ -112,7 +112,7 @@ public class HitObject : MonoBehaviour
 			{
 				ContinuousHitObjectGeneratorBase continuousHitObjectGenerator = BattleInstanceManager.instance.GetContinuousHitObjectGenerator(meHit.continuousHitObjectGeneratorBaseList[i].gameObject, defaultPosition, defaultRotation);
 				ignoreMainHitObjectByGenerator |= continuousHitObjectGenerator.ignoreMainHitObject;
-				continuousHitObjectGenerator.InitializeGenerator(meHit, parentActor, hitSignalIndexInAction, repeatIndex, spawnTransform, parentTransform);
+				continuousHitObjectGenerator.InitializeGenerator(meHit, parentActor, hitSignalIndexInAction, repeatIndex, spawnTransform);
 			}
 		}
 

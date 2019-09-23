@@ -100,6 +100,8 @@ public class Actor : MonoBehaviour {
 		HitObject.EnableRigidbodyAndCollider(false, _rigidbody, _collider, null, false);
 	}
 
+	public Collider GetCollider() { return _collider; }
+
 	/*
 	// Team
 	public int TeamID

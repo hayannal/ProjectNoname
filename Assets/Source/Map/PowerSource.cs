@@ -47,7 +47,7 @@ public class PowerSource : MonoBehaviour
 			return;
 		if (affectorProcessor.actor == null)
 			return;
-		if (affectorProcessor.actor.team.teamID == (int)Team.eTeamID.DefaultMonster)
+		if (affectorProcessor.actor.team.teamId == (int)Team.eTeamID.DefaultMonster)
 			return;
 
 		BattleInstanceManager.instance.GetCachedObject(StageManager.instance.gatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);

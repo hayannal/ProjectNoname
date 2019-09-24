@@ -127,7 +127,7 @@ public class GatePillar : MonoBehaviour
 		HitObject hitObject = BattleInstanceManager.instance.GetHitObjectFromCollider(collider);
 		if (hitObject == null)
 			return false;
-		if (hitObject.statusStructForHitObject.teamID == (int)Team.eTeamID.DefaultMonster)
+		if (hitObject.statusStructForHitObject.teamId == (int)Team.eTeamID.DefaultMonster)
 			return false;
 		if (hitObject.createTime < _spawnTime)
 			return false;

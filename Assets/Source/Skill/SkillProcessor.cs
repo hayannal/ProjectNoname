@@ -151,7 +151,7 @@ public class SkillProcessor : MonoBehaviour
 
 	static void CopyEtcStatus(ref StatusStructForHitObject statusStructForHitObject, Actor actor)
 	{
-		statusStructForHitObject.teamID = actor.team.teamID;
+		statusStructForHitObject.teamId = actor.team.teamId;
 		statusStructForHitObject.weaponIDAtCreation = 0;
 		//if (meHit.useWeaponHitEffect)
 		//	statusStructForHitObject.weaponIDAtCreation = actor.GetWeaponID(meHit.weaponDummyName);

@@ -5,7 +5,7 @@ using ActorStatusDefine;
 
 public struct StatusStructForHitObject
 {
-	public int teamID;
+	public int teamId;
 	public int weaponIDAtCreation;
 	public int skillLevel;  // current action skill level
 	public int hitSignalIndexInAction;

@@ -64,7 +64,7 @@ public class TargetingProcessor : MonoBehaviour {
 			// team check
 			if (_teamComponent != null)
 			{
-				if (!Team.CheckTeamFilter(_teamComponent.teamID, result[i], teamFilter, false))
+				if (!Team.CheckTeamFilter(_teamComponent.teamId, result[i], teamFilter, false))
 					continue;
 			}
 

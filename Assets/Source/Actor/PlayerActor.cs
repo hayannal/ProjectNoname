@@ -44,7 +44,7 @@ public class PlayerActor : Actor
 	{
 		base.InitializeActor();
 
-		team.teamID = (int)Team.eTeamID.DefaultArmy;
+		team.SetTeamId((int)Team.eTeamID.DefaultAlly, true, gameObject, Team.eTeamLayer.TEAM0_ACTOR_LAYER);
 		skillProcessor.InitializeSkill(actorId);
 		actorStatus.InitializeActorStatus(actorId);
 

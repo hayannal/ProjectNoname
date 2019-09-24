@@ -55,7 +55,7 @@ public class TreasureChest : MonoBehaviour
 			return;
 		if (affectorProcessor.actor == null)
 			return;
-		if (affectorProcessor.actor.team.teamID == (int)Team.eTeamID.DefaultMonster)
+		if (affectorProcessor.actor.team.teamId == (int)Team.eTeamID.DefaultMonster)
 			return;
 
 		ShowIndicator();

@@ -59,7 +59,7 @@ public class MonsterActor : Actor
 	{
 		base.InitializeActor();
 
-		team.teamID = (int)Team.eTeamID.DefaultMonster;
+		team.SetTeamId((int)Team.eTeamID.DefaultMonster, true, gameObject, Team.eTeamLayer.TEAM1_ACTOR_LAYER);
 		bossMonster = cachedMonsterTableData.boss;
 		if (cachedTransform.parent != null)
 			group = cachedTransform.parent.GetComponent<GroupMonster>();

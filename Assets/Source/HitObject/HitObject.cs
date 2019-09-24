@@ -37,7 +37,7 @@ public class HitObject : MonoBehaviour
 					AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(targetCollider);
 					if (affectorProcessor == null)
 						continue;
-					if (!Team.CheckTeamFilter(parentActor.team.teamID, targetCollider, meHit.teamCheckType))
+					if (!Team.CheckTeamFilter(parentActor.team.teamId, targetCollider, meHit.teamCheckType))
 						continue;
 					float colliderRadius = ColliderUtil.GetRadius(targetCollider);
 					if (colliderRadius == -1.0f)
@@ -265,7 +265,7 @@ public class HitObject : MonoBehaviour
 
 	static void CopyEtcStatusForHitObject(ref StatusStructForHitObject statusStructForHitObject, Actor actor, MeHitObject meHit, int hitSignalIndexInAction, int repeatIndex)
 	{
-		statusStructForHitObject.teamID = actor.team.teamID;
+		statusStructForHitObject.teamId = actor.team.teamId;
 		statusStructForHitObject.weaponIDAtCreation = 0;
 		//if (meHit.useWeaponHitEffect)
 		//	statusStructForHitObject.weaponIDAtCreation = actor.GetWeaponID(meHit.weaponDummyName);
@@ -291,7 +291,7 @@ public class HitObject : MonoBehaviour
 				continue;
 
 			// team check
-			if (!Team.CheckTeamFilter(statusForHitObject.teamID, result[i], meHit.teamCheckType))
+			if (!Team.CheckTeamFilter(statusForHitObject.teamId, result[i], meHit.teamCheckType))
 				continue;
 
 			// object radius
@@ -377,17 +377,32 @@ public class HitObject : MonoBehaviour
 		_animator = GetComponent<Animator>();
 	}
 
-	static int HITOBJECT_LAYER;
 	public void InitializeHitObject(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction, int repeatIndex)
 	{
-		if (HITOBJECT_LAYER == 0) HITOBJECT_LAYER = LayerMask.NameToLayer("HitObject");
-		if (gameObject.layer == 0)
-			ObjectUtil.ChangeLayer(gameObject, HITOBJECT_LAYER);
-
 		_signal = meHit;
 		_createTime = Time.time;
 		parentActor.actorStatus.CopyStatusBase(ref _statusBase);
 		CopyEtcStatusForHitObject(ref _statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction, repeatIndex);
+
+		Team.eTeamLayer teamLayerType = Team.eTeamLayer.TeamLayer_Amount;
+		switch (_statusStructForHitObject.teamId)
+		{
+			case (int)Team.eTeamID.DefaultAlly:
+				switch (_signal.teamCheckType)
+				{
+					case Team.eTeamCheckFilter.Enemy: teamLayerType = Team.eTeamLayer.TEAM0_HITOBJECT_LAYER; break;
+					case Team.eTeamCheckFilter.Ally: teamLayerType = Team.eTeamLayer.TEAM1_HITOBJECT_LAYER; break;
+				}
+				break;
+			case (int)Team.eTeamID.DefaultMonster:
+				switch (_signal.teamCheckType)
+				{
+					case Team.eTeamCheckFilter.Enemy: teamLayerType = Team.eTeamLayer.TEAM1_HITOBJECT_LAYER; break;
+					case Team.eTeamCheckFilter.Ally: teamLayerType = Team.eTeamLayer.TEAM0_HITOBJECT_LAYER; break;
+				}
+				break;
+		}
+		Team.SetTeamLayer(gameObject, teamLayerType);
 
 		if (_rigidbody == null) _rigidbody = GetComponent<Rigidbody>();
 		if (_collider == null) _collider = GetComponentInChildren<Collider>();
@@ -617,7 +632,7 @@ public class HitObject : MonoBehaviour
 				ignoreAffectorProcessor = true;
 
 			AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(col);
-			if (affectorProcessor != null && Team.CheckTeamFilter(_statusStructForHitObject.teamID, col, _signal.teamCheckType))
+			if (affectorProcessor != null && Team.CheckTeamFilter(_statusStructForHitObject.teamId, col, _signal.teamCheckType))
 			{
 				if (_signal.oneHitPerTarget)
 				{
@@ -663,7 +678,7 @@ public class HitObject : MonoBehaviour
 		if (monsterCollided)
 		{
 			bool ricochetApplied = false;
-			if (_remainRicochetCount > 0 && _hitObjectMovement != null && _hitObjectMovement.IsEnableRicochet(_statusStructForHitObject.teamID))
+			if (_remainRicochetCount > 0 && _hitObjectMovement != null && _hitObjectMovement.IsEnableRicochet(_statusStructForHitObject.teamId))
 			{
 				// 리코세를 하기 위해선 각도에 따라 몹을 관통하기도 관통 안하기도 한다.
 				// 그렇다고 이걸 일일이 각도 체크하면서 하기엔 위험부담이 있어서
@@ -789,7 +804,7 @@ public class HitObject : MonoBehaviour
 		if (_signal.useHitStay)
 		{
 			AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(col);
-			if (affectorProcessor != null && CheckHitStayInterval(affectorProcessor) && Team.CheckTeamFilter(_statusStructForHitObject.teamID, col, _signal.teamCheckType))
+			if (affectorProcessor != null && CheckHitStayInterval(affectorProcessor) && Team.CheckTeamFilter(_statusStructForHitObject.teamId, col, _signal.teamCheckType))
 			{
 				Vector3 contactPoint = Vector3.zero;
 				Vector3 contactNormal = Vector3.forward;

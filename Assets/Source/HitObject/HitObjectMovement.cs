@@ -10,7 +10,6 @@ public class HitObjectMovement : MonoBehaviour {
 		FollowTarget,
 		Turn,
 		//Howitzer,
-		//Homing
 	}
 
 	public enum eStartDirectionType
@@ -38,12 +37,15 @@ public class HitObjectMovement : MonoBehaviour {
 		{
 			case eMovementType.FollowTarget:
 				_currentCurve = _signal.curve;
+				Collider targetCollider = parentActor.targetingProcessor.GetTarget();
+				if (targetCollider != null)
+					_followTargetTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
+				else
+					_followTargetTransform = null;
 
-				//TargetSystem targetSystem = parentTransform.GetComponent<TargetSystem>();
-
-				// temp code
-				GameObject tempObject = GameObject.Find("GoblinB(Clone)");
-				if (tempObject != null) _followTargetTransform = tempObject.transform;
+				// FollowTarget역시 최초에 한번 설정해두는게 좋다. 타겟 없을때 앞으로 나가게 하려면 이게 제일 나은듯.
+				_rigidbody.velocity = cachedTransform.forward * _signal.speed;
+				_forward = cachedTransform.forward;
 				break;
 			case eMovementType.Direct:
 			case eMovementType.Turn:
@@ -93,14 +95,20 @@ public class HitObjectMovement : MonoBehaviour {
 					Vector3 diffDir = _followTargetTransform.position - cachedTransform.position;
 					if (_signal.curveLockY)
 					{
-						cachedTransform.rotation = Quaternion.Slerp(cachedTransform.rotation, Quaternion.LookRotation(diffDir), _currentCurve * Time.fixedDeltaTime);
+						diffDir.y = 0.0f;
+						cachedTransform.rotation = Quaternion.RotateTowards(cachedTransform.rotation, Quaternion.LookRotation(diffDir), _currentCurve * Time.fixedDeltaTime);
 					}
 					else
 					{
 						Vector3 newDir = Vector3.RotateTowards(cachedTransform.forward, diffDir, _currentCurve * Time.fixedDeltaTime, 0.0f);
 						cachedTransform.rotation = Quaternion.LookRotation(newDir);
 					}
-					_rigidbody.velocity = cachedTransform.forward * _signal.speed;
+					_velocity = _rigidbody.velocity = cachedTransform.forward * _signal.speed;
+					_forward = cachedTransform.forward;
+				}
+				else
+				{
+					// 중간에 타겟을 바꿀일은 없겠지?
 				}
 				break;
 			case eMovementType.Turn:

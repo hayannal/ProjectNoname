@@ -8,6 +8,7 @@ public class HitObjectMovement : MonoBehaviour {
 	{
 		Direct,
 		FollowTarget,
+		Turn,
 		//Howitzer,
 		//Homing
 	}
@@ -45,6 +46,7 @@ public class HitObjectMovement : MonoBehaviour {
 				if (tempObject != null) _followTargetTransform = tempObject.transform;
 				break;
 			case eMovementType.Direct:
+			case eMovementType.Turn:
 				// 생성 방향이 곧 날아가는 방향이다. 냅둔다.
 				//Vector3 targetPosition = HitObject.GetTargetPosition(_signal, parentActor, hitSignalIndexInAction);
 				//_rigidbody.velocity = HitObject.GetStartDirection(cachedTransform.position, meHit, parentActor.cachedTransform, targetPosition) * _signal.speed;
@@ -75,9 +77,9 @@ public class HitObjectMovement : MonoBehaviour {
 	{
 		switch(_signal.movementType)
 		{
-		case eMovementType.FollowTarget:
-			_currentCurve += Time.deltaTime * _signal.curveAdd;
-			break;
+			case eMovementType.FollowTarget:
+				_currentCurve += Time.deltaTime * _signal.curveAdd;
+				break;
 		}
 	}
 
@@ -85,22 +87,29 @@ public class HitObjectMovement : MonoBehaviour {
 	{
 		switch(_signal.movementType)
 		{
-		case eMovementType.FollowTarget:
-			if (_followTargetTransform != null)
-			{
-				Vector3 diffDir = _followTargetTransform.position - cachedTransform.position;
-				if (_signal.curveLockY)
+			case eMovementType.FollowTarget:
+				if (_followTargetTransform != null)
 				{
-					cachedTransform.rotation = Quaternion.Slerp(cachedTransform.rotation, Quaternion.LookRotation(diffDir), _currentCurve * Time.fixedDeltaTime);
+					Vector3 diffDir = _followTargetTransform.position - cachedTransform.position;
+					if (_signal.curveLockY)
+					{
+						cachedTransform.rotation = Quaternion.Slerp(cachedTransform.rotation, Quaternion.LookRotation(diffDir), _currentCurve * Time.fixedDeltaTime);
+					}
+					else
+					{
+						Vector3 newDir = Vector3.RotateTowards(cachedTransform.forward, diffDir, _currentCurve * Time.fixedDeltaTime, 0.0f);
+						cachedTransform.rotation = Quaternion.LookRotation(newDir);
+					}
+					_rigidbody.velocity = cachedTransform.forward * _signal.speed;
 				}
-				else
-				{
-					Vector3 newDir = Vector3.RotateTowards(cachedTransform.forward, diffDir, _currentCurve * Time.fixedDeltaTime, 0.0f);
-					cachedTransform.rotation = Quaternion.LookRotation(newDir);
-				}
-				_rigidbody.velocity = cachedTransform.forward * _signal.speed;
-			}
-			break;
+				break;
+			case eMovementType.Turn:
+				_rigidbody.MoveRotation(_rigidbody.rotation * Quaternion.Euler(0.0f, _signal.accelTurn * Time.deltaTime, 0.0f));
+				cachedTransform.rotation = _rigidbody.rotation;
+				//cachedTransform.Rotate(0.0f, _signal.accelTurn * Time.deltaTime, 0.0f, Space.Self);
+				_velocity = _rigidbody.velocity = cachedTransform.forward * _signal.speed;
+				_forward = cachedTransform.forward;
+				break;
 		}
 	}
 

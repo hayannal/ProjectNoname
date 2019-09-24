@@ -44,6 +44,7 @@ public class MeHitObject : MecanimEventBase {
 	public float curve;
 	public float curveAdd;
 	public bool curveLockY;
+	public float accelTurn;
 
 	public int parallelCount;
 	public float parallelDistance;
@@ -134,11 +135,16 @@ public class MeHitObject : MecanimEventBase {
 		if (movable)
 		{
 			movementType = (HitObjectMovement.eMovementType)EditorGUILayout.EnumPopup("Movement Type :", movementType);
-			if (movementType == HitObjectMovement.eMovementType.FollowTarget)
+			switch (movementType)
 			{
-				curve = EditorGUILayout.FloatField("Curve Power :", curve);
-				curveAdd = EditorGUILayout.FloatField("Curve Power Add :", curveAdd);
-				curveLockY = EditorGUILayout.Toggle("Curve Lock Y :", curveLockY);
+				case HitObjectMovement.eMovementType.FollowTarget:
+					curve = EditorGUILayout.FloatField("Curve Power :", curve);
+					curveAdd = EditorGUILayout.FloatField("Curve Power Add :", curveAdd);
+					curveLockY = EditorGUILayout.Toggle("Curve Lock Y :", curveLockY);
+					break;
+				case HitObjectMovement.eMovementType.Turn:
+					accelTurn = EditorGUILayout.FloatField("Turn Power :", accelTurn);
+					break;
 			}
 			startDirectionType = (HitObjectMovement.eStartDirectionType)EditorGUILayout.EnumPopup("Start Direction Type :", startDirectionType);
 			if (startDirectionType == HitObjectMovement.eStartDirectionType.Direction)

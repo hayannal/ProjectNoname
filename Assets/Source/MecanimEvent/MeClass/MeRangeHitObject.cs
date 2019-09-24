@@ -14,6 +14,7 @@ public class MeRangeHitObject : MeHitObject
 	#if UNITY_EDITOR
 	override public void OnGUI_PropertyWindow()
 	{
+		EditorGUILayout.LabelField("[Only available for Area]", EditorStyles.boldLabel);
 		base.OnGUI_PropertyWindow();
 		targetDetectType = HitObject.eTargetDetectType.Area;
 		lifeTime = 0.0f;

@@ -504,10 +504,15 @@ public class HitObject : MonoBehaviour
 			return;
 		}
 
-		if (_signal.lifeTime > 0.0f && _signal.targetDetectType == eTargetDetectType.Area)
-		{
-			CheckHitArea(transform.position, transform.forward, _signal, _statusBase, _statusStructForHitObject);
-		}
+		// Range 시그널이 아닌 Area는 자체적으로 시간값 가지고 검사한다. 발사체 형태의 부채꼴을 처리하기 위함.
+		if (_signal.RangeSignal == false && _signal.lifeTime > 0.0f && _signal.targetDetectType == eTargetDetectType.Area)
+			UpdateArea();
+	}
+
+	public void UpdateArea()
+	{
+		// Range시그널은 시그널쪽에서 호출되서 처리된다. 히트오브젝트 스스로는 하지 않는다. 이래야 시그널 범위 넘어섰을때 자동으로 호출되지 않는다.
+		CheckHitArea(transform.position, transform.forward, _signal, _statusBase, _statusStructForHitObject);
 	}
 
 	//Vector3 _prevPosition = Vector3.zero;
@@ -520,7 +525,7 @@ public class HitObject : MonoBehaviour
 	void FixedUpdate()
 	{
 		// for life time 0.0f
-		if (_createTime + _signal.lifeTime < Time.time)
+		if (_signal.RangeSignal == false && _createTime + _signal.lifeTime < Time.time)
 		{
 			OnFinalizeByLifeTime();
 			return;
@@ -566,7 +571,7 @@ public class HitObject : MonoBehaviour
 			FinalizeHitObject();
 	}
 
-	void OnFinalizeByLifeTime()
+	public void OnFinalizeByLifeTime()
 	{
 		if (_waitHitObjectAnimatorUpdateCount > 0)
 			return;

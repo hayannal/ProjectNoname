@@ -223,14 +223,7 @@ public class MeHitObject : MecanimEventBase {
 		}
 		else if (targetDetectType == HitObject.eTargetDetectType.Area)
 		{
-			// Area에서도 HitStay는 비슷하게 처리할 수 있을거 같다. lifeTime이 있는 부채꼴이라 다단히트 처리가 되는 것.
-			if (oneHitPerTarget == false)
-				useHitStay = EditorGUILayout.Toggle("Use Hit Stay :", useHitStay);
-			if (useHitStay)
-			{
-				hitStayInterval = EditorGUILayout.FloatField("Hit Stay Interval :", hitStayInterval);
-				hitStayGroupNumber = EditorGUILayout.IntField("Hit Stay Group Number", hitStayGroupNumber);
-			}
+			// Area에서는 현재 One Hit Per Target만 지원한다.
 			if (useHitStay == false)
 			{
 				oneHitPerTarget = EditorGUILayout.Toggle("One Hit Per Target :", oneHitPerTarget);
@@ -435,13 +428,18 @@ public class MeHitObject : MecanimEventBase {
 				spawnTransform = attachTransform;
 		}
 
+		InitializeHitObject(spawnTransform, this, actor, parentTransform, hitSignalIndexInAction);
+	}
+
+	protected virtual void InitializeHitObject(Transform spawnTransform, MeHitObject meHit, Actor parentActor, Transform parentTransform, int hitSignalIndexInAction)
+	{
 		// Repeat처리가 가장 먼저다.
 		// 그런데 상황에 따라 메인 발사체를 스폰하지 않을 수 있다.
-		HitObject.InitializeHit(spawnTransform, this, actor, parentTransform, hitSignalIndexInAction, 0);
+		HitObject.InitializeHit(spawnTransform, meHit, parentActor, parentTransform, hitSignalIndexInAction, 0);
 
 		if (repeatCount > 0)
 		{
-			Timing.RunCoroutine(RepeatProcess(spawnTransform, this, actor, parentTransform, hitSignalIndexInAction));
+			Timing.RunCoroutine(RepeatProcess(spawnTransform, meHit, parentActor, parentTransform, hitSignalIndexInAction));
 		}
 	}
 
@@ -458,7 +456,7 @@ public class MeHitObject : MecanimEventBase {
 			if (this == null)
 				yield break;
 
-			HitObject.InitializeHit(duplicatedSpawnTransform, this, actor, duplicatedParentTransform, hitSignalIndexInAction, i);
+			HitObject.InitializeHit(duplicatedSpawnTransform, meHit, parentActor, duplicatedParentTransform, hitSignalIndexInAction, i);
 		}
 		duplicatedSpawnTransform.gameObject.SetActive(false);
 		duplicatedParentTransform.gameObject.SetActive(false);

@@ -20,7 +20,7 @@ public class HitObject : MonoBehaviour
 	}
 
 	#region staticFunction
-	public static void InitializeHit(Transform spawnTransform, MeHitObject meHit, Actor parentActor, Transform parentTransform, int hitSignalIndexInAction, int repeatIndex)
+	public static HitObject InitializeHit(Transform spawnTransform, MeHitObject meHit, Actor parentActor, Transform parentTransform, int hitSignalIndexInAction, int repeatIndex)
 	{
 		// step 1. Find Target and Reaction
 		if (meHit.targetDetectType == eTargetDetectType.Preset)
@@ -61,7 +61,7 @@ public class HitObject : MonoBehaviour
 						HitRimBlink.ShowHitRimBlink(affectorProcessor.cachedTransform, hitParameter.contactNormal);
 				}
 			}
-			return;
+			return null;
 		}
 		else if (meHit.targetDetectType == eTargetDetectType.Area)
 		{
@@ -73,8 +73,10 @@ public class HitObject : MonoBehaviour
 			// HitObject 프리팹이 있거나 lifeTime이 있다면 생성하고 아니면 패스.
 			Vector3 position = GetSpawnPosition(spawnTransform, meHit, parentTransform);
 			Quaternion rotation = Quaternion.LookRotation(GetSpawnDirection(position, meHit, parentTransform, GetTargetPosition(meHit, parentActor, hitSignalIndexInAction)));
-			GetCachedHitObject(meHit, position, rotation);
-			return;
+			HitObject hitObject = GetCachedHitObject(meHit, position, rotation);
+			if (hitObject != null)
+				hitObject.InitializeHitObject(meHit, parentActor, hitSignalIndexInAction, repeatIndex);
+			return hitObject;
 		}
 
 		// step2. Collider타입은 상황에 맞게 1개 혹은 여러개 만들어야한다.
@@ -125,7 +127,9 @@ public class HitObject : MonoBehaviour
 			HitObject hitObject = GetCachedHitObject(meHit, defaultPosition, defaultRotation);
 			if (hitObject != null)
 				hitObject.InitializeHitObject(meHit, parentActor, hitSignalIndexInAction, repeatIndex);
+			return hitObject;
 		}
+		return null;
 	}
 
 	public static HitObject GetCachedHitObject(MeHitObject meHit, Vector3 position, Quaternion rotation)

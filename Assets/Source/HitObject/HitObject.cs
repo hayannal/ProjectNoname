@@ -570,7 +570,7 @@ public class HitObject : MonoBehaviour
 		gameObject.SetActive(false);
 	}
 
-	void OnFinalizeByCollision()
+	void OnFinalizeByCollision(bool plane = false)
 	{
 		EnableRigidbodyAndCollider(false);
 
@@ -579,8 +579,13 @@ public class HitObject : MonoBehaviour
 
 		if (_hitObjectLineRenderer != null)
 			_hitObjectLineRenderer.DisableLineRenderer(false);
-		if (_hitObjectAnimator != null && _hitObjectAnimator.OnFinalizeByCollision())
-			_hitObjectAnimatorStarted = true;
+		if (_hitObjectAnimator != null)
+		{
+			if (plane == false && _hitObjectAnimator.OnFinalizeByCollision())
+				_hitObjectAnimatorStarted = true;
+			if (plane == true && _hitObjectAnimator.OnFinalizeByCollisionPlane())
+				_hitObjectAnimatorStarted = true;
+		}
 
 		if (_disableSelfObjectAfterCollision)
 			FinalizeHitObject();
@@ -607,6 +612,7 @@ public class HitObject : MonoBehaviour
 	{
 		//Debug.Log("hit object collision enter");
 		bool collided = false;
+		bool planeCollided = false;
 		bool groundQuadCollided = false;
 		bool wallCollided = false;
 		bool monsterCollided = false;
@@ -620,6 +626,12 @@ public class HitObject : MonoBehaviour
 			collided = true;
 			if (_signal.showHitEffect)
 				HitEffect.ShowHitEffect(_signal, contact.point, contact.normal, _statusStructForHitObject.weaponIDAtCreation);
+
+			if (BattleInstanceManager.instance.planeCollider != null && BattleInstanceManager.instance.planeCollider == col)
+			{
+				planeCollided = true;
+				wallNormal = contact.normal;
+			}
 
 			if (BattleInstanceManager.instance.currentGround != null && BattleInstanceManager.instance.currentGround.CheckQuadCollider(col))
 			{
@@ -654,7 +666,7 @@ public class HitObject : MonoBehaviour
 					monsterCollided = true;
 				}
 			}
-			else if (groundQuadCollided == false)
+			else if (planeCollided == false && groundQuadCollided == false)
 			{
 				wallCollided = true;
 				wallNormal = contact.normal;
@@ -664,10 +676,10 @@ public class HitObject : MonoBehaviour
 				break;
 		}
 
-		OnPostCollided(collided, groundQuadCollided, wallCollided, monsterCollided, wallNormal);
+		OnPostCollided(collided, planeCollided, groundQuadCollided, wallCollided, monsterCollided, wallNormal);
 	}
 
-	void OnPostCollided(bool collided, bool groundQuadCollided, bool wallCollided, bool monsterCollided, Vector3 wallNormal)
+	void OnPostCollided(bool collided, bool planeCollided, bool groundQuadCollided, bool wallCollided, bool monsterCollided, Vector3 wallNormal)
 	{
 		if (collided == false)
 			return;
@@ -743,6 +755,12 @@ public class HitObject : MonoBehaviour
 				OnFinalizeByCollision();
 				return;
 			}
+		}
+
+		if (planeCollided)
+		{
+			OnFinalizeByCollision(true);
+			return;
 		}
 
 		if (useBounce)

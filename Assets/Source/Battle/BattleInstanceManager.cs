@@ -23,6 +23,7 @@ public class BattleInstanceManager : MonoBehaviour
 	public Collider targetColliderOfMonster { get; set; }
 	public Actor targetOfMonster { get; set; }
 	public Ground currentGround { get; set; }
+	public Collider planeCollider { get; set; }
 	#endregion
 
 

@@ -202,6 +202,7 @@ public class StageManager : MonoBehaviour
 		if (_currentPlaneObject != null)
 			_currentPlaneObject.SetActive(false);
 		_currentPlaneObject = BattleInstanceManager.instance.GetCachedObject(_handleNextPlanePrefab.Result, Vector3.zero, Quaternion.identity);
+		BattleInstanceManager.instance.planeCollider = _currentPlaneObject.GetComponent<Collider>();
 
 		if (_currentGroundObject != null)
 			_currentGroundObject.SetActive(false);

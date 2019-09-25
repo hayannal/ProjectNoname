@@ -43,7 +43,7 @@ public class MeHitObject : MecanimEventBase {
 	public float speed;
 	public float curve;
 	public float curveAdd;
-	public bool curveLockY;
+	public bool curveLockY = true;
 	public float accelTurn;
 
 	public int parallelCount;

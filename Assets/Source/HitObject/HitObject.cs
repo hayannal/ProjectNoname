@@ -508,6 +508,8 @@ public class HitObject : MonoBehaviour
 
 	void Update()
 	{
+		UpdateIgnoreList();
+
 		if (_waitHitObjectAnimatorUpdateCount > 0)
 		{
 			_waitHitObjectAnimatorUpdateCount -= 1;
@@ -556,6 +558,7 @@ public class HitObject : MonoBehaviour
 			_listOneHitPerTarget.Clear();
 		if (_dicHitStayTime != null)
 			_dicHitStayTime.Clear();
+		ClearIgnoreList();
 
 		// 히트 오브젝트 애니메이터를 발동시켜놨으면 첫번째 프레임이 호출될때까지는 기다려야한다.
 		if (_hitObjectAnimatorStarted)
@@ -623,10 +626,6 @@ public class HitObject : MonoBehaviour
 			if (col == null)
 				continue;
 
-			collided = true;
-			if (_signal.showHitEffect)
-				HitEffect.ShowHitEffect(_signal, contact.point, contact.normal, _statusStructForHitObject.weaponIDAtCreation);
-
 			if (BattleInstanceManager.instance.planeCollider != null && BattleInstanceManager.instance.planeCollider == col)
 			{
 				planeCollided = true;
@@ -653,26 +652,33 @@ public class HitObject : MonoBehaviour
 						ignoreAffectorProcessor = true;
 				}
 
-				if (ignoreAffectorProcessor == false)
+				if (ignoreAffectorProcessor == false && _signal.useHitStay == false)
 				{
-					if (_signal.useHitStay == false)
-					{
-						OnCollisionEnterAffectorProcessor(affectorProcessor, contact.point, contact.normal);
-						if (_signal.oneHitPerTarget)
-							_listOneHitPerTarget.Add(affectorProcessor);
-						if (_remainRicochetCount > 0 && _hitObjectMovement != null)
-							_hitObjectMovement.AddRicochet(col, _remainRicochetCount == _signal.ricochetCount);
-					}
+					OnCollisionEnterAffectorProcessor(affectorProcessor, contact.point, contact.normal);
+					if (_signal.oneHitPerTarget)
+						_listOneHitPerTarget.Add(affectorProcessor);
+					if (_remainRicochetCount > 0 && _hitObjectMovement != null)
+						_hitObjectMovement.AddRicochet(col, _remainRicochetCount == _signal.ricochetCount);
 					monsterCollided = true;
+
+					if (_signal.monsterThroughCount > 0 || _signal.monsterThroughCount == -1)
+						AddIgnoreList(col);
 				}
 			}
 			else if (planeCollided == false && groundQuadCollided == false)
 			{
 				wallCollided = true;
 				wallNormal = contact.normal;
+
+				if (_signal.wallThrough)
+					AddIgnoreList(col);
 			}
 
-			if (_signal.contactAll == false)
+			collided = planeCollided || groundQuadCollided || wallCollided || monsterCollided;
+			if (collided && _signal.showHitEffect)
+				HitEffect.ShowHitEffect(_signal, contact.point, contact.normal, _statusStructForHitObject.weaponIDAtCreation);
+
+			if (collided && _signal.contactAll == false)
 				break;
 		}
 
@@ -772,8 +778,11 @@ public class HitObject : MonoBehaviour
 
 		if (useThrough)
 		{
-			_tempTriggerOnCollision = true;
-			_collider.isTrigger = true;
+			if (_signal.useHitStay && _triggerForHitStay != null)
+			{
+				_tempTriggerOnCollision = true;
+				_collider.isTrigger = true;
+			}
 			if (_hitObjectMovement != null)
 				_hitObjectMovement.ReinitializeForThrough();
 			return;
@@ -916,6 +925,51 @@ public class HitObject : MonoBehaviour
 			HitRimBlink.ShowHitRimBlink(affectorProcessor.cachedTransform, hitParameter.contactNormal);
 	}
 
+	#region Ignore List
+	List<Collider> _listIgnoreCollider;
+	void AddIgnoreList(Collider collider)
+	{
+		if (_listIgnoreCollider == null)
+			_listIgnoreCollider = new List<Collider>();
+		if (_listIgnoreCollider.Contains(collider))
+			return;
+		_listIgnoreCollider.Add(collider);
+		Physics.IgnoreCollision(_collider, collider);
+	}
+
+	void RemoveIgnoreList(Collider collider)
+	{
+		if (_listIgnoreCollider == null)
+			return;
+		if (_listIgnoreCollider.Contains(collider) == false)
+			return;
+		_listIgnoreCollider.Remove(collider);
+		Physics.IgnoreCollision(_collider, collider, false);
+	}
+
+	void ClearIgnoreList()
+	{
+		if (_listIgnoreCollider == null)
+			return;
+		for (int i = 0; i < _listIgnoreCollider.Count; ++i)
+			RemoveIgnoreList(_listIgnoreCollider[i]);
+		_listIgnoreCollider.Clear();
+	}
+
+	void UpdateIgnoreList()
+	{
+		if (_listIgnoreCollider == null)
+			return;
+		for (int i = 0; i < _listIgnoreCollider.Count; ++i)
+		{
+			if (_collider.bounds.Intersects(_listIgnoreCollider[i].bounds) == false)
+			{
+				RemoveIgnoreList(_listIgnoreCollider[i]);
+				break;
+			}
+		}
+	}
+	#endregion
 
 
 

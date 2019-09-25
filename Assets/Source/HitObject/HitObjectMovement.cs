@@ -9,7 +9,7 @@ public class HitObjectMovement : MonoBehaviour {
 		Direct,
 		FollowTarget,
 		Turn,
-		//Howitzer,
+		Howitzer,
 	}
 
 	public enum eStartDirectionType
@@ -18,6 +18,12 @@ public class HitObjectMovement : MonoBehaviour {
 		Direction,
 		ToFirstTarget,
 		ToMultiTarget,
+	}
+
+	public enum eHowitzerType
+	{
+		FixedTime,
+		FixedSpeed,
 	}
 
 	MeHitObject _signal;
@@ -54,6 +60,32 @@ public class HitObjectMovement : MonoBehaviour {
 				//_rigidbody.velocity = HitObject.GetStartDirection(cachedTransform.position, meHit, parentActor.cachedTransform, targetPosition) * _signal.speed;
 				_velocity = _rigidbody.velocity = cachedTransform.forward * _signal.speed;
 				_forward = cachedTransform.forward;
+				break;
+			case eMovementType.Howitzer:
+				Vector3 targetPosition = HitObject.GetTargetPosition(_signal, parentActor, hitSignalIndexInAction);
+				switch (_signal.howitzerType)
+				{
+					case eHowitzerType.FixedTime:
+						_velocity = _rigidbody.velocity = ProjectileHelper.ComputeVelocityToHitTargetAtTime(cachedTransform.position, targetPosition, _signal.gravity, _signal.lifeTime);
+						_forward = cachedTransform.forward = _rigidbody.velocity.normalized;
+						break;
+					case eHowitzerType.FixedSpeed:
+						// 이거로 하면 out으로 나온 direction1,2 둘다 이상한 값이 들어있어서 쓸수가 없다. 차라리 위 함수를 응용해서 하기로 한다.
+						//Vector3 direction1;
+						//Vector3 direction2;
+						//bool result = ProjectileHelper.ComputeDirectionToHitTargetWithSpeed(cachedTransform.position, targetPosition, _signal.gravity, _signal.speed, out direction1, out direction2);
+						//if (result == false)
+						//{
+						//	Debug.LogError("Invalid Parameter! HitObject can't reach the target.");
+						//	break;
+						//}
+						//_velocity = _rigidbody.velocity = direction1.y > 0.0f ? direction2 : direction1;
+						Vector3 diff = targetPosition - cachedTransform.position;
+						float time = diff.magnitude / _signal.speed;
+						_velocity = _rigidbody.velocity = ProjectileHelper.ComputeVelocityToHitTargetAtTime(cachedTransform.position, targetPosition, _signal.gravity, time);
+						_forward = cachedTransform.forward = _rigidbody.velocity.normalized;
+						break;
+				}
 				break;
 		}
 	}
@@ -117,6 +149,13 @@ public class HitObjectMovement : MonoBehaviour {
 				//cachedTransform.Rotate(0.0f, _signal.accelTurn * Time.deltaTime, 0.0f, Space.Self);
 				_velocity = _rigidbody.velocity = cachedTransform.forward * _signal.speed;
 				_forward = cachedTransform.forward;
+				break;
+			case eMovementType.Howitzer:
+				Vector3 currentPosition = _rigidbody.position;
+				ProjectileHelper.UpdateProjectile(ref currentPosition, ref _velocity, _signal.gravity, Time.fixedDeltaTime);
+				// currentPosition을 적용해버리면 rigidbody도 앞으로 나아가고 transform도 앞으로 나아가서 두배로 가게 된다. 둘중 하나만 한다면 rigidbody만 하는게 맞다.
+				_rigidbody.velocity = _velocity;
+				_forward = cachedTransform.forward = _rigidbody.velocity.normalized;
 				break;
 		}
 	}

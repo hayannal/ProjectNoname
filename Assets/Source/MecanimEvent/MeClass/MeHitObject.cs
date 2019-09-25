@@ -34,6 +34,7 @@ public class MeHitObject : MecanimEventBase {
 	public HitObjectMovement.eMovementType movementType;
 	public HitObjectMovement.eStartDirectionType startDirectionType;
 	public Vector3 startDirection = Vector3.forward;
+	public HitObjectMovement.eHowitzerType howitzerType;
 	public bool useWorldSpaceDirection;
 	public bool bothRandomAngle = true;
 	public float leftRightRandomAngle;
@@ -45,6 +46,7 @@ public class MeHitObject : MecanimEventBase {
 	public float curveAdd;
 	public bool curveLockY = true;
 	public float accelTurn;
+	public float gravity = -9.81f;
 
 	public int parallelCount;
 	public float parallelDistance;
@@ -144,6 +146,10 @@ public class MeHitObject : MecanimEventBase {
 					break;
 				case HitObjectMovement.eMovementType.Turn:
 					accelTurn = EditorGUILayout.FloatField("Turn Power :", accelTurn);
+					break;
+				case HitObjectMovement.eMovementType.Howitzer:
+					howitzerType = (HitObjectMovement.eHowitzerType)EditorGUILayout.EnumPopup("Howitzer Type :", howitzerType);
+					gravity = EditorGUILayout.FloatField("Gravity :", gravity);
 					break;
 			}
 			startDirectionType = (HitObjectMovement.eStartDirectionType)EditorGUILayout.EnumPopup("Start Direction Type :", startDirectionType);

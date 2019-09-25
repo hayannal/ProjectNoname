@@ -76,6 +76,8 @@ public sealed class LocalPlayerController : BaseCharacterController
 	/// 
 	/// </summary>
 
+	int _clearCustomTargetWaitCount = 0;
+	bool _standbyClearCustomTarget = false;
 	protected override void Animate()
 	{
 		// If no animator, return
@@ -127,9 +129,23 @@ public sealed class LocalPlayerController : BaseCharacterController
 				if (actionController.PlayActionByControl(Control.eControllerType.ScreenController, Control.eInputType.Tab))
 				{
 					actor.targetingProcessor.SetCustomTargetPosition(targetPosition);
+					_clearCustomTargetWaitCount = 10;
 					RotateTowards(targetPosition - transform.position);
 				}
 			}
+		}
+
+		if (_clearCustomTargetWaitCount > 0)
+		{
+			_clearCustomTargetWaitCount -= 1;
+			if (_clearCustomTargetWaitCount == 0)
+				_standbyClearCustomTarget = true;
+		}
+
+		if (_standbyClearCustomTarget && actionController.mecanimState.IsState((int)eMecanimState.Idle))
+		{
+			actor.targetingProcessor.ClearCustomTargetPosition();
+			_standbyClearCustomTarget = false;
 		}
 	}
 

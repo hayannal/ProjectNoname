@@ -128,10 +128,9 @@ public class TargetingProcessor : MonoBehaviour {
 	#region Custom Position
 	public bool IsRegisteredCustomTargetPosition()
 	{
-		return _registeredCustomTargetPositionCount > 0;
+		return _listCustomTargetPosition.Count > 0;
 	}
 
-	int _registeredCustomTargetPositionCount = 0;
 	List<Vector3> _listCustomTargetPosition;
 	public Vector3 GetCustomTargetPosition(int index)
 	{
@@ -141,7 +140,6 @@ public class TargetingProcessor : MonoBehaviour {
 		if (!IsRegisteredCustomTargetPosition())
 			return Vector3.zero;
 
-		_registeredCustomTargetPositionCount -= 1;
 		if (index < _listCustomTargetPosition.Count)
 			return _listCustomTargetPosition[index];
 		return Vector3.zero;
@@ -153,7 +151,6 @@ public class TargetingProcessor : MonoBehaviour {
 			_listCustomTargetPosition = new List<Vector3>();
 		_listCustomTargetPosition.Clear();
 		_listCustomTargetPosition.Add(position);
-		_registeredCustomTargetPositionCount = 1;
 	}
 
 	public void SetCustomTargetPosition(List<Collider> listTarget)
@@ -163,7 +160,13 @@ public class TargetingProcessor : MonoBehaviour {
 		_listCustomTargetPosition.Clear();
 		for (int i = 0; i < listTarget.Count; ++i)
 			_listCustomTargetPosition.Add(BattleInstanceManager.instance.GetTransformFromCollider(listTarget[i]).position);
-		_registeredCustomTargetPositionCount = listTarget.Count;
+	}
+
+	public void ClearCustomTargetPosition()
+	{
+		if (_listCustomTargetPosition == null)
+			return;
+		_listCustomTargetPosition.Clear();
 	}
 	#endregion
 }

@@ -190,10 +190,10 @@ public class HitObject : MonoBehaviour
 				targetIndex = hitSignalIndexInAction;
 
 			TargetingProcessor targetingProcessor = parentActor.targetingProcessor;
-			if (targetingProcessor.IsRegisteredCustomTargetPosition())
-				targetPosition = targetingProcessor.GetCustomTargetPosition(targetIndex);
-			else if (targetingProcessor.GetTarget() != null)
+			if (targetingProcessor.GetTarget() != null)
 				targetPosition = targetingProcessor.GetTargetPosition(targetIndex);
+			else if (targetingProcessor.IsRegisteredCustomTargetPosition())
+				targetPosition = targetingProcessor.GetCustomTargetPosition(targetIndex);
 			else
 				targetPosition = GetFallbackTargetPosition(parentActor.cachedTransform);
 		}

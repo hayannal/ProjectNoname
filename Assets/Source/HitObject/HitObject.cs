@@ -643,7 +643,7 @@ public class HitObject : MonoBehaviour
 				ignoreAffectorProcessor = true;
 
 			AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(col);
-			if (affectorProcessor != null && Team.CheckTeamFilter(_statusStructForHitObject.teamId, col, _signal.teamCheckType))
+			if (affectorProcessor != null)
 			{
 				if (_signal.oneHitPerTarget)
 				{
@@ -831,7 +831,7 @@ public class HitObject : MonoBehaviour
 		if (_signal.useHitStay)
 		{
 			AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(col);
-			if (affectorProcessor != null && CheckHitStayInterval(affectorProcessor) && Team.CheckTeamFilter(_statusStructForHitObject.teamId, col, _signal.teamCheckType))
+			if (affectorProcessor != null && CheckHitStayInterval(affectorProcessor))
 			{
 				Vector3 contactPoint = Vector3.zero;
 				Vector3 contactNormal = Vector3.forward;

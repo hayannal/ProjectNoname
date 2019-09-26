@@ -173,6 +173,16 @@ public class HitObjectMovement : MonoBehaviour {
 
 		_listRicochet.Add(collider);
 	}
+
+	public Collider GetLastRicochetCollider()
+	{
+		if (_listRicochet == null)
+			return null;
+
+		if (_listRicochet.Count == 0)
+			return null;
+		return _listRicochet[_listRicochet.Count - 1];
+	}
 	
 	public bool IsEnableRicochet(int teamId)
 	{

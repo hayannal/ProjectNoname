@@ -663,6 +663,7 @@ public class HitObject : MonoBehaviour
 
 					if (_signal.monsterThroughCount > 0 || _signal.monsterThroughCount == -1)
 						AddIgnoreList(col);
+					// 리코세는 가능여부 판단하고 해야해서 OnPostCollided함수 안에서 한다.
 				}
 			}
 			else if (planeCollided == false && groundQuadCollided == false)
@@ -709,7 +710,15 @@ public class HitObject : MonoBehaviour
 					ricochetApplied = true;
 					_remainRicochetCount -= 1;
 					if (colliderEnabled)
+					{
+						if (_signal.useHitStay == false)
+						{
+							Collider lastRicochetCollider = _hitObjectMovement.GetLastRicochetCollider();
+							if (lastRicochetCollider != null)
+								AddIgnoreList(lastRicochetCollider);
+						}
 						useThrough = true;
+					}
 					else
 						return;
 				}

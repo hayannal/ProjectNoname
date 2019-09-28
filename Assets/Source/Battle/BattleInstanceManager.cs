@@ -304,6 +304,78 @@ public class BattleInstanceManager : MonoBehaviour
 	}
 	#endregion
 
+	#region LineRenderer
+	Dictionary<GameObject, List<LineRenderer>> _dicLineRendererInstancePool = new Dictionary<GameObject, List<LineRenderer>>();
+	public LineRenderer GetCachedLineRenderer(GameObject prefab, Vector3 position, Quaternion rotation, Transform parentTransform = null)
+	{
+		List<LineRenderer> listCachedLineRenderer = null;
+		if (_dicLineRendererInstancePool.ContainsKey(prefab))
+			listCachedLineRenderer = _dicLineRendererInstancePool[prefab];
+		else
+		{
+			listCachedLineRenderer = new List<LineRenderer>();
+			_dicLineRendererInstancePool.Add(prefab, listCachedLineRenderer);
+		}
+
+		for (int i = 0; i < listCachedLineRenderer.Count; ++i)
+		{
+			if (!listCachedLineRenderer[i].gameObject.activeSelf)
+			{
+				listCachedLineRenderer[i].transform.parent = parentTransform;
+				listCachedLineRenderer[i].transform.position = position;
+				listCachedLineRenderer[i].transform.rotation = rotation;
+				listCachedLineRenderer[i].gameObject.SetActive(true);
+				return listCachedLineRenderer[i];
+			}
+		}
+
+		GameObject newObject = Instantiate<GameObject>(prefab, position, rotation, parentTransform);
+#if UNITY_EDITOR
+		AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+		if (settings.ActivePlayModeDataBuilderIndex == 2)
+			ObjectUtil.ReloadShader(newObject);
+#endif
+		LineRenderer lineRenderer = newObject.GetComponent<LineRenderer>();
+		listCachedLineRenderer.Add(lineRenderer);
+		return lineRenderer;
+	}
+
+	Dictionary<GameObject, List<RayDesigner>> _dicRayDesignerInstancePool = new Dictionary<GameObject, List<RayDesigner>>();
+	public RayDesigner GetCachedRayDesigner(GameObject prefab, Vector3 position, Quaternion rotation, Transform parentTransform = null)
+	{
+		List<RayDesigner> listCachedRayDesigner = null;
+		if (_dicRayDesignerInstancePool.ContainsKey(prefab))
+			listCachedRayDesigner = _dicRayDesignerInstancePool[prefab];
+		else
+		{
+			listCachedRayDesigner = new List<RayDesigner>();
+			_dicRayDesignerInstancePool.Add(prefab, listCachedRayDesigner);
+		}
+
+		for (int i = 0; i < listCachedRayDesigner.Count; ++i)
+		{
+			if (!listCachedRayDesigner[i].gameObject.activeSelf)
+			{
+				listCachedRayDesigner[i].transform.parent = parentTransform;
+				listCachedRayDesigner[i].transform.position = position;
+				listCachedRayDesigner[i].transform.rotation = rotation;
+				listCachedRayDesigner[i].gameObject.SetActive(true);
+				return listCachedRayDesigner[i];
+			}
+		}
+
+		GameObject newObject = Instantiate<GameObject>(prefab, position, rotation, parentTransform);
+#if UNITY_EDITOR
+		AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+		if (settings.ActivePlayModeDataBuilderIndex == 2)
+			ObjectUtil.ReloadShader(newObject);
+#endif
+		RayDesigner rayDesigner = newObject.GetComponent<RayDesigner>();
+		listCachedRayDesigner.Add(rayDesigner);
+		return rayDesigner;
+	}
+	#endregion
+
 	#region Collider Transform
 	Dictionary<Collider, Transform> _dicTransformByCollider = new Dictionary<Collider, Transform>();
 	public Transform GetTransformFromCollider(Collider collider)

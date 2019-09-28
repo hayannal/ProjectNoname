@@ -198,6 +198,21 @@ public class RayDesigner : MonoBehaviour
         }
     }
 
+	public void UpdateMesh()
+	{
+		for (int r = 0; r < Rays.Count; r++)
+		{
+			if (Rays[r] == null)
+			{
+				Debug.LogError("Empty Ray! Removing it: index = " + r);
+				continue;
+			}
+
+			CalculateBezier(StartPoint.transform.position, EndPoint.transform.position, ControlPointOne.transform.position, ControlPointTwo.transform.position, Rays[r].Steps);
+			Rays[r].meshFilter.mesh = Rays[r].CreateMesh(Rays[r].RayHolder.transform, BezierPoints, FadeIn);
+		}
+	}
+
     void CheckPoints()
     {
         if (!StartPoint)

@@ -8,7 +8,7 @@ public class HitEffect : MonoBehaviour {
 	{
 		None,
 		LineRenderer,
-		RayDisigner,
+		RayDesigner,
 	}
 
 	#region staticFunction
@@ -48,6 +48,21 @@ public class HitEffect : MonoBehaviour {
 
 	public static void ShowHitEffectLineRenderer(MeHitObject meHit, Vector3 startPoint, Vector3 contactPoint)
 	{
+		switch (meHit.hitEffectLineRendererType)
+		{
+			case eLineRendererType.LineRenderer:
+				LineRenderer lineRenderer = BattleInstanceManager.instance.GetCachedLineRenderer(meHit.hitEffectLineRendererObject, startPoint, Quaternion.identity);
+				lineRenderer.SetPosition(0, startPoint);
+				lineRenderer.SetPosition(1, contactPoint);
+				break;
+			case eLineRendererType.RayDesigner:
+				RayDesigner rayDesigner = BattleInstanceManager.instance.GetCachedRayDesigner(meHit.hitEffectLineRendererObject, startPoint, Quaternion.identity);
+				rayDesigner.IsDynamic = false;
+				rayDesigner.UpdateStartPosition(startPoint, startPoint + Vector3.up);
+				rayDesigner.UpdateTargetPosition(contactPoint, contactPoint + Vector3.up);
+				rayDesigner.UpdateMesh();
+				break;
+		}
 	}
 	#endregion
 }

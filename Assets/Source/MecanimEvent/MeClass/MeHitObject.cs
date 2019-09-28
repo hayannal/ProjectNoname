@@ -103,10 +103,17 @@ public class MeHitObject : MecanimEventBase {
 	{
 		_propertyScrollPosition = EditorGUILayout.BeginScrollView(_propertyScrollPosition);
 		targetDetectType = (HitObject.eTargetDetectType)EditorGUILayout.EnumPopup("Target Find Type :", targetDetectType);
-		hitObjectPrefab = (GameObject)EditorGUILayout.ObjectField("Object :", hitObjectPrefab, typeof(GameObject), false);
-		if (targetDetectType != HitObject.eTargetDetectType.Preset) lifeTime = EditorGUILayout.FloatField("LifeTime :", lifeTime);
-		if (lifeTime > 0.0f) movable = EditorGUILayout.Toggle("Movable :", movable);
-		else movable = false;
+		if (targetDetectType == HitObject.eTargetDetectType.Preset)
+		{
+			// Preset Count
+		}
+		else
+		{
+			hitObjectPrefab = (GameObject)EditorGUILayout.ObjectField("Object :", hitObjectPrefab, typeof(GameObject), false);
+			lifeTime = EditorGUILayout.FloatField("LifeTime :", lifeTime);
+			if (lifeTime > 0.0f) movable = EditorGUILayout.Toggle("Movable :", movable);
+			else movable = false;
+		}
 		teamCheckType = (Team.eTeamCheckFilter)EditorGUILayout.EnumPopup("Team Check Type :", teamCheckType);
 
 		EditorGUILayout.LabelField("-----------------------------------------------------------------");

@@ -87,6 +87,8 @@ public class MeHitObject : MecanimEventBase {
 	public bool hitEffectLookAtNormal;
 	public bool useWeaponHitEffect;
 	public string weaponDummyName;
+	public bool showHitEffectLineRenderer;
+	public GameObject hitEffectLineRendererObject;
 	public bool showHitBlink;
 	public bool showHitRimBlink;
 
@@ -275,6 +277,9 @@ public class MeHitObject : MecanimEventBase {
 			else
 				hitEffectObject = (GameObject)EditorGUILayout.ObjectField("HitEffect Object :", hitEffectObject, typeof(GameObject), false);
 		}
+		showHitEffectLineRenderer = EditorGUILayout.Toggle("Show HitEffect LineRenderer:", showHitEffectLineRenderer);
+		if (showHitEffectLineRenderer)
+			hitEffectLineRendererObject = (GameObject)EditorGUILayout.ObjectField("HitEffect LineRenderer Object :", hitEffectLineRendererObject, typeof(GameObject), false);
 		showHitBlink = EditorGUILayout.Toggle("Show HitBlink :", showHitBlink);
 		showHitRimBlink = EditorGUILayout.Toggle("Show HitRimBlink :", showHitRimBlink);
 		EditorGUILayout.EndScrollView();

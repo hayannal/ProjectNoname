@@ -38,5 +38,9 @@ public class HitEffect : MonoBehaviour {
 			}
 		}
 	}
+
+	public static void ShowHitEffectLineRenderer(MeHitObject meHit, Vector3 startPoint, Vector3 contactPoint)
+	{
+	}
 	#endregion
 }

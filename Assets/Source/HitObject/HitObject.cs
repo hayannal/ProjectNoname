@@ -55,6 +55,8 @@ public class HitObject : MonoBehaviour
 
 					if (meHit.showHitEffect)
 						HitEffect.ShowHitEffect(meHit, hitParameter.contactPoint, hitParameter.contactNormal, hitParameter.statusStructForHitObject.weaponIDAtCreation);
+					if (meHit.showHitEffectLineRenderer)
+						HitEffect.ShowHitEffectLineRenderer(meHit, GetSpawnPosition(spawnTransform, meHit, parentTransform), hitParameter.contactPoint);
 					if (meHit.showHitBlink)
 						HitBlink.ShowHitBlink(affectorProcessor.cachedTransform);
 					if (meHit.showHitRimBlink)
@@ -322,6 +324,8 @@ public class HitObject : MonoBehaviour
 
 			if (meHit.showHitEffect)
 				HitEffect.ShowHitEffect(meHit, hitParameter.contactPoint, hitParameter.contactNormal, statusForHitObject.weaponIDAtCreation);
+			if (meHit.showHitEffectLineRenderer)
+				HitEffect.ShowHitEffectLineRenderer(meHit, areaPosition, hitParameter.contactPoint);
 			if (meHit.showHitBlink)
 				HitBlink.ShowHitBlink(affectorProcessor.cachedTransform);
 			if (meHit.showHitRimBlink)
@@ -345,6 +349,7 @@ public class HitObject : MonoBehaviour
 
 	MeHitObject _signal;
 	float _createTime;
+	Vector3 _createPosition;
 	StatusBase _statusBase = new StatusBase();
 	StatusStructForHitObject _statusStructForHitObject;
 	Rigidbody _rigidbody { get; set; }
@@ -381,6 +386,7 @@ public class HitObject : MonoBehaviour
 	{
 		_signal = meHit;
 		_createTime = Time.time;
+		_createPosition = cachedTransform.position;
 		parentActor.actorStatus.CopyStatusBase(ref _statusBase);
 		CopyEtcStatusForHitObject(ref _statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction, repeatIndex);
 
@@ -676,8 +682,13 @@ public class HitObject : MonoBehaviour
 			}
 
 			collided = planeCollided || groundQuadCollided || wallCollided || monsterCollided;
-			if (collided && _signal.showHitEffect)
-				HitEffect.ShowHitEffect(_signal, contact.point, contact.normal, _statusStructForHitObject.weaponIDAtCreation);
+			if (collided)
+			{
+				if (_signal.showHitEffect)
+					HitEffect.ShowHitEffect(_signal, contact.point, contact.normal, _statusStructForHitObject.weaponIDAtCreation);
+				if (_signal.showHitEffectLineRenderer)
+					HitEffect.ShowHitEffectLineRenderer(_signal, _createPosition, contact.point);
+			}
 
 			if (collided && _signal.contactAll == false)
 				break;
@@ -875,6 +886,8 @@ public class HitObject : MonoBehaviour
 
 				if (_signal.showHitEffect)
 					HitEffect.ShowHitEffect(_signal, contactPoint, contactNormal, _statusStructForHitObject.weaponIDAtCreation);
+				if (_signal.showHitEffectLineRenderer)
+					HitEffect.ShowHitEffectLineRenderer(_signal, _createPosition, contactPoint);
 			}
 		}
 	}

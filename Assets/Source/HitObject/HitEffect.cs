@@ -60,7 +60,7 @@ public class HitEffect : MonoBehaviour {
 				rayDesigner.IsDynamic = false;
 				rayDesigner.UpdateStartPosition(startPoint, startPoint + Vector3.up);
 				rayDesigner.UpdateTargetPosition(contactPoint, contactPoint + Vector3.up);
-				rayDesigner.UpdateMesh();
+				rayDesigner.UpdateMeshImmediate();
 				break;
 		}
 	}

@@ -198,21 +198,6 @@ public class RayDesigner : MonoBehaviour
         }
     }
 
-	public void UpdateMesh()
-	{
-		for (int r = 0; r < Rays.Count; r++)
-		{
-			if (Rays[r] == null)
-			{
-				Debug.LogError("Empty Ray! Removing it: index = " + r);
-				continue;
-			}
-
-			CalculateBezier(StartPoint.transform.position, EndPoint.transform.position, ControlPointOne.transform.position, ControlPointTwo.transform.position, Rays[r].Steps);
-			Rays[r].meshFilter.mesh = Rays[r].CreateMesh(Rays[r].RayHolder.transform, BezierPoints, FadeIn);
-		}
-	}
-
     void CheckPoints()
     {
         if (!StartPoint)
@@ -433,6 +418,23 @@ public class RayDesigner : MonoBehaviour
         StartPoint.transform.position = _TargetPoint;
         ControlPointOne.transform.position = _ControlPoint;
     }
+
+	// 메시 만들어내는걸 Fade처리로 하기엔 부하가 심하고 재활용도 안되서 메시는 일시에 만들도록 한다.
+	// 나중에 정 자연스럽게 하는게 필요해지면 알파를 제어하는거로 해야할듯.
+	public void UpdateMeshImmediate()
+	{
+		for (int r = 0; r < Rays.Count; r++)
+		{
+			if (Rays[r] == null)
+			{
+				Debug.LogError("Empty Ray! : index = " + r);
+				continue;
+			}
+
+			CalculateBezier(StartPoint.transform.position, EndPoint.transform.position, ControlPointOne.transform.position, ControlPointTwo.transform.position, Rays[r].Steps);
+			Rays[r].meshFilter.mesh = Rays[r].CreateMesh(Rays[r].RayHolder.transform, BezierPoints, FadeIn);
+		}
+	}
 
     private AnimationCurve CopyAnimationCurve(AnimationCurve _AnimationCurve)
     {

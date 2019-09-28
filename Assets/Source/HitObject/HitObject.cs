@@ -55,7 +55,7 @@ public class HitObject : MonoBehaviour
 
 					if (meHit.showHitEffect)
 						HitEffect.ShowHitEffect(meHit, hitParameter.contactPoint, hitParameter.contactNormal, hitParameter.statusStructForHitObject.weaponIDAtCreation);
-					if (meHit.showHitEffectLineRenderer)
+					if (meHit.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
 						HitEffect.ShowHitEffectLineRenderer(meHit, GetSpawnPosition(spawnTransform, meHit, parentTransform), hitParameter.contactPoint);
 					if (meHit.showHitBlink)
 						HitBlink.ShowHitBlink(affectorProcessor.cachedTransform);
@@ -324,7 +324,7 @@ public class HitObject : MonoBehaviour
 
 			if (meHit.showHitEffect)
 				HitEffect.ShowHitEffect(meHit, hitParameter.contactPoint, hitParameter.contactNormal, statusForHitObject.weaponIDAtCreation);
-			if (meHit.showHitEffectLineRenderer)
+			if (meHit.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
 				HitEffect.ShowHitEffectLineRenderer(meHit, areaPosition, hitParameter.contactPoint);
 			if (meHit.showHitBlink)
 				HitBlink.ShowHitBlink(affectorProcessor.cachedTransform);
@@ -686,7 +686,7 @@ public class HitObject : MonoBehaviour
 			{
 				if (_signal.showHitEffect)
 					HitEffect.ShowHitEffect(_signal, contact.point, contact.normal, _statusStructForHitObject.weaponIDAtCreation);
-				if (_signal.showHitEffectLineRenderer)
+				if (_signal.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
 					HitEffect.ShowHitEffectLineRenderer(_signal, _createPosition, contact.point);
 			}
 
@@ -886,7 +886,7 @@ public class HitObject : MonoBehaviour
 
 				if (_signal.showHitEffect)
 					HitEffect.ShowHitEffect(_signal, contactPoint, contactNormal, _statusStructForHitObject.weaponIDAtCreation);
-				if (_signal.showHitEffectLineRenderer)
+				if (_signal.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
 					HitEffect.ShowHitEffectLineRenderer(_signal, _createPosition, contactPoint);
 			}
 		}

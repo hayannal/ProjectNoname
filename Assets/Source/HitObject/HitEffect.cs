@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class HitEffect : MonoBehaviour {
 
+	public enum eLineRendererType
+	{
+		None,
+		LineRenderer,
+		RayDisigner,
+	}
+
 	#region staticFunction
 	public static void ShowHitEffect(MeHitObject meHit, Vector3 contactPoint, Vector3 contactNormal, int weaponIDAtCreation)
 	{

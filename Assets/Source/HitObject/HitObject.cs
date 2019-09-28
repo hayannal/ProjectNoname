@@ -535,7 +535,7 @@ public class HitObject : MonoBehaviour
 	public void UpdateArea()
 	{
 		// Range시그널은 시그널쪽에서 호출되서 처리된다. 히트오브젝트 스스로는 하지 않는다. 이래야 시그널 범위 넘어섰을때 자동으로 호출되지 않는다.
-		CheckHitArea(transform.position, transform.forward, _signal, _statusBase, _statusStructForHitObject);
+		CheckHitArea(cachedTransform.position, cachedTransform.forward, _signal, _statusBase, _statusStructForHitObject);
 	}
 
 	//Vector3 _prevPosition = Vector3.zero;

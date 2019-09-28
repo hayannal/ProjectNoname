@@ -226,7 +226,7 @@ public class HitObjectMovement : MonoBehaviour {
 			if (contains)
 			{
 				// contains를 체크할땐 마지막으로 등록된 타겟은 제외해야한다.
-				if (distance < containsNearestDistance && _listRicochet[_listRicochet.Count - 1] != result[i])
+				if (_signal.ricochetOneHitPerTarget == false && distance < containsNearestDistance && _listRicochet[_listRicochet.Count - 1] != result[i])
 				{
 					containsNearestDistance = distance;
 					containsNearestCollider = result[i];
@@ -251,7 +251,7 @@ public class HitObjectMovement : MonoBehaviour {
 
 		// existCount가 1보다는 큰데 nearestCollider 가 없다는 얘기는 존재하는 2개체 이상의 몹에 한번씩 리코세가 돌았다는 얘기다.
 		// 이땐 등록된 리스트를 초기화 하고 마지막 객체를 제외한 나머지 중 가장 가까운 타겟으로 날아가야한다.
-		if (nearestCollider == null && containsNearestCollider != null)
+		if (_signal.ricochetOneHitPerTarget == false && nearestCollider == null && containsNearestCollider != null)
 		{
 			Collider lastCollider = _listRicochet[_listRicochet.Count - 1];
 			_listRicochet.Clear();

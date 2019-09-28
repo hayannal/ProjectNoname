@@ -68,6 +68,7 @@ public class MeHitObject : MecanimEventBase {
 	public bool quadThrough;
 	public int bounceWallQuadCount;
 	public int ricochetCount;
+	public bool ricochetOneHitPerTarget;
 	public bool useHitStay;
 	public float hitStayInterval;
 	public int hitStayGroupNumber = 0;
@@ -218,6 +219,8 @@ public class MeHitObject : MecanimEventBase {
 			quadThrough = EditorGUILayout.Toggle("Quad Through :", quadThrough);
 			bounceWallQuadCount = EditorGUILayout.IntField("Bounce Wall Quad Count :", bounceWallQuadCount);
 			ricochetCount = EditorGUILayout.IntField("Ricochet Count :", ricochetCount);
+			if (ricochetCount > 0)
+				ricochetOneHitPerTarget = EditorGUILayout.Toggle("Ricochet One Hit Per Target :", ricochetOneHitPerTarget);
 
 			if (oneHitPerTarget == false)
 				useHitStay = EditorGUILayout.Toggle("Use Hit Stay :", useHitStay);

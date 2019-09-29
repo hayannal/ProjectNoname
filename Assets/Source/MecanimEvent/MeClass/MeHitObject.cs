@@ -15,6 +15,8 @@ public class MeHitObject : MecanimEventBase {
 	public GameObject hitObjectPrefab;
 	public float lifeTime;
 	public bool movable;
+	public float defaultSphereCastDistance;
+	public float sphereCastRadius;
 	public Team.eTeamCheckFilter teamCheckType;
 
 	public HitObject.eCreatePositionType createPositionType;
@@ -107,6 +109,18 @@ public class MeHitObject : MecanimEventBase {
 		{
 			// Preset Count
 		}
+		else if (targetDetectType == HitObject.eTargetDetectType.SphereCast)
+		{
+			hitObjectPrefab = (GameObject)EditorGUILayout.ObjectField("Object :", hitObjectPrefab, typeof(GameObject), false);
+			defaultSphereCastDistance = EditorGUILayout.FloatField("Default Distance :", defaultSphereCastDistance);
+			sphereCastRadius = EditorGUILayout.FloatField("Radius :", sphereCastRadius);
+			if (RangeSignal == false)
+			{
+				lifeTime = 0.0f;
+				EditorGUILayout.LabelField("[Only available LifeTime zero]", EditorStyles.label);
+				lifeTime = EditorGUILayout.FloatField("LifeTime :", lifeTime);
+			}
+		}
 		else
 		{
 			hitObjectPrefab = (GameObject)EditorGUILayout.ObjectField("Object :", hitObjectPrefab, typeof(GameObject), false);
@@ -177,7 +191,8 @@ public class MeHitObject : MecanimEventBase {
 				rightRandomAngle = EditorGUILayout.FloatField("Right Random Angle :", rightRandomAngle);
 			}
 			upDownRandomAngle = EditorGUILayout.FloatField("UpDown Random Angle :", upDownRandomAngle);
-			speed = EditorGUILayout.FloatField("Speed :", speed);
+			if (targetDetectType != HitObject.eTargetDetectType.SphereCast)
+				speed = EditorGUILayout.FloatField("Speed :", speed);
 			EditorGUILayout.LabelField("-----------------------------------------------------------------");
 		}
 
@@ -248,6 +263,22 @@ public class MeHitObject : MecanimEventBase {
 		else if (targetDetectType == HitObject.eTargetDetectType.Area)
 		{
 			// Area에서는 현재 One Hit Per Target만 지원한다.
+			if (useHitStay == false)
+			{
+				oneHitPerTarget = EditorGUILayout.Toggle("One Hit Per Target :", oneHitPerTarget);
+			}
+			EditorGUILayout.LabelField("-----------------------------------------------------------------");
+		}
+		else if (targetDetectType == HitObject.eTargetDetectType.SphereCast)
+		{
+			// 잘만 하면 Area SphereCast 둘다 hitStay 적용할 수 있을듯. 그럼 위의 else if와 합쳐야한다.
+			if (oneHitPerTarget == false)
+				useHitStay = EditorGUILayout.Toggle("Use Hit Stay :", useHitStay);
+			if (useHitStay)
+			{
+				hitStayInterval = EditorGUILayout.FloatField("Hit Stay Interval :", hitStayInterval);
+				hitStayGroupNumber = EditorGUILayout.IntField("Hit Stay Group Number", hitStayGroupNumber);
+			}
 			if (useHitStay == false)
 			{
 				oneHitPerTarget = EditorGUILayout.Toggle("One Hit Per Target :", oneHitPerTarget);

@@ -14,9 +14,10 @@ public class MeRangeHitObject : MeHitObject
 	#if UNITY_EDITOR
 	override public void OnGUI_PropertyWindow()
 	{
-		EditorGUILayout.LabelField("[Only available for Area]", EditorStyles.boldLabel);
+		EditorGUILayout.LabelField("[Only available for Area or SphereCast]", EditorStyles.boldLabel);
 		base.OnGUI_PropertyWindow();
-		targetDetectType = HitObject.eTargetDetectType.Area;
+		if (targetDetectType != HitObject.eTargetDetectType.Area && targetDetectType != HitObject.eTargetDetectType.SphereCast)
+			targetDetectType = HitObject.eTargetDetectType.Area;
 		lifeTime = 0.0f;
 		oneHitPerTarget = true;
 	}
@@ -99,14 +100,14 @@ public class MeRangeHitObject : MeHitObject
 	override public void OnRangeSignal(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		if (_mainHitObject != null)
-			_mainHitObject.UpdateArea();
+			_mainHitObject.UpdateAreaOrSphereCast();
 
 		if (_listRepeatHitObject != null)
 		{
 			for (int i = 0; i < _listRepeatHitObject.Count; ++i)
 			{
 				if (_listRepeatHitObject[i] != null)
-					_listRepeatHitObject[i].UpdateArea();
+					_listRepeatHitObject[i].UpdateAreaOrSphereCast();
 			}
 		}
 	}

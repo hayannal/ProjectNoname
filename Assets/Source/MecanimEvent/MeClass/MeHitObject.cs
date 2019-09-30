@@ -260,16 +260,7 @@ public class MeHitObject : MecanimEventBase {
 			useLineRenderer = EditorGUILayout.Toggle("Use LineRenderer :", useLineRenderer);
 			EditorGUILayout.LabelField("-----------------------------------------------------------------");
 		}
-		else if (targetDetectType == HitObject.eTargetDetectType.Area)
-		{
-			// Area에서는 현재 One Hit Per Target만 지원한다.
-			if (useHitStay == false)
-			{
-				oneHitPerTarget = EditorGUILayout.Toggle("One Hit Per Target :", oneHitPerTarget);
-			}
-			EditorGUILayout.LabelField("-----------------------------------------------------------------");
-		}
-		else if (targetDetectType == HitObject.eTargetDetectType.SphereCast)
+		else if (targetDetectType == HitObject.eTargetDetectType.Area || targetDetectType == HitObject.eTargetDetectType.SphereCast)
 		{
 			// 잘만 하면 Area SphereCast 둘다 hitStay 적용할 수 있을듯. 그럼 위의 else if와 합쳐야한다.
 			if (oneHitPerTarget == false)

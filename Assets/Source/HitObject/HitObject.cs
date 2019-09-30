@@ -285,7 +285,8 @@ public class HitObject : MonoBehaviour
 		statusStructForHitObject.repeatIndex = repeatIndex;
 	}
 
-	static void CheckHitArea(Vector3 areaPosition, Vector3 areaForward, MeHitObject meHit, StatusBase statusBase, StatusStructForHitObject statusForHitObject)
+	static void CheckHitArea(Vector3 areaPosition, Vector3 areaForward, MeHitObject meHit, StatusBase statusBase, StatusStructForHitObject statusForHitObject,
+		List<AffectorProcessor> listOneHitPerTarget = null, Dictionary<AffectorProcessor, float> dicHitStayTime = null)
 	{
 		// step 1. Physics.OverlapSphere
 		Collider[] result = Physics.OverlapSphere(areaPosition, meHit.areaDistanceMax); // meHit.areaDistanceMax * parentTransform.localScale.x
@@ -303,6 +304,14 @@ public class HitObject : MonoBehaviour
 
 			// team check
 			if (!Team.CheckTeamFilter(statusForHitObject.teamId, result[i], meHit.teamCheckType))
+				continue;
+
+			// one Hit Per Target
+			if (listOneHitPerTarget != null && meHit.oneHitPerTarget && listOneHitPerTarget.Contains(affectorProcessor))
+				continue;
+
+			// hit stay
+			if (dicHitStayTime != null && meHit.useHitStay && CheckHitStayInterval(affectorProcessor, dicHitStayTime, meHit) == false)
 				continue;
 
 			// object radius
@@ -339,12 +348,16 @@ public class HitObject : MonoBehaviour
 				HitBlink.ShowHitBlink(affectorProcessor.cachedTransform);
 			if (meHit.showHitRimBlink)
 				HitRimBlink.ShowHitRimBlink(affectorProcessor.cachedTransform, hitParameter.contactNormal);
+
+			if (listOneHitPerTarget != null && meHit.oneHitPerTarget)
+				listOneHitPerTarget.Add(affectorProcessor);
 		}
 	}
 
 	static RaycastHit[] s_raycastHitList = null;
 	static List<RaycastHit> s_listMonsterRaycastHit = null;
-	static void CheckSphereCast(Vector3 spawnPosition, Vector3 spawnForward, MeHitObject meHit, StatusBase statusBase, StatusStructForHitObject statusForHitObject)
+	static void CheckSphereCast(Vector3 spawnPosition, Vector3 spawnForward, MeHitObject meHit, StatusBase statusBase, StatusStructForHitObject statusForHitObject,
+		List<AffectorProcessor> listOneHitPerTarget = null, Dictionary<AffectorProcessor, float> dicHitStayTime = null)
 	{
 		if (s_raycastHitList == null)
 			s_raycastHitList = new RaycastHit[100];
@@ -441,6 +454,14 @@ public class HitObject : MonoBehaviour
 			if (affectorProcessor == null)
 				continue;
 
+			// one Hit Per Target
+			if (listOneHitPerTarget != null && meHit.oneHitPerTarget && listOneHitPerTarget.Contains(affectorProcessor))
+				continue;
+
+			// hit stay
+			if (dicHitStayTime != null && meHit.useHitStay && CheckHitStayInterval(affectorProcessor, dicHitStayTime, meHit) == false)
+				continue;
+
 			// object radius
 			float colliderRadius = ColliderUtil.GetRadius(col);
 			if (colliderRadius == -1.0f) continue;
@@ -462,6 +483,9 @@ public class HitObject : MonoBehaviour
 				HitBlink.ShowHitBlink(affectorProcessor.cachedTransform);
 			if (meHit.showHitRimBlink)
 				HitRimBlink.ShowHitRimBlink(affectorProcessor.cachedTransform, hitParameter.contactNormal);
+
+			if (listOneHitPerTarget != null && meHit.oneHitPerTarget)
+				listOneHitPerTarget.Add(affectorProcessor);
 
 			if (meHit.monsterThroughCount == 0)
 				break;
@@ -675,14 +699,31 @@ public class HitObject : MonoBehaviour
 
 	public void UpdateAreaOrSphereCast()
 	{
+		switch (_signal.targetDetectType)
+		{
+			case eTargetDetectType.Area:
+			case eTargetDetectType.SphereCast:
+				if (_signal.oneHitPerTarget)
+				{
+					if (_listOneHitPerTarget == null)
+						_listOneHitPerTarget = new List<AffectorProcessor>();
+				}
+				if (_signal.useHitStay)
+				{
+					if (_dicHitStayTime == null)
+						_dicHitStayTime = new Dictionary<AffectorProcessor, float>();
+				}
+				break;
+		}
+
 		// Range시그널은 시그널쪽에서 호출되서 처리된다. 히트오브젝트 스스로는 하지 않는다. 이래야 시그널 범위 넘어섰을때 자동으로 호출되지 않는다.
 		switch (_signal.targetDetectType)
 		{
 			case eTargetDetectType.Area:
-				CheckHitArea(cachedTransform.position, cachedTransform.forward, _signal, _statusBase, _statusStructForHitObject);
+				CheckHitArea(cachedTransform.position, cachedTransform.forward, _signal, _statusBase, _statusStructForHitObject, _listOneHitPerTarget, _dicHitStayTime);
 				break;
 			case eTargetDetectType.SphereCast:
-				CheckSphereCast(cachedTransform.position, cachedTransform.forward, _signal, _statusBase, _statusStructForHitObject);
+				CheckSphereCast(cachedTransform.position, cachedTransform.forward, _signal, _statusBase, _statusStructForHitObject, _listOneHitPerTarget, _dicHitStayTime);
 				break;
 		}
 	}
@@ -999,8 +1040,11 @@ public class HitObject : MonoBehaviour
 
 		if (_signal.useHitStay)
 		{
+			if (_dicHitStayTime == null)
+				_dicHitStayTime = new Dictionary<AffectorProcessor, float>();
+
 			AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(col);
-			if (affectorProcessor != null && CheckHitStayInterval(affectorProcessor))
+			if (affectorProcessor != null && CheckHitStayInterval(affectorProcessor, _dicHitStayTime, _signal))
 			{
 				Vector3 contactPoint = Vector3.zero;
 				Vector3 contactNormal = Vector3.forward;
@@ -1042,20 +1086,17 @@ public class HitObject : MonoBehaviour
 	}
 
 	Dictionary<AffectorProcessor, float> _dicHitStayTime = null;
-	bool CheckHitStayInterval(AffectorProcessor affectorProcessor)
+	static bool CheckHitStayInterval(AffectorProcessor affectorProcessor, Dictionary<AffectorProcessor, float> dicHitStayTime, MeHitObject meHit)
 	{
-		if (_dicHitStayTime == null)
-			_dicHitStayTime = new Dictionary<AffectorProcessor, float>();
-
-		if (_dicHitStayTime.ContainsKey(affectorProcessor) == false)
+		if (dicHitStayTime.ContainsKey(affectorProcessor) == false)
 		{
-			_dicHitStayTime.Add(affectorProcessor, Time.time);
+			dicHitStayTime.Add(affectorProcessor, Time.time);
 			return true;
 		}
-		float lastTime = _dicHitStayTime[affectorProcessor];
-		if (Time.time > lastTime + _signal.hitStayInterval)
+		float lastTime = dicHitStayTime[affectorProcessor];
+		if (Time.time > lastTime + meHit.hitStayInterval)
 		{
-			_dicHitStayTime[affectorProcessor] = Time.time;
+			dicHitStayTime[affectorProcessor] = Time.time;
 			return true;
 		}
 		return false;

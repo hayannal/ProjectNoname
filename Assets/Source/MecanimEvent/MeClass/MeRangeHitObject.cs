@@ -19,12 +19,6 @@ public class MeRangeHitObject : MeHitObject
 		if (targetDetectType != HitObject.eTargetDetectType.Area && targetDetectType != HitObject.eTargetDetectType.SphereCast)
 			targetDetectType = HitObject.eTargetDetectType.Area;
 		lifeTime = 0.0f;
-
-		// 디폴트값으로 체크해둔다.
-		if (targetDetectType == HitObject.eTargetDetectType.Area)
-			oneHitPerTarget = true;
-		else if (targetDetectType == HitObject.eTargetDetectType.SphereCast)
-			useHitStay = true;
 	}
 	#endif
 	

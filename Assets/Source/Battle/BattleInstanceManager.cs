@@ -211,6 +211,9 @@ public class BattleInstanceManager : MonoBehaviour
 
 	public void OnFinalizeHitObject(Collider collider)
 	{
+		if (collider == null)
+			return;
+
 		_dicHitObjectByCollider.Remove(collider);
 	}
 

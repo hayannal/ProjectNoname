@@ -798,6 +798,7 @@ public class HitObject : MonoBehaviour
 		if (_dicHitStayTime != null)
 			_dicHitStayTime.Clear();
 		ClearIgnoreList();
+		_settedHitEffectLineRendererStartPosition = false;
 
 		// 히트 오브젝트 애니메이터를 발동시켜놨으면 첫번째 프레임이 호출될때까지는 기다려야한다.
 		if (_hitObjectAnimatorStarted)
@@ -847,7 +848,20 @@ public class HitObject : MonoBehaviour
 	}
 
 
+	bool _settedHitEffectLineRendererStartPosition = false;
+	Vector3 _reservedHitEffectLineRendererStartPosition;
+	Vector3 GetHitEffectLineRendererStartPosition(Vector3 nextPosition)
+	{
+		Vector3 returnValue = Vector3.zero;
+		if (_settedHitEffectLineRendererStartPosition)
+			returnValue = _reservedHitEffectLineRendererStartPosition;
+		else
+			returnValue = _createPosition;
 
+		_settedHitEffectLineRendererStartPosition = true;
+		_reservedHitEffectLineRendererStartPosition = nextPosition;
+		return returnValue;
+	}
 
 	List<AffectorProcessor> _listOneHitPerTarget = null;
 	void OnCollisionEnter(Collision collision)
@@ -919,9 +933,8 @@ public class HitObject : MonoBehaviour
 			{
 				if (_signal.showHitEffect)
 					HitEffect.ShowHitEffect(_signal, contact.point, contact.normal, _statusStructForHitObject.weaponIDAtCreation);
-				// 히트이펙트용 라인렌더러는 관통시 마지막 지점에만 연결되어야 중복된거처럼 보이지 않게 된다. 여기서 처리하면 여러개 그려져버린다.
 				if (_signal.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
-					HitEffect.ShowHitEffectLineRenderer(_signal, _createPosition, contact.point);
+					HitEffect.ShowHitEffectLineRenderer(_signal, GetHitEffectLineRendererStartPosition(contact.point), contact.point);
 			}
 
 			if (collided && _signal.contactAll == false)
@@ -1123,9 +1136,8 @@ public class HitObject : MonoBehaviour
 
 				if (_signal.showHitEffect)
 					HitEffect.ShowHitEffect(_signal, contactPoint, contactNormal, _statusStructForHitObject.weaponIDAtCreation);
-				// hitStay에 LineRenderer는 안어울리는거 아닌가
-				//if (_signal.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
-				//	HitEffect.ShowHitEffectLineRenderer(_signal, _createPosition, contactPoint);
+				if (_signal.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
+					HitEffect.ShowHitEffectLineRenderer(_signal, GetHitEffectLineRendererStartPosition(contactPoint), contactPoint);
 			}
 		}
 	}

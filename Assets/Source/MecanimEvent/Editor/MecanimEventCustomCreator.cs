@@ -37,8 +37,8 @@ public static class MecanimEventCustomCreator
 		if (eventBase is MeDestroy) return eMecanimEventType.Destroy;
 		//if (eventBase is MeApplyAffector) return eMecanimEventType.ApplyAffector;
 		if (eventBase is MeAnimatorSpeed) return eMecanimEventType.AnimatorSpeed;
-		if (eventBase is MeHitObject) return eMecanimEventType.HitObject;
 		if (eventBase is MeRangeHitObject) return eMecanimEventType.RangeHitObject;
+		if (eventBase is MeHitObject) return eMecanimEventType.HitObject;
 		if (eventBase is MeGlobalLight) return eMecanimEventType.GlobalLight;
 		return eMecanimEventType.State;
 #endregion

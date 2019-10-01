@@ -9,7 +9,7 @@ public class HitObjectLineRenderer : MonoBehaviour
 	List<float> _listStartWidthMultiplier = new List<float>();
 	List<float> _listFadeOutWidthMultiplier = new List<float>();
 
-	public void InitializeSignal(MeHitObject meHit, Actor parentActor)
+	public void InitializeSignal(MeHitObject meHit)
 	{
 		_signal = meHit;
 

@@ -72,20 +72,25 @@ public class HitObject : MonoBehaviour
 			StatusStructForHitObject statusStructForHitObject = new StatusStructForHitObject();
 			CopyEtcStatusForHitObject(ref statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction, repeatIndex);
 
+			Vector3 endPosition = Vector3.zero;
 			if (meHit.targetDetectType == eTargetDetectType.Area)
 				CheckHitArea(areaPosition, spawnTransform.forward, meHit, parentActor.actorStatus.statusBase, statusStructForHitObject);
 			else if (meHit.targetDetectType == eTargetDetectType.SphereCast)
-				CheckSphereCast(areaPosition, spawnTransform.forward, meHit, parentActor.actorStatus.statusBase, statusStructForHitObject);
+				endPosition = CheckSphereCast(areaPosition, spawnTransform.forward, meHit, parentActor.actorStatus.statusBase, statusStructForHitObject);
 
 			// HitObject 프리팹이 있거나 lifeTime이 있다면 생성하고 아니면 패스.
 			Vector3 position = GetSpawnPosition(spawnTransform, meHit, parentTransform);
 			Quaternion rotation = Quaternion.LookRotation(GetSpawnDirection(position, meHit, parentTransform, GetTargetPosition(meHit, parentActor, hitSignalIndexInAction)));
 			HitObject hitObject = GetCachedHitObject(meHit, position, rotation);
 			if (hitObject != null)
-				hitObject.InitializeHitObject(meHit, parentActor, hitSignalIndexInAction, repeatIndex);
-			if (meHit.targetDetectType == eTargetDetectType.SphereCast)
 			{
-				// attach child
+				hitObject.InitializeHitObject(meHit, parentActor, hitSignalIndexInAction, repeatIndex);
+				if (meHit.targetDetectType == eTargetDetectType.SphereCast)
+				{
+					// attach child
+					hitObject.cachedTransform.parent = spawnTransform;
+					hitObject._hitObjectSphereCastRayPath.SetEndPosition(endPosition);
+				}
 			}
 			return hitObject;
 		}
@@ -306,14 +311,6 @@ public class HitObject : MonoBehaviour
 			if (!Team.CheckTeamFilter(statusForHitObject.teamId, result[i], meHit.teamCheckType))
 				continue;
 
-			// one Hit Per Target
-			if (listOneHitPerTarget != null && meHit.oneHitPerTarget && listOneHitPerTarget.Contains(affectorProcessor))
-				continue;
-
-			// hit stay
-			if (dicHitStayTime != null && meHit.useHitStay && CheckHitStayInterval(affectorProcessor, dicHitStayTime, meHit) == false)
-				continue;
-
 			// object radius
 			float colliderRadius = ColliderUtil.GetRadius(result[i]);
 			if (colliderRadius == -1.0f) continue;
@@ -330,33 +327,46 @@ public class HitObject : MonoBehaviour
 			float adjustAngle = Mathf.Rad2Deg * Mathf.Acos(diff.magnitude / hypotenuse);
 			if (meHit.areaAngle * 0.5f < angle - adjustAngle) continue;
 
-			HitParameter hitParameter = new HitParameter();
-			hitParameter.hitNormal = forward;
-			hitParameter.contactNormal = diff.normalized;
-			hitParameter.contactPoint = result[i].transform.position + (-hitParameter.contactNormal * colliderRadius * 0.7f);
-			hitParameter.contactPoint.y += (meHit.areaHeightMin + meHit.areaHeightMax) * 0.5f;
-			hitParameter.statusBase = statusBase;
-			hitParameter.statusStructForHitObject = statusForHitObject;
+			bool ignoreAffectorProcessor = false;
 
-			ApplyAffectorValue(affectorProcessor, meHit.affectorValueIdList, hitParameter);
+			// one Hit Per Target
+			if (listOneHitPerTarget != null && meHit.oneHitPerTarget && listOneHitPerTarget.Contains(affectorProcessor))
+				ignoreAffectorProcessor = true;
 
-			if (meHit.showHitEffect)
-				HitEffect.ShowHitEffect(meHit, hitParameter.contactPoint, hitParameter.contactNormal, statusForHitObject.weaponIDAtCreation);
-			if (meHit.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
-				HitEffect.ShowHitEffectLineRenderer(meHit, areaPosition, hitParameter.contactPoint);
-			if (meHit.showHitBlink)
-				HitBlink.ShowHitBlink(affectorProcessor.cachedTransform);
-			if (meHit.showHitRimBlink)
-				HitRimBlink.ShowHitRimBlink(affectorProcessor.cachedTransform, hitParameter.contactNormal);
+			// hit stay
+			if (dicHitStayTime != null && meHit.useHitStay && CheckHitStayInterval(affectorProcessor, dicHitStayTime, meHit) == false)
+				ignoreAffectorProcessor = true;
 
-			if (listOneHitPerTarget != null && meHit.oneHitPerTarget)
-				listOneHitPerTarget.Add(affectorProcessor);
+			if (ignoreAffectorProcessor == false)
+			{
+				HitParameter hitParameter = new HitParameter();
+				hitParameter.hitNormal = forward;
+				hitParameter.contactNormal = diff.normalized;
+				hitParameter.contactPoint = result[i].transform.position + (-hitParameter.contactNormal * colliderRadius * 0.7f);
+				hitParameter.contactPoint.y += (meHit.areaHeightMin + meHit.areaHeightMax) * 0.5f;
+				hitParameter.statusBase = statusBase;
+				hitParameter.statusStructForHitObject = statusForHitObject;
+
+				ApplyAffectorValue(affectorProcessor, meHit.affectorValueIdList, hitParameter);
+
+				if (meHit.showHitEffect)
+					HitEffect.ShowHitEffect(meHit, hitParameter.contactPoint, hitParameter.contactNormal, statusForHitObject.weaponIDAtCreation);
+				if (meHit.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
+					HitEffect.ShowHitEffectLineRenderer(meHit, areaPosition, hitParameter.contactPoint);
+				if (meHit.showHitBlink)
+					HitBlink.ShowHitBlink(affectorProcessor.cachedTransform);
+				if (meHit.showHitRimBlink)
+					HitRimBlink.ShowHitRimBlink(affectorProcessor.cachedTransform, hitParameter.contactNormal);
+
+				if (listOneHitPerTarget != null && meHit.oneHitPerTarget)
+					listOneHitPerTarget.Add(affectorProcessor);
+			}
 		}
 	}
 
 	static RaycastHit[] s_raycastHitList = null;
 	static List<RaycastHit> s_listMonsterRaycastHit = null;
-	static void CheckSphereCast(Vector3 spawnPosition, Vector3 spawnForward, MeHitObject meHit, StatusBase statusBase, StatusStructForHitObject statusForHitObject,
+	static Vector3 CheckSphereCast(Vector3 spawnPosition, Vector3 spawnForward, MeHitObject meHit, StatusBase statusBase, StatusStructForHitObject statusForHitObject,
 		List<AffectorProcessor> listOneHitPerTarget = null, Dictionary<AffectorProcessor, float> dicHitStayTime = null)
 	{
 		if (s_raycastHitList == null)
@@ -370,6 +380,7 @@ public class HitObject : MonoBehaviour
 
 		// step 2. Through Test
 		float reservedNearestDistance = meHit.defaultSphereCastDistance;
+		Vector3 endPosition = Vector3.zero;
 		for (int i = 0; i < resultCount; ++i)
 		{
 			if (i >= s_raycastHitList.Length)
@@ -412,19 +423,28 @@ public class HitObject : MonoBehaviour
 			if (planeCollided)
 			{
 				if (reservedNearestDistance > s_raycastHitList[i].distance)
+				{
 					reservedNearestDistance = s_raycastHitList[i].distance;
+					endPosition = s_raycastHitList[i].point;
+				}
 			}
 
 			if (groundQuadCollided && meHit.quadThrough == false)
 			{
 				if (reservedNearestDistance > s_raycastHitList[i].distance)
+				{
 					reservedNearestDistance = s_raycastHitList[i].distance;
+					endPosition = s_raycastHitList[i].point;
+				}
 			}
 
 			if (wallCollided && meHit.wallThrough == false)
 			{
 				if (reservedNearestDistance > s_raycastHitList[i].distance)
+				{
 					reservedNearestDistance = s_raycastHitList[i].distance;
+					endPosition = s_raycastHitList[i].point;
+				}
 			}
 
 			// 몹관통이 특정 숫자로 되어있으면 거기까지만 딱 관통되야하기 때문에 정렬이 필요하다. 그래서 몬스터껀 따로 모아둔다.
@@ -454,48 +474,61 @@ public class HitObject : MonoBehaviour
 			if (affectorProcessor == null)
 				continue;
 
-			// one Hit Per Target
-			if (listOneHitPerTarget != null && meHit.oneHitPerTarget && listOneHitPerTarget.Contains(affectorProcessor))
-				continue;
-
-			// hit stay
-			if (dicHitStayTime != null && meHit.useHitStay && CheckHitStayInterval(affectorProcessor, dicHitStayTime, meHit) == false)
-				continue;
-
 			// object radius
 			float colliderRadius = ColliderUtil.GetRadius(col);
 			if (colliderRadius == -1.0f) continue;
 
-			HitParameter hitParameter = new HitParameter();
-			hitParameter.hitNormal = spawnForward;
-			hitParameter.contactNormal = -s_listMonsterRaycastHit[i].normal;
-			hitParameter.contactPoint = s_listMonsterRaycastHit[i].point;
-			hitParameter.statusBase = statusBase;
-			hitParameter.statusStructForHitObject = statusForHitObject;
+			bool ignoreAffectorProcessor = false;
 
-			ApplyAffectorValue(affectorProcessor, meHit.affectorValueIdList, hitParameter);
+			// one Hit Per Target
+			if (listOneHitPerTarget != null && meHit.oneHitPerTarget && listOneHitPerTarget.Contains(affectorProcessor))
+				ignoreAffectorProcessor = true;
 
-			if (meHit.showHitEffect)
-				HitEffect.ShowHitEffect(meHit, hitParameter.contactPoint, hitParameter.contactNormal, statusForHitObject.weaponIDAtCreation);
-			//if (meHit.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
-			//	HitEffect.ShowHitEffectLineRenderer(meHit, areaPosition, hitParameter.contactPoint);
-			if (meHit.showHitBlink)
-				HitBlink.ShowHitBlink(affectorProcessor.cachedTransform);
-			if (meHit.showHitRimBlink)
-				HitRimBlink.ShowHitRimBlink(affectorProcessor.cachedTransform, hitParameter.contactNormal);
+			// hit stay
+			if (dicHitStayTime != null && meHit.useHitStay && CheckHitStayInterval(affectorProcessor, dicHitStayTime, meHit) == false)
+				ignoreAffectorProcessor = true;
 
-			if (listOneHitPerTarget != null && meHit.oneHitPerTarget)
-				listOneHitPerTarget.Add(affectorProcessor);
+			if (ignoreAffectorProcessor == false)
+			{
+				HitParameter hitParameter = new HitParameter();
+				hitParameter.hitNormal = spawnForward;
+				hitParameter.contactNormal = -s_listMonsterRaycastHit[i].normal;
+				hitParameter.contactPoint = s_listMonsterRaycastHit[i].point;
+				hitParameter.statusBase = statusBase;
+				hitParameter.statusStructForHitObject = statusForHitObject;
+
+				ApplyAffectorValue(affectorProcessor, meHit.affectorValueIdList, hitParameter);
+
+				if (meHit.showHitEffect)
+					HitEffect.ShowHitEffect(meHit, hitParameter.contactPoint, hitParameter.contactNormal, statusForHitObject.weaponIDAtCreation);
+				//if (meHit.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
+				//	HitEffect.ShowHitEffectLineRenderer(meHit, areaPosition, hitParameter.contactPoint);
+				if (meHit.showHitBlink)
+					HitBlink.ShowHitBlink(affectorProcessor.cachedTransform);
+				if (meHit.showHitRimBlink)
+					HitRimBlink.ShowHitRimBlink(affectorProcessor.cachedTransform, hitParameter.contactNormal);
+
+				if (listOneHitPerTarget != null && meHit.oneHitPerTarget)
+					listOneHitPerTarget.Add(affectorProcessor);
+			}
 
 			if (meHit.monsterThroughCount == 0)
+			{
+				endPosition = s_listMonsterRaycastHit[i].point;
 				break;
+			}
 			if (meHit.monsterThroughCount > 0)
 			{
 				if (meHit.monsterThroughCount == monsterThroughCount)
+				{
+					endPosition = s_listMonsterRaycastHit[i].point;
 					break;
+				}
 				++monsterThroughCount;
 			}
 		}
+
+		return endPosition;
 	}
 
 	static void ApplyAffectorValue(AffectorProcessor affectorProcessor, List<string> listAffectorValueId, HitParameter hitParameter)
@@ -541,6 +574,7 @@ public class HitObject : MonoBehaviour
 	HitObjectLineRenderer _hitObjectLineRenderer;
 	HitObjectAnimator _hitObjectAnimator;
 	Animator _animator;
+	HitObjectSphereCastRayPath _hitObjectSphereCastRayPath;
 
 	void Awake()
 	{
@@ -588,7 +622,7 @@ public class HitObject : MonoBehaviour
 		// hitStay를 쓰면 트리거 하나를 추가로 가지고 있어야한다. 여기에 몹Through를 켜면 긁고 지나가는 투과형 다단히트 오브젝트가 된다.
 		_tempTriggerOnCollision = false;
 		if (_collider != null) _collider.isTrigger = false;
-		if (_signal.useHitStay)
+		if (_signal.useHitStay && _signal.targetDetectType == eTargetDetectType.Collider)
 		{
 			if (_triggerForHitStay == null)
 			{
@@ -620,7 +654,7 @@ public class HitObject : MonoBehaviour
 					_hitObjectLineRenderer = GetComponent<HitObjectLineRenderer>();
 					if (_hitObjectLineRenderer == null) _hitObjectLineRenderer = gameObject.AddComponent<HitObjectLineRenderer>();
 				}
-				_hitObjectLineRenderer.InitializeSignal(meHit, parentActor);
+				_hitObjectLineRenderer.InitializeSignal(meHit);
 			}
 			if (_animator != null)
 			{
@@ -633,6 +667,13 @@ public class HitObject : MonoBehaviour
 				_hitObjectAnimatorStarted = false;
 				_waitHitObjectAnimatorUpdateCount = 0;
 			}
+		}
+		if (meHit.targetDetectType == eTargetDetectType.SphereCast)
+		{
+			if (_hitObjectSphereCastRayPath == null)
+				_hitObjectSphereCastRayPath = GetComponent<HitObjectSphereCastRayPath>();
+			if (_hitObjectSphereCastRayPath != null)
+				_hitObjectSphereCastRayPath.InitializeSignal(this, parentActor);
 		}
 
 		BattleInstanceManager.instance.OnInitializeHitObject(this, _collider);
@@ -723,7 +764,9 @@ public class HitObject : MonoBehaviour
 				CheckHitArea(cachedTransform.position, cachedTransform.forward, _signal, _statusBase, _statusStructForHitObject, _listOneHitPerTarget, _dicHitStayTime);
 				break;
 			case eTargetDetectType.SphereCast:
-				CheckSphereCast(cachedTransform.position, cachedTransform.forward, _signal, _statusBase, _statusStructForHitObject, _listOneHitPerTarget, _dicHitStayTime);
+				Vector3 endPosition = CheckSphereCast(cachedTransform.position, cachedTransform.forward, _signal, _statusBase, _statusStructForHitObject, _listOneHitPerTarget, _dicHitStayTime);
+				if (_hitObjectSphereCastRayPath != null)
+					_hitObjectSphereCastRayPath.SetEndPosition(endPosition);
 				break;
 		}
 	}
@@ -876,6 +919,7 @@ public class HitObject : MonoBehaviour
 			{
 				if (_signal.showHitEffect)
 					HitEffect.ShowHitEffect(_signal, contact.point, contact.normal, _statusStructForHitObject.weaponIDAtCreation);
+				// 히트이펙트용 라인렌더러는 관통시 마지막 지점에만 연결되어야 중복된거처럼 보이지 않게 된다. 여기서 처리하면 여러개 그려져버린다.
 				if (_signal.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
 					HitEffect.ShowHitEffectLineRenderer(_signal, _createPosition, contact.point);
 			}
@@ -1079,8 +1123,9 @@ public class HitObject : MonoBehaviour
 
 				if (_signal.showHitEffect)
 					HitEffect.ShowHitEffect(_signal, contactPoint, contactNormal, _statusStructForHitObject.weaponIDAtCreation);
-				if (_signal.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
-					HitEffect.ShowHitEffectLineRenderer(_signal, _createPosition, contactPoint);
+				// hitStay에 LineRenderer는 안어울리는거 아닌가
+				//if (_signal.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
+				//	HitEffect.ShowHitEffectLineRenderer(_signal, _createPosition, contactPoint);
 			}
 		}
 	}

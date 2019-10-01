@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
 #endif
+using DigitalRuby.ThunderAndLightning;
 
 public class BattleInstanceManager : MonoBehaviour
 {
@@ -373,6 +374,41 @@ public class BattleInstanceManager : MonoBehaviour
 		RayDesigner rayDesigner = newObject.GetComponent<RayDesigner>();
 		listCachedRayDesigner.Add(rayDesigner);
 		return rayDesigner;
+	}
+
+	Dictionary<GameObject, List<LightningBoltPrefabScript>> _dicProceduralLightningInstancePool = new Dictionary<GameObject, List<LightningBoltPrefabScript>>();
+	public LightningBoltPrefabScript GetCachedLightningBoltPrefabScript(GameObject prefab, Vector3 position, Quaternion rotation, Transform parentTransform = null)
+	{
+		List<LightningBoltPrefabScript> listCachedProceduralLightning = null;
+		if (_dicProceduralLightningInstancePool.ContainsKey(prefab))
+			listCachedProceduralLightning = _dicProceduralLightningInstancePool[prefab];
+		else
+		{
+			listCachedProceduralLightning = new List<LightningBoltPrefabScript>();
+			_dicProceduralLightningInstancePool.Add(prefab, listCachedProceduralLightning);
+		}
+
+		for (int i = 0; i < listCachedProceduralLightning.Count; ++i)
+		{
+			if (!listCachedProceduralLightning[i].gameObject.activeSelf)
+			{
+				listCachedProceduralLightning[i].transform.parent = parentTransform;
+				listCachedProceduralLightning[i].transform.position = position;
+				listCachedProceduralLightning[i].transform.rotation = rotation;
+				listCachedProceduralLightning[i].gameObject.SetActive(true);
+				return listCachedProceduralLightning[i];
+			}
+		}
+
+		GameObject newObject = Instantiate<GameObject>(prefab, position, rotation, parentTransform);
+#if UNITY_EDITOR
+		AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+		if (settings.ActivePlayModeDataBuilderIndex == 2)
+			ObjectUtil.ReloadShader(newObject);
+#endif
+		LightningBoltPrefabScript lightningBoltPrefabScript = newObject.GetComponent<LightningBoltPrefabScript>();
+		listCachedProceduralLightning.Add(lightningBoltPrefabScript);
+		return lightningBoltPrefabScript;
 	}
 	#endregion
 

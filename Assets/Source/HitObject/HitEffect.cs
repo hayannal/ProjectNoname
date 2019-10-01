@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DigitalRuby.ThunderAndLightning;
 
 public class HitEffect : MonoBehaviour {
 
@@ -9,6 +10,7 @@ public class HitEffect : MonoBehaviour {
 		None,
 		LineRenderer,
 		RayDesigner,
+		ProceduralLightning,
 	}
 
 	#region staticFunction
@@ -61,6 +63,13 @@ public class HitEffect : MonoBehaviour {
 				rayDesigner.UpdateStartPosition(startPoint, startPoint + Vector3.up);
 				rayDesigner.UpdateTargetPosition(contactPoint, contactPoint + Vector3.up);
 				rayDesigner.UpdateMeshImmediate();
+				break;
+			case eLineRendererType.ProceduralLightning:
+				LightningBoltPrefabScript lightningBoltPrefabScript = BattleInstanceManager.instance.GetCachedLightningBoltPrefabScript(meHit.hitEffectLineRendererObject, startPoint, Quaternion.identity);
+				lightningBoltPrefabScript.ManualMode = true;
+				lightningBoltPrefabScript.Source.transform.position = startPoint;
+				lightningBoltPrefabScript.Destination.transform.position = contactPoint;
+				lightningBoltPrefabScript.Trigger();
 				break;
 		}
 	}

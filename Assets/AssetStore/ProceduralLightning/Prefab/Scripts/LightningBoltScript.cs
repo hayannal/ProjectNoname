@@ -282,10 +282,13 @@ namespace DigitalRuby.ThunderAndLightning
         protected virtual void Awake()
         {
             UpdateShaderIds();
+			UpdateCamera();
+			UpdateMaterialsForLastTexture();
+			UpdateShaderParameters();
 
 #if UNITY_EDITOR
 
-            if (GetComponents<LightningBoltScript>().Length > 1)
+			if (GetComponents<LightningBoltScript>().Length > 1)
             {
                 UnityEngine.Debug.LogError("Having more than one lightning script attached to one game object is not supported.");
             }
@@ -299,9 +302,6 @@ namespace DigitalRuby.ThunderAndLightning
         /// </summary>
         protected virtual void Start()
         {
-            UpdateCamera();
-            UpdateMaterialsForLastTexture();
-            UpdateShaderParameters();
             CheckCompensateForParentTransform();
             UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
             if (MultiThreaded)

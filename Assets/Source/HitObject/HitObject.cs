@@ -847,6 +847,19 @@ public class HitObject : MonoBehaviour
 		FinalizeHitObject();
 	}
 
+	public void OnFinalizeByRangeSignal()
+	{
+		// SphereCast 타입이라면 천천히 사라지게 하고 삭제를 위임한다.
+		if (_hitObjectSphereCastRayPath != null)
+		{
+			_hitObjectSphereCastRayPath.DisableRayPath();
+			return;
+		}
+
+		OnFinalizeByLifeTime();
+	}
+
+
 
 	bool _settedHitEffectLineRendererStartPosition = false;
 	Vector3 _reservedHitEffectLineRendererStartPosition;

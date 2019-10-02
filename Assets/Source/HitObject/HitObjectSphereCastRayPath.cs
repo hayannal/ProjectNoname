@@ -7,7 +7,7 @@ public class HitObjectSphereCastRayPath : MonoBehaviour
 {
 	public LightningBoltPathScript lightningBoltPathScript;
 	public Transform lightningBoltPathEndTransform;
-	List<LineRenderer> _listLineRenderer = new List<LineRenderer>();
+	List<LineRenderer> _listLineRenderer = null;
 
 	HitObject _hitObject;
 	Actor _parentActor;
@@ -15,8 +15,11 @@ public class HitObjectSphereCastRayPath : MonoBehaviour
 
 	public void InitializeSignal(HitObject hitObject, Actor parentActor)
 	{
-		if (_listLineRenderer.Count == 0)
+		lightningBoltPathScript.ManualMode = false;
+
+		if (_listLineRenderer == null)
 		{
+			_listLineRenderer = new List<LineRenderer>();
 			GetComponentsInChildren<LineRenderer>(_listLineRenderer);
 			for (int i = 0; i < _listLineRenderer.Count; ++i)
 				_listLineRenderer[i].useWorldSpace = true;
@@ -35,8 +38,20 @@ public class HitObjectSphereCastRayPath : MonoBehaviour
 
 	void Update()
 	{
+		if (_fadeOutStarted && _fadeOutRemainTime > 0.0f)
+		{
+			_fadeOutRemainTime -= Time.deltaTime;
+			if (_fadeOutRemainTime <= 0.0f)
+			{
+				_fadeOutRemainTime = 0.0f;
+				_fadeOutStarted = false;
+				_hitObject.OnFinalizeByLifeTime();
+			}
+			return;
+		}
+
 		if (CheckChangeState())
-			_hitObject.OnFinalizeByLifeTime();
+			DisableRayPath();
 
 		for (int i = 0; i < _listLineRenderer.Count; ++i)
 		{
@@ -55,6 +70,23 @@ public class HitObjectSphereCastRayPath : MonoBehaviour
 			return false;
 
 		return true;
+	}
+
+	bool _fadeOutStarted = false;
+	float _fadeOutRemainTime;
+	public void DisableRayPath()
+	{
+		if (lightningBoltPathScript != null && lightningBoltPathScript.FadePercent > 0.0f && lightningBoltPathScript.FadeOutMultiplier > 0.0f)
+		{
+			// 이 조건에서만 천천히 삭제되면 된다.
+			lightningBoltPathScript.ManualMode = true;
+			cachedTransform.parent = null;
+			_fadeOutRemainTime = lightningBoltPathScript.FadePercent;
+			_fadeOutStarted = true;
+			return;
+		}
+
+		_hitObject.OnFinalizeByLifeTime();
 	}
 
 

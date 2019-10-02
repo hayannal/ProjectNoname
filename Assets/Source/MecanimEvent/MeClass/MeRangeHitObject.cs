@@ -69,7 +69,7 @@ public class MeRangeHitObject : MeHitObject
 	{
 		if (_mainHitObject != null)
 		{
-			_mainHitObject.OnFinalizeByLifeTime();
+			_mainHitObject.OnFinalizeByRangeSignal();
 			_mainHitObject = null;
 		}
 
@@ -91,7 +91,7 @@ public class MeRangeHitObject : MeHitObject
 
 			int index = i - 1;
 			if (index < _listRepeatHitObject.Count && _listRepeatHitObject[index] != null)
-				_listRepeatHitObject[index].OnFinalizeByLifeTime();
+				_listRepeatHitObject[index].OnFinalizeByRangeSignal();
 		}
 		_listRepeatHitObject.Clear();
 	}

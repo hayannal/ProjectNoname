@@ -450,7 +450,14 @@ namespace DigitalRuby.ThunderAndLightning
             parameters.StartVariance = StartVariance;
             parameters.EndVariance = EndVariance;
 
-            base.CreateLightningBolt(parameters);
+			// adjust generation by distance
+			Vector3 diff = parameters.End - parameters.Start;
+			if (diff.sqrMagnitude < 9.0f)
+				parameters.Generations = 3;
+			else if (diff.sqrMagnitude < 16.0f)
+				parameters.Generations = 4;
+
+			base.CreateLightningBolt(parameters);
         }
     }
 }

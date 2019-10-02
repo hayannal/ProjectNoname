@@ -266,7 +266,21 @@ namespace DigitalRuby.ThunderAndLightning
                 {
                     parameters.Start = lastPoint.Value;
                     parameters.End = currentPoint.Value;
-                    base.CreateLightningBolt(parameters);
+
+					// adjust generation by distance
+					Vector3 diff = parameters.End - parameters.Start;
+					if (diff.sqrMagnitude < 9.0f)
+					{
+						parameters.Generations -= 2;
+						parameters.Generations = Mathf.Max(parameters.Generations, 2);
+					}
+					else if (diff.sqrMagnitude < 16.0f)
+					{
+						parameters.Generations -= 1;
+						parameters.Generations = Mathf.Max(parameters.Generations, 3);
+					}
+
+					base.CreateLightningBolt(parameters);
 
                     if ((nextInterval -= Speed) <= 0.0f)
                     {

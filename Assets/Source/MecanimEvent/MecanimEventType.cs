@@ -14,5 +14,6 @@ public enum eMecanimEventType
 	HitObject,
 	RangeHitObject,
 	GlobalLight,
+	MovePositionCurve,
 }
 #endregion

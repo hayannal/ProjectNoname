@@ -4,9 +4,12 @@ using UnityEngine;
 using System.Collections;
 
 public class MecanimEventBase : StateMachineBehaviour {
-	
+
+#if UNITY_EDITOR
 	static public bool s_bDisableMecanimEvent = false;
 	static public bool s_bForceCallUpdate = false;
+	static public float s_fAnimatorSpeed = 1.0f;
+#endif
 
 	public virtual bool RangeSignal { get { return false; } }
 
@@ -15,7 +18,9 @@ public class MecanimEventBase : StateMachineBehaviour {
 
 	// OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
 	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
+#if UNITY_EDITOR
 		if (s_bForceCallUpdate) return;
+#endif
 
 #if DEBUG_ON_DAMAGE_CHANGE_STATE
 		if (GameManager.Instance.testFlag)
@@ -35,7 +40,9 @@ public class MecanimEventBase : StateMachineBehaviour {
 	float _lastNormalizeTime;
 	override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
+#if UNITY_EDITOR
 		if (s_bDisableMecanimEvent) return;
+#endif
 
 		// for animator.speed >= 0.0f
 

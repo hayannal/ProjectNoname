@@ -667,7 +667,7 @@ public class MecanimEventTool : EditorWindow
 			if (m_bPlay)
 			{
 				if (needResetNormalizedTime) asiCurrentTime = 0.0f;
-				asiCurrentTime += Time.deltaTime * asi.speed * _speedMultiplier;
+				asiCurrentTime += Time.deltaTime * asi.speed * _speedMultiplier * MecanimEventBase.s_fAnimatorSpeed;
 				if (asiCurrentTime >= clipLength)
 				{
 					if (m_bLoop)

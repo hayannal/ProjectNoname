@@ -29,6 +29,9 @@ public class HitObjectSphereCastRayPath : MonoBehaviour
 		_parentActor = parentActor;
 		if (parentActor.actionController.animator != null)
 			_fullPathHash = parentActor.actionController.animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
+
+		// 액션 변경 체크
+		_parentActor.actionController.EnableDetectPlayAction(true);
 	}
 
 	public void SetEndPosition(Vector3 position)
@@ -61,6 +64,8 @@ public class HitObjectSphereCastRayPath : MonoBehaviour
 
 	protected bool CheckChangeState()
 	{
+		if (_parentActor.actionController.detectedPlayAction)
+			return true;
 		if (_parentActor.actionController.animator.IsInTransition(0))
 			return true;
 
@@ -76,6 +81,8 @@ public class HitObjectSphereCastRayPath : MonoBehaviour
 	float _fadeOutRemainTime;
 	public void DisableRayPath()
 	{
+		_parentActor.actionController.EnableDetectPlayAction(false);
+
 		if (lightningBoltPathScript != null && lightningBoltPathScript.FadePercent > 0.0f && lightningBoltPathScript.FadeOutMultiplier > 0.0f)
 		{
 			// 이 조건에서만 천천히 삭제되면 된다.

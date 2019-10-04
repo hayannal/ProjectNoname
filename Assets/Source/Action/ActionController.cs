@@ -239,8 +239,30 @@ public class ActionController : MonoBehaviour {
 			_dicHitSignalIndexInfo.Add(actionNameHash, 0);
 		#endregion
 
+		#region DetectPlayAction
+		if (_needDetectPlayAction)
+			detectedPlayAction = true;
+		#endregion
 		return true;
 	}
+
+	#region DetectPlayAction
+	// 지금까지 이런 처리가 한번도 필요하지 않았는데, 어태치하는 이펙트가 생기고 나서 필요하게 되었다.
+	// 현재 구조상 움직이거나 해서 임의의 액션을 실행할때
+	// 먼저 transform값이 변경(포지션 혹은 로테이션)되면서 애니를 CrossFade 시켜놓고
+	// 다음프레임에 애니메이션이 적용되면서 시그널이 돌아가게 된다.
+	// 이러다보니 어태치된 레이 이펙트가 한 프레임 회전되는 캐릭터를 따라가고 나서 그 다음 프레임부터 사라지게 된다.
+	// 이게 별로라서 고치는 방법으로 임의의 액션을 실행할때(다음 프레임에 처리되는 CrossFade를 기다리지 않도록) 
+	// 직접 PlayAction을 호출해서 액션을 변경하려는지를 감지하기로 했다.
+	// 참고로 평소에는 할필요가 없으니 필요할때만 체크하게 한다.
+	bool _needDetectPlayAction = false;
+	public void EnableDetectPlayAction(bool enable)
+	{
+		_needDetectPlayAction = enable;
+		detectedPlayAction = false;
+	}
+	public bool detectedPlayAction { get; private set; }
+	#endregion
 
 	public ActionInfo GetActionInfoByControllerType(Control.eControllerType eControllerType)
 	{

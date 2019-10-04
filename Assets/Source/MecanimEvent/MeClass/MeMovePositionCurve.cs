@@ -32,6 +32,7 @@ public class MeMovePositionCurve : MecanimEventBase {
 	// 아무래도 컨트롤러는 Rigidbody가지고 움직이니 여기서는 transform을 직접 움직이는게 나아보인다.
 	//BaseCharacterController _baseCharacterController;
 	Transform _transform;
+	Rigidbody _rigidbody;
 	float _prevX;
 	float _prevZ;
 	override public void OnRangeSignal(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -44,7 +45,10 @@ public class MeMovePositionCurve : MecanimEventBase {
 				if (characterMovement == null)
 					characterMovement = animator.transform.parent.GetComponent<CharacterMovement>();
 				if (characterMovement != null)
+				{
 					_transform = characterMovement.transform;
+					_rigidbody = characterMovement.GetComponent<Rigidbody>();
+				}
 			}
 		}
 
@@ -72,10 +76,14 @@ public class MeMovePositionCurve : MecanimEventBase {
 				localTranslation.z = diff;
 			_prevZ = value;
 		}
-		
-		if (localTranslation != Vector3.zero)
-			_transform.Translate(localTranslation, Space.Self);
 
+		if (localTranslation != Vector3.zero)
+		{
+			if (_rigidbody != null)
+				_rigidbody.MovePosition(_rigidbody.position + _transform.TransformDirection(localTranslation));
+			else if (_transform != null)
+				_transform.Translate(localTranslation, Space.Self);
+		}
 	}
 
 	float _basePositionY;

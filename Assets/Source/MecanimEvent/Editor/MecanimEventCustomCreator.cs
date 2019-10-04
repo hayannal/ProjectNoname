@@ -23,6 +23,7 @@ public static class MecanimEventCustomCreator
 		case eMecanimEventType.RangeHitObject: eventBase = targetState.AddStateMachineBehaviour<MeRangeHitObject>(); break;
 		case eMecanimEventType.GlobalLight: eventBase = targetState.AddStateMachineBehaviour<MeGlobalLight>(); break;
 		case eMecanimEventType.MovePositionCurve: eventBase = targetState.AddStateMachineBehaviour<MeMovePositionCurve>(); break;
+		case eMecanimEventType.DontMove: eventBase = targetState.AddStateMachineBehaviour<MeDontMove>(); break;
 #endregion
 		}
 		return eventBase;
@@ -42,6 +43,7 @@ public static class MecanimEventCustomCreator
 		if (eventBase is MeHitObject) return eMecanimEventType.HitObject;
 		if (eventBase is MeGlobalLight) return eMecanimEventType.GlobalLight;
 		if (eventBase is MeMovePositionCurve) return eMecanimEventType.MovePositionCurve;
+		if (eventBase is MeDontMove) return eMecanimEventType.DontMove;
 		return eMecanimEventType.State;
 #endregion
 	}

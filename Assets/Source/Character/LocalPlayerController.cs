@@ -68,6 +68,21 @@ public sealed class LocalPlayerController : BaseCharacterController
 	#region METHODS
 
 	/// <summary>
+	/// Calculate the desired movement velocity.
+	/// Eg: Convert the input (moveDirection) to movement velocity vector,
+	///     use navmesh agent desired velocity, etc.
+	/// </summary>
+
+	public bool dontMove { get; set; }
+	protected override Vector3 CalcDesiredVelocity()
+	{
+		if (dontMove)
+			return Vector3.zero;
+
+		return base.CalcDesiredVelocity();
+	}
+
+	/// <summary>
 	/// Overrides 'BaseCharacterController' Animate method.
 	/// 
 	/// This shows how to handle your characters' animation states using the Animate method.

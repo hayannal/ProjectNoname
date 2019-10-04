@@ -41,6 +41,35 @@ public class PathFinderController : BaseAgentController
 	#region METHODS
 
 	/// <summary>
+	/// Calculate the desired movement velocity.
+	/// Eg: Convert the input (moveDirection) to movement velocity vector,
+	///     use navmesh agent desired velocity, etc.
+	/// </summary>
+
+	bool _dontMove = false;
+	public bool dontMove
+	{
+		get
+		{
+			return _dontMove;
+		}
+		set
+		{
+			_dontMove = value;
+			if (agent != null)
+				agent.speed = _dontMove ? 0.0f : speed;
+		}
+	}
+
+	protected override Vector3 CalcDesiredVelocity()
+	{
+		if (_dontMove)
+			return Vector3.zero;
+
+		return base.CalcDesiredVelocity();
+	}
+
+	/// <summary>
 	/// Overrides 'BaseCharacterController' Animate method.
 	/// 
 	/// This shows how to handle your characters' animation states using the Animate method.

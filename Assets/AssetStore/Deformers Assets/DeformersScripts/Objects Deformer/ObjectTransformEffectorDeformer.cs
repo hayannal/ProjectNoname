@@ -51,6 +51,19 @@ public class ObjectTransformEffectorDeformer : MonoBehaviour {
 		}
 	}
 
+	public void SetEffector(GameObject effectorObject)
+	{
+		bool changed = false;
+		if (Effector != effectorObject)
+		{
+			Effector = effectorObject;
+			changed = true;
+		}
+
+		if (changed)
+			theEffector = Effector.GetComponent<EffectorVal>();
+	}
+
 	void FixedUpdate()
 	{if (Effector != null) {
 			TransformChanger ();

@@ -390,6 +390,14 @@ public class MonsterAI : MonoBehaviour
 
 		if (_attackPlayed == false)
 		{
+			// 어택을 하려면 Idle 상태로 진입할때까지 기다린다.
+			// 고대버그이긴 한데 간혹가다 어택이 실행 안되는 버그가 있었다.
+			// 디버깅 해보니 아래 PlayActionByActionName 실행 후 같은 프레임의 PathFinderController 업데이트에서
+			// actionController.PlayActionByActionName("Idle"); 함수가 호출되면서 어택 시켜둔걸 덮는 문제였다.
+			// 그래서 차라리 Idle로 진입 후에 attack 처리를 하는 형태로 바꾸기로 결정함.
+			if (actor.actionController.mecanimState.IsState((int)eMecanimState.Idle) == false)
+				return;
+
 			switch (attackActionPlayType)
 			{
 				case eActionPlayType.Table:

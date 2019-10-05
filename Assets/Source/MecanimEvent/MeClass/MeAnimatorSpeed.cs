@@ -53,16 +53,19 @@ public class MeAnimatorSpeed : MecanimEventBase {
 			OnRangeSignalEnd(animator, stateInfo, layerIndex);
 	}
 
-#if UNITY_EDITOR
 	override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		base.OnStateUpdate(animator, stateInfo, layerIndex);
 
+		if (_waitEnd == true && animator.IsInTransition(0))
+			OnRangeSignalEnd(animator, stateInfo, layerIndex);
+
+#if UNITY_EDITOR
 		if (MecanimEventBase.s_bDisableMecanimEvent || MecanimEventBase.s_bForceCallUpdate)
 		{
 			MecanimEventBase.s_fAnimatorSpeed = IsInRange(stateInfo) ? speed : 1.0f;
 			return;
 		}
-	}
 #endif
+	}
 }

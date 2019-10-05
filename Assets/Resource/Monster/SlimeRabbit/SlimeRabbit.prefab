@@ -194,8 +194,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startDelay: 0.75
-  startState: 0
-  useStateList: 0100010101
+  startState: 2
+  useStateList: 0000010101
   moveTimeRange: {x: 5, y: 5}
   refreshTickTimeRange: {x: 1, y: 1}
   desireDistance: 5
@@ -207,7 +207,7 @@ MonoBehaviour:
   attackActionName: Attack
   attackActionFadeDuration: 0.44
   lookAtTargetBeforeAttack: 1
-  attackDelayTimeRange: {x: 2, y: 2.5}
+  attackDelayTimeRange: {x: 1, y: 1.5}
   useAnimatorParameterForAI: 0
   listAnimatorParameterForAI: 
 --- !u!1001 &2135747208220717866
@@ -280,6 +280,30 @@ PrefabInstance:
     - target: {fileID: 13700000, guid: 506ab9ed9fe71614d9002e37dd530c3e, type: 3}
       propertyPath: m_ReceiveShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400014, guid: 506ab9ed9fe71614d9002e37dd530c3e, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 400014, guid: 506ab9ed9fe71614d9002e37dd530c3e, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 400014, guid: 506ab9ed9fe71614d9002e37dd530c3e, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 400012, guid: 506ab9ed9fe71614d9002e37dd530c3e, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 400012, guid: 506ab9ed9fe71614d9002e37dd530c3e, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 400012, guid: 506ab9ed9fe71614d9002e37dd530c3e, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 506ab9ed9fe71614d9002e37dd530c3e, type: 3}

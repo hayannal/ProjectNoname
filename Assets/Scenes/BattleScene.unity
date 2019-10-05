@@ -377,34 +377,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 946220113990051800, guid: 844ce25cc18dd684ba4e47b52ead9b79,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -4.79
-      objectReference: {fileID: 0}
-    - target: {fileID: 946220113664832812, guid: 844ce25cc18dd684ba4e47b52ead9b79,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -4.79
-      objectReference: {fileID: 0}
-    - target: {fileID: 946220114368202493, guid: 844ce25cc18dd684ba4e47b52ead9b79,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 4.78
-      objectReference: {fileID: 0}
-    - target: {fileID: 946220113781080252, guid: 844ce25cc18dd684ba4e47b52ead9b79,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 4.78
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 844ce25cc18dd684ba4e47b52ead9b79, type: 3}
---- !u!1 &107117264 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8280080458833314705, guid: 844ce25cc18dd684ba4e47b52ead9b79,
-    type: 3}
-  m_PrefabInstance: {fileID: 107117263}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &266810825
 GameObject:
   m_ObjectHideFlags: 0
@@ -528,6 +502,7 @@ MonoBehaviour:
     type: 3}
   skillSlotCanvasPrefab: {fileID: 2912271825967916095, guid: e7896afafe2474c4b876e625aa1bcc71,
     type: 3}
+  dropObjectPrefabList: []
 --- !u!4 &363291708
 Transform:
   m_ObjectHideFlags: 0
@@ -554,47 +529,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb494d5547fb8f340819242ba7f44115, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultPlaneSceneObject: {fileID: 730957143}
-  defaultGroundSceneObject: {fileID: 107117264}
   gatePillarPrefab: {fileID: 3325874705248193124, guid: c420ec3ae676f304887232e59a232d6d,
     type: 3}
   fadeCanvasPrefab: {fileID: 5808278950118106818, guid: 939411a8d608caf44bb27d3ce183a02b,
     type: 3}
   playerIndicatorPrefab: {fileID: 4637444971815004563, guid: a04cacfe13c3d9a40a3cd590caee9c01,
     type: 3}
-  planePrefabList:
-  - {fileID: 3896961553916062822, guid: e44b4b28dff3330469a6cf6037b1d76c, type: 3}
-  - {fileID: 8608147889564029456, guid: fe259a9554c932b49b9068d41745d43a, type: 3}
-  - {fileID: 689383516128435919, guid: 541c9d11bd657ef4ea3743ee7fd1e80c, type: 3}
-  groundPrefabList:
-  - {fileID: 8280080458833314705, guid: 844ce25cc18dd684ba4e47b52ead9b79, type: 3}
-  wallPrefabList:
-  - {fileID: 5152394217873367696, guid: 0e09377c28838004c9076c781ba336a9, type: 3}
-  - {fileID: 6845497800719747595, guid: f541e5ed167e95248907c83dc7c390fc, type: 3}
-  - {fileID: 7993013453232600147, guid: 32b754a896e4cf34bb2e44469ea74d0f, type: 3}
-  - {fileID: 8959635818442759151, guid: d55e7fe80965adb4684cb43350fe2132, type: 3}
-  - {fileID: 7993013453232600147, guid: cf497109224de4045b542459a8e9d579, type: 3}
-  spawnFlagPrefabList:
-  - {fileID: 3723020214160948160, guid: 76cf6f58f181b034f95ed7867799263b, type: 3}
-  - {fileID: 3723020214160948160, guid: c93702d7b16a0234f8267fce3345a19d, type: 3}
-  - {fileID: 3723020214160948160, guid: 2b3b2eabfc4e45d45a2ed2600da6c4ae, type: 3}
-  - {fileID: 3723020214160948160, guid: ea4ca9a5cd515d94b806a9f7505fbf32, type: 3}
-  - {fileID: 3723020214160948160, guid: 20a75312f40822b45ab3902be9d9915a, type: 3}
-  - {fileID: 3723020214160948160, guid: 636f3d555fe72d74bb147ae9576b5d2b, type: 3}
-  - {fileID: 3723020214160948160, guid: f91c867e5716ae741bd32182e2ccccf7, type: 3}
-  playChapter: 1
-  playStage: 0
-  lastClearChapter: 1
-  lastClearStage: 0
-  powerSourcePrefabList:
-  - {fileID: 4874765979154111986, guid: 26bb63c50da8f1e469af1ef0a0ac4d60, type: 3}
-  - {fileID: 8559926397600700064, guid: fe2c140e4c662724d9c0081e5b5c50ad, type: 3}
-  - {fileID: 7841181055703564182, guid: 65e186f72d4c35a44b81c8c66b5e9f91, type: 3}
-  - {fileID: 2043715298629758418, guid: 8ffa2eea003e60d43b1e5d5071c4148d, type: 3}
-  dropObjectPrefabList:
-  - {fileID: 9030083785615646100, guid: e74e35b4a741fd14489eb9a39031fd1e, type: 3}
-  - {fileID: 1129119652213920025, guid: f78c46e7c01d1914c9feebfb5ebbded0, type: 3}
-  - {fileID: 9030083785615646100, guid: b4f6320e8405d17498e6efbccc6394de, type: 3}
 --- !u!1 &436095921
 GameObject:
   m_ObjectHideFlags: 0
@@ -1174,12 +1114,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e44b4b28dff3330469a6cf6037b1d76c, type: 3}
---- !u!1 &730957143 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3896961553916062822, guid: e44b4b28dff3330469a6cf6037b1d76c,
-    type: 3}
-  m_PrefabInstance: {fileID: 730957142}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &859163694
 GameObject:
   m_ObjectHideFlags: 0
@@ -1463,7 +1397,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 16
+  field of view: 18.666666
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -3420,6 +3354,7 @@ MonoBehaviour:
   globalConstantFloatTable: {fileID: 11400000, guid: b28338c3c64df6a40858e4b3a79ace69,
     type: 2}
   dropTable: {fileID: 11400000, guid: 1d9e50a1c20f441469e42ef12b31378c, type: 2}
+  fontTable: {fileID: 0}
 --- !u!4 &2033018329
 Transform:
   m_ObjectHideFlags: 0

@@ -554,6 +554,7 @@ public class HitObject : MonoBehaviour
 	Collider _collider { get; set; }
 	List<TrailRenderer> _listTrailRendererAfterCollision;
 	List<GameObject> _listDisableObjectAfterCollision;
+	List<ParticleSystemRenderer> _listDisableParticleSystemRendererAfterCollision;
 	bool _disableSelfObjectAfterCollision;
 
 	// 기본적으로 벽 튕기는 처리나 투과를 위해서 모든 히트오브젝트는 컬리더로 되어있다.
@@ -685,6 +686,20 @@ public class HitObject : MonoBehaviour
 		{
 			_listDisableObjectAfterCollision = new List<GameObject>();
 			_listTrailRendererAfterCollision = new List<TrailRenderer>();
+			_listDisableParticleSystemRendererAfterCollision = new List<ParticleSystemRenderer>();
+
+			HitObjectDisableAfterCollision hitObjectDisableAfterCollision = GetComponentInChildren<HitObjectDisableAfterCollision>();
+			if (hitObjectDisableAfterCollision != null)
+			{
+				for (int i = 0; i < hitObjectDisableAfterCollision.DeactivateObjectsAfterCollision.Length; ++i)
+					_listDisableObjectAfterCollision.Add(hitObjectDisableAfterCollision.DeactivateObjectsAfterCollision[i]);
+				for (int i = 0; i < hitObjectDisableAfterCollision.DisableParticlesAfterCollision.Length; ++i)
+				{
+					ParticleSystemRenderer particleSystemRenderer = hitObjectDisableAfterCollision.DisableParticlesAfterCollision[i].GetComponent<ParticleSystemRenderer>();
+					if (particleSystemRenderer != null)
+						_listDisableParticleSystemRendererAfterCollision.Add(particleSystemRenderer);
+				}
+			}
 
 			RFX4_PhysicsMotion physicsMotion = GetComponentInChildren<RFX4_PhysicsMotion>();
 			if (physicsMotion != null)
@@ -715,6 +730,8 @@ public class HitObject : MonoBehaviour
 				_listDisableObjectAfterCollision[i].SetActive(true);
 			for (int i = 0; i < _listTrailRendererAfterCollision.Count; ++i)
 				_listTrailRendererAfterCollision[i].Clear();
+			for (int i = 0; i < _listDisableParticleSystemRendererAfterCollision.Count; ++i)
+				_listDisableParticleSystemRendererAfterCollision[i].enabled = true;
 		}
 	}
 
@@ -819,6 +836,8 @@ public class HitObject : MonoBehaviour
 
 		for (int i = 0; i < _listDisableObjectAfterCollision.Count; ++i)
 			_listDisableObjectAfterCollision[i].SetActive(false);
+		for (int i = 0; i < _listDisableParticleSystemRendererAfterCollision.Count; ++i)
+			_listDisableParticleSystemRendererAfterCollision[i].enabled = false;
 
 		if (_hitObjectLineRenderer != null)
 			_hitObjectLineRenderer.DisableLineRenderer(false);

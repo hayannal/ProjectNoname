@@ -14715,7 +14715,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 1, a: 1}
+      maxColor: {r: 1, g: 1, b: 1, a: 0.6666667}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -19534,7 +19534,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 0.5586207, b: 0, a: 1}
+      maxColor: {r: 1, g: 0.5586207, b: 0, a: 0.5019608}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -23186,7 +23186,7 @@ ParticleSystem:
       properties: 0
       emitProbability: 1
   LightsModule:
-    enabled: 1
+    enabled: 0
     ratio: 1
     light: {fileID: 108943164253918692, guid: faeb88c246231cb4aafcb2bc5b5b0427, type: 3}
     randomDistribution: 1
@@ -24189,6 +24189,7 @@ GameObject:
   - component: {fileID: 199924630522290694}
   - component: {fileID: 114964184784307936}
   - component: {fileID: 3764797763380180041}
+  - component: {fileID: 8995348604999994361}
   m_Layer: 0
   m_Name: ProtonExplosionYellow_D
   m_TagString: Untagged
@@ -29023,3 +29024,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   delayTime: 2
+--- !u!114 &8995348604999994361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1795988735297500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da6612240c354cb4abb66363c62ab797, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  numberOfShakes: 3
+  shakeAmountMin: {x: 0, y: 0, z: 0}
+  shakeAmountMax: {x: 0.4, y: 0.4, z: 0.4}
+  rotationAmountMin: {x: 0, y: 0, z: 0.01}
+  rotationAmountMax: {x: 0, y: 0, z: 0.08}
+  distanceMin: 0.01
+  distanceMax: 0.12
+  speedMin: 15
+  speedMax: 20
+  decay: 0.75

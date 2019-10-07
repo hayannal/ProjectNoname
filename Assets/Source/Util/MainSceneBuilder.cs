@@ -189,7 +189,7 @@ public class MainSceneBuilder : MonoBehaviour
 		{
 			_listCachingObject = new List<GameObject>();
 			for (int i = 0; i < BattleInstanceManager.instance.playerActor.cachingObjectList.Length; ++i)
-				_listCachingObject.Add(BattleInstanceManager.instance.GetCachedObject(BattleInstanceManager.instance.playerActor.cachingObjectList[i], null));
+				_listCachingObject.Add(BattleInstanceManager.instance.GetCachedObject(BattleInstanceManager.instance.playerActor.cachingObjectList[i], Vector3.right, Quaternion.identity));
 		}
 
 		// step 11. title ui

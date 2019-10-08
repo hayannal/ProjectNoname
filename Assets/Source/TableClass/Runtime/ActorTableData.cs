@@ -36,4 +36,12 @@ public class ActorTableData
   float _sp;
   public float sp { get { return _sp; } set { _sp = value; } }
   
+  [SerializeField]
+  float _attackRange;
+  public float attackRange { get { return _attackRange; } set { _attackRange = value; } }
+  
+  [SerializeField]
+  float _ultimateRange;
+  public float ultimateRange { get { return _ultimateRange; } set { _ultimateRange = value; } }
+  
 }

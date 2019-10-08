@@ -173,7 +173,15 @@ public sealed class LocalPlayerController : BaseCharacterController
 	{
 		// moveDirection 도 막아야 회전을 안한다.
 		if (actor.actorStatus.IsDie())
+		{
+			// 제자리 애니들(대표적으로 Run애니)을 가지고 있어서 useRootMotion 끄는 캐릭들이 있다.
+			// 이런 캐릭들은 죽을때 이동중이었다면 미끄러지면서 죽는 모션이 나오게 된다.(useRootMotion이 꺼있기 때문에 마지막 velocity가 계속 적용되는 상태라 이렇다.)
+			// 그래서 둘 중 하나로 처리해야하는데 useRootMotion를 바꾸는건 복구코드가 별도로 필요해지기 때문에
+			// moveDirection을 초기화 하기로 한다.
+			moveDirection = Vector3.zero;
+			//useRootMotion = true;
 			return;
+		}
 
 		// Handle your custom input here...
 

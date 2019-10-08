@@ -28,6 +28,10 @@ public class PlayerAI : MonoBehaviour
 		actor = GetComponent<Actor>();
 		targetingProcessor = GetComponent<TargetingProcessor>();
 		baseCharacterController = GetComponent<BaseCharacterController>();
+
+		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(actor.actorId);
+		if (actorTableData != null)
+			_actorTableAttackRange = actorTableData.attackRange;
 	}
 
     // Update is called once per frame
@@ -94,6 +98,7 @@ public class PlayerAI : MonoBehaviour
 		_cachedTargetingObjectTransform.position = targetTransform.position;
 	}
 
+	float _actorTableAttackRange;
 	float _currentAttackDelay;
 	string NormalAttackName = "Attack";
 	void UpdateAttack()
@@ -127,7 +132,18 @@ public class PlayerAI : MonoBehaviour
 			return;
 
 		Transform targetTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
-		baseCharacterController.movement.rotation = Quaternion.LookRotation(targetTransform.position - actor.cachedTransform.position);
+		Vector3 diff = targetTransform.position - actor.cachedTransform.position;
+		diff.y = 0.0f;
+		if (_actorTableAttackRange > 0.0f && diff.sqrMagnitude > _actorTableAttackRange * _actorTableAttackRange)
+		{
+			RangeIndicator.instance.Initialize(_actorTableAttackRange);
+			Cooltime cooltime = actor.cooltimeProcessor.GetCooltime(NormalAttackName);
+			if (cooltime != null)
+				_currentAttackDelay = cooltime.cooltime;
+			return;
+		}
+
+		baseCharacterController.movement.rotation = Quaternion.LookRotation(diff);
 		if (actor.actionController.PlayActionByActionName(NormalAttackName))
 		{
 			Cooltime cooltime = actor.cooltimeProcessor.GetCooltime(NormalAttackName);

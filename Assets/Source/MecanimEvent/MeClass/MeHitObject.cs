@@ -15,6 +15,7 @@ public class MeHitObject : MecanimEventBase {
 	public GameObject hitObjectPrefab;
 	public float lifeTime;
 	public bool movable;
+	public float maxDistance;
 	public float defaultSphereCastDistance;
 	public float sphereCastRadius;
 	public Team.eTeamCheckFilter teamCheckType;
@@ -127,6 +128,8 @@ public class MeHitObject : MecanimEventBase {
 			lifeTime = EditorGUILayout.FloatField("LifeTime :", lifeTime);
 			if (lifeTime > 0.0f) movable = EditorGUILayout.Toggle("Movable :", movable);
 			else movable = false;
+			if (movable)
+				maxDistance = EditorGUILayout.FloatField("Max Distance :", maxDistance);
 		}
 		teamCheckType = (Team.eTeamCheckFilter)EditorGUILayout.EnumPopup("Team Check Type :", teamCheckType);
 

@@ -750,6 +750,8 @@ public class HitObject : MonoBehaviour
 			return;
 		}
 
+		UpdateMaxDistance();
+
 		// Range 시그널이 아닌 Area는 자체적으로 시간값 가지고 검사한다. 발사체 형태의 부채꼴을 처리하기 위함.
 		if (_signal.RangeSignal == false && _signal.lifeTime > 0.0f)
 			UpdateAreaOrSphereCast();
@@ -794,6 +796,19 @@ public class HitObject : MonoBehaviour
 	//	_prevPosition = cachedTransform.position;
 	//}
 
+
+	void UpdateMaxDistance()
+	{
+		if (_signal.movable == false)
+			return;
+		if (_signal.maxDistance == 0.0f)
+			return;
+
+		Vector3 diff = cachedTransform.position - _createPosition;
+		diff.y = 0.0f;
+		if (diff.sqrMagnitude > _signal.maxDistance * _signal.maxDistance)
+			OnFinalizeByDistance();
+	}
 
 	void FixedUpdate()
 	{
@@ -864,6 +879,27 @@ public class HitObject : MonoBehaviour
 			_hitObjectAnimatorStarted = true;
 
 		FinalizeHitObject();
+	}
+
+	public void OnFinalizeByDistance()
+	{
+		if (_waitHitObjectAnimatorUpdateCount > 0)
+			return;
+
+		EnableRigidbodyAndCollider(false);
+
+		// Distance에 의해 꺼질때는 ByCollision처럼 disableSelfObjectAfterCollision 검사해서 Finalize하는게 이펙트 없어질때 더 예뻐보인다.
+		for (int i = 0; i < _listDisableObjectAfterCollision.Count; ++i)
+			_listDisableObjectAfterCollision[i].SetActive(false);
+		for (int i = 0; i < _listDisableParticleSystemRendererAfterCollision.Count; ++i)
+			_listDisableParticleSystemRendererAfterCollision[i].enabled = false;
+
+		if (_hitObjectAnimator != null && _hitObjectAnimator.OnFinalizeByDistance())
+			_hitObjectAnimatorStarted = true;
+
+		// 이것도 마찬가지.
+		if (_disableSelfObjectAfterCollision)
+			FinalizeHitObject();
 	}
 
 	public void OnFinalizeByRangeSignal()

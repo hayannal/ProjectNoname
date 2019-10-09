@@ -11,6 +11,7 @@ public class PlayerAI : MonoBehaviour
 	const float TargetChangeThreshold = 2.0f;
 
 	Collider targetCollider;
+	float _targetColliderRadius;
 
 	Actor actor { get; set; }
 	TargetingProcessor targetingProcessor { get; set; }
@@ -40,7 +41,8 @@ public class PlayerAI : MonoBehaviour
 		UpdateTargeting();
 		UpdateTargetingObject();
 		UpdateAttack();
-    }
+		UpdateAttackRange();
+	}
 
 	float _currentFindDelay;
 	Transform _cachedTargetingObjectTransform = null;
@@ -59,7 +61,10 @@ public class PlayerAI : MonoBehaviour
 		{
 			_currentFindDelay += TargetFindDelay;
 			if (targetingProcessor.FindNearestTarget(Team.eTeamCheckFilter.Enemy, FindTargetRange, actor.actionController.mecanimState.IsState((int)eMecanimState.Move) ? 0.0f : TargetChangeThreshold))
+			{
 				targetCollider = targetingProcessor.GetTarget();
+				_targetColliderRadius = ColliderUtil.GetRadius(targetCollider);
+			}
 			else
 				targetCollider = null;
 		}
@@ -134,14 +139,8 @@ public class PlayerAI : MonoBehaviour
 		Transform targetTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
 		Vector3 diff = targetTransform.position - actor.cachedTransform.position;
 		diff.y = 0.0f;
-		if (_actorTableAttackRange > 0.0f && diff.sqrMagnitude > _actorTableAttackRange * _actorTableAttackRange)
-		{
-			RangeIndicator.instance.Initialize(_actorTableAttackRange);
-			Cooltime cooltime = actor.cooltimeProcessor.GetCooltime(NormalAttackName);
-			if (cooltime != null)
-				_currentAttackDelay = cooltime.cooltime;
+		if (IsInAttackRange(diff) == false)
 			return;
-		}
 
 		baseCharacterController.movement.rotation = Quaternion.LookRotation(diff);
 		if (actor.actionController.PlayActionByActionName(NormalAttackName))
@@ -150,5 +149,29 @@ public class PlayerAI : MonoBehaviour
 			if (cooltime != null)
 				_currentAttackDelay = cooltime.cooltime;
 		}
+	}
+
+	bool IsInAttackRange(Vector3 diff)
+	{
+		if (_actorTableAttackRange == 0.0f)
+			return true;
+
+		if (diff.sqrMagnitude - (_targetColliderRadius * _targetColliderRadius) > _actorTableAttackRange * _actorTableAttackRange)
+			return false;
+
+		return true;
+	}
+
+	void UpdateAttackRange()
+	{
+		if (targetCollider == null)
+			return;
+		if (_actorTableAttackRange == 0.0f)
+			return;
+
+		Transform targetTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
+		Vector3 diff = targetTransform.position - actor.cachedTransform.position;
+		diff.y = 0.0f;
+		RangeIndicator.instance.ShowIndicator(_actorTableAttackRange, !IsInAttackRange(diff), actor.cachedTransform, false);
 	}
 }

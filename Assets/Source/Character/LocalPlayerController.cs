@@ -18,6 +18,7 @@ public sealed class LocalPlayerController : BaseCharacterController
 	Actor _actor;
 	ActionController _actionController;
 	Transform _cameraTransform;
+	float _actorTableAttackRange;
 
 	#endregion
 
@@ -35,6 +36,9 @@ public sealed class LocalPlayerController : BaseCharacterController
 			if (_actor != null)
 				return _actor;
 			_actor = GetComponent<Actor>();
+			ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(_actor.actorId);
+			if (actorTableData != null)
+				_actorTableAttackRange = actorTableData.attackRange;
 			return _actor;
 		}
 	}
@@ -134,11 +138,15 @@ public sealed class LocalPlayerController : BaseCharacterController
 			if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, groundMask.value))
 			{
 				Vector3 targetPosition = hitInfo.point;
+				Collider targetCollider = null;
 
 				if (GatePillar.instance != null && GatePillar.instance.gameObject.activeSelf)
 				{
 					if (hitInfo.collider != null && hitInfo.collider.gameObject == GatePillar.instance.meshColliderObject)
+					{
 						targetPosition = GatePillar.instance.cachedTransform.position;
+						targetCollider = hitInfo.collider;
+					}
 				}
 
 				if (actionController.PlayActionByControl(Control.eControllerType.ScreenController, Control.eInputType.Tab))
@@ -146,6 +154,7 @@ public sealed class LocalPlayerController : BaseCharacterController
 					actor.targetingProcessor.SetCustomTargetPosition(targetPosition);
 					_clearCustomTargetWaitCount = 10;
 					RotateTowards(targetPosition - cachedTransform.position);
+					CheckAttackRange(targetPosition, targetCollider);
 				}
 			}
 		}
@@ -162,6 +171,20 @@ public sealed class LocalPlayerController : BaseCharacterController
 			actor.targetingProcessor.ClearCustomTargetPosition();
 			_standbyClearCustomTarget = false;
 		}
+	}
+
+	void CheckAttackRange(Vector3 targetPosition, Collider targetCollider)
+	{
+		if (_actorTableAttackRange == 0.0f)
+			return;
+
+		float targetRadius = 0.0f;
+		if (targetCollider != null) targetRadius = ColliderUtil.GetRadius(targetCollider);
+
+		Vector3 diff = targetPosition - actor.cachedTransform.position;
+		diff.y = 0.0f;
+		if (diff.sqrMagnitude - (targetRadius * targetRadius) > _actorTableAttackRange * _actorTableAttackRange)
+			RangeIndicator.instance.ShowIndicator(_actorTableAttackRange, true, cachedTransform, true);
 	}
 
 	/// <summary>

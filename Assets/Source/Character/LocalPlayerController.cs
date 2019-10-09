@@ -145,7 +145,7 @@ public sealed class LocalPlayerController : BaseCharacterController
 				{
 					actor.targetingProcessor.SetCustomTargetPosition(targetPosition);
 					_clearCustomTargetWaitCount = 10;
-					RotateTowards(targetPosition - transform.position);
+					RotateTowards(targetPosition - cachedTransform.position);
 				}
 			}
 		}
@@ -198,4 +198,18 @@ public sealed class LocalPlayerController : BaseCharacterController
 	}
 
 	#endregion
+
+
+
+
+	Transform _transform;
+	public Transform cachedTransform
+	{
+		get
+		{
+			if (_transform == null)
+				_transform = GetComponent<Transform>();
+			return _transform;
+		}
+	}
 }

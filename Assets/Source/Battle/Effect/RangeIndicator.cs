@@ -30,8 +30,8 @@ public class RangeIndicator : MonoBehaviour
 	public LineRenderer lineRenderer;
 	public int segments = 80;
 
-	const float MAX_ALPHA = 0.6f;
-	const float MIN_ALPHA = 0.3f;
+	const float MAX_ALPHA = 0.55f;
+	const float MIN_ALPHA = 0.45f;
 
 	float _defaultHeight;
 	void Awake()

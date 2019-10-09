@@ -40,8 +40,4 @@ public class ActorTableData
   float _attackRange;
   public float attackRange { get { return _attackRange; } set { _attackRange = value; } }
   
-  [SerializeField]
-  float _ultimateRange;
-  public float ultimateRange { get { return _ultimateRange; } set { _ultimateRange = value; } }
-  
 }

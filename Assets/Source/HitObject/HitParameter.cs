@@ -10,6 +10,8 @@ public struct StatusStructForHitObject
 	public int skillLevel;  // current action skill level
 	public int hitSignalIndexInAction;
 	public int repeatIndex;
+	public bool showHitBlink;
+	public bool showHitRimBlink;
 	//public float hp;	// hp is in StatusBase
 	//public int level;
 	//public int liveComradeCount;

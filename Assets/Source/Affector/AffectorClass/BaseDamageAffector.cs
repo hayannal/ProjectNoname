@@ -9,6 +9,7 @@ public class BaseDamageAffector : AffectorBase {
 		if (_actor == null)
 		{
 			// something else? for breakable object
+			ShowHitBlink(hitParameter);
 			return;
 		}
 
@@ -38,5 +39,15 @@ public class BaseDamageAffector : AffectorBase {
 
 		//Collider col = m_Actor.GetComponent<Collider>();
 		//DamageFloaterManager.Instance.ShowDamage(intDamage, m_Actor.transform.position + new Vector3(0.0f, ColliderUtil.GetHeight(col), 0.0f));
+
+		ShowHitBlink(hitParameter);
+	}
+
+	void ShowHitBlink(HitParameter hitParameter)
+	{
+		if (hitParameter.statusStructForHitObject.showHitBlink)
+			HitBlink.ShowHitBlink(_affectorProcessor.cachedTransform);
+		if (hitParameter.statusStructForHitObject.showHitRimBlink)
+			HitRimBlink.ShowHitRimBlink(_affectorProcessor.cachedTransform, hitParameter.contactNormal);
 	}
 }

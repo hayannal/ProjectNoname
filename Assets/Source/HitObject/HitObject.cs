@@ -46,8 +46,8 @@ public class HitObject : MonoBehaviour
 
 					HitParameter hitParameter = new HitParameter();
 					hitParameter.hitNormal = parentTransform.forward;
-					hitParameter.contactNormal = (targetCollider.transform.position - parentTransform.position).normalized;
-					hitParameter.contactPoint = targetCollider.transform.position + (-hitParameter.contactNormal * colliderRadius * 0.7f);
+					hitParameter.contactNormal = (parentTransform.position - targetCollider.transform.position).normalized;
+					hitParameter.contactPoint = targetCollider.transform.position + (hitParameter.contactNormal * colliderRadius * 0.7f);
 					hitParameter.contactPoint.y += targetCollider.bounds.size.y * 0.5f;
 					hitParameter.statusBase = parentActor.actorStatus.statusBase;
 					CopyEtcStatusForHitObject(ref hitParameter.statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction, repeatIndex);
@@ -58,9 +58,9 @@ public class HitObject : MonoBehaviour
 						HitEffect.ShowHitEffect(meHit, hitParameter.contactPoint, hitParameter.contactNormal, hitParameter.statusStructForHitObject.weaponIDAtCreation);
 					if (meHit.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
 						HitEffect.ShowHitEffectLineRenderer(meHit, GetSpawnPosition(spawnTransform, meHit, parentTransform), hitParameter.contactPoint);
-					if (meHit.showHitBlink)
+					if (meHit.showHitBlink && (meHit.affectorValueIdList == null || meHit.affectorValueIdList.Count == 0))
 						HitBlink.ShowHitBlink(affectorProcessor.cachedTransform);
-					if (meHit.showHitRimBlink)
+					if (meHit.showHitRimBlink && (meHit.affectorValueIdList == null || meHit.affectorValueIdList.Count == 0))
 						HitRimBlink.ShowHitRimBlink(affectorProcessor.cachedTransform, hitParameter.contactNormal);
 				}
 			}
@@ -288,6 +288,13 @@ public class HitObject : MonoBehaviour
 		statusStructForHitObject.skillLevel = actor.actionController.GetCurrentSkillLevelByCurrentAction();
 		statusStructForHitObject.hitSignalIndexInAction = hitSignalIndexInAction;
 		statusStructForHitObject.repeatIndex = repeatIndex;
+		if (meHit.affectorValueIdList.Count > 0)
+		{
+			statusStructForHitObject.showHitBlink = meHit.showHitBlink;
+			statusStructForHitObject.showHitRimBlink = meHit.showHitRimBlink;
+		}
+		else
+			statusStructForHitObject.showHitBlink = statusStructForHitObject.showHitRimBlink = false;
 	}
 
 	static void CheckHitArea(Vector3 areaPosition, Vector3 areaForward, MeHitObject meHit, StatusBase statusBase, StatusStructForHitObject statusForHitObject,
@@ -341,8 +348,8 @@ public class HitObject : MonoBehaviour
 			{
 				HitParameter hitParameter = new HitParameter();
 				hitParameter.hitNormal = forward;
-				hitParameter.contactNormal = diff.normalized;
-				hitParameter.contactPoint = result[i].transform.position + (-hitParameter.contactNormal * colliderRadius * 0.7f);
+				hitParameter.contactNormal = -diff.normalized;
+				hitParameter.contactPoint = result[i].transform.position + (hitParameter.contactNormal * colliderRadius * 0.7f);
 				hitParameter.contactPoint.y += (meHit.areaHeightMin + meHit.areaHeightMax) * 0.5f;
 				hitParameter.statusBase = statusBase;
 				hitParameter.statusStructForHitObject = statusForHitObject;
@@ -353,9 +360,9 @@ public class HitObject : MonoBehaviour
 					HitEffect.ShowHitEffect(meHit, hitParameter.contactPoint, hitParameter.contactNormal, statusForHitObject.weaponIDAtCreation);
 				if (meHit.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
 					HitEffect.ShowHitEffectLineRenderer(meHit, areaPosition, hitParameter.contactPoint);
-				if (meHit.showHitBlink)
+				if (meHit.showHitBlink && (meHit.affectorValueIdList == null || meHit.affectorValueIdList.Count == 0))
 					HitBlink.ShowHitBlink(affectorProcessor.cachedTransform);
-				if (meHit.showHitRimBlink)
+				if (meHit.showHitRimBlink && (meHit.affectorValueIdList == null || meHit.affectorValueIdList.Count == 0))
 					HitRimBlink.ShowHitRimBlink(affectorProcessor.cachedTransform, hitParameter.contactNormal);
 
 				if (listOneHitPerTarget != null && meHit.oneHitPerTarget)
@@ -492,7 +499,7 @@ public class HitObject : MonoBehaviour
 			{
 				HitParameter hitParameter = new HitParameter();
 				hitParameter.hitNormal = spawnForward;
-				hitParameter.contactNormal = -s_listMonsterRaycastHit[i].normal;
+				hitParameter.contactNormal = s_listMonsterRaycastHit[i].normal;
 				hitParameter.contactPoint = s_listMonsterRaycastHit[i].point;
 				hitParameter.statusBase = statusBase;
 				hitParameter.statusStructForHitObject = statusForHitObject;
@@ -503,9 +510,9 @@ public class HitObject : MonoBehaviour
 					HitEffect.ShowHitEffect(meHit, hitParameter.contactPoint, hitParameter.contactNormal, statusForHitObject.weaponIDAtCreation);
 				//if (meHit.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
 				//	HitEffect.ShowHitEffectLineRenderer(meHit, areaPosition, hitParameter.contactPoint);
-				if (meHit.showHitBlink)
+				if (meHit.showHitBlink && (meHit.affectorValueIdList == null || meHit.affectorValueIdList.Count == 0))
 					HitBlink.ShowHitBlink(affectorProcessor.cachedTransform);
-				if (meHit.showHitRimBlink)
+				if (meHit.showHitRimBlink && (meHit.affectorValueIdList == null || meHit.affectorValueIdList.Count == 0))
 					HitRimBlink.ShowHitRimBlink(affectorProcessor.cachedTransform, hitParameter.contactNormal);
 
 				if (listOneHitPerTarget != null && meHit.oneHitPerTarget)
@@ -1197,7 +1204,7 @@ public class HitObject : MonoBehaviour
 				if (!collided)
 				{
 					contactPoint = cachedTransform.position;
-					contactNormal = cachedTransform.forward;
+					contactNormal = -cachedTransform.forward;
 				}
 
 				OnCollisionEnterAffectorProcessor(affectorProcessor, contactPoint, contactNormal);
@@ -1248,17 +1255,15 @@ public class HitObject : MonoBehaviour
 		// Reaction
 		HitParameter hitParameter = new HitParameter();
 		hitParameter.hitNormal = transform.forward;
-		hitParameter.contactNormal = -contactNormal;
+		hitParameter.contactNormal = contactNormal;
 		hitParameter.contactPoint = contactPoint;
-		//hitParameter.contactNormal = (col.transform.position - transform.position).normalized;
-		//hitParameter.contactPoint = col.ClosestPointOnBounds(col.transform.position) + (hitParameter.contactNormal * colliderRadius * 0.3f);
 		hitParameter.statusBase = _statusBase;
 		hitParameter.statusStructForHitObject = _statusStructForHitObject;
 		ApplyAffectorValue(affectorProcessor, _signal.affectorValueIdList, hitParameter);
 		
-		if (_signal.showHitBlink)
+		if (_signal.showHitBlink && (_signal.affectorValueIdList == null || _signal.affectorValueIdList.Count == 0))
 			HitBlink.ShowHitBlink(affectorProcessor.cachedTransform);
-		if (_signal.showHitRimBlink)
+		if (_signal.showHitRimBlink && (_signal.affectorValueIdList == null || _signal.affectorValueIdList.Count == 0))
 			HitRimBlink.ShowHitRimBlink(affectorProcessor.cachedTransform, hitParameter.contactNormal);
 	}
 

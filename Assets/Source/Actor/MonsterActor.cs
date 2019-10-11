@@ -70,6 +70,7 @@ public class MonsterActor : Actor
 
 	void InitializeMonster()
 	{
+		InitializePassiveSkill();
 		actorStatus.InitializeMonsterStatus(actorId);
 		monsterAI.InitializeAI();
 
@@ -96,6 +97,35 @@ public class MonsterActor : Actor
 		HitObject.EnableRigidbodyAndCollider(true, _rigidbody, _collider);
 
 		InitializeMonster();
+	}
+	#endregion
+
+	#region Passive Skill
+	List<AffectorBase> _listPassiveAffector;
+	void InitializePassiveSkill()
+	{
+		if (cachedMonsterTableData.passiveAffectorValueId.Length == 0)
+			return;
+
+		if (_listPassiveAffector == null)
+			_listPassiveAffector = new List<AffectorBase>();
+		_listPassiveAffector.Clear();
+
+		HitParameter hitParameter = new HitParameter();
+		hitParameter.statusBase = actorStatus.statusBase;
+		SkillProcessor.CopyEtcStatus(ref hitParameter.statusStructForHitObject, this);
+
+		for (int i = 0; i < cachedMonsterTableData.passiveAffectorValueId.Length; ++i)
+		{
+			AffectorBase passiveAffector = affectorProcessor.ApplyAffectorValue(cachedMonsterTableData.passiveAffectorValueId[i], hitParameter, true);
+			if (passiveAffector == null)
+				continue;
+
+			if (AffectorCustomCreator.IsContinuousAffector(passiveAffector.affectorType))
+				_listPassiveAffector.Add(passiveAffector);
+			else
+				Debug.LogErrorFormat("Non-continuous affector in a passive skill! / AffectorValueId = {1}", cachedMonsterTableData.passiveAffectorValueId[i]);
+		}
 	}
 	#endregion
 

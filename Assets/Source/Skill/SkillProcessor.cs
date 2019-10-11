@@ -149,13 +149,14 @@ public class SkillProcessor : MonoBehaviour
 	}
 	#endregion
 
-	static void CopyEtcStatus(ref StatusStructForHitObject statusStructForHitObject, Actor actor)
+	public static void CopyEtcStatus(ref StatusStructForHitObject statusStructForHitObject, Actor actor)
 	{
 		statusStructForHitObject.teamId = actor.team.teamId;
-		statusStructForHitObject.weaponIDAtCreation = 0;
+		statusStructForHitObject.skillLevel = 0;
+
+		//statusStructForHitObject.weaponIDAtCreation = 0;
 		//if (meHit.useWeaponHitEffect)
 		//	statusStructForHitObject.weaponIDAtCreation = actor.GetWeaponID(meHit.weaponDummyName);
-		statusStructForHitObject.skillLevel = 0;
 		statusStructForHitObject.hitSignalIndexInAction = 0;
 	}
 

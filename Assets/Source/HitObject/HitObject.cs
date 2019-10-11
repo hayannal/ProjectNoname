@@ -282,10 +282,11 @@ public class HitObject : MonoBehaviour
 	static void CopyEtcStatusForHitObject(ref StatusStructForHitObject statusStructForHitObject, Actor actor, MeHitObject meHit, int hitSignalIndexInAction, int repeatIndex)
 	{
 		statusStructForHitObject.teamId = actor.team.teamId;
+		statusStructForHitObject.skillLevel = actor.actionController.GetCurrentSkillLevelByCurrentAction();
+
 		statusStructForHitObject.weaponIDAtCreation = 0;
 		//if (meHit.useWeaponHitEffect)
 		//	statusStructForHitObject.weaponIDAtCreation = actor.GetWeaponID(meHit.weaponDummyName);
-		statusStructForHitObject.skillLevel = actor.actionController.GetCurrentSkillLevelByCurrentAction();
 		statusStructForHitObject.hitSignalIndexInAction = hitSignalIndexInAction;
 		statusStructForHitObject.repeatIndex = repeatIndex;
 		if (meHit.affectorValueIdList.Count > 0)

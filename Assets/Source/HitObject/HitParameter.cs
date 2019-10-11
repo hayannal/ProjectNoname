@@ -6,12 +6,16 @@ using ActorStatusDefine;
 public struct StatusStructForHitObject
 {
 	public int teamId;
-	public int weaponIDAtCreation;
 	public int skillLevel;  // current action skill level
+
+	// for hitObject
+	public int weaponIDAtCreation;
 	public int hitSignalIndexInAction;
 	public int repeatIndex;
 	public bool showHitBlink;
 	public bool showHitRimBlink;
+
+	// example
 	//public float hp;	// hp is in StatusBase
 	//public int level;
 	//public int liveComradeCount;

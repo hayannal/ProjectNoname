@@ -48,4 +48,8 @@ public class MonsterTableData
   float _initialDropSp;
   public float initialDropSp { get { return _initialDropSp; } set { _initialDropSp = value; } }
   
+  [SerializeField]
+  string[] _passiveAffectorValueId = new string[0];
+  public string[] passiveAffectorValueId { get { return _passiveAffectorValueId; } set { _passiveAffectorValueId = value; } }
+  
 }

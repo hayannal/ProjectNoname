@@ -9,6 +9,9 @@ public class Actor : MonoBehaviour {
 	public static int ACTOR_LAYER;
 
 	public string actorId;
+	public GameObject[] commonPoolPreloadObjectList;
+	public GameObject[] selfPassivePreloadObjectList;
+
 	public ActionController actionController { get; private set; }
 	public BaseCharacterController baseCharacterController { get; private set; }
 	//public MovementController movementController { get; private set; }
@@ -70,6 +73,12 @@ public class Actor : MonoBehaviour {
 	protected virtual void InitializeActor()
 	{
 		actionController.InitializeActionPlayInfo(actorId);
+
+		// 디버프에 쓰는 화상 이펙트도 결국엔 누군가 거는거기 때문에 공용풀에 올려두는게 가장 최소한만 로딩할 수 있는 구조다.
+		// 지금은 플레이중인 오브젝트를 지우는 코드가 없기때문에
+		// 사실 초기화때 한번 해두면 해제할 필요가 없긴 하다.
+		// 참고로 자기 전용으로 하는건 굳이 공용리스트에 등록할 필요 없어서 공용 오브젝트만 등록한다.
+		BattleInstanceManager.instance.AddCommonPoolPreloadObjectList(commonPoolPreloadObjectList);
 	}
 
 	Transform _transform;

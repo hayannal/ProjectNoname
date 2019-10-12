@@ -684,6 +684,38 @@ public class BattleInstanceManager : MonoBehaviour
 	}
 	#endregion
 
+	#region CommonPoolPreloadObjectList
+	// 액션툴에 넣을 수 없는 패시브용 이펙트들을 위해 만든 구조다.
+	// 패시브용 이펙트도 크게 둘로 분류할 수 있는데,
+	// 방어자한테 붙는건 자기 액터쪽에 붙어있을테니 어펙터 처리할때 그거 읽어오면 되니 로드하기가 편하다.
+	// 하지만 화상이나 빙결처럼 다른 상대한테 거는 이펙트들은 방어자가 미리 들고있을 수 없기때문에(모든걸 다 넣어야한다.) 로드하기가 불편하다.
+	// 그렇다고 공용 피격 이펙트들을 한데모아 다 로드하는건 낭비이기 때문에(메모리도 로딩속도도 다 손해다.)
+	// 결국 공격자가 들고있게 해놔야하고 해당 액터를 로드시 이렇게 공용 풀에 등록해서 꺼내쓰기로 한다.
+	//
+	// 꼭 지켜야할건 여러 캐릭터가 같은 이펙트를 사용할 수 있기 때문에 디펜던시 걸리도록 별도의 번들로 묶어야 한다는거다.
+	List<GameObject> _listCommonPoolPreloadObject = new List<GameObject>();
+	public void AddCommonPoolPreloadObjectList(GameObject[] commonPoolPreloadObjectList)
+	{
+		for (int i = 0; i < commonPoolPreloadObjectList.Length; ++i)
+		{
+			GameObject newObject = commonPoolPreloadObjectList[i];
+			if (_listCommonPoolPreloadObject.Contains(newObject) == false)
+				_listCommonPoolPreloadObject.Add(newObject);
+		}
+	}
+
+	public GameObject FindCommonPoolPreloadObject(string objectName)
+	{
+		for (int i = 0; i < _listCommonPoolPreloadObject.Count; ++i)
+		{
+			if (_listCommonPoolPreloadObject[i].name == objectName)
+				return _listCommonPoolPreloadObject[i];
+		}
+		return null;
+	}
+	#endregion
+
+
 
 
 

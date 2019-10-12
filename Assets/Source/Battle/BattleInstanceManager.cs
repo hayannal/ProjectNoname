@@ -531,6 +531,17 @@ public class BattleInstanceManager : MonoBehaviour
 		_dicActionNameHash.Add(actionName, hash);
 		return hash;
 	}
+
+	Dictionary<string, int> _dicShaderPropertyId = new Dictionary<string, int>();
+	public int GetShaderPropertyId(string propertyName)
+	{
+		if (_dicShaderPropertyId.ContainsKey(propertyName))
+			return _dicShaderPropertyId[propertyName];
+
+		int id = Shader.PropertyToID(propertyName);
+		_dicShaderPropertyId.Add(propertyName, id);
+		return id;
+	}
 	#endregion
 
 	#region Global Constant

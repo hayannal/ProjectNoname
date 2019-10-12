@@ -13,6 +13,14 @@ public class BaseDamageAffector : AffectorBase {
 			return;
 		}
 
+		// 무적 검사를 가장 먼저.
+		//if (InvincibleAffector.CheckInvincible(_affectorProcessor))
+		//	return;
+
+		// 횟수 보호막 검사가 그 다음.
+		if (CountBarrierAffector.CheckBarrier(_affectorProcessor))
+			return;
+
 		//float damage = hitParameter.statusBase.valueList[(int)eActorStatus.Attack] * 1000.0f / (_actor.actorStatus.GetValue(eActorStatus.Defense) + 1000.0f);
 		float damage = hitParameter.statusBase.valueList[(int)eActorStatus.Attack] - _actor.actorStatus.GetValue(eActorStatus.Defense);
 		switch (affectorValueLevelTableData.iValue1)

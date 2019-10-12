@@ -16,6 +16,7 @@ public static class AffectorCustomCreator
 			//case eAffectorType.DotDamage: affectorBase = new DotDamageAffector(); break;
 			//case eAffectorType.MoveToTarget: affectorBase = new MoveToTargetAffector(); break;
 			case eAffectorType.AddActorState: affectorBase = new AddActorStateAffector(); break;
+			case eAffectorType.CountBarrier: affectorBase = new CountBarrierAffector(); break;
 			#endregion
 		}
 		return affectorBase;
@@ -34,6 +35,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.DefaultContainer:
 			case eAffectorType.PiercingHitObject:
 			case eAffectorType.AddAffectorHitObject:
+			case eAffectorType.CountBarrier:
 				return true;
 			#endregion
 		}

@@ -14,7 +14,7 @@ public class AffectorProcessor : MonoBehaviour {
 		actor = GetComponent<Actor>();
 	}
 
-	void OnEnable()
+	void OnDisable()
 	{
 		if (_dicContinuousAffector != null)
 		{
@@ -202,6 +202,9 @@ public class AffectorProcessor : MonoBehaviour {
 			return false;
 
 		List<AffectorBase> listContinuousAffector = GetContinuousAffectorList((eAffectorType)data.affectorId);
+		if (listContinuousAffector == null)
+			return false;
+
 		for (int i = 0; i < listContinuousAffector.Count; ++i)
 		{
 			if (listContinuousAffector[i].finalized)
@@ -224,6 +227,21 @@ public class AffectorProcessor : MonoBehaviour {
 				return true;
 		}
 		return false;
+	}
+
+	// 실제 처리에서는 발견되는 가장 최초 ContinuousAffector를 가져와서 처리할때가 많다. 그래서 공용함수로 만들어둔다.
+	public AffectorBase GetFirstContinuousAffector(eAffectorType affectorType)
+	{
+		List<AffectorBase> listContinuousAffector = GetContinuousAffectorList(affectorType);
+		if (listContinuousAffector == null)
+			return null;
+
+		for (int i = 0; i < listContinuousAffector.Count; ++i)
+		{
+			if (listContinuousAffector[i].finalized == false)
+				return listContinuousAffector[i];
+		}
+		return null;
 	}
 
 	void Update()

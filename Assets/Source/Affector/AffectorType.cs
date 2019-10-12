@@ -15,11 +15,16 @@ public enum eAffectorType
 	DropItem,
 	CannotAction,
 	CannotMove,
+
 	DefaultContainer,
 	Heal,
 	PiercingHitObject,
 	AddAffectorHitObject,
 	GetLevelPack,
 	CallAffectorValue,
+	Invincible,
+	CountBarrier,
+	GaugeBarrier,
+	Headshot,
 }
 #endregion

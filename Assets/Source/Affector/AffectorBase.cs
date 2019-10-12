@@ -54,4 +54,48 @@ public class AffectorBase
 	public virtual void FinalizeAffector()
 	{
 	}
+
+
+
+
+	#region Helper
+	protected float CalcEndTime(float durationValue)
+	{
+		if (durationValue != -1.0f)
+			return Time.time + durationValue;
+		return 0.0f;
+	}
+
+	protected bool CheckEndTime(float endTime)
+	{
+		if (endTime == 0.0f)
+			return true;
+
+		if (Time.time > endTime)
+		{
+			finalized = true;
+			return false;
+		}
+		return true;
+	}
+
+
+	protected GameObject FindPreloadObject(string objectName)
+	{
+		if (_actor != null)
+		{
+			for (int i = 0; i < _actor.selfPassivePreloadObjectList.Length; ++i)
+			{
+				if (_actor.selfPassivePreloadObjectList[i].name == objectName)
+					return _actor.selfPassivePreloadObjectList[i];
+			}
+		}
+		GameObject result = BattleInstanceManager.instance.FindCommonPoolPreloadObject(objectName);
+#if UNITY_EDITOR
+		if (result == null)
+			Debug.LogErrorFormat("Not found Preload Object = {0}", objectName);
+#endif
+		return result;
+	}
+	#endregion
 }

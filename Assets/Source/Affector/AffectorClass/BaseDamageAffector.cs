@@ -18,7 +18,7 @@ public class BaseDamageAffector : AffectorBase {
 		//	return;
 
 		// 횟수 보호막 검사가 그 다음.
-		if (CountBarrierAffector.CheckBarrier(_affectorProcessor))
+		if (CountBarrierAffector.CheckBarrier(_affectorProcessor, hitParameter))
 			return;
 
 		//float damage = hitParameter.statusBase.valueList[(int)eActorStatus.Attack] * 1000.0f / (_actor.actorStatus.GetValue(eActorStatus.Defense) + 1000.0f);

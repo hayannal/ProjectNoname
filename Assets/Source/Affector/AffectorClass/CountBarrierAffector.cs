@@ -4,9 +4,16 @@ using System.Collections.Generic;
 
 public class CountBarrierAffector : AffectorBase
 {
+	static string BONE_NAME = "Bone_CountBarrier_";
+
+	Color _defaultBarrierColor = new Color(50.0f / 255.0f, 50.0f / 255.0f, 50.0f / 255.0f);
+	Color _hitBarrierColor = new Color(250.0f / 255.0f, 50.0f / 255.0f, 50.0f / 255.0f);
+
 	int _remainCount;
 	float _endTime;
+	Transform _boneTransform;
 	Transform _loopEffectTransform;
+	Material _loopEffectMaterial;
 	GameObject _onBarrierEffectPrefab;
 
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
@@ -16,16 +23,39 @@ public class CountBarrierAffector : AffectorBase
 		// lifeTime
 		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
 
+		// attach bone
+		bool useLoopEffect = !string.IsNullOrEmpty(affectorValueLevelTableData.sValue3);
+		bool useOnBarrierEffect = !string.IsNullOrEmpty(affectorValueLevelTableData.sValue4);
+		if (useLoopEffect || useOnBarrierEffect)
+		{
+			if (_actor != null)
+				_boneTransform = _actor.actionController.dummyFinder.FindTransform(BONE_NAME);
+			else
+				_boneTransform = _affectorProcessor.cachedTransform;
+		}
+
 		// loop effect
-		if (!string.IsNullOrEmpty(affectorValueLevelTableData.sValue3))
+		if (useLoopEffect)
 		{
 			GameObject loopEffectPrefab = FindPreloadObject(affectorValueLevelTableData.sValue3);
 			if (loopEffectPrefab != null)
-				_loopEffectTransform = BattleInstanceManager.instance.GetCachedObject(loopEffectPrefab, _actor.cachedTransform).transform;
+			{
+				_loopEffectTransform = BattleInstanceManager.instance.GetCachedObject(loopEffectPrefab, _boneTransform).transform;
+				_loopEffectTransform.localPosition = Vector3.zero;
+				_loopEffectTransform.localRotation = Quaternion.identity;
+				_loopEffectTransform.localScale = Vector3.one;
+				Renderer loopEffectRenderer = _loopEffectTransform.GetComponentInChildren<Renderer>();
+				if (loopEffectRenderer != null)
+				{
+					_loopEffectMaterial = loopEffectRenderer.material;
+					_loopEffectMaterial.SetColor(BattleInstanceManager.instance.GetShaderPropertyId("_TintColor"), _defaultBarrierColor);
+					_currentLoopEffectColor = _targetLoopEffectColor = _defaultBarrierColor;
+				}
+			}
 		}
 
 		// onBarrier effect
-		if (!string.IsNullOrEmpty(affectorValueLevelTableData.sValue4))
+		if (useOnBarrierEffect)
 		{
 			_onBarrierEffectPrefab = FindPreloadObject(affectorValueLevelTableData.sValue4);
 
@@ -42,34 +72,87 @@ public class CountBarrierAffector : AffectorBase
 	{
 		if (CheckEndTime(_endTime) == false)
 			return;
+
+		UpdateLoopEffectColor();
+	}
+
+	Color _currentLoopEffectColor;
+	Color _targetLoopEffectColor;
+	bool _lastBarrierPingpongState = false;
+	float _lastBarrierPingpongRemainTime = 0.0f;
+	const float LastBarrierPingpongTime = 0.4f;
+	void UpdateLoopEffectColor()
+	{
+		if (_loopEffectMaterial == null)
+			return;
+
+		if (_remainCount > 1)
+		{
+			_currentLoopEffectColor = Color.Lerp(_currentLoopEffectColor, _targetLoopEffectColor, Time.deltaTime * 2.0f);
+			_loopEffectMaterial.SetColor(BattleInstanceManager.instance.GetShaderPropertyId("_TintColor"), _currentLoopEffectColor);
+		}
+		else if (_remainCount == 1)
+		{
+			if (_lastBarrierPingpongRemainTime > 0.0f)
+			{
+				_lastBarrierPingpongRemainTime -= Time.deltaTime;
+				if (_lastBarrierPingpongRemainTime <= 0.0f)
+				{
+					_lastBarrierPingpongRemainTime += LastBarrierPingpongTime;
+					_lastBarrierPingpongState ^= true;
+
+					if (_lastBarrierPingpongState)
+						_targetLoopEffectColor = _defaultBarrierColor;
+					else
+						_targetLoopEffectColor = Color.black;
+				}
+			}
+			
+			_currentLoopEffectColor = Color.Lerp(_currentLoopEffectColor, _targetLoopEffectColor, Time.deltaTime * 4.0f);
+			_loopEffectMaterial.SetColor(BattleInstanceManager.instance.GetShaderPropertyId("_TintColor"), _currentLoopEffectColor);
+		}
 	}
 
 	public override void FinalizeAffector()
 	{
 		if (_loopEffectTransform != null)
 		{
-			DisableParticleEmission.DisableEmission(_loopEffectTransform);
+			_loopEffectTransform.gameObject.SetActive(false);
 			_loopEffectTransform = null;
 		}
 	}
 
-	void OnBarrier()
+	void OnBarrier(HitParameter hitParameter)
 	{
+		if (_loopEffectMaterial != null)
+		{
+			_currentLoopEffectColor = _hitBarrierColor;
+			_loopEffectMaterial.SetColor(BattleInstanceManager.instance.GetShaderPropertyId("_TintColor"), _currentLoopEffectColor);
+			if (_remainCount == 2)
+			{
+				_lastBarrierPingpongState = false;
+				_lastBarrierPingpongRemainTime = LastBarrierPingpongTime;
+			}
+		}
+
 		if (_onBarrierEffectPrefab != null)
-			BattleInstanceManager.instance.GetCachedObject(_onBarrierEffectPrefab, _actor.cachedTransform.position, Quaternion.identity);
+		{
+			Transform effectTransform = BattleInstanceManager.instance.GetCachedObject(_onBarrierEffectPrefab, hitParameter.contactPoint, Quaternion.LookRotation(hitParameter.contactNormal)).transform;
+			effectTransform.parent = _boneTransform;
+		}
 
 		_remainCount -= 1;
 		if (_remainCount == 0)
 			finalized = true;
 	}
 
-	public static bool CheckBarrier(AffectorProcessor affectorProcessor)
+	public static bool CheckBarrier(AffectorProcessor affectorProcessor, HitParameter hitParameter)
 	{
 		CountBarrierAffector countBarrierAffector = (CountBarrierAffector)affectorProcessor.GetFirstContinuousAffector(eAffectorType.CountBarrier);
 		if (countBarrierAffector == null)
 			return false;
 
-		countBarrierAffector.OnBarrier();
+		countBarrierAffector.OnBarrier(hitParameter);
 		return true;
 	}
 }

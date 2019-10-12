@@ -366,6 +366,24 @@ public class ActionController : MonoBehaviour {
 	}
 	#endregion
 
+	#region DummyFinder
+	DummyFinder _dummyFinder;
+	public DummyFinder dummyFinder
+	{
+		get
+		{
+			if (_dummyFinder != null)
+				return _dummyFinder;
+
+			if (_dummyFinder == null)
+				_dummyFinder = animator.GetComponent<DummyFinder>();
+			if (_dummyFinder == null)
+				_dummyFinder = animator.gameObject.AddComponent<DummyFinder>();
+			return _dummyFinder;
+		}
+	}
+	#endregion
+
 	/*
 	void Update()
 	{

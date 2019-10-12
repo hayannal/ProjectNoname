@@ -60,4 +60,8 @@ public class AffectorValueLevelTableData
   string _sValue3;
   public string sValue3 { get { return _sValue3; } set { _sValue3 = value; } }
   
+  [SerializeField]
+  string _sValue4;
+  public string sValue4 { get { return _sValue4; } set { _sValue4 = value; } }
+  
 }

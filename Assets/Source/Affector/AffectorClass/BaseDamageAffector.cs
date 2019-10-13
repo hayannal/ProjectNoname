@@ -20,8 +20,8 @@ public class BaseDamageAffector : AffectorBase {
 			return;
 
 		// 무적 검사를 그다음
-		//if (InvincibleAffector.CheckInvincible(_affectorProcessor))
-		//	return;
+		if (InvincibleAffector.CheckInvincible(_affectorProcessor))
+			return;
 
 		// 회피 체크
 		if (affectorValueLevelTableData.iValue3 == 0)

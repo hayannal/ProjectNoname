@@ -13,13 +13,25 @@ public class BaseDamageAffector : AffectorBase {
 			return;
 		}
 
-		// 무적 검사를 가장 먼저.
+		// 실명은 공격자꺼라 가장 먼저.
+
+		// 횟수 보호막 검사가 비쥬얼상 무적이나 회피보다 먼저다.
+		if (CountBarrierAffector.CheckBarrier(_affectorProcessor, hitParameter))
+			return;
+
+		// 무적 검사를 그다음
 		//if (InvincibleAffector.CheckInvincible(_affectorProcessor))
 		//	return;
 
-		// 횟수 보호막 검사가 그 다음.
-		if (CountBarrierAffector.CheckBarrier(_affectorProcessor, hitParameter))
-			return;
+		// 회피 체크
+		float evadeRate = _actor.actorStatus.GetValue(eActorStatus.Evade);
+		if (evadeRate > 0.0f)
+		{
+			if (Random.value <= evadeRate)
+			{
+				return;
+			}
+		}
 
 		//float damage = hitParameter.statusBase.valueList[(int)eActorStatus.Attack] * 1000.0f / (_actor.actorStatus.GetValue(eActorStatus.Defense) + 1000.0f);
 		float damage = hitParameter.statusBase.valueList[(int)eActorStatus.Attack] - _actor.actorStatus.GetValue(eActorStatus.Defense);

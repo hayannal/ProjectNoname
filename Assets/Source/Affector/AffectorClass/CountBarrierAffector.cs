@@ -7,7 +7,7 @@ public class CountBarrierAffector : AffectorBase
 	static string BONE_NAME = "Bone_CountBarrier_";
 
 	Color _defaultBarrierColor = new Color(50.0f / 255.0f, 50.0f / 255.0f, 50.0f / 255.0f);
-	Color _hitBarrierColor = new Color(250.0f / 255.0f, 50.0f / 255.0f, 50.0f / 255.0f);
+	Color _hitBarrierColor = new Color(320.0f / 255.0f, 100.0f / 255.0f, 100.0f / 255.0f);
 
 	int _remainCount;
 	float _endTime;
@@ -78,39 +78,53 @@ public class CountBarrierAffector : AffectorBase
 
 	Color _currentLoopEffectColor;
 	Color _targetLoopEffectColor;
+	float _barrierBlinkRemainTime = 0.0f;
+	const float BarrierBlinkTime = 0.1f;
 	bool _lastBarrierPingpongState = false;
 	float _lastBarrierPingpongRemainTime = 0.0f;
-	const float LastBarrierPingpongTime = 0.4f;
+	const float LastBarrierPingpongTime = 0.2f;
 	void UpdateLoopEffectColor()
 	{
 		if (_loopEffectMaterial == null)
 			return;
 
-		if (_remainCount > 1)
+		float lerpPower = 2.0f;
+		if (_barrierBlinkRemainTime > 0.0f)
 		{
-			_currentLoopEffectColor = Color.Lerp(_currentLoopEffectColor, _targetLoopEffectColor, Time.deltaTime * 2.0f);
-			_loopEffectMaterial.SetColor(BattleInstanceManager.instance.GetShaderPropertyId("_TintColor"), _currentLoopEffectColor);
-		}
-		else if (_remainCount == 1)
-		{
-			if (_lastBarrierPingpongRemainTime > 0.0f)
+			lerpPower = 30.0f;
+			_barrierBlinkRemainTime -= Time.deltaTime;
+			if (_barrierBlinkRemainTime <= 0.0f)
 			{
-				_lastBarrierPingpongRemainTime -= Time.deltaTime;
-				if (_lastBarrierPingpongRemainTime <= 0.0f)
-				{
-					_lastBarrierPingpongRemainTime += LastBarrierPingpongTime;
-					_lastBarrierPingpongState ^= true;
+				_barrierBlinkRemainTime = 0.0f;
+				_targetLoopEffectColor = _defaultBarrierColor;
+				lerpPower = 2.0f;
 
-					if (_lastBarrierPingpongState)
-						_targetLoopEffectColor = _defaultBarrierColor;
-					else
-						_targetLoopEffectColor = Color.black;
+				if (_remainCount == 1)
+				{
+					_lastBarrierPingpongState = false;
+					_lastBarrierPingpongRemainTime = LastBarrierPingpongTime;
+					_targetLoopEffectColor = Color.black;
 				}
 			}
-			
-			_currentLoopEffectColor = Color.Lerp(_currentLoopEffectColor, _targetLoopEffectColor, Time.deltaTime * 4.0f);
-			_loopEffectMaterial.SetColor(BattleInstanceManager.instance.GetShaderPropertyId("_TintColor"), _currentLoopEffectColor);
 		}
+
+		if (_lastBarrierPingpongRemainTime > 0.0f)
+		{
+			lerpPower = 10.0f;
+			_lastBarrierPingpongRemainTime -= Time.deltaTime;
+			if (_lastBarrierPingpongRemainTime <= 0.0f)
+			{
+				_lastBarrierPingpongRemainTime += LastBarrierPingpongTime;
+				_lastBarrierPingpongState ^= true;
+
+				if (_lastBarrierPingpongState)
+					_targetLoopEffectColor = _defaultBarrierColor;
+				else
+					_targetLoopEffectColor = Color.black;
+			}
+		}
+		_currentLoopEffectColor = Color.Lerp(_currentLoopEffectColor, _targetLoopEffectColor, Time.deltaTime * lerpPower);
+		_loopEffectMaterial.SetColor(BattleInstanceManager.instance.GetShaderPropertyId("_TintColor"), _currentLoopEffectColor);
 	}
 
 	public override void FinalizeAffector()
@@ -124,15 +138,12 @@ public class CountBarrierAffector : AffectorBase
 
 	void OnBarrier(HitParameter hitParameter)
 	{
+		_remainCount -= 1;
+
 		if (_loopEffectMaterial != null)
 		{
-			_currentLoopEffectColor = _hitBarrierColor;
-			_loopEffectMaterial.SetColor(BattleInstanceManager.instance.GetShaderPropertyId("_TintColor"), _currentLoopEffectColor);
-			if (_remainCount == 2)
-			{
-				_lastBarrierPingpongState = false;
-				_lastBarrierPingpongRemainTime = LastBarrierPingpongTime;
-			}
+			_targetLoopEffectColor = _hitBarrierColor;
+			_barrierBlinkRemainTime = BarrierBlinkTime;
 		}
 
 		if (_onBarrierEffectPrefab != null)
@@ -140,8 +151,7 @@ public class CountBarrierAffector : AffectorBase
 			Transform effectTransform = BattleInstanceManager.instance.GetCachedObject(_onBarrierEffectPrefab, hitParameter.contactPoint, Quaternion.LookRotation(hitParameter.contactNormal)).transform;
 			effectTransform.parent = _boneTransform;
 		}
-
-		_remainCount -= 1;
+		
 		if (_remainCount == 0)
 			finalized = true;
 	}

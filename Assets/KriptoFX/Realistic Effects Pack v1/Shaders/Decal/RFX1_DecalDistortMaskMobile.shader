@@ -53,7 +53,7 @@ Category {
 				half4 color : COLOR;
 				float4 texcoord : TEXCOORD0;
 				float2 uvMask : TEXCOORD1;
-				UNITY_FOG_COORDS(2)
+				//UNITY_FOG_COORDS(2)
 
 			};
 			
@@ -74,7 +74,7 @@ Category {
 				o.texcoord.zw = TRANSFORM_TEX(v.texcoord, _DistortTex) + _Offset.zw * _Time.xx;
 				o.uvMask = TRANSFORM_TEX(o.texcoord, _Mask);
 
-				UNITY_TRANSFER_FOG(o,o.vertex);
+				//UNITY_TRANSFER_FOG(o,o.vertex);
 				return o;
 			}
 			
@@ -90,7 +90,7 @@ Category {
 				
 				half4 col = 2.0f * i.color * _TintColor * tex;
 				
-				UNITY_APPLY_FOG(i.fogCoord, col);
+				//UNITY_APPLY_FOG(i.fogCoord, col);
 				
 				half m = saturate(mask - _Cutoff);
 				half alpha = saturate(tex.a * m * _TintColor.a * 2 * i.color.a);

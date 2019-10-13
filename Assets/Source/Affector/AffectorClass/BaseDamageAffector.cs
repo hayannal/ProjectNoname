@@ -24,12 +24,15 @@ public class BaseDamageAffector : AffectorBase {
 		//	return;
 
 		// 회피 체크
-		float evadeRate = _actor.actorStatus.GetValue(eActorStatus.Evade);
-		if (evadeRate > 0.0f)
+		if (affectorValueLevelTableData.iValue3 == 0)
 		{
-			if (Random.value <= evadeRate)
+			float evadeRate = _actor.actorStatus.GetValue(eActorStatus.Evade);
+			if (evadeRate > 0.0f)
 			{
-				return;
+				if (Random.value <= evadeRate)
+				{
+					return;
+				}
 			}
 		}
 

@@ -37,6 +37,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.PiercingHitObject:
 			case eAffectorType.AddAffectorHitObject:
 			case eAffectorType.CountBarrier:
+			case eAffectorType.Invincible:
 				return true;
 			#endregion
 		}

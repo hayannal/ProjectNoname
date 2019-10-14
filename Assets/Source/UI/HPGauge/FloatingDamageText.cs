@@ -40,6 +40,10 @@ public class FloatingDamageText : MonoBehaviour
 
 		float rotateY = cachedTransform.position.x * 2.0f;
 		cachedTransform.rotation = Quaternion.Euler(0.0f, rotateY, 0.0f);
+
+		// position ani
+		int index = FloatingDamageTextRootCanvas.instance.GetPositionAnimationIndex(actor);
+		Debug.Log(index);
 	}
 
 

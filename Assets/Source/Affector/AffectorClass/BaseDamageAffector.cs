@@ -21,18 +21,25 @@ public class BaseDamageAffector : AffectorBase {
 
 		// 무적 검사를 그다음
 		if (InvincibleAffector.CheckInvincible(_affectorProcessor))
+		{
+			if (_actor.GetRigidbody() != null)
+				_actor.GetRigidbody().velocity = Vector3.zero;
 			return;
+		}
 
 		// 회피 체크
 		if (affectorValueLevelTableData.iValue3 == 0)
 		{
 			float evadeRate = _actor.actorStatus.GetValue(eActorStatus.Evade);
-			if (evadeRate > 0.0f)
+			if (evadeRate > 0.0f && Random.value <= evadeRate)
 			{
-				if (Random.value <= evadeRate)
-				{
-					return;
-				}
+				// 안밀리게. 이 코드가 가장 간결하다.
+				if (_actor.GetRigidbody() != null)
+					_actor.GetRigidbody().velocity = Vector3.zero;
+
+				// 회피 데미지 플로터 적용.
+
+				return;
 			}
 		}
 

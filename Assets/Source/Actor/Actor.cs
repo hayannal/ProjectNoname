@@ -110,6 +110,8 @@ public class Actor : MonoBehaviour {
 	}
 
 	public Collider GetCollider() { return _collider; }
+	public Rigidbody GetRigidbody() { return _rigidbody; }
+
 
 	/*
 	// Team

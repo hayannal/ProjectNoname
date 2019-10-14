@@ -25,13 +25,13 @@ public class MonsterHPGauge : MonoBehaviour
 
 	public void InitializeGauge(MonsterActor monsterActor)
 	{
-		_offsetY = monsterActor.monsterHpGaugeOffsetY;
+		_offsetY = monsterActor.gaugeOffsetY;
 		widthRectTransform.sizeDelta = new Vector2(monsterActor.monsterHpGaugeWidth * _defaultWidth, widthRectTransform.sizeDelta.y);
 		hpRatioSlider.value = 1.0f;
 		lateFillRectTransform.anchorMin = new Vector2(hpFillRectTransform.anchorMax.x, 0.0f);
 		lateFillRectTransform.anchorMax = hpFillRectTransform.anchorMax;
 		_targetTransform = monsterActor.cachedTransform;
-		GetTargetHeight(_targetTransform);
+		_targetHeight = ColliderUtil.GetHeight(monsterActor.GetCollider());
 	}
 
 	// Update is called once per frame
@@ -45,19 +45,10 @@ public class MonsterHPGauge : MonoBehaviour
 				UpdateGaugePosition();
 				UpdateGaugeRotation();
 				_prevTargetPosition = _targetTransform.position;
-			}			
+			}
 		}
 		
 		UpdateLateFill();
-	}
-
-	void GetTargetHeight(Transform t)
-	{
-		Collider collider = t.GetComponentInChildren<Collider>();
-		if (collider == null)
-			return;
-
-		_targetHeight = ColliderUtil.GetHeight(collider);
 	}
 
 	Transform _targetTransform;

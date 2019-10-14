@@ -6,7 +6,6 @@ using MEC;
 public class MonsterActor : Actor
 {
 	public float monsterHpGaugeWidth = 1.0f;
-	public float monsterHpGaugeOffsetY = 0.0f;
 
 	public PathFinderController pathFinderController { get; private set; }
 	public MonsterAI monsterAI { get; private set; }

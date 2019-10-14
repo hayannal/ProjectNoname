@@ -19,6 +19,9 @@ public class BattleManager : MonoBehaviour
 	public GameObject playerHPGaugePrefab;
 	public GameObject skillSlotCanvasPrefab;
 
+	public GameObject floatingDamageTextRootCanvasPrefab;
+	public GameObject floatingDamageTextPrefab;
+
 	public GameObject[] dropObjectPrefabList;
 
 	void Awake()

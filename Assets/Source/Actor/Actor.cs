@@ -11,6 +11,7 @@ public class Actor : MonoBehaviour {
 	public string actorId;
 	public GameObject[] commonPoolPreloadObjectList;
 	public GameObject[] selfPassivePreloadObjectList;
+	public float gaugeOffsetY;
 
 	public ActionController actionController { get; private set; }
 	public BaseCharacterController baseCharacterController { get; private set; }

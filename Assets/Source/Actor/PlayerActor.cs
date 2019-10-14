@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlayerActor : Actor
 {
-	public float playerGaugeOffsetY = 0.0f;
 	public GameObject[] cachingObjectList;
 
 	public SkillProcessor skillProcessor { get; private set; }

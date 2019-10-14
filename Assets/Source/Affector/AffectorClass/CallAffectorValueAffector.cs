@@ -16,10 +16,10 @@ public class CallAffectorValueAffector : AffectorBase
 
 	float _endTime;
 	int _eventRemainCount;
+	AffectorValueLevelTableData _affectorValueLevelTableData;
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
-		_tableEventType = (eEventType)affectorValueLevelTableData.iValue1;
-		_tableAffectorValueId = affectorValueLevelTableData.sValue2;
+		_affectorValueLevelTableData = affectorValueLevelTableData;
 
 		// lifeTime
 		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
@@ -34,13 +34,13 @@ public class CallAffectorValueAffector : AffectorBase
 			return;
 	}
 
-	eEventType _tableEventType;
-	string _tableAffectorValueId;
 	void OnEvent(eEventType eventType, float argument = 0.0f)
 	{
-		if (_tableEventType != eventType)
+		if ((eEventType)_affectorValueLevelTableData.iValue1 != eventType)
 			return;
 		if (_actor == null)
+			return;
+		if (eventType == eEventType.HpRate && argument > _affectorValueLevelTableData.fValue1)
 			return;
 
 		bool needFinalize = false;
@@ -54,7 +54,7 @@ public class CallAffectorValueAffector : AffectorBase
 		HitParameter hitParameter = new HitParameter();
 		hitParameter.statusBase = _actor.actorStatus.statusBase;
 		SkillProcessor.CopyEtcStatus(ref hitParameter.statusStructForHitObject, _actor);
-		_affectorProcessor.ApplyAffectorValue(_tableAffectorValueId, hitParameter, false);
+		_affectorProcessor.ApplyAffectorValue(_affectorValueLevelTableData.sValue2, hitParameter, false);
 
 		if (needFinalize)
 			finalized = true;

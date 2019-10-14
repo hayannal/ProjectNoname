@@ -185,7 +185,7 @@ public class AffectorProcessor : MonoBehaviour {
 		return affectorBase;
 	}
 
-	List<AffectorBase> GetContinuousAffectorList(eAffectorType affectorType)
+	public List<AffectorBase> GetContinuousAffectorList(eAffectorType affectorType)
 	{
 		if (_dicContinuousAffector == null)
 			return null;

@@ -24,6 +24,9 @@ public class BattleModeProcessorBase
 		_mapLoaded = true;
 		_monsterSpawned = false;
 		_monsterSpawnCount = 0;
+
+		if (BattleInstanceManager.instance.playerActor != null)
+			CallAffectorValueAffector.OnEvent(BattleInstanceManager.instance.playerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnStartStage);
 	}
 
 	GameObject _powerSourceObject;

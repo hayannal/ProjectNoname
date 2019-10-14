@@ -139,6 +139,8 @@ public class MonsterActor : Actor
 	MonsterHPGauge _monsterHPGauge;
 	public override void OnChangedHP()
 	{
+		base.OnChangedHP();
+
 		if (bossMonster)
 		{
 			BossMonsterGaugeCanvas.instance.OnChangedHP(this);

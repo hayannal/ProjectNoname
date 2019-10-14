@@ -62,6 +62,7 @@ public class BaseDamageAffector : AffectorBase {
 
 		int intDamage = (int)damage;
 		_actor.actorStatus.AddHP(-intDamage);
+		CallAffectorValueAffector.OnEvent(_affectorProcessor, CallAffectorValueAffector.eEventType.OnDamage);
 
 		bool useOnkill = (affectorValueLevelTableData.iValue2 == 1 && !string.IsNullOrEmpty(affectorValueLevelTableData.sValue2) && !_actor.actorStatus.IsDie());
 		if (useOnkill && _actor.actorStatus.IsDie())

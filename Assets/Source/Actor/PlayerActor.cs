@@ -63,6 +63,8 @@ public class PlayerActor : Actor
 
 	public override void OnChangedHP()
 	{
+		base.OnChangedHP();
+
 		PlayerGaugeCanvas.instance.OnChangedHP(this);
 	}
 

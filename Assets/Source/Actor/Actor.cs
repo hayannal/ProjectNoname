@@ -94,7 +94,7 @@ public class Actor : MonoBehaviour {
 
 	public virtual void OnChangedHP()
 	{
-
+		CallAffectorValueAffector.OnEvent(affectorProcessor, CallAffectorValueAffector.eEventType.HpRate, actorStatus.GetHPRatio());
 	}
 
 	public virtual void OnChangedSP()
@@ -107,6 +107,8 @@ public class Actor : MonoBehaviour {
 		actionController.PlayActionByActionName("Die");
 		actionController.idleAnimator.enabled = false;
 		HitObject.EnableRigidbodyAndCollider(false, _rigidbody, _collider, null, false);
+
+		CallAffectorValueAffector.OnEvent(affectorProcessor, CallAffectorValueAffector.eEventType.OnDie);
 	}
 
 	public Collider GetCollider() { return _collider; }

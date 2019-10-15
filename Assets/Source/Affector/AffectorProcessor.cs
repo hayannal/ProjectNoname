@@ -185,6 +185,16 @@ public class AffectorProcessor : MonoBehaviour {
 		return affectorBase;
 	}
 
+	#region Without Table
+	public AffectorBase ExecuteAffectorValueWithoutTable(eAffectorType affectorType, AffectorValueLevelTableData levelData, Actor actor, bool managed)
+	{
+		HitParameter hitParameter = new HitParameter();
+		hitParameter.statusBase = actor.actorStatus.statusBase;
+		SkillProcessor.CopyEtcStatus(ref hitParameter.statusStructForHitObject, actor);
+		return ExcuteAffector(affectorType, levelData, hitParameter, managed);
+	}
+	#endregion
+
 	public List<AffectorBase> GetContinuousAffectorList(eAffectorType affectorType)
 	{
 		if (_dicContinuousAffector == null)

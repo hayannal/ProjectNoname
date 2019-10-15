@@ -206,6 +206,8 @@ public class MonsterActor : Actor
 	{
 		if (!enable)
 			pathFinderController.agent.ResetPath();
+
+		// pause기능을 별도로 만들까 하다가 어차피 변수들만 잘 관리할 수 있다면 pause는 괜히 업뎃 돌게하는거니 직접 enabled를 컨트롤 하기로 한다.
 		monsterAI.enabled = enable;
 	}
 

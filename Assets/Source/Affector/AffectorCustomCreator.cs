@@ -16,8 +16,10 @@ public static class AffectorCustomCreator
 			//case eAffectorType.DotDamage: affectorBase = new DotDamageAffector(); break;
 			//case eAffectorType.MoveToTarget: affectorBase = new MoveToTargetAffector(); break;
 			case eAffectorType.AddActorState: affectorBase = new AddActorStateAffector(); break;
+			case eAffectorType.CallAffectorValue: affectorBase = new CallAffectorValueAffector(); break;
 			case eAffectorType.Invincible: affectorBase = new InvincibleAffector(); break;
 			case eAffectorType.CountBarrier: affectorBase = new CountBarrierAffector(); break;
+			case eAffectorType.InvincibleTortoise: affectorBase = new InvincibleTortoiseAffector(); break;
 			#endregion
 		}
 		return affectorBase;
@@ -36,8 +38,10 @@ public static class AffectorCustomCreator
 			case eAffectorType.DefaultContainer:
 			case eAffectorType.PiercingHitObject:
 			case eAffectorType.AddAffectorHitObject:
+			case eAffectorType.CallAffectorValue:
 			case eAffectorType.Invincible:
 			case eAffectorType.CountBarrier:
+			case eAffectorType.InvincibleTortoise:
 				return true;
 			#endregion
 		}

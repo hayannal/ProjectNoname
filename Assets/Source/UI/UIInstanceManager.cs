@@ -103,42 +103,6 @@ public class UIInstanceManager : MonoBehaviour
 	}
 	#endregion
 
-	#region Floating Damage
-	FloatingDamageTextRootCanvas _cachedFloatingDamageTextRootCanvas = null;
-	FloatingDamageTextRootCanvas GetCachedFloatingDamageTextRootCanvas()
-	{
-		if (_cachedFloatingDamageTextRootCanvas == null)
-			_cachedFloatingDamageTextRootCanvas = Instantiate<GameObject>(BattleManager.instance.floatingDamageTextRootCanvasPrefab).GetComponent<FloatingDamageTextRootCanvas>();
-		return _cachedFloatingDamageTextRootCanvas;
-	}
-
-	Dictionary<GameObject, List<FloatingDamageText>> _dicFloatingDamageTextInstancePool = new Dictionary<GameObject, List<FloatingDamageText>>();
-	public FloatingDamageText GetCachedFloatingDamageText(GameObject prefab)
-	{
-		List<FloatingDamageText> listCachedFloatingDamageText = null;
-		if (_dicFloatingDamageTextInstancePool.ContainsKey(prefab))
-			listCachedFloatingDamageText = _dicFloatingDamageTextInstancePool[prefab];
-		else
-		{
-			listCachedFloatingDamageText = new List<FloatingDamageText>();
-			_dicFloatingDamageTextInstancePool.Add(prefab, listCachedFloatingDamageText);
-		}
-
-		for (int i = 0; i < listCachedFloatingDamageText.Count; ++i)
-		{
-			if (!listCachedFloatingDamageText[i].gameObject.activeSelf)
-			{
-				listCachedFloatingDamageText[i].gameObject.SetActive(true);
-				return listCachedFloatingDamageText[i];
-			}
-		}
-
-		GameObject newObject = Instantiate<GameObject>(prefab, GetCachedFloatingDamageTextRootCanvas().cachedTransform);
-		FloatingDamageText floatingDamageText = newObject.GetComponent<FloatingDamageText>();
-		listCachedFloatingDamageText.Add(floatingDamageText);
-		return floatingDamageText;
-	}
-	#endregion
 
 
 	#region Async Load

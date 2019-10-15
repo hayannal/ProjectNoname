@@ -20,7 +20,6 @@ public class BattleManager : MonoBehaviour
 	public GameObject skillSlotCanvasPrefab;
 
 	public GameObject floatingDamageTextRootCanvasPrefab;
-	public GameObject floatingDamageTextPrefab;
 
 	public GameObject[] dropObjectPrefabList;
 

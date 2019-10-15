@@ -38,8 +38,7 @@ public class BaseDamageAffector : AffectorBase {
 					_actor.GetRigidbody().velocity = Vector3.zero;
 
 				// 회피 데미지 플로터 적용.
-				FloatingDamageText floatingDamageText = UIInstanceManager.instance.GetCachedFloatingDamageText(BattleManager.instance.floatingDamageTextPrefab);
-				floatingDamageText.InitializeText(FloatingDamageText.eFloatingDamageType.Evade, _actor);
+				FloatingDamageTextRootCanvas.instance.ShowText(FloatingDamageText.eFloatingDamageType.Evade, _actor);
 				return;
 			}
 		}

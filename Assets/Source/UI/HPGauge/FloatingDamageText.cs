@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class FloatingDamageText : MonoBehaviour
 {
@@ -14,8 +15,10 @@ public class FloatingDamageText : MonoBehaviour
 	}
 
 	public Text damageText;
+	public Transform positionAnimationTransform;
+	public DOTweenAnimation alphaTweenAnimation;
 
-	public void InitializeText(eFloatingDamageType floatingDamageType, Actor actor)
+	public void InitializeText(eFloatingDamageType floatingDamageType, Actor actor, int index)
 	{
 		switch (floatingDamageType)
 		{
@@ -32,18 +35,64 @@ public class FloatingDamageText : MonoBehaviour
 				damageText.SetLocalizedText(UIString.instance.GetString("GameUI_Headshot"));
 				break;
 		}
+		damageText.color = Color.white;
 
-		Vector3 desiredPosition = actor.cachedTransform.position;
-		desiredPosition.y += ColliderUtil.GetHeight(actor.GetCollider());
-		desiredPosition.y += actor.gaugeOffsetY;
-		cachedTransform.position = desiredPosition;
+		_offsetY = actor.gaugeOffsetY;
+		_targetTransform = actor.cachedTransform;
+		_targetHeight = ColliderUtil.GetHeight(actor.GetCollider());
 
-		float rotateY = cachedTransform.position.x * 2.0f;
-		cachedTransform.rotation = Quaternion.Euler(0.0f, rotateY, 0.0f);
+		//float rotateY = cachedTransform.position.x * 2.0f;
+		//cachedTransform.rotation = Quaternion.Euler(0.0f, rotateY, 0.0f);
 
 		// position ani
-		int index = FloatingDamageTextRootCanvas.instance.GetPositionAnimationIndex(actor);
-		Debug.Log(index);
+		positionAnimationTransform.localPosition = Vector3.zero;
+		_targetPosition = FloatingDamageTextRootCanvas.instance.positionAnimationTargetList[index];
+		_firstPositionAniRemainTime = FirstPositionAniDuration;
+	}
+
+	// Update is called once per frame
+	Vector3 _prevTargetPosition = -Vector3.up;
+	void Update()
+	{
+		if (_targetTransform != null)
+		{
+			if (_targetTransform.position != _prevTargetPosition)
+			{
+				UpdateGaugePosition();
+				_prevTargetPosition = _targetTransform.position;
+			}
+		}
+
+		UpdateFirstPositionAni();
+	}
+
+	Transform _targetTransform;
+	float _targetHeight;
+	float _offsetY;
+	void UpdateGaugePosition()
+	{
+		Vector3 desiredPosition = _targetTransform.position;
+		desiredPosition.y += _targetHeight;
+		desiredPosition.y += _offsetY;
+		cachedTransform.position = desiredPosition;
+	}
+
+	Vector3 _targetPosition;
+	const float FirstPositionAniDuration = 1.0f;
+	float _firstPositionAniRemainTime = 0.0f;
+	void UpdateFirstPositionAni()
+	{
+		positionAnimationTransform.localPosition = Vector3.Lerp(positionAnimationTransform.localPosition, _targetPosition, Time.deltaTime * 5.0f);
+
+		if (_firstPositionAniRemainTime > 0.0f)
+		{
+			_firstPositionAniRemainTime -= Time.deltaTime;
+			if (_firstPositionAniRemainTime <= 0.0f)
+			{
+				_firstPositionAniRemainTime = 0.0f;
+				alphaTweenAnimation.DORestart();
+			}
+		}
 	}
 
 

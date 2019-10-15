@@ -81,4 +81,9 @@ public class PlayerActor : Actor
 
 		BattleManager.instance.OnDiePlayer(this);
 	}
+
+	public override void EnableAI(bool enable)
+	{
+		playerAI.enabled = enable;
+	}
 }

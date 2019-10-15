@@ -50,6 +50,12 @@ public class MonsterAI : MonoBehaviour
 	{
 		targetActor = null;
 		targetRadius = 0.0f;
+
+		ResetRandomMoveStateInfo();
+		ResetCustomActionStateInfo();
+		ResetChaseStateInfo();
+		ResetAttackActionStateInfo();
+		ResetAttackDelayStateInfo();
 	}
 	#endregion
 

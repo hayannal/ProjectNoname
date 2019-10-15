@@ -112,6 +112,11 @@ public class Actor : MonoBehaviour {
 		CallAffectorValueAffector.OnEvent(affectorProcessor, CallAffectorValueAffector.eEventType.OnDie);
 	}
 
+	public virtual void EnableAI(bool enable)
+	{
+
+	}
+
 	public Collider GetCollider() { return _collider; }
 	public Rigidbody GetRigidbody() { return _rigidbody; }
 

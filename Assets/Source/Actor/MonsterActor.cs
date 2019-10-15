@@ -202,6 +202,13 @@ public class MonsterActor : Actor
 		yield break;
 	}
 
+	public override void EnableAI(bool enable)
+	{
+		if (!enable)
+			pathFinderController.agent.ResetPath();
+		monsterAI.enabled = enable;
+	}
+
 	#region Drop Item
 	float _dropSpValue;
 	float _dropSpRefreshPeriod;

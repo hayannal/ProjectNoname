@@ -128,6 +128,9 @@ public class TargetingProcessor : MonoBehaviour {
 	#region Custom Position
 	public bool IsRegisteredCustomTargetPosition()
 	{
+		if (_listCustomTargetPosition == null)
+			return false;
+
 		return _listCustomTargetPosition.Count > 0;
 	}
 

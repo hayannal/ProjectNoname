@@ -47,7 +47,7 @@ public class PlayerActor : Actor
 		skillProcessor.InitializeSkill(actorId);
 		actorStatus.InitializeActorStatus(actorId);
 
-		if (MainSceneBuilder.instance.lobby == false)
+		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby == false)
 			InitializeCanvas();
 
 		BattleInstanceManager.instance.playerActor = this;

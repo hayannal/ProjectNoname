@@ -22,6 +22,8 @@ public class BattleManager : MonoBehaviour
 	public GameObject floatingDamageTextRootCanvasPrefab;
 
 	public GameObject[] dropObjectPrefabList;
+	public GameObject portalPrefab;
+	public GameObject portalMoveEffectPrefab;
 
 	void Awake()
 	{

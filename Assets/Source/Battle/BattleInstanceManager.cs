@@ -726,6 +726,33 @@ public class BattleInstanceManager : MonoBehaviour
 	}
 	#endregion
 
+	#region Portal
+	List<Portal> _listCachedPortal = new List<Portal>();
+	public Portal GetCachedPortal(Vector3 position, Quaternion rotation)
+	{
+		for (int i = 0; i < _listCachedPortal.Count; ++i)
+		{
+			if (!_listCachedPortal[i].gameObject.activeSelf)
+			{
+				_listCachedPortal[i].cachedTransform.position = position;
+				_listCachedPortal[i].cachedTransform.rotation = rotation;
+				_listCachedPortal[i].gameObject.SetActive(true);
+				return _listCachedPortal[i];
+			}
+		}
+
+		GameObject newObject = Instantiate<GameObject>(BattleManager.instance.portalPrefab, position, rotation, null);
+#if UNITY_EDITOR
+		AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+		if (settings.ActivePlayModeDataBuilderIndex == 2)
+			ObjectUtil.ReloadShader(newObject);
+#endif
+		Portal portal = newObject.GetComponent<Portal>();
+		_listCachedPortal.Add(portal);
+		return portal;
+	}
+	#endregion
+
 
 
 

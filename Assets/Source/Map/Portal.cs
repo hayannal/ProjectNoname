@@ -78,8 +78,12 @@ public class Portal : MonoBehaviour
 		// 이러기엔 포탈이 있는지부터 검사해서 오픈되어있는지까지 체크해야한다.
 		// 그래서 차라리 두어프레임만 무시하게 해놓고 이동 즉시 켜있어도 다시 되돌아오지 않게 처리하겠다.
 		s_ignoreEnterFrameCount = Time.frameCount + 3;
-
 		affectorProcessor.actor.cachedTransform.position = targetPosition;
+
+		// Tail Animator for playerActor
+		if (BattleInstanceManager.instance.playerActor == affectorProcessor.actor)
+			TailAnimatorUpdater.UpdateAnimator(affectorProcessor.actor.cachedTransform, 5);
+
 		BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.portalMoveEffectPrefab, targetPosition, Quaternion.identity);
 	}
 

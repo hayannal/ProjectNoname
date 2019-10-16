@@ -148,13 +148,15 @@ public class StageManager : MonoBehaviour
 	AsyncOperationResult _handleNextGroundPrefab;
 	AsyncOperationResult _handleNextWallPrefab;
 	AsyncOperationResult _handleNextSpawnFlagPrefab;
+	AsyncOperationResult _handleNextPortalFlagPrefab;
 	AsyncOperationResult _handleEnvironmentSettingPrefab;
 	void PrepareNextMap(MapTableData mapTableData, string environmentSetting)
 	{
 		_handleNextPlanePrefab = AddressableAssetLoadManager.GetAddressableAsset(mapTableData.plane, "Map");
 		_handleNextGroundPrefab = AddressableAssetLoadManager.GetAddressableAsset(mapTableData.ground, "Map");
 		_handleNextWallPrefab = AddressableAssetLoadManager.GetAddressableAsset(mapTableData.wall, "Map");
-		_handleNextSpawnFlagPrefab = AddressableAssetLoadManager.GetAddressableAsset(mapTableData.spawnFlag, "Map");
+		_handleNextSpawnFlagPrefab = AddressableAssetLoadManager.GetAddressableAsset(mapTableData.spawnFlag, "Map");	// Spawn
+		_handleNextPortalFlagPrefab = AddressableAssetLoadManager.GetAddressableAsset(mapTableData.portalFlag, "Map");
 
 		_handleEnvironmentSettingPrefab = AddressableAssetLoadManager.GetAddressableAsset(environmentSetting, "EnvironmentSetting");
 	}
@@ -187,7 +189,7 @@ public class StageManager : MonoBehaviour
 			return false;
 		if (_handlePowerSourcePrefab == null || _handlePowerSourcePrefab.IsDone == false)
 			return false;
-		return (_handleNextPlanePrefab.IsDone && _handleNextGroundPrefab.IsDone && _handleNextWallPrefab.IsDone && _handleNextSpawnFlagPrefab.IsDone);
+		return (_handleNextPlanePrefab.IsDone && _handleNextGroundPrefab.IsDone && _handleNextWallPrefab.IsDone && _handleNextSpawnFlagPrefab.IsDone && _handleNextPortalFlagPrefab.IsDone);
 	}
 #endif
 
@@ -195,6 +197,7 @@ public class StageManager : MonoBehaviour
 	GameObject _currentGroundObject;
 	GameObject _currentWallObject;
 	GameObject _currentSpawnFlagObject;
+	GameObject _currentPortalFlagObject;
 	GameObject _currentEnvironmentSettingObject;
 	void InstantiateMap(MapTableData mapTableData)
 	{
@@ -215,6 +218,10 @@ public class StageManager : MonoBehaviour
 		if (_currentSpawnFlagObject != null)
 			_currentSpawnFlagObject.SetActive(false);
 		_currentSpawnFlagObject = Instantiate<GameObject>(_handleNextSpawnFlagPrefab.Result);
+
+		if (_currentPortalFlagObject != null)
+			_currentPortalFlagObject.SetActive(false);
+		_currentSpawnFlagObject = BattleInstanceManager.instance.GetCachedObject(_handleNextPortalFlagPrefab.Result, Vector3.zero, Quaternion.identity);
 
 		if (_currentEnvironmentSettingObject != null)
 			_currentEnvironmentSettingObject.SetActive(false);

@@ -34,6 +34,7 @@ Shader "FrameworkNG/Diffuse"
 
 			CGPROGRAM
 
+			#pragma target 3.0
 			#pragma exclude_renderers xbox360
 			#pragma surface surf Lambert exclude_path:deferred exclude_path:prepass nolightmap noforwardadd interpolateview approxview
 			#pragma vertex vert

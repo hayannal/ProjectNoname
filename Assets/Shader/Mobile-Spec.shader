@@ -27,6 +27,7 @@ SubShader {
 
 CGPROGRAM
 #pragma surface surf MobileBlinnPhong exclude_path:prepass nolightmap noforwardadd halfasview interpolateview
+#pragma target 3.0
 #pragma shader_feature _GLOSSPOWER
 #pragma shader_feature _ADJUSTSHININESS
 

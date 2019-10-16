@@ -14,6 +14,7 @@ SubShader {
 
 CGPROGRAM
 #pragma surface surf Lambert exclude_path:prepass nolightmap noforwardadd
+#pragma target 3.0
 
 sampler2D _MainTex;
 

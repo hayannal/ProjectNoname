@@ -9,6 +9,10 @@ using System.Collections;
 public class AffectorValueLevelTableData
 {
   [SerializeField]
+  string _idForVlookup;
+  public string idForVlookup { get { return _idForVlookup; } set { _idForVlookup = value; } }
+  
+  [SerializeField]
   string _affectorValueId;
   public string affectorValueId { get { return _affectorValueId; } set { _affectorValueId = value; } }
   

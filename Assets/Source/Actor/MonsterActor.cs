@@ -196,8 +196,15 @@ public class MonsterActor : Actor
 		if (this == null)
 			yield break;
 
-		DieDissolve.ShowDieDissolve(cachedTransform, bossMonster);
-		DieAshParticle.ShowParticle(cachedTransform, bossMonster);
+		if (cachedMonsterTableData.useDieDissolve)
+		{
+			DieDissolve.ShowDieDissolve(cachedTransform, bossMonster);
+			DieAshParticle.ShowParticle(cachedTransform, bossMonster);
+		}
+		else
+		{
+			gameObject.SetActive(false);
+		}
 
 		yield break;
 	}

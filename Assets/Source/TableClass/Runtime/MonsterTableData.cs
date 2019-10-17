@@ -56,4 +56,8 @@ public class MonsterTableData
   string[] _passiveAffectorValueId = new string[0];
   public string[] passiveAffectorValueId { get { return _passiveAffectorValueId; } set { _passiveAffectorValueId = value; } }
   
+  [SerializeField]
+  bool _useDieDissolve;
+  public bool useDieDissolve { get { return _useDieDissolve; } set { _useDieDissolve = value; } }
+  
 }

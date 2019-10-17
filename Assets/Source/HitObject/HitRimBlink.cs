@@ -12,7 +12,7 @@ public class HitRimBlink : MonoBehaviour {
 	static AnimationCurveAsset s_HitColorCurveAsset;
 
 	List<Material> _cachedMaterials = new List<Material>();
-	float _currentTime;
+	float _currentTime = 0.0f;
 
 	#region staticFunction
 	public static void ShowHitRimBlink(Transform rootTransform, Vector3 hitNormal, bool firstCaching = false)
@@ -36,7 +36,8 @@ public class HitRimBlink : MonoBehaviour {
 	{
 		if (!_caching)
 			CachingMaterials();
-		_currentTime = 0.0f;
+		if (_currentTime > 0.0f)
+			_currentTime *= 0.5f;
 		enabled = true;
 
 		#region First Caching
@@ -98,7 +99,10 @@ public class HitRimBlink : MonoBehaviour {
 		}
 
 		if (_currentTime > s_HitRimCurveAsset.curve.keys[s_HitRimCurveAsset.curve.length-1].time)
+		{
 			enabled = false;
+			_currentTime = 0.0f;
+		}
 	}
 
 	bool _caching;

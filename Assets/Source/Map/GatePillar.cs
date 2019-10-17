@@ -125,6 +125,13 @@ public class GatePillar : MonoBehaviour
 		if (collider == null)
 			return false;
 		HitObject hitObject = BattleInstanceManager.instance.GetHitObjectFromCollider(collider);
+		// _disableSelfObjectAfterCollision 켜지는 HitObject들은 하필 게이트 필라에 다다르는 순간 바로 꺼져버린다.
+		// 풀링에서 빠져버리기 때문에 위 함수로 얻어올 수 없게 되는데
+		// 그렇다고 hitObject 컬리더 함수에서 직접 하기엔 괜히 로직만 복잡해지고
+		// 그렇다고 한프레임 살려두다 죽이는것도 지저분하다.
+		// 그래서 어차피 성능에 영향 심하게 주는 함수도 아니고, 몹 다 잡고난 다음이니 GetComponent 호출하게 한다.
+		if (hitObject == null)
+			hitObject = collider.GetComponent<HitObject>();
 		if (hitObject == null)
 			return false;
 		if (hitObject.statusStructForHitObject.teamId == (int)Team.eTeamID.DefaultMonster)

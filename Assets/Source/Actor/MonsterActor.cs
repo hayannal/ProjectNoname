@@ -203,6 +203,10 @@ public class MonsterActor : Actor
 		}
 		else
 		{
+			// only for MonsterBomb and no allow Always Animate
+			Renderer renderer = cachedTransform.GetComponentInChildren<Renderer>();
+			if (renderer != null) renderer.enabled = true;
+
 			gameObject.SetActive(false);
 		}
 

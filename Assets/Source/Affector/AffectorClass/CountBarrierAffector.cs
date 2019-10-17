@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class CountBarrierAffector : AffectorBase
 {
+	// 해당 어펙터를 쓰려면 액터에다가 본 추가로 넣고 액터 preload 오브젝트 리스트에다가 루프 이펙트나 피격 이벤트 이펙트를 넣어놔야한다.
 	static string BONE_NAME = "Bone_CountBarrier_";
 
 	Color _defaultBarrierColor = new Color(50.0f / 255.0f, 50.0f / 255.0f, 50.0f / 255.0f);

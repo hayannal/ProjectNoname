@@ -308,6 +308,7 @@ public class MeHitObject : MecanimEventBase {
 				weaponDummyName = EditorGUILayout.TextField("Weapon Dummy Name :", weaponDummyName);
 			else
 				hitEffectObject = (GameObject)EditorGUILayout.ObjectField("HitEffect Object :", hitEffectObject, typeof(GameObject), false);
+			hitEffectLookAtNormal = EditorGUILayout.Toggle("LookAt ContactNormal :", hitEffectLookAtNormal);
 		}
 		hitEffectLineRendererType = (HitEffect.eLineRendererType)EditorGUILayout.EnumPopup("HitEffect LineRenderer Type :", hitEffectLineRendererType);
 		if (hitEffectLineRendererType != HitEffect.eLineRendererType.None)

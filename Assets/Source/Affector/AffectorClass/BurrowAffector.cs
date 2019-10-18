@@ -38,7 +38,7 @@ public class BurrowAffector : AffectorBase
 		//HitObject.EnableRigidbodyAndCollider(false, _actor.GetRigidbody(), _actor.GetCollider());
 		//_actor.cachedTransform.DOLocalMoveY(BurrowAnimationPositionY, TweenDuration).SetEase(Ease.Linear);
 
-		// 버로우 대기
+		// 버로우 대기. 시간으로 체크하기엔 시그널의 길이가 얼마나 될지 몰라서 이렇게 높이와 collider 상태로 구분하기로 한다.
 		while (true)
 		{
 			if (this == null)

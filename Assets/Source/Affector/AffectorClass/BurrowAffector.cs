@@ -115,7 +115,10 @@ public class BurrowAffector : AffectorBase
 			{
 				_burrowEndRemainTime = 0.0f;
 				if (_scrollTransform != null)
+				{
 					_scrollTransform.gameObject.SetActive(false);
+					_scrollTransform = null;
+				}
 				_actor.cachedTransform.position = new Vector3(_actor.cachedTransform.position.x, BurrowAnimationPositionY, _actor.cachedTransform.position.z);
 				_actor.actionController.animator.CrossFade(BattleInstanceManager.instance.GetActionNameHash(BurrowEndStateName), 0.05f);
 				Timing.RunCoroutine(BurrowOffProcess());
@@ -144,6 +147,19 @@ public class BurrowAffector : AffectorBase
 
 	bool CheckDie()
 	{
+		if (_scrollTransform != null && _scrollTransform.gameObject.activeSelf)
+		{
+			DieDissolve.ShowDieDissolve(_scrollTransform, false);
+			DieAshParticle.ShowParticle(_scrollTransform, false);
+
+			// Restore
+			_actor.baseCharacterController.movement.useGravity = true;
+			_actor.actionController.idleAnimator.enabled = true;
+			_actor.EnableAI(true);
+
+			_actor.gameObject.SetActive(false);
+			return true;
+		}
 		return false;
 	}
 

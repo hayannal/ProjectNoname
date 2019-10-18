@@ -193,6 +193,9 @@ public class MonsterActor : Actor
 
 	IEnumerator<float> DieProcess()
 	{
+		if (BurrowAffector.CheckDie(affectorProcessor))
+			yield break;
+
 		yield return Timing.WaitForSeconds(1.2f);
 
 		// avoid gc

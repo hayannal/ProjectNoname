@@ -37,6 +37,11 @@ public class MeMovePositionCurve : MecanimEventBase {
 	float _prevZ;
 	override public void OnRangeSignal(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
+#if UNITY_EDITOR
+		if (MecanimEventBase.s_bDisableMecanimEvent || MecanimEventBase.s_bForceCallUpdate)
+			return;
+#endif
+
 		if (useLocalPositionX || useLocalPositionY || useLocalPositionZ)
 		{
 			if (_transform == null)
@@ -83,6 +88,24 @@ public class MeMovePositionCurve : MecanimEventBase {
 				_rigidbody.MovePosition(_rigidbody.position + _transform.TransformDirection(localTranslation));
 			else if (_transform != null)
 				_transform.Translate(localTranslation, Space.Self);
+		}
+	}
+
+	override public void OnRangeSignalEnd(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+	{
+#if UNITY_EDITOR
+		if (MecanimEventBase.s_bDisableMecanimEvent || MecanimEventBase.s_bForceCallUpdate)
+			return;
+#endif
+
+		if (_transform == null)
+			return;
+
+		if (useLocalPositionY)
+		{
+			float firstValue = curveY.keys[0].value;
+			float lastValue = curveY.keys[curveY.length - 1].value;
+			_transform.position = new Vector3(_transform.position.x, _basePositionY + (lastValue - firstValue), _transform.position.z);
 		}
 	}
 

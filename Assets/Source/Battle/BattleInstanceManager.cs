@@ -476,6 +476,38 @@ public class BattleInstanceManager : MonoBehaviour
 	#endregion
 
 
+	#region Live Monster List
+	List<MonsterActor> _listLiveMonsterActor = new List<MonsterActor>();
+	public void OnInitializeMonster(MonsterActor monsterActor)
+	{
+		if (_listLiveMonsterActor.Contains(monsterActor))
+		{
+#if UNITY_EDITOR
+			Debug.LogError("Invalid Data : LiveMonsterActorList already contains the monster");
+#endif
+			return;
+		}
+		_listLiveMonsterActor.Add(monsterActor);
+	}
+
+	public void OnDieMonster(MonsterActor monsterActor)
+	{
+		if (_listLiveMonsterActor.Contains(monsterActor) == false)
+		{
+#if UNITY_EDITOR
+			Debug.LogError("Invalid Data : LiveMonsterActorList does not contain the monster");
+#endif
+			return;
+		}
+		_listLiveMonsterActor.Remove(monsterActor);
+	}
+
+	public List<MonsterActor> GetLiveMonsterList()
+	{
+		return _listLiveMonsterActor;
+	}
+	#endregion
+
 	#region PathFinder Agent
 	Dictionary<int, int> _dicPathFinderAgentRefCount = new Dictionary<int, int>();
 	public void OnInitializePathFinderAgent(int agentTypeID)

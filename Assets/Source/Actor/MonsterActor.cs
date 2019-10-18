@@ -85,6 +85,7 @@ public class MonsterActor : Actor
 		#endregion
 
 		BattleManager.instance.OnSpawnMonster(this);
+		BattleInstanceManager.instance.OnInitializeMonster(this);
 		BattleInstanceManager.instance.OnInitializePathFinderAgent(pathFinderController.agent.agentTypeID);
 	}
 
@@ -185,6 +186,7 @@ public class MonsterActor : Actor
 		Timing.RunCoroutine(DieProcess());
 
 		BattleManager.instance.OnDieMonster(this);
+		BattleInstanceManager.instance.OnDieMonster(this);
 		BattleInstanceManager.instance.OnFinalizePathFinderAgent(pathFinderController.agent.agentTypeID);
 	}
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 //using UnityEngine.Networking;
 using ActorStatusDefine;
+using MecanimStateDefine;
 
 public class ActorStatus : MonoBehaviour
 {
@@ -159,12 +160,24 @@ public class ActorStatus : MonoBehaviour
 	{
 		_statusBase._hp += addHP;
 		_statusBase._hp = Mathf.Clamp(_statusBase._hp, 0, GetValue(eActorStatus.MaxHP));
-		actor.OnChangedHP();
+
+		bool onDie = false;
 		if (_statusBase._hp <= 0)
 		{
-			_statusBase._hp = 0.0f;
-			actor.OnDie();
+			// 애니 중에 죽으면 정말 이상하게 보이는 상황이 있다. 공중같이.
+			// 이럴때를 대비해서 Die를 무시하고 hp를 1로 복구시켜주는 DontDie 애니 시그널을 추가해둔다. 불굴의 의지로 자세(애니)를 유지.
+			if (actor.actionController.mecanimState.IsState((int)eMecanimState.DontDie) == false)
+			{
+				_statusBase._hp = 0.0f;
+				onDie = true;
+			}
+			else
+			{
+				_statusBase._hp = 1.0f;
+			}
 		}
+		actor.OnChangedHP();
+		if (onDie) actor.OnDie();
 	}
 
 	public float GetHPRatio()

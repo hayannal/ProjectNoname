@@ -57,6 +57,8 @@ public class MonsterHPGauge : MonoBehaviour
 	void UpdateGaugePosition()
 	{
 		Vector3 desiredPosition = _targetTransform.position;
+		if (desiredPosition.y < 0.0f)
+			desiredPosition.y = 0.0f;
 		desiredPosition.y += _targetHeight;
 		desiredPosition.y += _offsetY;
 		cachedTransform.position = desiredPosition;

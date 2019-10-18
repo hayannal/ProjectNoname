@@ -100,7 +100,14 @@ public class PlayerAI : MonoBehaviour
 			return;
 
 		_cachedTargetingObjectTransform.gameObject.SetActive(true);
-		_cachedTargetingObjectTransform.position = targetTransform.position;
+		if (targetTransform.position.y < 0.0f)
+		{
+			Vector3 newPos = targetTransform.position;
+			newPos.y = 0.0f;
+			_cachedTargetingObjectTransform.position = newPos;
+		}
+		else
+			_cachedTargetingObjectTransform.position = targetTransform.position;
 	}
 
 	float _actorTableAttackRange;

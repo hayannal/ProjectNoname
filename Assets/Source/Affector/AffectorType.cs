@@ -26,5 +26,7 @@ public enum eAffectorType
 	CountBarrier,
 	Headshot,
 	InvincibleTortoise,
+
+	Burrow,
 }
 #endregion

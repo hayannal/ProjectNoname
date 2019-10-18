@@ -20,6 +20,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.Invincible: affectorBase = new InvincibleAffector(); break;
 			case eAffectorType.CountBarrier: affectorBase = new CountBarrierAffector(); break;
 			case eAffectorType.InvincibleTortoise: affectorBase = new InvincibleTortoiseAffector(); break;
+			case eAffectorType.Burrow: affectorBase = new BurrowAffector(); break;
 			#endregion
 		}
 		return affectorBase;
@@ -42,6 +43,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.Invincible:
 			case eAffectorType.CountBarrier:
 			case eAffectorType.InvincibleTortoise:
+			case eAffectorType.Burrow:
 				return true;
 			#endregion
 		}

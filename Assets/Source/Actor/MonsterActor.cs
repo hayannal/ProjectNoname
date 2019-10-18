@@ -96,6 +96,7 @@ public class MonsterActor : Actor
 		actionController.idleAnimator.enabled = true;
 		HitObject.EnableRigidbodyAndCollider(true, _rigidbody, _collider);
 
+		monsterAI.enabled = true;
 		InitializeMonster();
 	}
 	#endregion

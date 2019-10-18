@@ -51,8 +51,10 @@ public class MecanimEventBase : StateMachineBehaviour {
 
 		int lastLoop = (int)_lastNormalizeTime;
 		int currentLoop = (int)stateInfo.normalizedTime;
-		float lastNormalizedTime = _lastNormalizeTime - lastLoop;
-		float currentNormalizedTime = stateInfo.normalizedTime - currentLoop;   //	0.0 ~ 0.99999
+		float lastNormalizedTime = _lastNormalizeTime;
+		if (stateInfo.loop) lastNormalizedTime -= lastLoop;
+		float currentNormalizedTime = stateInfo.normalizedTime;
+		if (stateInfo.loop) currentNormalizedTime -= currentLoop;   //	0.0 ~ 0.99999
 
 		if (animator.IsInTransition(0))
 		{

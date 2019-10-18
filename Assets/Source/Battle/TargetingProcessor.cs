@@ -79,6 +79,8 @@ public class TargetingProcessor : MonoBehaviour {
 			Vector3 diff = listMonsterActor[i].cachedTransform.position - position;
 			diff.y = 0.0f;
 			float distance = diff.magnitude - colliderRadius;
+			if (listMonsterActor[i].affectorProcessor.IsContinuousAffectorType(eAffectorType.Burrow))
+				distance += range;
 			if (distance < nearestDistance)
 			{
 				nearestDistance = distance;
@@ -139,9 +141,17 @@ public class TargetingProcessor : MonoBehaviour {
 			Vector3 prevTargetDiff = BattleInstanceManager.instance.GetTransformFromCollider(_targetList[0]).position - position;
 			prevTargetDiff.y = 0.0f;
 			float prevDistance = prevTargetDiff.magnitude - ColliderUtil.GetRadius(_targetList[0]);
+			AffectorProcessor prevAffectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(_targetList[0]);
+			if (prevAffectorProcessor.IsContinuousAffectorType(eAffectorType.Burrow))
+				prevDistance += range;
+
 			Vector3 currentTargetDiff = BattleInstanceManager.instance.GetTransformFromCollider(nearestCollider).position - position;
 			currentTargetDiff.y = 0.0f;
 			float currentDistance = currentTargetDiff.magnitude - ColliderUtil.GetRadius(nearestCollider);
+			AffectorProcessor currentAffectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(nearestCollider);
+			if (currentAffectorProcessor.IsContinuousAffectorType(eAffectorType.Burrow))
+				currentDistance += range;
+
 			if (currentDistance <= prevDistance - changeThreshold)
 			{
 				_targetList.Clear();

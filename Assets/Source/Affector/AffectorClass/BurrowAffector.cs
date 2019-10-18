@@ -12,6 +12,8 @@ public class BurrowAffector : AffectorBase
 	const string BurrowStartStateName = "BurrowStart";
 	const string BurrowEndStateName = "BurrowEnd";
 
+	Transform _scrollTransform;
+
 	AffectorValueLevelTableData _affectorValueLevelTableData;
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
@@ -51,9 +53,13 @@ public class BurrowAffector : AffectorBase
 		_actor.cachedTransform.position = new Vector3(_actor.cachedTransform.position.x, s_BurrowPositionY, _actor.cachedTransform.position.z);
 
 		// loop effect
-		if (!string.IsNullOrEmpty(_affectorValueLevelTableData.sValue3))
-		{			
-			
+		GameObject scrollPrefab = FindPreloadObject(_affectorValueLevelTableData.sValue3);
+		if (scrollPrefab != null)
+		{
+			Vector3 scrollPosition = _actor.cachedTransform.position;
+			scrollPosition.y = 0.0f;
+			_scrollTransform = BattleInstanceManager.instance.GetCachedObject(scrollPrefab, scrollPosition, Quaternion.identity).transform;
+			_scrollTransform.DOLocalJump(new Vector3(_actor.cachedTransform.position.x, 0.0f, _actor.cachedTransform.position.z), 1.0f, 1, 0.5f).SetEase(Ease.Linear);
 		}
 
 		_remainAttackCount = _affectorValueLevelTableData.iValue2;
@@ -108,6 +114,8 @@ public class BurrowAffector : AffectorBase
 			if (_burrowEndRemainTime <= 0.0f)
 			{
 				_burrowEndRemainTime = 0.0f;
+				if (_scrollTransform != null)
+					_scrollTransform.gameObject.SetActive(false);
 				_actor.cachedTransform.position = new Vector3(_actor.cachedTransform.position.x, BurrowAnimationPositionY, _actor.cachedTransform.position.z);
 				_actor.actionController.animator.CrossFade(BattleInstanceManager.instance.GetActionNameHash(BurrowEndStateName), 0.05f);
 				Timing.RunCoroutine(BurrowOffProcess());

@@ -45,7 +45,7 @@ public class TargetingProcessor : MonoBehaviour {
 
 	Transform _transform = null;
 	Team _teamComponent = null;
-	public bool FindNearestTarget(Team.eTeamCheckFilter teamFilter, float range, float changeThreshold = 0.0f)
+	public bool FindNearestTarget(Team.eTeamCheckFilter teamFilter, float range)
 	{
 		if (_transform == null)
 			_transform = GetComponent<Transform>();
@@ -55,39 +55,6 @@ public class TargetingProcessor : MonoBehaviour {
 		Vector3 position = _transform.position;
 		float nearestDistance = float.MaxValue;
 		Collider nearestCollider = null;
-#if USE_MONSTER_LIST
-		// 간혹가다 몬스터의 Collider를 꺼야할때가 있어서 Physic으로 검사하면 타겟팅이 잠시 풀리게 되버렸다. (땅 투과시)
-		// 그래서 차라리 몬스터 리스트를 히트오브젝트처럼 등록해놨다가 받아오는 형태로 가기로 한다.
-		// Die시 빠지기 때문에 Die검사를 추가로 할 필요도 없다.
-		List<MonsterActor> listMonsterActor = BattleInstanceManager.instance.GetLiveMonsterList();
-		for (int i = 0; i < listMonsterActor.Count; ++i)
-		{
-			Collider monsterCollider = listMonsterActor[i].GetCollider();
-
-			// team check
-			if (_teamComponent != null)
-			{
-				if (!Team.CheckTeamFilter(_teamComponent.teamId, monsterCollider, teamFilter, false))
-					continue;
-			}
-
-			// object radius
-			float colliderRadius = ColliderUtil.GetRadius(monsterCollider);
-			if (colliderRadius == -1.0f) continue;
-
-			// distance
-			Vector3 diff = listMonsterActor[i].cachedTransform.position - position;
-			diff.y = 0.0f;
-			float distance = diff.magnitude - colliderRadius;
-			if (listMonsterActor[i].affectorProcessor.IsContinuousAffectorType(eAffectorType.Burrow))
-				distance += range;
-			if (distance < nearestDistance)
-			{
-				nearestDistance = distance;
-				nearestCollider = monsterCollider;
-			}
-		}
-#else
 		Collider[] result = Physics.OverlapSphere(position, range); // range * _transform.localScale.x
 		for (int i = 0; i < result.Length; ++i)
 		{
@@ -125,7 +92,58 @@ public class TargetingProcessor : MonoBehaviour {
 				nearestCollider = result[i];
 			}
 		}
-#endif
+
+		_targetList.Clear();
+		if (nearestDistance != float.MaxValue && nearestCollider != null)
+		{
+			_targetList.Add(nearestCollider);
+			return true;
+		}
+		return false;
+	}
+
+#if USE_MONSTER_LIST
+	// 간혹가다 몬스터의 Collider를 꺼야할때가 있어서 Physic으로 검사하면 타겟팅이 잠시 풀리게 되버렸다. (땅 투과시)
+	// 그래서 차라리 몬스터 리스트를 히트오브젝트처럼 등록해놨다가 받아오는 형태로 가기로 한다.
+	// Die시 빠지기 때문에 Die검사를 추가로 할 필요도 없다.
+	public bool FindNearestMonster(float range, float changeThreshold = 0.0f)
+	{
+		if (_transform == null)
+			_transform = GetComponent<Transform>();
+		if (_teamComponent == null)
+			_teamComponent = GetComponent<Team>();
+
+		Vector3 position = _transform.position;
+		float nearestDistance = float.MaxValue;
+		Collider nearestCollider = null;
+		List<MonsterActor> listMonsterActor = BattleInstanceManager.instance.GetLiveMonsterList();
+		for (int i = 0; i < listMonsterActor.Count; ++i)
+		{
+			Collider monsterCollider = listMonsterActor[i].GetCollider();
+
+			// team check
+			if (_teamComponent != null)
+			{
+				if (!Team.CheckTeamFilter(_teamComponent.teamId, monsterCollider, Team.eTeamCheckFilter.Enemy, false))
+					continue;
+			}
+
+			// object radius
+			float colliderRadius = ColliderUtil.GetRadius(monsterCollider);
+			if (colliderRadius == -1.0f) continue;
+
+			// distance
+			Vector3 diff = listMonsterActor[i].cachedTransform.position - position;
+			diff.y = 0.0f;
+			float distance = diff.magnitude - colliderRadius;
+			if (listMonsterActor[i].affectorProcessor.IsContinuousAffectorType(eAffectorType.Burrow))
+				distance += range;
+			if (distance < nearestDistance)
+			{
+				nearestDistance = distance;
+				nearestCollider = monsterCollider;
+			}
+		}
 
 		if (changeThreshold == 0.0f || _targetList.Count == 0 || _targetList[0] == null || nearestCollider == null)
 		{
@@ -161,6 +179,7 @@ public class TargetingProcessor : MonoBehaviour {
 		}
 		return false;
 	}
+#endif
 
 	public void ForceSetTarget(Collider collider)
 	{

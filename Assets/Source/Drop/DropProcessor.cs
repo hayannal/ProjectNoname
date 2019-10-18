@@ -31,7 +31,9 @@ public class DropProcessor : MonoBehaviour
 	{
 		Debug.Log("dropId : " + dropId + " / addDropId : " + addDropId);
 
-		DropProcessor dropProcess = BattleInstanceManager.instance.GetCachedDropProcessor(rootTransform.position);
+		Vector3 dropPosition = rootTransform.position;
+		dropPosition.y = 0.0f;
+		DropProcessor dropProcess = BattleInstanceManager.instance.GetCachedDropProcessor(dropPosition);
 		dropProcess.onAfterBattle = onAfterBattle;
 
 		if (!string.IsNullOrEmpty(dropId))

@@ -9,6 +9,7 @@ public class PathFinderController : BaseAgentController
 
 	Actor _actor;
 	ActionController _actionController;
+	MonsterAI _monsterAI;
 
 	#endregion
 
@@ -33,6 +34,17 @@ public class PathFinderController : BaseAgentController
 				return _actionController;
 			_actionController = GetComponent<ActionController>();
 			return _actionController;
+		}
+	}
+
+	public MonsterAI monsterAI
+	{
+		get
+		{
+			if (_monsterAI != null)
+				return _monsterAI;
+			_monsterAI = GetComponent<MonsterAI>();
+			return _monsterAI;
 		}
 	}
 
@@ -85,6 +97,11 @@ public class PathFinderController : BaseAgentController
 		if (animator == null)
 			return;
 		if (actor.actorStatus.IsDie())
+			return;
+
+		// MonsterAI 가 꺼있을때는 컨티뉴어스 어펙터 등에서 뭔가 특이한 액션을 처리할때다.
+		// 이땐 아래 액션 체인지 코드를 수행하지 않는다.
+		if (monsterAI.enabled == false)
 			return;
 
 		// Compute move vector in local space - not needed

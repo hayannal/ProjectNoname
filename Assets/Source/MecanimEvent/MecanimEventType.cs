@@ -16,5 +16,6 @@ public enum eMecanimEventType
 	GlobalLight,
 	MovePositionCurve,
 	DontMove,
+	DisableActorCollider,
 }
 #endregion

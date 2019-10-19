@@ -76,6 +76,10 @@ public class BaseDamageAffector : AffectorBase {
 		//Collider col = m_Actor.GetComponent<Collider>();
 		//DamageFloaterManager.Instance.ShowDamage(intDamage, m_Actor.transform.position + new Vector3(0.0f, ColliderUtil.GetHeight(col), 0.0f));
 
+		// 버로우로 내려가있는 도중엔 본체에 HitRimBlink 할 필요 없다.
+		if (BurrowAffector.CheckBurrow(_affectorProcessor))
+			return;
+
 		ShowHitBlink(hitParameter);
 	}
 

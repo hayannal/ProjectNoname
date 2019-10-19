@@ -145,22 +145,38 @@ public class BurrowAffector : AffectorBase
 		finalized = true;
 	}
 
+	bool CheckBurrow()
+	{
+		// 내려가있는지를 체크. 올라오거나 내려갈땐 false를 리턴.
+		if (_scrollTransform != null && _scrollTransform.gameObject.activeSelf)
+			return true;
+		return false;
+	}
+
 	bool CheckDie()
 	{
-		if (_scrollTransform != null && _scrollTransform.gameObject.activeSelf)
-		{
-			DieDissolve.ShowDieDissolve(_scrollTransform, false);
-			DieAshParticle.ShowParticle(_scrollTransform, false);
+		if (CheckBurrow() == false)
+			return false;
 
-			// Restore
-			_actor.baseCharacterController.movement.useGravity = true;
-			_actor.actionController.idleAnimator.enabled = true;
-			_actor.EnableAI(true);
+		DieDissolve.ShowDieDissolve(_scrollTransform, false);
+		DieAshParticle.ShowParticle(_scrollTransform, false);
 
-			_actor.gameObject.SetActive(false);
-			return true;
-		}
-		return false;
+		// Restore
+		_actor.baseCharacterController.movement.useGravity = true;
+		_actor.actionController.idleAnimator.enabled = true;
+		_actor.EnableAI(true);
+
+		_actor.gameObject.SetActive(false);
+		return true;
+	}
+
+	public static bool CheckBurrow(AffectorProcessor affectorProcessor)
+	{
+		BurrowAffector burrowAffector = (BurrowAffector)affectorProcessor.GetFirstContinuousAffector(eAffectorType.Burrow);
+		if (burrowAffector == null)
+			return false;
+
+		return burrowAffector.CheckBurrow();
 	}
 
 	public static bool CheckDie(AffectorProcessor affectorProcessor)

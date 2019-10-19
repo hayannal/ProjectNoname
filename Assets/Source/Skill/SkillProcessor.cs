@@ -151,6 +151,7 @@ public class SkillProcessor : MonoBehaviour
 
 	public static void CopyEtcStatus(ref StatusStructForHitObject statusStructForHitObject, Actor actor)
 	{
+		statusStructForHitObject.actorInstanceId = actor.GetInstanceID();
 		statusStructForHitObject.teamId = actor.team.teamId;
 		statusStructForHitObject.skillLevel = 0;
 

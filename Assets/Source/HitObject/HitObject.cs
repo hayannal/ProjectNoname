@@ -281,6 +281,7 @@ public class HitObject : MonoBehaviour
 
 	static void CopyEtcStatusForHitObject(ref StatusStructForHitObject statusStructForHitObject, Actor actor, MeHitObject meHit, int hitSignalIndexInAction, int repeatIndex)
 	{
+		statusStructForHitObject.actorInstanceId = actor.GetInstanceID();
 		statusStructForHitObject.teamId = actor.team.teamId;
 		statusStructForHitObject.skillLevel = actor.actionController.GetCurrentSkillLevelByCurrentAction();
 
@@ -342,7 +343,7 @@ public class HitObject : MonoBehaviour
 				ignoreAffectorProcessor = true;
 
 			// hit stay
-			if (dicHitStayTime != null && meHit.useHitStay && CheckHitStayInterval(affectorProcessor, dicHitStayTime, meHit) == false)
+			if (dicHitStayTime != null && meHit.useHitStay && CheckHitStayInterval(affectorProcessor, dicHitStayTime, meHit, statusForHitObject.actorInstanceId) == false)
 				ignoreAffectorProcessor = true;
 
 			if (ignoreAffectorProcessor == false)
@@ -493,7 +494,7 @@ public class HitObject : MonoBehaviour
 				ignoreAffectorProcessor = true;
 
 			// hit stay
-			if (dicHitStayTime != null && meHit.useHitStay && CheckHitStayInterval(affectorProcessor, dicHitStayTime, meHit) == false)
+			if (dicHitStayTime != null && meHit.useHitStay && CheckHitStayInterval(affectorProcessor, dicHitStayTime, meHit, statusForHitObject.actorInstanceId) == false)
 				ignoreAffectorProcessor = true;
 
 			if (ignoreAffectorProcessor == false)
@@ -1177,7 +1178,7 @@ public class HitObject : MonoBehaviour
 				_dicHitStayTime = new Dictionary<AffectorProcessor, float>();
 
 			AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(col);
-			if (affectorProcessor != null && CheckHitStayInterval(affectorProcessor, _dicHitStayTime, _signal))
+			if (affectorProcessor != null && CheckHitStayInterval(affectorProcessor, _dicHitStayTime, _signal, _statusStructForHitObject.actorInstanceId))
 			{
 				Vector3 contactPoint = Vector3.zero;
 				Vector3 contactNormal = Vector3.forward;
@@ -1219,10 +1220,10 @@ public class HitObject : MonoBehaviour
 	}
 
 	Dictionary<AffectorProcessor, float> _dicHitStayTime = null;
-	static bool CheckHitStayInterval(AffectorProcessor affectorProcessor, Dictionary<AffectorProcessor, float> dicHitStayTime, MeHitObject meHit)
+	static bool CheckHitStayInterval(AffectorProcessor affectorProcessor, Dictionary<AffectorProcessor, float> dicHitStayTime, MeHitObject meHit, int creatorActorInstanceId)
 	{
 		if (meHit.hitStayIgnoreDuplicate)
-			return affectorProcessor.CheckHitStayInterval(meHit);
+			return affectorProcessor.CheckHitStayInterval(meHit, creatorActorInstanceId);
 
 		if (dicHitStayTime.ContainsKey(affectorProcessor) == false)
 		{

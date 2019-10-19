@@ -65,6 +65,10 @@ public class BaseDamageAffector : AffectorBase {
 		_actor.actorStatus.AddHP(-intDamage);
 		CallAffectorValueAffector.OnEvent(_affectorProcessor, CallAffectorValueAffector.eEventType.OnDamage);
 
+#if UNITY_EDITOR
+		//Debug.LogFormat("Current = {0} / Max = {1} / Damage = {2} / frameCount = {3}", _actor.actorStatus.GetHP(), _actor.actorStatus.GetValue(eActorStatus.MaxHP), intDamage, Time.frameCount);
+#endif
+
 		bool useOnkill = (affectorValueLevelTableData.iValue2 == 1 && !string.IsNullOrEmpty(affectorValueLevelTableData.sValue2) && !_actor.actorStatus.IsDie());
 		if (useOnkill && _actor.actorStatus.IsDie())
 			_affectorProcessor.ApplyAffectorValue(affectorValueLevelTableData.sValue2, hitParameter, false);

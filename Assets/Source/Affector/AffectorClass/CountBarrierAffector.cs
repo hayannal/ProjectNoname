@@ -19,6 +19,12 @@ public class CountBarrierAffector : AffectorBase
 
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
+		if (_actor.actorStatus.IsDie())
+		{
+			finalized = true;
+			return;
+		}
+
 		_remainCount = affectorValueLevelTableData.iValue2;
 		
 		// lifeTime

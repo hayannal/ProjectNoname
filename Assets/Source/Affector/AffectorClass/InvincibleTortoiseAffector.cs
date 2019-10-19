@@ -11,7 +11,10 @@ public class InvincibleTortoiseAffector : AffectorBase
 		if (_actor == null)
 			return;
 		if (_actor.actorStatus.IsDie())
+		{
+			finalized = true;
 			return;
+		}
 
 		// lifeTime
 		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);

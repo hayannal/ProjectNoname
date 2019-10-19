@@ -20,7 +20,13 @@ public class BurrowAffector : AffectorBase
 		if (_actor == null)
 			return;
 		if (_actor.actorStatus.IsDie())
+		{
+			// fValue1을 지속시간으로 쓰고있는 대부분의 어펙터들은 Die 체크 후 그냥 리턴해도 무방하지만(지속시간 셋팅이 안되서 바로 finalize된다.)
+			// 이 버로우 어펙터는 지속시간이 없기 때문에 빈 어펙터로 죽지않고 남게된다.
+			// 꼭 finalize 해줘야한다.
+			finalized = true;
 			return;
+		}
 
 		_affectorValueLevelTableData = affectorValueLevelTableData;
 

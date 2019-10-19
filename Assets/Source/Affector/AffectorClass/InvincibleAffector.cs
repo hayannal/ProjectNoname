@@ -7,6 +7,12 @@ public class InvincibleAffector : AffectorBase
 
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
+		if (_actor.actorStatus.IsDie())
+		{
+			finalized = true;
+			return;
+		}
+
 		// lifeTime
 		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
 	}

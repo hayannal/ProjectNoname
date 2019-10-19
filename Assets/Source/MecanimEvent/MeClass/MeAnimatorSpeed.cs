@@ -26,7 +26,8 @@ public class MeAnimatorSpeed : MecanimEventBase {
 			return;
 #endif
 
-		_prevSpeed = animator.speed;
+		if (_prevSpeed == 0.0f)
+			_prevSpeed = animator.speed;
 		animator.speed = speed;
 		_waitEnd = true;
 	}
@@ -57,7 +58,7 @@ public class MeAnimatorSpeed : MecanimEventBase {
 	{
 		base.OnStateUpdate(animator, stateInfo, layerIndex);
 
-		if (_waitEnd == true && animator.IsInTransition(0))
+		if (_waitEnd == true && (animator.IsInTransition(0) || IsInRange(stateInfo) == false))
 			OnRangeSignalEnd(animator, stateInfo, layerIndex);
 
 #if UNITY_EDITOR

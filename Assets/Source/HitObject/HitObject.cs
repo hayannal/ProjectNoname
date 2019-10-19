@@ -348,6 +348,8 @@ public class HitObject : MonoBehaviour
 			// hit stay
 			if (dicHitStayTime != null && meHit.useHitStay && CheckHitStayInterval(affectorProcessor, dicHitStayTime, meHit, statusForHitObject.actorInstanceId) == false)
 				ignoreAffectorProcessor = true;
+			if (dicHitStayTime == null && meHit.useHitStay)
+				ignoreAffectorProcessor = true;
 
 			if (ignoreAffectorProcessor == false)
 			{
@@ -498,6 +500,8 @@ public class HitObject : MonoBehaviour
 
 			// hit stay
 			if (dicHitStayTime != null && meHit.useHitStay && CheckHitStayInterval(affectorProcessor, dicHitStayTime, meHit, statusForHitObject.actorInstanceId) == false)
+				ignoreAffectorProcessor = true;
+			if (dicHitStayTime == null && meHit.useHitStay)
 				ignoreAffectorProcessor = true;
 
 			if (ignoreAffectorProcessor == false)

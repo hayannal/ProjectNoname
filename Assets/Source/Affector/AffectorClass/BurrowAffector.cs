@@ -9,8 +9,6 @@ public class BurrowAffector : AffectorBase
 {
 	public static float s_BurrowPositionY = -5.0f;
 	const float BurrowAnimationPositionY = -2.0f;
-	const string BurrowStartStateName = "BurrowStart";
-	const string BurrowEndStateName = "BurrowEnd";
 
 	Transform _scrollTransform;
 
@@ -33,7 +31,7 @@ public class BurrowAffector : AffectorBase
 		_actor.EnableAI(false);
 		_actor.actionController.idleAnimator.enabled = false;
 		_actor.baseCharacterController.movement.useGravity = false;
-		_actor.actionController.animator.CrossFade(BattleInstanceManager.instance.GetActionNameHash(BurrowStartStateName), 0.05f);
+		_actor.actionController.animator.CrossFade(BattleInstanceManager.instance.GetActionNameHash(_affectorValueLevelTableData.sValue1), 0.05f);
 		Timing.RunCoroutine(BurrowOnProcess());
 	}
 
@@ -126,7 +124,7 @@ public class BurrowAffector : AffectorBase
 					_scrollTransform = null;
 				}
 				_actor.cachedTransform.position = new Vector3(_actor.cachedTransform.position.x, BurrowAnimationPositionY, _actor.cachedTransform.position.z);
-				_actor.actionController.animator.CrossFade(BattleInstanceManager.instance.GetActionNameHash(BurrowEndStateName), 0.05f);
+				_actor.actionController.animator.CrossFade(BattleInstanceManager.instance.GetActionNameHash(_affectorValueLevelTableData.sValue2), 0.05f);
 				Timing.RunCoroutine(BurrowOffProcess());
 			}
 		}

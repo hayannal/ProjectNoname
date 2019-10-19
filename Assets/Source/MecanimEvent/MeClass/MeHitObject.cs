@@ -74,7 +74,7 @@ public class MeHitObject : MecanimEventBase {
 	public bool ricochetOneHitPerTarget;
 	public bool useHitStay;
 	public float hitStayInterval;
-	public int hitStayGroupNumber = 0;
+	public bool hitStayIgnoreDuplicate;
 	public bool hitStayLineRendererTrigger;
 	public bool oneHitPerTarget = false;
 	public bool useLineRenderer;
@@ -254,7 +254,7 @@ public class MeHitObject : MecanimEventBase {
 			if (useHitStay)
 			{
 				hitStayInterval = EditorGUILayout.FloatField("Hit Stay Interval :", hitStayInterval);
-				hitStayGroupNumber = EditorGUILayout.IntField("Hit Stay Group Number", hitStayGroupNumber);
+				hitStayIgnoreDuplicate = EditorGUILayout.Toggle("Hit Stay No Duplicate", hitStayIgnoreDuplicate);
 			}
 			if (useHitStay == false)
 			{
@@ -271,7 +271,7 @@ public class MeHitObject : MecanimEventBase {
 			if (useHitStay)
 			{
 				hitStayInterval = EditorGUILayout.FloatField("Hit Stay Interval :", hitStayInterval);
-				hitStayGroupNumber = EditorGUILayout.IntField("Hit Stay Group Number", hitStayGroupNumber);
+				hitStayIgnoreDuplicate = EditorGUILayout.Toggle("Hit Stay No Duplicate", hitStayIgnoreDuplicate);
 			}
 			if (useHitStay == false)
 			{

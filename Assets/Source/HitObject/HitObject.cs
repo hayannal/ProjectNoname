@@ -1221,6 +1221,9 @@ public class HitObject : MonoBehaviour
 	Dictionary<AffectorProcessor, float> _dicHitStayTime = null;
 	static bool CheckHitStayInterval(AffectorProcessor affectorProcessor, Dictionary<AffectorProcessor, float> dicHitStayTime, MeHitObject meHit)
 	{
+		if (meHit.hitStayIgnoreDuplicate)
+			return affectorProcessor.CheckHitStayInterval(meHit);
+
 		if (dicHitStayTime.ContainsKey(affectorProcessor) == false)
 		{
 			dicHitStayTime.Add(affectorProcessor, Time.time);

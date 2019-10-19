@@ -464,6 +464,29 @@ public class AffectorProcessor : MonoBehaviour {
 
 
 
+	#region Check Group HitStay Interval for Ignore Duplicate
+	// 여러 장판이 깔려도 틱당 한번씩만 처리하려면 피격자 입장에서 시간을 체크해야한다.
+	Dictionary<MeHitObject, float> _dicHitStayTime = null;
+	public bool CheckHitStayInterval(MeHitObject meHit)
+	{
+		if (_dicHitStayTime == null)
+			_dicHitStayTime = new Dictionary<MeHitObject, float>();
+
+		if (_dicHitStayTime.ContainsKey(meHit) == false)
+		{
+			_dicHitStayTime.Add(meHit, Time.time);
+			return true;
+		}
+		float lastTime = _dicHitStayTime[meHit];
+		if (Time.time > lastTime + meHit.hitStayInterval)
+		{
+			_dicHitStayTime[meHit] = Time.time;
+			return true;
+		}
+		return false;
+	}
+	#endregion
+
 
 
 

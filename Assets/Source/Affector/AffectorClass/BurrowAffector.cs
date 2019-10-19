@@ -50,6 +50,32 @@ public class BurrowAffector : AffectorBase
 			if (this == null)
 				yield break;
 
+			// 복합적인 문제가 터졌다.
+			// MEC 를 안쓰고 Update문에서 처리했다면,
+			// 혹은 버로우 시작지점부터 컬리더를 꺼서 연타 공격을 허용하지 않았다면,
+			// 혹은 MEC 대신에 진짜 코루틴을 썼더라면(AffectorBase는 Mono가 아니라서 불가능 하지만, Mono였다면 .. 코루틴 썼을지도)
+			// 혹은 몬스터를 재사용하지 않았다면,
+			// 문제가 발생하지 않았을텐데 아무튼, 상황은 이렇다.
+			//
+			// 연타 공격 중 첫번째 공격을 맞고 BurrowOnProcess 코루틴을 시작시켜놨는데
+			// 연타 공격 중 두번째 공격을 맞고 죽는 애니가 나오면서 이 while문에 갇혀버린 것이다.(정해진 높이에 도달이 안됨)
+			// AffectorProcessor의 continuous List에서는 삭제된 상태지만 자기 혼자 돌고있었던 것이다. 진짜 코루틴이었다면 알아서 중지됐을듯.
+			// 이 상황에서
+			// 몹을 리스폰하면서 재사용했고, 첫 공격을 맞아서 BurrowOnProcess이 발생했을때
+			// 아까 남아있던 코루틴이 실행되면서 액터를 -5 위치로 옮겨버리고 자기는 더이상 물고있는 곳이 없으니 삭제되버리는 것이었다.
+			// 그리고 정작 AffectorProcessor에 새로 들어온 버로우 어펙터는
+			// 아까 그 남아있던 코루틴이 캐릭터를 -5 위치로 옮겼기때문에 이 while문을 탈출하지 못한채 기다리고 있는 것이었다.
+			//
+			// 모든 조건들이 맞아떨어지면서 이런 문제가 생긴건데
+			// 결국 가장 중요한건 MEC의 사용법대로
+			// gameObject 꺼질때를 대비해서 gameObject가 null이거나 activeSelf체크를 수동으로 해줘야한다는거다!!!!!!!
+			// gameObject 꺼질때 자동으로 멈추는 옵션도 있긴 하나 결국 진짜 코루틴과 마찬가지로 오버헤드가 생기기 때문에 별로다.
+			// 그러니 꼭 gameObject가 꺼질걸 대비해서 아래 코드를 수행해야한다!!!!!!!
+			//
+			// Update문에서 처리해도 되지만 코드가 지저분해지고, 일정시간 대기하는덴 불편하다. 그러니 MEC 사용법대로 잘 쓰자..
+			if (_affectorProcessor.gameObject == null || _affectorProcessor.gameObject.activeSelf == false)
+				yield break;
+
 			if (Mathf.Abs(_actor.cachedTransform.position.y - BurrowAnimationPositionY) < 0.01f && _actor.GetCollider().enabled == true)
 				break;
 			yield return Timing.WaitForOneFrame;
@@ -137,6 +163,8 @@ public class BurrowAffector : AffectorBase
 		{
 			if (this == null)
 				yield break;
+			if (_affectorProcessor.gameObject == null || _affectorProcessor.gameObject.activeSelf == false)
+				yield break;
 
 			if (Mathf.Abs(_actor.cachedTransform.position.y) < 0.01f && _actor.GetCollider().enabled == true)
 				break;
@@ -145,6 +173,7 @@ public class BurrowAffector : AffectorBase
 
 		_actor.baseCharacterController.movement.useGravity = true;
 		_actor.actionController.idleAnimator.enabled = true;
+		_actor.actionController.PlayActionByActionName("Idle");
 		_actor.EnableAI(true);
 		finalized = true;
 	}

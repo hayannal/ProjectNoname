@@ -303,7 +303,10 @@ public class HitObject : MonoBehaviour
 		List<AffectorProcessor> listOneHitPerTarget = null, Dictionary<AffectorProcessor, float> dicHitStayTime = null)
 	{
 		// step 1. Physics.OverlapSphere
-		Collider[] result = Physics.OverlapSphere(areaPosition, meHit.areaDistanceMax); // meHit.areaDistanceMax * parentTransform.localScale.x
+		float maxDistance = meHit.areaDistanceMax;
+		maxDistance = Mathf.Max(Mathf.Abs(meHit.areaHeightMax), maxDistance);
+		maxDistance = Mathf.Max(Mathf.Abs(meHit.areaHeightMin), maxDistance);
+		Collider[] result = Physics.OverlapSphere(areaPosition, maxDistance); // meHit.areaDistanceMax * parentTransform.localScale.x
 
 		// step 2. Check each object.
 		float distanceMin = meHit.areaDistanceMin; // * parentTransform.localScale.x;

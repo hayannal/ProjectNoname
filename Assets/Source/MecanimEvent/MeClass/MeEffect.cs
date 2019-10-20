@@ -23,14 +23,25 @@ public class MeEffect : MecanimEventBase {
 	}
 #endif
 
+	Transform _spawnTransform;
 	DummyFinder _dummyFinder = null;
 	override public void OnSignal(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		if (string.IsNullOrEmpty(parentName))
 		{
-			//Vector3 result = offset * animator.transform.localScale.x;
-			Vector3 rotation = animator.transform.TransformDirection(direction);
-			BattleInstanceManager.instance.GetCachedObject(effectData, animator.transform.TransformPoint(offset), Quaternion.LookRotation(rotation));
+			if (_spawnTransform == null)
+			{
+				if (animator.transform.parent != null)
+					_spawnTransform = animator.transform.parent;
+				if (_spawnTransform == null)
+					_spawnTransform = animator.transform;
+			}
+			if (_spawnTransform != null)
+			{
+				//Vector3 result = offset * animator.transform.localScale.x;
+				Vector3 rotation = _spawnTransform.TransformDirection(direction);
+				BattleInstanceManager.instance.GetCachedObject(effectData, _spawnTransform.TransformPoint(offset), Quaternion.LookRotation(rotation));
+			}
 		}
 		else
 		{

@@ -52,9 +52,15 @@ public class MecanimEventBase : StateMachineBehaviour {
 		int lastLoop = (int)_lastNormalizeTime;
 		int currentLoop = (int)stateInfo.normalizedTime;
 		float lastNormalizedTime = _lastNormalizeTime;
-		if (stateInfo.loop) lastNormalizedTime -= lastLoop;
 		float currentNormalizedTime = stateInfo.normalizedTime;
+#if UNITY_EDITOR
+		// 툴에서 액션 선택하고 Play눌러서 마지막에 다다를때 꼭 last 0 / current 1 로 와서 모든 시그널들이 1회씩 호출되길래 예외처리 해둔다.
+		if (stateInfo.loop || s_bForceCallUpdate) lastNormalizedTime -= lastLoop;
+		if (stateInfo.loop || s_bForceCallUpdate) currentNormalizedTime -= currentLoop;   //	0.0 ~ 0.99999
+#else
+		if (stateInfo.loop) lastNormalizedTime -= lastLoop;
 		if (stateInfo.loop) currentNormalizedTime -= currentLoop;   //	0.0 ~ 0.99999
+#endif
 
 		if (animator.IsInTransition(0))
 		{
@@ -90,7 +96,7 @@ public class MecanimEventBase : StateMachineBehaviour {
 				if (lastNormalizedTime <= StartTime && StartTime < currentNormalizedTime)
 				{
 					OnSignal(animator, stateInfo, layerIndex);
-					//Debug.Log("3333333333");
+					//Debug.LogFormat("lastNormalized = {0} / currentNormalized = {1}", lastNormalizedTime, currentNormalizedTime);
 				}
 			}
 			else

@@ -10,6 +10,7 @@ public class MeEffect : MecanimEventBase {
 	override public bool RangeSignal { get { return false; } }
 	public GameObject effectData;
 	public Vector3 offset;
+	public bool fixedWorldPositionY;
 	public Vector3 direction = Vector3.forward;
 	public string parentName;
 
@@ -18,6 +19,7 @@ public class MeEffect : MecanimEventBase {
 	{
 		effectData = (GameObject)EditorGUILayout.ObjectField("Object :", effectData, typeof(GameObject), false);
 		offset = EditorGUILayout.Vector3Field("Offset :", offset);
+		fixedWorldPositionY = EditorGUILayout.Toggle("Fixed World Position Y :", fixedWorldPositionY);
 		direction = EditorGUILayout.Vector3Field("Direction :", direction);
 		parentName = EditorGUILayout.TextField("Parent Transform Name :", parentName);
 	}
@@ -40,7 +42,17 @@ public class MeEffect : MecanimEventBase {
 			{
 				//Vector3 result = offset * animator.transform.localScale.x;
 				Vector3 rotation = _spawnTransform.TransformDirection(direction);
-				BattleInstanceManager.instance.GetCachedObject(effectData, _spawnTransform.TransformPoint(offset), Quaternion.LookRotation(rotation));
+				if (fixedWorldPositionY)
+				{
+					Vector3 convertOffset = Vector3.zero;
+					convertOffset.x = offset.x;
+					convertOffset.z = offset.z;
+					Vector3 spawnPosition = _spawnTransform.TransformPoint(convertOffset);
+					spawnPosition.y = offset.y;
+					BattleInstanceManager.instance.GetCachedObject(effectData, spawnPosition, Quaternion.LookRotation(rotation));
+				}
+				else
+					BattleInstanceManager.instance.GetCachedObject(effectData, _spawnTransform.TransformPoint(offset), Quaternion.LookRotation(rotation));
 			}
 		}
 		else

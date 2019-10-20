@@ -114,11 +114,10 @@ public class HitObject : MonoBehaviour
 
 		for (int i = 0; i < meHit.circularSectorCount; ++i)
 		{
-			Vector3 position = GetSpawnPosition(spawnTransform, meHit, parentTransform);
 			float centerAngleY = meHit.circularSectorUseWorldSpace ? meHit.circularSectorWorldSpaceCenterAngleY : defaultRotation.eulerAngles.y;
 			float baseAngle = meHit.circularSectorCount % 2 == 0 ? centerAngleY - (meHit.circularSectorBetweenAngle / 2f) : centerAngleY;
 			float angle = WavingNwayGenerator.GetShiftedAngle(i, baseAngle, meHit.circularSectorBetweenAngle);
-			HitObject circularSectorHitObject = GetCachedHitObject(meHit, position, Quaternion.Euler(0.0f, angle, 0.0f));
+			HitObject circularSectorHitObject = GetCachedHitObject(meHit, defaultPosition, Quaternion.Euler(0.0f, angle, 0.0f));
 			if (circularSectorHitObject == null)
 				continue;
 			circularSectorHitObject.InitializeHitObject(meHit, parentActor, hitSignalIndexInAction, repeatIndex);

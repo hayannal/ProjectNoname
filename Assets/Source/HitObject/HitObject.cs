@@ -68,20 +68,20 @@ public class HitObject : MonoBehaviour
 		}
 		else if (meHit.targetDetectType == eTargetDetectType.Area || meHit.targetDetectType == eTargetDetectType.SphereCast)
 		{
-			Vector3 areaPosition = spawnTransform.TransformPoint(meHit.offset); // meHit.offset * parentTransform.localScale
 			StatusStructForHitObject statusStructForHitObject = new StatusStructForHitObject();
 			CopyEtcStatusForHitObject(ref statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction, repeatIndex);
 
+			Vector3 areaPosition = GetSpawnPosition(spawnTransform, meHit, parentTransform);
+			Vector3 areaDirection = GetSpawnDirection(areaPosition, meHit, parentTransform, GetTargetPosition(meHit, parentActor, hitSignalIndexInAction));
 			Vector3 endPosition = Vector3.zero;
 			if (meHit.targetDetectType == eTargetDetectType.Area)
-				CheckHitArea(areaPosition, spawnTransform.forward, meHit, parentActor.actorStatus.statusBase, statusStructForHitObject);
+				CheckHitArea(areaPosition, areaDirection, meHit, parentActor.actorStatus.statusBase, statusStructForHitObject);
 			else if (meHit.targetDetectType == eTargetDetectType.SphereCast)
-				endPosition = CheckSphereCast(areaPosition, spawnTransform.forward, meHit, parentActor.actorStatus.statusBase, statusStructForHitObject);
+				endPosition = CheckSphereCast(areaPosition, areaDirection, meHit, parentActor.actorStatus.statusBase, statusStructForHitObject);
 
 			// HitObject 프리팹이 있거나 lifeTime이 있다면 생성하고 아니면 패스.
-			Vector3 position = GetSpawnPosition(spawnTransform, meHit, parentTransform);
-			Quaternion rotation = Quaternion.LookRotation(GetSpawnDirection(position, meHit, parentTransform, GetTargetPosition(meHit, parentActor, hitSignalIndexInAction)));
-			HitObject hitObject = GetCachedHitObject(meHit, position, rotation);
+			Quaternion rotation = Quaternion.LookRotation(areaDirection);
+			HitObject hitObject = GetCachedHitObject(meHit, areaPosition, rotation);
 			if (hitObject != null)
 			{
 				hitObject.InitializeHitObject(meHit, parentActor, hitSignalIndexInAction, repeatIndex);
@@ -164,20 +164,22 @@ public class HitObject : MonoBehaviour
 
 	public static Vector3 GetSpawnPosition(Transform spawnTransform, MeHitObject meHit, Transform parentActorTransform)
 	{
-		if (meHit.hitObjectPrefab == null && meHit.lifeTime > 0.0f)
-			return spawnTransform.TransformPoint(meHit.offset);
+		Vector3 offset = meHit.offset;
 
-		if (meHit.offset == Vector3.zero)
+		if (offset == Vector3.zero)
 			return spawnTransform.position;
 
 		if (meHit.createPositionType != eCreatePositionType.Bone)
-			return spawnTransform.TransformPoint(meHit.offset);    // meHit.offset * parentTransform.localScale
+			return spawnTransform.TransformPoint(offset);    // meHit.offset * parentTransform.localScale
 
 		if (meHit.useBoneRotation)
-			return spawnTransform.TransformPoint(meHit.offset);    // meHit.offset * parentTransform.localScale
+			return spawnTransform.TransformPoint(offset);    // meHit.offset * parentTransform.localScale
+
+		if (spawnTransform == parentActorTransform)
+			return spawnTransform.TransformPoint(offset);
 
 		Vector3 parentActorPosition = parentActorTransform.position;
-		Vector3 offsetPosition = parentActorTransform.TransformPoint(meHit.offset);
+		Vector3 offsetPosition = parentActorTransform.TransformPoint(offset);
 		offsetPosition -= parentActorPosition;
 		return spawnTransform.position + offsetPosition;
 	}

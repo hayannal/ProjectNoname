@@ -30,7 +30,7 @@ public class MeEffect : MecanimEventBase {
 		{
 			//Vector3 result = offset * animator.transform.localScale.x;
 			Vector3 rotation = animator.transform.TransformDirection(direction);
-			Instantiate(effectData, animator.transform.TransformPoint(offset), Quaternion.LookRotation(rotation));
+			BattleInstanceManager.instance.GetCachedObject(effectData, animator.transform.TransformPoint(offset), Quaternion.LookRotation(rotation));
 		}
 		else
 		{

@@ -208,6 +208,7 @@ public class BattleTestTool : EditorWindow
 							targetStateMachine = null;
 						}
 						useMonsterAI = false;
+						monsterAI.enabled = false;
 
 						prevMonsterInstance = monsterInstance;
 					}
@@ -294,9 +295,13 @@ public class BattleTestTool : EditorWindow
 
 					if (monsterInstance != null)
 					{
+						EditorGUI.BeginChangeCheck();
 						useMonsterAI = EditorGUILayout.Toggle("Toggle Monster AI :", useMonsterAI);
-						if (monsterAI != null)
-							monsterAI.enabled = useMonsterAI;
+						if (EditorGUI.EndChangeCheck())
+						{
+							if (monsterAI != null)
+								monsterAI.enabled = useMonsterAI;
+						}
 					}
 				}
 				GUILayout.EndVertical();

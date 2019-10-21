@@ -57,7 +57,7 @@ public class HitObject : MonoBehaviour
 					if (meHit.showHitEffect)
 						HitEffect.ShowHitEffect(meHit, hitParameter.contactPoint, hitParameter.contactNormal, hitParameter.statusStructForHitObject.weaponIDAtCreation);
 					if (meHit.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
-						HitEffect.ShowHitEffectLineRenderer(meHit, GetSpawnPosition(spawnTransform, meHit, parentTransform), hitParameter.contactPoint);
+						HitEffect.ShowHitEffectLineRenderer(meHit, GetSpawnPosition(spawnTransform, meHit, parentTransform, parentActor.affectorProcessor), hitParameter.contactPoint);
 					if (meHit.showHitBlink && (meHit.affectorValueIdList == null || meHit.affectorValueIdList.Count == 0))
 						HitBlink.ShowHitBlink(affectorProcessor.cachedTransform);
 					if (meHit.showHitRimBlink && (meHit.affectorValueIdList == null || meHit.affectorValueIdList.Count == 0))
@@ -71,7 +71,7 @@ public class HitObject : MonoBehaviour
 			StatusStructForHitObject statusStructForHitObject = new StatusStructForHitObject();
 			CopyEtcStatusForHitObject(ref statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction, repeatIndex);
 
-			Vector3 areaPosition = GetSpawnPosition(spawnTransform, meHit, parentTransform);
+			Vector3 areaPosition = GetSpawnPosition(spawnTransform, meHit, parentTransform, parentActor.affectorProcessor);
 			Vector3 areaDirection = GetSpawnDirection(areaPosition, meHit, parentTransform, GetTargetPosition(meHit, parentActor, hitSignalIndexInAction));
 			Vector3 endPosition = Vector3.zero;
 			if (meHit.targetDetectType == eTargetDetectType.Area)
@@ -97,13 +97,13 @@ public class HitObject : MonoBehaviour
 
 		// step2. Collider타입은 상황에 맞게 1개 혹은 여러개 만들어야한다.
 		Vector3 targetPosition = GetTargetPosition(meHit, parentActor, hitSignalIndexInAction);
-		Vector3 defaultPosition = GetSpawnPosition(spawnTransform, meHit, parentTransform);
+		Vector3 defaultPosition = GetSpawnPosition(spawnTransform, meHit, parentTransform, parentActor.affectorProcessor);
 		Quaternion defaultRotation = Quaternion.LookRotation(GetSpawnDirection(defaultPosition, meHit, parentTransform, targetPosition));
 		if (meHit.parallelCount > 0)
 		{
 			for (int i = 0; i < meHit.parallelCount; ++i)
 			{
-				Vector3 position = GetParallelSpawnPosition(spawnTransform, meHit, parentTransform, i);
+				Vector3 position = GetParallelSpawnPosition(spawnTransform, meHit, parentTransform, i, parentActor.affectorProcessor);
 				Quaternion rotation = Quaternion.LookRotation(GetSpawnDirection(defaultPosition, meHit, parentTransform, targetPosition));
 				HitObject parallelHitObject = GetCachedHitObject(meHit, position, rotation);
 				if (parallelHitObject == null)
@@ -161,9 +161,15 @@ public class HitObject : MonoBehaviour
 		return hitObject;
 	}
 
-	public static Vector3 GetSpawnPosition(Transform spawnTransform, MeHitObject meHit, Transform parentActorTransform)
+	public static Vector3 GetSpawnPosition(Transform spawnTransform, MeHitObject meHit, Transform parentActorTransform, AffectorProcessor parentActorAffectorProcessor)
 	{
 		Vector3 offset = meHit.offset;
+
+		if (parentActorAffectorProcessor != null)
+		{
+			if (BurrowAffector.CheckBurrow(parentActorAffectorProcessor))
+				offset.y -= BurrowAffector.s_BurrowPositionY;
+		}
 
 		if (offset == Vector3.zero)
 			return spawnTransform.position;
@@ -183,9 +189,9 @@ public class HitObject : MonoBehaviour
 		return spawnTransform.position + offsetPosition;
 	}
 
-	static Vector3 GetParallelSpawnPosition(Transform spawnTransform, MeHitObject meHit, Transform parentActorTransform, int parallelIndex)
+	static Vector3 GetParallelSpawnPosition(Transform spawnTransform, MeHitObject meHit, Transform parentActorTransform, int parallelIndex, AffectorProcessor parentActorAffectorProcessor)
 	{
-		Vector3 baseSpawnPosition = GetSpawnPosition(spawnTransform, meHit, parentActorTransform);
+		Vector3 baseSpawnPosition = GetSpawnPosition(spawnTransform, meHit, parentActorTransform, parentActorAffectorProcessor);
 
 		Vector3 parentActorPosition = parentActorTransform.position;
 		Vector3 parallelOffset = Vector3.zero;

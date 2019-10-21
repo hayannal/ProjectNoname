@@ -624,7 +624,7 @@ public class MecanimEventTool : EditorWindow
 	{
 		AnimatorStateInfo asi = m_ToolAnimator.GetCurrentAnimatorStateInfo(_selectedLayer);
 		AnimatorClipInfo[] acis = m_ToolAnimator.GetCurrentAnimatorClipInfo(_selectedLayer);
-		float clipLength = 0.0f;
+		float clipLength = 1.0f;
 		if (acis.Length > 0 && acis[0].clip != null) clipLength = acis[0].clip.length;
 		float clipLengthWithSpeed = clipLength / asi.speed;
 		GUILayout.BeginHorizontal();

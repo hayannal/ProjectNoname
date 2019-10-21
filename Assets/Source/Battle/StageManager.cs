@@ -221,7 +221,7 @@ public class StageManager : MonoBehaviour
 
 		if (_currentPortalFlagObject != null)
 			_currentPortalFlagObject.SetActive(false);
-		_currentSpawnFlagObject = BattleInstanceManager.instance.GetCachedObject(_handleNextPortalFlagPrefab.Result, Vector3.zero, Quaternion.identity);
+		_currentPortalFlagObject = BattleInstanceManager.instance.GetCachedObject(_handleNextPortalFlagPrefab.Result, Vector3.zero, Quaternion.identity);
 
 		if (_currentEnvironmentSettingObject != null)
 			_currentEnvironmentSettingObject.SetActive(false);

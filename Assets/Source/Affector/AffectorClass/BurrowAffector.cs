@@ -76,6 +76,14 @@ public class BurrowAffector : AffectorBase
 			if (_affectorProcessor.gameObject == null || _affectorProcessor.gameObject.activeSelf == false)
 				yield break;
 
+			// 애니메이션을 보면서 작업해야하는거라 시그널로 뺀건데 실수하면 매우 큰 버그가 나는 현상을 찾았다.
+			// 아래 break 조건문을 기다리는 동안 두개의 레인지 시그널이 돌고있는데
+			// 하나는 DisableActorCollider고 하나는 MovePositionCurve다.
+			// 그런데 MovePositionCurve가 조금이라도 더 늦게까지 호출되서 위치를 바꿔버리면
+			// 버로우 상태를 위해 -5로 옮겨둔 위치가 다시 -2쪽으로 이동되게 된다. (땅 뒤집는 이펙트가 허공에 나오게 된다.)
+			// MovePositionCurve 시그널에서 버로우 상태일땐 셋팅 안하는 방법과
+			// 버로우 상태일때 매프레임 -5로 셋팅하는 방법 두가지가 있는데, 둘다 맘에 들지 않는다.
+			// 우선은 레인지 시그널의 길이를 똑같이 설정해서 동시에 끝나도록 처리할텐데 더 좋은 방법이 있는지 고민해보자.
 			if (Mathf.Abs(_actor.cachedTransform.position.y - BurrowAnimationPositionY) < 0.01f && _actor.GetCollider().enabled == true)
 				break;
 			yield return Timing.WaitForOneFrame;

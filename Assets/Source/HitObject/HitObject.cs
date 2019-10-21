@@ -773,6 +773,7 @@ public class HitObject : MonoBehaviour
 			return;
 		}
 
+		UpdateLifeTime();
 		UpdateMaxDistance();
 
 		// Range 시그널이 아닌 Area는 자체적으로 시간값 가지고 검사한다. 발사체 형태의 부채꼴을 처리하기 위함.
@@ -820,6 +821,15 @@ public class HitObject : MonoBehaviour
 	//}
 
 
+	void UpdateLifeTime()
+	{
+		if (_signal.RangeSignal == false && _createTime + _signal.lifeTime < Time.time)
+		{
+			OnFinalizeByLifeTime();
+			return;
+		}
+	}
+
 	void UpdateMaxDistance()
 	{
 		if (_signal.movable == false)
@@ -831,16 +841,6 @@ public class HitObject : MonoBehaviour
 		diff.y = 0.0f;
 		if (diff.sqrMagnitude > _signal.maxDistance * _signal.maxDistance)
 			OnFinalizeByDistance();
-	}
-
-	void FixedUpdate()
-	{
-		// for life time 0.0f
-		if (_signal.RangeSignal == false && _createTime + _signal.lifeTime < Time.time)
-		{
-			OnFinalizeByLifeTime();
-			return;
-		}
 	}
 
 	int HitObjectAnimatorUpdateWaitCount = 3;

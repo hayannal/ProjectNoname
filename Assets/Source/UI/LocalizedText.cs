@@ -11,6 +11,15 @@ public static class TextExtension
 	// and specifies the type for which the method is defined.
 	public static void SetLocalizedText(this Text textComponent, string text)
 	{
+#if UNITY_EDITOR
+		if (UIString.instance.IsDoneLoadAsyncFont() == false)
+		{
+			textComponent.fontStyle = FontStyle.Bold;
+			textComponent.text = text;
+			return;
+		}
+#endif
+
 		textComponent.font = UIString.instance.GetLocalizedFont();
 		textComponent.fontStyle = UIString.instance.useSystemLocalizedFont ? FontStyle.Bold : FontStyle.Normal;
 		textComponent.text = text;

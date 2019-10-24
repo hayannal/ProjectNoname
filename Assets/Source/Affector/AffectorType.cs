@@ -28,5 +28,6 @@ public enum eAffectorType
 	InvincibleTortoise,
 
 	Burrow,
+	IgnoreEvadeVisual,
 }
 #endregion

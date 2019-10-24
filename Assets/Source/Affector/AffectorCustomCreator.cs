@@ -21,6 +21,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.CountBarrier: affectorBase = new CountBarrierAffector(); break;
 			case eAffectorType.InvincibleTortoise: affectorBase = new InvincibleTortoiseAffector(); break;
 			case eAffectorType.Burrow: affectorBase = new BurrowAffector(); break;
+			case eAffectorType.IgnoreEvadeVisual: affectorBase = new IgnoreEvadeVisualAffector(); break;
 			#endregion
 		}
 		return affectorBase;
@@ -44,6 +45,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.CountBarrier:
 			case eAffectorType.InvincibleTortoise:
 			case eAffectorType.Burrow:
+			case eAffectorType.IgnoreEvadeVisual:
 				return true;
 			#endregion
 		}

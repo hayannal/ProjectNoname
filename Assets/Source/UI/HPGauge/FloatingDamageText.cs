@@ -10,7 +10,6 @@ public class FloatingDamageText : MonoBehaviour
 	{
 		Miss,
 		Invincible,
-		Evade,
 		Headshot,
 	}
 
@@ -27,9 +26,6 @@ public class FloatingDamageText : MonoBehaviour
 				break;
 			case eFloatingDamageType.Invincible:
 				damageText.SetLocalizedText(UIString.instance.GetString("GameUI_Invincible"));
-				break;
-			case eFloatingDamageType.Evade:
-				damageText.SetLocalizedText(UIString.instance.GetString("GameUI_Evade"));
 				break;
 			case eFloatingDamageType.Headshot:
 				damageText.SetLocalizedText(UIString.instance.GetString("GameUI_Headshot"));

@@ -12,7 +12,7 @@ namespace ActorStatusDefine {
 		Defense,
 		AttackDelay,
 		AttackSpeedAddRatio,
-		Evade,
+		EvadeRate,
 		MoveSpeed,
 
 		MonsterStatusAmount,

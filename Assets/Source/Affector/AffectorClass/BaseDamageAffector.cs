@@ -14,6 +14,8 @@ public class BaseDamageAffector : AffectorBase {
 		}
 
 		// 실명은 공격자꺼라 가장 먼저.
+		// 하단의 빗맞음과 같이 처리하지 않고 최상위에서 먼저 돌린다.
+		// 결과는 동일하게 Miss로 표현한다.
 
 		// 횟수 보호막 검사가 비쥬얼상 무적이나 회피보다 먼저다.
 		if (CountBarrierAffector.CheckBarrier(_affectorProcessor, hitParameter))
@@ -28,18 +30,19 @@ public class BaseDamageAffector : AffectorBase {
 			return;
 		}
 
-		// 회피 체크
+		// 회피 체크. IgnoreEvadeVisualAffector와 달리 실제로 빗맞음 체크하는 항목이다.
+		// 저 어펙터가 없어도 이게 1이면 빗맞음 무시이며, %가 차오르지 않는 빗맞음 무시 필살기 공격을 만들때 쓸 예정이다.
 		if (affectorValueLevelTableData.iValue3 == 0)
 		{
-			float evadeRate = _actor.actorStatus.GetValue(eActorStatus.Evade);
+			float evadeRate = _actor.actorStatus.GetValue(eActorStatus.EvadeRate);
 			if (evadeRate > 0.0f && Random.value <= evadeRate)
 			{
 				// 안밀리게. 이 코드가 가장 간결하다.
 				if (_actor.GetRigidbody() != null)
 					_actor.GetRigidbody().velocity = Vector3.zero;
 
-				// 회피 데미지 플로터 적용.
-				FloatingDamageTextRootCanvas.instance.ShowText(FloatingDamageText.eFloatingDamageType.Evade, _actor);
+				// 미스 데미지 플로터 적용.
+				FloatingDamageTextRootCanvas.instance.ShowText(FloatingDamageText.eFloatingDamageType.Miss, _actor);
 				return;
 			}
 		}

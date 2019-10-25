@@ -50,8 +50,10 @@ public class PlayerGaugeCanvas : MonoBehaviour
 		_lateFillDelayRemainTime = 0.0f;
 		_lateFillLerpStarted = false;
 		_prevTargetPosition = -Vector3.up;
+		_initialized = false;
 	}
 
+	bool _initialized = false;
 	public void InitializeGauge(PlayerActor playerActor)
 	{
 		_offsetY = playerActor.gaugeOffsetY;
@@ -61,6 +63,7 @@ public class PlayerGaugeCanvas : MonoBehaviour
 		_lastRatio = playerActor.actorStatus.GetHPRatio();
 		_targetTransform = playerActor.cachedTransform;
 		GetTargetHeight(_targetTransform);
+		_initialized = true;
 	}
 
 	// Update is called once per frame
@@ -110,6 +113,9 @@ public class PlayerGaugeCanvas : MonoBehaviour
 	float _lastRatio = 1.0f;
 	public void OnChangedHP(PlayerActor playerActor)
 	{
+		if (_initialized == false)
+			InitializeGauge(playerActor);
+
 		mobaEnergyBar.MaxValue = playerActor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MaxHP);
 		mobaEnergyBar.Value = playerActor.actorStatus.GetHP();
 		float hpRatio = playerActor.actorStatus.GetHPRatio();

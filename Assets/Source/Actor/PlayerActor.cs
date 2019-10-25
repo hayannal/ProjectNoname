@@ -44,8 +44,8 @@ public class PlayerActor : Actor
 		base.InitializeActor();
 
 		team.SetTeamId((int)Team.eTeamID.DefaultAlly, true, gameObject, Team.eTeamLayer.TEAM0_ACTOR_LAYER);
-		skillProcessor.InitializeSkill(actorId);
 		actorStatus.InitializeActorStatus(actorId);
+		skillProcessor.InitializeSkill(actorId);
 
 		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby == false)
 			InitializeCanvas();

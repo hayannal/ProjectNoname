@@ -69,8 +69,8 @@ public class MonsterActor : Actor
 
 	void InitializeMonster()
 	{
-		InitializePassiveSkill();
 		actorStatus.InitializeMonsterStatus(actorId);
+		InitializePassiveSkill();
 		monsterAI.InitializeAI();
 
 		if (bossMonster)

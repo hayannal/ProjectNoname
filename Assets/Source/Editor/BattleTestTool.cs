@@ -133,6 +133,7 @@ public class BattleTestTool : EditorWindow
 	bool useMonsterAI = false;
 	GroupMonster groupMonster;
 	bool useGroupMonsterAI = false;
+	RailMonster railMonster;
 
 	void OnGUI_Monster()
 	{
@@ -152,18 +153,25 @@ public class BattleTestTool : EditorWindow
 				if (stageTableData != null)
 					StageManager.instance.currentStageTableData = stageTableData;
 				GameObject newObject = BattleInstanceManager.instance.GetCachedObject(monsterPrefab, Vector3.forward, Quaternion.identity);
+				monsterInstance = null;
+				groupMonster = null;
+				railMonster = null;
 				MonsterActor newMonsterActor = newObject.GetComponent<MonsterActor>();
 				if (newMonsterActor != null)
 				{
 					monsterInstance = newObject;
-					groupMonster = null;
 				}
 				GroupMonster newGroupMonster = newObject.GetComponent<GroupMonster>();
 				if (newGroupMonster != null)
 				{
-					monsterInstance = null;
 					groupMonster = newGroupMonster;
 					useGroupMonsterAI = false;
+				}
+				RailMonster newRailMonster = newObject.GetComponent<RailMonster>();
+				if (newRailMonster != null)
+				{
+					monsterInstance = newRailMonster.monsterActor.gameObject;
+					railMonster = newRailMonster;
 				}
 			}
 			if (monsterInstance != null)
@@ -209,6 +217,8 @@ public class BattleTestTool : EditorWindow
 						}
 						useMonsterAI = false;
 						monsterAI.enabled = false;
+						if (railMonster != null)
+							railMonster.enabled = false;
 
 						prevMonsterInstance = monsterInstance;
 					}
@@ -301,6 +311,8 @@ public class BattleTestTool : EditorWindow
 						{
 							if (monsterAI != null)
 								monsterAI.enabled = useMonsterAI;
+							if (railMonster != null)
+								railMonster.enabled = useMonsterAI;
 						}
 					}
 				}

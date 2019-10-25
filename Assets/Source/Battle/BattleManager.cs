@@ -17,6 +17,7 @@ public class BattleManager : MonoBehaviour
 	public GameObject monsterHPGaugePrefab;
 	public GameObject bossMonsterHPGaugePrefab;
 	public GameObject playerHPGaugePrefab;
+	public GameObject playerIgnoreEvadeCanvasPrefab;
 	public GameObject skillSlotCanvasPrefab;
 
 	public GameObject floatingDamageTextRootCanvasPrefab;

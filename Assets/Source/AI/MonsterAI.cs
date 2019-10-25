@@ -9,10 +9,10 @@ public class MonsterAI : MonoBehaviour
 {
 	const float TargetFindDelay = 0.1f;
 
-	Actor targetActor;
+	public Actor targetActor { get; private set; }
 	float targetRadius;
 
-	Actor actor { get; set; }
+	Actor actor;
 	float actorRadius;
 	TargetingProcessor targetingProcessor { get; set; }
 	PathFinderController pathFinderController { get; set; }

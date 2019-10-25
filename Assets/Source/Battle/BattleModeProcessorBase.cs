@@ -17,6 +17,8 @@ public class BattleModeProcessorBase
 			_powerSourceObject.gameObject.SetActive(false);
 			_powerSourceObject = null;
 		}
+
+		RailMonster.OnPreInstantiateMap();
 	}
 
 	public void OnLoadedMap()

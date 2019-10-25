@@ -10,7 +10,7 @@ public class PlayerAI : MonoBehaviour
 	const float TargetFindDelay = 0.1f;
 	const float TargetChangeThreshold = 2.0f;
 
-	Collider targetCollider;
+	public Collider targetCollider { get; private set; }
 	float _targetColliderRadius;
 
 	Actor actor { get; set; }

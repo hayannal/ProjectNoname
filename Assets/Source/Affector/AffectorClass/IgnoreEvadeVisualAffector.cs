@@ -41,12 +41,47 @@ public class IgnoreEvadeVisualAffector : AffectorBase
 		UpdateMecanimState();
 	}
 
+	Collider _lastTargetCollider = null;
+	bool _canvasShowState = false;
 	void UpdateTargetMonster()
 	{
 		// Visual Affector이기 때문에 UI쪽 처리할땐 로컬 플레이어인지 확인해야한다.
-		//bool show = true;
-		//if (_actor != BattleInstanceManager.instance.playerActor)
-		//	show = false;
+		if (_actor != BattleInstanceManager.instance.playerActor)
+		{
+			PlayerIgnoreEvadeCanvas.instance.ShowIgnoreEvade(false, null);
+			return;
+		}
+
+		if (_lastTargetCollider == BattleInstanceManager.instance.playerActor.playerAI.targetCollider)
+			return;
+
+		bool needShow = false;
+		float evadeRate = 0.0f;
+		if (BattleInstanceManager.instance.playerActor.playerAI.targetCollider != null)
+		{
+			AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(BattleInstanceManager.instance.playerActor.playerAI.targetCollider);
+			if (affectorProcessor != null && affectorProcessor.actor != null)
+			{
+				evadeRate = affectorProcessor.actor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.EvadeRate);
+				if (evadeRate > 0.0f)
+					needShow = true;
+			}
+		}
+		_lastTargetCollider = BattleInstanceManager.instance.playerActor.playerAI.targetCollider;
+
+		if (needShow == false && _canvasShowState)
+		{
+			PlayerIgnoreEvadeCanvas.instance.ShowIgnoreEvade(false, null);
+			_canvasShowState = false;
+			return;
+		}
+
+		if (needShow && _canvasShowState == false)
+		{
+			PlayerIgnoreEvadeCanvas.instance.ShowIgnoreEvade(true, BattleInstanceManager.instance.playerActor);
+			PlayerIgnoreEvadeCanvas.instance.SetPercent(evadeRate);
+			_canvasShowState = true;
+		}
 	}
 
 	bool _attackStateStarted = false;

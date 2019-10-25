@@ -77,6 +77,10 @@ public class PlayerIgnoreEvadeCanvas : MonoBehaviour
 				_prevTargetPosition = _targetTransform.position;
 			}
 		}
+
+		// 아무래도 이 캔버스가 나와있는 상태에서 플레이어가 죽을 경우(혹은 아예 게임오브젝트가 꺼질 경우) 자동으로 Disable 하는 처리를 여기서 해야할거 같다.
+		// 패시브 어펙터가 Finalize하기도 전에 삭제될 경우를 대비해서다.
+		//
 	}
 
 	void GetTargetHeight(Transform t)

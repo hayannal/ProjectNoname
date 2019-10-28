@@ -17,8 +17,12 @@ public class ActorTableData
   public int grade { get { return _grade; } set { _grade = value; } }
   
   [SerializeField]
-  int _mainWeaponType;
-  public int mainWeaponType { get { return _mainWeaponType; } set { _mainWeaponType = value; } }
+  float _multiHp;
+  public float multiHp { get { return _multiHp; } set { _multiHp = value; } }
+  
+  [SerializeField]
+  float _multiAtkVisual;
+  public float multiAtkVisual { get { return _multiAtkVisual; } set { _multiAtkVisual = value; } }
   
   [SerializeField]
   float _attackDelay;

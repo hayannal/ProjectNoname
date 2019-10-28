@@ -109,7 +109,6 @@ public class StageManager : MonoBehaviour
 
 	public float currentMonstrStandardHp { get { return _currentStageTableData.standardHp; } }
 	public float currentMonstrStandardAtk { get { return _currentStageTableData.standardAtk; } }
-	public float currentMonstrStandardDef { get { return _currentStageTableData.standardDef; } }
 	public float currentBossHpPer1Line { get { return _currentStageTableData.standardHp * _currentStageTableData.bossHpRatioPer1Line; } }
 	public bool bossStage { get { return currentBossHpPer1Line != 0.0f; } }
 	StageTableData _currentStageTableData = null;

@@ -16,7 +16,7 @@ public class TableDataManager : MonoBehaviour
 	public MapTable mapTable;
 	public MonsterTable monsterTable;
 	public ActorTable actorTable;
-	public ActorPowerLevelTable actorPowerLevelTable;
+	public PowerLevelTable powerLevelTable;
 	public SkillTable skillTable;
 	public SkillLevelTable skillLevelTable;
 	public ConditionValueTable conditionValueTable;
@@ -112,12 +112,12 @@ public class TableDataManager : MonoBehaviour
 		return null;
 	}
 
-	public ActorPowerLevelTableData FindActorPowerLevelTableData(string actorId, int powerLevel)
+	public PowerLevelTableData FindPowerLevelTableData(int powerLevel)
 	{
-		for (int i = 0; i < actorPowerLevelTable.dataArray.Length; ++i)
+		for (int i = 0; i < powerLevelTable.dataArray.Length; ++i)
 		{
-			if (actorPowerLevelTable.dataArray[i].actorId == actorId && actorPowerLevelTable.dataArray[i].powerLevel == powerLevel)
-				return actorPowerLevelTable.dataArray[i];
+			if (powerLevelTable.dataArray[i].powerLevel == powerLevel)
+				return powerLevelTable.dataArray[i];
 		}
 		return null;
 	}

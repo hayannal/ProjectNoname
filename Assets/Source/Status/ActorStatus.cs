@@ -28,10 +28,9 @@ public class ActorStatus : MonoBehaviour
 			_statusBase.ClearValue();
 
 		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(actorId);
-		ActorPowerLevelTableData actorPowerLevelTableData = TableDataManager.instance.FindActorPowerLevelTableData(actorId, 1);
-		_statusBase.valueList[(int)eActorStatus.MaxHP] = actorPowerLevelTableData.hp;
-		_statusBase.valueList[(int)eActorStatus.Attack] = actorPowerLevelTableData.atk;
-		_statusBase.valueList[(int)eActorStatus.Defense] = actorPowerLevelTableData.def;
+		PowerLevelTableData powerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(1);
+		_statusBase.valueList[(int)eActorStatus.MaxHP] = powerLevelTableData.hp;
+		_statusBase.valueList[(int)eActorStatus.Attack] = powerLevelTableData.atk;
 		_statusBase.valueList[(int)eActorStatus.AttackDelay] = actorTableData.attackDelay;
 		_statusBase.valueList[(int)eActorStatus.MoveSpeed] = actorTableData.moveSpeed;
 		_statusBase.valueList[(int)eActorStatus.MaxSP] = actorTableData.sp;
@@ -53,7 +52,6 @@ public class ActorStatus : MonoBehaviour
 		MonsterTableData monsterTableData = TableDataManager.instance.FindMonsterTableData(monsterActorId);
 		_statusBase.valueList[(int)eActorStatus.MaxHP] = StageManager.instance.currentMonstrStandardHp * monsterTableData.multiHp;
 		_statusBase.valueList[(int)eActorStatus.Attack] = StageManager.instance.currentMonstrStandardAtk * monsterTableData.multiAtk;
-		_statusBase.valueList[(int)eActorStatus.Defense] = StageManager.instance.currentMonstrStandardDef * monsterTableData.multiDef;
 		_statusBase.valueList[(int)eActorStatus.AttackDelay] = monsterTableData.attackDelay;
 		_statusBase.valueList[(int)eActorStatus.EvadeRate] = monsterTableData.evadeRate;
 		_statusBase.valueList[(int)eActorStatus.MoveSpeed] = monsterTableData.moveSpeed;

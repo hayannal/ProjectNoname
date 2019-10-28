@@ -10,7 +10,8 @@ using System.Collections.Generic;
 /// can be serialized onto an asset data file.
 /// 
 [System.Serializable]
-public class ActorPowerLevelTable : ScriptableObject 
+[PreferBinarySerialization]
+public class PowerLevelTable : ScriptableObject 
 {	
     [HideInInspector] [SerializeField] 
     public string SheetName = "";
@@ -19,7 +20,7 @@ public class ActorPowerLevelTable : ScriptableObject
     public string WorksheetName = "";
     
     // Note: initialize in OnEnable() not here.
-    public ActorPowerLevelTableData[] dataArray;
+    public PowerLevelTableData[] dataArray;
     
     void OnEnable()
     {		
@@ -32,7 +33,7 @@ public class ActorPowerLevelTable : ScriptableObject
         //    because OnEnable is called whenever Unity builds.
         // 		
         if (dataArray == null)
-            dataArray = new ActorPowerLevelTableData[0];
+            dataArray = new PowerLevelTableData[0];
 
     }
     

@@ -9,12 +9,12 @@ using UnityQuickSheet;
 ///
 /// !!! Machine generated code !!!
 ///
-[CustomEditor(typeof(ActorPowerLevelTable))]
-public class ActorPowerLevelTableEditor : BaseExcelEditor<ActorPowerLevelTable>
+[CustomEditor(typeof(PowerLevelTable))]
+public class PowerLevelTableEditor : BaseExcelEditor<PowerLevelTable>
 {	    
     public override bool Load()
     {
-        ActorPowerLevelTable targetData = target as ActorPowerLevelTable;
+        PowerLevelTable targetData = target as PowerLevelTable;
 
         string path = targetData.SheetName;
 
@@ -28,7 +28,7 @@ public class ActorPowerLevelTableEditor : BaseExcelEditor<ActorPowerLevelTable>
         ExcelQuery query = new ExcelQuery(path, sheet);
         if (query != null && query.IsValid())
         {
-            targetData.dataArray = query.Deserialize<ActorPowerLevelTableData>().ToArray();
+            targetData.dataArray = query.Deserialize<PowerLevelTableData>().ToArray();
             EditorUtility.SetDirty(targetData);
             AssetDatabase.SaveAssets();
             return true;

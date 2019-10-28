@@ -6,12 +6,8 @@ using System.Collections;
 /// !!! DO NOT CHANGE Tabs to Spaces !!!
 /// 
 [System.Serializable]
-public class ActorPowerLevelTableData
+public class PowerLevelTableData
 {
-  [SerializeField]
-  string _actorId;
-  public string actorId { get { return _actorId; } set { _actorId = value; } }
-  
   [SerializeField]
   int _powerLevel;
   public int powerLevel { get { return _powerLevel; } set { _powerLevel = value; } }
@@ -23,9 +19,5 @@ public class ActorPowerLevelTableData
   [SerializeField]
   float _atk;
   public float atk { get { return _atk; } set { _atk = value; } }
-  
-  [SerializeField]
-  float _def;
-  public float def { get { return _def; } set { _def = value; } }
   
 }

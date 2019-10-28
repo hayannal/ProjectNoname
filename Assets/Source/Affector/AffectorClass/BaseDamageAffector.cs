@@ -48,7 +48,8 @@ public class BaseDamageAffector : AffectorBase {
 		}
 
 		//float damage = hitParameter.statusBase.valueList[(int)eActorStatus.Attack] * 1000.0f / (_actor.actorStatus.GetValue(eActorStatus.Defense) + 1000.0f);
-		float damage = hitParameter.statusBase.valueList[(int)eActorStatus.Attack] - _actor.actorStatus.GetValue(eActorStatus.Defense);
+		//float damage = hitParameter.statusBase.valueList[(int)eActorStatus.Attack] - _actor.actorStatus.GetValue(eActorStatus.Defense);
+		float damage = hitParameter.statusBase.valueList[(int)eActorStatus.Attack];
 		switch (affectorValueLevelTableData.iValue1)
 		{
 			case 0:

@@ -8,6 +8,13 @@ public class Actor : MonoBehaviour {
 
 	public static int ACTOR_LAYER;
 
+	public enum eActorGrade
+	{
+		Normal,
+		Heroic,
+		Legendary,
+	}
+
 	public string actorId;
 	public GameObject[] commonPoolPreloadObjectList;
 	public GameObject[] selfPassivePreloadObjectList;

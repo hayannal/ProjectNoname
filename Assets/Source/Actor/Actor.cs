@@ -8,7 +8,7 @@ public class Actor : MonoBehaviour {
 
 	public static int ACTOR_LAYER;
 
-	public enum eActorGrade
+	public enum eGrade
 	{
 		Normal,
 		Heroic,

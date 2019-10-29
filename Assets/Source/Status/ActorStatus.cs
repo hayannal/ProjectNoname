@@ -21,14 +21,14 @@ public class ActorStatus : MonoBehaviour
 		actor = GetComponent<Actor>();
 	}
 
-	public void InitializeActorStatus(string actorId)
+	public void InitializeActorStatus()
 	{
 		if (_statusBase == null)
 			_statusBase = new ActorStatusList();
 		else
 			_statusBase.ClearValue();
 
-		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(actorId);
+		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(actor.actorId);
 		PowerLevelTableData powerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(1);
 		_statusBase.valueList[(int)eActorStatus.MaxHp] = powerLevelTableData.hp;
 		_statusBase.valueList[(int)eActorStatus.Attack] = powerLevelTableData.atk;
@@ -58,14 +58,14 @@ public class ActorStatus : MonoBehaviour
 		OnChangedStatus();
 	}
 
-	public void InitializeMonsterStatus(string monsterActorId)
+	public void InitializeMonsterStatus()
 	{
 		if (_statusBase == null)
 			_statusBase = new MonsterStatusList();
 		else
 			_statusBase.ClearValue();
 
-		MonsterTableData monsterTableData = TableDataManager.instance.FindMonsterTableData(monsterActorId);
+		MonsterTableData monsterTableData = TableDataManager.instance.FindMonsterTableData(actor.actorId);
 		_statusBase.valueList[(int)eActorStatus.MaxHp] = StageManager.instance.currentMonstrStandardHp * monsterTableData.multiHp;
 		_statusBase.valueList[(int)eActorStatus.Attack] = StageManager.instance.currentMonstrStandardAtk * monsterTableData.multiAtk;
 		_statusBase.valueList[(int)eActorStatus.AttackDelay] = monsterTableData.attackDelay;

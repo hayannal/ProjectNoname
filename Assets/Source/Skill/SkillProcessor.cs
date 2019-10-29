@@ -34,7 +34,7 @@ public class SkillProcessor : MonoBehaviour
 	}
 
 	List<SkillInfo> _listSkillInfo;
-	public void InitializeSkill(string actorId)
+	public void InitializeSkill()
 	{
 		cooltimeProcessor = GetComponent<CooltimeProcessor>();
 		if (cooltimeProcessor == null) cooltimeProcessor = gameObject.AddComponent<CooltimeProcessor>();
@@ -46,7 +46,7 @@ public class SkillProcessor : MonoBehaviour
 		for (int i = 0; i < TableDataManager.instance.skillTable.dataArray.Length; ++i)
 		{
 			SkillTableData skillTableData = TableDataManager.instance.skillTable.dataArray[i];
-			if (skillTableData.actorId != actorId) continue;
+			if (skillTableData.actorId != actor.actorId) continue;
 
 			SkillInfo info = new SkillInfo();
 			int skillLevel = 1; // actor.GetSkillLevel(skillInfo.skillID);

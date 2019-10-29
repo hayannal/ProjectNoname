@@ -11,6 +11,7 @@ public class ActorStatus : MonoBehaviour
 	//[SyncVar(hook = "OnChangeHp")]
 	//float _hp;
 
+	// 이 statusBase가 캐싱 역할을 수행한다. UI에 표기되는 수치도 이 값을 로그화 시켜서 보여주는거다.
 	StatusBase _statusBase;
 	public StatusBase statusBase { get { return _statusBase; } }
 	public Actor actor { get; private set; }
@@ -29,14 +30,29 @@ public class ActorStatus : MonoBehaviour
 
 		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(actorId);
 		PowerLevelTableData powerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(1);
-		_statusBase.valueList[(int)eActorStatus.MaxHP] = powerLevelTableData.hp;
+		_statusBase.valueList[(int)eActorStatus.MaxHp] = powerLevelTableData.hp;
 		_statusBase.valueList[(int)eActorStatus.Attack] = powerLevelTableData.atk;
 		_statusBase.valueList[(int)eActorStatus.AttackDelay] = actorTableData.attackDelay;
 		_statusBase.valueList[(int)eActorStatus.MoveSpeed] = actorTableData.moveSpeed;
-		_statusBase.valueList[(int)eActorStatus.MaxSP] = actorTableData.sp;
+		_statusBase.valueList[(int)eActorStatus.MaxSp] = actorTableData.sp;
+
+		// _statusBase 에 로비에서의 스탯을 caching해둔다.
+		// 이걸 완전히 합쳐버릴때의 단점이 장비로 올라가는 공% 합산값만 따로 확인하기 어렵다는건데
+		// 어차피 TimeSpace에서는 별도로 캐싱된 값을 가지고 표시하기 때문에 상관없다.
+		// equip
+		for (int i = 0; i < _statusBase.valueList.Length; ++i)
+			_statusBase.valueList[i] += TimeSpaceData.instance.cachedEquipStatusList.valueList[i];
+
+		// equip rate
+		_statusBase.valueList[(int)eActorStatus.MaxHp] *= (1.0f + TimeSpaceData.instance.cachedEquipStatusList.valueList[(int)eActorStatus.MaxHpRate]);
+		_statusBase.valueList[(int)eActorStatus.Attack] *= (1.0f + TimeSpaceData.instance.cachedEquipStatusList.valueList[(int)eActorStatus.AttackRate]);
+
+		// actor multi
+		_statusBase.valueList[(int)eActorStatus.MaxHp] *= actorTableData.multiHp;
+		_statusBase.valueList[(int)eActorStatus.Attack] *= actorTableData.multiAtk;
 
 		//if (isServer)
-		_statusBase._hp = GetValue(eActorStatus.MaxHP);
+		_statusBase._hp = GetValue(eActorStatus.MaxHp);
 		_statusBase._sp = 0.0f;
 
 		OnChangedStatus();
@@ -50,14 +66,14 @@ public class ActorStatus : MonoBehaviour
 			_statusBase.ClearValue();
 
 		MonsterTableData monsterTableData = TableDataManager.instance.FindMonsterTableData(monsterActorId);
-		_statusBase.valueList[(int)eActorStatus.MaxHP] = StageManager.instance.currentMonstrStandardHp * monsterTableData.multiHp;
+		_statusBase.valueList[(int)eActorStatus.MaxHp] = StageManager.instance.currentMonstrStandardHp * monsterTableData.multiHp;
 		_statusBase.valueList[(int)eActorStatus.Attack] = StageManager.instance.currentMonstrStandardAtk * monsterTableData.multiAtk;
 		_statusBase.valueList[(int)eActorStatus.AttackDelay] = monsterTableData.attackDelay;
 		_statusBase.valueList[(int)eActorStatus.EvadeRate] = monsterTableData.evadeRate;
 		_statusBase.valueList[(int)eActorStatus.MoveSpeed] = monsterTableData.moveSpeed;
 
 		//if (isServer)
-		_statusBase._hp = GetValue(eActorStatus.MaxHP);
+		_statusBase._hp = GetValue(eActorStatus.MaxHp);
 
 		OnChangedStatus();
 	}
@@ -68,6 +84,14 @@ public class ActorStatus : MonoBehaviour
 			actor.baseCharacterController.speed = GetValue(eActorStatus.MoveSpeed);
 		if (eType == eActorStatus.AttackSpeedAddRatio || eType == eActorStatus.ExAmount)
 			actor.actionController.OnChangedAttackSpeedAddRatio(GetValue(eActorStatus.AttackSpeedAddRatio));
+	}
+
+	public float GetCachedValue(eActorStatus eType)
+	{
+		if ((int)eType >= _statusBase.valueList.Length)
+			return 0.0f;
+
+		return _statusBase.valueList[(int)eType];
 	}
 
 	public float GetValue(eActorStatus eType)
@@ -157,7 +181,7 @@ public class ActorStatus : MonoBehaviour
 	public virtual void AddHP(float addHP)
 	{
 		_statusBase._hp += addHP;
-		_statusBase._hp = Mathf.Clamp(_statusBase._hp, 0, GetValue(eActorStatus.MaxHP));
+		_statusBase._hp = Mathf.Clamp(_statusBase._hp, 0, GetValue(eActorStatus.MaxHp));
 
 		bool onDie = false;
 		if (_statusBase._hp <= 0)
@@ -180,14 +204,14 @@ public class ActorStatus : MonoBehaviour
 
 	public float GetHPRatio()
 	{
-		return GetHP() / GetValue(eActorStatus.MaxHP);
+		return GetHP() / GetValue(eActorStatus.MaxHp);
 	}
 
 
 	public virtual void AddSP(float addSP)
 	{
 		_statusBase._sp += addSP;
-		_statusBase._sp = Mathf.Clamp(_statusBase._sp, 0, GetValue(eActorStatus.MaxSP));
+		_statusBase._sp = Mathf.Clamp(_statusBase._sp, 0, GetValue(eActorStatus.MaxSp));
 		actor.OnChangedSP();
 		if (_statusBase._sp <= 0)
 			_statusBase._sp = 0.0f;
@@ -195,6 +219,6 @@ public class ActorStatus : MonoBehaviour
 
 	public float GetSPRatio()
 	{
-		return GetSP() / GetValue(eActorStatus.MaxSP);
+		return GetSP() / GetValue(eActorStatus.MaxSp);
 	}
 }

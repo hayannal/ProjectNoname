@@ -225,7 +225,7 @@ public class ActionController : MonoBehaviour {
 		animator.CrossFade(actionNameHash, actionPlayInfo.fadeDuration);
 
 		if (actionPlayInfo.actionName == "Ultimate")
-			actor.actorStatus.AddSP(-actor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MaxSP));
+			actor.actorStatus.AddSP(-actor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MaxSp));
 
 		if (normalAttack && actor != null)
 			cooltimeProcessor.ApplyCooltime(actionPlayInfo.actionName, actor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.AttackDelay));

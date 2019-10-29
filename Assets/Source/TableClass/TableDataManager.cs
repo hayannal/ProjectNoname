@@ -26,6 +26,8 @@ public class TableDataManager : MonoBehaviour
 	public GlobalConstantFloatTable globalConstantFloatTable;
 	public DropTable dropTable;
 	public FontTable fontTable;
+	public EquipTable equipTable;
+	public TimeSpacePositionTable timeSpacePositionTable;
 
 	void Awake()
 	{
@@ -208,6 +210,26 @@ public class TableDataManager : MonoBehaviour
 		{
 			if (fontTable.dataArray[i].id == condition)
 				return fontTable.dataArray[i];
+		}
+		return null;
+	}
+
+	public EquipTableData FindEquipTableData(string equipId)
+	{
+		for (int i = 0; i < equipTable.dataArray.Length; ++i)
+		{
+			if (equipTable.dataArray[i].equipId == equipId)
+				return equipTable.dataArray[i];
+		}
+		return null;
+	}
+
+	public TimeSpacePositionTableData FindTimeSpacePositionTableData(int positionId)
+	{
+		for (int i = 0; i < timeSpacePositionTable.dataArray.Length; ++i)
+		{
+			if (timeSpacePositionTable.dataArray[i].positionId == positionId)
+				return timeSpacePositionTable.dataArray[i];
 		}
 		return null;
 	}

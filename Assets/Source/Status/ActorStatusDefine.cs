@@ -7,7 +7,7 @@ namespace ActorStatusDefine {
 	
 	public enum eActorStatus
 	{
-		MaxHP,
+		MaxHp,
 		Attack,
 		AttackDelay,
 		AttackSpeedAddRatio,
@@ -16,13 +16,12 @@ namespace ActorStatusDefine {
 
 		MonsterStatusAmount,
 
-		MaxSP = MonsterStatusAmount,
-		AttackSpeedStep,
+		MaxSp = MonsterStatusAmount,
 
 		BaseAmount,
 
-		AttackRatio = BaseAmount,
-		DefenseRatio,
+		MaxHpRate = BaseAmount,
+		AttackRate,
 
 		ExAmount,
 	}
@@ -71,6 +70,30 @@ namespace ActorStatusDefine {
 		public override void Initialize()
 		{
 			valueList = new ObscuredFloat[(int)eActorStatus.ExAmount];
+		}
+	}
+
+	public class EquipStatusList
+	{
+		public ObscuredFloat[] valueList;
+
+		public EquipStatusList()
+		{
+			Initialize();
+		}
+
+		public virtual void Initialize()
+		{
+			valueList = new ObscuredFloat[(int)eActorStatus.ExAmount];
+		}
+
+		public void ClearValue()
+		{
+			if (valueList == null)
+				return;
+
+			for (int i = 0; i < valueList.Length; ++i)
+				valueList[i] = 0.0f;
 		}
 	}
 }

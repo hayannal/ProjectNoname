@@ -109,7 +109,8 @@ public class MainSceneBuilder : MonoBehaviour
 		// step 3. temp login
 		if (PlayerData.instance.loginned == false)
 		{
-
+			// login and recv player data
+			TimeSpaceData.instance.OnRecvEquipInventory();
 		}
 
 		// step 4. set lobby

@@ -46,7 +46,7 @@ public class Condition : MonoBehaviour
 		{
 			case eConditionType.AttackerHpRatio:
 				useFloatCompare = true;
-				baseValue = (hitParameter.statusBase._hp / hitParameter.statusBase.valueList[(int)eActorStatus.MaxHP]);
+				baseValue = (hitParameter.statusBase._hp / hitParameter.statusBase.valueList[(int)eActorStatus.MaxHp]);
 				break;
 			case eConditionType.DefenderHpRatio:
 				if (defenderActor == null) return false;

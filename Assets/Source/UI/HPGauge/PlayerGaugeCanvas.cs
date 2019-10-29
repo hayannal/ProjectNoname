@@ -58,7 +58,7 @@ public class PlayerGaugeCanvas : MonoBehaviour
 	{
 		_offsetY = playerActor.gaugeOffsetY;
 		//widthRectTransform.sizeDelta = new Vector2(monsterActor.monsterHpGaugeWidth * _defaultWidth, widthRectTransform.sizeDelta.y);
-		mobaEnergyBar.MaxValue = playerActor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MaxHP);
+		mobaEnergyBar.MaxValue = playerActor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MaxHp);
 		mobaEnergyBar.Value = playerActor.actorStatus.GetHP();
 		_lastRatio = playerActor.actorStatus.GetHPRatio();
 		_targetTransform = playerActor.cachedTransform;
@@ -116,7 +116,7 @@ public class PlayerGaugeCanvas : MonoBehaviour
 		if (_initialized == false)
 			InitializeGauge(playerActor);
 
-		mobaEnergyBar.MaxValue = playerActor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MaxHP);
+		mobaEnergyBar.MaxValue = playerActor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MaxHp);
 		mobaEnergyBar.Value = playerActor.actorStatus.GetHP();
 		float hpRatio = playerActor.actorStatus.GetHPRatio();
 

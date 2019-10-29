@@ -71,7 +71,7 @@ public class BattleTestTool : EditorWindow
 			if (_playerActor == null)
 				_playerActor = GameObject.FindObjectOfType<PlayerActor>();
 			if (spFull && _playerActor != null && _playerActor.actorStatus.GetSPRatio() != 1.0f)
-				_playerActor.actorStatus.AddSP(_playerActor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MaxSP));
+				_playerActor.actorStatus.AddSP(_playerActor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MaxSp));
 		}
 		GUILayout.EndVertical();	
 	}

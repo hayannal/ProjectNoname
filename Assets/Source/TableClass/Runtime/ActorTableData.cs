@@ -21,8 +21,8 @@ public class ActorTableData
   public float multiHp { get { return _multiHp; } set { _multiHp = value; } }
   
   [SerializeField]
-  float _multiAtkVisual;
-  public float multiAtkVisual { get { return _multiAtkVisual; } set { _multiAtkVisual = value; } }
+  float _multiAtk;
+  public float multiAtk { get { return _multiAtk; } set { _multiAtk = value; } }
   
   [SerializeField]
   float _attackDelay;

@@ -55,9 +55,8 @@ public class BattleModeProcessorBase
 		{
 			// all kill monster
 			BattleManager.instance.GetStackedDropExp();
-			if (StageManager.instance.needLevelUp)
+			if (StageManager.instance.needLevelUpCount > 0)
 			{
-
 			}
 			else
 			{

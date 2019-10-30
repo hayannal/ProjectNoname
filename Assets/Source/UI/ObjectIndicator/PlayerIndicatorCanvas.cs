@@ -15,7 +15,7 @@ public class PlayerIndicatorCanvas : ObjectIndicatorCanvas
 		{
 			if (_instance == null)
 			{
-				_instance = Instantiate<GameObject>(StageManager.instance.playerIndicatorPrefab).GetComponent<PlayerIndicatorCanvas>();
+				_instance = Instantiate<GameObject>(BattleManager.instance.playerIndicatorPrefab).GetComponent<PlayerIndicatorCanvas>();
 #if UNITY_EDITOR
 				AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
 				if (settings.ActivePlayModeDataBuilderIndex == 2)

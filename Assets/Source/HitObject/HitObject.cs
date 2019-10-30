@@ -304,6 +304,14 @@ public class HitObject : MonoBehaviour
 		}
 		else
 			statusStructForHitObject.showHitBlink = statusStructForHitObject.showHitRimBlink = false;
+		statusStructForHitObject.monsterActor = actor is MonsterActor;
+		statusStructForHitObject.bossMonsterActor = false;
+		if (statusStructForHitObject.monsterActor)
+		{
+			MonsterActor monsterActor = actor as MonsterActor;
+			if (monsterActor != null)
+				statusStructForHitObject.bossMonsterActor = monsterActor.bossMonster;
+		}
 	}
 
 	static void CheckHitArea(Vector3 areaPosition, Vector3 areaForward, MeHitObject meHit, StatusBase statusBase, StatusStructForHitObject statusForHitObject,

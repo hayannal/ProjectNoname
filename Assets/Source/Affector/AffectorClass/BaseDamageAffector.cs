@@ -87,9 +87,11 @@ public class BaseDamageAffector : AffectorBase {
 			}
 		}
 
-		if (_actor is PlayerActor)
+		if (_actor is PlayerActor && hitParameter.statusStructForHitObject.monsterActor)
 		{
-			
+			float damageDecreaseAddRate = _actor.actorStatus.GetValue(hitParameter.statusStructForHitObject.bossMonsterActor ? eActorStatus.BossMonsterDamageDecreaseAddRate : eActorStatus.NormalMonsterDamageDecreaseAddRate);
+			if (damageDecreaseAddRate != 0.0f)
+				damage *= (1.0f - damageDecreaseAddRate);
 		}
 
 		// 버로우로 내려가있는 도중엔 본체에 HitRimBlink 할 필요 없다.

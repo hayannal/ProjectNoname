@@ -15,6 +15,8 @@ public struct StatusStructForHitObject
 	public int repeatIndex;
 	public bool showHitBlink;
 	public bool showHitRimBlink;
+	public bool monsterActor;
+	public bool bossMonsterActor;
 
 	// example
 	//public float hp;	// hp is in StatusBase

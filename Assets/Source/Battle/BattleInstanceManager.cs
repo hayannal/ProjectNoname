@@ -583,8 +583,19 @@ public class BattleInstanceManager : MonoBehaviour
 		if (_dicGlobalConstantFloat.ContainsKey(id))
 			return _dicGlobalConstantFloat[id];
 
-		float value = TableDataManager.instance.GetGlobalConstant(id);
+		float value = TableDataManager.instance.GetGlobalConstantFloat(id);
 		_dicGlobalConstantFloat.Add(id, value);
+		return value;
+	}
+
+	Dictionary<string, int> _dicGlobalConstantInt = new Dictionary<string, int>();
+	public int GetCachedGlobalConstantInt(string id)
+	{
+		if (_dicGlobalConstantInt.ContainsKey(id))
+			return _dicGlobalConstantInt[id];
+
+		int value = TableDataManager.instance.GetGlobalConstantInt(id);
+		_dicGlobalConstantInt.Add(id, value);
 		return value;
 	}
 	#endregion

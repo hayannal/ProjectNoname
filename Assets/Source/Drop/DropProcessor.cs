@@ -112,7 +112,7 @@ public class DropProcessor : MonoBehaviour
 		if (dropExpValue == 0)
 			return;
 
-		Debug.Log("dropGold : " + dropExpValue);
+		Debug.Log("dropExp : " + dropExpValue);
 
 		BattleManager.instance.StackDropExp(dropExpValue);
 	}

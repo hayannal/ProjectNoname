@@ -43,6 +43,11 @@ public class StageManager : MonoBehaviour
 		instance = this;
 	}
 
+	void Update()
+	{
+		UpdateLevelUp();
+	}
+
 #if USE_MAIN_SCENE
 	public void InitializeStage(int chapter, int stage, int lastClearChapter, int lastClearStage)
 	{
@@ -283,4 +288,69 @@ public class StageManager : MonoBehaviour
 
 
 
+
+	#region PlayerLevel
+	int _playerLevel = 1;
+	public int playerLevel { get { return _playerLevel; } }
+	int _playerExp = 0;
+	public void AddExp(int exp)
+	{
+		_playerExp += exp;
+
+		// level, bottom exp bar
+		int maxStageLevel = GetMaxStageLevel();
+		int level = 0;
+		float percent = 0.0f;
+		for (int i = _playerLevel; i < TableDataManager.instance.stageExpTable.dataArray.Length; ++i)
+		{
+			if (_playerExp < TableDataManager.instance.stageExpTable.dataArray[i].requiredAccumulatedExp)
+			{
+				int currentPeriodExp = _playerExp - TableDataManager.instance.stageExpTable.dataArray[i - 1].requiredAccumulatedExp;
+				percent = (float)currentPeriodExp / (float)TableDataManager.instance.stageExpTable.dataArray[i].requiredExp;
+				level = TableDataManager.instance.stageExpTable.dataArray[i].level - 1;
+				break;
+			}
+			if (TableDataManager.instance.stageExpTable.dataArray[i].level >= maxStageLevel)
+			{
+				level = maxStageLevel;
+				percent = 1.0f;
+				break;
+			}
+		}
+		if (level == 0)
+		{
+			// max
+			level = maxStageLevel;
+			percent = 1.0f;
+		}
+		LobbyCanvas.instance.RefreshExpPercent(percent);
+		if (_playerLevel == level)
+			return;
+
+		BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.playerLevelUpEffectPrefab, BattleInstanceManager.instance.playerActor.cachedTransform.position, Quaternion.identity);
+
+		_needLevelUpCount = level - _playerLevel;
+		PlayerGaugeCanvas.instance.RefreshLevelText(level);
+	}
+
+	int GetMaxStageLevel()
+	{
+		int maxStageLevel = BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxStageLevel");
+
+		// 잠재력 개방에 따른 차이. 잠재력은 ActorStatus인가? 아니면 액터의 또다른 개방 정보인가. 결국 강화랑 저장할 곳이 또 뭔가가 필요할듯. 파워레벨 역시 스탯은 아닐듯.
+
+		return maxStageLevel;
+	}
+
+	int _needLevelUpCount = 0;
+	public bool needLevelUp { get { return _needLevelUpCount > 0; } }
+	void UpdateLevelUp()
+	{
+		if (_needLevelUpCount > 0)
+		{
+			//_needLevelUpCount -= 1;
+
+		}
+	}
+	#endregion
 }

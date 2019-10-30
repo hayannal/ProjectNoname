@@ -251,7 +251,7 @@ public class MainSceneBuilder : MonoBehaviour
 	{
 		lobby = false;
 		TreasureChest.instance.gameObject.SetActive(false);
-		LobbyCanvas.instance.mainMenu9DotButton.gameObject.SetActive(false);
+		LobbyCanvas.instance.OnExitLobby();
 		if (EnergyGaugeCanvas.instance != null)
 			EnergyGaugeCanvas.instance.gameObject.SetActive(false);
 		if (BattleInstanceManager.instance.playerActor != null)

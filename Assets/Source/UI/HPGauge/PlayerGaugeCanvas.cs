@@ -63,6 +63,7 @@ public class PlayerGaugeCanvas : MonoBehaviour
 		_lastRatio = playerActor.actorStatus.GetHPRatio();
 		_targetTransform = playerActor.cachedTransform;
 		GetTargetHeight(_targetTransform);
+		RefreshLevelText(1, false);
 		_initialized = true;
 	}
 
@@ -195,6 +196,18 @@ public class PlayerGaugeCanvas : MonoBehaviour
 		}
 	}
 
+	public void RefreshLevelText(int level, bool resetAlphaFade = true)
+	{
+		levelText.text = level.ToString();
+
+		if (resetAlphaFade == false)
+			return;
+
+		if (!offsetRootObject.activeSelf)
+			offsetRootObject.SetActive(true);
+		canvasGroup.alpha = DEFAULT_CANVAS_GROUP_ALPHA;
+		_alphaRemainTime = 0.0f;
+	}
 
 
 	Transform _transform;

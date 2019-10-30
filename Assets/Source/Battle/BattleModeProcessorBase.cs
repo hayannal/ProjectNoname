@@ -48,19 +48,24 @@ public class BattleModeProcessorBase
 	{
 	}
 
-	PlayerIndicatorCanvas _playerIndicatorCanvas;
 	public void OnDieMonster(MonsterActor monsterActor)
 	{
 		--_monsterSpawnCount;
 		if (_mapLoaded && _monsterSpawned && _monsterSpawnCount == 0)
 		{
-			BattleManager.instance.GetStackedDropExp();
-
 			// all kill monster
-			BattleInstanceManager.instance.GetCachedObject(StageManager.instance.gatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
+			BattleManager.instance.GetStackedDropExp();
+			if (StageManager.instance.needLevelUp)
+			{
 
-			if (StageManager.instance.currentStageTableData != null && StageManager.instance.currentStageTableData.swap && PlayerData.instance.swappable)
-				PlayerIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform);
+			}
+			else
+			{
+				BattleInstanceManager.instance.GetCachedObject(StageManager.instance.gatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
+
+				if (StageManager.instance.currentStageTableData != null && StageManager.instance.currentStageTableData.swap && PlayerData.instance.swappable)
+					PlayerIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform);
+			}
 		}
 	}
 

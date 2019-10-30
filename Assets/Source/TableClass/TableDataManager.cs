@@ -24,10 +24,12 @@ public class TableDataManager : MonoBehaviour
 	public LevelPackLevelTable levelPackLevelTable;
 	public ActorLevelPackTable actorLevelPackTable;
 	public GlobalConstantFloatTable globalConstantFloatTable;
+	public GlobalConstantIntTable globalConstantIntTable;
 	public DropTable dropTable;
 	public FontTable fontTable;
 	public EquipTable equipTable;
 	public TimeSpacePositionTable timeSpacePositionTable;
+	public StageExpTable stageExpTable;
 
 	void Awake()
 	{
@@ -184,7 +186,7 @@ public class TableDataManager : MonoBehaviour
 		return null;
 	}
 
-	public float GetGlobalConstant(string id)
+	public float GetGlobalConstantFloat(string id)
 	{
 		for (int i = 0; i < globalConstantFloatTable.dataArray.Length; ++i)
 		{
@@ -192,6 +194,16 @@ public class TableDataManager : MonoBehaviour
 				return globalConstantFloatTable.dataArray[i].value;
 		}
 		return 0.0f;
+	}
+
+	public int GetGlobalConstantInt(string id)
+	{
+		for (int i = 0; i < globalConstantIntTable.dataArray.Length; ++i)
+		{
+			if (globalConstantIntTable.dataArray[i].id == id)
+				return globalConstantIntTable.dataArray[i].value;
+		}
+		return 0;
 	}
 
 	public DropTableData FindDropTableData(string dropId)

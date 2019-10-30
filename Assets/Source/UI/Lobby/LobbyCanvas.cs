@@ -8,14 +8,21 @@ public class LobbyCanvas : MonoBehaviour
 {
 	public static LobbyCanvas instance;
 
-	public Button mainMenu9DotButton;
+	public Button mainMenuDotButton;
+	public Image expGaugeImage;
+	public GameObject expMaxObject;
 
 	void Awake()
 	{
 		instance = this;
 	}
 
-	public void OnClick9DotButton()
+	void Start()
+	{
+		expGaugeImage.gameObject.SetActive(false);
+	}
+
+	public void OnClickDotButton()
 	{
 		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null)
 			TitleCanvas.instance.FadeTitle();
@@ -53,5 +60,20 @@ public class LobbyCanvas : MonoBehaviour
 				SceneManager.LoadScene(0);
 			});
 		}
+	}
+
+
+	public void OnExitLobby()
+	{
+		mainMenuDotButton.gameObject.SetActive(false);
+		expGaugeImage.gameObject.SetActive(true);
+		expGaugeImage.fillAmount = 0.0f;
+		expMaxObject.gameObject.SetActive(false);
+	}
+
+	public void RefreshExpPercent(float percent)
+	{
+		expGaugeImage.fillAmount = percent;
+		expMaxObject.gameObject.SetActive(percent == 1.0f);
 	}
 }

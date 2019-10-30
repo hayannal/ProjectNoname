@@ -20,13 +20,15 @@ public class BattleManager : MonoBehaviour
 	public GameObject playerIgnoreEvadeCanvasPrefab;
 	public GameObject skillSlotCanvasPrefab;
 
+	public GameObject playerIndicatorPrefab;
+	public GameObject levelUpIndicatorPrefab;
+	public GameObject playerLevelUpEffectPrefab;
+
 	public GameObject floatingDamageTextRootCanvasPrefab;
 
 	public GameObject[] dropObjectPrefabList;
 	public GameObject portalPrefab;
 	public GameObject portalMoveEffectPrefab;
-
-	public GameObject playerLevelUpEffectPrefab;
 
 	void Awake()
 	{

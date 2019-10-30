@@ -79,7 +79,8 @@ namespace ActorStatusDefine {
 	{
 		public override void Initialize()
 		{
-			valueList = new ObscuredFloat[(int)eActorStatus.ExAmount];
+			// 캐싱용이기 때문에 Ex 스탯들은 필요하지 않다.
+			valueList = new ObscuredFloat[(int)eActorStatus.BaseAmount];
 		}
 	}
 

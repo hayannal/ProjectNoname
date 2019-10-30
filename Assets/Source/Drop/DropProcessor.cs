@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using MEC;
+using ActorStatusDefine;
 
 public class DropProcessor : MonoBehaviour
 {
@@ -101,8 +102,8 @@ public class DropProcessor : MonoBehaviour
 		if (dropSpValue == 0.0f)
 			return;
 
-		Debug.Log("dropSp : " + dropSpValue);
-
+		float spGainAddRate = BattleInstanceManager.instance.playerActor.actorStatus.GetValue(eActorStatus.SpGainAddRate);
+		if (spGainAddRate != 0.0f) dropSpValue *= (1.0f + spGainAddRate);
 		BattleInstanceManager.instance.playerActor.actorStatus.AddSP(dropSpValue);
 	}
 

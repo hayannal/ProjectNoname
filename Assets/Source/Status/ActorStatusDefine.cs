@@ -10,13 +10,23 @@ namespace ActorStatusDefine {
 		MaxHp,
 		Attack,
 		AttackDelay,
-		AttackSpeedAddRatio,
+		AttackSpeedAddRate,
 		EvadeRate,
 		MoveSpeed,
 
 		MonsterStatusAmount,
 
 		MaxSp = MonsterStatusAmount,
+		SpGainAddRate,
+		CriticalRate,
+		CriticalDamageAddRate,
+		MoveSpeedAddRate,
+		NormalMonsterDamageIncreaseAddRate,
+		NormalMonsterDamageDecreaseAddRate,
+		BossMonsterDamageIncreaseAddRate,
+		BossMonsterDamageDecreaseAddRate,
+		PowerSourceHealAddRate,
+		SwapHealAddRate,
 
 		BaseAmount,
 

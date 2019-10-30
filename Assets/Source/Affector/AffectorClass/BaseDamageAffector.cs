@@ -65,6 +65,33 @@ public class BaseDamageAffector : AffectorBase {
 				break;
 		}
 
+		if ((int)eActorStatus.CriticalRate < hitParameter.statusBase.valueList.Length)
+		{
+			float criticalRate = hitParameter.statusBase.valueList[(int)eActorStatus.CriticalRate];
+			if (criticalRate > 0.0f && criticalRate <= Random.value)
+			{
+				float criticalDamageRate = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("DefaultCriticalDamageRate");
+				criticalDamageRate += hitParameter.statusBase.valueList[(int)eActorStatus.CriticalDamageAddRate];
+				damage *= (1.0f + criticalDamageRate);
+			}
+		}
+
+		if (_actor is MonsterActor && (int)eActorStatus.NormalMonsterDamageIncreaseAddRate < hitParameter.statusBase.valueList.Length)
+		{
+			MonsterActor monsterActor = _actor as MonsterActor;
+			if (monsterActor != null)
+			{
+				float damageIncreaseAddRate = hitParameter.statusBase.valueList[monsterActor.bossMonster ? (int)eActorStatus.BossMonsterDamageIncreaseAddRate : (int)eActorStatus.NormalMonsterDamageIncreaseAddRate];
+				if (damageIncreaseAddRate != 0.0f)
+					damage *= (1.0f + damageIncreaseAddRate);
+			}
+		}
+
+		if (_actor is PlayerActor)
+		{
+			
+		}
+
 		// 버로우로 내려가있는 도중엔 본체에 HitRimBlink 할 필요 없다.
 		// DieProcess 들어가기전에 물어보는게 가장 정확하다.
 		// DieProcess 진행중엔 Burrow처럼 액터를 바로 끄는 경우가 있어서 ContinuousAffector가 클리어될 수 있기 때문.

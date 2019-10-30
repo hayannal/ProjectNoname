@@ -82,8 +82,8 @@ public class ActorStatus : MonoBehaviour
 	{
 		if (eType == eActorStatus.MoveSpeed || eType == eActorStatus.ExAmount)
 			actor.baseCharacterController.speed = GetValue(eActorStatus.MoveSpeed);
-		if (eType == eActorStatus.AttackSpeedAddRatio || eType == eActorStatus.ExAmount)
-			actor.actionController.OnChangedAttackSpeedAddRatio(GetValue(eActorStatus.AttackSpeedAddRatio));
+		if (eType == eActorStatus.AttackSpeedAddRate || eType == eActorStatus.ExAmount)
+			actor.actionController.OnChangedAttackSpeedAddRatio(GetValue(eActorStatus.AttackSpeedAddRate));
 	}
 
 	public float GetCachedValue(eActorStatus eType)
@@ -105,7 +105,10 @@ public class ActorStatus : MonoBehaviour
 			case eActorStatus.Attack:
 				break;
 			case eActorStatus.AttackDelay:
-				value = value / (1.0f + GetValue(eActorStatus.AttackSpeedAddRatio));
+				value = value / (1.0f + GetValue(eActorStatus.AttackSpeedAddRate));
+				break;
+			case eActorStatus.MoveSpeed:
+				value = value * (1.0f + GetValue(eActorStatus.MoveSpeedAddRate));
 				break;
 		}
 		return value;
@@ -138,8 +141,13 @@ public class ActorStatus : MonoBehaviour
 		//if (targetStatusBase == null) targetStatusBase = new StatusBase();
 
 		int minLength = Mathf.Min(_statusBase.valueList.Length, targetStatusBase.valueList.Length);
-		for (int i = 0; i < minLength; ++i)
-			targetStatusBase.valueList[i] = GetValue((eActorStatus)i);
+		for (int i = 0; i < targetStatusBase.valueList.Length; ++i)
+		{
+			if (i < minLength)
+				targetStatusBase.valueList[i] = GetValue((eActorStatus)i);
+			else
+				targetStatusBase.valueList[i] = 0.0f;
+		}
 
 		targetStatusBase._hp = _statusBase._hp;
 		targetStatusBase._sp = _statusBase._sp;

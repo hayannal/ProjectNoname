@@ -268,5 +268,16 @@ public class SkillProcessor : MonoBehaviour
 				Debug.LogErrorFormat("Non-continuous affector in a levelPack! / LevelPackId = {0} / AffectorValueId = {1}", levelPackId, info.affectorValueId[i]);
 		}
 	}
+
+	public int GetLevelPackStackCount(string levelPackId)
+	{
+		if (actor == null || _dicLevelPack == null)
+			return 0;
+
+		if (_dicLevelPack.ContainsKey(levelPackId) == false)
+			return 0;
+
+		return _dicLevelPack[levelPackId].level;
+	}
 	#endregion
 }

@@ -17,6 +17,14 @@ public class LevelPackTableData
   public string icon { get { return _icon; } set { _icon = value; } }
   
   [SerializeField]
+  bool _exclusive;
+  public bool exclusive { get { return _exclusive; } set { _exclusive = value; } }
+  
+  [SerializeField]
+  float _dropWeight;
+  public float dropWeight { get { return _dropWeight; } set { _dropWeight = value; } }
+  
+  [SerializeField]
   string[] _affectorValueId = new string[0];
   public string[] affectorValueId { get { return _affectorValueId; } set { _affectorValueId = value; } }
   
@@ -35,5 +43,9 @@ public class LevelPackTableData
   [SerializeField]
   bool _useAffectorValueIdOverriding;
   public bool useAffectorValueIdOverriding { get { return _useAffectorValueIdOverriding; } set { _useAffectorValueIdOverriding = value; } }
+  
+  [SerializeField]
+  string[] _useActor = new string[0];
+  public string[] useActor { get { return _useActor; } set { _useActor = value; } }
   
 }

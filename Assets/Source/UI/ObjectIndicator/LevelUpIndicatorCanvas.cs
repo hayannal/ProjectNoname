@@ -121,12 +121,63 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 			_exclusive = true;
 		}
 
+		RefreshLevelPackList();
 		// 레벨팩 3개 나오는거 2개 나오는거 구분할 필요가 있는가. 이땐 애니는 어떻게 바뀌나. 아이템 오브젝트는 리스트 형태인가. 캐시드 아이템으로 처리할건가 등등
 
 		// 처음 두번은 렙업 카운트로 일반꺼 하고
 		// 그 다음 보스몹 한대도 안맞은거 레벨팩 들어올때 전용 2개짜리 돌려야하는건가. 레벨팩 드랍템은 천천히 들어오는건가????? 전투 시작해버리면 어쩌나.
 
 		// 전용팩만 2개 나오는거 구분할 필요가 있는가.
+	}
+
+	class RandomLevelPackInfo
+	{
+		public LevelPackTableData levelPackTableData;
+		public float rate;
+	}
+
+	List<RandomLevelPackInfo> _listRandomLevelPackInfo = new List<RandomLevelPackInfo>();
+	void RefreshLevelPackList()
+	{
+		List<LevelPackTableData> listLevelPackTableData = LevelPackDataManager.instance.FindActorLevelPackList(BattleInstanceManager.instance.playerActor.actorId);
+		float sumWeight = 0.0f;
+		for (int i = 0; i < listLevelPackTableData.Count; ++i)
+		{
+			if (_exclusive && listLevelPackTableData[i].exclusive == false)
+				continue;
+			if (BattleInstanceManager.instance.playerActor.skillProcessor.GetLevelPackStackCount(listLevelPackTableData[i].levelPackId) >= listLevelPackTableData[i].defaultMax)
+				continue;
+
+			sumWeight += listLevelPackTableData[i].dropWeight;
+			RandomLevelPackInfo newInfo = new RandomLevelPackInfo();
+			newInfo.levelPackTableData = listLevelPackTableData[i];
+			newInfo.rate = sumWeight;
+			_listRandomLevelPackInfo.Add(newInfo);
+		}
+		if (_listRandomLevelPackInfo.Count == 0)
+		{
+			Debug.LogError("Invalid Result : There are no level packs available.");
+			return;
+		}
+
+		for (int i = 0; i < _listRandomLevelPackInfo.Count; ++i)
+			_listRandomLevelPackInfo[i].rate = _listRandomLevelPackInfo[i].rate / sumWeight;
+		for (int i = 0; i < buttonList.Length; ++i)
+		{
+			float currentRandom = Random.value;
+			for (int j = 0; j < _listRandomLevelPackInfo.Count; ++j)
+			{
+				if (currentRandom <= _listRandomLevelPackInfo[j].rate)
+				{
+					buttonList[i].SetInfo(_listRandomLevelPackInfo[j].levelPackTableData);
+					break;
+				}
+			}
+
+			if (_exclusive && i == 1)
+				break;
+		}
+		_listRandomLevelPackInfo.Clear();
 	}
 
 	public void OnCompleteLineAnimation()

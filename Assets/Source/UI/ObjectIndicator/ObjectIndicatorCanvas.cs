@@ -35,6 +35,11 @@ public class ObjectIndicatorCanvas : MonoBehaviour
 
 		_prevTargetTransform = targetTransform = t;
 		GetTargetHeightAndRadius(targetTransform);
+		if (useLeftRightSwapByAxisX)
+		{
+			UpdateTargetPosition();
+			UpdateLeftRightSwapByAxisX();
+		}
 		bottomLineImageRectTransform.pivot = new Vector2(rightPosition ? 0.0f : 1.0f, bottomLineImageRectTransform.pivot.y);
 		_immediatelyUpdate = true;
 		_lastRightPosition = rightPosition;

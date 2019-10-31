@@ -85,6 +85,11 @@ public class BattleManager : MonoBehaviour
 		_currentBattleMode.OnDieMonster(monsterActor);
 	}
 
+	public void OnClearStage()
+	{
+		_currentBattleMode.OnClearStage();
+	}
+
 	public int GetSpawnedMonsterCount()
 	{
 		return _currentBattleMode.GetSpawnedMonsterCount();
@@ -107,5 +112,8 @@ public class BattleManager : MonoBehaviour
 
 		_stackDropExp = 0;
 	}
+
+	// 레벨팩이 드랍되면 체크해놨다가 먹어야 GatePillar가 나오게 해야한다.
+	public int reservedLevelPackCount { get; set; }
 	#endregion
 }

@@ -325,7 +325,7 @@ public class StageManager : MonoBehaviour
 
 		BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.playerLevelUpEffectPrefab, BattleInstanceManager.instance.playerActor.cachedTransform.position, Quaternion.identity);
 		PlayerGaugeCanvas.instance.RefreshLevelText(level);
-		//LevelUpIndicatorCanvas.instance.ShowLevelUpIndicator(BattleInstanceManager.instance.playerActor.cachedTransform, needLevelUpCount);
+		LevelUpIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform, needLevelUpCount, 0);
 	}
 
 	int GetMaxStageLevel()

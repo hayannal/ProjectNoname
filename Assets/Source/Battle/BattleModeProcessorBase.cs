@@ -55,17 +55,25 @@ public class BattleModeProcessorBase
 		{
 			// all kill monster
 			BattleManager.instance.GetStackedDropExp();
-			if (StageManager.instance.needLevelUpCount > 0)
+			if (LevelUpIndicatorCanvas.IsShow() || BattleManager.instance.reservedLevelPackCount > 0)
 			{
+				// 게이트 필라 생성하는 타이밍이 카운트를 지정하기에 가장 적당한 곳이다.
+				LevelUpIndicatorCanvas.SetTargetLevelUpCount(StageManager.instance.needLevelUpCount + BattleManager.instance.reservedLevelPackCount);
+				StageManager.instance.needLevelUpCount = BattleManager.instance.reservedLevelPackCount = 0;
 			}
 			else
 			{
-				BattleInstanceManager.instance.GetCachedObject(StageManager.instance.gatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
-
-				if (StageManager.instance.currentStageTableData != null && StageManager.instance.currentStageTableData.swap && PlayerData.instance.swappable)
-					PlayerIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform);
+				BattleManager.instance.OnClearStage();
 			}
 		}
+	}
+
+	public void OnClearStage()
+	{
+		BattleInstanceManager.instance.GetCachedObject(StageManager.instance.gatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
+
+		if (StageManager.instance.currentStageTableData != null && StageManager.instance.currentStageTableData.swap && PlayerData.instance.swappable)
+			PlayerIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform);
 	}
 
 	public int GetSpawnedMonsterCount()

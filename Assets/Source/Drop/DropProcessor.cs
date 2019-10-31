@@ -82,6 +82,10 @@ public class DropProcessor : MonoBehaviour
 					dropProcessor.Add(dropType, floatValue, intValue);
 					break;
 				case eDropType.LevelPack:
+					++BattleManager.instance.reservedLevelPackCount;
+					// check no hit levelpack
+					if (false)
+						floatValue = 1.0f;
 					dropProcessor.Add(dropType, floatValue, intValue);
 					break;
 				case eDropType.Heart:
@@ -107,7 +111,7 @@ public class DropProcessor : MonoBehaviour
 		BattleInstanceManager.instance.playerActor.actorStatus.AddSP(dropSpValue);
 	}
 
-	public static void DropExp(int dropExpValue)
+	static void DropExp(int dropExpValue)
 	{
 		if (dropExpValue == 0)
 			return;
@@ -153,6 +157,7 @@ public class DropProcessor : MonoBehaviour
 				{
 					newInfo = new DropObjectInfo();
 					newInfo.dropType = dropType;
+					if (newInfo.dropType == eDropType.LevelPack) newInfo.floatValue = floatValue;
 					newInfo.intValue = 1;
 					_listDropObjectInfo.Add(newInfo);
 				}
@@ -177,7 +182,11 @@ public class DropProcessor : MonoBehaviour
 	{
 		for (int i = 0; i < _listDropObjectInfo.Count; ++i)
 		{
-			GameObject dropObjectPrefab = GetDropObjectPrefab(_listDropObjectInfo[i].dropType);
+			string prefabName = _listDropObjectInfo[i].dropType.ToString();
+			if (_listDropObjectInfo[i].dropType == eDropType.LevelPack && _listDropObjectInfo[i].floatValue > 0.0f)
+				prefabName = string.Format("NoHit{0}", prefabName);
+
+			GameObject dropObjectPrefab = GetDropObjectPrefab(prefabName);
 			if (dropObjectPrefab == null)
 				continue;
 
@@ -208,12 +217,11 @@ public class DropProcessor : MonoBehaviour
 	}
 
 	// temp code
-	GameObject GetDropObjectPrefab(eDropType dropType)
+	GameObject GetDropObjectPrefab(string prefabName)
 	{
-		string name = string.Format("Drop{0}", dropType.ToString());
 		for (int i = 0; i < BattleManager.instance.dropObjectPrefabList.Length; ++i)
 		{
-			if (BattleManager.instance.dropObjectPrefabList[i].name == name)
+			if (BattleManager.instance.dropObjectPrefabList[i].name == prefabName)
 				return BattleManager.instance.dropObjectPrefabList[i];
 		}
 		return null;

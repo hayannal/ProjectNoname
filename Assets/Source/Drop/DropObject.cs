@@ -43,8 +43,15 @@ public class DropObject : MonoBehaviour
 	public RectTransform nameCanvasRectTransform;
 	public Text nameText;
 
+	DropProcessor.eDropType _dropType;
+	float _floatValue;
+	int _intValue;
 	public void Initialize(DropProcessor.eDropType dropType, float floatValue, int intValue, bool forceAfterBattle)
 	{
+		_dropType = dropType;
+		_floatValue = floatValue;
+		_intValue = intValue;
+
 		_onAfterBattle = forceAfterBattle ? forceAfterBattle : false;
 		_onAfterDropAnimation = false;
 		_lastDropObject = false;
@@ -239,6 +246,15 @@ public class DropObject : MonoBehaviour
 		// 두번 나오지 않게 pullStart 체크를 추가로 한다.
 		if (_pullStarted == false)
 			DiableEffectObject();
+
+		switch (_dropType)
+		{
+			case DropProcessor.eDropType.LevelPack:
+				int levelPackCount = (_floatValue == 0.0f) ? 1 : 0;
+				int noHitLevelPackCount = (_floatValue > 0.0f) ? 1 : 0;
+				LevelUpIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform, levelPackCount, noHitLevelPackCount);
+				break;
+		}
 
 		_initialized = false;
 		BattleInstanceManager.instance.OnFinalizeDropObject(this);

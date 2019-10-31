@@ -318,15 +318,14 @@ public class StageManager : MonoBehaviour
 			level = maxStageLevel;
 			percent = 1.0f;
 		}
-		LobbyCanvas.instance.RefreshExpPercent(percent);
-		if (_playerLevel == level)
+		needLevelUpCount = level - _playerLevel;
+		LobbyCanvas.instance.RefreshExpPercent(percent, needLevelUpCount);
+		if (needLevelUpCount == 0)
 			return;
 
 		BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.playerLevelUpEffectPrefab, BattleInstanceManager.instance.playerActor.cachedTransform.position, Quaternion.identity);
-
-		needLevelUpCount = level - _playerLevel;
 		PlayerGaugeCanvas.instance.RefreshLevelText(level);
-		//LevelUpIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform);
+		//LevelUpIndicatorCanvas.instance.ShowLevelUpIndicator(BattleInstanceManager.instance.playerActor.cachedTransform, needLevelUpCount);
 	}
 
 	int GetMaxStageLevel()

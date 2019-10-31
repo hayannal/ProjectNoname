@@ -17,6 +17,11 @@ public class LobbyCanvas : MonoBehaviour
 		instance = this;
 	}
 
+	void Update()
+	{
+		UpdateExpGauge();
+	}
+
 	void Start()
 	{
 		expGaugeImage.gameObject.SetActive(false);
@@ -71,9 +76,42 @@ public class LobbyCanvas : MonoBehaviour
 		expMaxObject.gameObject.SetActive(false);
 	}
 
-	public void RefreshExpPercent(float percent)
+	#region Exp Percent Gauge
+	public void RefreshExpPercent(float targetPercent, int levelUpCount)
 	{
-		expGaugeImage.fillAmount = percent;
-		expMaxObject.gameObject.SetActive(percent == 1.0f);
+		_targetPercent = targetPercent;
+		_levelUpCount = levelUpCount;
+
+		float totalDiff = levelUpCount;
+		totalDiff += (targetPercent - expGaugeImage.fillAmount);
+		_fillSpeed = totalDiff / LevelUpExpFillTime;
+		_fillRemainTime = LevelUpExpFillTime;
 	}
+
+	const float LevelUpExpFillTime = 0.5f;
+	float _fillRemainTime;
+	float _fillSpeed;
+	float _targetPercent;
+	int _levelUpCount;
+	void UpdateExpGauge()
+	{
+		if (_fillRemainTime > 0.0f)
+		{
+			_fillRemainTime -= Time.deltaTime;
+			expGaugeImage.fillAmount += _fillSpeed * Time.deltaTime;
+			if (expGaugeImage.fillAmount >= 1.0f && _levelUpCount > 0)
+			{
+				expGaugeImage.fillAmount -= 1.0f;
+				_levelUpCount -= 1;
+			}
+
+			if (_fillRemainTime <= 0.0f)
+			{
+				_fillRemainTime = 0.0f;
+				expGaugeImage.fillAmount = _targetPercent;
+				expMaxObject.gameObject.SetActive(_targetPercent == 1.0f);
+			}
+		}
+	}
+	#endregion
 }

@@ -182,7 +182,7 @@ public class DropProcessor : MonoBehaviour
 	{
 		for (int i = 0; i < _listDropObjectInfo.Count; ++i)
 		{
-			string prefabName = _listDropObjectInfo[i].dropType.ToString();
+			string prefabName = string.Format("Drop{0}", _listDropObjectInfo[i].dropType.ToString());
 			if (_listDropObjectInfo[i].dropType == eDropType.LevelPack && _listDropObjectInfo[i].floatValue > 0.0f)
 				prefabName = string.Format("NoHit{0}", prefabName);
 

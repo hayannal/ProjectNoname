@@ -322,9 +322,10 @@ public class StageManager : MonoBehaviour
 		LobbyCanvas.instance.RefreshExpPercent(percent, needLevelUpCount);
 		if (needLevelUpCount == 0)
 			return;
+		_playerLevel = level;
 
 		BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.playerLevelUpEffectPrefab, BattleInstanceManager.instance.playerActor.cachedTransform.position, Quaternion.identity);
-		PlayerGaugeCanvas.instance.RefreshLevelText(level);
+		PlayerGaugeCanvas.instance.RefreshLevelText(_playerLevel);
 		LevelUpIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform, needLevelUpCount, 0);
 	}
 

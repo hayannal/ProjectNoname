@@ -202,7 +202,7 @@ public class SkillProcessor : MonoBehaviour
 		{
 			info = new LevelPackInfo();
 			nextlevel = 1;
-			info.maxLevel = levelPackTableData.defaultMax;
+			info.maxLevel = levelPackTableData.max;
 			info.iconName = levelPackTableData.icon;
 			if (levelPackTableData.useAffectorValueIdOverriding == false)
 				info.affectorValueId = levelPackTableData.affectorValueId;

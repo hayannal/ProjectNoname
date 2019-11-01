@@ -103,9 +103,20 @@ public class AddressableAssetLoadManager : MonoBehaviour
 	{
 		if (_dicAddressableGameObject.ContainsKey(address))
 		{
-			// 사실 여기서 IsDone이 안되어있으면 문제긴 한데 이 콜백은 동시호출도 아니고 천천히 로딩되면 받는거 위주로 쓸거기 때문에 중복호출에 대한 처리까지는 하지 않는다.
-			if (callback != null && _dicAddressableGameObject[address].IsDone)
-				callback(_dicAddressableGameObject[address].Result);
+			if (callback != null)
+			{
+				if (_dicAddressableGameObject[address].IsDone)
+					callback(_dicAddressableGameObject[address].Result);
+				else
+				{
+					AsyncOperationGameObjectResult asyncOperationResultForCallback = new AsyncOperationGameObjectResult();
+					asyncOperationResultForCallback.handle = _dicAddressableGameObject[address].handle;
+					asyncOperationResultForCallback.category = category;
+					asyncOperationResultForCallback.callback = callback;
+					_listAddressableGameObjectForCallback.Add(asyncOperationResultForCallback);
+					return asyncOperationResultForCallback;
+				}
+			}
 			return _dicAddressableGameObject[address];
 		}
 
@@ -123,8 +134,23 @@ public class AddressableAssetLoadManager : MonoBehaviour
 	{
 		if (_dicAddressableSprite.ContainsKey(address))
 		{
-			if (callback != null && _dicAddressableSprite[address].IsDone)
-				callback(_dicAddressableSprite[address].Result);
+			if (callback != null)
+			{
+				if (_dicAddressableSprite[address].IsDone)
+					callback(_dicAddressableSprite[address].Result);
+				else
+				{
+					// 동시호출로 인해 들어올때가 대부분일거다.
+					// 가장 중요한 handle은 최초로 호출된 handle을 복사해서 오고 나머지 정보는 동일하게 채운다.
+					// dictionary에는 넣지 않고 callback 대기 리스트에만 넣어놨다가 콜백을 처리한다.
+					AsyncOperationSpriteResult asyncOperationResultForCallback = new AsyncOperationSpriteResult();
+					asyncOperationResultForCallback.handle = _dicAddressableSprite[address].handle;
+					asyncOperationResultForCallback.category = category;
+					asyncOperationResultForCallback.callback = callback;
+					_listAddressableSpriteForCallback.Add(asyncOperationResultForCallback);
+					return asyncOperationResultForCallback;
+				}
+			}
 			return _dicAddressableSprite[address];
 		}
 

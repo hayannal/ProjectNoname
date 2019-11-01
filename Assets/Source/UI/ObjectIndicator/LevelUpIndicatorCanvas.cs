@@ -145,7 +145,7 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 		{
 			if (_exclusive && listLevelPackTableData[i].exclusive == false)
 				continue;
-			if (BattleInstanceManager.instance.playerActor.skillProcessor.GetLevelPackStackCount(listLevelPackTableData[i].levelPackId) >= listLevelPackTableData[i].defaultMax)
+			if (listLevelPackTableData[i].max != -1 && BattleInstanceManager.instance.playerActor.skillProcessor.GetLevelPackStackCount(listLevelPackTableData[i].levelPackId) >= listLevelPackTableData[i].max)
 				continue;
 
 			sumWeight += listLevelPackTableData[i].dropWeight;

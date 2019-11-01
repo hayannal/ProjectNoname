@@ -53,7 +53,7 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 
 	public static bool IsShow()
 	{
-		if (_instance != null && _instance.gameObject.activeSelf)
+		if (_instance != null && _instance.gameObject.activeSelf && _instance._close == false)
 			return true;
 		return false;
 	}
@@ -73,6 +73,8 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 		_targetLevelUpCount = targetCount;
 	}
 
+	public CanvasGroup canvasGroup;
+	public GraphicRaycaster graphicRaycaster;
 	public GameObject buttonRootObject;
 	public LevelUpIndicatorButton[] buttonList;
 	public GameObject titleTextObject;
@@ -101,6 +103,7 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 	void Update()
 	{
 		UpdateObjectIndicator();
+		UpdateCloseAlphaAnimation();
 	}
 
 	// 노말은 false로 전용은 true로 리스트에 넣어둔다.
@@ -116,6 +119,13 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 	bool _exclusive = false;
 	void ShowLevelUpIndicator(int levelUpCount, int exclusiveLevelUpCount)
 	{
+		if (_close)
+		{
+			_close = false;
+			graphicRaycaster.enabled = true;
+			canvasGroup.alpha = 1.0f;
+		}
+
 		// 둘 중에 하나는 0으로 들어온다. 1보다 큰 값에 대해선 예약으로 걸어둔다.
 		// _exclusive일때는 3개의 레벨팩 중 마지막꺼가 무조건 exclusive에서 뽑혀진다.
 		_exclusive = false;
@@ -267,6 +277,24 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 		}
 
 		// 예약이 없다면 창을 닫는다.
-		gameObject.SetActive(false);
+		//gameObject.SetActive(false);
+		_close = true;
+		graphicRaycaster.enabled = false;
+	}
+
+	bool _close = false;
+	void UpdateCloseAlphaAnimation()
+	{
+		if (_close == false)
+			return;
+
+		canvasGroup.alpha -= Time.deltaTime * 2.0f;
+		if (canvasGroup.alpha <= 0.0f)
+		{
+			canvasGroup.alpha = 1.0f;
+			graphicRaycaster.enabled = true;
+			_close = false;
+			gameObject.SetActive(false);
+		}
 	}
 }

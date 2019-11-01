@@ -44,8 +44,8 @@ public class ActorStatus : MonoBehaviour
 			_statusBase.valueList[i] += TimeSpaceData.instance.cachedEquipStatusList.valueList[i];
 
 		// equip rate
-		_statusBase.valueList[(int)eActorStatus.MaxHp] *= (1.0f + TimeSpaceData.instance.cachedEquipStatusList.valueList[(int)eActorStatus.MaxHpRate]);
-		_statusBase.valueList[(int)eActorStatus.Attack] *= (1.0f + TimeSpaceData.instance.cachedEquipStatusList.valueList[(int)eActorStatus.AttackRate]);
+		_statusBase.valueList[(int)eActorStatus.MaxHp] *= (1.0f + TimeSpaceData.instance.cachedEquipStatusList.valueList[(int)eActorStatus.MaxHpAddRate]);
+		_statusBase.valueList[(int)eActorStatus.Attack] *= (1.0f + TimeSpaceData.instance.cachedEquipStatusList.valueList[(int)eActorStatus.AttackAddRate]);
 
 		// actor multi
 		_statusBase.valueList[(int)eActorStatus.MaxHp] *= actorTableData.multiHp;
@@ -96,19 +96,29 @@ public class ActorStatus : MonoBehaviour
 
 	public float GetValue(eActorStatus eType)
 	{
-		if ((int)eType >= _statusBase.valueList.Length)
-			return 0.0f;
+		float value = 0.0f;
+		if ((int)eType < _statusBase.valueList.Length)
+			value += _statusBase.valueList[(int)eType];
+		value += ChangeActorStatusAffector.GetValue(actor.affectorProcessor, eType);
 
-		float value = _statusBase.valueList[(int)eType];
+		float addRate = 0.0f;
 		switch (eType)
 		{
+			case eActorStatus.MaxHp:
+				addRate = GetValue(eActorStatus.MaxHpAddRate);
+				if (addRate != 0.0f) value *= (1.0f + addRate);
+				break;
 			case eActorStatus.Attack:
+				addRate = GetValue(eActorStatus.AttackAddRate);
+				if (addRate != 0.0f) value *= (1.0f + addRate);
 				break;
 			case eActorStatus.AttackDelay:
-				value = value / (1.0f + GetValue(eActorStatus.AttackSpeedAddRate));
+				float attackSpeedAddRate = GetValue(eActorStatus.AttackSpeedAddRate);
+				if (attackSpeedAddRate != 0.0f) value /= (1.0f + attackSpeedAddRate);
 				break;
 			case eActorStatus.MoveSpeed:
-				value = value * (1.0f + GetValue(eActorStatus.MoveSpeedAddRate));
+				addRate = GetValue(eActorStatus.MoveSpeedAddRate);
+				if (addRate != 0.0f) value *= (1.0f + addRate);
 				break;
 		}
 		return value;

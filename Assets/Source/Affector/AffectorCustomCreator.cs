@@ -16,6 +16,7 @@ public static class AffectorCustomCreator
 			//case eAffectorType.DotDamage: affectorBase = new DotDamageAffector(); break;
 			//case eAffectorType.MoveToTarget: affectorBase = new MoveToTargetAffector(); break;
 			case eAffectorType.AddActorState: affectorBase = new AddActorStateAffector(); break;
+			case eAffectorType.ChangeActorStatus: affectorBase = new ChangeActorStatusAffector(); break;
 			case eAffectorType.CallAffectorValue: affectorBase = new CallAffectorValueAffector(); break;
 			case eAffectorType.Invincible: affectorBase = new InvincibleAffector(); break;
 			case eAffectorType.CountBarrier: affectorBase = new CountBarrierAffector(); break;

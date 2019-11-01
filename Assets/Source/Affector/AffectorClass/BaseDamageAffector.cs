@@ -102,6 +102,7 @@ public class BaseDamageAffector : AffectorBase {
 
 		int intDamage = (int)damage;
 		_actor.actorStatus.AddHP(-intDamage);
+		ChangeActorStatusAffector.OnDamage(_affectorProcessor);
 		CallAffectorValueAffector.OnEvent(_affectorProcessor, CallAffectorValueAffector.eEventType.OnDamage);
 
 #if UNITY_EDITOR

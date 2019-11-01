@@ -30,8 +30,8 @@ namespace ActorStatusDefine {
 
 		BaseAmount,
 
-		MaxHpRate = BaseAmount,
-		AttackRate,
+		MaxHpAddRate = BaseAmount,
+		AttackAddRate,
 
 		ExAmount,
 	}

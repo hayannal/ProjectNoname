@@ -12,9 +12,16 @@ public class LevelUpIndicatorButton : MonoBehaviour
 	Color normalGradientColor = Color.white;
 	Color exclusiveGradientColor = new Color(1.0f, 0.5f, 0.0f);
 
+	string _id;
 	public void SetInfo(LevelPackTableData levelPackTableData)
 	{
+		_id = levelPackTableData.levelPackId;
 		nameTextList.SetLocalizedText(UIString.instance.GetString(levelPackTableData.nameId));
 		gradient.color2 = levelPackTableData.exclusive ? exclusiveGradientColor : normalGradientColor;
+	}
+
+	public void OnClickButton()
+	{
+		LevelUpIndicatorCanvas.OnSelectLevelPack(_id);
 	}
 }

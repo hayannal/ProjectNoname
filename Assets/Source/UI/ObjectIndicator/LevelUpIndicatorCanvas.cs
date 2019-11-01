@@ -58,6 +58,13 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 		return false;
 	}
 
+	public static void OnSelectLevelPack(string levelPackId)
+	{
+		if (IsShow() == false)
+			return;
+		_instance.OnSelectLevelUpPack(levelPackId);
+	}
+
 	// 타겟의 수치만큼 레벨업을 해야 모든 레벨업 기회를 적용한거다. 이게 충족되야 다음 맵으로 넘어갈 수 있다.
 	// 드랍으로만 레벨팩이 나오면 LevelUpIndicator가 보여지지 않기 때문에 static으로 기억해둔다.
 	static int _targetLevelUpCount;
@@ -233,29 +240,18 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 		}
 	}
 
-	public void OnClickButton1()
-	{
-
-	}
-
-	public void OnClickButton2()
-	{
-
-	}
-
-	public void OnClickButton3()
-	{
-
-	}
-
 	int _selectCount = 0;
-	void OnSelectLevelUpPack()
+	void OnSelectLevelUpPack(string levelPackId)
 	{
 		++_selectCount;
+		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack(levelPackId);
 
 		// 예약이 되어있다면 창을 닫지 않고 항목만 갱신
+		if (_listReservedLevelUp.Count > 0)
+		{
 
-		// 예약이 없다면 창을 닫는다.
+			return;
+		}
 
 		// 굴려야할 모든 레벨업 항목을 굴렸다면 BattleManager에게 Clear를 알린다.
 		if (_selectCount == _targetLevelUpCount)
@@ -263,5 +259,8 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 			_selectCount = _targetLevelUpCount = 0;
 			BattleManager.instance.OnClearStage();
 		}
+
+		// 예약이 없다면 창을 닫는다.
+		gameObject.SetActive(false);
 	}
 }

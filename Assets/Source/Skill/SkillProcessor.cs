@@ -171,8 +171,7 @@ public class SkillProcessor : MonoBehaviour
 
 	public class LevelPackInfo
 	{
-		public int level;
-		public int maxLevel;
+		public int stackCount;
 		public string iconName;
 		public string[] affectorValueId;
 		public string nameId;
@@ -196,42 +195,32 @@ public class SkillProcessor : MonoBehaviour
 			return;
 
 		LevelPackInfo info = null;
-		int nextlevel = 0;
-		bool createAffector = false;
 		if (_dicLevelPack.ContainsKey(levelPackId) == false)
 		{
 			info = new LevelPackInfo();
-			nextlevel = 1;
-			info.maxLevel = levelPackTableData.max;
+			info.stackCount = 1;
 			info.iconName = levelPackTableData.icon;
 			if (levelPackTableData.useAffectorValueIdOverriding == false)
 				info.affectorValueId = levelPackTableData.affectorValueId;
 			info.nameId = levelPackTableData.nameId;
 			info.descriptionId = levelPackTableData.descriptionId;
-			createAffector = true;
 			_dicLevelPack.Add(levelPackId, info);
 		}
 		else
 		{
 			info = _dicLevelPack[levelPackId];
-			nextlevel = info.level + 1;
+			++info.stackCount;
 		}
 
-		LevelPackLevelTableData levelPackLevelTableData = TableDataManager.instance.FindLevelPackLevelTableData(levelPackId, nextlevel);
+		LevelPackLevelTableData levelPackLevelTableData = TableDataManager.instance.FindLevelPackLevelTableData(levelPackId, info.stackCount);
 		if (levelPackLevelTableData != null)
 		{
 			if (levelPackTableData.useAffectorValueIdOverriding)
-			{
 				info.affectorValueId = levelPackLevelTableData.affectorValueId;
-				createAffector = true;
-			}
 			info.descriptionParameterList = levelPackLevelTableData.parameter;
 		}
 
-		if (createAffector)
-		{
-			CreateLevelPackAffector(levelPackId, info);
-		}
+		CreateLevelPackAffector(levelPackId, info);
 	}
 
 	void CreateLevelPackAffector(string levelPackId, LevelPackInfo info)
@@ -251,7 +240,7 @@ public class SkillProcessor : MonoBehaviour
 		HitParameter hitParameter = new HitParameter();
 		hitParameter.statusBase = actor.actorStatus.statusBase;
 		CopyEtcStatus(ref hitParameter.statusStructForHitObject, actor);
-		hitParameter.statusStructForHitObject.skillLevel = info.level;
+		hitParameter.statusStructForHitObject.skillLevel = info.stackCount;
 
 		for (int i = 0; i < info.affectorValueId.Length; ++i)
 		{
@@ -274,7 +263,7 @@ public class SkillProcessor : MonoBehaviour
 		if (_dicLevelPack.ContainsKey(levelPackId) == false)
 			return 0;
 
-		return _dicLevelPack[levelPackId].level;
+		return _dicLevelPack[levelPackId].stackCount;
 	}
 	#endregion
 }

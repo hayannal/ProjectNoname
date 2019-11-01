@@ -39,6 +39,7 @@ public class ActionController : MonoBehaviour {
 		actor = GetComponent<Actor>();
 	}
 
+	string[] _defaultActionNameList = { "Idle", "Move", "Die", "Attack" };
 	public void InitializeActionPlayInfo(string actorId)
 	{
 		skillProcessor = GetComponent<SkillProcessor>();
@@ -60,35 +61,26 @@ public class ActionController : MonoBehaviour {
 			//	if (actor.CheckSkillLearn(actionTableRow._SkillID) == false)
 			//		continue;
 			//}
+			
+			//if (!string.IsNullOrEmpty(actionTableRow._CastingID))
+			//{
+			//	Google2u.CastingTableRow castingTableRow = Google2u.CastingTable.Instance.GetRow(actionTableRow._CastingID);
+			//	if (castingTableRow != null)
+			//		info.castingID = actionTableRow._CastingID;
+			//}
 
-			ActionInfo info = new ActionInfo();
-			info.actionName = actionTableData.actionName;
-			StringUtil.SplitIntList(actionTableData.listAllowingState, ref info.listAllowingState);
-			StringUtil.SplitIntList(actionTableData.listNotAllowingState, ref info.listNotAllowingState);
-			info.actionNameHash = Animator.StringToHash(actionTableData.mecanimName);
-			info.fadeDuration = actionTableData.fadeDuration;
-			info.skillId = actionTableData.skillId;
+			_listActionInfo.Add(CreateActionInfo(actionTableData));
+		}
 
-			if (!string.IsNullOrEmpty(actionTableData.controlId))
+		for (int i = 0; i < _defaultActionNameList.Length; ++i)
+		{
+			ActionInfo actionInfo = GetActionInfoByName(_defaultActionNameList[i]);
+			if (actionInfo == null)
 			{
-				ControlTableData controlTableData = TableDataManager.instance.FindControlTableData(actionTableData.controlId);
-				if (controlTableData != null)
-				{
-					info.eControllerType = (Control.eControllerType)controlTableData.controlType;
-					info.eInputType = (Control.eInputType)controlTableData.inputType;
-				}
+				ActionTableData actionTableData = TableDataManager.instance.FindDefaultActionTableData(_defaultActionNameList[i]);
+				if (actionTableData != null)
+					_listActionInfo.Add(CreateActionInfo(actionTableData));
 			}
-
-			/*
-			if (!string.IsNullOrEmpty(actionTableRow._CastingID))
-			{
-				Google2u.CastingTableRow castingTableRow = Google2u.CastingTable.Instance.GetRow(actionTableRow._CastingID);
-				if (castingTableRow != null)
-					info.castingID = actionTableRow._CastingID;
-			}
-			*/
-
-			_listActionInfo.Add(info);
 		}
 
 		/*
@@ -155,6 +147,29 @@ public class ActionController : MonoBehaviour {
 		}
 		*/
 	}
+
+	ActionInfo CreateActionInfo(ActionTableData actionTableData)
+	{
+		ActionInfo info = new ActionInfo();
+		info.actionName = actionTableData.actionName;
+		StringUtil.SplitIntList(actionTableData.listAllowingState, ref info.listAllowingState);
+		StringUtil.SplitIntList(actionTableData.listNotAllowingState, ref info.listNotAllowingState);
+		info.actionNameHash = Animator.StringToHash(actionTableData.mecanimName);
+		info.fadeDuration = actionTableData.fadeDuration;
+		info.skillId = actionTableData.skillId;
+
+		if (!string.IsNullOrEmpty(actionTableData.controlId))
+		{
+			ControlTableData controlTableData = TableDataManager.instance.FindControlTableData(actionTableData.controlId);
+			if (controlTableData != null)
+			{
+				info.eControllerType = (Control.eControllerType)controlTableData.controlType;
+				info.eInputType = (Control.eInputType)controlTableData.inputType;
+			}
+		}
+		return info;
+	}
+
 
 	public bool PlayActionByActionName(string actionID)
 	{

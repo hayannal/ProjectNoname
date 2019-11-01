@@ -35,6 +35,16 @@ public class TableDataManager : MonoBehaviour
 		instance = this;
 	}
 
+	public ActionTableData FindDefaultActionTableData(string actionName)
+	{
+		for (int i = 0; i < actionTable.dataArray.Length; ++i)
+		{
+			if (actionTable.dataArray[i].actorId == "Default" && actionTable.dataArray[i].actionName == actionName)
+				return actionTable.dataArray[i];
+		}
+		return null;
+	}
+
 	public ControlTableData FindControlTableData(string controlId)
 	{
 		for (int i = 0; i < controlTable.dataArray.Length; ++i)

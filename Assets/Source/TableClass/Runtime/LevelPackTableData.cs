@@ -37,8 +37,8 @@ public class LevelPackTableData
   public string descriptionId { get { return _descriptionId; } set { _descriptionId = value; } }
   
   [SerializeField]
-  int _defaultMax;
-  public int defaultMax { get { return _defaultMax; } set { _defaultMax = value; } }
+  int _max;
+  public int max { get { return _max; } set { _max = value; } }
   
   [SerializeField]
   bool _useAffectorValueIdOverriding;

@@ -22,7 +22,6 @@ public class TableDataManager : MonoBehaviour
 	public ConditionValueTable conditionValueTable;
 	public LevelPackTable levelPackTable;
 	public LevelPackLevelTable levelPackLevelTable;
-	public ActorLevelPackTable actorLevelPackTable;
 	public GlobalConstantFloatTable globalConstantFloatTable;
 	public GlobalConstantIntTable globalConstantIntTable;
 	public DropTable dropTable;
@@ -172,16 +171,6 @@ public class TableDataManager : MonoBehaviour
 		{
 			if (levelPackLevelTable.dataArray[i].levelPackId == levelPackId && levelPackLevelTable.dataArray[i].level == level)
 				return levelPackLevelTable.dataArray[i];
-		}
-		return null;
-	}
-
-	public ActorLevelPackTableData FindActorLevelPackTableData(string actorId, string levelPackId)
-	{
-		for (int i = 0; i < actorLevelPackTable.dataArray.Length; ++i)
-		{
-			if (actorLevelPackTable.dataArray[i].actorId == actorId && actorLevelPackTable.dataArray[i].levelPackId == levelPackId)
-				return actorLevelPackTable.dataArray[i];
 		}
 		return null;
 	}

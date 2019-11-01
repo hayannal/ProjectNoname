@@ -142,26 +142,26 @@ public class StageManager : MonoBehaviour
 	}
 
 #if USE_MAIN_SCENE
-	AsyncOperationResult _handleNextPlanePrefab;
-	AsyncOperationResult _handleNextGroundPrefab;
-	AsyncOperationResult _handleNextWallPrefab;
-	AsyncOperationResult _handleNextSpawnFlagPrefab;
-	AsyncOperationResult _handleNextPortalFlagPrefab;
-	AsyncOperationResult _handleEnvironmentSettingPrefab;
+	AsyncOperationGameObjectResult _handleNextPlanePrefab;
+	AsyncOperationGameObjectResult _handleNextGroundPrefab;
+	AsyncOperationGameObjectResult _handleNextWallPrefab;
+	AsyncOperationGameObjectResult _handleNextSpawnFlagPrefab;
+	AsyncOperationGameObjectResult _handleNextPortalFlagPrefab;
+	AsyncOperationGameObjectResult _handleEnvironmentSettingPrefab;
 	void PrepareNextMap(MapTableData mapTableData, string environmentSetting)
 	{
-		_handleNextPlanePrefab = AddressableAssetLoadManager.GetAddressableAsset(mapTableData.plane, "Map");
-		_handleNextGroundPrefab = AddressableAssetLoadManager.GetAddressableAsset(mapTableData.ground, "Map");
-		_handleNextWallPrefab = AddressableAssetLoadManager.GetAddressableAsset(mapTableData.wall, "Map");
-		_handleNextSpawnFlagPrefab = AddressableAssetLoadManager.GetAddressableAsset(mapTableData.spawnFlag, "Map");	// Spawn
-		_handleNextPortalFlagPrefab = AddressableAssetLoadManager.GetAddressableAsset(mapTableData.portalFlag, "Map");
+		_handleNextPlanePrefab = AddressableAssetLoadManager.GetAddressableGameObject(mapTableData.plane, "Map");
+		_handleNextGroundPrefab = AddressableAssetLoadManager.GetAddressableGameObject(mapTableData.ground, "Map");
+		_handleNextWallPrefab = AddressableAssetLoadManager.GetAddressableGameObject(mapTableData.wall, "Map");
+		_handleNextSpawnFlagPrefab = AddressableAssetLoadManager.GetAddressableGameObject(mapTableData.spawnFlag, "Map");	// Spawn
+		_handleNextPortalFlagPrefab = AddressableAssetLoadManager.GetAddressableGameObject(mapTableData.portalFlag, "Map");
 
-		_handleEnvironmentSettingPrefab = AddressableAssetLoadManager.GetAddressableAsset(environmentSetting, "EnvironmentSetting");
+		_handleEnvironmentSettingPrefab = AddressableAssetLoadManager.GetAddressableGameObject(environmentSetting, "EnvironmentSetting");
 	}
 
 	string _lastPlayerActorId = "";
 	int _lastPlayerPowerSource = -1;
-	AsyncOperationResult _handlePowerSourcePrefab = null;
+	AsyncOperationGameObjectResult _handlePowerSourcePrefab = null;
 	public void PreparePowerSource()
 	{
 		if (_lastPlayerActorId == BattleInstanceManager.instance.playerActor.actorId)
@@ -173,7 +173,7 @@ public class StageManager : MonoBehaviour
 			return;
 
 		_lastPlayerPowerSource = actorTableData.powerSource;
-		_handlePowerSourcePrefab = AddressableAssetLoadManager.GetAddressableAsset(PowerSource.Index2Name(_lastPlayerPowerSource), "PowerSource");
+		_handlePowerSourcePrefab = AddressableAssetLoadManager.GetAddressableGameObject(PowerSource.Index2Name(_lastPlayerPowerSource), "PowerSource");
 	}
 
 	public GameObject GetPreparedPowerSourcePrefab()

@@ -109,7 +109,7 @@ public class UIInstanceManager : MonoBehaviour
 	class LoadCanvasAsync
 	{
 		public string canvasAddress;
-		public AsyncOperationResult handleCanvasPrefab;
+		public AsyncOperationGameObjectResult handleCanvasPrefab;
 		public System.Action calllback;
 	}
 	List<LoadCanvasAsync> _listAsyncOperationResult = new List<LoadCanvasAsync>();
@@ -137,7 +137,7 @@ public class UIInstanceManager : MonoBehaviour
 
 		LoadCanvasAsync loadCanvasAsync = new LoadCanvasAsync();
 		loadCanvasAsync.canvasAddress = canvasAddress;
-		loadCanvasAsync.handleCanvasPrefab = AddressableAssetLoadManager.GetAddressableAsset(canvasAddress, "Canvas");
+		loadCanvasAsync.handleCanvasPrefab = AddressableAssetLoadManager.GetAddressableGameObject(canvasAddress, "Canvas");
 		loadCanvasAsync.calllback = null;
 		_listAsyncOperationResult.Add(loadCanvasAsync);
 

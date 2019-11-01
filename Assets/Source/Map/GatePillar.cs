@@ -32,7 +32,7 @@ public class GatePillar : MonoBehaviour
 		_spawnTime = Time.time;
 		if (string.IsNullOrEmpty(StageManager.instance.currentGatePillarPreview) == false)
 		{
-			AddressableAssetLoadManager.GetAddressableAsset("ImageObjectIndicator", "Object", (prefab) =>
+			AddressableAssetLoadManager.GetAddressableGameObject("ImageObjectIndicator", "Object", (prefab) =>
 			{
 				_objectIndicatorCanvas = UIInstanceManager.instance.GetCachedObjectIndicatorCanvas(prefab);
 				_objectIndicatorCanvas.targetTransform = cachedTransform;
@@ -71,7 +71,7 @@ public class GatePillar : MonoBehaviour
 			if (_energyGaugeShowRemainTime <= 0.0f)
 			{
 				_energyGaugeShowRemainTime = 0.0f;
-				AddressableAssetLoadManager.GetAddressableAsset("EnergyGaugeCanvas", "Object", (prefab) =>
+				AddressableAssetLoadManager.GetAddressableGameObject("EnergyGaugeCanvas", "Object", (prefab) =>
 				{
 					BattleInstanceManager.instance.GetCachedObject(prefab, null);
 				});

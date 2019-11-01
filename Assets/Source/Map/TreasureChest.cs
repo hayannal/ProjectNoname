@@ -34,7 +34,7 @@ public class TreasureChest : MonoBehaviour
 
 	void ShowIndicator()
 	{
-		AddressableAssetLoadManager.GetAddressableAsset("TreasureChestIndicator", "Object", (prefab) =>
+		AddressableAssetLoadManager.GetAddressableGameObject("TreasureChestIndicator", "Object", (prefab) =>
 		{
 			_objectIndicatorCanvas = UIInstanceManager.instance.GetCachedObjectIndicatorCanvas(prefab);
 			_objectIndicatorCanvas.targetTransform = transform;

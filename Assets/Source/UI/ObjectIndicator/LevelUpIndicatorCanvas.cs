@@ -249,7 +249,13 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 		// 예약이 되어있다면 창을 닫지 않고 항목만 갱신
 		if (_listReservedLevelUp.Count > 0)
 		{
+			_exclusive = _listReservedLevelUp[0];
+			_listReservedLevelUp.RemoveAt(0);
+			RefreshLevelPackList();
 
+			for (int i = 0; i < buttonList.Length; ++i)
+				buttonList[i].gameObject.SetActive(false);
+			OnCompleteLineAnimation();
 			return;
 		}
 

@@ -14,7 +14,7 @@ public class ObjectIndicatorCanvas : MonoBehaviour
 	public RectTransform lineImageRectTransform;
 	public Image lineImage;
 	public Vector2 lineOffset = new Vector2(0.0f, 0.0f);
-	public Vector2 contentOffset = new Vector2(0.75f, 1.0f);
+	public Vector3 contentOffset = new Vector3(0.75f, 1.0f, 0.0f);
 	public bool rightPosition = true;
 	bool useTweenOutBack = false;
 	public bool useLeftRightSwapByAxisX = false;
@@ -126,6 +126,7 @@ public class ObjectIndicatorCanvas : MonoBehaviour
 		}
 
 		desiredPosition.y += contentOffset.y;
+		desiredPosition.z += contentOffset.z;
 		deltaX = _targetRadius + lineOffset.x + contentOffset.x + contentGroupRectTransform.sizeDelta.x * 0.5f;
 		desiredPosition.x += rightPosition ? deltaX : -deltaX;
 

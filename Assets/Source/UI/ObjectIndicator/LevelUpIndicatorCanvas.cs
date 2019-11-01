@@ -110,6 +110,7 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 	void ShowLevelUpIndicator(int levelUpCount, int exclusiveLevelUpCount)
 	{
 		// 둘 중에 하나는 0으로 들어온다. 1보다 큰 값에 대해선 예약으로 걸어둔다.
+		// _exclusive일때는 3개의 레벨팩 중 마지막꺼가 무조건 exclusive에서 뽑혀진다.
 		_exclusive = false;
 		if (levelUpCount > 0 && exclusiveLevelUpCount == 0)
 		{
@@ -122,12 +123,6 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 		}
 
 		RefreshLevelPackList();
-		// 레벨팩 3개 나오는거 2개 나오는거 구분할 필요가 있는가. 이땐 애니는 어떻게 바뀌나. 아이템 오브젝트는 리스트 형태인가. 캐시드 아이템으로 처리할건가 등등
-
-		// 처음 두번은 렙업 카운트로 일반꺼 하고
-		// 그 다음 보스몹 한대도 안맞은거 레벨팩 들어올때 전용 2개짜리 돌려야하는건가. 레벨팩 드랍템은 천천히 들어오는건가????? 전투 시작해버리면 어쩌나.
-
-		// 전용팩만 2개 나오는거 구분할 필요가 있는가.
 	}
 
 	class RandomLevelPackInfo
@@ -143,8 +138,6 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 		float sumWeight = 0.0f;
 		for (int i = 0; i < listLevelPackTableData.Count; ++i)
 		{
-			if (_exclusive && listLevelPackTableData[i].exclusive == false)
-				continue;
 			if (listLevelPackTableData[i].max != -1 && BattleInstanceManager.instance.playerActor.skillProcessor.GetLevelPackStackCount(listLevelPackTableData[i].levelPackId) >= listLevelPackTableData[i].max)
 				continue;
 
@@ -178,6 +171,44 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 				break;
 		}
 		_listRandomLevelPackInfo.Clear();
+
+		if (_exclusive == false)
+			return;
+
+		// last is exclusive
+		sumWeight = 0.0f;
+		for (int i = 0; i < listLevelPackTableData.Count; ++i)
+		{
+			if (listLevelPackTableData[i].exclusive == false)
+				continue;
+			if (listLevelPackTableData[i].max != -1 && BattleInstanceManager.instance.playerActor.skillProcessor.GetLevelPackStackCount(listLevelPackTableData[i].levelPackId) >= listLevelPackTableData[i].max)
+				continue;
+
+			sumWeight += listLevelPackTableData[i].dropWeight;
+			RandomLevelPackInfo newInfo = new RandomLevelPackInfo();
+			newInfo.levelPackTableData = listLevelPackTableData[i];
+			newInfo.rate = sumWeight;
+			_listRandomLevelPackInfo.Add(newInfo);
+		}
+		if (_listRandomLevelPackInfo.Count == 0)
+		{
+			Debug.LogError("Invalid Result : There are no level packs available for exclusive.");
+			return;
+		}
+
+		for (int i = 0; i < _listRandomLevelPackInfo.Count; ++i)
+			_listRandomLevelPackInfo[i].rate = _listRandomLevelPackInfo[i].rate / sumWeight;
+
+		float lastRandom = Random.value;
+		for (int j = 0; j < _listRandomLevelPackInfo.Count; ++j)
+		{
+			if (lastRandom <= _listRandomLevelPackInfo[j].rate)
+			{
+				buttonList[buttonList.Length - 1].SetInfo(_listRandomLevelPackInfo[j].levelPackTableData);
+				break;
+			}
+		}
+		_listRandomLevelPackInfo.Clear();
 	}
 
 	public void OnCompleteLineAnimation()
@@ -193,13 +224,11 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 		{
 			buttonList[i].gameObject.SetActive(true);
 
-			yield return Timing.WaitForSeconds(0.3f);
+			if (i != (buttonList.Length - 1))
+				yield return Timing.WaitForSeconds(0.3f);
 
 			// avoid gc
 			if (this == null)
-				yield break;
-
-			if (_exclusive && i == 1)
 				yield break;
 		}
 	}

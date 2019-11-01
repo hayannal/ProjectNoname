@@ -32,7 +32,7 @@ public class ObjectUtil : MonoBehaviour
 			}
 		}
 
-		Graphic[] graphics = obj.GetComponentsInChildren<Graphic>();
+		Graphic[] graphics = obj.GetComponentsInChildren<Graphic>(true);
 		if (graphics != null)
 		{
 			for (int i = 0; i < graphics.Length; ++i)

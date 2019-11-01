@@ -25,6 +25,11 @@ public class LevelPackDataManager : MonoBehaviour
 		for (int i = 0; i < TableDataManager.instance.levelPackTable.dataArray.Length; ++i)
 		{
 			LevelPackTableData levelPackTableData = TableDataManager.instance.levelPackTable.dataArray[i];
+			if (levelPackTableData.exclusive == false)
+			{
+				listLevelPackTableData.Add(levelPackTableData);
+				continue;
+			}
 
 			bool find = false;
 			for (int j = 0; j < levelPackTableData.useActor.Length; ++j)

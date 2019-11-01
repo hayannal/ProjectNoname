@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using DG.Tweening;
 using MEC;
@@ -14,6 +15,11 @@ public class ButtonScale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
 	// 버튼 영역 조정용 transform은 scale이 적용되지 않게 처리.
 	public Transform adjustRectTransform;
+
+	[Space]
+	// 스케일 애니 후 이벤트
+	public UnityEvent onCompleteAnimation;
+	public bool lockCanvasInputInAnimation;
 
 	Transform _transform;
 	Button _button;
@@ -94,6 +100,7 @@ public class ButtonScale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 	}
 
 	bool _clickAnimation = false;
+	GraphicRaycaster _graphicRaycaster;
 	void PlayAnimation()
 	{
 		if (_button != null && _button.interactable == false)
@@ -101,6 +108,14 @@ public class ButtonScale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
 		_clickAnimation = true;
 		_transform.DOScale(clickScale, clickAnimationDuration * 0.5f).SetEase(Ease.OutQuad).OnComplete(OnCompleteScale);
+
+		if (lockCanvasInputInAnimation)
+		{
+			if (_graphicRaycaster == null)
+				_graphicRaycaster = GetComponentInParent<GraphicRaycaster>();
+			if (_graphicRaycaster != null)
+				_graphicRaycaster.enabled = false;
+		}
 	}
 	
 	void OnCompleteScale()
@@ -111,6 +126,10 @@ public class ButtonScale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 	void OnCompleteScaleEnd()
 	{
 		_clickAnimation = false;
+		if (onCompleteAnimation != null)
+			onCompleteAnimation.Invoke();
+		if (lockCanvasInputInAnimation && _graphicRaycaster != null)
+			_graphicRaycaster.enabled = true;
 	}
 }
 

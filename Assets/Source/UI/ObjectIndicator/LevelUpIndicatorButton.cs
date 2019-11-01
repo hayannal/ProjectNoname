@@ -15,6 +15,11 @@ public class LevelUpIndicatorButton : MonoBehaviour
 	string _id;
 	public void SetInfo(LevelPackTableData levelPackTableData)
 	{
+		AddressableAssetLoadManager.GetAddressableSprite(levelPackTableData.icon, "Icon", (sprite) =>
+		{
+			iconImage.sprite = sprite;
+		});
+
 		_id = levelPackTableData.levelPackId;
 		nameTextList.SetLocalizedText(UIString.instance.GetString(levelPackTableData.nameId));
 		gradient.color2 = levelPackTableData.exclusive ? exclusiveGradientColor : normalGradientColor;

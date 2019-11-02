@@ -157,10 +157,20 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 		{
 			if (listLevelPackTableData[i].max != -1 && BattleInstanceManager.instance.playerActor.skillProcessor.GetLevelPackStackCount(listLevelPackTableData[i].levelPackId) >= listLevelPackTableData[i].max)
 				continue;
+			if (listLevelPackTableData[i].dropWeight == 0.0f)
+				continue;
 
 			sumWeight += listLevelPackTableData[i].dropWeight;
 			RandomLevelPackInfo newInfo = new RandomLevelPackInfo();
 			newInfo.levelPackTableData = listLevelPackTableData[i];
+			newInfo.rate = sumWeight;
+			_listRandomLevelPackInfo.Add(newInfo);
+		}
+		if (_listRandomLevelPackInfo.Count == 0 && listLevelPackTableData.Count > 0)
+		{
+			sumWeight = listLevelPackTableData[0].dropWeight;
+			RandomLevelPackInfo newInfo = new RandomLevelPackInfo();
+			newInfo.levelPackTableData = listLevelPackTableData[0];
 			newInfo.rate = sumWeight;
 			_listRandomLevelPackInfo.Add(newInfo);
 		}
@@ -200,10 +210,20 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 				continue;
 			if (listLevelPackTableData[i].max != -1 && BattleInstanceManager.instance.playerActor.skillProcessor.GetLevelPackStackCount(listLevelPackTableData[i].levelPackId) >= listLevelPackTableData[i].max)
 				continue;
+			if (listLevelPackTableData[i].dropWeight == 0.0f)
+				continue;
 
 			sumWeight += listLevelPackTableData[i].dropWeight;
 			RandomLevelPackInfo newInfo = new RandomLevelPackInfo();
 			newInfo.levelPackTableData = listLevelPackTableData[i];
+			newInfo.rate = sumWeight;
+			_listRandomLevelPackInfo.Add(newInfo);
+		}
+		if (_listRandomLevelPackInfo.Count == 0 && listLevelPackTableData.Count > 0)
+		{
+			sumWeight = listLevelPackTableData[0].dropWeight;
+			RandomLevelPackInfo newInfo = new RandomLevelPackInfo();
+			newInfo.levelPackTableData = listLevelPackTableData[0];
 			newInfo.rate = sumWeight;
 			_listRandomLevelPackInfo.Add(newInfo);
 		}

@@ -31,6 +31,13 @@ public class LevelPackDataManager : MonoBehaviour
 				continue;
 			}
 
+			// exclusive 예외처리 추가.
+			if (levelPackTableData.useActor.Length == 1 && levelPackTableData.useActor[0] == "All")
+			{
+				listLevelPackTableData.Add(levelPackTableData);
+				continue;
+			}
+
 			bool find = false;
 			for (int j = 0; j < levelPackTableData.useActor.Length; ++j)
 			{

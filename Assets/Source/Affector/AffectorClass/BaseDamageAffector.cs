@@ -68,7 +68,7 @@ public class BaseDamageAffector : AffectorBase {
 		if ((int)eActorStatus.CriticalRate < hitParameter.statusBase.valueList.Length)
 		{
 			float criticalRate = hitParameter.statusBase.valueList[(int)eActorStatus.CriticalRate];
-			if (criticalRate > 0.0f && criticalRate <= Random.value)
+			if (criticalRate > 0.0f && Random.value <= criticalRate)
 			{
 				float criticalDamageRate = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("DefaultCriticalDamageRate");
 				criticalDamageRate += hitParameter.statusBase.valueList[(int)eActorStatus.CriticalDamageAddRate];

@@ -51,6 +51,9 @@ public class BattleTestTool : EditorWindow
 	bool usePlayerAI = true;
 	PlayerActor _playerActor = null;
 	bool spFull = false;
+	string _affectorValueId;
+	int _affectorValueLevel;
+	string _levelPackId;
 	void OnGUI_Player()
 	{
 		GUILayout.BeginVertical("box");
@@ -72,6 +75,21 @@ public class BattleTestTool : EditorWindow
 				_playerActor = GameObject.FindObjectOfType<PlayerActor>();
 			if (spFull && _playerActor != null && _playerActor.actorStatus.GetSPRatio() != 1.0f)
 				_playerActor.actorStatus.AddSP(_playerActor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MaxSp));
+			_affectorValueId = EditorGUILayout.TextField("Affector Value Id :", _affectorValueId);
+			_affectorValueLevel = EditorGUILayout.IntField("Affector Value Level :", _affectorValueLevel);
+			if (GUILayout.Button("Apply Affector Value"))
+			{
+				HitParameter hitParameter = new HitParameter();
+				hitParameter.statusBase = _playerActor.actorStatus.statusBase;
+				SkillProcessor.CopyEtcStatus(ref hitParameter.statusStructForHitObject, _playerActor);
+				hitParameter.statusStructForHitObject.skillLevel = _affectorValueLevel;
+				_playerActor.affectorProcessor.ApplyAffectorValue(_affectorValueId, hitParameter);
+			}
+			_levelPackId = EditorGUILayout.TextField("Level Pack Id :", _levelPackId);
+			if (GUILayout.Button("Add Level Pack"))
+			{
+				_playerActor.skillProcessor.AddLevelPack(_levelPackId);
+			}
 		}
 		GUILayout.EndVertical();	
 	}

@@ -100,7 +100,7 @@ public class BaseDamageAffector : AffectorBase {
 		bool showHitBlink = true;
 		if (BurrowAffector.CheckBurrow(_affectorProcessor)) showHitBlink = false;
 
-		_actor.actorStatus.AddHP(damage);
+		_actor.actorStatus.AddHP(-damage);
 		ChangeActorStatusAffector.OnDamage(_affectorProcessor);
 		CallAffectorValueAffector.OnEvent(_affectorProcessor, CallAffectorValueAffector.eEventType.OnDamage);
 

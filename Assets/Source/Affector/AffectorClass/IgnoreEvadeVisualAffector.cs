@@ -71,6 +71,7 @@ public class IgnoreEvadeVisualAffector : AffectorBase
 
 		if (needShow == false && _canvasShowState)
 		{
+			_currentIgnoreEvade = 0.0f;
 			PlayerIgnoreEvadeCanvas.instance.ShowIgnoreEvade(false, null);
 			_canvasShowState = false;
 			return;
@@ -78,15 +79,23 @@ public class IgnoreEvadeVisualAffector : AffectorBase
 
 		if (needShow && _canvasShowState == false)
 		{
+			_initEvade = evadeRate;
+			_currentIgnoreEvade = 1.0f - _initEvade;
 			PlayerIgnoreEvadeCanvas.instance.ShowIgnoreEvade(true, BattleInstanceManager.instance.playerActor);
-			PlayerIgnoreEvadeCanvas.instance.SetPercent(evadeRate);
+			PlayerIgnoreEvadeCanvas.instance.SetPercent(_currentIgnoreEvade);
 			_canvasShowState = true;
 		}
 	}
 
+	float _initEvade = 0.0f;
+	float _currentIgnoreEvade = 0.0f;
 	bool _attackStateStarted = false;
+	float _addSpeed = 0.0f;
 	void UpdateMecanimState()
 	{
+		if (_currentIgnoreEvade == 0.0f)
+			return;
+
 		// Attack 상태가 시작되는 시점부터 ui 표시하면서 테이블에 적혀있는 시간동안 % 올리면 된다.
 		if (_applyNormalAttack)
 		{
@@ -95,8 +104,7 @@ public class IgnoreEvadeVisualAffector : AffectorBase
 				if (_actor.actionController.mecanimState.IsState((int)eMecanimState.Attack))
 				{
 					_attackStateStarted = true;
-
-					// show ui
+					_addSpeed = _initEvade / _affectorValueLevelTableData.fValue3;
 				}
 			}
 			else
@@ -104,6 +112,8 @@ public class IgnoreEvadeVisualAffector : AffectorBase
 				if (_actor.actionController.mecanimState.IsState((int)eMecanimState.Attack) == false)
 				{
 					_attackStateStarted = false;
+					_currentIgnoreEvade = 1.0f - _initEvade;
+					PlayerIgnoreEvadeCanvas.instance.SetPercent(_currentIgnoreEvade);
 				}
 			}
 		}
@@ -115,8 +125,7 @@ public class IgnoreEvadeVisualAffector : AffectorBase
 				if (_actor.actionController.mecanimState.IsState((int)eMecanimState.Ultimate))
 				{
 					_attackStateStarted = true;
-
-					// show ui
+					_addSpeed = _initEvade / _affectorValueLevelTableData.fValue4;
 				}
 			}
 			else
@@ -124,10 +133,22 @@ public class IgnoreEvadeVisualAffector : AffectorBase
 				if (_actor.actionController.mecanimState.IsState((int)eMecanimState.Ultimate) == false)
 				{
 					_attackStateStarted = false;
+					_currentIgnoreEvade = 1.0f - _initEvade;
+					PlayerIgnoreEvadeCanvas.instance.SetPercent(_currentIgnoreEvade);
 				}
 			}
 		}
+
+		if (_attackStateStarted)
+		{
+			_currentIgnoreEvade += (_addSpeed * Time.deltaTime);
+			if (_currentIgnoreEvade > 1.0f)
+				_currentIgnoreEvade = 1.0f;
+			PlayerIgnoreEvadeCanvas.instance.SetPercent(_currentIgnoreEvade);
+		}
 	}
+
+
 
 	public override void FinalizeAffector()
 	{

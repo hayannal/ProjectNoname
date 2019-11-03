@@ -100,13 +100,12 @@ public class BaseDamageAffector : AffectorBase {
 		bool showHitBlink = true;
 		if (BurrowAffector.CheckBurrow(_affectorProcessor)) showHitBlink = false;
 
-		int intDamage = (int)damage;
-		_actor.actorStatus.AddHP(-intDamage);
+		_actor.actorStatus.AddHP(damage);
 		ChangeActorStatusAffector.OnDamage(_affectorProcessor);
 		CallAffectorValueAffector.OnEvent(_affectorProcessor, CallAffectorValueAffector.eEventType.OnDamage);
 
 #if UNITY_EDITOR
-		//Debug.LogFormat("Current = {0} / Max = {1} / Damage = {2} / frameCount = {3}", _actor.actorStatus.GetHP(), _actor.actorStatus.GetValue(eActorStatus.MaxHp), intDamage, Time.frameCount);
+		//Debug.LogFormat("Current = {0} / Max = {1} / Damage = {2} / frameCount = {3}", _actor.actorStatus.GetHP(), _actor.actorStatus.GetValue(eActorStatus.MaxHp), damage, Time.frameCount);
 #endif
 
 		bool useOnkill = (affectorValueLevelTableData.iValue2 == 1 && !string.IsNullOrEmpty(affectorValueLevelTableData.sValue2) && !_actor.actorStatus.IsDie());

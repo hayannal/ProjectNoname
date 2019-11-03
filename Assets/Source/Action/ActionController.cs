@@ -75,9 +75,18 @@ public class ActionController : MonoBehaviour {
 		for (int i = 0; i < _defaultActionNameList.Length; ++i)
 		{
 			ActionInfo actionInfo = GetActionInfoByName(_defaultActionNameList[i]);
-			if (actionInfo == null)
+			if (actionInfo != null)
+				continue;
+
+			if (TableDataManager.instance.FindActorTableData(actorId) != null)
 			{
-				ActionTableData actionTableData = TableDataManager.instance.FindDefaultActionTableData(_defaultActionNameList[i]);
+				ActionTableData actionTableData = TableDataManager.instance.FindActionTableData("Default", _defaultActionNameList[i]);
+				if (actionTableData != null)
+					_listActionInfo.Add(CreateActionInfo(actionTableData));
+			}
+			else if (TableDataManager.instance.FindMonsterTableData(actorId) != null)
+			{
+				ActionTableData actionTableData = TableDataManager.instance.FindActionTableData("Default", _defaultActionNameList[i]);
 				if (actionTableData != null)
 					_listActionInfo.Add(CreateActionInfo(actionTableData));
 			}

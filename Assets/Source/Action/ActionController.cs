@@ -80,13 +80,13 @@ public class ActionController : MonoBehaviour {
 
 			if (TableDataManager.instance.FindActorTableData(actorId) != null)
 			{
-				ActionTableData actionTableData = TableDataManager.instance.FindActionTableData("Default", _defaultActionNameList[i]);
+				ActionTableData actionTableData = TableDataManager.instance.FindActionTableData("DefaultPlayer", _defaultActionNameList[i]);
 				if (actionTableData != null)
 					_listActionInfo.Add(CreateActionInfo(actionTableData));
 			}
 			else if (TableDataManager.instance.FindMonsterTableData(actorId) != null)
 			{
-				ActionTableData actionTableData = TableDataManager.instance.FindActionTableData("Default", _defaultActionNameList[i]);
+				ActionTableData actionTableData = TableDataManager.instance.FindActionTableData("DefaultMonster", _defaultActionNameList[i]);
 				if (actionTableData != null)
 					_listActionInfo.Add(CreateActionInfo(actionTableData));
 			}

@@ -206,6 +206,13 @@ public sealed class LocalPlayerController : BaseCharacterController
 			return;
 		}
 
+		if (actor.affectorProcessor.IsContinuousAffectorType(eAffectorType.CannotMove))
+		{
+			moveDirection = Vector3.zero;
+			return;
+		}
+
+
 		// Handle your custom input here...
 
 		moveDirection = new Vector3

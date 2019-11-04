@@ -18,6 +18,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.AddActorState: affectorBase = new AddActorStateAffector(); break;
 			case eAffectorType.ChangeActorStatus: affectorBase = new ChangeActorStatusAffector(); break;
 			case eAffectorType.CallAffectorValue: affectorBase = new CallAffectorValueAffector(); break;
+			case eAffectorType.Heal: affectorBase = new HealAffector(); break;
 			case eAffectorType.Invincible: affectorBase = new InvincibleAffector(); break;
 			case eAffectorType.CountBarrier: affectorBase = new CountBarrierAffector(); break;
 			case eAffectorType.InvincibleTortoise: affectorBase = new InvincibleTortoiseAffector(); break;

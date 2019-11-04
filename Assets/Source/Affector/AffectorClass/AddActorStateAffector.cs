@@ -12,11 +12,6 @@ public class AddActorStateAffector : AffectorBase {
 			return;
 		}
 
-		string actorStateId = affectorValueLevelTableData.sValue2;
-		ActorStateTableData data = TableDataManager.instance.FindActorStateTableData(actorStateId);
-		if (data == null)
-			return;
-
-		_affectorProcessor.AddActorState(actorStateId, data.continuousAffectorValueId, hitParameter);
+		_affectorProcessor.AddActorState(affectorValueLevelTableData.sValue1, hitParameter);
 	}
 }

@@ -53,6 +53,7 @@ public class BattleTestTool : EditorWindow
 	bool spFull = false;
 	string _affectorValueId;
 	int _affectorValueLevel;
+	string _actorStateId;
 	string _levelPackId;
 	void OnGUI_Player()
 	{
@@ -84,6 +85,14 @@ public class BattleTestTool : EditorWindow
 				SkillProcessor.CopyEtcStatus(ref hitParameter.statusStructForHitObject, _playerActor);
 				hitParameter.statusStructForHitObject.skillLevel = _affectorValueLevel;
 				_playerActor.affectorProcessor.ApplyAffectorValue(_affectorValueId, hitParameter);
+			}
+			_actorStateId = EditorGUILayout.TextField("Actor State Id :", _actorStateId);
+			if (GUILayout.Button("Add Actor State"))
+			{
+				HitParameter hitParameter = new HitParameter();
+				hitParameter.statusBase = _playerActor.actorStatus.statusBase;
+				SkillProcessor.CopyEtcStatus(ref hitParameter.statusStructForHitObject, _playerActor);
+				_playerActor.affectorProcessor.AddActorState(_actorStateId, hitParameter);
 			}
 			_levelPackId = EditorGUILayout.TextField("Level Pack Id :", _levelPackId);
 			if (GUILayout.Button("Add Level Pack"))

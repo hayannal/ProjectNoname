@@ -310,10 +310,16 @@ public class AffectorProcessor : MonoBehaviour {
 
 	Dictionary<string, List<AffectorBase>> _dicActorStateInfo;
 
-	public void AddActorState(string actorStateId, string[] affectorValueIdList, HitParameter hitParameter)
+	public void AddActorState(string actorStateId, HitParameter hitParameter)
 	{
+		ActorStateTableData data = TableDataManager.instance.FindActorStateTableData(actorStateId);
+		if (data == null)
+			return;
+
 		if (_dicActorStateInfo == null)
 			_dicActorStateInfo = new Dictionary<string, List<AffectorBase>>();
+
+		string[] affectorValueIdList = data.continuousAffectorValueId;
 
 		bool createAffector = false;
 		List<AffectorBase> listAffector = null;

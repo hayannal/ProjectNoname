@@ -82,7 +82,7 @@ public class ActorStatus : MonoBehaviour
 	{
 		if (eType == eActorStatus.MoveSpeed || eType == eActorStatus.MoveSpeedAddRate || eType == eActorStatus.ExAmount)
 			actor.baseCharacterController.speed = GetValue(eActorStatus.MoveSpeed);
-		if (eType == eActorStatus.AttackDelay || eType == eActorStatus.AttackSpeedAddRate || eType == eActorStatus.ExAmount)
+		if (eType == eActorStatus.AttackSpeedAddRate || eType == eActorStatus.ExAmount)
 			actor.actionController.OnChangedAttackSpeedAddRatio(GetValue(eActorStatus.AttackSpeedAddRate));
 	}
 

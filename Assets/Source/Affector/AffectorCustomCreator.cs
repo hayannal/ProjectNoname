@@ -23,6 +23,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.InvincibleTortoise: affectorBase = new InvincibleTortoiseAffector(); break;
 			case eAffectorType.Burrow: affectorBase = new BurrowAffector(); break;
 			case eAffectorType.IgnoreEvadeVisual: affectorBase = new IgnoreEvadeVisualAffector(); break;
+			case eAffectorType.DropAdjust: affectorBase = new DropAdjustAffector(); break;
 			#endregion
 		}
 		return affectorBase;

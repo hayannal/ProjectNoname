@@ -58,10 +58,24 @@ public class DropProcessor : MonoBehaviour
 	{
 		for (int i = 0; i < dropTableData.dropEnum.Length; ++i)
 		{
-			if (Random.value > dropTableData.probability[i])
+			eDropType dropType = (eDropType)dropTableData.dropEnum[i];
+			float probability = dropTableData.probability[i];
+			switch (dropType)
+			{
+				case eDropType.Gacha:
+					float itemDropAdjust = DropAdjustAffector.GetValue(BattleInstanceManager.instance.playerActor.affectorProcessor, DropAdjustAffector.eDropAdjustType.ItemDropRate);
+					if (itemDropAdjust != 0.0f)
+						probability *= (1.0f + itemDropAdjust);
+					break;
+				case eDropType.Heart:
+					float heartDropAdjust = DropAdjustAffector.GetValue(BattleInstanceManager.instance.playerActor.affectorProcessor, DropAdjustAffector.eDropAdjustType.HeartDropRate);
+					if (heartDropAdjust != 0.0f)
+						probability *= (1.0f + heartDropAdjust);
+					break;
+			}
+			if (Random.value > probability)
 				continue;
 
-			eDropType dropType = (eDropType)dropTableData.dropEnum[i];
 			float floatValue = 0.0f;
 			int intValue = 0;
 			if (FloatRange(dropType))
@@ -79,6 +93,9 @@ public class DropProcessor : MonoBehaviour
 					DropExp(intValue);
 					break;
 				case eDropType.Gold:
+					float goldDropAdjust = DropAdjustAffector.GetValue(BattleInstanceManager.instance.playerActor.affectorProcessor, DropAdjustAffector.eDropAdjustType.GoldDropAmount);
+					if (goldDropAdjust != 0.0f)
+						intValue = Mathf.CeilToInt(intValue * (1.0f + goldDropAdjust));
 					dropProcessor.Add(dropType, floatValue, intValue);
 					break;
 				case eDropType.LevelPack:
@@ -139,6 +156,8 @@ public class DropProcessor : MonoBehaviour
 				break;
 			case eDropType.Gold:
 				int randomCount = Random.Range(4, 7);
+				float goldDropAdjust = DropAdjustAffector.GetValue(BattleInstanceManager.instance.playerActor.affectorProcessor, DropAdjustAffector.eDropAdjustType.GoldDropAmount);
+				if (goldDropAdjust > 0.0f) randomCount += 1;
 				int quotient = intValue / randomCount;
 				int remainder = intValue % randomCount;
 				for (int i = 0; i < randomCount; ++i)

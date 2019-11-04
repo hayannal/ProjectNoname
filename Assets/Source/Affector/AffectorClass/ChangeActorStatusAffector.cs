@@ -82,16 +82,16 @@ public class ChangeActorStatusAffector : AffectorBase
 
 	public static float GetValue(AffectorProcessor affectorProcessor, eActorStatus eType)
 	{
-		List<AffectorBase> listCallAffectorValueAffector = affectorProcessor.GetContinuousAffectorList(eAffectorType.ChangeActorStatus);
-		if (listCallAffectorValueAffector == null)
+		List<AffectorBase> listChangeActorStatusAffector = affectorProcessor.GetContinuousAffectorList(eAffectorType.ChangeActorStatus);
+		if (listChangeActorStatusAffector == null)
 			return 0.0f;
 
 		float result = 0.0f;
-		for (int i = 0; i < listCallAffectorValueAffector.Count; ++i)
+		for (int i = 0; i < listChangeActorStatusAffector.Count; ++i)
 		{
-			if (listCallAffectorValueAffector[i].finalized)
+			if (listChangeActorStatusAffector[i].finalized)
 				continue;
-			ChangeActorStatusAffector changeActorStatusAffector = listCallAffectorValueAffector[i] as ChangeActorStatusAffector;
+			ChangeActorStatusAffector changeActorStatusAffector = listChangeActorStatusAffector[i] as ChangeActorStatusAffector;
 			if (changeActorStatusAffector == null)
 				continue;
 			result += changeActorStatusAffector.GetValue(eType);

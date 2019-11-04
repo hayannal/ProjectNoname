@@ -30,12 +30,17 @@ public class ChangeActorStatusAffector : AffectorBase
 		_eType = (eActorStatus)affectorValueLevelTableData.iValue1;
 		_value = affectorValueLevelTableData.fValue2;
 		_onDamageRemainCount = affectorValueLevelTableData.iValue2;
+
+		_actor.actorStatus.OnChangedStatus(_eType);
 	}
 
 	public override void UpdateAffector()
 	{
 		if (CheckEndTime(_endTime) == false)
+		{
+			_actor.actorStatus.OnChangedStatus(_eType);
 			return;
+		}
 	}
 
 	void OnDamage()
@@ -44,7 +49,10 @@ public class ChangeActorStatusAffector : AffectorBase
 		{
 			_onDamageRemainCount -= 1;
 			if (_onDamageRemainCount == 0)
+			{
 				finalized = true;
+				_actor.actorStatus.OnChangedStatus(_eType);
+			}
 		}
 	}
 

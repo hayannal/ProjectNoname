@@ -160,8 +160,8 @@ public class AffectorProcessor : MonoBehaviour {
 					affectorBase.InitializeAffector(affectorType, actor, this);
 					affectorBase.managed = managed;
 					affectorBase.affectorValueId = levelData.affectorValueId;
-					affectorBase.ExecuteAffector(levelData, hitParameter);
 					listContinuousAffector.Add(affectorBase);
+					affectorBase.ExecuteAffector(levelData, hitParameter);
 				}
 			}
 		}

@@ -123,6 +123,7 @@ public class PlayerGaugeCanvas : MonoBehaviour
 
 		if (_lastRatio < hpRatio)
 		{
+			ResetAlphaFade();
 		}
 		else
 		{
@@ -203,6 +204,11 @@ public class PlayerGaugeCanvas : MonoBehaviour
 		if (resetAlphaFade == false)
 			return;
 
+		ResetAlphaFade();
+	}
+
+	void ResetAlphaFade()
+	{
 		if (!offsetRootObject.activeSelf)
 			offsetRootObject.SetActive(true);
 		canvasGroup.alpha = DEFAULT_CANVAS_GROUP_ALPHA;

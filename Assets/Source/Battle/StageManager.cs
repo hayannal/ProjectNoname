@@ -324,9 +324,21 @@ public class StageManager : MonoBehaviour
 			return;
 		_playerLevel = level;
 
-		BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.playerLevelUpEffectPrefab, BattleInstanceManager.instance.playerActor.cachedTransform.position, Quaternion.identity);
+		BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.playerLevelUpEffectPrefab, BattleInstanceManager.instance.playerActor.cachedTransform.position, Quaternion.identity, BattleInstanceManager.instance.playerActor.cachedTransform);
 		PlayerGaugeCanvas.instance.RefreshLevelText(_playerLevel);
 		LevelUpIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform, needLevelUpCount, 0);
+		Timing.RunCoroutine(LevelUpScreenEffectProcess());
+	}
+
+	IEnumerator<float> LevelUpScreenEffectProcess()
+	{
+		FadeCanvas.instance.FadeOut(0.2f, 0.333f);
+		yield return Timing.WaitForSeconds(0.2f);
+
+		if (this == null)
+			yield break;
+
+		FadeCanvas.instance.FadeIn(1.0f);
 	}
 
 	int GetMaxStageLevel()

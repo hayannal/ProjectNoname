@@ -7,6 +7,7 @@ public class BattleModeProcessorBase
 	bool _mapLoaded = false;
 	bool _monsterSpawned = false;
 	int _monsterSpawnCount = 0;
+	int _damageCountInStage = 0;
 
 	public void OnPreInstantiateMap()
 	{
@@ -34,6 +35,7 @@ public class BattleModeProcessorBase
 	GameObject _powerSourceObject;
 	public void OnSpawnFlag()
 	{
+		_damageCountInStage = 0;
 		if (StageManager.instance.spawnPowerSourcePrefab)
 			_powerSourceObject = BattleInstanceManager.instance.GetCachedObject(StageManager.instance.GetPreparedPowerSourcePrefab(), StageManager.instance.currentPowerSourceSpawnPosition, Quaternion.identity);
 	}
@@ -79,5 +81,15 @@ public class BattleModeProcessorBase
 	public int GetSpawnedMonsterCount()
 	{
 		return _monsterSpawnCount;
+	}
+
+	public void AddDamageCountOnStage()
+	{
+		++_damageCountInStage;
+	}
+
+	public int GetDamageCountOnStage()
+	{
+		return _damageCountInStage;
 	}
 }

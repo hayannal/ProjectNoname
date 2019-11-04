@@ -96,6 +96,16 @@ public class BattleManager : MonoBehaviour
 		return _currentBattleMode.GetSpawnedMonsterCount();
 	}
 
+	public void AddDamageCountOnStage()
+	{
+		_currentBattleMode.AddDamageCountOnStage();
+	}
+
+	public int GetDamageCountOnStage()
+	{
+		return _currentBattleMode.GetDamageCountOnStage();
+	}
+
 	#region Common
 	int _stackDropExp = 0;
 	public void StackDropExp(int exp)

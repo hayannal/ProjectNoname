@@ -18,7 +18,6 @@ public enum eAffectorType
 
 	DefaultContainer,
 	Heal,
-	PiercingHitObject,
 	AddAffectorHitObject,
 	GetLevelPack,
 	CallAffectorValue,
@@ -26,8 +25,11 @@ public enum eAffectorType
 	CountBarrier,
 	Headshot,
 	InvincibleTortoise,
-
 	Burrow,
+
 	IgnoreEvadeVisual,
+	DropAdjust,
+
+	PiercingHitObject = 71,
 }
 #endregion

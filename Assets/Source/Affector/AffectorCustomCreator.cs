@@ -39,7 +39,6 @@ public static class AffectorCustomCreator
 			case eAffectorType.CannotAction:
 			case eAffectorType.CannotMove:
 			case eAffectorType.DefaultContainer:
-			case eAffectorType.PiercingHitObject:
 			case eAffectorType.AddAffectorHitObject:
 			case eAffectorType.CallAffectorValue:
 			case eAffectorType.Invincible:
@@ -47,6 +46,8 @@ public static class AffectorCustomCreator
 			case eAffectorType.InvincibleTortoise:
 			case eAffectorType.Burrow:
 			case eAffectorType.IgnoreEvadeVisual:
+			case eAffectorType.DropAdjust:
+			case eAffectorType.PiercingHitObject:
 				return true;
 			#endregion
 		}

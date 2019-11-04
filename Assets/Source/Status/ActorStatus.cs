@@ -52,7 +52,7 @@ public class ActorStatus : MonoBehaviour
 		_statusBase.valueList[(int)eActorStatus.Attack] *= actorTableData.multiAtk;
 
 		//if (isServer)
-		_statusBase._hp = GetValue(eActorStatus.MaxHp);
+		_statusBase._hp = _lastMaxHp = GetValue(eActorStatus.MaxHp);
 		_statusBase._sp = 0.0f;
 
 		OnChangedStatus();
@@ -73,17 +73,34 @@ public class ActorStatus : MonoBehaviour
 		_statusBase.valueList[(int)eActorStatus.MoveSpeed] = monsterTableData.moveSpeed;
 
 		//if (isServer)
-		_statusBase._hp = GetValue(eActorStatus.MaxHp);
+		_statusBase._hp = _lastMaxHp = GetValue(eActorStatus.MaxHp);
 
 		OnChangedStatus();
 	}
 
+	float _lastMaxHp = 0.0f;
 	public void OnChangedStatus(eActorStatus eType = eActorStatus.ExAmount)
 	{
 		if (eType == eActorStatus.MoveSpeed || eType == eActorStatus.MoveSpeedAddRate || eType == eActorStatus.ExAmount)
 			actor.baseCharacterController.speed = GetValue(eActorStatus.MoveSpeed);
 		if (eType == eActorStatus.AttackSpeedAddRate || eType == eActorStatus.ExAmount)
 			actor.actionController.OnChangedAttackSpeedAddRatio(GetValue(eActorStatus.AttackSpeedAddRate));
+		if (eType == eActorStatus.MaxHp || eType == eActorStatus.MaxHpAddRate)
+		{
+			float maxHp = GetValue(eActorStatus.MaxHp);
+			if (maxHp > _lastMaxHp)
+			{
+				AddHP(maxHp - _lastMaxHp);
+			}
+			else
+			{
+				if (GetHP() > maxHp)
+					AddHP(maxHp - GetHP());
+				else
+					actor.OnChangedHP();
+			}
+			_lastMaxHp = maxHp;
+		}
 	}
 
 	public float GetCachedValue(eActorStatus eType)

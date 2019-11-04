@@ -21,13 +21,13 @@ public class FadeCanvas : MonoBehaviour
 
 	public Image fadeImage;
 	
-	public void FadeOut(float duration)
+	public void FadeOut(float duration, float endValue = 1.0f)
 	{
 		if (!gameObject.activeSelf)
 			gameObject.SetActive(true);
 
 		fadeImage.color = new Color(1.0f, 1.0f, 1.0f, 0.0f);
-		fadeImage.DOFade(1.0f, duration);
+		fadeImage.DOFade(endValue, duration);
 	}
 
 	public void FadeIn(float duration)

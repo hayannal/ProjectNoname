@@ -5,7 +5,6 @@ using ActorStatusDefine;
 
 public class BounceWallQuadHitObjectAffector : AffectorBase
 {
-	float _endTime;
 	int _bounceWallQuadAddCount;
 	public int bounceWallQuadAddCount { get { return _bounceWallQuadAddCount; } }
 
@@ -23,16 +22,7 @@ public class BounceWallQuadHitObjectAffector : AffectorBase
 			return;
 		}
 
-		// lifeTime
-		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
-
 		_bounceWallQuadAddCount = affectorValueLevelTableData.iValue1;
-	}
-
-	public override void UpdateAffector()
-	{
-		if (CheckEndTime(_endTime) == false)
-			return;
 	}
 
 	public static int GetAddCount(AffectorProcessor affectorProcessor)

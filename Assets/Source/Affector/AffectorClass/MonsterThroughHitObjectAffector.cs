@@ -5,7 +5,6 @@ using ActorStatusDefine;
 
 public class MonsterThroughHitObjectAffector : AffectorBase
 {
-	float _endTime;
 	int _piercingAddCount;
 	public int piercingAddCount { get { return _piercingAddCount; } }
 
@@ -23,16 +22,7 @@ public class MonsterThroughHitObjectAffector : AffectorBase
 			return;
 		}
 
-		// lifeTime
-		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
-
 		_piercingAddCount = affectorValueLevelTableData.iValue1;
-	}
-
-	public override void UpdateAffector()
-	{
-		if (CheckEndTime(_endTime) == false)
-			return;
 	}
 
 	public static int GetAddCount(AffectorProcessor affectorProcessor)

@@ -5,7 +5,6 @@ using ActorStatusDefine;
 
 public class RicochetHitObjectAffector : AffectorBase
 {
-	float _endTime;
 	int _ricochetAddCount;
 	public int ricochetAddCount { get { return _ricochetAddCount; } }
 
@@ -23,16 +22,7 @@ public class RicochetHitObjectAffector : AffectorBase
 			return;
 		}
 
-		// lifeTime
-		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
-
 		_ricochetAddCount = affectorValueLevelTableData.iValue1;
-	}
-
-	public override void UpdateAffector()
-	{
-		if (CheckEndTime(_endTime) == false)
-			return;
 	}
 
 	public static int GetAddCount(AffectorProcessor affectorProcessor)

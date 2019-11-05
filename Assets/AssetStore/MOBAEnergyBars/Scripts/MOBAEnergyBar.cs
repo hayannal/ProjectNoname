@@ -85,11 +85,18 @@ public class MOBAEnergyBar : MonoBehaviour {
 		damage = Mathf.Max(0, damage - BurnRate * MaxValue * Time.deltaTime);
 #endif
 #if UNITY_EDITOR
-        if (EditorApplication.isPlaying && lastValue > Value)
+        if (EditorApplication.isPlaying)
         {
-            damage += lastValue - Value;
-            damage = Mathf.Clamp(damage, 0f, MaxValue - Value);
-            lastValue = Value;
+			if (lastValue > Value)
+			{
+				damage += lastValue - Value;
+				damage = Mathf.Clamp(damage, 0f, MaxValue - Value);
+				lastValue = Value;
+			}
+			else if (lastValue < Value)
+			{
+				lastValue = Value;
+			}
         }
         else if (!EditorApplication.isPlaying)
         {
@@ -102,8 +109,12 @@ public class MOBAEnergyBar : MonoBehaviour {
             damage = Mathf.Clamp(damage, 0f, MaxValue - Value);
             lastValue = Value;
         }
+		else if (lastValue < Value)
+		{
+			lastValue = Value;
+		}
 #endif
-        updatePropertiesIfChanged();
+		updatePropertiesIfChanged();
     }
 
 #if USE_LERP_DAMAGE

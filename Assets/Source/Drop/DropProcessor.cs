@@ -101,7 +101,7 @@ public class DropProcessor : MonoBehaviour
 				case eDropType.LevelPack:
 					++BattleManager.instance.reservedLevelPackCount;
 					// check no hit levelpack
-					if (false)
+					if (BattleManager.instance.GetDamageCountOnStage() == 0)
 						floatValue = 1.0f;
 					dropProcessor.Add(dropType, floatValue, intValue);
 					break;

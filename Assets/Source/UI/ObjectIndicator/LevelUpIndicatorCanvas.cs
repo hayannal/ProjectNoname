@@ -275,7 +275,7 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 	{
 		++_selectCount;
 		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack(levelPackId);
-		BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.levelPackGainEffectPrefab, BattleInstanceManager.instance.playerActor.cachedTransform.position, Quaternion.identity);
+		BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.levelPackGainEffectPrefab, BattleInstanceManager.instance.playerActor.cachedTransform.position, Quaternion.identity, BattleInstanceManager.instance.playerActor.cachedTransform);
 
 		// 예약이 되어있다면 창을 닫지 않고 항목만 갱신
 		if (_listReservedLevelUp.Count > 0)

@@ -120,6 +120,13 @@ public class BaseDamageAffector : AffectorBase {
 				damage *= damageRate;
 		}
 
+		if (hitParameter.statusStructForHitObject.parallelAddCountByLevelPack > 0)
+		{
+			float damageRate = ParallelHitObjectAffector.GetDamageRate(hitParameter.statusStructForHitObject.parallelAddCountByLevelPack);
+			if (damageRate != 1.0f)
+				damage *= damageRate;
+		}
+
 		// 버로우로 내려가있는 도중엔 본체에 HitRimBlink 할 필요 없다.
 		// DieProcess 들어가기전에 물어보는게 가장 정확하다.
 		// DieProcess 진행중엔 Burrow처럼 액터를 바로 끄는 경우가 있어서 ContinuousAffector가 클리어될 수 있기 때문.

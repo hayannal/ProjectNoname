@@ -27,6 +27,7 @@ public struct StatusStructForHitObject
 	public int monsterThroughAddCountByLevelPack;
 	public int ricochetAddCountByLevelPack;
 	public int bounceWallQuadAddCountByLevelPack;
+	public int parallelAddCountByLevelPack;
 
 	// example
 	//public float hp;	// hp is in StatusBase

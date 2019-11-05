@@ -99,11 +99,17 @@ public class HitObject : MonoBehaviour
 		Vector3 targetPosition = GetTargetPosition(meHit, parentActor, hitSignalIndexInAction);
 		Vector3 defaultPosition = GetSpawnPosition(spawnTransform, meHit, parentTransform, parentActor.affectorProcessor);
 		Quaternion defaultRotation = Quaternion.LookRotation(GetSpawnDirection(defaultPosition, meHit, parentTransform, targetPosition));
-		if (meHit.parallelCount > 0)
+		ActionController.ActionInfo currentActionInfo = parentActor.actionController.GetCurrentActionInfo();
+		bool normalAttack = (currentActionInfo != null && currentActionInfo.actionName == "Attack");
+		int parallelAddCountByLevelPack = normalAttack ? ParallelHitObjectAffector.GetAddCount(parentActor.affectorProcessor) : 0;
+		int parallelCount = meHit.parallelCount + parallelAddCountByLevelPack;
+		if (parallelCount > 0)
 		{
-			for (int i = 0; i < meHit.parallelCount; ++i)
+			float parallelDistance = meHit.parallelDistance;
+			if (parallelAddCountByLevelPack > 0) parallelDistance = ParallelHitObjectAffector.GetDistance(parentActor.affectorProcessor);
+			for (int i = 0; i < parallelCount; ++i)
 			{
-				Vector3 position = GetParallelSpawnPosition(spawnTransform, meHit, parentTransform, i, parentActor.affectorProcessor);
+				Vector3 position = GetParallelSpawnPosition(spawnTransform, meHit, parentTransform, parallelCount, i, parallelDistance, parentActor.affectorProcessor);
 				Quaternion rotation = Quaternion.LookRotation(GetSpawnDirection(defaultPosition, meHit, parentTransform, targetPosition));
 				HitObject parallelHitObject = GetCachedHitObject(meHit, position, rotation);
 				if (parallelHitObject == null)
@@ -136,6 +142,8 @@ public class HitObject : MonoBehaviour
 
 		bool createMainHitObject = true;
 		if (meHit.ignoreMainHitObjectByParallel || meHit.ignoreMainHitObjectByCircularSector || ignoreMainHitObjectByGenerator)
+			createMainHitObject = false;
+		if (parallelAddCountByLevelPack > 0)
 			createMainHitObject = false;
 		if (createMainHitObject)
 		{
@@ -189,13 +197,13 @@ public class HitObject : MonoBehaviour
 		return spawnTransform.position + offsetPosition;
 	}
 
-	static Vector3 GetParallelSpawnPosition(Transform spawnTransform, MeHitObject meHit, Transform parentActorTransform, int parallelIndex, AffectorProcessor parentActorAffectorProcessor)
+	static Vector3 GetParallelSpawnPosition(Transform spawnTransform, MeHitObject meHit, Transform parentActorTransform, int parallelCount, int parallelIndex, float parallelDistance, AffectorProcessor parentActorAffectorProcessor)
 	{
 		Vector3 baseSpawnPosition = GetSpawnPosition(spawnTransform, meHit, parentActorTransform, parentActorAffectorProcessor);
 
 		Vector3 parentActorPosition = parentActorTransform.position;
 		Vector3 parallelOffset = Vector3.zero;
-		parallelOffset.x = ((meHit.parallelCount - 1) * 0.5f * meHit.parallelDistance) * -1.0f + meHit.parallelDistance * parallelIndex;
+		parallelOffset.x = ((parallelCount - 1) * 0.5f * parallelDistance) * -1.0f + parallelDistance * parallelIndex;
 		Vector3 offsetPosition = parentActorTransform.TransformPoint(parallelOffset);
 		offsetPosition -= parentActorPosition;
 		return baseSpawnPosition + offsetPosition;
@@ -316,10 +324,11 @@ public class HitObject : MonoBehaviour
 		statusStructForHitObject.ricochetIndex = 0;
 		statusStructForHitObject.bounceWallQuadIndex = 0;
 		ActionController.ActionInfo currentActionInfo = actor.actionController.GetCurrentActionInfo();
-		bool normalAttack = (currentActionInfo.actionName == "Attack");
+		bool normalAttack = (currentActionInfo != null && currentActionInfo.actionName == "Attack");
 		statusStructForHitObject.monsterThroughAddCountByLevelPack = normalAttack ? MonsterThroughHitObjectAffector.GetAddCount(actor.affectorProcessor) : 0;
 		statusStructForHitObject.ricochetAddCountByLevelPack = normalAttack ? RicochetHitObjectAffector.GetAddCount(actor.affectorProcessor) : 0;
 		statusStructForHitObject.bounceWallQuadAddCountByLevelPack = normalAttack ? BounceWallQuadHitObjectAffector.GetAddCount(actor.affectorProcessor) : 0;
+		statusStructForHitObject.parallelAddCountByLevelPack = normalAttack ? ParallelHitObjectAffector.GetAddCount(actor.affectorProcessor) : 0;
 	}
 
 	static void CheckHitArea(Vector3 areaPosition, Vector3 areaForward, MeHitObject meHit, StatusBase statusBase, StatusStructForHitObject statusForHitObject,

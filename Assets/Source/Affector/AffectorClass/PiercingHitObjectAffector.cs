@@ -46,6 +46,11 @@ public class PiercingHitObjectAffector : AffectorBase
 
 	public static float GetDamageRate(int piercingAddCount, int index)
 	{
+		DamageRateTableData damageRateTableData = TableDataManager.instance.FindDamageTableData("MonsterThrough", piercingAddCount);
+		if (damageRateTableData == null)
+			return 1.0f;
+		if (index < damageRateTableData.rate.Length)
+			return damageRateTableData.rate[index];
 		return 1.0f;
 	}
 }

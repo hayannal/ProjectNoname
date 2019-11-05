@@ -46,6 +46,11 @@ public class RicochetHitObjectAffector : AffectorBase
 
 	public static float GetDamageRate(int ricochetAddCount, int index)
 	{
+		DamageRateTableData damageRateTableData = TableDataManager.instance.FindDamageTableData("Ricochet", ricochetAddCount);
+		if (damageRateTableData == null)
+			return 1.0f;
+		if (index < damageRateTableData.rate.Length)
+			return damageRateTableData.rate[index];
 		return 1.0f;
 	}
 }

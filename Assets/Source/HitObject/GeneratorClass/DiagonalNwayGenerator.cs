@@ -16,9 +16,9 @@ public class DiagonalNwayGenerator : ContinuousHitObjectGeneratorBase
 			gameObject.SetActive(false);
 	}
 
-	public override void InitializeGenerator(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction, int repeatIndex, Transform spawnTransform)
+	public override void InitializeGenerator(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack, Transform spawnTransform)
 	{
-		base.InitializeGenerator(meHit, parentActor, hitSignalIndexInAction, repeatIndex, spawnTransform);
+		base.InitializeGenerator(meHit, parentActor, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, spawnTransform);
 
 		Collider collider = parentActor.GetCollider();
 		Vector3 diagonal = new Vector3(-1.0f, 0.0f, 1.0f);

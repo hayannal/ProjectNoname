@@ -494,28 +494,36 @@ public class MeHitObject : MecanimEventBase {
 	{
 		// Repeat처리가 가장 먼저다.
 		// 그런데 상황에 따라 메인 발사체를 스폰하지 않을 수 있다.
-		HitObject.InitializeHit(spawnTransform, meHit, parentActor, parentTransform, hitSignalIndexInAction, 0);
+		HitObject.InitializeHit(spawnTransform, meHit, parentActor, parentTransform, hitSignalIndexInAction, 0, 0);
 
-		if (repeatCount > 0)
+		ActionController.ActionInfo currentActionInfo = parentActor.actionController.GetCurrentActionInfo();
+		bool normalAttack = (currentActionInfo != null && currentActionInfo.actionName == "Attack");
+		int repeatAddCountByLevelPack = normalAttack ? RepeatHitObjectAffector.GetAddCount(parentActor.affectorProcessor) : 0;
+		_resultRepeatInterval = meHit.repeatInterval;
+		if (repeatAddCountByLevelPack > 0) _resultRepeatInterval = RepeatHitObjectAffector.GetInterval(parentActor.affectorProcessor);
+		_totalRepeatCount = repeatCount + repeatAddCountByLevelPack;
+		if (_totalRepeatCount > 0)
 		{
 			Timing.RunCoroutine(RepeatProcess(spawnTransform, meHit, parentActor, parentTransform, hitSignalIndexInAction));
 		}
 	}
 
+	int _totalRepeatCount;
+	float _resultRepeatInterval;
 	IEnumerator<float> RepeatProcess(Transform spawnTransform, MeHitObject meHit, Actor parentActor, Transform parentTransform, int hitSignalIndexInAction)
 	{
 		// Repeat 하기전 트랜스폼들을 복제해서 캐싱해야한다. 이래야 본 포지션 및 캐릭터 방향까지 기억할 수 있다.
 		Transform duplicatedSpawnTransform = BattleInstanceManager.instance.GetEmptyTransform(spawnTransform.position, spawnTransform.rotation);
 		Transform duplicatedParentTransform = BattleInstanceManager.instance.GetEmptyTransform(parentTransform.position, parentTransform.rotation);
-		for (int i = 1; i <= meHit.repeatCount; ++i)
+		for (int i = 1; i <= _totalRepeatCount; ++i)
 		{
-			yield return Timing.WaitForSeconds(meHit.repeatInterval);
+			yield return Timing.WaitForSeconds(_resultRepeatInterval);
 
 			// avoid gc
 			if (this == null)
 				yield break;
 
-			HitObject.InitializeHit(duplicatedSpawnTransform, meHit, parentActor, duplicatedParentTransform, hitSignalIndexInAction, i);
+			HitObject.InitializeHit(duplicatedSpawnTransform, meHit, parentActor, duplicatedParentTransform, hitSignalIndexInAction, i, _totalRepeatCount - meHit.repeatCount);
 		}
 		duplicatedSpawnTransform.gameObject.SetActive(false);
 		duplicatedParentTransform.gameObject.SetActive(false);

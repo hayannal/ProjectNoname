@@ -15,13 +15,15 @@ public class ContinuousHitObjectGeneratorBase : MonoBehaviour
 	protected Actor _parentActor;
 	protected int _hitSignalIndexInAction;
 	int _repeatIndex;
+	int _repeatAddCountByLevelPack;
 
-	public virtual void InitializeGenerator(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction, int repeatIndex, Transform spawnTransform)
+	public virtual void InitializeGenerator(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack, Transform spawnTransform)
 	{
 		_signal = meHit;
 		_parentActor = parentActor;
 		_hitSignalIndexInAction = hitSignalIndexInAction;
 		_repeatIndex = repeatIndex;
+		_repeatAddCountByLevelPack = repeatAddCountByLevelPack;
 
 		_fullPathHash = 0;
 		if (disableOnChangeState)
@@ -64,7 +66,7 @@ public class ContinuousHitObjectGeneratorBase : MonoBehaviour
 		if (hitObject == null)
 			return null;
 
-		hitObject.InitializeHitObject(_signal, _parentActor, _hitSignalIndexInAction, _repeatIndex);
+		hitObject.InitializeHitObject(_signal, _parentActor, _hitSignalIndexInAction, _repeatIndex, _repeatAddCountByLevelPack);
 		return hitObject;
 	}
 

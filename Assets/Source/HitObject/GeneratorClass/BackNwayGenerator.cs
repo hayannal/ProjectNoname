@@ -16,9 +16,9 @@ public class BackNwayGenerator : ContinuousHitObjectGeneratorBase
 			gameObject.SetActive(false);
 	}
 
-	public override void InitializeGenerator(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction, int repeatIndex, Transform spawnTransform)
+	public override void InitializeGenerator(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack, Transform spawnTransform)
 	{
-		base.InitializeGenerator(meHit, parentActor, hitSignalIndexInAction, repeatIndex, spawnTransform);
+		base.InitializeGenerator(meHit, parentActor, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, spawnTransform);
 
 		Collider collider = parentActor.GetCollider();
 		_spawnLocalPosition.y = 1.0f;

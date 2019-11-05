@@ -31,9 +31,15 @@ public class MeRangeHitObject : MeHitObject
 	protected override void InitializeHitObject(Transform spawnTransform, MeHitObject meHit, Actor parentActor, Transform parentTransform, int hitSignalIndexInAction)
 	{
 		// Range에서는 만들어낸 Main HitObject를 기억해놨다가 직접 처리하는데 써야한다.
-		_mainHitObject = HitObject.InitializeHit(spawnTransform, meHit, parentActor, parentTransform, hitSignalIndexInAction, 0);
+		_mainHitObject = HitObject.InitializeHit(spawnTransform, meHit, parentActor, parentTransform, hitSignalIndexInAction, 0, 0);
 
-		if (repeatCount > 0)
+		ActionController.ActionInfo currentActionInfo = parentActor.actionController.GetCurrentActionInfo();
+		bool normalAttack = (currentActionInfo != null && currentActionInfo.actionName == "Attack");
+		int repeatAddCountByLevelPack = normalAttack ? RepeatHitObjectAffector.GetAddCount(parentActor.affectorProcessor) : 0;
+		_resultRepeatInterval = meHit.repeatInterval;
+		if (repeatAddCountByLevelPack > 0) _resultRepeatInterval = RepeatHitObjectAffector.GetInterval(parentActor.affectorProcessor);
+		_totalRepeatCount = repeatCount + repeatAddCountByLevelPack;
+		if (_totalRepeatCount > 0)
 		{
 			if (_listRepeatHitObject == null)
 				_listRepeatHitObject = new List<HitObject>();
@@ -48,15 +54,15 @@ public class MeRangeHitObject : MeHitObject
 		// Repeat 하기전 트랜스폼들을 복제해서 캐싱해야한다. 이래야 본 포지션 및 캐릭터 방향까지 기억할 수 있다.
 		Transform duplicatedSpawnTransform = BattleInstanceManager.instance.GetEmptyTransform(spawnTransform.position, spawnTransform.rotation);
 		Transform duplicatedParentTransform = BattleInstanceManager.instance.GetEmptyTransform(parentTransform.position, parentTransform.rotation);
-		for (int i = 1; i <= meHit.repeatCount; ++i)
+		for (int i = 1; i <= _totalRepeatCount; ++i)
 		{
-			yield return Timing.WaitForSeconds(meHit.repeatInterval);
+			yield return Timing.WaitForSeconds(_resultRepeatInterval);
 
 			// avoid gc
 			if (this == null)
 				yield break;
 
-			HitObject repeatHitObject = HitObject.InitializeHit(duplicatedSpawnTransform, meHit, parentActor, duplicatedParentTransform, hitSignalIndexInAction, i);
+			HitObject repeatHitObject = HitObject.InitializeHit(duplicatedSpawnTransform, meHit, parentActor, duplicatedParentTransform, hitSignalIndexInAction, i, _totalRepeatCount - meHit.repeatCount);
 			_listRepeatHitObject.Add(repeatHitObject);
 		}
 		duplicatedSpawnTransform.gameObject.SetActive(false);
@@ -65,6 +71,8 @@ public class MeRangeHitObject : MeHitObject
 
 	HitObject _mainHitObject;
 	List<HitObject> _listRepeatHitObject;
+	int _totalRepeatCount;
+	float _resultRepeatInterval;
 	override public void OnRangeSignalEnd(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		if (_mainHitObject != null)
@@ -73,7 +81,7 @@ public class MeRangeHitObject : MeHitObject
 			_mainHitObject = null;
 		}
 
-		if (repeatCount > 0)
+		if (_totalRepeatCount > 0)
 		{
 			Timing.RunCoroutine(RepeatEndProcess());
 		}
@@ -81,9 +89,9 @@ public class MeRangeHitObject : MeHitObject
 
 	IEnumerator<float> RepeatEndProcess()
 	{
-		for (int i = 1; i <= repeatCount; ++i)
+		for (int i = 1; i <= _totalRepeatCount; ++i)
 		{
-			yield return Timing.WaitForSeconds(repeatInterval);
+			yield return Timing.WaitForSeconds(_resultRepeatInterval);
 
 			// avoid gc
 			if (this == null)
@@ -101,13 +109,25 @@ public class MeRangeHitObject : MeHitObject
 		if (_mainHitObject != null)
 			_mainHitObject.UpdateAreaOrSphereCast();
 
-		if (_listRepeatHitObject != null)
+		if (_totalRepeatCount > 0)
 		{
-			for (int i = 0; i < _listRepeatHitObject.Count; ++i)
-			{
-				if (_listRepeatHitObject[i] != null)
-					_listRepeatHitObject[i].UpdateAreaOrSphereCast();
-			}
+			Timing.RunCoroutine(RepeatRangeSignalProcess());
+		}
+	}
+
+	IEnumerator<float> RepeatRangeSignalProcess()
+	{
+		for (int i = 1; i <= _totalRepeatCount; ++i)
+		{
+			yield return Timing.WaitForSeconds(_resultRepeatInterval);
+
+			// avoid gc
+			if (this == null)
+				yield break;
+
+			int index = i - 1;
+			if (index < _listRepeatHitObject.Count && _listRepeatHitObject[index] != null)
+				_listRepeatHitObject[index].UpdateAreaOrSphereCast();
 		}
 	}
 }

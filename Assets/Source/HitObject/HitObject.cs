@@ -21,7 +21,7 @@ public class HitObject : MonoBehaviour
 	}
 
 	#region staticFunction
-	public static HitObject InitializeHit(Transform spawnTransform, MeHitObject meHit, Actor parentActor, Transform parentTransform, int hitSignalIndexInAction, int repeatIndex)
+	public static HitObject InitializeHit(Transform spawnTransform, MeHitObject meHit, Actor parentActor, Transform parentTransform, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack)
 	{
 		// step 1. Find Target and Reaction
 		if (meHit.targetDetectType == eTargetDetectType.Preset)
@@ -50,7 +50,7 @@ public class HitObject : MonoBehaviour
 					hitParameter.contactPoint = targetCollider.transform.position + (hitParameter.contactNormal * colliderRadius * 0.7f);
 					hitParameter.contactPoint.y += targetCollider.bounds.size.y * 0.5f;
 					hitParameter.statusBase = parentActor.actorStatus.statusBase;
-					CopyEtcStatusForHitObject(ref hitParameter.statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction, repeatIndex);
+					CopyEtcStatusForHitObject(ref hitParameter.statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
 
 					ApplyAffectorValue(affectorProcessor, meHit.affectorValueIdList, hitParameter);
 
@@ -69,7 +69,7 @@ public class HitObject : MonoBehaviour
 		else if (meHit.targetDetectType == eTargetDetectType.Area || meHit.targetDetectType == eTargetDetectType.SphereCast)
 		{
 			StatusStructForHitObject statusStructForHitObject = new StatusStructForHitObject();
-			CopyEtcStatusForHitObject(ref statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction, repeatIndex);
+			CopyEtcStatusForHitObject(ref statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
 
 			Vector3 areaPosition = GetSpawnPosition(spawnTransform, meHit, parentTransform, parentActor.affectorProcessor);
 			Vector3 areaDirection = GetSpawnDirection(areaPosition, meHit, parentTransform, GetTargetPosition(meHit, parentActor, hitSignalIndexInAction));
@@ -84,7 +84,7 @@ public class HitObject : MonoBehaviour
 			HitObject hitObject = GetCachedHitObject(meHit, areaPosition, rotation);
 			if (hitObject != null)
 			{
-				hitObject.InitializeHitObject(meHit, parentActor, hitSignalIndexInAction, repeatIndex);
+				hitObject.InitializeHitObject(meHit, parentActor, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
 				if (meHit.targetDetectType == eTargetDetectType.SphereCast)
 				{
 					// attach child
@@ -114,7 +114,7 @@ public class HitObject : MonoBehaviour
 				HitObject parallelHitObject = GetCachedHitObject(meHit, position, rotation);
 				if (parallelHitObject == null)
 					continue;
-				parallelHitObject.InitializeHitObject(meHit, parentActor, hitSignalIndexInAction, repeatIndex);
+				parallelHitObject.InitializeHitObject(meHit, parentActor, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
 			}
 		}
 
@@ -126,7 +126,7 @@ public class HitObject : MonoBehaviour
 			HitObject circularSectorHitObject = GetCachedHitObject(meHit, defaultPosition, Quaternion.Euler(0.0f, angle, 0.0f));
 			if (circularSectorHitObject == null)
 				continue;
-			circularSectorHitObject.InitializeHitObject(meHit, parentActor, hitSignalIndexInAction, repeatIndex);
+			circularSectorHitObject.InitializeHitObject(meHit, parentActor, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
 		}
 
 		bool ignoreMainHitObjectByGenerator = false;
@@ -136,7 +136,7 @@ public class HitObject : MonoBehaviour
 			{
 				ContinuousHitObjectGeneratorBase continuousHitObjectGenerator = BattleInstanceManager.instance.GetContinuousHitObjectGenerator(meHit.continuousHitObjectGeneratorBaseList[i].gameObject, defaultPosition, defaultRotation);
 				ignoreMainHitObjectByGenerator |= continuousHitObjectGenerator.ignoreMainHitObject;
-				continuousHitObjectGenerator.InitializeGenerator(meHit, parentActor, hitSignalIndexInAction, repeatIndex, spawnTransform);
+				continuousHitObjectGenerator.InitializeGenerator(meHit, parentActor, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, spawnTransform);
 			}
 		}
 
@@ -147,7 +147,7 @@ public class HitObject : MonoBehaviour
 			ContinuousHitObjectGeneratorBase continuousHitObjectGenerator = BattleInstanceManager.instance.GetContinuousHitObjectGenerator(BattleManager.instance.diagonalNwayGeneratorPrefab, defaultPosition, defaultRotation);
 			ignoreMainHitObjectByGenerator |= continuousHitObjectGenerator.ignoreMainHitObject;
 			continuousHitObjectGenerator.createCount = diagonalNwayAddCount;
-			continuousHitObjectGenerator.InitializeGenerator(meHit, parentActor, hitSignalIndexInAction, repeatIndex, spawnTransform);
+			continuousHitObjectGenerator.InitializeGenerator(meHit, parentActor, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, spawnTransform);
 		}
 
 		bool createMainHitObject = true;
@@ -159,7 +159,7 @@ public class HitObject : MonoBehaviour
 		{
 			HitObject hitObject = GetCachedHitObject(meHit, defaultPosition, defaultRotation);
 			if (hitObject != null)
-				hitObject.InitializeHitObject(meHit, parentActor, hitSignalIndexInAction, repeatIndex);
+				hitObject.InitializeHitObject(meHit, parentActor, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
 			return hitObject;
 		}
 		return null;
@@ -304,7 +304,7 @@ public class HitObject : MonoBehaviour
 		return parentActorTransform.TransformDirection(result);
 	}
 
-	static void CopyEtcStatusForHitObject(ref StatusStructForHitObject statusStructForHitObject, Actor actor, MeHitObject meHit, int hitSignalIndexInAction, int repeatIndex)
+	static void CopyEtcStatusForHitObject(ref StatusStructForHitObject statusStructForHitObject, Actor actor, MeHitObject meHit, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack)
 	{
 		statusStructForHitObject.actorInstanceId = actor.GetInstanceID();
 		statusStructForHitObject.teamId = actor.team.teamId;
@@ -330,6 +330,7 @@ public class HitObject : MonoBehaviour
 				statusStructForHitObject.bossMonsterActor = monsterActor.bossMonster;
 		}
 		statusStructForHitObject.repeatIndex = repeatIndex;
+		statusStructForHitObject.repeatAddCountByLevelPack = repeatAddCountByLevelPack;
 		statusStructForHitObject.monsterThroughIndex = 0;
 		statusStructForHitObject.ricochetIndex = 0;
 		statusStructForHitObject.bounceWallQuadIndex = 0;
@@ -339,6 +340,8 @@ public class HitObject : MonoBehaviour
 		statusStructForHitObject.ricochetAddCountByLevelPack = normalAttack ? RicochetHitObjectAffector.GetAddCount(actor.affectorProcessor) : 0;
 		statusStructForHitObject.bounceWallQuadAddCountByLevelPack = normalAttack ? BounceWallQuadHitObjectAffector.GetAddCount(actor.affectorProcessor) : 0;
 		statusStructForHitObject.parallelAddCountByLevelPack = normalAttack ? ParallelHitObjectAffector.GetAddCount(actor.affectorProcessor) : 0;
+		// repeat은 액션이 끝나고도 딜레이 기다렸다가 나갈 수 있기 때문에 여기서 체크하면 안된다.
+		//statusStructForHitObject.repeatAddCountByLevelPack = normalAttack ? RepeatHitObjectAffector.GetAddCount(actor.affectorProcessor) : 0;
 	}
 
 	static void CheckHitArea(Vector3 areaPosition, Vector3 areaForward, MeHitObject meHit, StatusBase statusBase, StatusStructForHitObject statusForHitObject,
@@ -641,13 +644,13 @@ public class HitObject : MonoBehaviour
 		_animator = GetComponent<Animator>();
 	}
 
-	public void InitializeHitObject(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction, int repeatIndex)
+	public void InitializeHitObject(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack)
 	{
 		_signal = meHit;
 		_createTime = Time.time;
 		_createPosition = cachedTransform.position;
 		parentActor.actorStatus.CopyStatusBase(ref _statusBase);
-		CopyEtcStatusForHitObject(ref _statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction, repeatIndex);
+		CopyEtcStatusForHitObject(ref _statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
 
 		Team.eTeamLayer teamLayerType = Team.eTeamLayer.TeamLayer_Amount;
 		switch (_statusStructForHitObject.teamId)

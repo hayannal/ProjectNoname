@@ -16,9 +16,9 @@ public class LeftRightNwayGenerator : ContinuousHitObjectGeneratorBase
 			gameObject.SetActive(false);
 	}
 
-	public override void InitializeGenerator(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction, int repeatIndex, Transform spawnTransform)
+	public override void InitializeGenerator(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack, Transform spawnTransform)
 	{
-		base.InitializeGenerator(meHit, parentActor, hitSignalIndexInAction, repeatIndex, spawnTransform);
+		base.InitializeGenerator(meHit, parentActor, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, spawnTransform);
 
 		Collider collider = parentActor.GetCollider();
 		_spawnLocalLeftPosition.x = ColliderUtil.GetRadius(collider) * -BackNwayGenerator.BackNwayLocalRadiusScale;

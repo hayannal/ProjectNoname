@@ -24,6 +24,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.BounceWallQuadHitObject: affectorBase = new BounceWallQuadHitObjectAffector(); break;
 			case eAffectorType.ParallelHitObject: affectorBase = new ParallelHitObjectAffector(); break;
 			case eAffectorType.DiagonalNwayGenerator: affectorBase = new DiagonalNwayGeneratorAffector(); break;
+			case eAffectorType.RepeatHitObject: affectorBase = new RepeatHitObjectAffector(); break;
 			case eAffectorType.Invincible: affectorBase = new InvincibleAffector(); break;
 			case eAffectorType.CountBarrier: affectorBase = new CountBarrierAffector(); break;
 			case eAffectorType.InvincibleTortoise: affectorBase = new InvincibleTortoiseAffector(); break;
@@ -53,6 +54,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.BounceWallQuadHitObject:
 			case eAffectorType.ParallelHitObject:
 			case eAffectorType.DiagonalNwayGenerator:
+			case eAffectorType.RepeatHitObject:
 			case eAffectorType.Invincible:
 			case eAffectorType.CountBarrier:
 			case eAffectorType.InvincibleTortoise:

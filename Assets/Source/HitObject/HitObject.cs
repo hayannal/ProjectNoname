@@ -316,6 +316,8 @@ public class HitObject : MonoBehaviour
 		statusStructForHitObject.monsterThroughAddCountByLevelPack = MonsterThroughHitObjectAffector.GetAddCount(actor.affectorProcessor);
 		statusStructForHitObject.ricochetIndex = 0;
 		statusStructForHitObject.ricochetAddCountByLevelPack = RicochetHitObjectAffector.GetAddCount(actor.affectorProcessor);
+		statusStructForHitObject.bounceWallQuadIndex = 0;
+		statusStructForHitObject.bounceWallQuadAddCountByLevelPack = BounceWallQuadHitObjectAffector.GetAddCount(actor.affectorProcessor);
 	}
 
 	static void CheckHitArea(Vector3 areaPosition, Vector3 areaForward, MeHitObject meHit, StatusBase statusBase, StatusStructForHitObject statusForHitObject,
@@ -670,7 +672,7 @@ public class HitObject : MonoBehaviour
 
 		// 사실은 기본으로 들고있는 애들은 팩을 못먹게 할테니 덧셈 대신 덮어쓰는게 맞는데 어차피 0일테니 그냥 덧셈으로 해둔다.
 		_remainMonsterThroughCount = _signal.monsterThroughCount + statusStructForHitObject.monsterThroughAddCountByLevelPack;
-		_remainBounceWallQuadCount = _signal.bounceWallQuadCount;
+		_remainBounceWallQuadCount = _signal.bounceWallQuadCount + statusStructForHitObject.bounceWallQuadAddCountByLevelPack;
 		_remainRicochetCount = _signal.ricochetCount + statusStructForHitObject.ricochetAddCountByLevelPack;
 
 		// Sub Component
@@ -1109,6 +1111,7 @@ public class HitObject : MonoBehaviour
 		{
 			if (_remainBounceWallQuadCount > 0)
 			{
+				++_statusStructForHitObject.bounceWallQuadIndex;
 				_remainBounceWallQuadCount -= 1;
 				useBounce = true;
 			}
@@ -1125,6 +1128,7 @@ public class HitObject : MonoBehaviour
 		{
 			if (_remainBounceWallQuadCount > 0)
 			{
+				++_statusStructForHitObject.bounceWallQuadIndex;
 				_remainBounceWallQuadCount -= 1;
 				useBounce = true;
 			}

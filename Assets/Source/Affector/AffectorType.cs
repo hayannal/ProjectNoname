@@ -22,6 +22,7 @@ public enum eAffectorType
 
 	MonsterThroughHitObject = 31,
 	RicochetHitObject,
+	BounceWallQuadHitObject,
 
 	DropItem = 51,
 	Invincible,

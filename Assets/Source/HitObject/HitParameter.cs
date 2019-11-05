@@ -21,10 +21,12 @@ public struct StatusStructForHitObject
 	public int repeatIndex;
 	public int monsterThroughIndex;
 	public int ricochetIndex;
+	public int bounceWallQuadIndex;
 
 	// for level pack
 	public int monsterThroughAddCountByLevelPack;
 	public int ricochetAddCountByLevelPack;
+	public int bounceWallQuadAddCountByLevelPack;
 
 	// example
 	//public float hp;	// hp is in StatusBase

@@ -12,11 +12,17 @@ public struct StatusStructForHitObject
 	// for hitObject
 	public int weaponIDAtCreation;
 	public int hitSignalIndexInAction;
-	public int repeatIndex;
 	public bool showHitBlink;
 	public bool showHitRimBlink;
 	public bool monsterActor;
 	public bool bossMonsterActor;
+
+	// hitObject etc index
+	public int repeatIndex;
+	public int piercingIndex;
+
+	// for level pack
+	public int piercingAddCountByLevelPack;
 
 	// example
 	//public float hp;	// hp is in StatusBase

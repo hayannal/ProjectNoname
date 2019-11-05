@@ -296,7 +296,6 @@ public class HitObject : MonoBehaviour
 		//if (meHit.useWeaponHitEffect)
 		//	statusStructForHitObject.weaponIDAtCreation = actor.GetWeaponID(meHit.weaponDummyName);
 		statusStructForHitObject.hitSignalIndexInAction = hitSignalIndexInAction;
-		statusStructForHitObject.repeatIndex = repeatIndex;
 		if (meHit.affectorValueIdList.Count > 0)
 		{
 			statusStructForHitObject.showHitBlink = meHit.showHitBlink;
@@ -312,6 +311,9 @@ public class HitObject : MonoBehaviour
 			if (monsterActor != null)
 				statusStructForHitObject.bossMonsterActor = monsterActor.bossMonster;
 		}
+		statusStructForHitObject.repeatIndex = repeatIndex;
+		statusStructForHitObject.piercingIndex = 0;
+		statusStructForHitObject.piercingAddCountByLevelPack = PiercingHitObjectAffector.GetAddCount(actor.affectorProcessor);
 	}
 
 	static void CheckHitArea(Vector3 areaPosition, Vector3 areaForward, MeHitObject meHit, StatusBase statusBase, StatusStructForHitObject statusForHitObject,
@@ -543,6 +545,7 @@ public class HitObject : MonoBehaviour
 					listOneHitPerTarget.Add(affectorProcessor);
 			}
 
+			// Ray발사라서 PiercingHitObjectAffector에 영향받지 않는다.
 			if (meHit.monsterThroughCount == 0)
 			{
 				endPosition = s_listMonsterRaycastHit[i].point;
@@ -663,7 +666,8 @@ public class HitObject : MonoBehaviour
 			}
 		}
 
-		_remainMonsterThroughCount = _signal.monsterThroughCount;	// + level pack through count
+		// 사실은 기본으로 들고있는 애들은 팩을 못먹게 할테니 덧셈 대신 덮어쓰는게 맞는데 어차피 0일테니 그냥 덧셈으로 해둔다.
+		_remainMonsterThroughCount = _signal.monsterThroughCount + statusStructForHitObject.piercingAddCountByLevelPack;
 		_remainBounceWallQuadCount = _signal.bounceWallQuadCount;
 		_remainRicochetCount = _signal.ricochetCount;
 
@@ -1013,7 +1017,7 @@ public class HitObject : MonoBehaviour
 						_hitObjectMovement.AddRicochet(col, _remainRicochetCount == _signal.ricochetCount);
 					monsterCollided = true;
 
-					if (_signal.monsterThroughCount > 0 || _signal.monsterThroughCount == -1)
+					if (_remainMonsterThroughCount > 0 || _remainMonsterThroughCount == -1)
 						AddIgnoreList(col);
 					// 리코세는 가능여부 판단하고 해야해서 OnPostCollided함수 안에서 한다.
 				}
@@ -1087,6 +1091,7 @@ public class HitObject : MonoBehaviour
 			}
 			else if ((_remainMonsterThroughCount > 0 || _remainMonsterThroughCount == -1))
 			{
+				++_statusStructForHitObject.piercingIndex;
 				if (_remainMonsterThroughCount > 0) _remainMonsterThroughCount -= 1;
 				useThrough = true;
 			}

@@ -23,6 +23,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.RicochetHitObject: affectorBase = new RicochetHitObjectAffector(); break;
 			case eAffectorType.BounceWallQuadHitObject: affectorBase = new BounceWallQuadHitObjectAffector(); break;
 			case eAffectorType.ParallelHitObject: affectorBase = new ParallelHitObjectAffector(); break;
+			case eAffectorType.DiagonalNwayGenerator: affectorBase = new DiagonalNwayGeneratorAffector(); break;
 			case eAffectorType.Invincible: affectorBase = new InvincibleAffector(); break;
 			case eAffectorType.CountBarrier: affectorBase = new CountBarrierAffector(); break;
 			case eAffectorType.InvincibleTortoise: affectorBase = new InvincibleTortoiseAffector(); break;
@@ -51,6 +52,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.RicochetHitObject:
 			case eAffectorType.BounceWallQuadHitObject:
 			case eAffectorType.ParallelHitObject:
+			case eAffectorType.DiagonalNwayGenerator:
 			case eAffectorType.Invincible:
 			case eAffectorType.CountBarrier:
 			case eAffectorType.InvincibleTortoise:

@@ -31,6 +31,9 @@ public class BattleManager : MonoBehaviour
 	public GameObject portalPrefab;
 	public GameObject portalMoveEffectPrefab;
 
+	// for level pack
+	public GameObject diagonalNwayGeneratorPrefab;
+
 	void Awake()
 	{
 		instance = this;

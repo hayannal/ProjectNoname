@@ -24,6 +24,7 @@ public enum eAffectorType
 	RicochetHitObject,
 	BounceWallQuadHitObject,
 	ParallelHitObject,
+	DiagonalNwayGenerator,
 
 	DropItem = 51,
 	Invincible,

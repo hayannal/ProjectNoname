@@ -140,6 +140,16 @@ public class HitObject : MonoBehaviour
 			}
 		}
 
+		// 대각샷 좌우샷 후방샷 레벨팩
+		int diagonalNwayAddCount = normalAttack ? DiagonalNwayGeneratorAffector.GetAddCount(parentActor.affectorProcessor) : 0;
+		if (diagonalNwayAddCount > 0)
+		{
+			ContinuousHitObjectGeneratorBase continuousHitObjectGenerator = BattleInstanceManager.instance.GetContinuousHitObjectGenerator(BattleManager.instance.diagonalNwayGeneratorPrefab, defaultPosition, defaultRotation);
+			ignoreMainHitObjectByGenerator |= continuousHitObjectGenerator.ignoreMainHitObject;
+			continuousHitObjectGenerator.createCount = diagonalNwayAddCount;
+			continuousHitObjectGenerator.InitializeGenerator(meHit, parentActor, hitSignalIndexInAction, repeatIndex, spawnTransform);
+		}
+
 		bool createMainHitObject = true;
 		if (meHit.ignoreMainHitObjectByParallel || meHit.ignoreMainHitObjectByCircularSector || ignoreMainHitObjectByGenerator)
 			createMainHitObject = false;

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using ActorStatusDefine;
 
-public class PiercingHitObjectAffector : AffectorBase
+public class MonsterThroughHitObjectAffector : AffectorBase
 {
 	float _endTime;
 	int _piercingAddCount;
@@ -37,7 +37,7 @@ public class PiercingHitObjectAffector : AffectorBase
 
 	public static int GetAddCount(AffectorProcessor affectorProcessor)
 	{
-		PiercingHitObjectAffector piercingHitObjectAffector = (PiercingHitObjectAffector)affectorProcessor.GetFirstContinuousAffector(eAffectorType.PiercingHitObject);
+		MonsterThroughHitObjectAffector piercingHitObjectAffector = (MonsterThroughHitObjectAffector)affectorProcessor.GetFirstContinuousAffector(eAffectorType.MonsterThroughHitObject);
 		if (piercingHitObjectAffector == null)
 			return 0;
 

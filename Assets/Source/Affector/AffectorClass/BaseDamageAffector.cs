@@ -99,9 +99,9 @@ public class BaseDamageAffector : AffectorBase {
 		}
 
 		// 리코셰 몹관통 등에 의한 데미지 감소 처리. 레벨팩 없이 시그널에 의해 동작할땐 적용하지 않는다.
-		if (hitParameter.statusStructForHitObject.piercingAddCountByLevelPack > 0)
+		if (hitParameter.statusStructForHitObject.monsterThroughAddCountByLevelPack > 0)
 		{
-			float damageRate = PiercingHitObjectAffector.GetDamageRate(hitParameter.statusStructForHitObject.piercingAddCountByLevelPack, hitParameter.statusStructForHitObject.piercingIndex);
+			float damageRate = MonsterThroughHitObjectAffector.GetDamageRate(hitParameter.statusStructForHitObject.monsterThroughAddCountByLevelPack, hitParameter.statusStructForHitObject.monsterThroughIndex);
 			if (damageRate != 1.0f)
 				damage *= damageRate;
 		}

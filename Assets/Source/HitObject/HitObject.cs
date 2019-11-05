@@ -312,8 +312,8 @@ public class HitObject : MonoBehaviour
 				statusStructForHitObject.bossMonsterActor = monsterActor.bossMonster;
 		}
 		statusStructForHitObject.repeatIndex = repeatIndex;
-		statusStructForHitObject.piercingIndex = 0;
-		statusStructForHitObject.piercingAddCountByLevelPack = PiercingHitObjectAffector.GetAddCount(actor.affectorProcessor);
+		statusStructForHitObject.monsterThroughIndex = 0;
+		statusStructForHitObject.monsterThroughAddCountByLevelPack = MonsterThroughHitObjectAffector.GetAddCount(actor.affectorProcessor);
 		statusStructForHitObject.ricochetIndex = 0;
 		statusStructForHitObject.ricochetAddCountByLevelPack = RicochetHitObjectAffector.GetAddCount(actor.affectorProcessor);
 	}
@@ -669,9 +669,9 @@ public class HitObject : MonoBehaviour
 		}
 
 		// 사실은 기본으로 들고있는 애들은 팩을 못먹게 할테니 덧셈 대신 덮어쓰는게 맞는데 어차피 0일테니 그냥 덧셈으로 해둔다.
-		_remainMonsterThroughCount = _signal.monsterThroughCount + statusStructForHitObject.piercingAddCountByLevelPack;
+		_remainMonsterThroughCount = _signal.monsterThroughCount + statusStructForHitObject.monsterThroughAddCountByLevelPack;
 		_remainBounceWallQuadCount = _signal.bounceWallQuadCount;
-		_remainRicochetCount = _signal.ricochetCount;
+		_remainRicochetCount = _signal.ricochetCount + statusStructForHitObject.ricochetAddCountByLevelPack;
 
 		// Sub Component
 		if (meHit.lifeTime > 0.0f)
@@ -1094,7 +1094,7 @@ public class HitObject : MonoBehaviour
 			}
 			else if ((_remainMonsterThroughCount > 0 || _remainMonsterThroughCount == -1))
 			{
-				++_statusStructForHitObject.piercingIndex;
+				++_statusStructForHitObject.monsterThroughIndex;
 				if (_remainMonsterThroughCount > 0) _remainMonsterThroughCount -= 1;
 				useThrough = true;
 			}

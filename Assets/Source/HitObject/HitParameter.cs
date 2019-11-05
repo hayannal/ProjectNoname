@@ -19,11 +19,11 @@ public struct StatusStructForHitObject
 
 	// hitObject etc index
 	public int repeatIndex;
-	public int piercingIndex;
+	public int monsterThroughIndex;
 	public int ricochetIndex;
 
 	// for level pack
-	public int piercingAddCountByLevelPack;
+	public int monsterThroughAddCountByLevelPack;
 	public int ricochetAddCountByLevelPack;
 
 	// example

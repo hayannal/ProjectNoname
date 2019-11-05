@@ -20,7 +20,7 @@ public enum eAffectorType
 	AddAffectorHitObject,
 	CallAffectorValue,
 
-	PiercingHitObject = 31,
+	MonsterThroughHitObject = 31,
 	RicochetHitObject,
 
 	DropItem = 51,

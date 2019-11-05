@@ -1,0 +1,51 @@
+﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using ActorStatusDefine;
+
+public class RicochetHitObjectAffector : AffectorBase
+{
+	float _endTime;
+	int _ricochetAddCount;
+	public int ricochetAddCount { get { return _ricochetAddCount; } }
+
+	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
+	{
+		if (_actor == null)
+		{
+			// something else? for breakable object
+			return;
+		}
+
+		if (_actor.actorStatus.IsDie())
+		{
+			finalized = true;
+			return;
+		}
+
+		// lifeTime
+		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
+
+		_ricochetAddCount = affectorValueLevelTableData.iValue1;
+	}
+
+	public override void UpdateAffector()
+	{
+		if (CheckEndTime(_endTime) == false)
+			return;
+	}
+
+	public static int GetAddCount(AffectorProcessor affectorProcessor)
+	{
+		RicochetHitObjectAffector ricochetHitObjectAffector = (RicochetHitObjectAffector)affectorProcessor.GetFirstContinuousAffector(eAffectorType.RicochetHitObject);
+		if (ricochetHitObjectAffector == null)
+			return 0;
+
+		return ricochetHitObjectAffector.ricochetAddCount;
+	}
+
+	public static float GetDamageRate(int ricochetAddCount, int index)
+	{
+		return 1.0f;
+	}
+}

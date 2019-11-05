@@ -21,6 +21,7 @@ public enum eAffectorType
 	CallAffectorValue,
 
 	PiercingHitObject = 31,
+	RicochetHitObject,
 
 	DropItem = 51,
 	Invincible,

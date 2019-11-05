@@ -20,6 +20,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.Heal: affectorBase = new HealAffector(); break;
 			case eAffectorType.CallAffectorValue: affectorBase = new CallAffectorValueAffector(); break;
 			case eAffectorType.PiercingHitObject: affectorBase = new PiercingHitObjectAffector(); break;
+			case eAffectorType.RicochetHitObject: affectorBase = new RicochetHitObjectAffector(); break;
 			case eAffectorType.Invincible: affectorBase = new InvincibleAffector(); break;
 			case eAffectorType.CountBarrier: affectorBase = new CountBarrierAffector(); break;
 			case eAffectorType.InvincibleTortoise: affectorBase = new InvincibleTortoiseAffector(); break;
@@ -45,6 +46,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.AddAffectorHitObject:
 			case eAffectorType.CallAffectorValue:
 			case eAffectorType.PiercingHitObject:
+			case eAffectorType.RicochetHitObject:
 			case eAffectorType.Invincible:
 			case eAffectorType.CountBarrier:
 			case eAffectorType.InvincibleTortoise:

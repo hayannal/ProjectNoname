@@ -314,6 +314,8 @@ public class HitObject : MonoBehaviour
 		statusStructForHitObject.repeatIndex = repeatIndex;
 		statusStructForHitObject.piercingIndex = 0;
 		statusStructForHitObject.piercingAddCountByLevelPack = PiercingHitObjectAffector.GetAddCount(actor.affectorProcessor);
+		statusStructForHitObject.ricochetIndex = 0;
+		statusStructForHitObject.ricochetAddCountByLevelPack = RicochetHitObjectAffector.GetAddCount(actor.affectorProcessor);
 	}
 
 	static void CheckHitArea(Vector3 areaPosition, Vector3 areaForward, MeHitObject meHit, StatusBase statusBase, StatusStructForHitObject statusForHitObject,
@@ -1069,6 +1071,7 @@ public class HitObject : MonoBehaviour
 				if (_hitObjectMovement.ApplyRicochet(ref colliderEnabled))
 				{
 					ricochetApplied = true;
+					++_statusStructForHitObject.ricochetIndex;
 					_remainRicochetCount -= 1;
 					if (colliderEnabled)
 					{

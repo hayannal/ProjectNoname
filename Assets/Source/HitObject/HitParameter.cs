@@ -20,9 +20,11 @@ public struct StatusStructForHitObject
 	// hitObject etc index
 	public int repeatIndex;
 	public int piercingIndex;
+	public int ricochetIndex;
 
 	// for level pack
 	public int piercingAddCountByLevelPack;
+	public int ricochetAddCountByLevelPack;
 
 	// example
 	//public float hp;	// hp is in StatusBase

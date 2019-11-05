@@ -334,13 +334,23 @@ public class ActionController : MonoBehaviour {
 	}
 
 	#region Current Action
+	// for caching
+	int _lastCurrentStateFullPathHash;
+	ActionInfo _lastCurrentActionInfo;
 	public ActionInfo GetCurrentActionInfo()
 	{
 		AnimatorStateInfo animatorStateInfo = animator.GetCurrentAnimatorStateInfo(0);
+		if (_lastCurrentStateFullPathHash == animatorStateInfo.fullPathHash && _lastCurrentActionInfo != null)
+			return _lastCurrentActionInfo;
+
 		for (int i = 0; i < _listActionInfo.Count; ++i)
 		{
 			if (_listActionInfo[i].actionNameHash == animatorStateInfo.fullPathHash)
+			{
+				_lastCurrentStateFullPathHash = animatorStateInfo.fullPathHash;
+				_lastCurrentActionInfo = _listActionInfo[i];
 				return _listActionInfo[i];
+			}
 		}
 		return null;
 	}

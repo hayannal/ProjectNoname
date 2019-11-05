@@ -313,11 +313,13 @@ public class HitObject : MonoBehaviour
 		}
 		statusStructForHitObject.repeatIndex = repeatIndex;
 		statusStructForHitObject.monsterThroughIndex = 0;
-		statusStructForHitObject.monsterThroughAddCountByLevelPack = MonsterThroughHitObjectAffector.GetAddCount(actor.affectorProcessor);
 		statusStructForHitObject.ricochetIndex = 0;
-		statusStructForHitObject.ricochetAddCountByLevelPack = RicochetHitObjectAffector.GetAddCount(actor.affectorProcessor);
 		statusStructForHitObject.bounceWallQuadIndex = 0;
-		statusStructForHitObject.bounceWallQuadAddCountByLevelPack = BounceWallQuadHitObjectAffector.GetAddCount(actor.affectorProcessor);
+		ActionController.ActionInfo currentActionInfo = actor.actionController.GetCurrentActionInfo();
+		bool normalAttack = (currentActionInfo.actionName == "Attack");
+		statusStructForHitObject.monsterThroughAddCountByLevelPack = normalAttack ? MonsterThroughHitObjectAffector.GetAddCount(actor.affectorProcessor) : 0;
+		statusStructForHitObject.ricochetAddCountByLevelPack = normalAttack ? RicochetHitObjectAffector.GetAddCount(actor.affectorProcessor) : 0;
+		statusStructForHitObject.bounceWallQuadAddCountByLevelPack = normalAttack ? BounceWallQuadHitObjectAffector.GetAddCount(actor.affectorProcessor) : 0;
 	}
 
 	static void CheckHitArea(Vector3 areaPosition, Vector3 areaForward, MeHitObject meHit, StatusBase statusBase, StatusStructForHitObject statusForHitObject,

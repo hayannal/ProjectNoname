@@ -12,24 +12,23 @@ public enum eAffectorType
 	MoveToTarget,
 	AddActorState,
 	ChangeActorStatus,
-	DropItem,
 	CannotAction,
 	CannotMove,
-
 	DefaultContainer,
+
 	Heal,
 	AddAffectorHitObject,
-	GetLevelPack,
 	CallAffectorValue,
+
+	PiercingHitObject = 31,
+
+	DropItem = 51,
 	Invincible,
 	CountBarrier,
 	Headshot,
 	InvincibleTortoise,
 	Burrow,
-
 	IgnoreEvadeVisual,
 	DropAdjust,
-
-	PiercingHitObject = 71,
 }
 #endregion

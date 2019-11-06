@@ -34,6 +34,7 @@ public class BattleManager : MonoBehaviour
 	// for level pack
 	public GameObject diagonalNwayGeneratorPrefab;
 	public GameObject leftRightNwayGeneratorPrefab;
+	public GameObject backNwayGeneratorPrefab;
 
 	void Awake()
 	{

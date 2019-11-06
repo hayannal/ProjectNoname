@@ -26,7 +26,8 @@ public enum eAffectorType
 	ParallelHitObject,
 	DiagonalNwayGenerator,
 	LeftRightNwayGenerator,
-	RepeatHitObject = 38,
+	BackNwayGenerator,
+	RepeatHitObject,
 
 	DropItem = 51,
 	Invincible,

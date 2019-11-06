@@ -25,6 +25,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.ParallelHitObject: affectorBase = new ParallelHitObjectAffector(); break;
 			case eAffectorType.DiagonalNwayGenerator: affectorBase = new DiagonalNwayGeneratorAffector(); break;
 			case eAffectorType.LeftRightNwayGenerator: affectorBase = new LeftRightNwayGeneratorAffector(); break;
+			case eAffectorType.BackNwayGenerator: affectorBase = new BackNwayGeneratorAffector(); break;
 			case eAffectorType.RepeatHitObject: affectorBase = new RepeatHitObjectAffector(); break;
 			case eAffectorType.Invincible: affectorBase = new InvincibleAffector(); break;
 			case eAffectorType.CountBarrier: affectorBase = new CountBarrierAffector(); break;
@@ -56,6 +57,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.ParallelHitObject:
 			case eAffectorType.DiagonalNwayGenerator:
 			case eAffectorType.LeftRightNwayGenerator:
+			case eAffectorType.BackNwayGenerator:
 			case eAffectorType.RepeatHitObject:
 			case eAffectorType.Invincible:
 			case eAffectorType.CountBarrier:

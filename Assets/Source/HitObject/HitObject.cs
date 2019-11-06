@@ -106,7 +106,7 @@ public class HitObject : MonoBehaviour
 		if (parallelCount > 0)
 		{
 			float parallelDistance = meHit.parallelDistance;
-			if (parallelAddCountByLevelPack > 0) parallelDistance = ParallelHitObjectAffector.GetDistance(parentActor.affectorProcessor);
+			if (parallelDistance == 0.0f && parallelAddCountByLevelPack > 0) parallelDistance = ParallelHitObjectAffector.GetDistance(parentActor.affectorProcessor);
 			for (int i = 0; i < parallelCount; ++i)
 			{
 				Vector3 position = GetParallelSpawnPosition(spawnTransform, meHit, parentTransform, parallelCount, i, parallelDistance, parentActor.affectorProcessor);

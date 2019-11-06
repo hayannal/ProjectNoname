@@ -496,11 +496,11 @@ public class MeHitObject : MecanimEventBase {
 
 		bool normalAttack = parentActor.actionController.mecanimState.IsState((int)eMecanimState.Attack);
 		int repeatAddCountByLevelPack = normalAttack ? RepeatHitObjectAffector.GetAddCount(parentActor.affectorProcessor) : 0;
-		_resultRepeatInterval = meHit.repeatInterval;
-		if (repeatAddCountByLevelPack > 0) _resultRepeatInterval = RepeatHitObjectAffector.GetInterval(parentActor.affectorProcessor);
 		_totalRepeatCount = repeatCount + repeatAddCountByLevelPack;
 		if (_totalRepeatCount > 0)
 		{
+			_resultRepeatInterval = meHit.repeatInterval;
+			if (_resultRepeatInterval == 0.0f && repeatAddCountByLevelPack > 0) _resultRepeatInterval = RepeatHitObjectAffector.GetInterval(parentActor.affectorProcessor);
 			Timing.RunCoroutine(RepeatProcess(spawnTransform, meHit, parentActor, parentTransform, hitSignalIndexInAction));
 		}
 	}

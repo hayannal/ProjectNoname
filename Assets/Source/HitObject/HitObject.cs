@@ -150,6 +150,15 @@ public class HitObject : MonoBehaviour
 			continuousHitObjectGenerator.InitializeGenerator(meHit, parentActor, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, spawnTransform);
 		}
 
+		int leftRightNwayAddCount = normalAttack ? LeftRightNwayGeneratorAffector.GetAddCount(parentActor.affectorProcessor) : 0;
+		if (leftRightNwayAddCount > 0)
+		{
+			ContinuousHitObjectGeneratorBase continuousHitObjectGenerator = BattleInstanceManager.instance.GetContinuousHitObjectGenerator(BattleManager.instance.leftRightNwayGeneratorPrefab, defaultPosition, defaultRotation);
+			ignoreMainHitObjectByGenerator |= continuousHitObjectGenerator.ignoreMainHitObject;
+			continuousHitObjectGenerator.createCount = leftRightNwayAddCount;
+			continuousHitObjectGenerator.InitializeGenerator(meHit, parentActor, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, spawnTransform);
+		}
+
 		bool createMainHitObject = true;
 		if (meHit.ignoreMainHitObjectByParallel || meHit.ignoreMainHitObjectByCircularSector || ignoreMainHitObjectByGenerator)
 			createMainHitObject = false;

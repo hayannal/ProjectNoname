@@ -159,8 +159,7 @@ public class MeHitObject : MecanimEventBase {
 		EditorGUILayout.LabelField("-----------------------------------------------------------------");
 
 		repeatCount = EditorGUILayout.IntField("Repeat Count :", repeatCount);
-		if (repeatCount > 0)
-			repeatInterval = EditorGUILayout.FloatField("Repeat Interval :", repeatInterval);
+		repeatInterval = EditorGUILayout.FloatField("Repeat Interval :", repeatInterval);
 
 		EditorGUILayout.LabelField("-----------------------------------------------------------------");
 
@@ -205,11 +204,9 @@ public class MeHitObject : MecanimEventBase {
 		if (targetDetectType == HitObject.eTargetDetectType.Collider)
 		{
 			parallelCount = EditorGUILayout.IntField("Parallel Count", parallelCount);
+			parallelDistance = EditorGUILayout.FloatField("Parallel Distance :", parallelDistance);
 			if (parallelCount > 0)
-			{
-				parallelDistance = EditorGUILayout.FloatField("Parallel Distance :", parallelDistance);
 				ignoreMainHitObjectByParallel = EditorGUILayout.Toggle("Ignore Main HitObject :", ignoreMainHitObjectByParallel);
-			}
 
 			circularSectorCount = EditorGUILayout.IntField("Circular Sector Count", circularSectorCount);
 			if (circularSectorCount > 0)

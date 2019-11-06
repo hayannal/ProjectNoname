@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEditorInternal;
 #endif
 using MEC;
+using MecanimStateDefine;
 
 public class MeRangeHitObject : MeHitObject
 {
@@ -33,8 +34,7 @@ public class MeRangeHitObject : MeHitObject
 		// Range에서는 만들어낸 Main HitObject를 기억해놨다가 직접 처리하는데 써야한다.
 		_mainHitObject = HitObject.InitializeHit(spawnTransform, meHit, parentActor, parentTransform, hitSignalIndexInAction, 0, 0);
 
-		ActionController.ActionInfo currentActionInfo = parentActor.actionController.GetCurrentActionInfo();
-		bool normalAttack = (currentActionInfo != null && currentActionInfo.actionName == "Attack");
+		bool normalAttack = parentActor.actionController.mecanimState.IsState((int)eMecanimState.Attack);
 		int repeatAddCountByLevelPack = normalAttack ? RepeatHitObjectAffector.GetAddCount(parentActor.affectorProcessor) : 0;
 		_resultRepeatInterval = meHit.repeatInterval;
 		if (repeatAddCountByLevelPack > 0) _resultRepeatInterval = RepeatHitObjectAffector.GetInterval(parentActor.affectorProcessor);

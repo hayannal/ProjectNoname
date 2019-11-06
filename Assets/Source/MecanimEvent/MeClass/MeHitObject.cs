@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEditorInternal;
 #endif
 using MEC;
+using MecanimStateDefine;
 
 public class MeHitObject : MecanimEventBase {
 
@@ -496,8 +497,7 @@ public class MeHitObject : MecanimEventBase {
 		// 그런데 상황에 따라 메인 발사체를 스폰하지 않을 수 있다.
 		HitObject.InitializeHit(spawnTransform, meHit, parentActor, parentTransform, hitSignalIndexInAction, 0, 0);
 
-		ActionController.ActionInfo currentActionInfo = parentActor.actionController.GetCurrentActionInfo();
-		bool normalAttack = (currentActionInfo != null && currentActionInfo.actionName == "Attack");
+		bool normalAttack = parentActor.actionController.mecanimState.IsState((int)eMecanimState.Attack);
 		int repeatAddCountByLevelPack = normalAttack ? RepeatHitObjectAffector.GetAddCount(parentActor.affectorProcessor) : 0;
 		_resultRepeatInterval = meHit.repeatInterval;
 		if (repeatAddCountByLevelPack > 0) _resultRepeatInterval = RepeatHitObjectAffector.GetInterval(parentActor.affectorProcessor);

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using ActorStatusDefine;
+using MecanimStateDefine;
 
 public class HitObject : MonoBehaviour
 {
@@ -99,8 +100,7 @@ public class HitObject : MonoBehaviour
 		Vector3 targetPosition = GetTargetPosition(meHit, parentActor, hitSignalIndexInAction);
 		Vector3 defaultPosition = GetSpawnPosition(spawnTransform, meHit, parentTransform, parentActor.affectorProcessor);
 		Quaternion defaultRotation = Quaternion.LookRotation(GetSpawnDirection(defaultPosition, meHit, parentTransform, targetPosition));
-		ActionController.ActionInfo currentActionInfo = parentActor.actionController.GetCurrentActionInfo();
-		bool normalAttack = (currentActionInfo != null && currentActionInfo.actionName == "Attack");
+		bool normalAttack = parentActor.actionController.mecanimState.IsState((int)eMecanimState.Attack);
 		int parallelAddCountByLevelPack = normalAttack ? ParallelHitObjectAffector.GetAddCount(parentActor.affectorProcessor) : 0;
 		int parallelCount = meHit.parallelCount + parallelAddCountByLevelPack;
 		if (parallelCount > 0)
@@ -334,8 +334,7 @@ public class HitObject : MonoBehaviour
 		statusStructForHitObject.monsterThroughIndex = 0;
 		statusStructForHitObject.ricochetIndex = 0;
 		statusStructForHitObject.bounceWallQuadIndex = 0;
-		ActionController.ActionInfo currentActionInfo = actor.actionController.GetCurrentActionInfo();
-		bool normalAttack = (currentActionInfo != null && currentActionInfo.actionName == "Attack");
+		bool normalAttack = actor.actionController.mecanimState.IsState((int)eMecanimState.Attack);
 		statusStructForHitObject.monsterThroughAddCountByLevelPack = normalAttack ? MonsterThroughHitObjectAffector.GetAddCount(actor.affectorProcessor) : 0;
 		statusStructForHitObject.ricochetAddCountByLevelPack = normalAttack ? RicochetHitObjectAffector.GetAddCount(actor.affectorProcessor) : 0;
 		statusStructForHitObject.bounceWallQuadAddCountByLevelPack = normalAttack ? BounceWallQuadHitObjectAffector.GetAddCount(actor.affectorProcessor) : 0;

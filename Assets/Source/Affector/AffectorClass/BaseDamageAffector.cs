@@ -146,6 +146,19 @@ public class BaseDamageAffector : AffectorBase {
 				damage *= (1.0f - reduceDamageRate);
 		}
 
+		if (_actor.actorStatus.GetHPRatio() == 1.0f)
+		{
+			if (attackerActor == null) attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(hitParameter.statusStructForHitObject.actorInstanceId);
+			if (attackerActor != null)
+			{
+				if (InstantDeathAffector.CheckInstantDeath(attackerActor.affectorProcessor))
+				{
+					damage = _actor.actorStatus.GetHP() + 1.0f;
+					FloatingDamageTextRootCanvas.instance.ShowText(FloatingDamageText.eFloatingDamageType.Headshot, _actor);
+				}
+			}
+		}
+
 		// 버로우로 내려가있는 도중엔 본체에 HitRimBlink 할 필요 없다.
 		// DieProcess 들어가기전에 물어보는게 가장 정확하다.
 		// DieProcess 진행중엔 Burrow처럼 액터를 바로 끄는 경우가 있어서 ContinuousAffector가 클리어될 수 있기 때문.
@@ -185,7 +198,6 @@ public class BaseDamageAffector : AffectorBase {
 			if (attackerActor != null)
 			{
 				CallAffectorValueAffector.OnEvent(attackerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnKill);
-				//VampireAffector.OnKill(attackerActor.affectorProcessor);
 			}
 		}
 

@@ -55,7 +55,14 @@ public class CallAffectorValueAffector : AffectorBase
 		HitParameter hitParameter = new HitParameter();
 		hitParameter.statusBase = _actor.actorStatus.statusBase;
 		SkillProcessor.CopyEtcStatus(ref hitParameter.statusStructForHitObject, _actor);
-		_affectorProcessor.ApplyAffectorValue(_affectorValueLevelTableData.sValue2, hitParameter, false);
+		if (_affectorValueLevelTableData.sValue2.Contains(","))
+		{
+			string[] affectorValueIdList = BattleInstanceManager.instance.GetCachedString2StringList(_affectorValueLevelTableData.sValue2);
+			for (int i = 0; i < affectorValueIdList.Length; ++i)
+				_affectorProcessor.ApplyAffectorValue(affectorValueIdList[i], hitParameter, false);
+		}
+		else
+			_affectorProcessor.ApplyAffectorValue(_affectorValueLevelTableData.sValue2, hitParameter, false);
 
 		if (needFinalize)
 			finalized = true;

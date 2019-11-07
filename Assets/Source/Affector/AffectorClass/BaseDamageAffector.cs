@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using ActorStatusDefine;
 
 public class BaseDamageAffector : AffectorBase {
@@ -160,7 +161,16 @@ public class BaseDamageAffector : AffectorBase {
 		if (onDie)
 		{
 			if (affectorValueLevelTableData.iValue2 == 1 && !string.IsNullOrEmpty(affectorValueLevelTableData.sValue2))
-				_affectorProcessor.ApplyAffectorValue(affectorValueLevelTableData.sValue2, hitParameter, false);
+			{
+				if (affectorValueLevelTableData.sValue2.Contains(","))
+				{
+					string[] affectorValueIdList = BattleInstanceManager.instance.GetCachedString2StringList(affectorValueLevelTableData.sValue2);
+					for (int i = 0; i < affectorValueIdList.Length; ++i)
+						_affectorProcessor.ApplyAffectorValue(affectorValueIdList[i], hitParameter, false);
+				}
+				else
+					_affectorProcessor.ApplyAffectorValue(affectorValueLevelTableData.sValue2, hitParameter, false);
+			}
 
 			Actor attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(hitParameter.statusStructForHitObject.actorInstanceId);
 			if (attackerActor != null)

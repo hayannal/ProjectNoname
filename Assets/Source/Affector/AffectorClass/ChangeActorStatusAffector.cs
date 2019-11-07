@@ -34,6 +34,12 @@ public class ChangeActorStatusAffector : AffectorBase
 		_actor.actorStatus.OnChangedStatus(_eType);
 	}
 
+	public override void OverrideAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
+	{
+		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
+		_onDamageRemainCount = affectorValueLevelTableData.iValue2;
+	}
+
 	public override void UpdateAffector()
 	{
 		if (CheckEndTime(_endTime) == false)

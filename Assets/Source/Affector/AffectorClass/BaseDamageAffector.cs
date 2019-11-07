@@ -155,6 +155,7 @@ public class BaseDamageAffector : AffectorBase {
 		Actor attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(hitParameter.statusStructForHitObject.actorInstanceId);
 		if (attackerActor != null)
 		{
+			ReflectDamageAffector.OnHit(attackerActor.affectorProcessor, damage);
 			CallAffectorValueAffector.OnEvent(attackerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnHit, damage);
 		}
 

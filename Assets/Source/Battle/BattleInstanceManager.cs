@@ -604,6 +604,21 @@ public class BattleInstanceManager : MonoBehaviour
 	public PlayerActor playerActor { get; set; }
 	#endregion
 
+	#region Instance Id
+	public Actor FindActorByInstanceId(int instanceId)
+	{
+		if (playerActor.GetInstanceID() == instanceId)
+			return playerActor;
+
+		for (int i = 0; i < _listLiveMonsterActor.Count; ++i)
+		{
+			if (_listLiveMonsterActor[i].GetInstanceID() == instanceId)
+				return _listLiveMonsterActor[i];
+		}
+		return null;
+	}
+	#endregion
+
 	#region Drop
 	List<DropProcessor> _listCachedDropProcessor = new List<DropProcessor>();
 	public DropProcessor GetCachedDropProcessor(Vector3 position)

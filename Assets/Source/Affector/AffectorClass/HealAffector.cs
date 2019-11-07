@@ -12,10 +12,10 @@ public class HealAffector : AffectorBase
 			return;
 
 		float heal = 0.0f;
-		if (affectorValueLevelTableData.fValue1 > 0.0f)
-			heal += (_actor.actorStatus.GetValue(eActorStatus.MaxHp) * affectorValueLevelTableData.fValue1);
-		if (affectorValueLevelTableData.fValue2 > 0.0f)
-			heal += (hitParameter.statusStructForHitObject.damage * affectorValueLevelTableData.fValue2);
+		if (affectorValueLevelTableData.fValue3 > 0.0f)
+			heal += (_actor.actorStatus.GetValue(eActorStatus.MaxHp) * affectorValueLevelTableData.fValue3);
+		if (affectorValueLevelTableData.fValue4 > 0.0f)
+			heal += (hitParameter.statusStructForHitObject.damage * affectorValueLevelTableData.fValue4);
 
 		_actor.actorStatus.AddHP(heal);
 	}

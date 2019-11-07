@@ -15,7 +15,7 @@ public class HealAffector : AffectorBase
 		if (affectorValueLevelTableData.fValue1 > 0.0f)
 			heal += (_actor.actorStatus.GetValue(eActorStatus.MaxHp) * affectorValueLevelTableData.fValue1);
 		if (affectorValueLevelTableData.fValue2 > 0.0f)
-			heal += affectorValueLevelTableData.fValue2;
+			heal += (hitParameter.statusStructForHitObject.damage * affectorValueLevelTableData.fValue2);
 
 		_actor.actorStatus.AddHP(heal);
 	}

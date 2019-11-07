@@ -31,6 +31,9 @@ public struct StatusStructForHitObject
 	public int parallelAddCountByLevelPack;
 	public int repeatAddCountByLevelPack;
 
+	// for affector
+	public float damage;
+
 	// example
 	//public float hp;	// hp is in StatusBase
 	//public int level;

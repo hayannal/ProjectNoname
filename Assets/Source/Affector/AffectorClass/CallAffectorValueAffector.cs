@@ -55,6 +55,15 @@ public class CallAffectorValueAffector : AffectorBase
 		HitParameter hitParameter = new HitParameter();
 		hitParameter.statusBase = _actor.actorStatus.statusBase;
 		SkillProcessor.CopyEtcStatus(ref hitParameter.statusStructForHitObject, _actor);
+
+		switch (eventType)
+		{
+			case eEventType.OnDamage:
+			case eEventType.OnHit:
+				hitParameter.statusStructForHitObject.damage = argument;
+				break;
+		}
+
 		if (_affectorValueLevelTableData.sValue2.Contains(","))
 		{
 			string[] affectorValueIdList = BattleInstanceManager.instance.GetCachedString2StringList(_affectorValueLevelTableData.sValue2);

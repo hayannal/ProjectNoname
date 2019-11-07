@@ -151,7 +151,12 @@ public class BaseDamageAffector : AffectorBase {
 		bool onDie = _actor.actorStatus.IsDie();
 		_actor.actorStatus.AddHP(-damage);
 		ChangeActorStatusAffector.OnDamage(_affectorProcessor);
-		CallAffectorValueAffector.OnEvent(_affectorProcessor, CallAffectorValueAffector.eEventType.OnDamage);
+		CallAffectorValueAffector.OnEvent(_affectorProcessor, CallAffectorValueAffector.eEventType.OnDamage, damage);
+		Actor attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(hitParameter.statusStructForHitObject.actorInstanceId);
+		if (attackerActor != null)
+		{
+			CallAffectorValueAffector.OnEvent(attackerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnHit, damage);
+		}
 
 #if UNITY_EDITOR
 		//Debug.LogFormat("Current = {0} / Max = {1} / Damage = {2} / frameCount = {3}", _actor.actorStatus.GetHP(), _actor.actorStatus.GetValue(eActorStatus.MaxHp), damage, Time.frameCount);
@@ -172,7 +177,6 @@ public class BaseDamageAffector : AffectorBase {
 					_affectorProcessor.ApplyAffectorValue(affectorValueLevelTableData.sValue2, hitParameter, false);
 			}
 
-			Actor attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(hitParameter.statusStructForHitObject.actorInstanceId);
 			if (attackerActor != null)
 			{
 				CallAffectorValueAffector.OnEvent(attackerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnKill);

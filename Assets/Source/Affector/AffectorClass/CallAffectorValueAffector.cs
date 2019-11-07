@@ -37,7 +37,7 @@ public class CallAffectorValueAffector : AffectorBase
 
 	void OnEvent(eEventType eventType, float argument = 0.0f)
 	{
-		if ((eEventType)_affectorValueLevelTableData.iValue1 != eventType)
+		if ((eEventType)_affectorValueLevelTableData.iValue3 != eventType)
 			return;
 		if (_actor == null)
 			return;

@@ -34,6 +34,8 @@ public class HealOverTimeAffector : AffectorBase
 		// lifeTime
 		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
 
+		_remainTickTime = affectorValueLevelTableData.fValue2;
+
 		if (affectorValueLevelTableData.fValue4 > 0.0f)
 			_hitParameterDamage = hitParameter.statusStructForHitObject.damage;
 	}

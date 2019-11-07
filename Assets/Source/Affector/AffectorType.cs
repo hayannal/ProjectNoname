@@ -22,6 +22,7 @@ public enum eAffectorType
 	ReduceDamage,
 	HealOverTime,
 	ReflectDamage,
+	AddAttackByLeftHp,
 
 	MonsterThroughHitObject = 31,
 	RicochetHitObject,

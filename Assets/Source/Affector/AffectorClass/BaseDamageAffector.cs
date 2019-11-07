@@ -66,6 +66,7 @@ public class BaseDamageAffector : AffectorBase {
 				break;
 		}
 
+		Actor attackerActor = null;
 		if ((int)eActorStatus.CriticalRate < hitParameter.statusBase.valueList.Length)
 		{
 			float criticalRate = hitParameter.statusBase.valueList[(int)eActorStatus.CriticalRate];
@@ -73,6 +74,9 @@ public class BaseDamageAffector : AffectorBase {
 			{
 				float criticalDamageRate = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("DefaultCriticalDamageRate");
 				criticalDamageRate += hitParameter.statusBase.valueList[(int)eActorStatus.CriticalDamageAddRate];
+				if (attackerActor == null) attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(hitParameter.statusStructForHitObject.actorInstanceId);
+				if (attackerActor != null)
+					criticalDamageRate += AddCriticalDamageByTargetHpAffector.GetValue(attackerActor.affectorProcessor, _actor.actorStatus.GetHPRatio());
 				damage *= (1.0f + criticalDamageRate);
 			}
 		}
@@ -152,7 +156,7 @@ public class BaseDamageAffector : AffectorBase {
 		_actor.actorStatus.AddHP(-damage);
 		ChangeActorStatusAffector.OnDamage(_affectorProcessor);
 		CallAffectorValueAffector.OnEvent(_affectorProcessor, CallAffectorValueAffector.eEventType.OnDamage, damage);
-		Actor attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(hitParameter.statusStructForHitObject.actorInstanceId);
+		if (attackerActor == null) attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(hitParameter.statusStructForHitObject.actorInstanceId);
 		if (attackerActor != null)
 		{
 			ReflectDamageAffector.OnHit(attackerActor.affectorProcessor, damage);

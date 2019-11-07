@@ -165,6 +165,7 @@ public class BaseDamageAffector : AffectorBase {
 			Actor attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(hitParameter.statusStructForHitObject.actorInstanceId);
 			if (attackerActor != null)
 			{
+				CallAffectorValueAffector.OnEvent(attackerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnKill);
 				//VampireAffector.OnKill(attackerActor.affectorProcessor);
 			}
 		}

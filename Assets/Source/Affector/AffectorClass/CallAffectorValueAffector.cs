@@ -12,6 +12,7 @@ public class CallAffectorValueAffector : AffectorBase
 		HpRate,
 		OnDamage,
 		OnHit,
+		OnKill,
 	}
 
 	float _endTime;

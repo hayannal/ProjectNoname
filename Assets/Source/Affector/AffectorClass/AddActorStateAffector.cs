@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using ActorStatusDefine;
 
 public class AddActorStateAffector : AffectorBase {
 

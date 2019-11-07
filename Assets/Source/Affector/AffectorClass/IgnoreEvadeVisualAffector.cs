@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using MecanimStateDefine;
+using ActorStatusDefine;
 
 public class IgnoreEvadeVisualAffector : AffectorBase
 {
@@ -62,7 +63,7 @@ public class IgnoreEvadeVisualAffector : AffectorBase
 			AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(BattleInstanceManager.instance.playerActor.playerAI.targetCollider);
 			if (affectorProcessor != null && affectorProcessor.actor != null)
 			{
-				evadeRate = affectorProcessor.actor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.EvadeRate);
+				evadeRate = affectorProcessor.actor.actorStatus.GetValue(eActorStatus.EvadeRate);
 				if (evadeRate > 0.0f)
 					needShow = true;
 			}

@@ -138,7 +138,7 @@ public class ActorStatus : MonoBehaviour
 				if (addRate != 0.0f) value *= (1.0f + addRate);
 				break;
 			case eActorStatus.AttackAddRate:
-				value += AddAttackByLeftHpAffector.GetValue(actor.affectorProcessor, actor.actorStatus.GetHPRatio());
+				value += AddAttackByHpAffector.GetValue(actor.affectorProcessor, actor.actorStatus.GetHPRatio());
 				break;
 		}
 		return value;

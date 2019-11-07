@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using ActorStatusDefine;
 
-public class AddAttackByLeftHpAffector : AffectorBase
+public class AddAttackByHpAffector : AffectorBase
 {
 	float _endTime;
 	float _value;
@@ -25,7 +24,7 @@ public class AddAttackByLeftHpAffector : AffectorBase
 
 		// lifeTime
 		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
-		
+
 		_value = affectorValueLevelTableData.fValue2;
 	}
 
@@ -42,7 +41,7 @@ public class AddAttackByLeftHpAffector : AffectorBase
 
 	public static float GetValue(AffectorProcessor affectorProcessor, float hpRate)
 	{
-		List<AffectorBase> listAddAttackByHpAffector = affectorProcessor.GetContinuousAffectorList(eAffectorType.AddAttackByLeftHp);
+		List<AffectorBase> listAddAttackByHpAffector = affectorProcessor.GetContinuousAffectorList(eAffectorType.AddAttackByHp);
 		if (listAddAttackByHpAffector == null)
 			return 0.0f;
 
@@ -51,10 +50,10 @@ public class AddAttackByLeftHpAffector : AffectorBase
 		{
 			if (listAddAttackByHpAffector[i].finalized)
 				continue;
-			AddAttackByLeftHpAffector addAttackByLeftHpAffector = listAddAttackByHpAffector[i] as AddAttackByLeftHpAffector;
-			if (addAttackByLeftHpAffector == null)
+			AddAttackByHpAffector addAttackByHpAffector = listAddAttackByHpAffector[i] as AddAttackByHpAffector;
+			if (addAttackByHpAffector == null)
 				continue;
-			result += addAttackByLeftHpAffector.value;
+			result += addAttackByHpAffector.value;
 		}
 		if (result == 0.0f)
 			return 0.0f;

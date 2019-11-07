@@ -22,7 +22,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.ReduceDamage: affectorBase = new ReduceDamageAffector(); break;
 			case eAffectorType.HealOverTime: affectorBase = new HealOverTimeAffector(); break;
 			case eAffectorType.ReflectDamage: affectorBase = new ReflectDamageAffector(); break;
-			case eAffectorType.AddAttackByLeftHp: affectorBase = new AddAttackByLeftHpAffector(); break;
+			case eAffectorType.AddAttackByHp: affectorBase = new AddAttackByHpAffector(); break;
 			case eAffectorType.MonsterThroughHitObject: affectorBase = new MonsterThroughHitObjectAffector(); break;
 			case eAffectorType.RicochetHitObject: affectorBase = new RicochetHitObjectAffector(); break;
 			case eAffectorType.BounceWallQuadHitObject: affectorBase = new BounceWallQuadHitObjectAffector(); break;
@@ -58,7 +58,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.ReduceDamage:
 			case eAffectorType.HealOverTime:
 			case eAffectorType.ReflectDamage:
-			case eAffectorType.AddAttackByLeftHp:
+			case eAffectorType.AddAttackByHp:
 			case eAffectorType.MonsterThroughHitObject:
 			case eAffectorType.RicochetHitObject:
 			case eAffectorType.BounceWallQuadHitObject:

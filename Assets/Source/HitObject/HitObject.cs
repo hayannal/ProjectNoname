@@ -328,6 +328,7 @@ public class HitObject : MonoBehaviour
 		statusStructForHitObject.teamId = actor.team.teamId;
 		statusStructForHitObject.skillLevel = actor.actionController.GetCurrentSkillLevelByCurrentAction();
 
+		statusStructForHitObject.targetDetectType = meHit.targetDetectType;
 		statusStructForHitObject.weaponIDAtCreation = 0;
 		//if (meHit.useWeaponHitEffect)
 		//	statusStructForHitObject.weaponIDAtCreation = actor.GetWeaponID(meHit.weaponDummyName);

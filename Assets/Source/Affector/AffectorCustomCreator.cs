@@ -19,6 +19,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.ChangeActorStatus: affectorBase = new ChangeActorStatusAffector(); break;
 			case eAffectorType.Heal: affectorBase = new HealAffector(); break;
 			case eAffectorType.CallAffectorValue: affectorBase = new CallAffectorValueAffector(); break;
+			case eAffectorType.ReduceDamage: affectorBase = new ReduceDamageAffector(); break;
 			case eAffectorType.MonsterThroughHitObject: affectorBase = new MonsterThroughHitObjectAffector(); break;
 			case eAffectorType.RicochetHitObject: affectorBase = new RicochetHitObjectAffector(); break;
 			case eAffectorType.BounceWallQuadHitObject: affectorBase = new BounceWallQuadHitObjectAffector(); break;
@@ -51,6 +52,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.DefaultContainer:
 			case eAffectorType.AddAffectorHitObject:
 			case eAffectorType.CallAffectorValue:
+			case eAffectorType.ReduceDamage:
 			case eAffectorType.MonsterThroughHitObject:
 			case eAffectorType.RicochetHitObject:
 			case eAffectorType.BounceWallQuadHitObject:

@@ -10,6 +10,7 @@ public struct StatusStructForHitObject
 	public int skillLevel;  // current action skill level
 
 	// for hitObject
+	public HitObject.eTargetDetectType targetDetectType;
 	public int weaponIDAtCreation;
 	public int hitSignalIndexInAction;
 	public bool showHitBlink;

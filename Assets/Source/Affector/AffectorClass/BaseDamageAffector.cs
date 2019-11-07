@@ -140,6 +140,7 @@ public class BaseDamageAffector : AffectorBase {
 		bool showHitBlink = true;
 		if (BurrowAffector.CheckBurrow(_affectorProcessor)) showHitBlink = false;
 
+		bool onDie = _actor.actorStatus.IsDie();
 		_actor.actorStatus.AddHP(-damage);
 		ChangeActorStatusAffector.OnDamage(_affectorProcessor);
 		CallAffectorValueAffector.OnEvent(_affectorProcessor, CallAffectorValueAffector.eEventType.OnDamage);
@@ -148,9 +149,18 @@ public class BaseDamageAffector : AffectorBase {
 		//Debug.LogFormat("Current = {0} / Max = {1} / Damage = {2} / frameCount = {3}", _actor.actorStatus.GetHP(), _actor.actorStatus.GetValue(eActorStatus.MaxHp), damage, Time.frameCount);
 #endif
 
-		bool useOnkill = (affectorValueLevelTableData.iValue2 == 1 && !string.IsNullOrEmpty(affectorValueLevelTableData.sValue2) && !_actor.actorStatus.IsDie());
-		if (useOnkill && _actor.actorStatus.IsDie())
-			_affectorProcessor.ApplyAffectorValue(affectorValueLevelTableData.sValue2, hitParameter, false);
+		onDie = (onDie == false && _actor.actorStatus.IsDie());
+		if (onDie)
+		{
+			if (affectorValueLevelTableData.iValue2 == 1 && !string.IsNullOrEmpty(affectorValueLevelTableData.sValue2))
+				_affectorProcessor.ApplyAffectorValue(affectorValueLevelTableData.sValue2, hitParameter, false);
+
+			Actor attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(hitParameter.statusStructForHitObject.actorInstanceId);
+			if (attackerActor != null)
+			{
+				//VampireAffector.OnKill(attackerActor.affectorProcessor);
+			}
+		}
 
 		//Collider col = m_Actor.GetComponent<Collider>();
 		//DamageFloaterManager.Instance.ShowDamage(intDamage, m_Actor.transform.position + new Vector3(0.0f, ColliderUtil.GetHeight(col), 0.0f));

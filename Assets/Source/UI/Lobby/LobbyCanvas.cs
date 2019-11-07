@@ -9,8 +9,8 @@ public class LobbyCanvas : MonoBehaviour
 	public static LobbyCanvas instance;
 
 	public Button mainMenuDotButton;
+	public Text levelText;
 	public Image expGaugeImage;
-	public GameObject expMaxObject;
 
 	void Awake()
 	{
@@ -24,6 +24,7 @@ public class LobbyCanvas : MonoBehaviour
 
 	void Start()
 	{
+		levelText.gameObject.SetActive(false);
 		expGaugeImage.gameObject.SetActive(false);
 	}
 
@@ -73,12 +74,24 @@ public class LobbyCanvas : MonoBehaviour
 		mainMenuDotButton.gameObject.SetActive(false);
 		expGaugeImage.gameObject.SetActive(true);
 		expGaugeImage.fillAmount = 0.0f;
-		expMaxObject.gameObject.SetActive(false);
+		RefreshLevelText(1);
 	}
 
 	#region Exp Percent Gauge
+	public void RefreshLevelText(int level)
+	{
+		int maxStageLevel = StageManager.instance.GetMaxStageLevel();
+		if (level == maxStageLevel)
+			levelText.text = UIString.instance.GetString("GameUI_Lv", "Max");
+		else
+			levelText.text = UIString.instance.GetString("GameUI_Lv", level);
+	}
+
 	public void RefreshExpPercent(float targetPercent, int levelUpCount)
 	{
+		if (levelText.gameObject.activeSelf == false)
+			levelText.gameObject.SetActive(true);
+
 		_targetPercent = targetPercent;
 		_levelUpCount = levelUpCount;
 
@@ -109,7 +122,6 @@ public class LobbyCanvas : MonoBehaviour
 			{
 				_fillRemainTime = 0.0f;
 				expGaugeImage.fillAmount = _targetPercent;
-				expMaxObject.gameObject.SetActive(_targetPercent == 1.0f);
 			}
 		}
 	}

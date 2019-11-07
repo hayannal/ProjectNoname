@@ -31,7 +31,6 @@ public class PlayerGaugeCanvas : MonoBehaviour
 	public GameObject offsetRootObject;
 	public RectTransform widthRectTransform;
 	public MOBAEnergyBar mobaEnergyBar;
-	public Text levelText;
 
 	float _defaultWidth;
 	void Awake()
@@ -63,7 +62,6 @@ public class PlayerGaugeCanvas : MonoBehaviour
 		_lastRatio = playerActor.actorStatus.GetHPRatio();
 		_targetTransform = playerActor.cachedTransform;
 		GetTargetHeight(_targetTransform);
-		RefreshLevelText(1, false);
 		_initialized = true;
 	}
 
@@ -123,7 +121,10 @@ public class PlayerGaugeCanvas : MonoBehaviour
 
 		if (_lastRatio < hpRatio)
 		{
-			ResetAlphaFade();
+			if (!offsetRootObject.activeSelf)
+				offsetRootObject.SetActive(true);
+			canvasGroup.alpha = DEFAULT_CANVAS_GROUP_ALPHA;
+			_alphaRemainTime = 0.0f;
 		}
 		else
 		{
@@ -197,23 +198,7 @@ public class PlayerGaugeCanvas : MonoBehaviour
 		}
 	}
 
-	public void RefreshLevelText(int level, bool resetAlphaFade = true)
-	{
-		levelText.text = level.ToString();
 
-		if (resetAlphaFade == false)
-			return;
-
-		ResetAlphaFade();
-	}
-
-	void ResetAlphaFade()
-	{
-		if (!offsetRootObject.activeSelf)
-			offsetRootObject.SetActive(true);
-		canvasGroup.alpha = DEFAULT_CANVAS_GROUP_ALPHA;
-		_alphaRemainTime = 0.0f;
-	}
 
 
 	Transform _transform;

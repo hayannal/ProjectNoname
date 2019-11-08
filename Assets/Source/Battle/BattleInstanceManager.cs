@@ -788,6 +788,12 @@ public class BattleInstanceManager : MonoBehaviour
 		}
 	}
 
+	public void AddCommonPoolPreloadObjectList(GameObject commonPoolPreloadObject)
+	{
+		if (_listCommonPoolPreloadObject.Contains(commonPoolPreloadObject) == false)
+			_listCommonPoolPreloadObject.Add(commonPoolPreloadObject);
+	}
+
 	public GameObject FindCommonPoolPreloadObject(string objectName)
 	{
 		for (int i = 0; i < _listCommonPoolPreloadObject.Count; ++i)

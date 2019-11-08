@@ -38,7 +38,6 @@ public enum eAffectorType
 	DropItem = 51,
 	Invincible,
 	CountBarrier,
-	Headshot,
 	InvincibleTortoise,
 	Burrow,
 	IgnoreEvadeVisual,

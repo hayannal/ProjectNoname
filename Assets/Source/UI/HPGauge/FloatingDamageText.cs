@@ -11,6 +11,7 @@ public class FloatingDamageText : MonoBehaviour
 		Miss,
 		Invincible,
 		Headshot,
+		Immortal,
 	}
 
 	public Text damageText;
@@ -29,6 +30,9 @@ public class FloatingDamageText : MonoBehaviour
 				break;
 			case eFloatingDamageType.Headshot:
 				damageText.SetLocalizedText(UIString.instance.GetString("GameUI_Headshot"));
+				break;
+			case eFloatingDamageType.Immortal:
+				damageText.SetLocalizedText(UIString.instance.GetString("GameUI_ImmortalWill"));
 				break;
 		}
 		damageText.color = Color.white;

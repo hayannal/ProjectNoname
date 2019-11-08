@@ -64,6 +64,11 @@ public class InstantDeathAffector : AffectorBase
 		if (defenderActor.actionController.mecanimState.IsState((int)eMecanimState.DontDie))
 			return false;
 
+		// 로직 순서상 여기서 즉사 결정이 되더라도
+		// ImmortalWillAffector에서 안 죽을 수도 있는건데
+		// 몬스터는 ImmortalWillAffector를 가지지 않는다는 점을 이용해서 체크하지 않도록 한다.
+		//if (ImmortalWillAffector.CheckImmortal(defenderActor.affectorProcessor))
+
 		return (Random.value <= result);
 	}
 }

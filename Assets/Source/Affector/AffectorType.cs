@@ -25,6 +25,7 @@ public enum eAffectorType
 	AddAttackByHp,
 	AddCriticalDamageByTargetHp,
 	InstantDeath,
+	ImmortalWill,
 
 	MonsterThroughHitObject = 31,
 	RicochetHitObject,

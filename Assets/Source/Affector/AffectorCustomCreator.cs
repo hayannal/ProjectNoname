@@ -17,6 +17,8 @@ public static class AffectorCustomCreator
 			//case eAffectorType.MoveToTarget: affectorBase = new MoveToTargetAffector(); break;
 			case eAffectorType.AddActorState: affectorBase = new AddActorStateAffector(); break;
 			case eAffectorType.ChangeActorStatus: affectorBase = new ChangeActorStatusAffector(); break;
+			case eAffectorType.CannotAction: affectorBase = new CannotActionAffector(); break;
+			case eAffectorType.CannotMove: affectorBase = new CannotMoveAffector(); break;
 			case eAffectorType.Heal: affectorBase = new HealAffector(); break;
 			case eAffectorType.CallAffectorValue: affectorBase = new CallAffectorValueAffector(); break;
 			case eAffectorType.ReduceDamage: affectorBase = new ReduceDamageAffector(); break;

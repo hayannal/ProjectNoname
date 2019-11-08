@@ -51,103 +51,9 @@ public class BaseDamageAffector : AffectorBase {
 		//float damage = hitParameter.statusBase.valueList[(int)eActorStatus.Attack] * 1000.0f / (_actor.actorStatus.GetValue(eActorStatus.Defense) + 1000.0f);
 		//float damage = hitParameter.statusBase.valueList[(int)eActorStatus.Attack] - _actor.actorStatus.GetValue(eActorStatus.Defense);
 		float damage = hitParameter.statusBase.valueList[(int)eActorStatus.Attack];
-		float damageRatio = 1.0f;
-		switch (affectorValueLevelTableData.iValue1)
-		{
-			case 0:
-				damageRatio = affectorValueLevelTableData.fValue1;
-				break;
-			case 1:
-				int hitSignalIndexInAction = hitParameter.statusStructForHitObject.hitSignalIndexInAction;
-				float[] damageRatioList = BattleInstanceManager.instance.GetCachedMultiHitDamageRatioList(affectorValueLevelTableData.sValue1);
-				if (hitSignalIndexInAction < damageRatioList.Length)
-					damageRatio = damageRatioList[hitSignalIndexInAction];
-				else
-					Debug.LogErrorFormat("Invalid hitSignalIndexInAction. index = {0}", hitSignalIndexInAction);
-				break;
-		}
-		damage *= damageRatio;
 
+		bool instantDeath = false;
 		Actor attackerActor = null;
-		if ((int)eActorStatus.CriticalRate < hitParameter.statusBase.valueList.Length)
-		{
-			float criticalRate = hitParameter.statusBase.valueList[(int)eActorStatus.CriticalRate];
-			if (criticalRate > 0.0f && Random.value <= criticalRate)
-			{
-				float criticalDamageRate = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("DefaultCriticalDamageRate");
-				criticalDamageRate += hitParameter.statusBase.valueList[(int)eActorStatus.CriticalDamageAddRate];
-				if (attackerActor == null) attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(hitParameter.statusStructForHitObject.actorInstanceId);
-				if (attackerActor != null)
-					criticalDamageRate += AddCriticalDamageByTargetHpAffector.GetValue(attackerActor.affectorProcessor, _actor.actorStatus.GetHPRatio());
-				damage *= (1.0f + criticalDamageRate);
-			}
-		}
-
-		if (_actor is MonsterActor && (int)eActorStatus.NormalMonsterDamageIncreaseAddRate < hitParameter.statusBase.valueList.Length)
-		{
-			MonsterActor monsterActor = _actor as MonsterActor;
-			if (monsterActor != null)
-			{
-				float damageIncreaseAddRate = hitParameter.statusBase.valueList[monsterActor.bossMonster ? (int)eActorStatus.BossMonsterDamageIncreaseAddRate : (int)eActorStatus.NormalMonsterDamageIncreaseAddRate];
-				if (damageIncreaseAddRate != 0.0f)
-					damage *= (1.0f + damageIncreaseAddRate);
-			}
-		}
-
-		if (_actor is PlayerActor)
-		{
-			BattleManager.instance.AddDamageCountOnStage();
-			if (hitParameter.statusStructForHitObject.monsterActor)
-			{
-				float damageDecreaseAddRate = _actor.actorStatus.GetValue(hitParameter.statusStructForHitObject.bossMonsterActor ? eActorStatus.BossMonsterDamageDecreaseAddRate : eActorStatus.NormalMonsterDamageDecreaseAddRate);
-				if (damageDecreaseAddRate != 0.0f)
-					damage *= (1.0f - damageDecreaseAddRate);
-			}
-		}
-
-		// 리코셰 몹관통 등에 의한 데미지 감소 처리. 레벨팩 없이 시그널에 의해 동작할땐 적용하지 않는다.
-		if (hitParameter.statusStructForHitObject.monsterThroughAddCountByLevelPack > 0)
-		{
-			float damageRate = MonsterThroughHitObjectAffector.GetDamageRate(hitParameter.statusStructForHitObject.monsterThroughAddCountByLevelPack, hitParameter.statusStructForHitObject.monsterThroughIndex);
-			if (damageRate != 1.0f)
-				damage *= damageRate;
-		}
-
-		if (hitParameter.statusStructForHitObject.ricochetAddCountByLevelPack > 0)
-		{
-			float damageRate = RicochetHitObjectAffector.GetDamageRate(hitParameter.statusStructForHitObject.ricochetAddCountByLevelPack, hitParameter.statusStructForHitObject.ricochetIndex);
-			if (damageRate != 1.0f)
-				damage *= damageRate;
-		}
-
-		if (hitParameter.statusStructForHitObject.bounceWallQuadAddCountByLevelPack > 0)
-		{
-			float damageRate = BounceWallQuadHitObjectAffector.GetDamageRate(hitParameter.statusStructForHitObject.bounceWallQuadAddCountByLevelPack, hitParameter.statusStructForHitObject.bounceWallQuadIndex);
-			if (damageRate != 1.0f)
-				damage *= damageRate;
-		}
-
-		if (hitParameter.statusStructForHitObject.parallelAddCountByLevelPack > 0)
-		{
-			float damageRate = ParallelHitObjectAffector.GetDamageRate(hitParameter.statusStructForHitObject.parallelAddCountByLevelPack);
-			if (damageRate != 1.0f)
-				damage *= damageRate;
-		}
-
-		if (hitParameter.statusStructForHitObject.repeatAddCountByLevelPack > 0)
-		{
-			float damageRate = RepeatHitObjectAffector.GetDamageRate(hitParameter.statusStructForHitObject.repeatAddCountByLevelPack, hitParameter.statusStructForHitObject.repeatIndex);
-			if (damageRate != 1.0f)
-				damage *= damageRate;
-		}
-
-		if (hitParameter.statusStructForHitObject.targetDetectType == HitObject.eTargetDetectType.Collider)
-		{
-			float reduceDamageRate = ReduceDamageAffector.GetValue(_affectorProcessor, ReduceDamageAffector.eReduceDamageType.Collider);
-			if (reduceDamageRate != 0.0f)
-				damage *= (1.0f - reduceDamageRate);
-		}
-
 		if (_actor.actorStatus.GetHPRatio() == 1.0f)
 		{
 			if (attackerActor == null) attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(hitParameter.statusStructForHitObject.actorInstanceId);
@@ -157,9 +63,113 @@ public class BaseDamageAffector : AffectorBase {
 				{
 					damage = _actor.actorStatus.GetHP() + 1.0f;
 					FloatingDamageTextRootCanvas.instance.ShowText(FloatingDamageText.eFloatingDamageType.Headshot, _actor);
+					instantDeath = true;
 				}
 			}
 		}
+
+		if (instantDeath == false)
+		{
+			// Calc Damage
+			float damageRatio = 1.0f;
+			switch (affectorValueLevelTableData.iValue1)
+			{
+				case 0:
+					damageRatio = affectorValueLevelTableData.fValue1;
+					break;
+				case 1:
+					int hitSignalIndexInAction = hitParameter.statusStructForHitObject.hitSignalIndexInAction;
+					float[] damageRatioList = BattleInstanceManager.instance.GetCachedMultiHitDamageRatioList(affectorValueLevelTableData.sValue1);
+					if (hitSignalIndexInAction < damageRatioList.Length)
+						damageRatio = damageRatioList[hitSignalIndexInAction];
+					else
+						Debug.LogErrorFormat("Invalid hitSignalIndexInAction. index = {0}", hitSignalIndexInAction);
+					break;
+			}
+			damage *= damageRatio;
+
+
+			if ((int)eActorStatus.CriticalRate < hitParameter.statusBase.valueList.Length)
+			{
+				float criticalRate = hitParameter.statusBase.valueList[(int)eActorStatus.CriticalRate];
+				if (criticalRate > 0.0f && Random.value <= criticalRate)
+				{
+					float criticalDamageRate = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("DefaultCriticalDamageRate");
+					criticalDamageRate += hitParameter.statusBase.valueList[(int)eActorStatus.CriticalDamageAddRate];
+					if (attackerActor == null) attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(hitParameter.statusStructForHitObject.actorInstanceId);
+					if (attackerActor != null)
+						criticalDamageRate += AddCriticalDamageByTargetHpAffector.GetValue(attackerActor.affectorProcessor, _actor.actorStatus.GetHPRatio());
+					damage *= (1.0f + criticalDamageRate);
+				}
+			}
+
+			if (_actor is MonsterActor && (int)eActorStatus.NormalMonsterDamageIncreaseAddRate < hitParameter.statusBase.valueList.Length)
+			{
+				MonsterActor monsterActor = _actor as MonsterActor;
+				if (monsterActor != null)
+				{
+					float damageIncreaseAddRate = hitParameter.statusBase.valueList[monsterActor.bossMonster ? (int)eActorStatus.BossMonsterDamageIncreaseAddRate : (int)eActorStatus.NormalMonsterDamageIncreaseAddRate];
+					if (damageIncreaseAddRate != 0.0f)
+						damage *= (1.0f + damageIncreaseAddRate);
+				}
+			}
+
+			if (_actor is PlayerActor)
+			{
+				if (hitParameter.statusStructForHitObject.monsterActor)
+				{
+					float damageDecreaseAddRate = _actor.actorStatus.GetValue(hitParameter.statusStructForHitObject.bossMonsterActor ? eActorStatus.BossMonsterDamageDecreaseAddRate : eActorStatus.NormalMonsterDamageDecreaseAddRate);
+					if (damageDecreaseAddRate != 0.0f)
+						damage *= (1.0f - damageDecreaseAddRate);
+				}
+			}
+
+			// 리코셰 몹관통 등에 의한 데미지 감소 처리. 레벨팩 없이 시그널에 의해 동작할땐 적용하지 않는다.
+			if (hitParameter.statusStructForHitObject.monsterThroughAddCountByLevelPack > 0)
+			{
+				float damageRate = MonsterThroughHitObjectAffector.GetDamageRate(hitParameter.statusStructForHitObject.monsterThroughAddCountByLevelPack, hitParameter.statusStructForHitObject.monsterThroughIndex);
+				if (damageRate != 1.0f)
+					damage *= damageRate;
+			}
+
+			if (hitParameter.statusStructForHitObject.ricochetAddCountByLevelPack > 0)
+			{
+				float damageRate = RicochetHitObjectAffector.GetDamageRate(hitParameter.statusStructForHitObject.ricochetAddCountByLevelPack, hitParameter.statusStructForHitObject.ricochetIndex);
+				if (damageRate != 1.0f)
+					damage *= damageRate;
+			}
+
+			if (hitParameter.statusStructForHitObject.bounceWallQuadAddCountByLevelPack > 0)
+			{
+				float damageRate = BounceWallQuadHitObjectAffector.GetDamageRate(hitParameter.statusStructForHitObject.bounceWallQuadAddCountByLevelPack, hitParameter.statusStructForHitObject.bounceWallQuadIndex);
+				if (damageRate != 1.0f)
+					damage *= damageRate;
+			}
+
+			if (hitParameter.statusStructForHitObject.parallelAddCountByLevelPack > 0)
+			{
+				float damageRate = ParallelHitObjectAffector.GetDamageRate(hitParameter.statusStructForHitObject.parallelAddCountByLevelPack);
+				if (damageRate != 1.0f)
+					damage *= damageRate;
+			}
+
+			if (hitParameter.statusStructForHitObject.repeatAddCountByLevelPack > 0)
+			{
+				float damageRate = RepeatHitObjectAffector.GetDamageRate(hitParameter.statusStructForHitObject.repeatAddCountByLevelPack, hitParameter.statusStructForHitObject.repeatIndex);
+				if (damageRate != 1.0f)
+					damage *= damageRate;
+			}
+
+			if (hitParameter.statusStructForHitObject.targetDetectType == HitObject.eTargetDetectType.Collider)
+			{
+				float reduceDamageRate = ReduceDamageAffector.GetValue(_affectorProcessor, ReduceDamageAffector.eReduceDamageType.Collider);
+				if (reduceDamageRate != 0.0f)
+					damage *= (1.0f - reduceDamageRate);
+			}
+		}
+
+		if (_actor is PlayerActor)
+			BattleManager.instance.AddDamageCountOnStage();
 
 		// 버로우로 내려가있는 도중엔 본체에 HitRimBlink 할 필요 없다.
 		// DieProcess 들어가기전에 물어보는게 가장 정확하다.

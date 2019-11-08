@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using MecanimStateDefine;
 
 public class InstantDeathAffector : AffectorBase
 {
@@ -34,7 +35,7 @@ public class InstantDeathAffector : AffectorBase
 			return;
 	}
 
-	public static bool CheckInstantDeath(AffectorProcessor affectorProcessor)
+	public static bool CheckInstantDeath(AffectorProcessor affectorProcessor, Actor defenderActor)
 	{
 		List<AffectorBase> listInstantDeathAffector = affectorProcessor.GetContinuousAffectorList(eAffectorType.InstantDeath);
 		if (listInstantDeathAffector == null)
@@ -51,6 +52,16 @@ public class InstantDeathAffector : AffectorBase
 			result += instantDeathAffector.value;
 		}
 		if (result == 0.0f)
+			return false;
+
+		if (defenderActor is MonsterActor)
+		{
+			MonsterActor monsterActor = defenderActor as MonsterActor;
+			if (monsterActor != null && monsterActor.bossMonster)
+				return false;
+		}
+
+		if (defenderActor.actionController.mecanimState.IsState((int)eMecanimState.DontDie))
 			return false;
 
 		return (Random.value <= result);

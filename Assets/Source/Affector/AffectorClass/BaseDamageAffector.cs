@@ -151,7 +151,7 @@ public class BaseDamageAffector : AffectorBase {
 			if (attackerActor == null) attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(hitParameter.statusStructForHitObject.actorInstanceId);
 			if (attackerActor != null)
 			{
-				if (InstantDeathAffector.CheckInstantDeath(attackerActor.affectorProcessor))
+				if (InstantDeathAffector.CheckInstantDeath(attackerActor.affectorProcessor, _actor))
 				{
 					damage = _actor.actorStatus.GetHP() + 1.0f;
 					FloatingDamageTextRootCanvas.instance.ShowText(FloatingDamageText.eFloatingDamageType.Headshot, _actor);

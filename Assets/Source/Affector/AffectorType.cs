@@ -44,5 +44,6 @@ public enum eAffectorType
 	IgnoreEvadeVisual,
 	DropAdjust,
 	SlowHitObjectSpeed,
+	CollisionDamage,
 }
 #endregion

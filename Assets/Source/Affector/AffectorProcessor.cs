@@ -188,11 +188,25 @@ public class AffectorProcessor : MonoBehaviour {
 	}
 
 	#region Without Table
-	public AffectorBase ExecuteAffectorValueWithoutTable(eAffectorType affectorType, AffectorValueLevelTableData levelData, Actor actor, bool managed)
+	public AffectorBase ExecuteAffectorValueWithoutTable(eAffectorType affectorType, AffectorValueLevelTableData levelData, Actor actor, bool managed, bool useMonsterActorInfo = false)
 	{
 		HitParameter hitParameter = new HitParameter();
 		hitParameter.statusBase = actor.actorStatus.statusBase;
 		SkillProcessor.CopyEtcStatus(ref hitParameter.statusStructForHitObject, actor);
+
+		if (useMonsterActorInfo)
+		{
+			// Monster정보가 추가로 필요해져서 복사해둔다.
+			hitParameter.statusStructForHitObject.monsterActor = actor is MonsterActor;
+			hitParameter.statusStructForHitObject.bossMonsterActor = false;
+			if (hitParameter.statusStructForHitObject.monsterActor)
+			{
+				MonsterActor monsterActor = actor as MonsterActor;
+				if (monsterActor != null)
+					hitParameter.statusStructForHitObject.bossMonsterActor = monsterActor.bossMonster;
+			}
+		}
+
 		return ExcuteAffector(affectorType, levelData, hitParameter, managed);
 	}
 	#endregion

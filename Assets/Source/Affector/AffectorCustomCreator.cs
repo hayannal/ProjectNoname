@@ -41,6 +41,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.IgnoreEvadeVisual: affectorBase = new IgnoreEvadeVisualAffector(); break;
 			case eAffectorType.DropAdjust: affectorBase = new DropAdjustAffector(); break;
 			case eAffectorType.SlowHitObjectSpeed: affectorBase = new SlowHitObjectSpeedAffector(); break;
+			case eAffectorType.CollisionDamage: affectorBase = new CollisionDamageAffector(); break;
 			#endregion
 		}
 		return affectorBase;

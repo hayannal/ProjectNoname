@@ -60,10 +60,15 @@ public class ReflectDamageAffector : AffectorBase
 		if (actor.actorStatus.GetHP() <= 1.0f)
 			return;
 
+		if (actor is PlayerActor)
+			BattleManager.instance.AddDamageCountOnStage();
+
 		float reflectDamage = damage * result;
 		if (actor.actorStatus.GetHP() - reflectDamage < 1.0f)
 			reflectDamage = actor.actorStatus.GetHP() - 1.0f;
 		actor.actorStatus.AddHP(-reflectDamage);
+		ChangeActorStatusAffector.OnDamage(affectorProcessor);
+		CallAffectorValueAffector.OnEvent(affectorProcessor, CallAffectorValueAffector.eEventType.OnDamage, damage);
 
 #if UNITY_EDITOR
 		//Debug.LogFormat("Current = {0} / Max = {1} / Damage = {2} / frameCount = {3}", actor.actorStatus.GetHP(), actor.actorStatus.GetValue(eActorStatus.MaxHp), reflectDamage, Time.frameCount);

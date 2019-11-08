@@ -51,20 +51,22 @@ public class BaseDamageAffector : AffectorBase {
 		//float damage = hitParameter.statusBase.valueList[(int)eActorStatus.Attack] * 1000.0f / (_actor.actorStatus.GetValue(eActorStatus.Defense) + 1000.0f);
 		//float damage = hitParameter.statusBase.valueList[(int)eActorStatus.Attack] - _actor.actorStatus.GetValue(eActorStatus.Defense);
 		float damage = hitParameter.statusBase.valueList[(int)eActorStatus.Attack];
+		float damageRatio = 1.0f;
 		switch (affectorValueLevelTableData.iValue1)
 		{
 			case 0:
-				damage *= affectorValueLevelTableData.fValue1;
+				damageRatio = affectorValueLevelTableData.fValue1;
 				break;
 			case 1:
 				int hitSignalIndexInAction = hitParameter.statusStructForHitObject.hitSignalIndexInAction;
 				float[] damageRatioList = BattleInstanceManager.instance.GetCachedMultiHitDamageRatioList(affectorValueLevelTableData.sValue1);
 				if (hitSignalIndexInAction < damageRatioList.Length)
-					damage *= damageRatioList[hitSignalIndexInAction];
+					damageRatio = damageRatioList[hitSignalIndexInAction];
 				else
 					Debug.LogErrorFormat("Invalid hitSignalIndexInAction. index = {0}", hitSignalIndexInAction);
 				break;
 		}
+		damage *= damageRatio;
 
 		Actor attackerActor = null;
 		if ((int)eActorStatus.CriticalRate < hitParameter.statusBase.valueList.Length)

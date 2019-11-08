@@ -120,7 +120,7 @@ public class PlayerActor : Actor
 	{
 		eAffectorType affectorType = eAffectorType.CollisionDamage;
 		AffectorValueLevelTableData collisionDamageAffectorValue = new AffectorValueLevelTableData();
-		affectorProcessor.ExecuteAffectorValueWithoutTable(affectorType, collisionDamageAffectorValue, attackerActor, false);
+		affectorProcessor.ExecuteAffectorValueWithoutTable(affectorType, collisionDamageAffectorValue, attackerActor, false, true);
 	}
 
 	float _collisionStayInterval = 0.0f;

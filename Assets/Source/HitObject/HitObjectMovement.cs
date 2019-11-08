@@ -28,6 +28,7 @@ public class HitObjectMovement : MonoBehaviour {
 
 	MeHitObject _signal;
 	Rigidbody _rigidbody;
+	float _speed;
 
 	Transform _followTargetTransform;
 	float _currentCurve;
@@ -38,6 +39,13 @@ public class HitObjectMovement : MonoBehaviour {
 		_rigidbody = rigidbody;
 		_rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
 		_rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+		_speed = _signal.speed;
+		if (parentActor.team.teamId == (int)Team.eTeamID.DefaultMonster)
+		{
+			float slowRate = SlowHitObjectSpeedAffector.GetValue(BattleInstanceManager.instance.playerActor.affectorProcessor);
+			if (slowRate != 0.0f)
+				_speed *= (1.0f - slowRate);
+		}
 
 		switch(_signal.movementType)
 		{
@@ -50,15 +58,15 @@ public class HitObjectMovement : MonoBehaviour {
 					_followTargetTransform = null;
 
 				// FollowTarget역시 최초에 한번 설정해두는게 좋다. 타겟 없을때 앞으로 나가게 하려면 이게 제일 나은듯.
-				_rigidbody.velocity = cachedTransform.forward * _signal.speed;
+				_rigidbody.velocity = cachedTransform.forward * _speed;
 				_forward = cachedTransform.forward;
 				break;
 			case eMovementType.Direct:
 			case eMovementType.Turn:
 				// 생성 방향이 곧 날아가는 방향이다. 냅둔다.
 				//Vector3 targetPosition = HitObject.GetTargetPosition(_signal, parentActor, hitSignalIndexInAction);
-				//_rigidbody.velocity = HitObject.GetStartDirection(cachedTransform.position, meHit, parentActor.cachedTransform, targetPosition) * _signal.speed;
-				_velocity = _rigidbody.velocity = cachedTransform.forward * _signal.speed;
+				//_rigidbody.velocity = HitObject.GetStartDirection(cachedTransform.position, meHit, parentActor.cachedTransform, targetPosition) * _speed;
+				_velocity = _rigidbody.velocity = cachedTransform.forward * _speed;
 				_forward = cachedTransform.forward;
 				break;
 			case eMovementType.Howitzer:
@@ -73,7 +81,7 @@ public class HitObjectMovement : MonoBehaviour {
 						// 이거로 하면 out으로 나온 direction1,2 둘다 이상한 값이 들어있어서 쓸수가 없다. 차라리 위 함수를 응용해서 하기로 한다.
 						//Vector3 direction1;
 						//Vector3 direction2;
-						//bool result = ProjectileHelper.ComputeDirectionToHitTargetWithSpeed(cachedTransform.position, targetPosition, _signal.gravity, _signal.speed, out direction1, out direction2);
+						//bool result = ProjectileHelper.ComputeDirectionToHitTargetWithSpeed(cachedTransform.position, targetPosition, _signal.gravity, _speed, out direction1, out direction2);
 						//if (result == false)
 						//{
 						//	Debug.LogError("Invalid Parameter! HitObject can't reach the target.");
@@ -81,7 +89,7 @@ public class HitObjectMovement : MonoBehaviour {
 						//}
 						//_velocity = _rigidbody.velocity = direction1.y > 0.0f ? direction2 : direction1;
 						Vector3 diff = targetPosition - cachedTransform.position;
-						float time = diff.magnitude / _signal.speed;
+						float time = diff.magnitude / _speed;
 						_velocity = _rigidbody.velocity = ProjectileHelper.ComputeVelocityToHitTargetAtTime(cachedTransform.position, targetPosition, _signal.gravity, time);
 						_forward = cachedTransform.forward = _rigidbody.velocity.normalized;
 						break;
@@ -135,7 +143,7 @@ public class HitObjectMovement : MonoBehaviour {
 						Vector3 newDir = Vector3.RotateTowards(cachedTransform.forward, diffDir, _currentCurve * Time.fixedDeltaTime, 0.0f);
 						cachedTransform.rotation = Quaternion.LookRotation(newDir);
 					}
-					_velocity = _rigidbody.velocity = cachedTransform.forward * _signal.speed;
+					_velocity = _rigidbody.velocity = cachedTransform.forward * _speed;
 					_forward = cachedTransform.forward;
 				}
 				else
@@ -147,7 +155,7 @@ public class HitObjectMovement : MonoBehaviour {
 				_rigidbody.MoveRotation(_rigidbody.rotation * Quaternion.Euler(0.0f, _signal.accelTurn * Time.deltaTime, 0.0f));
 				cachedTransform.rotation = _rigidbody.rotation;
 				//cachedTransform.Rotate(0.0f, _signal.accelTurn * Time.deltaTime, 0.0f, Space.Self);
-				_velocity = _rigidbody.velocity = cachedTransform.forward * _signal.speed;
+				_velocity = _rigidbody.velocity = cachedTransform.forward * _speed;
 				_forward = cachedTransform.forward;
 				break;
 			case eMovementType.Howitzer:
@@ -283,7 +291,7 @@ public class HitObjectMovement : MonoBehaviour {
 		Vector3 diff = targetTransform.position - cachedTransform.position;
 		diff.y = 0.0f;
 		Vector3 normalizedDiff = diff.normalized;
-		_velocity = _rigidbody.velocity = normalizedDiff * _signal.speed;
+		_velocity = _rigidbody.velocity = normalizedDiff * _speed;
 		_forward = cachedTransform.forward = normalizedDiff;
 		return true;
 	}

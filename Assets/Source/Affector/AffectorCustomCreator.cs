@@ -40,6 +40,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.Burrow: affectorBase = new BurrowAffector(); break;
 			case eAffectorType.IgnoreEvadeVisual: affectorBase = new IgnoreEvadeVisualAffector(); break;
 			case eAffectorType.DropAdjust: affectorBase = new DropAdjustAffector(); break;
+			case eAffectorType.SlowHitObjectSpeed: affectorBase = new SlowHitObjectSpeedAffector(); break;
 			#endregion
 		}
 		return affectorBase;
@@ -79,6 +80,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.Burrow:
 			case eAffectorType.IgnoreEvadeVisual:
 			case eAffectorType.DropAdjust:
+			case eAffectorType.SlowHitObjectSpeed:
 				return true;
 			#endregion
 		}

@@ -43,5 +43,6 @@ public enum eAffectorType
 	Burrow,
 	IgnoreEvadeVisual,
 	DropAdjust,
+	SlowHitObjectSpeed,
 }
 #endregion

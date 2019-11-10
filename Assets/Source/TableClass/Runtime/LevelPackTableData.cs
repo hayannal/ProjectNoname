@@ -48,4 +48,8 @@ public class LevelPackTableData
   string[] _useActor = new string[0];
   public string[] useActor { get { return _useActor; } set { _useActor = value; } }
   
+  [SerializeField]
+  string[] _effectAddress = new string[0];
+  public string[] effectAddress { get { return _effectAddress; } set { _effectAddress = value; } }
+  
 }

@@ -205,6 +205,17 @@ public class SkillProcessor : MonoBehaviour
 			info.nameId = levelPackTableData.nameId;
 			info.descriptionId = levelPackTableData.descriptionId;
 			_dicLevelPack.Add(levelPackId, info);
+
+			// 공용으로 쓰는 디버프나 버프 이펙트들은 특정 액터가 들고있기 애매하다.
+			// 그래서 레벨팩이나 뭔가 다른 시스템에 의해 필요한 순간이 오면 어드레스로 접근해서 로드한 후 commonPool에 넣기로 한다.
+			// 이래야 초기로딩이 길어지지도, 쓰지 않는 이펙트때문에 메모리를 낭비하는 일도 안생긴다.
+			for (int i = 0; i < levelPackTableData.effectAddress.Length; ++i)
+			{
+				AddressableAssetLoadManager.GetAddressableGameObject(levelPackTableData.effectAddress[i], "CommonEffect", (prefab) =>
+				{
+					BattleInstanceManager.instance.AddCommonPoolPreloadObjectList(prefab);
+				});
+			}
 		}
 		else
 		{

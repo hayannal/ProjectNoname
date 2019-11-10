@@ -53,4 +53,12 @@ public class LevelPackDataManager : MonoBehaviour
 		_dicActorLevelPack.Add(actorId, listLevelPackTableData);
 		return listLevelPackTableData;
 	}
+
+	LevelPackTableData _cachedExclusiveLevelPackTableDataAfterMax;
+	public LevelPackTableData GetFallbackExclusiveLevelPackTableData()
+	{
+		if (_cachedExclusiveLevelPackTableDataAfterMax == null)
+			_cachedExclusiveLevelPackTableDataAfterMax = TableDataManager.instance.FindLevelPackTableData(BattleInstanceManager.instance.GetCachedGlobalConstantString("ExclusiveLevelPackIdAfterMax"));
+		return _cachedExclusiveLevelPackTableDataAfterMax;
+	}
 }

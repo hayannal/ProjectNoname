@@ -219,13 +219,18 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 			newInfo.rate = sumWeight;
 			_listRandomLevelPackInfo.Add(newInfo);
 		}
-		if (_listRandomLevelPackInfo.Count == 0 && listLevelPackTableData.Count > 0)
+		// exclusive일때 가져올게 없다면 미리 지정해둔 fallback용 exclusive 레벨팩을 보여준다.
+		if (_listRandomLevelPackInfo.Count == 0)
 		{
-			sumWeight = listLevelPackTableData[0].dropWeight;
-			RandomLevelPackInfo newInfo = new RandomLevelPackInfo();
-			newInfo.levelPackTableData = listLevelPackTableData[0];
-			newInfo.rate = sumWeight;
-			_listRandomLevelPackInfo.Add(newInfo);
+			LevelPackTableData fallbackLevelPackTableData = LevelPackDataManager.instance.GetFallbackExclusiveLevelPackTableData();
+			if (fallbackLevelPackTableData != null)
+			{
+				sumWeight = fallbackLevelPackTableData.dropWeight;
+				RandomLevelPackInfo newInfo = new RandomLevelPackInfo();
+				newInfo.levelPackTableData = fallbackLevelPackTableData;
+				newInfo.rate = sumWeight;
+				_listRandomLevelPackInfo.Add(newInfo);
+			}
 		}
 		if (_listRandomLevelPackInfo.Count == 0)
 		{

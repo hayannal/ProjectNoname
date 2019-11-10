@@ -24,6 +24,7 @@ public class TableDataManager : MonoBehaviour
 	public LevelPackLevelTable levelPackLevelTable;
 	public GlobalConstantFloatTable globalConstantFloatTable;
 	public GlobalConstantIntTable globalConstantIntTable;
+	public GlobalConstantStringTable globalConstantStringTable;
 	public DropTable dropTable;
 	public FontTable fontTable;
 	public EquipTable equipTable;
@@ -204,6 +205,16 @@ public class TableDataManager : MonoBehaviour
 				return globalConstantIntTable.dataArray[i].value;
 		}
 		return 0;
+	}
+
+	public string GetGlobalConstantString(string id)
+	{
+		for (int i = 0; i < globalConstantStringTable.dataArray.Length; ++i)
+		{
+			if (globalConstantStringTable.dataArray[i].id == id)
+				return globalConstantStringTable.dataArray[i].value;
+		}
+		return "";
 	}
 
 	public DropTableData FindDropTableData(string dropId)

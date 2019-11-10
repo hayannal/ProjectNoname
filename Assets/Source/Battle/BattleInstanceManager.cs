@@ -613,6 +613,17 @@ public class BattleInstanceManager : MonoBehaviour
 		_dicGlobalConstantInt.Add(id, value);
 		return value;
 	}
+
+	Dictionary<string, string> _dicGlobalConstantString = new Dictionary<string, string>();
+	public string GetCachedGlobalConstantString(string id)
+	{
+		if (_dicGlobalConstantString.ContainsKey(id))
+			return _dicGlobalConstantString[id];
+
+		string value = TableDataManager.instance.GetGlobalConstantString(id);
+		_dicGlobalConstantString.Add(id, value);
+		return value;
+	}
 	#endregion
 
 	#region PlayerActor

@@ -206,11 +206,12 @@ public sealed class LocalPlayerController : BaseCharacterController
 			return;
 		}
 
-		if (actor.affectorProcessor.IsContinuousAffectorType(eAffectorType.CannotMove))
-		{
-			moveDirection = Vector3.zero;
-			return;
-		}
+		// 여기서 zero로 바꾸면 Move액션이 안나가게 된다.
+		//if (actor.affectorProcessor.IsContinuousAffectorType(eAffectorType.CannotMove))
+		//{
+		//	moveDirection = Vector3.zero;
+		//	return;
+		//}
 
 
 		// Handle your custom input here...

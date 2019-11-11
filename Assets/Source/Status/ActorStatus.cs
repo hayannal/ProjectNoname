@@ -134,6 +134,8 @@ public class ActorStatus : MonoBehaviour
 				if (attackSpeedAddRate != 0.0f) value /= (1.0f + attackSpeedAddRate);
 				break;
 			case eActorStatus.MoveSpeed:
+				// 0으로 고정시키면 ai에서 아예 Move애니 대신 Idle이 나오게 된다. 그래서 0보다는 큰 값으로 설정해둔다.
+				if (actor.affectorProcessor.IsContinuousAffectorType(eAffectorType.CannotMove)) value = 0.00001f;
 				addRate = GetValue(eActorStatus.MoveSpeedAddRate);
 				if (addRate != 0.0f) value *= (1.0f + addRate);
 				break;

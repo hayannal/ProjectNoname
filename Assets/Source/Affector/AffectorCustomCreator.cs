@@ -20,6 +20,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.CannotAction: affectorBase = new CannotActionAffector(); break;
 			case eAffectorType.CannotMove: affectorBase = new CannotMoveAffector(); break;
 			case eAffectorType.Heal: affectorBase = new HealAffector(); break;
+			case eAffectorType.DefaultContainer: affectorBase = new DefaultContainerAffector(); break;
 			case eAffectorType.CallAffectorValue: affectorBase = new CallAffectorValueAffector(); break;
 			case eAffectorType.ReduceDamage: affectorBase = new ReduceDamageAffector(); break;
 			case eAffectorType.HealOverTime: affectorBase = new HealOverTimeAffector(); break;

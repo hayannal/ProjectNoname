@@ -54,6 +54,7 @@ public class CallAffectorValueAffector : AffectorBase
 
 		HitParameter hitParameter = new HitParameter();
 		hitParameter.statusBase = _actor.actorStatus.statusBase;
+		hitParameter.statusStructForHitObject.skillLevel = _affectorValueLevelTableData.level;
 		SkillProcessor.CopyEtcStatus(ref hitParameter.statusStructForHitObject, _actor);
 
 		switch (eventType)

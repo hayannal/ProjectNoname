@@ -214,7 +214,15 @@ public class BaseDamageAffector : AffectorBase {
 
 			if (attackerActor != null)
 			{
-				CallAffectorValueAffector.OnEvent(attackerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnKill);
+				bool ignoreOnKill = false;
+				if (_actor is MonsterActor)
+				{
+					MonsterActor monsterActor = _actor as MonsterActor;
+					if (monsterActor != null && monsterActor.groupMonster && monsterActor.group.IsLastAliveMonster(monsterActor) == false)
+						ignoreOnKill = true;
+				}
+				if (ignoreOnKill == false)
+					CallAffectorValueAffector.OnEvent(attackerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnKill);
 			}
 		}
 

@@ -22,9 +22,9 @@ public class CollisionDamageAffector : AffectorBase
 			}
 		}
 
-		float reduceDamageRate = ReduceDamageAffector.GetValue(_affectorProcessor, ReduceDamageAffector.eReduceDamageType.Crash);
-		if (reduceDamageRate != 0.0f)
-			damage *= (1.0f - reduceDamageRate);
+		float reduceDamageValue = ReduceDamageAffector.GetValue(_affectorProcessor, ReduceDamageAffector.eReduceDamageType.Crash);
+		if (reduceDamageValue != 0.0f)
+			damage *= (1.0f - (reduceDamageValue / (1.0f + reduceDamageValue)));
 
 		_actor.actorStatus.AddHP(-damage);
 		ChangeActorStatusAffector.OnDamage(_affectorProcessor);

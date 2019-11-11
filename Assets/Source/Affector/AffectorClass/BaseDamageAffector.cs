@@ -167,9 +167,9 @@ public class BaseDamageAffector : AffectorBase {
 
 			if (hitParameter.statusStructForHitObject.targetDetectType == HitObject.eTargetDetectType.Collider)
 			{
-				float reduceDamageRate = ReduceDamageAffector.GetValue(_affectorProcessor, ReduceDamageAffector.eReduceDamageType.Collider);
-				if (reduceDamageRate != 0.0f)
-					damage *= (1.0f - reduceDamageRate);
+				float reduceDamageValue = ReduceDamageAffector.GetValue(_affectorProcessor, ReduceDamageAffector.eReduceDamageType.Collider);
+				if (reduceDamageValue != 0.0f)
+					damage *= (1.0f - (reduceDamageValue / (1.0f + reduceDamageValue)));
 			}
 		}
 

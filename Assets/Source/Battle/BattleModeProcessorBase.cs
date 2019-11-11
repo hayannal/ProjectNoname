@@ -27,9 +27,6 @@ public class BattleModeProcessorBase
 		_mapLoaded = true;
 		_monsterSpawned = false;
 		_monsterSpawnCount = 0;
-
-		if (BattleInstanceManager.instance.playerActor != null)
-			CallAffectorValueAffector.OnEvent(BattleInstanceManager.instance.playerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnStartStage);
 	}
 
 	GameObject _powerSourceObject;
@@ -38,6 +35,11 @@ public class BattleModeProcessorBase
 		_damageCountInStage = 0;
 		if (StageManager.instance.spawnPowerSourcePrefab)
 			_powerSourceObject = BattleInstanceManager.instance.GetCachedObject(StageManager.instance.GetPreparedPowerSourcePrefab(), StageManager.instance.currentPowerSourceSpawnPosition, Quaternion.identity);
+		else
+		{
+			if (BattleInstanceManager.instance.playerActor != null)
+				CallAffectorValueAffector.OnEvent(BattleInstanceManager.instance.playerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnStartStage);
+		}
 	}
 
 	public void OnSpawnMonster(MonsterActor monsterActor)

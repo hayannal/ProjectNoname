@@ -192,6 +192,7 @@ public class BaseDamageAffector : AffectorBase {
 			ReflectDamageAffector.OnHit(attackerActor.affectorProcessor, damage);
 			CallAffectorValueAffector.OnEvent(attackerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnHit, damage);
 			AttackWeightHitObjectAffector.OnEvent(attackerActor.affectorProcessor, _affectorProcessor, damageRatio);
+			CertainHpHitObjectAffector.OnEvent(attackerActor.affectorProcessor, _affectorProcessor, _actor.actorStatus.GetHPRatio());
 		}
 
 #if UNITY_EDITOR

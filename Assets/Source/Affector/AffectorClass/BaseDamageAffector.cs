@@ -73,10 +73,10 @@ public class BaseDamageAffector : AffectorBase {
 			}
 		}
 
+		float damageRatio = 1.0f;
 		if (instantDeath == false)
 		{
 			// Calc Damage
-			float damageRatio = 1.0f;
 			switch (affectorValueLevelTableData.iValue1)
 			{
 				case 0:
@@ -191,6 +191,7 @@ public class BaseDamageAffector : AffectorBase {
 		{
 			ReflectDamageAffector.OnHit(attackerActor.affectorProcessor, damage);
 			CallAffectorValueAffector.OnEvent(attackerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnHit, damage);
+			AttackWeightHitObjectAffector.OnEvent(attackerActor.affectorProcessor, _affectorProcessor, damageRatio);
 		}
 
 #if UNITY_EDITOR

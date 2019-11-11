@@ -36,6 +36,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.LeftRightNwayGenerator: affectorBase = new LeftRightNwayGeneratorAffector(); break;
 			case eAffectorType.BackNwayGenerator: affectorBase = new BackNwayGeneratorAffector(); break;
 			case eAffectorType.RepeatHitObject: affectorBase = new RepeatHitObjectAffector(); break;
+			case eAffectorType.AttackWeightHitObject: affectorBase = new AttackWeightHitObjectAffector(); break;
 			case eAffectorType.Invincible: affectorBase = new InvincibleAffector(); break;
 			case eAffectorType.CountBarrier: affectorBase = new CountBarrierAffector(); break;
 			case eAffectorType.InvincibleTortoise: affectorBase = new InvincibleTortoiseAffector(); break;
@@ -77,6 +78,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.LeftRightNwayGenerator:
 			case eAffectorType.BackNwayGenerator:
 			case eAffectorType.RepeatHitObject:
+			case eAffectorType.AttackWeightHitObject:
 			case eAffectorType.Invincible:
 			case eAffectorType.CountBarrier:
 			case eAffectorType.InvincibleTortoise:

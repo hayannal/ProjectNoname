@@ -35,6 +35,7 @@ public enum eAffectorType
 	LeftRightNwayGenerator,
 	BackNwayGenerator,
 	RepeatHitObject,
+	AttackWeightHitObject,
 
 	DropItem = 51,
 	Invincible,

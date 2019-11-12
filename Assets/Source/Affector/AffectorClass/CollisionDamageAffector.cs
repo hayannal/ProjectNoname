@@ -29,6 +29,12 @@ public class CollisionDamageAffector : AffectorBase
 		_actor.actorStatus.AddHP(-damage);
 		ChangeActorStatusAffector.OnDamage(_affectorProcessor);
 		CallAffectorValueAffector.OnEvent(_affectorProcessor, CallAffectorValueAffector.eEventType.OnDamage, damage);
+		Actor attackerActor = null;
+		if (attackerActor == null) attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(hitParameter.statusStructForHitObject.actorInstanceId);
+		if (attackerActor != null)
+		{
+			ReflectDamageAffector.OnDamage(_affectorProcessor, attackerActor, damage);
+		}
 
 #if UNITY_EDITOR
 		//Debug.LogFormat("Current = {0} / Max = {1} / Damage = {2} / frameCount = {3}", _actor.actorStatus.GetHP(), _actor.actorStatus.GetValue(eActorStatus.MaxHp), damage, Time.frameCount);

@@ -37,6 +37,7 @@ public enum eAffectorType
 	RepeatHitObject,
 	AttackWeightHitObject,
 	CertainHpHitObject,
+	TeleportingHitObject,
 
 	DropItem = 51,
 	Invincible,
@@ -47,5 +48,6 @@ public enum eAffectorType
 	DropAdjust,
 	SlowHitObjectSpeed,
 	CollisionDamage,
+	Teleported,
 }
 #endregion

@@ -39,6 +39,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.RepeatHitObject: affectorBase = new RepeatHitObjectAffector(); break;
 			case eAffectorType.AttackWeightHitObject: affectorBase = new AttackWeightHitObjectAffector(); break;
 			case eAffectorType.CertainHpHitObject: affectorBase = new CertainHpHitObjectAffector(); break;
+			case eAffectorType.TeleportingHitObject: affectorBase = new TeleportingHitObjectAffector(); break;
 			case eAffectorType.Invincible: affectorBase = new InvincibleAffector(); break;
 			case eAffectorType.CountBarrier: affectorBase = new CountBarrierAffector(); break;
 			case eAffectorType.InvincibleTortoise: affectorBase = new InvincibleTortoiseAffector(); break;
@@ -47,6 +48,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.DropAdjust: affectorBase = new DropAdjustAffector(); break;
 			case eAffectorType.SlowHitObjectSpeed: affectorBase = new SlowHitObjectSpeedAffector(); break;
 			case eAffectorType.CollisionDamage: affectorBase = new CollisionDamageAffector(); break;
+			case eAffectorType.Teleported: affectorBase = new TeleportedAffector(); break;
 			#endregion
 		}
 		return affectorBase;
@@ -82,6 +84,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.RepeatHitObject:
 			case eAffectorType.AttackWeightHitObject:
 			case eAffectorType.CertainHpHitObject:
+			case eAffectorType.TeleportingHitObject:
 			case eAffectorType.Invincible:
 			case eAffectorType.CountBarrier:
 			case eAffectorType.InvincibleTortoise:
@@ -89,6 +92,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.IgnoreEvadeVisual:
 			case eAffectorType.DropAdjust:
 			case eAffectorType.SlowHitObjectSpeed:
+			case eAffectorType.Teleported:
 				return true;
 			#endregion
 		}

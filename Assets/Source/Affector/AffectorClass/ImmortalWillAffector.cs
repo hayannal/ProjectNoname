@@ -8,6 +8,8 @@ public class ImmortalWillAffector : AffectorBase
 	float _value;
 	float value { get { return _value; } }
 
+	const float StandardHitCountForMonsterKillingPlayer = 3.0f;
+
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
 		if (_actor == null)
@@ -53,7 +55,8 @@ public class ImmortalWillAffector : AffectorBase
 		if (result == 0.0f)
 			return false;
 
-		bool immortal = (Random.value <= result);
+		float rate = result * StandardHitCountForMonsterKillingPlayer / (result * StandardHitCountForMonsterKillingPlayer + 1.0f);
+		bool immortal = (Random.value <= rate);
 		if (immortal)
 			FloatingDamageTextRootCanvas.instance.ShowText(FloatingDamageText.eFloatingDamageType.Immortal, affectorProcessor.actor);
 		return immortal;

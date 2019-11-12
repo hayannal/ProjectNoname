@@ -9,6 +9,8 @@ public class InstantDeathAffector : AffectorBase
 	float _value;
 	float value { get { return _value; } }
 
+	const float StandardHitCountForPlayerKillingMonster = 10.0f;
+
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
 		if (_actor == null)
@@ -69,6 +71,7 @@ public class InstantDeathAffector : AffectorBase
 		// 몬스터는 ImmortalWillAffector를 가지지 않는다는 점을 이용해서 체크하지 않도록 한다.
 		//if (ImmortalWillAffector.CheckImmortal(defenderActor.affectorProcessor))
 
-		return (Random.value <= result);
+		float rate = StandardHitCountForPlayerKillingMonster / (StandardHitCountForPlayerKillingMonster - 1.0f) * result / (result + 1.0f);
+		return (Random.value <= rate);
 	}
 }

@@ -418,6 +418,17 @@ public class ActionController : MonoBehaviour {
 	}
 	#endregion
 
+	Transform _animatorTransform;
+	public Transform cachedAnimatorTransform
+	{
+		get
+		{
+			if (_animatorTransform == null)
+				_animatorTransform = animator.transform;
+			return _animatorTransform;
+		}
+	}
+
 	/*
 	void Update()
 	{

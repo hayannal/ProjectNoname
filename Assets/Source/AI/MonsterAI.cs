@@ -95,6 +95,8 @@ public class MonsterAI : MonoBehaviour
 			return;
 		if (actor.actorStatus.IsDie())
 			return;
+		if (actor.affectorProcessor.IsContinuousAffectorType(eAffectorType.CannotAction))
+			return;
 
 		if (_startDelayRemainTime > 0.0f)
 		{

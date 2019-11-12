@@ -28,6 +28,9 @@ public class DuplicatingGenerator : ContinuousHitObjectGeneratorBase
 			return;
 		}
 
+		if (_parentActor.affectorProcessor.IsContinuousAffectorType(eAffectorType.CannotAction))
+			return;
+
 		_remainIntervalTime -= Time.deltaTime;
 		if (_remainIntervalTime < 0.0f)
 		{

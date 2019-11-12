@@ -42,6 +42,9 @@ public class PaintGenerator : ContinuousHitObjectGeneratorBase
 			return;
 		}
 
+		if (_parentActor.affectorProcessor.IsContinuousAffectorType(eAffectorType.CannotAction))
+			return;
+
 		_remainLineIntervalTime -= Time.deltaTime;
 		if (_remainLineIntervalTime < 0.0f)
 		{

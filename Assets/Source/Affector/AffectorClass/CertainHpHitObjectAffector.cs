@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using MecanimStateDefine;
 
 public class CertainHpHitObjectAffector : AffectorBase
 {
@@ -27,6 +28,8 @@ public class CertainHpHitObjectAffector : AffectorBase
 			return;
 
 		if (_affectorValueLevelTableData.iValue2 == 1 && BurrowAffector.CheckBurrow(defenderAffectorProcessor))
+			return;
+		if (_affectorValueLevelTableData.iValue2 == 1 && defenderAffectorProcessor.actor.actionController.mecanimState.IsState((int)eMecanimState.DontDie))
 			return;
 
 		// 이 어펙터의 가장 큰 특징은 일정 hp구간이하로 내려갈때마다 확률을 굴려서 어펙터밸류를 콜하는건데,

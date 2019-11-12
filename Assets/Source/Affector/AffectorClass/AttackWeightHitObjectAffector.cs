@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using MecanimStateDefine;
 
 public class AttackWeightHitObjectAffector : AffectorBase
 {
@@ -25,6 +26,8 @@ public class AttackWeightHitObjectAffector : AffectorBase
 			return;
 
 		if (_affectorValueLevelTableData.iValue2 == 1 && BurrowAffector.CheckBurrow(defenderAffectorProcessor))
+			return;
+		if (_affectorValueLevelTableData.iValue2 == 1 && defenderAffectorProcessor.actor.actionController.mecanimState.IsState((int)eMecanimState.DontDie))
 			return;
 
 		// 공격 횟수에 상관없이 동일한 확률을 가진다면 이렇게 안하고 affectorValueIdList 에다가 직접 임의의 어펙터를 넣었어도 된다. 아니면 AddAffectorHitObject 사용하든가.

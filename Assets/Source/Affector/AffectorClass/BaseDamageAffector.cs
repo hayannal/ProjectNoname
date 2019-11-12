@@ -189,7 +189,7 @@ public class BaseDamageAffector : AffectorBase {
 		if (attackerActor == null) attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(hitParameter.statusStructForHitObject.actorInstanceId);
 		if (attackerActor != null)
 		{
-			ReflectDamageAffector.OnHit(attackerActor.affectorProcessor, damage);
+			ReflectDamageAffector.OnDamage(_affectorProcessor, attackerActor, damage);
 			CallAffectorValueAffector.OnEvent(attackerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnHit, damage);
 			AttackWeightHitObjectAffector.OnEvent(attackerActor.affectorProcessor, _affectorProcessor, damageRatio);
 			CertainHpHitObjectAffector.OnEvent(attackerActor.affectorProcessor, _affectorProcessor, _actor.actorStatus.GetHPRatio());

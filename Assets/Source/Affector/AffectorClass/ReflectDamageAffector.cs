@@ -35,7 +35,7 @@ public class ReflectDamageAffector : AffectorBase
 			return;
 	}
 	
-	public static void OnHit(AffectorProcessor affectorProcessor, float damage)
+	public static void OnDamage(AffectorProcessor affectorProcessor, Actor attackerActor, float damage)
 	{
 		if (affectorProcessor.actor == null)
 			return;
@@ -56,7 +56,7 @@ public class ReflectDamageAffector : AffectorBase
 		if (result == 0.0f)
 			return;
 
-		Actor actor = affectorProcessor.actor;
+		Actor actor = attackerActor;
 		if (actor.actorStatus.GetHP() <= 1.0f)
 			return;
 
@@ -67,8 +67,8 @@ public class ReflectDamageAffector : AffectorBase
 		if (actor.actorStatus.GetHP() - reflectDamage < 1.0f)
 			reflectDamage = actor.actorStatus.GetHP() - 1.0f;
 		actor.actorStatus.AddHP(-reflectDamage);
-		ChangeActorStatusAffector.OnDamage(affectorProcessor);
-		CallAffectorValueAffector.OnEvent(affectorProcessor, CallAffectorValueAffector.eEventType.OnDamage, damage);
+		ChangeActorStatusAffector.OnDamage(actor.affectorProcessor);
+		CallAffectorValueAffector.OnEvent(actor.affectorProcessor, CallAffectorValueAffector.eEventType.OnDamage, damage);
 
 #if UNITY_EDITOR
 		//Debug.LogFormat("Current = {0} / Max = {1} / Damage = {2} / frameCount = {3}", actor.actorStatus.GetHP(), actor.actorStatus.GetValue(eActorStatus.MaxHp), reflectDamage, Time.frameCount);

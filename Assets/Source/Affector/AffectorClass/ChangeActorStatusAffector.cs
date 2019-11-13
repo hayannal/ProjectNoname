@@ -35,7 +35,7 @@ public class ChangeActorStatusAffector : AffectorBase
 		if (!string.IsNullOrEmpty(affectorValueLevelTableData.sValue4))
 			_onStartEffectPrefab = FindPreloadObject(affectorValueLevelTableData.sValue4);
 		if (_onStartEffectPrefab != null)
-			BattleInstanceManager.instance.GetCachedObject(_onStartEffectPrefab, _actor.cachedTransform.position, _actor.cachedTransform.rotation);
+			BattleInstanceManager.instance.GetCachedObject(_onStartEffectPrefab, _actor.cachedTransform.position, _actor.cachedTransform.rotation, (affectorValueLevelTableData.iValue3 == 1) ? _actor.cachedTransform : null);
 
 		_actor.actorStatus.OnChangedStatus(_eType);
 	}
@@ -46,7 +46,7 @@ public class ChangeActorStatusAffector : AffectorBase
 		_onDamageRemainCount = affectorValueLevelTableData.iValue2;
 
 		if (_onStartEffectPrefab != null)
-			BattleInstanceManager.instance.GetCachedObject(_onStartEffectPrefab, _actor.cachedTransform.position, _actor.cachedTransform.rotation);
+			BattleInstanceManager.instance.GetCachedObject(_onStartEffectPrefab, _actor.cachedTransform.position, _actor.cachedTransform.rotation, (affectorValueLevelTableData.iValue3 == 1) ? _actor.cachedTransform : null);
 	}
 
 	public override void UpdateAffector()

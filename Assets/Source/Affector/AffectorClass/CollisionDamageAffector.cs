@@ -11,6 +11,8 @@ public class CollisionDamageAffector : AffectorBase
 			return;
 
 		float damage = hitParameter.statusBase.valueList[(int)eActorStatus.Attack];
+		damage *= affectorValueLevelTableData.fValue1;
+
 		if (_actor is PlayerActor)
 		{
 			BattleManager.instance.AddDamageCountOnStage();

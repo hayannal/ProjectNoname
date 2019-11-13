@@ -809,6 +809,9 @@ public class BattleInstanceManager : MonoBehaviour
 	{
 		for (int i = 0; i < _listCommonPoolPreloadObject.Count; ++i)
 		{
+			if (_listCommonPoolPreloadObject[i] == null)
+				continue;
+
 			if (_listCommonPoolPreloadObject[i].name == objectName)
 				return _listCommonPoolPreloadObject[i];
 		}

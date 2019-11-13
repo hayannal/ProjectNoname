@@ -36,6 +36,11 @@ public class TreasureChest : MonoBehaviour
 	{
 		AddressableAssetLoadManager.GetAddressableGameObject("TreasureChestIndicator", "Object", (prefab) =>
 		{
+			// 로딩하는 중간에 맵이동시 전투맵으로 들어가고 나서 TreasureChestIndicator가 나와버리게 된다. 그래서 체크로직 추가한다.
+			if (this == null) return;
+			if (gameObject == null) return;
+			if (gameObject.activeSelf == false) return;
+
 			_objectIndicatorCanvas = UIInstanceManager.instance.GetCachedObjectIndicatorCanvas(prefab);
 			_objectIndicatorCanvas.targetTransform = transform;
 		});

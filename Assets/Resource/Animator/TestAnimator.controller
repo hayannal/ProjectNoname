@@ -88,11 +88,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0.43442622
   EndTime: 1
+  targetDetectType: 2
   hitObjectPrefab: {fileID: 3024574136435083412, guid: a1a5458f04d3fbc4eb5cf432a20702d8,
     type: 3}
   lifeTime: 3
   movable: 1
-  targetDetectType: 2
+  maxDistance: 0
+  defaultSphereCastDistance: 0
+  sphereCastRadius: 0
   teamCheckType: 0
   createPositionType: 0
   boneName: 
@@ -104,9 +107,13 @@ MonoBehaviour:
   areaHeightMin: 0
   areaHeightMax: 0
   areaAngle: 0
+  repeatCount: 0
+  repeatInterval: 0
   movementType: 0
   startDirectionType: 2
   startDirection: {x: 0, y: 0, z: 1}
+  howitzerType: 0
+  useWorldSpaceDirection: 0
   bothRandomAngle: 1
   leftRightRandomAngle: 0
   leftRandomAngle: 0
@@ -116,25 +123,41 @@ MonoBehaviour:
   curve: 0
   curveAdd: 0
   curveLockY: 0
+  accelTurn: 0
+  gravity: -9.81
+  parallelCount: 0
+  parallelDistance: 0
+  ignoreMainHitObjectByParallel: 0
+  circularSectorCount: 0
+  circularSectorBetweenAngle: 0
+  circularSectorUseWorldSpace: 0
+  circularSectorWorldSpaceCenterAngleY: 0
+  ignoreMainHitObjectByCircularSector: 0
+  continuousHitObjectGeneratorBaseList: []
   contactAll: 1
   monsterThroughCount: -1
   wallThrough: 0
   quadThrough: 0
   bounceWallQuadCount: 0
   ricochetCount: 0
+  ricochetOneHitPerTarget: 0
   useHitStay: 0
   hitStayInterval: 0
-  hitStayGroupNumber: 0
+  hitStayIgnoreDuplicate: 0
+  hitStayIdForIgnoreDuplicate: 0
   hitStayLineRendererTrigger: 0
   oneHitPerTarget: 1
   useLineRenderer: 1
-  affectorValueIdList: []
+  affectorValueIdList:
+  - UltimateAttackGanfaul
   showHitEffect: 1
   hitEffectObject: {fileID: 2454282025452705989, guid: f670a7b7b994dc44bbd06f075012c53b,
     type: 3}
   hitEffectLookAtNormal: 0
   useWeaponHitEffect: 0
   weaponDummyName: 
+  hitEffectLineRendererType: 0
+  hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 1
 --- !u!1107 &-1805817263514781681
@@ -241,11 +264,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0.29
   EndTime: 1
+  targetDetectType: 2
   hitObjectPrefab: {fileID: 913101303298452110, guid: d37d1943642ed344c9e56a9a97548bbc,
     type: 3}
   lifeTime: 3
   movable: 1
-  targetDetectType: 2
+  maxDistance: 0
+  defaultSphereCastDistance: 0
+  sphereCastRadius: 0
   teamCheckType: 0
   createPositionType: 1
   boneName: RightHandDummy
@@ -257,9 +283,13 @@ MonoBehaviour:
   areaHeightMin: 0
   areaHeightMax: 0
   areaAngle: 0
+  repeatCount: 0
+  repeatInterval: 0
   movementType: 0
   startDirectionType: 2
   startDirection: {x: 0, y: 0, z: 1}
+  howitzerType: 0
+  useWorldSpaceDirection: 0
   bothRandomAngle: 1
   leftRightRandomAngle: 0
   leftRandomAngle: 0
@@ -269,15 +299,28 @@ MonoBehaviour:
   curve: 0
   curveAdd: 0
   curveLockY: 0
+  accelTurn: 0
+  gravity: -9.81
+  parallelCount: 0
+  parallelDistance: 0
+  ignoreMainHitObjectByParallel: 0
+  circularSectorCount: 0
+  circularSectorBetweenAngle: 0
+  circularSectorUseWorldSpace: 0
+  circularSectorWorldSpaceCenterAngleY: 0
+  ignoreMainHitObjectByCircularSector: 0
+  continuousHitObjectGeneratorBaseList: []
   contactAll: 0
   monsterThroughCount: 0
   wallThrough: 0
   quadThrough: 0
   bounceWallQuadCount: 0
   ricochetCount: 0
+  ricochetOneHitPerTarget: 0
   useHitStay: 0
   hitStayInterval: 0
-  hitStayGroupNumber: 0
+  hitStayIgnoreDuplicate: 0
+  hitStayIdForIgnoreDuplicate: 0
   hitStayLineRendererTrigger: 0
   oneHitPerTarget: 0
   useLineRenderer: 0
@@ -289,6 +332,8 @@ MonoBehaviour:
   hitEffectLookAtNormal: 1
   useWeaponHitEffect: 0
   weaponDummyName: 
+  hitEffectLineRendererType: 0
+  hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 1
 --- !u!114 &-564446965862659516
@@ -308,6 +353,7 @@ MonoBehaviour:
   effectData: {fileID: 8331450023444192633, guid: 7b14a648f451dea4aaf232213110e7f1,
     type: 3}
   offset: {x: 0, y: 0, z: 0}
+  fixedWorldPositionY: 0
   direction: {x: 0, y: 0, z: 1}
   parentName: RightHandDummy
 --- !u!91 &9100000
@@ -418,6 +464,7 @@ MonoBehaviour:
   effectData: {fileID: 2107271655324038936, guid: 7c3ec32c2f5983a46ae6d3dce045704d,
     type: 3}
   offset: {x: 0, y: 1, z: 1}
+  fixedWorldPositionY: 0
   direction: {x: 0, y: 0, z: 1}
   parentName: 
 --- !u!114 &6649347608798660281

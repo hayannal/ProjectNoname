@@ -8,6 +8,7 @@ using UnityEditorInternal;
 using MEC;
 using MecanimStateDefine;
 
+[CreateAssetMenu(fileName = "NewMeHitObject", menuName = "CustomAsset/Create MeHitObject", order = 1101)]
 public class MeHitObject : MecanimEventBase {
 
 	override public bool RangeSignal { get { return false; } }

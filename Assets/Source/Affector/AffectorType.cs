@@ -27,6 +27,8 @@ public enum eAffectorType
 	InstantDeath,
 	ImmortalWill,
 
+	CreateHitObject,
+
 	MonsterThroughHitObject = 31,
 	RicochetHitObject,
 	BounceWallQuadHitObject,
@@ -37,6 +39,7 @@ public enum eAffectorType
 	RepeatHitObject,
 	AttackWeightHitObject,
 	CertainHpHitObject,
+
 	TeleportingHitObject,
 
 	DropItem = 51,

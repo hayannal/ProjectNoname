@@ -52,5 +52,7 @@ public enum eAffectorType
 	SlowHitObjectSpeed,
 	CollisionDamage,
 	Teleported,
+
+	CreateHitObjectMoving,	
 }
 #endregion

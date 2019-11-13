@@ -50,6 +50,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.SlowHitObjectSpeed: affectorBase = new SlowHitObjectSpeedAffector(); break;
 			case eAffectorType.CollisionDamage: affectorBase = new CollisionDamageAffector(); break;
 			case eAffectorType.Teleported: affectorBase = new TeleportedAffector(); break;
+			case eAffectorType.CreateHitObjectMoving: affectorBase = new CreateHitObjectMovingAffector(); break;
 			#endregion
 		}
 		return affectorBase;
@@ -94,6 +95,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.DropAdjust:
 			case eAffectorType.SlowHitObjectSpeed:
 			case eAffectorType.Teleported:
+			case eAffectorType.CreateHitObjectMoving:
 				return true;
 			#endregion
 		}

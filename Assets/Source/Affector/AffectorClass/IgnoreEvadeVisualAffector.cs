@@ -148,10 +148,4 @@ public class IgnoreEvadeVisualAffector : AffectorBase
 			PlayerIgnoreEvadeCanvas.instance.SetPercent(_currentIgnoreEvade);
 		}
 	}
-
-
-
-	public override void FinalizeAffector()
-	{
-	}
 }

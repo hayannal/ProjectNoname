@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using ActorStatusDefine;
 
 public class CreateHitObjectAffector : AffectorBase
 {
@@ -15,8 +14,7 @@ public class CreateHitObjectAffector : AffectorBase
 		if (meHitObjectInfoPrefab == null)
 			return;
 
-		GameObject newObject = BattleInstanceManager.instance.GetCachedObject(meHitObjectInfoPrefab, _actor.cachedTransform);
-		MeHitObjectInfo info = newObject.GetComponent<MeHitObjectInfo>();
+		MeHitObjectInfo info = meHitObjectInfoPrefab.GetComponent<MeHitObjectInfo>();
 		if (info == null)
 			return;
 

@@ -10,6 +10,7 @@ public class CannotActionAffector : AffectorBase
 	const float PingPongSpeed = 3.0f;
 	const float PingPongMove = 0.15f;
 
+	bool _applied = false;
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
 		if (_actor.actorStatus.IsDie())
@@ -26,6 +27,7 @@ public class CannotActionAffector : AffectorBase
 		_actor.actionController.animator.speed = 0.0f;
 		_actor.actorStatus.OnChangedStatus(ActorStatusDefine.eActorStatus.MoveSpeed);
 		_shakeStartTime = Time.time;
+		_applied = true;
 	}
 
 	public override void OverrideAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
@@ -39,7 +41,6 @@ public class CannotActionAffector : AffectorBase
 		if (CheckEndTime(_endTime) == false)
 		{
 			_actor.actorStatus.OnChangedStatus(ActorStatusDefine.eActorStatus.MoveSpeed);
-			
 			return;
 		}
 
@@ -55,8 +56,12 @@ public class CannotActionAffector : AffectorBase
 
 	public override void FinalizeAffector()
 	{
+		if (_applied == false)
+			return;
+
 		_actor.actionController.cachedAnimatorTransform.localPosition = Vector3.zero;
 		_actor.actionController.animator.speed = _prevSpeed;
+		_applied = false;
 	}
 
 	void UpdateShake()

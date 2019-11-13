@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MEC;
+using ActorStatusDefine;
 
 public class PowerSource : MonoBehaviour
 {
@@ -50,7 +52,25 @@ public class PowerSource : MonoBehaviour
 		if (affectorProcessor.actor.team.teamId == (int)Team.eTeamID.DefaultMonster)
 			return;
 
+		AffectorValueLevelTableData healAffectorValue = new AffectorValueLevelTableData();
+		healAffectorValue.fValue3 = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("PowerSourceHeal");
+		affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Heal, healAffectorValue, affectorProcessor.actor, false);
+		affectorProcessor.actor.actorStatus.AddSP(affectorProcessor.actor.actorStatus.GetValue(eActorStatus.MaxSp) * BattleInstanceManager.instance.GetCachedGlobalConstantFloat("PowerSourceSpHeal"));
+
 		BattleInstanceManager.instance.GetCachedObject(StageManager.instance.gatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
 		_spawnedGatePillar = true;
+
+		Timing.RunCoroutine(ScreenHealEffectProcess());
+	}
+
+	IEnumerator<float> ScreenHealEffectProcess()
+	{
+		FadeCanvas.instance.FadeOut(0.3f, 0.95f);
+		yield return Timing.WaitForSeconds(0.3f);
+
+		if (this == null)
+			yield break;
+
+		FadeCanvas.instance.FadeIn(1.75f);
 	}
 }

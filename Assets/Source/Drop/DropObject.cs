@@ -254,6 +254,11 @@ public class DropObject : MonoBehaviour
 				int noHitLevelPackCount = (_floatValue > 0.0f) ? 1 : 0;
 				LevelUpIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform, levelPackCount, noHitLevelPackCount);
 				break;
+			case DropProcessor.eDropType.Heart:
+				AffectorValueLevelTableData healAffectorValue = new AffectorValueLevelTableData();
+				healAffectorValue.fValue3 = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("DropHeal");
+				BattleInstanceManager.instance.playerActor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Heal, healAffectorValue, BattleInstanceManager.instance.playerActor, false);
+				break;
 		}
 
 		_initialized = false;

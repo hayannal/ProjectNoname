@@ -794,6 +794,13 @@ public class BattleInstanceManager : MonoBehaviour
 		for (int i = 0; i < commonPoolPreloadObjectList.Length; ++i)
 		{
 			GameObject newObject = commonPoolPreloadObjectList[i];
+#if UNITY_EDITOR
+			if (newObject == null)
+			{
+				Debug.LogError("Common Pool Error : Null Object!!!!!!");
+				continue;
+			}
+#endif
 			if (_listCommonPoolPreloadObject.Contains(newObject) == false)
 				_listCommonPoolPreloadObject.Add(newObject);
 		}
@@ -801,6 +808,13 @@ public class BattleInstanceManager : MonoBehaviour
 
 	public void AddCommonPoolPreloadObjectList(GameObject commonPoolPreloadObject)
 	{
+#if UNITY_EDITOR
+		if (commonPoolPreloadObject == null)
+		{
+			Debug.LogError("Common Pool Error : Null Object!!!!!!");
+			return;
+		}
+#endif
 		if (_listCommonPoolPreloadObject.Contains(commonPoolPreloadObject) == false)
 			_listCommonPoolPreloadObject.Add(commonPoolPreloadObject);
 	}

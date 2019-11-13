@@ -4,7 +4,6 @@ using ActorStatusDefine;
 
 public class CreateHitObjectAffector : AffectorBase
 {
-	DummyFinder _dummyFinder;
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
 		if (_actor == null)
@@ -26,10 +25,7 @@ public class CreateHitObjectAffector : AffectorBase
 		
 		if (info.meHit.createPositionType == HitObject.eCreatePositionType.Bone && !string.IsNullOrEmpty(info.meHit.boneName))
 		{
-			if (_dummyFinder == null) _dummyFinder = _actor.actionController.animator.GetComponent<DummyFinder>();
-			if (_dummyFinder == null) _dummyFinder = _actor.actionController.animator.gameObject.AddComponent<DummyFinder>();
-
-			Transform attachTransform = _dummyFinder.FindTransform(info.meHit.boneName);
+			Transform attachTransform = _actor.actionController.dummyFinder.FindTransform(info.meHit.boneName);
 			if (attachTransform != null)
 				spawnTransform = attachTransform;
 		}

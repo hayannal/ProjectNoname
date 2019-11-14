@@ -12,6 +12,7 @@ Shader "FrameworkNG/Particle/Shadow"
 		//[Enum(UnityEngine.Rendering.CompareFunction)] _ZTestMode("ZTest", Float) = 4
 		[Enum(UnityEngine.Rendering.CullMode)] _Cull("Cull Mode", Float) = 0
 		_ShadowCutoff("Shadow Cutoff", Range(0, 1)) = 0.05
+		[KeywordEnum(A,R)] _Shadow_Channel("Shadow Channel", Float) = 0
 
 		[Toggle(_CUTOFF)] _UseCutoff("========== Use Cutoff ==========", Float) = 0
 		_Cutoff("Cutoff", Range(0, 1)) = 0.5
@@ -93,7 +94,18 @@ Shader "FrameworkNG/Particle/Shadow"
 			#pragma vertex vert
 			#pragma fragment frag
 			#pragma multi_compile_shadowcaster
+			#pragma shader_feature _SHADOW_CHANNEL_A _SHADOW_CHANNEL_R
 			#include "UnityCG.cginc"
+				
+			inline fixed SelectShadowChannel(fixed4 col)
+			{
+				#if _SHADOW_CHANNEL_A
+				return col.a;
+				#elif _SHADOW_CHANNEL_R
+				return col.r;
+				#endif
+				return 1.0f;
+			}
 
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
@@ -124,7 +136,8 @@ Shader "FrameworkNG/Particle/Shadow"
 
 			float4 frag(v2f i) : SV_Target
 			{
-				fixed a = tex2D(_MainTex, i.texcoord).a;
+				fixed col = tex2D(_MainTex, i.texcoord);
+				fixed a = SelectShadowChannel(col);
 				a = 2.0f * i.color.a * _TintColor.a * a;
 				clip(a - _ShadowCutoff);
 				SHADOW_CASTER_FRAGMENT(i)

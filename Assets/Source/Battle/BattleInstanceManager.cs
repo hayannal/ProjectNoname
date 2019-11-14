@@ -861,6 +861,14 @@ public class BattleInstanceManager : MonoBehaviour
 	#endregion
 
 	#region CreateHitObjectMoving List
+	// RailMonster나 TeleportedAffector는 스스로 OnDestroy를 체크하기가 편하기때문에 static으로 관리해도 리스트에서 삭제가 용이했었는데,
+	// 이 CreateHitObjectMovingAffector꺼는 히트오브젝트가 꺼지는 타임마다 체크를 해야해서
+	// 이벤트를 받기가 상대적으로 어려웠다.
+	// 그러다보니 static리스트를 클리어하기가 어려워서 차라리 BattleInstanceManager에가 맡기기로 했다.
+	// 이러면 어차피 맵이동시 알아서 지워지기 때문에 삭제에 대한걸 처리하지 않아도 괜찮아진다.
+	//
+	// 그렇지만 이 방법은 웬만하면 쓰지 않기로 한다.
+	// 이미 HitObject를 따로 관리하고 있는 마당에 괜히 중복해서 관리하는거라 static으로 처리하기 어려워서 예외적으로 해주는거 뿐이다.
 	List<HitObject> _listHitObjectMoving;
 	public void AddHitObjectMoving(HitObject hitObject)
 	{

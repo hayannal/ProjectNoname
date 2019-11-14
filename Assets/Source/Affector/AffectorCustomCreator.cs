@@ -51,6 +51,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.CollisionDamage: affectorBase = new CollisionDamageAffector(); break;
 			case eAffectorType.Teleported: affectorBase = new TeleportedAffector(); break;
 			case eAffectorType.CreateHitObjectMoving: affectorBase = new CreateHitObjectMovingAffector(); break;
+			case eAffectorType.CreateWall: affectorBase = new CreateWallAffector(); break;
 			#endregion
 		}
 		return affectorBase;
@@ -96,6 +97,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.SlowHitObjectSpeed:
 			case eAffectorType.Teleported:
 			case eAffectorType.CreateHitObjectMoving:
+			case eAffectorType.CreateWall:
 				return true;
 			#endregion
 		}

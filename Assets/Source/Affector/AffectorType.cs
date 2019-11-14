@@ -53,6 +53,7 @@ public enum eAffectorType
 	CollisionDamage,
 	Teleported,
 
-	CreateHitObjectMoving,	
+	CreateHitObjectMoving,
+	CreateWall,
 }
 #endregion

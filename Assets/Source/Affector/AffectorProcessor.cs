@@ -285,7 +285,11 @@ public class AffectorProcessor : MonoBehaviour {
 		while (e.MoveNext())
 		{
 			for (int i = 0; i < e.Current.Value.Count; ++i)
+			{
+				if (e.Current.Value[i].finalized)
+					continue;
 				e.Current.Value[i].UpdateAffector();
+			}
 		}
 
 		e = _dicContinuousAffector.GetEnumerator();

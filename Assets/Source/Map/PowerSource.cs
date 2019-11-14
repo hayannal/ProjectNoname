@@ -72,6 +72,7 @@ public class PowerSource : MonoBehaviour
 		if (this == null)
 			yield break;
 
+		BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("PowerSourceUI_Heal"), 2.5f);
 		FadeCanvas.instance.FadeIn(1.75f);
 	}
 }

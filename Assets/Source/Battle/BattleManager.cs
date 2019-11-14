@@ -19,6 +19,7 @@ public class BattleManager : MonoBehaviour
 	public GameObject playerHPGaugePrefab;
 	public GameObject playerIgnoreEvadeCanvasPrefab;
 	public GameObject skillSlotCanvasPrefab;
+	public GameObject battleToastCanvasPrefab;
 
 	public GameObject playerIndicatorPrefab;
 	public GameObject levelUpIndicatorPrefab;

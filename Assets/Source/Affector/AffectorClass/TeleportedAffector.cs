@@ -8,6 +8,7 @@ public class TeleportedAffector : AffectorBase
 	Vector3 _prevPosition;
 
 	const float TeleportedHeight = 500.0f;
+	const float EffectOffetY = 0.8f;
 
 	bool _applied = false;
 	AffectorValueLevelTableData _affectorValueLevelTableData;
@@ -28,7 +29,7 @@ public class TeleportedAffector : AffectorBase
 		{
 			GameObject onStartEffectPrefab = FindPreloadObject(affectorValueLevelTableData.sValue3);
 			if (onStartEffectPrefab != null)
-				BattleInstanceManager.instance.GetCachedObject(onStartEffectPrefab, _actor.cachedTransform.position, _actor.cachedTransform.rotation);
+				BattleInstanceManager.instance.GetCachedObject(onStartEffectPrefab, _actor.cachedTransform.position + new Vector3(0.0f, EffectOffetY, 0.0f), _actor.cachedTransform.rotation);
 		}
 
 		_actor.EnableAI(false);
@@ -62,7 +63,7 @@ public class TeleportedAffector : AffectorBase
 		{
 			GameObject onEndEffectPrefab = FindPreloadObject(_affectorValueLevelTableData.sValue4);
 			if (onEndEffectPrefab != null)
-				BattleInstanceManager.instance.GetCachedObject(onEndEffectPrefab, _actor.cachedTransform.position, _actor.cachedTransform.rotation);
+				BattleInstanceManager.instance.GetCachedObject(onEndEffectPrefab, _actor.cachedTransform.position + new Vector3(0.0f, EffectOffetY, 0.0f), _actor.cachedTransform.rotation);
 		}
 		_applied = false;
 	}

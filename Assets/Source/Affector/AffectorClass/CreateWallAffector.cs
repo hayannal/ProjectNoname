@@ -79,10 +79,10 @@ public class CreateWallAffector : AffectorBase
 		Vector3 direction = Vector3.forward;
 		switch (index)
 		{
-			case 0: direction = Vector3.forward; break;
-			case 1: direction = Vector3.right; break;
-			case 2: direction = Vector3.back; break;
-			case 3: direction = Vector3.left; break;
+			case 0: direction = (Vector3.forward + Vector3.right).normalized; break;
+			case 1: direction = (Vector3.right + Vector3.back).normalized; break;
+			case 2: direction = (Vector3.back + Vector3.left).normalized; break;
+			case 3: direction = (Vector3.left + Vector3.forward).normalized; break;
 		}
 		return direction;
 	}

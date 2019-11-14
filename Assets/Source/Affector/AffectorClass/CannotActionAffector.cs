@@ -13,6 +13,9 @@ public class CannotActionAffector : AffectorBase
 	bool _applied = false;
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
+		if (_actor == null)
+			return;
+
 		if (_actor.actorStatus.IsDie())
 		{
 			finalized = true;

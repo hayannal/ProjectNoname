@@ -67,7 +67,8 @@ public class CreateHitObjectMovingAffector : AffectorBase
 				spawnTransform = attachTransform;
 		}
 
-		HitObject.InitializeHit(spawnTransform, _meHit, _actor, parentTransform, 0, 0, 0);
+		HitObject hitObject = HitObject.InitializeHit(spawnTransform, _meHit, _actor, parentTransform, 0, 0, 0);
+		BattleInstanceManager.instance.AddHitObjectMoving(hitObject);
 	}
 
 	MeHitObject _meHit;

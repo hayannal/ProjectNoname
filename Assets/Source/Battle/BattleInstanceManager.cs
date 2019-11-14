@@ -860,6 +860,33 @@ public class BattleInstanceManager : MonoBehaviour
 	}
 	#endregion
 
+	#region CreateHitObjectMoving List
+	List<HitObject> _listHitObjectMoving;
+	public void AddHitObjectMoving(HitObject hitObject)
+	{
+		if (_listHitObjectMoving == null)
+			_listHitObjectMoving = new List<HitObject>();
+
+		if (_listHitObjectMoving.Contains(hitObject) == false)
+			_listHitObjectMoving.Add(hitObject);
+	}
+
+	public void DisableHitObjectMoving()
+	{
+		if (_listHitObjectMoving == null)
+			return;
+
+		for (int i = 0; i < _listHitObjectMoving.Count; ++i)
+		{
+			if (_listHitObjectMoving[i] == null)
+				continue;
+			if (_listHitObjectMoving[i].gameObject == null || _listHitObjectMoving[i].gameObject.activeSelf == false)
+				continue;
+			_listHitObjectMoving[i].gameObject.SetActive(false);
+		}
+	}
+	#endregion
+
 
 
 

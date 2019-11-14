@@ -20,6 +20,7 @@ public class BattleModeProcessorBase
 		}
 
 		RailMonster.OnPreInstantiateMap();
+		BattleInstanceManager.instance.DisableHitObjectMoving();
 	}
 
 	public void OnLoadedMap()

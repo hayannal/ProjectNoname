@@ -860,8 +860,15 @@ public class BattleInstanceManager : MonoBehaviour
 	}
 	#endregion
 
+
+
+
+
+
+
+
 	#region CreateHitObjectMoving List
-	// RailMonster나 TeleportedAffector는 스스로 OnDestroy를 체크하기가 편하기때문에 static으로 관리해도 리스트에서 삭제가 용이했었는데,
+	// RailMonster는 스스로 OnDestroy를 체크하기가 편하기때문에 static으로 관리해도 리스트에서 삭제가 용이했었는데,
 	// 이 CreateHitObjectMovingAffector꺼는 히트오브젝트가 꺼지는 타임마다 체크를 해야해서
 	// 이벤트를 받기가 상대적으로 어려웠다.
 	// 그러다보니 static리스트를 클리어하기가 어려워서 차라리 BattleInstanceManager에가 맡기기로 했다.
@@ -892,6 +899,42 @@ public class BattleInstanceManager : MonoBehaviour
 				continue;
 			_listHitObjectMoving[i].gameObject.SetActive(false);
 		}
+	}
+	#endregion
+
+	#region Teleported Affector List
+	// 결국 Teleported Affector도 static으로는 관리하기가 어려워져서 여기에 추가하기로 했다.
+	List<TeleportedAffector> _listTeleportedAffector;
+	public void AddTeleportedAffector(TeleportedAffector teleportedAffector)
+	{
+		if (_listTeleportedAffector == null)
+			_listTeleportedAffector = new List<TeleportedAffector>();
+
+		_listTeleportedAffector.Add(teleportedAffector);
+	}
+
+	public void RemoveTeleportedAffector(TeleportedAffector teleportedAffector)
+	{
+		if (_listTeleportedAffector == null)
+			return;
+
+		_listTeleportedAffector.Remove(teleportedAffector);
+	}
+
+	public int GetActiveTeleportedCount()
+	{
+		if (_listTeleportedAffector == null)
+			return 0;
+		return _listTeleportedAffector.Count;
+	}
+
+	public void RestoreFirstTeleportedObject()
+	{
+		if (_listTeleportedAffector == null)
+			return;
+
+		if (_listTeleportedAffector.Count > 0)
+			_listTeleportedAffector[0].finalized = true;
 	}
 	#endregion
 

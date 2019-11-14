@@ -22,11 +22,11 @@ public class TeleportingHitObjectAffector : AffectorBase
 
 	public override void UpdateAffector()
 	{
-		if (TeleportedAffector.GetActiveCount() > 0)
+		if (BattleInstanceManager.instance.GetActiveTeleportedCount() > 0)
 		{
-			int remainSpawnedMonsterCount = BattleManager.instance.GetSpawnedMonsterCount() - TeleportedAffector.GetActiveCount();
+			int remainSpawnedMonsterCount = BattleManager.instance.GetSpawnedMonsterCount() - BattleInstanceManager.instance.GetActiveTeleportedCount();
 			if (remainSpawnedMonsterCount == 0)
-				TeleportedAffector.RestoreFirstObject();
+				BattleInstanceManager.instance.RestoreFirstTeleportedObject();
 		}
 	}
 
@@ -38,12 +38,12 @@ public class TeleportingHitObjectAffector : AffectorBase
 		// 해당 스테이지의 마지막 몹이면 호출하지 말아야한다.
 		if (BattleManager.instance != null)
 		{
-			int remainSpawnedMonsterCount = BattleManager.instance.GetSpawnedMonsterCount() - TeleportedAffector.GetActiveCount();
+			int remainSpawnedMonsterCount = BattleManager.instance.GetSpawnedMonsterCount() - BattleInstanceManager.instance.GetActiveTeleportedCount();
 			if (remainSpawnedMonsterCount <= 1)
 				return;
 		}
 
-		if (TeleportedAffector.GetActiveCount() >= _affectorValueLevelTableData.iValue1)
+		if (BattleInstanceManager.instance.GetActiveTeleportedCount() >= _affectorValueLevelTableData.iValue1)
 			return;
 
 		float limitHp = _affectorValueLevelTableData.fValue3;

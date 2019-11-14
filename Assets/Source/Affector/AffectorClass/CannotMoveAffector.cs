@@ -12,7 +12,10 @@ public class CannotMoveAffector : AffectorBase
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
 		if (_actor == null)
+		{
+			finalized = true;
 			return;
+		}
 
 		if (_actor.actorStatus.IsDie())
 		{

@@ -16,6 +16,11 @@ public class RailMonster : MonoBehaviour
 		_monsterActor = GetComponentInChildren<MonsterActor>();
 	}
 
+	void OnDestroy()
+	{
+		OnFinalized(this);
+	}
+
 	bool _started = false;
 	void Start()
 	{
@@ -118,6 +123,14 @@ public class RailMonster : MonoBehaviour
 
 		if (s_listInitializedRail.Contains(railMonster) == false)
 			s_listInitializedRail.Add(railMonster);
+	}
+
+	static void OnFinalized(RailMonster railMonster)
+	{
+		if (s_listInitializedRail == null)
+			return;
+
+		s_listInitializedRail.Remove(railMonster);
 	}
 
 	public static void OnPreInstantiateMap()

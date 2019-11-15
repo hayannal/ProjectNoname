@@ -7,7 +7,8 @@ public class CannotMoveAffector : AffectorBase
 	float _endTime;
 	Transform _loopEffectTransform;
 
-	const float ScaleDuration = 0.4f;
+	const float ScaleStartDuration = 0.4f;
+	const float ScaleEndDuration = 0.2f;
 
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
@@ -32,7 +33,7 @@ public class CannotMoveAffector : AffectorBase
 		{
 			_loopEffectTransform = BattleInstanceManager.instance.GetCachedObject(loopEffectPrefab, _actor.cachedTransform.position, _actor.cachedTransform.rotation).transform;
 			_loopEffectTransform.localScale = Vector3.zero;
-			_loopEffectTransform.DOScale(1.0f, ScaleDuration).SetEase(Ease.OutQuad);
+			_loopEffectTransform.DOScale(1.0f, ScaleStartDuration).SetEase(Ease.OutQuad);
 		}
 
 		_actor.actorStatus.OnChangedStatus(ActorStatusDefine.eActorStatus.MoveSpeed);
@@ -65,7 +66,7 @@ public class CannotMoveAffector : AffectorBase
 	{
 		if (_loopEffectTransform != null)
 		{
-			_loopEffectTransform.DOScale(0.0f, ScaleDuration).SetEase(Ease.OutQuad).onComplete = () => {
+			_loopEffectTransform.DOScale(new Vector3(1.0f, 0.0f, 1.0f), ScaleEndDuration).SetEase(Ease.InQuad).onComplete = () => {
 				_loopEffectTransform.gameObject.SetActive(false);
 				_loopEffectTransform = null;
 			};

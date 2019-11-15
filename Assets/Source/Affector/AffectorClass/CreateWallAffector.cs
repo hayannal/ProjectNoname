@@ -8,6 +8,8 @@ public class CreateWallAffector : AffectorBase
 
 	const float OffsetY = 1.0f;
 
+	public static int TEAM0_BARRIER_LAYER;
+
 	AffectorValueLevelTableData _affectorValueLevelTableData;
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
@@ -24,6 +26,10 @@ public class CreateWallAffector : AffectorBase
 		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
 
 		_nextCreateTime = Time.time + affectorValueLevelTableData.fValue2;
+
+		// 지금은 플레이어만 이 어펙터를 사용하기 때문에 Tema0꺼만 처리해둔다.
+		// 혹시 몬스터가 쓰게되면 이거 확장해야한다.
+		if (TEAM0_BARRIER_LAYER == 0) TEAM0_BARRIER_LAYER = LayerMask.NameToLayer("Team0Barrier");
 	}
 
 	int _directionIndex = 0;
@@ -89,6 +95,9 @@ public class CreateWallAffector : AffectorBase
 		Transform newTransform = BattleInstanceManager.instance.GetCachedObject(_wallPrefab, position, rotation).transform;
 		_wallTransformList[_directionIndex] = newTransform;
 		_wallEndTimeList[_directionIndex] = Time.time + _affectorValueLevelTableData.fValue3;
+
+		if (newTransform.gameObject.layer != TEAM0_BARRIER_LAYER)
+			ObjectUtil.ChangeLayer(newTransform.gameObject, TEAM0_BARRIER_LAYER);
 	}
 
 	Vector3 GetDirection(int index)

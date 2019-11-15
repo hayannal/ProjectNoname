@@ -249,7 +249,23 @@ public class ActionController : MonoBehaviour {
 		animator.CrossFade(actionNameHash, actionPlayInfo.fadeDuration);
 
 		if (actionPlayInfo.actionName == "Ultimate")
+		{
 			actor.actorStatus.AddSP(-actor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MaxSp));
+
+			#region Ultimate Force Set
+			// 간혹가다 궁극기를 눌렀는데 일반어택이 씹어버리고 덮는 경우가 발생했다.
+			// 생각해보니 현재 액션 시스템 특성상 다음 프레임에 애니메이션이 적용되면서 시그널이 들어가기 때문에
+			// 궁극기 버튼 누르는 같은 프레임에 AI가 돌면서 일반 어택을 실행하면 궁극기 액션 걸어둔걸 덮고 실행될 수 있는 구조였다.
+			// 유저 손으로 할땐 이런 문제가 없지만 AI는 그렇지 않아서 발생하는건데..
+			//
+			// 해결책으로 다음과 같은 방법을 쓰기로 한다.
+			// 궁극기 실행 타임에 아래 코드로 얼티메이트 상태를 임시로 넣어둔다.
+			// 다음 프레임에 궁극기 액션이 시작됨과 동시에 이 임시로 넣어둔건 빠지게될거고(로직상 액션 변경시 fullPathHash가 0인건 삭제되게 되어있다.)
+			// 궁극기 상태는 레인지시그널 설정해둔 만큼만 잘 작동하게 될거다.
+			// 이렇게 처리해두면 같은 프레임에 AI가 돌아도 일반공격이 덮어쓰지 못할테니 더이상 버그가 발생하지 않게될거다.
+			actor.actionController.mecanimState.StartState((int)MecanimStateDefine.eMecanimState.Ultimate, 0);
+			#endregion
+		}
 
 		if (normalAttack && actor != null)
 			cooltimeProcessor.ApplyCooltime(actionPlayInfo.actionName, actor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.AttackDelay));

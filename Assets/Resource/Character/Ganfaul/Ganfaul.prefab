@@ -152,7 +152,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actorId: Actor001
-  playerGaugeOffsetY: 0
+  commonPoolPreloadObjectList: []
+  selfPassivePreloadObjectList: []
+  gaugeOffsetY: 0
   cachingObjectList:
   - {fileID: 913101303298452110, guid: d37d1943642ed344c9e56a9a97548bbc, type: 3}
   - {fileID: 4225582290400697939, guid: 26996fb04a3ef8f45adcd177a0b2bb0b, type: 3}
@@ -355,6 +357,14 @@ PrefabInstance:
     - target: {fileID: 400014, guid: e86e4968da2df194b9877b9d14201a19, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0.147
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: e86e4968da2df194b9877b9d14201a19, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: e86e4968da2df194b9877b9d14201a19, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 13700000, guid: e86e4968da2df194b9877b9d14201a19, type: 3}
       propertyPath: m_Materials.Array.data[0]

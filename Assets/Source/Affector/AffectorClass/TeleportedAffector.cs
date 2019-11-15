@@ -74,7 +74,7 @@ public class TeleportedAffector : AffectorBase
 		_applied = false;
 	}
 
-	// 어펙터의 소멸자는 씬이 이동되도 호출되지 않는다.(액터가 사라져도 호출되지 않는다.)
+	// 어펙터의 소멸자는 씬이 이동되어도 호출되지 않는다.(액터가 사라져도 호출되지 않는다.)
 	// 그래서 OnDestroy처럼 쓸 수 없고
 	// 스스로 아무 리스트에도 포함되지 않아야 지워지는데, 이러려면
 	// static 리스트에도 들어있지 않은채로 finalized가 호출되서 continuousAffectorList에서 삭제되어야 한다.

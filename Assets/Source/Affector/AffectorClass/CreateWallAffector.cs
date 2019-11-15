@@ -47,6 +47,23 @@ public class CreateWallAffector : AffectorBase
 		_nextCreateTime += _affectorValueLevelTableData.fValue2;
 	}
 
+	public override void FinalizeAffector()
+	{
+		if (_wallTransformList == null)
+			return;
+
+		for (int i = 0; i < _wallTransformList.Length; ++i)
+		{
+			if (_wallTransformList[i] == null)
+				continue;
+			if (_wallTransformList[i].gameObject == null)
+				continue;
+			if (_wallTransformList[i].gameObject.activeSelf == false)
+				continue;
+			_wallTransformList[i].gameObject.SetActive(false);
+		}
+	}
+
 	GameObject _wallPrefab;
 	Transform[] _wallTransformList;
 	float[] _wallEndTimeList;

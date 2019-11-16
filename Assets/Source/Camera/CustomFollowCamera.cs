@@ -75,12 +75,6 @@ public class CustomFollowCamera : MonoBehaviour
 	Transform _prevTargetTransform;
 	void Update()
 	{
-		if (_targetTransform == null)
-		{
-			if (BattleInstanceManager.instance.playerActor != null)
-				_targetTransform = BattleInstanceManager.instance.playerActor.cachedTransform;
-		}
-
 		if (_prevTargetTransform != targetTransform && targetTransform != null)
 		{
 			_immediatelyUpdate = true;

@@ -16,11 +16,27 @@ public class PlayerActor : Actor
 		InitializeComponent();
 	}
 
+	bool _started;
 	void Start()
 	{
 		actorRadius = ColliderUtil.GetRadius(_collider);
 		InitializeActor();
+		_started = true;
 	}
+
+	#region Swap
+	void OnEnable()
+	{
+		if (_started)
+			RegisterBattleInstance();
+	}
+
+	void OnDisable()
+	{
+		if (BattleInstanceManager.instance.playerActor == this)
+			BattleInstanceManager.instance.playerActor = null;
+	}
+	#endregion
 
 	protected override void InitializeComponent()
 	{
@@ -50,14 +66,24 @@ public class PlayerActor : Actor
 		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby == false)
 			InitializeCanvas();
 
-		BattleInstanceManager.instance.playerActor = this;
-		StageManager.instance.PreparePowerSource();
+		RegisterBattleInstance();
 	}
 
 	public void InitializeCanvas()
 	{
 		PlayerGaugeCanvas.instance.InitializeGauge(this);
 		SkillSlotCanvas.instance.InitializeSkillSlot(this);
+	}
+
+	void RegisterBattleInstance()
+	{
+		// 씬 들어와서 처음 만들어지는 PlayerActor는 바로 등록하고 그 이후엔 교체할때만 등록하도록 한다.
+		if (BattleInstanceManager.instance.playerActor == null)
+		{
+			BattleInstanceManager.instance.playerActor = this;
+			CustomFollowCamera.instance.targetTransform = cachedTransform;
+			StageManager.instance.PreparePowerSource();
+		}
 	}
 
 	public override void OnChangedHP()

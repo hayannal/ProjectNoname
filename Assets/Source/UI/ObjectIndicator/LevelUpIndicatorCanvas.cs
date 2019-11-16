@@ -142,115 +142,31 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 		RefreshLevelPackList();
 	}
 
-	class RandomLevelPackInfo
-	{
-		public LevelPackTableData levelPackTableData;
-		public float rate;
-	}
-
-	List<RandomLevelPackInfo> _listRandomLevelPackInfo = new List<RandomLevelPackInfo>();
 	void RefreshLevelPackList()
 	{
-		List<LevelPackTableData> listLevelPackTableData = LevelPackDataManager.instance.FindActorLevelPackList(BattleInstanceManager.instance.playerActor.actorId);
-		float sumWeight = 0.0f;
-		for (int i = 0; i < listLevelPackTableData.Count; ++i)
-		{
-			if (listLevelPackTableData[i].max != -1 && BattleInstanceManager.instance.playerActor.skillProcessor.GetLevelPackStackCount(listLevelPackTableData[i].levelPackId) >= listLevelPackTableData[i].max)
-				continue;
-			if (listLevelPackTableData[i].dropWeight == 0.0f)
-				continue;
-
-			sumWeight += listLevelPackTableData[i].dropWeight;
-			RandomLevelPackInfo newInfo = new RandomLevelPackInfo();
-			newInfo.levelPackTableData = listLevelPackTableData[i];
-			newInfo.rate = sumWeight;
-			_listRandomLevelPackInfo.Add(newInfo);
-		}
-		if (_listRandomLevelPackInfo.Count == 0 && listLevelPackTableData.Count > 0)
-		{
-			sumWeight = listLevelPackTableData[0].dropWeight;
-			RandomLevelPackInfo newInfo = new RandomLevelPackInfo();
-			newInfo.levelPackTableData = listLevelPackTableData[0];
-			newInfo.rate = sumWeight;
-			_listRandomLevelPackInfo.Add(newInfo);
-		}
-		if (_listRandomLevelPackInfo.Count == 0)
-		{
-			Debug.LogError("Invalid Result : There are no level packs available.");
-			return;
-		}
-
-		for (int i = 0; i < _listRandomLevelPackInfo.Count; ++i)
-			_listRandomLevelPackInfo[i].rate = _listRandomLevelPackInfo[i].rate / sumWeight;
+		List<LevelPackDataManager.RandomLevelPackInfo> listRandomLevelPackInfo = LevelPackDataManager.instance.GetRandomLevelPackTableDataList(BattleInstanceManager.instance.playerActor);
 		for (int i = 0; i < buttonList.Length; ++i)
 		{
 			float currentRandom = Random.value;
-			for (int j = 0; j < _listRandomLevelPackInfo.Count; ++j)
+			for (int j = 0; j < listRandomLevelPackInfo.Count; ++j)
 			{
-				if (currentRandom <= _listRandomLevelPackInfo[j].rate)
+				if (currentRandom <= listRandomLevelPackInfo[j].rate)
 				{
-					buttonList[i].SetInfo(_listRandomLevelPackInfo[j].levelPackTableData);
+					buttonList[i].SetInfo(listRandomLevelPackInfo[j].levelPackTableData);
 					break;
 				}
 			}
-
 			if (_exclusive && i == 1)
 				break;
 		}
-		_listRandomLevelPackInfo.Clear();
+		listRandomLevelPackInfo.Clear();
 
 		if (_exclusive == false)
 			return;
 
 		// last is exclusive
-		sumWeight = 0.0f;
-		for (int i = 0; i < listLevelPackTableData.Count; ++i)
-		{
-			if (listLevelPackTableData[i].exclusive == false)
-				continue;
-			if (listLevelPackTableData[i].max != -1 && BattleInstanceManager.instance.playerActor.skillProcessor.GetLevelPackStackCount(listLevelPackTableData[i].levelPackId) >= listLevelPackTableData[i].max)
-				continue;
-			if (listLevelPackTableData[i].dropWeight == 0.0f)
-				continue;
-
-			sumWeight += listLevelPackTableData[i].dropWeight;
-			RandomLevelPackInfo newInfo = new RandomLevelPackInfo();
-			newInfo.levelPackTableData = listLevelPackTableData[i];
-			newInfo.rate = sumWeight;
-			_listRandomLevelPackInfo.Add(newInfo);
-		}
-		// exclusive일때 가져올게 없다면 미리 지정해둔 fallback용 exclusive 레벨팩을 보여준다.
-		if (_listRandomLevelPackInfo.Count == 0)
-		{
-			LevelPackTableData fallbackLevelPackTableData = LevelPackDataManager.instance.GetFallbackExclusiveLevelPackTableData();
-			if (fallbackLevelPackTableData != null)
-			{
-				sumWeight = fallbackLevelPackTableData.dropWeight;
-				RandomLevelPackInfo newInfo = new RandomLevelPackInfo();
-				newInfo.levelPackTableData = fallbackLevelPackTableData;
-				newInfo.rate = sumWeight;
-				_listRandomLevelPackInfo.Add(newInfo);
-			}
-		}
-		if (_listRandomLevelPackInfo.Count == 0)
-		{
-			Debug.LogError("Invalid Result : There are no level packs available for exclusive.");
-			return;
-		}
-
-		for (int i = 0; i < _listRandomLevelPackInfo.Count; ++i)
-			_listRandomLevelPackInfo[i].rate = _listRandomLevelPackInfo[i].rate / sumWeight;
-
-		float lastRandom = Random.value;
-		for (int j = 0; j < _listRandomLevelPackInfo.Count; ++j)
-		{
-			if (lastRandom <= _listRandomLevelPackInfo[j].rate)
-			{
-				buttonList[buttonList.Length - 1].SetInfo(_listRandomLevelPackInfo[j].levelPackTableData);
-				break;
-			}
-		}
-		_listRandomLevelPackInfo.Clear();
+		LevelPackTableData randomExclusiveLevelPackTableData = LevelPackDataManager.instance.GetRandomExclusiveLevelPackTableData(BattleInstanceManager.instance.playerActor);
+		buttonList[buttonList.Length - 1].SetInfo(randomExclusiveLevelPackTableData);
 	}
 
 	public void OnCompleteLineAnimation()

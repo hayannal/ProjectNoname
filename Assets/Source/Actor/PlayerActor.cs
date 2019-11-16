@@ -63,9 +63,6 @@ public class PlayerActor : Actor
 		actorStatus.InitializeActorStatus();
 		skillProcessor.InitializeSkill();
 
-		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby == false)
-			InitializeCanvas();
-
 		RegisterBattleInstance();
 	}
 
@@ -77,12 +74,17 @@ public class PlayerActor : Actor
 
 	void RegisterBattleInstance()
 	{
+		BattleInstanceManager.instance.OnInitializePlayerActor(this);
+
 		// 씬 들어와서 처음 만들어지는 PlayerActor는 바로 등록하고 그 이후엔 교체할때만 등록하도록 한다.
 		if (BattleInstanceManager.instance.playerActor == null)
 		{
 			BattleInstanceManager.instance.playerActor = this;
 			CustomFollowCamera.instance.targetTransform = cachedTransform;
 			StageManager.instance.PreparePowerSource();
+
+			if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby == false)
+				InitializeCanvas();
 		}
 	}
 

@@ -52,9 +52,13 @@ public class PlayerAI : MonoBehaviour
 		if (targetingProcessor == null)
 			return;
 
-		// 여기서 리턴할지 아니면 find만 안할지 고민중이다
+		// 공격중일땐 findDelay만 0에 가깝게 줄여놓고 대기타다가 Idle로 진입하면 바로 find한다.
 		if (actor.actionController.mecanimState.IsState((int)eMecanimState.Attack) || actor.actionController.mecanimState.IsState((int)eMecanimState.Ultimate))
+		{
+			if (_currentFindDelay > 0.0f)
+				_currentFindDelay -= Time.deltaTime;
 			return;
+		}
 
 		_currentFindDelay -= Time.deltaTime;
 		if (_currentFindDelay <= 0.0f)

@@ -67,4 +67,9 @@ public class PlayerIndicatorCanvas : ObjectIndicatorCanvas
 	{
 		UpdateObjectIndicator();
 	}
+
+	public void OnClickSwapButton()
+	{
+		UIInstanceManager.instance.ShowCanvasAsync("SwapCanvas", null);
+	}
 }

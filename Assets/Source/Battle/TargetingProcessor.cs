@@ -136,7 +136,7 @@ public class TargetingProcessor : MonoBehaviour {
 			Vector3 diff = listMonsterActor[i].cachedTransform.position - position;
 			diff.y = 0.0f;
 			float distance = diff.magnitude - colliderRadius;
-			if (listMonsterActor[i].affectorProcessor.IsContinuousAffectorType(eAffectorType.Burrow) || listMonsterActor[i].affectorProcessor.IsContinuousAffectorType(eAffectorType.Teleported))
+			if (IsOutOfRange(listMonsterActor[i].affectorProcessor))
 				distance += range;
 			if (distance < nearestDistance)
 			{
@@ -160,14 +160,14 @@ public class TargetingProcessor : MonoBehaviour {
 			prevTargetDiff.y = 0.0f;
 			float prevDistance = prevTargetDiff.magnitude - ColliderUtil.GetRadius(_targetList[0]);
 			AffectorProcessor prevAffectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(_targetList[0]);
-			if (prevAffectorProcessor.IsContinuousAffectorType(eAffectorType.Burrow) || prevAffectorProcessor.IsContinuousAffectorType(eAffectorType.Teleported))
+			if (IsOutOfRange(prevAffectorProcessor))
 				prevDistance += range;
 
 			Vector3 currentTargetDiff = BattleInstanceManager.instance.GetTransformFromCollider(nearestCollider).position - position;
 			currentTargetDiff.y = 0.0f;
 			float currentDistance = currentTargetDiff.magnitude - ColliderUtil.GetRadius(nearestCollider);
 			AffectorProcessor currentAffectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(nearestCollider);
-			if (currentAffectorProcessor.IsContinuousAffectorType(eAffectorType.Burrow) || currentAffectorProcessor.IsContinuousAffectorType(eAffectorType.Teleported))
+			if (IsOutOfRange(currentAffectorProcessor))
 				currentDistance += range;
 
 			if (currentDistance <= prevDistance - changeThreshold)
@@ -177,6 +177,14 @@ public class TargetingProcessor : MonoBehaviour {
 			}
 			return true;
 		}
+		return false;
+	}
+
+	public static bool IsOutOfRange(AffectorProcessor affectorProcessor)
+	{
+		// 특수한 상황에선 범위 밖 몬스터 인거처럼 처리해야한다.
+		if (affectorProcessor.IsContinuousAffectorType(eAffectorType.Burrow) || affectorProcessor.IsContinuousAffectorType(eAffectorType.Teleported))
+			return true;
 		return false;
 	}
 #endif

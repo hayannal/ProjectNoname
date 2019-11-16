@@ -34,9 +34,11 @@ public class MonsterHPGauge : MonoBehaviour
 		_targetHeight = ColliderUtil.GetHeight(monsterActor.GetCollider());
 	}
 
-	// Update is called once per frame
+	// 컬리더 히트오브젝트냐 Area 히트오브젝트냐에 따라 Monster Hp Gauge Show 위치가 달라지는데
+	// 이랬더니 Area 히트오브젝트에선 한프레임 늦게 몬스터의 포지션을 따라가게 나와서 어색하게 보였다.
+	// LateUpdate로 교체해서 해결한다.
 	Vector3 _prevTargetPosition = -Vector3.up;
-	void Update()
+	void LateUpdate()
 	{
 		if (_targetTransform != null)
 		{

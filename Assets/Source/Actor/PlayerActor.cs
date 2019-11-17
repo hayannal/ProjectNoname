@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using ActorStatusDefine;
 
 public class PlayerActor : Actor
 {
@@ -86,14 +87,20 @@ public class PlayerActor : Actor
 			{
 				if (BattleInstanceManager.instance.playerActor != null)
 				{
-					// 이전시킬거 다 물려받는다.
+					// 레벨팩 이전
+					LevelPackDataManager.instance.TransferLevelPackList(BattleInstanceManager.instance.playerActor, this);
+
+					// Hp비율 이전
+					float hpRatio = BattleInstanceManager.instance.playerActor.actorStatus.GetHPRatio();
+					actorStatus.SetHPRatio(hpRatio);
+
+					// Sp는?
 
 					// 스왑 힐 적용
-
-					// 레벨팩 이전					
-
-					// UI 표시 - 게이지 100% 여도 강제 Show 다시 해야하지 않나
-					//InitializeCanvas()
+					AffectorValueLevelTableData healAffectorValue = new AffectorValueLevelTableData();
+					healAffectorValue.fValue3 = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("SwapHeal");
+					healAffectorValue.fValue3 += affectorProcessor.actor.actorStatus.GetValue(eActorStatus.SwapHealRate);
+					affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Heal, healAffectorValue, affectorProcessor.actor, false);
 
 					BattleInstanceManager.instance.playerActor.gameObject.SetActive(false);
 				}
@@ -145,7 +152,6 @@ public class PlayerActor : Actor
 	#region Experience
 	// 아마도 대표캐릭터 셋팅하는 UI로 옮겨야할거 같다.
 	PlayerActor _prevPlayerActor;
-	bool _experienceMode = false;
 	public void ExperienceCharacter()
 	{
 		// UI에서 체함하기 누를때 쓰는 함수
@@ -154,9 +160,10 @@ public class PlayerActor : Actor
 		_prevPlayerActor.gameObject.SetActive(false);
 		OnChangedMainCharacter(true);
 
-		// 혹시 체험모드에선 HP 리셋 시켜야하나. 항상 맥스 아닌가?
+		// 혹시 체험모드에선 HP 리셋 시켜야하나. 항상 맥스라 안해도 될거 같은데..
+		//actorStatus.SetHPRatio(1.0f);
 
-		//PlayerGaugeCanvas.instance.InitializeGauge(this);
+		PlayerGaugeCanvas.instance.InitializeGauge(this);
 		SkillSlotCanvas.instance.InitializeSkillSlot(this);
 	}
 

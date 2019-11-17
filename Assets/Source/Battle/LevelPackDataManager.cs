@@ -143,4 +143,55 @@ public class LevelPackDataManager : MonoBehaviour
 		_listRandomLevelPackInfo.Clear();
 		return result;
 	}
+
+
+	#region LevelPack List for Swap Character
+	Dictionary<string, List<string>> _dicPlayerAcquiredLevelPack = new Dictionary<string, List<string>>();
+	public void AddLevelPack(string playerActorId, string levelPackId)
+	{
+		if (_dicPlayerAcquiredLevelPack.ContainsKey(playerActorId))
+		{
+			_dicPlayerAcquiredLevelPack[playerActorId].Add(levelPackId);
+			return;
+		}
+
+		List<string> listPlayerAcquiredLevelPack = new List<string>();
+		listPlayerAcquiredLevelPack.Add(levelPackId);
+		_dicPlayerAcquiredLevelPack.Add(playerActorId, listPlayerAcquiredLevelPack);
+	}
+
+	public void TransferLevelPackList(PlayerActor prevPlayerActor, PlayerActor nextPlayerActor)
+	{
+		if (_dicPlayerAcquiredLevelPack.ContainsKey(prevPlayerActor.actorId) == false)
+			return;
+
+		List<string> listPrevPlayerAcquiredLevelPack = _dicPlayerAcquiredLevelPack[prevPlayerActor.actorId];
+		int currentPlayerAcquiredLevelPackCount = 0;
+		if (_dicPlayerAcquiredLevelPack.ContainsKey(nextPlayerActor.actorId))
+			currentPlayerAcquiredLevelPackCount = _dicPlayerAcquiredLevelPack[nextPlayerActor.actorId].Count;
+		for (int i = 0; i < listPrevPlayerAcquiredLevelPack.Count; ++i)
+		{
+			if (i < currentPlayerAcquiredLevelPackCount)
+				continue;
+			string levelPackId = listPrevPlayerAcquiredLevelPack[i];
+			LevelPackTableData levelPackTableData = TableDataManager.instance.FindLevelPackTableData(levelPackId);
+			if (levelPackTableData == null)
+				continue;
+
+			if (IsAcquirableLevelPack(levelPackTableData, nextPlayerActor.actorId))
+			{
+				// 이어받을 수 있느건 이어받으면 된다.
+				AddLevelPack(nextPlayerActor.actorId, levelPackId);
+				nextPlayerActor.skillProcessor.AddLevelPack(levelPackId);
+			}
+			else
+			{
+				// 재굴림을 통해 얻어야한다.
+				string newLevelPackId = GetRandomExclusiveLevelPackTableData(nextPlayerActor).levelPackId;
+				AddLevelPack(nextPlayerActor.actorId, newLevelPackId);
+				nextPlayerActor.skillProcessor.AddLevelPack(newLevelPackId);
+			}
+		}
+	}
+	#endregion
 }

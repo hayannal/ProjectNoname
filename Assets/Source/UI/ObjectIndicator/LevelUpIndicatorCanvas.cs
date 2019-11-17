@@ -195,6 +195,7 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 	void OnSelectLevelUpPack(string levelPackId)
 	{
 		++_selectCount;
+		LevelPackDataManager.instance.AddLevelPack(BattleInstanceManager.instance.playerActor.actorId, levelPackId);
 		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack(levelPackId);
 		BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.levelPackGainEffectPrefab, BattleInstanceManager.instance.playerActor.cachedTransform.position, Quaternion.identity, BattleInstanceManager.instance.playerActor.cachedTransform);
 

@@ -265,4 +265,11 @@ public class ActorStatus : MonoBehaviour
 	{
 		return GetSP() / GetValue(eActorStatus.MaxSp);
 	}
+
+
+	// for Swap
+	public void SetHPRatio(float ratio)
+	{
+		_statusBase._hp = GetValue(eActorStatus.MaxHp) * ratio;
+	}
 }

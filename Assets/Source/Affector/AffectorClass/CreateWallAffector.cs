@@ -124,15 +124,14 @@ public class CreateWallAffector : AffectorBase
 				continue;
 			if (_wallTransformList[i].gameObject.activeSelf == false)
 				continue;
-			if (_wallEndTimeList[i] == 0.0f)
-				continue;
 
 			_wallTransformList[i].position = _actor.cachedTransform.position + GetDirection(i) + new Vector3(0.0f, OffsetY, 0.0f);
 
-			if (Time.time > _wallEndTimeList[i])
+			if (_wallEndTimeList[i] > 0.0f && Time.time > _wallEndTimeList[i])
 			{
 				_wallTransformList[i].gameObject.SetActive(false);
 				_wallEndTimeList[i] = 0.0f;
+				_wallTransformList[i] = null;
 			}
 		}
 	}

@@ -76,17 +76,103 @@ public class PlayerActor : Actor
 	{
 		BattleInstanceManager.instance.OnInitializePlayerActor(this);
 
-		// 씬 들어와서 처음 만들어지는 PlayerActor는 바로 등록하고 그 이후엔 교체할때만 등록하도록 한다.
-		if (BattleInstanceManager.instance.playerActor == null)
+		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby == false)
 		{
-			BattleInstanceManager.instance.playerActor = this;
-			CustomFollowCamera.instance.targetTransform = cachedTransform;
-			StageManager.instance.PreparePowerSource();
+			// 전투 진입 후 교체하는 거라면 분명 스왑상태에서 캐릭터를 전환한 것이다.
+			// 이땐 Hp비율부터 레벨팩 등을 이전받아야한다.
+			// 그런데 여기서 그냥 다 자동으로 처리하니 씬에다가 두 캐릭터 빼고싶어도 볼 수가 없다.
+			// 그래서 Swap플래그 하나 걸어놓고 처리하기로 한다.
+			if (BattleInstanceManager.instance.standbySwapPlayerActor)
+			{
+				if (BattleInstanceManager.instance.playerActor != null)
+				{
+					// 이전시킬거 다 물려받는다.
 
-			if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby == false)
-				InitializeCanvas();
+					// 스왑 힐 적용
+
+					// 레벨팩 이전					
+
+					// UI 표시 - 게이지 100% 여도 강제 Show 다시 해야하지 않나
+					//InitializeCanvas()
+
+					BattleInstanceManager.instance.playerActor.gameObject.SetActive(false);
+				}
+
+				// 이전받고 나서야 메인캐릭터로 교체.
+				OnChangedMainCharacter();
+
+				BattleInstanceManager.instance.standbySwapPlayerActor = false;
+			}
+		}
+		else
+		{
+			// 로비에선 처음 만들어지는 PlayerActor는 바로 등록하고 그 이후엔 교체할때만 등록하도록 한다.
+			// 이래야 다른 캐릭터들 생성해서 캐릭터창 가더라도 메인 캐릭터를 유지할 수 있다.
+			if (BattleInstanceManager.instance.playerActor == null)
+				OnChangedMainCharacter();
 		}
 	}
+
+	void OnChangedMainCharacter(bool experience = false)
+	{
+		BattleInstanceManager.instance.playerActor = this;
+		CustomFollowCamera.instance.targetTransform = cachedTransform;
+
+		if (experience)
+			return;
+
+		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby == false)
+			InitializeCanvas();
+
+		StageManager.instance.PreparePowerSource();
+	}
+
+	public void ChangeMainCharacter()
+	{
+		// UI에서 대표캐릭터 바꿀때 쓰는 함수
+		// OnChangedMainCharacter 호출이 패스되면서 BattleInstanceManager.instance.playerActor 에 설정되어있지 않은 상태다.
+		// 이미 교체할 캐릭터는 만들어진 상태니 GetCachedPlayerActor 함수로 찾으면 찾아져야한다.
+
+		// 먼저 이전 playerActor를 비활성화
+		Vector3 position = BattleInstanceManager.instance.playerActor.cachedTransform.position;
+		BattleInstanceManager.instance.playerActor.gameObject.SetActive(false);
+
+		// 메인 캐릭터 처리.
+		OnChangedMainCharacter();
+		BattleInstanceManager.instance.playerActor.cachedTransform.position = position;
+	}
+
+	#region Experience
+	// 아마도 대표캐릭터 셋팅하는 UI로 옮겨야할거 같다.
+	PlayerActor _prevPlayerActor;
+	bool _experienceMode = false;
+	public void ExperienceCharacter()
+	{
+		// UI에서 체함하기 누를때 쓰는 함수
+		// 이때도 ChangeMainCharacter 함수와 마찬가지로 교체할 캐릭터는 이미 만들어진 상태고 OnChangedMainCharacter함수는 호출이 패스된 상태다.
+		_prevPlayerActor = BattleInstanceManager.instance.playerActor;
+		_prevPlayerActor.gameObject.SetActive(false);
+		OnChangedMainCharacter(true);
+
+		// 혹시 체험모드에선 HP 리셋 시켜야하나. 항상 맥스 아닌가?
+
+		//PlayerGaugeCanvas.instance.InitializeGauge(this);
+		SkillSlotCanvas.instance.InitializeSkillSlot(this);
+	}
+
+	public void FinishExperienceCharacter()
+	{
+		if (_prevPlayerActor == null)
+			return;
+
+		BattleInstanceManager.instance.playerActor.gameObject.SetActive(false);
+		_prevPlayerActor.OnChangedMainCharacter(true);
+		_prevPlayerActor = null;
+
+		//PlayerGaugeCanvas.instance.InitializeGauge(this);
+		SkillSlotCanvas.instance.HideSkillSlot();
+	}
+	#endregion
 
 	public override void OnChangedHP()
 	{

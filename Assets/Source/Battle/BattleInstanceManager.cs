@@ -628,6 +628,7 @@ public class BattleInstanceManager : MonoBehaviour
 
 	#region PlayerActor
 	public PlayerActor playerActor { get; set; }
+	public bool standbySwapPlayerActor { get; set; }
 	#endregion
 
 	#region PlayerActor List
@@ -640,7 +641,7 @@ public class BattleInstanceManager : MonoBehaviour
 		_dicCachedPlayerActor.Add(playerActor.actorId, playerActor);
 	}
 
-	public PlayerActor FindCachedPlayerActor(string actorId)
+	public PlayerActor GetCachedPlayerActor(string actorId)
 	{
 		if (_dicCachedPlayerActor.ContainsKey(actorId))
 			return _dicCachedPlayerActor[actorId];

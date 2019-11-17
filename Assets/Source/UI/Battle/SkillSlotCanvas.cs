@@ -39,6 +39,13 @@ public class SkillSlotCanvas : MonoBehaviour
 		}
 	}
 
+	// for experience
+	public void HideSkillSlot()
+	{
+		if (_ultimateSkillSlotIcon != null)
+			_ultimateSkillSlotIcon.gameObject.SetActive(false);
+	}
+
 	public void OnChangedSP(PlayerActor playerActor)
 	{
 		if (_ultimateSkillSlotIcon != null)

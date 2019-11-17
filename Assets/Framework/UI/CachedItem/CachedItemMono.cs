@@ -17,7 +17,10 @@ public class CachedItemMono<T> : MonoBehaviour where T : MonoBehaviour
 		for (int i = 0; i < _listCachedItem.Count; ++i)
 		{
 			if (!_listCachedItem[i].gameObject.activeSelf)
+			{
+				_listCachedItem[i].gameObject.SetActive(true);
 				return _listCachedItem[i];
+			}
 		}
 
 		GameObject newObject = Instantiate(cachedObjectPrefab, parentTransform);

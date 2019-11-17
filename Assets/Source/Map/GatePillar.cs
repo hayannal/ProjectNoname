@@ -141,6 +141,18 @@ public class GatePillar : MonoBehaviour
 		return true;
 	}
 
+	public void CheckHitObject(int teamId, Collider collider)
+	{
+		if (collider.gameObject != meshColliderObject)
+			return;
+		if (teamId == (int)Team.eTeamID.DefaultMonster)
+			return;
+		if (Time.time < _spawnTime)
+			return;
+
+		Timing.RunCoroutine(NextMapProcess());
+	}
+
 	bool _processing = false;
 	IEnumerator<float> NextMapProcess()
 	{

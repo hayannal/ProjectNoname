@@ -402,6 +402,9 @@ public class HitObject : MonoBehaviour
 			float adjustAngle = Mathf.Rad2Deg * Mathf.Acos(diff.magnitude / hypotenuse);
 			if (meHit.areaAngle * 0.5f < angle - adjustAngle) continue;
 
+			if (GatePillar.instance != null && GatePillar.instance.gameObject.activeSelf)
+				GatePillar.instance.CheckHitObject(statusForHitObject.teamId, result[i]);
+
 			bool ignoreAffectorProcessor = false;
 
 			// one Hit Per Target

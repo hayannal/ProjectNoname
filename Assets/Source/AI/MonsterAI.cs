@@ -134,7 +134,7 @@ public class MonsterAI : MonoBehaviour
 
 		if (targetActor != null)
 		{
-			if (targetActor.actorStatus.IsDie())
+			if (targetActor.actorStatus.IsDie() || targetActor.gameObject.activeSelf == false)
 			{
 				if (BattleInstanceManager.instance.targetOfMonster == targetActor)
 					BattleInstanceManager.instance.targetOfMonster = null;
@@ -150,6 +150,8 @@ public class MonsterAI : MonoBehaviour
 		{
 			_currentFindDelay += TargetFindDelay;
 
+			if (BattleInstanceManager.instance.targetOfMonster != null && BattleInstanceManager.instance.targetOfMonster.gameObject.activeSelf == false)
+				BattleInstanceManager.instance.targetOfMonster = null;
 			if (BattleInstanceManager.instance.targetOfMonster == null)
 			{
 				if (targetingProcessor.FindNearestTarget(Team.eTeamCheckFilter.Enemy, PlayerAI.FindTargetRange))

@@ -119,7 +119,8 @@ public class PlayerGaugeCanvas : MonoBehaviour
 		mobaEnergyBar.Value = playerActor.actorStatus.GetHP();
 		float hpRatio = playerActor.actorStatus.GetHPRatio();
 
-		if (_lastRatio < hpRatio)
+		// <= 로 체크해야 100% -> 100% 될때도 표시된다.
+		if (_lastRatio <= hpRatio)
 		{
 			if (!offsetRootObject.activeSelf)
 				offsetRootObject.SetActive(true);

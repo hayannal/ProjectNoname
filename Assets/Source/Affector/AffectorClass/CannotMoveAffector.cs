@@ -72,4 +72,15 @@ public class CannotMoveAffector : AffectorBase
 			};
 		}
 	}
+
+	public override void DisableAffector()
+	{
+		// 몹을 죽지도 않았는데 Disable시킬 일은 없을거 같지만
+		// 플레이어한테 걸릴걸 대비해서 미리 해둔다.
+		FinalizeAffector();
+
+		// 근데 이러면 다시 켜질때 이펙트 도로 생성해야하지 않나.
+		// Disable말고 EnableAffector도 만들어야하나?
+		// 우선 아직은 필요없는 상황이니 고려만 해둔다.
+	}
 }

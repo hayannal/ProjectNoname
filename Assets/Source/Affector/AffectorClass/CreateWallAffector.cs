@@ -51,6 +51,16 @@ public class CreateWallAffector : AffectorBase
 			_directionIndex = 0;
 
 		_nextCreateTime += _affectorValueLevelTableData.fValue2;
+		if (_nextCreateTime < Time.time)
+		{
+			// 스왑 전에 얻은 어펙터가 다시 켜진거다. 예외처리 해준다.
+			while (true)
+			{
+				_nextCreateTime += _affectorValueLevelTableData.fValue2;
+				if (_nextCreateTime > Time.time)
+					break;
+			}
+		}
 	}
 
 	public override void FinalizeAffector()
@@ -67,7 +77,15 @@ public class CreateWallAffector : AffectorBase
 			if (_wallTransformList[i].gameObject.activeSelf == false)
 				continue;
 			_wallTransformList[i].gameObject.SetActive(false);
+			_wallTransformList[i] = null;
+			_wallEndTimeList[i] = 0.0f;
 		}
+	}
+
+	public override void DisableAffector()
+	{
+		// 현재 보여지고 있는 것들만 꺼두면 다음에 다시 켜질때 알아서 켜질거다.
+		FinalizeAffector();
 	}
 
 	GameObject _wallPrefab;
@@ -130,8 +148,8 @@ public class CreateWallAffector : AffectorBase
 			if (_wallEndTimeList[i] > 0.0f && Time.time > _wallEndTimeList[i])
 			{
 				_wallTransformList[i].gameObject.SetActive(false);
-				_wallEndTimeList[i] = 0.0f;
 				_wallTransformList[i] = null;
+				_wallEndTimeList[i] = 0.0f;
 			}
 		}
 	}

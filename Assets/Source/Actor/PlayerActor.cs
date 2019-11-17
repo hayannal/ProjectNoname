@@ -43,6 +43,8 @@ public class PlayerActor : Actor
 	{
 		base.InitializeComponent();
 
+		affectorProcessor.dontClearOnDisable = true;
+
 		actorStatus = GetComponent<ActorStatus>();
 		if (actorStatus == null) actorStatus = gameObject.AddComponent<ActorStatus>();
 

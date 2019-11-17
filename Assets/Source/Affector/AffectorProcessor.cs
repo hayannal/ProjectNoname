@@ -8,6 +8,7 @@ public class AffectorProcessor : MonoBehaviour {
 	Dictionary<int, List<AffectorBase>> _dicContinuousAffector;
 
 	public Actor actor { get; private set; }
+	public bool dontClearOnDisable { get; set; }
 
 	void Awake()
 	{
@@ -16,6 +17,26 @@ public class AffectorProcessor : MonoBehaviour {
 
 	void OnDisable()
 	{
+		if (dontClearOnDisable)
+		{
+			// 몬스터도 갑자기 Disable된다면 DisableAffector 호출이 필요하긴 한데
+			// 로직상 갑자기 Disable될 일이 없다. 우선 불필요한 로직이니 빼둔다.
+			if (_dicContinuousAffector != null)
+			{
+				Dictionary<int, List<AffectorBase>>.Enumerator e = _dicContinuousAffector.GetEnumerator();
+				while (e.MoveNext())
+				{
+					for (int i = 0; i < e.Current.Value.Count; ++i)
+					{
+						if (e.Current.Value[i].finalized)
+							continue;
+						e.Current.Value[i].DisableAffector();
+					}
+				}
+			}
+			return;
+		}
+
 		if (_dicContinuousAffector != null)
 		{
 			Dictionary<int, List<AffectorBase>>.Enumerator e = _dicContinuousAffector.GetEnumerator();

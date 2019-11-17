@@ -55,6 +55,10 @@ public class AffectorBase
 	{
 	}
 
+	public virtual void DisableAffector()
+	{
+	}
+
 
 
 

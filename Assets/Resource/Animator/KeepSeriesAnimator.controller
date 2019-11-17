@@ -15,38 +15,6 @@ MonoBehaviour:
   StartTime: 0
   EndTime: 0.85
   state: 3
---- !u!114 &-5730636824276967452
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9fb65b6b0d2204c4eac1fd62dbdc65d1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTime: 0.21
-  EndTime: 1
-  set: 1
-  globalLightIntensityRatio: 0.35
-  resetTimer: 1.5
---- !u!114 &-5026185068439357170
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ebaa29644feeec143b4ef6156771ef54, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTime: 0
-  EndTime: 0.7
-  state: 5
 --- !u!1102 &-4713780209319880699
 AnimatorState:
   serializedVersion: 5
@@ -74,89 +42,6 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!114 &-3297111524982826015
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTime: 0.43442622
-  EndTime: 1
-  targetDetectType: 2
-  hitObjectPrefab: {fileID: 3024574136435083412, guid: a1a5458f04d3fbc4eb5cf432a20702d8,
-    type: 3}
-  lifeTime: 3
-  movable: 1
-  defaultSphereCastDistance: 0
-  sphereCastRadius: 0
-  teamCheckType: 0
-  createPositionType: 0
-  boneName: 
-  offset: {x: 0, y: 1, z: 1}
-  useBoneRotation: 0
-  areaRotationY: 0
-  areaDistanceMin: 0
-  areaDistanceMax: 0
-  areaHeightMin: 0
-  areaHeightMax: 0
-  areaAngle: 0
-  repeatCount: 0
-  repeatInterval: 0
-  movementType: 0
-  startDirectionType: 2
-  startDirection: {x: 0, y: 0, z: 1}
-  howitzerType: 0
-  useWorldSpaceDirection: 0
-  bothRandomAngle: 1
-  leftRightRandomAngle: 0
-  leftRandomAngle: 0
-  rightRandomAngle: 0
-  upDownRandomAngle: 0
-  speed: 40
-  curve: 0
-  curveAdd: 0
-  curveLockY: 0
-  accelTurn: 0
-  gravity: -9.81
-  parallelCount: 0
-  parallelDistance: 0
-  ignoreMainHitObjectByParallel: 0
-  circularSectorCount: 0
-  circularSectorBetweenAngle: 0
-  circularSectorUseWorldSpace: 0
-  circularSectorWorldSpaceCenterAngleY: 0
-  ignoreMainHitObjectByCircularSector: 0
-  continuousHitObjectGeneratorBaseList: []
-  contactAll: 1
-  monsterThroughCount: -1
-  wallThrough: 0
-  quadThrough: 0
-  bounceWallQuadCount: 0
-  ricochetCount: 0
-  ricochetOneHitPerTarget: 0
-  useHitStay: 0
-  hitStayInterval: 0
-  hitStayGroupNumber: 0
-  hitStayLineRendererTrigger: 0
-  oneHitPerTarget: 1
-  useLineRenderer: 1
-  affectorValueIdList: []
-  showHitEffect: 1
-  hitEffectObject: {fileID: 2454282025452705989, guid: f670a7b7b994dc44bbd06f075012c53b,
-    type: 3}
-  hitEffectLookAtNormal: 0
-  useWeaponHitEffect: 0
-  weaponDummyName: 
-  hitEffectLineRendererType: 0
-  hitEffectLineRendererObject: {fileID: 0}
-  showHitBlink: 0
-  showHitRimBlink: 1
 --- !u!1107 &-1805817263514781681
 AnimatorStateMachine:
   serializedVersion: 5
@@ -178,9 +63,6 @@ AnimatorStateMachine:
   - serializedVersion: 1
     m_State: {fileID: -1605484021271178934}
     m_Position: {x: 410, y: 170, z: 0}
-  - serializedVersion: 1
-    m_State: {fileID: 3551446579252125196}
-    m_Position: {x: 410, y: 350, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -230,7 +112,6 @@ AnimatorState:
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours:
-  - {fileID: -564446965862659516}
   - {fileID: -1049766806834685529}
   - {fileID: -8241733205721431210}
   m_Position: {x: 50, y: 50, z: 0}
@@ -266,6 +147,7 @@ MonoBehaviour:
     type: 3}
   lifeTime: 3
   movable: 1
+  maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -315,7 +197,8 @@ MonoBehaviour:
   ricochetOneHitPerTarget: 0
   useHitStay: 0
   hitStayInterval: 0
-  hitStayGroupNumber: 0
+  hitStayIgnoreDuplicate: 0
+  hitStayIdForIgnoreDuplicate: 0
   hitStayLineRendererTrigger: 0
   oneHitPerTarget: 0
   useLineRenderer: 0
@@ -330,25 +213,6 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 0
---- !u!114 &-564446965862659516
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTime: 0.1423
-  EndTime: 1
-  effectData: {fileID: 8331450023444192633, guid: 7b14a648f451dea4aaf232213110e7f1,
-    type: 3}
-  offset: {x: 0, y: 0, z: 0}
-  direction: {x: 0, y: 0, z: 1}
-  parentName: RightHandDummy
 --- !u!91 &9100000
 AnimatorController:
   m_ObjectHideFlags: 0
@@ -377,23 +241,6 @@ AnimatorController:
     m_IKPass: 0
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
---- !u!114 &1741976016543231119
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9fb65b6b0d2204c4eac1fd62dbdc65d1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTime: 0.56
-  EndTime: 1
-  set: 0
-  globalLightIntensityRatio: 1
-  resetTimer: 0
 --- !u!114 &2126510092431887390
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -409,56 +256,6 @@ MonoBehaviour:
   StartTime: 0
   EndTime: 1
   state: 2
---- !u!1102 &3551446579252125196
-AnimatorState:
-  serializedVersion: 5
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Ultimate1
-  m_Speed: 1
-  m_CycleOffset: 0
-  m_Transitions: []
-  m_StateMachineBehaviours:
-  - {fileID: -5026185068439357170}
-  - {fileID: -3297111524982826015}
-  - {fileID: 6245764680516419974}
-  - {fileID: -5730636824276967452}
-  - {fileID: 1741976016543231119}
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 1
-  m_Mirror: 0
-  m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: dbc0459d16c5c484d83acd76eaf8d3f5, type: 2}
-  m_Tag: 
-  m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: 
---- !u!114 &6245764680516419974
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTime: 0.25785124
-  EndTime: 1
-  effectData: {fileID: 2107271655324038936, guid: 7c3ec32c2f5983a46ae6d3dce045704d,
-    type: 3}
-  offset: {x: 0, y: 1, z: 1}
-  direction: {x: 0, y: 0, z: 1}
-  parentName: 
 --- !u!114 &6649347608798660281
 MonoBehaviour:
   m_ObjectHideFlags: 1

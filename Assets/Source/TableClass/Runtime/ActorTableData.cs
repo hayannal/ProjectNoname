@@ -44,4 +44,8 @@ public class ActorTableData
   float _attackRange;
   public float attackRange { get { return _attackRange; } set { _attackRange = value; } }
   
+  [SerializeField]
+  string _prefabAddress;
+  public string prefabAddress { get { return _prefabAddress; } set { _prefabAddress = value; } }
+  
 }

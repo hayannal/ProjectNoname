@@ -88,7 +88,7 @@ public class BattleModeProcessorBase
 
 		PlayerIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform);
 
-		Timing.RunCoroutine(DelayedShowGatePillar(1.5f));
+		Timing.RunCoroutine(DelayedShowGatePillar(1.3f));
 	}
 
 	IEnumerator<float> DelayedShowGatePillar(float delayTime)

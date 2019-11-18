@@ -154,18 +154,22 @@ public class PlayerActor : Actor
 	#region Experience
 	// 아마도 대표캐릭터 셋팅하는 UI로 옮겨야할거 같다.
 	PlayerActor _prevPlayerActor;
+	bool _experienceMode = false;
 	public void ExperienceCharacter()
 	{
+		_experienceMode = true;
+
 		// UI에서 체함하기 누를때 쓰는 함수
 		// 이때도 ChangeMainCharacter 함수와 마찬가지로 교체할 캐릭터는 이미 만들어진 상태고 OnChangedMainCharacter함수는 호출이 패스된 상태다.
 		_prevPlayerActor = BattleInstanceManager.instance.playerActor;
 		_prevPlayerActor.gameObject.SetActive(false);
 		OnChangedMainCharacter(true);
 
-		// 혹시 체험모드에선 HP 리셋 시켜야하나. 항상 맥스라 안해도 될거 같은데..
-		//actorStatus.SetHPRatio(1.0f);
+		// 체험모드에서도 플레이어를 때리는 몹이 있을테니 HP 리셋
+		actorStatus.SetHPRatio(1.0f);
 
-		PlayerGaugeCanvas.instance.InitializeGauge(this);
+		// 들어갈때 피 게이지는 안떠도 상관없다고 해서 패스.
+		//PlayerGaugeCanvas.instance.InitializeGauge(this);
 		SkillSlotCanvas.instance.InitializeSkillSlot(this);
 	}
 
@@ -174,12 +178,16 @@ public class PlayerActor : Actor
 		if (_prevPlayerActor == null)
 			return;
 
+		// 체험모드에서도 플레이어를 때리는 몹이 있을테니 HP 리셋
+		actorStatus.SetHPRatio(1.0f);
+
 		BattleInstanceManager.instance.playerActor.gameObject.SetActive(false);
 		_prevPlayerActor.OnChangedMainCharacter(true);
 		_prevPlayerActor = null;
 
-		//PlayerGaugeCanvas.instance.InitializeGauge(this);
 		SkillSlotCanvas.instance.HideSkillSlot();
+
+		_experienceMode = false;
 	}
 	#endregion
 

@@ -76,8 +76,6 @@ public class BattleModeProcessorBase
 
 	public void OnClearStage()
 	{
-		BattleInstanceManager.instance.GetCachedObject(StageManager.instance.gatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
-
 		bool showPlayerIndicator = false;
 		if (StageManager.instance.currentStageTableData != null && StageManager.instance.currentStageTableData.swap && PlayerData.instance.swappable)
 			showPlayerIndicator = true;

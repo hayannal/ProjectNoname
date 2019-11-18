@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MEC;
 
 public class BattleModeProcessorBase
 {
@@ -77,9 +78,33 @@ public class BattleModeProcessorBase
 	{
 		BattleInstanceManager.instance.GetCachedObject(StageManager.instance.gatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
 
+		bool showPlayerIndicator = false;
 		if (StageManager.instance.currentStageTableData != null && StageManager.instance.currentStageTableData.swap && PlayerData.instance.swappable)
-			PlayerIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform);
+			showPlayerIndicator = true;
+
+		if (showPlayerIndicator == false)
+		{
+			BattleInstanceManager.instance.GetCachedObject(StageManager.instance.gatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
+			return;
+		}
+
+		PlayerIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform);
+
+		Timing.RunCoroutine(DelayedShowGatePillar(1.5f));
 	}
+
+	IEnumerator<float> DelayedShowGatePillar(float delayTime)
+	{
+		yield return Timing.WaitForSeconds(delayTime);
+
+		// avoid gc
+		if (this == null)
+			yield break;
+
+		BattleInstanceManager.instance.GetCachedObject(StageManager.instance.gatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
+	}
+
+
 
 	public int GetSpawnedMonsterCount()
 	{

@@ -5,6 +5,7 @@ using UnityEngine;
 public class CharacterData
 {
 	public string actorId;
+	public int powerLevel;
 
 
 

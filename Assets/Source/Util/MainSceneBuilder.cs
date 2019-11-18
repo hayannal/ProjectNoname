@@ -124,7 +124,7 @@ public class MainSceneBuilder : MonoBehaviour
 		// 차후에 5는 캐릭터 아이디에 따라 번들에서 로드해야할거다.
 		LoadingCanvas.instance.SetProgressBarPoint(0.6f);
 		_handleStageManager = Addressables.LoadAssetAsync<GameObject>("StageManager");
-		_handleStartCharacter = Addressables.LoadAssetAsync<GameObject>("Ganfaul");
+		_handleStartCharacter = Addressables.LoadAssetAsync<GameObject>(CharacterData.GetAddressByActorId(PlayerData.instance.mainCharacterId));
 		while (!_handleStageManager.IsDone || !_handleStartCharacter.IsDone) yield return null;
 		Instantiate<GameObject>(_handleStageManager.Result);
 #if UNITY_EDITOR

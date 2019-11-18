@@ -43,14 +43,16 @@ public class SwapCanvas : MonoBehaviour
 		_buttonClickTime = Time.time;
 		DelayedLoadingCanvas.instance.gameObject.SetActive(true);
 
+		string changeActorId = "Actor001";
+
 		// 이미 만들었던 플레이어 캐릭터라면 다시 만들필요 없으니 가져다쓰고 없으면 어드레스 로딩을 시작해야한다.
-		PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor("Actor001");
+		PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(changeActorId);
 		if (playerActor != null)
 		{
 			SwapCharacter(playerActor);
 			return;
 		}
-		AddressableAssetLoadManager.GetAddressableGameObject("Ganfaul", "", OnLoadedPlayerActor);
+		AddressableAssetLoadManager.GetAddressableGameObject(CharacterData.GetAddressByActorId(changeActorId), "", OnLoadedPlayerActor);
 	}
 
 	void OnLoadedPlayerActor(GameObject prefab)

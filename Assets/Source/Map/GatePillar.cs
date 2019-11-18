@@ -138,6 +138,8 @@ public class GatePillar : MonoBehaviour
 			return false;
 		if (hitObject.createTime < _spawnTime)
 			return false;
+		if (SwapCanvas.instance != null && SwapCanvas.instance.gameObject.activeSelf)
+			return false;
 		return true;
 	}
 
@@ -148,6 +150,8 @@ public class GatePillar : MonoBehaviour
 		if (teamId == (int)Team.eTeamID.DefaultMonster)
 			return;
 		if (Time.time < _spawnTime)
+			return;
+		if (SwapCanvas.instance != null && SwapCanvas.instance.gameObject.activeSelf)
 			return;
 
 		Timing.RunCoroutine(NextMapProcess());

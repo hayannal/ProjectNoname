@@ -33,7 +33,7 @@ public class MapTableData
   public string portalFlag { get { return _portalFlag; } set { _portalFlag = value; } }
   
   [SerializeField]
-  string _gatePillarPreview;
-  public string gatePillarPreview { get { return _gatePillarPreview; } set { _gatePillarPreview = value; } }
+  string _bossPreviewAddress;
+  public string bossPreviewAddress { get { return _bossPreviewAddress; } set { _bossPreviewAddress = value; } }
   
 }

@@ -30,22 +30,18 @@ public class GatePillar : MonoBehaviour
 	void OnEnable()
 	{
 		_spawnTime = Time.time;
-		if (string.IsNullOrEmpty(StageManager.instance.currentGatePillarPreview) == false)
-		{
-			AddressableAssetLoadManager.GetAddressableGameObject("ImageObjectIndicator", "Object", (prefab) =>
-			{
-				_objectIndicatorCanvas = UIInstanceManager.instance.GetCachedObjectIndicatorCanvas(prefab);
-				_objectIndicatorCanvas.targetTransform = cachedTransform;
-			});
-			return;
-		}
 		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && PlayerData.instance.tutorialChapter == false)
 		{
 			// 일부러 조금 뒤에 보이게 한다. 초기 로딩 줄이기 위해.
 			_energyGaugeShowRemainTime = energyGaugeShowDelayTime;
 			return;
 		}
-		_descriptionObjectIndicatorShowRemainTime = descriptionObjectIndicatorShowDelayTime;
+		// 보스 인디케이터는 빠르게 등장한다.
+		if (string.IsNullOrEmpty(StageManager.instance.currentBossPreviewAddress))
+			_descriptionObjectIndicatorShowRemainTime = descriptionObjectIndicatorShowDelayTime;
+		else
+			_descriptionObjectIndicatorShowRemainTime = 0.001f;
+
 	}
 
 	void OnDisable()

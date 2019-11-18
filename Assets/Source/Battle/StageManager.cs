@@ -22,6 +22,7 @@ public class StageManager : MonoBehaviour
 #endif
 
 	public GameObject gatePillarPrefab;
+	public GameObject bossGatePillarPrefab;
 	public GameObject fadeCanvasPrefab;
 
 #if USE_MAIN_SCENE
@@ -98,7 +99,7 @@ public class StageManager : MonoBehaviour
 			MapTableData mapTableData = TableDataManager.instance.FindMapTableData(StageDataManager.instance.reservedNextMap);
 			if (mapTableData != null)
 			{
-				currentGatePillarPreview = mapTableData.gatePillarPreview;
+				currentBossPreviewAddress = mapTableData.bossPreviewAddress;
 #if USE_MAIN_SCENE
 				PrepareNextMap(mapTableData, StageDataManager.instance.nextStageTableData.environmentSetting);
 #endif
@@ -276,7 +277,7 @@ public class StageManager : MonoBehaviour
 	}
 
 	public Vector3 currentGatePillarSpawnPosition { get; set; }
-	public string currentGatePillarPreview { get; set; }
+	public string currentBossPreviewAddress { get; set; }
 	public bool spawnPowerSourcePrefab { get; set; }
 	public Vector3 currentPowerSourceSpawnPosition { get; set; }
 

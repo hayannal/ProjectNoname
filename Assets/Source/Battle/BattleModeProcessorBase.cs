@@ -82,7 +82,7 @@ public class BattleModeProcessorBase
 
 		if (showPlayerIndicator == false)
 		{
-			BattleInstanceManager.instance.GetCachedObject(StageManager.instance.gatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
+			ShowGatePillar();
 			return;
 		}
 
@@ -99,7 +99,13 @@ public class BattleModeProcessorBase
 		if (this == null)
 			yield break;
 
-		BattleInstanceManager.instance.GetCachedObject(StageManager.instance.gatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
+		ShowGatePillar();
+	}
+
+	void ShowGatePillar()
+	{
+		BattleInstanceManager.instance.GetCachedObject(string.IsNullOrEmpty(StageManager.instance.currentBossPreviewAddress) ? StageManager.instance.gatePillarPrefab : StageManager.instance.bossGatePillarPrefab,
+			StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
 	}
 
 

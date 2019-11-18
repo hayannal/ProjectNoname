@@ -170,15 +170,18 @@ public class ObjectIndicatorCanvas : MonoBehaviour
 		#endregion
 
 		#region lineImage Alpha
-		float lineAlphaDistance = Mathf.Abs(contentGroupRectTransform.position.x - targetTransform.position.x);
-		if (lineAlphaDistance < _immediatelyAlphaDistance - 0.5f)
+		if (useLeftRightSwapByAxisX)
 		{
-			float alpha = Mathf.Lerp(0.0f, 1.0f, (lineAlphaDistance / (_immediatelyAlphaDistance - 0.5f)));
-			lineImage.color = new Color(lineImage.color.r, lineImage.color.g, lineImage.color.b, alpha * alpha);
-		}
-		else
-		{
-			lineImage.color = new Color(lineImage.color.r, lineImage.color.g, lineImage.color.b, 1.0f);
+			float lineAlphaDistance = Mathf.Abs(contentGroupRectTransform.position.x - targetTransform.position.x);
+			if (lineAlphaDistance < _immediatelyAlphaDistance - 0.5f)
+			{
+				float alpha = Mathf.Lerp(0.0f, 1.0f, (lineAlphaDistance / (_immediatelyAlphaDistance - 0.5f)));
+				lineImage.color = new Color(lineImage.color.r, lineImage.color.g, lineImage.color.b, alpha * alpha);
+			}
+			else
+			{
+				lineImage.color = new Color(lineImage.color.r, lineImage.color.g, lineImage.color.b, 1.0f);
+			}
 		}
 		#endregion
 	}

@@ -31,12 +31,6 @@ public class PlayerActor : Actor
 		if (_started)
 			RegisterBattleInstance();
 	}
-
-	void OnDisable()
-	{
-		if (BattleInstanceManager.instance.playerActor == this)
-			BattleInstanceManager.instance.playerActor = null;
-	}
 	#endregion
 
 	protected override void InitializeComponent()

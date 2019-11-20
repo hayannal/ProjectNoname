@@ -118,19 +118,15 @@ public class PlayerAI : MonoBehaviour
 	}
 
 	float _actorTableAttackRange;
-	float _currentAttackDelay;
 	string NormalAttackName = "Attack";
+	Cooltime _normalAttackCooltime;
 	void UpdateAttack()
 	{
-		// Attack Delay?
-		// 이미 쿨타임 프로세서가 알아서 처리하고 있지 않나.
-		// 연산 최적화를 위해? 혹은 처리 위치에 따라 스턴중에 딜레이 안흐르게 할수도 있다. CannotAction보다 아래.
-		if (_currentAttackDelay > 0.0f)
-		{
-			_currentAttackDelay -= Time.deltaTime;
-			if (_currentAttackDelay > 0.0f)
-				return;
-		}
+		// Attack Delay
+		// 평타에 어택 딜레이가 쿨타임으로 적용되어있기 때문에 이걸 얻어와서 쓴다.
+		// 참고로 스턴중에도 어택 딜레이는 줄어들게 되어있다.
+		if (_normalAttackCooltime != null && _normalAttackCooltime.CheckCooltime())
+			return;
 
 		// ContinuousAffector 검사
 		if (actor.affectorProcessor.IsContinuousAffectorType(eAffectorType.CannotAction))
@@ -158,11 +154,7 @@ public class PlayerAI : MonoBehaviour
 
 		baseCharacterController.movement.rotation = Quaternion.LookRotation(diff);
 		if (actor.actionController.PlayActionByActionName(NormalAttackName))
-		{
-			Cooltime cooltime = actor.cooltimeProcessor.GetCooltime(NormalAttackName);
-			if (cooltime != null)
-				_currentAttackDelay = cooltime.cooltime;
-		}
+			_normalAttackCooltime = actor.cooltimeProcessor.GetCooltime(NormalAttackName);
 	}
 
 	bool IsInAttackRange(Vector3 diff)

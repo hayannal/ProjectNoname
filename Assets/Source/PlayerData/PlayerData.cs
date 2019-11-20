@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using CodeStage.AntiCheat.ObscuredTypes;
 
 public class PlayerData : MonoBehaviour
 {
@@ -20,16 +21,20 @@ public class PlayerData : MonoBehaviour
 
 	public bool loginned { get; private set; }
 
-	public bool tutorialChapter { get { return true; } }
+	public ObscuredInt lastClearChapter { get; set; }
+	public ObscuredInt lastClearStage { get; set; }
+	public ObscuredInt selectedChapter { get; set; } 
+	public ObscuredBool chaosMode { get; set; }
+	public ObscuredInt purifyCount { get; set; }
 
+	public bool tutorialChapter { get { return lastClearChapter == 0; } }
 
-
-	void Awake()
+	#region Player Info
+	public void OnRecvPlayerInfo()
 	{
-		// temp
-		OnRecvCharacterList();
+		//lastClearChapter = 1;
 	}
-
+	#endregion
 
 
 	#region Character List

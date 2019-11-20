@@ -110,6 +110,8 @@ public class MainSceneBuilder : MonoBehaviour
 		if (PlayerData.instance.loginned == false)
 		{
 			// login and recv player data
+			PlayerData.instance.OnRecvPlayerInfo();
+			PlayerData.instance.OnRecvCharacterList();
 			TimeSpaceData.instance.OnRecvEquipInventory();
 		}
 

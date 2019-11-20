@@ -1,11 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using CodeStage.AntiCheat.ObscuredTypes;
 
 public class CharacterData
 {
-	public string actorId;
-	public int powerLevel;
+	public ObscuredString actorId;
+	public ObscuredInt powerLevel;
 
 
 

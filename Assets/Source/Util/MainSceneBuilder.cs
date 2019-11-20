@@ -14,13 +14,6 @@ public class MainSceneBuilder : MonoBehaviour
 	public static MainSceneBuilder instance;
 	public static bool s_firstTimeAfterLaunch = true;
 
-	// 서버에서 받는거로 고치기 전까지만 쓰는 임시값이다.
-	// temp code
-	public int playChapter = 1;
-	public int playStage = 0;
-	public int lastClearChapter = 1;
-	public int lastClearStage = 0;
-
 	void Awake()
 	{
 		instance = this;
@@ -123,7 +116,6 @@ public class MainSceneBuilder : MonoBehaviour
 			_handleTitleCanvas = Addressables.LoadAssetAsync<GameObject>("TitleCanvas");
 
 		// step 5, 6
-		// 차후에 5는 캐릭터 아이디에 따라 번들에서 로드해야할거다.
 		LoadingCanvas.instance.SetProgressBarPoint(0.6f);
 		_handleStageManager = Addressables.LoadAssetAsync<GameObject>("StageManager");
 		_handleStartCharacter = Addressables.LoadAssetAsync<GameObject>(CharacterData.GetAddressByActorId(PlayerData.instance.mainCharacterId));
@@ -156,7 +148,7 @@ public class MainSceneBuilder : MonoBehaviour
 		// 결국 재부팅시 데이터 캐싱등의 처리까지 하려면 2번이 제일 낫다.
 		LoadingCanvas.instance.SetProgressBarPoint(0.9f);
 		_handleTreasureChest = Addressables.LoadAssetAsync<GameObject>("TreasureChest");
-		StageManager.instance.InitializeStage(playChapter, playStage, lastClearChapter, lastClearStage);
+		StageManager.instance.InitializeStage(PlayerData.instance.selectedChapter, 0);
 		while (StageManager.instance.IsDoneLoadAsyncNextStage() == false)
 			yield return null;
 		StageManager.instance.MoveToNextStage(true);

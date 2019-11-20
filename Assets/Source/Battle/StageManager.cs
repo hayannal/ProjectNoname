@@ -9,6 +9,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 #else
 using SubjectNerd.Utilities;
 #endif
+using CodeStage.AntiCheat.ObscuredTypes;
 
 public class StageManager : MonoBehaviour
 {
@@ -33,10 +34,8 @@ public class StageManager : MonoBehaviour
 	[Reorderable] public GameObject[] spawnFlagPrefabList;
 #endif
 
-	public int playChapter { get; set; }
-	public int playStage { get; set; }
-	public int lastClearChapter { get; set; }
-	public int lastClearStage { get; set; }
+	public ObscuredInt playChapter { get; set; }
+	public ObscuredInt playStage { get; set; }
 
 	void Awake()
 	{
@@ -44,14 +43,12 @@ public class StageManager : MonoBehaviour
 	}
 
 #if USE_MAIN_SCENE
-	public void InitializeStage(int chapter, int stage, int lastClearChapter, int lastClearStage)
+	public void InitializeStage(int chapter, int stage)
 	{
 		playChapter = chapter;
 		playStage = stage;
-		this.lastClearChapter = lastClearChapter;
-		this.lastClearStage = lastClearStage;
 
-		StageDataManager.instance.CalcNextStageInfo(chapter, stage, lastClearChapter, lastClearStage);
+		StageDataManager.instance.CalcNextStageInfo(chapter, stage, PlayerData.instance.lastClearChapter, PlayerData.instance.lastClearStage);
 
 		if (StageDataManager.instance.existNextStageInfo)
 		{
@@ -92,7 +89,7 @@ public class StageManager : MonoBehaviour
 	public void GetNextStageInfo()
 	{
 		int nextStage = playStage + 1;
-		StageDataManager.instance.CalcNextStageInfo(playChapter, nextStage, lastClearChapter, lastClearStage);
+		StageDataManager.instance.CalcNextStageInfo(playChapter, nextStage, PlayerData.instance.lastClearChapter, PlayerData.instance.lastClearStage);
 
 		if (StageDataManager.instance.existNextStageInfo)
 		{
@@ -285,9 +282,9 @@ public class StageManager : MonoBehaviour
 
 
 	#region PlayerLevel
-	int _playerLevel = 1;
+	ObscuredInt _playerLevel = 1;
 	public int playerLevel { get { return _playerLevel; } }
-	int _playerExp = 0;
+	ObscuredInt _playerExp = 0;
 	public int needLevelUpCount { get; set; }
 	public void AddExp(int exp)
 	{

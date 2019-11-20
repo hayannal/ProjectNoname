@@ -32,7 +32,10 @@ public class PlayerData : MonoBehaviour
 	#region Player Info
 	public void OnRecvPlayerInfo()
 	{
-		//lastClearChapter = 1;
+		// 디비 및 훈련챕터 들어가기 전까지 임시로 쓰는 값이다. 1챕터 정보를 부른다.
+		lastClearChapter = 1;
+		lastClearStage = 0;
+		selectedChapter = 1;
 	}
 	#endregion
 

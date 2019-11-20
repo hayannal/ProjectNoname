@@ -56,7 +56,7 @@ public class InstantDeathAffector : AffectorBase
 		if (result == 0.0f)
 			return false;
 
-		if (defenderActor is MonsterActor)
+		if (defenderActor.IsMonsterActor())
 		{
 			MonsterActor monsterActor = defenderActor as MonsterActor;
 			if (monsterActor != null && monsterActor.bossMonster)

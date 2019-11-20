@@ -5,6 +5,8 @@ using MEC;
 
 public class MonsterActor : Actor
 {
+	public override bool IsMonsterActor() { return true; }
+
 	public float monsterHpGaugeWidth = 1.0f;
 
 	public PathFinderController pathFinderController { get; private set; }

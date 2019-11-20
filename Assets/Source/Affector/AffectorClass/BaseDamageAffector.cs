@@ -108,7 +108,7 @@ public class BaseDamageAffector : AffectorBase {
 				}
 			}
 
-			if (_actor is MonsterActor && (int)eActorStatus.NormalMonsterDamageIncreaseAddRate < hitParameter.statusBase.valueList.Length)
+			if (_actor.IsMonsterActor() && (int)eActorStatus.NormalMonsterDamageIncreaseAddRate < hitParameter.statusBase.valueList.Length)
 			{
 				MonsterActor monsterActor = _actor as MonsterActor;
 				if (monsterActor != null)
@@ -218,7 +218,7 @@ public class BaseDamageAffector : AffectorBase {
 			if (attackerActor != null)
 			{
 				bool ignoreOnKill = false;
-				if (_actor is MonsterActor)
+				if (_actor.IsMonsterActor())
 				{
 					MonsterActor monsterActor = _actor as MonsterActor;
 					if (monsterActor != null && monsterActor.groupMonster && monsterActor.group.IsLastAliveMonster(monsterActor) == false)

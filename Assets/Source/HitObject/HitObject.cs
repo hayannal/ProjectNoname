@@ -340,7 +340,7 @@ public class HitObject : MonoBehaviour
 		}
 		else
 			statusStructForHitObject.showHitBlink = statusStructForHitObject.showHitRimBlink = false;
-		statusStructForHitObject.monsterActor = actor is MonsterActor;
+		statusStructForHitObject.monsterActor = actor.IsMonsterActor();
 		statusStructForHitObject.bossMonsterActor = false;
 		if (statusStructForHitObject.monsterActor)
 		{

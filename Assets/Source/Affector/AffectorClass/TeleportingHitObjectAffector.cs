@@ -47,7 +47,7 @@ public class TeleportingHitObjectAffector : AffectorBase
 			return;
 
 		float limitHp = _affectorValueLevelTableData.fValue3;
-		if (defenderAffectorProcessor.actor is MonsterActor)
+		if (defenderAffectorProcessor.actor.IsMonsterActor())
 		{
 			MonsterActor monsterActor = defenderAffectorProcessor.actor as MonsterActor;
 			if (monsterActor != null && monsterActor.bossMonster)

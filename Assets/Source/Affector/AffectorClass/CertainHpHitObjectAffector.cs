@@ -35,7 +35,7 @@ public class CertainHpHitObjectAffector : AffectorBase
 			return;
 
 		float[] hpRatioList = _hpRatioList;
-		if (defenderAffectorProcessor.actor is MonsterActor)
+		if (defenderAffectorProcessor.actor.IsMonsterActor())
 		{
 			MonsterActor monsterActor = defenderAffectorProcessor.actor as MonsterActor;
 			if (monsterActor != null && monsterActor.bossMonster)

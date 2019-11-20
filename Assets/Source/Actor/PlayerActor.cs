@@ -5,6 +5,8 @@ using ActorStatusDefine;
 
 public class PlayerActor : Actor
 {
+	public override bool IsPlayerActor() { return true; }
+
 	public GameObject[] cachingObjectList;
 
 	public SkillProcessor skillProcessor { get; private set; }

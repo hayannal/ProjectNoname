@@ -15,6 +15,9 @@ public class Actor : MonoBehaviour {
 		Legendary,
 	}
 
+	public virtual bool IsMonsterActor() { return false; }
+	public virtual bool IsPlayerActor() { return false; }
+
 	public string actorId;
 	public GameObject[] commonPoolPreloadObjectList;
 	public GameObject[] selfPassivePreloadObjectList;

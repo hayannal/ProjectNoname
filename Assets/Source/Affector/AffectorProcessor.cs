@@ -218,7 +218,7 @@ public class AffectorProcessor : MonoBehaviour {
 		if (useMonsterActorInfo)
 		{
 			// Monster정보가 추가로 필요해져서 복사해둔다.
-			hitParameter.statusStructForHitObject.monsterActor = actor is MonsterActor;
+			hitParameter.statusStructForHitObject.monsterActor = actor.IsMonsterActor();
 			hitParameter.statusStructForHitObject.bossMonsterActor = false;
 			if (hitParameter.statusStructForHitObject.monsterActor)
 			{

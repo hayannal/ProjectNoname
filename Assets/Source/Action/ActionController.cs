@@ -213,6 +213,7 @@ public class ActionController : MonoBehaviour {
 		return false;
 	}
 
+	public bool waitAttackSignal { get; set; }
 	bool PlayAction(ActionInfo actionPlayInfo)
 	{
 		if (!CheckMecanimState(actionPlayInfo.listNotAllowingState, actionPlayInfo.listAllowingState))
@@ -225,6 +226,21 @@ public class ActionController : MonoBehaviour {
 			if (cooltimeProcessor.CheckCooltime(actionPlayInfo.actionName))
 				return false;
 		}
+
+		#region Attack Cancel
+		// 공격 액션 실행 후 어택 시그널 오지도 않은채 액션을 바꿨다면 캔슬로 여기고 쿨타임을 초기화해준다.
+		bool cancelAttack = false;
+		if (waitAttackSignal && (actionPlayInfo.actionName == "Move" || actionPlayInfo.actionName == "Idle"))
+		{
+			Cooltime cooltime = cooltimeProcessor.GetCooltime("Attack");
+			if (cooltime != null && cooltime.CheckCooltime())
+			{
+				waitAttackSignal = false;
+				cooltime.cooltime = 0.0f;
+				cancelAttack = true;
+			}
+		}
+		#endregion
 
 		SkillProcessor.SkillInfo selectedSkillInfo = null;
 		int actionNameHash = actionPlayInfo.actionNameHash;
@@ -246,7 +262,8 @@ public class ActionController : MonoBehaviour {
 			if (animator.GetNextAnimatorStateInfo(0).fullPathHash == actionNameHash)
 				return false;
 		}
-		animator.CrossFade(actionNameHash, actionPlayInfo.fadeDuration);
+		// 어택 캔슬할땐 빠르게 블렌딩 되어야 시그널 호출이 문제없이 호출되게 된다.
+		animator.CrossFade(actionNameHash, cancelAttack ? 0.02f : actionPlayInfo.fadeDuration);
 
 		if (actionPlayInfo.actionName == "Ultimate")
 		{
@@ -268,7 +285,10 @@ public class ActionController : MonoBehaviour {
 		}
 
 		if (normalAttack && actor != null)
+		{
 			cooltimeProcessor.ApplyCooltime(actionPlayInfo.actionName, actor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.AttackDelay));
+			waitAttackSignal = true;
+		}
 		if (selectedSkillInfo != null)
 			cooltimeProcessor.ApplyCooltime(selectedSkillInfo.skillId, selectedSkillInfo.cooltime);
 

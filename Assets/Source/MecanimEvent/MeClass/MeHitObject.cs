@@ -459,6 +459,16 @@ public class MeHitObject : MecanimEventBase {
 			}
 		}
 
+		// 여기서 처리하면 RangeSignal 시작될때도 함께 처리할 수 있다.
+		// Ultimate인지 Attack인지 구분하지 않아도 되는게 어차피 Ultimate쪽은 AI에서 돌리지 않기 때문에 호출되도 상관없어진다.
+		// 그래서 일부러 검사루틴 줄이려고 체크하지 않는다.
+		if (actor.IsPlayerActor())
+		{
+			PlayerActor playerActor = actor as PlayerActor;
+			if (playerActor != null)
+				playerActor.actionController.waitAttackSignal = false;
+		}
+
 		Transform spawnTransform = null;
 		Transform parentTransform = null;
 		if (hitObjectAnimator != null)

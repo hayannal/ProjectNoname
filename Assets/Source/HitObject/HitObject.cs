@@ -73,7 +73,7 @@ public class HitObject : MonoBehaviour
 			CopyEtcStatusForHitObject(ref statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
 
 			Vector3 areaPosition = GetSpawnPosition(spawnTransform, meHit, parentTransform, parentActor.affectorProcessor);
-			Vector3 areaDirection = GetSpawnDirection(areaPosition, meHit, parentTransform, GetTargetPosition(meHit, parentActor, hitSignalIndexInAction));
+			Vector3 areaDirection = GetSpawnDirection(areaPosition, meHit, parentTransform, GetTargetPosition(meHit, parentActor, hitSignalIndexInAction), parentActor.targetingProcessor);
 			Vector3 endPosition = Vector3.zero;
 			if (meHit.targetDetectType == eTargetDetectType.Area)
 				CheckHitArea(areaPosition, areaDirection, meHit, parentActor.actorStatus.statusBase, statusStructForHitObject);
@@ -99,7 +99,7 @@ public class HitObject : MonoBehaviour
 		// step2. Collider타입은 상황에 맞게 1개 혹은 여러개 만들어야한다.
 		Vector3 targetPosition = GetTargetPosition(meHit, parentActor, hitSignalIndexInAction);
 		Vector3 defaultPosition = GetSpawnPosition(spawnTransform, meHit, parentTransform, parentActor.affectorProcessor);
-		Quaternion defaultRotation = Quaternion.LookRotation(GetSpawnDirection(defaultPosition, meHit, parentTransform, targetPosition));
+		Quaternion defaultRotation = Quaternion.LookRotation(GetSpawnDirection(defaultPosition, meHit, parentTransform, targetPosition, parentActor.targetingProcessor));
 		bool normalAttack = parentActor.actionController.mecanimState.IsState((int)eMecanimState.Attack);
 		int parallelAddCountByLevelPack = normalAttack ? ParallelHitObjectAffector.GetAddCount(parentActor.affectorProcessor) : 0;
 		int parallelCount = meHit.parallelCount + parallelAddCountByLevelPack;
@@ -110,7 +110,7 @@ public class HitObject : MonoBehaviour
 			for (int i = 0; i < parallelCount; ++i)
 			{
 				Vector3 position = GetParallelSpawnPosition(spawnTransform, meHit, parentTransform, parallelCount, i, parallelDistance, parentActor.affectorProcessor);
-				Quaternion rotation = Quaternion.LookRotation(GetSpawnDirection(defaultPosition, meHit, parentTransform, targetPosition));
+				Quaternion rotation = Quaternion.LookRotation(GetSpawnDirection(defaultPosition, meHit, parentTransform, targetPosition, parentActor.targetingProcessor));
 				HitObject parallelHitObject = GetCachedHitObject(meHit, position, rotation);
 				if (parallelHitObject == null)
 					continue;
@@ -265,7 +265,7 @@ public class HitObject : MonoBehaviour
 		return t.TransformPoint(fallbackPosition);
 	}
 
-	public static Vector3 GetSpawnDirection(Vector3 spawnPosition, MeHitObject meHit, Transform parentActorTransform, Vector3 targetPosition, bool applyRange = true)
+	public static Vector3 GetSpawnDirection(Vector3 spawnPosition, MeHitObject meHit, Transform parentActorTransform, Vector3 targetPosition, TargetingProcessor targetingProcessor = null)
 	{
 		Vector3 result = Vector3.zero;
 		switch (meHit.startDirectionType)
@@ -283,38 +283,41 @@ public class HitObject : MonoBehaviour
 				diffToTargetPosition.y = 0.0f;
 				// world to local
 				result = parentActorTransform.InverseTransformDirection(diffToTargetPosition.normalized);
+				// 플레이어 캐릭터 몸통을 클릭할때 몸 뒤로 쏘는걸 방지하기 위해 체크한다.
+				if (targetingProcessor != null && targetingProcessor.IsRegisteredCustomTargetPosition())
+				{
+					if (result.z < 0.0f)
+						result *= -1.0f;
+				}
 				break;
 		}
-		if (applyRange)
+		if (meHit.leftRightRandomAngle != 0.0f || meHit.upDownRandomAngle != 0.0f || meHit.leftRandomAngle != 0.0f || meHit.rightRandomAngle != 0.0f)
 		{
-			if (meHit.leftRightRandomAngle != 0.0f || meHit.upDownRandomAngle != 0.0f || meHit.leftRandomAngle != 0.0f || meHit.rightRandomAngle != 0.0f)
-			{
-				Vector3 tempUp = Vector3.up;
-				if (result == tempUp) tempUp = -Vector3.forward;
-				Vector3 right = Vector3.Cross(-tempUp, result);
-				Vector3 up = Vector3.Cross(right, result);
+			Vector3 tempUp = Vector3.up;
+			if (result == tempUp) tempUp = -Vector3.forward;
+			Vector3 right = Vector3.Cross(-tempUp, result);
+			Vector3 up = Vector3.Cross(right, result);
 
-				if (meHit.bothRandomAngle)
+			if (meHit.bothRandomAngle)
+			{
+				if (meHit.leftRightRandomAngle != 0.0f)
 				{
-					if (meHit.leftRightRandomAngle != 0.0f)
-					{
-						Quaternion rotation = Quaternion.AngleAxis(Random.Range(-meHit.leftRightRandomAngle, meHit.leftRightRandomAngle), up);
-						result = rotation * result;
-					}
-				}
-				else
-				{
-					if (meHit.leftRandomAngle != 0.0f || meHit.rightRandomAngle != 0.0f)
-					{
-						Quaternion rotation = Quaternion.AngleAxis(Random.Range(-meHit.leftRandomAngle, meHit.rightRandomAngle), up);
-						result = rotation * result;
-					}
-				}
-				if (meHit.upDownRandomAngle != 0.0f)
-				{
-					Quaternion rotation = Quaternion.AngleAxis(Random.Range(-meHit.upDownRandomAngle, meHit.upDownRandomAngle), right);
+					Quaternion rotation = Quaternion.AngleAxis(Random.Range(-meHit.leftRightRandomAngle, meHit.leftRightRandomAngle), up);
 					result = rotation * result;
 				}
+			}
+			else
+			{
+				if (meHit.leftRandomAngle != 0.0f || meHit.rightRandomAngle != 0.0f)
+				{
+					Quaternion rotation = Quaternion.AngleAxis(Random.Range(-meHit.leftRandomAngle, meHit.rightRandomAngle), up);
+					result = rotation * result;
+				}
+			}
+			if (meHit.upDownRandomAngle != 0.0f)
+			{
+				Quaternion rotation = Quaternion.AngleAxis(Random.Range(-meHit.upDownRandomAngle, meHit.upDownRandomAngle), right);
+				result = rotation * result;
 			}
 		}
 		if (meHit.startDirectionType == HitObjectMovement.eStartDirectionType.Direction && meHit.useWorldSpaceDirection)

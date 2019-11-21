@@ -100,6 +100,8 @@ public class GatePillar : MonoBehaviour
 		{
 			if (CheckCollider(contact.otherCollider) == false)
 				continue;
+			if (CheckNextMap() == false)
+				continue;
 
 			Timing.RunCoroutine(NextMapProcess());
 			break;
@@ -111,6 +113,8 @@ public class GatePillar : MonoBehaviour
 		if (_processing)
 			return;
 		if (CheckCollider(other) == false)
+			return;
+		if (CheckNextMap() == false)
 			return;
 
 		Timing.RunCoroutine(NextMapProcess());
@@ -147,10 +151,26 @@ public class GatePillar : MonoBehaviour
 			return;
 		if (Time.time < _spawnTime)
 			return;
-		if (SwapCanvas.instance != null && SwapCanvas.instance.gameObject.activeSelf)
+		if (CheckNextMap() == false)
 			return;
 
 		Timing.RunCoroutine(NextMapProcess());
+	}
+
+	bool CheckNextMap()
+	{
+		if (SwapCanvas.instance != null && SwapCanvas.instance.gameObject.activeSelf)
+			return false;
+
+		if (MainSceneBuilder.instance.lobby)
+		{
+			// check lobby energy
+
+			// check lobby suggest
+
+		}
+
+		return true;
 	}
 
 	bool _processing = false;

@@ -48,7 +48,7 @@ public class StageManager : MonoBehaviour
 		playChapter = chapter;
 		playStage = stage;
 
-		StageDataManager.instance.CalcNextStageInfo(chapter, stage, PlayerData.instance.lastClearChapter, PlayerData.instance.lastClearStage);
+		StageDataManager.instance.CalcNextStageInfo(chapter, stage, PlayerData.instance.highestClearChapter, PlayerData.instance.highestClearStage);
 
 		if (StageDataManager.instance.existNextStageInfo)
 		{
@@ -89,7 +89,7 @@ public class StageManager : MonoBehaviour
 	public void GetNextStageInfo()
 	{
 		int nextStage = playStage + 1;
-		StageDataManager.instance.CalcNextStageInfo(playChapter, nextStage, PlayerData.instance.lastClearChapter, PlayerData.instance.lastClearStage);
+		StageDataManager.instance.CalcNextStageInfo(playChapter, nextStage, PlayerData.instance.highestClearChapter, PlayerData.instance.highestClearStage);
 
 		if (StageDataManager.instance.existNextStageInfo)
 		{

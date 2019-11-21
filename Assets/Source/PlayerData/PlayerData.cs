@@ -21,20 +21,20 @@ public class PlayerData : MonoBehaviour
 
 	public bool loginned { get; private set; }
 
-	public ObscuredInt lastClearChapter { get; set; }
-	public ObscuredInt lastClearStage { get; set; }
-	public ObscuredInt selectedChapter { get; set; } 
+	public ObscuredInt highestClearChapter { get; set; }
+	public ObscuredInt highestClearStage { get; set; }
+	public ObscuredInt selectedChapter { get; set; }
 	public ObscuredBool chaosMode { get; set; }
 	public ObscuredInt purifyCount { get; set; }
 
-	public bool tutorialChapter { get { return lastClearChapter == 0; } }
+	public bool tutorialChapter { get { return highestClearChapter == 0; } }
 
 	#region Player Info
 	public void OnRecvPlayerInfo()
 	{
 		// 디비 및 훈련챕터 들어가기 전까지 임시로 쓰는 값이다. 1챕터 정보를 부른다.
-		lastClearChapter = 1;
-		lastClearStage = 0;
+		highestClearChapter = 1;
+		highestClearStage = 0;
 		selectedChapter = 1;
 	}
 	#endregion

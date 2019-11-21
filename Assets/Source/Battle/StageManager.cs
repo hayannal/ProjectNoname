@@ -48,7 +48,7 @@ public class StageManager : MonoBehaviour
 		playChapter = chapter;
 		playStage = stage;
 
-		StageDataManager.instance.CalcNextStageInfo(chapter, stage, PlayerData.instance.highestClearChapter, PlayerData.instance.highestClearStage);
+		StageDataManager.instance.CalcNextStageInfo(chapter, stage, PlayerData.instance.highestPlayChapter, PlayerData.instance.highestClearStage);
 
 		if (StageDataManager.instance.existNextStageInfo)
 		{
@@ -89,7 +89,7 @@ public class StageManager : MonoBehaviour
 	public void GetNextStageInfo()
 	{
 		int nextStage = playStage + 1;
-		StageDataManager.instance.CalcNextStageInfo(playChapter, nextStage, PlayerData.instance.highestClearChapter, PlayerData.instance.highestClearStage);
+		StageDataManager.instance.CalcNextStageInfo(playChapter, nextStage, PlayerData.instance.highestPlayChapter, PlayerData.instance.highestClearStage);
 
 		if (StageDataManager.instance.existNextStageInfo)
 		{
@@ -350,6 +350,42 @@ public class StageManager : MonoBehaviour
 		// 잠재력 개방에 따른 차이. 잠재력은 ActorStatus인가? 아니면 액터의 또다른 개방 정보인가. 결국 강화랑 저장할 곳이 또 뭔가가 필요할듯. 파워레벨 역시 스탯은 아닐듯.
 
 		return maxStageLevel;
+	}
+	#endregion
+
+
+	#region Battle Result
+	public void OnSuccess()
+	{
+		// 챕터 +1 해두고 디비에 기록. highest 갱신.
+		int nextChapter = playChapter + 1;
+
+		// 최종 챕터 확인
+		int chaosChapterLimit = BattleInstanceManager.instance.GetCachedGlobalConstantInt("ChaosChapterLimit");
+		if (nextChapter == chaosChapterLimit)
+		{
+			// 최종 챕터를 깬거라 더이상 진행하면 안되서
+			// 곧바로 카오스 모드로 진입시켜야한다.
+		}
+	}
+
+	public void OnFail()
+	{
+		int purifyStartChapter = BattleInstanceManager.instance.GetCachedGlobalConstantInt("PurifyStartChapter");
+		if (playChapter >= purifyStartChapter)
+		{
+			// 카오스 모드를 발동해야하는 시기다. 튜토리얼도 있을 예정.
+		}
+	}
+
+	public void OnResult()
+	{
+		// 이기거나 지는거에 상관없이, 혹은 카오스 모드 여부에 상관없이
+		// 최종 챕터를 플레이 했다면 보스를 클리어한 스테이지 수만큼 상자를 채워야한다.
+		if (playChapter == PlayerData.instance.highestPlayChapter)
+		{
+
+		}
 	}
 	#endregion
 }

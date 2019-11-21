@@ -21,19 +21,27 @@ public class PlayerData : MonoBehaviour
 
 	public bool loginned { get; private set; }
 
-	public ObscuredInt highestClearChapter { get; set; }
+	// 변수 이름이 헷갈릴 수 있는데 로직상 이게 가장 필요한 정보라 그렇다.
+	// 하나는 최대로 플레이한 챕터 번호고 하나는 최대로 클리어한 스테이지 번호다.
+	// 무슨 말이냐 하면
+	// 0-20 하다 죽었으면 highestPlayChapter는 0 / highestClearStage는 19가 저장되는 형태다.
+	// 1-50 하다 죽었으면 highestPlayChapter는 1 / highestClearStage는 49가 저장되는 형태다.
+	// 1-50 의 보스를 잡고 게이트 필라 치기 전에 죽었으면 위와 마찬가지로 highestPlayChapter는 1 / highestClearStage는 49가 저장되는 형태다.
+	// 1-50 의 보스를 잡고 게이트 필라를 쳐서 결과창이 나왔으면 highestPlayChapter는 2 / highestClearStage는 0이 저장되는 형태다.
+	// 이래야 깔끔하게 두개만 저장해서 모든걸 처리할 수 있다.
+	public ObscuredInt highestPlayChapter { get; set; }
 	public ObscuredInt highestClearStage { get; set; }
 	public ObscuredInt selectedChapter { get; set; }
 	public ObscuredBool chaosMode { get; set; }
 	public ObscuredInt purifyCount { get; set; }
 
-	public bool tutorialChapter { get { return highestClearChapter == 0; } }
+	public bool tutorialChapter { get { return highestPlayChapter == 0; } }
 
 	#region Player Info
 	public void OnRecvPlayerInfo()
 	{
 		// 디비 및 훈련챕터 들어가기 전까지 임시로 쓰는 값이다. 1챕터 정보를 부른다.
-		highestClearChapter = 1;
+		highestPlayChapter = 1;
 		highestClearStage = 0;
 		selectedChapter = 1;
 	}

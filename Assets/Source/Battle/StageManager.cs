@@ -86,6 +86,17 @@ public class StageManager : MonoBehaviour
 	}
 #endif
 
+	public MapTableData nextMapTableData { get; private set; }
+	public string currentBossPreviewAddress
+	{
+		get
+		{
+			if (nextMapTableData == null)
+				return "";
+			return nextMapTableData.bossPreviewAddress;
+		}
+	}
+
 	public void GetNextStageInfo()
 	{
 		int nextStage = playStage + 1;
@@ -96,7 +107,7 @@ public class StageManager : MonoBehaviour
 			MapTableData mapTableData = TableDataManager.instance.FindMapTableData(StageDataManager.instance.reservedNextMap);
 			if (mapTableData != null)
 			{
-				currentBossPreviewAddress = mapTableData.bossPreviewAddress;
+				nextMapTableData = mapTableData;
 #if USE_MAIN_SCENE
 				PrepareNextMap(mapTableData, StageDataManager.instance.nextStageTableData.environmentSetting);
 #endif
@@ -274,7 +285,6 @@ public class StageManager : MonoBehaviour
 	}
 
 	public Vector3 currentGatePillarSpawnPosition { get; set; }
-	public string currentBossPreviewAddress { get; set; }
 	public bool spawnPowerSourcePrefab { get; set; }
 	public Vector3 currentPowerSourceSpawnPosition { get; set; }
 

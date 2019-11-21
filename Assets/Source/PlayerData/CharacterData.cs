@@ -17,4 +17,9 @@ public class CharacterData
 			return "";
 		return actorTableData.prefabAddress;
 	}
+
+	public static string GetNameByActorId(string actorId)
+	{
+		return actorId;
+	}
 }

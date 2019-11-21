@@ -6,10 +6,13 @@ using UnityEngine.UI;
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
 #endif
+using System.Text;
 
 public class SwapCanvas : MonoBehaviour
 {
 	public static SwapCanvas instance;
+
+	public Text suggestText;
 
 	void Awake()
 	{
@@ -18,7 +21,15 @@ public class SwapCanvas : MonoBehaviour
 
 	void OnEnable()
 	{
-		RefreshSwapInfo();
+		if (MainSceneBuilder.instance.lobby)
+			RefreshChapterInfo();
+		else
+			RefreshSwapInfo();
+	}
+
+	void RefreshChapterInfo()
+	{
+
 	}
 
 	void RefreshSwapInfo()
@@ -29,7 +40,13 @@ public class SwapCanvas : MonoBehaviour
 
 	void RefreshBossInfo()
 	{
+		if (StageManager.instance.nextMapTableData == null)
+			return;
+		if (string.IsNullOrEmpty(StageManager.instance.currentBossPreviewAddress))
+			return;
 
+		string suggestString = GetSuggestString(StageManager.instance.nextMapTableData.descriptionId, StageManager.instance.nextMapTableData.suggestedActorId);
+		//suggestText.SetLocalizedText(suggestString);
 	}
 
 	void RefreshGrid()
@@ -115,5 +132,24 @@ public class SwapCanvas : MonoBehaviour
 
 		// SwapCanvas를 닫는다.
 		gameObject.SetActive(false);
+	}
+
+	StringBuilder _stringBuilderFull = new StringBuilder();
+	StringBuilder _stringBuilderActor = new StringBuilder();
+	string GetSuggestString(string descriptionId, string[] suggestedActorIdList)
+	{
+		_stringBuilderFull.Remove(0, _stringBuilderFull.Length);
+		_stringBuilderActor.Remove(0, _stringBuilderActor.Length);
+		for (int i = 0; i < suggestedActorIdList.Length; ++i)
+		{
+			string actorId = suggestedActorIdList[i];
+			if (PlayerData.instance.ContainsActor(actorId) == false)
+				continue;
+			if (_stringBuilderActor.Length > 0)
+				_stringBuilderActor.Append(", ");
+			_stringBuilderActor.Append(CharacterData.GetNameByActorId(actorId));
+		}
+		_stringBuilderFull.AppendFormat(UIString.instance.GetString(descriptionId), _stringBuilderActor.ToString());
+		return _stringBuilderFull.ToString();
 	}
 }

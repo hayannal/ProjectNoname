@@ -80,5 +80,15 @@ public class PlayerData : MonoBehaviour
 	}
 
 	public bool swappable { get { return _listCharacterData.Count > 1; } }
+
+	public bool ContainsActor(string actorId)
+	{
+		for (int i = 0; i < _listCharacterData.Count; ++i)
+		{
+			if (_listCharacterData[i].actorId == actorId)
+				return true;
+		}
+		return false;
+	}
 	#endregion
 }

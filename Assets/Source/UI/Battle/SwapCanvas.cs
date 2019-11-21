@@ -29,7 +29,12 @@ public class SwapCanvas : MonoBehaviour
 
 	void RefreshChapterInfo()
 	{
+		ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
+		if (chapterTableData == null)
+			return;
 
+		string suggestString = GetSuggestString(chapterTableData.descriptionId, chapterTableData.suggestedActorId);
+		//suggestText.SetLocalizedText(suggestString);
 	}
 
 	void RefreshSwapInfo()

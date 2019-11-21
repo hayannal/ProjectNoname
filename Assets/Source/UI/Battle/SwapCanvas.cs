@@ -149,6 +149,8 @@ public class SwapCanvas : MonoBehaviour
 				_stringBuilderActor.Append(", ");
 			_stringBuilderActor.Append(CharacterData.GetNameByActorId(actorId));
 		}
+		if (_stringBuilderActor.Length == 0)
+			_stringBuilderActor.Append(CharacterData.GetNameByActorId(suggestedActorIdList[0]));
 		_stringBuilderFull.AppendFormat(UIString.instance.GetString(descriptionId), _stringBuilderActor.ToString());
 		return _stringBuilderFull.ToString();
 	}

@@ -13,6 +13,10 @@ public class ChapterTableData
   public int chapter { get { return _chapter; } set { _chapter = value; } }
   
   [SerializeField]
+  int _maxStage;
+  public int maxStage { get { return _maxStage; } set { _maxStage = value; } }
+  
+  [SerializeField]
   int _suggestedPowerLevel;
   public int suggestedPowerLevel { get { return _suggestedPowerLevel; } set { _suggestedPowerLevel = value; } }
   

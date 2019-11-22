@@ -798,6 +798,20 @@ public class BattleInstanceManager : MonoBehaviour
 	}
 	#endregion
 
+	#region Stage Table
+	Dictionary<string, StageTableData> _dicStageTableData = new Dictionary<string, StageTableData>();
+	public StageTableData GetCachedStageTableData(int chapter, int stage, bool chaos)
+	{
+		string key = string.Format("{0}_{1}_{2}", chapter, stage, chaos ? 1 : 0);
+		if (_dicStageTableData.ContainsKey(key))
+			return _dicStageTableData[key];
+
+		StageTableData stageTableData = TableDataManager.instance.FindStageTableData(chapter, stage, chaos);
+		_dicStageTableData.Add(key, stageTableData);
+		return stageTableData;
+	}
+	#endregion
+
 	#region CommonPoolPreloadObjectList
 	// 액션툴에 넣을 수 없는 패시브용 이펙트들을 위해 만든 구조다.
 	// 패시브용 이펙트도 크게 둘로 분류할 수 있는데,

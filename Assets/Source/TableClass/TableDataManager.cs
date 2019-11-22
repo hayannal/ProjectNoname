@@ -88,11 +88,11 @@ public class TableDataManager : MonoBehaviour
 		return null;
 	}
 
-	public StageTableData FindStageTableData(int chapter, int stage)
+	public StageTableData FindStageTableData(int chapter, int stage, bool chaos)
 	{
 		for (int i = 0; i < stageTable.dataArray.Length; ++i)
 		{
-			if (stageTable.dataArray[i].chapter == chapter && stageTable.dataArray[i].stage == stage)
+			if (stageTable.dataArray[i].chapter == chapter && stageTable.dataArray[i].stage == stage && stageTable.dataArray[i].chaos == chaos)
 				return stageTable.dataArray[i];
 		}
 		return null;

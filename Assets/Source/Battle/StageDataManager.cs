@@ -18,13 +18,11 @@ public class StageDataManager : MonoBehaviour
 	public StageTableData nextStageTableData { get; set; }
 	public string reservedNextMap { get; set; }
 	public bool existNextStageInfo { get { return (nextStageTableData != null && string.IsNullOrEmpty(reservedNextMap) == false); } }
-	
-	Dictionary<int, List<string>> _dicStageInfoByGrouping = new Dictionary<int, List<string>>();
-	Dictionary<int, int> _dicCurrentIndexByGrouping = new Dictionary<int, int>();
+
 	public bool CalcNextStageInfo(int chapter, int nextStage, int highestPlayChapter, int highestClearStage)
 	{
 		nextStageTableData = null;
-		StageTableData stageTableData = TableDataManager.instance.FindStageTableData(chapter, nextStage);
+		StageTableData stageTableData = BattleInstanceManager.instance.GetCachedStageTableData(chapter, nextStage, PlayerData.instance.chaosMode);
 		if (stageTableData == null)
 			return false;
 		nextStageTableData = stageTableData;
@@ -32,13 +30,34 @@ public class StageDataManager : MonoBehaviour
 		return true;
 	}
 
+	// 테이블 파싱에 캐싱찾기 기능을 넣으면서 미리 전부다 계산해도 크게 무리가 없을거 같아서 차라리 한번에 다 캐싱해두기로 한다.
+	// 차후 튕겼을때 복구해주는거 하게될때 이 딕셔너리만 복구시켜주면 될거다.
+	// 챕터 변경시 씬을 리로드하지 않는다면 클리어가 필요하다.
+	Dictionary<int, string> _dicCachedMap = new Dictionary<int, string>();
 	string CalcNextMap(StageTableData stageTableData, int chapter, int nextStage, int highestPlayChapter, int highestClearStage)
 	{
-		//if (stageTableData.chaos)
-		//	return CalcChaosNextMap(stageTableData, chapter, nextStage, highestPlayChapter, highestClearStage);
-		return CalcNormalNextMap(stageTableData, chapter, nextStage, highestPlayChapter, highestClearStage);
+		if (_dicCachedMap.Count == 0)
+		{
+			int maxStage = TableDataManager.instance.FindChapterTableData(chapter).maxStage;
+			for (int i = nextStage; i <= maxStage; ++i)
+			{
+				StageTableData diffData = BattleInstanceManager.instance.GetCachedStageTableData(chapter, i, stageTableData.chaos);
+				string mapId = "";
+				if (stageTableData.chaos)
+					mapId = CalcChaosNextMap(diffData, chapter, i);
+				else
+					mapId = CalcNormalNextMap(diffData, chapter, i, highestPlayChapter, highestClearStage);
+				_dicCachedMap.Add(i, mapId);
+			}
+		}
+
+		if (_dicCachedMap.ContainsKey(nextStage))
+			return _dicCachedMap[nextStage];
+		return "";
 	}
 
+	Dictionary<int, List<string>> _dicStageInfoByGrouping = new Dictionary<int, List<string>>();
+	Dictionary<int, int> _dicCurrentIndexByGrouping = new Dictionary<int, int>();
 	string CalcNormalNextMap(StageTableData stageTableData, int chapter, int nextStage, int highestPlayChapter, int highestClearStage)
 	{
 		List<string> listStageId = null;
@@ -57,11 +76,10 @@ public class StageDataManager : MonoBehaviour
 			else
 			{
 				listStageId = new List<string>();
-				for (int i = 0; i < TableDataManager.instance.stageTable.dataArray.Length; ++i)
+				int maxStage = TableDataManager.instance.FindChapterTableData(chapter).maxStage;
+				for (int i = 0; i <= maxStage; ++i)
 				{
-					StageTableData diffData = TableDataManager.instance.stageTable.dataArray[i];
-					if (stageTableData.chapter != diffData.chapter)
-						continue;
+					StageTableData diffData = BattleInstanceManager.instance.GetCachedStageTableData(chapter, i, PlayerData.instance.chaosMode);
 					if (stageTableData.grouping != diffData.grouping)
 						continue;
 
@@ -116,7 +134,7 @@ public class StageDataManager : MonoBehaviour
 		return listStageId[currentIndex];
 	}
 
-	string CalcChaosNextMap(StageTableData stageTableData, int chapter, int nextStage, int highestPlayChapter, int highestClearStage)
+	string CalcChaosNextMap(StageTableData stageTableData, int chapter, int nextStage)
 	{
 		return "";
 	}

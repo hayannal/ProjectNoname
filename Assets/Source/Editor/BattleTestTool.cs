@@ -180,7 +180,7 @@ public class BattleTestTool : EditorWindow
 			monsterPrefab = (GameObject)EditorGUILayout.ObjectField("Monster Prefab :", monsterPrefab, typeof(GameObject), false);
 			if (GUILayout.Button("Spawn"))
 			{
-				StageTableData stageTableData = TableDataManager.instance.FindStageTableData(playChapter, playStage);
+				StageTableData stageTableData = BattleInstanceManager.instance.GetCachedStageTableData(playChapter, playStage, PlayerData.instance.chaosMode);
 				if (stageTableData != null)
 					StageManager.instance.currentStageTableData = stageTableData;
 				GameObject newObject = BattleInstanceManager.instance.GetCachedObject(monsterPrefab, Vector3.forward, Quaternion.identity);

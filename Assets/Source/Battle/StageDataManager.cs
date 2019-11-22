@@ -34,6 +34,13 @@ public class StageDataManager : MonoBehaviour
 
 	string CalcNextMap(StageTableData stageTableData, int chapter, int nextStage, int highestPlayChapter, int highestClearStage)
 	{
+		//if (stageTableData.chaos)
+		//	return CalcChaosNextMap(stageTableData, chapter, nextStage, highestPlayChapter, highestClearStage);
+		return CalcNormalNextMap(stageTableData, chapter, nextStage, highestPlayChapter, highestClearStage);
+	}
+
+	string CalcNormalNextMap(StageTableData stageTableData, int chapter, int nextStage, int highestPlayChapter, int highestClearStage)
+	{
 		List<string> listStageId = null;
 		int currentIndex = 0;
 		int currentGrouping = stageTableData.grouping;
@@ -107,5 +114,10 @@ public class StageDataManager : MonoBehaviour
 			_dicCurrentIndexByGrouping[currentGrouping] = currentIndex;
 		}
 		return listStageId[currentIndex];
+	}
+
+	string CalcChaosNextMap(StageTableData stageTableData, int chapter, int nextStage, int highestPlayChapter, int highestClearStage)
+	{
+		return "";
 	}
 }

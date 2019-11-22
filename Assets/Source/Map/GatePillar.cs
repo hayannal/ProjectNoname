@@ -167,7 +167,42 @@ public class GatePillar : MonoBehaviour
 			// check lobby energy
 
 			// check lobby suggest
-
+			// 카오스 여부에 따라서도 나눠야한다.
+			ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
+			if (chapterTableData != null)
+			{
+				CharacterData mainCharacterData = PlayerData.instance.GetCharacterData(PlayerData.instance.mainCharacterId);
+				bool showSwapCanvas = false;
+				if (mainCharacterData.powerLevel < chapterTableData.suggestedPowerLevel)
+					showSwapCanvas = true;
+				bool find = false;
+				if (PlayerData.instance.chaosMode)
+				{
+					// 카오스 모드에선 suggested 검사를 패스한다. 파워레벨만 체크하면 끝이다.
+					find = true;
+				}
+				else
+				{
+					for (int i = 0; i < chapterTableData.suggestedActorId.Length; ++i)
+					{
+						if (chapterTableData.suggestedActorId[i] == PlayerData.instance.mainCharacterId)
+						{
+							find = true;
+							break;
+						}
+					}
+				}
+				if (!find)
+					showSwapCanvas = true;
+				if (showSwapCanvas)
+				{
+					YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_ChangeActor"), UIString.instance.GetString("GameUI_ChapterSuggestDescription"), () => {
+						YesNoCanvas.instance.ShowCanvas(false, "", "", null);
+						UIInstanceManager.instance.ShowCanvasAsync("SwapCanvas", null);
+					});
+					return false;
+				}
+			}
 		}
 
 		return true;

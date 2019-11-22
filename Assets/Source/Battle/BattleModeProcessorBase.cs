@@ -104,7 +104,7 @@ public class BattleModeProcessorBase
 
 	void ShowGatePillar()
 	{
-		BattleInstanceManager.instance.GetCachedObject(string.IsNullOrEmpty(StageManager.instance.currentBossPreviewAddress) ? StageManager.instance.gatePillarPrefab : StageManager.instance.bossGatePillarPrefab,
+		BattleInstanceManager.instance.GetCachedObject(string.IsNullOrEmpty(StageManager.instance.nextMapTableData.bossPreviewAddress) ? StageManager.instance.gatePillarPrefab : StageManager.instance.bossGatePillarPrefab,
 			StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
 	}
 

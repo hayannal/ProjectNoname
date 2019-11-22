@@ -62,10 +62,22 @@ public class PlayerData : MonoBehaviour
 
 		CharacterData characterData = new CharacterData();
 		characterData.actorId = "Actor001";
+		characterData.powerLevel = 1;
 		_listCharacterData.Add(characterData);
 		characterData = new CharacterData();
 		characterData.actorId = "Actor002";
+		characterData.powerLevel = 1;
 		_listCharacterData.Add(characterData);
+	}
+
+	public CharacterData GetCharacterData(string actorId)
+	{
+		for (int i = 0; i < _listCharacterData.Count; ++i)
+		{
+			if (_listCharacterData[i].actorId == actorId)
+				return _listCharacterData[i];
+		}
+		return null;
 	}
 
 	string _mainCharacterId = "Actor002";

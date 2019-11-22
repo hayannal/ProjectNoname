@@ -47,14 +47,18 @@ public class StageManager : MonoBehaviour
 	{
 		playChapter = chapter;
 		playStage = stage;
+		GetStageInfo(playChapter, playStage);
+	}
 
+	void GetStageInfo(int chapter, int stage)
+	{
 		StageDataManager.instance.CalcNextStageInfo(chapter, stage, PlayerData.instance.highestPlayChapter, PlayerData.instance.highestClearStage);
 
 		if (StageDataManager.instance.existNextStageInfo)
 		{
-			MapTableData mapTableData = TableDataManager.instance.FindMapTableData(StageDataManager.instance.reservedNextMap);
-			if (mapTableData != null)
-				PrepareNextMap(mapTableData, StageDataManager.instance.nextStageTableData.environmentSetting);
+			nextMapTableData = TableDataManager.instance.FindMapTableData(StageDataManager.instance.reservedNextMap);
+			if (nextMapTableData != null)
+				PrepareNextMap(nextMapTableData, StageDataManager.instance.nextStageTableData.environmentSetting);
 		}
 	}
 #else
@@ -86,32 +90,34 @@ public class StageManager : MonoBehaviour
 	}
 #endif
 
-	public MapTableData nextMapTableData { get; private set; }
-	public string currentBossPreviewAddress
-	{
-		get
-		{
-			if (nextMapTableData == null)
-				return "";
-			return nextMapTableData.bossPreviewAddress;
-		}
-	}
-
 	public void GetNextStageInfo()
 	{
 		int nextStage = playStage + 1;
-		StageDataManager.instance.CalcNextStageInfo(playChapter, nextStage, PlayerData.instance.highestPlayChapter, PlayerData.instance.highestClearStage);
+		GetStageInfo(playChapter, nextStage);
+	}
 
-		if (StageDataManager.instance.existNextStageInfo)
+	// 이건 9층 클리어 후 10층 보스가 나옴을 알리기 위해 빨간색 게이트 필라를 띄우는데 필요.
+	public MapTableData nextMapTableData { get; private set; }
+
+	// 이건 10층 클리어 후 20층 보스의 정보를 알기 위해 필요.
+	public MapTableData nextBossMapTableData
+	{
+		get
 		{
-			MapTableData mapTableData = TableDataManager.instance.FindMapTableData(StageDataManager.instance.reservedNextMap);
-			if (mapTableData != null)
-			{
-				nextMapTableData = mapTableData;
-#if USE_MAIN_SCENE
-				PrepareNextMap(mapTableData, StageDataManager.instance.nextStageTableData.environmentSetting);
-#endif
-			}
+
+			return null;
+		}
+	}
+
+	public string nextBossPreviewAddress
+	{
+		get
+		{
+			// 이제 잔몹 - 보스 형태로 편성이 바뀌면서
+			// 10층을 클리어 했을 때 20층의 정보를 구해와서 다음 보스의 얼굴을 표시해야한다.
+			if (nextBossMapTableData == null)
+				return "";
+			return nextBossMapTableData.bossPreviewAddress;
 		}
 	}
 

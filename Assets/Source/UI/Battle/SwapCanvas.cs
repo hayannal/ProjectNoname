@@ -25,32 +25,47 @@ public class SwapCanvas : MonoBehaviour
 			RefreshChapterInfo();
 		else
 			RefreshSwapInfo();
+		RefreshGrid();
 	}
 
 	void RefreshChapterInfo()
 	{
-		ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
-		if (chapterTableData == null)
-			return;
+		if (PlayerData.instance.chaosMode)
+		{
+			// 카오스 모드에선 suggest 설명이 의미없으므로 표시하지 않는다.
+		}
+		else
+		{
+			// 챕터 시작에서도 사실 미리 구축해둔 정보로 10층에 나올 보스를 알 수 있지만
+			// 재접시 랜덤으로 바뀔 수 있는 이 정보를 보여주는게 이상한데다가
+			// 챕터 설명인데 10층 정보가 나오는건 정말 안맞기 때문에
+			// 차라리 챕터의 권장 시작 캐릭터를 설정해주는 문구를 표시하는거다.
+			ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
+			if (chapterTableData == null)
+				return;
 
-		string suggestString = GetSuggestString(chapterTableData.descriptionId, chapterTableData.suggestedActorId);
-		//suggestText.SetLocalizedText(suggestString);
+			string suggestString = GetSuggestString(chapterTableData.descriptionId, chapterTableData.suggestedActorId);
+			//suggestText.SetLocalizedText(suggestString);
+		}
+
+		// 챕터 디버프 어펙터는 로비 바로 다음 스테이지에서 뽑아와서 표시해준다.(여기서 넣는거 아니다. 보여주기만 한다.)
+		// 없으면 표시하지 않는다.
+		// 실제로 넣는건 해당 시점에서 하니 여기서는 신경쓰지 않아도 된다.
+		// 카오스에서는 여러개 들어있을 수도 있는데 이땐 아마 설명창에 여러개 중 하나가 되는 식이라고 표시될거다. 통합 스트링 제공.
+		if (StageDataManager.instance.existNextStageInfo)
+		{
+			//StageDataManager.instance.nextStageTableData.affector
+		}
 	}
 
 	void RefreshSwapInfo()
 	{
-		RefreshBossInfo();
-		RefreshGrid();
-	}
-
-	void RefreshBossInfo()
-	{
-		if (StageManager.instance.nextMapTableData == null)
+		if (StageManager.instance.nextBossMapTableData == null)
 			return;
-		if (string.IsNullOrEmpty(StageManager.instance.currentBossPreviewAddress))
+		if (string.IsNullOrEmpty(StageManager.instance.nextBossPreviewAddress))
 			return;
 
-		string suggestString = GetSuggestString(StageManager.instance.nextMapTableData.descriptionId, StageManager.instance.nextMapTableData.suggestedActorId);
+		string suggestString = GetSuggestString(StageManager.instance.nextBossMapTableData.descriptionId, StageManager.instance.nextBossMapTableData.suggestedActorId);
 		//suggestText.SetLocalizedText(suggestString);
 	}
 

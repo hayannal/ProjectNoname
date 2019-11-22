@@ -42,17 +42,19 @@ public class Condition : MonoBehaviour
 		eCompareType compareType = (eCompareType)data.compareType;
 
 		bool useFloatCompare = false;
-		float baseValue = 0.0f;
+		bool useIntCompare = false;
+		float baseValueFloat = 0.0f;
+		int baseValueInt = 0;
 		switch (conditionType)
 		{
 			case eConditionType.AttackerHpRatio:
 				useFloatCompare = true;
-				baseValue = (hitParameter.statusBase._hp / hitParameter.statusBase.valueList[(int)eActorStatus.MaxHp]);
+				baseValueFloat = (hitParameter.statusBase._hp / hitParameter.statusBase.valueList[(int)eActorStatus.MaxHp]);
 				break;
 			case eConditionType.DefenderHpRatio:
 				if (defenderActor == null) return false;
 				useFloatCompare = true;
-				baseValue = defenderActor.actorStatus.GetHPRatio();
+				baseValueFloat = defenderActor.actorStatus.GetHPRatio();
 				break;
 			case eConditionType.AttackerActorState:
 
@@ -71,8 +73,8 @@ public class Condition : MonoBehaviour
 				if (defenderActor == null) return false;
 				ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(defenderActor.actorId);
 				if (actorTableData == null) return false;
-				useFloatCompare = true;
-				baseValue = actorTableData.powerSource;
+				useIntCompare = true;
+				baseValueInt = actorTableData.powerSource;
 				break;
 			case eConditionType.AttackerUltimateSkillGaugeRatio:
 				break;
@@ -83,38 +85,69 @@ public class Condition : MonoBehaviour
 				break;
 		}
 
-		if (!useFloatCompare)
-			return false;
-		float.TryParse(data.value, out float floatValue);
-
-		switch (compareType)
+		if (useFloatCompare)
 		{
-			case eCompareType.Equal:
-				if (baseValue == floatValue)
-					return true;
-				break;
-			case eCompareType.NotEqual:
-				if (baseValue != floatValue)
-					return true;
-				break;
-			case eCompareType.Little:
-				if (baseValue < floatValue)
-					return true;
-				break;
-			case eCompareType.Greater:
-				if (baseValue > floatValue)
-					return true;
-				break;
-			case eCompareType.LittleOrEqual:
-				if (baseValue <= floatValue)
-					return true;
-				break;
-			case eCompareType.GreaterOrEqual:
-				if (baseValue >= floatValue)
-					return true;
-				break;
+			float.TryParse(data.value, out float floatValue);
+			switch (compareType)
+			{
+				case eCompareType.Equal:
+					if (baseValueFloat == floatValue)
+						return true;
+					break;
+				case eCompareType.NotEqual:
+					if (baseValueFloat != floatValue)
+						return true;
+					break;
+				case eCompareType.Little:
+					if (baseValueFloat < floatValue)
+						return true;
+					break;
+				case eCompareType.Greater:
+					if (baseValueFloat > floatValue)
+						return true;
+					break;
+				case eCompareType.LittleOrEqual:
+					if (baseValueFloat <= floatValue)
+						return true;
+					break;
+				case eCompareType.GreaterOrEqual:
+					if (baseValueFloat >= floatValue)
+						return true;
+					break;
+			}
 		}
 
+		if (useIntCompare)
+		{
+			int.TryParse(data.value, out int intValue);
+			switch (compareType)
+			{
+				case eCompareType.Equal:
+					if (baseValueInt == intValue)
+						return true;
+					break;
+				case eCompareType.NotEqual:
+					if (baseValueInt != intValue)
+						return true;
+					break;
+				case eCompareType.Little:
+					if (baseValueInt < intValue)
+						return true;
+					break;
+				case eCompareType.Greater:
+					if (baseValueInt > intValue)
+						return true;
+					break;
+				case eCompareType.LittleOrEqual:
+					if (baseValueInt <= intValue)
+						return true;
+					break;
+				case eCompareType.GreaterOrEqual:
+					if (baseValueInt >= intValue)
+						return true;
+					break;
+			}
+		}
 		return false;
 	}
 }

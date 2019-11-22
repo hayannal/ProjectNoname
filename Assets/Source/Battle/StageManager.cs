@@ -121,18 +121,6 @@ public class StageManager : MonoBehaviour
 		}
 	}
 
-	public string nextBossPreviewAddress
-	{
-		get
-		{
-			// 이제 잔몹 - 보스 형태로 편성이 바뀌면서
-			// 10층을 클리어 했을 때 20층의 정보를 구해와서 다음 보스의 얼굴을 표시해야한다.
-			if (nextBossMapTableData == null)
-				return "";
-			return nextBossMapTableData.bossPreviewAddress;
-		}
-	}
-
 	public float currentMonstrStandardHp { get { return _currentStageTableData.standardHp; } }
 	public float currentMonstrStandardAtk { get { return _currentStageTableData.standardAtk; } }
 	public float currentBossHpPer1Line { get { return _currentStageTableData.standardHp * _currentStageTableData.bossHpRatioPer1Line; } }

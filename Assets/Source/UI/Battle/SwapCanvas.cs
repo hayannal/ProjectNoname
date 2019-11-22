@@ -60,12 +60,11 @@ public class SwapCanvas : MonoBehaviour
 
 	void RefreshSwapInfo()
 	{
-		if (StageManager.instance.nextBossMapTableData == null)
-			return;
-		if (string.IsNullOrEmpty(StageManager.instance.nextBossPreviewAddress))
+		MapTableData nextBossMapTableData = StageManager.instance.nextBossMapTableData;
+		if (nextBossMapTableData == null)
 			return;
 
-		string suggestString = GetSuggestString(StageManager.instance.nextBossMapTableData.descriptionId, StageManager.instance.nextBossMapTableData.suggestedActorId);
+		string suggestString = GetSuggestString(nextBossMapTableData.descriptionId, nextBossMapTableData.suggestedActorId);
 		//suggestText.SetLocalizedText(suggestString);
 	}
 

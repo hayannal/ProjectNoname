@@ -29,8 +29,16 @@ public class StageTableData
   public string[] environmentSetting { get { return _environmentSetting; } set { _environmentSetting = value; } }
   
   [SerializeField]
-  string[] _affectorId = new string[0];
-  public string[] affectorId { get { return _affectorId; } set { _affectorId = value; } }
+  string[] _stagePenaltyId = new string[0];
+  public string[] stagePenaltyId { get { return _stagePenaltyId; } set { _stagePenaltyId = value; } }
+  
+  [SerializeField]
+  string _penaltyRepresentative;
+  public string penaltyRepresentative { get { return _penaltyRepresentative; } set { _penaltyRepresentative = value; } }
+  
+  [SerializeField]
+  string[] _repreParameter = new string[0];
+  public string[] repreParameter { get { return _repreParameter; } set { _repreParameter = value; } }
   
   [SerializeField]
   bool _chaos;

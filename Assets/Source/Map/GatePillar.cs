@@ -167,9 +167,8 @@ public class GatePillar : MonoBehaviour
 			// check lobby energy
 
 			// check lobby suggest
-			// 카오스 여부에 따라서도 나눠야한다.
 			ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
-			if (chapterTableData != null)
+			if (OptionManager.instance.suggestedChapter != StageManager.instance.playChapter && chapterTableData != null)
 			{
 				CharacterData mainCharacterData = PlayerData.instance.GetCharacterData(PlayerData.instance.mainCharacterId);
 				bool showSwapCanvas = false;
@@ -197,8 +196,11 @@ public class GatePillar : MonoBehaviour
 				if (showSwapCanvas)
 				{
 					YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_EnterInfo"), UIString.instance.GetString("GameUI_EnterInfoDesc"), () => {
+						OptionManager.instance.suggestedChapter = StageManager.instance.playChapter;
 						YesNoCanvas.instance.ShowCanvas(false, "", "", null);
 						UIInstanceManager.instance.ShowCanvasAsync("SwapCanvas", null);
+					}, () => {
+						OptionManager.instance.suggestedChapter = StageManager.instance.playChapter;
 					});
 					return false;
 				}

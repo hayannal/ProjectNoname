@@ -20,6 +20,9 @@ public class CharacterData
 
 	public static string GetNameByActorId(string actorId)
 	{
-		return actorId;
+		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(actorId);
+		if (actorTableData == null)
+			return "";
+		return UIString.instance.GetString(actorTableData.nameId);
 	}
 }

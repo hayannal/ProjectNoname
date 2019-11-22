@@ -71,6 +71,7 @@ public class Condition : MonoBehaviour
 				if (defenderActor == null) return false;
 				ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(defenderActor.actorId);
 				if (actorTableData == null) return false;
+				useFloatCompare = true;
 				baseValue = actorTableData.powerSource;
 				break;
 			case eConditionType.AttackerUltimateSkillGaugeRatio:

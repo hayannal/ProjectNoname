@@ -30,6 +30,10 @@ public class SwapCanvas : MonoBehaviour
 
 	void RefreshChapterInfo()
 	{
+		ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
+		if (chapterTableData == null)
+			return;
+
 		if (PlayerData.instance.chaosMode)
 		{
 			// 카오스 모드에선 suggest 설명이 의미없으므로 표시하지 않는다.
@@ -40,10 +44,6 @@ public class SwapCanvas : MonoBehaviour
 			// 재접시 랜덤으로 바뀔 수 있는 이 정보를 보여주는게 이상한데다가
 			// 챕터 설명인데 10층 정보가 나오는건 정말 안맞기 때문에
 			// 차라리 챕터의 권장 시작 캐릭터를 설정해주는 문구를 표시하는거다.
-			ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
-			if (chapterTableData == null)
-				return;
-
 			string suggestString = GetSuggestString(chapterTableData.descriptionId, chapterTableData.suggestedActorId);
 			//suggestText.SetLocalizedText(suggestString);
 		}
@@ -52,10 +52,15 @@ public class SwapCanvas : MonoBehaviour
 		// 없으면 표시하지 않는다.
 		// 실제로 넣는건 해당 시점에서 하니 여기서는 신경쓰지 않아도 된다.
 		// 카오스에서는 여러개 들어있을 수도 있는데 이땐 아마 설명창에 여러개 중 하나가 되는 식이라고 표시될거다. 통합 스트링 제공.
+		// 사실 챕터에 넣을 수 있지만 스테이지에 연결해두는 이유가
+		// 언젠가 나중에 챕터 중간에도 이 디버프를 변경시킬 상황이 올까봐 미리 확장시켜서 여기에 두는 것이다.
 		if (StageDataManager.instance.existNextStageInfo)
 		{
 			//StageDataManager.instance.nextStageTableData.affector
 		}
+
+		// 파워레벨은 항상 표시
+		//chapterTableData.suggestedPowerLevel
 	}
 
 	void RefreshSwapInfo()

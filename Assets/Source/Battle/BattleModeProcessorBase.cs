@@ -35,6 +35,15 @@ public class BattleModeProcessorBase
 	public void OnSpawnFlag()
 	{
 		_damageCountInStage = 0;
+
+		// environmentSetting처럼 있으면 랜덤하게 골라서 적용하고 없을땐 그냥 냅둬서 유지시킨다.
+		if (StageManager.instance.currentStageTableData != null && StageManager.instance.currentStageTableData.stagePenaltyId.Length > 0)
+		{
+			string stagePenaltyId = StageManager.instance.currentStageTableData.stagePenaltyId[Random.Range(0, StageManager.instance.currentStageTableData.stagePenaltyId.Length)];
+			if (BattleInstanceManager.instance.playerActor != null)
+				BattleInstanceManager.instance.playerActor.RefreshStagePenaltyAffector(stagePenaltyId, true);
+		}
+
 		if (StageManager.instance.spawnPowerSourcePrefab)
 			_powerSourceObject = BattleInstanceManager.instance.GetCachedObject(StageManager.instance.GetPreparedPowerSourcePrefab(), StageManager.instance.currentPowerSourceSpawnPosition, Quaternion.identity);
 		else

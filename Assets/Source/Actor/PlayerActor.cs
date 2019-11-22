@@ -100,6 +100,10 @@ public class PlayerActor : Actor
 					healAffectorValue.fValue3 += affectorProcessor.actor.actorStatus.GetValue(eActorStatus.SwapHealRate);
 					affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Heal, healAffectorValue, affectorProcessor.actor, false);
 
+					// 스테이지 디버프
+					if (BattleInstanceManager.instance.playerActor.currentStagePenaltyTableData != null)
+						RefreshStagePenaltyAffector(BattleInstanceManager.instance.playerActor.currentStagePenaltyTableData.stagePenaltyId, false);
+
 					BattleInstanceManager.instance.playerActor.gameObject.SetActive(false);
 				}
 
@@ -146,6 +150,51 @@ public class PlayerActor : Actor
 		OnChangedMainCharacter();
 		BattleInstanceManager.instance.playerActor.cachedTransform.position = position;
 	}
+
+	#region Stage Penalty Affector
+	// 메인캐릭터로 바뀌거나 진입 직전에 한번씩만 호출해주면 알아서 최신 어펙터로 적용한다.
+	List<AffectorBase> _listStagePenaltyAffector = null;
+	public StagePenaltyTableData currentStagePenaltyTableData { get; set; }
+	public void RefreshStagePenaltyAffector(string stagePenaltyId, bool showAlarm)
+	{
+		currentStagePenaltyTableData = null;
+
+		StagePenaltyTableData stagePenaltyTableData = TableDataManager.instance.FindStagePenaltyTableData(stagePenaltyId);
+		if (stagePenaltyTableData == null)
+			return;
+
+		if (_listStagePenaltyAffector == null)
+			_listStagePenaltyAffector = new List<AffectorBase>();
+
+		for (int i = 0; i < _listStagePenaltyAffector.Count; ++i)
+			_listStagePenaltyAffector[i].finalized = true;
+		_listStagePenaltyAffector.Clear();
+
+		HitParameter hitParameter = new HitParameter();
+		hitParameter.statusBase = actorStatus.statusBase;
+		SkillProcessor.CopyEtcStatus(ref hitParameter.statusStructForHitObject, this);
+
+		for (int i = 0; i < stagePenaltyTableData.affectorId.Length; ++i)
+		{
+			AffectorBase newAffector = affectorProcessor.ApplyAffectorValue(stagePenaltyTableData.affectorId[i], hitParameter, true);
+			if (newAffector == null)
+				continue;
+
+			if (AffectorCustomCreator.IsContinuousAffector(newAffector.affectorType))
+				_listStagePenaltyAffector.Add(newAffector);
+			else
+				Debug.LogErrorFormat("Non-continuous affector in a Stage Penalty! / StagePenaltyId = {0} / AffectorValueId = {1}", stagePenaltyId, stagePenaltyTableData.affectorId[i]);
+		}
+
+		currentStagePenaltyTableData = stagePenaltyTableData;
+
+		if (!showAlarm)
+			return;
+
+		string[] penaltyMindParameterList = UIString.instance.ParseParameterString(stagePenaltyTableData.mindParameter);
+		BattleToastCanvas.instance.ShowToast(UIString.instance.GetString(stagePenaltyTableData.penaltyMindText, penaltyMindParameterList), 2.5f);
+	}
+	#endregion
 
 	#region Experience
 	// 아마도 대표캐릭터 셋팅하는 UI로 옮겨야할거 같다.

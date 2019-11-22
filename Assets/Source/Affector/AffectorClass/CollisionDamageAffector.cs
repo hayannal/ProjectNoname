@@ -28,6 +28,10 @@ public class CollisionDamageAffector : AffectorBase
 		if (reduceDamageValue != 0.0f)
 			damage *= (1.0f - (reduceDamageValue / (1.0f + reduceDamageValue)));
 
+		float enlargeDamageValue = EnlargeDamageAffector.GetValue(_affectorProcessor);
+		if (enlargeDamageValue != 0.0f)
+			damage *= (1.0f + enlargeDamageValue);
+
 		_actor.actorStatus.AddHP(-damage);
 		ChangeActorStatusAffector.OnDamage(_affectorProcessor);
 		CallAffectorValueAffector.OnEvent(_affectorProcessor, CallAffectorValueAffector.eEventType.OnDamage, damage);

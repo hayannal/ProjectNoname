@@ -28,6 +28,7 @@ public enum eAffectorType
 	ImmortalWill,
 
 	CreateHitObject,
+	EnlargeDamage,
 
 	MonsterThroughHitObject = 31,
 	RicochetHitObject,

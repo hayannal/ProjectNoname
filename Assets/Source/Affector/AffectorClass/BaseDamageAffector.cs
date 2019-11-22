@@ -171,6 +171,10 @@ public class BaseDamageAffector : AffectorBase {
 				if (reduceDamageValue != 0.0f)
 					damage *= (1.0f - (reduceDamageValue / (1.0f + reduceDamageValue)));
 			}
+
+			float enlargeDamageValue = EnlargeDamageAffector.GetValue(_affectorProcessor);
+			if (enlargeDamageValue != 0.0f)
+				damage *= (1.0f + enlargeDamageValue);
 		}
 
 		if (_actor is PlayerActor)

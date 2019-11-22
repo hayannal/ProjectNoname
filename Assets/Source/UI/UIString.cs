@@ -92,7 +92,7 @@ public class UIString : MonoBehaviour
 				continue;
 			if (parameterList[i].Length == 0)
 				continue;
-			if (parameterList[i][0] == '{' && parameterList[i][parameterList.Length - 1] == '}')
+			if (parameterList[i][0] == '{' && parameterList[i][parameterList[i].Length - 1] == '}')
 			{
 				find = true;
 				break;
@@ -107,9 +107,9 @@ public class UIString : MonoBehaviour
 				continue;
 			if (parameterList[i].Length == 0)
 				continue;
-			if (parameterList[i][0] == '{' && parameterList[i][parameterList.Length - 1] == '}')
+			if (parameterList[i][0] == '{' && parameterList[i][parameterList[i].Length - 1] == '}')
 			{
-				resultList[i] = parameterList[i].Substring(1, parameterList.Length - 2);
+				resultList[i] = parameterList[i].Substring(1, parameterList[i].Length - 2);
 				resultList[i] = GetString(resultList[i]);
 			}
 			else

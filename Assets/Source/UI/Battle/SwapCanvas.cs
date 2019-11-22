@@ -56,7 +56,19 @@ public class SwapCanvas : MonoBehaviour
 		// 언젠가 나중에 챕터 중간에도 이 디버프를 변경시킬 상황이 올까봐 미리 확장시켜서 여기에 두는 것이다.
 		if (StageDataManager.instance.existNextStageInfo)
 		{
-			//StageDataManager.instance.nextStageTableData.affector
+			string penaltyString = "";
+			if (!string.IsNullOrEmpty(StageDataManager.instance.nextStageTableData.penaltyRepresentative))
+			{
+				string[] penaltyParameterList = UIString.instance.ParseParameterString(StageDataManager.instance.nextStageTableData.repreParameter);
+				penaltyString = UIString.instance.GetString(StageDataManager.instance.nextStageTableData.penaltyRepresentative, penaltyParameterList);
+			}
+			else
+			{
+				if (StageDataManager.instance.nextStageTableData.stagePenaltyId.Length == 1)
+				{
+					// 패널티가 하나만 있을땐 직접 구해와서
+				}
+			}
 		}
 
 		// 파워레벨은 항상 표시

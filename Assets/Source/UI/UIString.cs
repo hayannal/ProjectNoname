@@ -83,6 +83,42 @@ public class UIString : MonoBehaviour
 		return string.Format(value, arg);
 	}
 
+	public string[] ParseParameterString(string[] parameterList)
+	{
+		bool find = false;
+		for (int i = 0; i < parameterList.Length; ++i)
+		{
+			if (parameterList[i] == null)
+				continue;
+			if (parameterList[i].Length == 0)
+				continue;
+			if (parameterList[i][0] == '{' && parameterList[i][parameterList.Length - 1] == '}')
+			{
+				find = true;
+				break;
+			}
+		}
+		if (!find)
+			return parameterList;
+		string[] resultList = new string[parameterList.Length];
+		for (int i = 0; i < parameterList.Length; ++i)
+		{
+			if (parameterList[i] == null)
+				continue;
+			if (parameterList[i].Length == 0)
+				continue;
+			if (parameterList[i][0] == '{' && parameterList[i][parameterList.Length - 1] == '}')
+			{
+				resultList[i] = parameterList[i].Substring(1, parameterList.Length - 2);
+				resultList[i] = GetString(resultList[i]);
+			}
+			else
+			{
+				resultList[i] = parameterList[i];
+			}
+		}
+		return resultList;
+	}
 
 	InApkStringTableData FindInApkStringTableData(string id)
 	{

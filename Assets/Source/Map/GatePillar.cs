@@ -196,7 +196,7 @@ public class GatePillar : MonoBehaviour
 					showSwapCanvas = true;
 				if (showSwapCanvas)
 				{
-					YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_ChangeActor"), UIString.instance.GetString("GameUI_ChapterSuggestDescription"), () => {
+					YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_EnterInfo"), UIString.instance.GetString("GameUI_EnterInfoDesc"), () => {
 						YesNoCanvas.instance.ShowCanvas(false, "", "", null);
 						UIInstanceManager.instance.ShowCanvasAsync("SwapCanvas", null);
 					});

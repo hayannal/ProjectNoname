@@ -16,6 +16,7 @@ public class TableDataManager : MonoBehaviour
 	public MapTable mapTable;
 	public ChapterTable chapterTable;
 	public MapSetTable mapSetTable;
+	public StagePenaltyTable stagePenaltyTable;
 	public MonsterTable monsterTable;
 	public ActorTable actorTable;
 	public PowerLevelTable powerLevelTable;
@@ -125,6 +126,16 @@ public class TableDataManager : MonoBehaviour
 		{
 			if (mapSetTable.dataArray[i].mapSetId == mapSetId)
 				return mapSetTable.dataArray[i];
+		}
+		return null;
+	}
+
+	public StagePenaltyTableData FindStagePenaltyTableData(string stagePenaltyId)
+	{
+		for (int i = 0; i < stagePenaltyTable.dataArray.Length; ++i)
+		{
+			if (stagePenaltyTable.dataArray[i].stagePenaltyId == stagePenaltyId)
+				return stagePenaltyTable.dataArray[i];
 		}
 		return null;
 	}

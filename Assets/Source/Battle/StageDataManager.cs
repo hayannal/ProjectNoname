@@ -56,6 +56,13 @@ public class StageDataManager : MonoBehaviour
 		return "";
 	}
 
+	public string GetCachedMap(int stage)
+	{
+		if (_dicCachedMap.ContainsKey(stage))
+			return _dicCachedMap[stage];
+		return "";
+	}
+
 	Dictionary<int, List<string>> _dicStageInfoByGrouping = new Dictionary<int, List<string>>();
 	Dictionary<int, int> _dicCurrentIndexByGrouping = new Dictionary<int, int>();
 	string CalcNormalNextMap(StageTableData stageTableData, int chapter, int nextStage, int highestPlayChapter, int highestClearStage)

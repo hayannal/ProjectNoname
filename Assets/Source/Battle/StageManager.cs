@@ -56,7 +56,7 @@ public class StageManager : MonoBehaviour
 
 		if (StageDataManager.instance.existNextStageInfo)
 		{
-			nextMapTableData = TableDataManager.instance.FindMapTableData(StageDataManager.instance.reservedNextMap);
+			nextMapTableData = BattleInstanceManager.instance.GetCachedMapTableData(StageDataManager.instance.reservedNextMap);
 			if (nextMapTableData != null)
 				PrepareNextMap(nextMapTableData, StageDataManager.instance.nextStageTableData.environmentSetting);
 		}
@@ -104,7 +104,19 @@ public class StageManager : MonoBehaviour
 	{
 		get
 		{
-
+			int maxStage = TableDataManager.instance.FindChapterTableData(playChapter).maxStage;
+			for (int i = playStage + 1; i <= maxStage; ++i)
+			{
+				string reservedMap = StageDataManager.instance.GetCachedMap(i);
+				if (reservedMap == "")
+					continue;
+				MapTableData mapTableData = BattleInstanceManager.instance.GetCachedMapTableData(reservedMap);
+				if (mapTableData == null)
+					continue;
+				if (string.IsNullOrEmpty(mapTableData.bossPreviewAddress))
+					continue;
+				return mapTableData;
+			}
 			return null;
 		}
 	}
@@ -144,7 +156,7 @@ public class StageManager : MonoBehaviour
 
 		//StageTestCanvas.instance.RefreshCurrentMapText(playChapter, playStage, currentMap);
 
-		MapTableData mapTableData = TableDataManager.instance.FindMapTableData(currentMap);
+		MapTableData mapTableData = BattleInstanceManager.instance.GetCachedMapTableData(currentMap);
 		if (mapTableData != null)
 		{
 			if (BattleManager.instance != null)

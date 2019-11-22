@@ -810,6 +810,17 @@ public class BattleInstanceManager : MonoBehaviour
 		_dicStageTableData.Add(key, stageTableData);
 		return stageTableData;
 	}
+
+	Dictionary<string, MapTableData> _dicMapTableData = new Dictionary<string, MapTableData>();
+	public MapTableData GetCachedMapTableData(string mapId)
+	{
+		if (_dicMapTableData.ContainsKey(mapId))
+			return _dicMapTableData[mapId];
+
+		MapTableData mapTableData = TableDataManager.instance.FindMapTableData(mapId);
+		_dicMapTableData.Add(mapId, mapTableData);
+		return mapTableData;
+	}
 	#endregion
 
 	#region CommonPoolPreloadObjectList

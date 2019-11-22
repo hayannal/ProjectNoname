@@ -105,6 +105,7 @@ public class BattleTestTool : EditorWindow
 
 	int playChapter = 1;
 	int playStage = 1;
+	bool chaosMode = false;
 	void OnGUI_Stage()
 	{
 		GUILayout.BeginVertical("box");
@@ -117,6 +118,7 @@ public class BattleTestTool : EditorWindow
 
 			playChapter = EditorGUILayout.IntField("Chapter :", playChapter);
 			playStage = EditorGUILayout.IntField("Stage :", playStage);
+			chaosMode = EditorGUILayout.Toggle("Chaos Mode :", chaosMode);
 
 			GUILayout.BeginHorizontal();
 			{
@@ -124,11 +126,13 @@ public class BattleTestTool : EditorWindow
 				{
 					playChapter = StageManager.instance.playChapter;
 					playStage = StageManager.instance.playStage;
+					chaosMode = PlayerData.instance.chaosMode;
 				}
 				if (GUILayout.Button("Set Next Stage"))
 				{
 					StageManager.instance.playChapter = playChapter;
 					StageManager.instance.playStage = playStage - 1;
+					PlayerData.instance.chaosMode = chaosMode;
 					StageManager.instance.GetNextStageInfo();
 				}
 			}

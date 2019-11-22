@@ -37,6 +37,10 @@ public class MapTableData
   public string bossPreviewAddress { get { return _bossPreviewAddress; } set { _bossPreviewAddress = value; } }
   
   [SerializeField]
+  string _nameId;
+  public string nameId { get { return _nameId; } set { _nameId = value; } }
+  
+  [SerializeField]
   string _descriptionId;
   public string descriptionId { get { return _descriptionId; } set { _descriptionId = value; } }
   

@@ -13,6 +13,14 @@ public class ActorTableData
   public string actorId { get { return _actorId; } set { _actorId = value; } }
   
   [SerializeField]
+  string _nameId;
+  public string nameId { get { return _nameId; } set { _nameId = value; } }
+  
+  [SerializeField]
+  string _descId;
+  public string descId { get { return _descId; } set { _descId = value; } }
+  
+  [SerializeField]
   int _grade;
   public int grade { get { return _grade; } set { _grade = value; } }
   

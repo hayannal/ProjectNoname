@@ -25,8 +25,16 @@ public class StageTableData
   public float standardAtk { get { return _standardAtk; } set { _standardAtk = value; } }
   
   [SerializeField]
-  string _environmentSetting;
-  public string environmentSetting { get { return _environmentSetting; } set { _environmentSetting = value; } }
+  string[] _environmentSetting = new string[0];
+  public string[] environmentSetting { get { return _environmentSetting; } set { _environmentSetting = value; } }
+  
+  [SerializeField]
+  string[] _affectorId = new string[0];
+  public string[] affectorId { get { return _affectorId; } set { _affectorId = value; } }
+  
+  [SerializeField]
+  bool _chaos;
+  public bool chaos { get { return _chaos; } set { _chaos = value; } }
   
   [SerializeField]
   string _overridingMap;
@@ -47,6 +55,18 @@ public class StageTableData
   [SerializeField]
   string[] _addRandomMap = new string[0];
   public string[] addRandomMap { get { return _addRandomMap; } set { _addRandomMap = value; } }
+  
+  [SerializeField]
+  string[] _mapSetId = new string[0];
+  public string[] mapSetId { get { return _mapSetId; } set { _mapSetId = value; } }
+  
+  [SerializeField]
+  int _stageCount;
+  public int stageCount { get { return _stageCount; } set { _stageCount = value; } }
+  
+  [SerializeField]
+  int _stageType;
+  public int stageType { get { return _stageType; } set { _stageType = value; } }
   
   [SerializeField]
   string _defaultNormalDropId;

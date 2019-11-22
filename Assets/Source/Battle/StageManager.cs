@@ -163,7 +163,7 @@ public class StageManager : MonoBehaviour
 	AsyncOperationGameObjectResult _handleNextSpawnFlagPrefab;
 	AsyncOperationGameObjectResult _handleNextPortalFlagPrefab;
 	AsyncOperationGameObjectResult _handleEnvironmentSettingPrefab;
-	void PrepareNextMap(MapTableData mapTableData, string environmentSetting)
+	void PrepareNextMap(MapTableData mapTableData, string[] environmentSettingList)
 	{
 		_handleNextPlanePrefab = AddressableAssetLoadManager.GetAddressableGameObject(mapTableData.plane, "Map");
 		_handleNextGroundPrefab = AddressableAssetLoadManager.GetAddressableGameObject(mapTableData.ground, "Map");
@@ -171,7 +171,14 @@ public class StageManager : MonoBehaviour
 		_handleNextSpawnFlagPrefab = AddressableAssetLoadManager.GetAddressableGameObject(mapTableData.spawnFlag, "Map");	// Spawn
 		_handleNextPortalFlagPrefab = AddressableAssetLoadManager.GetAddressableGameObject(mapTableData.portalFlag, "Map");
 
-		_handleEnvironmentSettingPrefab = AddressableAssetLoadManager.GetAddressableGameObject(environmentSetting, "EnvironmentSetting");
+		// 환경은 위의 맵 정보와 달리 들어오면 설정하고 아니면 패스하는 형태다. 그래서 없을땐 null로 한다.
+		if (environmentSettingList.Length == 0)
+			_handleEnvironmentSettingPrefab = null;
+		else
+		{
+			string environmentSetting = environmentSettingList[Random.Range(0, environmentSettingList.Length)];
+			_handleEnvironmentSettingPrefab = AddressableAssetLoadManager.GetAddressableGameObject(environmentSetting, "EnvironmentSetting");
+		}
 	}
 
 	string _lastPlayerActorId = "";
@@ -198,7 +205,7 @@ public class StageManager : MonoBehaviour
 
 	public bool IsDoneLoadAsyncNextStage()
 	{
-		if (_handleEnvironmentSettingPrefab == null || _handleEnvironmentSettingPrefab.IsDone == false)
+		if (_handleEnvironmentSettingPrefab != null && _handleEnvironmentSettingPrefab.IsDone == false)
 			return false;
 		if (_handlePowerSourcePrefab == null || _handlePowerSourcePrefab.IsDone == false)
 			return false;
@@ -236,9 +243,13 @@ public class StageManager : MonoBehaviour
 			_currentPortalFlagObject.SetActive(false);
 		_currentPortalFlagObject = BattleInstanceManager.instance.GetCachedObject(_handleNextPortalFlagPrefab.Result, Vector3.zero, Quaternion.identity);
 
-		if (_currentEnvironmentSettingObject != null)
-			_currentEnvironmentSettingObject.SetActive(false);
-		_currentEnvironmentSettingObject = BattleInstanceManager.instance.GetCachedObject(_handleEnvironmentSettingPrefab.Result, null);
+		// 위의 맵 정보와 달리 테이블에 값이 있을때만 변경하는거라 이렇게 처리한다.
+		if (_handleEnvironmentSettingPrefab != null)
+		{
+			if (_currentEnvironmentSettingObject != null)
+				_currentEnvironmentSettingObject.SetActive(false);
+			_currentEnvironmentSettingObject = BattleInstanceManager.instance.GetCachedObject(_handleEnvironmentSettingPrefab.Result, null);
+		}
 #else
 		for (int i = 0; i < planePrefabList.Length; ++i)
 		{

@@ -13,6 +13,7 @@ public class Condition : MonoBehaviour
 		DefenderActorState,
 		AttackerAffectorValueId,
 		DefenderAffectorValueId,
+		DefenderPowerSource,
 		AttackerUltimateSkillGaugeRatio,
 		AttackerUniqueGaugeRatio,
 		DistanceOnFire,
@@ -65,6 +66,12 @@ public class Condition : MonoBehaviour
 			case eConditionType.DefenderAffectorValueId:
 				if (defenderAffectorProcessor.IsContinuousAffectorValueId(data.value))
 					return true;
+				break;
+			case eConditionType.DefenderPowerSource:
+				if (defenderActor == null) return false;
+				ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(defenderActor.actorId);
+				if (actorTableData == null) return false;
+				baseValue = actorTableData.powerSource;
 				break;
 			case eConditionType.AttackerUltimateSkillGaugeRatio:
 				break;

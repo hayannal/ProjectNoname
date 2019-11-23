@@ -22,6 +22,7 @@ public class CachedItemHave<T> where T : MonoBehaviour
 		}
 
 		GameObject newObject = Object.Instantiate(cachedObjectPrefab, parentTransform);
+		newObject.SetActive(true);
 #if UNITY_EDITOR
 		AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
 		if (settings.ActivePlayModeDataBuilderIndex == 2)

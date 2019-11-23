@@ -56,13 +56,13 @@ public class LobbyCanvas : MonoBehaviour
 
 		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby)
 		{
-			YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_ExitGame"), UIString.instance.GetString("GameUI_ExitGameDescription"), () => {
+			FullscreenYesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_ExitGame"), UIString.instance.GetString("GameUI_ExitGameDescription"), () => {
 				Application.Quit();
 			});
 		}
 		else
 		{
-			YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_BackToLobby"), UIString.instance.GetString("GameUI_BackToLobbyDescription"), () => {
+			FullscreenYesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_BackToLobby"), UIString.instance.GetString("GameUI_BackToLobbyDescription"), () => {
 				SceneManager.LoadScene(0);
 			});
 		}

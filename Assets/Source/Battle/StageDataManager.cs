@@ -24,7 +24,12 @@ public class StageDataManager : MonoBehaviour
 		nextStageTableData = null;
 		StageTableData stageTableData = BattleInstanceManager.instance.GetCachedStageTableData(chapter, nextStage, PlayerData.instance.chaosMode);
 		if (stageTableData == null)
+		{
+#if UNITY_EDITOR
+			Debug.LogErrorFormat("Not found StageTableData. chapter = {0} / stage = {1} / chaos = {2}", chapter, nextStage, PlayerData.instance.chaosMode);
+#endif
 			return false;
+		}
 		nextStageTableData = stageTableData;
 		reservedNextMap = CalcNextMap(stageTableData, chapter, nextStage, highestPlayChapter, highestClearStage);
 		return true;

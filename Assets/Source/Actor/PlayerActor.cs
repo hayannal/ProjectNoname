@@ -75,15 +75,16 @@ public class PlayerActor : Actor
 	{
 		BattleInstanceManager.instance.OnInitializePlayerActor(this);
 
-		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby == false)
+		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
+
+		// 메인 캐릭터를 스왑할땐 항상 standbySwapPlayerActor 플래그가 켜있으니 이거로 구분하면 된다.
+		// 이땐 Hp비율부터 레벨팩 등을 이전받아야한다.
+		// 로비라면 할 필요 없으니 그냥 이전 캐릭터를 끄기만 하고 넘어간다.
+		if (BattleInstanceManager.instance.standbySwapPlayerActor)
 		{
-			// 전투 진입 후 교체하는 거라면 분명 스왑상태에서 캐릭터를 전환한 것이다.
-			// 이땐 Hp비율부터 레벨팩 등을 이전받아야한다.
-			// 그런데 여기서 그냥 다 자동으로 처리하니 씬에다가 두 캐릭터 빼고싶어도 볼 수가 없다.
-			// 그래서 Swap플래그 하나 걸어놓고 처리하기로 한다.
-			if (BattleInstanceManager.instance.standbySwapPlayerActor)
+			if (BattleInstanceManager.instance.playerActor != null)
 			{
-				if (BattleInstanceManager.instance.playerActor != null)
+				if (lobby == false)
 				{
 					// 레벨팩 이전
 					LevelPackDataManager.instance.TransferLevelPackList(BattleInstanceManager.instance.playerActor, this);
@@ -103,20 +104,20 @@ public class PlayerActor : Actor
 					// 스테이지 디버프
 					if (BattleInstanceManager.instance.playerActor.currentStagePenaltyTableData != null)
 						RefreshStagePenaltyAffector(BattleInstanceManager.instance.playerActor.currentStagePenaltyTableData.stagePenaltyId, false);
-
-					BattleInstanceManager.instance.playerActor.gameObject.SetActive(false);
 				}
 
-				// 이전받고 나서야 메인캐릭터로 교체.
-				OnChangedMainCharacter();
-
-				BattleInstanceManager.instance.standbySwapPlayerActor = false;
+				BattleInstanceManager.instance.playerActor.gameObject.SetActive(false);
 			}
+
+			// 이전받고 나서야 메인캐릭터로 교체.
+			OnChangedMainCharacter();
+
+			BattleInstanceManager.instance.standbySwapPlayerActor = false;
 		}
 		else
 		{
-			// 로비에선 처음 만들어지는 PlayerActor는 바로 등록하고 그 이후엔 교체할때만 등록하도록 한다.
-			// 이래야 다른 캐릭터들 생성해서 캐릭터창 가더라도 메인 캐릭터를 유지할 수 있다.
+			// 처음 만들어지는 PlayerActor는 바로 등록하고 그게 아니라면 로비에서 다른 캐릭터 보여주려는 경우일거다.
+			// 이 경우가 아닌데 캐릭이 추가로 등장하는거라면 씬에다 캐릭터 끌어서 추가했을 경우 일거다. 이럴땐 Change하지 않는다.
 			if (BattleInstanceManager.instance.playerActor == null)
 				OnChangedMainCharacter();
 		}

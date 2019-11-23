@@ -66,7 +66,13 @@ public class SwapCanvas : MonoBehaviour
 			{
 				if (StageDataManager.instance.nextStageTableData.stagePenaltyId.Length == 1)
 				{
-					// 패널티가 하나만 있을땐 직접 구해와서
+					// 패널티가 하나만 있을땐 직접 구해와서 표시해준다.
+					StagePenaltyTableData stagePenaltyTableData = TableDataManager.instance.FindStagePenaltyTableData(StageDataManager.instance.nextStageTableData.stagePenaltyId[0]);
+					if (stagePenaltyTableData != null)
+					{
+						string[] nameParameterList = UIString.instance.ParseParameterString(stagePenaltyTableData.nameParameter);
+						penaltyString = UIString.instance.GetString(stagePenaltyTableData.penaltyName, nameParameterList);
+					}
 				}
 			}
 		}

@@ -23,6 +23,9 @@ public class SkillSlotCanvas : MonoBehaviour
 	public Transform ultimateSkillSlotTransform;
 	public Sprite[] powerSourceIconSpriteList;
 
+	public class CustomItemContainer : CachedItemHave<SkillSlotIcon>
+	{
+	}
 	CustomItemContainer _container = new CustomItemContainer();
 
 	SkillSlotIcon _ultimateSkillSlotIcon;
@@ -51,8 +54,4 @@ public class SkillSlotCanvas : MonoBehaviour
 		if (_ultimateSkillSlotIcon != null)
 			_ultimateSkillSlotIcon.OnChangedSP(playerActor);
 	}
-}
-
-public class CustomItemContainer : CachedItemHave<SkillSlotIcon>
-{
 }

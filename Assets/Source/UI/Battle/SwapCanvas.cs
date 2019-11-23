@@ -23,9 +23,22 @@ public class SwapCanvas : MonoBehaviour
 	public Text stagePenaltyText;
 	public Text selectResultText;
 
+	public GameObject contentItemPrefab;
+	public Transform contentRootTransform;
+
+	public class CustomItemContainer : CachedItemHave<SwapCanvasListItem>
+	{
+	}
+	CustomItemContainer _container = new CustomItemContainer();
+
 	void Awake()
 	{
 		instance = this;
+	}
+
+	void Start()
+	{
+		contentItemPrefab.SetActive(false);
 	}
 
 	void OnEnable()
@@ -118,9 +131,27 @@ public class SwapCanvas : MonoBehaviour
 		suggestPowerLevelText.SetLocalizedText(UIString.instance.GetString("GameUI_SuggestedPowerLevel", chapterTableData.suggestedPowerLevel));
 	}
 
+	List<SwapCanvasListItem> _listSwapCanvasListItem = new List<SwapCanvasListItem>();
 	void RefreshGrid()
 	{
+		for (int i = 0; i < _listSwapCanvasListItem.Count; ++i)
+			_listSwapCanvasListItem[i].gameObject.SetActive(false);
+		_listSwapCanvasListItem.Clear();
 
+		List<CharacterData> listCharacterData = PlayerData.instance.listCharacterData;
+		for (int i = 0; i < listCharacterData.Count; ++i)
+		{
+			SwapCanvasListItem swapCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootTransform);
+			swapCanvasListItem.Initialize(listCharacterData[i]);
+			_listSwapCanvasListItem.Add(swapCanvasListItem);
+		}
+
+		// 자동 선택 기능 추가해야한다.
+	}
+
+	public void OnClickListItem(string actorId)
+	{
+		_selectedActorId = actorId;
 	}
 
 	public void OnClickChapterInfoButton()
@@ -156,22 +187,24 @@ public class SwapCanvas : MonoBehaviour
 
 
 
+	string _selectedActorId = "Actor002";	// temp code
 	float _buttonClickTime;
 	public void OnClickYesButton()
 	{
+		if (string.IsNullOrEmpty(_selectedActorId))
+			return;
+
 		_buttonClickTime = Time.time;
 		DelayedLoadingCanvas.instance.gameObject.SetActive(true);
 
-		string changeActorId = "Actor001";
-
 		// 이미 만들었던 플레이어 캐릭터라면 다시 만들필요 없으니 가져다쓰고 없으면 어드레스 로딩을 시작해야한다.
-		PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(changeActorId);
+		PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(_selectedActorId);
 		if (playerActor != null)
 		{
 			SwapCharacter(playerActor);
 			return;
 		}
-		AddressableAssetLoadManager.GetAddressableGameObject(CharacterData.GetAddressByActorId(changeActorId), "", OnLoadedPlayerActor);
+		AddressableAssetLoadManager.GetAddressableGameObject(CharacterData.GetAddressByActorId(_selectedActorId), "", OnLoadedPlayerActor);
 	}
 
 	void OnLoadedPlayerActor(GameObject prefab)

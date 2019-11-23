@@ -13,8 +13,8 @@ public class StagePenaltyTableData
   public string stagePenaltyId { get { return _stagePenaltyId; } set { _stagePenaltyId = value; } }
   
   [SerializeField]
-  string[] _affectorId = new string[0];
-  public string[] affectorId { get { return _affectorId; } set { _affectorId = value; } }
+  string[] _affectorValueId = new string[0];
+  public string[] affectorValueId { get { return _affectorValueId; } set { _affectorValueId = value; } }
   
   [SerializeField]
   string _penaltyName;

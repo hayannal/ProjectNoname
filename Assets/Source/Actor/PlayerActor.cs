@@ -174,16 +174,16 @@ public class PlayerActor : Actor
 		hitParameter.statusBase = actorStatus.statusBase;
 		SkillProcessor.CopyEtcStatus(ref hitParameter.statusStructForHitObject, this);
 
-		for (int i = 0; i < stagePenaltyTableData.affectorId.Length; ++i)
+		for (int i = 0; i < stagePenaltyTableData.affectorValueId.Length; ++i)
 		{
-			AffectorBase newAffector = affectorProcessor.ApplyAffectorValue(stagePenaltyTableData.affectorId[i], hitParameter, true);
+			AffectorBase newAffector = affectorProcessor.ApplyAffectorValue(stagePenaltyTableData.affectorValueId[i], hitParameter, true);
 			if (newAffector == null)
 				continue;
 
 			if (AffectorCustomCreator.IsContinuousAffector(newAffector.affectorType))
 				_listStagePenaltyAffector.Add(newAffector);
 			else
-				Debug.LogErrorFormat("Non-continuous affector in a Stage Penalty! / StagePenaltyId = {0} / AffectorValueId = {1}", stagePenaltyId, stagePenaltyTableData.affectorId[i]);
+				Debug.LogErrorFormat("Non-continuous affector in a Stage Penalty! / StagePenaltyId = {0} / AffectorValueId = {1}", stagePenaltyId, stagePenaltyTableData.affectorValueId[i]);
 		}
 
 		currentStagePenaltyTableData = stagePenaltyTableData;

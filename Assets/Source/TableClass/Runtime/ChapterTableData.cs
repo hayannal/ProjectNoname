@@ -21,6 +21,10 @@ public class ChapterTableData
   public int suggestedPowerLevel { get { return _suggestedPowerLevel; } set { _suggestedPowerLevel = value; } }
   
   [SerializeField]
+  int _ignoreSuggestionPowerLevel;
+  public int ignoreSuggestionPowerLevel { get { return _ignoreSuggestionPowerLevel; } set { _ignoreSuggestionPowerLevel = value; } }
+  
+  [SerializeField]
   string _nameId;
   public string nameId { get { return _nameId; } set { _nameId = value; } }
   

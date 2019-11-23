@@ -193,6 +193,8 @@ public class GatePillar : MonoBehaviour
 				}
 				if (!find)
 					showSwapCanvas = true;
+				if (showSwapCanvas && mainCharacterData.powerLevel >= chapterTableData.ignoreSuggestionPowerLevel)
+					showSwapCanvas = false;
 				if (showSwapCanvas)
 				{
 					YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_EnterInfo"), UIString.instance.GetString("GameUI_EnterInfoDesc"), () => {

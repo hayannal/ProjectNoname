@@ -12,7 +12,16 @@ public class SwapCanvas : MonoBehaviour
 {
 	public static SwapCanvas instance;
 
-	public Text suggestText;
+	public GameObject chapterRootObject;
+	public GameObject swapRootObject;
+	public Text chapterRomanNumberText;
+	public Text chapterNameText;
+	public Text suggestPowerLevelText;
+	public Button chapterInfoButton;
+	public Image bossImage;
+	public Text bossNameText;
+	public Text stagePenaltyText;
+	public Text selectResultText;
 
 	void Awake()
 	{
@@ -30,22 +39,23 @@ public class SwapCanvas : MonoBehaviour
 
 	void RefreshChapterInfo()
 	{
+		chapterRootObject.SetActive(true);
+		swapRootObject.SetActive(false);
+
 		ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
 		if (chapterTableData == null)
 			return;
 
+		chapterRomanNumberText.SetLocalizedText(GetChapterRomanNumberString(StageManager.instance.playChapter));
 		if (PlayerData.instance.chaosMode)
 		{
-			// 카오스 모드에선 suggest 설명이 의미없으므로 표시하지 않는다.
+			chapterNameText.SetLocalizedText(UIString.instance.GetString("GameUI_ChaosMode"));
+			chapterInfoButton.gameObject.SetActive(false);
 		}
 		else
 		{
-			// 챕터 시작에서도 사실 미리 구축해둔 정보로 10층에 나올 보스를 알 수 있지만
-			// 재접시 랜덤으로 바뀔 수 있는 이 정보를 보여주는게 이상한데다가
-			// 챕터 설명인데 10층 정보가 나오는건 정말 안맞기 때문에
-			// 차라리 챕터의 권장 시작 캐릭터를 설정해주는 문구를 표시하는거다.
-			string suggestString = GetSuggestString(chapterTableData.descriptionId, chapterTableData.suggestedActorId);
-			//suggestText.SetLocalizedText(suggestString);
+			chapterNameText.SetLocalizedText(UIString.instance.GetString(chapterTableData.nameId));
+			chapterInfoButton.gameObject.SetActive(true);
 		}
 
 		// 챕터 디버프 어펙터는 로비 바로 다음 스테이지에서 뽑아와서 표시해준다.(여기서 넣는거 아니다. 보여주기만 한다.)
@@ -75,13 +85,59 @@ public class SwapCanvas : MonoBehaviour
 					}
 				}
 			}
+			if (string.IsNullOrEmpty(penaltyString) == false)
+				stagePenaltyText.SetLocalizedText(penaltyString);
 		}
 
 		// 파워레벨은 항상 표시
-		//chapterTableData.suggestedPowerLevel
+		suggestPowerLevelText.SetLocalizedText(UIString.instance.GetString("GameUI_SuggestedPowerLevel", chapterTableData.suggestedPowerLevel));
+	}
+
+	public static string GetChapterRomanNumberString(int chapter)
+	{
+		string romanNumberString = UIString.instance.GetString(string.Format("GameUI_RomanNumber{0}", chapter));
+		return UIString.instance.GetString("GameUI_Chapter", romanNumberString);
 	}
 
 	void RefreshSwapInfo()
+	{
+		chapterRootObject.SetActive(false);
+		swapRootObject.SetActive(true);
+
+		ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
+		if (chapterTableData == null)
+			return;
+
+		MapTableData nextBossMapTableData = StageManager.instance.nextBossMapTableData;
+		if (nextBossMapTableData == null)
+			return;
+
+		bossNameText.SetLocalizedText(UIString.instance.GetString(nextBossMapTableData.nameId));
+
+		// 파워레벨은 항상 표시
+		suggestPowerLevelText.SetLocalizedText(UIString.instance.GetString("GameUI_SuggestedPowerLevel", chapterTableData.suggestedPowerLevel));
+	}
+
+	void RefreshGrid()
+	{
+
+	}
+
+	public void OnClickChapterInfoButton()
+	{
+		ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
+		if (chapterTableData == null)
+			return;
+
+		// 챕터 시작에서도 사실 미리 구축해둔 정보로 10층에 나올 보스를 알 수 있지만
+		// 재접시 랜덤으로 바뀔 수 있는 이 정보를 보여주는게 이상한데다가
+		// 챕터 설명인데 10층 정보가 나오는건 정말 안맞기 때문에
+		// 차라리 챕터의 권장 시작 캐릭터를 설정해주는 문구를 표시하는거다.
+		string suggestString = GetSuggestString(chapterTableData.descriptionId, chapterTableData.suggestedActorId);
+		//suggestText.SetLocalizedText(suggestString);
+	}
+
+	public void OnClickBossInfoButton()
 	{
 		MapTableData nextBossMapTableData = StageManager.instance.nextBossMapTableData;
 		if (nextBossMapTableData == null)
@@ -91,10 +147,14 @@ public class SwapCanvas : MonoBehaviour
 		//suggestText.SetLocalizedText(suggestString);
 	}
 
-	void RefreshGrid()
-	{
 
-	}
+
+
+
+
+
+
+
 
 	float _buttonClickTime;
 	public void OnClickYesButton()

@@ -50,6 +50,7 @@ public class PlayerData : MonoBehaviour
 
 	#region Character List
 	List<CharacterData> _listCharacterData = new List<CharacterData>();
+	public List<CharacterData> listCharacterData { get { return _listCharacterData; } }
 
 	public void OnRecvCharacterList()
 	{
@@ -68,6 +69,14 @@ public class PlayerData : MonoBehaviour
 		characterData.actorId = "Actor002";
 		characterData.powerLevel = 1;
 		_listCharacterData.Add(characterData);
+		characterData = new CharacterData();
+		characterData.actorId = "Actor003";
+		characterData.powerLevel = 1;
+		_listCharacterData.Add(characterData);
+		characterData = new CharacterData();
+		characterData.actorId = "Actor004";
+		characterData.powerLevel = 1;
+		_listCharacterData.Add(characterData);
 	}
 
 	public CharacterData GetCharacterData(string actorId)
@@ -80,7 +89,7 @@ public class PlayerData : MonoBehaviour
 		return null;
 	}
 
-	string _mainCharacterId = "Actor002";
+	string _mainCharacterId = "Actor001";
 	public string mainCharacterId
 	{
 		get

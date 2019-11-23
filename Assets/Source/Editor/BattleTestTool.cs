@@ -4,6 +4,7 @@ using UnityEditor.Animations;
 using System.Collections;
 using System.Collections.Generic;
 using ECM.Controllers;
+using UnityEngine.SceneManagement;
 
 public class BattleTestTool : EditorWindow
 {
@@ -105,7 +106,6 @@ public class BattleTestTool : EditorWindow
 
 	int playChapter = 1;
 	int playStage = 1;
-	bool chaosMode = false;
 	void OnGUI_Stage()
 	{
 		GUILayout.BeginVertical("box");
@@ -116,9 +116,16 @@ public class BattleTestTool : EditorWindow
 			EditorGUILayout.LabelField(szDesc, EditorStyles.textField);
 			GUI.color = defaultColor;
 
+			if (GUILayout.Button("Toggle Chaos Mode"))
+			{
+				// 카오스 모드는 스테이지 진행 도중에 바꿀 수 없어서 이렇게 버튼으로 구현한다.
+				PlayerData.instance.chaosMode ^= true;
+				SceneManager.LoadScene(0);
+				return;
+			}
+
 			playChapter = EditorGUILayout.IntField("Chapter :", playChapter);
 			playStage = EditorGUILayout.IntField("Stage :", playStage);
-			chaosMode = EditorGUILayout.Toggle("Chaos Mode :", chaosMode);
 
 			GUILayout.BeginHorizontal();
 			{
@@ -126,13 +133,11 @@ public class BattleTestTool : EditorWindow
 				{
 					playChapter = StageManager.instance.playChapter;
 					playStage = StageManager.instance.playStage;
-					chaosMode = PlayerData.instance.chaosMode;
 				}
 				if (GUILayout.Button("Set Next Stage"))
 				{
 					StageManager.instance.playChapter = playChapter;
 					StageManager.instance.playStage = playStage - 1;
-					PlayerData.instance.chaosMode = chaosMode;
 					StageManager.instance.GetNextStageInfo();
 				}
 			}

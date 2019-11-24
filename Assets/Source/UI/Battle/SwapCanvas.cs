@@ -24,7 +24,7 @@ public class SwapCanvas : MonoBehaviour
 	public Text selectResultText;
 
 	public GameObject contentItemPrefab;
-	public Transform contentRootTransform;
+	public RectTransform contentRootRectTransform;
 
 	public class CustomItemContainer : CachedItemHave<SwapCanvasListItem>
 	{
@@ -39,6 +39,9 @@ public class SwapCanvas : MonoBehaviour
 	void Start()
 	{
 		contentItemPrefab.SetActive(false);
+
+		// 생성되는 프레임에도 제대로 동작하려면 start에서도 호출해야한다.
+		RefreshContentPosition();
 	}
 
 	void OnEnable()
@@ -141,12 +144,22 @@ public class SwapCanvas : MonoBehaviour
 		List<CharacterData> listCharacterData = PlayerData.instance.listCharacterData;
 		for (int i = 0; i < listCharacterData.Count; ++i)
 		{
-			SwapCanvasListItem swapCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootTransform);
+			SwapCanvasListItem swapCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
 			swapCanvasListItem.Initialize(listCharacterData[i]);
 			_listSwapCanvasListItem.Add(swapCanvasListItem);
 		}
 
-		// 자동 선택 기능 추가해야한다.
+		RefreshContentPosition();
+	}
+
+	RectTransform _contentParentRectTransform;
+	void RefreshContentPosition()
+	{
+		if (_contentParentRectTransform == null) _contentParentRectTransform = contentRootRectTransform.parent.GetComponent<RectTransform>();
+		LayoutRebuilder.ForceRebuildLayoutImmediate(contentRootRectTransform);
+		bool centerPivot = (contentRootRectTransform.rect.height < _contentParentRectTransform.rect.height);
+		contentRootRectTransform.pivot = new Vector2(contentRootRectTransform.pivot.x, centerPivot ? 0.5f : 1.0f);
+		contentRootRectTransform.anchoredPosition = new Vector2(contentRootRectTransform.anchoredPosition.x, centerPivot ? _contentParentRectTransform.rect.height * -0.5f : 0.0f);
 	}
 
 	public void OnClickListItem(string actorId)

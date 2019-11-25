@@ -14,6 +14,10 @@ public class BaseDamageAffector : AffectorBase {
 			return;
 		}
 
+		// BaseDamage는 IsDie 검사를 하는게 맞다. 여기서 리턴안하면 MonsterActor의 OnDie호출되면서 몬스터 카운트부터 다 꼬인다.
+		if (_actor.actorStatus.IsDie())
+			return;
+
 		// 실명은 공격자꺼라 가장 먼저.
 		// 하단의 빗맞음과 같이 처리하지 않고 최상위에서 먼저 돌린다.
 		// 결과는 동일하게 Miss로 표현한다.

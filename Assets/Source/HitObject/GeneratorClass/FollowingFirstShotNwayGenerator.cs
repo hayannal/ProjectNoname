@@ -48,7 +48,7 @@ public class FollowingFirstShotNwayGenerator : ContinuousHitObjectGeneratorBase
 					// 제일 먼저 디폴트 발사체의 방향을 계산해서 center를 구한다.
 					Vector3 targetPosition = HitObject.GetTargetPosition(_signal, _parentActor, _hitSignalIndexInAction);
 					Vector3 position = cachedTransform.position;
-					Quaternion rotation = Quaternion.LookRotation(HitObject.GetSpawnDirection(position, _signal, cachedTransform, targetPosition));
+					Quaternion rotation = Quaternion.LookRotation(HitObject.GetSpawnDirection(position, _signal, cachedTransform, targetPosition, _parentActor.targetingProcessor));
 					_centerAngleY = rotation.eulerAngles.y;
 				}
 				

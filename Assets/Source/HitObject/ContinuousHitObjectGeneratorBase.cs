@@ -49,7 +49,7 @@ public class ContinuousHitObjectGeneratorBase : MonoBehaviour
 		// AttachChild해놨으면 알아서 밀려나갈때 발생기도 밀려날거고 그렇지 않다면 생성된 자리에서 만들어낼거다.
 		Vector3 targetPosition = HitObject.GetTargetPosition(_signal, _parentActor, _hitSignalIndexInAction);
 		Vector3 position = cachedTransform.position;
-		Quaternion rotation = Quaternion.LookRotation(HitObject.GetSpawnDirection(position, _signal, cachedTransform, targetPosition));
+		Quaternion rotation = Quaternion.LookRotation(HitObject.GetSpawnDirection(position, _signal, cachedTransform, targetPosition, _parentActor.targetingProcessor));
 		return Generate(position, rotation);
 	}
 

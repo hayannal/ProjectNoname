@@ -242,6 +242,18 @@ public class ActionController : MonoBehaviour {
 		}
 		#endregion
 
+		#region Fast Attack Delay
+		// 공격 딜레이가 매우 많이 줄어들면 공격 애니메이션이 끝나기도 전에 다시 공격이 나가야한다.
+		// 공격 시그널이 발동 된 후에 처리되는거라 쿨 초기화는 하지 않고 crossFade만 예외처리 해준다.
+		bool ignoreCrossFade = false;
+		if (cancelAttack == false && actionPlayInfo.actionName == "Attack")
+		{
+			ActionInfo currentActionInfo = GetCurrentActionInfo();
+			if (currentActionInfo != null && currentActionInfo.actionName == "Attack")
+				ignoreCrossFade = true;
+		}
+		#endregion
+
 		SkillProcessor.SkillInfo selectedSkillInfo = null;
 		int actionNameHash = actionPlayInfo.actionNameHash;
 		if (!string.IsNullOrEmpty(actionPlayInfo.skillId) && skillProcessor != null)
@@ -262,8 +274,11 @@ public class ActionController : MonoBehaviour {
 			if (animator.GetNextAnimatorStateInfo(0).fullPathHash == actionNameHash)
 				return false;
 		}
-		// 어택 캔슬할땐 빠르게 블렌딩 되어야 시그널 호출이 문제없이 호출되게 된다.
-		animator.CrossFade(actionNameHash, cancelAttack ? 0.02f : actionPlayInfo.fadeDuration);
+		if (ignoreCrossFade)
+			animator.CrossFade(actionNameHash, 0.01f, 0, 0.0f);
+		else
+			// 어택 캔슬할땐 빠르게 블렌딩 되어야 시그널 호출이 문제없이 호출되게 된다.
+			animator.CrossFade(actionNameHash, cancelAttack ? 0.02f : actionPlayInfo.fadeDuration);
 
 		if (actionPlayInfo.actionName == "Ultimate")
 		{

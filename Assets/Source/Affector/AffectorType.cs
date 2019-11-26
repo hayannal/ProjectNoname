@@ -42,6 +42,7 @@ public enum eAffectorType
 	CertainHpHitObject,
 
 	TeleportingHitObject,
+	AddGeneratorCreateCount,
 
 	DropItem = 51,
 	Invincible,

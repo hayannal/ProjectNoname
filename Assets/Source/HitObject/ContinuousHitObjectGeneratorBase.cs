@@ -25,7 +25,7 @@ public class ContinuousHitObjectGeneratorBase : MonoBehaviour
 		_hitSignalIndexInAction = hitSignalIndexInAction;
 		_repeatIndex = repeatIndex;
 		_repeatAddCountByLevelPack = repeatAddCountByLevelPack;
-		_initializedCreateCount = createCount;// + AddGeneratorCreateCountAffector.GetAddCount(parentActor.affectorProcessor);
+		_initializedCreateCount = createCount + AddGeneratorCreateCountAffector.GetAddCount(parentActor.affectorProcessor);
 
 		_fullPathHash = 0;
 		if (disableOnChangeState)

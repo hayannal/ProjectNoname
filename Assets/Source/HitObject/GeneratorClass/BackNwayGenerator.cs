@@ -10,12 +10,6 @@ public class BackNwayGenerator : ContinuousHitObjectGeneratorBase
 	public static float BackNwayLocalRadiusScale = 1.2f;
 	Vector3 _spawnLocalPosition = Vector3.zero;
 
-	void OnEnable()
-	{
-		if (createCount == 0)
-			gameObject.SetActive(false);
-	}
-
 	public override void InitializeGenerator(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack, Transform spawnTransform)
 	{
 		base.InitializeGenerator(meHit, parentActor, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, spawnTransform);
@@ -23,6 +17,9 @@ public class BackNwayGenerator : ContinuousHitObjectGeneratorBase
 		Collider collider = parentActor.GetCollider();
 		_spawnLocalPosition.y = 1.0f;
 		_spawnLocalPosition.z = ColliderUtil.GetRadius(collider) * -BackNwayLocalRadiusScale;
+
+		if (_initializedCreateCount == 0)
+			gameObject.SetActive(false);
 	}
 
 	// Update is called once per frame
@@ -36,11 +33,11 @@ public class BackNwayGenerator : ContinuousHitObjectGeneratorBase
 
 		// lock spawn position
 		Vector3 spawnPosition = _parentActor.cachedTransform.TransformPoint(_spawnLocalPosition);
-		for (int i = 0; i < createCount; ++i)
+		for (int i = 0; i < _initializedCreateCount; ++i)
 		{
 			// only local back
 			float centerAngleY = cachedTransform.rotation.eulerAngles.y + 180.0f;
-			float baseAngle = createCount % 2 == 0 ? centerAngleY - (betweenAngle / 2f) : centerAngleY;
+			float baseAngle = _initializedCreateCount % 2 == 0 ? centerAngleY - (betweenAngle / 2f) : centerAngleY;
 			float angle = WavingNwayGenerator.GetShiftedAngle(i, baseAngle, betweenAngle);
 
 			Generate(spawnPosition, Quaternion.Euler(0.0f, angle, 0.0f));

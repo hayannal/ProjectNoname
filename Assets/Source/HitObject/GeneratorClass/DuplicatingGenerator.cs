@@ -10,9 +10,11 @@ public class DuplicatingGenerator : ContinuousHitObjectGeneratorBase
 	int _remainCreateCount;
 	float _remainIntervalTime;
 
-	void OnEnable()
+	public override void InitializeGenerator(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack, Transform spawnTransform)
 	{
-		_remainCreateCount = createCount;
+		base.InitializeGenerator(meHit, parentActor, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, spawnTransform);
+
+		_remainCreateCount = _initializedCreateCount;
 		_remainIntervalTime = 0.0f;
 
 		if (_remainCreateCount == 0)

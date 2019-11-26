@@ -16,9 +16,11 @@ public class WavingNwayGenerator : ContinuousHitObjectGeneratorBase
 	int _remainCreateCount;
 	float _remainLineIntervalTime;
 
-	void OnEnable()
+	public override void InitializeGenerator(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack, Transform spawnTransform)
 	{
-		_remainCreateCount = createCount;
+		base.InitializeGenerator(meHit, parentActor, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, spawnTransform);
+
+		_remainCreateCount = _initializedCreateCount;
 		_remainLineIntervalTime = 0.0f;
 
 		if (_remainCreateCount == 0)

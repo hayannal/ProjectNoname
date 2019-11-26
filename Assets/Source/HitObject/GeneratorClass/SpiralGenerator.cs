@@ -13,9 +13,11 @@ public class SpiralGenerator : ContinuousHitObjectGeneratorBase
 	int _remainCreateCount;
 	float _remainIntervalTime;
 
-	void OnEnable()
+	public override void InitializeGenerator(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack, Transform spawnTransform)
 	{
-		_remainCreateCount = createCount;
+		base.InitializeGenerator(meHit, parentActor, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, spawnTransform);
+
+		_remainCreateCount = _initializedCreateCount;
 		_remainIntervalTime = 0.0f;
 
 		if (_remainCreateCount == 0)
@@ -39,7 +41,7 @@ public class SpiralGenerator : ContinuousHitObjectGeneratorBase
 		{
 			_remainCreateCount -= 1;
 			_remainIntervalTime += interval;
-			int index = (createCount - _remainCreateCount) - 1;
+			int index = (_initializedCreateCount - _remainCreateCount) - 1;
 
 			if (useWorldSpaceDirection)
 				Generate(cachedTransform.position, Quaternion.Euler(0.0f, startAngleY + index * shiftAngleY, 0.0f));

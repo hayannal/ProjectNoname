@@ -8,6 +8,7 @@ public class ContinuousHitObjectGeneratorBase : MonoBehaviour
 	public bool ignoreMainHitObject = true;
 	public bool attachChild = true;
 	public int createCount;
+	protected int _initializedCreateCount;
 
 	int _fullPathHash;
 
@@ -24,6 +25,7 @@ public class ContinuousHitObjectGeneratorBase : MonoBehaviour
 		_hitSignalIndexInAction = hitSignalIndexInAction;
 		_repeatIndex = repeatIndex;
 		_repeatAddCountByLevelPack = repeatAddCountByLevelPack;
+		_initializedCreateCount = createCount;// + AddGeneratorCreateCountAffector.GetAddCount(parentActor.affectorProcessor);
 
 		_fullPathHash = 0;
 		if (disableOnChangeState)

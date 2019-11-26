@@ -14,9 +14,11 @@ public class FollowingFirstShotNwayGenerator : ContinuousHitObjectGeneratorBase
 	float _remainLineIntervalTime;
 	float _centerAngleY;
 
-	void OnEnable()
+	public override void InitializeGenerator(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack, Transform spawnTransform)
 	{
-		_remainCreateCount = createCount;
+		base.InitializeGenerator(meHit, parentActor, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, spawnTransform);
+
+		_remainCreateCount = _initializedCreateCount;
 		_remainLineIntervalTime = 0.0f;
 		_listFirstShotRotation.Clear();
 
@@ -43,7 +45,7 @@ public class FollowingFirstShotNwayGenerator : ContinuousHitObjectGeneratorBase
 
 			for (int i = 0; i < wayNum; ++i)
 			{
-				if (_remainCreateCount == createCount)
+				if (_remainCreateCount == _initializedCreateCount)
 				{
 					// 제일 먼저 디폴트 발사체의 방향을 계산해서 center를 구한다.
 					Vector3 targetPosition = HitObject.GetTargetPosition(_signal, _parentActor, _hitSignalIndexInAction);

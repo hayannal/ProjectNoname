@@ -10,12 +10,6 @@ public class DiagonalNwayGenerator : ContinuousHitObjectGeneratorBase
 	Vector3 _spawnLocalLeftDiagonalPosition = Vector3.zero;
 	Vector3 _spawnLocalRightDiagonalPosition = Vector3.zero;
 
-	void OnEnable()
-	{
-		if (createCount == 0)
-			gameObject.SetActive(false);
-	}
-
 	public override void InitializeGenerator(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack, Transform spawnTransform)
 	{
 		base.InitializeGenerator(meHit, parentActor, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, spawnTransform);
@@ -31,6 +25,9 @@ public class DiagonalNwayGenerator : ContinuousHitObjectGeneratorBase
 		_spawnLocalRightDiagonalPosition.x = diagonal.x * BackNwayGenerator.BackNwayLocalRadiusScale;
 		_spawnLocalRightDiagonalPosition.y = 1.0f;
 		_spawnLocalRightDiagonalPosition.z = diagonal.z * BackNwayGenerator.BackNwayLocalRadiusScale;
+
+		if (_initializedCreateCount == 0)
+			gameObject.SetActive(false);
 	}
 
 	// Update is called once per frame
@@ -44,22 +41,22 @@ public class DiagonalNwayGenerator : ContinuousHitObjectGeneratorBase
 
 		// lock spawn position
 		Vector3 spawnPosition = _parentActor.cachedTransform.TransformPoint(_spawnLocalLeftDiagonalPosition);
-		for (int i = 0; i < createCount; ++i)
+		for (int i = 0; i < _initializedCreateCount; ++i)
 		{
 			// only local back
 			float centerAngleY = cachedTransform.rotation.eulerAngles.y - 45.0f;
-			float baseAngle = createCount % 2 == 0 ? centerAngleY - (betweenAngle / 2f) : centerAngleY;
+			float baseAngle = _initializedCreateCount % 2 == 0 ? centerAngleY - (betweenAngle / 2f) : centerAngleY;
 			float angle = WavingNwayGenerator.GetShiftedAngle(i, baseAngle, betweenAngle);
 
 			Generate(spawnPosition, Quaternion.Euler(0.0f, angle, 0.0f));
 		}
 
 		spawnPosition = _parentActor.cachedTransform.TransformPoint(_spawnLocalRightDiagonalPosition);
-		for (int i = 0; i < createCount; ++i)
+		for (int i = 0; i < _initializedCreateCount; ++i)
 		{
 			// only local back
 			float centerAngleY = cachedTransform.rotation.eulerAngles.y + 45.0f;
-			float baseAngle = createCount % 2 == 0 ? centerAngleY - (betweenAngle / 2f) : centerAngleY;
+			float baseAngle = _initializedCreateCount % 2 == 0 ? centerAngleY - (betweenAngle / 2f) : centerAngleY;
 			float angle = WavingNwayGenerator.GetShiftedAngle(i, baseAngle, betweenAngle);
 
 			Generate(spawnPosition, Quaternion.Euler(0.0f, angle, 0.0f));

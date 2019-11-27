@@ -57,5 +57,6 @@ public enum eAffectorType
 
 	CreateHitObjectMoving,
 	CreateWall,
+	PositionBuff,
 }
 #endregion

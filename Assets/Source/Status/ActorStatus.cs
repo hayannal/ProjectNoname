@@ -143,6 +143,7 @@ public class ActorStatus : MonoBehaviour
 				break;
 			case eActorStatus.AttackAddRate:
 				value += AddAttackByHpAffector.GetValue(actor.affectorProcessor, actor.actorStatus.GetHPRatio());
+				value += PositionBuffAffector.GetAttackAddRate(actor.affectorProcessor);
 				break;
 		}
 		return value;

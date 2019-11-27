@@ -118,10 +118,20 @@ public class HitObject : MonoBehaviour
 			}
 		}
 
-		for (int i = 0; i < meHit.circularSectorCount; ++i)
+		bool ignoreMainHitObjectByGenerator = false;
+
+		// 다른 어펙터와 달리 지속시간 대신 장판에 서있을때만 추가되는 어펙터다.
+		int positionBuffCircularSectorCount = normalAttack ? PositionBuffAffector.GetCircularSectorCount(parentActor.affectorProcessor) : 0;
+		int circularSectorCount = meHit.circularSectorCount;
+		if (positionBuffCircularSectorCount > 0)
+		{
+			circularSectorCount = positionBuffCircularSectorCount;
+			ignoreMainHitObjectByGenerator = true;
+		}
+		for (int i = 0; i < circularSectorCount; ++i)
 		{
 			float centerAngleY = meHit.circularSectorUseWorldSpace ? meHit.circularSectorWorldSpaceCenterAngleY : defaultRotation.eulerAngles.y;
-			float baseAngle = meHit.circularSectorCount % 2 == 0 ? centerAngleY - (meHit.circularSectorBetweenAngle / 2f) : centerAngleY;
+			float baseAngle = circularSectorCount % 2 == 0 ? centerAngleY - (meHit.circularSectorBetweenAngle / 2f) : centerAngleY;
 			float angle = WavingNwayGenerator.GetShiftedAngle(i, baseAngle, meHit.circularSectorBetweenAngle);
 			HitObject circularSectorHitObject = GetCachedHitObject(meHit, defaultPosition, Quaternion.Euler(0.0f, angle, 0.0f));
 			if (circularSectorHitObject == null)
@@ -129,7 +139,6 @@ public class HitObject : MonoBehaviour
 			circularSectorHitObject.InitializeHitObject(meHit, parentActor, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
 		}
 
-		bool ignoreMainHitObjectByGenerator = false;
 		if (meHit.continuousHitObjectGeneratorBaseList != null)
 		{
 			for (int i = 0; i < meHit.continuousHitObjectGeneratorBaseList.Count; ++i)

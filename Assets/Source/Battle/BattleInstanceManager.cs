@@ -982,6 +982,40 @@ public class BattleInstanceManager : MonoBehaviour
 	}
 	#endregion
 
+	#region Position Buff Affector List
+	List<PositionBuffAffector> _listPositionBuffAffector;
+	public void AddPositionBuffAffector(PositionBuffAffector positionBuffAffector)
+	{
+		if (_listPositionBuffAffector == null)
+			_listPositionBuffAffector = new List<PositionBuffAffector>();
+
+		_listPositionBuffAffector.Add(positionBuffAffector);
+	}
+
+	public void RemovePositionBuffAffector(PositionBuffAffector positionBuffAffector)
+	{
+		if (_listPositionBuffAffector == null)
+			return;
+
+		_listPositionBuffAffector.Remove(positionBuffAffector);
+	}
+
+	public void FinalizeAllPositionBuffAffector(bool ignoreFinalizeEffect)
+	{
+		if (_listPositionBuffAffector == null)
+			return;
+
+		for (int i = 0; i < _listPositionBuffAffector.Count; ++i)
+		{
+			if (_listPositionBuffAffector[i] == null)
+				continue;
+			_listPositionBuffAffector[i].ignoreFinalizeEffect = ignoreFinalizeEffect;
+			_listPositionBuffAffector[i].finalized = true;
+		}
+		_listPositionBuffAffector.Clear();
+	}
+	#endregion
+
 
 
 

@@ -54,6 +54,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.Teleported: affectorBase = new TeleportedAffector(); break;
 			case eAffectorType.CreateHitObjectMoving: affectorBase = new CreateHitObjectMovingAffector(); break;
 			case eAffectorType.CreateWall: affectorBase = new CreateWallAffector(); break;
+			case eAffectorType.PositionBuff: affectorBase = new PositionBuffAffector(); break;
 			#endregion
 		}
 		return affectorBase;
@@ -102,6 +103,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.Teleported:
 			case eAffectorType.CreateHitObjectMoving:
 			case eAffectorType.CreateWall:
+			case eAffectorType.PositionBuff:
 				return true;
 			#endregion
 		}

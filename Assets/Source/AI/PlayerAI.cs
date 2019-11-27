@@ -122,6 +122,9 @@ public class PlayerAI : MonoBehaviour
 	Cooltime _normalAttackCooltime;
 	void UpdateAttack()
 	{
+		if (actor.actorStatus.IsDie())
+			return;
+
 		// Attack Delay
 		// 평타에 어택 딜레이가 쿨타임으로 적용되어있기 때문에 이걸 얻어와서 쓴다.
 		// 참고로 스턴중에도 어택 딜레이는 줄어들게 되어있다.

@@ -305,7 +305,8 @@ public class ActionController : MonoBehaviour {
 			// 다음 프레임에 궁극기 액션이 시작됨과 동시에 이 임시로 넣어둔건 빠지게될거고(로직상 액션 변경시 fullPathHash가 0인건 삭제되게 되어있다.)
 			// 궁극기 상태는 레인지시그널 설정해둔 만큼만 잘 작동하게 될거다.
 			// 이렇게 처리해두면 같은 프레임에 AI가 돌아도 일반공격이 덮어쓰지 못할테니 더이상 버그가 발생하지 않게될거다.
-			actor.actionController.mecanimState.StartState((int)MecanimStateDefine.eMecanimState.Ultimate, 0);
+			if (passiveOrNonAni == false)
+				actor.actionController.mecanimState.StartState((int)MecanimStateDefine.eMecanimState.Ultimate, 0);
 			#endregion
 		}
 

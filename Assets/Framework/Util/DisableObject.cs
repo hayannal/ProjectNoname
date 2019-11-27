@@ -45,6 +45,8 @@ public class DisableObject : MonoBehaviour {
 		// avoid gc
 		if (this == null)
 			yield break;
+		if (gameObject.activeSelf == false)
+			yield break;
 #else
 		yield return new WaitForSeconds(delayTime);
 #endif

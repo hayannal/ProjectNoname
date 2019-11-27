@@ -97,6 +97,7 @@ public class MonsterActor : Actor
 		actionController.PlayActionByActionName("Idle");
 		actionController.idleAnimator.enabled = true;
 		HitObject.EnableRigidbodyAndCollider(true, _rigidbody, _collider);
+		ResetAdjustMass();
 
 		monsterAI.enabled = true;
 		InitializeMonster();
@@ -284,6 +285,30 @@ public class MonsterActor : Actor
 
 		// sp drop
 		DropProcessor.DropSp(_dropSpValue);
+	}
+	#endregion
+
+	#region Adjust Mass
+	bool _adjustMassState = false;
+	float _origMass = 0.0f;
+	public void AdjustMass(float rate)
+	{
+		if (_adjustMassState == false)
+		{
+			_origMass = _rigidbody.mass;
+		}
+
+		_rigidbody.mass = _origMass * rate;
+		_adjustMassState = true;
+	}
+
+	public void ResetAdjustMass()
+	{
+		if (_adjustMassState == false)
+			return;
+
+		_rigidbody.mass = _origMass;
+		_adjustMassState = false;
 	}
 	#endregion
 

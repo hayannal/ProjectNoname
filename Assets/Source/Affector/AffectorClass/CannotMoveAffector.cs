@@ -36,6 +36,12 @@ public class CannotMoveAffector : AffectorBase
 			_loopEffectTransform.DOScale(1.0f, ScaleStartDuration).SetEase(Ease.OutQuad);
 		}
 
+		if (_actor.IsMonsterActor())
+		{
+			MonsterActor monsterActor = _actor as MonsterActor;
+			if (monsterActor != null)
+				monsterActor.AdjustMass(10.0f);
+		}
 		_actor.actorStatus.OnChangedStatus(ActorStatusDefine.eActorStatus.MoveSpeed);
 	}
 
@@ -70,6 +76,13 @@ public class CannotMoveAffector : AffectorBase
 				_loopEffectTransform.gameObject.SetActive(false);
 				_loopEffectTransform = null;
 			};
+		}
+
+		if (_actor.IsMonsterActor())
+		{
+			MonsterActor monsterActor = _actor as MonsterActor;
+			if (monsterActor != null)
+				monsterActor.ResetAdjustMass();
 		}
 	}
 

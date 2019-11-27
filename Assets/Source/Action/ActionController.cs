@@ -256,6 +256,7 @@ public class ActionController : MonoBehaviour {
 
 		SkillProcessor.SkillInfo selectedSkillInfo = null;
 		int actionNameHash = actionPlayInfo.actionNameHash;
+		bool passiveOrNonAni = false;
 		if (!string.IsNullOrEmpty(actionPlayInfo.skillId) && skillProcessor != null)
 		{
 			selectedSkillInfo = skillProcessor.GetSkillInfo(actionPlayInfo.skillId);
@@ -265,20 +266,29 @@ public class ActionController : MonoBehaviour {
 					return false;
 				if (selectedSkillInfo.actionNameHash != 0)
 					actionNameHash = selectedSkillInfo.actionNameHash;
+				if (selectedSkillInfo.skillType == eSkillType.Passive || selectedSkillInfo.skillType == eSkillType.NonAni)
+				{
+					passiveOrNonAni = true;
+					if (selectedSkillInfo.skillType == eSkillType.NonAni)
+						skillProcessor.ApplyNonAniSkill(selectedSkillInfo);
+				}
 			}
 		}
 
-		// Play Action
-		if (actionPlayInfo.fadeDuration > 0.0f)
-		{	
-			if (animator.GetNextAnimatorStateInfo(0).fullPathHash == actionNameHash)
-				return false;
+		if (passiveOrNonAni == false)
+		{
+			// Play Action
+			if (actionPlayInfo.fadeDuration > 0.0f)
+			{
+				if (animator.GetNextAnimatorStateInfo(0).fullPathHash == actionNameHash)
+					return false;
+			}
+			if (ignoreCrossFade)
+				animator.CrossFade(actionNameHash, 0.01f, 0, 0.0f);
+			else
+				// 어택 캔슬할땐 빠르게 블렌딩 되어야 시그널 호출이 문제없이 호출되게 된다.
+				animator.CrossFade(actionNameHash, cancelAttack ? 0.02f : actionPlayInfo.fadeDuration);
 		}
-		if (ignoreCrossFade)
-			animator.CrossFade(actionNameHash, 0.01f, 0, 0.0f);
-		else
-			// 어택 캔슬할땐 빠르게 블렌딩 되어야 시그널 호출이 문제없이 호출되게 된다.
-			animator.CrossFade(actionNameHash, cancelAttack ? 0.02f : actionPlayInfo.fadeDuration);
 
 		if (actionPlayInfo.actionName == "Ultimate")
 		{

@@ -17,8 +17,8 @@ public class SkillTableData
   public string actorId { get { return _actorId; } set { _actorId = value; } }
   
   [SerializeField]
-  bool _passiveSkill;
-  public bool passiveSkill { get { return _passiveSkill; } set { _passiveSkill = value; } }
+  int _skillType;
+  public int skillType { get { return _skillType; } set { _skillType = value; } }
   
   [SerializeField]
   string _icon;
@@ -29,8 +29,8 @@ public class SkillTableData
   public float cooltime { get { return _cooltime; } set { _cooltime = value; } }
   
   [SerializeField]
-  string[] _passiveAffectorValueId = new string[0];
-  public string[] passiveAffectorValueId { get { return _passiveAffectorValueId; } set { _passiveAffectorValueId = value; } }
+  string[] _tableAffectorValueId = new string[0];
+  public string[] tableAffectorValueId { get { return _tableAffectorValueId; } set { _tableAffectorValueId = value; } }
   
   [SerializeField]
   string _nameId;
@@ -49,8 +49,8 @@ public class SkillTableData
   public bool useMecanimNameOverriding { get { return _useMecanimNameOverriding; } set { _useMecanimNameOverriding = value; } }
   
   [SerializeField]
-  bool _usePassiveAffectorValueIdOverriding;
-  public bool usePassiveAffectorValueIdOverriding { get { return _usePassiveAffectorValueIdOverriding; } set { _usePassiveAffectorValueIdOverriding = value; } }
+  bool _useTableAffectorValueIdOverriding;
+  public bool useTableAffectorValueIdOverriding { get { return _useTableAffectorValueIdOverriding; } set { _useTableAffectorValueIdOverriding = value; } }
   
   [SerializeField]
   bool _useNameIdOverriding;

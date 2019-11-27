@@ -10,6 +10,7 @@ using System.Collections.Generic;
 /// can be serialized onto an asset data file.
 /// 
 [System.Serializable]
+[PreferBinarySerialization]
 public class SkillTable : ScriptableObject 
 {	
     [HideInInspector] [SerializeField] 

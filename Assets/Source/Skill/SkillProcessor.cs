@@ -2,6 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum eSkillType
+{
+	Active = 1,
+	Passive = 2,
+	NonAni = 3,
+}
+
 // 이 플젝에선 몬스터의 경우 레벨팩을 들고있지도 않을거고
 // 액티브 스킬 혹은 패시브스킬도 가지고 있더라도 스킬레벨이 들어있지 않을거라
 // 액션툴 혹은 AI툴에다가 직접 어펙터를 설정하게 될 것이다.
@@ -18,11 +25,11 @@ public class SkillProcessor : MonoBehaviour
 	{
 		public string skillId;
 		public int skillLevel;
-		public bool passiveSkill;
+		public eSkillType skillType;
 		public string iconName;
 		public float cooltime;
 		public int actionNameHash;
-		public string[] passiveAffectorValueId;
+		public string[] tableAffectorValueIdList;
 		public string nameId;
 		public string descriptionId;
 		public List<AffectorBase> listPassiveAffector;
@@ -53,15 +60,15 @@ public class SkillProcessor : MonoBehaviour
 
 			info.skillId = skillTableData.id;
 			info.skillLevel = skillLevel;
-			info.passiveSkill = skillTableData.passiveSkill;
+			info.skillType = (eSkillType)skillTableData.skillType;
 			info.iconName = skillTableData.icon;
 			info.cooltime = skillTableData.cooltime;
 			info.actionNameHash = 0;
-			info.passiveAffectorValueId = skillTableData.passiveAffectorValueId;
+			info.tableAffectorValueIdList = skillTableData.tableAffectorValueId;
 			info.nameId = skillTableData.nameId;
 			info.descriptionId = skillTableData.descriptionId;
 
-			if (skillTableData.useCooltimeOverriding || skillTableData.useMecanimNameOverriding || skillTableData.usePassiveAffectorValueIdOverriding || skillTableData.useNameIdOverriding || skillTableData.useDescriptionIdOverriding)
+			if (skillTableData.useCooltimeOverriding || skillTableData.useMecanimNameOverriding || skillTableData.useTableAffectorValueIdOverriding || skillTableData.useNameIdOverriding || skillTableData.useDescriptionIdOverriding)
 			{
 				SkillLevelTableData skillLevelTableData = TableDataManager.instance.FindSkillLevelTableData(info.skillId, skillLevel);
 				if (skillLevelTableData != null)
@@ -70,8 +77,8 @@ public class SkillProcessor : MonoBehaviour
 						info.cooltime = skillLevelTableData.cooltime;
 					if (skillTableData.useMecanimNameOverriding)
 						info.actionNameHash = BattleInstanceManager.instance.GetActionNameHash(skillLevelTableData.mecanimName);
-					if (skillTableData.usePassiveAffectorValueIdOverriding)
-						info.passiveAffectorValueId = skillLevelTableData.passiveAffectorValueId;
+					if (skillTableData.useTableAffectorValueIdOverriding)
+						info.tableAffectorValueIdList = skillLevelTableData.tableAffectorValueId;
 					if (skillTableData.useNameIdOverriding)
 						info.nameId = skillLevelTableData.nameId;
 					if (skillTableData.useDescriptionIdOverriding)
@@ -80,7 +87,7 @@ public class SkillProcessor : MonoBehaviour
 			}
 
 			#region Passive Skill
-			if (info.passiveSkill)
+			if (info.skillType == eSkillType.Passive)
 				InitializePassiveSkill(info);
 			#endregion
 
@@ -103,7 +110,7 @@ public class SkillProcessor : MonoBehaviour
 	{
 		if (actor == null)
 			return;
-		if (info.passiveAffectorValueId.Length == 0)
+		if (info.tableAffectorValueIdList.Length == 0)
 			return;
 
 		if (info.listPassiveAffector == null)
@@ -115,16 +122,16 @@ public class SkillProcessor : MonoBehaviour
 		CopyEtcStatus(ref hitParameter.statusStructForHitObject, actor);
 		hitParameter.statusStructForHitObject.skillLevel = info.skillLevel;
 
-		for (int i = 0; i < info.passiveAffectorValueId.Length; ++i)
+		for (int i = 0; i < info.tableAffectorValueIdList.Length; ++i)
 		{
-			AffectorBase passiveAffector = affectorProcessor.ApplyAffectorValue(info.passiveAffectorValueId[i], hitParameter, true);
+			AffectorBase passiveAffector = affectorProcessor.ApplyAffectorValue(info.tableAffectorValueIdList[i], hitParameter, true);
 			if (passiveAffector == null)
 				continue;
 
 			if (AffectorCustomCreator.IsContinuousAffector(passiveAffector.affectorType))
 				info.listPassiveAffector.Add(passiveAffector);
 			else
-				Debug.LogErrorFormat("Non-continuous affector in a passive skill! / SkillId = {0} / AffectorValueId = {1}", info.skillId, info.passiveAffectorValueId[i]);
+				Debug.LogErrorFormat("Non-continuous affector in a passive skill! / SkillId = {0} / AffectorValueId = {1}", info.skillId, info.tableAffectorValueIdList[i]);
 		}
 	}
 
@@ -136,16 +143,35 @@ public class SkillProcessor : MonoBehaviour
 		info.skillLevel += 1;
 
 		SkillTableData skillTableData = TableDataManager.instance.FindSkillTableData(info.skillId);
-		if (skillTableData.usePassiveAffectorValueIdOverriding)
+		if (skillTableData.useTableAffectorValueIdOverriding)
 		{
 			SkillLevelTableData skillLevelTableData = TableDataManager.instance.FindSkillLevelTableData(info.skillId, info.skillLevel);
 			if (skillLevelTableData != null)
 			{
-				if (skillTableData.usePassiveAffectorValueIdOverriding)
-					info.passiveAffectorValueId = skillLevelTableData.passiveAffectorValueId;
+				if (skillTableData.useTableAffectorValueIdOverriding)
+					info.tableAffectorValueIdList = skillLevelTableData.tableAffectorValueId;
 			}
 		}
 		InitializePassiveSkill(info);
+	}
+	#endregion
+
+	#region NonAni Skill
+	public void ApplyNonAniSkill(SkillInfo info)
+	{
+		if (actor == null)
+			return;
+		if (info.tableAffectorValueIdList.Length == 0)
+			return;
+
+		HitParameter hitParameter = new HitParameter();
+		hitParameter.statusBase = actor.actorStatus.statusBase;
+		CopyEtcStatus(ref hitParameter.statusStructForHitObject, actor);
+		hitParameter.statusStructForHitObject.skillLevel = info.skillLevel;
+
+		// 애니만 없을뿐 active스킬처럼 쓰는거라서 managed는 false로 호출한다.
+		for (int i = 0; i < info.tableAffectorValueIdList.Length; ++i)
+			affectorProcessor.ApplyAffectorValue(info.tableAffectorValueIdList[i], hitParameter, false);
 	}
 	#endregion
 
@@ -173,7 +199,7 @@ public class SkillProcessor : MonoBehaviour
 	{
 		public int stackCount;
 		public string iconName;
-		public string[] affectorValueId;
+		public string[] affectorValueIdList;
 		public string nameId;
 		public string descriptionId;
 		public string[] descriptionParameterList;
@@ -201,7 +227,7 @@ public class SkillProcessor : MonoBehaviour
 			info.stackCount = 1;
 			info.iconName = levelPackTableData.icon;
 			if (levelPackTableData.useAffectorValueIdOverriding == false)
-				info.affectorValueId = levelPackTableData.affectorValueId;
+				info.affectorValueIdList = levelPackTableData.affectorValueId;
 			info.nameId = levelPackTableData.nameId;
 			info.descriptionId = levelPackTableData.descriptionId;
 			_dicLevelPack.Add(levelPackId, info);
@@ -227,7 +253,7 @@ public class SkillProcessor : MonoBehaviour
 		if (levelPackLevelTableData != null)
 		{
 			if (levelPackTableData.useAffectorValueIdOverriding)
-				info.affectorValueId = levelPackLevelTableData.affectorValueId;
+				info.affectorValueIdList = levelPackLevelTableData.affectorValueId;
 			info.descriptionParameterList = levelPackLevelTableData.parameter;
 		}
 
@@ -238,7 +264,7 @@ public class SkillProcessor : MonoBehaviour
 	{
 		if (actor == null)
 			return;
-		if (info.affectorValueId.Length == 0)
+		if (info.affectorValueIdList.Length == 0)
 			return;
 
 		if (info.listAffector == null)
@@ -253,16 +279,16 @@ public class SkillProcessor : MonoBehaviour
 		CopyEtcStatus(ref hitParameter.statusStructForHitObject, actor);
 		hitParameter.statusStructForHitObject.skillLevel = info.stackCount;
 
-		for (int i = 0; i < info.affectorValueId.Length; ++i)
+		for (int i = 0; i < info.affectorValueIdList.Length; ++i)
 		{
-			AffectorBase newAffector = affectorProcessor.ApplyAffectorValue(info.affectorValueId[i], hitParameter, true);
+			AffectorBase newAffector = affectorProcessor.ApplyAffectorValue(info.affectorValueIdList[i], hitParameter, true);
 			if (newAffector == null)
 				continue;
 
 			if (AffectorCustomCreator.IsContinuousAffector(newAffector.affectorType))
 				info.listAffector.Add(newAffector);
 			else
-				Debug.LogErrorFormat("Non-continuous affector in a levelPack! / LevelPackId = {0} / AffectorValueId = {1}", levelPackId, info.affectorValueId[i]);
+				Debug.LogErrorFormat("Non-continuous affector in a levelPack! / LevelPackId = {0} / AffectorValueId = {1}", levelPackId, info.affectorValueIdList[i]);
 		}
 	}
 

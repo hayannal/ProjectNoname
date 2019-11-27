@@ -25,8 +25,8 @@ public class SkillLevelTableData
   public string mecanimName { get { return _mecanimName; } set { _mecanimName = value; } }
   
   [SerializeField]
-  string[] _passiveAffectorValueId = new string[0];
-  public string[] passiveAffectorValueId { get { return _passiveAffectorValueId; } set { _passiveAffectorValueId = value; } }
+  string[] _tableAffectorValueId = new string[0];
+  public string[] tableAffectorValueId { get { return _tableAffectorValueId; } set { _tableAffectorValueId = value; } }
   
   [SerializeField]
   string _nameId;

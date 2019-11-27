@@ -685,6 +685,10 @@ public class HitObject : MonoBehaviour
 		parentActor.actorStatus.CopyStatusBase(ref _statusBase);
 		CopyEtcStatusForHitObject(ref _statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
 
+#if UNITY_EDITOR
+		//Debug.LogFormat("HitObject Create Time = {0}", _createTime);
+#endif
+
 		Team.eTeamLayer teamLayerType = Team.eTeamLayer.TeamLayer_Amount;
 		switch (_statusStructForHitObject.teamId)
 		{

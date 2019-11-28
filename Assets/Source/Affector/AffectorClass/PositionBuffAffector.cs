@@ -27,7 +27,9 @@ public class PositionBuffAffector : AffectorBase
 
 		_lastPosition = _actor.cachedTransform.position;
 		_startEffectPrefab = FindPreloadObject(affectorValueLevelTableData.sValue3);
-		_endEffectPrefab = FindPreloadObject(affectorValueLevelTableData.sValue4);
+
+		if (string.IsNullOrEmpty(affectorValueLevelTableData.sValue4) == false)
+			_endEffectPrefab = FindPreloadObject(affectorValueLevelTableData.sValue4);
 
 		if (_startEffectPrefab != null)
 			_startEffectTransform = BattleInstanceManager.instance.GetCachedObject(_startEffectPrefab, _lastPosition, Quaternion.identity).transform;
@@ -43,12 +45,7 @@ public class PositionBuffAffector : AffectorBase
 			_startEffectTransform.gameObject.SetActive(false);
 
 		if (_endEffectPrefab != null)
-		{
-			Transform endEffectTransform = BattleInstanceManager.instance.GetCachedObject(_endEffectPrefab, _lastPosition, Quaternion.identity).transform;
-			endEffectTransform.localPosition = Vector3.zero;
-			endEffectTransform.localRotation = Quaternion.identity;
-			endEffectTransform.localScale = Vector3.one;
-		}
+			BattleInstanceManager.instance.GetCachedObject(_endEffectPrefab, _lastPosition, Quaternion.identity);
 
 		_lastPosition = _actor.cachedTransform.position;
 		if (_startEffectPrefab != null)
@@ -74,12 +71,7 @@ public class PositionBuffAffector : AffectorBase
 		BattleInstanceManager.instance.RemovePositionBuffAffector(this);
 
 		if (_endEffectPrefab != null)
-		{
-			Transform endEffectTransform = BattleInstanceManager.instance.GetCachedObject(_endEffectPrefab, _lastPosition, Quaternion.identity).transform;
-			endEffectTransform.localPosition = Vector3.zero;
-			endEffectTransform.localRotation = Quaternion.identity;
-			endEffectTransform.localScale = Vector3.one;
-		}
+			BattleInstanceManager.instance.GetCachedObject(_endEffectPrefab, _lastPosition, Quaternion.identity);
 	}
 
 	bool IsInRange(AffectorProcessor affectorProcessor)

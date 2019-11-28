@@ -102,7 +102,7 @@ public class PositionBuffAffector : AffectorBase
 		if (positionBuffAffector == null)
 			return 0;
 		if (positionBuffAffector.IsInRange(affectorProcessor))
-			return positionBuffAffector._affectorValueLevelTableData.fValue2;
+			return positionBuffAffector._affectorValueLevelTableData.fValue3;
 		return 0;
 	}
 }

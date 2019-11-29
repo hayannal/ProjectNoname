@@ -1,4 +1,6 @@
-﻿using ECM.Common;
+﻿#define OPTIMIZE_DETECT_GROUND
+
+using ECM.Common;
 using System.Collections;
 using UnityEngine;
 
@@ -68,6 +70,13 @@ namespace ECM.Components
         [Range(0.0f, 1.0f)]
         [SerializeField]
         private float _snapStrength = 0.5f;
+
+#if OPTIMIZE_DETECT_GROUND
+		// 지형 변화가 없는 곳에선 계속해서 Ground를 찾는게 괜한 부하다. 최초로 찾아지면 더이상 찾지 않게 하는 옵션이 필요하다.
+		// 이번 프로젝트에선 항상 켤테니 true로 해둔다.
+		[SerializeField]
+		private bool _ignoreDetectGround = true;
+#endif
 
         #endregion
 
@@ -641,6 +650,11 @@ namespace ECM.Components
 
         private void DetectGround()
         {
+#if OPTIMIZE_DETECT_GROUND
+			if (_ignoreDetectGround && isOnGround)
+				return;
+#endif
+
             // Reset 'grounding' info
 
             ResetGroundInfo();
@@ -704,6 +718,11 @@ namespace ECM.Components
         
         private void PreventGroundPenetration()
         {
+#if OPTIMIZE_DETECT_GROUND
+			if (_ignoreDetectGround)
+				return;
+#endif
+
             // If on ground, return
 
             if (isOnGround)
@@ -1387,6 +1406,11 @@ namespace ECM.Components
 
         private void OnEnable()
         {
+#if OPTIMIZE_DETECT_GROUND
+			if (_ignoreDetectGround)
+				return;
+#endif
+
             // Initialize LateFixedUpdate coroutine
 
             if (_lateFixedUpdateCoroutine != null)
@@ -1397,6 +1421,11 @@ namespace ECM.Components
 
         private void OnDisable()
         {
+#if OPTIMIZE_DETECT_GROUND
+			if (_ignoreDetectGround)
+				return;
+#endif
+
             // Stop LateFixedUpdate coroutine
 
             if (_lateFixedUpdateCoroutine != null)

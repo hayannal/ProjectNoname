@@ -374,6 +374,7 @@ public class HitObject : MonoBehaviour
 		//statusStructForHitObject.repeatAddCountByLevelPack = normalAttack ? RepeatHitObjectAffector.GetAddCount(actor.affectorProcessor) : 0;
 	}
 
+	static List<AffectorProcessor> s_listAppliedAffectorProcessor;
 	static void CheckHitArea(Vector3 areaPosition, Vector3 areaForward, MeHitObject meHit, StatusBase statusBase, StatusStructForHitObject statusForHitObject,
 		List<AffectorProcessor> listOneHitPerTarget = null, Dictionary<AffectorProcessor, float> dicHitStayTime = null)
 	{
@@ -387,6 +388,11 @@ public class HitObject : MonoBehaviour
 		float distanceMin = meHit.areaDistanceMin; // * parentTransform.localScale.x;
 		float distanceMax = meHit.areaDistanceMax; // * parentTransform.localScale.x;
 		Vector3 forward = Quaternion.Euler(0.0f, meHit.areaRotationY, 0.0f) * areaForward;
+
+		if (s_listAppliedAffectorProcessor == null)
+			s_listAppliedAffectorProcessor = new List<AffectorProcessor>();
+		s_listAppliedAffectorProcessor.Clear();
+
 		for (int i = 0; i < result.Length; ++i)
 		{
 			// affector processor
@@ -401,6 +407,15 @@ public class HitObject : MonoBehaviour
 			// object radius
 			float colliderRadius = ColliderUtil.GetRadius(result[i]);
 			if (colliderRadius == -1.0f) continue;
+
+			// check sub parts
+			// 이론대로라면 파츠를 가진 타겟을 처리할때
+			// 해당 타겟의 파츠 중 어느 하나를 처리했다면 다른 파츠들은 continue시켜서 두번 처리되지 않게 하는건데
+			// 이 로직에선 affectorProcessor를 가지고 처리하기 때문에 monsterActor 같은데 들어가서 파츠몹인지를 검사하기가 애매하다.
+			// 그래서 아예 MonsterParts 같은 스크립트도 만들지 말고 컬리더만 여러개 부착시킨 후
+			// 여러개의 컬리더 중 하나라도 처리되면 나머지는 처리하지 않도록 해본다.
+			if (s_listAppliedAffectorProcessor.Contains(affectorProcessor))
+				continue;
 
 			// distance
 			Vector3 diff = result[i].transform.position - areaPosition;
@@ -452,6 +467,8 @@ public class HitObject : MonoBehaviour
 
 				if (listOneHitPerTarget != null && meHit.oneHitPerTarget)
 					listOneHitPerTarget.Add(affectorProcessor);
+
+				s_listAppliedAffectorProcessor.Add(affectorProcessor);
 			}
 		}
 	}
@@ -551,6 +568,10 @@ public class HitObject : MonoBehaviour
 		// 몬스터 raycast 정보는 정렬
 		s_listMonsterRaycastHit.Sort((a, b) => a.distance.CompareTo(b.distance));
 
+		if (s_listAppliedAffectorProcessor == null)
+			s_listAppliedAffectorProcessor = new List<AffectorProcessor>();
+		s_listAppliedAffectorProcessor.Clear();
+
 		// step 3. Check each object.
 		int monsterThroughCount = 0;
 		for (int i = 0; i < s_listMonsterRaycastHit.Count; ++i)
@@ -569,6 +590,10 @@ public class HitObject : MonoBehaviour
 			// object radius
 			float colliderRadius = ColliderUtil.GetRadius(col);
 			if (colliderRadius == -1.0f) continue;
+
+			// check sub parts
+			if (s_listAppliedAffectorProcessor.Contains(affectorProcessor))
+				continue;
 
 			bool ignoreAffectorProcessor = false;
 
@@ -604,6 +629,8 @@ public class HitObject : MonoBehaviour
 
 				if (listOneHitPerTarget != null && meHit.oneHitPerTarget)
 					listOneHitPerTarget.Add(affectorProcessor);
+
+				s_listAppliedAffectorProcessor.Add(affectorProcessor);
 			}
 
 			// Ray발사라서 PiercingHitObjectAffector에 영향받지 않는다.
@@ -1034,6 +1061,10 @@ public class HitObject : MonoBehaviour
 	List<AffectorProcessor> _listOneHitPerTarget = null;
 	void OnCollisionEnter(Collision collision)
 	{
+		if (s_listAppliedAffectorProcessor == null)
+			s_listAppliedAffectorProcessor = new List<AffectorProcessor>();
+		s_listAppliedAffectorProcessor.Clear();
+
 		//Debug.Log("hit object collision enter");
 		bool collided = false;
 		bool planeCollided = false;
@@ -1066,6 +1097,10 @@ public class HitObject : MonoBehaviour
 			AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(col);
 			if (affectorProcessor != null)
 			{
+				// check sub parts
+				if (s_listAppliedAffectorProcessor.Contains(affectorProcessor))
+					continue;
+
 				if (_signal.oneHitPerTarget)
 				{
 					if (_listOneHitPerTarget == null) _listOneHitPerTarget = new List<AffectorProcessor>();
@@ -1085,6 +1120,8 @@ public class HitObject : MonoBehaviour
 					if (_remainMonsterThroughCount > 0 || _remainMonsterThroughCount == -1)
 						AddIgnoreList(col);
 					// 리코세는 가능여부 판단하고 해야해서 OnPostCollided함수 안에서 한다.
+
+					s_listAppliedAffectorProcessor.Add(affectorProcessor);
 				}
 			}
 			else if (planeCollided == false && groundQuadCollided == false)

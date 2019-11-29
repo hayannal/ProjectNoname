@@ -119,6 +119,10 @@ public class Actor : MonoBehaviour {
 		actionController.idleAnimator.enabled = false;
 		HitObject.EnableRigidbodyAndCollider(false, _rigidbody, _collider, null, false);
 
+		// 원래 여기서 컬리더 여러개 사용하고 있다면 리스트 돌면서 함께 끌 예정이었으나
+		// 위의 코드만으로도 서브 컬리더의 충돌이 다 무시되서 안하기로 했다.
+		// rigidbody의 detectCollisions을 false로 하면 알아서 다 무시되는 형태.
+
 		CallAffectorValueAffector.OnEvent(affectorProcessor, CallAffectorValueAffector.eEventType.OnDie);
 	}
 

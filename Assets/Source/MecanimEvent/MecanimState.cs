@@ -85,6 +85,18 @@ public class MecanimState : MonoBehaviour {
 	}
 
 
+#if UNITY_EDITOR
+	// OnGUI 함수가 실제 빌드로 들어가게 되면
+	// 인풋이 발생할때마다 이쪽에 이벤트를 날리게 되고
+	// 해당 OnGUI 스크립트를 돌리고 있는 개수만큼 GUIUtility.BeginGUI 함수가 콜되면서 꽤 많은 부하를 만들어낸다.
+	// 저 함수 뿐만 아니라 UIEvents.IMGUIRenderOverlays 도 호출되면서 부하가 심해진다.
+	// 몬스터 50마리에 거의 8ms 는 늘어나는 느낌이었다. 테스트폰 아임백.
+	//
+	// 이번 경우에는 하필 이게 몬스터마다 붙어있었고,
+	// 몹이 많아진채로 터치를 하면 프레임 저하가 심해서 물리 문제라 생각했는데..
+	// 결국 이 OnGUI의 문제도 원인제공자 중에 하나란걸 알게 되서
+	// 폰에서 상태값이 필요할때만 UNITY_EDITOR 디파인 풀고 사용하도록 한다. 평소에는 에디터에서만 보면 될거다.
+
 	#region debugging
 	public bool showState = false;
 
@@ -92,7 +104,6 @@ public class MecanimState : MonoBehaviour {
 	public  float frequency = 0.5F; // The update frequency of the fps
 	public int nbDecimal = 1; // How many decimal do you want to display
 	private GUIStyle style; // The style the text will be displayed at, based en defaultSkin.label.
-
 
 	void OnGUI()
 	{
@@ -127,4 +138,5 @@ public class MecanimState : MonoBehaviour {
 		return _stringBuilder.ToString();
 	}
 	#endregion
+#endif
 }

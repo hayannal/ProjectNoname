@@ -69,6 +69,7 @@ public class MonsterAIEditor : ReorderableArrayInspector
 		if (t.useStateList[2])
 		{
 			t.chaseDistanceRange = EditorGUILayout.Vector2Field("Chase Distance", t.chaseDistanceRange);
+			t.chaseCancelTimeRange = EditorGUILayout.Vector2Field("Cancel Time", t.chaseCancelTimeRange);
 		}
 
 		DrawUILine(Color.grey);

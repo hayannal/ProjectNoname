@@ -56,4 +56,8 @@ public class ActorTableData
   string _prefabAddress;
   public string prefabAddress { get { return _prefabAddress; } set { _prefabAddress = value; } }
   
+  [SerializeField]
+  string _portraitAddress;
+  public string portraitAddress { get { return _portraitAddress; } set { _portraitAddress = value; } }
+  
 }

@@ -11,6 +11,13 @@ public class SwapCanvasListItem : MonoBehaviour
 	public void Initialize(CharacterData characterData)
 	{
 		_actorId = characterData.actorId;
+
+		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(characterData.actorId);
+		AddressableAssetLoadManager.GetAddressableSprite(actorTableData.portraitAddress, "Icon", (sprite) =>
+		{
+			characterImage.sprite = null;
+			characterImage.sprite = sprite;
+		});
 	}
 
 	public void OnClickButton()

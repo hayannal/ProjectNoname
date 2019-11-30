@@ -198,7 +198,7 @@ public class SkillProcessor : MonoBehaviour
 	public class LevelPackInfo
 	{
 		public int stackCount;
-		public string iconName;
+		public string iconAddress;
 		public string[] affectorValueIdList;
 		public string nameId;
 		public string descriptionId;
@@ -225,7 +225,7 @@ public class SkillProcessor : MonoBehaviour
 		{
 			info = new LevelPackInfo();
 			info.stackCount = 1;
-			info.iconName = levelPackTableData.icon;
+			info.iconAddress = levelPackTableData.iconAddress;
 			if (levelPackTableData.useAffectorValueIdOverriding == false)
 				info.affectorValueIdList = levelPackTableData.affectorValueId;
 			info.nameId = levelPackTableData.nameId;

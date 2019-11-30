@@ -15,7 +15,7 @@ public class LevelUpIndicatorButton : MonoBehaviour
 	string _id;
 	public void SetInfo(LevelPackTableData levelPackTableData)
 	{
-		AddressableAssetLoadManager.GetAddressableSprite(levelPackTableData.icon, "Icon", (sprite) =>
+		AddressableAssetLoadManager.GetAddressableSprite(levelPackTableData.iconAddress, "Icon", (sprite) =>
 		{
 			iconImage.sprite = null;
 			iconImage.sprite = sprite;

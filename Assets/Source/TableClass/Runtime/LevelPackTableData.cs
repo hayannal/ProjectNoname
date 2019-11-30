@@ -13,8 +13,8 @@ public class LevelPackTableData
   public string levelPackId { get { return _levelPackId; } set { _levelPackId = value; } }
   
   [SerializeField]
-  string _icon;
-  public string icon { get { return _icon; } set { _icon = value; } }
+  string _iconAddress;
+  public string iconAddress { get { return _iconAddress; } set { _iconAddress = value; } }
   
   [SerializeField]
   bool _exclusive;

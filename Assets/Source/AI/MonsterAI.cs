@@ -29,7 +29,7 @@ public class MonsterAI : MonoBehaviour
 	}
 	eStateType _currentState;
 
-	public float startDelay;
+	public Vector2 startDelayRange;
 	public eStateType startState = eStateType.RandomMove;
 	public bool[] useStateList = new bool[(int)eStateType.TypeAmount];
 
@@ -65,7 +65,7 @@ public class MonsterAI : MonoBehaviour
 	bool _initialized = false;
 	public void InitializeAI()
 	{
-		_startDelayRemainTime = startDelay;
+		_startDelayRemainTime = Random.Range(startDelayRange.x, startDelayRange.y);
 		_currentState = startState;
 
 		// exception handling

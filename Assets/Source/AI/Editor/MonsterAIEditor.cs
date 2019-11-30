@@ -21,7 +21,7 @@ public class MonsterAIEditor : ReorderableArrayInspector
 	{
 		MonsterAI t = (MonsterAI)target;
 
-		t.startDelay = EditorGUILayout.FloatField("Start Delay Time", t.startDelay);
+		t.startDelayRange = EditorGUILayout.Vector2Field("Start Delay Time", t.startDelayRange);
 		t.startState = (MonsterAI.eStateType)EditorGUILayout.EnumPopup("Start State Type", t.startState);
 
 		if (t.useStateList[(int)t.startState] == false)

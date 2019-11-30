@@ -133,6 +133,7 @@ MonoBehaviour:
   _slideGravityMultiplier: 2
   _snapToGround: 1
   _snapStrength: 0.5
+  _ignoreDetectGround: 1
 --- !u!114 &-1384411542460216806
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -179,8 +180,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actorId: Madcap
+  commonPoolPreloadObjectList: []
+  selfPassivePreloadObjectList: []
+  gaugeOffsetY: 0
   monsterHpGaugeWidth: 1
-  monsterHpGaugeOffsetY: 0
 --- !u!114 &-126302612920679643
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -193,7 +196,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16c7fbc98e43a374b85a6a2909d657eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startDelay: 0.25
+  startDelayRange: {x: 0.25, y: 0.25}
   startState: 0
   useStateList: 0100010101
   moveTimeRange: {x: 5, y: 5}

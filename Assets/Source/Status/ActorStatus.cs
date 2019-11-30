@@ -21,6 +21,7 @@ public class ActorStatus : MonoBehaviour
 		actor = GetComponent<Actor>();
 	}
 
+	// 로비에서 파워레벨이 바뀌든 연구소 장비가 바뀌든 이 함수 호출해주면 알아서 모든 스탯을 재계산하게 된다.
 	public void InitializeActorStatus()
 	{
 		if (_statusBase == null)
@@ -85,6 +86,9 @@ public class ActorStatus : MonoBehaviour
 			actor.baseCharacterController.speed = GetValue(eActorStatus.MoveSpeed);
 		if (eType == eActorStatus.AttackSpeedAddRate || eType == eActorStatus.ExAmount)
 			actor.actionController.OnChangedAttackSpeedAddRatio(GetValue(eActorStatus.AttackSpeedAddRate));
+
+		// 로비에서는 장비 변경해도 만피로 유지되면서 이 함수 호출되는데 항상 ExAmount로 올거다.
+		// 그래서 ExAmount로 올땐 처리하지 않고 인게임 내에서 MaxHp 관련 스탯으로 올때만 처리해주면 된다.
 		if (eType == eActorStatus.MaxHp || eType == eActorStatus.MaxHpAddRate)
 		{
 			float maxHp = GetValue(eActorStatus.MaxHp);

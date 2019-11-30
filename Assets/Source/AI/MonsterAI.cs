@@ -336,16 +336,20 @@ public class MonsterAI : MonoBehaviour
 	#endregion
 
 	#region Chase
-	public float chaseDistance;
+	public Vector2 chaseDistanceRange;
+	float _chaseDistance = 0.0f;
 	Vector3 _lastGoalPosition = Vector3.up;
 	void UpdateChase(bool callByAttackAction = false)
 	{
 		if (targetActor == null)
 			return;
 
+		if (_chaseDistance == 0.0f)
+			_chaseDistance = Random.Range(chaseDistanceRange.x, chaseDistanceRange.y);
+
 		Vector3 diff = actor.cachedTransform.position - targetActor.cachedTransform.position;
 		float sqrDiff = diff.sqrMagnitude;
-		float sqrRadius = (targetRadius + actorRadius) * (targetRadius + actorRadius) + 0.01f + (chaseDistance * chaseDistance);
+		float sqrRadius = (targetRadius + actorRadius) * (targetRadius + actorRadius) + 0.01f + (_chaseDistance * _chaseDistance);
 		if (sqrDiff <= sqrRadius)
 		{
 			if (callByAttackAction == false)
@@ -367,6 +371,7 @@ public class MonsterAI : MonoBehaviour
 
 	void ResetChaseStateInfo()
 	{
+		_chaseDistance = 0.0f;
 		_lastGoalPosition = Vector3.up;
 	}
 	#endregion

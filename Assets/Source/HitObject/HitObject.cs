@@ -46,9 +46,10 @@ public class HitObject : MonoBehaviour
 						continue;
 
 					HitParameter hitParameter = new HitParameter();
+					Transform targetColliderTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
 					hitParameter.hitNormal = parentTransform.forward;
-					hitParameter.contactNormal = (parentTransform.position - targetCollider.transform.position).normalized;
-					hitParameter.contactPoint = targetCollider.transform.position + (hitParameter.contactNormal * colliderRadius * 0.7f);
+					hitParameter.contactNormal = (parentTransform.position - targetColliderTransform.position).normalized;
+					hitParameter.contactPoint = targetColliderTransform.position + (hitParameter.contactNormal * colliderRadius * 0.7f);
 					hitParameter.contactPoint.y += targetCollider.bounds.size.y * 0.5f;
 					hitParameter.statusBase = parentActor.actorStatus.statusBase;
 					CopyEtcStatusForHitObject(ref hitParameter.statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
@@ -418,7 +419,7 @@ public class HitObject : MonoBehaviour
 				continue;
 
 			// distance
-			Vector3 diff = result[i].transform.position - areaPosition;
+			Vector3 diff = BattleInstanceManager.instance.GetTransformFromCollider(result[i]).position - areaPosition;
 			diff.y = 0.0f;
 			if (diff.magnitude + colliderRadius < distanceMin) continue;
 			if (diff.magnitude - colliderRadius > distanceMax) continue;
@@ -449,7 +450,7 @@ public class HitObject : MonoBehaviour
 				HitParameter hitParameter = new HitParameter();
 				hitParameter.hitNormal = forward;
 				hitParameter.contactNormal = -diff.normalized;
-				hitParameter.contactPoint = result[i].transform.position + (hitParameter.contactNormal * colliderRadius * 0.7f);
+				hitParameter.contactPoint = BattleInstanceManager.instance.GetTransformFromCollider(result[i]).position + (hitParameter.contactNormal * colliderRadius * 0.7f);
 				hitParameter.contactPoint.y += (meHit.areaHeightMin + meHit.areaHeightMax) * 0.5f;
 				hitParameter.statusBase = statusBase;
 				hitParameter.statusStructForHitObject = statusForHitObject;

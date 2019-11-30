@@ -27,6 +27,7 @@ namespace ActorStatusDefine {
 		BossMonsterDamageDecreaseAddRate,
 		PowerSourceHealRate,
 		SwapHealRate,
+		LevelUpHealRate,
 
 		BaseAmount,
 

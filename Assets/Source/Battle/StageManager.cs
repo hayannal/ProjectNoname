@@ -10,6 +10,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using SubjectNerd.Utilities;
 #endif
 using CodeStage.AntiCheat.ObscuredTypes;
+using ActorStatusDefine;
 
 public class StageManager : MonoBehaviour
 {
@@ -351,6 +352,7 @@ public class StageManager : MonoBehaviour
 
 		AffectorValueLevelTableData healAffectorValue = new AffectorValueLevelTableData();
 		healAffectorValue.fValue3 = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("LevelUpHeal") * needLevelUpCount;
+		healAffectorValue.fValue3 += BattleInstanceManager.instance.playerActor.actorStatus.GetValue(eActorStatus.LevelUpHealRate) * needLevelUpCount;
 		BattleInstanceManager.instance.playerActor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Heal, healAffectorValue, BattleInstanceManager.instance.playerActor, false);
 
 		BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.playerLevelUpEffectPrefab, BattleInstanceManager.instance.playerActor.cachedTransform.position, Quaternion.identity, BattleInstanceManager.instance.playerActor.cachedTransform);

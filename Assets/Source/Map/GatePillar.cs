@@ -174,27 +174,6 @@ public class GatePillar : MonoBehaviour
 				bool showSwapCanvas = false;
 				if (mainCharacterData.powerLevel < chapterTableData.suggestedPowerLevel)
 					showSwapCanvas = true;
-				bool find = false;
-				if (PlayerData.instance.chaosMode)
-				{
-					// 카오스 모드에선 suggested 검사를 패스한다. 파워레벨만 체크하면 끝이다.
-					find = true;
-				}
-				else
-				{
-					for (int i = 0; i < chapterTableData.suggestedActorId.Length; ++i)
-					{
-						if (chapterTableData.suggestedActorId[i] == PlayerData.instance.mainCharacterId)
-						{
-							find = true;
-							break;
-						}
-					}
-				}
-				if (!find)
-					showSwapCanvas = true;
-				if (showSwapCanvas && mainCharacterData.powerLevel >= chapterTableData.ignoreSuggestionPowerLevel)
-					showSwapCanvas = false;
 				if (showSwapCanvas)
 				{
 					FullscreenYesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_EnterInfo"), UIString.instance.GetString("GameUI_EnterInfoDesc"), () => {

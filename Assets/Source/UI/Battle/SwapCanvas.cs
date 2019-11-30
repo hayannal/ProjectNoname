@@ -167,6 +167,8 @@ public class SwapCanvas : MonoBehaviour
 		_selectedActorId = actorId;
 	}
 
+	// 하단 함수는 챕터 캔버스에서 사용할 코드다.
+	/*
 	public void OnClickChapterInfoButton()
 	{
 		ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
@@ -180,6 +182,7 @@ public class SwapCanvas : MonoBehaviour
 		string suggestString = GetSuggestString(chapterTableData.descriptionId, chapterTableData.suggestedActorId);
 		//suggestText.SetLocalizedText(suggestString);
 	}
+	*/
 
 	public void OnClickBossInfoButton()
 	{

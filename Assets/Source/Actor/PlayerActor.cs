@@ -89,11 +89,9 @@ public class PlayerActor : Actor
 					// 레벨팩 이전
 					LevelPackDataManager.instance.TransferLevelPackList(BattleInstanceManager.instance.playerActor, this);
 
-					// Hp비율 이전
+					// Hp비율 이전. Sp는 최대로 회복
 					float hpRatio = BattleInstanceManager.instance.playerActor.actorStatus.GetHPRatio();
-					actorStatus.SetHPRatio(hpRatio);
-
-					// Sp는?
+					actorStatus.SetHpSpRatio(hpRatio, 1.0f);
 
 					// 스왑 힐 적용
 					AffectorValueLevelTableData healAffectorValue = new AffectorValueLevelTableData();
@@ -212,7 +210,7 @@ public class PlayerActor : Actor
 		OnChangedMainCharacter(true);
 
 		// 체험모드에서도 플레이어를 때리는 몹이 있을테니 HP 리셋
-		actorStatus.SetHPRatio(1.0f);
+		actorStatus.SetHpSpRatio(1.0f, 0.0f);
 
 		// 들어갈때 피 게이지는 안떠도 상관없다고 해서 패스.
 		//PlayerGaugeCanvas.instance.InitializeGauge(this);
@@ -225,7 +223,7 @@ public class PlayerActor : Actor
 			return;
 
 		// 체험모드에서도 플레이어를 때리는 몹이 있을테니 HP 리셋
-		actorStatus.SetHPRatio(1.0f);
+		actorStatus.SetHpSpRatio(1.0f, 0.0f);
 
 		BattleInstanceManager.instance.playerActor.gameObject.SetActive(false);
 		_prevPlayerActor.OnChangedMainCharacter(true);

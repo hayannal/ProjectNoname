@@ -52,6 +52,8 @@ public class ActorStatus : MonoBehaviour
 		_statusBase.valueList[(int)eActorStatus.MaxHp] *= actorTableData.multiHp;
 		_statusBase.valueList[(int)eActorStatus.Attack] *= actorTableData.multiAtk;
 
+		// potential MoveSpeedAddRate, SpGainAddRate
+
 		//if (isServer)
 		_statusBase._hp = _lastMaxHp = GetValue(eActorStatus.MaxHp);
 		_statusBase._sp = 0.0f;

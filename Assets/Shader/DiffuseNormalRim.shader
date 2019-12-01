@@ -11,6 +11,13 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 		_RimPower ("Rim Power", Range(-1.0, 2)) = 1
 		_RimDirAdjust ("Rim Dir Adjust", Vector) = (0, 0, 0, 0)
 
+		[Toggle(_HUE)] _UseHue("========== Use Hue ==========", Float) = 0
+		_Hue ("Hue", Range(0.0, 360)) = 0
+
+		[Toggle(_SELECTHUE)] _SelectHue("========== Select Hue Range ==========", Float) = 0
+		_V_TA_HueSaturationLightness_Angle("Angle", Range(0, 1)) = 0
+		_V_TA_HueSaturationLightness_Range("Range", Range(0, 1)) = 0.25
+
 		[Toggle(_DISSOLVE)] _UseDissolve("========== Use Dissolve ==========", Float) = 0
 		[HDR]_EdgeColor1 ("Edge Color", Color) = (1,1,1,1)
 		_EdgeSize ("EdgeSize", Range(0,1)) = 0.2
@@ -23,6 +30,8 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 		CGPROGRAM
 		#pragma surface surf Lambert exclude_path:prepass nolightmap noforwardadd
 		#pragma multi_compile _ _DISSOLVE
+		#pragma shader_feature _HUE
+		#pragma shader_feature _SELECTHUE
 
 		// Use shader model 3.0 target, to get nicer looking lighting
 		#pragma target 3.0
@@ -34,6 +43,20 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 		float4 _RimColor;
       	float _RimPower;
       	float4 _RimDirAdjust;
+
+#if _HUE
+		uniform float _Hue;
+#endif
+
+#if _SELECTHUE
+		//Range( 0.0,  360.0) - default = 0
+		float _V_TA_HueSaturationLightness_Angle;
+
+		//Range( 0.0,  1.0) - default = 0.25
+		float _V_TA_HueSaturationLightness_Range;
+		float _V_TA_HueSaturationLightness_RangeMin;
+		float _V_TA_HueSaturationLightness_RangeMax;
+#endif
 
 #if _DISSOLVE
 		half4 _EdgeColor1;
@@ -53,8 +76,56 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 #endif
 		};
 
+#if _HUE
+		inline float3 applyHue(float3 aColor)
+		{
+			float angle = radians(_Hue);
+			float3 k = float3(0.57735, 0.57735, 0.57735);
+			float cosAngle = cos(angle);
+
+			return aColor * cosAngle + cross(k, aColor) * sin(angle) + k * dot(k, aColor) * (1 - cosAngle);
+		}
+#endif
+
+#if _SELECTHUE
+		float RGBtoHUE(float3 c)
+		{
+			float4 K = float4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+			float4 p = lerp(float4(c.bg, K.wz), float4(c.gb, K.xy), step(c.b, c.g));
+			float4 q = lerp(float4(p.xyw, c.r), float4(c.r, p.yzx), step(p.x, c.r));
+
+			return abs(q.z + (q.w - q.y) / (6.0 * (q.x - min(q.w, q.y)) + 1.0e-10));
+		}
+
+		inline float3 SelectiveByRange(float3 _srcColor, float3 hsl)
+		{
+			//hue range value
+			float h = RGBtoHUE(_srcColor.rgb);
+
+			_V_TA_HueSaturationLightness_RangeMin = _V_TA_HueSaturationLightness_Angle - _V_TA_HueSaturationLightness_Range;
+			_V_TA_HueSaturationLightness_RangeMax = _V_TA_HueSaturationLightness_Angle + _V_TA_HueSaturationLightness_Range;
+
+			if (_V_TA_HueSaturationLightness_RangeMax > 1.0 && h < _V_TA_HueSaturationLightness_RangeMax - 1.0) h += 1.0;
+			if (_V_TA_HueSaturationLightness_RangeMin < 0.0 && h > _V_TA_HueSaturationLightness_RangeMin + 1.0) h -= 1.0;
+
+			float2 smoothStep = smoothstep(float2(_V_TA_HueSaturationLightness_Angle, _V_TA_HueSaturationLightness_RangeMin), float2(_V_TA_HueSaturationLightness_RangeMax, _V_TA_HueSaturationLightness_Angle), h);
+
+			_srcColor.rgb = lerp(lerp(hsl.rgb, _srcColor.rgb, smoothStep.x), lerp(_srcColor.rgb, hsl.rgb, smoothStep.y), step(h, _V_TA_HueSaturationLightness_Angle));
+
+			return _srcColor;
+		}
+#endif
+
 		void surf (Input IN, inout SurfaceOutput o) {
 			o.Albedo = tex2D(_MainTex, IN.uv_MainTex).rgb * _Color;
+#if _HUE
+	#if _SELECTHUE
+			float3 hsl = applyHue(o.Albedo);
+			o.Albedo = SelectiveByRange(o.Albedo, hsl);
+	#else
+			o.Albedo = applyHue(o.Albedo);
+	#endif
+#endif
 
 #if _DISSOLVE
 			half Noise = tex2D(_Noise, IN.uv_Noise).r;

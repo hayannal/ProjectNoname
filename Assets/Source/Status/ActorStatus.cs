@@ -44,7 +44,7 @@ public class ActorStatus : MonoBehaviour
 		for (int i = 0; i < _statusBase.valueList.Length; ++i)
 			_statusBase.valueList[i] += TimeSpaceData.instance.cachedEquipStatusList.valueList[i];
 
-		// equip rate
+		// equip rate + potential stat rate
 		_statusBase.valueList[(int)eActorStatus.MaxHp] *= (1.0f + TimeSpaceData.instance.cachedEquipStatusList.valueList[(int)eActorStatus.MaxHpAddRate]);
 		_statusBase.valueList[(int)eActorStatus.Attack] *= (1.0f + TimeSpaceData.instance.cachedEquipStatusList.valueList[(int)eActorStatus.AttackAddRate]);
 

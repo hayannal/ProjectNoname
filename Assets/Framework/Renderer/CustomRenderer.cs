@@ -106,6 +106,7 @@ public class CustomRenderer : MonoBehaviour
     }
 
 	public int needGrab_refCount { get; set; }
+	public int needBlur_refCount { get; set; }
     void OnPostRender()
     {
 		m_mainCamera.targetTexture = null;
@@ -176,6 +177,11 @@ public class CustomRenderer : MonoBehaviour
 
 		PostProcess();
 
+		if (needBlur_refCount > 0)
+		{
+			Blur(m_firstRT);
+		}
+
 		m_bloomComponent.OnPostRenderAdditiveBloom(m_firstRT, null as RenderTexture);
 		RenderTexture.ReleaseTemporary(m_firstRT);
     }
@@ -218,5 +224,100 @@ public class CustomRenderer : MonoBehaviour
 		}
 	}
 	#endregion
-#endif
+
+	#region Blur
+	[Range(0, 25)]
+	/// <summary>
+	/// how many Iterations should the blur be applied for
+	/// </summary>
+	public int blurIterations;
+
+	[Range(0, 5)]
+	/// <summary>
+	/// Lowers the resolution of the texture, thus allowing for a larger blur without so many iterations
+	/// </summary>
+	public int blurDownRes;
+
+	/// <summary>
+	/// Weather to update the blur
+	/// </summary>
+	public bool updateBlur = true;
+
+	/// <summary>
+	/// amount of time that will pass before re-rendering the blur
+	/// </summary>
+	public float blurUpdateRate = 0.02f;
+
+	/// <summary>
+	/// last time we rendered the blur
+	/// </summary>
+	private float _blurLastUpdate = 0.0f;
+
+	/// <summary>
+	/// Stores the blur texture between renders
+	/// </summary>
+	RenderTexture _blurTexture;
+
+	/// <summary>
+	/// The material where we'll pass the screen texture though to create the blur
+	/// </summary>
+	private Material _blurMaterial;
+
+	void Blur(RenderTexture source)
+	{
+		//set the width and height
+		int width = source.width >> blurDownRes;
+		int height = source.height >> blurDownRes;
+
+		if (_blurTexture == null)
+		{
+			_blurTexture = new RenderTexture(width, height, 16, RenderTextureFormat.ARGB32);
+			_blurTexture.Create();
+			//Debug.LogFormat("Blur Texture {0} x {1}", width, height);
+
+			// 처음 만들어질땐 바로 구워지도록 _blurLastUpdate값을 갱신시킨다.
+			_blurLastUpdate = Time.time - blurUpdateRate;
+		}
+		if (_blurMaterial == null)
+			_blurMaterial = new Material(Shader.Find("Hidden/GaussianBlur_Mobile"));
+
+		// if we need to re-render
+		if (Time.time - _blurLastUpdate >= blurUpdateRate && updateBlur)
+		{
+			//create a temp texture
+			RenderTexture rt = RenderTexture.GetTemporary(width, height);
+
+			//move the screen image to our temp texture
+			Graphics.Blit(source, rt);
+
+			//loop to add the blur to our temp texture
+			for (int i = 0; i < blurIterations; i++)
+			{
+				RenderTexture rt2 = RenderTexture.GetTemporary(width, height);
+				Graphics.Blit(rt, rt2, _blurMaterial);
+				RenderTexture.ReleaseTemporary(rt);
+				rt = rt2;
+			}
+
+			//store our texture in BlurTexture
+			Graphics.Blit(rt, _blurTexture);
+
+			//set the global texture for our shader to use
+			Shader.SetGlobalTexture("_MobileBlur", rt);
+
+			//remove the temp texture
+			RenderTexture.ReleaseTemporary(rt);
+
+			//set lastUpdate
+			_blurLastUpdate = Time.time;
+
+		}
+		else
+		{
+			//set the global texture again...must be done for each frame
+			Shader.SetGlobalTexture("_MobileBlur", _blurTexture);
+		}
 	}
+	#endregion
+#endif
+}

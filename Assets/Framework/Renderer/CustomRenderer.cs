@@ -230,18 +230,13 @@ public class CustomRenderer : MonoBehaviour
 	/// <summary>
 	/// how many Iterations should the blur be applied for
 	/// </summary>
-	public int blurIterations;
+	public int blurIterations = 2;
 
 	[Range(0, 5)]
 	/// <summary>
 	/// Lowers the resolution of the texture, thus allowing for a larger blur without so many iterations
 	/// </summary>
-	public int blurDownRes;
-
-	/// <summary>
-	/// Weather to update the blur
-	/// </summary>
-	public bool updateBlur = true;
+	public int blurDownRes = 1;
 
 	/// <summary>
 	/// amount of time that will pass before re-rendering the blur
@@ -282,7 +277,7 @@ public class CustomRenderer : MonoBehaviour
 			_blurMaterial = new Material(Shader.Find("Hidden/GaussianBlur_Mobile"));
 
 		// if we need to re-render
-		if (Time.time - _blurLastUpdate >= blurUpdateRate && updateBlur)
+		if (Time.time - _blurLastUpdate >= blurUpdateRate)
 		{
 			//create a temp texture
 			RenderTexture rt = RenderTexture.GetTemporary(width, height);

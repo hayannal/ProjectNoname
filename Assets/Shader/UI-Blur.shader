@@ -125,7 +125,7 @@ Shader "FrameworkNG/UI/Blur"
 				color.a *= IN.color.a;
 
 				#if _BLUR
-				#if _SMALLBLUR
+				#if _STRONGBLUR
 					half3 blurColor = tex2D(_MobileStrongBlur, IN.screenPos).rgb;
 				#else
 					half3 blurColor = tex2D(_MobileBlur, IN.screenPos).rgb;

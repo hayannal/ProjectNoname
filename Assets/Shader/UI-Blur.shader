@@ -18,6 +18,7 @@ Shader "FrameworkNG/UI/Blur"
 		[Toggle(UNITY_UI_ALPHACLIP)] _UseUIAlphaClip ("Use Alpha Clip", Float) = 0
 
 		[Toggle(_BLUR)] _UseBlur("========== Use Blur ==========", Float) = 0
+		[Toggle(_STRONGBLUR)] _UseStrongBlur("Strong Blur", Float) = 0
 	}
 
 	SubShader
@@ -56,15 +57,18 @@ Shader "FrameworkNG/UI/Blur"
 			#include "UnityCG.cginc"
 			#include "UnityUI.cginc"
 
-			#pragma multi_compile __ UNITY_UI_ALPHACLIP
+			#pragma multi_compile_local _ UNITY_UI_CLIP_RECT
+			#pragma multi_compile_local _ UNITY_UI_ALPHACLIP
 
 			#pragma shader_feature _BLUR
+			#pragma shader_feature _STRONGBLUR
 			
 			struct appdata_t
 			{
 				float4 vertex   : POSITION;
 				float4 color    : COLOR;
 				float2 texcoord : TEXCOORD0;
+				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
 			struct v2f
@@ -76,6 +80,7 @@ Shader "FrameworkNG/UI/Blur"
 				#if _BLUR
 					float2 screenPos : TEXCOORD2;
 				#endif
+				UNITY_VERTEX_OUTPUT_STEREO
 			};
 			
 			fixed4 _Color;
@@ -83,12 +88,18 @@ Shader "FrameworkNG/UI/Blur"
 			float4 _ClipRect;
 
 			#if _BLUR
+			#if _STRONGBLUR
+				uniform sampler2D _MobileStrongBlur;
+			#else
 				uniform sampler2D _MobileBlur;
+			#endif
 			#endif
 
 			v2f vert(appdata_t IN)
 			{
 				v2f OUT;
+				UNITY_SETUP_INSTANCE_ID(IN);
+				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT);
 				OUT.worldPosition = IN.vertex;
 				OUT.vertex = UnityObjectToClipPos(OUT.worldPosition);
 
@@ -110,15 +121,23 @@ Shader "FrameworkNG/UI/Blur"
 
 			fixed4 frag(v2f IN) : SV_Target
 			{
-				half4 color = (tex2D(_MainTex, IN.texcoord) + _TextureSampleAdd) * IN.color;
+				half4 color = (tex2D(_MainTex, IN.texcoord) + _TextureSampleAdd);
+				color.a *= IN.color.a;
 
 				#if _BLUR
+				#if _SMALLBLUR
+					half3 blurColor = tex2D(_MobileStrongBlur, IN.screenPos).rgb;
+				#else
 					half3 blurColor = tex2D(_MobileBlur, IN.screenPos).rgb;
-					color.rgb = color.rgb * blurColor.rgb;
-					//color.rgb = saturate(lerp(blurColor.rgb, color.rgb, IN.color.a));
 				#endif
-				
+					color.rgb = lerp(blurColor.rgb, color.rgb, color.a);
+					color.a = 1.0f;
+				#endif
+				color.rgb *= IN.color.rgb;
+
+				#ifdef UNITY_UI_CLIP_RECT
 				color.a *= UnityGet2DClipping(IN.worldPosition.xy, _ClipRect);
+				#endif
 				
 				#ifdef UNITY_UI_ALPHACLIP
 				clip (color.a - 0.001);

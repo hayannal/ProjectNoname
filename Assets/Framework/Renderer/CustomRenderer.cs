@@ -107,7 +107,8 @@ public class CustomRenderer : MonoBehaviour
 
 	public int needGrab_refCount { get; set; }
 	public int needBlur_refCount { get; set; }
-    void OnPostRender()
+	public int needStrongBlur_refCount { get; set; }
+	void OnPostRender()
     {
 		m_mainCamera.targetTexture = null;
 		m_bloomComponent.UpdateBloom(m_firstRT);
@@ -178,9 +179,9 @@ public class CustomRenderer : MonoBehaviour
 		PostProcess();
 
 		if (needBlur_refCount > 0)
-		{
 			Blur(m_firstRT);
-		}
+		if (needStrongBlur_refCount > 0)
+			StrongBlur(m_firstRT);
 
 		m_bloomComponent.OnPostRenderAdditiveBloom(m_firstRT, null as RenderTexture);
 		RenderTexture.ReleaseTemporary(m_firstRT);
@@ -232,12 +233,6 @@ public class CustomRenderer : MonoBehaviour
 	/// </summary>
 	public int blurIterations = 2;
 
-	[Range(0, 5)]
-	/// <summary>
-	/// Lowers the resolution of the texture, thus allowing for a larger blur without so many iterations
-	/// </summary>
-	public int blurDownRes = 1;
-
 	/// <summary>
 	/// amount of time that will pass before re-rendering the blur
 	/// </summary>
@@ -248,18 +243,17 @@ public class CustomRenderer : MonoBehaviour
 	/// </summary>
 	private float _blurLastUpdate = 0.0f;
 
-	/// <summary>
-	/// Stores the blur texture between renders
-	/// </summary>
 	RenderTexture _blurTexture;
+	Material _blurMaterial;
 
-	/// <summary>
-	/// The material where we'll pass the screen texture though to create the blur
-	/// </summary>
-	private Material _blurMaterial;
-
+	// 디비전을 보니 항상 풀스크린엔 Dof가 깔려서 은은한 블러가 먹힌채
+	// UI에는 진한 블러를 먹여서 외곽선이나 쉐도우 없이도 폰트가 잘 보이게 해뒀다.
+	// 이걸 모바일로 fake로 구현하기 위해
+	// 블러 텍스처를 작은거 하나 큰거 하나 들고있게 해본다.
 	void Blur(RenderTexture source)
 	{
+		int blurDownRes = 1;
+
 		//set the width and height
 		int width = source.width >> blurDownRes;
 		int height = source.height >> blurDownRes;
@@ -305,12 +299,51 @@ public class CustomRenderer : MonoBehaviour
 
 			//set lastUpdate
 			_blurLastUpdate = Time.time;
-
 		}
 		else
 		{
 			//set the global texture again...must be done for each frame
 			Shader.SetGlobalTexture("_MobileBlur", _blurTexture);
+		}
+	}
+
+	float _strongBlurLastUpdate = 0.0f;
+	RenderTexture _strongBlurTexture;
+	void StrongBlur(RenderTexture source)
+	{
+		int smallBlurDownRes = 4;
+		int smallWidth = source.width >> smallBlurDownRes;
+		int smallHeight = source.height >> smallBlurDownRes;
+
+		if (_strongBlurTexture == null)
+		{			
+			_strongBlurTexture = new RenderTexture(smallWidth, smallHeight, 16, RenderTextureFormat.ARGB32);
+			_strongBlurTexture.Create();
+			_strongBlurLastUpdate = Time.time - blurUpdateRate;
+		}
+		if (_blurMaterial == null)
+			_blurMaterial = new Material(Shader.Find("Hidden/GaussianBlur_Mobile"));
+
+		if (Time.time - _strongBlurLastUpdate >= blurUpdateRate)
+		{
+			RenderTexture strongRt = RenderTexture.GetTemporary(smallWidth, smallHeight);
+			Graphics.Blit(source, strongRt);
+
+			for (int i = 0; i < blurIterations; i++)
+			{
+				RenderTexture smallRt2 = RenderTexture.GetTemporary(smallWidth, smallHeight);
+				Graphics.Blit(strongRt, smallRt2, _blurMaterial);
+				RenderTexture.ReleaseTemporary(strongRt);
+				strongRt = smallRt2;
+			}
+			Graphics.Blit(strongRt, _strongBlurTexture);
+			Shader.SetGlobalTexture("_MobileStrongBlur", strongRt);
+			RenderTexture.ReleaseTemporary(strongRt);
+			_strongBlurLastUpdate = Time.time;
+		}
+		else
+		{
+			Shader.SetGlobalTexture("_MobileStrongBlur", _strongBlurTexture);
 		}
 	}
 	#endregion

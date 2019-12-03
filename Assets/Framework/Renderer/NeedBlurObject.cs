@@ -6,6 +6,8 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class NeedBlurObject : MonoBehaviour
 {
+	public bool useStrongBlur;
+
 	void OnEnable()
 	{
 		if (_started)
@@ -27,12 +29,22 @@ public class NeedBlurObject : MonoBehaviour
 	void IncreaseRefCount()
 	{
 		if (CustomRenderer.instance != null)
-			++CustomRenderer.instance.needBlur_refCount;
+		{
+			if (useStrongBlur)
+				++CustomRenderer.instance.needStrongBlur_refCount;
+			else
+				++CustomRenderer.instance.needBlur_refCount;
+		}
 	}
 
 	void DecreaseRefCount()
 	{
 		if (CustomRenderer.instance != null)
-			--CustomRenderer.instance.needBlur_refCount;
+		{
+			if (useStrongBlur)
+				--CustomRenderer.instance.needStrongBlur_refCount;
+			else
+				--CustomRenderer.instance.needBlur_refCount;
+		}
 	}
 }

@@ -58,7 +58,8 @@ Shader "FrameworkNG/UI/Refraction"
 			#include "UnityCG.cginc"
 			#include "UnityUI.cginc"
 
-			#pragma multi_compile __ UNITY_UI_ALPHACLIP
+			#pragma multi_compile_local _ UNITY_UI_CLIP_RECT
+			#pragma multi_compile_local _ UNITY_UI_ALPHACLIP
 
 			#pragma shader_feature _REFRACTION
 			
@@ -67,6 +68,7 @@ Shader "FrameworkNG/UI/Refraction"
 				float4 vertex   : POSITION;
 				float4 color    : COLOR;
 				float2 texcoord : TEXCOORD0;
+				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
 			struct v2f
@@ -79,6 +81,7 @@ Shader "FrameworkNG/UI/Refraction"
 					float2 screenPos : TEXCOORD2;
 					half2 bumpUV : TEXCOORD3;
 				#endif
+				UNITY_VERTEX_OUTPUT_STEREO
 			};
 			
 			fixed4 _Color;
@@ -96,6 +99,8 @@ Shader "FrameworkNG/UI/Refraction"
 			v2f vert(appdata_t IN)
 			{
 				v2f OUT;
+				UNITY_SETUP_INSTANCE_ID(IN);
+				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT);
 				OUT.worldPosition = IN.vertex;
 				OUT.vertex = UnityObjectToClipPos(OUT.worldPosition);
 
@@ -127,8 +132,10 @@ Shader "FrameworkNG/UI/Refraction"
 					color.rgb = color.rgb * backgroundColor.rgb;
 					//color.rgb = saturate(lerp(backgroundColor.rgb, color.rgb, IN.color.a));
 				#endif
-				
+
+				#ifdef UNITY_UI_CLIP_RECT
 				color.a *= UnityGet2DClipping(IN.worldPosition.xy, _ClipRect);
+				#endif
 				
 				#ifdef UNITY_UI_ALPHACLIP
 				clip (color.a - 0.001);

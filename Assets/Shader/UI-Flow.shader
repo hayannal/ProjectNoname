@@ -59,7 +59,8 @@ Shader "FrameworkNG/UI/Flow"
 			#include "UnityCG.cginc"
 			#include "UnityUI.cginc"
 
-			#pragma multi_compile __ UNITY_UI_ALPHACLIP
+			#pragma multi_compile_local _ UNITY_UI_CLIP_RECT
+			#pragma multi_compile_local _ UNITY_UI_ALPHACLIP
 
 			#pragma shader_feature _FLOW
 			
@@ -68,6 +69,7 @@ Shader "FrameworkNG/UI/Flow"
 				float4 vertex   : POSITION;
 				float4 color    : COLOR;
 				float2 texcoord : TEXCOORD0;
+				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
 			struct v2f
@@ -79,6 +81,7 @@ Shader "FrameworkNG/UI/Flow"
 				#if _FLOW
 					half2 flowUV : TEXCOORD2;
 				#endif
+				UNITY_VERTEX_OUTPUT_STEREO
 			};
 			
 			fixed4 _Color;
@@ -95,6 +98,8 @@ Shader "FrameworkNG/UI/Flow"
 			v2f vert(appdata_t IN)
 			{
 				v2f OUT;
+				UNITY_SETUP_INSTANCE_ID(IN);
+				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT);
 				OUT.worldPosition = IN.vertex;
 				OUT.vertex = UnityObjectToClipPos(OUT.worldPosition);
 
@@ -122,7 +127,9 @@ Shader "FrameworkNG/UI/Flow"
 					color.rgb += tex2D(_FlowTex, IN.flowUV).rgb * _FlowPower * color.a;
 				#endif
 				
+				#ifdef UNITY_UI_CLIP_RECT
 				color.a *= UnityGet2DClipping(IN.worldPosition.xy, _ClipRect);
+				#endif
 				
 				#ifdef UNITY_UI_ALPHACLIP
 				clip (color.a - 0.001);

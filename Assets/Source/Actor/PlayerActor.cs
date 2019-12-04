@@ -119,6 +119,8 @@ public class PlayerActor : Actor
 			OnChangedMainCharacter();
 
 			BattleInstanceManager.instance.standbySwapPlayerActor = false;
+
+			BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.playerSpawnEffectPrefab, cachedTransform.position, Quaternion.identity);
 		}
 		else
 		{

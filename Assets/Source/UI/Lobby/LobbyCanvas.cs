@@ -9,6 +9,7 @@ public class LobbyCanvas : MonoBehaviour
 	public static LobbyCanvas instance;
 
 	public Button mainMenuDotButton;
+	public Button battlePauseButton;
 	public Text levelText;
 	public Image expGaugeImage;
 
@@ -26,6 +27,7 @@ public class LobbyCanvas : MonoBehaviour
 	{
 		levelText.gameObject.SetActive(false);
 		expGaugeImage.gameObject.SetActive(false);
+		battlePauseButton.gameObject.SetActive(false);
 	}
 
 	public void OnClickDotButton()
@@ -36,7 +38,7 @@ public class LobbyCanvas : MonoBehaviour
 		ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_PossibleAfterTraining"), 2.0f);
 	}
 
-	public void OnClickOptionButton()
+	public void OnClickBattlePauseButton()
 	{
 		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null)
 			TitleCanvas.instance.FadeTitle();
@@ -72,6 +74,7 @@ public class LobbyCanvas : MonoBehaviour
 	public void OnExitLobby()
 	{
 		mainMenuDotButton.gameObject.SetActive(false);
+		battlePauseButton.gameObject.SetActive(true);
 		expGaugeImage.gameObject.SetActive(true);
 		expGaugeImage.fillAmount = 0.0f;
 		RefreshLevelText(1);

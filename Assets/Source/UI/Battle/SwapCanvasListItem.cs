@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class SwapCanvasListItem : MonoBehaviour
 {
 	public Image characterImage;
+	public Coffee.UIExtensions.UIGradient gradient;
 	public Text powerLevelText;
 	public Text nameText;
 	public Text powerSourceText;
@@ -28,6 +29,13 @@ public class SwapCanvasListItem : MonoBehaviour
 		powerLevelText.color = (characterData.powerLevel < suggestedPowerLevel) ? new Color(0.78f, 0.0f, 0.0f) : Color.white;
 		nameText.SetLocalizedText(UIString.instance.GetString(actorTableData.nameId));
 		powerSourceText.SetLocalizedText(PowerSource.Index2Name(actorTableData.powerSource));
+
+		switch (actorTableData.grade)
+		{
+			case 0: gradient.color1 = Color.black; gradient.color2 = Color.green; break;
+			case 1: gradient.color1 = Color.black; gradient.color2 = Color.magenta; break;
+			case 2: gradient.color1 = Color.grey; gradient.color2 = Color.yellow; break;
+		}
 
 		recommandedText.gameObject.SetActive(false);
 		if (suggestedActorIdList != null)

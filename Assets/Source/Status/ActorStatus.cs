@@ -275,9 +275,13 @@ public class ActorStatus : MonoBehaviour
 
 
 	// for Swap
-	public void SetHpSpRatio(float hpRatio, float spRatio)
+	public void SetHpRatio(float hpRatio)
 	{
 		_statusBase._hp = GetValue(eActorStatus.MaxHp) * hpRatio;
-		_statusBase._sp = GetValue(eActorStatus.MaxSp) * spRatio;
+	}
+
+	public void SetSpRatio(float ratio)
+	{
+		_statusBase._sp = GetValue(eActorStatus.MaxSp) * ratio;
 	}
 }

@@ -196,7 +196,7 @@ public class StageManager : MonoBehaviour
 			return;
 
 		_lastPlayerPowerSource = actorTableData.powerSource;
-		_handlePowerSourcePrefab = AddressableAssetLoadManager.GetAddressableGameObject(PowerSource.Index2Name(_lastPlayerPowerSource), "PowerSource");
+		_handlePowerSourcePrefab = AddressableAssetLoadManager.GetAddressableGameObject(PowerSource.Index2Address(_lastPlayerPowerSource), "PowerSource");
 	}
 
 	public GameObject GetPreparedPowerSourcePrefab()
@@ -379,6 +379,21 @@ public class StageManager : MonoBehaviour
 		// 잠재력 개방에 따른 차이. 잠재력은 ActorStatus인가? 아니면 액터의 또다른 개방 정보인가. 결국 강화랑 저장할 곳이 또 뭔가가 필요할듯. 파워레벨 역시 스탯은 아닐듯.
 
 		return maxStageLevel;
+	}
+	#endregion
+
+	#region Player List
+	List<string> _listBattlePlayerActorIdList = new List<string>();
+	public void AddBattlePlayer(string actorId)
+	{
+		if (_listBattlePlayerActorIdList.Contains(actorId))
+			return;
+		_listBattlePlayerActorIdList.Add(actorId);
+	}
+
+	public bool IsInBattlePlayerList(string actorId)
+	{
+		return _listBattlePlayerActorIdList.Contains(actorId);
 	}
 	#endregion
 

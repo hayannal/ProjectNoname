@@ -86,18 +86,26 @@ public class PlayerActor : Actor
 			{
 				if (lobby == false)
 				{
+					// 한번이라도 썼던 캐릭터인지 확인
+					bool firstEnter = StageManager.instance.IsInBattlePlayerList(actorId);
+
 					// 레벨팩 이전
 					LevelPackDataManager.instance.TransferLevelPackList(BattleInstanceManager.instance.playerActor, this);
 
 					// Hp비율 이전. Sp는 최대로 회복
 					float hpRatio = BattleInstanceManager.instance.playerActor.actorStatus.GetHPRatio();
-					actorStatus.SetHpSpRatio(hpRatio, 1.0f);
+					actorStatus.SetHpRatio(hpRatio);
 
-					// 스왑 힐 적용
-					AffectorValueLevelTableData healAffectorValue = new AffectorValueLevelTableData();
-					healAffectorValue.fValue3 = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("SwapHeal");
-					healAffectorValue.fValue3 += affectorProcessor.actor.actorStatus.GetValue(eActorStatus.SwapHealRate);
-					affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Heal, healAffectorValue, affectorProcessor.actor, false);
+					// 처음 스왑이라면 힐과 sp회복 적용
+					if (firstEnter)
+					{
+						actorStatus.SetSpRatio(1.0f);
+
+						AffectorValueLevelTableData healAffectorValue = new AffectorValueLevelTableData();
+						healAffectorValue.fValue3 = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("SwapHeal");
+						healAffectorValue.fValue3 += affectorProcessor.actor.actorStatus.GetValue(eActorStatus.SwapHealRate);
+						affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Heal, healAffectorValue, affectorProcessor.actor, false);
+					}
 
 					// 스테이지 디버프
 					if (BattleInstanceManager.instance.playerActor.currentStagePenaltyTableData != null)
@@ -123,13 +131,17 @@ public class PlayerActor : Actor
 
 	void OnChangedMainCharacter(bool experience = false)
 	{
+		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
+		if (lobby == false)
+			StageManager.instance.AddBattlePlayer(actorId);
+
 		BattleInstanceManager.instance.playerActor = this;
 		CustomFollowCamera.instance.targetTransform = cachedTransform;
 
 		if (experience)
 			return;
 
-		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby == false)
+		if (lobby == false)
 			InitializeCanvas();
 
 		StageManager.instance.PreparePowerSource();
@@ -210,7 +222,8 @@ public class PlayerActor : Actor
 		OnChangedMainCharacter(true);
 
 		// 체험모드에서도 플레이어를 때리는 몹이 있을테니 HP 리셋
-		actorStatus.SetHpSpRatio(1.0f, 0.0f);
+		actorStatus.SetHpRatio(1.0f);
+		actorStatus.SetSpRatio(0.0f);
 
 		// 들어갈때 피 게이지는 안떠도 상관없다고 해서 패스.
 		//PlayerGaugeCanvas.instance.InitializeGauge(this);
@@ -223,7 +236,8 @@ public class PlayerActor : Actor
 			return;
 
 		// 체험모드에서도 플레이어를 때리는 몹이 있을테니 HP 리셋
-		actorStatus.SetHpSpRatio(1.0f, 0.0f);
+		actorStatus.SetHpRatio(1.0f);
+		actorStatus.SetSpRatio(0.0f);
 
 		BattleInstanceManager.instance.playerActor.gameObject.SetActive(false);
 		_prevPlayerActor.OnChangedMainCharacter(true);

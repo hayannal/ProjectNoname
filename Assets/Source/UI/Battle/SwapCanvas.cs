@@ -41,7 +41,7 @@ public class SwapCanvas : MonoBehaviour
 		contentItemPrefab.SetActive(false);
 
 		// 생성되는 프레임에도 제대로 동작하려면 start에서도 호출해야한다.
-		RefreshContentPosition();
+		//RefreshContentPosition();
 	}
 
 	void OnEnable()
@@ -80,6 +80,7 @@ public class SwapCanvas : MonoBehaviour
 		// 카오스에서는 여러개 들어있을 수도 있는데 이땐 아마 설명창에 여러개 중 하나가 되는 식이라고 표시될거다. 통합 스트링 제공.
 		// 사실 챕터에 넣을 수 있지만 스테이지에 연결해두는 이유가
 		// 언젠가 나중에 챕터 중간에도 이 디버프를 변경시킬 상황이 올까봐 미리 확장시켜서 여기에 두는 것이다.
+		stagePenaltyText.gameObject.SetActive(false);
 		if (StageDataManager.instance.existNextStageInfo)
 		{
 			string penaltyString = "";
@@ -102,8 +103,13 @@ public class SwapCanvas : MonoBehaviour
 				}
 			}
 			if (string.IsNullOrEmpty(penaltyString) == false)
+			{
 				stagePenaltyText.SetLocalizedText(penaltyString);
+				stagePenaltyText.gameObject.SetActive(true);
+			}
 		}
+
+		selectResultText.text = "";
 
 		// 파워레벨은 항상 표시
 		suggestPowerLevelText.SetLocalizedText(UIString.instance.GetString("GameUI_SuggestedPowerLevel", chapterTableData.suggestedPowerLevel));
@@ -141,15 +147,40 @@ public class SwapCanvas : MonoBehaviour
 			_listSwapCanvasListItem[i].gameObject.SetActive(false);
 		_listSwapCanvasListItem.Clear();
 
+		ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
+		if (chapterTableData == null)
+			return;
+
+		string[] suggestedActorIdList = null;
+		if (MainSceneBuilder.instance.lobby == false)
+		{
+			MapTableData nextBossMapTableData = StageManager.instance.nextBossMapTableData;
+			if (nextBossMapTableData != null)
+				suggestedActorIdList = nextBossMapTableData.suggestedActorId;
+		}
+
 		List<CharacterData> listCharacterData = PlayerData.instance.listCharacterData;
+		listCharacterData.Sort(delegate (CharacterData x, CharacterData y)
+		{
+			if (x.powerLevel > y.powerLevel) return -11;
+			else if (x.powerLevel < y.powerLevel) return 1;
+			return 0;
+		});
+		int firstIndex = -1;
 		for (int i = 0; i < listCharacterData.Count; ++i)
 		{
 			SwapCanvasListItem swapCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
-			swapCanvasListItem.Initialize(listCharacterData[i]);
+			swapCanvasListItem.Initialize(listCharacterData[i], chapterTableData.suggestedPowerLevel, suggestedActorIdList);
 			_listSwapCanvasListItem.Add(swapCanvasListItem);
-		}
 
-		RefreshContentPosition();
+			if (firstIndex == -1 && listCharacterData[i].actorId != BattleInstanceManager.instance.playerActor.actorId)
+				firstIndex = i;
+		}
+		if (firstIndex != -1)
+			OnClickListItem(_listSwapCanvasListItem[firstIndex].actorId);
+
+		// 항목이 적을땐 가운데 정렬 하려고 했는데 안쓰게 되면서 지울까 하다가 혹시 몰라서 코드는 남겨둔다.
+		//RefreshContentPosition();
 	}
 
 	RectTransform _contentParentRectTransform;
@@ -164,7 +195,24 @@ public class SwapCanvas : MonoBehaviour
 
 	public void OnClickListItem(string actorId)
 	{
+		if (BattleInstanceManager.instance.playerActor.actorId == actorId)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NowPlayingCharacter"), 2.0f);
+			return;
+		}
+
 		_selectedActorId = actorId;
+
+		for (int i = 0; i < _listSwapCanvasListItem.Count; ++i)
+			_listSwapCanvasListItem[i].ShowSelectObject(_listSwapCanvasListItem[i].actorId == actorId);
+
+		if (!MainSceneBuilder.instance.lobby)
+		{
+			if (StageManager.instance.IsInBattlePlayerList(actorId))
+				selectResultText.SetLocalizedText(UIString.instance.GetString("GameUI_FirstSwapHealNotApplied"));
+			else
+				selectResultText.text = "";
+		}
 	}
 
 	// 하단 함수는 챕터 캔버스에서 사용할 코드다.

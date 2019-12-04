@@ -6,7 +6,7 @@ using ActorStatusDefine;
 
 public class PowerSource : MonoBehaviour
 {
-	public static string Index2Name(int powerSource)
+	public static string Index2Address(int powerSource)
 	{
 		switch (powerSource)
 		{
@@ -14,6 +14,18 @@ public class PowerSource : MonoBehaviour
 			case 1: return "PowerSourceMachine";
 			case 2: return "PowerSourceNature";
 			case 3: return "PowerSourceQigong";
+		}
+		return "";
+	}
+
+	public static string Index2Name(int powerSource)
+	{
+		switch (powerSource)
+		{
+			case 0: return UIString.instance.GetString("GameUI_Magic");
+			case 1: return UIString.instance.GetString("GameUI_Machine");
+			case 2: return UIString.instance.GetString("GameUI_Nature");
+			case 3: return UIString.instance.GetString("GameUI_Qigong");
 		}
 		return "";
 	}

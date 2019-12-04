@@ -165,8 +165,15 @@ public class SwapCanvas : MonoBehaviour
 		List<CharacterData> listCharacterData = PlayerData.instance.listCharacterData;
 		listCharacterData.Sort(delegate (CharacterData x, CharacterData y)
 		{
-			if (x.powerLevel > y.powerLevel) return -11;
+			if (x.powerLevel > y.powerLevel) return -1;
 			else if (x.powerLevel < y.powerLevel) return 1;
+			ActorTableData xActorTableData = TableDataManager.instance.FindActorTableData(x.actorId);
+			ActorTableData yActorTableData = TableDataManager.instance.FindActorTableData(y.actorId);
+			if (xActorTableData != null && yActorTableData != null)
+			{
+				if (xActorTableData.grade > yActorTableData.grade) return -1;
+				else if (xActorTableData.grade < yActorTableData.grade) return 1;
+			}
 			return 0;
 		});
 		int firstIndex = -1;

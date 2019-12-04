@@ -18,6 +18,7 @@ public class SwapCanvas : MonoBehaviour
 	public Text chapterNameText;
 	public Text suggestPowerLevelText;
 	public Button chapterInfoButton;
+	public Image chapterInfoImage;
 	public Image bossImage;
 	public Text bossNameText;
 	public Text stagePenaltyText;
@@ -66,12 +67,14 @@ public class SwapCanvas : MonoBehaviour
 		if (PlayerData.instance.chaosMode)
 		{
 			chapterNameText.SetLocalizedText(UIString.instance.GetString("GameUI_ChaosMode"));
-			chapterInfoButton.gameObject.SetActive(false);
+			chapterInfoButton.interactable = false;
+			chapterInfoImage.gameObject.SetActive(false);
 		}
 		else
 		{
 			chapterNameText.SetLocalizedText(UIString.instance.GetString(chapterTableData.nameId));
-			chapterInfoButton.gameObject.SetActive(true);
+			chapterInfoButton.interactable = true;
+			chapterInfoImage.gameObject.SetActive(true);
 		}
 
 		// 챕터 디버프 어펙터는 로비 바로 다음 스테이지에서 뽑아와서 표시해준다.(여기서 넣는거 아니다. 보여주기만 한다.)
@@ -197,7 +200,7 @@ public class SwapCanvas : MonoBehaviour
 	{
 		if (BattleInstanceManager.instance.playerActor.actorId == actorId)
 		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NowPlayingCharacter"), 2.0f);
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NowPlayingCharacter"), 1.0f);
 			return;
 		}
 
@@ -215,22 +218,14 @@ public class SwapCanvas : MonoBehaviour
 		}
 	}
 
-	// 하단 함수는 챕터 캔버스에서 사용할 코드다.
-	/*
 	public void OnClickChapterInfoButton()
 	{
 		ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
 		if (chapterTableData == null)
 			return;
 
-		// 챕터 시작에서도 사실 미리 구축해둔 정보로 10층에 나올 보스를 알 수 있지만
-		// 재접시 랜덤으로 바뀔 수 있는 이 정보를 보여주는게 이상한데다가
-		// 챕터 설명인데 10층 정보가 나오는건 정말 안맞기 때문에
-		// 차라리 챕터의 권장 시작 캐릭터를 설정해주는 문구를 표시하는거다.
-		string suggestString = GetSuggestString(chapterTableData.descriptionId, chapterTableData.suggestedActorId);
-		//suggestText.SetLocalizedText(suggestString);
+		//UIString.instance.GetString(chapterTableData.descriptionId);
 	}
-	*/
 
 	public void OnClickBossInfoButton()
 	{

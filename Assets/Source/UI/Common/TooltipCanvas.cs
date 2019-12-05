@@ -65,18 +65,6 @@ public class TooltipCanvas : MonoBehaviour
 	{
 		if (Input.GetMouseButtonUp(0))
 			gameObject.SetActive(false);
-
-		/*
-		if (Input.touchCount == 0)
-			return;
-
-		for (int i = 0; i < Input.touchCount; ++i)
-		{
-			Touch touch = Input.GetTouch(i);
-			if (touch.phase == TouchPhase.Ended)
-				gameObject.SetActive(false);
-		}
-		*/
 	}
 
 	int _currentIndex = 0;

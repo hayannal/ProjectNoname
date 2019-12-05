@@ -5,26 +5,31 @@ using UnityEngine.EventSystems;
 
 public class DragThresholdController : MonoBehaviour {
 
+	public static DragThresholdController instance;
+
 	private const float inchToCm = 2.54f;
 
 	[SerializeField]
 	private EventSystem eventSystem = null;
 
 	[SerializeField]
-	private float dragThresholdCM = 0.5f;
+	private float uiDragThresholdCM = 0.5f;
 	//For drag Threshold
 
-	private void SetDragThreshold()
-	{
-		if (eventSystem != null)
-		{
-			eventSystem.pixelDragThreshold = (int)(dragThresholdCM * Screen.dpi / inchToCm);
-		}
-	}
-
-
+	int _defaultPixelDragThreshold;
 	void Awake()
 	{
-		SetDragThreshold();
+		instance = this;
+		_defaultPixelDragThreshold = eventSystem.pixelDragThreshold;
+	}
+
+	public void ApplyUIDragThreshold()
+	{
+		eventSystem.pixelDragThreshold = (int)(uiDragThresholdCM * Screen.dpi / inchToCm);
+	}
+
+	public void ResetUIDragThreshold()
+	{
+		eventSystem.pixelDragThreshold = _defaultPixelDragThreshold;
 	}
 }

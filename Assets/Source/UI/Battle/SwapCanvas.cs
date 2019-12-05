@@ -52,6 +52,15 @@ public class SwapCanvas : MonoBehaviour
 		else
 			RefreshSwapInfo();
 		RefreshGrid();
+
+		if (DragThresholdController.instance != null)
+			DragThresholdController.instance.ApplyUIDragThreshold();
+	}
+
+	void OnDisable()
+	{
+		if (DragThresholdController.instance != null)
+			DragThresholdController.instance.ResetUIDragThreshold();
 	}
 
 	void RefreshChapterInfo()

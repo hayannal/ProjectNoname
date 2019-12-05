@@ -85,6 +85,18 @@ public class TooltipCanvas : MonoBehaviour
 	{
 		cachedRectTransform.SetParent(targetTransform.parent);
 		cachedRectTransform.localScale = Vector3.one;
+		cachedRectTransform.localRotation = Quaternion.identity;
+
+		// 해상도 달라질때는 offset도 달라져야한다.
+		if (cachedRectTransform.parent != null)
+		{
+			Canvas parentCanvas = cachedRectTransform.parent.GetComponentInParent<Canvas>();
+			if (parentCanvas != null)
+			{
+				offset.x *= parentCanvas.transform.localScale.x;
+				offset.y *= parentCanvas.transform.localScale.y;
+			}
+		}
 		tooltipTextRectTransform[_currentIndex].position = targetTransform.position + new Vector3(offset.x, offset.y, 0.0f);
 	}
 

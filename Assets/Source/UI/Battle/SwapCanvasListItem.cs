@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class SwapCanvasListItem : MonoBehaviour
 {
+	public RectTransform contentRectTransform;
 	public Image characterImage;
 	public Image blurImage;
 	public Coffee.UIExtensions.UIGradient gradient;
@@ -84,5 +85,35 @@ public class SwapCanvasListItem : MonoBehaviour
 	public void ShowSelectObject(bool show)
 	{
 		selectObject.SetActive(show);
+	}
+
+	void Update()
+	{
+		UpdateSelectPosition();
+	}
+
+	void UpdateSelectPosition()
+	{
+		Vector2 selectOffset = new Vector2(-13.0f, 8.0f);
+		if (selectObject.activeSelf)
+		{
+			if (contentRectTransform.anchoredPosition != selectOffset)
+			{
+				contentRectTransform.anchoredPosition = Vector2.Lerp(contentRectTransform.anchoredPosition, selectOffset, Time.deltaTime * 15.0f);
+				Vector2 diff = contentRectTransform.anchoredPosition - selectOffset;
+				if (diff.sqrMagnitude < 0.001f)
+					contentRectTransform.anchoredPosition = selectOffset;
+			}
+		}
+		else
+		{
+			if (contentRectTransform.anchoredPosition != Vector2.zero)
+			{
+				contentRectTransform.anchoredPosition = Vector2.Lerp(contentRectTransform.anchoredPosition, Vector2.zero, Time.deltaTime * 15.0f);
+				Vector2 diff = contentRectTransform.anchoredPosition;
+				if (diff.sqrMagnitude < 0.001f)
+					contentRectTransform.anchoredPosition = Vector2.zero;
+			}
+		}
 	}
 }

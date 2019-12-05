@@ -63,7 +63,7 @@ public class SwapCanvas : MonoBehaviour
 		if (chapterTableData == null)
 			return;
 
-		chapterRomanNumberText.SetLocalizedText(GetChapterRomanNumberString(StageManager.instance.playChapter));
+		chapterRomanNumberText.text = GetChapterRomanNumberString(StageManager.instance.playChapter);
 		if (PlayerData.instance.chaosMode)
 		{
 			chapterNameText.SetLocalizedText(UIString.instance.GetString("GameUI_ChaosMode"));

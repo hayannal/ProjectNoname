@@ -237,6 +237,17 @@ public class DotMainMenuCanvas : MonoBehaviour
 			gameObject.SetActive(false);
 	}
 
+	#region Button Event
+	public void OnClickCharacterButton()
+	{
+		UIInstanceManager.instance.ShowCanvasAsync("CharacterInfoCanvas", () =>
+		{
+
+		});
+		gameObject.SetActive(false);
+	}
+	#endregion
+
 
 
 

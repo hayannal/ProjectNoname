@@ -709,7 +709,6 @@ MonoBehaviour:
   - {fileID: 4258549245158107598}
   - {fileID: 3595468527247087554}
   - {fileID: 2867048521152108476}
-  radius: 2
 --- !u!225 &6139634102808880706
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -1556,15 +1555,15 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 114606328351407824, guid: e6083abf9fe5e6b4090973a15b282249,
-        type: 3}
-      propertyPath: m_Text
-      value: Shop
-      objectReference: {fileID: 0}
     - target: {fileID: 114850577562609422, guid: e6083abf9fe5e6b4090973a15b282249,
         type: 3}
       propertyPath: m_Color.a
       value: 0.5529412
+      objectReference: {fileID: 0}
+    - target: {fileID: 114606328351407824, guid: e6083abf9fe5e6b4090973a15b282249,
+        type: 3}
+      propertyPath: m_Text
+      value: Shop
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e6083abf9fe5e6b4090973a15b282249, type: 3}
@@ -1690,15 +1689,15 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 114606328351407824, guid: e6083abf9fe5e6b4090973a15b282249,
-        type: 3}
-      propertyPath: m_Text
-      value: Character
-      objectReference: {fileID: 0}
     - target: {fileID: 114850577562609422, guid: e6083abf9fe5e6b4090973a15b282249,
         type: 3}
       propertyPath: m_Color.a
       value: 0.5529412
+      objectReference: {fileID: 0}
+    - target: {fileID: 114606328351407824, guid: e6083abf9fe5e6b4090973a15b282249,
+        type: 3}
+      propertyPath: m_Text
+      value: Character
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e6083abf9fe5e6b4090973a15b282249, type: 3}
@@ -1824,15 +1823,30 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 114606328351407824, guid: e6083abf9fe5e6b4090973a15b282249,
+    - target: {fileID: 114348352206016790, guid: e6083abf9fe5e6b4090973a15b282249,
         type: 3}
-      propertyPath: m_Text
-      value: Chapter
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1638362503168242259}
+    - target: {fileID: 114348352206016790, guid: e6083abf9fe5e6b4090973a15b282249,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnClickCharacterButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 114348352206016790, guid: e6083abf9fe5e6b4090973a15b282249,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114850577562609422, guid: e6083abf9fe5e6b4090973a15b282249,
         type: 3}
       propertyPath: m_Color.a
       value: 0.5529412
+      objectReference: {fileID: 0}
+    - target: {fileID: 114606328351407824, guid: e6083abf9fe5e6b4090973a15b282249,
+        type: 3}
+      propertyPath: m_Text
+      value: Chapter
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e6083abf9fe5e6b4090973a15b282249, type: 3}

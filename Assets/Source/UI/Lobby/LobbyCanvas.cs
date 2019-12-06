@@ -111,6 +111,12 @@ public class LobbyCanvas : MonoBehaviour
 			DotMainMenuCanvas.instance.gameObject.SetActive(false);
 	}
 
+	public void OnEnterMainMenu(bool enter)
+	{
+		dotMainMenuButton.gameObject.SetActive(!enter);
+		lobbyOptionButton.gameObject.SetActive(!enter);
+	}
+
 	#region Exp Percent Gauge
 	public void RefreshLevelText(int level)
 	{

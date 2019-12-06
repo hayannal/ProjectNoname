@@ -8,7 +8,7 @@ public class LobbyCanvas : MonoBehaviour
 {
 	public static LobbyCanvas instance;
 
-	public Button mainMenuDotButton;
+	public Button dotMainMenuButton;
 	public Button battlePauseButton;
 	public Text levelText;
 	public Image expGaugeImage;
@@ -73,7 +73,7 @@ public class LobbyCanvas : MonoBehaviour
 
 	public void OnExitLobby()
 	{
-		mainMenuDotButton.gameObject.SetActive(false);
+		dotMainMenuButton.gameObject.SetActive(false);
 		battlePauseButton.gameObject.SetActive(true);
 		expGaugeImage.gameObject.SetActive(true);
 		expGaugeImage.fillAmount = 0.0f;

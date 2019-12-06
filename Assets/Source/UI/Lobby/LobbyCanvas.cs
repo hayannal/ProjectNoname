@@ -35,7 +35,26 @@ public class LobbyCanvas : MonoBehaviour
 		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null)
 			TitleCanvas.instance.FadeTitle();
 
-		ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_PossibleAfterTraining"), 2.0f);
+		if (PlayerData.instance.tutorialChapter)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_PossibleAfterTraining"), 2.0f);
+			return;
+		}
+
+		if (DotMainMenuCanvas.instance != null)
+		{
+			DotMainMenuCanvas.instance.ToggleShow();
+			return;
+		}
+
+		UIInstanceManager.instance.ShowCanvasAsync("DotMainMenuCanvas", () => {
+
+			if (this == null) return;
+			if (gameObject == null) return;
+			if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby == false) return;
+
+			DotMainMenuCanvas.instance.targetTransform = BattleInstanceManager.instance.playerActor.cachedTransform;
+		});
 	}
 
 	public void OnClickBattlePauseButton()
@@ -78,6 +97,9 @@ public class LobbyCanvas : MonoBehaviour
 		expGaugeImage.gameObject.SetActive(true);
 		expGaugeImage.fillAmount = 0.0f;
 		RefreshLevelText(1);
+
+		if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
+			DotMainMenuCanvas.instance.gameObject.SetActive(false);
 	}
 
 	#region Exp Percent Gauge

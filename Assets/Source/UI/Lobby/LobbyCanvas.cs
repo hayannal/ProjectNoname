@@ -9,6 +9,7 @@ public class LobbyCanvas : MonoBehaviour
 	public static LobbyCanvas instance;
 
 	public Button dotMainMenuButton;
+	public Button lobbyOptionButton;
 	public Button battlePauseButton;
 	public Text levelText;
 	public Image expGaugeImage;
@@ -25,9 +26,9 @@ public class LobbyCanvas : MonoBehaviour
 
 	void Start()
 	{
+		battlePauseButton.gameObject.SetActive(false);
 		levelText.gameObject.SetActive(false);
 		expGaugeImage.gameObject.SetActive(false);
-		battlePauseButton.gameObject.SetActive(false);
 	}
 
 	public void OnClickDotButton()
@@ -57,11 +58,18 @@ public class LobbyCanvas : MonoBehaviour
 		});
 	}
 
-	public void OnClickBattlePauseButton()
+	public void OnClickLobbyOptionButton()
 	{
 		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null)
 			TitleCanvas.instance.FadeTitle();
 
+		//UIInstanceManager.instance.ShowCanvasAsync("OptionCanvas", () =>
+		//{
+		//});
+	}
+
+	public void OnClickBattlePauseButton()
+	{
 		//UIInstanceManager.instance.ShowCanvasAsync("OptionCanvas", () =>
 		//{
 		//});
@@ -93,6 +101,7 @@ public class LobbyCanvas : MonoBehaviour
 	public void OnExitLobby()
 	{
 		dotMainMenuButton.gameObject.SetActive(false);
+		lobbyOptionButton.gameObject.SetActive(false);
 		battlePauseButton.gameObject.SetActive(true);
 		expGaugeImage.gameObject.SetActive(true);
 		expGaugeImage.fillAmount = 0.0f;

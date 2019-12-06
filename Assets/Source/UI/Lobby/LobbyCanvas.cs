@@ -44,6 +44,7 @@ public class LobbyCanvas : MonoBehaviour
 
 		if (DotMainMenuCanvas.instance != null)
 		{
+			DotMainMenuCanvas.instance.targetTransform = BattleInstanceManager.instance.playerActor.cachedTransform;
 			DotMainMenuCanvas.instance.ToggleShow();
 			return;
 		}

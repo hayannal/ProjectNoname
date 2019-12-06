@@ -11,8 +11,6 @@ public class DescriptionObjectIndicatorCanvas : ObjectIndicatorCanvas
 	void Start()
     {
 		GetComponent<Canvas>().worldCamera = UIInstanceManager.instance.GetCachedCameraMain();
-
-		InitializeTarget(targetTransform);
 	}
 
 	void OnEnable()

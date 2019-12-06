@@ -25,7 +25,6 @@ public class ObjectIndicatorCanvas : MonoBehaviour
 	void Start()
     {
 		GetComponent<Canvas>().worldCamera = UIInstanceManager.instance.GetCachedCameraMain();
-		InitializeTarget(targetTransform);
     }
 
 	protected void InitializeTarget(Transform t)

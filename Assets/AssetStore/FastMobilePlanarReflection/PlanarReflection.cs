@@ -138,7 +138,7 @@ public class PlanarReflection : MonoBehaviour
     }
 
 
-    void OnDisable()
+    void OnDestroy()
     {
         if (reflectionTexture)
         {

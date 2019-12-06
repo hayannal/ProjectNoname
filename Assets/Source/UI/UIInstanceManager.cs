@@ -138,7 +138,7 @@ public class UIInstanceManager : MonoBehaviour
 		LoadCanvasAsync loadCanvasAsync = new LoadCanvasAsync();
 		loadCanvasAsync.canvasAddress = canvasAddress;
 		loadCanvasAsync.handleCanvasPrefab = AddressableAssetLoadManager.GetAddressableGameObject(canvasAddress, "Canvas");
-		loadCanvasAsync.calllback = null;
+		loadCanvasAsync.calllback = callback;
 		_listAsyncOperationResult.Add(loadCanvasAsync);
 
 		DelayedLoadingCanvas.instance.gameObject.SetActive(true);

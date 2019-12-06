@@ -35,7 +35,7 @@ public class CharacterInfoCanvas : MonoBehaviour
 	Quaternion _lastCameraRotation;
 	Vector3 _lastCharacterPosition;
 	Quaternion _lastCharacterRotation;
-
+	Transform _groundTransform;
 	void SetInfoCameraMode(bool enable)
 	{
 		if (_infoCameraMode == enable)
@@ -57,10 +57,19 @@ public class CharacterInfoCanvas : MonoBehaviour
 			_lastCharacterRotation = BattleInstanceManager.instance.playerActor.cachedTransform.rotation;
 
 			// ground setting
+			if (_groundTransform == null)
+			{
+				_groundTransform = Instantiate<GameObject>(infoCameraGroundPrefab).transform;
+			}
+			else
+			{
+				_groundTransform.gameObject.SetActive(true);
+			}
 
 			// player setting
 			BattleInstanceManager.instance.playerActor.cachedTransform.position = Vector3.zero;
 			BattleInstanceManager.instance.playerActor.cachedTransform.rotation = Quaternion.Euler(0.0f, charactorY, 0.0f);
+			TailAnimatorUpdater.UpdateAnimator(BattleInstanceManager.instance.playerActor.cachedTransform, 5);
 
 			// setting
 			UIInstanceManager.instance.GetCachedCameraMain().fieldOfView = infoCameraFov;
@@ -74,11 +83,14 @@ public class CharacterInfoCanvas : MonoBehaviour
 			if (CustomFollowCamera.instance == null || CameraFovController.instance == null || LobbyCanvas.instance == null)
 				return;
 
+			_groundTransform.gameObject.SetActive(false);
+
 			UIInstanceManager.instance.GetCachedCameraMain().fieldOfView = _lastFov;
 			CustomFollowCamera.instance.cachedTransform.position = _lastCameraPosition;
 			CustomFollowCamera.instance.cachedTransform.rotation = _lastCameraRotation;
 			BattleInstanceManager.instance.playerActor.cachedTransform.position = _lastCharacterPosition;
 			BattleInstanceManager.instance.playerActor.cachedTransform.rotation = _lastCharacterRotation;
+			TailAnimatorUpdater.UpdateAnimator(BattleInstanceManager.instance.playerActor.cachedTransform, 5);
 
 			CameraFovController.instance.enabled = true;
 			CustomFollowCamera.instance.enabled = true;

@@ -5,6 +5,8 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class CameraFovController : MonoBehaviour
 {
+	public static CameraFovController instance;
+
 	public float horizontalFov = 8.0f;
 
 	Camera _mainCamera;
@@ -13,6 +15,7 @@ public class CameraFovController : MonoBehaviour
 
 	void Awake()
 	{
+		instance = this;
 		_mainCamera = GetComponent<Camera>();
 	}
 

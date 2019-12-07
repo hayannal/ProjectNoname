@@ -98,6 +98,10 @@ public class PlayerData : MonoBehaviour
 			// 우선은 임시
 			return _mainCharacterId;
 		}
+		set
+		{
+			_mainCharacterId = value;
+		}
 	}
 
 	public bool swappable { get { return _listCharacterData.Count > 1; } }

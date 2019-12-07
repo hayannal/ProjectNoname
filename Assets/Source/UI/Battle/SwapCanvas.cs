@@ -262,12 +262,15 @@ public class SwapCanvas : MonoBehaviour
 
 
 
-	string _selectedActorId = "Actor002";	// temp code
+	string _selectedActorId;
 	float _buttonClickTime;
 	public void OnClickYesButton()
 	{
 		if (string.IsNullOrEmpty(_selectedActorId))
 			return;
+
+		// DB
+
 
 		_buttonClickTime = Time.time;
 		DelayedLoadingCanvas.instance.gameObject.SetActive(true);
@@ -332,6 +335,9 @@ public class SwapCanvas : MonoBehaviour
 		// 기존 플레이어액터 정보 구해와서 피, 스왑힐,레벨팩 이전 하는게 가장 맞다.
 		// 여기서는 아무것도 하지 않는다.
 		/////////////////////////////////////////////////////////////////////
+
+		// PlayerData 에 등록
+		PlayerData.instance.mainCharacterId = newPlayerActor.actorId;
 
 		// 걸린 시간 표시
 		float deltaTime = Time.time - _buttonClickTime;

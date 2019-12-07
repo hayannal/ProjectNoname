@@ -113,7 +113,10 @@ public class CharacterInfoCanvas : MonoBehaviour
 		if (pointerEventData == null)
 			return;
 
-		BattleInstanceManager.instance.playerActor.cachedTransform.Rotate(0.0f, -pointerEventData.delta.x, 0.0f, Space.Self);
+		float ratio = -pointerEventData.delta.x * 2.54f;
+		ratio /= Screen.dpi;
+		ratio *= 20.0f;	// rotate speed
+		BattleInstanceManager.instance.playerActor.cachedTransform.Rotate(0.0f, ratio, 0.0f, Space.Self);
 	}
 	#endregion
 }

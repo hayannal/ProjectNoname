@@ -306,6 +306,23 @@ public class StageManager : MonoBehaviour
 	public bool spawnPowerSourcePrefab { get; set; }
 	public Vector3 currentPowerSourceSpawnPosition { get; set; }
 
+	#region LobbyUI
+	public void ShowGroundForUI(bool show)
+	{
+		if (_currentPlaneObject != null)
+			_currentPlaneObject.SetActive(show);
+
+		if (_currentGroundObject != null)
+			_currentGroundObject.SetActive(show);
+
+		if (_currentWallObject != null)
+			_currentWallObject.SetActive(show);
+
+		if (_currentEnvironmentSettingObject != null)
+			_currentEnvironmentSettingObject.SetActive(show);
+	}
+	#endregion
+
 
 
 

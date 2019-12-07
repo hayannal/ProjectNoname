@@ -31,6 +31,7 @@ public class CharacterInfoCanvas : MonoBehaviour
 	#region Info Camera
 	bool _infoCameraMode = false;
 	float _lastFov;
+	Color _lastBackgroundColor;
 	Vector3 _lastCameraPosition;
 	Quaternion _lastCameraRotation;
 	Vector3 _lastCharacterPosition;
@@ -51,12 +52,14 @@ public class CharacterInfoCanvas : MonoBehaviour
 
 			// save prev info
 			_lastFov = UIInstanceManager.instance.GetCachedCameraMain().fieldOfView;
+			_lastBackgroundColor = UIInstanceManager.instance.GetCachedCameraMain().backgroundColor;
 			_lastCameraPosition = CustomFollowCamera.instance.cachedTransform.position;
 			_lastCameraRotation = CustomFollowCamera.instance.cachedTransform.rotation;
 			_lastCharacterPosition = BattleInstanceManager.instance.playerActor.cachedTransform.position;
 			_lastCharacterRotation = BattleInstanceManager.instance.playerActor.cachedTransform.rotation;
 
 			// ground setting
+			StageManager.instance.ShowGroundForUI(false);
 			if (_groundTransform == null)
 			{
 				_groundTransform = Instantiate<GameObject>(infoCameraGroundPrefab).transform;
@@ -65,6 +68,7 @@ public class CharacterInfoCanvas : MonoBehaviour
 			{
 				_groundTransform.gameObject.SetActive(true);
 			}
+			TreasureChest.instance.gameObject.SetActive(false);
 
 			// player setting
 			BattleInstanceManager.instance.playerActor.cachedTransform.position = Vector3.zero;
@@ -73,10 +77,9 @@ public class CharacterInfoCanvas : MonoBehaviour
 
 			// setting
 			UIInstanceManager.instance.GetCachedCameraMain().fieldOfView = infoCameraFov;
+			UIInstanceManager.instance.GetCachedCameraMain().backgroundColor = Color.black;
 			CustomFollowCamera.instance.cachedTransform.position = infoCameraTransform.localPosition;
 			CustomFollowCamera.instance.cachedTransform.rotation = infoCameraTransform.localRotation;
-
-
 		}
 		else
 		{
@@ -84,8 +87,11 @@ public class CharacterInfoCanvas : MonoBehaviour
 				return;
 
 			_groundTransform.gameObject.SetActive(false);
+			StageManager.instance.ShowGroundForUI(true);
+			TreasureChest.instance.gameObject.SetActive(true);
 
 			UIInstanceManager.instance.GetCachedCameraMain().fieldOfView = _lastFov;
+			UIInstanceManager.instance.GetCachedCameraMain().backgroundColor = _lastBackgroundColor;
 			CustomFollowCamera.instance.cachedTransform.position = _lastCameraPosition;
 			CustomFollowCamera.instance.cachedTransform.rotation = _lastCameraRotation;
 			BattleInstanceManager.instance.playerActor.cachedTransform.position = _lastCharacterPosition;

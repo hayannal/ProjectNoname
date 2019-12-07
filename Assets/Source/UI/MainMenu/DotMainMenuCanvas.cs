@@ -110,11 +110,13 @@ public class DotMainMenuCanvas : MonoBehaviour
 
 	void OnEnable()
 	{
+		EnvironmentSetting.SetGlobalLightIntensityRatio(0.3f, 0.0f);
 		Initialize(targetTransform);
 	}
 
 	void OnDisable()
 	{
+		EnvironmentSetting.ResetGlobalLightIntensityRatio();
 		_reservedHide = false;
 	}
 

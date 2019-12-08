@@ -74,12 +74,15 @@ public class HitObject : MonoBehaviour
 			CopyEtcStatusForHitObject(ref statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
 
 			Vector3 areaPosition = GetSpawnPosition(spawnTransform, meHit, parentTransform, parentActor.affectorProcessor);
-			Vector3 areaDirection = GetSpawnDirection(areaPosition, meHit, parentTransform, GetTargetPosition(meHit, parentActor, hitSignalIndexInAction), parentActor.targetingProcessor);
+			Vector3 areaDirection = spawnTransform.forward;
 			Vector3 endPosition = Vector3.zero;
 			if (meHit.targetDetectType == eTargetDetectType.Area)
 				CheckHitArea(areaPosition, areaDirection, meHit, parentActor.actorStatus.statusBase, statusStructForHitObject);
 			else if (meHit.targetDetectType == eTargetDetectType.SphereCast)
+			{
+				areaDirection = GetSpawnDirection(areaPosition, meHit, parentTransform, GetTargetPosition(meHit, parentActor, hitSignalIndexInAction), parentActor.targetingProcessor);
 				endPosition = CheckSphereCast(areaPosition, areaDirection, meHit, parentActor.actorStatus.statusBase, statusStructForHitObject);
+			}
 
 			// HitObject 프리팹이 있거나 lifeTime이 있다면 생성하고 아니면 패스.
 			Quaternion rotation = Quaternion.LookRotation(areaDirection);

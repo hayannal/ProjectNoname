@@ -1,18 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &8926028565034217868
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 155699935948911986}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f12479a3eb790ef4abc68cb914116b15, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  uiStringKey: GameUI_Shop
 --- !u!114 &35933086612755634
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20,6 +7,19 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 155971152587108316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f12479a3eb790ef4abc68cb914116b15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiStringKey: GameUI_Shop
+--- !u!114 &8926028565034217868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 155699935948911986}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f12479a3eb790ef4abc68cb914116b15, type: 3}
@@ -46,11 +46,12 @@ MonoBehaviour:
   lineImageRectTransform: {fileID: 591947475082890691}
   lineImage: {fileID: 2495200768360355304}
   lineOffset: {x: -0.2, y: -1.4}
-  contentOffset: {x: 0.8, y: 1.1}
+  contentOffset: {x: 0.8, y: 1.1, z: 0}
   rightPosition: 1
   useLeftRightSwapByAxisX: 0
   leftRightSwapThreshold: 1.5
   swapSuppressingRange: 2.5
+  buttonRootObject: {fileID: 8390645892102825191}
 --- !u!1 &8390645892102825191
 GameObject:
   m_ObjectHideFlags: 0

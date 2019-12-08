@@ -30,6 +30,8 @@ public class CharacterInfoCanvas : MonoBehaviour
 
 	#region Info Camera
 	bool _infoCameraMode = false;
+	float _lastRendererResolutionFactor;
+	float _lastBloomResolutionFactor;
 	float _lastFov;
 	Color _lastBackgroundColor;
 	Vector3 _lastCameraPosition;
@@ -51,6 +53,8 @@ public class CharacterInfoCanvas : MonoBehaviour
 			CustomFollowCamera.instance.enabled = false;
 
 			// save prev info
+			_lastRendererResolutionFactor = CustomRenderer.instance.RenderTextureResolutionFactor;
+			_lastBloomResolutionFactor = CustomRenderer.instance.bloom.RenderTextureResolutoinFactor;
 			_lastFov = UIInstanceManager.instance.GetCachedCameraMain().fieldOfView;
 			_lastBackgroundColor = UIInstanceManager.instance.GetCachedCameraMain().backgroundColor;
 			_lastCameraPosition = CustomFollowCamera.instance.cachedTransform.position;
@@ -76,6 +80,8 @@ public class CharacterInfoCanvas : MonoBehaviour
 			TailAnimatorUpdater.UpdateAnimator(BattleInstanceManager.instance.playerActor.cachedTransform, 5);
 
 			// setting
+			CustomRenderer.instance.RenderTextureResolutionFactor = (CustomRenderer.instance.RenderTextureResolutionFactor + 1.0f) * 0.5f;
+			CustomRenderer.instance.bloom.RenderTextureResolutoinFactor = 0.8f;
 			UIInstanceManager.instance.GetCachedCameraMain().fieldOfView = infoCameraFov;
 			UIInstanceManager.instance.GetCachedCameraMain().backgroundColor = Color.black;
 			CustomFollowCamera.instance.cachedTransform.position = infoCameraTransform.localPosition;
@@ -90,6 +96,8 @@ public class CharacterInfoCanvas : MonoBehaviour
 			StageManager.instance.ShowGroundForUI(true);
 			TreasureChest.instance.gameObject.SetActive(true);
 
+			CustomRenderer.instance.RenderTextureResolutionFactor = _lastRendererResolutionFactor;
+			CustomRenderer.instance.bloom.RenderTextureResolutoinFactor = _lastBloomResolutionFactor;
 			UIInstanceManager.instance.GetCachedCameraMain().fieldOfView = _lastFov;
 			UIInstanceManager.instance.GetCachedCameraMain().backgroundColor = _lastBackgroundColor;
 			CustomFollowCamera.instance.cachedTransform.position = _lastCameraPosition;

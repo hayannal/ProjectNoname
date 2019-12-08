@@ -20,7 +20,7 @@ public class PropertyCurve : MonoBehaviour {
 		startTime = Time.time;
 	}
 
-	void OnDisable()
+	void OnDestroy()
 	{
 		ResetMaterials();
 	}

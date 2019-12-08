@@ -48,6 +48,7 @@ public class BattleTestTool : EditorWindow
 		OnGUI_Map();
 	}
 
+	bool _foldoutAffectorGroup = false;
 	PlayerAI _playerAI = null;
 	bool usePlayerAI = true;
 	PlayerActor _playerActor = null;
@@ -77,28 +78,33 @@ public class BattleTestTool : EditorWindow
 				_playerActor = GameObject.FindObjectOfType<PlayerActor>();
 			if (spFull && _playerActor != null && _playerActor.actorStatus.GetSPRatio() != 1.0f)
 				_playerActor.actorStatus.AddSP(_playerActor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MaxSp));
-			_affectorValueId = EditorGUILayout.TextField("Affector Value Id :", _affectorValueId);
-			_affectorValueLevel = EditorGUILayout.IntField("Affector Value Level :", _affectorValueLevel);
-			if (GUILayout.Button("Apply Affector Value"))
+
+			_foldoutAffectorGroup = EditorGUILayout.Foldout(_foldoutAffectorGroup, _foldoutAffectorGroup ? "[Hide Affector Group]" : "[Show Affector Group]");
+			if (_foldoutAffectorGroup)
 			{
-				HitParameter hitParameter = new HitParameter();
-				hitParameter.statusBase = _playerActor.actorStatus.statusBase;
-				SkillProcessor.CopyEtcStatus(ref hitParameter.statusStructForHitObject, _playerActor);
-				hitParameter.statusStructForHitObject.skillLevel = _affectorValueLevel;
-				_playerActor.affectorProcessor.ApplyAffectorValue(_affectorValueId, hitParameter);
-			}
-			_actorStateId = EditorGUILayout.TextField("Actor State Id :", _actorStateId);
-			if (GUILayout.Button("Add Actor State"))
-			{
-				HitParameter hitParameter = new HitParameter();
-				hitParameter.statusBase = _playerActor.actorStatus.statusBase;
-				SkillProcessor.CopyEtcStatus(ref hitParameter.statusStructForHitObject, _playerActor);
-				_playerActor.affectorProcessor.AddActorState(_actorStateId, hitParameter);
-			}
-			_levelPackId = EditorGUILayout.TextField("Level Pack Id :", _levelPackId);
-			if (GUILayout.Button("Add Level Pack"))
-			{
-				_playerActor.skillProcessor.AddLevelPack(_levelPackId);
+				_affectorValueId = EditorGUILayout.TextField("Affector Value Id :", _affectorValueId);
+				_affectorValueLevel = EditorGUILayout.IntField("Affector Value Level :", _affectorValueLevel);
+				if (GUILayout.Button("Apply Affector Value"))
+				{
+					HitParameter hitParameter = new HitParameter();
+					hitParameter.statusBase = _playerActor.actorStatus.statusBase;
+					SkillProcessor.CopyEtcStatus(ref hitParameter.statusStructForHitObject, _playerActor);
+					hitParameter.statusStructForHitObject.skillLevel = _affectorValueLevel;
+					_playerActor.affectorProcessor.ApplyAffectorValue(_affectorValueId, hitParameter);
+				}
+				_actorStateId = EditorGUILayout.TextField("Actor State Id :", _actorStateId);
+				if (GUILayout.Button("Add Actor State"))
+				{
+					HitParameter hitParameter = new HitParameter();
+					hitParameter.statusBase = _playerActor.actorStatus.statusBase;
+					SkillProcessor.CopyEtcStatus(ref hitParameter.statusStructForHitObject, _playerActor);
+					_playerActor.affectorProcessor.AddActorState(_actorStateId, hitParameter);
+				}
+				_levelPackId = EditorGUILayout.TextField("Level Pack Id :", _levelPackId);
+				if (GUILayout.Button("Add Level Pack"))
+				{
+					_playerActor.skillProcessor.AddLevelPack(_levelPackId);
+				}
 			}
 		}
 		GUILayout.EndVertical();	

@@ -107,6 +107,10 @@ public class MeMovePositionCurve : MecanimEventBase {
 			float lastValue = curveY.keys[curveY.length - 1].value;
 			_transform.position = new Vector3(_transform.position.x, _basePositionY + (lastValue - firstValue), _transform.position.z);
 		}
+		if (useLocalPositionX)
+			_prevX = 0.0f;
+		if (useLocalPositionZ)
+			_prevZ = 0.0f;
 	}
 
 	float _basePositionY;

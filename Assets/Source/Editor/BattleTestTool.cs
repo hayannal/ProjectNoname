@@ -67,6 +67,13 @@ public class BattleTestTool : EditorWindow
 			EditorGUILayout.LabelField(szDesc, EditorStyles.textField);
 			GUI.color = defaultColor;
 
+			if (_playerActor == null)
+				_playerActor = GameObject.FindObjectOfType<PlayerActor>();
+			if (_playerActor != null && _playerActor != BattleInstanceManager.instance.playerActor)
+			{
+				_playerActor = BattleInstanceManager.instance.playerActor;
+				_playerAI = _playerActor.playerAI;
+			}
 			usePlayerAI = EditorGUILayout.Toggle("Toggle Player AI :", usePlayerAI);
 			if (_playerAI == null)
 				_playerAI = GameObject.FindObjectOfType<PlayerAI>();
@@ -74,8 +81,6 @@ public class BattleTestTool : EditorWindow
 				_playerAI.enabled = usePlayerAI;
 
 			spFull = EditorGUILayout.Toggle("SP Full :", spFull);
-			if (_playerActor == null)
-				_playerActor = GameObject.FindObjectOfType<PlayerActor>();
 			if (spFull && _playerActor != null && _playerActor.actorStatus.GetSPRatio() != 1.0f)
 				_playerActor.actorStatus.AddSP(_playerActor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MaxSp));
 

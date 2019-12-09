@@ -133,7 +133,11 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 			_Cutoff = lerp(0, _Cutoff + _EdgeSize, _Cutoff);
 			half Edge = smoothstep(_Cutoff + _EdgeSize, _Cutoff, clamp(Noise, _EdgeSize, 1));
 			o.Emission = _EdgeColor1 * Edge;
+			//o.Albedo += _EdgeColor1 * Edge;
 			clip(Noise - _Cutoff);
+			//o.Albedo.r = saturate(o.Albedo.r);
+			//o.Albedo.g = saturate(o.Albedo.g);
+			//o.Albedo.b = saturate(o.Albedo.b);
 #else
 			float3 rimNormal = UnpackNormal(tex2D(_RimNormalTex, IN.uv_RimNormalTex));
 			float3 vNormal = normalize(o.Normal + rimNormal);
@@ -141,6 +145,10 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 			float3 viewNormal = normalize(IN.viewDir + _RimDirAdjust.xyz);
 			half rim = 1.0 - dot(viewNormal, vNormal);
 			o.Emission = _RimColor.rgb * saturate(rim - _RimPower);
+			//o.Albedo += _RimColor.rgb * saturate(rim - _RimPower);
+			//o.Albedo.r = saturate(o.Albedo.r);
+			//o.Albedo.g = saturate(o.Albedo.g);
+			//o.Albedo.b = saturate(o.Albedo.b);
 #endif
 		}
 		ENDCG

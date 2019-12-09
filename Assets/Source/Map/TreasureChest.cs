@@ -20,7 +20,6 @@ public class TreasureChest : MonoBehaviour
 			_objectIndicatorCanvas.gameObject.SetActive(false);
 			_objectIndicatorCanvas = null;
 		}
-		_spawnedIndicator = false;
 	}
 
 	void Start()

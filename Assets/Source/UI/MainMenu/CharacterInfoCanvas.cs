@@ -29,6 +29,7 @@ public class CharacterInfoCanvas : MonoBehaviour
 
 
 	#region Info Camera
+	Vector3 _rootOffsetPosition = new Vector3(0.0f, 0.0f, 500.0f);
 	bool _infoCameraMode = false;
 	float _lastRendererResolutionFactor;
 	float _lastBloomResolutionFactor;
@@ -63,19 +64,14 @@ public class CharacterInfoCanvas : MonoBehaviour
 			_lastCharacterRotation = BattleInstanceManager.instance.playerActor.cachedTransform.rotation;
 
 			// ground setting
-			StageManager.instance.ShowGroundForUI(false);
+			StageManager.instance.EnableEnvironmentSettingForUI(false);
 			if (_groundTransform == null)
-			{
-				_groundTransform = Instantiate<GameObject>(infoCameraGroundPrefab).transform;
-			}
+				_groundTransform = Instantiate<GameObject>(infoCameraGroundPrefab, _rootOffsetPosition, Quaternion.identity).transform;
 			else
-			{
 				_groundTransform.gameObject.SetActive(true);
-			}
-			TreasureChest.instance.gameObject.SetActive(false);
 
 			// player setting
-			BattleInstanceManager.instance.playerActor.cachedTransform.position = Vector3.zero;
+			BattleInstanceManager.instance.playerActor.cachedTransform.position = _rootOffsetPosition;
 			BattleInstanceManager.instance.playerActor.cachedTransform.rotation = Quaternion.Euler(0.0f, charactorY, 0.0f);
 			TailAnimatorUpdater.UpdateAnimator(BattleInstanceManager.instance.playerActor.cachedTransform, 5);
 
@@ -84,7 +80,7 @@ public class CharacterInfoCanvas : MonoBehaviour
 			CustomRenderer.instance.bloom.RenderTextureResolutoinFactor = 0.8f;
 			UIInstanceManager.instance.GetCachedCameraMain().fieldOfView = infoCameraFov;
 			UIInstanceManager.instance.GetCachedCameraMain().backgroundColor = Color.black;
-			CustomFollowCamera.instance.cachedTransform.position = infoCameraTransform.localPosition;
+			CustomFollowCamera.instance.cachedTransform.position = infoCameraTransform.localPosition + _rootOffsetPosition;
 			CustomFollowCamera.instance.cachedTransform.rotation = infoCameraTransform.localRotation;
 		}
 		else
@@ -93,8 +89,7 @@ public class CharacterInfoCanvas : MonoBehaviour
 				return;
 
 			_groundTransform.gameObject.SetActive(false);
-			StageManager.instance.ShowGroundForUI(true);
-			TreasureChest.instance.gameObject.SetActive(true);
+			StageManager.instance.EnableEnvironmentSettingForUI(true);
 
 			CustomRenderer.instance.RenderTextureResolutionFactor = _lastRendererResolutionFactor;
 			CustomRenderer.instance.bloom.RenderTextureResolutoinFactor = _lastBloomResolutionFactor;

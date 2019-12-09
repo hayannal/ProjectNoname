@@ -29,7 +29,7 @@ public class CharacterInfoCanvas : MonoBehaviour
 
 
 	#region Info Camera
-	Vector3 _rootOffsetPosition = new Vector3(0.0f, 0.0f, 500.0f);
+	Vector3 _rootOffsetPosition = new Vector3(0.0f, 0.0f, 75.0f);
 	bool _infoCameraMode = false;
 	float _lastRendererResolutionFactor;
 	float _lastBloomResolutionFactor;
@@ -73,7 +73,7 @@ public class CharacterInfoCanvas : MonoBehaviour
 			// player setting
 			BattleInstanceManager.instance.playerActor.cachedTransform.position = _rootOffsetPosition;
 			BattleInstanceManager.instance.playerActor.cachedTransform.rotation = Quaternion.Euler(0.0f, charactorY, 0.0f);
-			TailAnimatorUpdater.UpdateAnimator(BattleInstanceManager.instance.playerActor.cachedTransform, 5);
+			TailAnimatorUpdater.UpdateAnimator(BattleInstanceManager.instance.playerActor.cachedTransform, 15);
 
 			// setting
 			CustomRenderer.instance.RenderTextureResolutionFactor = (CustomRenderer.instance.RenderTextureResolutionFactor + 1.0f) * 0.5f;
@@ -99,7 +99,7 @@ public class CharacterInfoCanvas : MonoBehaviour
 			CustomFollowCamera.instance.cachedTransform.rotation = _lastCameraRotation;
 			BattleInstanceManager.instance.playerActor.cachedTransform.position = _lastCharacterPosition;
 			BattleInstanceManager.instance.playerActor.cachedTransform.rotation = _lastCharacterRotation;
-			TailAnimatorUpdater.UpdateAnimator(BattleInstanceManager.instance.playerActor.cachedTransform, 5);
+			TailAnimatorUpdater.UpdateAnimator(BattleInstanceManager.instance.playerActor.cachedTransform, 15);
 
 			CameraFovController.instance.enabled = true;
 			CustomFollowCamera.instance.enabled = true;

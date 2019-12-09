@@ -18,6 +18,10 @@ public class RFX4_MobileBloom : MonoBehaviour
 	[Tooltip("Filters out pixels under this level of brightness.")]
 	public float bloomThreshold = 1.3f;
 
+	[Range(1.0f, 2.5f)]
+	[Tooltip("Sets the max level of brightness.")]
+	public float bloomBrightnessMax = 2.05f;
+
 	[Tooltip("Lens Dirt Texture. The texture that controls per-channel light scattering amount.")]
 	public Texture2D DirtTexture;
 	public float DirtIntensity = 3.0f;
@@ -123,9 +127,11 @@ public class RFX4_MobileBloom : MonoBehaviour
 
         //// update the shader properties
         var threshold = Mathf.GammaToLinearSpace(bloomThreshold);
+		var brightnessMax = Mathf.GammaToLinearSpace(bloomBrightnessMax);
 
-        bloomMaterial.SetFloat("_Threshold", threshold);
-      
+		bloomMaterial.SetFloat("_Threshold", threshold);
+		bloomMaterial.SetFloat("_BrightnessMax", brightnessMax);
+
         var sampleScale = 0.5f + logh - logh_i;
      
         bloomMaterial.SetFloat("_SampleScale",  sampleScale * 0.5f);

@@ -8,6 +8,7 @@ half4 _MainTex_ST;
 half4 _BaseTex_ST;
 
 half _Threshold;
+half _BrightnessMax;
 float _SampleScale;
 half _Intensity;
 
@@ -125,6 +126,8 @@ half4 frag_prefilter(v2f_img i) : SV_Target
 //#endif
 	// Pixel brightness
 	half br = Brightness(m);
+
+	br = min(br, _BrightnessMax);
 	
 	// Combine and apply the brightness response curve.
 	m *= (br - _Threshold) / max(br, 1e-5);

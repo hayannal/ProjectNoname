@@ -11,7 +11,7 @@ public class DieDissolve : MonoBehaviour
 	public static void ShowDieDissolve(Transform rootTransform, bool bossMonster)
 	{
 		if (s_dissolvePropertyID == 0) s_dissolvePropertyID = Shader.PropertyToID("_UseDissolve");
-		if (s_cutoffPropertyID == 0) s_cutoffPropertyID = Shader.PropertyToID("_Cutoff");
+		if (s_cutoffPropertyID == 0) s_cutoffPropertyID = Shader.PropertyToID("_EdgeCutoff");
 
 		DieDissolve dieDissolve = rootTransform.GetComponent<DieDissolve>();
 		if (dieDissolve == null) dieDissolve = rootTransform.gameObject.AddComponent<DieDissolve>();

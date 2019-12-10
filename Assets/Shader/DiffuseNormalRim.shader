@@ -11,6 +11,9 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 		_RimPower ("Rim Power", Range(-1.0, 2)) = 1
 		_RimDirAdjust ("Rim Dir Adjust", Vector) = (0, 0, 0, 0)
 
+		[Toggle(_CUTOFF)] _UseCutoff("========== Use Cutoff ==========", Float) = 0
+		_Cutoff("Alpha cutoff", Range(0, 1)) = 0.5
+
 		[Toggle(_HUE)] _UseHue("========== Use Hue ==========", Float) = 0
 		_Hue ("Hue", Range(0.0, 360)) = 0
 
@@ -22,7 +25,7 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 		[HDR]_EdgeColor1 ("Edge Color", Color) = (1,1,1,1)
 		_EdgeSize ("EdgeSize", Range(0,1)) = 0.2
 		_Noise ("Noise", 2D) = "white" {}
-		_Cutoff ("Cutoff", Range(0, 1)) = 0.0
+		_EdgeCutoff ("Edge Cutoff", Range(0, 1)) = 0.0
 	}
 	SubShader {
 		Tags { "RenderType"="Opaque" }
@@ -30,6 +33,7 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 		CGPROGRAM
 		#pragma surface surf Lambert exclude_path:prepass nolightmap noforwardadd
 		#pragma multi_compile _ _DISSOLVE
+		#pragma shader_feature _CUTOFF
 		#pragma shader_feature _HUE
 		#pragma shader_feature _SELECTHUE
 
@@ -43,6 +47,10 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 		float4 _RimColor;
       	float _RimPower;
       	float4 _RimDirAdjust;
+
+#if _CUTOFF
+		half _Cutoff;
+#endif
 
 #if _HUE
 		uniform float _Hue;
@@ -62,7 +70,7 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 		half4 _EdgeColor1;
 		half _EdgeSize;
 		sampler2D _Noise;
-		half _Cutoff;
+		half _EdgeCutoff;
 #endif
 
 		// Vertex를 연산할 때 필요한 데이터를 정합니다.
@@ -117,7 +125,11 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 #endif
 
 		void surf (Input IN, inout SurfaceOutput o) {
-			o.Albedo = tex2D(_MainTex, IN.uv_MainTex).rgb * _Color;
+			fixed4 c = tex2D(_MainTex, IN.uv_MainTex);
+#if _CUTOFF
+			clip(c.a - _Cutoff);
+#endif
+			o.Albedo = c.rgb * _Color;
 #if _HUE
 	#if _SELECTHUE
 			float3 hsl = applyHue(o.Albedo);
@@ -130,11 +142,11 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 #if _DISSOLVE
 			half Noise = tex2D(_Noise, IN.uv_Noise).r;
 			Noise = lerp(0, 1, Noise);
-			_Cutoff = lerp(0, _Cutoff + _EdgeSize, _Cutoff);
-			half Edge = smoothstep(_Cutoff + _EdgeSize, _Cutoff, clamp(Noise, _EdgeSize, 1));
+			_EdgeCutoff = lerp(0, _EdgeCutoff + _EdgeSize, _EdgeCutoff);
+			half Edge = smoothstep(_EdgeCutoff + _EdgeSize, _EdgeCutoff, clamp(Noise, _EdgeSize, 1));
 			o.Emission = _EdgeColor1 * Edge;
 			//o.Albedo += _EdgeColor1 * Edge;
-			clip(Noise - _Cutoff);
+			clip(Noise - _EdgeCutoff);
 			//o.Albedo.r = saturate(o.Albedo.r);
 			//o.Albedo.g = saturate(o.Albedo.g);
 			//o.Albedo.b = saturate(o.Albedo.b);
@@ -164,39 +176,40 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 			#pragma fragment frag
 			#pragma multi_compile_shadowcaster
 			#pragma multi_compile _ _DISSOLVE
+			#pragma shader_feature _CUTOFF
 			#include "UnityCG.cginc"
 
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
 
+#if _CUTOFF
+			half _Cutoff;
+#endif
+
 #if _DISSOLVE
 			half _EdgeSize;
 			sampler2D _Noise;
 			half4 _Noise_ST;
-			half _Cutoff;
-
-			struct appdata_t
-			{
-				float4 vertex : POSITION;
-				half2 texcoord : TEXCOORD0;
-			};
+			half _EdgeCutoff;
 #endif
 
 			struct v2f {
 				V2F_SHADOW_CASTER;
+#if _CUTOFF
+				half2 uv_MainTex : TEXCOORD0;
+#endif
 #if _DISSOLVE
 				half2 uv_Noise : TEXCOORD1;
 #endif
 			};
 
-#if _DISSOLVE
-			v2f vert(appdata_t v)
-#else
 			v2f vert(appdata_base v)
-#endif
 			{
 				v2f o;
 				TRANSFER_SHADOW_CASTER(o)
+#if _CUTOFF
+				o.uv_MainTex = TRANSFORM_TEX(v.texcoord, _MainTex);
+#endif
 #if _DISSOLVE
 				o.uv_Noise = TRANSFORM_TEX(v.texcoord, _Noise);
 #endif
@@ -205,11 +218,15 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 
 			fixed frag(v2f i) : SV_Target
 			{
+#if _CUTOFF
+				fixed4 c = tex2D(_MainTex, i.uv_MainTex);
+				clip(c.a - _Cutoff);
+#endif
 #if _DISSOLVE
 				fixed Noise = tex2D(_Noise, i.uv_Noise).r;
 				Noise = lerp(0, 1, Noise);
-				_Cutoff = lerp(0, _Cutoff + _EdgeSize, _Cutoff);
-				clip(Noise - _Cutoff);
+				_EdgeCutoff = lerp(0, _EdgeCutoff + _EdgeSize, _EdgeCutoff);
+				clip(Noise - _EdgeCutoff);
 #endif
 
 				SHADOW_CASTER_FRAGMENT(i)

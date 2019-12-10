@@ -47,7 +47,7 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1559865429882821465}
   m_Enabled: 1
-  m_AgentTypeID: 0
+  m_AgentTypeID: 1479372276
   m_Radius: 0.5
   m_Speed: 3.5
   m_Acceleration: 8
@@ -87,7 +87,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.5
+  m_Radius: 0.35
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
@@ -107,7 +107,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   _groundLimit: 60
-  _stepOffset: 0.5
+  _stepOffset: 0.35
   _ledgeOffset: 0
   _castDistance: 0.5
   _triggerInteraction: 1
@@ -206,6 +206,7 @@ MonoBehaviour:
   customActionName: 
   customActionFadeDuration: 0.05
   chaseDistanceRange: {x: 3.1, y: 3.1}
+  chaseCancelTimeRange: {x: 0, y: 0}
   attackActionPlayType: 0
   attackActionName: Attack
   attackActionFadeDuration: 0.05
@@ -267,6 +268,18 @@ PrefabInstance:
     - target: {fileID: 400052, guid: 24a7c0fc9af8fbe4e91451cc57602d62, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400052, guid: 24a7c0fc9af8fbe4e91451cc57602d62, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 400052, guid: 24a7c0fc9af8fbe4e91451cc57602d62, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 400052, guid: 24a7c0fc9af8fbe4e91451cc57602d62, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 9500000, guid: 24a7c0fc9af8fbe4e91451cc57602d62, type: 3}
       propertyPath: m_Controller

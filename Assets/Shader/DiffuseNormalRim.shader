@@ -11,8 +11,11 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 		_RimPower ("Rim Power", Range(-1.0, 2)) = 1
 		_RimDirAdjust ("Rim Dir Adjust", Vector) = (0, 0, 0, 0)
 
-		[Toggle(_CUTOFF)] _UseCutoff("========== Use Cutoff ==========", Float) = 0
+		[Toggle(_CUTOFF)] _UseCutoff("========== Use Cutoff (A) ==========", Float) = 0
 		_Cutoff("Alpha cutoff", Range(0, 1)) = 0.5
+
+		[Toggle(_EMISSIVE)] _UseEmissive("========== Use Emissive Updater (A) ==========", Float) = 0
+		_EmissiveColor("Emissive Color", Color) = (1, 1, 1, 1)
 
 		[Toggle(_HUE)] _UseHue("========== Use Hue ==========", Float) = 0
 		_Hue ("Hue", Range(0.0, 360)) = 0
@@ -34,6 +37,7 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 		#pragma surface surf Lambert exclude_path:prepass nolightmap noforwardadd
 		#pragma multi_compile _ _DISSOLVE
 		#pragma shader_feature _CUTOFF
+		#pragma shader_feature _EMISSIVE
 		#pragma shader_feature _HUE
 		#pragma shader_feature _SELECTHUE
 
@@ -50,6 +54,10 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 
 #if _CUTOFF
 		half _Cutoff;
+#endif
+
+#if _EMISSIVE
+		fixed4 _EmissiveColor;
 #endif
 
 #if _HUE
@@ -137,6 +145,10 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 	#else
 			o.Albedo = applyHue(o.Albedo);
 	#endif
+#endif
+
+#if _EMISSIVE
+			o.Albedo = lerp(o.Albedo, _EmissiveColor.rgb, c.a * _EmissiveColor.a);
 #endif
 
 #if _DISSOLVE

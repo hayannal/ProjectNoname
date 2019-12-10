@@ -1,60 +1,118 @@
 fileFormatVersion: 2
 guid: 9f6db6e3afafe9a4a8ca5b725e794191
-timeCreated: 1476638512
-licenseType: Store
 ModelImporter:
-  serializedVersion: 19
-  fileIDToRecycleName:
-    100000: joint10
-    100002: joint11
-    100004: joint13
-    100006: joint14
-    100008: joint4
-    100010: joint5
-    100012: joint6
-    100014: joint7
-    100016: joint8
-    100018: joint9
-    100020: momo1
-    100022: //RootNode
-    400000: joint10
-    400002: joint11
-    400004: joint13
-    400006: joint14
-    400008: joint4
-    400010: joint5
-    400012: joint6
-    400014: joint7
-    400016: joint8
-    400018: joint9
-    400020: momo1
-    400022: //RootNode
-    7400000: Die
-    9500000: //RootNode
+  serializedVersion: 25
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: joint10
+  - first:
+      1: 100002
+    second: joint11
+  - first:
+      1: 100004
+    second: joint13
+  - first:
+      1: 100006
+    second: joint14
+  - first:
+      1: 100008
+    second: joint4
+  - first:
+      1: 100010
+    second: joint5
+  - first:
+      1: 100012
+    second: joint6
+  - first:
+      1: 100014
+    second: joint7
+  - first:
+      1: 100016
+    second: joint8
+  - first:
+      1: 100018
+    second: joint9
+  - first:
+      1: 100020
+    second: momo1
+  - first:
+      1: 100022
+    second: //RootNode
+  - first:
+      4: 400000
+    second: joint10
+  - first:
+      4: 400002
+    second: joint11
+  - first:
+      4: 400004
+    second: joint13
+  - first:
+      4: 400006
+    second: joint14
+  - first:
+      4: 400008
+    second: joint4
+  - first:
+      4: 400010
+    second: joint5
+  - first:
+      4: 400012
+    second: joint6
+  - first:
+      4: 400014
+    second: joint7
+  - first:
+      4: 400016
+    second: joint8
+  - first:
+      4: 400018
+    second: joint9
+  - first:
+      4: 400020
+    second: momo1
+  - first:
+      4: 400022
+    second: //RootNode
+  - first:
+      74: 7400000
+    second: Die
+  - first:
+      95: 9500000
+    second: //RootNode
+  externalObjects: {}
   materials:
     importMaterials: 0
     materialName: 0
     materialSearch: 1
+    materialLocation: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
     motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
       name: Die
       takeName: Take 001
+      internalID: 7400000
       firstFrame: 30
       lastFrame: 49
       wrapMode: 0
@@ -63,7 +121,7 @@ ModelImporter:
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 1
+      loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -110,13 +168,22 @@ ModelImporter:
     globalScale: 14
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 0
     importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    meshOptimizationFlags: -1
+    indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
@@ -126,9 +193,15 @@ ModelImporter:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
+    serializedVersion: 3
     human: []
     skeleton: []
     armTwist: 0.5
@@ -138,8 +211,11 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 14
     rootMotionBoneName: 
     hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 2
   humanoidOversampling: 1

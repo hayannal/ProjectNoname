@@ -369,7 +369,17 @@ ModelImporter:
   - first:
       137: 13700000
     second: necromancer
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: necromancer
+    second: {fileID: 2100000, guid: 39a70a9f84898314f8a05a946ed3e627, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: staff_skull
+    second: {fileID: 2100000, guid: f2c05e207892a8c4099d2ebbc4e860b2, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
@@ -389,7 +399,7 @@ ModelImporter:
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
     importConstraints: 0
-    animationCompression: 1
+    animationCompression: 3
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -400,7 +410,7 @@ ModelImporter:
     - serializedVersion: 16
       name: All
       takeName: Take 001
-      internalID: 0
+      internalID: 7400000
       firstFrame: 0
       lastFrame: 1115
       wrapMode: 0
@@ -429,7 +439,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Idle1
       takeName: Take 001
-      internalID: 0
+      internalID: 7400002
       firstFrame: 0
       lastFrame: 120
       wrapMode: 2
@@ -438,7 +448,7 @@ ModelImporter:
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
+      loopTime: 1
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -458,7 +468,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Idle2
       takeName: Take 001
-      internalID: 0
+      internalID: 7400004
       firstFrame: 121
       lastFrame: 240
       wrapMode: 2
@@ -487,7 +497,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Take
       takeName: Take 001
-      internalID: 0
+      internalID: 7400006
       firstFrame: 241
       lastFrame: 316
       wrapMode: 0
@@ -516,7 +526,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Sits
       takeName: Take 001
-      internalID: 0
+      internalID: 7400008
       firstFrame: 316
       lastFrame: 440
       wrapMode: 2
@@ -545,7 +555,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Up
       takeName: Take 001
-      internalID: 0
+      internalID: 7400010
       firstFrame: 440
       lastFrame: 470
       wrapMode: 0
@@ -574,7 +584,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Walk
       takeName: Take 001
-      internalID: 0
+      internalID: 7400012
       firstFrame: 471
       lastFrame: 509
       wrapMode: 2
@@ -603,7 +613,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Run
       takeName: Take 001
-      internalID: 0
+      internalID: 7400014
       firstFrame: 511
       lastFrame: 549
       wrapMode: 2
@@ -612,7 +622,7 @@ ModelImporter:
       cycleOffset: 0
       loop: 1
       hasAdditiveReferencePose: 0
-      loopTime: 0
+      loopTime: 1
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -632,7 +642,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Magic Attack
       takeName: Take 001
-      internalID: 0
+      internalID: 7400016
       firstFrame: 551
       lastFrame: 660
       wrapMode: 0
@@ -661,7 +671,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Magic Attack2
       takeName: Take 001
-      internalID: 0
+      internalID: 7400018
       firstFrame: 661
       lastFrame: 790
       wrapMode: 0
@@ -690,7 +700,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Magic Attack3
       takeName: Take 001
-      internalID: 0
+      internalID: 7400020
       firstFrame: 791
       lastFrame: 940
       wrapMode: 0
@@ -719,7 +729,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Attack
       takeName: Take 001
-      internalID: 0
+      internalID: 7400022
       firstFrame: 941
       lastFrame: 1020
       wrapMode: 0
@@ -748,7 +758,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Death1
       takeName: Take 001
-      internalID: 0
+      internalID: 7400024
       firstFrame: 1021
       lastFrame: 1095
       wrapMode: 0
@@ -777,7 +787,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Death2
       takeName: Take 001
-      internalID: 0
+      internalID: 7400026
       firstFrame: 1096
       lastFrame: 1115
       wrapMode: 0
@@ -806,7 +816,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 0.1
+    globalScale: 0.02
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
@@ -835,7 +845,7 @@ ModelImporter:
     normalImportMode: 0
     tangentImportMode: 4
     normalCalculationMode: 0
-    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
   referencedClips: []
@@ -852,13 +862,13 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 0.1
+    globalScale: 0.02
     rootMotionBoneName: 
     hasTranslationDoF: 0
-    hasExtraRoot: 0
+    hasExtraRoot: 1
     skeletonHasParents: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 1
+  animationType: 2
   humanoidOversampling: 1
   additionalBone: 1
   userData: 

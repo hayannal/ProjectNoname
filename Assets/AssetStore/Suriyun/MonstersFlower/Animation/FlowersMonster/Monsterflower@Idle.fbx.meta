@@ -1,74 +1,160 @@
 fileFormatVersion: 2
 guid: 479c6131a3844774b9688c5db5ada638
-timeCreated: 1460086369
-licenseType: Store
 ModelImporter:
-  serializedVersion: 19
-  fileIDToRecycleName:
-    100000: Flower_monster
-    100002: joint1
-    100004: joint10
-    100006: joint11
-    100008: joint12
-    100010: joint2
-    100012: joint3
-    100014: joint4
-    100016: joint5
-    100018: joint6
-    100020: joint7
-    100022: joint8
-    100024: joint9
-    100026: //RootNode
-    100028: nurbsCircle1
-    100030: nurbsCircle4
-    100032: nurbsCircle5
-    100034: nurbsCircle6
-    400000: Flower_monster
-    400002: joint1
-    400004: joint10
-    400006: joint11
-    400008: joint12
-    400010: joint2
-    400012: joint3
-    400014: joint4
-    400016: joint5
-    400018: joint6
-    400020: joint7
-    400022: joint8
-    400024: joint9
-    400026: //RootNode
-    400028: nurbsCircle1
-    400030: nurbsCircle4
-    400032: nurbsCircle5
-    400034: nurbsCircle6
-    4300000: Flower_monster
-    7400000: Idle
-    9500000: //RootNode
-    13700000: Flower_monster
+  serializedVersion: 25
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: Flower_monster
+  - first:
+      1: 100002
+    second: joint1
+  - first:
+      1: 100004
+    second: joint10
+  - first:
+      1: 100006
+    second: joint11
+  - first:
+      1: 100008
+    second: joint12
+  - first:
+      1: 100010
+    second: joint2
+  - first:
+      1: 100012
+    second: joint3
+  - first:
+      1: 100014
+    second: joint4
+  - first:
+      1: 100016
+    second: joint5
+  - first:
+      1: 100018
+    second: joint6
+  - first:
+      1: 100020
+    second: joint7
+  - first:
+      1: 100022
+    second: joint8
+  - first:
+      1: 100024
+    second: joint9
+  - first:
+      1: 100026
+    second: //RootNode
+  - first:
+      1: 100028
+    second: nurbsCircle1
+  - first:
+      1: 100030
+    second: nurbsCircle4
+  - first:
+      1: 100032
+    second: nurbsCircle5
+  - first:
+      1: 100034
+    second: nurbsCircle6
+  - first:
+      4: 400000
+    second: Flower_monster
+  - first:
+      4: 400002
+    second: joint1
+  - first:
+      4: 400004
+    second: joint10
+  - first:
+      4: 400006
+    second: joint11
+  - first:
+      4: 400008
+    second: joint12
+  - first:
+      4: 400010
+    second: joint2
+  - first:
+      4: 400012
+    second: joint3
+  - first:
+      4: 400014
+    second: joint4
+  - first:
+      4: 400016
+    second: joint5
+  - first:
+      4: 400018
+    second: joint6
+  - first:
+      4: 400020
+    second: joint7
+  - first:
+      4: 400022
+    second: joint8
+  - first:
+      4: 400024
+    second: joint9
+  - first:
+      4: 400026
+    second: //RootNode
+  - first:
+      4: 400028
+    second: nurbsCircle1
+  - first:
+      4: 400030
+    second: nurbsCircle4
+  - first:
+      4: 400032
+    second: nurbsCircle5
+  - first:
+      4: 400034
+    second: nurbsCircle6
+  - first:
+      43: 4300000
+    second: Flower_monster
+  - first:
+      74: 7400000
+    second: Idle
+  - first:
+      95: 9500000
+    second: //RootNode
+  - first:
+      137: 13700000
+    second: Flower_monster
+  externalObjects: {}
   materials:
     importMaterials: 0
     materialName: 0
     materialSearch: 1
+    materialLocation: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
-    resampleRotations: 1
+    resampleCurves: 1
     optimizeGameObjects: 0
     motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
       name: Idle
       takeName: Monsterflower@Idle
+      internalID: 7400000
       firstFrame: 1
       lastFrame: 30
       wrapMode: 0
@@ -131,16 +217,25 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 30
+    globalScale: 90
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 0
     importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    meshOptimizationFlags: -1
+    indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
@@ -150,9 +245,15 @@ ModelImporter:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
+    serializedVersion: 3
     human: []
     skeleton: []
     armTwist: 0.5
@@ -162,8 +263,11 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 0.9
     rootMotionBoneName: 
     hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 2
   humanoidOversampling: 1

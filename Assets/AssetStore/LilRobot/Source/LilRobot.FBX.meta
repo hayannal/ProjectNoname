@@ -1,64 +1,176 @@
 fileFormatVersion: 2
 guid: d314a97dbb26b834a882d42db92820bd
 ModelImporter:
-  serializedVersion: 23
-  fileIDToRecycleName:
-    100000: Arm.L
-    100002: Arm.L_end
-    100004: Arm.R
-    100006: Arm.R_end
-    100008: Armature
-    100010: Body
-    100012: Center
-    100014: Eyes
-    100016: Head
-    100018: HeadTip
-    100020: HeadTip_end
-    100022: Leg.L
-    100024: Leg.L_end
-    100026: Leg.R
-    100028: Leg.R_end
-    100030: //RootNode
-    100032: LilRobot
-    100034: QBlock
-    400000: Arm.L
-    400002: Arm.L_end
-    400004: Arm.R
-    400006: Arm.R_end
-    400008: Armature
-    400010: Body
-    400012: Center
-    400014: Eyes
-    400016: Head
-    400018: HeadTip
-    400020: HeadTip_end
-    400022: Leg.L
-    400024: Leg.L_end
-    400026: Leg.R
-    400028: Leg.R_end
-    400030: LilRobot
-    400032: //RootNode
-    400034: QBlock
-    2100000: Eyes
-    2100002: LilRobot.002
-    2300000: QBlock
-    3300000: QBlock
-    4300000: Eyes
-    4300002: LilRobot
-    4300004: QBlock
-    7400000: Hit
-    7400002: Armature|PoseLib
-    7400004: Idle
-    7400006: Walk
-    7400008: Run
-    7400010: Jump
-    7400012: Attack1
-    7400014: Attack2
-    7400016: Death
-    9500000: //RootNode
-    13700000: Eyes
-    13700002: LilRobot
-    2186277476908879412: ImportLogs
+  serializedVersion: 25
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: Arm.L
+  - first:
+      1: 100002
+    second: Arm.L_end
+  - first:
+      1: 100004
+    second: Arm.R
+  - first:
+      1: 100006
+    second: Arm.R_end
+  - first:
+      1: 100008
+    second: Armature
+  - first:
+      1: 100010
+    second: Body
+  - first:
+      1: 100012
+    second: Center
+  - first:
+      1: 100014
+    second: Eyes
+  - first:
+      1: 100016
+    second: Head
+  - first:
+      1: 100018
+    second: HeadTip
+  - first:
+      1: 100020
+    second: HeadTip_end
+  - first:
+      1: 100022
+    second: Leg.L
+  - first:
+      1: 100024
+    second: Leg.L_end
+  - first:
+      1: 100026
+    second: Leg.R
+  - first:
+      1: 100028
+    second: Leg.R_end
+  - first:
+      1: 100030
+    second: //RootNode
+  - first:
+      1: 100032
+    second: LilRobot
+  - first:
+      1: 100034
+    second: QBlock
+  - first:
+      4: 400000
+    second: Arm.L
+  - first:
+      4: 400002
+    second: Arm.L_end
+  - first:
+      4: 400004
+    second: Arm.R
+  - first:
+      4: 400006
+    second: Arm.R_end
+  - first:
+      4: 400008
+    second: Armature
+  - first:
+      4: 400010
+    second: Body
+  - first:
+      4: 400012
+    second: Center
+  - first:
+      4: 400014
+    second: Eyes
+  - first:
+      4: 400016
+    second: Head
+  - first:
+      4: 400018
+    second: HeadTip
+  - first:
+      4: 400020
+    second: HeadTip_end
+  - first:
+      4: 400022
+    second: Leg.L
+  - first:
+      4: 400024
+    second: Leg.L_end
+  - first:
+      4: 400026
+    second: Leg.R
+  - first:
+      4: 400028
+    second: Leg.R_end
+  - first:
+      4: 400030
+    second: LilRobot
+  - first:
+      4: 400032
+    second: //RootNode
+  - first:
+      4: 400034
+    second: QBlock
+  - first:
+      21: 2100000
+    second: Eyes
+  - first:
+      21: 2100002
+    second: LilRobot.002
+  - first:
+      23: 2300000
+    second: QBlock
+  - first:
+      33: 3300000
+    second: QBlock
+  - first:
+      43: 4300000
+    second: Eyes
+  - first:
+      43: 4300002
+    second: LilRobot
+  - first:
+      43: 4300004
+    second: QBlock
+  - first:
+      74: 7400000
+    second: Hit
+  - first:
+      74: 7400002
+    second: Armature|PoseLib
+  - first:
+      74: 7400004
+    second: Idle
+  - first:
+      74: 7400006
+    second: Walk
+  - first:
+      74: 7400008
+    second: Run
+  - first:
+      74: 7400010
+    second: Jump
+  - first:
+      74: 7400012
+    second: Attack1
+  - first:
+      74: 7400014
+    second: Attack2
+  - first:
+      74: 7400016
+    second: Death
+  - first:
+      95: 9500000
+    second: //RootNode
+  - first:
+      137: 13700000
+    second: Eyes
+  - first:
+      137: 13700002
+    second: LilRobot
+  - first:
+      41386430: 2186277476908879412
+    second: ImportLogs
   externalObjects:
   - first:
       type: UnityEngine:Material
@@ -100,6 +212,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Idle
       takeName: Armature|ArmatureAction
+      internalID: 7400004
       firstFrame: 1
       lastFrame: 60
       wrapMode: 0
@@ -128,6 +241,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Walk
       takeName: Armature|ArmatureAction
+      internalID: 7400006
       firstFrame: 66
       lastFrame: 95
       wrapMode: 0
@@ -156,6 +270,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Run
       takeName: Armature|ArmatureAction
+      internalID: 7400008
       firstFrame: 101
       lastFrame: 117
       wrapMode: 0
@@ -184,6 +299,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Jump
       takeName: Armature|ArmatureAction
+      internalID: 7400010
       firstFrame: 125
       lastFrame: 161
       wrapMode: 0
@@ -212,6 +328,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Attack1
       takeName: Armature|ArmatureAction
+      internalID: 7400012
       firstFrame: 165
       lastFrame: 180
       wrapMode: 0
@@ -220,8 +337,8 @@ ModelImporter:
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 1
-      loopBlend: 1
+      loopTime: 0
+      loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
       loopBlendPositionXZ: 0
@@ -240,6 +357,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Attack2
       takeName: Armature|ArmatureAction
+      internalID: 7400014
       firstFrame: 185
       lastFrame: 202
       wrapMode: 0
@@ -248,8 +366,8 @@ ModelImporter:
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 1
-      loopBlend: 1
+      loopTime: 0
+      loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
       loopBlendPositionXZ: 0
@@ -268,6 +386,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Hit
       takeName: Armature|ArmatureAction
+      internalID: 7400000
       firstFrame: 205
       lastFrame: 215
       wrapMode: 0
@@ -296,6 +415,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Death
       takeName: Armature|ArmatureAction
+      internalID: 7400016
       firstFrame: 220
       lastFrame: 237
       wrapMode: 0
@@ -335,18 +455,19 @@ ModelImporter:
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
     preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    meshOptimizationFlags: -1
     indexFormat: 0
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
-    useFileScale: 1
-    previousCalculatedGlobalScale: 0.01
-    hasPreviousCalculatedGlobalScale: 1
+    useFileScale: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -355,10 +476,11 @@ ModelImporter:
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
-    serializedVersion: 2
+    serializedVersion: 3
     human: []
     skeleton: []
     armTwist: 0.5
@@ -368,6 +490,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 1
     rootMotionBoneName: Center
     hasTranslationDoF: 0
     hasExtraRoot: 0

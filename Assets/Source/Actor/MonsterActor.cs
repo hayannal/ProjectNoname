@@ -205,10 +205,10 @@ public class MonsterActor : Actor
 		if (this == null)
 			yield break;
 
-		if (cachedMonsterTableData.useDieDissolve)
+		if (cachedMonsterTableData.flakeMultiplier > 0.0f)
 		{
 			DieDissolve.ShowDieDissolve(cachedTransform, bossMonster);
-			DieAshParticle.ShowParticle(cachedTransform, bossMonster);
+			DieAshParticle.ShowParticle(cachedTransform, bossMonster, cachedMonsterTableData.flakeMultiplier);
 		}
 		else
 		{

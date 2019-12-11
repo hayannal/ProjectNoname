@@ -5,15 +5,15 @@ using MEC;
 
 public class DieAshParticle : MonoBehaviour
 {
-	public static void ShowParticle(Transform rootTransform, bool bossMonster)
+	public static void ShowParticle(Transform rootTransform, bool bossMonster, float flakeMultiplier)
 	{
 		DieAshParticle dieAshParticle = rootTransform.GetComponent<DieAshParticle>();
 		if (dieAshParticle == null) dieAshParticle = rootTransform.gameObject.AddComponent<DieAshParticle>();
-		dieAshParticle.ShowParticle(bossMonster);
+		dieAshParticle.ShowParticle(bossMonster, flakeMultiplier);
 	}
 
 	List<AshParticle> _listAshParticle;
-	public void ShowParticle(bool bossMonster)
+	public void ShowParticle(bool bossMonster, float flakeMultiplier)
 	{
 		if (_listAshParticle == null)
 		{
@@ -30,7 +30,7 @@ public class DieAshParticle : MonoBehaviour
 			{
 				GameObject newObject = BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.monsterDieAshParticlePrefab, skinnedMeshRendererList[i].transform);
 				AshParticle ashParticle = newObject.GetComponent<AshParticle>();
-				ashParticle.SetParticleInfo(skinnedMeshRendererList[i], duration);
+				ashParticle.SetParticleInfo(skinnedMeshRendererList[i], duration, flakeMultiplier);
 				_listAshParticle.Add(ashParticle);
 			}
 		}

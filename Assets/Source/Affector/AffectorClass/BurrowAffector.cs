@@ -200,7 +200,7 @@ public class BurrowAffector : AffectorBase
 			return false;
 
 		DieDissolve.ShowDieDissolve(_scrollTransform, false);
-		DieAshParticle.ShowParticle(_scrollTransform, false);
+		DieAshParticle.ShowParticle(_scrollTransform, false, 0.5f);
 
 		// Restore
 		_actor.baseCharacterController.movement.useGravity = true;

@@ -14,13 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0.30305526
   EndTime: 1
+  targetDetectType: 1
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   movable: 0
-  targetDetectType: 1
+  maxDistance: 0
+  defaultSphereCastDistance: 0
+  sphereCastRadius: 0
   teamCheckType: 0
   createPositionType: 0
-  boneName: jnt_flowerRight
+  boneName: 
   offset: {x: 0, y: 0, z: 0.1}
   useBoneRotation: 0
   areaRotationY: 0
@@ -29,9 +32,13 @@ MonoBehaviour:
   areaHeightMin: 0
   areaHeightMax: 2
   areaAngle: 45
+  repeatCount: 0
+  repeatInterval: 0
   movementType: 0
   startDirectionType: 2
   startDirection: {x: 0, y: 0, z: 1}
+  howitzerType: 0
+  useWorldSpaceDirection: 0
   bothRandomAngle: 1
   leftRightRandomAngle: 0
   leftRandomAngle: 0
@@ -41,14 +48,40 @@ MonoBehaviour:
   curve: 0
   curveAdd: 0
   curveLockY: 0
+  accelTurn: 0
+  gravity: -9.81
+  parallelCount: 0
+  parallelDistance: 0
+  ignoreMainHitObjectByParallel: 0
+  circularSectorCount: 0
+  circularSectorBetweenAngle: 0
+  circularSectorUseWorldSpace: 0
+  circularSectorWorldSpaceCenterAngleY: 0
+  ignoreMainHitObjectByCircularSector: 0
+  continuousHitObjectGeneratorBaseList: []
+  contactAll: 0
+  monsterThroughCount: 0
+  wallThrough: 0
+  quadThrough: 0
+  bounceWallQuadCount: 0
+  ricochetCount: 0
+  ricochetOneHitPerTarget: 0
+  useHitStay: 0
+  hitStayInterval: 0
+  hitStayIgnoreDuplicate: 0
+  hitStayIdForIgnoreDuplicate: 0
+  hitStayLineRendererTrigger: 0
+  oneHitPerTarget: 0
+  useLineRenderer: 0
   affectorValueIdList:
   - NormalAttack01
   showHitEffect: 0
-  hitEffectObject: {fileID: 1124335935880280, guid: b6d68723f7e26204d8f14d607141cc13,
-    type: 3}
+  hitEffectObject: {fileID: 0}
   hitEffectLookAtNormal: 0
   useWeaponHitEffect: 0
   weaponDummyName: 
+  hitEffectLineRendererType: 0
+  hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 0
 --- !u!1102 &-7870688956108488034

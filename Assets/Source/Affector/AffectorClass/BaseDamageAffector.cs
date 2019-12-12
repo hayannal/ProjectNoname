@@ -211,28 +211,28 @@ public class BaseDamageAffector : AffectorBase {
 		onDie = (onDie == false && _actor.actorStatus.IsDie());
 		if (onDie)
 		{
-			if (affectorValueLevelTableData.iValue2 == 1 && !string.IsNullOrEmpty(affectorValueLevelTableData.sValue2))
+			bool ignoreOnKill = false;
+			if (_actor.IsMonsterActor())
 			{
-				if (affectorValueLevelTableData.sValue2.Contains(","))
-				{
-					string[] affectorValueIdList = BattleInstanceManager.instance.GetCachedString2StringList(affectorValueLevelTableData.sValue2);
-					for (int i = 0; i < affectorValueIdList.Length; ++i)
-						_affectorProcessor.ApplyAffectorValue(affectorValueIdList[i], hitParameter, false);
-				}
-				else
-					_affectorProcessor.ApplyAffectorValue(affectorValueLevelTableData.sValue2, hitParameter, false);
+				MonsterActor monsterActor = _actor as MonsterActor;
+				if (monsterActor != null && monsterActor.groupMonster && monsterActor.group.IsLastAliveMonster(monsterActor) == false)
+					ignoreOnKill = true;
 			}
-
-			if (attackerActor != null)
+			if (ignoreOnKill == false)
 			{
-				bool ignoreOnKill = false;
-				if (_actor.IsMonsterActor())
+				if (affectorValueLevelTableData.iValue2 == 1 && !string.IsNullOrEmpty(affectorValueLevelTableData.sValue2))
 				{
-					MonsterActor monsterActor = _actor as MonsterActor;
-					if (monsterActor != null && monsterActor.groupMonster && monsterActor.group.IsLastAliveMonster(monsterActor) == false)
-						ignoreOnKill = true;
+					if (affectorValueLevelTableData.sValue2.Contains(","))
+					{
+						string[] affectorValueIdList = BattleInstanceManager.instance.GetCachedString2StringList(affectorValueLevelTableData.sValue2);
+						for (int i = 0; i < affectorValueIdList.Length; ++i)
+							_affectorProcessor.ApplyAffectorValue(affectorValueIdList[i], hitParameter, false);
+					}
+					else
+						_affectorProcessor.ApplyAffectorValue(affectorValueLevelTableData.sValue2, hitParameter, false);
 				}
-				if (ignoreOnKill == false)
+
+				if (attackerActor != null)
 					CallAffectorValueAffector.OnEvent(attackerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnKill);
 			}
 		}

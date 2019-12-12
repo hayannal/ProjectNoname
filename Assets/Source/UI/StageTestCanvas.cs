@@ -14,6 +14,10 @@ public class StageTestCanvas : MonoBehaviour
 	void Awake()
 	{
 		instance = this;
+
+		StageTableData stageTableData = TableDataManager.instance.FindStageTableData(1, 1, PlayerData.instance.chaosMode);
+		if (stageTableData != null)
+			StageManager.instance.currentStageTableData = stageTableData;
 	}
 
 	public void OnClickButton()

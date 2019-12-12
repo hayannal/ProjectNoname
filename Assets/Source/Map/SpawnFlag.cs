@@ -92,7 +92,8 @@ public class SpawnFlag : MonoBehaviour
 			if (MainSceneBuilder.instance == null || MainSceneBuilder.instance.mainSceneBuilding == false)
 				BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.playerSpawnEffectPrefab, playerStartSpawnTransform.position, Quaternion.identity);
 
-			BattleInstanceManager.instance.playerActor.cachedTransform.position = playerStartSpawnTransform.position;
+			if (BattleInstanceManager.instance.playerActor != null)
+				BattleInstanceManager.instance.playerActor.cachedTransform.position = playerStartSpawnTransform.position;
 			CustomFollowCamera.instance.immediatelyUpdate = true;
 			StageManager.instance.currentGatePillarSpawnPosition = gatePillarSpawnTransform.position;
 			StageManager.instance.spawnPowerSourcePrefab = powerSourceSpawnTransform.gameObject.activeSelf;

@@ -80,7 +80,7 @@ public class SpawnFlag : MonoBehaviour
 			else
 				newObject = BattleInstanceManager.instance.GetCachedObject(_listSpawnInfo[i].prefab, cachedTransform);
 #else
-			GameObject newObject = Instantiate(_listSpawnInfo[i].prefab, cachedTransform);
+			GameObject newObject = BattleInstanceManager.instance.GetCachedObject(_listSpawnInfo[i].prefab, cachedTransform);
 #endif
 			newObject.transform.localPosition = _listSpawnInfo[i].localPosition;
 			newObject.transform.localRotation = Quaternion.Euler(_listSpawnInfo[i].localRotation);

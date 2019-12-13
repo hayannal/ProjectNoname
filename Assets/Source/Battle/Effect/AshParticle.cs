@@ -5,6 +5,7 @@ using UnityEngine;
 public class AshParticle : MonoBehaviour
 {
 	static float DefaultRateOverTimeMultiplier = 200.0f;
+	static float DefaultSmokeRateOverTimeMultiplier = 12.0f;
 
 	public ParticleSystem flakeParticleSystem;
 	public ParticleSystem emberParticleSystem;
@@ -23,6 +24,8 @@ public class AshParticle : MonoBehaviour
 		emission.rateOverTimeMultiplier = DefaultRateOverTimeMultiplier * flakeMultiplier;
 		emission = emberParticleSystem.emission;
 		emission.rateOverTimeMultiplier = DefaultRateOverTimeMultiplier * flakeMultiplier;
+		emission = smokeParticleSystem.emission;
+		emission.rateOverTimeMultiplier = DefaultSmokeRateOverTimeMultiplier * flakeMultiplier;
 
 		ParticleSystem.MainModule main = flakeParticleSystem.main;
 		main.duration = duration;

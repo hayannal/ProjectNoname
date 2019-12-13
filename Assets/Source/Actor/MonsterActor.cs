@@ -14,6 +14,7 @@ public class MonsterActor : Actor
 	public bool bossMonster { get; private set; }
 	public GroupMonster group { get; private set; }
 	public bool groupMonster { get { return group != null; } }
+	public SequentialMonster sequentialMonster { get; set; }
 
 	void Awake()
 	{
@@ -38,6 +39,7 @@ public class MonsterActor : Actor
 	{
 		if (groupMonster)
 			group.CheckAllDisable();
+		sequentialMonster = null;
 	}
 	#endregion
 
@@ -75,7 +77,7 @@ public class MonsterActor : Actor
 		InitializePassiveSkill();
 		monsterAI.InitializeAI();
 
-		if (bossMonster)
+		if (bossMonster && BattleInstanceManager.instance.bossGaugeSequentialMonster == null)
 			BossMonsterGaugeCanvas.instance.InitializeGauge(this);
 
 		monsterAI.OnEventAnimatorParameter(MonsterAI.eAnimatorParameterForAI.fHpRatio, actorStatus.GetHPRatio());
@@ -138,7 +140,15 @@ public class MonsterActor : Actor
 		#region Drop SP
 		UpdateDropSp();
 		#endregion
+
+		if (checkOverlapPositionFrameCount > 0)
+		{
+			if (cachedTransform.position.y > 0.0f)
+				cachedTransform.position = new Vector3(cachedTransform.position.x, 0.0f, cachedTransform.position.z);
+			checkOverlapPositionFrameCount -= 1;
+		}
 	}
+	public int checkOverlapPositionFrameCount { get; set; }
 
 	MonsterHPGauge _monsterHPGauge;
 	public override void OnChangedHP()
@@ -168,9 +178,12 @@ public class MonsterActor : Actor
 
 		Drop();
 
+		if (sequentialMonster != null)
+			sequentialMonster.OnDieMonster(this);
+
 		if (bossMonster)
 		{
-			BossMonsterGaugeCanvas.instance.OnDie();
+			BossMonsterGaugeCanvas.instance.OnDie(this);
 		}
 		else
 		{

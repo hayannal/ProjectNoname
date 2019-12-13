@@ -904,6 +904,60 @@ public class BattleInstanceManager : MonoBehaviour
 	}
 	#endregion
 
+	#region Sequential Monster
+	List<SequentialMonster> _listSequentialMonster;
+	public SequentialMonster bossGaugeSequentialMonster { get; set; }
+	public void OnInitializeSequentialMonster(SequentialMonster sequentialMonster)
+	{
+		if (_listSequentialMonster == null)
+			_listSequentialMonster = new List<SequentialMonster>();
+
+		if (_listSequentialMonster.Contains(sequentialMonster))
+		{
+			Debug.LogError("Invalid Data : listSequentialMonsters already contains the sequential monster");
+			return;
+		}
+
+		_listSequentialMonster.Add(sequentialMonster);
+
+		if (sequentialMonster.applyBossMonsterGauge)
+		{
+			if (bossGaugeSequentialMonster == null)
+				bossGaugeSequentialMonster = sequentialMonster;
+			else
+				Debug.LogError("Invalid Data : bossGaugeSequentialMonster already exist");
+		}
+	}
+
+	public void OnFinalizeSequentialMonster(SequentialMonster sequentialMonster)
+	{
+		if (_listSequentialMonster == null)
+			return;
+
+		if (_listSequentialMonster.Contains(sequentialMonster) == false)
+		{
+#if UNITY_EDITOR
+			Debug.LogError("Invalid Data : listSequentialMonsters does not contain the sequential monster");
+#endif
+			return;
+		}
+		_listSequentialMonster.Remove(sequentialMonster);
+	}
+
+	public bool CheckFinishSequentialMonster()
+	{
+		if (_listSequentialMonster == null)
+			return true;
+
+		for (int i = 0; i < _listSequentialMonster.Count; ++i)
+		{
+			if (_listSequentialMonster[i].GetRemainSpawnCount() > 0)
+				return false;
+		}
+		return true;
+	}
+	#endregion
+
 
 
 

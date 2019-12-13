@@ -32,11 +32,15 @@ public class BossMonsterGaugeCanvas : MonoBehaviour
 		_dieCount = 0;
 		_lateFillDelayRemainTime = 0.0f;
 		_lateFillLerpStarted = false;
+		_initializedSequentialGauge = false;
 	}
 
 	List<MonsterActor> _listMonsterActor = new List<MonsterActor>();
 	public void InitializeGauge(MonsterActor monsterActor)
 	{
+		if (BattleInstanceManager.instance.bossGaugeSequentialMonster != null)
+			return;
+
 		if (!gameObject.activeSelf)
 			gameObject.SetActive(true);
 
@@ -54,6 +58,28 @@ public class BossMonsterGaugeCanvas : MonoBehaviour
 		float hpLineRatio = sumHp / StageManager.instance.currentBossHpPer1Line;
 		_lastHpLineRatio = hpLineRatio;
 		RefreshBossHpGauge(hpLineRatio, true);
+	}
+
+	bool _initializedSequentialGauge = false;
+	public void InitializeSequentialGauge(SequentialMonster sequentialMonster)
+	{
+		if (sequentialMonster != BattleInstanceManager.instance.bossGaugeSequentialMonster)
+			return;
+		if (_initializedSequentialGauge)
+			return;
+
+		if (StageManager.instance.currentBossHpPer1Line == 0.0f)
+		{
+			Debug.LogError("Invalid Data! BossHpPer1Line is 0.");
+			return;
+		}
+
+		float sumHp = sequentialMonster.GetCurrentHp();
+		float hpLineRatio = sumHp / StageManager.instance.currentBossHpPer1Line;
+		_lastHpLineRatio = hpLineRatio;
+		RefreshBossHpGauge(hpLineRatio, true);
+		_initializedSequentialGauge = true;
+		gameObject.SetActive(true);
 	}
 
 	void RefreshBossHpGauge(float hpLineRatio, bool immediatelyUpdateLateFill)
@@ -104,12 +130,21 @@ public class BossMonsterGaugeCanvas : MonoBehaviour
 	float _lastHpLineRatio = 1.0f;
 	public void OnChangedHP(MonsterActor monsterActor)
 	{
-		if (_listMonsterActor.Contains(monsterActor) == false)
-			return;
-
 		float sumHp = 0.0f;
-		for (int i = 0; i < _listMonsterActor.Count; ++i)
-			sumHp += _listMonsterActor[i].actorStatus.GetHP();
+		if (monsterActor.sequentialMonster != null)
+		{
+			if (monsterActor.sequentialMonster == BattleInstanceManager.instance.bossGaugeSequentialMonster)
+				sumHp = monsterActor.sequentialMonster.GetCurrentHp();
+		}
+		else
+		{
+			if (_listMonsterActor.Contains(monsterActor) == false)
+				return;
+
+			for (int i = 0; i < _listMonsterActor.Count; ++i)
+				sumHp += _listMonsterActor[i].actorStatus.GetHP();
+		}
+
 		float hpLineRatio = sumHp / StageManager.instance.currentBossHpPer1Line;
 		if (_lastHpLineRatio < hpLineRatio)
 		{
@@ -185,15 +220,34 @@ public class BossMonsterGaugeCanvas : MonoBehaviour
 	}
 
 	int _dieCount = 0;
-	public void OnDie()
+	public void OnDie(MonsterActor monsterActor)
 	{
-		++_dieCount;
-		if (_dieCount >= _listMonsterActor.Count)
+		bool allDie = false;
+		if (monsterActor.sequentialMonster != null)
+		{
+			if (monsterActor.sequentialMonster == BattleInstanceManager.instance.bossGaugeSequentialMonster)
+			{
+				allDie = (monsterActor.sequentialMonster.IsLastAliveMonster(monsterActor) && monsterActor.actorStatus.IsDie());
+				if (allDie)
+					BattleInstanceManager.instance.bossGaugeSequentialMonster = null;
+			}
+		}
+		else
+		{
+			++_dieCount;
+			if (_dieCount >= _listMonsterActor.Count)
+				allDie = true;
+		}
+
+		if (allDie)
 			gameObject.SetActive(false);
 	}
 
 	public bool IsLastAliveMonster(MonsterActor monsterActor)
 	{
+		if (monsterActor.sequentialMonster != null && monsterActor.sequentialMonster == BattleInstanceManager.instance.bossGaugeSequentialMonster)
+			return monsterActor.sequentialMonster.IsLastAliveMonster(monsterActor);
+
 		bool allDie = true;
 		for (int i = 0; i < _listMonsterActor.Count; ++i)
 		{

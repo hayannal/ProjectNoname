@@ -67,7 +67,7 @@ public class BattleModeProcessorBase
 	public void OnDieMonster(MonsterActor monsterActor)
 	{
 		--_monsterSpawnCount;
-		if (_mapLoaded && _monsterSpawned && _monsterSpawnCount == 0)
+		if (_mapLoaded && _monsterSpawned && _monsterSpawnCount == 0 && BattleInstanceManager.instance.CheckFinishSequentialMonster())
 		{
 			// all kill monster
 			BattleManager.instance.GetStackedDropExp();

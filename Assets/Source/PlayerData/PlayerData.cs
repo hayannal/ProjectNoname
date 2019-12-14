@@ -44,6 +44,9 @@ public class PlayerData : MonoBehaviour
 		highestPlayChapter = 1;
 		highestClearStage = 0;
 		selectedChapter = 1;
+
+		// temp
+		loginned = true;
 	}
 	#endregion
 

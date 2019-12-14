@@ -29,8 +29,12 @@ public class ActorStatus : MonoBehaviour
 		else
 			_statusBase.ClearValue();
 
+		int powerLevel = 1;
+		CharacterData characterData = PlayerData.instance.GetCharacterData(actor.actorId);
+		if (characterData != null) powerLevel = characterData.powerLevel;
+
 		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(actor.actorId);
-		PowerLevelTableData powerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(1);
+		PowerLevelTableData powerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(powerLevel);
 		_statusBase.valueList[(int)eActorStatus.MaxHp] = powerLevelTableData.hp;
 		_statusBase.valueList[(int)eActorStatus.Attack] = powerLevelTableData.atk;
 		_statusBase.valueList[(int)eActorStatus.AttackDelay] = actorTableData.attackDelay;

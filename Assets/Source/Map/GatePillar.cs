@@ -29,6 +29,9 @@ public class GatePillar : MonoBehaviour
 	float _spawnTime;
 	void OnEnable()
 	{
+		if (DragThresholdController.instance != null)
+			DragThresholdController.instance.ApplyUIDragThreshold();
+
 		_spawnTime = Time.time;
 		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && PlayerData.instance.tutorialChapter == false)
 		{
@@ -41,7 +44,6 @@ public class GatePillar : MonoBehaviour
 			_descriptionObjectIndicatorShowRemainTime = descriptionObjectIndicatorShowDelayTime;
 		else
 			_descriptionObjectIndicatorShowRemainTime = 0.001f;
-
 	}
 
 	void OnDisable()
@@ -54,6 +56,9 @@ public class GatePillar : MonoBehaviour
 			_objectIndicatorCanvas.gameObject.SetActive(false);
 			_objectIndicatorCanvas = null;
 		}
+
+		if (DragThresholdController.instance != null)
+			DragThresholdController.instance.ResetUIDragThreshold();
 	}
 
 	float _descriptionObjectIndicatorShowRemainTime;

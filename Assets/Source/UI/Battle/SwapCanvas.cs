@@ -337,7 +337,8 @@ public class SwapCanvas : MonoBehaviour
 		/////////////////////////////////////////////////////////////////////
 
 		// PlayerData 에 등록
-		PlayerData.instance.mainCharacterId = newPlayerActor.actorId;
+		if (MainSceneBuilder.instance.lobby)
+			PlayerData.instance.mainCharacterId = newPlayerActor.actorId;
 
 		// 걸린 시간 표시
 		float deltaTime = Time.time - _buttonClickTime;

@@ -23,13 +23,23 @@ public class DragThresholdController : MonoBehaviour {
 		_defaultPixelDragThreshold = eventSystem.pixelDragThreshold;
 	}
 
+	int _uiDragThresholdRefCount = 0;
 	public void ApplyUIDragThreshold()
 	{
-		eventSystem.pixelDragThreshold = (int)(uiDragThresholdCM * Screen.dpi / inchToCm);
+		++_uiDragThresholdRefCount;
+		if (_uiDragThresholdRefCount == 1)
+			eventSystem.pixelDragThreshold = (int)(uiDragThresholdCM * Screen.dpi / inchToCm);
 	}
 
 	public void ResetUIDragThreshold()
 	{
-		eventSystem.pixelDragThreshold = _defaultPixelDragThreshold;
+		--_uiDragThresholdRefCount;
+		if (_uiDragThresholdRefCount < 0)
+		{
+			Debug.LogError("Invalid RefCount : Reference count is negative.");
+			_uiDragThresholdRefCount = 0;
+		}
+		if (_uiDragThresholdRefCount == 0)
+			eventSystem.pixelDragThreshold = _defaultPixelDragThreshold;
 	}
 }

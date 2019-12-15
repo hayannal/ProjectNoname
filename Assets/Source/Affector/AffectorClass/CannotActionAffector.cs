@@ -31,6 +31,7 @@ public class CannotActionAffector : AffectorBase
 		if (_actor.actionController.animator.speed != 0.0f)
 			_prevSpeed = _actor.actionController.animator.speed;
 		_actor.actionController.animator.speed = 0.0f;
+		_defaultAnimatorLocalPosition = _actor.actionController.cachedAnimatorTransform.localPosition;
 		_actor.actorStatus.OnChangedStatus(ActorStatusDefine.eActorStatus.MoveSpeed);
 		_shakeStartTime = Time.time;
 		_applied = true;
@@ -65,11 +66,12 @@ public class CannotActionAffector : AffectorBase
 		if (_applied == false)
 			return;
 
-		_actor.actionController.cachedAnimatorTransform.localPosition = Vector3.zero;
+		_actor.actionController.cachedAnimatorTransform.localPosition = _defaultAnimatorLocalPosition;
 		_actor.actionController.animator.speed = _prevSpeed;
 		_applied = false;
 	}
 
+	Vector3 _defaultAnimatorLocalPosition;
 	void UpdateShake()
 	{
 		float delta = Time.time - _shakeStartTime;
@@ -77,5 +79,6 @@ public class CannotActionAffector : AffectorBase
 		float pingPong = Mathf.PingPong(delta, PingPongMove);
 		pingPong -= PingPongMove * 0.5f;
 		_actor.actionController.cachedAnimatorTransform.position = _actor.cachedTransform.position + new Vector3(pingPong, 0.0f, 0.0f);
+		_actor.actionController.cachedAnimatorTransform.localPosition += _defaultAnimatorLocalPosition;
 	}
 }

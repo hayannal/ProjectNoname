@@ -27,27 +27,28 @@ public class SequentialMonster : MonoBehaviour
 		_listAliveMonsterActor.Clear();
 		_spawnPositionIndex = 0;
 		_spawnLooped = false;
+		_createdInstanceCount = 0;
 		_firstSpawn = true;
 
 		BattleInstanceManager.instance.OnInitializeSequentialMonster(this);
 	}
 
-	public int GetRemainSpawnCount()
-	{
-		return _remainSpawnCount;
-	}
-
 	int _remainSpawnCount = 0;
 	float _remainDelay = 0.0f;
+	// 위의 스폰은 스폰 타이밍을 결정하는 변수라서 현재 생성되어있는 몬스터 수를 계산하기엔 부적합하다. 실제로 생성은 아래 createdInstanceCount를 사용해야한다.
+	int _createdInstanceCount;
 	void Update()
 	{
+		if (_remainSpawnCount <= 0)
+			return;
+
 		if (_remainDelay > 0.0f)
 		{
 			_remainDelay -= Time.deltaTime;
 			return;
 		}
 
-		if (_listAliveMonsterActor.Count >= maxAliveMonsterCount)
+		if (_firstSpawn == false && GetAliveMonsterCount() >= maxAliveMonsterCount)
 		{
 			_remainDelay += defaultSpawnLoopInterval;
 			return;
@@ -55,13 +56,6 @@ public class SequentialMonster : MonoBehaviour
 
 		SpawnMonster();
 		_remainSpawnCount -= 1;
-		if (_remainSpawnCount <= 0)
-		{
-			BattleInstanceManager.instance.OnFinalizeSequentialMonster(this);
-			gameObject.SetActive(false);
-			return;
-		}
-
 		_remainDelay += _spawnLooped ? defaultSpawnLoopInterval : defaultSpawnInterval;
 		_spawnLooped = false;
 	}
@@ -97,6 +91,7 @@ public class SequentialMonster : MonoBehaviour
 	}
 
 	bool _firstSpawn;
+	int _monsterCountPerSpawnSequence;
 	IEnumerator<float> DelayedSpawnMonster(Vector3 spawnPosition, Quaternion spawnRotation)
 	{
 		// 겹쳐서 스폰될때 다른 액터의 컬리더 위로 올라가는 현상을 줄이기 위해 랜덤 오차를 넣어본다.
@@ -119,18 +114,17 @@ public class SequentialMonster : MonoBehaviour
 			{
 				groupMonster.listMonsterActor[i].sequentialMonster = this;
 				groupMonster.listMonsterActor[i].checkOverlapPositionFrameCount = 100;
-				_listAliveMonsterActor.Add(groupMonster.listMonsterActor[i]);
 			}
 		}
 
+		MonsterActor monsterActor = null;
 		if (groupMonster == null)
 		{
-			MonsterActor monsterActor = newObject.GetComponent<MonsterActor>();
+			monsterActor = newObject.GetComponent<MonsterActor>();
 			if (monsterActor != null)
 			{
 				monsterActor.sequentialMonster = this;
 				monsterActor.checkOverlapPositionFrameCount = 100;
-				_listAliveMonsterActor.Add(monsterActor);
 			}
 		}
 
@@ -144,44 +138,100 @@ public class SequentialMonster : MonoBehaviour
 		if (this == null)
 			yield break;
 
-		if (_firstSpawn && applyBossMonsterGauge)
+		// 스탯 초기화가 끝난 후에 AliveMonster에 넣는다. (이래야 hp계산 타이밍이 언제가 되든 문제없이 계산된다.)
+		// 이때 실제로 생성한 카운트도 증가시켜서 동기를 맞춰둔다.
+		// 한가지 주의해야할 점이 있는데 하필 위에서 한프레임 기다리는동안 같은 프레임에 원샷으로 맞아서 죽어버리면
+		// OnDieMonster 함수가 먼저 호출되면서 Remove를 못하게 된다.
+		// 그래서 차라리 Hp가 0이하라면 이미 죽었다고 판단해서 넣지 않기로 해본다.
+		// (사실 이게 다 저 yield return Timing.WaitForOneFrame 때문이다. 지금 구조상 어쩔 수 없어서 이렇게 만든거니..)
+		++_createdInstanceCount;
+		if (groupMonster != null)
 		{
-			// 여기서 한 그룹당 피가 얼마인지를 계산해둔다.
-			_sumHpPerSpawnSequence = 0.0f;
-			for (int i = 0; i < _listAliveMonsterActor.Count; ++i)
+			for (int i = 0; i < groupMonster.listMonsterActor.Count; ++i)
 			{
-				if (_listAliveMonsterActor[i].bossMonster == false)
+				if (groupMonster.listMonsterActor[i].actorStatus.IsDie())
 					continue;
-				_sumHpPerSpawnSequence += _listAliveMonsterActor[i].actorStatus.GetValue(ActorStatusDefine.eActorStatus.MaxHp);
+				_listAliveMonsterActor.Add(groupMonster.listMonsterActor[i]);
 			}
-			BossMonsterGaugeCanvas.instance.InitializeSequentialGauge(this);
+			if (_firstSpawn) _monsterCountPerSpawnSequence = groupMonster.listMonsterActor.Count;
 		}
-		_firstSpawn = false;
+		if (groupMonster == null && monsterActor != null)
+		{
+			if (monsterActor.actorStatus.IsDie() == false)
+				_listAliveMonsterActor.Add(monsterActor);
+			if (_firstSpawn) _monsterCountPerSpawnSequence = 1;
+		}
+
+		if (_firstSpawn)
+		{
+			_firstSpawn = false;
+			if (applyBossMonsterGauge)
+			{
+				// 여기서 한 그룹당 피가 얼마인지를 계산해둔다.
+				_sumBossHpPerSpawnSequence = 0.0f;
+				for (int i = 0; i < _listAliveMonsterActor.Count; ++i)
+				{
+					if (_listAliveMonsterActor[i].bossMonster == false)
+						continue;
+					_sumBossHpPerSpawnSequence += _listAliveMonsterActor[i].actorStatus.GetValue(ActorStatusDefine.eActorStatus.MaxHp);
+				}
+				BossMonsterGaugeCanvas.instance.InitializeSequentialGauge(this);
+			}
+		}
 	}
 
-	float _sumHpPerSpawnSequence;
-	public float GetCurrentHp()
+	public int GetAliveMonsterCount()
 	{
+		// _listAliveMonsterActor 리스트만 가지고서는 제대로 계산하면 안된다. 만들고있는 몬스터들까지 포함시켜줘야한다.
+		int count = _listAliveMonsterActor.Count;
+		int creatingCount = (totalCount - _createdInstanceCount) - _remainSpawnCount;
+		count += creatingCount * _monsterCountPerSpawnSequence;
+		return count;
+	}
+
+	float _sumBossHpPerSpawnSequence;
+	public float GetSumBossCurrentHp()
+	{
+		if (_firstSpawn == true)
+		{
+			// 아직 첫번째 스폰이 수행되기 전이라서 정보가 캐싱되어있지 않다. 호출되면 안되는 타이밍이다.
+			Debug.LogError("Invalid call. This can be called after the first spawn.");
+			return 0.0f;
+		}
+
 		float sumHp = 0.0f;
 		for (int i = 0; i < _listAliveMonsterActor.Count; ++i)
 			sumHp += _listAliveMonsterActor[i].actorStatus.GetHP();
-		sumHp += (_remainSpawnCount * _sumHpPerSpawnSequence);
+		sumHp += (totalCount - _createdInstanceCount) * _sumBossHpPerSpawnSequence;
 		return sumHp;
 	}
 
 	public void OnDieMonster(MonsterActor monsterActor)
 	{
 		if (_listAliveMonsterActor.Contains(monsterActor) == false)
+		{
+			Debug.LogError("Invalid call. monsterActor not contains.");
 			return;
+		}
 
 		_listAliveMonsterActor.Remove(monsterActor);
-		if (_listAliveMonsterActor.Count == 0 && _remainDelay > 0.1f)
-			_remainDelay = 0.1f;
+		if (GetAliveMonsterCount() == 0)
+		{
+			if (totalCount == _createdInstanceCount)
+			{
+				BattleInstanceManager.instance.OnFinalizeSequentialMonster(this);
+				gameObject.SetActive(false);
+				return;
+			}
+			
+			if (_remainSpawnCount > 0 && _remainDelay > 0.1f)
+				_remainDelay = 0.1f;
+		}
 	}
 
 	public bool IsLastAliveMonster(MonsterActor monsterActor)
 	{
-		if (_remainSpawnCount > 0)
+		if (totalCount - _createdInstanceCount > 0)
 			return false;
 
 		bool allDie = true;

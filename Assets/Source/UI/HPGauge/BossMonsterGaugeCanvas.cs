@@ -74,7 +74,7 @@ public class BossMonsterGaugeCanvas : MonoBehaviour
 			return;
 		}
 
-		float sumHp = sequentialMonster.GetCurrentHp();
+		float sumHp = sequentialMonster.GetSumBossCurrentHp();
 		float hpLineRatio = sumHp / StageManager.instance.currentBossHpPer1Line;
 		_lastHpLineRatio = hpLineRatio;
 		RefreshBossHpGauge(hpLineRatio, true);
@@ -134,7 +134,7 @@ public class BossMonsterGaugeCanvas : MonoBehaviour
 		if (monsterActor.sequentialMonster != null)
 		{
 			if (monsterActor.sequentialMonster == BattleInstanceManager.instance.bossGaugeSequentialMonster)
-				sumHp = monsterActor.sequentialMonster.GetCurrentHp();
+				sumHp = monsterActor.sequentialMonster.GetSumBossCurrentHp();
 		}
 		else
 		{

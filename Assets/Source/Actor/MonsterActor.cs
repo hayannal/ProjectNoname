@@ -176,10 +176,10 @@ public class MonsterActor : Actor
 	{
 		base.OnDie();
 
-		Drop();
-
 		if (sequentialMonster != null)
 			sequentialMonster.OnDieMonster(this);
+
+		Drop();
 
 		if (bossMonster)
 		{

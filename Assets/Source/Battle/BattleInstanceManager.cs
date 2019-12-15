@@ -949,12 +949,7 @@ public class BattleInstanceManager : MonoBehaviour
 		if (_listSequentialMonster == null)
 			return true;
 
-		for (int i = 0; i < _listSequentialMonster.Count; ++i)
-		{
-			if (_listSequentialMonster[i].GetRemainSpawnCount() > 0)
-				return false;
-		}
-		return true;
+		return _listSequentialMonster.Count == 0;
 	}
 	#endregion
 

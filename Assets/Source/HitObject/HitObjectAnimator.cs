@@ -5,6 +5,7 @@ using UnityEngine;
 public class HitObjectAnimator : MonoBehaviour
 {
 	public Actor parentActor { get; private set; }
+	public float parentHitObjectCreateTime { get; private set; }
 	Animator _animator;
 
 	const string ByLifeTimeStateName = "ByLifeTime";
@@ -34,9 +35,10 @@ public class HitObjectAnimator : MonoBehaviour
 	}
 
 	bool _played = false;
-	public void InitializeSignal(Actor actor, Animator animator)
+	public void InitializeSignal(Actor actor, Animator animator, float createTime)
 	{
 		parentActor = actor;
+		parentHitObjectCreateTime = createTime;
 		_animator = animator;
 		_animator.Play(BattleInstanceManager.instance.GetActionNameHash("Standby"), 0, 0.0f);
 		_played = false;

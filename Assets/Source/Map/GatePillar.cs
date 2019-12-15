@@ -141,20 +141,20 @@ public class GatePillar : MonoBehaviour
 			return false;
 		if (hitObject.statusStructForHitObject.teamId == (int)Team.eTeamID.DefaultMonster)
 			return false;
-		if (hitObject.createTime < _spawnTime)
+		if (hitObject.GetGatePillarCompareTime() < _spawnTime)
 			return false;
 		if (SwapCanvas.instance != null && SwapCanvas.instance.gameObject.activeSelf)
 			return false;
 		return true;
 	}
 
-	public void CheckHitObject(int teamId, Collider collider)
+	public void CheckHitObject(int teamId, float gatePillarCompareTime, Collider collider)
 	{
 		if (collider.gameObject != meshColliderObject)
 			return;
 		if (teamId == (int)Team.eTeamID.DefaultMonster)
 			return;
-		if (Time.time < _spawnTime)
+		if (gatePillarCompareTime < _spawnTime)
 			return;
 		if (CheckNextMap() == false)
 			return;

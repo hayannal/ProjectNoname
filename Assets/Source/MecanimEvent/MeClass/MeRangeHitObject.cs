@@ -29,10 +29,10 @@ public class MeRangeHitObject : MeHitObject
 		OnSignal(animator, stateInfo, layerIndex);
 	}
 
-	protected override void InitializeHitObject(Transform spawnTransform, MeHitObject meHit, Actor parentActor, Transform parentTransform, int hitSignalIndexInAction)
+	protected override void InitializeHitObject(Transform spawnTransform, MeHitObject meHit, Actor parentActor, Transform parentTransform, float parentHitObjectCreateTime, int hitSignalIndexInAction)
 	{
 		// Range에서는 만들어낸 Main HitObject를 기억해놨다가 직접 처리하는데 써야한다.
-		_mainHitObject = HitObject.InitializeHit(spawnTransform, meHit, parentActor, parentTransform, hitSignalIndexInAction, 0, 0);
+		_mainHitObject = HitObject.InitializeHit(spawnTransform, meHit, parentActor, parentTransform, parentHitObjectCreateTime, hitSignalIndexInAction, 0, 0);
 
 		bool normalAttack = parentActor.actionController.mecanimState.IsState((int)eMecanimState.Attack);
 		int repeatAddCountByLevelPack = normalAttack ? RepeatHitObjectAffector.GetAddCount(parentActor.affectorProcessor) : 0;
@@ -45,11 +45,11 @@ public class MeRangeHitObject : MeHitObject
 
 			_resultRepeatInterval = meHit.repeatInterval;
 			if (_resultRepeatInterval == 0.0f && repeatAddCountByLevelPack > 0) _resultRepeatInterval = RepeatHitObjectAffector.GetInterval(parentActor.affectorProcessor);
-			Timing.RunCoroutine(RepeatProcess(spawnTransform, meHit, parentActor, parentTransform, hitSignalIndexInAction));
+			Timing.RunCoroutine(RepeatProcess(spawnTransform, meHit, parentActor, parentTransform, parentHitObjectCreateTime, hitSignalIndexInAction));
 		}
 	}
 
-	IEnumerator<float> RepeatProcess(Transform spawnTransform, MeHitObject meHit, Actor parentActor, Transform parentTransform, int hitSignalIndexInAction)
+	IEnumerator<float> RepeatProcess(Transform spawnTransform, MeHitObject meHit, Actor parentActor, Transform parentTransform, float parentHitObjectCreateTime, int hitSignalIndexInAction)
 	{
 		// Repeat 하기전 트랜스폼들을 복제해서 캐싱해야한다. 이래야 본 포지션 및 캐릭터 방향까지 기억할 수 있다.
 		Transform duplicatedSpawnTransform = BattleInstanceManager.instance.GetEmptyTransform(spawnTransform.position, spawnTransform.rotation);
@@ -62,7 +62,7 @@ public class MeRangeHitObject : MeHitObject
 			if (this == null)
 				yield break;
 
-			HitObject repeatHitObject = HitObject.InitializeHit(duplicatedSpawnTransform, meHit, parentActor, duplicatedParentTransform, hitSignalIndexInAction, i, _totalRepeatCount - meHit.repeatCount);
+			HitObject repeatHitObject = HitObject.InitializeHit(duplicatedSpawnTransform, meHit, parentActor, duplicatedParentTransform, parentHitObjectCreateTime, hitSignalIndexInAction, i, _totalRepeatCount - meHit.repeatCount);
 			_listRepeatHitObject.Add(repeatHitObject);
 		}
 		duplicatedSpawnTransform.gameObject.SetActive(false);

@@ -22,7 +22,7 @@ public class HitObject : MonoBehaviour
 	}
 
 	#region staticFunction
-	public static HitObject InitializeHit(Transform spawnTransform, MeHitObject meHit, Actor parentActor, Transform parentTransform, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack)
+	public static HitObject InitializeHit(Transform spawnTransform, MeHitObject meHit, Actor parentActor, Transform parentTransform, float parentHitObjectCreateTime, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack)
 	{
 		// step 1. Find Target and Reaction
 		if (meHit.targetDetectType == eTargetDetectType.Preset)
@@ -77,11 +77,11 @@ public class HitObject : MonoBehaviour
 			Vector3 areaDirection = spawnTransform.forward;
 			Vector3 endPosition = Vector3.zero;
 			if (meHit.targetDetectType == eTargetDetectType.Area)
-				CheckHitArea(areaPosition, areaDirection, meHit, parentActor.actorStatus.statusBase, statusStructForHitObject);
+				CheckHitArea(areaPosition, areaDirection, meHit, parentActor.actorStatus.statusBase, statusStructForHitObject, GetGatePillarCompareTime(0.0f, parentHitObjectCreateTime));
 			else if (meHit.targetDetectType == eTargetDetectType.SphereCast)
 			{
 				areaDirection = GetSpawnDirection(areaPosition, meHit, parentTransform, GetTargetPosition(meHit, parentActor, hitSignalIndexInAction), parentActor.targetingProcessor);
-				endPosition = CheckSphereCast(areaPosition, areaDirection, meHit, parentActor.actorStatus.statusBase, statusStructForHitObject);
+				endPosition = CheckSphereCast(areaPosition, areaDirection, meHit, parentActor.actorStatus.statusBase, statusStructForHitObject, GetGatePillarCompareTime(0.0f, parentHitObjectCreateTime));
 			}
 
 			// HitObject 프리팹이 있거나 lifeTime이 있다면 생성하고 아니면 패스.
@@ -89,7 +89,7 @@ public class HitObject : MonoBehaviour
 			HitObject hitObject = GetCachedHitObject(meHit, areaPosition, rotation);
 			if (hitObject != null)
 			{
-				hitObject.InitializeHitObject(meHit, parentActor, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
+				hitObject.InitializeHitObject(meHit, parentActor, parentHitObjectCreateTime, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
 				if (meHit.targetDetectType == eTargetDetectType.SphereCast)
 				{
 					// attach child
@@ -118,7 +118,7 @@ public class HitObject : MonoBehaviour
 				HitObject parallelHitObject = GetCachedHitObject(meHit, position, rotation);
 				if (parallelHitObject == null)
 					continue;
-				parallelHitObject.InitializeHitObject(meHit, parentActor, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
+				parallelHitObject.InitializeHitObject(meHit, parentActor, parentHitObjectCreateTime, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
 			}
 		}
 
@@ -140,7 +140,7 @@ public class HitObject : MonoBehaviour
 			HitObject circularSectorHitObject = GetCachedHitObject(meHit, defaultPosition, Quaternion.Euler(0.0f, angle, 0.0f));
 			if (circularSectorHitObject == null)
 				continue;
-			circularSectorHitObject.InitializeHitObject(meHit, parentActor, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
+			circularSectorHitObject.InitializeHitObject(meHit, parentActor, parentHitObjectCreateTime, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
 		}
 
 		if (meHit.continuousHitObjectGeneratorBaseList != null)
@@ -190,7 +190,7 @@ public class HitObject : MonoBehaviour
 		{
 			HitObject hitObject = GetCachedHitObject(meHit, defaultPosition, defaultRotation);
 			if (hitObject != null)
-				hitObject.InitializeHitObject(meHit, parentActor, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
+				hitObject.InitializeHitObject(meHit, parentActor, parentHitObjectCreateTime, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
 			return hitObject;
 		}
 		return null;
@@ -338,6 +338,17 @@ public class HitObject : MonoBehaviour
 		return parentActorTransform.TransformDirection(result);
 	}
 
+	static float GetGatePillarCompareTime(float createTime, float parentHitObjectCreateTime)
+	{
+		if (parentHitObjectCreateTime > 0.0f)
+			return parentHitObjectCreateTime;
+
+		if (createTime > 0.0f)
+			return createTime;
+
+		return Time.time;
+	}
+
 	static void CopyEtcStatusForHitObject(ref StatusStructForHitObject statusStructForHitObject, Actor actor, MeHitObject meHit, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack)
 	{
 		statusStructForHitObject.actorInstanceId = actor.GetInstanceID();
@@ -379,7 +390,7 @@ public class HitObject : MonoBehaviour
 	}
 
 	static List<AffectorProcessor> s_listAppliedAffectorProcessor;
-	static void CheckHitArea(Vector3 areaPosition, Vector3 areaForward, MeHitObject meHit, StatusBase statusBase, StatusStructForHitObject statusForHitObject,
+	static void CheckHitArea(Vector3 areaPosition, Vector3 areaForward, MeHitObject meHit, StatusBase statusBase, StatusStructForHitObject statusForHitObject, float gatePillarCompareTime,
 		List<AffectorProcessor> listOneHitPerTarget = null, Dictionary<AffectorProcessor, float> dicHitStayTime = null)
 	{
 		// step 1. Physics.OverlapSphere
@@ -434,7 +445,7 @@ public class HitObject : MonoBehaviour
 			if (meHit.areaAngle * 0.5f < angle - adjustAngle) continue;
 
 			if (GatePillar.instance != null && GatePillar.instance.gameObject.activeSelf)
-				GatePillar.instance.CheckHitObject(statusForHitObject.teamId, result[i]);
+				GatePillar.instance.CheckHitObject(statusForHitObject.teamId, gatePillarCompareTime, result[i]);
 
 			bool ignoreAffectorProcessor = false;
 
@@ -479,7 +490,7 @@ public class HitObject : MonoBehaviour
 
 	static RaycastHit[] s_raycastHitList = null;
 	static List<RaycastHit> s_listMonsterRaycastHit = null;
-	static Vector3 CheckSphereCast(Vector3 spawnPosition, Vector3 spawnForward, MeHitObject meHit, StatusBase statusBase, StatusStructForHitObject statusForHitObject,
+	static Vector3 CheckSphereCast(Vector3 spawnPosition, Vector3 spawnForward, MeHitObject meHit, StatusBase statusBase, StatusStructForHitObject statusForHitObject, float gatePillarCompareTime,
 		List<AffectorProcessor> listOneHitPerTarget = null, Dictionary<AffectorProcessor, float> dicHitStayTime = null)
 	{
 		if (s_raycastHitList == null)
@@ -674,6 +685,7 @@ public class HitObject : MonoBehaviour
 	MeHitObject _signal;
 	float _createTime;
 	Vector3 _createPosition;
+	float _parentHitObjectCreateTime;
 	StatusBase _statusBase = new StatusBase();
 	StatusStructForHitObject _statusStructForHitObject;
 	Rigidbody _rigidbody { get; set; }
@@ -708,10 +720,11 @@ public class HitObject : MonoBehaviour
 		_animator = GetComponent<Animator>();
 	}
 
-	public void InitializeHitObject(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack)
+	public void InitializeHitObject(MeHitObject meHit, Actor parentActor, float parentHitObjectCreateTime, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack)
 	{
 		_signal = meHit;
 		_createTime = Time.time;
+		_parentHitObjectCreateTime = parentHitObjectCreateTime;
 		_createPosition = cachedTransform.position;
 		parentActor.actorStatus.CopyStatusBase(ref _statusBase);
 		CopyEtcStatusForHitObject(ref _statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
@@ -795,7 +808,7 @@ public class HitObject : MonoBehaviour
 					_hitObjectAnimator = GetComponent<HitObjectAnimator>();
 					if (_hitObjectAnimator == null) _hitObjectAnimator = gameObject.AddComponent<HitObjectAnimator>();
 				}
-				_hitObjectAnimator.InitializeSignal(parentActor, _animator);
+				_hitObjectAnimator.InitializeSignal(parentActor, _animator, _createTime);
 				_hitObjectAnimatorStarted = false;
 				_waitHitObjectAnimatorUpdateCount = 0;
 			}
@@ -912,14 +925,19 @@ public class HitObject : MonoBehaviour
 		switch (_signal.targetDetectType)
 		{
 			case eTargetDetectType.Area:
-				CheckHitArea(cachedTransform.position, cachedTransform.forward, _signal, _statusBase, _statusStructForHitObject, _listOneHitPerTarget, _dicHitStayTime);
+				CheckHitArea(cachedTransform.position, cachedTransform.forward, _signal, _statusBase, _statusStructForHitObject, GetGatePillarCompareTime(), _listOneHitPerTarget, _dicHitStayTime);
 				break;
 			case eTargetDetectType.SphereCast:
-				Vector3 endPosition = CheckSphereCast(cachedTransform.position, cachedTransform.forward, _signal, _statusBase, _statusStructForHitObject, _listOneHitPerTarget, _dicHitStayTime);
+				Vector3 endPosition = CheckSphereCast(cachedTransform.position, cachedTransform.forward, _signal, _statusBase, _statusStructForHitObject, GetGatePillarCompareTime(), _listOneHitPerTarget, _dicHitStayTime);
 				if (_hitObjectSphereCastRayPath != null)
 					_hitObjectSphereCastRayPath.SetEndPosition(endPosition);
 				break;
 		}
+	}
+
+	public float GetGatePillarCompareTime()
+	{
+		return HitObject.GetGatePillarCompareTime(_createTime, _parentHitObjectCreateTime);
 	}
 
 	//Vector3 _prevPosition = Vector3.zero;

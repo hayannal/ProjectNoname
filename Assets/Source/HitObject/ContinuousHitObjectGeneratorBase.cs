@@ -68,7 +68,7 @@ public class ContinuousHitObjectGeneratorBase : MonoBehaviour
 		if (hitObject == null)
 			return null;
 
-		hitObject.InitializeHitObject(_signal, _parentActor, _hitSignalIndexInAction, _repeatIndex, _repeatAddCountByLevelPack);
+		hitObject.InitializeHitObject(_signal, _parentActor, 0.0f, _hitSignalIndexInAction, _repeatIndex, _repeatAddCountByLevelPack);
 		return hitObject;
 	}
 

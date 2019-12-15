@@ -46,8 +46,8 @@ public class CertainHpHitObjectAffector : AffectorBase
 		// 이걸 수행하기 위해선 해당 액터에 마지막으로 호출했던 certainHp를 기억시켜놔야한다.
 		// 그런데 이게 여러개의 어펙터밸류가 동시에 동작할 수 있기 때문에, 아이디별로 certainHp를 따로 기억시켜야한다.
 		float lastHpRatio = 1.0f;
-		if (DefaultContainerAffector.ContainsValue(_actor.affectorProcessor, _affectorValueLevelTableData.affectorValueId))
-			lastHpRatio = DefaultContainerAffector.GetFloatValue2(_actor.affectorProcessor, _affectorValueLevelTableData.affectorValueId);
+		if (DefaultContainerAffector.ContainsValue(defenderAffectorProcessor, _affectorValueLevelTableData.affectorValueId))
+			lastHpRatio = DefaultContainerAffector.GetFloatValue2(defenderAffectorProcessor, _affectorValueLevelTableData.affectorValueId);
 
 		bool result = false;
 		for (int i = 0; i < hpRatioList.Length; ++i)
@@ -64,7 +64,7 @@ public class CertainHpHitObjectAffector : AffectorBase
 				affectorValueLevelTableData.fValue1 = -1.0f;
 				affectorValueLevelTableData.fValue2 = hpRatio;
 				affectorValueLevelTableData.sValue1 = _affectorValueLevelTableData.affectorValueId;
-				_actor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.DefaultContainer, affectorValueLevelTableData, _actor, false);
+				defenderAffectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.DefaultContainer, affectorValueLevelTableData, _actor, false);
 				break;
 			}
 		}

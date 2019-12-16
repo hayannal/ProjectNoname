@@ -21,9 +21,10 @@ public class MecanimEventTool : EditorWindow
 	private MecanimEventGizmos m_Gizmos;
 
 	private bool m_bPlay = false;
-	private bool m_bLoop = true;
+	private bool m_bLoop = false;
 
 	private Vector3 ToolGameObjectInitializePosition = new Vector3(0.0f, 0.0f, 1.0f);
+	private Vector3 ToolGameObjectInitializeRotation = new Vector3(0.0f, 180.0f, 0.0f);
 
 
 	[MenuItem("Window/Open Mecanim Editor Window _F4")]
@@ -166,7 +167,7 @@ public class MecanimEventTool : EditorWindow
 
 				if (m_OrigMeshObject != null)
 				{
-					m_ToolGameObject = Instantiate(m_OrigMeshObject, ToolGameObjectInitializePosition, Quaternion.identity) as GameObject;
+					m_ToolGameObject = Instantiate(m_OrigMeshObject, ToolGameObjectInitializePosition, Quaternion.Euler(ToolGameObjectInitializeRotation)) as GameObject;
 					m_ToolAnimator = m_ToolGameObject.GetComponentInChildren<Animator>();
 
 					string szAC = AssetDatabase.GetAssetPath(m_AC);

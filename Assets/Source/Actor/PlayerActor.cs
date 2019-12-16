@@ -61,6 +61,8 @@ public class PlayerActor : Actor
 		team.SetTeamId((int)Team.eTeamID.DefaultAlly, true, gameObject, Team.eTeamLayer.TEAM0_ACTOR_LAYER);
 		actorStatus.InitializeActorStatus();
 		skillProcessor.InitializeSkill();
+		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(actorId);
+		targetingProcessor.sphereCastRadiusForCheckWall = actorTableData.targetingSphereRadius;
 
 		RegisterBattleInstance();
 	}

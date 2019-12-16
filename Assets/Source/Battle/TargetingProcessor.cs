@@ -103,6 +103,8 @@ public class TargetingProcessor : MonoBehaviour {
 	}
 
 #if USE_MONSTER_LIST
+	// 0이면 벽검사를 하지 않는다. 0보다 크면 SphereCast로 벽을 검사해서 타겟을 찾는다.
+	public float sphereCastRadiusForCheckWall { get; set; }
 	// 간혹가다 몬스터의 Collider를 꺼야할때가 있어서 Physic으로 검사하면 타겟팅이 잠시 풀리게 되버렸다. (땅 투과시)
 	// 그래서 차라리 몬스터 리스트를 히트오브젝트처럼 등록해놨다가 받아오는 형태로 가기로 한다.
 	// Die시 빠지기 때문에 Die검사를 추가로 할 필요도 없다.
@@ -136,7 +138,7 @@ public class TargetingProcessor : MonoBehaviour {
 			Vector3 diff = listMonsterActor[i].cachedTransform.position - position;
 			diff.y = 0.0f;
 			float distance = diff.magnitude - colliderRadius;
-			AdjustRange(listMonsterActor[i].affectorProcessor, listMonsterActor[i].cachedTransform.position, position, range, ref distance);
+			AdjustRange(listMonsterActor[i].affectorProcessor, listMonsterActor[i].cachedTransform.position, position, sphereCastRadiusForCheckWall, range, ref distance);
 			if (distance < nearestDistance)
 			{
 				nearestDistance = distance;
@@ -160,14 +162,14 @@ public class TargetingProcessor : MonoBehaviour {
 			prevTargetDiff.y = 0.0f;
 			float prevDistance = prevTargetDiff.magnitude - ColliderUtil.GetRadius(_targetList[0]);
 			AffectorProcessor prevAffectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(_targetList[0]);
-			AdjustRange(prevAffectorProcessor, prevTargetPosition, position, range, ref prevDistance);
+			AdjustRange(prevAffectorProcessor, prevTargetPosition, position, sphereCastRadiusForCheckWall, range, ref prevDistance);
 
 			Vector3 currentTargetPosition = BattleInstanceManager.instance.GetTransformFromCollider(nearestCollider).position;
 			Vector3 currentTargetDiff = currentTargetPosition - position;
 			currentTargetDiff.y = 0.0f;
 			float currentDistance = currentTargetDiff.magnitude - ColliderUtil.GetRadius(nearestCollider);
 			AffectorProcessor currentAffectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(nearestCollider);
-			AdjustRange(currentAffectorProcessor, currentTargetPosition, position, range, ref currentDistance);
+			AdjustRange(currentAffectorProcessor, currentTargetPosition, position, sphereCastRadiusForCheckWall, range, ref currentDistance);
 
 			if (currentDistance <= prevDistance - changeThreshold)
 			{
@@ -188,7 +190,7 @@ public class TargetingProcessor : MonoBehaviour {
 	}
 
 	static RaycastHit[] s_raycastHitList = null;
-	public static bool CheckWall(Vector3 position, Vector3 targetPosition)
+	static bool CheckWall(Vector3 position, Vector3 targetPosition, float radius)
 	{
 		// temp - check wall
 		if (s_raycastHitList == null)
@@ -199,7 +201,6 @@ public class TargetingProcessor : MonoBehaviour {
 		float length = diff.magnitude;
 		Vector3 rayPosition = position;
 		rayPosition.y = 1.0f;
-		float radius = 0.2f;
 		int resultCount = Physics.SphereCastNonAlloc(rayPosition, radius, diff.normalized, s_raycastHitList, length - radius, 1);
 
 		// step 2. Through Test
@@ -243,14 +244,14 @@ public class TargetingProcessor : MonoBehaviour {
 		return false;
 	}
 	
-	public static void AdjustRange(AffectorProcessor affectorProcessor, Vector3 targetPosition, Vector3 position, float findRange, ref float distance)
+	public static void AdjustRange(AffectorProcessor affectorProcessor, Vector3 targetPosition, Vector3 position, float sphereCastRadiusForCheckWall, float findRange, ref float distance)
 	{
 		bool applyOutOfRange = false;
 		bool applyFarthest = false;
 		if (IsOutOfRange(affectorProcessor))
 			applyOutOfRange = true;
 
-		if (CheckWall(position, targetPosition))
+		if (sphereCastRadiusForCheckWall > 0.0f && CheckWall(position, targetPosition, sphereCastRadiusForCheckWall))
 			applyFarthest = true;
 		if (affectorProcessor.IsContinuousAffectorType(eAffectorType.Burrow))
 			applyFarthest = true;

@@ -1152,7 +1152,7 @@ public class HitObject : MonoBehaviour
 			}
 			else if (planeCollided == false && groundQuadCollided == false)
 			{
-				if (col.gameObject.layer == CreateWallAffector.TEAM0_BARRIER_LAYER && Vector3.Dot(cachedTransform.forward, contact.normal) > 0.0f)
+				if (CreateWallAffector.TEAM0_BARRIER_LAYER != 0 && col.gameObject.layer == CreateWallAffector.TEAM0_BARRIER_LAYER && Vector3.Dot(cachedTransform.forward, contact.normal) > 0.0f)
 				{
 					// 적들이 쏜 총알이 레벨팩 배리어 안쪽에 맞으면 관통 처리를 해준다.
 					// 이펙트는 뜨지 않게 하기위해 하단에서 wallCollided를 true로 바꾼다.

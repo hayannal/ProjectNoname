@@ -1096,6 +1096,7 @@ public class HitObject : MonoBehaviour
 		bool groundQuadCollided = false;
 		bool wallCollided = false;
 		bool monsterCollided = false;
+		bool forceBarrierThrough = false;
 		Vector3 wallNormal = Vector3.forward;
 		foreach (ContactPoint contact in collision.contacts)
 		{
@@ -1151,11 +1152,22 @@ public class HitObject : MonoBehaviour
 			}
 			else if (planeCollided == false && groundQuadCollided == false)
 			{
-				wallCollided = true;
-				wallNormal = contact.normal;
-
-				if (_signal.wallThrough)
+				if (col.gameObject.layer == CreateWallAffector.TEAM0_BARRIER_LAYER && Vector3.Dot(cachedTransform.forward, contact.normal) > 0.0f)
+				{
+					// 적들이 쏜 총알이 레벨팩 배리어 안쪽에 맞으면 관통 처리를 해준다.
+					// 이펙트는 뜨지 않게 하기위해 하단에서 wallCollided를 true로 바꾼다.
+					//wallCollided = true;
+					forceBarrierThrough = true;
 					AddIgnoreList(col);
+				}
+				else
+				{
+					wallCollided = true;
+					wallNormal = contact.normal;
+
+					if (_signal.wallThrough)
+						AddIgnoreList(col);
+				}
 			}
 
 			collided = planeCollided || groundQuadCollided || wallCollided || monsterCollided;
@@ -1169,12 +1181,17 @@ public class HitObject : MonoBehaviour
 
 			if (collided && _signal.contactAll == false)
 				break;
+			if (forceBarrierThrough)
+			{
+				collided = wallCollided = true;
+				break;
+			}
 		}
 
-		OnPostCollided(collided, planeCollided, groundQuadCollided, wallCollided, monsterCollided, wallNormal);
+		OnPostCollided(collided, planeCollided, groundQuadCollided, wallCollided, monsterCollided, wallNormal, forceBarrierThrough);
 	}
 
-	void OnPostCollided(bool collided, bool planeCollided, bool groundQuadCollided, bool wallCollided, bool monsterCollided, Vector3 wallNormal)
+	void OnPostCollided(bool collided, bool planeCollided, bool groundQuadCollided, bool wallCollided, bool monsterCollided, Vector3 wallNormal, bool forceBarrierThrough)
 	{
 		if (collided == false)
 			return;
@@ -1234,7 +1251,9 @@ public class HitObject : MonoBehaviour
 
 		if (wallCollided)
 		{
-			if (_remainBounceWallQuadCount > 0)
+			if (forceBarrierThrough)
+				useThrough = true;
+			else if (_remainBounceWallQuadCount > 0)
 			{
 				if (_statusStructForHitObject.bounceWallQuadAddCountByLevelPack > 0)
 					++_statusStructForHitObject.bounceWallQuadIndex;

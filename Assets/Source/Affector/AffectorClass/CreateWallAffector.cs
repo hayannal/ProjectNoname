@@ -109,7 +109,7 @@ public class CreateWallAffector : AffectorBase
 
 		Vector3 direction = GetDirection(_directionIndex);
 		Vector3 position = _actor.cachedTransform.position + direction + new Vector3(0.0f, OffsetY, 0.0f);
-		Quaternion rotation = Quaternion.LookRotation(direction);
+		Quaternion rotation = Quaternion.LookRotation(-direction);
 		Transform newTransform = BattleInstanceManager.instance.GetCachedObject(_wallPrefab, position, rotation).transform;
 		_wallTransformList[_directionIndex] = newTransform;
 		_wallEndTimeList[_directionIndex] = Time.time + _affectorValueLevelTableData.fValue3;

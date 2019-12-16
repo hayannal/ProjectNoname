@@ -520,6 +520,9 @@ public class HitObject : MonoBehaviour
 			if (col.isTrigger)
 				continue;
 
+			if (BattleInstanceManager.instance.GetHitObjectFromCollider(col) != null)
+				continue;
+
 			if (BattleInstanceManager.instance.planeCollider != null && BattleInstanceManager.instance.planeCollider == col)
 			{
 				planeCollided = true;

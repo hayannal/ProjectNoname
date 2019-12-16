@@ -60,4 +60,8 @@ public class ActorTableData
   string _portraitAddress;
   public string portraitAddress { get { return _portraitAddress; } set { _portraitAddress = value; } }
   
+  [SerializeField]
+  float _targetingSphereRadius;
+  public float targetingSphereRadius { get { return _targetingSphereRadius; } set { _targetingSphereRadius = value; } }
+  
 }

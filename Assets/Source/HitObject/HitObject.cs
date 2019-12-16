@@ -1432,14 +1432,22 @@ public class HitObject : MonoBehaviour
 
 	#region Ignore List
 	List<Collider> _listIgnoreCollider;
+	Dictionary<Collider, bool> _dicIgnoreColliderAddFrame;
 	void AddIgnoreList(Collider collider)
 	{
 		if (_listIgnoreCollider == null)
 			_listIgnoreCollider = new List<Collider>();
+		if (_dicIgnoreColliderAddFrame == null)
+			_dicIgnoreColliderAddFrame = new Dictionary<Collider, bool>();
 		if (_listIgnoreCollider.Contains(collider))
 			return;
 		_listIgnoreCollider.Add(collider);
 		Physics.IgnoreCollision(_collider, collider);
+
+		if (_dicIgnoreColliderAddFrame.ContainsKey(collider))
+			_dicIgnoreColliderAddFrame[collider] = true;
+		else
+			_dicIgnoreColliderAddFrame.Add(collider, true);
 	}
 
 	void RemoveIgnoreList(Collider collider)
@@ -1450,6 +1458,9 @@ public class HitObject : MonoBehaviour
 			return;
 		_listIgnoreCollider.Remove(collider);
 		Physics.IgnoreCollision(_collider, collider, false);
+
+		if (_dicIgnoreColliderAddFrame.ContainsKey(collider))
+			_dicIgnoreColliderAddFrame[collider] = false;
 	}
 
 	void ClearIgnoreList()
@@ -1463,10 +1474,23 @@ public class HitObject : MonoBehaviour
 
 	void UpdateIgnoreList()
 	{
+		// 벽에 붙은 몬스터를 관통할때 보니까
+		// AddIgnoreList 했던 프레임에 Remove를 하고 있어서
+		// 바로 다음 프레임에 또 다시 OnCollisionEnter가 호출되버렸다. 이러면서 연달아 두번 히트가 들어갔다.
+		// 왜 Remove되는지 Physic 디버그창에서 확인해보니
+		// 벽에 붙은 몬스터를 관통할땐 발사체가 몸체 앞으로 약간 튕겨져나오면서(평소엔 딱 붙은채로 있어서 다음 프레임에 Remove된다.)
+		// Intersects함수가 false를 리턴하는거였다.
+		// 그래서 어차피 AddIgnoreList 를 호출하는 프레임엔 검사를 할필요 없으니 건너뛰기로 해본다.
 		if (_listIgnoreCollider == null)
 			return;
 		for (int i = 0; i < _listIgnoreCollider.Count; ++i)
 		{
+			if (_dicIgnoreColliderAddFrame.ContainsKey(_listIgnoreCollider[i]) && _dicIgnoreColliderAddFrame[_listIgnoreCollider[i]])
+			{
+				_dicIgnoreColliderAddFrame[_listIgnoreCollider[i]] = false;
+				continue;
+			}
+
 			if (_collider.bounds.Intersects(_listIgnoreCollider[i].bounds) == false)
 			{
 				RemoveIgnoreList(_listIgnoreCollider[i]);

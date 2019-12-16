@@ -30,6 +30,12 @@ public class DuplicatingGenerator : ContinuousHitObjectGeneratorBase
 			return;
 		}
 
+		if (_parentActor.actorStatus.IsDie())
+		{
+			gameObject.SetActive(false);
+			return;
+		}
+
 		if (_parentActor.affectorProcessor.IsContinuousAffectorType(eAffectorType.CannotAction))
 			return;
 

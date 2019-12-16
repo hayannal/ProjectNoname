@@ -136,8 +136,7 @@ public class TargetingProcessor : MonoBehaviour {
 			Vector3 diff = listMonsterActor[i].cachedTransform.position - position;
 			diff.y = 0.0f;
 			float distance = diff.magnitude - colliderRadius;
-			if (IsOutOfRange(listMonsterActor[i].affectorProcessor))
-				distance += range;
+			AdjustRange(listMonsterActor[i].affectorProcessor, listMonsterActor[i].cachedTransform.position, position, range, ref distance);
 			if (distance < nearestDistance)
 			{
 				nearestDistance = distance;
@@ -156,19 +155,19 @@ public class TargetingProcessor : MonoBehaviour {
 		}
 		else
 		{
-			Vector3 prevTargetDiff = BattleInstanceManager.instance.GetTransformFromCollider(_targetList[0]).position - position;
+			Vector3 prevTargetPosition = BattleInstanceManager.instance.GetTransformFromCollider(_targetList[0]).position;
+			Vector3 prevTargetDiff = prevTargetPosition - position;
 			prevTargetDiff.y = 0.0f;
 			float prevDistance = prevTargetDiff.magnitude - ColliderUtil.GetRadius(_targetList[0]);
 			AffectorProcessor prevAffectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(_targetList[0]);
-			if (IsOutOfRange(prevAffectorProcessor))
-				prevDistance += range;
+			AdjustRange(prevAffectorProcessor, prevTargetPosition, position, range, ref prevDistance);
 
-			Vector3 currentTargetDiff = BattleInstanceManager.instance.GetTransformFromCollider(nearestCollider).position - position;
+			Vector3 currentTargetPosition = BattleInstanceManager.instance.GetTransformFromCollider(nearestCollider).position;
+			Vector3 currentTargetDiff = currentTargetPosition - position;
 			currentTargetDiff.y = 0.0f;
 			float currentDistance = currentTargetDiff.magnitude - ColliderUtil.GetRadius(nearestCollider);
 			AffectorProcessor currentAffectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(nearestCollider);
-			if (IsOutOfRange(currentAffectorProcessor))
-				currentDistance += range;
+			AdjustRange(currentAffectorProcessor, currentTargetPosition, position, range, ref currentDistance);
 
 			if (currentDistance <= prevDistance - changeThreshold)
 			{
@@ -183,9 +182,83 @@ public class TargetingProcessor : MonoBehaviour {
 	public static bool IsOutOfRange(AffectorProcessor affectorProcessor)
 	{
 		// 특수한 상황에선 범위 밖 몬스터 인거처럼 처리해야한다.
-		if (affectorProcessor.IsContinuousAffectorType(eAffectorType.Burrow) || affectorProcessor.IsContinuousAffectorType(eAffectorType.Teleported))
+		if (affectorProcessor.IsContinuousAffectorType(eAffectorType.Teleported))
 			return true;
 		return false;
+	}
+
+	static RaycastHit[] s_raycastHitList = null;
+	public static bool CheckWall(Vector3 position, Vector3 targetPosition)
+	{
+		// temp - check wall
+		if (s_raycastHitList == null)
+			s_raycastHitList = new RaycastHit[100];
+
+		// step 1. Physics.SphereCastNonAlloc
+		Vector3 diff = targetPosition - position;
+		float length = diff.magnitude;
+		Vector3 rayPosition = position;
+		rayPosition.y = 1.0f;
+		float radius = 0.2f;
+		int resultCount = Physics.SphereCastNonAlloc(rayPosition, radius, diff.normalized, s_raycastHitList, length - radius, 1);
+
+		// step 2. Through Test
+		float reservedNearestDistance = length - radius;
+		Vector3 endPosition = Vector3.zero;
+		for (int i = 0; i < resultCount; ++i)
+		{
+			if (i >= s_raycastHitList.Length)
+				break;
+
+			bool planeCollided = false;
+			bool groundQuadCollided = false;
+			Vector3 wallNormal = Vector3.forward;
+			Collider col = s_raycastHitList[i].collider;
+			if (col.isTrigger)
+				continue;
+
+			if (BattleInstanceManager.instance.planeCollider != null && BattleInstanceManager.instance.planeCollider == col)
+			{
+				planeCollided = true;
+				wallNormal = s_raycastHitList[i].normal;
+			}
+
+			if (BattleInstanceManager.instance.currentGround != null && BattleInstanceManager.instance.currentGround.CheckQuadCollider(col))
+			{
+				groundQuadCollided = true;
+				wallNormal = s_raycastHitList[i].normal;
+			}
+
+			AffectorProcessor targetAffectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(col);
+			if (targetAffectorProcessor != null)
+			{
+				//if (Team.CheckTeamFilter(statusForHitObject.teamId, col, meHit.teamCheckType))
+				//	monsterCollided = true;
+			}
+			else if (planeCollided == false && groundQuadCollided == false)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static void AdjustRange(AffectorProcessor affectorProcessor, Vector3 targetPosition, Vector3 position, float findRange, ref float distance)
+	{
+		bool applyOutOfRange = false;
+		bool applyFarthest = false;
+		if (IsOutOfRange(affectorProcessor))
+			applyOutOfRange = true;
+
+		if (CheckWall(position, targetPosition))
+			applyFarthest = true;
+		if (affectorProcessor.IsContinuousAffectorType(eAffectorType.Burrow))
+			applyFarthest = true;
+
+		if (applyFarthest)
+			distance += findRange;
+		if (applyOutOfRange)
+			distance += findRange * 2.0f;
 	}
 #endif
 

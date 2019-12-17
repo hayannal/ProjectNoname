@@ -92,4 +92,8 @@ public class StageTableData
   float _spDecreasePeriod;
   public float spDecreasePeriod { get { return _spDecreasePeriod; } set { _spDecreasePeriod = value; } }
   
+  [SerializeField]
+  float _initialDropSpAdjustment;
+  public float initialDropSpAdjustment { get { return _initialDropSpAdjustment; } set { _initialDropSpAdjustment = value; } }
+  
 }

@@ -84,6 +84,8 @@ public class MonsterActor : Actor
 
 		#region Drop SP
 		_dropSpValue = cachedMonsterTableData.initialDropSp;
+		if (StageManager.instance.currentStageTableData != null)
+			_dropSpValue *= StageManager.instance.currentStageTableData.initialDropSpAdjustment;
 		_dropSpRefreshPeriod = (StageManager.instance.currentStageTableData != null) ? StageManager.instance.currentStageTableData.spDecreasePeriod : 0.0f;
 		_nextDropSpRefreshTime = Time.time + _dropSpRefreshPeriod;
 		#endregion

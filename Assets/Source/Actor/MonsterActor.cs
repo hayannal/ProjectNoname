@@ -91,6 +91,7 @@ public class MonsterActor : Actor
 		BattleManager.instance.OnSpawnMonster(this);
 		BattleInstanceManager.instance.OnInitializeMonster(this);
 		BattleInstanceManager.instance.OnInitializePathFinderAgent(pathFinderController.agent.agentTypeID);
+		_needNavMeshAgentWarp = true;
 	}
 
 	#region ObjectPool
@@ -135,8 +136,16 @@ public class MonsterActor : Actor
 	}
 	#endregion
 
+	bool _needNavMeshAgentWarp = false;
 	void Update()
 	{
+		if (_needNavMeshAgentWarp)
+		{
+			// 실시간으로 굽는거다보니 포지션이 틀어질 수 있다. 첫번째 업데이트때 강제로 동기를 맞춰준다.
+			pathFinderController.agent.Warp(cachedTransform.position);
+			_needNavMeshAgentWarp = false;
+		}
+
 		#region Drop SP
 		UpdateDropSp();
 		#endregion

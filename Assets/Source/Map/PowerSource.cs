@@ -33,6 +33,7 @@ public class PowerSource : MonoBehaviour
 	void OnEnable()
 	{
 		_spawnedGatePillar = false;
+		_guideMessageShowRemainTime = 5.0f;
 	}
 
 	bool _spawnedGatePillar;
@@ -86,5 +87,22 @@ public class PowerSource : MonoBehaviour
 
 		BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("PowerSourceUI_Heal"), 2.5f);
 		FadeCanvas.instance.FadeIn(1.75f);
+	}
+
+	float _guideMessageShowRemainTime;
+	void Update()
+	{
+		if (_spawnedGatePillar == true)
+			return;
+
+		if (_guideMessageShowRemainTime > 0.0f)
+		{
+			_guideMessageShowRemainTime -= Time.deltaTime;
+			if (_guideMessageShowRemainTime <= 0.0f)
+			{
+				_guideMessageShowRemainTime = 0.0f;
+				BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("PowerSourceUI_ComeHere"), 4.0f);
+			}
+		}
 	}
 }

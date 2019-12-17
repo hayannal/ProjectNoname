@@ -76,7 +76,7 @@ public class PathFinderController : BaseAgentController
 	private void Start()
 	{
 		// temp code
-		agent.obstacleAvoidanceType = UnityEngine.AI.ObstacleAvoidanceType.NoObstacleAvoidance;
+		//agent.obstacleAvoidanceType = UnityEngine.AI.ObstacleAvoidanceType.NoObstacleAvoidance;
 	}
 
 	protected override Vector3 CalcDesiredVelocity()

@@ -29,6 +29,11 @@ public class GatePillar : MonoBehaviour
 	float _spawnTime;
 	void OnEnable()
 	{
+		// 보스 게이트필라가 추가되면서 instance가 두개 생겼다.
+		// instance 구조를 뽑아버릴까 하다가
+		// 항상 하나의 게이트필라만 켜지는 구조라서 OnEnable에서 덮어쓰는거로 처리해본다.
+		instance = this;
+
 		if (DragThresholdController.instance != null)
 			DragThresholdController.instance.ApplyUIDragThreshold();
 

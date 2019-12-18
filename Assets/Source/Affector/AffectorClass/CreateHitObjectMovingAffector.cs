@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using MecanimStateDefine;
+using ActorStatusDefine;
 
 public class CreateHitObjectMovingAffector : AffectorBase
 {
@@ -67,7 +68,7 @@ public class CreateHitObjectMovingAffector : AffectorBase
 				spawnTransform = attachTransform;
 		}
 
-		HitObject hitObject = HitObject.InitializeHit(spawnTransform, _meHit, _actor, parentTransform, 0.0f, 0, 0, 0);
+		HitObject hitObject = HitObject.InitializeHit(spawnTransform, _meHit, _actor, parentTransform, null, 0.0f, 0, 0, 0);
 		BattleInstanceManager.instance.AddHitObjectMoving(hitObject);
 	}
 

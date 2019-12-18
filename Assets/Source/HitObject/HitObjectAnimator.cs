@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using ActorStatusDefine;
 
 public class HitObjectAnimator : MonoBehaviour
 {
 	public Actor parentActor { get; private set; }
+	public StatusBase statusBase { get; private set; }
 	public float parentHitObjectCreateTime { get; private set; }
 	Animator _animator;
 
@@ -35,9 +37,10 @@ public class HitObjectAnimator : MonoBehaviour
 	}
 
 	bool _played = false;
-	public void InitializeSignal(Actor actor, Animator animator, float createTime)
+	public void InitializeSignal(Actor actor, Animator animator, StatusBase statusBase, float createTime)
 	{
 		parentActor = actor;
+		this.statusBase = statusBase;
 		parentHitObjectCreateTime = createTime;
 		_animator = animator;
 		_animator.Play(BattleInstanceManager.instance.GetActionNameHash("Standby"), 0, 0.0f);

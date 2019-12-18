@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using ActorStatusDefine;
 
 public class ContinuousHitObjectGeneratorBase : MonoBehaviour
 {
@@ -68,7 +69,7 @@ public class ContinuousHitObjectGeneratorBase : MonoBehaviour
 		if (hitObject == null)
 			return null;
 
-		hitObject.InitializeHitObject(_signal, _parentActor, 0.0f, _hitSignalIndexInAction, _repeatIndex, _repeatAddCountByLevelPack);
+		hitObject.InitializeHitObject(_signal, _parentActor, null, 0.0f, _hitSignalIndexInAction, _repeatIndex, _repeatAddCountByLevelPack);
 		return hitObject;
 	}
 

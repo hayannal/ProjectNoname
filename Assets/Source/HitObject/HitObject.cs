@@ -22,8 +22,15 @@ public class HitObject : MonoBehaviour
 	}
 
 	#region staticFunction
-	public static HitObject InitializeHit(Transform spawnTransform, MeHitObject meHit, Actor parentActor, Transform parentTransform, float parentHitObjectCreateTime, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack)
+	public static HitObject InitializeHit(Transform spawnTransform, MeHitObject meHit, Actor parentActor, Transform parentTransform, StatusBase statusBase, float parentHitObjectCreateTime, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack)
 	{
+		// step 0. 셋팅되어 오지 않았다면 parentActor로부터 1회 계산해서 쭉 사용한다. 히트오브젝트를 한 프레임에도 여러개 만들기때문에 공용으로 사용한다.
+		if (statusBase == null)
+		{
+			statusBase = new StatusBase();
+			parentActor.actorStatus.CopyStatusBase(ref statusBase);
+		}
+
 		// step 1. Find Target and Reaction
 		if (meHit.targetDetectType == eTargetDetectType.Preset)
 		{
@@ -51,7 +58,7 @@ public class HitObject : MonoBehaviour
 					hitParameter.contactNormal = (parentTransform.position - targetColliderTransform.position).normalized;
 					hitParameter.contactPoint = targetColliderTransform.position + (hitParameter.contactNormal * colliderRadius * 0.7f);
 					hitParameter.contactPoint.y += targetCollider.bounds.size.y * 0.5f;
-					hitParameter.statusBase = parentActor.actorStatus.statusBase;
+					hitParameter.statusBase = statusBase;
 					CopyEtcStatusForHitObject(ref hitParameter.statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
 
 					ApplyAffectorValue(affectorProcessor, meHit.affectorValueIdList, hitParameter);
@@ -77,11 +84,11 @@ public class HitObject : MonoBehaviour
 			Vector3 areaDirection = spawnTransform.forward;
 			Vector3 endPosition = Vector3.zero;
 			if (meHit.targetDetectType == eTargetDetectType.Area)
-				CheckHitArea(areaPosition, areaDirection, meHit, parentActor.actorStatus.statusBase, statusStructForHitObject, GetGatePillarCompareTime(0.0f, parentHitObjectCreateTime));
+				CheckHitArea(areaPosition, areaDirection, meHit, statusBase, statusStructForHitObject, GetGatePillarCompareTime(0.0f, parentHitObjectCreateTime));
 			else if (meHit.targetDetectType == eTargetDetectType.SphereCast)
 			{
 				areaDirection = GetSpawnDirection(areaPosition, meHit, parentTransform, GetTargetPosition(meHit, parentActor, hitSignalIndexInAction), parentActor.targetingProcessor);
-				endPosition = CheckSphereCast(areaPosition, areaDirection, meHit, parentActor.actorStatus.statusBase, statusStructForHitObject, GetGatePillarCompareTime(0.0f, parentHitObjectCreateTime));
+				endPosition = CheckSphereCast(areaPosition, areaDirection, meHit, statusBase, statusStructForHitObject, GetGatePillarCompareTime(0.0f, parentHitObjectCreateTime));
 			}
 
 			// HitObject 프리팹이 있거나 lifeTime이 있다면 생성하고 아니면 패스.
@@ -89,7 +96,7 @@ public class HitObject : MonoBehaviour
 			HitObject hitObject = GetCachedHitObject(meHit, areaPosition, rotation);
 			if (hitObject != null)
 			{
-				hitObject.InitializeHitObject(meHit, parentActor, parentHitObjectCreateTime, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
+				hitObject.InitializeHitObject(meHit, parentActor, statusBase, parentHitObjectCreateTime, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
 				if (meHit.targetDetectType == eTargetDetectType.SphereCast)
 				{
 					// attach child
@@ -118,7 +125,7 @@ public class HitObject : MonoBehaviour
 				HitObject parallelHitObject = GetCachedHitObject(meHit, position, rotation);
 				if (parallelHitObject == null)
 					continue;
-				parallelHitObject.InitializeHitObject(meHit, parentActor, parentHitObjectCreateTime, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
+				parallelHitObject.InitializeHitObject(meHit, parentActor, statusBase, parentHitObjectCreateTime, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
 			}
 		}
 
@@ -140,7 +147,7 @@ public class HitObject : MonoBehaviour
 			HitObject circularSectorHitObject = GetCachedHitObject(meHit, defaultPosition, Quaternion.Euler(0.0f, angle, 0.0f));
 			if (circularSectorHitObject == null)
 				continue;
-			circularSectorHitObject.InitializeHitObject(meHit, parentActor, parentHitObjectCreateTime, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
+			circularSectorHitObject.InitializeHitObject(meHit, parentActor, statusBase, parentHitObjectCreateTime, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
 		}
 
 		if (meHit.continuousHitObjectGeneratorBaseList != null)
@@ -190,7 +197,7 @@ public class HitObject : MonoBehaviour
 		{
 			HitObject hitObject = GetCachedHitObject(meHit, defaultPosition, defaultRotation);
 			if (hitObject != null)
-				hitObject.InitializeHitObject(meHit, parentActor, parentHitObjectCreateTime, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
+				hitObject.InitializeHitObject(meHit, parentActor, statusBase, parentHitObjectCreateTime, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
 			return hitObject;
 		}
 		return null;
@@ -689,7 +696,7 @@ public class HitObject : MonoBehaviour
 	float _createTime;
 	Vector3 _createPosition;
 	float _parentHitObjectCreateTime;
-	StatusBase _statusBase = new StatusBase();
+	StatusBase _statusBase;
 	StatusStructForHitObject _statusStructForHitObject;
 	Rigidbody _rigidbody { get; set; }
 	Collider _collider { get; set; }
@@ -723,13 +730,13 @@ public class HitObject : MonoBehaviour
 		_animator = GetComponent<Animator>();
 	}
 
-	public void InitializeHitObject(MeHitObject meHit, Actor parentActor, float parentHitObjectCreateTime, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack)
+	public void InitializeHitObject(MeHitObject meHit, Actor parentActor, StatusBase statusBase, float parentHitObjectCreateTime, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack)
 	{
 		_signal = meHit;
 		_createTime = Time.time;
 		_parentHitObjectCreateTime = parentHitObjectCreateTime;
 		_createPosition = cachedTransform.position;
-		parentActor.actorStatus.CopyStatusBase(ref _statusBase);
+		_statusBase = statusBase;
 		CopyEtcStatusForHitObject(ref _statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
 
 #if UNITY_EDITOR
@@ -811,7 +818,7 @@ public class HitObject : MonoBehaviour
 					_hitObjectAnimator = GetComponent<HitObjectAnimator>();
 					if (_hitObjectAnimator == null) _hitObjectAnimator = gameObject.AddComponent<HitObjectAnimator>();
 				}
-				_hitObjectAnimator.InitializeSignal(parentActor, _animator, _createTime);
+				_hitObjectAnimator.InitializeSignal(parentActor, _animator, _statusBase, _createTime);
 				_hitObjectAnimatorStarted = false;
 				_waitHitObjectAnimatorUpdateCount = 0;
 			}

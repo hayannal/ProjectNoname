@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using ActorStatusDefine;
 
 public class CreateHitObjectAffector : AffectorBase
 {
@@ -28,6 +29,6 @@ public class CreateHitObjectAffector : AffectorBase
 				spawnTransform = attachTransform;
 		}
 
-		HitObject.InitializeHit(spawnTransform, info.meHit, _actor, parentTransform, 0.0f, 0, 0, 0);
+		HitObject.InitializeHit(spawnTransform, info.meHit, _actor, parentTransform, null, 0.0f, 0, 0, 0);
 	}
 }

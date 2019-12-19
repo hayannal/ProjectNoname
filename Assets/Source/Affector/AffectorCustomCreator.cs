@@ -31,6 +31,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.ImmortalWill: affectorBase = new ImmortalWillAffector(); break;
 			case eAffectorType.CreateHitObject: affectorBase = new CreateHitObjectAffector(); break;
 			case eAffectorType.EnlargeDamage: affectorBase = new EnlargeDamageAffector(); break;
+			case eAffectorType.RemoveColliderHitObject: affectorBase = new RemoveColliderHitObjectAffector(); break;
 			case eAffectorType.MonsterThroughHitObject: affectorBase = new MonsterThroughHitObjectAffector(); break;
 			case eAffectorType.RicochetHitObject: affectorBase = new RicochetHitObjectAffector(); break;
 			case eAffectorType.BounceWallQuadHitObject: affectorBase = new BounceWallQuadHitObjectAffector(); break;
@@ -81,6 +82,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.InstantDeath:
 			case eAffectorType.ImmortalWill:
 			case eAffectorType.EnlargeDamage:
+			case eAffectorType.RemoveColliderHitObject:
 			case eAffectorType.MonsterThroughHitObject:
 			case eAffectorType.RicochetHitObject:
 			case eAffectorType.BounceWallQuadHitObject:

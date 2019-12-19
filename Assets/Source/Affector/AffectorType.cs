@@ -29,6 +29,7 @@ public enum eAffectorType
 
 	CreateHitObject,
 	EnlargeDamage,
+	RemoveColliderHitObject,
 
 	MonsterThroughHitObject = 31,
 	RicochetHitObject,

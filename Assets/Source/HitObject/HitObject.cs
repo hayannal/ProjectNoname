@@ -982,7 +982,7 @@ public class HitObject : MonoBehaviour
 	int HitObjectAnimatorUpdateWaitCount = 3;
 	int _waitHitObjectAnimatorUpdateCount = 0;
 	bool _hitObjectAnimatorStarted = false;
-	void FinalizeHitObject()
+	public void FinalizeHitObject()
 	{
 		if (_listOneHitPerTarget != null)
 			_listOneHitPerTarget.Clear();

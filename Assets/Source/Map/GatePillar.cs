@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using MEC;
 #if UNITY_EDITOR
 using UnityEditor.AddressableAssets;
@@ -21,9 +22,17 @@ public class GatePillar : MonoBehaviour
 	public float descriptionObjectIndicatorShowDelayTime = 5.0f;
 	public float energyGaugeShowDelayTime = 0.2f;
 
+	public Canvas worldCanvas;
+	public Text floorText;
+
 	void Awake()
 	{
 		instance = this;
+	}
+
+	void Start()
+	{
+		worldCanvas.worldCamera = UIInstanceManager.instance.GetCachedCameraMain();
 	}
 
 	float _spawnTime;
@@ -37,6 +46,8 @@ public class GatePillar : MonoBehaviour
 		if (DragThresholdController.instance != null)
 			DragThresholdController.instance.ApplyUIDragThreshold();
 
+		floorText.text = "";
+
 		_spawnTime = Time.time;
 		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && PlayerData.instance.tutorialChapter == false)
 		{
@@ -49,6 +60,9 @@ public class GatePillar : MonoBehaviour
 			_descriptionObjectIndicatorShowRemainTime = descriptionObjectIndicatorShowDelayTime;
 		else
 			_descriptionObjectIndicatorShowRemainTime = 0.001f;
+
+		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby == false && StageManager.instance.playStage != TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter).maxStage)
+			floorText.SetLocalizedText(string.Format("To {0} Floor", StageManager.instance.playStage + 1));
 	}
 
 	void OnDisable()

@@ -23,7 +23,7 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
 
 		_radius = affectorValueLevelTableData.fValue2;
-		_applyFollow = (affectorValueLevelTableData.iValue1 == 3);
+		_applyFollow = (affectorValueLevelTableData.iValue3 == 1);
 		_startPosition = _actor.cachedTransform.position;
 
 		if (!string.IsNullOrEmpty(affectorValueLevelTableData.sValue4))

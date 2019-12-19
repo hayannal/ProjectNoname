@@ -1073,6 +1073,15 @@ public class HitObject : MonoBehaviour
 		OnFinalizeByLifeTime();
 	}
 
+	public void OnFinalizeByRemove()
+	{
+		if (_signal.showHitEffect)
+			HitEffect.ShowHitEffect(_signal, cachedTransform.position, cachedTransform.forward, _statusStructForHitObject.weaponIDAtCreation);
+		//if (_signal.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
+		//	HitEffect.ShowHitEffectLineRenderer(_signal, GetHitEffectLineRendererStartPosition(contact.point), contact.point);
+		FinalizeHitObject();
+	}
+
 
 
 	bool _settedHitEffectLineRendererStartPosition = false;

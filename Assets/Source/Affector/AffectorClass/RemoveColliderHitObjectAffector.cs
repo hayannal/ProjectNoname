@@ -79,7 +79,7 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 			if (!Team.CheckTeamFilter(_actor.team.teamId, result[i], Team.eTeamCheckFilter.Enemy))
 				continue;
 
-			hitObject.FinalizeHitObject();
+			hitObject.OnFinalizeByRemove();
 		}
 	}
 }

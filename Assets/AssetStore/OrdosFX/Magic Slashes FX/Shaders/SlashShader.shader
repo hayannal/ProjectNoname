@@ -8,7 +8,6 @@ Shader "Slash/BlendDistortionCutout"
 			_CutoutTex("Cutout Texture", 2D) = "white" {}
 		_DistTex("Distortion Texture", 2D) = "white" {}
 		_DistStrength("Distortion Strength", Vector) = (1,1,1,1)
-			_SoftFade("Soft Fade", Float) = 3
 	}
 	SubShader
 	{
@@ -41,8 +40,7 @@ Shader "Slash/BlendDistortionCutout"
 				float2 rotation : TEXCOORD2;
 				float4 color : COLOR0;
 				UNITY_FOG_COORDS(3)
-					float2 uvDistort : TEXCOORD4;
-				float4 screenPos : TEXCOORD5;
+				float2 uvDistort : TEXCOORD4;
 				float4 vertex : SV_POSITION;
 			};
 
@@ -54,9 +52,6 @@ Shader "Slash/BlendDistortionCutout"
 			float4 _DistTex_ST;
 			float4 _TintColor;
 			float4 _DistStrength;
-			float _SoftFade;
-			sampler2D _CameraDepthTexture;
-
 			
 			v2f vert (appdata v)
 			{
@@ -67,22 +62,12 @@ Shader "Slash/BlendDistortionCutout"
 				o.uvDistort = TRANSFORM_TEX(v.uv.xy, _DistTex);
 				o.color = v.color;
 				o.rotation = v.uv.zw;
-
-				o.screenPos = ComputeScreenPos(o.vertex);
-				COMPUTE_EYEDEPTH(o.screenPos.z);
-				UNITY_TRANSFER_FOG(o,o.vertex);
 				return o;
 			}
 			
 			fixed4 frag (v2f i) : SV_Target
 			{
 				half fade = 1;
-#ifdef SOFTPARTICLES_ON
-				float sceneZ = LinearEyeDepth(UNITY_SAMPLE_DEPTH(tex2Dproj(_CameraDepthTexture, UNITY_PROJ_COORD(i.screenPos))));
-				float partZ = i.screenPos.z;
-				fade = saturate(_SoftFade * (sceneZ - partZ));
-				fade = _SoftFade > 0.01 ? fade : 1;
-#endif
 				half2 distort = tex2D(_DistTex, i.uvDistort + _Time.x * _DistStrength.zw) * _DistStrength.xy;
 
 				fixed4 col = tex2D(_MainTex, i.uv + i.rotation + distort);
@@ -93,8 +78,6 @@ Shader "Slash/BlendDistortionCutout"
 				col.a = saturate(col.a * 4) *  step(cut - i.color.a, col.a);
 #endif
 
-				
-				UNITY_APPLY_FOG(i.fogCoord, col);
 				col.a = saturate(col.a * fade);
 				return col;
 			}

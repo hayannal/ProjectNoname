@@ -34,17 +34,17 @@ public class Team : MonoBehaviour
 	int _teamId;
 	public int teamId { get { return _teamId; } }
 
-	public void SetTeamId(int teamId, bool applyChangeLayer = true, GameObject targetObject = null, eTeamLayer teamLayerType = eTeamLayer.TEAM0_HITOBJECT_LAYER)
+	public void SetTeamId(int teamId, bool applyChangeLayer = true, GameObject targetObject = null, eTeamLayer teamLayerType = eTeamLayer.TEAM0_HITOBJECT_LAYER, bool recursive = true)
 	{
 		_teamId = teamId;
 
 		if (applyChangeLayer == false)
 			return;
 
-		SetTeamLayer(targetObject, teamLayerType);
+		SetTeamLayer(targetObject, teamLayerType, recursive);
 	}
 
-	public static void SetTeamLayer(GameObject targetObject, eTeamLayer teamLayerType, bool overrideLayer = false)
+	public static void SetTeamLayer(GameObject targetObject, eTeamLayer teamLayerType, bool recursive = true, bool overrideLayer = false)
 	{
 		int layer = 0;
 		switch (teamLayerType)
@@ -66,8 +66,14 @@ public class Team : MonoBehaviour
 				layer = TEAM1_ACTOR_LAYER;
 				break;
 		}
-		if (targetObject.layer == 0 || overrideLayer)
+
+		if (overrideLayer == false && targetObject.layer != 0)
+			return;
+
+		if (recursive)
 			ObjectUtil.ChangeLayer(targetObject, layer);
+		else
+			targetObject.layer = layer;
 	}
 
 	static public bool CheckTeamFilter(int teamID, Collider target, eTeamCheckFilter filter, bool nullIsEnemy = true)

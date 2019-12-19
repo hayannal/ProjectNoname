@@ -21,6 +21,7 @@ public class SwapCanvas : MonoBehaviour
 	public Image chapterInfoImage;
 	public Image bossImage;
 	public Text bossNameText;
+	public Button bossInfoButton;
 	public Text stagePenaltyText;
 	public Text selectResultText;
 
@@ -63,29 +64,8 @@ public class SwapCanvas : MonoBehaviour
 			DragThresholdController.instance.ResetUIDragThreshold();
 	}
 
-	void RefreshChapterInfo()
+	void RefreshCommonInfo()
 	{
-		chapterRootObject.SetActive(true);
-		swapRootObject.SetActive(false);
-
-		ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
-		if (chapterTableData == null)
-			return;
-
-		chapterRomanNumberText.text = GetChapterRomanNumberString(StageManager.instance.playChapter);
-		if (PlayerData.instance.chaosMode)
-		{
-			chapterNameText.SetLocalizedText(UIString.instance.GetString("GameUI_ChaosMode"));
-			chapterInfoButton.interactable = false;
-			chapterInfoImage.gameObject.SetActive(false);
-		}
-		else
-		{
-			chapterNameText.SetLocalizedText(UIString.instance.GetString(chapterTableData.nameId));
-			chapterInfoButton.interactable = true;
-			chapterInfoImage.gameObject.SetActive(true);
-		}
-
 		// 챕터 디버프 어펙터는 로비 바로 다음 스테이지에서 뽑아와서 표시해준다.(여기서 넣는거 아니다. 보여주기만 한다.)
 		// 없으면 표시하지 않는다.
 		// 실제로 넣는건 해당 시점에서 하니 여기서는 신경쓰지 않아도 된다.
@@ -123,8 +103,38 @@ public class SwapCanvas : MonoBehaviour
 
 		selectResultText.text = "";
 
+		ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
+		if (chapterTableData == null)
+			return;
+
 		// 파워레벨은 항상 표시
 		suggestPowerLevelText.SetLocalizedText(UIString.instance.GetString("GameUI_SuggestedPowerLevel", chapterTableData.suggestedPowerLevel));
+	}
+
+	void RefreshChapterInfo()
+	{
+		chapterRootObject.SetActive(true);
+		swapRootObject.SetActive(false);
+
+		ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
+		if (chapterTableData == null)
+			return;
+
+		chapterRomanNumberText.text = GetChapterRomanNumberString(StageManager.instance.playChapter);
+		if (PlayerData.instance.chaosMode)
+		{
+			chapterNameText.SetLocalizedText(UIString.instance.GetString("GameUI_ChaosMode"));
+			chapterInfoButton.interactable = false;
+			chapterInfoImage.gameObject.SetActive(false);
+		}
+		else
+		{
+			chapterNameText.SetLocalizedText(UIString.instance.GetString(chapterTableData.nameId));
+			chapterInfoButton.interactable = true;
+			chapterInfoImage.gameObject.SetActive(true);
+		}
+
+		RefreshCommonInfo();
 	}
 
 	public static string GetChapterRomanNumberString(int chapter)
@@ -138,18 +148,21 @@ public class SwapCanvas : MonoBehaviour
 		chapterRootObject.SetActive(false);
 		swapRootObject.SetActive(true);
 
-		ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
-		if (chapterTableData == null)
-			return;
-
 		MapTableData nextBossMapTableData = StageManager.instance.nextBossMapTableData;
 		if (nextBossMapTableData == null)
 			return;
 
+		if (string.IsNullOrEmpty(nextBossMapTableData.bossPreviewAddress) == false)
+		{
+			AddressableAssetLoadManager.GetAddressableSprite(nextBossMapTableData.bossPreviewAddress, "Icon", (sprite) =>
+			{
+				bossImage.sprite = null;
+				bossImage.sprite = sprite;
+			});
+		}
 		bossNameText.SetLocalizedText(UIString.instance.GetString(nextBossMapTableData.nameId));
 
-		// 파워레벨은 항상 표시
-		suggestPowerLevelText.SetLocalizedText(UIString.instance.GetString("GameUI_SuggestedPowerLevel", chapterTableData.suggestedPowerLevel));
+		RefreshCommonInfo();
 	}
 
 	List<SwapCanvasListItem> _listSwapCanvasListItem = new List<SwapCanvasListItem>();
@@ -250,7 +263,7 @@ public class SwapCanvas : MonoBehaviour
 			return;
 
 		string suggestString = GetSuggestString(nextBossMapTableData.descriptionId, nextBossMapTableData.suggestedActorId);
-		//suggestText.SetLocalizedText(suggestString);
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, suggestString, 200, bossInfoButton.transform, new Vector2(0.0f, -35.0f));
 	}
 
 

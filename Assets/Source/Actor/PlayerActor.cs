@@ -166,6 +166,11 @@ public class PlayerActor : Actor
 		BattleInstanceManager.instance.playerActor.cachedTransform.position = position;
 	}
 
+	void Update()
+	{
+		UpdateUltimateIndicator();
+	}
+
 	#region Stage Penalty Affector
 	// 메인캐릭터로 바뀌거나 진입 직전에 한번씩만 호출해주면 알아서 최신 어펙터로 적용한다.
 	List<AffectorBase> _listStagePenaltyAffector = null;
@@ -263,6 +268,7 @@ public class PlayerActor : Actor
 	public override void OnChangedSP()
 	{
 		SkillSlotCanvas.instance.OnChangedSP(this);
+		ShowUltimateIndicator(actorStatus.GetSPRatio() == 1.0f);
 	}
 
 	public override void OnDie()
@@ -333,6 +339,34 @@ public class PlayerActor : Actor
 			return true;
 		}
 		return false;
+	}
+	#endregion
+
+	#region Ultimate Indicator
+	Transform _cachedUltimateIndicatorTransform;
+	void ShowUltimateIndicator(bool show)
+	{
+		if (show)
+		{
+			if (_cachedUltimateIndicatorTransform == null)
+				_cachedUltimateIndicatorTransform = BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.ultimateCirclePrefab, null).transform;
+			if (_cachedUltimateIndicatorTransform != null)
+				_cachedUltimateIndicatorTransform.gameObject.SetActive(true);
+		}
+		else
+		{
+			if (_cachedUltimateIndicatorTransform != null)
+				_cachedUltimateIndicatorTransform.gameObject.SetActive(false);
+		}
+	}
+
+	void UpdateUltimateIndicator()
+	{
+		if (_cachedUltimateIndicatorTransform == null)
+			return;
+		if (_cachedUltimateIndicatorTransform.gameObject.activeSelf == false)
+			return;
+		_cachedUltimateIndicatorTransform.position = cachedTransform.position;
 	}
 	#endregion
 }

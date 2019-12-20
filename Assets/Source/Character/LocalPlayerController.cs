@@ -160,7 +160,7 @@ public sealed class LocalPlayerController : BaseCharacterController
 			}
 		}
 
-		if (ScreenJoystick.instance.CheckInput(Control.eInputType.DoubleTab) && IsAutoPlay())
+		if (ScreenJoystick.instance.CheckInput(Control.eInputType.DoubleTab) && IsAutoPlay() && actor.actorStatus.GetSPRatio() == 1.0f)
 		{
 			actionController.PlayActionByControl(Control.eControllerType.UltimateSkillSlot, Control.eInputType.Tab);
 		}

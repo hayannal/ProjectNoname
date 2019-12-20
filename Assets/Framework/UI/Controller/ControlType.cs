@@ -7,6 +7,7 @@ namespace Control
 	{
 		None,
 		Tab,
+		DoubleTab,
 		Hold,
 		Swipe,
 		Press,

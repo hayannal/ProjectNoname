@@ -40,6 +40,7 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 			_touchEventResultList.Add(false);
 		_inputProcessor = new InputProcessor();
 		_inputProcessor.tabAction = OnTab;
+		_inputProcessor.doubleTabAction = OnDoubleTab;
 		_inputProcessor.holdAction = OnHold;
 		_inputProcessor.draggingAction = OnDragging;
 		_inputProcessor.endDragAction = OnEndDrag;
@@ -250,6 +251,14 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 		_touchEventResultList[(int)Control.eInputType.Tab] = true;
 	}
 
+	public void OnDoubleTab()
+	{
+		if (_actionInfo.eInputType == Control.eInputType.DoubleTab)
+			PlayAction();
+
+		_touchEventResultList[(int)Control.eInputType.DoubleTab] = true;
+	}
+
 	public void OnPress()
 	{
 		if (_actionInfo.eInputType == Control.eInputType.Press)
@@ -271,6 +280,7 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 		switch (eInputType)
 		{
 			case Control.eInputType.Tab:
+			case Control.eInputType.DoubleTab:
 			case Control.eInputType.Hold:
 			case Control.eInputType.Swipe:
 			case Control.eInputType.Press:

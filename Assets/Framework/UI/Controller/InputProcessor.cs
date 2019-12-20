@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 public class InputProcessor
 {
 	public Action<Vector2> tabAction;
+	public Action doubleTabAction;
 	public Action endDragAction;
 	public Action holdAction;
 	public Action swipeAction;
@@ -20,6 +21,8 @@ public class InputProcessor
 	Vector2 _position = Vector2.zero;
 	bool _beginDrag = false;
 	bool _beginHold = false;
+	float _lastTabTime;
+	const float _doubleTabInterval = 0.25f;
 
 	bool _enabled = true;
 	public bool enabled { set { _enabled = value; } }
@@ -50,6 +53,14 @@ public class InputProcessor
 		{
 			if (tabAction != null)
 				tabAction(eventData.position);
+
+			if (Time.time - _lastTabTime < _doubleTabInterval)
+			{
+				// 더블탭을 탭과 완벽하게 구분해서 지원하는게 아니라서 탭 이벤트와 함께 발생된다.
+				if (doubleTabAction != null)
+					doubleTabAction();
+			}
+			_lastTabTime = Time.time;
 		}
 
 		if (_beginDrag == true)

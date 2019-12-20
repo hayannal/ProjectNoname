@@ -160,6 +160,11 @@ public sealed class LocalPlayerController : BaseCharacterController
 			}
 		}
 
+		if (ScreenJoystick.instance.CheckInput(Control.eInputType.DoubleTab) && IsAutoPlay())
+		{
+			actionController.PlayActionByControl(Control.eControllerType.UltimateSkillSlot, Control.eInputType.Tab);
+		}
+
 		if (_clearCustomTargetWaitCount > 0)
 		{
 			_clearCustomTargetWaitCount -= 1;

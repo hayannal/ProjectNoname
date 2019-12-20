@@ -100,6 +100,7 @@ public class ScreenJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 
 		InputProcessor inputProcessor = new InputProcessor();
 		inputProcessor.tabAction = OnTab;
+		inputProcessor.doubleTabAction = OnDoubleTab;
 		inputProcessor.holdAction = OnHold;
 		inputProcessor.draggingAction = OnDragging;
 		inputProcessor.endDragAction = OnEndDrag;
@@ -284,6 +285,11 @@ public class ScreenJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 		tabPosition = position;
 	}
 
+	public void OnDoubleTab()
+	{
+		_touchEventResultList[(int)Control.eInputType.DoubleTab] = true;
+	}
+
 	public void OnPress()
 	{
 		////_actionController.PlayActionByControl(Control.eControllerType.ScreenController, Control.eInputType.Press);
@@ -301,6 +307,7 @@ public class ScreenJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 		switch (eInputType)
 		{
 			case Control.eInputType.Tab:
+			case Control.eInputType.DoubleTab:
 			case Control.eInputType.Hold:
 			case Control.eInputType.Swipe:
 			case Control.eInputType.Press:

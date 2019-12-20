@@ -42,6 +42,7 @@ public class GatePillar : MonoBehaviour
 		// instance 구조를 뽑아버릴까 하다가
 		// 항상 하나의 게이트필라만 켜지는 구조라서 OnEnable에서 덮어쓰는거로 처리해본다.
 		instance = this;
+		raycastCount = 0;
 
 		if (DragThresholdController.instance != null)
 			DragThresholdController.instance.ApplyUIDragThreshold();
@@ -144,6 +145,7 @@ public class GatePillar : MonoBehaviour
 		Timing.RunCoroutine(NextMapProcess());
 	}
 
+	public int raycastCount { get; set; }
 	bool CheckCollider(Collider collider)
 	{
 		if (collider == null)
@@ -162,6 +164,8 @@ public class GatePillar : MonoBehaviour
 			return false;
 		if (hitObject.GetGatePillarCompareTime() < _spawnTime)
 			return false;
+		if (raycastCount == 0)
+			return false;
 		if (SwapCanvas.instance != null && SwapCanvas.instance.gameObject.activeSelf)
 			return false;
 		return true;
@@ -174,6 +178,8 @@ public class GatePillar : MonoBehaviour
 		if (teamId == (int)Team.eTeamID.DefaultMonster)
 			return;
 		if (gatePillarCompareTime < _spawnTime)
+			return;
+		if (raycastCount == 0)
 			return;
 		if (CheckNextMap() == false)
 			return;

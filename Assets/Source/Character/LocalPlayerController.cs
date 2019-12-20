@@ -128,7 +128,7 @@ public sealed class LocalPlayerController : BaseCharacterController
 				actionController.PlayActionByActionName("Idle");
 		}
 
-		if (ScreenJoystick.instance.CheckInput(Control.eInputType.Tab))
+		if (ScreenJoystick.instance.CheckInput(Control.eInputType.Tab) && IsAutoPlay() == false)
 		{
 			if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null)
 				TitleCanvas.instance.FadeTitle();
@@ -185,6 +185,13 @@ public sealed class LocalPlayerController : BaseCharacterController
 		diff.y = 0.0f;
 		if (diff.sqrMagnitude - (targetRadius * targetRadius) > _actorTableAttackRange * _actorTableAttackRange)
 			RangeIndicator.instance.ShowIndicator(_actorTableAttackRange, true, cachedTransform, true);
+	}
+
+	bool IsAutoPlay()
+	{
+		if (BattleManager.instance != null && BattleManager.instance.IsAutoPlay())
+			return true;
+		return false;
 	}
 
 	/// <summary>

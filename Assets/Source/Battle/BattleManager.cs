@@ -98,6 +98,11 @@ public class BattleManager : MonoBehaviour
 		_currentBattleMode.OnClearStage();
 	}
 
+	public bool IsAutoPlay()
+	{
+		return _currentBattleMode.IsAutoPlay();
+	}
+
 	public int GetSpawnedMonsterCount()
 	{
 		return _currentBattleMode.GetSpawnedMonsterCount();

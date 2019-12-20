@@ -101,6 +101,16 @@ public class BattleModeProcessorBase
 		Timing.RunCoroutine(DelayedShowGatePillar(1.3f));
 	}
 
+	public bool IsAutoPlay()
+	{
+		if (_monsterSpawned)
+		{
+			if (_monsterSpawnCount > 0)
+				return true;
+		}
+		return false;
+	}
+
 	IEnumerator<float> DelayedShowGatePillar(float delayTime)
 	{
 		yield return Timing.WaitForSeconds(delayTime);

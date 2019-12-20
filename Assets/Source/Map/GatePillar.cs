@@ -42,7 +42,6 @@ public class GatePillar : MonoBehaviour
 		// instance 구조를 뽑아버릴까 하다가
 		// 항상 하나의 게이트필라만 켜지는 구조라서 OnEnable에서 덮어쓰는거로 처리해본다.
 		instance = this;
-		raycastCount = 0;
 
 		if (DragThresholdController.instance != null)
 			DragThresholdController.instance.ApplyUIDragThreshold();
@@ -68,6 +67,9 @@ public class GatePillar : MonoBehaviour
 
 	void OnDisable()
 	{
+		raycastCount = 0;
+		_checkedStageSwapSuggest = false;
+
 		particleRootObject.SetActive(false);
 		changeEffectParticleRootObject.SetActive(false);
 
@@ -219,8 +221,62 @@ public class GatePillar : MonoBehaviour
 				}
 			}
 		}
+		else
+		{
+			// swappable이면서
+			// 다음번 보스의 suggest 캐릭터가 아니면서
+			// 다음번 보스의 suggest 캐릭터를 보유하고 있고, 이 캐릭터의 파워레벨이 권장파워레벨 이상이라면
+			if (_checkedStageSwapSuggest == false && StageManager.instance.currentStageTableData != null && StageManager.instance.currentStageTableData.swap)
+			{
+				MapTableData nextBossMapTableData = StageManager.instance.nextBossMapTableData;
+				if (nextBossMapTableData != null && CheckSuggestedActor(nextBossMapTableData.suggestedActorId, BattleInstanceManager.instance.playerActor.actorId) == false && HasSuggestedActor(nextBossMapTableData.suggestedActorId))
+				{
+					FullscreenYesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_EnterInfo"), UIString.instance.GetString("GameUI_EnterRecommendDesc"), () => {
+						_checkedStageSwapSuggest = true;
+						FullscreenYesNoCanvas.instance.ShowCanvas(false, "", "", null);
+						UIInstanceManager.instance.ShowCanvasAsync("SwapCanvas", null);
+					}, () => {
+						_checkedStageSwapSuggest = true;
+					});
+					return false;
+				}
+			}
+		}
 
 		return true;
+	}
+
+	bool _checkedStageSwapSuggest = false;
+	bool HasSuggestedActor(string[] suggestedActorIdList)
+	{
+		ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
+		if (chapterTableData == null)
+			return false;
+
+		List<CharacterData> listCharacterData = PlayerData.instance.listCharacterData;
+		for (int i = 0; i < listCharacterData.Count; ++i)
+		{
+			CharacterData characterData = listCharacterData[i];
+			if (characterData.powerLevel < chapterTableData.suggestedPowerLevel)
+				continue;
+			if (BattleInstanceManager.instance.playerActor.actorId == characterData.actorId)
+				continue;
+			if (CheckSuggestedActor(suggestedActorIdList, characterData.actorId))
+				return true;
+		}
+		return false;
+	}
+
+	public static bool CheckSuggestedActor(string[] suggestedActorIdList, string actorId)
+	{
+		if (suggestedActorIdList == null)
+			return false;
+		for (int i = 0; i < suggestedActorIdList.Length; ++i)
+		{
+			if (suggestedActorIdList[i] == actorId)			
+				return true;
+		}
+		return false;
 	}
 
 	bool _processing = false;

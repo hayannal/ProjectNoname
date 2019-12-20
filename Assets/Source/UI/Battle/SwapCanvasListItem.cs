@@ -56,22 +56,10 @@ public class SwapCanvasListItem : MonoBehaviour
 		}
 
 		recommandedText.gameObject.SetActive(false);
-		if (suggestedActorIdList != null)
+		if (GatePillar.CheckSuggestedActor(suggestedActorIdList, characterData.actorId))
 		{
-			bool find = false;
-			for (int i = 0; i < suggestedActorIdList.Length; ++i)
-			{
-				if (suggestedActorIdList[i] == characterData.actorId)
-				{
-					find = true;
-					break;
-				}
-			}
-			if (find)
-			{
-				recommandedText.SetLocalizedText(UIString.instance.GetString("GameUI_Suggested"));
-				recommandedText.gameObject.SetActive(true);
-			}
+			recommandedText.SetLocalizedText(UIString.instance.GetString("GameUI_Suggested"));
+			recommandedText.gameObject.SetActive(true);
 		}
 		
 		selectObject.SetActive(false);

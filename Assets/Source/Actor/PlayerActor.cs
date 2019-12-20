@@ -35,6 +35,11 @@ public class PlayerActor : Actor
 	}
 	#endregion
 
+	void OnDisable()
+	{
+		ShowUltimateIndicator(false);
+	}
+
 	protected override void InitializeComponent()
 	{
 		base.InitializeComponent();

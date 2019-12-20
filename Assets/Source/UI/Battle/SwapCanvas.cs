@@ -380,10 +380,16 @@ public class SwapCanvas : MonoBehaviour
 				continue;
 			if (_stringBuilderActor.Length > 0)
 				_stringBuilderActor.Append(", ");
+			_stringBuilderActor.Append("<color=#00AB00>");
 			_stringBuilderActor.Append(CharacterData.GetNameByActorId(actorId));
+			_stringBuilderActor.Append("</color>");
 		}
 		if (_stringBuilderActor.Length == 0)
+		{
+			_stringBuilderActor.Append("<color=#00AB00>");
 			_stringBuilderActor.Append(CharacterData.GetNameByActorId(suggestedActorIdList[0]));
+			_stringBuilderActor.Append("</color>");
+		}
 		_stringBuilderFull.AppendFormat(UIString.instance.GetString(descriptionId), _stringBuilderActor.ToString());
 		return _stringBuilderFull.ToString();
 	}

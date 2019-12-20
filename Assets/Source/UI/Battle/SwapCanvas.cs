@@ -20,6 +20,8 @@ public class SwapCanvas : MonoBehaviour
 	public Button chapterInfoButton;
 	public Image chapterInfoImage;
 	public Image bossImage;
+	public Image bossMirrorImage;
+	public Coffee.UIExtensions.UIMirrorReflection uiMirrorReflection;
 	public Text bossNameText;
 	public Button bossInfoButton;
 	public Text stagePenaltyText;
@@ -156,10 +158,11 @@ public class SwapCanvas : MonoBehaviour
 		{
 			AddressableAssetLoadManager.GetAddressableSprite(nextBossMapTableData.bossPreviewAddress, "Icon", (sprite) =>
 			{
-				bossImage.sprite = null;
-				bossImage.sprite = sprite;
+				bossImage.sprite = bossMirrorImage.sprite = null;
+				bossImage.sprite = bossMirrorImage.sprite = sprite;
 			});
 		}
+		uiMirrorReflection.spacing = nextBossMapTableData.mirrorOffset;
 		bossNameText.SetLocalizedText(UIString.instance.GetString(nextBossMapTableData.nameId));
 
 		RefreshCommonInfo();

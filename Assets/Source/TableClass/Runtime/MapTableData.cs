@@ -37,6 +37,10 @@ public class MapTableData
   public string bossPreviewAddress { get { return _bossPreviewAddress; } set { _bossPreviewAddress = value; } }
   
   [SerializeField]
+  float _mirrorOffset;
+  public float mirrorOffset { get { return _mirrorOffset; } set { _mirrorOffset = value; } }
+  
+  [SerializeField]
   string _nameId;
   public string nameId { get { return _nameId; } set { _nameId = value; } }
   

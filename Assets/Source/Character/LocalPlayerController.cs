@@ -195,6 +195,10 @@ public sealed class LocalPlayerController : BaseCharacterController
 
 	bool IsAutoPlay()
 	{
+#if UNITY_EDITOR
+		if (BattleInstanceManager.instance.playerActor != null && BattleInstanceManager.instance.playerActor.playerAI.enabled == false)
+			return false;
+#endif
 		if (BattleManager.instance != null && BattleManager.instance.IsAutoPlay())
 			return true;
 		return false;

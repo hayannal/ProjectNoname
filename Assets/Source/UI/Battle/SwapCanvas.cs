@@ -14,14 +14,13 @@ public class SwapCanvas : MonoBehaviour
 
 	public GameObject chapterRootObject;
 	public GameObject swapRootObject;
+	public GameObject swapBackgroundRootObject;
 	public Text chapterRomanNumberText;
 	public Text chapterNameText;
 	public Text suggestPowerLevelText;
 	public Button chapterInfoButton;
 	public Image chapterInfoImage;
-	public Image bossImage;
-	public Image bossMirrorImage;
-	public Coffee.UIExtensions.UIMirrorReflection uiMirrorReflection;
+	public Transform previewRootTransform;
 	public Text bossNameText;
 	public Button bossInfoButton;
 	public Text stagePenaltyText;
@@ -117,6 +116,7 @@ public class SwapCanvas : MonoBehaviour
 	{
 		chapterRootObject.SetActive(true);
 		swapRootObject.SetActive(false);
+		swapBackgroundRootObject.SetActive(false);
 
 		ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
 		if (chapterTableData == null)
@@ -145,24 +145,30 @@ public class SwapCanvas : MonoBehaviour
 		return UIString.instance.GetString("GameUI_Chapter", romanNumberString);
 	}
 
+	GameObject _cachedPreviewObject;
 	void RefreshSwapInfo()
 	{
 		chapterRootObject.SetActive(false);
 		swapRootObject.SetActive(true);
+		swapBackgroundRootObject.SetActive(true);
+
+		if (_cachedPreviewObject != null)
+		{
+			_cachedPreviewObject.SetActive(false);
+			_cachedPreviewObject = null;
+		}
 
 		MapTableData nextBossMapTableData = StageManager.instance.nextBossMapTableData;
 		if (nextBossMapTableData == null)
 			return;
 
-		if (string.IsNullOrEmpty(nextBossMapTableData.bossPreviewAddress) == false)
+		if (string.IsNullOrEmpty(nextBossMapTableData.bossName) == false)
 		{
-			AddressableAssetLoadManager.GetAddressableSprite(nextBossMapTableData.bossPreviewAddress, "Icon", (sprite) =>
+			AddressableAssetLoadManager.GetAddressableGameObject(string.Format("Preview_{0}", nextBossMapTableData.bossName), "Preview", (prefab) =>
 			{
-				bossImage.sprite = bossMirrorImage.sprite = null;
-				bossImage.sprite = bossMirrorImage.sprite = sprite;
+				_cachedPreviewObject = BattleInstanceManager.instance.GetCachedObject(prefab, previewRootTransform);
 			});
 		}
-		uiMirrorReflection.spacing = nextBossMapTableData.mirrorOffset;
 		bossNameText.SetLocalizedText(UIString.instance.GetString(nextBossMapTableData.nameId));
 
 		RefreshCommonInfo();

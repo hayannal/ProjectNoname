@@ -114,7 +114,7 @@ public class StageManager : MonoBehaviour
 				MapTableData mapTableData = BattleInstanceManager.instance.GetCachedMapTableData(reservedMap);
 				if (mapTableData == null)
 					continue;
-				if (string.IsNullOrEmpty(mapTableData.bossPreviewAddress))
+				if (string.IsNullOrEmpty(mapTableData.bossName))
 					continue;
 				return mapTableData;
 			}

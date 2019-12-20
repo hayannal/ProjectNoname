@@ -56,7 +56,7 @@ public class GatePillar : MonoBehaviour
 			return;
 		}
 		// 보스 인디케이터는 빠르게 등장한다.
-		if (string.IsNullOrEmpty(StageManager.instance.nextMapTableData.bossPreviewAddress))
+		if (string.IsNullOrEmpty(StageManager.instance.nextMapTableData.bossName))
 			_descriptionObjectIndicatorShowRemainTime = descriptionObjectIndicatorShowDelayTime;
 		else
 			_descriptionObjectIndicatorShowRemainTime = 0.001f;

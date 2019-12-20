@@ -62,7 +62,7 @@ public class GatePillar : MonoBehaviour
 			_descriptionObjectIndicatorShowRemainTime = 0.001f;
 
 		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby == false && StageManager.instance.playStage != TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter).maxStage)
-			floorText.SetLocalizedText(string.Format("To {0} Floor", StageManager.instance.playStage + 1));
+			floorText.text = (StageManager.instance.playStage + 1).ToString();
 	}
 
 	void OnDisable()

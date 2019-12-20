@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using ActorStatusDefine;
 
 public class FollowingFirstShotNwayGenerator : ContinuousHitObjectGeneratorBase
 {
@@ -14,9 +15,9 @@ public class FollowingFirstShotNwayGenerator : ContinuousHitObjectGeneratorBase
 	float _remainLineIntervalTime;
 	float _centerAngleY;
 
-	public override void InitializeGenerator(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack, Transform spawnTransform)
+	public override void InitializeGenerator(MeHitObject meHit, Actor parentActor, StatusBase statusBase, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack, Transform spawnTransform)
 	{
-		base.InitializeGenerator(meHit, parentActor, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, spawnTransform);
+		base.InitializeGenerator(meHit, parentActor, statusBase, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, spawnTransform);
 
 		_remainCreateCount = _initializedCreateCount;
 		_remainLineIntervalTime = 0.0f;

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using ActorStatusDefine;
 
 public class BackNwayGenerator : ContinuousHitObjectGeneratorBase
 {
@@ -10,9 +11,9 @@ public class BackNwayGenerator : ContinuousHitObjectGeneratorBase
 	public static float BackNwayLocalRadiusScale = 1.2f;
 	Vector3 _spawnLocalPosition = Vector3.zero;
 
-	public override void InitializeGenerator(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack, Transform spawnTransform)
+	public override void InitializeGenerator(MeHitObject meHit, Actor parentActor, StatusBase statusBase, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack, Transform spawnTransform)
 	{
-		base.InitializeGenerator(meHit, parentActor, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, spawnTransform);
+		base.InitializeGenerator(meHit, parentActor, statusBase, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, spawnTransform);
 
 		Collider collider = parentActor.GetCollider();
 		_spawnLocalPosition.y = 1.0f;
@@ -40,7 +41,7 @@ public class BackNwayGenerator : ContinuousHitObjectGeneratorBase
 			float baseAngle = _initializedCreateCount % 2 == 0 ? centerAngleY - (betweenAngle / 2f) : centerAngleY;
 			float angle = WavingNwayGenerator.GetShiftedAngle(i, baseAngle, betweenAngle);
 
-			Generate(spawnPosition, Quaternion.Euler(0.0f, angle, 0.0f));
+			Generate(spawnPosition, Quaternion.Euler(0.0f, angle, 0.0f), true);
 		}
 		gameObject.SetActive(false);
 	}

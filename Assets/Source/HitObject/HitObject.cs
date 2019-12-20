@@ -156,7 +156,7 @@ public class HitObject : MonoBehaviour
 			{
 				ContinuousHitObjectGeneratorBase continuousHitObjectGenerator = BattleInstanceManager.instance.GetContinuousHitObjectGenerator(meHit.continuousHitObjectGeneratorBaseList[i].gameObject, defaultPosition, defaultRotation);
 				ignoreMainHitObjectByGenerator |= continuousHitObjectGenerator.ignoreMainHitObject;
-				continuousHitObjectGenerator.InitializeGenerator(meHit, parentActor, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, spawnTransform);
+				continuousHitObjectGenerator.InitializeGenerator(meHit, parentActor, statusBase, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, spawnTransform);
 			}
 		}
 
@@ -167,7 +167,7 @@ public class HitObject : MonoBehaviour
 			ContinuousHitObjectGeneratorBase continuousHitObjectGenerator = BattleInstanceManager.instance.GetContinuousHitObjectGenerator(BattleManager.instance.diagonalNwayGeneratorPrefab, defaultPosition, defaultRotation);
 			ignoreMainHitObjectByGenerator |= continuousHitObjectGenerator.ignoreMainHitObject;
 			continuousHitObjectGenerator.createCount = diagonalNwayAddCount;
-			continuousHitObjectGenerator.InitializeGenerator(meHit, parentActor, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, spawnTransform);
+			continuousHitObjectGenerator.InitializeGenerator(meHit, parentActor, statusBase, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, spawnTransform);
 		}
 
 		int leftRightNwayAddCount = normalAttack ? LeftRightNwayGeneratorAffector.GetAddCount(parentActor.affectorProcessor) : 0;
@@ -176,7 +176,7 @@ public class HitObject : MonoBehaviour
 			ContinuousHitObjectGeneratorBase continuousHitObjectGenerator = BattleInstanceManager.instance.GetContinuousHitObjectGenerator(BattleManager.instance.leftRightNwayGeneratorPrefab, defaultPosition, defaultRotation);
 			ignoreMainHitObjectByGenerator |= continuousHitObjectGenerator.ignoreMainHitObject;
 			continuousHitObjectGenerator.createCount = leftRightNwayAddCount;
-			continuousHitObjectGenerator.InitializeGenerator(meHit, parentActor, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, spawnTransform);
+			continuousHitObjectGenerator.InitializeGenerator(meHit, parentActor, statusBase, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, spawnTransform);
 		}
 
 		int backNwayAddCount = normalAttack ? BackNwayGeneratorAffector.GetAddCount(parentActor.affectorProcessor) : 0;
@@ -185,7 +185,7 @@ public class HitObject : MonoBehaviour
 			ContinuousHitObjectGeneratorBase continuousHitObjectGenerator = BattleInstanceManager.instance.GetContinuousHitObjectGenerator(BattleManager.instance.backNwayGeneratorPrefab, defaultPosition, defaultRotation);
 			ignoreMainHitObjectByGenerator |= continuousHitObjectGenerator.ignoreMainHitObject;
 			continuousHitObjectGenerator.createCount = backNwayAddCount;
-			continuousHitObjectGenerator.InitializeGenerator(meHit, parentActor, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, spawnTransform);
+			continuousHitObjectGenerator.InitializeGenerator(meHit, parentActor, statusBase, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, spawnTransform);
 		}
 
 		bool createMainHitObject = true;

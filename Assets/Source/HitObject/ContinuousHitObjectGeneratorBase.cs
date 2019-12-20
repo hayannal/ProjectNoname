@@ -15,14 +15,16 @@ public class ContinuousHitObjectGeneratorBase : MonoBehaviour
 
 	protected MeHitObject _signal;
 	protected Actor _parentActor;
+	protected StatusBase _statusBase;
 	protected int _hitSignalIndexInAction;
 	int _repeatIndex;
 	int _repeatAddCountByLevelPack;
 
-	public virtual void InitializeGenerator(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack, Transform spawnTransform)
+	public virtual void InitializeGenerator(MeHitObject meHit, Actor parentActor, StatusBase statusBase, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack, Transform spawnTransform)
 	{
 		_signal = meHit;
 		_parentActor = parentActor;
+		_statusBase = statusBase;
 		_hitSignalIndexInAction = hitSignalIndexInAction;
 		_repeatIndex = repeatIndex;
 		_repeatAddCountByLevelPack = repeatAddCountByLevelPack;
@@ -56,20 +58,26 @@ public class ContinuousHitObjectGeneratorBase : MonoBehaviour
 		return Generate(position, rotation);
 	}
 
-	// 본체 기준에서 만들어내는 Generate
-	protected HitObject Generate()
-	{
-		return Generate(cachedTransform.position, cachedTransform.rotation);
-	}
-
 	// 스파이럴이나 페인트 제네레이터는 새로운 position과 rotation을 계산해서 히트오브젝트를 만들어낸다. 시그널값 무시.
-	protected HitObject Generate(Vector3 position, Quaternion rotation)
+	protected HitObject Generate(Vector3 position, Quaternion rotation, bool useInitializedStatusBase = false)
 	{
 		HitObject hitObject = HitObject.GetCachedHitObject(_signal, position, rotation);
 		if (hitObject == null)
 			return null;
 
-		hitObject.InitializeHitObject(_signal, _parentActor, null, 0.0f, _hitSignalIndexInAction, _repeatIndex, _repeatAddCountByLevelPack);
+		StatusBase statusBase = null;
+		if (useInitializedStatusBase)
+		{
+			// 제네레이터는 기본적으로 시간을 두고 발사하는 것들이라 디폴트는 parentActor에서 항상 새로 스탯을 뽑아내는거고,
+			// 간혹 일부 동시간에 여러개 발사하는거만 초기화때 전달받은 스탯을 사용한다.
+			statusBase = _statusBase;
+		}
+		else
+		{
+			statusBase = new StatusBase();
+			_parentActor.actorStatus.CopyStatusBase(ref statusBase);
+		}
+		hitObject.InitializeHitObject(_signal, _parentActor, statusBase, 0.0f, _hitSignalIndexInAction, _repeatIndex, _repeatAddCountByLevelPack);
 		return hitObject;
 	}
 

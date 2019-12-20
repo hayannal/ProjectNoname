@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using ActorStatusDefine;
 
 public class DiagonalNwayGenerator : ContinuousHitObjectGeneratorBase
 {
@@ -10,9 +11,9 @@ public class DiagonalNwayGenerator : ContinuousHitObjectGeneratorBase
 	Vector3 _spawnLocalLeftDiagonalPosition = Vector3.zero;
 	Vector3 _spawnLocalRightDiagonalPosition = Vector3.zero;
 
-	public override void InitializeGenerator(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack, Transform spawnTransform)
+	public override void InitializeGenerator(MeHitObject meHit, Actor parentActor, StatusBase statusBase, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack, Transform spawnTransform)
 	{
-		base.InitializeGenerator(meHit, parentActor, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, spawnTransform);
+		base.InitializeGenerator(meHit, parentActor, statusBase, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, spawnTransform);
 
 		Collider collider = parentActor.GetCollider();
 		Vector3 diagonal = new Vector3(-1.0f, 0.0f, 1.0f);
@@ -48,7 +49,7 @@ public class DiagonalNwayGenerator : ContinuousHitObjectGeneratorBase
 			float baseAngle = _initializedCreateCount % 2 == 0 ? centerAngleY - (betweenAngle / 2f) : centerAngleY;
 			float angle = WavingNwayGenerator.GetShiftedAngle(i, baseAngle, betweenAngle);
 
-			Generate(spawnPosition, Quaternion.Euler(0.0f, angle, 0.0f));
+			Generate(spawnPosition, Quaternion.Euler(0.0f, angle, 0.0f), true);
 		}
 
 		spawnPosition = _parentActor.cachedTransform.TransformPoint(_spawnLocalRightDiagonalPosition);
@@ -59,7 +60,7 @@ public class DiagonalNwayGenerator : ContinuousHitObjectGeneratorBase
 			float baseAngle = _initializedCreateCount % 2 == 0 ? centerAngleY - (betweenAngle / 2f) : centerAngleY;
 			float angle = WavingNwayGenerator.GetShiftedAngle(i, baseAngle, betweenAngle);
 
-			Generate(spawnPosition, Quaternion.Euler(0.0f, angle, 0.0f));
+			Generate(spawnPosition, Quaternion.Euler(0.0f, angle, 0.0f), true);
 		}
 		gameObject.SetActive(false);
 	}

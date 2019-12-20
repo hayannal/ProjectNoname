@@ -103,6 +103,40 @@ public class UIInstanceManager : MonoBehaviour
 	}
 	#endregion
 
+	#region Object Pool
+	Dictionary<GameObject, List<GameObject>> _dicInstancePool = new Dictionary<GameObject, List<GameObject>>();
+	public GameObject GetCachedObject(GameObject prefab, Transform parentTransform)
+	{
+		List<GameObject> listCachedGameObject = null;
+		if (_dicInstancePool.ContainsKey(prefab))
+			listCachedGameObject = _dicInstancePool[prefab];
+		else
+		{
+			listCachedGameObject = new List<GameObject>();
+			_dicInstancePool.Add(prefab, listCachedGameObject);
+		}
+
+		for (int i = 0; i < listCachedGameObject.Count; ++i)
+		{
+			if (!listCachedGameObject[i].activeSelf)
+			{
+				listCachedGameObject[i].transform.SetParent(parentTransform);
+				listCachedGameObject[i].SetActive(true);
+				return listCachedGameObject[i];
+			}
+		}
+
+		GameObject newObject = Instantiate<GameObject>(prefab, parentTransform);
+#if UNITY_EDITOR
+		AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+		if (settings.ActivePlayModeDataBuilderIndex == 2)
+			ObjectUtil.ReloadShader(newObject);
+#endif
+		listCachedGameObject.Add(newObject);
+		return newObject;
+	}
+	#endregion
+
 
 
 	#region Async Load

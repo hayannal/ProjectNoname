@@ -166,7 +166,7 @@ public class SwapCanvas : MonoBehaviour
 		{
 			AddressableAssetLoadManager.GetAddressableGameObject(string.Format("Preview_{0}", nextBossMapTableData.bossName), "Preview", (prefab) =>
 			{
-				_cachedPreviewObject = BattleInstanceManager.instance.GetCachedObject(prefab, previewRootTransform);
+				_cachedPreviewObject = UIInstanceManager.instance.GetCachedObject(prefab, previewRootTransform);
 			});
 		}
 		bossNameText.SetLocalizedText(UIString.instance.GetString(nextBossMapTableData.nameId));

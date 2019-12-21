@@ -151,7 +151,7 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 			{
 				if (currentRandom <= listRandomLevelPackInfo[j].rate)
 				{
-					buttonList[i].SetInfo(listRandomLevelPackInfo[j].levelPackTableData);
+					buttonList[i].SetInfo(listRandomLevelPackInfo[j].levelPackTableData, BattleInstanceManager.instance.playerActor.skillProcessor.GetLevelPackStackCount(listRandomLevelPackInfo[j].levelPackTableData.levelPackId) + 1);
 					break;
 				}
 			}
@@ -165,7 +165,7 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 
 		// last is exclusive
 		LevelPackTableData randomExclusiveLevelPackTableData = LevelPackDataManager.instance.GetRandomExclusiveLevelPackTableData(BattleInstanceManager.instance.playerActor);
-		buttonList[buttonList.Length - 1].SetInfo(randomExclusiveLevelPackTableData);
+		buttonList[buttonList.Length - 1].SetInfo(randomExclusiveLevelPackTableData, BattleInstanceManager.instance.playerActor.skillProcessor.GetLevelPackStackCount(randomExclusiveLevelPackTableData.levelPackId) + 1);
 	}
 
 	public void OnCompleteLineAnimation()

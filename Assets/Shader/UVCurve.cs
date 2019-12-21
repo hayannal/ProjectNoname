@@ -19,7 +19,7 @@ public class UVCurve : MonoBehaviour {
 		startTime = Time.time;
 	}
 
-	void OnDisable()
+	void OnDestroy()
 	{
 		ResetMaterials();
 	}

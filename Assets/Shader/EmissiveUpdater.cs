@@ -23,7 +23,7 @@ public class EmissiveUpdater : MonoBehaviour {
 		startTime = Time.time;
 	}
 
-	void OnDisable()
+	void OnDestroy()
 	{
 		ResetMaterials();
 	}

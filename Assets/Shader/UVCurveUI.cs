@@ -18,7 +18,7 @@ public class UVCurveUI : MonoBehaviour {
 		startTime = Time.time;
 	}
 
-	void OnDisable()
+	void OnDestroy()
 	{
 		ResetMaterial();
 	}

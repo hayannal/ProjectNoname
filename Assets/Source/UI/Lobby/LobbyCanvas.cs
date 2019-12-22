@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using DG.Tweening;
 
 public class LobbyCanvas : MonoBehaviour
 {
@@ -12,7 +13,11 @@ public class LobbyCanvas : MonoBehaviour
 	public Button lobbyOptionButton;
 	public Button battlePauseButton;
 	public Text levelText;
+	public Slider expGaugeSlider;
+	public RectTransform expGaugeRectTransform;
 	public Image expGaugeImage;
+	public DOTweenAnimation expGaugeColorTween;
+	public Image expGaugeEndPointImage;
 
 	void Awake()
 	{
@@ -22,13 +27,17 @@ public class LobbyCanvas : MonoBehaviour
 	void Update()
 	{
 		UpdateExpGauge();
+		UpdateExpGaugeHeight();
 	}
 
 	void Start()
 	{
 		battlePauseButton.gameObject.SetActive(false);
 		levelText.gameObject.SetActive(false);
-		expGaugeImage.gameObject.SetActive(false);
+		expGaugeSlider.gameObject.SetActive(false);
+		expGaugeEndPointImage.gameObject.SetActive(false);
+		_defaultExpGaugeHeight = expGaugeRectTransform.sizeDelta.y;
+		_defaultExpGaugeColor = expGaugeImage.color;
 	}
 
 	public void OnClickDotButton()
@@ -104,8 +113,9 @@ public class LobbyCanvas : MonoBehaviour
 		dotMainMenuButton.gameObject.SetActive(false);
 		lobbyOptionButton.gameObject.SetActive(false);
 		battlePauseButton.gameObject.SetActive(true);
-		expGaugeImage.gameObject.SetActive(true);
-		expGaugeImage.fillAmount = 0.0f;
+		expGaugeSlider.value = 0.0f;
+		expGaugeSlider.gameObject.SetActive(true);
+		expGaugeEndPointImage.gameObject.SetActive(false);
 		RefreshLevelText(1);
 
 		if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
@@ -137,12 +147,21 @@ public class LobbyCanvas : MonoBehaviour
 		_levelUpCount = levelUpCount;
 
 		float totalDiff = levelUpCount;
-		totalDiff += (targetPercent - expGaugeImage.fillAmount);
+		totalDiff += (targetPercent - expGaugeSlider.value);
 		_fillSpeed = totalDiff / LevelUpExpFillTime;
 		_fillRemainTime = LevelUpExpFillTime;
+		_currentExpGaugeHeight = ExpGaugeFillHeight;
+
+		expGaugeRectTransform.sizeDelta = new Vector2(expGaugeRectTransform.sizeDelta.x, ExpGaugeFillHeight);
+		expGaugeColorTween.DORestart();
+		expGaugeEndPointImage.color = new Color(expGaugeEndPointImage.color.r, expGaugeEndPointImage.color.g, expGaugeEndPointImage.color.b, _defaultExpGaugeColor.a);
+		expGaugeEndPointImage.gameObject.SetActive(true);
 	}
 
-	const float LevelUpExpFillTime = 0.5f;
+	float _defaultExpGaugeHeight;
+	Color _defaultExpGaugeColor;
+	const float ExpGaugeFillHeight = 10.0f;
+	const float LevelUpExpFillTime = 0.75f;
 	float _fillRemainTime;
 	float _fillSpeed;
 	float _targetPercent;
@@ -152,17 +171,57 @@ public class LobbyCanvas : MonoBehaviour
 		if (_fillRemainTime > 0.0f)
 		{
 			_fillRemainTime -= Time.deltaTime;
-			expGaugeImage.fillAmount += _fillSpeed * Time.deltaTime;
-			if (expGaugeImage.fillAmount >= 1.0f && _levelUpCount > 0)
+			expGaugeSlider.value += _fillSpeed * Time.deltaTime;
+			if (expGaugeSlider.value >= 1.0f && _levelUpCount > 0)
 			{
-				expGaugeImage.fillAmount -= 1.0f;
+				expGaugeSlider.value -= 1.0f;
 				_levelUpCount -= 1;
 			}
 
 			if (_fillRemainTime <= 0.0f)
 			{
 				_fillRemainTime = 0.0f;
-				expGaugeImage.fillAmount = _targetPercent;
+				expGaugeSlider.value = _targetPercent;
+
+				expGaugeColorTween.DOPause();
+				expGaugeImage.color = _defaultExpGaugeColor;
+				expGaugeEndPointImage.DOFade(0.0f, HeightLerpDelayTime).SetEase(Ease.OutQuad);
+				_lerpHeightDelayRemainTime = HeightLerpDelayTime;
+				_lerpHeightRemainTime = 0.0f;
+			}
+		}
+	}
+
+	const float HeightLerpDelayTime = 1.25f;
+	const float HeightLerpTime = 0.4f;
+	float _lerpHeightDelayRemainTime;
+	float _lerpHeightRemainTime;
+	float _currentExpGaugeHeight;
+	void UpdateExpGaugeHeight()
+	{
+		if (_lerpHeightDelayRemainTime > 0.0f)
+		{
+			_lerpHeightDelayRemainTime -= Time.deltaTime;
+			if (_lerpHeightDelayRemainTime <= 0.0f)
+			{
+				_lerpHeightDelayRemainTime = 0.0f;
+				_lerpHeightRemainTime = HeightLerpTime;
+				expGaugeEndPointImage.gameObject.SetActive(false);
+				//DOTween.To(() => _currentExpGaugeHeight, x => _currentExpGaugeHeight = x, _defaultExpGaugeHeight, HeightLerpTime).SetEase(Ease.OutQuad);
+			}
+		}
+
+		if (_lerpHeightRemainTime > 0.0f)
+		{
+			_lerpHeightRemainTime -= Time.deltaTime;
+			_currentExpGaugeHeight = Mathf.Lerp(_currentExpGaugeHeight, _defaultExpGaugeHeight, Time.deltaTime * 5.0f);
+			expGaugeRectTransform.sizeDelta = new Vector2(expGaugeRectTransform.sizeDelta.x, _currentExpGaugeHeight);
+
+			if (_lerpHeightRemainTime <= 0.0f)
+			{
+				_lerpHeightRemainTime = 0.0f;
+				_currentExpGaugeHeight = _defaultExpGaugeHeight;
+				expGaugeRectTransform.sizeDelta = new Vector2(expGaugeRectTransform.sizeDelta.x, _defaultExpGaugeHeight);
 			}
 		}
 	}

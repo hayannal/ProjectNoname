@@ -126,6 +126,7 @@ public class StageManager : MonoBehaviour
 	public float currentMonstrStandardAtk { get { return _currentStageTableData.standardAtk; } }
 	public float currentBossHpPer1Line { get { return _currentStageTableData.standardHp * _currentStageTableData.bossHpRatioPer1Line; } }
 	public bool bossStage { get { return currentBossHpPer1Line != 0.0f; } }
+	public int addDropExp { get; private set; }
 	StageTableData _currentStageTableData = null;
 	public StageTableData currentStageTableData { get { return _currentStageTableData; } set { _currentStageTableData = value; } }
 	public void MoveToNextStage(bool ignorePlus = false)
@@ -148,6 +149,8 @@ public class StageManager : MonoBehaviour
 		MapTableData mapTableData = BattleInstanceManager.instance.GetCachedMapTableData(currentMap);
 		if (mapTableData != null)
 		{
+			addDropExp = mapTableData.dropExpAdd;
+
 			if (BattleManager.instance != null)
 				BattleManager.instance.OnPreInstantiateMap();
 			

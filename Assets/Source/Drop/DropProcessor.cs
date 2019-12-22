@@ -30,7 +30,7 @@ public class DropProcessor : MonoBehaviour
 
 	public static void Drop(Transform rootTransform, string dropId, string addDropId, bool onAfterBattle)
 	{
-		Debug.Log("dropId : " + dropId + " / addDropId : " + addDropId);
+		//Debug.Log("dropId : " + dropId + " / addDropId : " + addDropId);
 
 		Vector3 dropPosition = rootTransform.position;
 		dropPosition.y = 0.0f;
@@ -133,7 +133,7 @@ public class DropProcessor : MonoBehaviour
 		if (dropExpValue == 0)
 			return;
 
-		Debug.Log("dropExp : " + dropExpValue);
+		//Debug.Log("dropExp : " + dropExpValue);
 
 		BattleManager.instance.StackDropExp(dropExpValue);
 	}

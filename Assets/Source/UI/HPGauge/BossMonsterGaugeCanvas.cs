@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class BossMonsterGaugeCanvas : MonoBehaviour
 {
@@ -25,6 +26,7 @@ public class BossMonsterGaugeCanvas : MonoBehaviour
 	public RectTransform hpFill2RectTransform;
 	public RectTransform lateFill2RectTransform;
 	public Text questionText;
+	public DOTweenAnimation shakeTween;
 
 	void OnDisable()
 	{
@@ -115,6 +117,10 @@ public class BossMonsterGaugeCanvas : MonoBehaviour
 			{
 				lateFill1RectTransform.anchorMax = hpFill1RectTransform.anchorMax;
 				lateFill2RectTransform.anchorMax = hpFill2RectTransform.anchorMax;
+			}
+			else
+			{
+				shakeTween.DORestart();
 			}
 		}
 	}

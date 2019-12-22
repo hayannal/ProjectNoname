@@ -32,6 +32,9 @@ public class PlayerGaugeCanvas : MonoBehaviour
 	public RectTransform widthRectTransform;
 	public MOBAEnergyBar mobaEnergyBar;
 
+	const float g1 = 1.2332f;
+	const float g2 = -1.8884f;
+
 	float _defaultWidth;
 	void Awake()
 	{
@@ -59,6 +62,7 @@ public class PlayerGaugeCanvas : MonoBehaviour
 		//widthRectTransform.sizeDelta = new Vector2(monsterActor.monsterHpGaugeWidth * _defaultWidth, widthRectTransform.sizeDelta.y);
 		mobaEnergyBar.MaxValue = playerActor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MaxHp);
 		mobaEnergyBar.Value = playerActor.actorStatus.GetHP();
+		mobaEnergyBar.SmallGapInterval = mobaEnergyBar.MaxValue / (g1 * Mathf.Log(mobaEnergyBar.MaxValue) + g2);
 		_lastRatio = playerActor.actorStatus.GetHPRatio();
 		_targetTransform = playerActor.cachedTransform;
 		GetTargetHeight(_targetTransform);

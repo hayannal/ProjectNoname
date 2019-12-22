@@ -29,6 +29,10 @@ public class MapTableData
   public string spawnFlag { get { return _spawnFlag; } set { _spawnFlag = value; } }
   
   [SerializeField]
+  int _dropExpAdd;
+  public int dropExpAdd { get { return _dropExpAdd; } set { _dropExpAdd = value; } }
+  
+  [SerializeField]
   string _portalFlag;
   public string portalFlag { get { return _portalFlag; } set { _portalFlag = value; } }
   

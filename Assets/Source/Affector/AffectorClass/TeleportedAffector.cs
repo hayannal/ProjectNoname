@@ -12,6 +12,7 @@ public class TeleportedAffector : AffectorBase
 
 	bool _applied = false;
 	AffectorValueLevelTableData _affectorValueLevelTableData;
+	GameObject _positionEffectObject;
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
 		if (_actor == null)
@@ -31,6 +32,12 @@ public class TeleportedAffector : AffectorBase
 
 		_affectorValueLevelTableData = affectorValueLevelTableData;
 
+		if (!string.IsNullOrEmpty(affectorValueLevelTableData.sValue2))
+		{
+			GameObject positionEffectPrefab = FindPreloadObject(affectorValueLevelTableData.sValue2);
+			if (positionEffectPrefab != null)
+				_positionEffectObject = BattleInstanceManager.instance.GetCachedObject(positionEffectPrefab, _actor.cachedTransform.position, Quaternion.identity);
+		}
 		if (!string.IsNullOrEmpty(affectorValueLevelTableData.sValue3))
 		{
 			GameObject onStartEffectPrefab = FindPreloadObject(affectorValueLevelTableData.sValue3);
@@ -65,6 +72,11 @@ public class TeleportedAffector : AffectorBase
 		_actor.actionController.PlayActionByActionName("Idle");
 		_actor.EnableAI(true);
 
+		if (_positionEffectObject != null)
+		{
+			_positionEffectObject.SetActive(false);
+			_positionEffectObject = null;
+		}
 		if (!string.IsNullOrEmpty(_affectorValueLevelTableData.sValue4))
 		{
 			GameObject onEndEffectPrefab = FindPreloadObject(_affectorValueLevelTableData.sValue4);

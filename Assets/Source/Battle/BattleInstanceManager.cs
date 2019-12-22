@@ -1021,6 +1021,20 @@ public class BattleInstanceManager : MonoBehaviour
 		return _listTeleportedAffector.Count;
 	}
 
+	public int GetActiveTeleportedCountByType(bool bossMonster)
+	{
+		if (_listTeleportedAffector == null)
+			return 0;
+		int count = 0;
+		for (int i = 0; i < _listTeleportedAffector.Count; ++i)
+		{
+			if (bossMonster != _listTeleportedAffector[i].bossMonster)
+				continue;
+			++count;
+		}
+		return count;
+	}
+
 	public void RestoreFirstTeleportedObject()
 	{
 		if (_listTeleportedAffector == null)

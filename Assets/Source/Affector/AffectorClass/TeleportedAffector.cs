@@ -13,6 +13,7 @@ public class TeleportedAffector : AffectorBase
 	bool _applied = false;
 	AffectorValueLevelTableData _affectorValueLevelTableData;
 	GameObject _positionEffectObject;
+	public bool bossMonster { get; private set; }
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
 		if (_actor == null)
@@ -44,6 +45,13 @@ public class TeleportedAffector : AffectorBase
 			if (onStartEffectPrefab != null)
 				BattleInstanceManager.instance.GetCachedObject(onStartEffectPrefab, _actor.cachedTransform.position + new Vector3(0.0f, EffectOffetY, 0.0f), _actor.cachedTransform.rotation);
 		}
+
+		bossMonster = false;
+		MonsterActor monsterActor = null;
+		if (_actor.IsMonsterActor())
+			monsterActor = _actor as MonsterActor;
+		if (monsterActor != null && monsterActor.bossMonster)
+			bossMonster = true;
 
 		_actor.EnableAI(false);
 		_actor.actionController.idleAnimator.enabled = false;

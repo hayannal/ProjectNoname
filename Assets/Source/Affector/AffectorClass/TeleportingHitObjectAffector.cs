@@ -43,16 +43,21 @@ public class TeleportingHitObjectAffector : AffectorBase
 				return;
 		}
 
-		if (BattleInstanceManager.instance.GetActiveTeleportedCount() >= _affectorValueLevelTableData.iValue1)
+		MonsterActor defenderMonsterActor = null;
+		bool bossMonster = false;
+		if (defenderAffectorProcessor.actor.IsMonsterActor())
+			defenderMonsterActor = defenderAffectorProcessor.actor as MonsterActor;
+		if (defenderMonsterActor != null && defenderMonsterActor.bossMonster)
+			bossMonster = true;
+
+		//if (BattleInstanceManager.instance.GetActiveTeleportedCount() >= _affectorValueLevelTableData.iValue1)
+		//	return;
+		if (bossMonster == false && BattleInstanceManager.instance.GetActiveTeleportedCountByType(false) >= _affectorValueLevelTableData.iValue1)
+			return;
+		if (bossMonster && BattleInstanceManager.instance.GetActiveTeleportedCountByType(true) >= _affectorValueLevelTableData.iValue3)
 			return;
 
-		float limitHp = _affectorValueLevelTableData.fValue3;
-		if (defenderAffectorProcessor.actor.IsMonsterActor())
-		{
-			MonsterActor monsterActor = defenderAffectorProcessor.actor as MonsterActor;
-			if (monsterActor != null && monsterActor.bossMonster)
-				limitHp = _affectorValueLevelTableData.fValue4;
-		}
+		float limitHp = bossMonster ? limitHp = _affectorValueLevelTableData.fValue4 : _affectorValueLevelTableData.fValue3;
 		if (defenderAffectorProcessor.actor.actorStatus.GetHPRatio() < limitHp)
 			return;
 

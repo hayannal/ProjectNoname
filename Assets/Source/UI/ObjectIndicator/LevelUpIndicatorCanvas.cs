@@ -28,19 +28,19 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 	}
 	static LevelUpIndicatorCanvas _instance = null;
 
-	public static void Show(bool show, Transform targetTransform, int levelUpCount, int exclusiveLevelUpCount)
+	public static void Show(bool show, Transform targetTransform, int levelUpCount, int levelPackCount, int exclusiveLevelPackCount)
 	{
 		if (show)
 		{
 			// 이미 보여지는 중이라면 예약을 걸어두기만 한다.
 			if (IsShow())
 			{
-				_instance.ReserveCount(levelUpCount, exclusiveLevelUpCount);
+				_instance.ReserveCount(levelUpCount, levelPackCount, exclusiveLevelPackCount);
 				return;
 			}
 
 			instance.targetTransform = targetTransform;
-			instance.ShowLevelUpIndicator(levelUpCount, exclusiveLevelUpCount);
+			instance.ShowLevelUpIndicator(levelUpCount, levelPackCount, exclusiveLevelPackCount);
 			instance.gameObject.SetActive(true);
 		}
 		else
@@ -78,6 +78,7 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 	public GameObject buttonRootObject;
 	public LevelUpIndicatorButton[] buttonList;
 	public GameObject titleTextObject;
+	public Text titleText;
 
 	// Start is called before the first frame update
 	void Start()
@@ -105,18 +106,26 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 		UpdateCloseAlphaAnimation();
 	}
 
-	// 노말은 false로 전용은 true로 리스트에 넣어둔다.
-	List<bool> _listReservedLevelUp = new List<bool>();
-	void ReserveCount(int levelUpCount, int exclusiveLevelUpCount)
+	// 레벨업은 0 노말 레벨팩 보상은 1로 전용은 2로 리스트에 넣어둔다.
+	enum eLevelUpType
+	{
+		LevelUp,
+		LevelPack,
+		NoHitLevelPack,
+	}
+	List<int> _listReservedLevelUpType = new List<int>();
+	void ReserveCount(int levelUpCount, int levelPackCount, int exclusiveLevelPackCount)
 	{
 		for (int i = 0; i < levelUpCount; ++i)
-			_listReservedLevelUp.Add(false);
-		for (int i = 0; i < exclusiveLevelUpCount; ++i)
-			_listReservedLevelUp.Add(true);
+			_listReservedLevelUpType.Add((int)eLevelUpType.LevelUp);
+		for (int i = 0; i < levelPackCount; ++i)
+			_listReservedLevelUpType.Add((int)eLevelUpType.LevelPack);
+		for (int i = 0; i < exclusiveLevelPackCount; ++i)
+			_listReservedLevelUpType.Add((int)eLevelUpType.NoHitLevelPack);
 	}
 
-	bool _exclusive = false;
-	void ShowLevelUpIndicator(int levelUpCount, int exclusiveLevelUpCount)
+	int _levelUpType = 0;
+	void ShowLevelUpIndicator(int levelUpCount, int levelPackCount, int exclusiveLevelPackCount)
 	{
 		if (_close)
 		{
@@ -125,17 +134,22 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 			canvasGroup.alpha = 1.0f;
 		}
 
-		// 둘 중에 하나는 0으로 들어온다. 1보다 큰 값에 대해선 예약으로 걸어둔다.
-		// _exclusive일때는 3개의 레벨팩 중 마지막꺼가 무조건 exclusive에서 뽑혀진다.
-		_exclusive = false;
-		if (levelUpCount > 0 && exclusiveLevelUpCount == 0)
+		// 셋중에 하나만 값이 0 초과로 들어온다.
+		// exclusiveLevelPack 일때는 3개의 레벨팩 중 마지막꺼가 무조건 exclusive에서 뽑혀진다.
+		_levelUpType = 0;
+		if (levelUpCount > 0 && levelPackCount == 0 && exclusiveLevelPackCount == 0)
 		{
-			ReserveCount(levelUpCount - 1, exclusiveLevelUpCount);
+			ReserveCount(levelUpCount - 1, levelPackCount, exclusiveLevelPackCount);
 		}
-		if (levelUpCount == 0 && exclusiveLevelUpCount > 0)
+		if (levelUpCount == 0 && levelPackCount > 0 && exclusiveLevelPackCount == 0)
 		{
-			ReserveCount(levelUpCount, exclusiveLevelUpCount - 1);
-			_exclusive = true;
+			ReserveCount(levelUpCount, levelPackCount - 1, exclusiveLevelPackCount);
+			_levelUpType = (int)eLevelUpType.LevelPack;
+		}
+		if (levelUpCount == 0 && levelPackCount == 0 && exclusiveLevelPackCount > 0)
+		{
+			ReserveCount(levelUpCount, levelPackCount, exclusiveLevelPackCount - 1);
+			_levelUpType = (int)eLevelUpType.NoHitLevelPack;
 		}
 
 		RefreshLevelPackList();
@@ -143,6 +157,13 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 
 	void RefreshLevelPackList()
 	{
+		switch (_levelUpType)
+		{
+			case 0: titleText.SetLocalizedText(UIString.instance.GetString("GameUI_SelectLevelPack")); break;
+			case 1: titleText.SetLocalizedText(UIString.instance.GetString("GameUI_BossClearReward")); break;
+			case 2: titleText.SetLocalizedText(UIString.instance.GetString("GameUI_NoHitClearReward")); break;
+		}
+
 		List<LevelPackDataManager.RandomLevelPackInfo> listRandomLevelPackInfo = LevelPackDataManager.instance.GetRandomLevelPackTableDataList(BattleInstanceManager.instance.playerActor);
 		for (int i = 0; i < buttonList.Length; ++i)
 		{
@@ -155,12 +176,12 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 					break;
 				}
 			}
-			if (_exclusive && i == 1)
+			if (_levelUpType == (int)eLevelUpType.NoHitLevelPack && i == 1)
 				break;
 		}
 		listRandomLevelPackInfo.Clear();
 
-		if (_exclusive == false)
+		if (_levelUpType != (int)eLevelUpType.NoHitLevelPack)
 			return;
 
 		// last is exclusive
@@ -199,10 +220,10 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 		BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.levelPackGainEffectPrefab, BattleInstanceManager.instance.playerActor.cachedTransform.position, Quaternion.identity, BattleInstanceManager.instance.playerActor.cachedTransform);
 
 		// 예약이 되어있다면 창을 닫지 않고 항목만 갱신
-		if (_listReservedLevelUp.Count > 0)
+		if (_listReservedLevelUpType.Count > 0)
 		{
-			_exclusive = _listReservedLevelUp[0];
-			_listReservedLevelUp.RemoveAt(0);
+			_levelUpType = _listReservedLevelUpType[0];
+			_listReservedLevelUpType.RemoveAt(0);
 			RefreshLevelPackList();
 
 			for (int i = 0; i < buttonList.Length; ++i)

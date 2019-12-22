@@ -365,7 +365,7 @@ public class StageManager : MonoBehaviour
 
 		BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.playerLevelUpEffectPrefab, BattleInstanceManager.instance.playerActor.cachedTransform.position, Quaternion.identity, BattleInstanceManager.instance.playerActor.cachedTransform);
 		LobbyCanvas.instance.RefreshLevelText(_playerLevel);
-		LevelUpIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform, needLevelUpCount, 0);
+		LevelUpIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform, needLevelUpCount, 0, 0);
 		Timing.RunCoroutine(LevelUpScreenEffectProcess());
 	}
 

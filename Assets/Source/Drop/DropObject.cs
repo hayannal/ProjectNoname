@@ -252,7 +252,7 @@ public class DropObject : MonoBehaviour
 			case DropProcessor.eDropType.LevelPack:
 				int levelPackCount = (_floatValue == 0.0f) ? 1 : 0;
 				int noHitLevelPackCount = (_floatValue > 0.0f) ? 1 : 0;
-				LevelUpIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform, levelPackCount, noHitLevelPackCount);
+				LevelUpIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform, 0, levelPackCount, noHitLevelPackCount);
 				break;
 			case DropProcessor.eDropType.Heart:
 				AffectorValueLevelTableData healAffectorValue = new AffectorValueLevelTableData();
@@ -337,12 +337,12 @@ public class DropObject : MonoBehaviour
 
 	void CheckShowNameCanvas()
 	{
-		if (nameCanvasRectTransform == null || nameText == null)
-			return;
+		if (nameCanvasRectTransform != null)
+			nameCanvasRectTransform.gameObject.SetActive(true);
 
 		// 우선 임시로 LocalizedText 함수만 호출해둔다.
-		nameText.SetLocalizedText(nameText.text);
-		nameCanvasRectTransform.gameObject.SetActive(true);
+		if (nameText != null)
+			nameText.SetLocalizedText(nameText.text);
 	}
 
 

@@ -327,6 +327,9 @@ public class StageManager : MonoBehaviour
 	public int needLevelUpCount { get; set; }
 	public void AddExp(int exp)
 	{
+		if (_playerLevel == GetMaxStageLevel())
+			return;
+
 		_playerExp += exp;
 
 		// level, bottom exp bar

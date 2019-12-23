@@ -17,6 +17,7 @@ public class MeHitObject : MecanimEventBase {
 	public HitObject.eTargetDetectType targetDetectType;
 	public GameObject hitObjectPrefab;
 	public float lifeTime;
+	public float areaHitLifeTimeEarlyOffset;
 	public bool movable;
 	public float maxDistance;
 	public float defaultSphereCastDistance;
@@ -27,6 +28,7 @@ public class MeHitObject : MecanimEventBase {
 	public string boneName;
 	public Vector3 offset;
 	public bool useBoneRotation;
+	public bool fixedWorldPositionY;
 	public float areaRotationY;
 	public float areaDistanceMin;
 	public float areaDistanceMax;
@@ -131,7 +133,11 @@ public class MeHitObject : MecanimEventBase {
 		{
 			hitObjectPrefab = (GameObject)EditorGUILayout.ObjectField("Object :", hitObjectPrefab, typeof(GameObject), false);
 			lifeTime = EditorGUILayout.FloatField("LifeTime :", lifeTime);
-			if (lifeTime > 0.0f) movable = EditorGUILayout.Toggle("Movable :", movable);
+			if (lifeTime > 0.0f)
+			{
+				areaHitLifeTimeEarlyOffset = EditorGUILayout.FloatField("Area Hit LifeTime :", areaHitLifeTimeEarlyOffset);
+				movable = EditorGUILayout.Toggle("Movable :", movable);
+			}
 			else movable = false;
 			if (movable)
 				maxDistance = EditorGUILayout.FloatField("Max Distance :", maxDistance);
@@ -147,6 +153,7 @@ public class MeHitObject : MecanimEventBase {
 			useBoneRotation = EditorGUILayout.Toggle("Apply Bone Rotation :", useBoneRotation);
 		}
 		offset = EditorGUILayout.Vector3Field("Offset :", offset);
+		fixedWorldPositionY = EditorGUILayout.Toggle("Fixed World Position Y :", fixedWorldPositionY);
 
 		if (targetDetectType == HitObject.eTargetDetectType.Area)
 		{
@@ -404,7 +411,7 @@ public class MeHitObject : MecanimEventBase {
 				spawnTransform = attachTransform;
 		}
 
-		Vector3 offsetPosition = HitObject.GetSpawnPosition(spawnTransform, this, t, null);
+		Vector3 offsetPosition = HitObject.GetSpawnPosition(spawnTransform, this, t, actor, 0);
 		Vector3 direction = HitObject.GetSpawnDirection(offsetPosition, this, t, HitObject.GetFallbackTargetPosition(t)) * 1.5f;
 
 		Color defaultColor = Gizmos.color;

@@ -66,7 +66,7 @@ public class HitObject : MonoBehaviour
 					if (meHit.showHitEffect)
 						HitEffect.ShowHitEffect(meHit, hitParameter.contactPoint, hitParameter.contactNormal, hitParameter.statusStructForHitObject.weaponIDAtCreation);
 					if (meHit.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
-						HitEffect.ShowHitEffectLineRenderer(meHit, GetSpawnPosition(spawnTransform, meHit, parentTransform, parentActor.affectorProcessor), hitParameter.contactPoint);
+						HitEffect.ShowHitEffectLineRenderer(meHit, GetSpawnPosition(spawnTransform, meHit, parentTransform, parentActor, hitSignalIndexInAction), hitParameter.contactPoint);
 					if (meHit.showHitBlink && (meHit.affectorValueIdList == null || meHit.affectorValueIdList.Count == 0))
 						HitBlink.ShowHitBlink(affectorProcessor.cachedTransform);
 					if (meHit.showHitRimBlink && (meHit.affectorValueIdList == null || meHit.affectorValueIdList.Count == 0))
@@ -80,7 +80,7 @@ public class HitObject : MonoBehaviour
 			StatusStructForHitObject statusStructForHitObject = new StatusStructForHitObject();
 			CopyEtcStatusForHitObject(ref statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
 
-			Vector3 areaPosition = GetSpawnPosition(spawnTransform, meHit, parentTransform, parentActor.affectorProcessor);
+			Vector3 areaPosition = GetSpawnPosition(spawnTransform, meHit, parentTransform, parentActor, hitSignalIndexInAction);
 			Vector3 areaDirection = spawnTransform.forward;
 			Vector3 endPosition = Vector3.zero;
 			if (meHit.targetDetectType == eTargetDetectType.Area)
@@ -109,7 +109,7 @@ public class HitObject : MonoBehaviour
 
 		// step2. Collider타입은 상황에 맞게 1개 혹은 여러개 만들어야한다.
 		Vector3 targetPosition = GetTargetPosition(meHit, parentActor, hitSignalIndexInAction);
-		Vector3 defaultPosition = GetSpawnPosition(spawnTransform, meHit, parentTransform, parentActor.affectorProcessor);
+		Vector3 defaultPosition = GetSpawnPosition(spawnTransform, meHit, parentTransform, parentActor, hitSignalIndexInAction);
 		Quaternion defaultRotation = Quaternion.LookRotation(GetSpawnDirection(defaultPosition, meHit, parentTransform, targetPosition, parentActor.targetingProcessor));
 		bool normalAttack = parentActor.actionController.mecanimState.IsState((int)eMecanimState.Attack);
 		int parallelAddCountByLevelPack = normalAttack ? ParallelHitObjectAffector.GetAddCount(parentActor.affectorProcessor) : 0;
@@ -120,7 +120,7 @@ public class HitObject : MonoBehaviour
 			if (parallelDistance == 0.0f && parallelAddCountByLevelPack > 0) parallelDistance = ParallelHitObjectAffector.GetDistance(parentActor.affectorProcessor);
 			for (int i = 0; i < parallelCount; ++i)
 			{
-				Vector3 position = GetParallelSpawnPosition(spawnTransform, meHit, parentTransform, parallelCount, i, parallelDistance, parentActor.affectorProcessor);
+				Vector3 position = GetParallelSpawnPosition(spawnTransform, meHit, parentTransform, parallelCount, i, parallelDistance, parentActor, hitSignalIndexInAction);
 				Quaternion rotation = Quaternion.LookRotation(GetSpawnDirection(defaultPosition, meHit, parentTransform, targetPosition, parentActor.targetingProcessor));
 				HitObject parallelHitObject = GetCachedHitObject(meHit, position, rotation);
 				if (parallelHitObject == null)
@@ -217,37 +217,60 @@ public class HitObject : MonoBehaviour
 		return hitObject;
 	}
 
-	public static Vector3 GetSpawnPosition(Transform spawnTransform, MeHitObject meHit, Transform parentActorTransform, AffectorProcessor parentActorAffectorProcessor)
+	public static Vector3 GetSpawnPosition(Transform spawnTransform, MeHitObject meHit, Transform parentActorTransform, Actor parentActor, int hitSignalIndexInAction)
 	{
 		Vector3 offset = meHit.offset;
 
-		if (parentActorAffectorProcessor != null)
+		if (parentActor != null && parentActor.affectorProcessor != null)
 		{
-			if (BurrowAffector.CheckBurrow(parentActorAffectorProcessor))
+			if (BurrowAffector.CheckBurrow(parentActor.affectorProcessor))
 				offset.y -= BurrowAffector.s_BurrowPositionY;
 		}
 
-		if (offset == Vector3.zero)
-			return spawnTransform.position;
+		Transform t = spawnTransform;
+		switch (meHit.createPositionType)
+		{
+			case eCreatePositionType.Offset: t = parentActorTransform; break;
+			case eCreatePositionType.TargetPosition: t = GetTargetTransform(meHit, parentActor.targetingProcessor, hitSignalIndexInAction); break;
+		}
+		Vector3 spawnPosition = Vector3.zero;
+		if (t != null)
+		{
+			if (offset == Vector3.zero)
+				spawnPosition = t.position;
+			else
+			{
+				if (meHit.createPositionType == eCreatePositionType.Bone && meHit.useBoneRotation == false)
+				{
+					Vector3 parentActorPosition = parentActorTransform.position;
+					Vector3 offsetPosition = parentActorTransform.TransformPoint(offset);
+					offsetPosition -= parentActorPosition;
+					return spawnTransform.position + offsetPosition;
+				}
+				else
+					spawnPosition = t.TransformPoint(offset);   // meHit.offset * parentTransform.localScale
+			}
+		}
+		else
+		{
+			if (meHit.createPositionType == eCreatePositionType.TargetPosition)
+			{
+				if (parentActor.targetingProcessor.IsRegisteredCustomTargetPosition())
+					spawnPosition = parentActor.targetingProcessor.GetCustomTargetPosition(0);
+				else
+					spawnPosition = GetFallbackTargetPosition(parentActorTransform);
+			}
+			spawnPosition += offset;
+		}
 
-		if (meHit.createPositionType != eCreatePositionType.Bone)
-			return spawnTransform.TransformPoint(offset);    // meHit.offset * parentTransform.localScale
-
-		if (meHit.useBoneRotation)
-			return spawnTransform.TransformPoint(offset);    // meHit.offset * parentTransform.localScale
-
-		if (spawnTransform == parentActorTransform)
-			return spawnTransform.TransformPoint(offset);
-
-		Vector3 parentActorPosition = parentActorTransform.position;
-		Vector3 offsetPosition = parentActorTransform.TransformPoint(offset);
-		offsetPosition -= parentActorPosition;
-		return spawnTransform.position + offsetPosition;
+		if (meHit.fixedWorldPositionY)
+			spawnPosition.y = offset.y;
+		return spawnPosition;
 	}
 
-	static Vector3 GetParallelSpawnPosition(Transform spawnTransform, MeHitObject meHit, Transform parentActorTransform, int parallelCount, int parallelIndex, float parallelDistance, AffectorProcessor parentActorAffectorProcessor)
+	static Vector3 GetParallelSpawnPosition(Transform spawnTransform, MeHitObject meHit, Transform parentActorTransform, int parallelCount, int parallelIndex, float parallelDistance, Actor parentActor, int hitSignalIndexInAction)
 	{
-		Vector3 baseSpawnPosition = GetSpawnPosition(spawnTransform, meHit, parentActorTransform, parentActorAffectorProcessor);
+		Vector3 baseSpawnPosition = GetSpawnPosition(spawnTransform, meHit, parentActorTransform, parentActor, hitSignalIndexInAction);
 
 		Vector3 parentActorPosition = parentActorTransform.position;
 		Vector3 parallelOffset = Vector3.zero;
@@ -255,6 +278,17 @@ public class HitObject : MonoBehaviour
 		Vector3 offsetPosition = parentActorTransform.TransformPoint(parallelOffset);
 		offsetPosition -= parentActorPosition;
 		return baseSpawnPosition + offsetPosition;
+	}
+
+	public static Transform GetTargetTransform(MeHitObject meHit, TargetingProcessor targetingProcessor, int hitSignalIndexInAction)
+	{
+		int targetIndex = -1;
+		if (meHit.startDirectionType == HitObjectMovement.eStartDirectionType.ToFirstTarget)
+			targetIndex = 0;
+		else if (meHit.startDirectionType == HitObjectMovement.eStartDirectionType.ToMultiTarget)
+			targetIndex = hitSignalIndexInAction;
+
+		return targetingProcessor.GetTargetTransform(targetIndex);
 	}
 
 	public static Vector3 GetTargetPosition(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction)
@@ -269,7 +303,7 @@ public class HitObject : MonoBehaviour
 				targetIndex = hitSignalIndexInAction;
 
 			TargetingProcessor targetingProcessor = parentActor.targetingProcessor;
-			if (targetingProcessor.GetTarget() != null)
+			if (targetingProcessor.GetTarget(targetIndex) != null)
 				targetPosition = targetingProcessor.GetTargetPosition(targetIndex);
 			else if (targetingProcessor.IsRegisteredCustomTargetPosition())
 				targetPosition = targetingProcessor.GetCustomTargetPosition(targetIndex);
@@ -914,6 +948,12 @@ public class HitObject : MonoBehaviour
 
 	public void UpdateAreaOrSphereCast()
 	{
+		if (_signal.targetDetectType == eTargetDetectType.Area && _signal.areaHitLifeTimeEarlyOffset > 0.0f)
+		{
+			if (_createTime + (_signal.lifeTime - _signal.areaHitLifeTimeEarlyOffset) < Time.time)
+				return;
+		}
+
 		switch (_signal.targetDetectType)
 		{
 			case eTargetDetectType.Area:

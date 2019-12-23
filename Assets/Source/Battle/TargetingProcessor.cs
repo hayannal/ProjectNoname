@@ -41,6 +41,14 @@ public class TargetingProcessor : MonoBehaviour {
 		return BattleInstanceManager.instance.GetTransformFromCollider(collider).position;
 	}
 
+	public Transform GetTargetTransform(int index = 0)
+	{
+		Collider collider = GetTarget(index);
+		if (collider == null)
+			return null;
+		return BattleInstanceManager.instance.GetTransformFromCollider(collider);
+	}
+
 	List<Collider> _targetList = new List<Collider>();
 
 	Transform _transform = null;

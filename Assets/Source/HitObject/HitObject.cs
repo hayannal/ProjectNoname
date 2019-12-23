@@ -898,7 +898,7 @@ public class HitObject : MonoBehaviour
 			_waitHitObjectAnimatorUpdateCount -= 1;
 			if (_waitHitObjectAnimatorUpdateCount == 0)
 			{
-				BattleInstanceManager.instance.OnFinalizeHitObject(_collider);
+				BattleInstanceManager.instance.OnFinalizeHitObject(this, _collider);
 				gameObject.SetActive(false);
 			}
 			return;
@@ -982,7 +982,7 @@ public class HitObject : MonoBehaviour
 	int HitObjectAnimatorUpdateWaitCount = 3;
 	int _waitHitObjectAnimatorUpdateCount = 0;
 	bool _hitObjectAnimatorStarted = false;
-	public void FinalizeHitObject()
+	public void FinalizeHitObject(bool ignoreAnimator = false)
 	{
 		if (_listOneHitPerTarget != null)
 			_listOneHitPerTarget.Clear();
@@ -992,14 +992,14 @@ public class HitObject : MonoBehaviour
 		_settedHitEffectLineRendererStartPosition = false;
 
 		// 히트 오브젝트 애니메이터를 발동시켜놨으면 첫번째 프레임이 호출될때까지는 기다려야한다.
-		if (_hitObjectAnimatorStarted)
+		if (_hitObjectAnimatorStarted && ignoreAnimator == false)
 		{
 			_hitObjectAnimatorStarted = false;
 			_waitHitObjectAnimatorUpdateCount = HitObjectAnimatorUpdateWaitCount;
 			return;
 		}
 
-		BattleInstanceManager.instance.OnFinalizeHitObject(_collider);
+		BattleInstanceManager.instance.OnFinalizeHitObject(this, _collider);
 		//Destroy(gameObject);
 		gameObject.SetActive(false);
 	}
@@ -1079,7 +1079,7 @@ public class HitObject : MonoBehaviour
 			HitEffect.ShowHitEffect(_signal, cachedTransform.position, cachedTransform.forward, _statusStructForHitObject.weaponIDAtCreation);
 		//if (_signal.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
 		//	HitEffect.ShowHitEffectLineRenderer(_signal, GetHitEffectLineRendererStartPosition(contact.point), contact.point);
-		FinalizeHitObject();
+		FinalizeHitObject(true);
 	}
 
 

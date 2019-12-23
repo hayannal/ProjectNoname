@@ -198,23 +198,46 @@ public class BattleInstanceManager : MonoBehaviour
 		return null;
 	}
 
+	List<HitObject> _listInitializedHitObject = new List<HitObject>();
 	public void OnInitializeHitObject(HitObject hitObject, Collider collider)
 	{
+		if (_listInitializedHitObject.Contains(hitObject) == false)
+			_listInitializedHitObject.Add(hitObject);
+
 		if (collider == null)
 			return;
 
 		if (_dicHitObjectByCollider.ContainsKey(collider) == false)
-		{
 			_dicHitObjectByCollider.Add(collider, hitObject);
-		}
 	}
 
-	public void OnFinalizeHitObject(Collider collider)
+	public void OnFinalizeHitObject(HitObject hitObject, Collider collider)
 	{
+		if (_readyForFinalizeAll == false)
+			_listInitializedHitObject.Remove(hitObject);
+
 		if (collider == null)
 			return;
 
 		_dicHitObjectByCollider.Remove(collider);
+	}
+
+	bool _readyForFinalizeAll = false;
+	public void FinalizeAllHitObject()
+	{
+		_readyForFinalizeAll = true;
+		for (int i = 0; i < _listInitializedHitObject.Count; ++i)
+		{
+			if (_listInitializedHitObject[i] == null)
+				continue;
+
+			// mine 말고는 activeSelf false이면서 들어있는 경우가 없을거라.. 체크하지 않는거로 해본다. 해도 상관은 없을듯
+			//if (_listInitializedHitObject[i].gameObject != null && _listInitializedHitObject[i].gameObject.activeSelf == false)
+			//	continue;
+			_listInitializedHitObject[i].FinalizeHitObject(true);
+		}
+		_listInitializedHitObject.Clear();
+		_readyForFinalizeAll = false;
 	}
 
 	List<HitObject> _listCachedEmptyHitObject = new List<HitObject>();
@@ -979,7 +1002,7 @@ public class BattleInstanceManager : MonoBehaviour
 			_listHitObjectMoving.Add(hitObject);
 	}
 
-	public void DisableHitObjectMoving()
+	public void DisableAllHitObjectMoving()
 	{
 		if (_listHitObjectMoving == null)
 			return;

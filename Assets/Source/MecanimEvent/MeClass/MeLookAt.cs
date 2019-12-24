@@ -42,7 +42,7 @@ public class MeLookAt : MecanimEventBase
 		}
 
 		if (lookAtRandom && _baseCharacterController != null)
-			_baseCharacterController.movement.rotation = Quaternion.LookRotation(new Vector3(0.0f, Random.Range(0.0f, 360.0f), 0.0f));
+			_baseCharacterController.movement.rotation = Quaternion.Euler(new Vector3(0.0f, Random.Range(0.0f, 360.0f), 0.0f));
 	}
 
 	override public void OnRangeSignal(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

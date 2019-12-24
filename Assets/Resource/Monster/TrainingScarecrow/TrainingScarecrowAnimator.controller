@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.25
+  StartTime: 0.85
   EndTime: 1
   targetDetectType: 2
   hitObjectPrefab: {fileID: 543431697849790876, guid: cc80c56f1d4401c499efa0abb9b1eb77,
@@ -169,12 +169,15 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Attack1
-  m_Speed: 1
+  m_Speed: 1.8
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours:
   - {fileID: -7934483339405519081}
   - {fileID: -8072175094259478716}
+  - {fileID: -1071411083619800146}
+  - {fileID: 2221416231102939976}
+  - {fileID: 1931280258413896852}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -183,7 +186,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 0147184bcfb3647c19e6051bcff89a2a, type: 3}
+  m_Motion: {fileID: 7400000, guid: 5e34e4f84735069468311417af48df11, type: 3}
   m_Tag: 
   m_SpeedParameter: AttackAniSpeedRatio
   m_MirrorParameter: 
@@ -242,6 +245,68 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!114 &-1071411083619800146
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc636291b831fe248b3ce095d84517d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0
+  EndTime: 0.9
+  useLocalPositionX: 0
+  curveX:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  useLocalPositionY: 1
+  curveY:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2.3062074
+      outSlope: 2.3062074
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.035885166
+    - serializedVersion: 3
+      time: 0.5
+      value: 0.4
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -2.0870633
+      outSlope: -2.0870633
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.031100512
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  useLocalPositionZ: 0
+  curveZ:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!91 &9100000
 AnimatorController:
   m_ObjectHideFlags: 0
@@ -270,6 +335,36 @@ AnimatorController:
     m_IKPass: 0
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
+--- !u!114 &1931280258413896852
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2e6805f699075e4eae576dc1aabd338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.71
+  EndTime: 0.9
+  speed: 2
+--- !u!114 &2221416231102939976
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2e6805f699075e4eae576dc1aabd338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.45
+  EndTime: 0.7
+  speed: 1.5
 --- !u!114 &7143102186761374112
 MonoBehaviour:
   m_ObjectHideFlags: 1

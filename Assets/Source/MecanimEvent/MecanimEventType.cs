@@ -17,5 +17,6 @@ public enum eMecanimEventType
 	MovePositionCurve,
 	DontMove,
 	DisableActorCollider,
+	LookAt,
 }
 #endregion

@@ -80,6 +80,7 @@ public class LobbyCanvas : MonoBehaviour
 
 	public void OnClickBattlePauseButton()
 	{
+		PauseCanvas.instance.gameObject.SetActive(true);
 		//UIInstanceManager.instance.ShowCanvasAsync("OptionCanvas", () =>
 		//{
 		//});
@@ -101,9 +102,8 @@ public class LobbyCanvas : MonoBehaviour
 		}
 		else
 		{
-			FullscreenYesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_BackToLobby"), UIString.instance.GetString("GameUI_BackToLobbyDescription"), () => {
-				SceneManager.LoadScene(0);
-			});
+			if (battlePauseButton.gameObject.activeSelf)
+				OnClickBattlePauseButton();
 		}
 	}
 

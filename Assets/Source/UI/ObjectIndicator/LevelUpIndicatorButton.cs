@@ -10,7 +10,7 @@ public class LevelUpIndicatorButton : MonoBehaviour
 	public Coffee.UIExtensions.UIGradient gradient;
 	public Text levelText;
 
-	static Color s_exclusiveGradientColor = new Color(1.0f, 0.5f, 0.0f);
+	public static Color s_exclusiveGradientColor = new Color(1.0f, 0.5f, 0.0f);
 
 	string _id;
 	public void SetInfo(LevelPackTableData levelPackTableData, int level)

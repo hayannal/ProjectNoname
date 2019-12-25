@@ -28,6 +28,7 @@ public class BattleManager : MonoBehaviour
 	public GameObject levelPackGainEffectPrefab;
 
 	public GameObject floatingDamageTextRootCanvasPrefab;
+	public GameObject pauseCanvasPrefab;
 
 	public GameObject[] dropObjectPrefabList;
 	public GameObject portalPrefab;

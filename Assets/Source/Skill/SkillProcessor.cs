@@ -198,6 +198,7 @@ public class SkillProcessor : MonoBehaviour
 	public class LevelPackInfo
 	{
 		public int stackCount;
+		public bool exclusive;
 		public string iconAddress;
 		public string[] affectorValueIdList;
 		public string nameId;
@@ -208,6 +209,7 @@ public class SkillProcessor : MonoBehaviour
 
 	// 형태가 패시브와 매우 유사하여 스킬 프로세서에 넣는다. 게임 구조가 다르다면 하단은 삭제.
 	Dictionary<string, LevelPackInfo> _dicLevelPack = null;
+	public Dictionary<string, LevelPackInfo> dicLevelPack { get { return _dicLevelPack; } }
 	public void AddLevelPack(string levelPackId)
 	{
 		if (actor == null)
@@ -225,6 +227,7 @@ public class SkillProcessor : MonoBehaviour
 		{
 			info = new LevelPackInfo();
 			info.stackCount = 1;
+			info.exclusive = levelPackTableData.exclusive;
 			info.iconAddress = levelPackTableData.iconAddress;
 			if (levelPackTableData.useAffectorValueIdOverriding == false)
 				info.affectorValueIdList = levelPackTableData.affectorValueId;

@@ -76,7 +76,7 @@ public class Team : MonoBehaviour
 			targetObject.layer = layer;
 	}
 
-	static public bool CheckTeamFilter(int teamID, Collider target, eTeamCheckFilter filter, bool nullIsEnemy = true)
+	public static bool CheckTeamFilter(int teamId, Collider target, eTeamCheckFilter filter, bool nullIsEnemy = true)
 	{
 		if (filter == eTeamCheckFilter.Any)
 			return true;
@@ -88,12 +88,16 @@ public class Team : MonoBehaviour
 			return false;
 		}
 
+		return CheckTeamFilter(teamId, targetTeam.teamId, filter);
+	}
+
+	public static bool CheckTeamFilter(int teamId, int targetTeamId, eTeamCheckFilter filter)
+	{
 		eTeamCheckFilter filterResult = eTeamCheckFilter.Any;
-		if (targetTeam.teamId == teamID)
+		if (targetTeamId == teamId)
 			filterResult = eTeamCheckFilter.Ally;
 		else
 			filterResult = eTeamCheckFilter.Enemy;
-
 		if (filterResult == filter)
 			return true;
 		return false;

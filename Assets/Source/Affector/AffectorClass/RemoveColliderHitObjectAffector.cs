@@ -76,7 +76,7 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 				continue;
 
 			// team check
-			if (!Team.CheckTeamFilter(_actor.team.teamId, result[i], Team.eTeamCheckFilter.Enemy))
+			if (!Team.CheckTeamFilter(_actor.team.teamId, hitObject.statusStructForHitObject.teamId, Team.eTeamCheckFilter.Enemy))
 				continue;
 
 			hitObject.OnFinalizeByRemove();

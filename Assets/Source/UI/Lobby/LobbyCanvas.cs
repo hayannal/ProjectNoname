@@ -226,4 +226,24 @@ public class LobbyCanvas : MonoBehaviour
 		}
 	}
 	#endregion
+
+
+
+
+
+
+	void OnApplicationPause(bool pauseStatus)
+	{
+		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby)
+			return;
+		if (SwapCanvas.instance != null && SwapCanvas.instance.gameObject.activeSelf)
+			return;
+		if (battlePauseButton.gameObject.activeSelf == false)
+			return;
+
+		// check die
+
+		if (pauseStatus)
+			PauseCanvas.instance.gameObject.SetActive(true);
+	}
 }

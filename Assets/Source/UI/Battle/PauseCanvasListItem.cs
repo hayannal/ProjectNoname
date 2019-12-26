@@ -51,7 +51,7 @@ public class PauseCanvasListItem : MonoBehaviour
 		{
 			if (contentRectTransform.anchoredPosition != selectOffset)
 			{
-				contentRectTransform.anchoredPosition = Vector2.Lerp(contentRectTransform.anchoredPosition, selectOffset, Time.deltaTime * 15.0f);
+				contentRectTransform.anchoredPosition = Vector2.Lerp(contentRectTransform.anchoredPosition, selectOffset, Time.unscaledDeltaTime * 15.0f);
 				Vector2 diff = contentRectTransform.anchoredPosition - selectOffset;
 				if (diff.sqrMagnitude < 0.001f)
 					contentRectTransform.anchoredPosition = selectOffset;
@@ -61,7 +61,7 @@ public class PauseCanvasListItem : MonoBehaviour
 		{
 			if (contentRectTransform.anchoredPosition != Vector2.zero)
 			{
-				contentRectTransform.anchoredPosition = Vector2.Lerp(contentRectTransform.anchoredPosition, Vector2.zero, Time.deltaTime * 15.0f);
+				contentRectTransform.anchoredPosition = Vector2.Lerp(contentRectTransform.anchoredPosition, Vector2.zero, Time.unscaledDeltaTime * 15.0f);
 				Vector2 diff = contentRectTransform.anchoredPosition;
 				if (diff.sqrMagnitude < 0.001f)
 					contentRectTransform.anchoredPosition = Vector2.zero;

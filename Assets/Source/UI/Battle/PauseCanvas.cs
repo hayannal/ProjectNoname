@@ -19,8 +19,10 @@ public class PauseCanvas : MonoBehaviour
 	}
 	static PauseCanvas _instance = null;
 
+	public GameObject levelPackNameLineObject;
 	public Text levelPackNameText;
 	public Text levelPackDescText;
+	public GameObject emptyLevelPackObject;
 
 	public GameObject contentItemPrefab;
 	public RectTransform contentRootRectTransform;
@@ -37,6 +39,11 @@ public class PauseCanvas : MonoBehaviour
 
 	void OnEnable()
 	{
+		if (LobbyCanvas.instance != null)
+			LobbyCanvas.instance.battlePauseButton.gameObject.SetActive(false);
+
+		Time.timeScale = 0.0f;
+
 		RefreshGrid();
 
 		if (DragThresholdController.instance != null)
@@ -45,6 +52,11 @@ public class PauseCanvas : MonoBehaviour
 
 	void OnDisable()
 	{
+		if (LobbyCanvas.instance != null)
+			LobbyCanvas.instance.battlePauseButton.gameObject.SetActive(true);
+
+		Time.timeScale = 1.0f;
+
 		if (DragThresholdController.instance != null)
 			DragThresholdController.instance.ResetUIDragThreshold();
 	}
@@ -59,6 +71,14 @@ public class PauseCanvas : MonoBehaviour
 
 		_listLevelPackInfo.Clear();
 		SkillProcessor skillProcessor = BattleInstanceManager.instance.playerActor.skillProcessor;
+		if (skillProcessor.dicLevelPack == null)
+		{
+			levelPackNameLineObject.SetActive(false);
+			emptyLevelPackObject.SetActive(true);
+			return;
+		}
+		levelPackNameLineObject.SetActive(true);
+		emptyLevelPackObject.SetActive(false);
 		Dictionary<string, SkillProcessor.LevelPackInfo>.Enumerator e = skillProcessor.dicLevelPack.GetEnumerator();
 		while (e.MoveNext())
 		{
@@ -97,7 +117,7 @@ public class PauseCanvas : MonoBehaviour
 		for (int i = 0; i < _listPauseCanvasListItem.Count; ++i)
 			_listPauseCanvasListItem[i].ShowSelectObject(false);
 
-		levelPackNameText.SetLocalizedText(UIString.instance.GetString(levelPackInfo.nameId));
+		levelPackNameText.SetLocalizedText(UIString.instance.GetString(levelPackInfo.nameId).Replace("\n", " "));
 		if (levelPackInfo.descriptionParameterList == null)
 			levelPackDescText.SetLocalizedText(UIString.instance.GetString(levelPackInfo.descriptionId));
 		else

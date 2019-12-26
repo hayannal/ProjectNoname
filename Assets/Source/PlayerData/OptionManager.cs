@@ -29,12 +29,16 @@ public class OptionManager : MonoBehaviour
 	float _systemVolume = 1.0f;
 	string _language = "KOR";
 	int _frame = 2;
+	int _useDoubleTab = 1;
+	int _lockIcon = 0;
 
 	string OPTION_SYSTEM_LANGUAGE_KEY = "_option_system_language_key";
 	string OPTION_BGM_VOLUME_KEY = "_option_bgm_volume_key";
 	string OPTION_SYSTEM_VOLUME_KEY = "_option_system_volume_key";
 	string OPTION_LANGUAGE_KEY = "_option_language_key";
 	string OPTION_FRAME_KEY = "_option_frame_key";
+	string OPTION_DOUBLE_TAB_KEY = "_option_double_tab_key";
+	string OPTION_LOCK_ICON_KEY = "_option_lock_icon_key";
 
 	void LoadSystemLanguage()
 	{
@@ -71,6 +75,16 @@ public class OptionManager : MonoBehaviour
 		{
 			frame = PlayerPrefs.GetInt(OPTION_FRAME_KEY);
 		}
+
+		if (PlayerPrefs.HasKey(OPTION_DOUBLE_TAB_KEY))
+		{
+			_useDoubleTab = PlayerPrefs.GetInt(OPTION_DOUBLE_TAB_KEY);
+		}
+
+		if (PlayerPrefs.HasKey(OPTION_LOCK_ICON_KEY))
+		{
+			_lockIcon = PlayerPrefs.GetInt(OPTION_LOCK_ICON_KEY);
+		}
 	}
 
 	public void SavePlayerPrefs()
@@ -79,6 +93,8 @@ public class OptionManager : MonoBehaviour
 		PlayerPrefs.SetFloat(OPTION_SYSTEM_VOLUME_KEY, _systemVolume);
 		PlayerPrefs.SetString(OPTION_LANGUAGE_KEY, _language);
 		PlayerPrefs.SetInt(OPTION_FRAME_KEY, _frame);
+		PlayerPrefs.SetInt(OPTION_DOUBLE_TAB_KEY, _useDoubleTab);
+		PlayerPrefs.SetInt(OPTION_LOCK_ICON_KEY, _lockIcon);
 	}
 
 	public float bgmVolume
@@ -158,6 +174,30 @@ public class OptionManager : MonoBehaviour
 					break;
 			}
 			*/
+		}
+	}
+
+	public int useDoubleTab
+	{
+		get
+		{
+			return _useDoubleTab;
+		}
+		set
+		{
+			_useDoubleTab = value;
+		}
+	}
+
+	public int lockIcon
+	{
+		get
+		{
+			return _lockIcon;
+		}
+		set
+		{
+			_lockIcon = value;
 		}
 	}
 

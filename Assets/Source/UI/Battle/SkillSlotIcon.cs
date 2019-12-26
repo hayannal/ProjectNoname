@@ -179,6 +179,8 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 	{
 		//if (CheckThreshold(eventData) == false)
 		//	return;
+		if (OptionManager.instance.lockIcon == 1)
+			return;
 
 		cachedTransform.position = eventData.position;
 

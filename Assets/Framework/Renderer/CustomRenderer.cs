@@ -265,13 +265,13 @@ public class CustomRenderer : MonoBehaviour
 			//Debug.LogFormat("Blur Texture {0} x {1}", width, height);
 
 			// 처음 만들어질땐 바로 구워지도록 _blurLastUpdate값을 갱신시킨다.
-			_blurLastUpdate = Time.time - blurUpdateRate;
+			_blurLastUpdate = Time.unscaledTime - blurUpdateRate;
 		}
 		if (_blurMaterial == null)
 			_blurMaterial = new Material(Shader.Find("Hidden/GaussianBlur_Mobile"));
 
 		// if we need to re-render
-		if (Time.time - _blurLastUpdate >= blurUpdateRate)
+		if (Time.unscaledTime - _blurLastUpdate >= blurUpdateRate)
 		{
 			//create a temp texture
 			RenderTexture rt = RenderTexture.GetTemporary(width, height);
@@ -298,7 +298,7 @@ public class CustomRenderer : MonoBehaviour
 			RenderTexture.ReleaseTemporary(rt);
 
 			//set lastUpdate
-			_blurLastUpdate = Time.time;
+			_blurLastUpdate = Time.unscaledTime;
 		}
 		else
 		{
@@ -319,12 +319,12 @@ public class CustomRenderer : MonoBehaviour
 		{			
 			_strongBlurTexture = new RenderTexture(smallWidth, smallHeight, 16, RenderTextureFormat.ARGB32);
 			_strongBlurTexture.Create();
-			_strongBlurLastUpdate = Time.time - blurUpdateRate;
+			_strongBlurLastUpdate = Time.unscaledTime - blurUpdateRate;
 		}
 		if (_blurMaterial == null)
 			_blurMaterial = new Material(Shader.Find("Hidden/GaussianBlur_Mobile"));
 
-		if (Time.time - _strongBlurLastUpdate >= blurUpdateRate)
+		if (Time.unscaledTime - _strongBlurLastUpdate >= blurUpdateRate)
 		{
 			RenderTexture strongRt = RenderTexture.GetTemporary(smallWidth, smallHeight);
 			Graphics.Blit(source, strongRt);
@@ -339,7 +339,7 @@ public class CustomRenderer : MonoBehaviour
 			Graphics.Blit(strongRt, _strongBlurTexture);
 			Shader.SetGlobalTexture("_MobileStrongBlur", strongRt);
 			RenderTexture.ReleaseTemporary(strongRt);
-			_strongBlurLastUpdate = Time.time;
+			_strongBlurLastUpdate = Time.unscaledTime;
 		}
 		else
 		{

@@ -8,21 +8,13 @@ public class NeedGrabObject : MonoBehaviour
 {
 	void OnEnable()
 	{
-		if (_started)
-			IncreaseRefCount();
+		IncreaseRefCount();
 	}
 
 	void OnDisable()
 	{
 		DecreaseRefCount();
 	}
-
-	bool _started = false;
-	void Start()
-    {
-		IncreaseRefCount();
-		_started = true;
-    }
 
 	void IncreaseRefCount()
 	{

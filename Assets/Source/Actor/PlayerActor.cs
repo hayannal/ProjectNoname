@@ -94,7 +94,7 @@ public class PlayerActor : Actor
 				if (lobby == false)
 				{
 					// 한번이라도 썼던 캐릭터인지 확인
-					bool firstEnter = StageManager.instance.IsInBattlePlayerList(actorId);
+					bool firstEnter = !StageManager.instance.IsInBattlePlayerList(actorId);
 
 					// 레벨팩 이전
 					LevelPackDataManager.instance.TransferLevelPackList(BattleInstanceManager.instance.playerActor, this);

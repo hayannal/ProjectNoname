@@ -161,7 +161,7 @@ public class PauseCanvas : MonoBehaviour
 
 	void SaveOption()
 	{
-		//OptionManager.instance.SavePlayerPrefs();
+		OptionManager.instance.SavePlayerPrefs();
 	}
 
 	public void OnValueChangedSystem(float value)

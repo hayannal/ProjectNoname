@@ -76,7 +76,7 @@ public class StageDataManager : MonoBehaviour
 		int currentIndex = 0;
 		int currentGrouping = stageTableData.grouping;
 		bool containsCachingData = false;
-		if (stageTableData.chapter <= highestPlayChapter && stageTableData.stage <= highestClearStage)
+		if (stageTableData.chapter < highestPlayChapter || (stageTableData.chapter == highestPlayChapter && stageTableData.stage <= highestClearStage))
 		{
 			// 클리어한 스테이지가 들어오면 캐싱하거나 이미 캐싱되어있다면 캐싱된걸 가져와 쓴다.
 			if (_dicStageInfoByGrouping.ContainsKey(currentGrouping))
@@ -95,7 +95,7 @@ public class StageDataManager : MonoBehaviour
 					if (stageTableData.grouping != diffData.grouping)
 						continue;
 
-					if (diffData.chapter > highestPlayChapter || diffData.stage > highestClearStage)
+					if (diffData.chapter > highestPlayChapter || (diffData.chapter == highestPlayChapter && diffData.stage > highestClearStage))
 						break;
 
 					if (string.IsNullOrEmpty(stageTableData.firstFixedMap) == false && listStageId.Contains(diffData.firstFixedMap) == false)
@@ -127,7 +127,7 @@ public class StageDataManager : MonoBehaviour
 			return stageTableData.overridingMap;
 
 		// 처음 올라가는 곳이라면 firstFixedMap을 우선으로 사용하고 없다면 addRandomMap을 사용한다. 없으면 캐싱된걸 쓴다.
-		if (stageTableData.chapter > highestPlayChapter || stageTableData.stage > highestClearStage)
+		if (stageTableData.chapter > highestPlayChapter || (stageTableData.chapter == highestPlayChapter && stageTableData.stage > highestClearStage))
 		{
 			if (string.IsNullOrEmpty(stageTableData.firstFixedMap) == false)
 				return stageTableData.firstFixedMap;

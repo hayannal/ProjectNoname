@@ -41,7 +41,7 @@ public class PlayerData : MonoBehaviour
 	public void OnRecvPlayerInfo()
 	{
 		// 디비 및 훈련챕터 들어가기 전까지 임시로 쓰는 값이다. 1챕터 정보를 부른다.
-		highestPlayChapter = 1;
+		highestPlayChapter = 2;
 		highestClearStage = 0;
 		selectedChapter = 1;
 

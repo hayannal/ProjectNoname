@@ -109,7 +109,8 @@ public class SwapCanvas : MonoBehaviour
 			return;
 
 		// 파워레벨은 항상 표시
-		suggestPowerLevelText.SetLocalizedText(UIString.instance.GetString("GameUI_SuggestedPowerLevel", chapterTableData.suggestedPowerLevel));
+		string rangeString = UIString.instance.GetString("GameUI_NumberRange", chapterTableData.suggestedPowerLevel, chapterTableData.suggestedMaxPowerLevel);
+		suggestPowerLevelText.SetLocalizedText(string.Format("{0} {1}", UIString.instance.GetString("GameUI_SuggestedPowerLevel"), rangeString));
 	}
 
 	void RefreshChapterInfo()

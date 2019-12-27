@@ -12,9 +12,10 @@ public class SwapCanvas : MonoBehaviour
 {
 	public static SwapCanvas instance;
 
+	public GameObject chapterBackgroundObject;
+	public GameObject swapBackgroundObject;
 	public GameObject chapterRootObject;
 	public GameObject swapRootObject;
-	public GameObject swapBackgroundRootObject;
 	public Text chapterRomanNumberText;
 	public Text chapterNameText;
 	public Text suggestPowerLevelText;
@@ -115,9 +116,10 @@ public class SwapCanvas : MonoBehaviour
 
 	void RefreshChapterInfo()
 	{
+		chapterBackgroundObject.SetActive(true);
+		swapBackgroundObject.SetActive(false);
 		chapterRootObject.SetActive(true);
 		swapRootObject.SetActive(false);
-		swapBackgroundRootObject.SetActive(false);
 
 		ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
 		if (chapterTableData == null)
@@ -149,9 +151,10 @@ public class SwapCanvas : MonoBehaviour
 	GameObject _cachedPreviewObject;
 	void RefreshSwapInfo()
 	{
+		chapterBackgroundObject.SetActive(false);
+		swapBackgroundObject.SetActive(true);
 		chapterRootObject.SetActive(false);
 		swapRootObject.SetActive(true);
-		swapBackgroundRootObject.SetActive(true);
 
 		if (_cachedPreviewObject != null)
 		{

@@ -97,7 +97,7 @@ public class MainSceneBuilder : MonoBehaviour
 		if (OptionManager.instance != null) { }
 
 		// step 2. font & string
-		UIString.instance.InitializeFont();
+		UIString.instance.InitializeFont(OptionManager.instance.language);
 
 		// step 3. temp login
 		if (PlayerData.instance.loginned == false)

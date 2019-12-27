@@ -91,10 +91,15 @@ public class OptionManager : MonoBehaviour
 	{
 		PlayerPrefs.SetFloat(OPTION_BGM_VOLUME_KEY, _bgmVolume);
 		PlayerPrefs.SetFloat(OPTION_SYSTEM_VOLUME_KEY, _systemVolume);
-		PlayerPrefs.SetString(OPTION_LANGUAGE_KEY, _language);
+		//PlayerPrefs.SetString(OPTION_LANGUAGE_KEY, _language);
 		PlayerPrefs.SetInt(OPTION_FRAME_KEY, _frame);
 		PlayerPrefs.SetInt(OPTION_DOUBLE_TAB_KEY, _useDoubleTab);
 		PlayerPrefs.SetInt(OPTION_LOCK_ICON_KEY, _lockIcon);
+	}
+
+	public void SaveLanguagePlayerPref()
+	{
+		PlayerPrefs.SetString(OPTION_LANGUAGE_KEY, _language);
 	}
 
 	public float bgmVolume
@@ -132,12 +137,14 @@ public class OptionManager : MonoBehaviour
 		set
 		{
 			_language = value;
-			if (UIString.instance.currentRegion != _language)
-			{
-				UIString.instance.currentRegion = _language;
-				UIString.instance.ReloadRegionFont();
-				LocalizedText.OnChangeRegion();
-			}
+
+			// LocalizedText밖에 안되는거라면 손이 많이가게된다. 차라리 씬로드를 통해서만 언어변경을 한다.
+			//if (UIString.instance.currentRegion != _language)
+			//{
+			//	UIString.instance.currentRegion = _language;
+			//	UIString.instance.ReloadRegionFont();
+			//	LocalizedText.OnChangeRegion();
+			//}
 		}
 	}
 

@@ -57,7 +57,7 @@ public class UIString : MonoBehaviour
 			switch (_currentRegion)
 			{
 				case "KOR": value = inApkStringTableData.kor; find = true; break;
-				case "ENG": value = inApkStringTableData.eng; find = true;  break;
+				case "ENG": value = inApkStringTableData.eng; find = true; break;
 			}
 		}
 
@@ -136,12 +136,12 @@ public class UIString : MonoBehaviour
 	bool _initializedFont = false;
 	public void InitializeFont(string overrideInitialRegion = "")
 	{
-		if (_initializedFont)
+		if (_initializedFont && currentRegion == overrideInitialRegion)
 			return;
 
 		// 옵션매니저 같이 외부에서 받은 초기화 정보가 있다면 그걸로 덮어서 초기화한다.
 		if (string.IsNullOrEmpty(overrideInitialRegion) == false)
-			_currentRegion = overrideInitialRegion;
+			currentRegion = overrideInitialRegion;
 
 		ReloadRegionFont();
 

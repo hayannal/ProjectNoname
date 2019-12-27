@@ -59,9 +59,11 @@ public class SettingCanvas : MonoBehaviour
 		bgmVolumeSlider.value = OptionManager.instance.bgmVolume;
 		doubleTabSwitch.isOn = (OptionManager.instance.useDoubleTab == 1);
 		lockIconSwitch.isOn = (OptionManager.instance.lockIcon == 1);
+
+		LoadLanguage();
 	}
 
-	void SaveOption()
+	public void SaveOption()
 	{
 		OptionManager.instance.SavePlayerPrefs();
 	}
@@ -104,6 +106,18 @@ public class SettingCanvas : MonoBehaviour
 		OptionManager.instance.lockIcon = 0;
 		lockIconOnOffText.text = "OFF";
 		lockIconOnOffText.color = new Color(0.176f, 0.176f, 0.176f);
+	}
+	#endregion
+
+	#region Language
+	void LoadLanguage()
+	{
+		languageText.SetLocalizedText(UIString.instance.GetString(string.Format("GameUI_Language_{0}", OptionManager.instance.language)));
+	}
+
+	public void OnClickLanguageButton()
+	{
+		UIInstanceManager.instance.ShowCanvasAsync("SelectLanguageCanvas", null);
 	}
 	#endregion
 

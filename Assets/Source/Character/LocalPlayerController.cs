@@ -157,6 +157,7 @@ public sealed class LocalPlayerController : BaseCharacterController
 					CheckAttackRange(targetPosition, targetCollider);
 					if (GatePillar.instance != null && GatePillar.instance.gameObject.activeSelf)
 						++GatePillar.instance.raycastCount;
+					Debug.Log("Test");
 				}
 			}
 		}

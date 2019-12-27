@@ -155,7 +155,8 @@ public sealed class LocalPlayerController : BaseCharacterController
 					_clearCustomTargetWaitCount = 10;
 					RotateTowards(targetPosition - cachedTransform.position);
 					CheckAttackRange(targetPosition, targetCollider);
-					++GatePillar.instance.raycastCount;
+					if (GatePillar.instance != null && GatePillar.instance.gameObject.activeSelf)
+						++GatePillar.instance.raycastCount;
 				}
 			}
 		}

@@ -20,4 +20,8 @@ public class DamageRateTableData
   float[] _rate = new float[0];
   public float[] rate { get { return _rate; } set { _rate = value; } }
   
+  [SerializeField]
+  string _overrideActorId;
+  public string overrideActorId { get { return _overrideActorId; } set { _overrideActorId = value; } }
+  
 }

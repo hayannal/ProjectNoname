@@ -290,8 +290,13 @@ public class TableDataManager : MonoBehaviour
 		return null;
 	}
 
-	public DamageRateTableData FindDamageTableData(string type, int addCount)
+	public DamageRateTableData FindDamageTableData(string type, int addCount, string actorId)
 	{
+		for (int i = 0; i < damageRateTable.dataArray.Length; ++i)
+		{
+			if (damageRateTable.dataArray[i].overrideActorId == actorId && damageRateTable.dataArray[i].id == type && damageRateTable.dataArray[i].number == addCount)
+				return damageRateTable.dataArray[i];
+		}
 		for (int i = 0; i < damageRateTable.dataArray.Length; ++i)
 		{
 			if (damageRateTable.dataArray[i].id == type && damageRateTable.dataArray[i].number == addCount)

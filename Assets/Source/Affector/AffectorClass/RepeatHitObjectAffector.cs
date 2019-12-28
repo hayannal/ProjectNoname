@@ -45,13 +45,8 @@ public class RepeatHitObjectAffector : AffectorBase
 		return repeatHitObjectAffector.repeatInterval;
 	}
 
-	public static float GetDamageRate(int repeatAddCount, int index)
+	public static float GetDamageRate(int repeatAddCount, int index, int actorInstanceId)
 	{
-		DamageRateTableData damageRateTableData = TableDataManager.instance.FindDamageTableData("Repeat", repeatAddCount);
-		if (damageRateTableData == null)
-			return 1.0f;
-		if (index < damageRateTableData.rate.Length)
-			return damageRateTableData.rate[index];
-		return 1.0f;
+		return MonsterThroughHitObjectAffector.GetDamageRate("Repeat", repeatAddCount, index, actorInstanceId);
 	}
 }

@@ -33,13 +33,22 @@ public class MonsterThroughHitObjectAffector : AffectorBase
 		return piercingHitObjectAffector.piercingAddCount;
 	}
 
-	public static float GetDamageRate(int piercingAddCount, int index)
+	public static float GetDamageRate(int piercingAddCount, int index, int actorInstanceId)
 	{
-		DamageRateTableData damageRateTableData = TableDataManager.instance.FindDamageTableData("MonsterThrough", piercingAddCount);
+		return GetDamageRate("MonsterThrough", piercingAddCount, index, actorInstanceId);
+	}
+
+	public static float GetDamageRate(string id, int addCount, int index, int actorInstanceId)
+	{
+		string actorId = "";
+		Actor actor = BattleInstanceManager.instance.FindActorByInstanceId(actorInstanceId);
+		if (actor != null)
+			actorId = actor.actorId;
+		DamageRateTableData damageRateTableData = TableDataManager.instance.FindDamageTableData(id, addCount, actorId);
 		if (damageRateTableData == null)
 			return 1.0f;
-		if (index < damageRateTableData.rate.Length)
-			return damageRateTableData.rate[index];
-		return 1.0f;
+		if (index >= damageRateTableData.rate.Length)
+			index = damageRateTableData.rate.Length - 1;
+		return damageRateTableData.rate[index];
 	}
 }

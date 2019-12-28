@@ -33,13 +33,8 @@ public class BounceWallQuadHitObjectAffector : AffectorBase
 		return bounceWallQuadHitObjectAffector.bounceWallQuadAddCount;
 	}
 
-	public static float GetDamageRate(int bounceWallQuadAddCount, int index)
+	public static float GetDamageRate(int bounceWallQuadAddCount, int index, int actorInstanceId)
 	{
-		DamageRateTableData damageRateTableData = TableDataManager.instance.FindDamageTableData("BounceWallQuad", bounceWallQuadAddCount);
-		if (damageRateTableData == null)
-			return 1.0f;
-		if (index < damageRateTableData.rate.Length)
-			return damageRateTableData.rate[index];
-		return 1.0f;
+		return MonsterThroughHitObjectAffector.GetDamageRate("BounceWallQuad", bounceWallQuadAddCount, index, actorInstanceId);
 	}
 }

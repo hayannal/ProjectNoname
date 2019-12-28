@@ -45,13 +45,8 @@ public class ParallelHitObjectAffector : AffectorBase
 		return parallelHitObjectAffector.parallelAddCount;
 	}
 
-	public static float GetDamageRate(int parallelAddCount)
+	public static float GetDamageRate(int parallelAddCount, int actorInstanceId)
 	{
-		DamageRateTableData damageRateTableData = TableDataManager.instance.FindDamageTableData("Parallel", parallelAddCount);
-		if (damageRateTableData == null)
-			return 1.0f;
-		if (damageRateTableData.rate.Length > 0)
-			return damageRateTableData.rate[0];
-		return 1.0f;
+		return MonsterThroughHitObjectAffector.GetDamageRate("Parallel", parallelAddCount, 0, actorInstanceId);
 	}
 }

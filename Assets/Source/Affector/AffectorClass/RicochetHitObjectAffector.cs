@@ -33,13 +33,8 @@ public class RicochetHitObjectAffector : AffectorBase
 		return ricochetHitObjectAffector.ricochetAddCount;
 	}
 
-	public static float GetDamageRate(int ricochetAddCount, int index)
+	public static float GetDamageRate(int ricochetAddCount, int index, int actorInstanceId)
 	{
-		DamageRateTableData damageRateTableData = TableDataManager.instance.FindDamageTableData("Ricochet", ricochetAddCount);
-		if (damageRateTableData == null)
-			return 1.0f;
-		if (index < damageRateTableData.rate.Length)
-			return damageRateTableData.rate[index];
-		return 1.0f;
+		return MonsterThroughHitObjectAffector.GetDamageRate("Ricochet", ricochetAddCount, index, actorInstanceId);
 	}
 }

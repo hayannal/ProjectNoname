@@ -92,6 +92,7 @@ MonoBehaviour:
   hitObjectPrefab: {fileID: 3024574136435083412, guid: a1a5458f04d3fbc4eb5cf432a20702d8,
     type: 3}
   lifeTime: 3
+  areaHitLifeTimeEarlyOffset: 0
   movable: 1
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -101,6 +102,7 @@ MonoBehaviour:
   boneName: 
   offset: {x: 0, y: 1, z: 1}
   useBoneRotation: 0
+  fixedWorldPositionY: 0
   areaRotationY: 0
   areaDistanceMin: 0
   areaDistanceMax: 0
@@ -268,6 +270,7 @@ MonoBehaviour:
   hitObjectPrefab: {fileID: 913101303298452110, guid: d37d1943642ed344c9e56a9a97548bbc,
     type: 3}
   lifeTime: 3
+  areaHitLifeTimeEarlyOffset: 0
   movable: 1
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -277,6 +280,7 @@ MonoBehaviour:
   boneName: 
   offset: {x: 0.17, y: 1, z: 0.5}
   useBoneRotation: 0
+  fixedWorldPositionY: 0
   areaRotationY: 0
   areaDistanceMin: 0
   areaDistanceMax: 0
@@ -311,7 +315,7 @@ MonoBehaviour:
   ignoreMainHitObjectByCircularSector: 0
   continuousHitObjectGeneratorBaseList: []
   contactAll: 0
-  monsterThroughCount: -1
+  monsterThroughCount: 2
   wallThrough: 0
   quadThrough: 0
   bounceWallQuadCount: 0

@@ -53,6 +53,9 @@ public class MeHitObject : MecanimEventBase {
 	public float curve;
 	public float curveAdd;
 	public bool curveLockY = true;
+	public float curveStartDelayTime;
+	public float curveLifeTime;
+	public bool endFollowOverTargetDistance;
 	public float accelTurn;
 	public float gravity = -9.81f;
 
@@ -181,6 +184,9 @@ public class MeHitObject : MecanimEventBase {
 					curve = EditorGUILayout.FloatField("Curve Power :", curve);
 					curveAdd = EditorGUILayout.FloatField("Curve Power Add :", curveAdd);
 					curveLockY = EditorGUILayout.Toggle("Curve Lock Y :", curveLockY);
+					curveStartDelayTime = EditorGUILayout.FloatField("Curve Start Delay :", curveStartDelayTime);
+					curveLifeTime = EditorGUILayout.FloatField("Curve LifeTime :", curveLifeTime);
+					endFollowOverTargetDistance = EditorGUILayout.Toggle("End Curve Over Target :", endFollowOverTargetDistance);
 					break;
 				case HitObjectMovement.eMovementType.Turn:
 					accelTurn = EditorGUILayout.FloatField("Turn Power :", accelTurn);

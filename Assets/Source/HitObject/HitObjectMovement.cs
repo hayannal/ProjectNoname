@@ -27,15 +27,21 @@ public class HitObjectMovement : MonoBehaviour {
 	}
 
 	MeHitObject _signal;
+	float _createTime;
+	Vector3 _createPosition;
 	Rigidbody _rigidbody;
 	float _speed;
 
-	Transform _followTargetTransform;
+	Actor _followTargetActor;
+	Vector3 _followTargetPosition;
 	float _currentCurve;
+	bool _ignoreFollow;
 
 	public void InitializeSignal(MeHitObject meHit, Actor parentActor, Rigidbody rigidbody, int hitSignalIndexInAction)
 	{
 		_signal = meHit;
+		_createTime = Time.time;
+		_createPosition = cachedTransform.position;
 		_rigidbody = rigidbody;
 		_rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
 		_rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
@@ -53,13 +59,23 @@ public class HitObjectMovement : MonoBehaviour {
 				_currentCurve = _signal.curve;
 				Collider targetCollider = parentActor.targetingProcessor.GetTarget();
 				if (targetCollider != null)
-					_followTargetTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
+				{
+					AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(targetCollider);
+					_followTargetActor = affectorProcessor.actor;
+				}
 				else
-					_followTargetTransform = null;
-
+				{
+					if (parentActor.targetingProcessor.IsRegisteredCustomTargetPosition())
+					{
+						_followTargetPosition = parentActor.targetingProcessor.GetCustomTargetPosition(0);
+						_followTargetActor = null;
+					}
+				}
+				
 				// FollowTarget역시 최초에 한번 설정해두는게 좋다. 타겟 없을때 앞으로 나가게 하려면 이게 제일 나은듯.
 				_rigidbody.velocity = cachedTransform.forward * _speed;
 				_forward = cachedTransform.forward;
+				_ignoreFollow = false;
 				break;
 			case eMovementType.Direct:
 			case eMovementType.Turn:
@@ -120,6 +136,18 @@ public class HitObjectMovement : MonoBehaviour {
 		switch(_signal.movementType)
 		{
 			case eMovementType.FollowTarget:
+				if (_ignoreFollow)
+					break;
+				if (_signal.curveStartDelayTime > 0.0f && (Time.time - _createTime) < _signal.curveStartDelayTime)
+					break;
+				if (_signal.curveLifeTime > 0.0f && (Time.time - _createTime - _signal.curveStartDelayTime) > _signal.curveLifeTime)
+					break;
+				if (_followTargetActor != null && _followTargetActor.actorStatus.IsDie())
+				{
+					// 중간에 타겟을 바꿀일은 없나?
+					_ignoreFollow = true;
+					break;
+				}
 				_currentCurve += Time.deltaTime * _signal.curveAdd;
 				break;
 		}
@@ -130,26 +158,41 @@ public class HitObjectMovement : MonoBehaviour {
 		switch(_signal.movementType)
 		{
 			case eMovementType.FollowTarget:
-				if (_followTargetTransform != null)
+				if (_ignoreFollow)
+					break;
+				if (_signal.curveStartDelayTime > 0.0f && (Time.time - _createTime) < _signal.curveStartDelayTime)
+					break;
+				if (_signal.curveLifeTime > 0.0f && (Time.time - _createTime - _signal.curveStartDelayTime) > _signal.curveLifeTime)
+					break;
+
+				Vector3 diffDir = Vector3.forward;
+				if (_followTargetActor != null)
+					diffDir = _followTargetActor.cachedTransform.position - cachedTransform.position;
+				else
+					diffDir = _followTargetPosition - cachedTransform.position;
+
+				if (_signal.endFollowOverTargetDistance)
 				{
-					Vector3 diffDir = _followTargetTransform.position - cachedTransform.position;
-					if (_signal.curveLockY)
+					Vector3 hitObjectDiff = cachedTransform.position - _createPosition;
+					if (hitObjectDiff.sqrMagnitude > diffDir.sqrMagnitude)
 					{
-						diffDir.y = 0.0f;
-						cachedTransform.rotation = Quaternion.RotateTowards(cachedTransform.rotation, Quaternion.LookRotation(diffDir), _currentCurve * Time.fixedDeltaTime);
+						_ignoreFollow = true;
+						break;
 					}
-					else
-					{
-						Vector3 newDir = Vector3.RotateTowards(cachedTransform.forward, diffDir, _currentCurve * Time.fixedDeltaTime, 0.0f);
-						cachedTransform.rotation = Quaternion.LookRotation(newDir);
-					}
-					_velocity = _rigidbody.velocity = cachedTransform.forward * _speed;
-					_forward = cachedTransform.forward;
+				}
+
+				if (_signal.curveLockY)
+				{
+					diffDir.y = 0.0f;
+					cachedTransform.rotation = Quaternion.RotateTowards(cachedTransform.rotation, Quaternion.LookRotation(diffDir), _currentCurve * Time.fixedDeltaTime);
 				}
 				else
 				{
-					// 중간에 타겟을 바꿀일은 없겠지?
+					Vector3 newDir = Vector3.RotateTowards(cachedTransform.forward, diffDir, _currentCurve * Time.fixedDeltaTime, 0.0f);
+					cachedTransform.rotation = Quaternion.LookRotation(newDir);
 				}
+				_velocity = _rigidbody.velocity = cachedTransform.forward * _speed;
+				_forward = cachedTransform.forward;
 				break;
 			case eMovementType.Turn:
 				_rigidbody.MoveRotation(_rigidbody.rotation * Quaternion.Euler(0.0f, _signal.accelTurn * Time.deltaTime, 0.0f));

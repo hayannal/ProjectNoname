@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using ActorStatusDefine;
 
 public class CallAffectorValueAffector : AffectorBase
 {
@@ -53,7 +54,8 @@ public class CallAffectorValueAffector : AffectorBase
 		}
 
 		HitParameter hitParameter = new HitParameter();
-		hitParameter.statusBase = _actor.actorStatus.statusBase;
+		hitParameter.statusBase = new StatusBase();
+		_actor.actorStatus.CopyStatusBase(ref hitParameter.statusBase);
 		hitParameter.statusStructForHitObject.skillLevel = _affectorValueLevelTableData.level;
 		SkillProcessor.CopyEtcStatus(ref hitParameter.statusStructForHitObject, _actor);
 

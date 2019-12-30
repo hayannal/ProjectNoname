@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using ActorStatusDefine;
 
 public class AffectorProcessor : MonoBehaviour {
 
@@ -212,7 +213,8 @@ public class AffectorProcessor : MonoBehaviour {
 	public AffectorBase ExecuteAffectorValueWithoutTable(eAffectorType affectorType, AffectorValueLevelTableData levelData, Actor actor, bool managed, bool useMonsterActorInfo = false)
 	{
 		HitParameter hitParameter = new HitParameter();
-		hitParameter.statusBase = actor.actorStatus.statusBase;
+		hitParameter.statusBase = new StatusBase();
+		actor.actorStatus.CopyStatusBase(ref hitParameter.statusBase);
 		SkillProcessor.CopyEtcStatus(ref hitParameter.statusStructForHitObject, actor);
 
 		if (useMonsterActorInfo)

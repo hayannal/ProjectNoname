@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using ECM.Controllers;
 using UnityEngine.SceneManagement;
+using ActorStatusDefine;
 
 public class BattleTestTool : EditorWindow
 {
@@ -96,7 +97,8 @@ public class BattleTestTool : EditorWindow
 				if (GUILayout.Button("Apply Affector Value"))
 				{
 					HitParameter hitParameter = new HitParameter();
-					hitParameter.statusBase = _playerActor.actorStatus.statusBase;
+					hitParameter.statusBase = new StatusBase();
+					_playerActor.actorStatus.CopyStatusBase(ref hitParameter.statusBase);
 					SkillProcessor.CopyEtcStatus(ref hitParameter.statusStructForHitObject, _playerActor);
 					hitParameter.statusStructForHitObject.skillLevel = _affectorValueLevel;
 					_playerActor.affectorProcessor.ApplyAffectorValue(_affectorValueId, hitParameter);
@@ -105,7 +107,8 @@ public class BattleTestTool : EditorWindow
 				if (GUILayout.Button("Add Actor State"))
 				{
 					HitParameter hitParameter = new HitParameter();
-					hitParameter.statusBase = _playerActor.actorStatus.statusBase;
+					hitParameter.statusBase = new StatusBase();
+					_playerActor.actorStatus.CopyStatusBase(ref hitParameter.statusBase);
 					SkillProcessor.CopyEtcStatus(ref hitParameter.statusStructForHitObject, _playerActor);
 					_playerActor.affectorProcessor.AddActorState(_actorStateId, hitParameter);
 				}

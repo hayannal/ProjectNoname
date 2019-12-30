@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using ActorStatusDefine;
 
 public enum eSkillType
 {
@@ -165,7 +166,8 @@ public class SkillProcessor : MonoBehaviour
 			return;
 
 		HitParameter hitParameter = new HitParameter();
-		hitParameter.statusBase = actor.actorStatus.statusBase;
+		hitParameter.statusBase = new StatusBase();
+		actor.actorStatus.CopyStatusBase(ref hitParameter.statusBase);
 		CopyEtcStatus(ref hitParameter.statusStructForHitObject, actor);
 		hitParameter.statusStructForHitObject.skillLevel = info.skillLevel;
 
@@ -278,7 +280,8 @@ public class SkillProcessor : MonoBehaviour
 		info.listAffector.Clear();
 
 		HitParameter hitParameter = new HitParameter();
-		hitParameter.statusBase = actor.actorStatus.statusBase;
+		hitParameter.statusBase = new StatusBase();
+		actor.actorStatus.CopyStatusBase(ref hitParameter.statusBase);
 		CopyEtcStatus(ref hitParameter.statusStructForHitObject, actor);
 		hitParameter.statusStructForHitObject.skillLevel = info.stackCount;
 

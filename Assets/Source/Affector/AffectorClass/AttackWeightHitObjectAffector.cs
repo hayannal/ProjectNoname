@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using MecanimStateDefine;
+using ActorStatusDefine;
 
 public class AttackWeightHitObjectAffector : AffectorBase
 {
@@ -38,7 +39,8 @@ public class AttackWeightHitObjectAffector : AffectorBase
 		if (callRate > 0.0f && Random.value <= callRate)
 		{
 			HitParameter hitParameter = new HitParameter();
-			hitParameter.statusBase = _actor.actorStatus.statusBase;
+			hitParameter.statusBase = new StatusBase();
+			_actor.actorStatus.CopyStatusBase(ref hitParameter.statusBase);
 			hitParameter.statusStructForHitObject.skillLevel = _affectorValueLevelTableData.level;
 			SkillProcessor.CopyEtcStatus(ref hitParameter.statusStructForHitObject, _actor);
 

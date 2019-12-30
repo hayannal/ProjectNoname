@@ -230,6 +230,11 @@ public class AffectorProcessor : MonoBehaviour {
 
 		return ExcuteAffector(affectorType, levelData, hitParameter, managed);
 	}
+
+	public AffectorBase ExecuteAffectorValueWithoutTable(eAffectorType affectorType, AffectorValueLevelTableData levelData, HitParameter hitParameter, bool managed)
+	{
+		return ExcuteAffector(affectorType, levelData, hitParameter, managed);
+	}
 	#endregion
 
 	public List<AffectorBase> GetContinuousAffectorList(eAffectorType affectorType)
@@ -515,19 +520,19 @@ public class AffectorProcessor : MonoBehaviour {
 	// 여러 장판이 깔려도 틱당 한번씩만 처리하려면 피격자 입장에서 시간을 체크해야한다.
 	// 만약 발사 액터를 구분하지 않는다면 액터아이디와 hitStayId를 조합해서 키를 만들면 될거다. 지금은 안쓸거 같아서 보류
 	Dictionary<string, float> _dicHitStayTime = null;
-	public bool CheckHitStayInterval(MeHitObject meHit, int creatorActorInstanceId)
+	public bool CheckHitStayInterval(int hitStayIdForIgnoreDuplicate, float hitStayInterval, int creatorActorInstanceId)
 	{
 		if (_dicHitStayTime == null)
 			_dicHitStayTime = new Dictionary<string, float>();
 
-		string key = string.Format("{0}_{1}", creatorActorInstanceId, meHit.hitStayIdForIgnoreDuplicate);
+		string key = string.Format("{0}_{1}", creatorActorInstanceId, hitStayIdForIgnoreDuplicate);
 		if (_dicHitStayTime.ContainsKey(key) == false)
 		{
 			_dicHitStayTime.Add(key, Time.time);
 			return true;
 		}
 		float lastTime = _dicHitStayTime[key];
-		if (Time.time > lastTime + meHit.hitStayInterval)
+		if (Time.time > lastTime + hitStayInterval)
 		{
 			_dicHitStayTime[key] = Time.time;
 			return true;

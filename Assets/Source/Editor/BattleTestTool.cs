@@ -53,6 +53,7 @@ public class BattleTestTool : EditorWindow
 	bool usePlayerAI = true;
 	PlayerActor _playerActor = null;
 	bool spFull = false;
+	bool hpFull = false;
 	string _affectorValueId;
 	int _affectorValueLevel;
 	string _actorStateId;
@@ -83,6 +84,9 @@ public class BattleTestTool : EditorWindow
 			spFull = EditorGUILayout.Toggle("SP Full :", spFull);
 			if (spFull && _playerActor != null && _playerActor.actorStatus.GetSPRatio() != 1.0f)
 				_playerActor.actorStatus.AddSP(_playerActor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MaxSp));
+			hpFull = EditorGUILayout.Toggle("HP Full :", hpFull);
+			if (hpFull && _playerActor != null && _playerActor.actorStatus.GetHPRatio() != 1.0f && _playerActor.actorStatus.IsDie() == false)
+				_playerActor.actorStatus.AddHP(_playerActor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MaxHp));
 
 			_foldoutAffectorGroup = EditorGUILayout.Foldout(_foldoutAffectorGroup, _foldoutAffectorGroup ? "[Hide Affector Group]" : "[Show Affector Group]");
 			if (_foldoutAffectorGroup)

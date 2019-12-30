@@ -119,7 +119,8 @@ public class SkillProcessor : MonoBehaviour
 		info.listPassiveAffector.Clear();
 
 		HitParameter hitParameter = new HitParameter();
-		hitParameter.statusBase = actor.actorStatus.statusBase;
+		hitParameter.statusBase = new StatusBase();
+		actor.actorStatus.CopyStatusBase(ref hitParameter.statusBase);
 		CopyEtcStatus(ref hitParameter.statusStructForHitObject, actor);
 		hitParameter.statusStructForHitObject.skillLevel = info.skillLevel;
 

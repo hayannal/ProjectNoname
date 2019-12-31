@@ -133,7 +133,10 @@ public class HitObjectMovement : MonoBehaviour {
 
 	void Update()
 	{
-		switch(_signal.movementType)
+		if (_rigidbody.detectCollisions == false)
+			return;
+
+		switch (_signal.movementType)
 		{
 			case eMovementType.FollowTarget:
 				if (_ignoreFollow)
@@ -155,6 +158,9 @@ public class HitObjectMovement : MonoBehaviour {
 
 	void FixedUpdate()
 	{
+		if (_rigidbody.detectCollisions == false)
+			return;
+
 		switch(_signal.movementType)
 		{
 			case eMovementType.FollowTarget:

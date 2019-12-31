@@ -13,6 +13,7 @@ public class PlayerActor : Actor
 	public PlayerAI playerAI { get; private set; }
 	//public CastingProcessor castingProcessor { get; private set; }
 	public float actorRadius { get; private set; }
+	public bool flying { get; private set; }
 
 	void Awake()
 	{
@@ -68,6 +69,7 @@ public class PlayerActor : Actor
 		skillProcessor.InitializeSkill();
 		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(actorId);
 		targetingProcessor.sphereCastRadiusForCheckWall = actorTableData.targetingSphereRadius;
+		flying = actorTableData.flying;
 
 		RegisterBattleInstance();
 	}

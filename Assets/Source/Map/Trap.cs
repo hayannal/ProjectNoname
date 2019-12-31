@@ -33,6 +33,11 @@ public class Trap : MonoBehaviour
 
 		if (affectorProcessor.actor.IsPlayerActor() == false)
 			return;
+		PlayerActor playerActor = affectorProcessor.actor as PlayerActor;
+		if (playerActor == null)
+			return;
+		if (playerActor.flying)
+			return;
 
 		// check Levitation Character
 

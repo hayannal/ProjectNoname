@@ -64,4 +64,8 @@ public class ActorTableData
   float _targetingSphereRadius;
   public float targetingSphereRadius { get { return _targetingSphereRadius; } set { _targetingSphereRadius = value; } }
   
+  [SerializeField]
+  bool _flying;
+  public bool flying { get { return _flying; } set { _flying = value; } }
+  
 }

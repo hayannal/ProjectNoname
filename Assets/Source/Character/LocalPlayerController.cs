@@ -97,6 +97,7 @@ public sealed class LocalPlayerController : BaseCharacterController
 
 	int _clearCustomTargetWaitCount = 0;
 	bool _standbyClearCustomTarget = false;
+	RaycastHit[] _raycastHitList = null;
 	protected override void Animate()
 	{
 		// If no animator, return
@@ -133,31 +134,76 @@ public sealed class LocalPlayerController : BaseCharacterController
 			if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null)
 				TitleCanvas.instance.FadeTitle();
 
-			Ray ray = UIInstanceManager.instance.GetCachedCameraMain().ScreenPointToRay(ScreenJoystick.instance.tabPosition);
-			RaycastHit hitInfo;
-			if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, groundMask.value))
-			{
-				Vector3 targetPosition = hitInfo.point;
-				Collider targetCollider = null;
+			if (_raycastHitList == null)
+				_raycastHitList = new RaycastHit[20];
 
+			Ray ray = UIInstanceManager.instance.GetCachedCameraMain().ScreenPointToRay(ScreenJoystick.instance.tabPosition);
+			Vector3 targetPosition = Vector3.zero;
+			Collider targetCollider = null;
+			Vector3 subHitPoint = Vector3.zero;
+			Collider subCollider = null;
+			bool groundHitted = false;
+			bool raycastHitted = false;
+			int resultCount = Physics.RaycastNonAlloc(ray, _raycastHitList, Mathf.Infinity, groundMask);
+			if (resultCount > 0)
+			{
+				// first gate pillar
 				if (GatePillar.instance != null && GatePillar.instance.gameObject.activeSelf)
 				{
-					if (hitInfo.collider != null && hitInfo.collider.gameObject == GatePillar.instance.meshColliderObject)
+					for (int i = 0; i < resultCount; ++i)
 					{
-						targetPosition = GatePillar.instance.cachedTransform.position;
-						targetCollider = hitInfo.collider;
+						if (i >= _raycastHitList.Length)
+							break;
+						if (_raycastHitList[i].collider == null || _raycastHitList[i].collider.isTrigger)
+							continue;
+
+						if (_raycastHitList[i].collider.gameObject == GatePillar.instance.meshColliderObject)
+						{
+							targetPosition = GatePillar.instance.cachedTransform.position;
+							targetCollider = _raycastHitList[i].collider;
+							groundHitted = true;
+							break;
+						}
 					}
 				}
 
-				if (actionController.PlayActionByControl(Control.eControllerType.ScreenController, Control.eInputType.Tab))
+				if (groundHitted == false)
 				{
-					actor.targetingProcessor.SetCustomTargetPosition(targetPosition);
-					_clearCustomTargetWaitCount = 10;
-					RotateTowards(targetPosition - cachedTransform.position);
-					CheckAttackRange(targetPosition, targetCollider);
-					if (GatePillar.instance != null && GatePillar.instance.gameObject.activeSelf)
-						++GatePillar.instance.raycastCount;
+					for (int i = 0; i < resultCount; ++i)
+					{
+						if (i >= _raycastHitList.Length)
+							break;
+						if (_raycastHitList[i].collider == null || _raycastHitList[i].collider.isTrigger)
+							continue;
+
+						if (_raycastHitList[i].collider == BattleInstanceManager.instance.planeCollider)
+						{
+							targetPosition = _raycastHitList[i].point;
+							targetCollider = _raycastHitList[i].collider;
+							groundHitted = true;
+							break;
+						}
+
+						subHitPoint = _raycastHitList[i].point;
+						subCollider = _raycastHitList[i].collider;
+						raycastHitted = true;
+					}
 				}
+			}
+			if (groundHitted == false && raycastHitted)
+			{
+				targetPosition = subHitPoint;
+				targetCollider = subCollider;
+			}
+			
+			if ((groundHitted || raycastHitted) && actionController.PlayActionByControl(Control.eControllerType.ScreenController, Control.eInputType.Tab))
+			{
+				actor.targetingProcessor.SetCustomTargetPosition(targetPosition);
+				_clearCustomTargetWaitCount = 10;
+				RotateTowards(targetPosition - cachedTransform.position);
+				CheckAttackRange(targetPosition, targetCollider);
+				if (GatePillar.instance != null && GatePillar.instance.gameObject.activeSelf)
+					++GatePillar.instance.raycastCount;
 			}
 		}
 

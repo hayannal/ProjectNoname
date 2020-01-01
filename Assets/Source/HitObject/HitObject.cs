@@ -1230,10 +1230,17 @@ public class HitObject : MonoBehaviour
 			collided = planeCollided || groundQuadCollided || wallCollided || monsterCollided;
 			if (collided)
 			{
-				if (_signal.showHitEffect)
-					HitEffect.ShowHitEffect(_signal, contact.point, contact.normal, _statusStructForHitObject.weaponIDAtCreation);
-				if (_signal.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
-					HitEffect.ShowHitEffectLineRenderer(_signal, GetHitEffectLineRendererStartPosition(contact.point), contact.point);
+				bool ignoreEffect = false;
+				if (_signal.movementType == HitObjectMovement.eMovementType.Howitzer && _signal.wallThrough && wallCollided)
+					ignoreEffect = true;
+
+				if (ignoreEffect == false)
+				{
+					if (_signal.showHitEffect)
+						HitEffect.ShowHitEffect(_signal, contact.point, contact.normal, _statusStructForHitObject.weaponIDAtCreation);
+					if (_signal.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
+						HitEffect.ShowHitEffectLineRenderer(_signal, GetHitEffectLineRendererStartPosition(contact.point), contact.point);
+				}
 			}
 
 			if (collided && _signal.contactAll == false)

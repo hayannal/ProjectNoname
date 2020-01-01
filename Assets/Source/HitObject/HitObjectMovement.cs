@@ -37,6 +37,10 @@ public class HitObjectMovement : MonoBehaviour {
 	float _currentCurve;
 	bool _ignoreFollow;
 
+	#region Custom Howitzer
+	public Vector3 howitzerTargetPosition { get; set; }
+	#endregion
+
 	public void InitializeSignal(MeHitObject meHit, Actor parentActor, Rigidbody rigidbody, int hitSignalIndexInAction)
 	{
 		_signal = meHit;
@@ -86,30 +90,44 @@ public class HitObjectMovement : MonoBehaviour {
 				_forward = cachedTransform.forward;
 				break;
 			case eMovementType.Howitzer:
-				Vector3 targetPosition = HitObject.GetTargetPosition(_signal, parentActor, hitSignalIndexInAction);
-				switch (_signal.howitzerType)
+				howitzerTargetPosition = HitObject.GetTargetPosition(_signal, parentActor, hitSignalIndexInAction);
+				if (_signal.howitzerTargetPositionOffset != Vector2.zero)
 				{
-					case eHowitzerType.FixedTime:
-						_velocity = _rigidbody.velocity = ProjectileHelper.ComputeVelocityToHitTargetAtTime(cachedTransform.position, targetPosition, _signal.gravity, _signal.lifeTime);
-						_forward = cachedTransform.forward = _rigidbody.velocity.normalized;
-						break;
-					case eHowitzerType.FixedSpeed:
-						// 이거로 하면 out으로 나온 direction1,2 둘다 이상한 값이 들어있어서 쓸수가 없다. 차라리 위 함수를 응용해서 하기로 한다.
-						//Vector3 direction1;
-						//Vector3 direction2;
-						//bool result = ProjectileHelper.ComputeDirectionToHitTargetWithSpeed(cachedTransform.position, targetPosition, _signal.gravity, _speed, out direction1, out direction2);
-						//if (result == false)
-						//{
-						//	Debug.LogError("Invalid Parameter! HitObject can't reach the target.");
-						//	break;
-						//}
-						//_velocity = _rigidbody.velocity = direction1.y > 0.0f ? direction2 : direction1;
-						Vector3 diff = targetPosition - cachedTransform.position;
-						float time = diff.magnitude / _speed;
-						_velocity = _rigidbody.velocity = ProjectileHelper.ComputeVelocityToHitTargetAtTime(cachedTransform.position, targetPosition, _signal.gravity, time);
-						_forward = cachedTransform.forward = _rigidbody.velocity.normalized;
-						break;
+					howitzerTargetPosition += parentActor.cachedTransform.TransformVector(new Vector3(_signal.howitzerTargetPositionOffset.x, 0.0f, _signal.howitzerTargetPositionOffset.y));
 				}
+				if (_signal.howitzerRandomPositionRadius > 0.0f)
+				{
+					Vector2 randomRadius = Random.insideUnitCircle * _signal.howitzerRandomPositionRadius;
+					howitzerTargetPosition += new Vector3(randomRadius.x, 0.0f, randomRadius.y);
+				}
+				ComputeHowitzer();
+				break;
+		}
+	}
+
+	public void ComputeHowitzer()
+	{
+		switch (_signal.howitzerType)
+		{
+			case eHowitzerType.FixedTime:
+				_velocity = _rigidbody.velocity = ProjectileHelper.ComputeVelocityToHitTargetAtTime(cachedTransform.position, howitzerTargetPosition, _signal.gravity, _signal.lifeTime);
+				_forward = cachedTransform.forward = _rigidbody.velocity.normalized;
+				break;
+			case eHowitzerType.FixedSpeed:
+				// 이거로 하면 out으로 나온 direction1,2 둘다 이상한 값이 들어있어서 쓸수가 없다. 차라리 위 함수를 응용해서 하기로 한다.
+				//Vector3 direction1;
+				//Vector3 direction2;
+				//bool result = ProjectileHelper.ComputeDirectionToHitTargetWithSpeed(cachedTransform.position, targetPosition, _signal.gravity, _speed, out direction1, out direction2);
+				//if (result == false)
+				//{
+				//	Debug.LogError("Invalid Parameter! HitObject can't reach the target.");
+				//	break;
+				//}
+				//_velocity = _rigidbody.velocity = direction1.y > 0.0f ? direction2 : direction1;
+				Vector3 diff = howitzerTargetPosition - cachedTransform.position;
+				float time = diff.magnitude / _speed;
+				_velocity = _rigidbody.velocity = ProjectileHelper.ComputeVelocityToHitTargetAtTime(cachedTransform.position, howitzerTargetPosition, _signal.gravity, time);
+				_forward = cachedTransform.forward = _rigidbody.velocity.normalized;
 				break;
 		}
 	}

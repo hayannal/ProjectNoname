@@ -49,6 +49,8 @@ public class MeHitObject : MecanimEventBase {
 	public float leftRandomAngle;
 	public float rightRandomAngle;
 	public float upDownRandomAngle;
+	public Vector2 howitzerTargetPositionOffset;
+	public float howitzerRandomPositionRadius;
 	public float speed;
 	public float curve;
 	public float curveAdd;
@@ -202,15 +204,23 @@ public class MeHitObject : MecanimEventBase {
 				useWorldSpaceDirection = EditorGUILayout.Toggle("Use World Space :", useWorldSpaceDirection);
 				startDirection = EditorGUILayout.Vector3Field("Direction :", startDirection);
 			}
-			bothRandomAngle = EditorGUILayout.Toggle("Both Random Angle :", bothRandomAngle);
-			if (bothRandomAngle)
-				leftRightRandomAngle = EditorGUILayout.FloatField("LeftRight Random Angle :", leftRightRandomAngle);
+			if (movementType == HitObjectMovement.eMovementType.Howitzer)
+			{
+				howitzerTargetPositionOffset = EditorGUILayout.Vector2Field("TargetPosition Offset :", howitzerTargetPositionOffset);
+				howitzerRandomPositionRadius = EditorGUILayout.FloatField("Random Raidus :", howitzerRandomPositionRadius);
+			}
 			else
 			{
-				leftRandomAngle = EditorGUILayout.FloatField("Left Random Angle :", leftRandomAngle);
-				rightRandomAngle = EditorGUILayout.FloatField("Right Random Angle :", rightRandomAngle);
+				bothRandomAngle = EditorGUILayout.Toggle("Both Random Angle :", bothRandomAngle);
+				if (bothRandomAngle)
+					leftRightRandomAngle = EditorGUILayout.FloatField("LeftRight Random Angle :", leftRightRandomAngle);
+				else
+				{
+					leftRandomAngle = EditorGUILayout.FloatField("Left Random Angle :", leftRandomAngle);
+					rightRandomAngle = EditorGUILayout.FloatField("Right Random Angle :", rightRandomAngle);
+				}
+				upDownRandomAngle = EditorGUILayout.FloatField("UpDown Random Angle :", upDownRandomAngle);
 			}
-			upDownRandomAngle = EditorGUILayout.FloatField("UpDown Random Angle :", upDownRandomAngle);
 			if (targetDetectType != HitObject.eTargetDetectType.SphereCast)
 				speed = EditorGUILayout.FloatField("Speed :", speed);
 			EditorGUILayout.LabelField("-----------------------------------------------------------------");

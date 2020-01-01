@@ -725,6 +725,7 @@ public class HitObject : MonoBehaviour
 
 	public StatusStructForHitObject statusStructForHitObject { get { return _statusStructForHitObject; } }
 	public float createTime { get { return _createTime; } }
+	public HitObjectMovement hitObjectMovement { get { return _hitObjectMovement; } }
 
 	MeHitObject _signal;
 	float _createTime;

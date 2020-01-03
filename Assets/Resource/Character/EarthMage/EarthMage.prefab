@@ -215,6 +215,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2370907083230124743}
   - component: {fileID: 2370907083235428951}
+  - component: {fileID: 4630361105680951563}
   m_Layer: 0
   m_Name: skn_EarthMage_Body
   m_TagString: Untagged
@@ -365,6 +366,23 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.0038530827, y: -0.5795208, z: 0.088466346}
     m_Extent: {x: 3.5922914, y: 4.4101167, z: 1.3769567}
   m_DirtyAABB: 0
+--- !u!114 &4630361105680951563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2370907083230152359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3417eb07376fcb64d87afa71334df49a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  emissiveColor: {r: 0, g: 0.84127593, b: 0.9433962, a: 1}
+  emissiveSpeed: 1.75
+  emissiveBase: 0.2
+  emissiveRange: 1.2
+  useSharedMaterials: 0
 --- !u!1 &2370907083230152369
 GameObject:
   m_ObjectHideFlags: 0
@@ -3103,6 +3121,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2370907083230124911}
     m_Modifications:
+    - target: {fileID: 100000, guid: 13c8dbbd487722241ac1cb3d90d603fb, type: 3}
+      propertyPath: m_Name
+      value: EarthMage_Staff
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 13c8dbbd487722241ac1cb3d90d603fb, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -3158,10 +3180,6 @@ PrefabInstance:
     - target: {fileID: 400000, guid: 13c8dbbd487722241ac1cb3d90d603fb, type: 3}
       propertyPath: m_LocalScale.z
       value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: 13c8dbbd487722241ac1cb3d90d603fb, type: 3}
-      propertyPath: m_Name
-      value: EarthMage_Staff
       objectReference: {fileID: 0}
     - target: {fileID: 2300000, guid: 13c8dbbd487722241ac1cb3d90d603fb, type: 3}
       propertyPath: m_Materials.Array.data[0]

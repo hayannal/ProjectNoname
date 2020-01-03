@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: magi_earth_mat_D
   m_Shader: {fileID: 4800000, guid: af96cba0ce400244e8f086910e74d586, type: 3}
-  m_ShaderKeywords: _EMISSION _FLOW_CHANNEL_R _MATCAP_NONE _SPECGLOSSMAP
+  m_ShaderKeywords: _EMISSION _EMISSIVE _FLOW_CHANNEL_R _MATCAP_NONE _SPECGLOSSMAP
   m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -48,7 +48,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: dec72939cbe2973408ba0c54caff91da, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MatCapTex:
@@ -101,7 +101,7 @@ Material:
     - _SrcBlend: 1
     - _UVSec: 0
     - _UseCutoff: 0
-    - _UseEmissive: 0
+    - _UseEmissive: 1
     - _UseFlow: 0
     - _UseNormal: 0
     - _UseRimLight: 0

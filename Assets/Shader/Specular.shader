@@ -4,7 +4,7 @@ Shader "FrameworkNG/Specular"
 {
 	Properties
 	{
-		_MainTex ("Base (RGB)", 2D) = "white" {}
+		_MainTex ("Base (RGB) Gloss (A)", 2D) = "white" {}
 		_ColorIntensity ("Color Intensity", Range(0, 20)) = 1.0
 		_MaskTex ("Emissive (R) MatCap (G) Cutoff (B)", 2D) = "white" {}
 		_SpecColor ("Specular Color", Color) = (0.5, 0.5, 0.5, 1)
@@ -191,7 +191,8 @@ inline fixed SelectFlowChannel(fixed3 mask)
 
 		void surf (Input IN, inout SurfaceOutput o)
 		{
-			fixed3 c = tex2D(_MainTex, IN.uv_MainTex).rgb;
+			fixed4 tex = tex2D(_MainTex, IN.uv_MainTex);
+			fixed3 c = tex.rgb;
 			#if _CUTOFF || _MATCAP_SINGLE || _MATCAP_DUAL || _EMISSIVE || _FLOW_CHANNEL_R || _FLOW_CHANNEL_G || _FLOW_CHANNEL_B
 				fixed3 mask = tex2D(_MaskTex, IN.uv_MainTex).rgb;
 			#endif
@@ -221,7 +222,7 @@ inline fixed SelectFlowChannel(fixed3 mask)
 			o.Albedo = c * _ColorIntensity;
 			o.Alpha = 1.0f;
 			o.Specular = _Shininess;
-			o.Gloss = 1.0f * _SpecPower;
+			o.Gloss = tex.a * _SpecPower;
 
 			#if _RIMLIGHT
 				NG_RIMLIGHT;

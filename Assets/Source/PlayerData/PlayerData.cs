@@ -140,6 +140,10 @@ public class PlayerData : MonoBehaviour
 		characterData.actorId = "Actor019";
 		characterData.powerLevel = 1;
 		_listCharacterData.Add(characterData);
+		characterData = new CharacterData();
+		characterData.actorId = "Actor020";
+		characterData.powerLevel = 1;
+		_listCharacterData.Add(characterData);
 	}
 
 	public CharacterData GetCharacterData(string actorId)

@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: SteampunkRobot_mtl_D
   m_Shader: {fileID: 4800000, guid: 746ea00b76d737d47b606f8586a83dff, type: 3}
-  m_ShaderKeywords: _FLOW_CHANNEL_R _MATCAP_NONE _METALLICGLOSSMAP _NORMAL _NORMALMAP
+  m_ShaderKeywords: _FLOW_CHANNEL_R _MATCAP_DUAL _METALLICGLOSSMAP _NORMAL _NORMALMAP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -48,11 +48,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 9ca55a9526fc87244b9ed03a8ce6d0d9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MatCapTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 36f7f39e5904dbb4297a4050e1ecaac5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -93,7 +93,7 @@ Material:
     - _GlossPower: 1
     - _Glossiness: 0.453
     - _GlossyReflections: 1
-    - _MatCap: 0
+    - _MatCap: 2
     - _Metallic: 0.471
     - _Mode: 0
     - _OcclusionStrength: 1

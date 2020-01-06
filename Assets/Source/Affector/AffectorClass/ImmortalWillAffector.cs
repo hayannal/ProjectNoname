@@ -8,7 +8,7 @@ public class ImmortalWillAffector : AffectorBase
 	float _value;
 	float value { get { return _value; } }
 
-	const float StandardHitCountForMonsterKillingPlayer = 3.0f;
+	const float StandardHitCountForMonsterKillingPlayer = 4.5f;
 
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{

@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Syria03
   m_Shader: {fileID: 4800000, guid: af96cba0ce400244e8f086910e74d586, type: 3}
-  m_ShaderKeywords: _FLOW_CHANNEL_R _MATCAP_NONE
+  m_ShaderKeywords: _FLOW_CHANNEL_R _MATCAP_SINGLE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -44,15 +44,15 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: f0f1bcfaa86277b4abc6ae7b2feff517, type: 3}
+        m_Texture: {fileID: 2800000, guid: 210af0a7a699e8f419d783a6c66eaafe, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 2201318610bfcc44a9938692c5feb1f3, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MatCapTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 95e6c9dfdc75f924aa49d0d5406048a2, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -90,7 +90,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _MatCap: 0
+    - _MatCap: 1
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1

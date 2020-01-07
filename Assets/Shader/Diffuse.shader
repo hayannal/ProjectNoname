@@ -7,6 +7,7 @@ Shader "FrameworkNG/Diffuse"
 		_MainTex("Base (RGB)", 2D) = "white" {}
 		_ColorIntensity("Color Intensity", Range(0, 20)) = 1.0
 		_MaskTex("Emissive (R) MatCap (G) Cutoff (B)", 2D) = "white" {}
+		[Enum(UnityEngine.Rendering.CullMode)] _Cull("Cull Mode", Float) = 2
 		[Toggle(_NORMAL)] _UseNormal("========== Use NormalMap ==========", Float) = 0
 		_NormalMap("Normal Map", 2D) = "bump" {}
 		[Toggle(_RIMLIGHT)] _UseRimLight("========== Use RimLight ==========", Float) = 0
@@ -30,7 +31,7 @@ Shader "FrameworkNG/Diffuse"
 		{
 			Tags { "RenderType" = "Opaque" }
 			LOD 200
-			//		cull Off
+			Cull [_Cull]
 
 			CGPROGRAM
 

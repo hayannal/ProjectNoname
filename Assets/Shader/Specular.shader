@@ -7,6 +7,7 @@ Shader "FrameworkNG/Specular"
 		_MainTex ("Base (RGB) Gloss (A)", 2D) = "white" {}
 		_ColorIntensity ("Color Intensity", Range(0, 20)) = 1.0
 		_MaskTex ("Emissive (R) MatCap (G) Cutoff (B)", 2D) = "white" {}
+		[Enum(UnityEngine.Rendering.CullMode)] _Cull("Cull Mode", Float) = 2
 		_SpecColor ("Specular Color", Color) = (0.5, 0.5, 0.5, 1)
 		_SpecPower ("Specular Intensity", Range(0.0, 2)) = 1
 		_Shininess ("Shininess", Range(0.01, 1)) = 0.078125
@@ -32,7 +33,7 @@ Shader "FrameworkNG/Specular"
 	{
 		Tags { "RenderType"="Opaque" }
 		LOD 200
-//		cull Off
+		Cull [_Cull]
 		
 		CGPROGRAM
 

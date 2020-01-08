@@ -199,6 +199,8 @@ public class RFX4_MobileBloom : MonoBehaviour
 	public void SaveDefaultDirtIntensity()
 	{
 		_defaultDirtIntensity = DirtIntensity;
+		if (_bloomMaterial != null)
+			_bloomMaterial.SetFloat("_DirtIntensity", DirtIntensity);
 	}
 
 	public void AdjustDirtIntensity(float adjust, bool useRefCount = true)

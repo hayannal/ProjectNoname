@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: c_nv_fashi
   m_Shader: {fileID: 4800000, guid: af96cba0ce400244e8f086910e74d586, type: 3}
-  m_ShaderKeywords: _FLOW_CHANNEL_R _MATCAP_NONE
+  m_ShaderKeywords: _CUTOFF _EMISSIVE _FLOW_CHANNEL_R _MATCAP_SINGLE
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -32,15 +32,15 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 098b48a81855d7245bd3ddfb8d485128, type: 3}
+        m_Texture: {fileID: 2800000, guid: 7204710ae4edd2d49841a57bac05b29d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 6c30b5f86c336d141be16d1e5419e5c5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MatCapTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 95e6c9dfdc75f924aa49d0d5406048a2, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
@@ -57,11 +57,11 @@ Material:
     - _Cutoff: 0.5
     - _FlowPower: 1
     - _Flow_Channel: 0
-    - _MatCap: 0
+    - _MatCap: 1
     - _RimPower: 0
     - _Shininess: 0.7
-    - _UseCutoff: 0
-    - _UseEmissive: 0
+    - _UseCutoff: 1
+    - _UseEmissive: 1
     - _UseFlow: 0
     - _UseNormal: 0
     - _UseRimLight: 0

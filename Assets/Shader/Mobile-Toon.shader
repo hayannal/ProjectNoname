@@ -16,6 +16,9 @@ Properties {
 
 	[Enum(OFF,0,FRONT,1,BACK,2)] _CullMode("Cull_Mode", int) = 2
 
+	[Toggle(_NORMAL)] _UseNormal("========== Use NormalMap ==========", Float) = 0
+	_NormalMap("Normal Map", 2D) = "bump" {}
+
 	[Toggle(_CUTOFF)] _UseCutoff("========== Use Cutoff ==========", Float) = 0
 	_Cutoff("Alpha cutoff", Range(0, 1)) = 0.5
 
@@ -31,6 +34,7 @@ SubShader {
 CGPROGRAM
 #pragma surface surf Toon exclude_path:prepass nolightmap noforwardadd
 #pragma target 3.0
+#pragma shader_feature _NORMAL
 #pragma shader_feature _CUTOFF
 #pragma shader_feature _HUECHANGE
 #pragma multi_compile_instancing
@@ -75,6 +79,9 @@ inline fixed3 hueChange(fixed3 col, fixed hueC) {
 sampler2D _MainTex;
 fixed3 _Color;
 fixed _KeepW;
+#if _NORMAL
+sampler2D _NormalMap;
+#endif
 #if _CUTOFF
 fixed _Cutoff;
 #endif
@@ -94,6 +101,9 @@ void surf (Input IN, inout SurfaceOutput o) {
 	o.Albedo = hueChange(o.Albedo, UNITY_ACCESS_INSTANCED_PROP(Props, _HueCI) * 9); //GPU Instancing
 #endif
     o.Alpha = c.a;
+#if _NORMAL
+	o.Normal = UnpackNormal(tex2D(_NormalMap, IN.uv_MainTex));
+#endif
 #if _CUTOFF
 	clip(o.Alpha - _Cutoff);
 #endif

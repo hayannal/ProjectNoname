@@ -34,6 +34,7 @@ public class TableDataManager : MonoBehaviour
 	public TimeSpacePositionTable timeSpacePositionTable;
 	public StageExpTable stageExpTable;
 	public DamageRateTable damageRateTable;
+	public ActorInfoTable actorInfoTable;
 
 	void Awake()
 	{
@@ -301,6 +302,16 @@ public class TableDataManager : MonoBehaviour
 		{
 			if (damageRateTable.dataArray[i].id == type && damageRateTable.dataArray[i].number == addCount)
 				return damageRateTable.dataArray[i];
+		}
+		return null;
+	}
+
+	public ActorInfoTableData FindActorInfoTableData(string actorId)
+	{
+		for (int i = 0; i < actorInfoTable.dataArray.Length; ++i)
+		{
+			if (actorInfoTable.dataArray[i].actorId == actorId)
+				return actorInfoTable.dataArray[i];
 		}
 		return null;
 	}

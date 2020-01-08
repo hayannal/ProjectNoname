@@ -40,6 +40,9 @@ public class CharacterInfoCanvas : MonoBehaviour
 	Vector3 _lastCharacterPosition;
 	Quaternion _lastCharacterRotation;
 	Transform _groundTransform;
+	EnvironmentSetting _environmentSetting;
+	float _defaultLightIntensity;
+	ActorInfoTableData _cachedActorInfoTableData;
 	void SetInfoCameraMode(bool enable)
 	{
 		if (_infoCameraMode == enable)
@@ -63,17 +66,38 @@ public class CharacterInfoCanvas : MonoBehaviour
 			_lastCharacterPosition = BattleInstanceManager.instance.playerActor.cachedTransform.position;
 			_lastCharacterRotation = BattleInstanceManager.instance.playerActor.cachedTransform.rotation;
 
+			// table override
+			_cachedActorInfoTableData = TableDataManager.instance.FindActorInfoTableData(BattleInstanceManager.instance.playerActor.actorId);
+
 			// ground setting
 			StageManager.instance.EnableEnvironmentSettingForUI(false);
 			if (_groundTransform == null)
+			{
 				_groundTransform = Instantiate<GameObject>(infoCameraGroundPrefab, _rootOffsetPosition, Quaternion.identity).transform;
+				_environmentSetting = _groundTransform.GetComponentInChildren<EnvironmentSetting>();
+				_defaultLightIntensity = _environmentSetting.defaultDirectionalLightIntensity;
+
+				// override setting
+				if (_cachedActorInfoTableData != null && _cachedActorInfoTableData.infoLightIntensity > 0.0f)
+					_environmentSetting.SetDefaultLightIntensity(_cachedActorInfoTableData.infoLightIntensity);
+			}
 			else
+			{
+				// override setting
+				if (_cachedActorInfoTableData != null && _cachedActorInfoTableData.infoLightIntensity > 0.0f)
+					_environmentSetting.SetDefaultLightIntensity(_cachedActorInfoTableData.infoLightIntensity);
+				else
+					_environmentSetting.SetDefaultLightIntensity(_defaultLightIntensity);
+
 				_groundTransform.gameObject.SetActive(true);
+			}
 
 			// player setting
 			BattleInstanceManager.instance.playerActor.cachedTransform.position = _rootOffsetPosition;
 			BattleInstanceManager.instance.playerActor.cachedTransform.rotation = Quaternion.Euler(0.0f, charactorY, 0.0f);
 			TailAnimatorUpdater.UpdateAnimator(BattleInstanceManager.instance.playerActor.cachedTransform, 15);
+			if (_cachedActorInfoTableData != null && _cachedActorInfoTableData.useInfoIdle)
+				BattleInstanceManager.instance.playerActor.actionController.animator.Play("InfoIdle");
 
 			// setting
 			CustomRenderer.instance.RenderTextureResolutionFactor = (CustomRenderer.instance.RenderTextureResolutionFactor + 1.0f) * 0.5f;
@@ -100,6 +124,13 @@ public class CharacterInfoCanvas : MonoBehaviour
 			BattleInstanceManager.instance.playerActor.cachedTransform.position = _lastCharacterPosition;
 			BattleInstanceManager.instance.playerActor.cachedTransform.rotation = _lastCharacterRotation;
 			TailAnimatorUpdater.UpdateAnimator(BattleInstanceManager.instance.playerActor.cachedTransform, 15);
+
+			if (_cachedActorInfoTableData != null)
+			{
+				if (_cachedActorInfoTableData.useInfoIdle)
+					BattleInstanceManager.instance.playerActor.actionController.PlayActionByActionName("Idle");
+				_cachedActorInfoTableData = null;
+			}
 
 			CameraFovController.instance.enabled = true;
 			CustomFollowCamera.instance.enabled = true;

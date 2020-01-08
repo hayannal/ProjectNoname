@@ -21,15 +21,16 @@ public class EnvironmentSetting : MonoBehaviour
 
 	Light _directionalLight;
 	float _defaultDirectionalLightIntensity;
+	public float defaultDirectionalLightIntensity { get { return _defaultDirectionalLightIntensity; } }
 	void Awake()
 	{
 		_directionalLight = GetComponent<Light>();
+		_defaultDirectionalLightIntensity = _directionalLight.intensity;
 	}
 
 	bool _started;
 	void Start()
 	{
-		_defaultDirectionalLightIntensity = _directionalLight.intensity;
 		SetEnvironment();
 
 #if UNITY_EDITOR
@@ -38,6 +39,11 @@ public class EnvironmentSetting : MonoBehaviour
 		_prevDirtIntensity = dirtIntensity;
 #endif
 		_started = true;
+	}
+
+	public void SetDefaultLightIntensity(float intensity)
+	{
+		_defaultDirectionalLightIntensity = intensity;
 	}
 
 	void SetEnvironment()

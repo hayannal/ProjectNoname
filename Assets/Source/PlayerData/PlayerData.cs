@@ -201,6 +201,10 @@ public class PlayerData : MonoBehaviour
 		characterData.powerLevel = 1;
 		_listCharacterData.Add(characterData);
 		characterData = new CharacterData();
+		characterData.actorId = "Actor039";
+		characterData.powerLevel = 1;
+		_listCharacterData.Add(characterData);
+		characterData = new CharacterData();
 		characterData.actorId = "Actor040";
 		characterData.powerLevel = 1;
 		_listCharacterData.Add(characterData);

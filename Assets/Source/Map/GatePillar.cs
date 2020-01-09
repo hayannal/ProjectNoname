@@ -193,6 +193,8 @@ public class GatePillar : MonoBehaviour
 	{
 		if (SwapCanvas.instance != null && SwapCanvas.instance.gameObject.activeSelf)
 			return false;
+		if (DelayedLoadingCanvas.IsShow())
+			return false;
 
 		if (MainSceneBuilder.instance.lobby)
 		{

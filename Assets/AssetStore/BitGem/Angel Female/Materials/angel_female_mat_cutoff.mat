@@ -8,8 +8,8 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: angel_female_mat_cutoff
-  m_Shader: {fileID: 4800000, guid: 7042d9380b94b0440993cac102286dfb, type: 3}
-  m_ShaderKeywords: _ALPHATEST_ON _EMISSION _FLOW_CHANNEL_R _MATCAP_NONE _METALLICGLOSSMAP
+  m_Shader: {fileID: 4800000, guid: af96cba0ce400244e8f086910e74d586, type: 3}
+  m_ShaderKeywords: _ALPHATEST_ON _CUTOFF _EMISSION _FLOW_CHANNEL_R _MATCAP_NONE _METALLICGLOSSMAP
     _SPECGLOSSMAP
   m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
@@ -45,11 +45,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: f155bd744e610b24d9146a5c5cbab368, type: 3}
+        m_Texture: {fileID: 2800000, guid: 298ee72217bdac94e8dec62d2a1b76bc, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 1e550dbddec919e48b6bdb07a59e4f6e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MatCapTex:
@@ -102,7 +102,7 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
-    - _UseCutoff: 0
+    - _UseCutoff: 1
     - _UseEmissive: 0
     - _UseFlow: 0
     - _UseNormal: 0

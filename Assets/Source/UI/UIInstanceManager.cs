@@ -175,7 +175,7 @@ public class UIInstanceManager : MonoBehaviour
 		loadCanvasAsync.calllback = callback;
 		_listAsyncOperationResult.Add(loadCanvasAsync);
 
-		DelayedLoadingCanvas.instance.gameObject.SetActive(true);
+		DelayedLoadingCanvas.Show(true);
 	}
 
 	void UpdateAsyncOperation()
@@ -203,7 +203,7 @@ public class UIInstanceManager : MonoBehaviour
 		}
 
 		if (loadFinish && _listAsyncOperationResult.Count == 0)
-			DelayedLoadingCanvas.instance.gameObject.SetActive(false);
+			DelayedLoadingCanvas.Show(false);
 	}
 	#endregion
 

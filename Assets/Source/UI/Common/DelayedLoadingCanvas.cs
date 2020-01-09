@@ -6,7 +6,7 @@ using DG.Tweening;
 
 public class DelayedLoadingCanvas : MonoBehaviour
 {
-	public static DelayedLoadingCanvas instance
+	static DelayedLoadingCanvas instance
 	{
 		get
 		{
@@ -18,6 +18,29 @@ public class DelayedLoadingCanvas : MonoBehaviour
 		}
 	}
 	static DelayedLoadingCanvas _instance = null;
+
+	public static void Show(bool show)
+	{
+		if (show)
+		{
+			if (IsShow())
+				return;
+			instance.gameObject.SetActive(true);
+		}
+		else
+		{
+			if (_instance == null)
+				return;
+			_instance.gameObject.SetActive(false);
+		}
+	}
+
+	public static bool IsShow()
+	{
+		if (_instance != null && _instance.gameObject.activeSelf)
+			return true;
+		return false;
+	}
 
 	public CanvasGroup objectCanvasGroup;
 

@@ -8,8 +8,8 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: M_ClothColor1
-  m_Shader: {fileID: 4800000, guid: af96cba0ce400244e8f086910e74d586, type: 3}
-  m_ShaderKeywords: _ALPHATEST_ON _EMISSION _FLOW_CHANNEL_R _MATCAP_NONE _METALLICGLOSSMAP
+  m_Shader: {fileID: 4800000, guid: 746ea00b76d737d47b606f8586a83dff, type: 3}
+  m_ShaderKeywords: _ALPHATEST_ON _CUTOFF _EMISSION _FLOW_CHANNEL_R _MATCAP_NONE _METALLICGLOSSMAP
     _NORMAL _NORMALMAP
   m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
@@ -45,11 +45,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: cc7065c729841454db933d3d6fdba1dc, type: 3}
+        m_Texture: {fileID: 2800000, guid: 5af2d7b458fec1a47822a3b94184fb7e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 5c1aeb1c2e2a3fb4e8d8c01f5ce38a5e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MatCapTex:
@@ -80,7 +80,7 @@ Material:
     - _BumpScale: 1
     - _ColorIntensity: 1
     - _Cull: 2
-    - _Cutoff: 0.278
+    - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _FlowPower: 1
@@ -94,11 +94,13 @@ Material:
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _RimPower: 0
+    - _Shininess: 0.9
     - _SmoothnessTextureChannel: 0
+    - _SpecPower: 1
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
-    - _UseCutoff: 0
+    - _UseCutoff: 1
     - _UseEmissive: 0
     - _UseFlow: 0
     - _UseNormal: 1
@@ -110,3 +112,4 @@ Material:
     - _EmissiveColor: {r: 1, g: 1, b: 1, a: 1}
     - _FlowSpeed: {r: 0, g: 0, b: 0, a: 0}
     - _RimColor: {r: 0.26, g: 0.19, b: 0.16, a: 0}
+    - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}

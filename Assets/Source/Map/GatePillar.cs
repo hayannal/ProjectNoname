@@ -210,6 +210,7 @@ public class GatePillar : MonoBehaviour
 					showSwapCanvas = true;
 				if (showSwapCanvas)
 				{
+					raycastCount = 0;
 					FullscreenYesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_EnterInfo"), UIString.instance.GetString("GameUI_EnterInfoDesc"), () => {
 						OptionManager.instance.suggestedChapter = StageManager.instance.playChapter;
 						FullscreenYesNoCanvas.instance.ShowCanvas(false, "", "", null);
@@ -233,6 +234,7 @@ public class GatePillar : MonoBehaviour
 				MapTableData nextBossMapTableData = StageManager.instance.nextBossMapTableData;
 				if (nextBossMapTableData != null && CheckSuggestedActor(nextBossMapTableData.suggestedActorId, BattleInstanceManager.instance.playerActor.actorId) == false && HasSuggestedActor(nextBossMapTableData.suggestedActorId))
 				{
+					raycastCount = 0;
 					FullscreenYesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_EnterInfo"), UIString.instance.GetString("GameUI_EnterRecommendDesc"), () => {
 						_checkedStageSwapSuggest = true;
 						FullscreenYesNoCanvas.instance.ShowCanvas(false, "", "", null);

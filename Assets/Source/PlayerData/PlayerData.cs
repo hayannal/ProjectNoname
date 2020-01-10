@@ -66,11 +66,11 @@ public class PlayerData : MonoBehaviour
 
 		CharacterData characterData = new CharacterData();
 		characterData.actorId = "Actor001";
-		characterData.powerLevel = 2;
+		characterData.powerLevel = 1;
 		_listCharacterData.Add(characterData);
 		characterData = new CharacterData();
 		characterData.actorId = "Actor002";
-		characterData.powerLevel = 2;
+		characterData.powerLevel = 1;
 		_listCharacterData.Add(characterData);
 		characterData = new CharacterData();
 		characterData.actorId = "Actor003";
@@ -220,7 +220,7 @@ public class PlayerData : MonoBehaviour
 		return null;
 	}
 
-	string _mainCharacterId = "Actor040";
+	string _mainCharacterId = "Actor001";
 	public string mainCharacterId
 	{
 		get

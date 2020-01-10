@@ -68,4 +68,8 @@ public class ActorTableData
   bool _flying;
   public bool flying { get { return _flying; } set { _flying = value; } }
   
+  [SerializeField]
+  int _orderIndex;
+  public int orderIndex { get { return _orderIndex; } set { _orderIndex = value; } }
+  
 }

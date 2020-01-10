@@ -208,9 +208,8 @@ public class SwapCanvas : MonoBehaviour
 			{
 				if (xActorTableData.grade > yActorTableData.grade) return -1;
 				else if (xActorTableData.grade < yActorTableData.grade) return 1;
-				int stringCompare = xActorTableData.actorId.CompareTo(yActorTableData.actorId);
-				if (stringCompare > 0) return 1;
-				else if (stringCompare < 0) return -1;
+				if (xActorTableData.orderIndex < yActorTableData.orderIndex) return -1;
+				else if (xActorTableData.orderIndex > yActorTableData.orderIndex) return 1;
 			}
 			return 0;
 		});

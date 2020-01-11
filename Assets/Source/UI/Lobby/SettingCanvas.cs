@@ -20,6 +20,8 @@ public class SettingCanvas : MonoBehaviour
 
 	public Button languageButton;
 	public Text languageText;
+	public Slider frameRateSlider;
+	public Text frameRateText;
 
 	void Awake()
 	{
@@ -61,6 +63,7 @@ public class SettingCanvas : MonoBehaviour
 		lockIconSwitch.isOn = (OptionManager.instance.lockIcon == 1);
 
 		LoadLanguage();
+		frameRateSlider.value = OptionManager.instance.frame;
 	}
 
 	public void SaveOption()
@@ -118,6 +121,15 @@ public class SettingCanvas : MonoBehaviour
 	public void OnClickLanguageButton()
 	{
 		UIInstanceManager.instance.ShowCanvasAsync("SelectLanguageCanvas", null);
+	}
+	#endregion
+
+	#region Frame Rate
+	public void OnValueChangedFrameRate(float value)
+	{
+		int intValue = Mathf.RoundToInt(value);
+		OptionManager.instance.frame = intValue;
+		frameRateText.text = OptionManager.instance.GetTargetFrameRate(intValue).ToString();
 	}
 	#endregion
 

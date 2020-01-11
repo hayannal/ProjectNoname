@@ -157,31 +157,26 @@ public class OptionManager : MonoBehaviour
 		set
 		{
 			_frame = value;
-			_frame = Mathf.Clamp(_frame, 0, 4);
-
-			//QualitySettings.vSyncCount = 0;
-			/*
-			// 개발중엔 프레임 봐야해서 막아둔다.
-			switch (_frame)
-			{
-				case 0:
-					Application.targetFrameRate = 30;
-					break;
-				case 1:
-					Application.targetFrameRate = 40;
-					break;
-				case 2:
-					Application.targetFrameRate = 45;
-					break;
-				case 3:
-					Application.targetFrameRate = 50;
-					break;
-				case 4:
-					Application.targetFrameRate = 60;
-					break;
-			}
-			*/
+			_frame = Mathf.Clamp(_frame, 0, 6);
+			QualitySettings.vSyncCount = 0;
+			Application.targetFrameRate = GetTargetFrameRate(_frame);
 		}
+	}
+
+	public int GetTargetFrameRate(int frame)
+	{
+		int targetFrameRate = 60;
+		switch (frame)
+		{
+			case 0: targetFrameRate = 30; break;
+			case 1: targetFrameRate = 35; break;
+			case 2: targetFrameRate = 40; break;
+			case 3: targetFrameRate = 45; break;
+			case 4: targetFrameRate = 50; break;
+			case 5: targetFrameRate = 55; break;
+			case 6: targetFrameRate = 60; break;
+		}
+		return targetFrameRate;
 	}
 
 	public int useDoubleTab

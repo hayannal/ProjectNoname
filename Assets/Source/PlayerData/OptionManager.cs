@@ -75,6 +75,10 @@ public class OptionManager : MonoBehaviour
 		{
 			frame = PlayerPrefs.GetInt(OPTION_FRAME_KEY);
 		}
+		else
+		{
+			frame = _frame;
+		}
 
 		if (PlayerPrefs.HasKey(OPTION_DOUBLE_TAB_KEY))
 		{

@@ -36,6 +36,11 @@ public class HUDFPS : MonoBehaviour
 	{
 	    accum += Time.timeScale/ Time.deltaTime;
 	    ++frames;
+
+		//if (Time.deltaTime < 0.01f)
+		//{
+		//	Debug.LogFormat("1) accum = {0} / frames = {1} / timeScale = {2} / deltaTime {3}", accum, frames, Time.timeScale, Time.deltaTime);
+		//}
 	}
  
 	IEnumerator FPS()
@@ -46,7 +51,12 @@ public class HUDFPS : MonoBehaviour
 			// Update the FPS
 		    float fps = accum/frames;
 		    sFPS = fps.ToString( "f" + Mathf.Clamp( nbDecimal, 0, 10 ) );
- 
+
+			//if (fps > 30)
+			//{
+			//	Debug.LogFormat("2) accum = {0} / frames = {1} / timeScale = {2} / deltaTime {3}", accum, frames, Time.timeScale, Time.deltaTime);
+			//}
+
 			//Update the color
 			color = (fps >= 30) ? Color.green : ((fps > 10) ? Color.red : Color.yellow);
  

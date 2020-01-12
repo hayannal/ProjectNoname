@@ -157,24 +157,34 @@ public class OptionManager : MonoBehaviour
 		set
 		{
 			_frame = value;
-			_frame = Mathf.Clamp(_frame, 0, 6);
+			_frame = Mathf.Clamp(_frame, 0, 3);
 			QualitySettings.vSyncCount = 0;
 			Application.targetFrameRate = GetTargetFrameRate(_frame);
 		}
 	}
 
-	public int GetTargetFrameRate(int frame)
+	int GetTargetFrameRate(int frame)
 	{
 		int targetFrameRate = 60;
 		switch (frame)
 		{
 			case 0: targetFrameRate = 30; break;
-			case 1: targetFrameRate = 35; break;
-			case 2: targetFrameRate = 40; break;
-			case 3: targetFrameRate = 45; break;
-			case 4: targetFrameRate = 50; break;
-			case 5: targetFrameRate = 55; break;
-			case 6: targetFrameRate = 60; break;
+			case 1: targetFrameRate = 48; break;
+			case 2: targetFrameRate = 54; break;
+			case 3: targetFrameRate = 60; break;
+		}
+		return targetFrameRate;
+	}
+
+	public int GetTargetFrameRateText(int frame)
+	{
+		int targetFrameRate = 60;
+		switch (frame)
+		{
+			case 0: targetFrameRate = 30; break;
+			case 1: targetFrameRate = 40; break;
+			case 2: targetFrameRate = 50; break;
+			case 3: targetFrameRate = 60; break;
 		}
 		return targetFrameRate;
 	}

@@ -129,7 +129,7 @@ public class SettingCanvas : MonoBehaviour
 	{
 		int intValue = Mathf.RoundToInt(value);
 		OptionManager.instance.frame = intValue;
-		frameRateText.text = OptionManager.instance.GetTargetFrameRate(intValue).ToString();
+		frameRateText.text = OptionManager.instance.GetTargetFrameRateText(intValue).ToString();
 	}
 	#endregion
 

@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class BossDescriptionObjectIndicatorCanvas : ObjectIndicatorCanvas
 {
 	public Text bossNameText;
+	public GameObject infoRootObject;
 	public Transform imageRootTransform;
 
 	// Start is called before the first frame update
@@ -22,7 +23,7 @@ public class BossDescriptionObjectIndicatorCanvas : ObjectIndicatorCanvas
 
 	void OnDisable()
 	{
-		imageRootTransform.gameObject.SetActive(false);
+		infoRootObject.SetActive(false);
 	}
 
 	// Update is called once per frame

@@ -9,6 +9,8 @@ public class PauseCanvasListItem : MonoBehaviour
 	public Image iconImage;
 	public Coffee.UIExtensions.UIGradient gradient;
 	public Text levelText;
+	public Image titleImage;
+	public Text exclusiveText;
 	public GameObject selectObject;
 
 	public SkillProcessor.LevelPackInfo levelPackInfo { get; private set; }
@@ -22,8 +24,10 @@ public class PauseCanvasListItem : MonoBehaviour
 
 		this.levelPackInfo = levelPackInfo;
 
-		gradient.color2 = levelPackInfo.exclusive ? LevelUpIndicatorButton.s_exclusiveGradientColor : Color.white;
+		gradient.color2 = levelPackInfo.colored ? LevelUpIndicatorButton.s_coloredGradientColor : Color.white;
+		titleImage.color = levelPackInfo.colored ? LevelUpIndicatorButton.s_coloredTitleColor : Color.white;
 		levelText.text = UIString.instance.GetString("GameUI_Lv", levelPackInfo.stackCount);
+		exclusiveText.gameObject.SetActive(levelPackInfo.exclusive);
 
 		selectObject.SetActive(false);
 	}

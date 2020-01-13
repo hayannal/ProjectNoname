@@ -371,7 +371,22 @@ public class StageManager : MonoBehaviour
 
 		BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.playerLevelUpEffectPrefab, BattleInstanceManager.instance.playerActor.cachedTransform.position, Quaternion.identity, BattleInstanceManager.instance.playerActor.cachedTransform);
 		LobbyCanvas.instance.RefreshLevelText(_playerLevel);
+
+		// 먼저 전용전투팩 얻는걸 체크. 여러개 얻을 경우 대비해서 누적시켜서 호출한다.
+		for (int i = _playerLevel - needLevelUpCount + 1; i <= _playerLevel; ++i)
+		{
+			string exclusiveLevelPackId = TableDataManager.instance.FindActorLevelPackByLevel(BattleInstanceManager.instance.playerActor.actorId, i);
+			if (string.IsNullOrEmpty(exclusiveLevelPackId))
+				continue;
+
+			// 전용팩은 레벨팩 데이터 매니저에 넣으면 안된다.
+			//LevelPackDataManager.instance.AddLevelPack(BattleInstanceManager.instance.playerActor.actorId, exclusiveLevelPackId);
+			BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack(exclusiveLevelPackId, true, i);
+			LevelUpIndicatorCanvas.ShowExclusive(true, BattleInstanceManager.instance.playerActor.cachedTransform, exclusiveLevelPackId, i);
+		}
+		// 이후 레벨업 카운트만큼 처리
 		LevelUpIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform, needLevelUpCount, 0, 0);
+
 		Timing.RunCoroutine(LevelUpScreenEffectProcess());
 	}
 

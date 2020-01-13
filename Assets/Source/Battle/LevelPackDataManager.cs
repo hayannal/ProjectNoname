@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// 캐릭터별로 전용팩의 개수가 달라지면서 Transfer할때 전용팩들은 아예 이전을 할 필요가 없어졌다.(레벨에 따라 자동으로 획득하면 된다.)
+// 그래서 공용팩만 매니저에서 관리하기로 하고 전용팩은 캐릭터의 스킬 프로세서에서 관리하기로 한다.
 public class LevelPackDataManager : MonoBehaviour
 {
 	public static LevelPackDataManager instance
@@ -15,46 +17,19 @@ public class LevelPackDataManager : MonoBehaviour
 	}
 	static LevelPackDataManager _instance = null;
 
-	Dictionary<string, List<LevelPackTableData>> _dicAcquirableActorLevelPack = new Dictionary<string, List<LevelPackTableData>>();
-	List<LevelPackTableData> FindAcquirableActorLevelPackList(string actorId)
+	List<LevelPackTableData> _listAcquirableLevelPack = new List<LevelPackTableData>();
+	List<LevelPackTableData> GetAcquirableActorLevelPackList()
 	{
-		if (_dicAcquirableActorLevelPack.ContainsKey(actorId))
-			return _dicAcquirableActorLevelPack[actorId];
+		if (_listAcquirableLevelPack.Count != 0)
+			return _listAcquirableLevelPack;
 
-		List<LevelPackTableData> listLevelPackTableData = new List<LevelPackTableData>();
 		for (int i = 0; i < TableDataManager.instance.levelPackTable.dataArray.Length; ++i)
 		{
 			LevelPackTableData levelPackTableData = TableDataManager.instance.levelPackTable.dataArray[i];
-			if (IsAcquirableLevelPack(levelPackTableData, actorId))
-				listLevelPackTableData.Add(levelPackTableData);
+			if (levelPackTableData.exclusive == false)
+				_listAcquirableLevelPack.Add(levelPackTableData);
 		}
-		_dicAcquirableActorLevelPack.Add(actorId, listLevelPackTableData);
-		return listLevelPackTableData;
-	}
-
-	bool IsAcquirableLevelPack(LevelPackTableData levelPackTableData, string actorId)
-	{
-		if (levelPackTableData.exclusive == false)
-			return true;
-
-		// exclusive 예외처리 추가.
-		if (levelPackTableData.useActor.Length == 1 && levelPackTableData.useActor[0] == "All")
-			return true;
-
-		for (int i = 0; i < levelPackTableData.useActor.Length; ++i)
-		{
-			if (levelPackTableData.useActor[i] == actorId)
-				return true;
-		}
-		return false;
-	}
-
-	LevelPackTableData _cachedExclusiveLevelPackTableDataAfterMax;
-	LevelPackTableData GetFallbackExclusiveLevelPackTableData()
-	{
-		if (_cachedExclusiveLevelPackTableDataAfterMax == null)
-			_cachedExclusiveLevelPackTableDataAfterMax = TableDataManager.instance.FindLevelPackTableData(BattleInstanceManager.instance.GetCachedGlobalConstantString("ExclusiveLevelPackIdAfterMax"));
-		return _cachedExclusiveLevelPackTableDataAfterMax;
+		return _listAcquirableLevelPack;
 	}
 
 	public class RandomLevelPackInfo
@@ -64,16 +39,18 @@ public class LevelPackDataManager : MonoBehaviour
 	}
 	List<RandomLevelPackInfo> _listRandomLevelPackInfo = new List<RandomLevelPackInfo>();
 
-	public List<RandomLevelPackInfo> GetRandomLevelPackTableDataList(PlayerActor playerActor)
+	public List<RandomLevelPackInfo> GetRandomLevelPackTableDataList(PlayerActor playerActor, bool onlyNoHitLevelPack)
 	{
 		_listRandomLevelPackInfo.Clear();
-		List<LevelPackTableData> listLevelPackTableData = FindAcquirableActorLevelPackList(playerActor.actorId);
+		List<LevelPackTableData> listLevelPackTableData = GetAcquirableActorLevelPackList();
 		float sumWeight = 0.0f;
 		for (int i = 0; i < listLevelPackTableData.Count; ++i)
 		{
 			if (listLevelPackTableData[i].max != -1 && playerActor.skillProcessor.GetLevelPackStackCount(listLevelPackTableData[i].levelPackId) >= listLevelPackTableData[i].max)
 				continue;
 			if (listLevelPackTableData[i].dropWeight == 0.0f)
+				continue;
+			if (onlyNoHitLevelPack && listLevelPackTableData[i].noHit == false)
 				continue;
 
 			sumWeight += listLevelPackTableData[i].dropWeight;
@@ -103,52 +80,20 @@ public class LevelPackDataManager : MonoBehaviour
 		return _listRandomLevelPackInfo;
 	}
 
-	public LevelPackTableData GetRandomExclusiveLevelPackTableData(PlayerActor playerActor)
-	{
-		_listRandomLevelPackInfo.Clear();
-		List<LevelPackTableData> listLevelPackTableData = FindAcquirableActorLevelPackList(playerActor.actorId);
-		float sumWeight = 0.0f;
-		for (int i = 0; i < listLevelPackTableData.Count; ++i)
-		{
-			if (listLevelPackTableData[i].exclusive == false)
-				continue;
-			if (listLevelPackTableData[i].max != -1 && playerActor.skillProcessor.GetLevelPackStackCount(listLevelPackTableData[i].levelPackId) >= listLevelPackTableData[i].max)
-				continue;
-			if (listLevelPackTableData[i].dropWeight == 0.0f)
-				continue;
-
-			sumWeight += listLevelPackTableData[i].dropWeight;
-			RandomLevelPackInfo newInfo = new RandomLevelPackInfo();
-			newInfo.levelPackTableData = listLevelPackTableData[i];
-			newInfo.rate = sumWeight;
-			_listRandomLevelPackInfo.Add(newInfo);
-		}
-		// exclusive일때 가져올게 없다면 미리 지정해둔 fallback용 exclusive 레벨팩을 보여준다.
-		if (_listRandomLevelPackInfo.Count == 0)
-			return GetFallbackExclusiveLevelPackTableData();		
-
-		for (int i = 0; i < _listRandomLevelPackInfo.Count; ++i)
-			_listRandomLevelPackInfo[i].rate = _listRandomLevelPackInfo[i].rate / sumWeight;
-
-		LevelPackTableData result = null;
-		float lastRandom = Random.value;
-		for (int i = 0; i < _listRandomLevelPackInfo.Count; ++i)
-		{
-			if (lastRandom <= _listRandomLevelPackInfo[i].rate)
-			{
-				result = _listRandomLevelPackInfo[i].levelPackTableData;
-				break;
-			}
-		}
-		_listRandomLevelPackInfo.Clear();
-		return result;
-	}
-
 
 	#region LevelPack List for Swap Character
 	Dictionary<string, List<string>> _dicPlayerAcquiredLevelPack = new Dictionary<string, List<string>>();
 	public void AddLevelPack(string playerActorId, string levelPackId)
 	{
+#if UNITY_EDITOR
+		LevelPackTableData levelPackTableData = TableDataManager.instance.FindLevelPackTableData(levelPackId);
+		if (levelPackTableData != null && levelPackTableData.exclusive)
+		{
+			Debug.LogError("Invalid Data : Exclusive LevelPack cannot be added to LevelPackDataManager");
+			return;
+		}
+#endif
+
 		if (_dicPlayerAcquiredLevelPack.ContainsKey(playerActorId))
 		{
 			_dicPlayerAcquiredLevelPack[playerActorId].Add(levelPackId);
@@ -162,6 +107,9 @@ public class LevelPackDataManager : MonoBehaviour
 
 	public void TransferLevelPackList(PlayerActor prevPlayerActor, PlayerActor nextPlayerActor)
 	{
+		// 이전하기 전에 먼저 레벨에 따라 자동으로 획득되는 팩부터 체크한다.
+		nextPlayerActor.skillProcessor.CheckAllExclusiveLevelPack();
+
 		if (_dicPlayerAcquiredLevelPack.ContainsKey(prevPlayerActor.actorId) == false)
 			return;
 
@@ -178,18 +126,11 @@ public class LevelPackDataManager : MonoBehaviour
 			if (levelPackTableData == null)
 				continue;
 
-			if (IsAcquirableLevelPack(levelPackTableData, nextPlayerActor.actorId))
+			if (levelPackTableData.exclusive == false)
 			{
-				// 이어받을 수 있느건 이어받으면 된다.
+				// 이어받을 수 있는건 이어받으면 된다. 이어받지 못하는건 레벨에 따라 획득되는 전용레벨팩일거라 위에서 이미 얻어둔 상태일거다.
 				AddLevelPack(nextPlayerActor.actorId, levelPackId);
-				nextPlayerActor.skillProcessor.AddLevelPack(levelPackId);
-			}
-			else
-			{
-				// 재굴림을 통해 얻어야한다.
-				string newLevelPackId = GetRandomExclusiveLevelPackTableData(nextPlayerActor).levelPackId;
-				AddLevelPack(nextPlayerActor.actorId, newLevelPackId);
-				nextPlayerActor.skillProcessor.AddLevelPack(newLevelPackId);
+				nextPlayerActor.skillProcessor.AddLevelPack(levelPackId, false, 0);
 			}
 		}
 	}

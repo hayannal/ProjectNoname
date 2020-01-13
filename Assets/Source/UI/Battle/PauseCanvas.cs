@@ -103,10 +103,12 @@ public class PauseCanvas : MonoBehaviour
 		}
 		_listLevelPackInfo.Sort(delegate (SkillProcessor.LevelPackInfo x, SkillProcessor.LevelPackInfo y)
 		{
-			if (x.stackCount > y.stackCount) return -1;
-			else if (x.stackCount < y.stackCount) return 1;
 			if (x.exclusive && y.exclusive == false) return -1;
 			else if (x.exclusive == false && y.exclusive) return 1;
+			if (x.stackCount > y.stackCount) return -1;
+			else if (x.stackCount < y.stackCount) return 1;
+			if (x.colored && y.colored == false) return -1;
+			else if (x.colored == false && y.colored) return 1;
 			return 0;
 		});
 

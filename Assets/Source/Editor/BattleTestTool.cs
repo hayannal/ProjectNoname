@@ -115,7 +115,7 @@ public class BattleTestTool : EditorWindow
 				_levelPackId = EditorGUILayout.TextField("Level Pack Id :", _levelPackId);
 				if (GUILayout.Button("Add Level Pack"))
 				{
-					_playerActor.skillProcessor.AddLevelPack(_levelPackId);
+					_playerActor.skillProcessor.AddLevelPack(_levelPackId, false, 0);
 				}
 			}
 		}

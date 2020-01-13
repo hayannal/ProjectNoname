@@ -9,8 +9,11 @@ public class LevelUpIndicatorButton : MonoBehaviour
 	public Image iconImage;
 	public Coffee.UIExtensions.UIGradient gradient;
 	public Text levelText;
+	public Image titleImage;
+	public Text exclusiveText;
 
-	public static Color s_exclusiveGradientColor = new Color(1.0f, 0.5f, 0.0f);
+	public static Color s_coloredGradientColor = new Color(1.0f, 0.5f, 0.0f);
+	public static Color s_coloredTitleColor = new Color(1.0f, 0.627f, 0.25f);
 
 	string _id;
 	public void SetInfo(LevelPackTableData levelPackTableData, int level)
@@ -23,12 +26,20 @@ public class LevelUpIndicatorButton : MonoBehaviour
 
 		_id = levelPackTableData.levelPackId;
 		nameTextList.SetLocalizedText(UIString.instance.GetString(levelPackTableData.nameId));
-		gradient.color2 = levelPackTableData.exclusive ? s_exclusiveGradientColor : Color.white;
+		gradient.color2 = levelPackTableData.colored ? s_coloredGradientColor : Color.white;
+		titleImage.color = levelPackTableData.colored ? s_coloredTitleColor : Color.white;
 		levelText.text = UIString.instance.GetString("GameUI_LevelPackLv", level);
+		exclusiveText.gameObject.SetActive(levelPackTableData.exclusive);
 	}
 
 	public void OnClickButton()
 	{
+		if (exclusiveText.gameObject.activeSelf)
+		{
+			LevelUpIndicatorCanvas.OnClickExclusiveCloseButton();
+			return;
+		}
+
 		LevelUpIndicatorCanvas.OnSelectLevelPack(_id);
 	}
 }

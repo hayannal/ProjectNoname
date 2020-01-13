@@ -202,6 +202,7 @@ public class SkillProcessor : MonoBehaviour
 	{
 		public int stackCount;
 		public bool exclusive;
+		public bool colored;
 		public string iconAddress;
 		public string[] affectorValueIdList;
 		public string nameId;
@@ -213,9 +214,12 @@ public class SkillProcessor : MonoBehaviour
 	// 형태가 패시브와 매우 유사하여 스킬 프로세서에 넣는다. 게임 구조가 다르다면 하단은 삭제.
 	Dictionary<string, LevelPackInfo> _dicLevelPack = null;
 	public Dictionary<string, LevelPackInfo> dicLevelPack { get { return _dicLevelPack; } }
-	public void AddLevelPack(string levelPackId)
+	public void AddLevelPack(string levelPackId, bool checkExclusive, int level)
 	{
 		if (actor == null)
+			return;
+
+		if (checkExclusive && _listLevelWhichExclusiveLevelPackOn.Contains(level))
 			return;
 
 		if (_dicLevelPack == null)
@@ -223,7 +227,15 @@ public class SkillProcessor : MonoBehaviour
 
 		LevelPackTableData levelPackTableData = TableDataManager.instance.FindLevelPackTableData(levelPackId);
 		if (levelPackTableData == null)
+		{
+#if UNITY_EDITOR
+			Debug.LogErrorFormat("Not found LevelPackTableData. levelPackId = {0}", levelPackId);
+#endif
 			return;
+		}
+
+		if (checkExclusive)
+			_listLevelWhichExclusiveLevelPackOn.Add(level);
 
 		LevelPackInfo info = null;
 		if (_dicLevelPack.ContainsKey(levelPackId) == false)
@@ -231,6 +243,7 @@ public class SkillProcessor : MonoBehaviour
 			info = new LevelPackInfo();
 			info.stackCount = 1;
 			info.exclusive = levelPackTableData.exclusive;
+			info.colored = levelPackTableData.colored;
 			info.iconAddress = levelPackTableData.iconAddress;
 			if (levelPackTableData.useAffectorValueIdOverriding == false)
 				info.affectorValueIdList = levelPackTableData.affectorValueId;
@@ -308,6 +321,32 @@ public class SkillProcessor : MonoBehaviour
 			return 0;
 
 		return _dicLevelPack[levelPackId].stackCount;
+	}
+
+	List<int> _listLevelWhichExclusiveLevelPackOn = new List<int>();
+	public void CheckAllExclusiveLevelPack()
+	{
+		if (actor == null)
+			return;
+
+		// 스테이지 시작 캐릭터는 2레벨이 될때부터 exclusiveLevelPack 획득 처리를 하기 때문에 동일하게 맞추기 위해 2부터 한다. 1때는 얻는게 없다고 가정한다.
+		for (int i = 2; i <= StageManager.instance.playerLevel; ++i)
+		{
+			string exclusiveLevelPackId = TableDataManager.instance.FindActorLevelPackByLevel(actor.actorId, i);
+			if (string.IsNullOrEmpty(exclusiveLevelPackId))
+				continue;
+
+			// 이미 얻은 레벨이라면 패스한다.
+			if (_listLevelWhichExclusiveLevelPackOn.Contains(i))
+				continue;
+
+			// 전용팩은 레벨팩 데이터 매니저에 넣으면 안되니 스킬 프로세서에만 등록하면 된다.
+			//LevelPackDataManager.instance.AddLevelPack(BattleInstanceManager.instance.playerActor.actorId, exclusiveLevelPackId);
+			AddLevelPack(exclusiveLevelPackId, true, i);
+
+			// 전환시에는 별도의 연출창이 없다.
+			//LevelUpIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform, 0, 0, 0, exclusiveLevelPackId);
+		}
 	}
 	#endregion
 }

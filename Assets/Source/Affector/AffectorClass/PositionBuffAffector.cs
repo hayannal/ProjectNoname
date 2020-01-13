@@ -77,7 +77,7 @@ public class PositionBuffAffector : AffectorBase
 	bool IsInRange(AffectorProcessor affectorProcessor)
 	{
 		Vector3 diff = affectorProcessor.actor.cachedTransform.position - _lastPosition;
-		float sqrMagnitude = diff.x * diff.x + diff.z + diff.z;
+		float sqrMagnitude = diff.x * diff.x + diff.z * diff.z;
 		if (sqrMagnitude > _affectorValueLevelTableData.fValue2 * _affectorValueLevelTableData.fValue2)
 			return false;
 		return true;

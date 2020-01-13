@@ -35,6 +35,7 @@ public class TableDataManager : MonoBehaviour
 	public StageExpTable stageExpTable;
 	public DamageRateTable damageRateTable;
 	public ActorInfoTable actorInfoTable;
+	public ActorLevelPackTable actorLevelPackTable;
 
 	void Awake()
 	{
@@ -312,6 +313,16 @@ public class TableDataManager : MonoBehaviour
 		{
 			if (actorInfoTable.dataArray[i].actorId == actorId)
 				return actorInfoTable.dataArray[i];
+		}
+		return null;
+	}
+
+	public string FindActorLevelPackByLevel(string actorId, int level)
+	{
+		for (int i = 0; i < actorLevelPackTable.dataArray.Length; ++i)
+		{
+			if (actorLevelPackTable.dataArray[i].level == level && actorLevelPackTable.dataArray[i].actorId == actorId)
+				return actorLevelPackTable.dataArray[i].levelPack;
 		}
 		return null;
 	}

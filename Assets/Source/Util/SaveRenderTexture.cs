@@ -15,23 +15,28 @@ public class SaveRenderTexture : MonoBehaviour
 			if (renderTexture == null)
 				return;
 
-			RenderTexture currentRT = RenderTexture.active;
-			RenderTexture.active = renderTexture;
-			//m_bloomComponent.UpdateBloom(tempRenderTexture);
-			
-			Texture2D tex = new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.ARGB32, false);
-			tex.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
-
-			byte[] bytes;
-			bytes = tex.EncodeToPNG();
-
-			string path = "screenshot.png";
-			System.IO.File.WriteAllBytes(path, bytes);
-			UnityEditor.AssetDatabase.ImportAsset(path);
-			Debug.Log("Saved to " + path);
-
-			RenderTexture.active = currentRT;
+			Capture();
 		}
+	}
+
+	public void Capture()
+	{
+		RenderTexture currentRT = RenderTexture.active;
+		RenderTexture.active = renderTexture;
+		//m_bloomComponent.UpdateBloom(tempRenderTexture);
+
+		Texture2D tex = new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.ARGB32, false);
+		tex.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
+
+		byte[] bytes;
+		bytes = tex.EncodeToPNG();
+
+		string path = "screenshot.png";
+		System.IO.File.WriteAllBytes(path, bytes);
+		UnityEditor.AssetDatabase.ImportAsset(path);
+		Debug.Log("Saved to " + path);
+
+		RenderTexture.active = currentRT;
 	}
 #endif
 }

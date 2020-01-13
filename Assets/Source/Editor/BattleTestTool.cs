@@ -47,6 +47,7 @@ public class BattleTestTool : EditorWindow
 		OnGUI_Stage();
 		OnGUI_Monster();
 		OnGUI_Map();
+		OnGUI_Capture();
 	}
 
 	bool _foldoutAffectorGroup = false;
@@ -460,5 +461,22 @@ public class BattleTestTool : EditorWindow
 			}
 		}
 		GUILayout.EndVertical();
+	}
+
+	void OnGUI_Capture()
+	{
+		if (SceneManager.GetActiveScene().name == "CaptureScene")
+		{
+			GUILayout.BeginVertical("box");
+			{
+				if (GUILayout.Button("Capture"))
+				{
+					SaveRenderTexture saveRenderTexture = GameObject.FindObjectOfType<SaveRenderTexture>();
+					if (saveRenderTexture != null)
+						saveRenderTexture.Capture();
+				}
+			}
+			GUILayout.EndVertical();
+		}
 	}
 }

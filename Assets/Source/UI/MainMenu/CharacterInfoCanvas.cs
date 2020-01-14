@@ -149,7 +149,7 @@ public class CharacterInfoCanvas : MonoBehaviour
 
 		float ratio = -pointerEventData.delta.x * 2.54f;
 		ratio /= Screen.dpi;
-		ratio *= 70.0f;	// rotate speed
+		ratio *= 80.0f;	// rotate speed
 		BattleInstanceManager.instance.playerActor.cachedTransform.Rotate(0.0f, ratio, 0.0f, Space.Self);
 	}
 	#endregion

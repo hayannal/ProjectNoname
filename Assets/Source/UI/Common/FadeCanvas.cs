@@ -28,6 +28,7 @@ public class FadeCanvas : MonoBehaviour
 
 		fadeImage.color = new Color(1.0f, 1.0f, 1.0f, 0.0f);
 		fadeImage.DOFade(endValue, duration);
+		_duration = 0.0f;
 	}
 
 	public void FadeIn(float duration)

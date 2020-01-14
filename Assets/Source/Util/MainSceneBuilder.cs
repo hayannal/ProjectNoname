@@ -226,6 +226,8 @@ public class MainSceneBuilder : MonoBehaviour
 
 	IEnumerator LateInitialize()
 	{
+		for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)
+			AddressableAssetLoadManager.GetAddressableSprite(TableDataManager.instance.actorTable.dataArray[i].portraitAddress, "Icon", null);
 		_handleBattleManager = Addressables.LoadAssetAsync<GameObject>("BattleManager");
 		yield return _handleBattleManager;
 		Instantiate<GameObject>(_handleBattleManager.Result);

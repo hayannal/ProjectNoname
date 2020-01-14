@@ -74,8 +74,8 @@ public class TeleportingHitObjectAffector : AffectorBase
 			HitParameter hitParameter = new HitParameter();
 			hitParameter.statusBase = new StatusBase();
 			_actor.actorStatus.CopyStatusBase(ref hitParameter.statusBase);
-			hitParameter.statusStructForHitObject.skillLevel = _affectorValueLevelTableData.level;
 			SkillProcessor.CopyEtcStatus(ref hitParameter.statusStructForHitObject, _actor);
+			hitParameter.statusStructForHitObject.skillLevel = _affectorValueLevelTableData.level;
 
 			defenderAffectorProcessor.ApplyAffectorValue(_affectorValueLevelTableData.sValue2, hitParameter, false);
 		}

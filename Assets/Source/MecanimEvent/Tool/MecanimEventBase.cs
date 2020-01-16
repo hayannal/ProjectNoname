@@ -147,12 +147,16 @@ public class MecanimEventBase : StateMachineBehaviour {
 	{
 	}
 
-	// Not Used
 	public bool IsInRange(AnimatorStateInfo stateInfo)
 	{
 		if (!RangeSignal) return false;
-		if (StartTime <= stateInfo.normalizedTime && stateInfo.normalizedTime <= EndTime)
+
+		float currentNormalizedTime = stateInfo.normalizedTime;
+		if (stateInfo.loop)
+			currentNormalizedTime -= ((int)stateInfo.normalizedTime);   //	0.0 ~ 0.99999
+		if (StartTime <= currentNormalizedTime && currentNormalizedTime <= EndTime)
 			return true;
+
 		return false;
 	}
 

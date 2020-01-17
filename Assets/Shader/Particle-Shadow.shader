@@ -136,7 +136,7 @@ Shader "FrameworkNG/Particle/Shadow"
 
 			float4 frag(v2f i) : SV_Target
 			{
-				fixed col = tex2D(_MainTex, i.texcoord);
+				fixed4 col = tex2D(_MainTex, i.texcoord);
 				fixed a = SelectShadowChannel(col);
 				a = 2.0f * i.color.a * _TintColor.a * a;
 				clip(a - _ShadowCutoff);

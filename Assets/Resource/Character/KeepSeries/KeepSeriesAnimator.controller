@@ -146,6 +146,7 @@ MonoBehaviour:
   hitObjectPrefab: {fileID: 1522649787266994, guid: 320c3e9c018c1684697f3f98018fd852,
     type: 3}
   lifeTime: 3
+  areaHitLifeTimeEarlyOffset: 0
   movable: 1
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -155,6 +156,7 @@ MonoBehaviour:
   boneName: 
   offset: {x: 0, y: 1, z: 0.5}
   useBoneRotation: 0
+  fixedWorldPositionY: 0
   areaRotationY: 0
   areaDistanceMin: 0
   areaDistanceMax: 0
@@ -173,10 +175,15 @@ MonoBehaviour:
   leftRandomAngle: 0
   rightRandomAngle: 0
   upDownRandomAngle: 0
+  howitzerTargetPositionOffset: {x: 0, y: 0}
+  howitzerRandomPositionRadius: 0
   speed: 8
   curve: 0
   curveAdd: 0
   curveLockY: 0
+  curveStartDelayTime: 0
+  curveLifeTime: 0
+  endFollowOverTargetDistance: 0
   accelTurn: 0
   gravity: -9.81
   parallelCount: 0
@@ -292,8 +299,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 1827226128182048838, guid: 6ee6469279740a94b8f7946fddc88dc1,
-    type: 3}
+  m_Motion: {fileID: 7400000, guid: 68778c3e6c4cea647b8d0bc38b548d6b, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 

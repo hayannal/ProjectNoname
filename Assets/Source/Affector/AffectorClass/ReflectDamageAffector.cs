@@ -60,7 +60,7 @@ public class ReflectDamageAffector : AffectorBase
 		if (actor.actorStatus.GetHP() <= 1.0f)
 			return;
 
-		if (actor is PlayerActor)
+		if (actor.IsPlayerActor())
 			BattleManager.instance.AddDamageCountOnStage();
 
 		float reflectDamage = damage * result;

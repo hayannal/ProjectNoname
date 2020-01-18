@@ -255,6 +255,63 @@ public class MonsterActor : Actor
 		monsterAI.enabled = enable;
 	}
 
+	#region Collision Damage
+	// OnCollisionEnter 호출되는 프레임부터 같이 호출되기 때문에 Stay에서만 처리해도 괜찮다.
+	// 원래 PlayerActor에서 처리하던건데 이랬더니 둘러쌓여도 Tick당 한번밖에 데미지를 입지 않아서 몬스터쪽으로 옮긴다.
+	void OnCollisionStay(Collision collision)
+	{
+		foreach (ContactPoint contact in collision.contacts)
+		{
+			Collider col = contact.otherCollider;
+			if (col == null)
+				continue;
+
+			if (col.isTrigger)
+				continue;
+
+			AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(col);
+			if (affectorProcessor == null)
+				continue;
+
+			if (affectorProcessor.actor == null)
+				continue;
+
+			if (affectorProcessor.actor.team.teamId == (int)Team.eTeamID.DefaultMonster)
+				continue;
+
+			if (CheckCollisionStayInterval())
+				ApplyCollisionDamageAffector(affectorProcessor);
+		}
+	}
+
+	void ApplyCollisionDamageAffector(AffectorProcessor defenderAffectorProcessor)
+	{
+		eAffectorType affectorType = eAffectorType.CollisionDamage;
+		AffectorValueLevelTableData collisionDamageAffectorValue = new AffectorValueLevelTableData();
+		collisionDamageAffectorValue.fValue1 = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("CollisionDamageRate");
+		collisionDamageAffectorValue.iValue1 = 0;
+		defenderAffectorProcessor.ExecuteAffectorValueWithoutTable(affectorType, collisionDamageAffectorValue, this, false, true);
+	}
+
+	float _collisionStayInterval = 0.0f;
+	float _lastCollisionStayTime = 0.0f;
+	bool CheckCollisionStayInterval()
+	{
+		if (_lastCollisionStayTime == 0.0f)
+		{
+			_collisionStayInterval = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("CollisionDamageInterval");
+			_lastCollisionStayTime = Time.time;
+			return true;
+		}
+		if (Time.time > _lastCollisionStayTime + _collisionStayInterval)
+		{
+			_lastCollisionStayTime = Time.time;
+			return true;
+		}
+		return false;
+	}
+	#endregion
+
 	#region Drop Item
 	float _dropSpValue;
 	float _dropSpRefreshPeriod;

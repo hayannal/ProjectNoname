@@ -60,5 +60,6 @@ public enum eAffectorType
 	CreateWall,
 	PositionBuff,
 	ReduceContinuousDamage,
+	DefenseStrongDamage,
 }
 #endregion

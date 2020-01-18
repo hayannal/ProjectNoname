@@ -12,6 +12,8 @@ public class FloatingDamageText : MonoBehaviour
 		Invincible,
 		Headshot,
 		Immortal,
+		ReduceContinuousDamage,
+		DefenseStrongDamage,
 	}
 
 	public Text damageText;
@@ -33,6 +35,12 @@ public class FloatingDamageText : MonoBehaviour
 				break;
 			case eFloatingDamageType.Immortal:
 				damageText.SetLocalizedText(UIString.instance.GetString("GameUI_ImmortalWill"));
+				break;
+			case eFloatingDamageType.ReduceContinuousDamage:
+				damageText.SetLocalizedText(UIString.instance.GetString("GameUI_ReduceContinuousDmg"));
+				break;
+			case eFloatingDamageType.DefenseStrongDamage:
+				damageText.SetLocalizedText(UIString.instance.GetString("GameUI_DefenseStrongDmg"));
 				break;
 		}
 		damageText.color = Color.white;

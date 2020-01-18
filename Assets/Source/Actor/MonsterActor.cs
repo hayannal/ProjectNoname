@@ -288,9 +288,9 @@ public class MonsterActor : Actor
 	{
 		eAffectorType affectorType = eAffectorType.CollisionDamage;
 		AffectorValueLevelTableData collisionDamageAffectorValue = new AffectorValueLevelTableData();
-		collisionDamageAffectorValue.fValue1 = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("CollisionDamageRate");
+		collisionDamageAffectorValue.fValue1 = cachedMonsterTableData.collisionDamageRate;
 		collisionDamageAffectorValue.iValue1 = 0;
-		defenderAffectorProcessor.ExecuteAffectorValueWithoutTable(affectorType, collisionDamageAffectorValue, this, false, true);
+		defenderAffectorProcessor.ExecuteAffectorValueWithoutTable(affectorType, collisionDamageAffectorValue, this, false);
 	}
 
 	float _collisionStayInterval = 0.0f;

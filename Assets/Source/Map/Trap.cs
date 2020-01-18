@@ -16,7 +16,6 @@ public class Trap : MonoBehaviour
 		Team.SetTeamLayer(gameObject, Team.eTeamLayer.TEAM1_HITOBJECT_LAYER);
 	}
 
-	StatusBase _statusBase = null;
 	Dictionary<AffectorProcessor, float> _dicHitStayTime = null;
 	void OnTriggerStay(Collider other)
 	{
@@ -46,25 +45,11 @@ public class Trap : MonoBehaviour
 
 		if (affectorProcessor.CheckHitStayInterval(hitStayIdForIgnoreDuplicate, hitStayInterval, _tempActorInstanceId))
 		{
-			if (_statusBase == null)
-				_statusBase = new StatusBase();
-			_statusBase.valueList[(int)eActorStatus.Attack] = StageManager.instance.currentStageTableData.standardAtk;
-
-			Vector3 contactPoint = affectorProcessor.cachedTransform.position;
-			Vector3 contactNormal = affectorProcessor.cachedTransform.forward;
-
-			HitParameter hitParameter = new HitParameter();
-			hitParameter.hitNormal = transform.forward;
-			hitParameter.contactNormal = contactNormal;
-			hitParameter.contactPoint = contactPoint;
-			hitParameter.statusBase = _statusBase;
-			hitParameter.statusStructForHitObject.teamId = (int)Team.eTeamID.DefaultMonster;
-
 			eAffectorType affectorType = eAffectorType.CollisionDamage;
 			AffectorValueLevelTableData collisionDamageAffectorValue = new AffectorValueLevelTableData();
 			collisionDamageAffectorValue.fValue1 = multiAtk;
 			collisionDamageAffectorValue.iValue1 = 1;
-			affectorProcessor.ExecuteAffectorValueWithoutTable(affectorType, collisionDamageAffectorValue, hitParameter, false);
+			affectorProcessor.ExecuteAffectorValueWithoutTable(affectorType, collisionDamageAffectorValue, null, false);
 
 			//if (meHit.showHitEffect)
 			//	HitEffect.ShowHitEffect(meHit, hitParameter.contactPoint, hitParameter.contactNormal, hitParameter.statusStructForHitObject.weaponIDAtCreation);

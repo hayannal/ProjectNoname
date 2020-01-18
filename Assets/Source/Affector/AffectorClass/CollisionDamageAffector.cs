@@ -12,11 +12,15 @@ public class CollisionDamageAffector : AffectorBase
 	{
 		if (_actor == null)
 			return;
+		if (StageManager.instance == null)
+			return;
+		if (StageManager.instance.currentStageTableData == null)
+			return;
 
-		float damage = hitParameter.statusBase.valueList[(int)eActorStatus.Attack];
+		float damage = StageManager.instance.currentStageTableData.standardAtk;
 		damage *= affectorValueLevelTableData.fValue1;
 
-		if (_actor is PlayerActor)
+		if (_actor.IsPlayerActor())
 		{
 			BattleManager.instance.AddDamageCountOnStage();
 			if (hitParameter.statusStructForHitObject.monsterActor)

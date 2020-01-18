@@ -210,31 +210,15 @@ public class AffectorProcessor : MonoBehaviour {
 	}
 
 	#region Without Table
-	public AffectorBase ExecuteAffectorValueWithoutTable(eAffectorType affectorType, AffectorValueLevelTableData levelData, Actor actor, bool managed, bool useMonsterActorInfo = false)
+	public AffectorBase ExecuteAffectorValueWithoutTable(eAffectorType affectorType, AffectorValueLevelTableData levelData, Actor actor, bool managed)
 	{
 		HitParameter hitParameter = new HitParameter();
-		hitParameter.statusBase = new StatusBase();
-		actor.actorStatus.CopyStatusBase(ref hitParameter.statusBase);
-		SkillProcessor.CopyEtcStatus(ref hitParameter.statusStructForHitObject, actor);
-
-		if (useMonsterActorInfo)
+		if (actor != null)
 		{
-			// Monster정보가 추가로 필요해져서 복사해둔다.
-			hitParameter.statusStructForHitObject.monsterActor = actor.IsMonsterActor();
-			hitParameter.statusStructForHitObject.bossMonsterActor = false;
-			if (hitParameter.statusStructForHitObject.monsterActor)
-			{
-				MonsterActor monsterActor = actor as MonsterActor;
-				if (monsterActor != null)
-					hitParameter.statusStructForHitObject.bossMonsterActor = monsterActor.bossMonster;
-			}
+			hitParameter.statusBase = new StatusBase();
+			actor.actorStatus.CopyStatusBase(ref hitParameter.statusBase);
+			SkillProcessor.CopyEtcStatus(ref hitParameter.statusStructForHitObject, actor);
 		}
-
-		return ExcuteAffector(affectorType, levelData, hitParameter, managed);
-	}
-
-	public AffectorBase ExecuteAffectorValueWithoutTable(eAffectorType affectorType, AffectorValueLevelTableData levelData, HitParameter hitParameter, bool managed)
-	{
 		return ExcuteAffector(affectorType, levelData, hitParameter, managed);
 	}
 	#endregion

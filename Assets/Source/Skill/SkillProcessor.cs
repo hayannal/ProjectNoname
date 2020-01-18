@@ -188,6 +188,15 @@ public class SkillProcessor : MonoBehaviour
 		//if (meHit.useWeaponHitEffect)
 		//	statusStructForHitObject.weaponIDAtCreation = actor.GetWeaponID(meHit.weaponDummyName);
 		statusStructForHitObject.hitSignalIndexInAction = 0;
+
+		statusStructForHitObject.monsterActor = actor.IsMonsterActor();
+		statusStructForHitObject.bossMonsterActor = false;
+		if (statusStructForHitObject.monsterActor)
+		{
+			MonsterActor monsterActor = actor as MonsterActor;
+			if (monsterActor != null)
+				statusStructForHitObject.bossMonsterActor = monsterActor.bossMonster;
+		}
 	}
 
 

@@ -4,12 +4,12 @@ using System.Collections.Generic;
 
 public class ReduceDamageAffector : AffectorBase
 {
-	float _endTime;
-
 	public enum eReduceDamageType
 	{
+		Melee,
 		Collider,
 		Crash,
+		Trap,
 	}
 
 	AffectorValueLevelTableData _affectorValueLevelTableData;
@@ -27,26 +27,21 @@ public class ReduceDamageAffector : AffectorBase
 			return;
 		}
 
-		// lifeTime
-		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
-
 		_affectorValueLevelTableData = affectorValueLevelTableData;
-	}
-
-	public override void UpdateAffector()
-	{
-		if (CheckEndTime(_endTime) == false)
-			return;
 	}
 
 	float GetValue(eReduceDamageType eType)
 	{
 		switch (eType)
 		{
+			case eReduceDamageType.Melee:
+				return _affectorValueLevelTableData.fValue1;
 			case eReduceDamageType.Collider:
 				return _affectorValueLevelTableData.fValue2;
 			case eReduceDamageType.Crash:
 				return _affectorValueLevelTableData.fValue3;
+			case eReduceDamageType.Trap:
+				return _affectorValueLevelTableData.fValue4;
 		}
 		return 0.0f;
 	}

@@ -327,6 +327,7 @@ public class PlayerActor : Actor
 		eAffectorType affectorType = eAffectorType.CollisionDamage;
 		AffectorValueLevelTableData collisionDamageAffectorValue = new AffectorValueLevelTableData();
 		collisionDamageAffectorValue.fValue1 = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("CollisionDamageRate");
+		collisionDamageAffectorValue.iValue1 = 0;
 		affectorProcessor.ExecuteAffectorValueWithoutTable(affectorType, collisionDamageAffectorValue, attackerActor, false, true);
 	}
 

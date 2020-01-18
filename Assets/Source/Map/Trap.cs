@@ -63,6 +63,7 @@ public class Trap : MonoBehaviour
 			eAffectorType affectorType = eAffectorType.CollisionDamage;
 			AffectorValueLevelTableData collisionDamageAffectorValue = new AffectorValueLevelTableData();
 			collisionDamageAffectorValue.fValue1 = multiAtk;
+			collisionDamageAffectorValue.iValue1 = 1;
 			affectorProcessor.ExecuteAffectorValueWithoutTable(affectorType, collisionDamageAffectorValue, hitParameter, false);
 
 			//if (meHit.showHitEffect)

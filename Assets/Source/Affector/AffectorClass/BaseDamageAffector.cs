@@ -169,12 +169,20 @@ public class BaseDamageAffector : AffectorBase {
 					damage *= damageRate;
 			}
 
-			if (hitParameter.statusStructForHitObject.targetDetectType == HitObject.eTargetDetectType.Collider)
+			float reduceDamageValue = 0.0f;
+			if (affectorValueLevelTableData.fValue4 == 0.0f)
 			{
-				float reduceDamageValue = ReduceDamageAffector.GetValue(_affectorProcessor, ReduceDamageAffector.eReduceDamageType.Collider);
-				if (reduceDamageValue != 0.0f)
-					damage *= (1.0f - (reduceDamageValue / (1.0f + reduceDamageValue)));
+				if (hitParameter.statusStructForHitObject.targetDetectType == HitObject.eTargetDetectType.Collider)
+					reduceDamageValue = ReduceDamageAffector.GetValue(_affectorProcessor, ReduceDamageAffector.eReduceDamageType.Collider);
 			}
+			else
+			{
+				int reduceDamageType = Mathf.RoundToInt(affectorValueLevelTableData.fValue4);
+				if (reduceDamageType == 1)
+					reduceDamageValue = ReduceDamageAffector.GetValue(_affectorProcessor, ReduceDamageAffector.eReduceDamageType.Melee);
+			}
+			if (reduceDamageValue != 0.0f)
+				damage *= (1.0f - (reduceDamageValue / (1.0f + reduceDamageValue)));
 
 			float enlargeDamageValue = EnlargeDamageAffector.GetValue(_affectorProcessor);
 			if (enlargeDamageValue != 0.0f)

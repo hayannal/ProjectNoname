@@ -56,6 +56,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.CreateHitObjectMoving: affectorBase = new CreateHitObjectMovingAffector(); break;
 			case eAffectorType.CreateWall: affectorBase = new CreateWallAffector(); break;
 			case eAffectorType.PositionBuff: affectorBase = new PositionBuffAffector(); break;
+			case eAffectorType.ReduceContinuousDamage: affectorBase = new ReduceContinuousDamageAffector(); break;
 			#endregion
 		}
 		return affectorBase;
@@ -106,6 +107,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.CreateHitObjectMoving:
 			case eAffectorType.CreateWall:
 			case eAffectorType.PositionBuff:
+			case eAffectorType.ReduceContinuousDamage:
 				return true;
 			#endregion
 		}

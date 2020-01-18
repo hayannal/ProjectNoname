@@ -131,6 +131,13 @@ public class BaseDamageAffector : AffectorBase {
 					if (damageDecreaseAddRate != 0.0f)
 						damage *= (1.0f - damageDecreaseAddRate);
 				}
+
+				// 연타저항 어펙터 처리.
+				float reduceContinuousDamageValue = ReduceContinuousDamageAffector.GetValue(_affectorProcessor);
+				if (reduceContinuousDamageValue != 0.0f)
+					damage *= (1.0f - (reduceContinuousDamageValue / (1.0f + reduceContinuousDamageValue)));
+
+				// 강공격 방어 어펙터 처리.
 			}
 
 			// 리코셰 몹관통 등에 의한 데미지 감소 처리. 레벨팩 없이 시그널에 의해 동작할땐 적용하지 않는다.
@@ -202,6 +209,7 @@ public class BaseDamageAffector : AffectorBase {
 		_actor.actorStatus.AddHP(-damage);
 		ChangeActorStatusAffector.OnDamage(_affectorProcessor);
 		CallAffectorValueAffector.OnEvent(_affectorProcessor, CallAffectorValueAffector.eEventType.OnDamage, damage);
+		ReduceContinuousDamageAffector.OnDamage(_affectorProcessor);
 		if (attackerActor == null) attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(hitParameter.statusStructForHitObject.actorInstanceId);
 		if (attackerActor != null)
 		{

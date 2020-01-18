@@ -29,6 +29,9 @@ public class CollisionDamageAffector : AffectorBase
 				if (damageDecreaseAddRate != 0.0f)
 					damage *= (1.0f - damageDecreaseAddRate);
 			}
+
+			// 연타저항은 충돌뎀지 감소팩, 트랩뎀지 감소팩이 각각 있기때문에 처리하지 않는다.
+			// 강공격 방어도 마찬가지
 		}
 
 		float reduceDamageValue = 0.0f;

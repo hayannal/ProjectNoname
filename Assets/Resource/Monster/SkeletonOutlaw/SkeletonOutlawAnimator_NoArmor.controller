@@ -103,6 +103,7 @@ MonoBehaviour:
   targetDetectType: 1
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
+  areaHitLifeTimeEarlyOffset: 0
   movable: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -112,6 +113,7 @@ MonoBehaviour:
   boneName: 
   offset: {x: 0, y: 0, z: 1}
   useBoneRotation: 0
+  fixedWorldPositionY: 0
   areaRotationY: 0
   areaDistanceMin: 0
   areaDistanceMax: 2.2
@@ -130,10 +132,15 @@ MonoBehaviour:
   leftRandomAngle: 0
   rightRandomAngle: 0
   upDownRandomAngle: 0
+  howitzerTargetPositionOffset: {x: 0, y: 0}
+  howitzerRandomPositionRadius: 0
   speed: 4.5
   curve: 0
   curveAdd: 0
   curveLockY: 0
+  curveStartDelayTime: 0
+  curveLifeTime: 0
+  endFollowOverTargetDistance: 0
   accelTurn: 0
   gravity: -9.81
   parallelCount: 0
@@ -160,7 +167,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttack01
+  - NormalAttackMelee01
   showHitEffect: 0
   hitEffectObject: {fileID: 0}
   hitEffectLookAtNormal: 0

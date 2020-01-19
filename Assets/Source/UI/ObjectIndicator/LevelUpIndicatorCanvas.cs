@@ -204,20 +204,57 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 			case 2: titleText.SetLocalizedText(UIString.instance.GetString("GameUI_NoHitClearReward")); break;
 		}
 
+		_listSelectedIndex.Clear();
 		List<LevelPackDataManager.RandomLevelPackInfo> listRandomLevelPackInfo = LevelPackDataManager.instance.GetRandomLevelPackTableDataList(BattleInstanceManager.instance.playerActor, _levelUpType == (int)eLevelUpType.NoHitLevelPack);
 		for (int i = 0; i < buttonList.Length; ++i)
 		{
-			float currentRandom = Random.value;
-			for (int j = 0; j < listRandomLevelPackInfo.Count; ++j)
+			int index = SelectRandomIndex(listRandomLevelPackInfo);
+			buttonList[i].SetInfo(listRandomLevelPackInfo[index].levelPackTableData, BattleInstanceManager.instance.playerActor.skillProcessor.GetLevelPackStackCount(listRandomLevelPackInfo[index].levelPackTableData.levelPackId) + 1);
+		}
+		listRandomLevelPackInfo.Clear();
+	}
+
+	List<int> _listSelectedIndex = new List<int>();
+	int SelectRandomIndex(List<LevelPackDataManager.RandomLevelPackInfo> listRandomLevelPackInfo)
+	{
+		int loopCount = 0;
+		while (true)
+		{
+			++loopCount;
+			if (loopCount > 100)
 			{
-				if (currentRandom <= listRandomLevelPackInfo[j].rate)
+				Debug.LogError("Something wrong. while loop invalid");
+				return FindIndex(listRandomLevelPackInfo, Random.value);
+			}
+
+			float currentRandom = Random.Range(0.0f, 1.0f);
+			int findIndex = FindIndex(listRandomLevelPackInfo, currentRandom);
+			if (findIndex == -1)
+				continue;
+			bool duplicated = false;
+			for (int i = 0; i < _listSelectedIndex.Count; ++i)
+			{
+				if (_listSelectedIndex[i] == findIndex)
 				{
-					buttonList[i].SetInfo(listRandomLevelPackInfo[j].levelPackTableData, BattleInstanceManager.instance.playerActor.skillProcessor.GetLevelPackStackCount(listRandomLevelPackInfo[j].levelPackTableData.levelPackId) + 1);
+					duplicated = true;
 					break;
 				}
 			}
+			if (duplicated)
+				continue;
+			_listSelectedIndex.Add(findIndex);
+			return findIndex;
 		}
-		listRandomLevelPackInfo.Clear();
+	}
+
+	int FindIndex(List<LevelPackDataManager.RandomLevelPackInfo> listRandomLevelPackInfo, float random)
+	{
+		for (int i = 0; i < listRandomLevelPackInfo.Count; ++i)
+		{
+			if (random <= listRandomLevelPackInfo[i].rate)
+				return i;
+		}
+		return -1;
 	}
 
 	#region Exclusive Info

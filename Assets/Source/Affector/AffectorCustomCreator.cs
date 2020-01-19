@@ -60,6 +60,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.DefenseStrongDamage: affectorBase = new DefenseStrongDamageAffector(); break;
 			case eAffectorType.HealSpOnHit: affectorBase = new HealSpOnHitAffector(); break;
 			case eAffectorType.PaybackSp: affectorBase = new PaybackSpAffector(); break;
+			case eAffectorType.Vampire: affectorBase = new VampireAffector(); break;
 			#endregion
 		}
 		return affectorBase;
@@ -114,6 +115,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.DefenseStrongDamage:
 			case eAffectorType.HealSpOnHit:
 			case eAffectorType.PaybackSp:
+			case eAffectorType.Vampire:
 				return true;
 			#endregion
 		}

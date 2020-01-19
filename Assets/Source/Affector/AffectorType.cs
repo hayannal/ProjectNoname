@@ -63,5 +63,6 @@ public enum eAffectorType
 	DefenseStrongDamage,
 	HealSpOnHit,
 	PaybackSp,
+	Vampire,
 }
 #endregion

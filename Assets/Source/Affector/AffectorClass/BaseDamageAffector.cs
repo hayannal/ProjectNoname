@@ -217,6 +217,7 @@ public class BaseDamageAffector : AffectorBase {
 		if (attackerActor == null) attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(hitParameter.statusStructForHitObject.actorInstanceId);
 		if (attackerActor != null)
 		{
+			VampireAffector.OnHit(attackerActor.affectorProcessor, damage);
 			HealSpOnHitAffector.OnHit(attackerActor.affectorProcessor);
 			ReflectDamageAffector.OnDamage(_affectorProcessor, attackerActor, damage);
 			CallAffectorValueAffector.OnEvent(attackerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnHit, damage);
@@ -254,7 +255,10 @@ public class BaseDamageAffector : AffectorBase {
 				}
 
 				if (attackerActor != null)
+				{
+					VampireAffector.OnKill(attackerActor.affectorProcessor);
 					CallAffectorValueAffector.OnEvent(attackerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnKill);
+				}
 			}
 		}
 

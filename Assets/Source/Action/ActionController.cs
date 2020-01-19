@@ -273,7 +273,7 @@ public class ActionController : MonoBehaviour {
 					{
 						// 궁극기라면 스킬을 실행하기 전에 미리 sp를 차감해야한다.
 						if (actionPlayInfo.actionName == "Ultimate")
-							actor.actorStatus.AddSP(-actor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MaxSp));
+							UseUltimateSp();
 						skillProcessor.ApplyNonAniSkill(selectedSkillInfo);
 					}
 				}
@@ -297,7 +297,7 @@ public class ActionController : MonoBehaviour {
 			if (actionPlayInfo.actionName == "Ultimate")
 			{
 				// 궁극기 액티브 스킬은 스킬을 실행시켜놓고 sp제거.
-				actor.actorStatus.AddSP(-actor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MaxSp));
+				UseUltimateSp();
 
 				#region Ultimate Force Set
 				// 간혹가다 궁극기를 눌렀는데 일반어택이 씹어버리고 덮는 경우가 발생했다.
@@ -335,6 +335,18 @@ public class ActionController : MonoBehaviour {
 			detectedPlayAction = true;
 		#endregion
 		return true;
+	}
+
+	void UseUltimateSp()
+	{
+		float needSp = actor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MaxSp);
+		float payback = PaybackSpAffector.GetValue(actor.affectorProcessor);
+		if (payback != 0.0f)
+		{
+			needSp *= (1.0f - payback);
+			FloatingDamageTextRootCanvas.instance.ShowText(FloatingDamageText.eFloatingDamageType.PaybackSp, actor);
+		}
+		actor.actorStatus.AddSP(-needSp);
 	}
 
 	#region DetectPlayAction

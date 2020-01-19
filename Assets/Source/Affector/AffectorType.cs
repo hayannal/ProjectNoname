@@ -62,5 +62,6 @@ public enum eAffectorType
 	ReduceContinuousDamage,
 	DefenseStrongDamage,
 	HealSpOnHit,
+	PaybackSp,
 }
 #endregion

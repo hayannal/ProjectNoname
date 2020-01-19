@@ -59,6 +59,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.ReduceContinuousDamage: affectorBase = new ReduceContinuousDamageAffector(); break;
 			case eAffectorType.DefenseStrongDamage: affectorBase = new DefenseStrongDamageAffector(); break;
 			case eAffectorType.HealSpOnHit: affectorBase = new HealSpOnHitAffector(); break;
+			case eAffectorType.PaybackSp: affectorBase = new PaybackSpAffector(); break;
 			#endregion
 		}
 		return affectorBase;
@@ -112,6 +113,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.ReduceContinuousDamage:
 			case eAffectorType.DefenseStrongDamage:
 			case eAffectorType.HealSpOnHit:
+			case eAffectorType.PaybackSp:
 				return true;
 			#endregion
 		}

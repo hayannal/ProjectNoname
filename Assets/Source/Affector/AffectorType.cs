@@ -61,5 +61,6 @@ public enum eAffectorType
 	PositionBuff,
 	ReduceContinuousDamage,
 	DefenseStrongDamage,
+	HealSpOnHit,
 }
 #endregion

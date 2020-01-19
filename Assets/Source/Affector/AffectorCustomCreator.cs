@@ -58,6 +58,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.PositionBuff: affectorBase = new PositionBuffAffector(); break;
 			case eAffectorType.ReduceContinuousDamage: affectorBase = new ReduceContinuousDamageAffector(); break;
 			case eAffectorType.DefenseStrongDamage: affectorBase = new DefenseStrongDamageAffector(); break;
+			case eAffectorType.HealSpOnHit: affectorBase = new HealSpOnHitAffector(); break;
 			#endregion
 		}
 		return affectorBase;
@@ -110,6 +111,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.PositionBuff:
 			case eAffectorType.ReduceContinuousDamage:
 			case eAffectorType.DefenseStrongDamage:
+			case eAffectorType.HealSpOnHit:
 				return true;
 			#endregion
 		}

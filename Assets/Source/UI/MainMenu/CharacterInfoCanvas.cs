@@ -7,7 +7,7 @@ public class CharacterInfoCanvas : MonoBehaviour
 {
 	public GameObject infoCameraGroundPrefab;
 	public Transform infoCameraTransform;
-	public float infoCameraFov = 60.0f;
+	public float infoCameraFov = 40.0f;
 	public float charactorY = 180.0f;
 
 	void Start()

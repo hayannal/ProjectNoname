@@ -10,6 +10,7 @@ public class MeLookAt : MecanimEventBase
 {
 	override public bool RangeSignal { get { return true; } }
 	public bool lookAtTarget;
+	public float lookAtTargetLerpPower = 1.0f;
 	public bool lookAtRandom;
 
 #if UNITY_EDITOR
@@ -48,6 +49,11 @@ public class MeLookAt : MecanimEventBase
 	override public void OnRangeSignal(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		if (lookAtTarget && _baseCharacterController != null && _actor != null && _actor.targetingProcessor.GetTargetCount() > 0)
-			_baseCharacterController.movement.rotation = Quaternion.LookRotation(_actor.targetingProcessor.GetTargetPosition(0) - _actor.cachedTransform.position);
+		{
+			if (lookAtTargetLerpPower == 1.0f)
+				_baseCharacterController.movement.rotation = Quaternion.LookRotation(_actor.targetingProcessor.GetTargetPosition(0) - _actor.cachedTransform.position);
+			else
+				_baseCharacterController.movement.rotation = Quaternion.Slerp(_baseCharacterController.movement.rotation, Quaternion.LookRotation(_actor.targetingProcessor.GetTargetPosition(0) - _actor.cachedTransform.position), lookAtTargetLerpPower);
+		}
 	}
 }

@@ -133,17 +133,6 @@ public class BaseDamageAffector : AffectorBase {
 					if (damageDecreaseAddRate != 0.0f)
 						damage *= (1.0f - damageDecreaseAddRate);
 				}
-
-				// 연타저항 어펙터 처리.
-				float reduceContinuousDamageValue = ReduceContinuousDamageAffector.GetValue(_affectorProcessor);
-				if (reduceContinuousDamageValue != 0.0f)
-				{
-					damage *= (1.0f - (reduceContinuousDamageValue / (1.0f + reduceContinuousDamageValue)));
-					FloatingDamageTextRootCanvas.instance.ShowText(FloatingDamageText.eFloatingDamageType.ReduceContinuousDamage, _actor);
-				}
-
-				// 강공격 방어 어펙터 처리.
-				damage = DefenseStrongDamageAffector.OnDamage(_affectorProcessor, damage);
 			}
 
 			// 리코셰 몹관통 등에 의한 데미지 감소 처리. 레벨팩 없이 시그널에 의해 동작할땐 적용하지 않는다.
@@ -196,6 +185,20 @@ public class BaseDamageAffector : AffectorBase {
 			}
 			if (reduceDamageValue != 0.0f)
 				damage *= (1.0f - (reduceDamageValue / (1.0f + reduceDamageValue)));
+
+			if (_actor.IsPlayerActor())
+			{
+				// 연타저항 어펙터 처리.
+				float reduceContinuousDamageValue = ReduceContinuousDamageAffector.GetValue(_affectorProcessor);
+				if (reduceContinuousDamageValue != 0.0f)
+				{
+					damage *= (1.0f - (reduceContinuousDamageValue / (1.0f + reduceContinuousDamageValue)));
+					FloatingDamageTextRootCanvas.instance.ShowText(FloatingDamageText.eFloatingDamageType.ReduceContinuousDamage, _actor);
+				}
+
+				// 강공격 방어 어펙터 처리.
+				damage = DefenseStrongDamageAffector.OnDamage(_affectorProcessor, damage);
+			}
 
 			float enlargeDamageValue = EnlargeDamageAffector.GetValue(_affectorProcessor);
 			if (enlargeDamageValue != 0.0f)

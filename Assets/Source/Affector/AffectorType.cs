@@ -64,5 +64,6 @@ public enum eAffectorType
 	HealSpOnHit,
 	PaybackSp,
 	Vampire,
+	Rush,
 }
 #endregion

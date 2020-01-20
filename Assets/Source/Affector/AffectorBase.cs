@@ -51,6 +51,10 @@ public class AffectorBase
 	{
 	}
 
+	public virtual void FixedUpdateAffector()
+	{
+	}
+
 	public virtual void FinalizeAffector()
 	{
 	}

@@ -288,6 +288,11 @@ public class AffectorProcessor : MonoBehaviour {
 		UpdateActorState();
 	}
 
+	void FixedUpdate()
+	{
+		FixedUpdateAffectorProcessor();
+	}
+
 	void UpdateAffectorProcessor()
 	{
 		if (_dicContinuousAffector == null)
@@ -311,6 +316,23 @@ public class AffectorProcessor : MonoBehaviour {
 			{
 				if (e.Current.Value[i].finalized)
 					e.Current.Value.RemoveAt(i);
+			}
+		}
+	}
+
+	void FixedUpdateAffectorProcessor()
+	{
+		if (_dicContinuousAffector == null)
+			return;
+
+		Dictionary<int, List<AffectorBase>>.Enumerator e = _dicContinuousAffector.GetEnumerator();
+		while (e.MoveNext())
+		{
+			for (int i = 0; i < e.Current.Value.Count; ++i)
+			{
+				if (e.Current.Value[i].finalized)
+					continue;
+				e.Current.Value[i].FixedUpdateAffector();
 			}
 		}
 	}

@@ -880,6 +880,7 @@ public class HitObject : MonoBehaviour
 			HitObjectDisableAfterCollision hitObjectDisableAfterCollision = GetComponentInChildren<HitObjectDisableAfterCollision>();
 			if (hitObjectDisableAfterCollision != null)
 			{
+				_disableSelfObjectAfterCollision = hitObjectDisableAfterCollision.disableHitObjectAfterCollision;
 				for (int i = 0; i < hitObjectDisableAfterCollision.DeactivateObjectsAfterCollision.Length; ++i)
 					_listDisableObjectAfterCollision.Add(hitObjectDisableAfterCollision.DeactivateObjectsAfterCollision[i]);
 				for (int i = 0; i < hitObjectDisableAfterCollision.DisableParticlesAfterCollision.Length; ++i)

@@ -33,6 +33,7 @@ namespace ActorStatusDefine {
 
 		MaxHpAddRate = BaseAmount,
 		AttackAddRate,
+		CriticalPower,
 
 		ExAmount,
 	}

@@ -16,6 +16,9 @@ public class ActorStatus : MonoBehaviour
 	public StatusBase statusBase { get { return _statusBase; } }
 	public Actor actor { get; private set; }
 
+	static float s_criticalPowerConstantA = 5.0f;
+	static float s_criticalPowerConstantB = 3.0f;
+
 	void Awake()
 	{
 		actor = GetComponent<Actor>();
@@ -150,6 +153,14 @@ public class ActorStatus : MonoBehaviour
 				if (actor.affectorProcessor.IsContinuousAffectorType(eAffectorType.CannotMove)) value = 0.05f;
 				addRate = GetValue(eActorStatus.MoveSpeedAddRate);
 				if (addRate != 0.0f) value *= (1.0f + addRate);
+				break;
+			case eActorStatus.CriticalRate:
+				float criticalPower1 = GetValue(eActorStatus.CriticalPower);
+				if (criticalPower1 != 0.0f) value += (criticalPower1 / (criticalPower1 * s_criticalPowerConstantA / s_criticalPowerConstantB + BattleInstanceManager.instance.GetCachedGlobalConstantFloat("DefaultCriticalDamageRate")));
+				break;
+			case eActorStatus.CriticalDamageAddRate:
+				float criticalPower2 = GetValue(eActorStatus.CriticalPower);
+				if (criticalPower2 != 0.0f) value += (criticalPower2 * s_criticalPowerConstantA / s_criticalPowerConstantB);
 				break;
 			case eActorStatus.AttackAddRate:
 				value += AddAttackByHpAffector.GetValue(actor.affectorProcessor, actor.actorStatus.GetHPRatio());

@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
 
 public class HitObjectMovement : MonoBehaviour {
 
@@ -41,6 +44,7 @@ public class HitObjectMovement : MonoBehaviour {
 	public Vector3 howitzerTargetPosition { get; set; }
 	#endregion
 
+	TweenerCore<float, float, FloatOptions> _tweenReferenceForSpeedChange;
 	public void InitializeSignal(MeHitObject meHit, Actor parentActor, Rigidbody rigidbody, int hitSignalIndexInAction)
 	{
 		_signal = meHit;
@@ -50,11 +54,22 @@ public class HitObjectMovement : MonoBehaviour {
 		_rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
 		_rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
 		_speed = _signal.speed;
+		float slowRate = 0.0f;
 		if (parentActor.team.teamId == (int)Team.eTeamID.DefaultMonster)
 		{
-			float slowRate = SlowHitObjectSpeedAffector.GetValue(BattleInstanceManager.instance.playerActor.affectorProcessor);
+			slowRate = SlowHitObjectSpeedAffector.GetValue(BattleInstanceManager.instance.playerActor.affectorProcessor);
 			if (slowRate != 0.0f)
 				_speed *= (1.0f - slowRate);
+		}
+
+		if (_signal.useSpeedChange)
+		{
+			float targetSpeed = _signal.targetSpeed;
+			if (slowRate != 0.0f)
+				targetSpeed *= (1.0f - slowRate);
+			if (_tweenReferenceForSpeedChange != null)
+				_tweenReferenceForSpeedChange.Kill();
+			_tweenReferenceForSpeedChange = DOTween.To(() => _speed, x => _speed = x, targetSpeed, _signal.speedChangeTime).SetEase(_signal.speedChangeEase);
 		}
 
 		switch(_signal.movementType)
@@ -181,6 +196,10 @@ public class HitObjectMovement : MonoBehaviour {
 
 		switch(_signal.movementType)
 		{
+			case eMovementType.Direct:
+				if (_signal.useSpeedChange)
+					_velocity = _rigidbody.velocity = cachedTransform.forward * _speed;
+				break;
 			case eMovementType.FollowTarget:
 				if (_ignoreFollow)
 					break;

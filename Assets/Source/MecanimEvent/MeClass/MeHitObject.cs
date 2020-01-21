@@ -52,6 +52,10 @@ public class MeHitObject : MecanimEventBase {
 	public Vector2 howitzerTargetPositionOffset;
 	public float howitzerRandomPositionRadius;
 	public float speed;
+	public bool useSpeedChange;
+	public float targetSpeed;
+	public float speedChangeTime;
+	public DG.Tweening.Ease speedChangeEase = DG.Tweening.Ease.OutQuad;
 	public float curve;
 	public float curveAdd;
 	public bool curveLockY = true;
@@ -222,7 +226,19 @@ public class MeHitObject : MecanimEventBase {
 				upDownRandomAngle = EditorGUILayout.FloatField("UpDown Random Angle :", upDownRandomAngle);
 			}
 			if (targetDetectType != HitObject.eTargetDetectType.SphereCast)
+			{
 				speed = EditorGUILayout.FloatField("Speed :", speed);
+				if (movementType != HitObjectMovement.eMovementType.Howitzer)
+				{
+					useSpeedChange = EditorGUILayout.Toggle("Use Speed Change :", useSpeedChange);
+					if (useSpeedChange)
+					{
+						targetSpeed = EditorGUILayout.FloatField("Target Speed :", targetSpeed);
+						speedChangeTime = EditorGUILayout.FloatField("Speed Change Time :", speedChangeTime);
+						speedChangeEase = (DG.Tweening.Ease)EditorGUILayout.EnumPopup("Easy Type :", speedChangeEase);
+					}
+				}
+			}
 			EditorGUILayout.LabelField("-----------------------------------------------------------------");
 		}
 

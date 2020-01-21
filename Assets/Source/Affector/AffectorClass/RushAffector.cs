@@ -38,6 +38,8 @@ public class RushAffector : AffectorBase
 		diff.z += randomOffset.y;
 		float rushTime = diff.magnitude / affectorValueLevelTableData.fValue1;
 		_minimunRushTime = affectorValueLevelTableData.fValue3 / affectorValueLevelTableData.fValue1;
+		if (rushTime < _minimunRushTime)
+			rushTime = _minimunRushTime;
 
 		_actorRadius = ColliderUtil.GetRadius(_actor.GetCollider());
 

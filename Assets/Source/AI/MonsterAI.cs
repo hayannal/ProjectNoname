@@ -298,6 +298,9 @@ public class MonsterAI : MonoBehaviour
 	bool _customActionPlayed = false;
 	void UpdateCustomAction()
 	{
+		if (targetActor == null)
+			return;
+
 		if (_customActionPlayed)
 		{
 			// Idle 하나만 남아있는지를 검사해야 더 정확하지 않을까?

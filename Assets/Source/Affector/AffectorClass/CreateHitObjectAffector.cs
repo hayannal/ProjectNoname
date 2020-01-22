@@ -29,6 +29,7 @@ public class CreateHitObjectAffector : AffectorBase
 				spawnTransform = attachTransform;
 		}
 
-		HitObject.InitializeHit(spawnTransform, info.meHit, _actor, parentTransform, null, 0.0f, 0, 0, 0);
+		HitObject hitObject = HitObject.InitializeHit(spawnTransform, info.meHit, _actor, parentTransform, null, 0.0f, 0, 0, 0);
+		hitObject.OverrideSkillLevel(affectorValueLevelTableData.level);
 	}
 }

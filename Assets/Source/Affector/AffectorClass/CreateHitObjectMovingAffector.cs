@@ -69,6 +69,7 @@ public class CreateHitObjectMovingAffector : AffectorBase
 		}
 
 		HitObject hitObject = HitObject.InitializeHit(spawnTransform, _meHit, _actor, parentTransform, null, 0.0f, 0, 0, 0);
+		hitObject.OverrideSkillLevel(_affectorValueLevelTableData.level);
 		BattleInstanceManager.instance.AddHitObjectMoving(hitObject);
 	}
 

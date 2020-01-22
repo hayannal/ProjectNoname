@@ -925,6 +925,12 @@ public class HitObject : MonoBehaviour
 		}
 	}
 
+	public void OverrideSkillLevel(int level)
+	{
+		// 히트오브젝트를 생성하고 나서 액션에 따라 자동으로 설정된 레벨 대신 임의의 레벨을 덮어써야할때가 있다. 대표적으로 마인. 힐장판.
+		_statusStructForHitObject.skillLevel = level;
+	}
+
 	void Update()
 	{
 		UpdateIgnoreList();

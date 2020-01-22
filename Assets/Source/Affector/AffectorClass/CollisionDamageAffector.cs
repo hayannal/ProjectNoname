@@ -18,6 +18,11 @@ public class CollisionDamageAffector : AffectorBase
 			return;
 
 		float damage = StageManager.instance.currentStageTableData.standardAtk;
+		if (affectorValueLevelTableData.iValue2 == 1)
+		{
+			if (hitParameter.statusBase != null)
+				damage = hitParameter.statusBase.valueList[(int)eActorStatus.Attack];
+		}
 		damage *= affectorValueLevelTableData.fValue1;
 
 		if (_actor.IsPlayerActor())

@@ -23,7 +23,6 @@ public class CreateHitObjectMovingAffector : AffectorBase
 		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
 
 		_lastPosition = _actor.cachedTransform.position;
-		_moveSpeedDelta = _actor.actorStatus.GetCachedValue(eActorStatus.MoveSpeed) * Time.deltaTime;
 	}
 
 	public override void UpdateAffector()
@@ -34,7 +33,6 @@ public class CreateHitObjectMovingAffector : AffectorBase
 		UpdateMovedDistance();
 	}
 
-	float _moveSpeedDelta = 0.0f;
 	float _movedDistance = 0.0f;
 	Vector3 _lastPosition;
 	void UpdateMovedDistance()
@@ -48,7 +46,7 @@ public class CreateHitObjectMovingAffector : AffectorBase
 		float deltaDistance = Vector3.Distance(_actor.cachedTransform.position, _lastPosition);
 		// 게이트 필라 이동전후에 플래그를 넣으려고 했는데 포탈부터 내 위치가 이동될 경우가 많다.
 		// 예외코드가 여러곳에 들어갈바엔 차라리 프레임 당 최대 이동량을 정해두고 이 값을 넘지 못하게 해본다.
-		_movedDistance += Mathf.Min(deltaDistance, _moveSpeedDelta);
+		_movedDistance += Mathf.Min(deltaDistance, _actor.baseCharacterController.speed * Time.deltaTime);
 		_lastPosition = _actor.cachedTransform.position;
 
 		if (_movedDistance > _affectorValueLevelTableData.fValue2)

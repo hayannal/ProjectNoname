@@ -409,6 +409,7 @@ public class MonsterAI : MonoBehaviour
 	public float attackActionFadeDuration = 0.05f;
 	public bool lookAtTargetBeforeAttack = true;
 	bool _attackPlayed = false;
+	bool _waitAttackState = false;
 	void UpdateAttack()
 	{
 		if (targetActor == null)
@@ -420,6 +421,18 @@ public class MonsterAI : MonoBehaviour
 			{
 				ResetAttackActionStateInfo();
 				NextStep();
+			}
+			return;
+		}
+
+		if (_waitAttackState)
+		{
+			if (actor.actionController.mecanimState.IsState((int)eMecanimState.Attack))
+			{
+				_waitAttackState = false;
+				_attackPlayed = true;
+				if (lookAtTargetBeforeAttack)
+					pathFinderController.movement.rotation = Quaternion.LookRotation(targetActor.cachedTransform.position - actor.cachedTransform.position);
 			}
 			return;
 		}
@@ -445,8 +458,30 @@ public class MonsterAI : MonoBehaviour
 					_attackPlayed = true;
 					break;
 				case eActionPlayType.Trigger:
+					// 트리거로 할땐 바로 위의 Table이나 State와 달리 한프레임 더 늦게 호출이 가 불러지지 않는다는 점때문에 (RandomPlayState를 쓰든 안쓰든 동일하다.)
+					// MeState - Attack상태가 돌입하기도 전에 _attackPlayed값이 true로 바뀌고
+					// 다음 프레임에 종료 조건에 걸려서 Reset이 호출되버린다.
+					// 그래서 Attack상태에 돌입했다가 풀리는걸 보고 종료하게 바꾼다. waitAttackState 추가.
+					// 
+					// 참고로 위 CustomAction쪽과는 약간 다른게 있다.
+					// 저건 Idle이 있으면 종료하는 조건으로 코딩해놨는데, 일반적으로 Idle상태가 없는 상태고
+					// Custom Action 안에다가도 Idle 상태를 안넣는 형태다보니
+					// 모든 행동이 끝나고 Idle Animator에 의해 Idle로 돌아갈때 종료되게 된다.
+					// 그래서 이런 플래그 처리를 안해도 된다.
+					//
+					// 그런데 또 다른 문제가 발생했다.
+					// 위의 처리로 시그널이 호출되는덴 문제가 없었는데
+					// 이상하게 애니는 Idle로 나가는데 액션은 State Machine 그룹내에 있는 액션이 실행되는거였다.
+					// (실제로 애니메이터 윈도우에선 State Machine안에 있는거로 실행되고있는데 애니는 Idle이 나가고 있었다.)
+					// 처음 보는 현상이라 찾아보니 같은 프레임에 Idle을 Play걸면서 trigger를 on하니까 이런 버그같은 현상이 발생하는 거였다.
+					// PlayRandomState를 붙이면 명시적으로 Play를 다시 시키니 문제가 발생하지 않는걸로 보아
+					// Trigger쪽 관련 이슈인거 같은데, 딱히 좋은 해결책을 찾을 수 없어서 고민이다.
+					// 이게 사실이라면 Custom Action쪽에서도 같은 문제가 발생할 수 있단건데 거긴 동시에 Play시키는 State가 없어서 그런지 괜찮았다.
+					// 결국 State Machine내에 특정 State를 명시해서 호출하는게 필요했는데 PlayRandomState는 랜덤 돌리는게 있어서 PlayState 스크립트를 만들게 되었다.
+					// 요거 붙이고 State Name 적어두면 같은 프레임에 Idle 호출했더라도 애니 제대로 보이면서 실행되게 된다.
 					actor.actionController.animator.SetTrigger(BattleInstanceManager.instance.GetActionNameHash(attackActionName));
-					_attackPlayed = true;
+					//_attackPlayed = true;
+					_waitAttackState = true;
 					break;
 			}
 			if (_attackPlayed)
@@ -465,6 +500,7 @@ public class MonsterAI : MonoBehaviour
 			// 어택하고 후딜 있는데 후딜 안하고 넘어가는 경우가 생기지 않는다.
 			if (useStateList[(int)eStateType.AttackDelay] == false) enable = true;
 			if (useStateList[(int)eStateType.AttackDelay] && _attackPlayed == false) enable = true;
+			if (_waitAttackState) enable = false;
 			if (enable)
 			{
 				UpdateChase(true);
@@ -481,6 +517,7 @@ public class MonsterAI : MonoBehaviour
 	void ResetAttackActionStateInfo()
 	{
 		_attackPlayed = false;
+		_waitAttackState = false;
 	}
 	#endregion
 

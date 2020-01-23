@@ -20,7 +20,7 @@ RenderSettings:
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.63529414, g: 0.6509804, b: 0.9137255, a: 0}
+  m_AmbientSkyColor: {r: 0.63529414, g: 0.6509804, b: 0.8039216, a: 0}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
@@ -2698,7 +2698,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RenderTextureResolutoinFactor: 0.8
   bloomIntensity: 0.5
-  bloomThreshold: 2.9
+  bloomThreshold: 3.8
   bloomBrightnessMax: 2.05
   DirtTexture: {fileID: 2800000, guid: 2f7a16ddcb2ee2740899c244fa30dd29, type: 3}
   DirtIntensity: 2
@@ -4172,25 +4172,40 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 461561232649368609, guid: 5a329945b4a56384bb396810517b4771,
-        type: 3}
-      propertyPath: bloomThreshold
-      value: 2.9
-      objectReference: {fileID: 0}
     - target: {fileID: 461561232649368615, guid: 5a329945b4a56384bb396810517b4771,
         type: 3}
       propertyPath: m_Color.r
-      value: 0.5188679
+      value: 0.6901961
       objectReference: {fileID: 0}
     - target: {fileID: 461561232649368615, guid: 5a329945b4a56384bb396810517b4771,
         type: 3}
       propertyPath: m_Color.g
-      value: 0.5188679
+      value: 0.6901961
       objectReference: {fileID: 0}
     - target: {fileID: 461561232649368615, guid: 5a329945b4a56384bb396810517b4771,
         type: 3}
       propertyPath: m_Color.b
-      value: 0.5188679
+      value: 0.6901961
+      objectReference: {fileID: 0}
+    - target: {fileID: 461561232649368615, guid: 5a329945b4a56384bb396810517b4771,
+        type: 3}
+      propertyPath: m_Intensity
+      value: 1.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 461561232649368615, guid: 5a329945b4a56384bb396810517b4771,
+        type: 3}
+      propertyPath: m_Shadows.m_Resolution
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 461561232649368609, guid: 5a329945b4a56384bb396810517b4771,
+        type: 3}
+      propertyPath: bloomThreshold
+      value: 3.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 461561232649368609, guid: 5a329945b4a56384bb396810517b4771,
+        type: 3}
+      propertyPath: ambientColor.b
+      value: 0.8039216
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5a329945b4a56384bb396810517b4771, type: 3}

@@ -35,6 +35,8 @@ public class VampireAffector : AffectorBase
 	{
 		if (affectorProcessor.actor == null)
 			return;
+		if (affectorProcessor.actor.actorStatus.IsDie())
+			return;
 		List<AffectorBase> listVampireAffector = affectorProcessor.GetContinuousAffectorList(eAffectorType.Vampire);
 		if (listVampireAffector == null)
 			return;
@@ -60,6 +62,8 @@ public class VampireAffector : AffectorBase
 	public static void OnHit(AffectorProcessor affectorProcessor, float damage)
 	{
 		if (affectorProcessor.actor == null)
+			return;
+		if (affectorProcessor.actor.actorStatus.IsDie())
 			return;
 		List<AffectorBase> listVampireAffector = affectorProcessor.GetContinuousAffectorList(eAffectorType.Vampire);
 		if (listVampireAffector == null)

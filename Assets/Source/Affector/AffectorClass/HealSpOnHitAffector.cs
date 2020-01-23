@@ -39,6 +39,8 @@ public class HealSpOnHitAffector : AffectorBase
 	{
 		if (affectorProcessor.actor == null)
 			return;
+		if (affectorProcessor.actor.actorStatus.IsDie())
+			return;
 		List<AffectorBase> listHealSpOnHitAffector = affectorProcessor.GetContinuousAffectorList(eAffectorType.HealSpOnHit);
 		if (listHealSpOnHitAffector == null)
 			return;

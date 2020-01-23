@@ -18,5 +18,6 @@ public enum eMecanimEventType
 	DontMove,
 	DisableActorCollider,
 	LookAt,
+	IdleAnimator,
 }
 #endregion

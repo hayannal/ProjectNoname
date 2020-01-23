@@ -25,7 +25,8 @@ public static class MecanimEventCustomCreator
 		case eMecanimEventType.MovePositionCurve: eventBase = targetState.AddStateMachineBehaviour<MeMovePositionCurve>(); break;
 		case eMecanimEventType.DontMove: eventBase = targetState.AddStateMachineBehaviour<MeDontMove>(); break;
 		case eMecanimEventType.DisableActorCollider: eventBase = targetState.AddStateMachineBehaviour<MeDisableActorCollider>(); break;
-		case eMecanimEventType.LookAt:eventBase = targetState.AddStateMachineBehaviour<MeLookAt>(); break;
+		case eMecanimEventType.LookAt: eventBase = targetState.AddStateMachineBehaviour<MeLookAt>(); break;
+		case eMecanimEventType.IdleAnimator: eventBase = targetState.AddStateMachineBehaviour<MeIdleAnimator>(); break;
 #endregion
 		}
 		return eventBase;
@@ -48,6 +49,7 @@ public static class MecanimEventCustomCreator
 		if (eventBase is MeDontMove) return eMecanimEventType.DontMove;
 		if (eventBase is MeDisableActorCollider) return eMecanimEventType.DisableActorCollider;
 		if (eventBase is MeLookAt) return eMecanimEventType.LookAt;
+		if (eventBase is MeIdleAnimator) return eMecanimEventType.IdleAnimator;
 		return eMecanimEventType.State;
 #endregion
 	}

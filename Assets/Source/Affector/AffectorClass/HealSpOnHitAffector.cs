@@ -6,11 +6,11 @@ using ActorStatusDefine;
 public class HealSpOnHitAffector : AffectorBase
 {
 	float _endTime;
-	static float s_cooltimeValueA = 20.0f;
-	static float s_cooltimeValueB = 5.0f;
-	static float s_probValueA = 0.45f;
-	static float s_probValueB = 0.05f;
-	static float s_amountValueA = 5.0f;
+	static float s_cooltimeValueA = 5.0f;
+	static float s_cooltimeValueB = 2.0f;
+	static float s_probValueA = 0.0f;
+	static float s_probValueB = 0.03f;
+	static float s_amountValueA = 17.65f;
 
 	AffectorValueLevelTableData _affectorValueLevelTableData;
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)

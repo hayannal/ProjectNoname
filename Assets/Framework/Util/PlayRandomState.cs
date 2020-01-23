@@ -63,7 +63,7 @@ public class PlayRandomState : StateMachineBehaviour
 	// OnStateExit is called before OnStateExit is called on any state inside this state machine
 	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
-		if (_lastState == stateInfo.shortNameHash && stateInfo.normalizedTime != 0.0f)
+		if (_lastState == stateInfo.fullPathHash && stateInfo.normalizedTime != 0.0f)
 			_lastState = 0;
 	}
 

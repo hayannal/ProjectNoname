@@ -15,6 +15,7 @@ public class FloatingDamageText : MonoBehaviour
 		ReduceContinuousDamage,
 		DefenseStrongDamage,
 		PaybackSp,
+		Critical,
 	}
 
 	public Text damageText;
@@ -45,6 +46,9 @@ public class FloatingDamageText : MonoBehaviour
 				break;
 			case eFloatingDamageType.PaybackSp:
 				damageText.SetLocalizedText(UIString.instance.GetString("GameUI_PaybackSp"));
+				break;
+			case eFloatingDamageType.Critical:
+				damageText.SetLocalizedText(UIString.instance.GetString("GameUI_Critical"));
 				break;
 		}
 		damageText.color = Color.white;

@@ -110,7 +110,11 @@ public class BaseDamageAffector : AffectorBase {
 					if (attackerActor == null) attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(hitParameter.statusStructForHitObject.actorInstanceId);
 					if (attackerActor != null)
 						criticalDamageRate += AddCriticalDamageByTargetHpAffector.GetValue(attackerActor.affectorProcessor, _actor.actorStatus.GetHPRatio());
-					damage *= (1.0f + criticalDamageRate);
+					if (criticalDamageRate > 0.0f)
+					{
+						damage *= (1.0f + criticalDamageRate);
+						FloatingDamageTextRootCanvas.instance.ShowText(FloatingDamageText.eFloatingDamageType.Critical, _actor);
+					}
 				}
 			}
 

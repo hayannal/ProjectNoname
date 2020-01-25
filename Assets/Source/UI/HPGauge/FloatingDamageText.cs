@@ -56,6 +56,7 @@ public class FloatingDamageText : MonoBehaviour
 		_offsetY = actor.gaugeOffsetY;
 		_targetTransform = actor.cachedTransform;
 		_targetHeight = ColliderUtil.GetHeight(actor.GetCollider());
+		UpdateGaugePosition();
 
 		//float rotateY = cachedTransform.position.x * 2.0f;
 		//cachedTransform.rotation = Quaternion.Euler(0.0f, rotateY, 0.0f);

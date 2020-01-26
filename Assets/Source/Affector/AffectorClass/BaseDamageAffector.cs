@@ -101,8 +101,11 @@ public class BaseDamageAffector : AffectorBase {
 			if ((int)eActorStatus.CriticalRate < hitParameter.statusBase.valueList.Length)
 			{
 				float criticalRate = hitParameter.statusBase.valueList[(int)eActorStatus.CriticalRate];
-				float minimumCriticalRate = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("MinimumCriticalRate");
-				criticalRate = Mathf.Max(criticalRate, minimumCriticalRate);
+				if (hitParameter.statusStructForHitObject.monsterActor == false)
+				{
+					float minimumCriticalRate = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("MinimumCriticalRate");
+					criticalRate = Mathf.Max(criticalRate, minimumCriticalRate);
+				}
 				if (criticalRate > 0.0f && Random.value <= criticalRate)
 				{
 					float criticalDamageRate = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("DefaultCriticalDamageRate");

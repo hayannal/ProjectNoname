@@ -30,7 +30,7 @@ MonoBehaviour:
   fixedWorldPositionY: 0
   areaRotationY: 0
   areaDistanceMin: 0
-  areaDistanceMax: 1.5
+  areaDistanceMax: 1
   areaHeightMin: 0
   areaHeightMax: 2
   areaAngle: 45
@@ -168,6 +168,7 @@ AnimatorState:
   - {fileID: 8004001059782761299}
   - {fileID: -9179463078839750710}
   - {fileID: -919309401874717448}
+  - {fileID: 2920306157461482869}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -247,8 +248,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc636291b831fe248b3ce095d84517d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.25
-  EndTime: 0.4
+  StartTime: 0.2
+  EndTime: 0.35
   useLocalPositionX: 0
   curveX:
     serializedVersion: 2
@@ -270,20 +271,20 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 34
+      inSlope: 4.624747
+      outSlope: 4.624747
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.33333334
+      outWeight: 0.039473683
     - serializedVersion: 3
       time: 1
       value: 2
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 34
+      inSlope: 0.25309518
+      outSlope: 0.25309518
+      tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
+      inWeight: 0.08014351
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -316,6 +317,21 @@ AnimatorController:
     m_IKPass: 0
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
+--- !u!114 &2920306157461482869
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2e6805f699075e4eae576dc1aabd338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.09
+  EndTime: 0.19
+  speed: 0.7
 --- !u!114 &7143102186761374112
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -16,6 +16,7 @@ public class WavingNwayGenerator : ContinuousHitObjectGeneratorBase
 
 	int _remainCreateCount;
 	float _remainLineIntervalTime;
+	float _waveTime;
 
 	public override void InitializeGenerator(MeHitObject meHit, Actor parentActor, StatusBase statusBase, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack, Transform spawnTransform)
 	{
@@ -23,6 +24,7 @@ public class WavingNwayGenerator : ContinuousHitObjectGeneratorBase
 
 		_remainCreateCount = _initializedCreateCount;
 		_remainLineIntervalTime = 0.0f;
+		_waveTime = Time.time;
 
 		if (_remainCreateCount == 0)
 			gameObject.SetActive(false);
@@ -52,7 +54,7 @@ public class WavingNwayGenerator : ContinuousHitObjectGeneratorBase
 			_remainLineIntervalTime += lineInterval;
 			for (int i = 0; i < wayNum; ++i)
 			{
-				float centerAngle = waveCenterAngleY + (waveRangeSize / 2f * Mathf.Sin(Time.time * 60.0f * waveSpeed / 100f));
+				float centerAngle = waveCenterAngleY + (waveRangeSize / 2f * Mathf.Sin((_waveTime - Time.time) * 60.0f * waveSpeed / 100f));
 				float baseAngle = wayNum % 2 == 0 ? centerAngle - (betweenAngle / 2f) : centerAngle;
 				float angle = GetShiftedAngle(i, baseAngle, betweenAngle);
 

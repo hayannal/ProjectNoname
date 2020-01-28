@@ -26,8 +26,10 @@ public class PlayRandomState : StateMachineBehaviour
 		if (animator.GetNextAnimatorStateInfo(0).fullPathHash == _lastState)
 			return;
 
-		if (_lastState == 0)
-		{
+		// 자꾸 이 루틴때문에 Random State 들어와서 아무것도 안할때가 있어서
+		// 우선 제거해본다.
+		//if (_lastState == 0)
+		//{
 			if (_sum == 0.0f)
 			{
 				for (int i = 0; i < randomStateInfoList.Length; ++i)
@@ -51,7 +53,7 @@ public class PlayRandomState : StateMachineBehaviour
 				_lastState = BattleInstanceManager.instance.GetActionNameHash(selectedStateName);
 				animator.CrossFade(_lastState, 0.05f);
 			}
-		}
+		//}
 	}
 
 	// OnStateUpdate is called before OnStateUpdate is called on any state inside this state machine

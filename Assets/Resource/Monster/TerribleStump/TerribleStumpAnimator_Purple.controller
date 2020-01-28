@@ -47,7 +47,7 @@ MonoBehaviour:
   targetDetectType: 2
   hitObjectPrefab: {fileID: 5848472822562479349, guid: b719df7e41737594083d0fc791e3e390,
     type: 3}
-  lifeTime: 5
+  lifeTime: 15
   areaHitLifeTimeEarlyOffset: 0
   movable: 1
   maxDistance: 0
@@ -175,12 +175,15 @@ AnimatorStateMachine:
   - serializedVersion: 1
     m_State: {fileID: -2473529730778767166}
     m_Position: {x: 240, y: 270, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: 3977561710708455629}
+    m_Position: {x: 240, y: 400, z: 0}
   m_ChildStateMachines:
   - serializedVersion: 1
     m_StateMachine: {fileID: -2689671602183168931}
-    m_Position: {x: 240, y: 360, z: 0}
+    m_Position: {x: 240, y: 460, z: 0}
   m_AnyStateTransitions:
-  - {fileID: 6935890085537750810}
+  - {fileID: -3527768796488261613}
   m_EntryTransitions: []
   m_StateMachineTransitions: {}
   m_StateMachineBehaviours: []
@@ -204,6 +207,31 @@ MonoBehaviour:
   StartTime: 0
   EndTime: 1
   state: 3
+--- !u!1101 &-3527768796488261613
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: AttackGroup
+    m_EventTreshold: 0
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 3977561710708455629}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0.25
+  m_TransitionOffset: 0
+  m_ExitTime: 0.75
+  m_HasExitTime: 0
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
 --- !u!1107 &-2689671602183168931
 AnimatorStateMachine:
   serializedVersion: 5
@@ -223,8 +251,7 @@ AnimatorStateMachine:
   m_AnyStateTransitions: []
   m_EntryTransitions: []
   m_StateMachineTransitions: {}
-  m_StateMachineBehaviours:
-  - {fileID: 6875229646891860285}
+  m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 50, y: 20, z: 0}
   m_EntryPosition: {x: 50, y: 120, z: 0}
   m_ExitPosition: {x: 530, y: 120, z: 0}
@@ -632,7 +659,7 @@ MonoBehaviour:
   targetDetectType: 2
   hitObjectPrefab: {fileID: 5848472822562479349, guid: b719df7e41737594083d0fc791e3e390,
     type: 3}
-  lifeTime: 5
+  lifeTime: 15
   areaHitLifeTimeEarlyOffset: 0
   movable: 1
   maxDistance: 0
@@ -712,6 +739,50 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 0
+--- !u!114 &3151684733992281541
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2975bb63eaed5744b93c28f39ecfc67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  randomStateInfoList:
+  - stateName: Base Layer.AttackGroup.Attack1
+    weight: 1
+  - stateName: Base Layer.AttackGroup.Attack2
+    weight: 0.6
+--- !u!1102 &3977561710708455629
+AnimatorState:
+  serializedVersion: 5
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: RandomTrigger
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours:
+  - {fileID: 3151684733992281541}
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 0}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!1101 &4859139090039436820
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -765,48 +836,6 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: AttackAniSpeedRatio
---- !u!114 &6875229646891860285
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f2975bb63eaed5744b93c28f39ecfc67, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  randomStateInfoList:
-  - stateName: Base Layer.AttackGroup.Attack1
-    weight: 1
-  - stateName: Base Layer.AttackGroup.Attack2
-    weight: 0.5
---- !u!1101 &6935890085537750810
-AnimatorStateTransition:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_Conditions:
-  - m_ConditionMode: 1
-    m_ConditionEvent: AttackGroup
-    m_EventTreshold: 0
-  m_DstStateMachine: {fileID: -2689671602183168931}
-  m_DstState: {fileID: 0}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 0
-  serializedVersion: 3
-  m_TransitionDuration: 0.99
-  m_TransitionOffset: 0
-  m_ExitTime: 0.75
-  m_HasExitTime: 0
-  m_HasFixedDuration: 0
-  m_InterruptionSource: 0
-  m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
 --- !u!114 &7094307520646407863
 MonoBehaviour:
   m_ObjectHideFlags: 3

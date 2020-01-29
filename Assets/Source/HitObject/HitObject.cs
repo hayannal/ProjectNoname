@@ -430,15 +430,19 @@ public class HitObject : MonoBehaviour
 		//statusStructForHitObject.repeatAddCountByLevelPack = normalAttack ? RepeatHitObjectAffector.GetAddCount(actor.affectorProcessor) : 0;
 	}
 
+	static Collider[] s_colliderList = null;
 	static List<AffectorProcessor> s_listAppliedAffectorProcessor;
 	static void CheckHitArea(Vector3 areaPosition, Vector3 areaForward, MeHitObject meHit, StatusBase statusBase, StatusStructForHitObject statusForHitObject, float gatePillarCompareTime,
 		List<AffectorProcessor> listOneHitPerTarget = null, Dictionary<AffectorProcessor, float> dicHitStayTime = null)
 	{
+		if (s_colliderList == null)
+			s_colliderList = new Collider[100];
+
 		// step 1. Physics.OverlapSphere
 		float maxDistance = meHit.areaDistanceMax;
 		maxDistance = Mathf.Max(Mathf.Abs(meHit.areaHeightMax), maxDistance);
 		maxDistance = Mathf.Max(Mathf.Abs(meHit.areaHeightMin), maxDistance);
-		Collider[] result = Physics.OverlapSphere(areaPosition, maxDistance); // meHit.areaDistanceMax * parentTransform.localScale.x
+		int resultCount = Physics.OverlapSphereNonAlloc(areaPosition, maxDistance, s_colliderList); // meHit.areaDistanceMax * parentTransform.localScale.x
 
 		// step 2. Check each object.
 		float distanceMin = meHit.areaDistanceMin; // * parentTransform.localScale.x;
@@ -449,19 +453,24 @@ public class HitObject : MonoBehaviour
 			s_listAppliedAffectorProcessor = new List<AffectorProcessor>();
 		s_listAppliedAffectorProcessor.Clear();
 
-		for (int i = 0; i < result.Length; ++i)
+		for (int i = 0; i < resultCount; ++i)
 		{
+			if (i >= s_colliderList.Length)
+				break;
+
+			Collider col = s_colliderList[i];
+
 			// affector processor
-			AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(result[i]);
+			AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(col);
 			if (affectorProcessor == null)
 				continue;
 
 			// team check
-			if (!Team.CheckTeamFilter(statusForHitObject.teamId, result[i], meHit.teamCheckType))
+			if (!Team.CheckTeamFilter(statusForHitObject.teamId, col, meHit.teamCheckType))
 				continue;
 
 			// object radius
-			float colliderRadius = ColliderUtil.GetRadius(result[i]);
+			float colliderRadius = ColliderUtil.GetRadius(col);
 			if (colliderRadius == -1.0f) continue;
 
 			// check sub parts
@@ -474,7 +483,7 @@ public class HitObject : MonoBehaviour
 				continue;
 
 			// distance
-			Vector3 diff = BattleInstanceManager.instance.GetTransformFromCollider(result[i]).position - areaPosition;
+			Vector3 diff = BattleInstanceManager.instance.GetTransformFromCollider(col).position - areaPosition;
 			diff.y = 0.0f;
 			if (diff.magnitude + colliderRadius < distanceMin) continue;
 			if (diff.magnitude - colliderRadius > distanceMax) continue;
@@ -486,7 +495,7 @@ public class HitObject : MonoBehaviour
 			if (meHit.areaAngle * 0.5f < angle - adjustAngle) continue;
 
 			if (GatePillar.instance != null && GatePillar.instance.gameObject.activeSelf)
-				GatePillar.instance.CheckHitObject(statusForHitObject.teamId, gatePillarCompareTime, result[i]);
+				GatePillar.instance.CheckHitObject(statusForHitObject.teamId, gatePillarCompareTime, col);
 
 			bool ignoreAffectorProcessor = false;
 
@@ -505,7 +514,7 @@ public class HitObject : MonoBehaviour
 				HitParameter hitParameter = new HitParameter();
 				hitParameter.hitNormal = forward;
 				hitParameter.contactNormal = -diff.normalized;
-				hitParameter.contactPoint = BattleInstanceManager.instance.GetTransformFromCollider(result[i]).position + (hitParameter.contactNormal * colliderRadius * 0.7f);
+				hitParameter.contactPoint = BattleInstanceManager.instance.GetTransformFromCollider(col).position + (hitParameter.contactNormal * colliderRadius * 0.7f);
 				hitParameter.contactPoint.y += (meHit.areaHeightMin + meHit.areaHeightMax) * 0.5f;
 				hitParameter.statusBase = statusBase;
 				hitParameter.statusStructForHitObject = statusForHitObject;

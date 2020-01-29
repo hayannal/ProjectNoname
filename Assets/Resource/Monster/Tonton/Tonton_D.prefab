@@ -55,7 +55,7 @@ NavMeshAgent:
   m_AngularSpeed: 120
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
+  m_AutoBraking: 0
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
@@ -161,9 +161,9 @@ MonoBehaviour:
   _jumpToleranceTime: 0.15
   _maxMidAirJumps: 1
   _useRootMotion: 0
-  _autoBraking: 1
+  _autoBraking: 0
   _brakingDistance: 2
-  _stoppingDistance: 1
+  _stoppingDistance: 0
   groundMask:
     serializedVersion: 2
     m_Bits: 1
@@ -198,14 +198,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startDelayRange: {x: 0.25, y: 0.25}
   startState: 0
-  useStateList: 0100010101
+  useStateList: 0100010001
   moveTimeRange: {x: 5, y: 5}
   refreshTickTimeRange: {x: 1, y: 1}
   desireDistance: 5
   customActionPlayType: 1
   customActionName: 
   customActionFadeDuration: 0.05
-  chaseDistanceRange: {x: 1, y: 1}
+  chaseDistanceRange: {x: 0, y: 0}
   chaseCancelTimeRange: {x: 0, y: 0}
   attackActionPlayType: 0
   attackActionName: Attack

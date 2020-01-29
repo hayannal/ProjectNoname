@@ -350,7 +350,7 @@ public class MonsterAI : MonoBehaviour
 		if (targetActor == null)
 			return;
 
-		if (_chaseDistance == 0.0f)
+		if (_chaseDistance == 0.0f && (chaseDistanceRange.x > 0.0f || chaseDistanceRange.y > 0.0f))
 			_chaseDistance = Random.Range(chaseDistanceRange.x, chaseDistanceRange.y);
 		if (_initChaseCancelTime == false)
 		{
@@ -369,7 +369,7 @@ public class MonsterAI : MonoBehaviour
 
 		Vector3 diff = actor.cachedTransform.position - targetActor.cachedTransform.position;
 		float sqrDiff = diff.sqrMagnitude;
-		float sqrRadius = (targetRadius + actorRadius) * (targetRadius + actorRadius) + 0.01f + (_chaseDistance * _chaseDistance);
+		float sqrRadius = (targetRadius + actorRadius) * (targetRadius + actorRadius) + (_chaseDistance > 0.0f ? 0.01f : 0.0f) + (_chaseDistance * _chaseDistance);
 		if (sqrDiff <= sqrRadius)
 		{
 			if (callByAttackAction == false)

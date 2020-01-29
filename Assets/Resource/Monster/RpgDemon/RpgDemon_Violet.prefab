@@ -198,20 +198,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startDelayRange: {x: 0.25, y: 0.25}
   startState: 0
-  useStateList: 0100010101
-  moveTimeRange: {x: 5, y: 5}
-  refreshTickTimeRange: {x: 1, y: 1}
+  useStateList: 0100000101
+  moveTimeRange: {x: 4, y: 5}
+  refreshTickTimeRange: {x: 1.5, y: 1.5}
   desireDistance: 5
   customActionPlayType: 1
   customActionName: 
   customActionFadeDuration: 0.05
   chaseDistanceRange: {x: 1, y: 1}
   chaseCancelTimeRange: {x: 4, y: 10}
-  attackActionPlayType: 0
-  attackActionName: Attack
-  attackActionFadeDuration: 0.44
+  attackActionPlayType: 2
+  attackActionName: AttackGroup
+  attackActionFadeDuration: 0.05
   lookAtTargetBeforeAttack: 1
-  attackDelayTimeRange: {x: 2, y: 2.5}
+  attackDelayTimeRange: {x: 1, y: 2.5}
   useAnimatorParameterForAI: 0
   listAnimatorParameterForAI: 
 --- !u!114 &1853192997564061113
@@ -286,14 +286,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 13700000, guid: 20b6002ffdd985141bcb3f9c0a0031f7, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 998ebafc253b49f4bb48b30f5b6f9099, type: 2}
     - target: {fileID: 9500000, guid: 20b6002ffdd985141bcb3f9c0a0031f7, type: 3}
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 3afa6c358239b6741aff0550c2c50e90, type: 2}
+    - target: {fileID: 13700000, guid: 20b6002ffdd985141bcb3f9c0a0031f7, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 998ebafc253b49f4bb48b30f5b6f9099, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 20b6002ffdd985141bcb3f9c0a0031f7, type: 3}
 --- !u!4 &5275014457619223210 stripped

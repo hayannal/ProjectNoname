@@ -72,6 +72,7 @@ AnimatorState:
   m_StateMachineBehaviours:
   - {fileID: 643465273381129630}
   - {fileID: -3186066446465754549}
+  - {fileID: -1412048345424974247}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -98,7 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.40085286
+  StartTime: 0.43
   EndTime: 1
   targetDetectType: 1
   hitObjectPrefab: {fileID: 0}
@@ -110,13 +111,13 @@ MonoBehaviour:
   sphereCastRadius: 0
   teamCheckType: 0
   createPositionType: 0
-  boneName: jnt_flowerRight
+  boneName: 
   offset: {x: 0, y: 0, z: 1}
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
   areaDistanceMin: 0
-  areaDistanceMax: 2.2
+  areaDistanceMax: 1.7
   areaHeightMin: 0
   areaHeightMax: 2
   areaAngle: 25
@@ -135,6 +136,10 @@ MonoBehaviour:
   howitzerTargetPositionOffset: {x: 0, y: 0}
   howitzerRandomPositionRadius: 0
   speed: 4.5
+  useSpeedChange: 0
+  targetSpeed: 0
+  speedChangeTime: 0
+  speedChangeEase: 6
   curve: 0
   curveAdd: 0
   curveLockY: 0
@@ -220,6 +225,21 @@ MonoBehaviour:
   StartTime: 0
   EndTime: 1
   state: 2
+--- !u!114 &-1412048345424974247
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2e6805f699075e4eae576dc1aabd338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.03
+  EndTime: 0.2
+  speed: 0.7
 --- !u!1102 &-1215575675028676736
 AnimatorState:
   serializedVersion: 5

@@ -348,7 +348,11 @@ public class MonsterAI : MonoBehaviour
 	void UpdateChase(bool callByAttackAction = false)
 	{
 		if (targetActor == null)
+		{
+			if (pathFinderController.agent.hasPath)
+				pathFinderController.agent.ResetPath();
 			return;
+		}
 
 		if (_chaseDistance == 0.0f && (chaseDistanceRange.x > 0.0f || chaseDistanceRange.y > 0.0f))
 			_chaseDistance = Random.Range(chaseDistanceRange.x, chaseDistanceRange.y);

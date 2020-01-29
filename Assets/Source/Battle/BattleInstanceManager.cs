@@ -111,10 +111,16 @@ public class BattleInstanceManager : MonoBehaviour
 	#endregion
 
 	#region AffectorProcessor
+	int _wallColliderLayer = 0;
 	Dictionary<Collider, AffectorProcessor> _dicAffectorProcessorByCollider = new Dictionary<Collider, AffectorProcessor>();
 	public AffectorProcessor GetAffectorProcessorFromCollider(Collider collider)
 	{
 		if (collider == null)
+			return null;
+
+		if (_wallColliderLayer == 0)
+			_wallColliderLayer = LayerMask.NameToLayer("Team0WallCollider");
+		if (collider.gameObject.layer == _wallColliderLayer)
 			return null;
 
 		if (_dicAffectorProcessorByCollider.ContainsKey(collider))

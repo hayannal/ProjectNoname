@@ -6,8 +6,6 @@ using UnityEngine;
 
 public class TargetingProcessor : MonoBehaviour {
 
-	public static int s_wallColliderLayer;
-
 	void OnEnable()
 	{
 		ClearTarget();
@@ -68,12 +66,6 @@ public class TargetingProcessor : MonoBehaviour {
 		Collider[] result = Physics.OverlapSphere(position, range); // range * _transform.localScale.x
 		for (int i = 0; i < result.Length; ++i)
 		{
-			// check wall collider
-			if (s_wallColliderLayer == 0)
-				s_wallColliderLayer = LayerMask.NameToLayer("Team0WallCollider");
-			if (result[i].gameObject.layer == s_wallColliderLayer)
-				continue;
-
 			// affector processor
 			AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(result[i]);
 			if (affectorProcessor == null)

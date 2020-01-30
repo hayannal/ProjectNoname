@@ -494,6 +494,13 @@ public class HitObject : MonoBehaviour
 			float adjustAngle = Mathf.Rad2Deg * Mathf.Acos(diff.magnitude / hypotenuse);
 			if (meHit.areaAngle * 0.5f < angle - adjustAngle) continue;
 
+			// check wall
+			if (meHit.checkRaycastWallInArea)
+			{
+				if (CheckRaycastWall(areaPosition, areaForward, diff.magnitude))
+					continue;
+			}
+
 			if (GatePillar.instance != null && GatePillar.instance.gameObject.activeSelf)
 				GatePillar.instance.CheckHitObject(statusForHitObject.teamId, gatePillarCompareTime, col);
 
@@ -536,6 +543,34 @@ public class HitObject : MonoBehaviour
 				s_listAppliedAffectorProcessor.Add(affectorProcessor);
 			}
 		}
+	}
+
+	static bool CheckRaycastWall(Vector3 areaPosition, Vector3 areaForward, float maxDistance)
+	{
+		if (s_raycastHitList == null)
+			s_raycastHitList = new RaycastHit[100];
+
+		int resultCount = Physics.RaycastNonAlloc(areaPosition, areaForward, s_raycastHitList, maxDistance, 1);
+		for (int i = 0; i < resultCount; ++i)
+		{
+			if (i >= s_raycastHitList.Length)
+				break;
+
+			Collider col = s_raycastHitList[i].collider;
+			if (col.isTrigger)
+				continue;
+
+			if (BattleInstanceManager.instance.GetHitObjectFromCollider(col) != null)
+				continue;
+
+			AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(col);
+			if (affectorProcessor != null)
+				continue;
+
+			return true;
+		}
+
+		return false;
 	}
 
 	static RaycastHit[] s_raycastHitList = null;

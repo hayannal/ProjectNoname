@@ -35,6 +35,7 @@ public class MeHitObject : MecanimEventBase {
 	public float areaHeightMin;
 	public float areaHeightMax;
 	public float areaAngle;
+	public bool checkRaycastWallInArea;
 
 	public int repeatCount;
 	public float repeatInterval;
@@ -172,6 +173,7 @@ public class MeHitObject : MecanimEventBase {
 			areaHeightMin = EditorGUILayout.FloatField("Area HeightMin :", areaHeightMin);
 			areaHeightMax = EditorGUILayout.FloatField("Area HeightMax :", areaHeightMax);
 			areaAngle = EditorGUILayout.FloatField("Area Angle :", areaAngle);
+			checkRaycastWallInArea = EditorGUILayout.Toggle("Check Wall :", checkRaycastWallInArea);
 		}
 
 		EditorGUILayout.LabelField("-----------------------------------------------------------------");

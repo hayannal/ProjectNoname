@@ -85,7 +85,12 @@ public class MeMovePositionCurve : MecanimEventBase {
 		if (localTranslation != Vector3.zero)
 		{
 			if (_rigidbody != null)
-				_rigidbody.MovePosition(_rigidbody.position + _transform.TransformDirection(localTranslation));
+			{
+				// MovePosition 함수로는 무슨 수를 써도 - FixedUpdate에서 호출하더라도 컬리더를 뚫어서 velocity를 올리는 형태로 구현한다.
+				// 이거때문에 커브에 넣은 숫자만큼 이동하지 않는데..
+				//_rigidbody.MovePosition(_rigidbody.position + _transform.TransformDirection(localTranslation));
+				_rigidbody.velocity = _transform.TransformDirection(localTranslation) / Time.deltaTime;
+			}
 			else if (_transform != null)
 				_transform.Translate(localTranslation, Space.Self);
 		}
@@ -107,10 +112,14 @@ public class MeMovePositionCurve : MecanimEventBase {
 			float lastValue = curveY.keys[curveY.length - 1].value;
 			_transform.position = new Vector3(_transform.position.x, _basePositionY + (lastValue - firstValue), _transform.position.z);
 		}
-		if (useLocalPositionX)
-			_prevX = 0.0f;
-		if (useLocalPositionZ)
-			_prevZ = 0.0f;
+		if (useLocalPositionX || useLocalPositionZ)
+		{
+			if (useLocalPositionX)
+				_prevX = 0.0f;
+			if (useLocalPositionZ)
+				_prevZ = 0.0f;
+			_rigidbody.velocity = Vector3.zero;
+		}
 	}
 
 	float _basePositionY;

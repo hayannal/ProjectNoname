@@ -245,7 +245,7 @@ public class HitObject : MonoBehaviour
 					Vector3 parentActorPosition = parentActorTransform.position;
 					Vector3 offsetPosition = parentActorTransform.TransformPoint(offset);
 					offsetPosition -= parentActorPosition;
-					return spawnTransform.position + offsetPosition;
+					spawnPosition = t.position + offsetPosition;
 				}
 				else
 					spawnPosition = t.TransformPoint(offset);   // meHit.offset * parentTransform.localScale

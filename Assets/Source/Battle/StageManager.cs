@@ -305,6 +305,18 @@ public class StageManager : MonoBehaviour
 			BattleManager.instance.OnLoadedMap();
 	}
 
+	public string GetCurrentSpawnFlagName()
+	{
+		if (_currentSpawnFlagObject != null)
+		{
+			string name = _currentSpawnFlagObject.name;
+			name = name.Replace("SpawnFlag", "");
+			name = name.Replace("(Clone)", "");
+			return name;
+		}
+		return "";
+	}
+
 	public Vector3 currentGatePillarSpawnPosition { get; set; }
 	public bool spawnPowerSourcePrefab { get; set; }
 	public Vector3 currentPowerSourceSpawnPosition { get; set; }

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using ActorStatusDefine;
+using UnityEngine.AI;
 
 public class RushAffector : AffectorBase
 {
@@ -32,10 +33,35 @@ public class RushAffector : AffectorBase
 			_targetRadius = 0.5f;
 		}
 
-		Vector3 diff = _targetPosition - _actor.cachedTransform.position;
-		Vector2 randomOffset = Random.insideUnitCircle * affectorValueLevelTableData.fValue2;
-		diff.x += randomOffset.x;
-		diff.z += randomOffset.y;
+		bool randomRush = false;
+		if (affectorValueLevelTableData.iValue1 > 0)
+		{
+			float rate = affectorValueLevelTableData.iValue1 * 0.01f;
+			if (Random.value <= rate)
+				randomRush = true;
+		}
+
+		Vector3 diff = Vector3.zero;
+		if (randomRush)
+		{
+			_targetPosition = GetRandomPosition();
+			diff = _targetPosition - _actor.cachedTransform.position;
+			_actor.baseCharacterController.movement.rotation = Quaternion.LookRotation(diff);
+		}
+		else
+		{
+			diff = _targetPosition - _actor.cachedTransform.position;
+			Vector2 randomOffset = Random.insideUnitCircle * affectorValueLevelTableData.fValue2;
+			diff.x += randomOffset.x;
+			diff.z += randomOffset.y;
+			if (affectorValueLevelTableData.iValue2 > 0)
+			{
+				diff += diff.normalized * affectorValueLevelTableData.iValue2;
+				_targetPosition = _actor.cachedTransform.position + diff;
+			}
+			_actor.baseCharacterController.movement.rotation = Quaternion.LookRotation(diff);
+		}
+		
 		float rushTime = diff.magnitude / affectorValueLevelTableData.fValue1;
 		_minimunRushTime = affectorValueLevelTableData.fValue3 / affectorValueLevelTableData.fValue1;
 		if (rushTime < _minimunRushTime)
@@ -45,6 +71,47 @@ public class RushAffector : AffectorBase
 
 		// lifeTime
 		_endTime = CalcEndTime(rushTime);
+	}
+
+	Vector3 GetRandomPosition()
+	{
+		Vector3 randomPosition = Vector3.zero;
+		Vector3 result = Vector3.zero;
+		float maxDistance = 1.0f;
+		int tryCount = 0;
+		int tryBreakCount = 0;
+		while (true)
+		{
+			Vector2 randomCircle = Random.insideUnitCircle.normalized;
+			Vector3 randomOffset = new Vector3(randomCircle.x * 5.0f, 0.0f, randomCircle.y * 5.0f);
+			randomPosition = _actor.cachedTransform.position + randomOffset;
+			
+			// AI쪽 코드에서 가져와본다.
+			randomPosition.y = 0.0f;
+
+			NavMeshHit hit;
+			if (NavMesh.SamplePosition(randomPosition, out hit, maxDistance, NavMesh.AllAreas))
+			{
+				result = hit.position;
+				break;
+			}
+
+			// exception handling
+			++tryCount;
+			if (tryCount > 20)
+			{
+				tryCount = 0;
+				maxDistance += 1.0f;
+			}
+
+			++tryBreakCount;
+			if (tryBreakCount > 400)
+			{
+				Debug.LogError("RushAffector RandomPosition Error. Not found valid random position.");
+				return randomPosition;
+			}
+		}
+		return result;
 	}
 
 	float _minimunRushTime;
@@ -74,7 +141,7 @@ public class RushAffector : AffectorBase
 
 		// 근접하면 돌진을 취소하고 공격한다.
 		Vector3 targetPosition = _targetPosition;
-		if (_targetCollider != null && _targetCollider.gameObject.activeSelf)
+		if (_affectorValueLevelTableData.iValue2 == 0 && _targetCollider != null && _targetCollider.gameObject.activeSelf)
 			targetPosition = BattleInstanceManager.instance.GetTransformFromCollider(_targetCollider).position;
 		Vector3 diff = _actor.cachedTransform.position - targetPosition;
 		float sqrDiff = diff.sqrMagnitude;

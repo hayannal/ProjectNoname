@@ -210,7 +210,10 @@ public class SequentialMonster : MonoBehaviour
 	{
 		if (_listAliveMonsterActor.Contains(monsterActor) == false)
 		{
-			Debug.LogError("Invalid call. monsterActor not contains.");
+			// checkOverlapPositionFrameCount값이 100이라면 지금 막 재생성된 SequentialMonster가 히트판정 맞고 죽었을 경우다.(마인 포함)
+			// 이럴땐 listAliveMonsterActor에 넣지 않기로 했으니 로그 안찍고 넘어간다.
+			if (monsterActor.checkOverlapPositionFrameCount != 100)
+				Debug.LogError("Invalid call. monsterActor not contains.");
 			return;
 		}
 

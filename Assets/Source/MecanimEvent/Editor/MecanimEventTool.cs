@@ -289,6 +289,13 @@ public class MecanimEventTool : EditorWindow
 							//StateMachineBehaviour smb = m_ToolAnimatorController.layers[i].stateMachine.states[j].state.behaviours[k];
 							//m_AC.layers[i].stateMachine.states[j].state.AddStateMachineBehaviour< smb.GetType( ) >();
 
+							ControlStateBase controlStateBase = m_ToolAnimatorController.layers[i].stateMachine.states[j].state.behaviours[k] as ControlStateBase;
+							if (controlStateBase != null)
+							{
+								ControlStateBase copyControlStateBase = ControlStateBase.CreateControlState(m_AC.layers[i].stateMachine.states[j].state, ControlStateBase.GetControlStateType(controlStateBase));
+								EditorUtility.CopySerialized(m_ToolAnimatorController.layers[i].stateMachine.states[j].state.behaviours[k], copyControlStateBase);
+							}
+
 							MecanimEventBase eventBase = m_ToolAnimatorController.layers[i].stateMachine.states[j].state.behaviours[k] as MecanimEventBase;
 							if (eventBase == null) continue;
 							MecanimEventBase copyEventBase = MecanimEventCustomCreator.CreateMecanimEvent(m_AC.layers[i].stateMachine.states[j].state, MecanimEventCustomCreator.GetMecanimEventType(eventBase));
@@ -336,6 +343,13 @@ public class MecanimEventTool : EditorWindow
 			}
 			for (int l = 0; l < toolChildAnimatorStateMachine.stateMachine.states[k].state.behaviours.Length; ++l)
 			{
+				ControlStateBase controlStateBase = toolChildAnimatorStateMachine.stateMachine.states[k].state.behaviours[l] as ControlStateBase;
+				if (controlStateBase != null)
+				{
+					ControlStateBase copyControlStateBase = ControlStateBase.CreateControlState(childAnimatorStateMachine.stateMachine.states[k].state, ControlStateBase.GetControlStateType(controlStateBase));
+					EditorUtility.CopySerialized(toolChildAnimatorStateMachine.stateMachine.states[k].state.behaviours[l], copyControlStateBase);
+				}
+
 				MecanimEventBase eventBase = toolChildAnimatorStateMachine.stateMachine.states[k].state.behaviours[l] as MecanimEventBase;
 				if (eventBase == null) continue;
 				MecanimEventBase copyEventBase = MecanimEventCustomCreator.CreateMecanimEvent(childAnimatorStateMachine.stateMachine.states[k].state, MecanimEventCustomCreator.GetMecanimEventType(eventBase));

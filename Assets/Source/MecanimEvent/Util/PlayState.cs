@@ -8,7 +8,7 @@ using UnityEngine;
 // 애니메이터가 제대로 동작하지 않는 경우가 생겼다.
 // 그래서 추가한게 이 PlayState 스크립트다.
 // StateMachine이 제대로 실행시키지 못할때 사용하면 될거다.
-public class PlayState : StateMachineBehaviour
+public class PlayState : ControlStateBase
 {
 	public string stateName;
 
@@ -21,11 +21,11 @@ public class PlayState : StateMachineBehaviour
 		if (string.IsNullOrEmpty(stateName))
 			return;
 
-		if (_lastState == 0)
-		{
+		//if (_lastState == 0)
+		//{
 			_lastState = BattleInstanceManager.instance.GetActionNameHash(stateName);
 			animator.CrossFade(_lastState, 0.05f);
-		}
+		//}
 	}
 
 	// OnStateUpdate is called before OnStateUpdate is called on any state inside this state machine

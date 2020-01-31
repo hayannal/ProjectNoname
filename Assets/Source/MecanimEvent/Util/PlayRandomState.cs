@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayRandomState : StateMachineBehaviour
+public class PlayRandomState : ControlStateBase
 {
 	[Serializable]
 	public class RandomStateInfo

@@ -35,6 +35,7 @@ MonoBehaviour:
   areaHeightMin: 0
   areaHeightMax: 0
   areaAngle: 0
+  checkRaycastWallInArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -65,8 +66,8 @@ MonoBehaviour:
   parallelCount: 0
   parallelDistance: 0
   ignoreMainHitObjectByParallel: 0
-  circularSectorCount: 16
-  circularSectorBetweenAngle: 22.5
+  circularSectorCount: 8
+  circularSectorBetweenAngle: 45
   circularSectorUseWorldSpace: 0
   circularSectorWorldSpaceCenterAngleY: 0
   ignoreMainHitObjectByCircularSector: 1
@@ -159,6 +160,7 @@ MonoBehaviour:
   areaHeightMin: 0
   areaHeightMax: 0
   areaAngle: 0
+  checkRaycastWallInArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -189,8 +191,8 @@ MonoBehaviour:
   parallelCount: 0
   parallelDistance: 0
   ignoreMainHitObjectByParallel: 0
-  circularSectorCount: 24
-  circularSectorBetweenAngle: 15
+  circularSectorCount: 16
+  circularSectorBetweenAngle: 22.5
   circularSectorUseWorldSpace: 0
   circularSectorWorldSpaceCenterAngleY: 0
   ignoreMainHitObjectByCircularSector: 1
@@ -373,6 +375,7 @@ MonoBehaviour:
   areaHeightMin: 0
   areaHeightMax: 0
   areaAngle: 0
+  checkRaycastWallInArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -403,8 +406,8 @@ MonoBehaviour:
   parallelCount: 0
   parallelDistance: 0
   ignoreMainHitObjectByParallel: 0
-  circularSectorCount: 16
-  circularSectorBetweenAngle: 22.5
+  circularSectorCount: 8
+  circularSectorBetweenAngle: 45
   circularSectorUseWorldSpace: 0
   circularSectorWorldSpaceCenterAngleY: 0
   ignoreMainHitObjectByCircularSector: 1
@@ -619,13 +622,13 @@ AnimatorController:
     m_DefaultFloat: 1
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: AttackGroup
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -748,6 +751,7 @@ MonoBehaviour:
   areaHeightMin: 0
   areaHeightMax: 2
   areaAngle: 20
+  checkRaycastWallInArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -871,6 +875,7 @@ MonoBehaviour:
   areaHeightMin: 0
   areaHeightMax: 0
   areaAngle: 0
+  checkRaycastWallInArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -1111,6 +1116,7 @@ MonoBehaviour:
   areaHeightMin: 0
   areaHeightMax: 0
   areaAngle: 0
+  checkRaycastWallInArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -1141,8 +1147,8 @@ MonoBehaviour:
   parallelCount: 0
   parallelDistance: 0
   ignoreMainHitObjectByParallel: 0
-  circularSectorCount: 24
-  circularSectorBetweenAngle: 15
+  circularSectorCount: 16
+  circularSectorBetweenAngle: 22.5
   circularSectorUseWorldSpace: 0
   circularSectorWorldSpaceCenterAngleY: 0
   ignoreMainHitObjectByCircularSector: 1

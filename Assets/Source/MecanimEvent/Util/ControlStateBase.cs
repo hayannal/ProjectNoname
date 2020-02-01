@@ -2,11 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor.Animations;
+#endif
 
 // Tool 저장기능을 위한 Base
 public class ControlStateBase : StateMachineBehaviour
 {
+#if UNITY_EDITOR
 	public enum eControlStateType
 	{
 		PlayState,
@@ -34,6 +37,7 @@ public class ControlStateBase : StateMachineBehaviour
 		return eControlStateType.PlayState;
 		#endregion
 	}
+#endif
 
 	// OnStateEnter is called before OnStateEnter is called on any state inside this state machine
 	//override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

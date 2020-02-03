@@ -70,6 +70,7 @@ public class PowerSource : MonoBehaviour
 		healAffectorValue.fValue3 += affectorProcessor.actor.actorStatus.GetValue(eActorStatus.PowerSourceHealRate);
 		affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Heal, healAffectorValue, affectorProcessor.actor, false);
 		affectorProcessor.actor.actorStatus.AddSP(affectorProcessor.actor.actorStatus.GetValue(eActorStatus.MaxSp) * BattleInstanceManager.instance.GetCachedGlobalConstantFloat("PowerSourceSpHeal"));
+		BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.healEffectPrefab, affectorProcessor.actor.cachedTransform.position, Quaternion.identity, affectorProcessor.actor.cachedTransform);
 
 		BattleManager.instance.OnClearStage();
 		_spawnedGatePillar = true;

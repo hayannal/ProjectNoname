@@ -26,6 +26,7 @@ public class BattleManager : MonoBehaviour
 	public GameObject levelUpIndicatorPrefab;
 	public GameObject playerLevelUpEffectPrefab;
 	public GameObject levelPackGainEffectPrefab;
+	public GameObject healEffectPrefab;
 
 	public GameObject floatingDamageTextRootCanvasPrefab;
 	public GameObject pauseCanvasPrefab;

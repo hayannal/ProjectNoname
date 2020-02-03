@@ -5,9 +5,17 @@ using UnityEngine.AI;
 
 public class RushAffector : AffectorBase
 {
+	enum eRushType
+	{
+		Target,
+		TargetPosition,
+		RandomPosition,
+	}
+
 	float _endTime;
 
 	Collider _targetCollider;
+	Vector3 _startPosition;
 	Vector3 _targetPosition;
 	AffectorValueLevelTableData _affectorValueLevelTableData;
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
@@ -20,7 +28,9 @@ public class RushAffector : AffectorBase
 			return;
 		}
 		_affectorValueLevelTableData = affectorValueLevelTableData;
+		_startPosition = _actor.cachedTransform.position;
 
+		// find target
 		if (_actor.targetingProcessor.GetTargetCount() > 0)
 		{
 			_targetCollider = _actor.targetingProcessor.GetTarget();
@@ -33,41 +43,42 @@ public class RushAffector : AffectorBase
 			_targetRadius = 0.5f;
 		}
 
-		bool randomRush = false;
-		if (affectorValueLevelTableData.iValue1 > 0)
-		{
-			float rate = affectorValueLevelTableData.iValue1 * 0.01f;
-			if (Random.value <= rate)
-				randomRush = true;
-		}
-
+		// check distance
 		Vector3 diff = Vector3.zero;
-		if (randomRush)
+		switch ((eRushType)affectorValueLevelTableData.iValue1)
 		{
-			_targetPosition = GetRandomPosition();
-			diff = _targetPosition - _actor.cachedTransform.position;
-			_actor.baseCharacterController.movement.rotation = Quaternion.LookRotation(diff);
+			case eRushType.Target:
+				diff = _targetPosition - _actor.cachedTransform.position;
+				_actor.baseCharacterController.movement.rotation = Quaternion.LookRotation(diff);
+				break;
+			case eRushType.TargetPosition:
+				diff = _targetPosition - _actor.cachedTransform.position;
+				Vector2 randomOffset = Random.insideUnitCircle * affectorValueLevelTableData.fValue4;
+				diff.x += randomOffset.x;
+				diff.z += randomOffset.y;
+				_actor.baseCharacterController.movement.rotation = Quaternion.LookRotation(diff);
+				break;
+			case eRushType.RandomPosition:
+				_targetPosition = GetRandomPosition();
+				diff = _targetPosition - _actor.cachedTransform.position;
+				_actor.baseCharacterController.movement.rotation = Quaternion.LookRotation(diff);
+				break;
 		}
-		else
-		{
-			diff = _targetPosition - _actor.cachedTransform.position;
-			Vector2 randomOffset = Random.insideUnitCircle * affectorValueLevelTableData.fValue2;
-			diff.x += randomOffset.x;
-			diff.z += randomOffset.y;
-			if (affectorValueLevelTableData.iValue2 > 0)
-			{
-				diff += diff.normalized * affectorValueLevelTableData.iValue2;
-				_targetPosition = _actor.cachedTransform.position + diff;
-			}
-			_actor.baseCharacterController.movement.rotation = Quaternion.LookRotation(diff);
-		}
-		
-		float rushTime = diff.magnitude / affectorValueLevelTableData.fValue1;
-		_minimunRushTime = affectorValueLevelTableData.fValue3 / affectorValueLevelTableData.fValue1;
-		if (rushTime < _minimunRushTime)
-			rushTime = _minimunRushTime;
 
+		_lastDiffSqrMagnitude = diff.sqrMagnitude;
 		_actorRadius = ColliderUtil.GetRadius(_actor.GetCollider());
+
+		float rushTime = -1.0f;
+		_minimunRushTime = affectorValueLevelTableData.fValue2 / affectorValueLevelTableData.fValue1;
+		switch ((eRushType)affectorValueLevelTableData.iValue1)
+		{
+			case eRushType.TargetPosition:
+			case eRushType.RandomPosition:
+				rushTime = diff.magnitude / affectorValueLevelTableData.fValue1;
+				if (rushTime < _minimunRushTime)
+					rushTime = _minimunRushTime;
+				break;
+		}
 
 		// lifeTime
 		_endTime = CalcEndTime(rushTime);
@@ -117,6 +128,7 @@ public class RushAffector : AffectorBase
 	float _minimunRushTime;
 	float _targetRadius;
 	float _actorRadius;
+	float _lastDiffSqrMagnitude = 0.0f;
 	public override void UpdateAffector()
 	{
 		if (CheckEndTime(_endTime) == false)
@@ -128,8 +140,6 @@ public class RushAffector : AffectorBase
 			return;
 		}
 
-
-
 		// 최소 거리를 지날때까진 거리 검사를 하지 않는다.
 		if (_minimunRushTime > 0.0f)
 		{
@@ -139,17 +149,57 @@ public class RushAffector : AffectorBase
 			return;
 		}
 
-		// 근접하면 돌진을 취소하고 공격한다.
 		Vector3 targetPosition = _targetPosition;
-		if (_affectorValueLevelTableData.iValue2 == 0 && _targetCollider != null && _targetCollider.gameObject.activeSelf)
+		if (_targetCollider != null && _targetCollider.gameObject.activeSelf)
 			targetPosition = BattleInstanceManager.instance.GetTransformFromCollider(_targetCollider).position;
-		Vector3 diff = _actor.cachedTransform.position - targetPosition;
-		float sqrDiff = diff.sqrMagnitude;
-		float sqrRadius = (_targetRadius + _actorRadius) * (_targetRadius + _actorRadius) + 0.01f + (_affectorValueLevelTableData.fValue4 * _affectorValueLevelTableData.fValue4);
-		if (sqrDiff <= sqrRadius)
+
+		float sqrRadius = (_targetRadius + _actorRadius) * (_targetRadius + _actorRadius) + 0.01f;
+		switch ((eRushType)_affectorValueLevelTableData.iValue1)
 		{
-			finalized = true;
-			return;
+			case eRushType.Target:
+				// iValue1 이 0일때는 타겟을 지나쳐야만 종료된다. rushTime이 무제한이니 이거로 꼭 풀어줘야 어펙터가 풀린다.
+				Vector3 targetDistance = targetPosition - _startPosition;
+				Vector3 currentDistance = _actor.cachedTransform.position - _startPosition;
+				float sqrPassDistance = _affectorValueLevelTableData.fValue3 * _affectorValueLevelTableData.fValue3;
+				if (_affectorValueLevelTableData.fValue3 < 0.0f) sqrPassDistance *= -1.0f;
+				if (currentDistance.sqrMagnitude >= targetDistance.sqrMagnitude + sqrPassDistance)
+				{
+					finalized = true;
+					return;
+				}
+				// 비껴서 지나가는게 아니라 정면으로 밀고갈걸 대비해서 액터사이의 거리가 멀어지는지도 체크해야한다.(혹은 동일한지)
+				// 최초 근접시점을 기억했다가 passDistance만큼 멀어지면 중단한다.
+				// 이 루틴으로 하려고 했는데 맵 끝에서 밀고나갈 경우엔 더이상 밀공간이 없어서 포지션 체크로는 안된다.
+				// 그래서 안전하게 시간으로 체크하기로 한다.
+				Vector3 currentDiff = _actor.cachedTransform.position - targetPosition;
+				if (currentDiff.sqrMagnitude < _lastDiffSqrMagnitude)
+				{
+					_lastDiffSqrMagnitude = currentDiff.sqrMagnitude;
+					//Debug.Log(_lastDiffSqrMagnitude);
+				}
+				else
+				{
+					if (_endTime == 0.0f)
+					{
+						// finish time
+						float remainTime = _affectorValueLevelTableData.fValue3 / _affectorValueLevelTableData.fValue1;
+						_endTime = CalcEndTime(remainTime);
+					}
+				}
+				break;
+			case eRushType.TargetPosition:
+			case eRushType.RandomPosition:
+				if (_affectorValueLevelTableData.iValue2 == 0)
+					break;
+				// 근접하면 돌진을 취소하고 공격한다.
+				Vector3 diff = _actor.cachedTransform.position - targetPosition;
+				float sqrDiff = diff.sqrMagnitude;
+				if (sqrDiff <= sqrRadius + (_affectorValueLevelTableData.fValue3 * _affectorValueLevelTableData.fValue3))
+				{
+					finalized = true;
+					return;
+				}
+				break;
 		}
 	}
 
@@ -157,6 +207,51 @@ public class RushAffector : AffectorBase
 	{
 		if (_actor.GetRigidbody() == null)
 			return;
+
+		// chase
+		bool checkDot = false;
+		switch ((eRushType)_affectorValueLevelTableData.iValue1)
+		{
+			case eRushType.Target:
+				if (_targetCollider == null)
+					break;
+				if (_targetCollider.gameObject.activeSelf == false)
+					break;
+				if (_affectorValueLevelTableData.fValue4 <= 0.0f)
+					break;
+				if (_endTime != 0.0f)
+					break;
+
+				// 발사체 추적기능의 Curve 코드를 사용한 예시다. 추적거리로 체크할 순 없으나 적당히 값만 입력하면 자연스럽게 보인다.
+				// 0이면 추적 없음 50이면 완전 추적. 20 ~ 40 사이쯤이 적당하다.
+				Vector3 currentTargetPosition = BattleInstanceManager.instance.GetTransformFromCollider(_targetCollider).position;
+				Vector3 diffDir = currentTargetPosition - _actor.cachedTransform.position;
+				_actor.cachedTransform.rotation = Quaternion.RotateTowards(_actor.cachedTransform.rotation, Quaternion.LookRotation(diffDir), _affectorValueLevelTableData.fValue4 * Time.fixedDeltaTime);
+				break;
+
+				/*
+				// 이건 fValue4를 추적거리로 체크할 수 있는데 마지막쯤에 프레임이 확 튀면서 방향이 바뀔때가 있다.
+				// dot검사로 안전장치를 해놔도 순간적으로 90 가까이 꺾이면 이상하게 보이긴 하다.
+				Vector3 currentTargetPosition = BattleInstanceManager.instance.GetTransformFromCollider(_targetCollider).position;
+				Vector3 offset = currentTargetPosition - _targetPosition;
+				if (offset.magnitude > (_affectorValueLevelTableData.fValue4 * Time.fixedDeltaTime))
+				{
+					_targetPosition = _targetPosition + offset.normalized * _affectorValueLevelTableData.fValue4 * Time.fixedDeltaTime;
+					checkDot = true;
+				}
+				else
+					_targetPosition = currentTargetPosition;
+
+				Vector3 diff = _targetPosition - _actor.cachedTransform.position;
+				// 느리게 추적하다보면 추적포지션을 따라잡을때가 있다. 이땐 dot 검사를 해서 90 이상 방향이 바뀌는지 체크하는게 안전하다.
+				if (checkDot && Vector3.Dot(diff.normalized, _actor.cachedTransform.forward) < 0.0f)
+					break;
+				_actor.baseCharacterController.movement.rotation = Quaternion.LookRotation(diff);
+				//Debug.LogFormat("{0} / {1}", diff, _actor.cachedTransform.forward);
+				break;
+				*/
+		}
+
 		_actor.GetRigidbody().velocity = _actor.cachedTransform.forward * _affectorValueLevelTableData.fValue1;
 	}
 

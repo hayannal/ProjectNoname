@@ -221,10 +221,11 @@ MonoBehaviour:
   areaHeightMin: 0
   areaHeightMax: 0
   areaAngle: 0
+  checkRaycastWallInArea: 0
   repeatCount: 0
   repeatInterval: 1
   movementType: 0
-  startDirectionType: 1
+  startDirectionType: 2
   startDirection: {x: 0, y: 0, z: 1}
   howitzerType: 0
   useWorldSpaceDirection: 0
@@ -233,12 +234,19 @@ MonoBehaviour:
   leftRandomAngle: 0
   rightRandomAngle: 0
   upDownRandomAngle: 0
+  howitzerTargetPositionOffset: {x: 0, y: 0}
+  howitzerRandomPositionRadius: 0
   speed: 12
+  useSpeedChange: 0
+  targetSpeed: 0
+  speedChangeTime: 0
+  speedChangeEase: 6
   curve: 0
   curveAdd: 0
   curveLockY: 0
   curveStartDelayTime: 0
   curveLifeTime: 0
+  endFollowOverTargetDistance: 0
   accelTurn: 0
   gravity: -9.81
   parallelCount: 0

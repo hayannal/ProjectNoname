@@ -8,6 +8,7 @@ public class EnvironmentSetting : MonoBehaviour
 	[ColorUsageAttribute(false, true)]
 	public Color ambientColor = Color.grey;
 	public float bloomThreshold = 1.3f;
+	public float bloomBrightnessMax = 1.5f;
 	public float dirtIntensity = 2.0f;
 
 	// for disable caching
@@ -36,6 +37,7 @@ public class EnvironmentSetting : MonoBehaviour
 #if UNITY_EDITOR
 		_prevAmbientColor = ambientColor;
 		_prevBloomThreshold = bloomThreshold;
+		_prevBloomBrightnessMax = bloomBrightnessMax;
 		_prevDirtIntensity = dirtIntensity;
 #endif
 		_started = true;
@@ -51,6 +53,7 @@ public class EnvironmentSetting : MonoBehaviour
 		SetSun();
 		SetAmbientColor();
 		SetBloomThreshold();
+		SetBloomBrightnessMax();
 		SetDirtIntensity();
 	}
 
@@ -72,6 +75,14 @@ public class EnvironmentSetting : MonoBehaviour
 		}
 	}
 
+	void SetBloomBrightnessMax()
+	{
+		if (CustomRenderer.instance != null)
+		{
+			CustomRenderer.instance.bloom.bloomBrightnessMax = bloomBrightnessMax;
+		}
+	}
+
 	void SetDirtIntensity()
 	{
 		if (CustomRenderer.instance != null)
@@ -84,6 +95,7 @@ public class EnvironmentSetting : MonoBehaviour
 #if UNITY_EDITOR
 	Color _prevAmbientColor;
 	float _prevBloomThreshold;
+	float _prevBloomBrightnessMax;
 	float _prevDirtIntensity;
 #endif
 	void Update()
@@ -104,6 +116,12 @@ public class EnvironmentSetting : MonoBehaviour
 		{
 			SetBloomThreshold();
 			_prevBloomThreshold = bloomThreshold;
+		}
+
+		if (_prevBloomBrightnessMax != bloomBrightnessMax)
+		{
+			SetBloomBrightnessMax();
+			_prevBloomBrightnessMax = bloomBrightnessMax;
 		}
 
 		if (_prevDirtIntensity != dirtIntensity)

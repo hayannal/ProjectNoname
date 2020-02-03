@@ -36,7 +36,8 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: ec593506ddc7af9479055bc9db13ce87, type: 3}
+  m_Motion: {fileID: 7437088784161203160, guid: ec593506ddc7af9479055bc9db13ce87,
+    type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -81,7 +82,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Attack1
-  m_Speed: 1
+  m_Speed: 0.8
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours:
@@ -125,7 +126,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Move
-  m_Speed: 1
+  m_Speed: 1.5
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours:
@@ -138,7 +139,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 80bd6c95892e7c44cb94ad16ea2b5d3e, type: 3}
+  m_Motion: {fileID: 7400000, guid: cf3c2ff2ba41e5e4d89163f0a88b7789, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -233,6 +234,7 @@ MonoBehaviour:
   areaHeightMin: 0
   areaHeightMax: 0
   areaAngle: 0
+  checkRaycastWallInArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -325,7 +327,7 @@ MonoBehaviour:
   StartTime: 0.56
   EndTime: 1
   targetDetectType: 2
-  hitObjectPrefab: {fileID: 6313189258560900821, guid: 56f289604ce19ec4dab54314c42d7e30,
+  hitObjectPrefab: {fileID: 1267055042978190381, guid: 458f26ad035550247a31ed6f680eebef,
     type: 3}
   lifeTime: 5
   areaHitLifeTimeEarlyOffset: 0
@@ -345,6 +347,7 @@ MonoBehaviour:
   areaHeightMin: 0
   areaHeightMax: 0
   areaAngle: 0
+  checkRaycastWallInArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -359,7 +362,7 @@ MonoBehaviour:
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
   howitzerRandomPositionRadius: 0
-  speed: 5.5
+  speed: 3.5
   useSpeedChange: 0
   targetSpeed: 0
   speedChangeTime: 0

@@ -4,8 +4,7 @@ using System.Collections.Generic;
 
 public class VelocityAffector : AffectorBase
 {
-	float _endTime;
-
+	float _endRemainTime;
 	Vector3 _reservedVelocity;
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
@@ -27,30 +26,31 @@ public class VelocityAffector : AffectorBase
 			return;
 		}
 
-		// lifeTime
-		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
-
+		_endRemainTime = affectorValueLevelTableData.fValue1;
 		_reservedVelocity.x = affectorValueLevelTableData.fValue2;
 		_reservedVelocity.z = affectorValueLevelTableData.fValue3;
 	}
 
 	public override void OverrideAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
-		// lifeTime
-		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
-
+		_endRemainTime = affectorValueLevelTableData.fValue1;
 		_reservedVelocity.x = affectorValueLevelTableData.fValue2;
 		_reservedVelocity.z = affectorValueLevelTableData.fValue3;
 	}
 
-	public override void UpdateAffector()
-	{
-		if (CheckEndTime(_endTime) == false)
-			return;
-	}
-
 	public override void FixedUpdateAffector()
 	{
+		if (_endRemainTime > 0.0f)
+		{
+			_endRemainTime -= Time.fixedDeltaTime;
+			if (_endRemainTime <= 0.0f)
+			{
+				_endRemainTime = 0.0f;
+				finalized = true;
+				return;
+			}
+		}
+
 		if (_actor.GetRigidbody().detectCollisions == false)
 			return;
 

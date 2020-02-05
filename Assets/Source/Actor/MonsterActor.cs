@@ -170,7 +170,8 @@ public class MonsterActor : Actor
 		{
 			BossMonsterGaugeCanvas.instance.OnChangedHP(this);
 		}
-		else
+		
+		if (bossMonster == false || groupMonster)
 		{
 			if (_monsterHPGauge == null)
 			{
@@ -196,7 +197,8 @@ public class MonsterActor : Actor
 		{
 			BossMonsterGaugeCanvas.instance.OnDie(this);
 		}
-		else
+		
+		if (bossMonster == false || groupMonster)
 		{
 			if (_monsterHPGauge != null)
 			{

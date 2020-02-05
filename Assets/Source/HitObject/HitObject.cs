@@ -1212,6 +1212,18 @@ public class HitObject : MonoBehaviour
 			if (col == null)
 				continue;
 
+			// 동시에 하나의 오브젝트에 OnCollisionEnter되면 가장 앞에 있는게 먼저 affectorProcessor를 처리하게 되는데
+			// 이게 몹이었고 죽는다면 rigidbody의 detect가 꺼지고 collider가 disable로 바뀌게 된다.
+			// affectorProcessor의 액터에 접근해서 rigidbody를 검사하는거보다 여기서 처리하는게 더 안전하고 빠르니
+			// collider가 꺼있으면 바로 through처리를 해주기로 한다.
+			if (col.enabled == false)
+			{
+				if (_hitObjectMovement != null)
+					_hitObjectMovement.ReinitializeForThrough();
+				//Debug.Log("disabled collider");
+				continue;
+			}
+
 			if (BattleInstanceManager.instance.planeCollider != null && BattleInstanceManager.instance.planeCollider == col)
 			{
 				planeCollided = true;

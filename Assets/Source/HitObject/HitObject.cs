@@ -83,12 +83,17 @@ public class HitObject : MonoBehaviour
 			Vector3 areaPosition = GetSpawnPosition(spawnTransform, meHit, parentTransform, parentActor, hitSignalIndexInAction);
 			Vector3 areaDirection = spawnTransform.forward;
 			Vector3 endPosition = Vector3.zero;
-			if (meHit.targetDetectType == eTargetDetectType.Area)
-				CheckHitArea(areaPosition, areaDirection, meHit, statusBase, statusStructForHitObject, GetGatePillarCompareTime(0.0f, parentHitObjectCreateTime));
-			else if (meHit.targetDetectType == eTargetDetectType.SphereCast)
+
+			// RangeSignal은 같은 프레임의 Update에서 스스로 체크할거라 여기서 검사할 필요 없다.
+			if (meHit.RangeSignal == false)
 			{
-				areaDirection = GetSpawnDirection(areaPosition, meHit, parentTransform, GetTargetPosition(meHit, parentActor, hitSignalIndexInAction), parentActor.targetingProcessor);
-				endPosition = CheckSphereCast(areaPosition, areaDirection, meHit, statusBase, statusStructForHitObject, GetGatePillarCompareTime(0.0f, parentHitObjectCreateTime));
+				if (meHit.targetDetectType == eTargetDetectType.Area)
+					CheckHitArea(areaPosition, areaDirection, meHit, statusBase, statusStructForHitObject, GetGatePillarCompareTime(0.0f, parentHitObjectCreateTime));
+				else if (meHit.targetDetectType == eTargetDetectType.SphereCast)
+				{
+					areaDirection = GetSpawnDirection(areaPosition, meHit, parentTransform, GetTargetPosition(meHit, parentActor, hitSignalIndexInAction), parentActor.targetingProcessor);
+					endPosition = CheckSphereCast(areaPosition, areaDirection, meHit, statusBase, statusStructForHitObject, GetGatePillarCompareTime(0.0f, parentHitObjectCreateTime));
+				}
 			}
 
 			// HitObject 프리팹이 있거나 lifeTime이 있다면 생성하고 아니면 패스.
@@ -210,7 +215,7 @@ public class HitObject : MonoBehaviour
 		{
 			hitObject = BattleInstanceManager.instance.GetCachedHitObject(meHit.hitObjectPrefab, position, rotation);
 		}
-		else if (meHit.lifeTime > 0.0f)
+		else if (meHit.lifeTime > 0.0f || meHit.RangeSignal)
 		{
 			hitObject = BattleInstanceManager.instance.GetEmptyHitObject(position, rotation);
 		}
@@ -1000,7 +1005,7 @@ public class HitObject : MonoBehaviour
 
 	public void UpdateAreaOrSphereCast()
 	{
-		if (_signal.targetDetectType == eTargetDetectType.Area && _signal.areaHitLifeTimeEarlyOffset > 0.0f)
+		if (_signal.targetDetectType == eTargetDetectType.Area && _signal.RangeSignal == false && _signal.areaHitLifeTimeEarlyOffset > 0.0f)
 		{
 			if (_createTime + (_signal.lifeTime - _signal.areaHitLifeTimeEarlyOffset) < Time.time)
 				return;

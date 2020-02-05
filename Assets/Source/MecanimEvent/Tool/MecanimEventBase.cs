@@ -71,9 +71,6 @@ public class MecanimEventBase : StateMachineBehaviour {
 
 		if (RangeSignal)
 		{
-			if (StartTime <= currentNormalizedTime && currentNormalizedTime < EndTime)
-				OnRangeSignal(animator, stateInfo, layerIndex);
-
 			if (lastNormalizedTime <= currentNormalizedTime)
 			{
 				if (lastNormalizedTime <= StartTime && StartTime <= currentNormalizedTime && currentNormalizedTime < EndTime)
@@ -81,7 +78,11 @@ public class MecanimEventBase : StateMachineBehaviour {
 				if (lastNormalizedTime <= EndTime && EndTime < currentNormalizedTime && lastNormalizedTime > StartTime)
 					OnRangeSignalEnd(animator, stateInfo, layerIndex);
 			}
-			else
+
+			if (StartTime <= currentNormalizedTime && currentNormalizedTime < EndTime)
+				OnRangeSignal(animator, stateInfo, layerIndex);
+
+			if (lastNormalizedTime > currentNormalizedTime)
 			{
 				if (lastNormalizedTime <= EndTime && EndTime <= 1.0f && StartTime < lastNormalizedTime)
 					OnRangeSignalEnd(animator, stateInfo, layerIndex);

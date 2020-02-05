@@ -6,10 +6,10 @@ using UnityEngine;
 public enum eAffectorType
 {
 	ChangeAction = 1,
-	AddForce,
 	BaseDamage,
 	DotDamage,
-	MoveToTarget,
+	AddForce,
+	Velocity,
 	AddActorState,
 	ChangeActorStatus,
 	CannotAction,

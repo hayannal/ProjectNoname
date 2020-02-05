@@ -11,10 +11,10 @@ public static class AffectorCustomCreator
 		{
 			#region USER_CODE
 			//case eAffectorType.ChangeAction: affectorBase = new ChangeActionAffector(); break;
-			//case eAffectorType.AddForce: affectorBase = new AddForceAffector(); break;
 			case eAffectorType.BaseDamage: affectorBase = new BaseDamageAffector(); break;
 			//case eAffectorType.DotDamage: affectorBase = new DotDamageAffector(); break;
-			//case eAffectorType.MoveToTarget: affectorBase = new MoveToTargetAffector(); break;
+			//case eAffectorType.AddForce: affectorBase = new AddForceAffector(); break;
+			//case eAffectorType.Velocity: affectorBase = new VelocityAffector(); break;
 			case eAffectorType.AddActorState: affectorBase = new AddActorStateAffector(); break;
 			case eAffectorType.ChangeActorStatus: affectorBase = new ChangeActorStatusAffector(); break;
 			case eAffectorType.CannotAction: affectorBase = new CannotActionAffector(); break;
@@ -73,7 +73,7 @@ public static class AffectorCustomCreator
 		{
 			#region USER_CODE
 			case eAffectorType.DotDamage:
-			case eAffectorType.MoveToTarget:
+			case eAffectorType.Velocity:
 			case eAffectorType.ChangeActorStatus:
 			case eAffectorType.CannotAction:
 			case eAffectorType.CannotMove:

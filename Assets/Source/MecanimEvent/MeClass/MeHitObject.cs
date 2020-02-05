@@ -562,7 +562,9 @@ public class MeHitObject : MecanimEventBase {
 		}
 	}
 
+	[System.NonSerialized]
 	int _totalRepeatCount;
+	[System.NonSerialized]
 	float _resultRepeatInterval;
 	IEnumerator<float> RepeatProcess(Transform spawnTransform, MeHitObject meHit, Actor parentActor, Transform parentTransform, StatusBase statusBase, float parentHitObjectCreateTime, int hitSignalIndexInAction)
 	{

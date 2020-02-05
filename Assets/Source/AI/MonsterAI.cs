@@ -459,7 +459,14 @@ public class MonsterAI : MonoBehaviour
 					break;
 				case eActionPlayType.State:
 					actor.actionController.animator.CrossFade(BattleInstanceManager.instance.GetActionNameHash(attackActionName), attackActionFadeDuration);
-					_attackPlayed = true;
+					// 처음 몬스터가 만들어질땐 CorssFade 호출한 프레임부터 Idle이 없어지고 Attack 이 들어있어서 탈출이 안되고 대기타게 되는데
+					// 이상하게 몇번 재활용 하다보면
+					// 다음 프레임에도 Idle 상태가 유지되면서 NextStep으로 넘어가지게 되었다.
+					// 아무래도 monsterAI 및 여러 스크립트를 껐다켰다 하면서 애니메이터쪽과 호출 순서가 꼬이는 듯 하다.
+					// 그래서 CustomAction은 특정 임의의 State를 체크하기 어려워 그냥 두지만
+					// 여기서는 Attack State 켜졌다가 꺼지는걸 보고 처리할 수 있으니 Trigger처럼 waitAttackState 변수를 사용하도록 하겠다.
+					//_attackPlayed = true;
+					_waitAttackState = true;
 					break;
 				case eActionPlayType.Trigger:
 					// 트리거로 할땐 바로 위의 Table이나 State와 달리 한프레임 더 늦게 호출이 가 불러지지 않는다는 점때문에 (RandomPlayState를 쓰든 안쓰든 동일하다.)

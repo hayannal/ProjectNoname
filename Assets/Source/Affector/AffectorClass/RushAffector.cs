@@ -43,29 +43,32 @@ public class RushAffector : AffectorBase
 			_targetRadius = 0.5f;
 		}
 
-		// check distance
+		// check exit condition
 		Vector3 diff = Vector3.zero;
 		switch ((eRushType)affectorValueLevelTableData.iValue1)
 		{
 			case eRushType.Target:
 				diff = _targetPosition - _actor.cachedTransform.position;
-				_actor.baseCharacterController.movement.rotation = Quaternion.LookRotation(diff);
+				_lastDiffSqrMagnitude = diff.sqrMagnitude;
+				// lookAt 시그널의 기능을 확장하면서 Rush에서는 더이상 rotation은 건들지 않기로 한다.
+				//_actor.baseCharacterController.movement.rotation = Quaternion.LookRotation(diff);
 				break;
 			case eRushType.TargetPosition:
 				diff = _targetPosition - _actor.cachedTransform.position;
-				Vector2 randomOffset = Random.insideUnitCircle * affectorValueLevelTableData.fValue4;
-				diff.x += randomOffset.x;
-				diff.z += randomOffset.y;
-				_actor.baseCharacterController.movement.rotation = Quaternion.LookRotation(diff);
+				_lastDiffSqrMagnitude = diff.sqrMagnitude;
+				_targetPosition = _actor.cachedTransform.position + _actor.cachedTransform.forward * diff.magnitude;
+				//Vector2 randomOffset = Random.insideUnitCircle * affectorValueLevelTableData.fValue4;
+				//diff.x += randomOffset.x;
+				//diff.z += randomOffset.y;
+				//_actor.baseCharacterController.movement.rotation = Quaternion.LookRotation(diff);
 				break;
 			case eRushType.RandomPosition:
 				_targetPosition = GetRandomPosition();
 				diff = _targetPosition - _actor.cachedTransform.position;
-				_actor.baseCharacterController.movement.rotation = Quaternion.LookRotation(diff);
+				//_actor.baseCharacterController.movement.rotation = Quaternion.LookRotation(diff);
 				break;
 		}
 
-		_lastDiffSqrMagnitude = diff.sqrMagnitude;
 		_actorRadius = ColliderUtil.GetRadius(_actor.GetCollider());
 
 		float rushTime = -1.0f;
@@ -74,7 +77,10 @@ public class RushAffector : AffectorBase
 		{
 			case eRushType.TargetPosition:
 			case eRushType.RandomPosition:
-				rushTime = diff.magnitude / affectorValueLevelTableData.fValue1;
+				float rushDistance = diff.magnitude;
+				if (rushDistance + _affectorValueLevelTableData.fValue3 > 0.0f)
+					rushDistance += _affectorValueLevelTableData.fValue3;
+				rushTime = rushDistance / affectorValueLevelTableData.fValue1;
 				if (rushTime < _minimunRushTime)
 					rushTime = _minimunRushTime;
 				break;
@@ -82,6 +88,13 @@ public class RushAffector : AffectorBase
 
 		// lifeTime
 		_endTime = CalcEndTime(rushTime);
+	}
+
+	public override void OverrideAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
+	{
+		// 원래라면 절대 들어오지 말아야하는데 러쉬중에 끝나지도 않았는데 러쉬가 또 온거다.
+		//Debug.Break();
+		Debug.LogError("Invalid call. Duplicated Rush Affector.");
 	}
 
 	Vector3 GetRandomPosition()
@@ -93,9 +106,7 @@ public class RushAffector : AffectorBase
 		int tryBreakCount = 0;
 		while (true)
 		{
-			Vector2 randomCircle = Random.insideUnitCircle.normalized;
-			Vector3 randomOffset = new Vector3(randomCircle.x * 5.0f, 0.0f, randomCircle.y * 5.0f);
-			randomPosition = _actor.cachedTransform.position + randomOffset;
+			randomPosition = _actor.cachedTransform.position + _actor.cachedTransform.forward * Random.Range(0.0f, 10.0f);
 			
 			// AI쪽 코드에서 가져와본다.
 			randomPosition.y = 0.0f;
@@ -194,7 +205,7 @@ public class RushAffector : AffectorBase
 				// 근접하면 돌진을 취소하고 공격한다.
 				Vector3 diff = _actor.cachedTransform.position - targetPosition;
 				float sqrDiff = diff.sqrMagnitude;
-				if (sqrDiff <= sqrRadius + (_affectorValueLevelTableData.fValue3 * _affectorValueLevelTableData.fValue3))
+				if (sqrDiff <= sqrRadius + (_affectorValueLevelTableData.fValue4 * _affectorValueLevelTableData.fValue4))
 				{
 					finalized = true;
 					return;
@@ -209,7 +220,7 @@ public class RushAffector : AffectorBase
 			return;
 
 		// chase
-		bool checkDot = false;
+		//bool checkDot = false;
 		switch ((eRushType)_affectorValueLevelTableData.iValue1)
 		{
 			case eRushType.Target:

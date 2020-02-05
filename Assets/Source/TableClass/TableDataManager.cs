@@ -296,12 +296,12 @@ public class TableDataManager : MonoBehaviour
 	{
 		for (int i = 0; i < damageRateTable.dataArray.Length; ++i)
 		{
-			if (damageRateTable.dataArray[i].overrideActorId == actorId && damageRateTable.dataArray[i].id == type && damageRateTable.dataArray[i].number == addCount)
+			if (damageRateTable.dataArray[i].overrideActorId == actorId && damageRateTable.dataArray[i].number == addCount && damageRateTable.dataArray[i].id == type)
 				return damageRateTable.dataArray[i];
 		}
 		for (int i = 0; i < damageRateTable.dataArray.Length; ++i)
 		{
-			if (damageRateTable.dataArray[i].id == type && damageRateTable.dataArray[i].number == addCount)
+			if (damageRateTable.dataArray[i].number == addCount && damageRateTable.dataArray[i].id == type)
 				return damageRateTable.dataArray[i];
 		}
 		return null;

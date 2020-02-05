@@ -120,21 +120,21 @@ public class BaseDamageAffector : AffectorBase {
 		}
 
 		// 리코셰 몹관통 등에 의한 데미지 감소 처리. 레벨팩 없이 시그널에 의해 동작할땐 적용하지 않는다.
-		if (hitParameter.statusStructForHitObject.monsterThroughAddCountByLevelPack > 0)
+		if (hitParameter.statusStructForHitObject.monsterThroughAddCountByLevelPack > 0 || hitParameter.statusStructForHitObject.monsterThroughIndex > 0)
 		{
 			float damageRate = MonsterThroughHitObjectAffector.GetDamageRate(hitParameter.statusStructForHitObject.monsterThroughAddCountByLevelPack, hitParameter.statusStructForHitObject.monsterThroughIndex, hitParameter.statusStructForHitObject.actorInstanceId);
 			if (damageRate != 1.0f)
 				damage *= damageRate;
 		}
 
-		if (hitParameter.statusStructForHitObject.ricochetAddCountByLevelPack > 0)
+		if (hitParameter.statusStructForHitObject.ricochetAddCountByLevelPack > 0 || hitParameter.statusStructForHitObject.ricochetIndex > 0)
 		{
 			float damageRate = RicochetHitObjectAffector.GetDamageRate(hitParameter.statusStructForHitObject.ricochetAddCountByLevelPack, hitParameter.statusStructForHitObject.ricochetIndex, hitParameter.statusStructForHitObject.actorInstanceId);
 			if (damageRate != 1.0f)
 				damage *= damageRate;
 		}
 
-		if (hitParameter.statusStructForHitObject.bounceWallQuadAddCountByLevelPack > 0)
+		if (hitParameter.statusStructForHitObject.bounceWallQuadAddCountByLevelPack > 0 || hitParameter.statusStructForHitObject.bounceWallQuadIndex > 0)
 		{
 			float damageRate = BounceWallQuadHitObjectAffector.GetDamageRate(hitParameter.statusStructForHitObject.bounceWallQuadAddCountByLevelPack, hitParameter.statusStructForHitObject.bounceWallQuadIndex, hitParameter.statusStructForHitObject.actorInstanceId);
 			if (damageRate != 1.0f)
@@ -148,7 +148,7 @@ public class BaseDamageAffector : AffectorBase {
 				damage *= damageRate;
 		}
 
-		if (hitParameter.statusStructForHitObject.repeatAddCountByLevelPack > 0)
+		if (hitParameter.statusStructForHitObject.repeatAddCountByLevelPack > 0 && hitParameter.statusStructForHitObject.repeatIndex > 0)
 		{
 			float damageRate = RepeatHitObjectAffector.GetDamageRate(hitParameter.statusStructForHitObject.repeatAddCountByLevelPack, hitParameter.statusStructForHitObject.repeatIndex, hitParameter.statusStructForHitObject.actorInstanceId);
 			if (damageRate != 1.0f)

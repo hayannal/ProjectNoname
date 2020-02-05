@@ -1340,8 +1340,7 @@ public class HitObject : MonoBehaviour
 				if (_hitObjectMovement.ApplyRicochet(ref colliderEnabled))
 				{
 					ricochetApplied = true;
-					if (_statusStructForHitObject.ricochetAddCountByLevelPack > 0)
-						++_statusStructForHitObject.ricochetIndex;
+					++_statusStructForHitObject.ricochetIndex;
 					_remainRicochetCount -= 1;
 					if (colliderEnabled)
 					{
@@ -1364,8 +1363,7 @@ public class HitObject : MonoBehaviour
 			}
 			else if ((_remainMonsterThroughCount > 0 || _remainMonsterThroughCount == -1))
 			{
-				if (_statusStructForHitObject.monsterThroughAddCountByLevelPack > 0)
-					++_statusStructForHitObject.monsterThroughIndex;
+				++_statusStructForHitObject.monsterThroughIndex;
 				if (_remainMonsterThroughCount > 0) _remainMonsterThroughCount -= 1;
 				useThrough = true;
 			}
@@ -1382,8 +1380,7 @@ public class HitObject : MonoBehaviour
 				useThrough = true;
 			else if (_remainBounceWallQuadCount > 0)
 			{
-				if (_statusStructForHitObject.bounceWallQuadAddCountByLevelPack > 0)
-					++_statusStructForHitObject.bounceWallQuadIndex;
+				++_statusStructForHitObject.bounceWallQuadIndex;
 				_remainBounceWallQuadCount -= 1;
 				useBounce = true;
 			}
@@ -1400,8 +1397,7 @@ public class HitObject : MonoBehaviour
 		{
 			if (_remainBounceWallQuadCount > 0)
 			{
-				if (_statusStructForHitObject.bounceWallQuadAddCountByLevelPack > 0)
-					++_statusStructForHitObject.bounceWallQuadIndex;
+				++_statusStructForHitObject.bounceWallQuadIndex;
 				_remainBounceWallQuadCount -= 1;
 				useBounce = true;
 			}

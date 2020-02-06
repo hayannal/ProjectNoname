@@ -542,6 +542,19 @@ public class HitObject : MonoBehaviour
 				if (meHit.showHitRimBlink && (meHit.affectorValueIdList == null || meHit.affectorValueIdList.Count == 0))
 					HitRimBlink.ShowHitRimBlink(affectorProcessor.cachedTransform, hitParameter.contactNormal);
 
+				// BaseDamageAffector에서 처리할까 하다가 applyCollisionDamageInterval여부도 statusStructForHitObject안에 넣어야하고
+				// 꼭 BaseDamageAffector에서 데미지 들어가는걸 확인할 필요가 없는거 같아서 여기서 처리하기로 한다.
+				if (meHit.applyCollisionDamageInterval && hitParameter.statusStructForHitObject.monsterActor)
+				{
+					Actor attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(hitParameter.statusStructForHitObject.actorInstanceId);
+					if (attackerActor != null)
+					{
+						MonsterActor monsterActor = attackerActor as MonsterActor;
+						if (monsterActor != null)
+							monsterActor.ApplyCollisionStayInterval();
+					}
+				}
+
 				if (listOneHitPerTarget != null && meHit.oneHitPerTarget)
 					listOneHitPerTarget.Add(affectorProcessor);
 

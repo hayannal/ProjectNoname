@@ -313,8 +313,7 @@ public class MonsterActor : Actor
 	{
 		if (_lastCollisionStayTime == 0.0f)
 		{
-			_collisionStayInterval = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("CollisionDamageInterval");
-			_lastCollisionStayTime = Time.time;
+			ApplyCollisionStayInterval();
 			return true;
 		}
 		if (Time.time > _lastCollisionStayTime + _collisionStayInterval)
@@ -323,6 +322,13 @@ public class MonsterActor : Actor
 			return true;
 		}
 		return false;
+	}
+
+	public void ApplyCollisionStayInterval()
+	{
+		_lastCollisionStayTime = Time.time;
+		if (_collisionStayInterval == 0.0f)
+			_collisionStayInterval = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("CollisionDamageInterval");
 	}
 	#endregion
 

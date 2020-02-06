@@ -56,7 +56,7 @@ public class CollisionDamageAffector : AffectorBase
 		CallAffectorValueAffector.OnEvent(_affectorProcessor, CallAffectorValueAffector.eEventType.OnDamage, damage);
 
 #if UNITY_EDITOR
-		//Debug.LogFormat("Current = {0} / Max = {1} / Damage = {2} / frameCount = {3}", _actor.actorStatus.GetHP(), _actor.actorStatus.GetValue(eActorStatus.MaxHp), damage, Time.frameCount);
+		//Debug.LogFormat("Current = {0} / Max = {1} / Damage = {2} / frameCount = {3} : CollisionDamage", _actor.actorStatus.GetHP(), _actor.actorStatus.GetValue(eActorStatus.MaxHp), damage, Time.frameCount);
 #endif
 	}
 }

@@ -17,6 +17,7 @@ public class MonsterAI : MonoBehaviour
 	TargetingProcessor targetingProcessor { get; set; }
 	PathFinderController pathFinderController { get; set; }
 
+	// startState로 이미 시리얼라이즈 되어있기 때문에 새로운 타입을 추가하려면 맨 아래 추가해야한다.
 	public enum eStateType
 	{
 		RandomMove,
@@ -24,14 +25,48 @@ public class MonsterAI : MonoBehaviour
 		Chase,
 		AttackAction,
 		AttackDelay,
+		StraightMove,
 
 		TypeAmount,
 	}
 	eStateType _currentState;
 
+	void NextStep()
+	{
+		eStateType currentState = _currentState;
+		int stateValue = (int)currentState;
+		for (int i = 0; i < (int)eStateType.TypeAmount; ++i)
+		{
+			eStateType nextState = ToNextStep((eStateType)stateValue);
+			stateValue = (int)nextState;
+			if (useStateList[stateValue])
+			{
+				_currentState = nextState;
+				break;
+			}
+		}
+	}
+
+	eStateType ToNextStep(eStateType stateType)
+	{
+		switch (stateType)
+		{
+			case eStateType.RandomMove: return eStateType.StraightMove;
+			case eStateType.StraightMove: return eStateType.CustomAction;
+			case eStateType.AttackDelay: return eStateType.RandomMove;
+		}
+		return (eStateType)(stateType + 1);
+	}
+
 	public Vector2 startDelayRange;
 	public eStateType startState = eStateType.RandomMove;
 	public bool[] useStateList = new bool[(int)eStateType.TypeAmount];
+
+	private void OnValidate()
+	{
+		if (useStateList != null && useStateList.Length != (int)eStateType.TypeAmount)
+			System.Array.Resize<bool>(ref useStateList, (int)eStateType.TypeAmount);
+	}
 
 	void Awake()
 	{
@@ -52,6 +87,7 @@ public class MonsterAI : MonoBehaviour
 		targetRadius = 0.0f;
 
 		ResetRandomMoveStateInfo();
+		ResetStraightMoveStateInfo();
 		ResetCustomActionStateInfo();
 		ResetChaseStateInfo();
 		ResetAttackActionStateInfo();
@@ -73,6 +109,7 @@ public class MonsterAI : MonoBehaviour
 			_currentState = eStateType.TypeAmount;
 
 		ResetRandomMoveStateInfo();
+		ResetStraightMoveStateInfo();
 		ResetCustomActionStateInfo();
 		ResetChaseStateInfo();
 		ResetAttackActionStateInfo();
@@ -123,6 +160,9 @@ public class MonsterAI : MonoBehaviour
 			case eStateType.AttackDelay:
 				UpdateAttackDelay();
 				break;
+			case eStateType.StraightMove:
+				UpdateStraightMove();
+				break;
 		}
 	}
 
@@ -171,24 +211,6 @@ public class MonsterAI : MonoBehaviour
 				targetingProcessor.ForceSetTarget(BattleInstanceManager.instance.targetColliderOfMonster);
 				targetActor = BattleInstanceManager.instance.targetOfMonster;
 				targetRadius = ColliderUtil.GetRadius(BattleInstanceManager.instance.targetColliderOfMonster);
-			}
-		}
-	}
-
-	void NextStep()
-	{
-		eStateType currentState = _currentState;
-		int nextValue = (int)currentState;
-		for (int i = 0; i < (int)eStateType.TypeAmount; ++i)
-		{
-			nextValue += 1;
-			eStateType nextState = (eStateType)nextValue;
-			if (nextState == eStateType.TypeAmount)
-				nextValue = 0;
-			if (useStateList[nextValue])
-			{
-				_currentState = (eStateType)nextValue;
-				break;
 			}
 		}
 	}
@@ -288,6 +310,135 @@ public class MonsterAI : MonoBehaviour
 	{
 		_moveRemainTime = 0.0f;
 		_moveRefreshRemainTime = 0.0f;
+	}
+	#endregion
+
+	#region StraightMove
+	public Vector2 straightMoveTimeRange;
+	public Vector2 straightRefreshTickTimeRange;
+	public enum eStraightMoveType
+	{
+		Random,
+		WorldAxis,
+		Diagonal,
+	}
+	public eStraightMoveType straightMoveType;
+	void UpdateStraightMove()
+	{
+		if (_moveRemainTime == 0.0f)
+		{
+			_moveRemainTime = Random.Range(straightMoveTimeRange.x, straightMoveTimeRange.y);
+			_moveRefreshRemainTime = Random.Range(straightRefreshTickTimeRange.x, straightRefreshTickTimeRange.y);
+			CaleStraightMovePosition();
+			pathFinderController.diableAnimate = true;
+			actor.actionController.PlayActionByActionName("Move");
+		}
+
+		if (_moveRemainTime > 0.0f)
+		{
+			_moveRemainTime -= Time.deltaTime;
+			_moveRefreshRemainTime -= Time.deltaTime;
+			if (_moveRemainTime <= 0.0f)
+			{
+				ResetStraightMoveStateInfo();
+				NextStep();
+				return;
+			}
+			if (_moveRefreshRemainTime <= 0.0f)
+			{
+				_moveRefreshRemainTime += Random.Range(straightRefreshTickTimeRange.x, straightRefreshTickTimeRange.y);
+				CaleStraightMovePosition();
+			}
+		}
+
+		if (actor.GetRigidbody() != null)
+		{
+			if (actor.affectorProcessor.IsContinuousAffectorType(eAffectorType.CannotMove))
+			{
+				actor.GetRigidbody().velocity = Vector3.zero;
+				return;
+			}
+
+			actor.GetRigidbody().rotation = Quaternion.Slerp(actor.GetRigidbody().rotation, Quaternion.LookRotation(_straightMoveDirection), actor.baseCharacterController.angularSpeed * Mathf.Deg2Rad * Time.deltaTime);
+			// velocity는 FixedUpdate에서만 제대로 동작하는 변수라서 일반 update에서 호출할 경우 속도가 꽤 느려진다. 프레임이 떨어질수록 더 느려진다.
+			// 그래서 몬스터의 기본 이속이 벽을 뚫을 정도로 빠르진 않을테니 MovePosition을 쓰도록 한다.
+			// 사실 이건 kinematic false인 오프젝트에 대해선 transform이동과 같다고 적혀있다.
+			//actor.GetRigidbody().velocity = _straightMoveDirection * actor.baseCharacterController.speed;
+			actor.GetRigidbody().MovePosition(actor.GetRigidbody().position + _straightMoveDirection * actor.baseCharacterController.speed * Time.deltaTime);
+		}
+	}
+
+	Vector3 _straightMoveDirection;
+	void CaleStraightMovePosition()
+	{
+		Vector3 randomDirection = Vector3.zero;
+		float distance = actor.baseCharacterController.speed * straightRefreshTickTimeRange.x;
+		int tryCount = 0;
+		int tryBreakCount = 0;
+		while (true)
+		{
+			switch (straightMoveType)
+			{
+				case eStraightMoveType.Random:
+					Vector2 randomCircle = Random.insideUnitCircle.normalized;
+					randomDirection = new Vector3(randomCircle.x, 0.0f, randomCircle.y);
+					break;
+				case eStraightMoveType.WorldAxis:
+					int random = Random.Range(0, 4);
+					switch (random)
+					{
+						case 0: randomDirection = Vector3.forward; break;
+						case 1: randomDirection = Vector3.back; break;
+						case 2: randomDirection = Vector3.right; break;
+						case 3: randomDirection = Vector3.left; break;
+					}
+					break;
+				case eStraightMoveType.Diagonal:
+					int randomDiagonal = Random.Range(0, 4);
+					switch (randomDiagonal)
+					{
+						case 0: randomDirection = Vector3.forward + Vector3.right; break;
+						case 1: randomDirection = Vector3.back + Vector3.right; break;
+						case 2: randomDirection = Vector3.forward + Vector3.left; break;
+						case 3: randomDirection = Vector3.back + Vector3.left; break;
+					}
+					break;
+			}
+
+			Vector3 desirePosition = actor.cachedTransform.position + randomDirection * distance;
+			desirePosition.y = 0.0f;
+
+			NavMeshHit hit;
+			if (NavMesh.SamplePosition(desirePosition, out hit, 1.0f, NavMesh.AllAreas))
+			{
+				_straightMoveDirection = randomDirection.normalized;
+				return;
+			}
+
+			// exception handling
+			++tryCount;
+			if (tryCount > 20)
+			{
+				tryCount = 0;
+				distance += 1.0f;
+			}
+
+			++tryBreakCount;
+			if (tryBreakCount > 200)
+			{
+				Debug.LogErrorFormat("MonsterAI StraightMove Error. {0} / {1}. Not found valid random position.", StageManager.instance.GetCurrentSpawnFlagName(), actor.actorId);
+				_straightMoveDirection = randomDirection.normalized;
+				return;
+			}
+		}
+		
+	}
+
+	void ResetStraightMoveStateInfo()
+	{
+		_moveRemainTime = 0.0f;
+		_moveRefreshRemainTime = 0.0f;
+		pathFinderController.diableAnimate = false;
 	}
 	#endregion
 

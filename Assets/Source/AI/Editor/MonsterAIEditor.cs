@@ -7,6 +7,45 @@ using SubjectNerd.Utilities;
 [CustomEditor(typeof(MonsterAI))]
 public class MonsterAIEditor : ReorderableArrayInspector
 {
+	enum eEditorStartStateType
+	{
+		RandomMove,
+		StraightMove,
+		CustomAction,
+		Chase,
+		AttackAction,
+		AttackDelay,
+	}
+	eEditorStartStateType _editorStartStateType;
+
+	MonsterAI.eStateType EditorStartStateType2StartType(eEditorStartStateType editorStartStateType)
+	{
+		switch (editorStartStateType)
+		{
+			case eEditorStartStateType.RandomMove: return MonsterAI.eStateType.RandomMove;
+			case eEditorStartStateType.StraightMove: return MonsterAI.eStateType.StraightMove;
+			case eEditorStartStateType.CustomAction: return MonsterAI.eStateType.CustomAction;
+			case eEditorStartStateType.Chase: return MonsterAI.eStateType.Chase;
+			case eEditorStartStateType.AttackAction: return MonsterAI.eStateType.AttackAction;
+			case eEditorStartStateType.AttackDelay: return MonsterAI.eStateType.AttackDelay;
+		}
+		return MonsterAI.eStateType.RandomMove;
+	}
+
+	eEditorStartStateType StartType2EditorStartStateType(MonsterAI.eStateType stateType)
+	{
+		switch (stateType)
+		{
+			case MonsterAI.eStateType.RandomMove: return eEditorStartStateType.RandomMove;
+			case MonsterAI.eStateType.StraightMove: return eEditorStartStateType.StraightMove;
+			case MonsterAI.eStateType.CustomAction: return eEditorStartStateType.CustomAction;
+			case MonsterAI.eStateType.Chase: return eEditorStartStateType.Chase;
+			case MonsterAI.eStateType.AttackAction: return eEditorStartStateType.AttackAction;
+			case MonsterAI.eStateType.AttackDelay: return eEditorStartStateType.AttackDelay;
+		}
+		return eEditorStartStateType.RandomMove;
+	}
+
 	protected override void InitInspector()
 	{
 		base.InitInspector();
@@ -22,7 +61,9 @@ public class MonsterAIEditor : ReorderableArrayInspector
 		MonsterAI t = (MonsterAI)target;
 
 		t.startDelayRange = EditorGUILayout.Vector2Field("Start Delay Time", t.startDelayRange);
-		t.startState = (MonsterAI.eStateType)EditorGUILayout.EnumPopup("Start State Type", t.startState);
+		_editorStartStateType = StartType2EditorStartStateType(t.startState);
+		_editorStartStateType = (eEditorStartStateType)EditorGUILayout.EnumPopup("Start State Type", _editorStartStateType);
+		t.startState = EditorStartStateType2StartType(_editorStartStateType);
 
 		if (t.useStateList[(int)t.startState] == false)
 		{
@@ -40,6 +81,16 @@ public class MonsterAIEditor : ReorderableArrayInspector
 			t.moveTimeRange = EditorGUILayout.Vector2Field("Move Total Time", t.moveTimeRange);
 			t.refreshTickTimeRange = EditorGUILayout.Vector2Field("Refresh Tick Time", t.refreshTickTimeRange);
 			t.desireDistance = EditorGUILayout.FloatField("Disire Distance", t.desireDistance);
+		}
+
+		DrawUILine(Color.grey);
+
+		t.useStateList[5] = EditorGUILayout.Toggle("Use Straight Move State", t.useStateList[5]);
+		if (t.useStateList[5])
+		{
+			t.straightMoveTimeRange = EditorGUILayout.Vector2Field("Move Total Time", t.straightMoveTimeRange);
+			t.straightRefreshTickTimeRange = EditorGUILayout.Vector2Field("Refresh Tick Time", t.straightRefreshTickTimeRange);
+			t.straightMoveType = (MonsterAI.eStraightMoveType)EditorGUILayout.EnumPopup("Straight Move Type", t.straightMoveType);
 		}
 
 		DrawUILine(Color.grey);

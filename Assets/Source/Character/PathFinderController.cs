@@ -96,6 +96,7 @@ public class PathFinderController : BaseAgentController
 	/// 
 	/// </summary>
 
+	public bool diableAnimate { get; set; }
 	protected override void Animate()
 	{
 		// If no animator, return
@@ -108,6 +109,12 @@ public class PathFinderController : BaseAgentController
 		// MonsterAI 가 꺼있을때는 컨티뉴어스 어펙터 등에서 뭔가 특이한 액션을 처리할때다.
 		// 이땐 아래 액션 체인지 코드를 수행하지 않는다.
 		if (monsterAI.enabled == false)
+			return;
+
+		// AI를 끄지 않아도 아래 액션 체인지 코드를 수행하지 않게 하고싶을 때가 있다.
+		// 대표적으로 이동을 AI가 제어하는 StraightMove다.
+		// 이럴때를 대비해서 플래그 하나 추가해둔다.
+		if (diableAnimate)
 			return;
 
 		// Compute move vector in local space - not needed

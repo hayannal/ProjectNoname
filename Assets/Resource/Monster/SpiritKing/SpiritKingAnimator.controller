@@ -115,7 +115,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0
   EndTime: 0.3
-  state: 1
+  state: 3
 --- !u!114 &-8619106489563072030
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -510,7 +510,7 @@ MonoBehaviour:
   StartTime: 0.48
   EndTime: 1
   targetDetectType: 2
-  hitObjectPrefab: {fileID: 739923753698809896, guid: 89636a1cd26f2e34b9c7af3dd11d9285,
+  hitObjectPrefab: {fileID: 6313189258560900821, guid: 56f289604ce19ec4dab54314c42d7e30,
     type: 3}
   lifeTime: 15
   areaHitLifeTimeEarlyOffset: 0
@@ -531,7 +531,7 @@ MonoBehaviour:
   areaHeightMax: 0
   areaAngle: 0
   checkRaycastWallInArea: 0
-  repeatCount: 5
+  repeatCount: 4
   repeatInterval: 0.1
   movementType: 0
   startDirectionType: 2
@@ -545,10 +545,10 @@ MonoBehaviour:
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
   howitzerRandomPositionRadius: 0
-  speed: 4
-  useSpeedChange: 1
-  targetSpeed: 10
-  speedChangeTime: 5
+  speed: 5.5
+  useSpeedChange: 0
+  targetSpeed: 0
+  speedChangeTime: 0
   speedChangeEase: 6
   curve: 0
   curveAdd: 0
@@ -582,7 +582,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttack01
+  - NormalAttack1.5
   showHitEffect: 1
   hitEffectObject: {fileID: 1124335935880280, guid: b6d68723f7e26204d8f14d607141cc13,
     type: 3}
@@ -881,13 +881,13 @@ AnimatorController:
     m_DefaultFloat: 1
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: AttackGroup
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -1658,7 +1658,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 103a63d9ada304948adbac0e5356a9c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.4
+  StartTime: 0.1
   EndTime: 1
   enable: 1
 --- !u!1102 &8545420892495349003
@@ -1704,10 +1704,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   randomStateInfoList:
   - stateName: Base Layer.AttackGroup.RightAttack
-    weight: 1
+    weight: 1.5
   - stateName: Base Layer.AttackGroup.SkillAttack
-    weight: 1
+    weight: 0.35
   - stateName: Base Layer.AttackGroup.IdleAttack
-    weight: 1
+    weight: 1.25
   - stateName: Base Layer.AttackGroup.IdleAttack2
-    weight: 1
+    weight: 0.5

@@ -10,6 +10,7 @@ public class ChangeActorStatusAffector : AffectorBase
 	float _value;
 	int _onDamageRemainCount;
 	GameObject _onStartEffectPrefab;
+	float _executeTime;
 
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
@@ -36,6 +37,7 @@ public class ChangeActorStatusAffector : AffectorBase
 			_onStartEffectPrefab = FindPreloadObject(affectorValueLevelTableData.sValue4);
 		if (_onStartEffectPrefab != null)
 			BattleInstanceManager.instance.GetCachedObject(_onStartEffectPrefab, _actor.cachedTransform.position, _actor.cachedTransform.rotation, (affectorValueLevelTableData.iValue3 == 1) ? _actor.cachedTransform : null);
+		_executeTime = Time.time;
 
 		_actor.actorStatus.OnChangedStatus(_eType);
 	}
@@ -46,7 +48,11 @@ public class ChangeActorStatusAffector : AffectorBase
 		_onDamageRemainCount = affectorValueLevelTableData.iValue2;
 
 		if (_onStartEffectPrefab != null)
-			BattleInstanceManager.instance.GetCachedObject(_onStartEffectPrefab, _actor.cachedTransform.position, _actor.cachedTransform.rotation, (affectorValueLevelTableData.iValue3 == 1) ? _actor.cachedTransform : null);
+		{
+			// 얻은지 0.05초도 안되서 또 얻는거라면 이펙트는 보여주지 않기로 한다. 너무 겹쳐서 보기 안좋다.
+			if (Time.time - _executeTime > 0.05f)
+				BattleInstanceManager.instance.GetCachedObject(_onStartEffectPrefab, _actor.cachedTransform.position, _actor.cachedTransform.rotation, (affectorValueLevelTableData.iValue3 == 1) ? _actor.cachedTransform : null);
+		}
 	}
 
 	public override void UpdateAffector()

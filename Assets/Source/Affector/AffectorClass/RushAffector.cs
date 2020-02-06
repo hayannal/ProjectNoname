@@ -300,4 +300,18 @@ public class RushAffector : AffectorBase
 			return;
 		_actor.actionController.animator.CrossFade(_affectorValueLevelTableData.sValue1, 0.05f);
 	}
+
+	public float GetCollisionDamageRate()
+	{
+		if (_affectorValueLevelTableData == null)
+			return 1.0f;
+
+		if (string.IsNullOrEmpty(_affectorValueLevelTableData.sValue2))
+			return 1.0f;
+
+		float fValue = 1.0f;
+		if (float.TryParse(_affectorValueLevelTableData.sValue2, out fValue))
+			return fValue;
+		return 1.0f;
+	}
 }

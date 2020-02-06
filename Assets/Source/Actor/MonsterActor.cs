@@ -282,17 +282,29 @@ public class MonsterActor : Actor
 				continue;
 
 			if (CheckCollisionStayInterval())
-				ApplyCollisionDamageAffector(affectorProcessor);
+				ApplyCollisionDamage(affectorProcessor);
 		}
 	}
 
-	void ApplyCollisionDamageAffector(AffectorProcessor defenderAffectorProcessor)
+	void ApplyCollisionDamage(AffectorProcessor defenderAffectorProcessor)
 	{
-		eAffectorType affectorType = eAffectorType.CollisionDamage;
-		AffectorValueLevelTableData collisionDamageAffectorValue = new AffectorValueLevelTableData();
-		collisionDamageAffectorValue.fValue1 = cachedMonsterTableData.collisionDamageRate;
-		collisionDamageAffectorValue.iValue1 = 0;
-		defenderAffectorProcessor.ExecuteAffectorValueWithoutTable(affectorType, collisionDamageAffectorValue, this, false);
+		RushAffector rushAffector = (RushAffector)affectorProcessor.GetFirstContinuousAffector(eAffectorType.Rush);
+		if (rushAffector != null)
+		{
+			eAffectorType affectorType = eAffectorType.BaseDamage;
+			AffectorValueLevelTableData baseDamageAffectorValue = new AffectorValueLevelTableData();
+			baseDamageAffectorValue.fValue1 = cachedMonsterTableData.collisionDamageRate * rushAffector.GetCollisionDamageRate();
+			baseDamageAffectorValue.fValue4 = 1.0f;
+			defenderAffectorProcessor.ExecuteAffectorValueWithoutTable(affectorType, baseDamageAffectorValue, this, false);
+		}
+		else
+		{
+			eAffectorType affectorType = eAffectorType.CollisionDamage;
+			AffectorValueLevelTableData collisionDamageAffectorValue = new AffectorValueLevelTableData();
+			collisionDamageAffectorValue.fValue1 = cachedMonsterTableData.collisionDamageRate;
+			collisionDamageAffectorValue.iValue1 = 0;
+			defenderAffectorProcessor.ExecuteAffectorValueWithoutTable(affectorType, collisionDamageAffectorValue, this, false);
+		}
 	}
 
 	float _collisionStayInterval = 0.0f;

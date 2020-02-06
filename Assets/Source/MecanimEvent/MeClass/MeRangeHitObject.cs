@@ -116,6 +116,12 @@ public class MeRangeHitObject : MeHitObject
 
 	override public void OnRangeSignal(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
+		if (_cachedParentActor != null)
+		{
+			if (_cachedParentActor.affectorProcessor.IsContinuousAffectorType(eAffectorType.CannotAction))
+				return;
+		}
+
 		if (_mainHitObject != null)
 		{
 			// RangeHit는 애니에 맞춰서 움직이는 근접 공격에 쓰려고 한거라 위치와 각도를 매프레임 갱신해줘야한다.

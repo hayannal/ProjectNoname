@@ -369,6 +369,74 @@ public class BattleTestTool : EditorWindow
 							if (railMonster != null)
 								railMonster.enabled = useMonsterAI;
 						}
+
+						GUILayout.BeginHorizontal();
+						{
+							if (GUILayout.Button("TimeScale"))
+							{
+								Time.timeScale = 0.2f;
+								AddressableAssetLoadManager.GetAddressableGameObject("Effect27_D", "CommonEffect", (prefab) =>
+								{
+									BattleInstanceManager.instance.AddCommonPoolPreloadObjectList(prefab);
+								});
+								AddressableAssetLoadManager.GetAddressableGameObject("Effect6_Collision_D", "CommonEffect", (prefab) =>
+								{
+									BattleInstanceManager.instance.AddCommonPoolPreloadObjectList(prefab);
+								});
+								AddressableAssetLoadManager.GetAddressableGameObject("Effect6_Collision_D2", "CommonEffect", (prefab) =>
+								{
+									BattleInstanceManager.instance.AddCommonPoolPreloadObjectList(prefab);
+								});
+								AddressableAssetLoadManager.GetAddressableGameObject("MagicSphere_12_D", "CommonEffect", (prefab) =>
+								{
+									BattleInstanceManager.instance.AddCommonPoolPreloadObjectList(prefab);
+								});
+							}
+							if (GUILayout.Button("Reset"))
+							{
+								Time.timeScale = 1.0f;
+							}
+							if (GUILayout.Button("Hold"))
+							{
+								MonsterActor monsterActor = monsterInstance.GetComponent<MonsterActor>();
+								if (monsterActor != null && monsterActor.actorStatus != null && monsterActor.actorStatus.statusBase != null)
+								{
+									HitParameter hitParameter = new HitParameter();
+									hitParameter.statusBase = new StatusBase();
+									_playerActor.actorStatus.CopyStatusBase(ref hitParameter.statusBase);
+									SkillProcessor.CopyEtcStatus(ref hitParameter.statusStructForHitObject, _playerActor);
+									hitParameter.statusStructForHitObject.skillLevel = 1;
+									monsterActor.affectorProcessor.ExcuteAffectorValue("LP_Hold_CannotMove", 1, hitParameter, false);
+								}
+							}
+							if (GUILayout.Button("Paral"))
+							{
+								MonsterActor monsterActor = monsterInstance.GetComponent<MonsterActor>();
+								if (monsterActor != null && monsterActor.actorStatus != null && monsterActor.actorStatus.statusBase != null)
+								{
+									HitParameter hitParameter = new HitParameter();
+									hitParameter.statusBase = new StatusBase();
+									_playerActor.actorStatus.CopyStatusBase(ref hitParameter.statusBase);
+									SkillProcessor.CopyEtcStatus(ref hitParameter.statusStructForHitObject, _playerActor);
+									hitParameter.statusStructForHitObject.skillLevel = 1;
+									monsterActor.affectorProcessor.ExcuteAffectorValue("LP_Paralyze_CannotAction", 1, hitParameter, false);
+								}
+							}
+							if (GUILayout.Button("Trans"))
+							{
+								MonsterActor monsterActor = monsterInstance.GetComponent<MonsterActor>();
+								if (monsterActor != null && monsterActor.actorStatus != null && monsterActor.actorStatus.statusBase != null)
+								{
+									HitParameter hitParameter = new HitParameter();
+									hitParameter.statusBase = new StatusBase();
+									_playerActor.actorStatus.CopyStatusBase(ref hitParameter.statusBase);
+									SkillProcessor.CopyEtcStatus(ref hitParameter.statusStructForHitObject, _playerActor);
+									hitParameter.statusStructForHitObject.skillLevel = 1;
+									monsterActor.affectorProcessor.ExcuteAffectorValue("LP_Transport_Teleported", 1, hitParameter, false);
+								}
+							}
+						}
+						GUILayout.EndHorizontal();
 					}
 				}
 				GUILayout.EndVertical();

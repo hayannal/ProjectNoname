@@ -562,10 +562,8 @@ public class MeHitObject : MecanimEventBase {
 		}
 	}
 
-	[System.NonSerialized]
-	int _totalRepeatCount;
-	[System.NonSerialized]
-	float _resultRepeatInterval;
+	protected int _totalRepeatCount;
+	protected float _resultRepeatInterval;
 	IEnumerator<float> RepeatProcess(Transform spawnTransform, MeHitObject meHit, Actor parentActor, Transform parentTransform, StatusBase statusBase, float parentHitObjectCreateTime, int hitSignalIndexInAction)
 	{
 		// Repeat 하기전 트랜스폼들을 복제해서 캐싱해야한다. 이래야 본 포지션 및 캐릭터 방향까지 기억할 수 있다.

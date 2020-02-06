@@ -83,10 +83,6 @@ public class MeRangeHitObject : MeHitObject
 
 	HitObject _mainHitObject;
 	List<HitObject> _listRepeatHitObject;
-	[System.NonSerialized]
-	int _totalRepeatCount;
-	[System.NonSerialized]
-	float _resultRepeatInterval;
 	override public void OnRangeSignalEnd(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		if (_mainHitObject != null)

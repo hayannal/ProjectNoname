@@ -142,6 +142,24 @@ public class RushAffector : AffectorBase
 	float _lastDiffSqrMagnitude = 0.0f;
 	public override void UpdateAffector()
 	{
+		if (_actor.affectorProcessor.IsContinuousAffectorType(eAffectorType.CannotAction))
+		{
+			// 행동불가일때 _endTime을 해당 시간만큼 늘려놔야 미리 멈추는걸 방지할 수 있다. 아무것도 처리하지 않으니 리턴.
+			if (_endTime > 0.0f)
+				_endTime += Time.deltaTime;
+			return;
+		}
+
+		bool cannotMove = false;
+		if (_actor.affectorProcessor.IsContinuousAffectorType(eAffectorType.CannotMove))
+		{
+			cannotMove = true;
+
+			// 이동불가일때 _endTime을 해당 시간만큼 늘려놔야 미리 멈추는걸 방지할 수 있다.
+			if (_endTime > 0.0f)
+				_endTime += Time.deltaTime;
+		}
+
 		if (CheckEndTime(_endTime) == false)
 			return;
 
@@ -152,7 +170,7 @@ public class RushAffector : AffectorBase
 		}
 
 		// 최소 거리를 지날때까진 거리 검사를 하지 않는다.
-		if (_minimunRushTime > 0.0f)
+		if (cannotMove == false && _minimunRushTime > 0.0f)
 		{
 			_minimunRushTime -= Time.deltaTime;
 			if (_minimunRushTime <= 0.0f)
@@ -218,6 +236,12 @@ public class RushAffector : AffectorBase
 	{
 		if (_actor.GetRigidbody() == null)
 			return;
+
+		if (_actor.affectorProcessor.IsContinuousAffectorType(eAffectorType.CannotAction) || _actor.affectorProcessor.IsContinuousAffectorType(eAffectorType.CannotMove))
+		{
+			_actor.GetRigidbody().velocity = Vector3.zero;
+			return;
+		}
 
 		// chase
 		//bool checkDot = false;

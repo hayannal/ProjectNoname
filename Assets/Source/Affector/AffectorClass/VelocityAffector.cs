@@ -40,6 +40,12 @@ public class VelocityAffector : AffectorBase
 
 	public override void FixedUpdateAffector()
 	{
+		if (_actor.affectorProcessor.IsContinuousAffectorType(eAffectorType.CannotAction))
+		{
+			_actor.GetRigidbody().velocity = Vector3.zero;
+			return;
+		}
+
 		if (_endRemainTime > 0.0f)
 		{
 			_endRemainTime -= Time.fixedDeltaTime;
@@ -63,6 +69,12 @@ public class VelocityAffector : AffectorBase
 		//	_rigidbody.velocity = _reservedVelocity;
 		//	_reservedVelocityState = false;
 		//}
+
+		if (_actor.affectorProcessor.IsContinuousAffectorType(eAffectorType.CannotMove))
+		{
+			_actor.GetRigidbody().velocity = Vector3.zero;
+			return;
+		}
 
 		_actor.GetRigidbody().velocity = _actor.cachedTransform.TransformDirection(_reservedVelocity);
 	}

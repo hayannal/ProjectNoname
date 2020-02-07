@@ -198,10 +198,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startDelayRange: {x: 0.25, y: 0.25}
   startState: 0
-  useStateList: 0100010101
-  moveTimeRange: {x: 1.5, y: 3}
-  refreshTickTimeRange: {x: 1.5, y: 1.5}
+  useStateList: 010001010100
+  moveTimeRange: {x: 0.5, y: 1}
+  refreshTickTimeRange: {x: 0.5, y: 0.5}
   desireDistance: 5
+  straightMoveTimeRange: {x: 0, y: 0}
+  straightRefreshTickTimeRange: {x: 0, y: 0}
+  straightMoveType: 0
   customActionPlayType: 1
   customActionName: 
   customActionFadeDuration: 0.05
@@ -238,10 +241,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3601504328294502871}
     m_Modifications:
-    - target: {fileID: 100000, guid: 20b6002ffdd985141bcb3f9c0a0031f7, type: 3}
-      propertyPath: m_Name
-      value: DemonBoss
-      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 20b6002ffdd985141bcb3f9c0a0031f7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -285,6 +284,10 @@ PrefabInstance:
     - target: {fileID: 400000, guid: 20b6002ffdd985141bcb3f9c0a0031f7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 20b6002ffdd985141bcb3f9c0a0031f7, type: 3}
+      propertyPath: m_Name
+      value: DemonBoss
       objectReference: {fileID: 0}
     - target: {fileID: 9500000, guid: 20b6002ffdd985141bcb3f9c0a0031f7, type: 3}
       propertyPath: m_Controller

@@ -58,7 +58,7 @@ public class MeAnimatorSpeed : MecanimEventBase {
 	{
 		base.OnStateUpdate(animator, stateInfo, layerIndex);
 
-		if (_waitEnd == true && (animator.IsInTransition(0) || IsInRange(stateInfo) == false))
+		if (_waitEnd == true && ((animator.IsInTransition(0) && animator.GetNextAnimatorStateInfo(0).fullPathHash != stateInfo.fullPathHash) || IsInRange(stateInfo) == false))
 			OnRangeSignalEnd(animator, stateInfo, layerIndex);
 
 #if UNITY_EDITOR

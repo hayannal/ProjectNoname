@@ -607,7 +607,7 @@ public class HitObject : MonoBehaviour
 
 		// step 2. Through Test
 		float reservedNearestDistance = meHit.defaultSphereCastDistance;
-		Vector3 endPosition = Vector3.zero;
+		Vector3 endPosition = spawnPosition + spawnForward * reservedNearestDistance;
 		for (int i = 0; i < resultCount; ++i)
 		{
 			if (i >= s_raycastHitList.Length)

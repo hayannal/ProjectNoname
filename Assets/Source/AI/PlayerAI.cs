@@ -191,6 +191,8 @@ public class PlayerAI : MonoBehaviour
 			return;
 		if (_actorTableAttackRange == 0.0f)
 			return;
+		if (actor.actorStatus.IsDie())
+			return;
 
 		Transform targetTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
 		Vector3 diff = targetTransform.position - actor.cachedTransform.position;

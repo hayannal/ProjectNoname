@@ -982,6 +982,43 @@ public class BattleInstanceManager : MonoBehaviour
 	}
 	#endregion
 
+	#region Attack Indicator
+	Dictionary<GameObject, List<AttackIndicator>> _dicAttackIndicatorInstancePool = new Dictionary<GameObject, List<AttackIndicator>>();
+	public AttackIndicator GetCachedAttackIndicator(GameObject prefab, Vector3 position, Quaternion rotation, Transform parentTransform = null)
+	{
+		List<AttackIndicator> listCachedAttackIndicator = null;
+		if (_dicAttackIndicatorInstancePool.ContainsKey(prefab))
+			listCachedAttackIndicator = _dicAttackIndicatorInstancePool[prefab];
+		else
+		{
+			listCachedAttackIndicator = new List<AttackIndicator>();
+			_dicAttackIndicatorInstancePool.Add(prefab, listCachedAttackIndicator);
+		}
+
+		for (int i = 0; i < listCachedAttackIndicator.Count; ++i)
+		{
+			if (!listCachedAttackIndicator[i].gameObject.activeSelf)
+			{
+				listCachedAttackIndicator[i].transform.parent = parentTransform;
+				listCachedAttackIndicator[i].transform.position = position;
+				listCachedAttackIndicator[i].transform.rotation = rotation;
+				listCachedAttackIndicator[i].gameObject.SetActive(true);
+				return listCachedAttackIndicator[i];
+			}
+		}
+
+		GameObject newObject = Instantiate<GameObject>(prefab, position, rotation, parentTransform);
+#if UNITY_EDITOR
+		AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+		if (settings.ActivePlayModeDataBuilderIndex == 2)
+			ObjectUtil.ReloadShader(newObject);
+#endif
+		AttackIndicator attackIndicator = newObject.GetComponent<AttackIndicator>();
+		listCachedAttackIndicator.Add(attackIndicator);
+		return attackIndicator;
+	}
+	#endregion
+
 
 
 

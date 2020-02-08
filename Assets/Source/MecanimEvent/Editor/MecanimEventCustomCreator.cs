@@ -27,6 +27,7 @@ public static class MecanimEventCustomCreator
 		case eMecanimEventType.DisableActorCollider: eventBase = targetState.AddStateMachineBehaviour<MeDisableActorCollider>(); break;
 		case eMecanimEventType.LookAt: eventBase = targetState.AddStateMachineBehaviour<MeLookAt>(); break;
 		case eMecanimEventType.IdleAnimator: eventBase = targetState.AddStateMachineBehaviour<MeIdleAnimator>(); break;
+		case eMecanimEventType.AttackIndicator: eventBase = targetState.AddStateMachineBehaviour<MeAttackIndicator>(); break;
 #endregion
 		}
 		return eventBase;
@@ -50,6 +51,7 @@ public static class MecanimEventCustomCreator
 		if (eventBase is MeDisableActorCollider) return eMecanimEventType.DisableActorCollider;
 		if (eventBase is MeLookAt) return eMecanimEventType.LookAt;
 		if (eventBase is MeIdleAnimator) return eMecanimEventType.IdleAnimator;
+		if (eventBase is MeAttackIndicator) return eMecanimEventType.AttackIndicator;
 		return eMecanimEventType.State;
 #endregion
 	}

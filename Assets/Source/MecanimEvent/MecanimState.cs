@@ -27,6 +27,20 @@ public class MecanimState : MonoBehaviour {
 	StateInfo _stateInfo = new StateInfo();
 	public void StartState(int stateID, int fullPathHash)
 	{
+		#region Idle State
+		// 우연히 플레이어의 AI가 켜있는데도 공격을 안하는 현상을 찾게되서 상태값을 확인해보니 Move와 Idle이 동시에 들어있었다.
+		// 현재로서는 이 현상의 원인을 찾기가 어려워 구조를 뜯을 수 없으므로 강제로 Move상태를 제거해보도록 한다.
+		// 이거로 가끔 공격 딜레이가 끝난거 같은데도 공격을 하지 않던 현상도 수정되는지 봐야한다.
+		if (stateID == (int)MecanimStateDefine.eMecanimState.Idle)
+		{
+			for (int i = m_listStateInfo.Count - 1; i >= 0; --i)
+			{
+				if (m_listStateInfo[i].stateID != (int)MecanimStateDefine.eMecanimState.Move)
+					m_listStateInfo.RemoveAt(i);
+			}
+		}
+		#endregion
+
 		for (int i = 0; i < m_listStateInfo.Count; ++i)
 		{
 			if (m_listStateInfo[i].stateID == stateID && m_listStateInfo[i].fullPathHash == fullPathHash)

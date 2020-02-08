@@ -63,6 +63,7 @@ public class PlayerGaugeCanvas : MonoBehaviour
 		mobaEnergyBar.MaxValue = playerActor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MaxHp);
 		mobaEnergyBar.Value = playerActor.actorStatus.GetHP();
 		mobaEnergyBar.SmallGapInterval = mobaEnergyBar.MaxValue / (g1 * Mathf.Log(mobaEnergyBar.MaxValue) + g2);
+		_lastMaxValue = mobaEnergyBar.MaxValue;
 		_lastRatio = playerActor.actorStatus.GetHPRatio();
 		_targetTransform = playerActor.cachedTransform;
 		GetTargetHeight(_targetTransform);
@@ -114,6 +115,7 @@ public class PlayerGaugeCanvas : MonoBehaviour
 	}
 
 	float _lastRatio = 1.0f;
+	float _lastMaxValue = 0.0f;
 	public void OnChangedHP(PlayerActor playerActor)
 	{
 		if (_initialized == false)
@@ -123,7 +125,7 @@ public class PlayerGaugeCanvas : MonoBehaviour
 		mobaEnergyBar.Value = playerActor.actorStatus.GetHP();
 		float hpRatio = playerActor.actorStatus.GetHPRatio();
 
-		if (_lastRatio < hpRatio)
+		if (_lastRatio < hpRatio || (_lastRatio == hpRatio && _lastRatio == 1.0f && mobaEnergyBar.MaxValue > _lastMaxValue))
 		{
 			if (!offsetRootObject.activeSelf)
 				offsetRootObject.SetActive(true);
@@ -137,6 +139,7 @@ public class PlayerGaugeCanvas : MonoBehaviour
 		}
 
 		_lastRatio = hpRatio;
+		_lastMaxValue = mobaEnergyBar.MaxValue;
 	}
 
 	const float LateFillDelay = 0.9f;

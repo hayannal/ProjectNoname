@@ -198,10 +198,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startDelayRange: {x: 0, y: 0}
   startState: 3
-  useStateList: 0000000101
+  useStateList: 000000010100
   moveTimeRange: {x: 4, y: 4}
   refreshTickTimeRange: {x: 2, y: 2}
   desireDistance: 5
+  straightMoveTimeRange: {x: 0, y: 0}
+  straightRefreshTickTimeRange: {x: 0, y: 0}
+  straightMoveType: 0
   customActionPlayType: 1
   customActionName: 
   customActionFadeDuration: 0.05
@@ -269,26 +272,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 400108, guid: 880472214087df440944324a3857fb04, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 400108, guid: 880472214087df440944324a3857fb04, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1.25
-      objectReference: {fileID: 0}
     - target: {fileID: 9500000, guid: 880472214087df440944324a3857fb04, type: 3}
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 01ae64a816d8baa48971746a7bfe3ddf, type: 2}
-    - target: {fileID: 13700000, guid: 880472214087df440944324a3857fb04, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 04f61fa7e4dae8c469a6a66a4d3b2812, type: 2}
     - target: {fileID: 13700002, guid: 880472214087df440944324a3857fb04, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: b1660ef77d06e2040a718d15d5a05a83, type: 2}
+    - target: {fileID: 13700000, guid: 880472214087df440944324a3857fb04, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 04f61fa7e4dae8c469a6a66a4d3b2812, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 880472214087df440944324a3857fb04, type: 3}
 --- !u!4 &9063285927108985070 stripped

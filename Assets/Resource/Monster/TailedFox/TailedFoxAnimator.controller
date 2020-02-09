@@ -15,9 +15,10 @@ MonoBehaviour:
   StartTime: 0.5
   EndTime: 1
   targetDetectType: 2
-  hitObjectPrefab: {fileID: 543431697849790876, guid: cc80c56f1d4401c499efa0abb9b1eb77,
+  hitObjectPrefab: {fileID: 5848472822562479349, guid: b719df7e41737594083d0fc791e3e390,
     type: 3}
-  lifeTime: 5
+  lifeTime: 15
+  areaHitLifeTimeEarlyOffset: 0
   movable: 1
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -27,12 +28,15 @@ MonoBehaviour:
   boneName: 
   offset: {x: 0, y: 1, z: 0.5}
   useBoneRotation: 0
+  fixedWorldPositionY: 0
   areaRotationY: 0
   areaDistanceMin: 0
   areaDistanceMax: 0
   areaHeightMin: 0
   areaHeightMax: 0
   areaAngle: 0
+  checkRaycastWallInArea: 0
+  applyCollisionDamageInterval: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -45,20 +49,29 @@ MonoBehaviour:
   leftRandomAngle: 0
   rightRandomAngle: 0
   upDownRandomAngle: 0
-  speed: 4.5
+  howitzerTargetPositionOffset: {x: 0, y: 0}
+  howitzerRandomPositionRadius: 0
+  speed: 2.5
+  useSpeedChange: 0
+  targetSpeed: 0
+  speedChangeTime: 0
+  speedChangeEase: 6
   curve: 0
   curveAdd: 0
   curveLockY: 0
+  curveStartDelayTime: 0
+  curveLifeTime: 0
+  endFollowOverTargetDistance: 0
   accelTurn: 0
   gravity: -9.81
   parallelCount: 0
   parallelDistance: 0
   ignoreMainHitObjectByParallel: 0
-  circularSectorCount: 0
-  circularSectorBetweenAngle: 0
+  circularSectorCount: 3
+  circularSectorBetweenAngle: 15
   circularSectorUseWorldSpace: 0
   circularSectorWorldSpaceCenterAngleY: 0
-  ignoreMainHitObjectByCircularSector: 0
+  ignoreMainHitObjectByCircularSector: 1
   continuousHitObjectGeneratorBaseList: []
   contactAll: 0
   monsterThroughCount: 0
@@ -77,7 +90,7 @@ MonoBehaviour:
   affectorValueIdList:
   - NormalAttack01
   showHitEffect: 1
-  hitEffectObject: {fileID: 1124335935880280, guid: b6d68723f7e26204d8f14d607141cc13,
+  hitEffectObject: {fileID: 1322770261676608, guid: 204b7eaaad459f64cbf1a248d336f391,
     type: 3}
   hitEffectLookAtNormal: 0
   useWeaponHitEffect: 0

@@ -88,7 +88,10 @@ public class HitObject : MonoBehaviour
 			if (meHit.RangeSignal == false)
 			{
 				if (meHit.targetDetectType == eTargetDetectType.Area)
-					CheckHitArea(areaPosition, areaDirection, meHit, statusBase, statusStructForHitObject, GetGatePillarCompareTime(0.0f, parentHitObjectCreateTime));
+				{
+					if (meHit.areaHitLifeTimeEarlyOffset == 0.0f)
+						CheckHitArea(areaPosition, areaDirection, meHit, statusBase, statusStructForHitObject, GetGatePillarCompareTime(0.0f, parentHitObjectCreateTime));
+				}
 				else if (meHit.targetDetectType == eTargetDetectType.SphereCast)
 				{
 					areaDirection = GetSpawnDirection(areaPosition, meHit, parentTransform, GetTargetPosition(meHit, parentActor, hitSignalIndexInAction), parentActor.targetingProcessor);
@@ -1020,7 +1023,7 @@ public class HitObject : MonoBehaviour
 	{
 		if (_signal.targetDetectType == eTargetDetectType.Area && _signal.RangeSignal == false && _signal.areaHitLifeTimeEarlyOffset > 0.0f)
 		{
-			if (_createTime + (_signal.lifeTime - _signal.areaHitLifeTimeEarlyOffset) < Time.time)
+			if (Time.time < _createTime + _signal.areaHitLifeTimeEarlyOffset)
 				return;
 		}
 

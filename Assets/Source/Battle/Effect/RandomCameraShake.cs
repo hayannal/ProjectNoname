@@ -1,9 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MEC;
 
 public class RandomCameraShake : MonoBehaviour
 {
+	public float startDelay = 0.0f;
+
 	public int numberOfShakes = 3;
 	public Vector3 shakeAmountMin;
 	public Vector3 shakeAmountMax;
@@ -20,7 +23,7 @@ public class RandomCameraShake : MonoBehaviour
 	void OnEnable()
 	{
 		if (_started)
-			Shake();
+			PlayShake();
 	}
 
 	bool _started = false;
@@ -32,10 +35,31 @@ public class RandomCameraShake : MonoBehaviour
 			_cameraShake = UIInstanceManager.instance.GetCachedCameraMain().gameObject.AddComponent<Thinksquirrel.CShake.CameraShake>();
 		_started = true;
 
+		PlayShake();
+	}
+
+	void PlayShake()
+	{
+		if (startDelay == 0.0f)
+			Shake();
+		else
+			Timing.RunCoroutine(DelayedShake(startDelay));
+	}
+
+	IEnumerator<float> DelayedShake(float delayTime)
+	{
+		yield return Timing.WaitForSeconds(delayTime);
+
+		// avoid gc
+		if (this == null)
+			yield break;
+		if (gameObject.activeSelf == false)
+			yield break;
+
 		Shake();
 	}
 
-    void Shake()
+	void Shake()
 	{
 		_cameraShake.Shake(Thinksquirrel.CShake.CameraShake.ShakeType.CameraMatrix,
 			numberOfShakes,

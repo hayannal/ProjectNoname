@@ -84,7 +84,18 @@ public class PathFinderController : BaseAgentController
 		if (_dontMove)
 			return Vector3.zero;
 
-		return base.CalcDesiredVelocity();
+		SetMoveDirection();
+
+		var desiredVelocity = base.CalcDesiredVelocity();
+
+		// Attack 애니에 들어있는 루트모션은 쓰고싶으면 useRootMotion을 켜고 RootMotionController를 Animator에 붙여두면 되는데
+		// 이 상태에서 Move애니에 이동값이 없으면 아예 desiredVelocity가 0으로 되서 제자리에서 못움직이게 된다.
+		// 그래서 아래 두줄로 예외처리를 해본다.
+		// 지금껏 몬스터한테 이걸 켜는 경우가 없었는데 처음으로 StoneMonster에게 적용해본다.
+		if (useRootMotion && applyRootMotion && desiredVelocity == Vector3.zero)
+			desiredVelocity = moveDirection * speed;
+
+		return autoBraking ? desiredVelocity * brakingRatio : desiredVelocity;
 	}
 
 	/// <summary>

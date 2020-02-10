@@ -80,8 +80,13 @@ public class MeLookAt : MecanimEventBase
 	override public void OnRangeSignal(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		Vector3 targetPosition = Vector3.zero;
-		if (lookAtTarget && _actor != null && _actor != null && _actor.targetingProcessor.GetTargetCount() > 0)
-			targetPosition = _actor.targetingProcessor.GetTargetPosition(0);
+		if (lookAtTarget && _actor != null && _actor != null)
+		{
+			if (_actor.targetingProcessor.GetTargetCount() > 0)
+				targetPosition = _actor.targetingProcessor.GetTargetPosition(0);
+			else
+				return;
+		}
 
 		if (lookAtRandom && _initializedRandom)
 			targetPosition = _randomPosition;

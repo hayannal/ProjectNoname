@@ -81,7 +81,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400004, guid: 24a7c0fc9af8fbe4e91451cc57602d62, type: 3}
+  m_Motion: {fileID: 7400006, guid: 24a7c0fc9af8fbe4e91451cc57602d62, type: 3}
   m_Tag: 
   m_SpeedParameter: AttackAniSpeedRatio
   m_MirrorParameter: 
@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.43
+  StartTime: 0.34
   EndTime: 1
   targetDetectType: 1
   hitObjectPrefab: {fileID: 0}
@@ -117,11 +117,12 @@ MonoBehaviour:
   fixedWorldPositionY: 0
   areaRotationY: 0
   areaDistanceMin: 0
-  areaDistanceMax: 1.7
+  areaDistanceMax: 1.5
   areaHeightMin: 0
   areaHeightMax: 2
-  areaAngle: 25
-  checkRaycastWallInArea: 1
+  areaAngle: 360
+  checkRaycastWallInArea: 0
+  applyCollisionDamageInterval: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -239,8 +240,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartTime: 0.03
-  EndTime: 0.2
-  speed: 0.7
+  EndTime: 0.29
+  speed: 0.37
 --- !u!1102 &-1215575675028676736
 AnimatorState:
   serializedVersion: 5
@@ -273,7 +274,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SwineconeAnimator
+  m_Name: SwineconeAnimator_Purple
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: AttackAniSpeedRatio

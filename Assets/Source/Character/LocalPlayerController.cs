@@ -277,6 +277,18 @@ public sealed class LocalPlayerController : BaseCharacterController
 		//	return;
 		//}
 
+		// 레이저 필살기 시전 중에 회전되는 문제가 있었는데 그게 이 moveDirection에 input으로 발생된 값을 그대로 넣었기 때문에 발생하던 거였다.
+		// 이동이 가능한 상태에서만 아래 코드를 호출해야하는거라 Die체크말고 조금 더 추가하기로 한다.
+		// - 언제나 디폴트 상태는 movable true이며 일부 특정한 상황에서만 불가능하다.
+		bool movable = true;
+		if (actor.actionController.mecanimState.IsState((int)eMecanimState.Ultimate))
+			movable = false;
+		if (movable == false)
+		{
+			moveDirection = Vector3.zero;
+			return;
+		}
+
 
 		// Handle your custom input here...
 

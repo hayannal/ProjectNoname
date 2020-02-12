@@ -14,6 +14,7 @@ public class ControlStateBase : StateMachineBehaviour
 	{
 		PlayState,
 		PlayRandomState,
+		PlayRandomStateWithCondition,
 	}
 
 	public static ControlStateBase CreateControlState(AnimatorState targetState, eControlStateType stateType)
@@ -24,6 +25,7 @@ public class ControlStateBase : StateMachineBehaviour
 			#region USER_CODE
 			case eControlStateType.PlayState: stateBase = targetState.AddStateMachineBehaviour<PlayState>(); break;
 			case eControlStateType.PlayRandomState: stateBase = targetState.AddStateMachineBehaviour<PlayRandomState>(); break;
+			case eControlStateType.PlayRandomStateWithCondition: stateBase = targetState.AddStateMachineBehaviour<PlayRandomStateWithCondition>(); break;
 			#endregion
 		}
 		return stateBase;
@@ -34,6 +36,7 @@ public class ControlStateBase : StateMachineBehaviour
 		#region USER_CODE
 		if (stateBase is PlayState) return eControlStateType.PlayState;
 		if (stateBase is PlayRandomState) return eControlStateType.PlayRandomState;
+		if (stateBase is PlayRandomStateWithCondition) return eControlStateType.PlayRandomStateWithCondition;
 		return eControlStateType.PlayState;
 		#endregion
 	}

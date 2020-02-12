@@ -19,7 +19,7 @@ public class Condition : MonoBehaviour
 		DistanceOnFire,
 	}
 
-	enum eCompareType
+	public enum eCompareType
 	{
 		Equal = 1,
 		NotEqual,
@@ -88,65 +88,79 @@ public class Condition : MonoBehaviour
 		if (useFloatCompare)
 		{
 			float.TryParse(data.value, out float floatValue);
-			switch (compareType)
-			{
-				case eCompareType.Equal:
-					if (baseValueFloat == floatValue)
-						return true;
-					break;
-				case eCompareType.NotEqual:
-					if (baseValueFloat != floatValue)
-						return true;
-					break;
-				case eCompareType.Little:
-					if (baseValueFloat < floatValue)
-						return true;
-					break;
-				case eCompareType.Greater:
-					if (baseValueFloat > floatValue)
-						return true;
-					break;
-				case eCompareType.LittleOrEqual:
-					if (baseValueFloat <= floatValue)
-						return true;
-					break;
-				case eCompareType.GreaterOrEqual:
-					if (baseValueFloat >= floatValue)
-						return true;
-					break;
-			}
+			if (CompareValue(compareType, baseValueFloat, floatValue))
+				return true;
 		}
 
 		if (useIntCompare)
 		{
 			int.TryParse(data.value, out int intValue);
-			switch (compareType)
-			{
-				case eCompareType.Equal:
-					if (baseValueInt == intValue)
-						return true;
-					break;
-				case eCompareType.NotEqual:
-					if (baseValueInt != intValue)
-						return true;
-					break;
-				case eCompareType.Little:
-					if (baseValueInt < intValue)
-						return true;
-					break;
-				case eCompareType.Greater:
-					if (baseValueInt > intValue)
-						return true;
-					break;
-				case eCompareType.LittleOrEqual:
-					if (baseValueInt <= intValue)
-						return true;
-					break;
-				case eCompareType.GreaterOrEqual:
-					if (baseValueInt >= intValue)
-						return true;
-					break;
-			}
+			if (CompareValue(compareType, baseValueInt, intValue))
+				return true;
+		}
+		return false;
+	}
+
+	public static bool CompareValue(eCompareType compareType, float baseValueFloat, float floatValue)
+	{
+		switch (compareType)
+		{
+			case eCompareType.Equal:
+				if (baseValueFloat == floatValue)
+					return true;
+				break;
+			case eCompareType.NotEqual:
+				if (baseValueFloat != floatValue)
+					return true;
+				break;
+			case eCompareType.Little:
+				if (baseValueFloat < floatValue)
+					return true;
+				break;
+			case eCompareType.Greater:
+				if (baseValueFloat > floatValue)
+					return true;
+				break;
+			case eCompareType.LittleOrEqual:
+				if (baseValueFloat <= floatValue)
+					return true;
+				break;
+			case eCompareType.GreaterOrEqual:
+				if (baseValueFloat >= floatValue)
+					return true;
+				break;
+		}
+		return false;
+	}
+
+	public static bool CompareValue(eCompareType compareType, int baseValueInt, float intValue)
+	{
+		switch (compareType)
+		{
+			case eCompareType.Equal:
+				if (baseValueInt == intValue)
+					return true;
+				break;
+			case eCompareType.NotEqual:
+				if (baseValueInt != intValue)
+					return true;
+				break;
+			case eCompareType.Little:
+				if (baseValueInt < intValue)
+					return true;
+				break;
+			case eCompareType.Greater:
+				if (baseValueInt > intValue)
+					return true;
+				break;
+			case eCompareType.LittleOrEqual:
+				if (baseValueInt <= intValue)
+					return true;
+				break;
+			case eCompareType.GreaterOrEqual:
+				if (baseValueInt >= intValue)
+					return true;
+				break;
 		}
 		return false;
 	}

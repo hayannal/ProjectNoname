@@ -160,7 +160,7 @@ MonoBehaviour:
   _extraJumpPower: 25
   _jumpToleranceTime: 0.15
   _maxMidAirJumps: 1
-  _useRootMotion: 0
+  _useRootMotion: 1
   _autoBraking: 1
   _brakingDistance: 2
   _stoppingDistance: 1
@@ -198,22 +198,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startDelayRange: {x: 0.25, y: 0.25}
   startState: 0
-  useStateList: 0100010101
+  useStateList: 010001010100
   moveTimeRange: {x: 5, y: 5}
-  refreshTickTimeRange: {x: 1, y: 1}
+  refreshTickTimeRange: {x: 2.5, y: 2.5}
   desireDistance: 5
+  straightMoveTimeRange: {x: 0, y: 0}
+  straightRefreshTickTimeRange: {x: 0, y: 0}
+  straightRefreshTickWaitTime: 0
+  straightMoveType: 0
   customActionPlayType: 1
   customActionName: 
   customActionFadeDuration: 0.05
-  chaseDistanceRange: {x: 1, y: 1}
+  chaseDistanceRange: {x: 2.5, y: 8}
   chaseCancelTimeRange: {x: 4, y: 10}
-  attackActionPlayType: 0
-  attackActionName: Attack
+  attackActionPlayType: 2
+  attackActionName: AttackGroup
   attackActionFadeDuration: 0.44
   lookAtTargetBeforeAttack: 1
   attackDelayTimeRange: {x: 2, y: 2.5}
   useAnimatorParameterForAI: 0
   listAnimatorParameterForAI: 
+--- !u!114 &7944894834729070523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8188142115955657026}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8220ce0fa80a49849a394145ade07766, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &8188142115955560352
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -279,6 +295,12 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: c7b7cc9bc17fa7b45a9262e069c6a856, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 29732e6717639ef4fbcbe24565442283, type: 3}
+--- !u!1 &8188142115955657026 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100066, guid: 29732e6717639ef4fbcbe24565442283,
+    type: 3}
+  m_PrefabInstance: {fileID: 8188142115955560352}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8188142115955692900 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400068, guid: 29732e6717639ef4fbcbe24565442283,

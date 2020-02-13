@@ -62,6 +62,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.PaybackSp: affectorBase = new PaybackSpAffector(); break;
 			case eAffectorType.Vampire: affectorBase = new VampireAffector(); break;
 			case eAffectorType.Rush: affectorBase = new RushAffector(); break;
+			case eAffectorType.TeleportTargetPosition: affectorBase = new TeleportTargetPositionAffector(); break;
 			#endregion
 		}
 		return affectorBase;
@@ -118,6 +119,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.PaybackSp:
 			case eAffectorType.Vampire:
 			case eAffectorType.Rush:
+			case eAffectorType.TeleportTargetPosition:
 				return true;
 			#endregion
 		}

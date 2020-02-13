@@ -65,5 +65,6 @@ public enum eAffectorType
 	PaybackSp,
 	Vampire,
 	Rush,
+	TeleportTargetPosition,
 }
 #endregion

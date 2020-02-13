@@ -29,6 +29,8 @@ public class Trap : MonoBehaviour
 		AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(col);
 		if (affectorProcessor == null)
 			return;
+		if (affectorProcessor.actor == null)
+			return;
 
 		if (affectorProcessor.actor.IsPlayerActor() == false)
 			return;

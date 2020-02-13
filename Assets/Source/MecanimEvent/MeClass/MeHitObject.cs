@@ -146,7 +146,8 @@ public class MeHitObject : MecanimEventBase {
 			lifeTime = EditorGUILayout.FloatField("LifeTime :", lifeTime);
 			if (lifeTime > 0.0f)
 			{
-				areaHitLifeTimeEarlyOffset = EditorGUILayout.FloatField("Area Hit LifeTime :", areaHitLifeTimeEarlyOffset);
+				if (targetDetectType == HitObject.eTargetDetectType.Area)
+					areaHitLifeTimeEarlyOffset = EditorGUILayout.FloatField("Area Hit LifeTime :", areaHitLifeTimeEarlyOffset);
 				movable = EditorGUILayout.Toggle("Movable :", movable);
 			}
 			else movable = false;

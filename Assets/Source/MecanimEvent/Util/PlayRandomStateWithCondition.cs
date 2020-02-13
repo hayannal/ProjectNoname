@@ -39,6 +39,8 @@ public class PlayRandomStateWithCondition : ControlStateBase
 		public bool useHpRatio2;
 		public Condition.eCompareType hpRatioCompareType2;
 		public float hpRatioParameter2;
+		public bool useTargetActorState;
+		public string actorStateId;
 	}
 	public RandomStateWithConditionInfo[] randomStateWithConditionInfoList;
 
@@ -99,6 +101,24 @@ public class PlayRandomStateWithCondition : ControlStateBase
 				if (randomStateWithConditionInfoList[i].useHpRatio2 && Condition.CompareValue(randomStateWithConditionInfoList[i].hpRatioCompareType2, hpRatio, randomStateWithConditionInfoList[i].hpRatioParameter2) == false)
 					continue;
 			}
+
+			if (randomStateWithConditionInfoList[i].useTargetActorState)
+			{
+				if (_actor.targetingProcessor.GetTargetCount() > 0)
+				{
+					Collider targetCollider = _actor.targetingProcessor.GetTarget();
+					AffectorProcessor targetAffectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(targetCollider);
+					if (targetAffectorProcessor == null)
+						continue;
+					if (targetAffectorProcessor.IsActorState(randomStateWithConditionInfoList[i].actorStateId) == false)
+						continue;
+				}
+				else
+				{
+					continue;
+				}
+			}
+
 			sumWeight += randomStateWithConditionInfoList[i].weight;
 			randomStateWithConditionInfoList[i].sumWeight = sumWeight;
 			_listRandomState.Add(randomStateWithConditionInfoList[i]);

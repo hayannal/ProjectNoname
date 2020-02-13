@@ -54,7 +54,22 @@ public class ContinuousHitObjectGeneratorBase : MonoBehaviour
 		// AttachChild해놨으면 알아서 밀려나갈때 발생기도 밀려날거고 그렇지 않다면 생성된 자리에서 만들어낼거다.
 		Vector3 targetPosition = HitObject.GetTargetPosition(_signal, _parentActor, _hitSignalIndexInAction);
 		Vector3 position = cachedTransform.position;
-		Quaternion rotation = Quaternion.LookRotation(HitObject.GetSpawnDirection(position, _signal, cachedTransform, targetPosition, _parentActor.targetingProcessor));
+		Vector3 spawnDirection = HitObject.GetSpawnDirection(position, _signal, cachedTransform, targetPosition, _parentActor.targetingProcessor);
+		if (attachChild && _signal.createPositionType == HitObject.eCreatePositionType.Bone)
+		{
+			// attachChild 켜고 Bone 켜면 특정 본 포지션에다 넣어두고 쭉 생성하는건데 이땐 몇몇 예외처리들이 있어야 제대로 동작이 된다.
+			// 안그러면 땅 아래로 보낸다거나 하늘로 보낸다거나 하는 현상이 나타난다.
+			if (_signal.fixedWorldPositionY)
+			{
+				position.y = _signal.offset.y;
+			}
+			if (spawnDirection.y != 0.0f)
+			{
+				spawnDirection.y = 0.0f;
+				spawnDirection = spawnDirection.normalized;
+			}
+		}
+		Quaternion rotation = Quaternion.LookRotation(spawnDirection);
 		return Generate(position, rotation);
 	}
 

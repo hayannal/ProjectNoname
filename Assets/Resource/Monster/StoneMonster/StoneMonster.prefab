@@ -199,23 +199,22 @@ MonoBehaviour:
   startDelayRange: {x: 0.25, y: 0.25}
   startState: 2
   useStateList: 010001010100
-  moveTimeRange: {x: 5, y: 5}
+  moveTimeRange: {x: 0.5, y: 2}
   refreshTickTimeRange: {x: 1, y: 1}
   desireDistance: 5
   straightMoveTimeRange: {x: 0, y: 0}
   straightRefreshTickTimeRange: {x: 0, y: 0}
-  straightRefreshTickWaitTime: 0
   straightMoveType: 0
   customActionPlayType: 1
   customActionName: 
   customActionFadeDuration: 0.05
-  chaseDistanceRange: {x: 4.5, y: 4.5}
+  chaseDistanceRange: {x: 4.5, y: 15}
   chaseCancelTimeRange: {x: 0, y: 0}
   attackActionPlayType: 0
   attackActionName: Attack
   attackActionFadeDuration: 0.44
   lookAtTargetBeforeAttack: 1
-  attackDelayTimeRange: {x: 1.5, y: 1.5}
+  attackDelayTimeRange: {x: 1, y: 2}
   useAnimatorParameterForAI: 0
   listAnimatorParameterForAI: 
 --- !u!114 &2567345118245338517
@@ -237,6 +236,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7617007456203230492}
     m_Modifications:
+    - target: {fileID: 100014, guid: 1db38da97b6ad094dbca967f13dd370f, type: 3}
+      propertyPath: m_Name
+      value: StoneMonster
+      objectReference: {fileID: 0}
     - target: {fileID: 400014, guid: 1db38da97b6ad094dbca967f13dd370f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -292,10 +295,6 @@ PrefabInstance:
     - target: {fileID: 400014, guid: 1db38da97b6ad094dbca967f13dd370f, type: 3}
       propertyPath: m_LocalScale.z
       value: 0.9
-      objectReference: {fileID: 0}
-    - target: {fileID: 100014, guid: 1db38da97b6ad094dbca967f13dd370f, type: 3}
-      propertyPath: m_Name
-      value: StoneMonster
       objectReference: {fileID: 0}
     - target: {fileID: 9500000, guid: 1db38da97b6ad094dbca967f13dd370f, type: 3}
       propertyPath: m_Controller

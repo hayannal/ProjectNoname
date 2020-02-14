@@ -15,10 +15,10 @@ MonoBehaviour:
   StartTime: 0
   EndTime: 0.03
   lookAtTarget: 1
-  leftRightRandomAngle: 0
+  leftRightRandomAngle: 3
   lookAtRandom: 0
   desireDistance: 5
-  lerpPower: 10
+  lerpPower: 60
 --- !u!1102 &-7870688956108488034
 AnimatorState:
   serializedVersion: 5
@@ -60,7 +60,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0
   EndTime: 0.1
-  speed: 0.2
+  speed: 0.5
 --- !u!1107 &-6540346028188328965
 AnimatorStateMachine:
   serializedVersion: 5
@@ -349,9 +349,9 @@ MonoBehaviour:
   indicatorType: 0
   attackIndicatorPrefab: {fileID: 2161458790205252103, guid: d67d8c65d73e4fe4981d78ac959fe07f,
     type: 3}
-  offset: {x: 0, y: 0, z: 7.5}
+  offset: {x: 0, y: 0, z: 7}
   startDirection: {x: 0, y: 0, z: 1}
-  areaRadius: 0.75
+  areaRadius: 1
   lineMaxDistance: 6
   lineWidth: 0.65
   sphereCastRadius: 0.2

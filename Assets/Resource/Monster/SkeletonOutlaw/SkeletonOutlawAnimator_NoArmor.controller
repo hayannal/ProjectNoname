@@ -60,7 +60,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0
   EndTime: 0.1
-  speed: 0.5
+  speed: 0.3
 --- !u!1107 &-6540346028188328965
 AnimatorStateMachine:
   serializedVersion: 5
@@ -110,6 +110,7 @@ AnimatorState:
   - {fileID: -8330926868400664555}
   - {fileID: -7797649876831047295}
   - {fileID: 4139078942042406724}
+  - {fileID: -3306288725606162614}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -124,6 +125,21 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: AttackAniSpeedRatio
+--- !u!114 &-3306288725606162614
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2e6805f699075e4eae576dc1aabd338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.425
+  EndTime: 0.52
+  speed: 0.5
 --- !u!114 &-3186066446465754549
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -149,15 +165,15 @@ MonoBehaviour:
   teamCheckType: 0
   createPositionType: 0
   boneName: 
-  offset: {x: 0, y: 0, z: 0.1}
+  offset: {x: 0, y: 0, z: 2}
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
   areaDistanceMin: 0
-  areaDistanceMax: 2.1
+  areaDistanceMax: 0.55
   areaHeightMin: 0
   areaHeightMax: 2
-  areaAngle: 25
+  areaAngle: 360
   checkRaycastWallInArea: 1
   applyCollisionDamageInterval: 0
   repeatCount: 0
@@ -349,7 +365,7 @@ MonoBehaviour:
   indicatorType: 0
   attackIndicatorPrefab: {fileID: 2161458790205252103, guid: d67d8c65d73e4fe4981d78ac959fe07f,
     type: 3}
-  offset: {x: 0, y: 0, z: 7}
+  offset: {x: 0, y: 0, z: 4.5}
   startDirection: {x: 0, y: 0, z: 1}
   areaRadius: 1
   lineMaxDistance: 6
@@ -392,20 +408,20 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 6.652519
-      outSlope: 6.652519
+      inSlope: 2.7719202
+      outSlope: 2.7719202
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.04665072
+      outWeight: 0.14166667
     - serializedVersion: 3
       time: 1
-      value: 4.5
-      inSlope: 2.180236
-      outSlope: 2.180236
+      value: 2.5
+      inSlope: 1.7593068
+      outSlope: 1.7593068
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.058612466
+      inWeight: 0.15416664
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2

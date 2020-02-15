@@ -20,5 +20,6 @@ public enum eMecanimEventType
 	LookAt,
 	IdleAnimator,
 	AttackIndicator,
+	Summon,
 }
 #endregion

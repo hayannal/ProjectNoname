@@ -28,6 +28,7 @@ public static class MecanimEventCustomCreator
 		case eMecanimEventType.LookAt: eventBase = targetState.AddStateMachineBehaviour<MeLookAt>(); break;
 		case eMecanimEventType.IdleAnimator: eventBase = targetState.AddStateMachineBehaviour<MeIdleAnimator>(); break;
 		case eMecanimEventType.AttackIndicator: eventBase = targetState.AddStateMachineBehaviour<MeAttackIndicator>(); break;
+		case eMecanimEventType.Summon: eventBase = targetState.AddStateMachineBehaviour<MeSummon>(); break;
 #endregion
 		}
 		return eventBase;
@@ -52,6 +53,7 @@ public static class MecanimEventCustomCreator
 		if (eventBase is MeLookAt) return eMecanimEventType.LookAt;
 		if (eventBase is MeIdleAnimator) return eMecanimEventType.IdleAnimator;
 		if (eventBase is MeAttackIndicator) return eMecanimEventType.AttackIndicator;
+		if (eventBase is MeSummon) return eMecanimEventType.Summon;
 		return eMecanimEventType.State;
 #endregion
 	}

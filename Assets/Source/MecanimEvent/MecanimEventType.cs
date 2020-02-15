@@ -15,6 +15,7 @@ public enum eMecanimEventType
 	RangeHitObject,
 	GlobalLight,
 	MovePositionCurve,
+	MoveToTarget,
 	DontMove,
 	DisableActorCollider,
 	LookAt,

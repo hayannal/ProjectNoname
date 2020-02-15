@@ -23,6 +23,7 @@ public static class MecanimEventCustomCreator
 		case eMecanimEventType.RangeHitObject: eventBase = targetState.AddStateMachineBehaviour<MeRangeHitObject>(); break;
 		case eMecanimEventType.GlobalLight: eventBase = targetState.AddStateMachineBehaviour<MeGlobalLight>(); break;
 		case eMecanimEventType.MovePositionCurve: eventBase = targetState.AddStateMachineBehaviour<MeMovePositionCurve>(); break;
+		case eMecanimEventType.MoveToTarget: eventBase = targetState.AddStateMachineBehaviour<MeMoveToTarget>(); break;
 		case eMecanimEventType.DontMove: eventBase = targetState.AddStateMachineBehaviour<MeDontMove>(); break;
 		case eMecanimEventType.DisableActorCollider: eventBase = targetState.AddStateMachineBehaviour<MeDisableActorCollider>(); break;
 		case eMecanimEventType.LookAt: eventBase = targetState.AddStateMachineBehaviour<MeLookAt>(); break;
@@ -49,6 +50,7 @@ public static class MecanimEventCustomCreator
 		if (eventBase is MeHitObject) return eMecanimEventType.HitObject;
 		if (eventBase is MeGlobalLight) return eMecanimEventType.GlobalLight;
 		if (eventBase is MeMovePositionCurve) return eMecanimEventType.MovePositionCurve;
+		if (eventBase is MeMoveToTarget) return eMecanimEventType.MoveToTarget;
 		if (eventBase is MeDontMove) return eMecanimEventType.DontMove;
 		if (eventBase is MeDisableActorCollider) return eMecanimEventType.DisableActorCollider;
 		if (eventBase is MeLookAt) return eMecanimEventType.LookAt;

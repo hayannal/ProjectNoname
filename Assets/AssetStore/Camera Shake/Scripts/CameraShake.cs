@@ -1,3 +1,5 @@
+#define MOD_AVG
+
 // Copyright (c) 2011-2017 Thinksquirrel Inc.
 
 using UnityEngine;
@@ -162,6 +164,9 @@ namespace Thinksquirrel.CShake
             internal Vector3 _shakePosition;
             internal Quaternion _shakeRotation;
             internal Vector2 _uiShakePosition;
+#if MOD_AVG
+			internal float _shakePositionAmountMagnitude;
+#endif
 
             internal ShakeState(ShakeType shakeType, Vector3 position, Quaternion rotation, Vector2 uiPosition)
             {
@@ -845,11 +850,21 @@ namespace Thinksquirrel.CShake
 
                 var timer = (Time.time - startTime) * speed;
 
+#if MOD_AVG
+				Vector3 amount = new Vector3(
+										   mod1 * Mathf.Sin(timer) * (shakeAmount.x * shakeDistance * scale),
+										   mod2 * Mathf.Cos(timer) * (shakeAmount.y * shakeDistance * scale),
+										   mod3 * Mathf.Sin(timer) * (shakeAmount.z * shakeDistance * scale));
+				state._shakePosition = start1 + amount;
+				state._shakePositionAmountMagnitude = amount.magnitude;
+				
+#else
                 state._shakePosition = start1 +
                                        new Vector3(
                                            mod1 * Mathf.Sin(timer) * (shakeAmount.x * shakeDistance * scale),
                                            mod2 * Mathf.Cos(timer) * (shakeAmount.y * shakeDistance * scale),
                                            mod3 * Mathf.Sin(timer) * (shakeAmount.z * shakeDistance * scale));
+#endif
 
                 state._shakeRotation = startR *
                                        Quaternion.Euler(
@@ -861,7 +876,11 @@ namespace Thinksquirrel.CShake
                     start2.x - (mod1 * Mathf.Sin(timer) * (shakeAmount.x * shakeDistance * pixelScale)),
                     start2.y - (mod2 * Mathf.Cos(timer) * (shakeAmount.y * shakeDistance * pixelScale)));
 
+#if MOD_AVG
+				camOffset = GetGeometricMax(stateList, true);
+#else
                 camOffset = GetGeometricAvg(stateList, true);
+#endif
                 camRot = GetAvgRotation(stateList);
                 NormalizeQuaternion(ref camRot);
 
@@ -879,7 +898,11 @@ namespace Thinksquirrel.CShake
                         break;
                 }
 
+#if MOD_AVG
+				var avg = GetGeometricMax(stateList, false);
+#else
                 var avg = GetGeometricAvg(stateList, false);
+#endif
 
                 m_ShakeRect.x = avg.x;
                 m_ShakeRect.y = avg.y;
@@ -1142,5 +1165,35 @@ namespace Thinksquirrel.CShake
             for (var i = 0; i < 4; ++i) q[i] *= magnitudeInverse;
         }
         #endregion
+
+#if MOD_AVG
+		private static Vector3 GetGeometricMax(IList<ShakeState> states, bool position)
+		{
+			float x = 0, y = 0, z = 0;
+			float magnitude = 0.0f;
+
+			for (int i = 0, statesCount = states.Count; i < statesCount; i++)
+			{
+				var state = states[i];
+				if (state._shakePositionAmountMagnitude < magnitude)
+					continue;
+				
+				if (position)
+				{
+					x = -state._shakePosition.x;
+					y = -state._shakePosition.y;
+					z = -state._shakePosition.z;
+				}
+				else
+				{
+					x = state._uiShakePosition.x;
+					y = state._uiShakePosition.y;
+				}
+				magnitude = state._shakePositionAmountMagnitude;
+			}
+
+			return new Vector3(x, y, z);
+		}
+#endif
     }
 }

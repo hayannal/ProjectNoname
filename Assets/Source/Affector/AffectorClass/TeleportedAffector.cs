@@ -55,6 +55,7 @@ public class TeleportedAffector : AffectorBase
 
 		_actor.EnableAI(false);
 		_actor.actionController.idleAnimator.enabled = false;
+		HitObject.EnableRigidbodyAndCollider(false, _actor.GetRigidbody(), _actor.GetCollider());
 		_actor.baseCharacterController.movement.useGravity = false;
 		_prevPosition = _actor.cachedTransform.position;
 		_actor.cachedTransform.position = new Vector3(_actor.cachedTransform.position.x, TeleportedHeight, _actor.cachedTransform.position.z);
@@ -76,6 +77,7 @@ public class TeleportedAffector : AffectorBase
 		BattleInstanceManager.instance.RemoveTeleportedAffector(this);
 		_actor.cachedTransform.position = _prevPosition;
 		_actor.baseCharacterController.movement.useGravity = true;
+		HitObject.EnableRigidbodyAndCollider(true, _actor.GetRigidbody(), _actor.GetCollider());
 		_actor.actionController.idleAnimator.enabled = true;
 		_actor.actionController.PlayActionByActionName("Idle");
 		_actor.EnableAI(true);

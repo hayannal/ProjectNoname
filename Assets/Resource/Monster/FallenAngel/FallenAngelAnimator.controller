@@ -330,7 +330,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49194a0f9ca12b744adffabac4269a85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.47
+  StartTime: 0.38
   EndTime: 0.62
   targetDetectType: 1
   hitObjectPrefab: {fileID: 0}
@@ -346,14 +346,14 @@ MonoBehaviour:
   offset: {x: 0, y: 0, z: 0.1}
   useBoneRotation: 0
   fixedWorldPositionY: 0
-  areaRotationY: -30
+  areaRotationY: -15
   areaDistanceMin: 0
   areaDistanceMax: 3
   areaHeightMin: 0
   areaHeightMax: 2
-  areaAngle: 145
+  areaAngle: 175
   checkRaycastWallInArea: 0
-  applyCollisionDamageInterval: 0
+  applyCollisionDamageInterval: 1
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -405,7 +405,7 @@ MonoBehaviour:
   oneHitPerTarget: 1
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttackMelee01
+  - NormalAttackMelee1.25
   showHitEffect: 0
   hitEffectObject: {fileID: 0}
   hitEffectLookAtNormal: 0
@@ -429,10 +429,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   randomStateWithConditionInfoList:
   - stateName: Base Layer.AttackGroup.MeleeAttack1
-    weight: 1
-    useDistance1: 0
-    distanceCompareType1: 1
-    distanceParameter1: 0
+    weight: 2
+    useDistance1: 1
+    distanceCompareType1: 4
+    distanceParameter1: 7
     useDistance2: 0
     distanceCompareType2: 0
     distanceParameter2: 0
@@ -442,6 +442,8 @@ MonoBehaviour:
     useHpRatio2: 0
     hpRatioCompareType2: 0
     hpRatioParameter2: 0
+    useTargetActorState: 0
+    actorStateId: 
   - stateName: Base Layer.AttackGroup.MeleeAttack2
     weight: 1
     useDistance1: 0
@@ -456,6 +458,8 @@ MonoBehaviour:
     useHpRatio2: 0
     hpRatioCompareType2: 0
     hpRatioParameter2: 0
+    useTargetActorState: 0
+    actorStateId: 
   - stateName: Base Layer.AttackGroup.MeleeAttack3
     weight: 3
     useDistance1: 1
@@ -470,6 +474,8 @@ MonoBehaviour:
     useHpRatio2: 0
     hpRatioCompareType2: 0
     hpRatioParameter2: 0
+    useTargetActorState: 0
+    actorStateId: 
 --- !u!1101 &-7344895036983689022
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -727,6 +733,21 @@ AnimatorStateMachine:
   m_ExitPosition: {x: 460, y: 100, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
   m_DefaultState: {fileID: -7870688956108488034}
+--- !u!114 &-5941364734379507292
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2e6805f699075e4eae576dc1aabd338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.15
+  EndTime: 0.28
+  speed: 0.5
 --- !u!1102 &-4817427863211959166
 AnimatorState:
   serializedVersion: 5
@@ -867,6 +888,7 @@ AnimatorState:
   - {fileID: 6080665227673775644}
   - {fileID: -7214573734603325467}
   - {fileID: 5756096301134193843}
+  - {fileID: -865713929141076285}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -949,6 +971,21 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!114 &-865713929141076285
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2e6805f699075e4eae576dc1aabd338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.05
+  EndTime: 0.19
+  speed: 0.5
 --- !u!91 &9100000
 AnimatorController:
   m_ObjectHideFlags: 0
@@ -1549,6 +1586,7 @@ AnimatorState:
   - {fileID: 7349031453667537166}
   - {fileID: 2262287631037989541}
   - {fileID: 6594582332311110961}
+  - {fileID: -5941364734379507292}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -1705,7 +1743,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0.2
   EndTime: 0.37
-  speed: 0.85
+  speed: 1.5
 --- !u!114 &4783302894067921087
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2391,7 +2429,7 @@ MonoBehaviour:
       outWeight: 0.04665072
     - serializedVersion: 3
       time: 1
-      value: 5.5
+      value: 12
       inSlope: 2.4173312
       outSlope: 2.4173312
       tangentMode: 0

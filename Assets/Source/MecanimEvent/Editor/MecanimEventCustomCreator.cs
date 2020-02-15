@@ -29,6 +29,7 @@ public static class MecanimEventCustomCreator
 		case eMecanimEventType.IdleAnimator: eventBase = targetState.AddStateMachineBehaviour<MeIdleAnimator>(); break;
 		case eMecanimEventType.AttackIndicator: eventBase = targetState.AddStateMachineBehaviour<MeAttackIndicator>(); break;
 		case eMecanimEventType.Summon: eventBase = targetState.AddStateMachineBehaviour<MeSummon>(); break;
+		case eMecanimEventType.BattleToast: eventBase = targetState.AddStateMachineBehaviour<MeBattleToast>(); break;
 #endregion
 		}
 		return eventBase;
@@ -54,6 +55,7 @@ public static class MecanimEventCustomCreator
 		if (eventBase is MeIdleAnimator) return eMecanimEventType.IdleAnimator;
 		if (eventBase is MeAttackIndicator) return eMecanimEventType.AttackIndicator;
 		if (eventBase is MeSummon) return eMecanimEventType.Summon;
+		if (eventBase is MeBattleToast) return eMecanimEventType.BattleToast;
 		return eMecanimEventType.State;
 #endregion
 	}

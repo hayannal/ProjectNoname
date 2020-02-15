@@ -21,5 +21,6 @@ public enum eMecanimEventType
 	IdleAnimator,
 	AttackIndicator,
 	Summon,
+	BattleToast,
 }
 #endregion

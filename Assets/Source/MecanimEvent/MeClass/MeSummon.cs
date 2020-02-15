@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -62,7 +63,7 @@ public class MeSummon : MecanimEventBase
 			case eCreatePositionType.LocalPosition:
 				if (_actor != null)
 				{
-					_createPosition = _actor.cachedTransform.TransformPoint(offset);
+					_createPosition = GetNavPosition(_actor.cachedTransform.TransformPoint(offset));
 					_createRotation = Quaternion.LookRotation(_actor.cachedTransform.TransformDirection(direction));
 				}
 				break;
@@ -73,7 +74,7 @@ public class MeSummon : MecanimEventBase
 					Transform targetTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
 					if (targetTransform != null)
 					{
-						_createPosition = targetTransform.TransformPoint(offset);
+						_createPosition = GetNavPosition(targetTransform.TransformPoint(offset));
 						_createRotation = Quaternion.LookRotation(targetTransform.TransformDirection(direction));
 					}
 				}
@@ -82,6 +83,34 @@ public class MeSummon : MecanimEventBase
 
 		if (castingLoopEffectPrefab != null)
 			_castingLoopEffectTransform = BattleInstanceManager.instance.GetCachedObject(castingLoopEffectPrefab, _createPosition, Quaternion.identity).transform;
+	}
+
+	Vector3 GetNavPosition(Vector3 desirePosition)
+	{
+		Vector3 result = Vector3.zero;
+		float maxDistance = 1.0f;
+		int tryBreakCount = 0;
+		desirePosition.y = 0.0f;
+		while (true)
+		{
+			// AI쪽 코드에서 가져와서 변형
+			NavMeshHit hit;
+			if (NavMesh.SamplePosition(desirePosition, out hit, maxDistance, NavMesh.AllAreas))
+			{
+				result = hit.position;
+				break;
+			}
+			maxDistance += 1.0f;
+
+			// exception handling
+			++tryBreakCount;
+			if (tryBreakCount > 50)
+			{
+				Debug.LogError("MeSummon NavPosition Error. Not found valid nav position.");
+				return desirePosition;
+			}
+		}
+		return result;
 	}
 
 	override public void OnRangeSignalEnd(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

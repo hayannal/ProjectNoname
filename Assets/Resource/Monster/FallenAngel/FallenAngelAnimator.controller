@@ -429,7 +429,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   randomStateWithConditionInfoList:
   - stateName: Base Layer.AttackGroup.MeleeAttack1
-    weight: 2
+    weight: 4
     useDistance1: 1
     distanceCompareType1: 4
     distanceParameter1: 7
@@ -776,6 +776,22 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: AttackAniSpeedRatio
+--- !u!114 &-4593519421137465927
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28b7375c9fa80ad4fab51e11fd741fe8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.2
+  EndTime: 1
+  toastStringId: MindTextUI_FarAtkFallenAngel
+  showTime: 2
 --- !u!114 &-4464952319541276508
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1715,6 +1731,7 @@ AnimatorState:
   - {fileID: 7346421647444426717}
   - {fileID: 4554208368499201096}
   - {fileID: 427262129102746476}
+  - {fileID: -4593519421137465927}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1

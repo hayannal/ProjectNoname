@@ -101,8 +101,8 @@ public class CustomFollowCamera : MonoBehaviour
 
 	#endregion
 
-	const float LEFT_LIMIT = -4.0f;
-	const float RIGHT_LIMIT = 4.0f;
+	const float LEFT_LIMIT = -3.93f;
+	const float RIGHT_LIMIT = 3.93f;
 	const float UP_LIMIT = 10.5f;
 	const float DOWN_LIMIT = -12.5f;
 	float _quadUp;

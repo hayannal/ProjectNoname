@@ -44,8 +44,16 @@ public class PlayRandomStateWithCondition : ControlStateBase
 		public bool useMonsterCount;
 		public Condition.eCompareType monsterCountCompareType;
 		public int monsterCountParameter;
+		public int actionCountLimit;
 	}
 	public RandomStateWithConditionInfo[] randomStateWithConditionInfoList;
+
+	void OnDisable()
+	{
+		//Debug.Log("PlayRandomStateWithCondition OnDisable");
+		if (_dicActionCount != null)
+			_dicActionCount.Clear();
+	}
 
 	List<RandomStateWithConditionInfo> _listRandomState;
 	Actor _actor = null;
@@ -128,6 +136,9 @@ public class PlayRandomStateWithCondition : ControlStateBase
 					continue;
 			}
 
+			if (randomStateWithConditionInfoList[i].actionCountLimit > 0 && GetActionCount(randomStateWithConditionInfoList[i].stateName) >= randomStateWithConditionInfoList[i].actionCountLimit)
+				continue;
+
 			sumWeight += randomStateWithConditionInfoList[i].weight;
 			randomStateWithConditionInfoList[i].sumWeight = sumWeight;
 			_listRandomState.Add(randomStateWithConditionInfoList[i]);
@@ -149,6 +160,8 @@ public class PlayRandomStateWithCondition : ControlStateBase
 			if (random <= _listRandomState[i].sumWeight)
 			{
 				selectedStateName = _listRandomState[i].stateName;
+				if (_listRandomState[i].actionCountLimit > 0)
+					AddActionCount(_listRandomState[i].stateName);
 				break;
 			}
 		}
@@ -158,6 +171,26 @@ public class PlayRandomStateWithCondition : ControlStateBase
 			animator.CrossFade(_lastState, 0.05f);
 		}
 		_listRandomState.Clear();
+	}
+
+	Dictionary<string, int> _dicActionCount;
+	void AddActionCount(string stateName)
+	{
+		if (_dicActionCount == null)
+			_dicActionCount = new Dictionary<string, int>();
+		if (_dicActionCount.ContainsKey(stateName))
+			_dicActionCount[stateName] += 1;
+		else
+			_dicActionCount.Add(stateName, 1);
+	}
+
+	int GetActionCount(string stateName)
+	{
+		if (_dicActionCount == null)
+			return 0;
+		if (_dicActionCount.ContainsKey(stateName))
+			return _dicActionCount[stateName];
+		return 0;
 	}
 
 	// OnStateUpdate is called before OnStateUpdate is called on any state inside this state machine

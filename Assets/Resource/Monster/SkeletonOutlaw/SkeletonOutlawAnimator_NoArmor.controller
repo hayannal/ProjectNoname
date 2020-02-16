@@ -60,7 +60,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0
   EndTime: 0.1
-  speed: 0.3
+  speed: 0.15
 --- !u!1107 &-6540346028188328965
 AnimatorStateMachine:
   serializedVersion: 5
@@ -109,7 +109,7 @@ AnimatorState:
   - {fileID: 6534059543617466623}
   - {fileID: -8330926868400664555}
   - {fileID: -7797649876831047295}
-  - {fileID: 4139078942042406724}
+  - {fileID: 6817074167264028641}
   - {fileID: -3306288725606162614}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -139,7 +139,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0.425
   EndTime: 0.52
-  speed: 0.5
+  speed: 0.75
 --- !u!114 &-3186066446465754549
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -170,7 +170,7 @@ MonoBehaviour:
   fixedWorldPositionY: 0
   areaRotationY: 0
   areaDistanceMin: 0
-  areaDistanceMax: 0.55
+  areaDistanceMax: 0.5
   areaHeightMin: 0
   areaHeightMax: 2
   areaAngle: 360
@@ -348,31 +348,6 @@ MonoBehaviour:
   StartTime: 0
   EndTime: 1
   state: 3
---- !u!114 &4139078942042406724
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 730425ac1b42c454d818b8c323f30bae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTime: 0
-  EndTime: 0.15
-  indicatorType: 0
-  attackIndicatorPrefab: {fileID: 2161458790205252103, guid: d67d8c65d73e4fe4981d78ac959fe07f,
-    type: 3}
-  offset: {x: 0, y: 0, z: 4.5}
-  startDirection: {x: 0, y: 0, z: 1}
-  areaRadius: 1
-  lineMaxDistance: 6
-  lineWidth: 0.65
-  sphereCastRadius: 0.2
-  wallThrough: 0
-  quadThrough: 0
 --- !u!114 &6534059543617466623
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -426,6 +401,21 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &6817074167264028641
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2e6805f699075e4eae576dc1aabd338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.2
+  EndTime: 0.4
+  speed: 0.5
 --- !u!114 &8164237390613649006
 MonoBehaviour:
   m_ObjectHideFlags: 1

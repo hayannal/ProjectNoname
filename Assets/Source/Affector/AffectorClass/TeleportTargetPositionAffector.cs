@@ -50,9 +50,6 @@ public class TeleportTargetPositionAffector : AffectorBase
 		if (this == null)
 			yield break;
 
-		if (_onStartEffectPrefab != null)
-			BattleInstanceManager.instance.GetCachedObject(_onStartEffectPrefab, _actor.cachedTransform.position, _actor.cachedTransform.rotation, null);
-
 		_actor.baseCharacterController.movement.useGravity = true;
 
 		bool findTargetTransform = false;
@@ -71,6 +68,9 @@ public class TeleportTargetPositionAffector : AffectorBase
 		
 		if (findTargetTransform == false)
 			_actor.cachedTransform.position = _origPosition;
+
+		if (_onStartEffectPrefab != null)
+			BattleInstanceManager.instance.GetCachedObject(_onStartEffectPrefab, _actor.cachedTransform.position, _actor.cachedTransform.rotation, null);
 
 		_actor.actionController.animator.CrossFade(BattleInstanceManager.instance.GetActionNameHash(_affectorValueLevelTableData.sValue1), 0.05f);
 		finalized = true;

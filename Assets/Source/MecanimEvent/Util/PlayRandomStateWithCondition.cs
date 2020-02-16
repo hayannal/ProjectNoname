@@ -41,6 +41,9 @@ public class PlayRandomStateWithCondition : ControlStateBase
 		public float hpRatioParameter2;
 		public bool useTargetActorState;
 		public string actorStateId;
+		public bool useMonsterCount;
+		public Condition.eCompareType monsterCountCompareType;
+		public int monsterCountParameter;
 	}
 	public RandomStateWithConditionInfo[] randomStateWithConditionInfoList;
 
@@ -117,6 +120,12 @@ public class PlayRandomStateWithCondition : ControlStateBase
 				{
 					continue;
 				}
+			}
+
+			if (randomStateWithConditionInfoList[i].useMonsterCount)
+			{
+				if (Condition.CompareValue(randomStateWithConditionInfoList[i].monsterCountCompareType, BattleManager.instance.GetSpawnedMonsterCount(), randomStateWithConditionInfoList[i].monsterCountParameter) == false)
+					continue;
 			}
 
 			sumWeight += randomStateWithConditionInfoList[i].weight;

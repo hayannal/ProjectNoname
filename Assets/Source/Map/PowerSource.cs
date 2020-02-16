@@ -80,14 +80,14 @@ public class PowerSource : MonoBehaviour
 
 	IEnumerator<float> ScreenHealEffectProcess()
 	{
-		FadeCanvas.instance.FadeOut(0.3f, 0.95f);
-		yield return Timing.WaitForSeconds(0.3f);
+		FadeCanvas.instance.FadeOut(0.2f, 0.7f);
+		yield return Timing.WaitForSeconds(0.2f);
 
 		if (this == null)
 			yield break;
 
 		BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("PowerSourceUI_Heal"), 2.5f);
-		FadeCanvas.instance.FadeIn(1.75f);
+		FadeCanvas.instance.FadeIn(1.5f);
 	}
 
 	float _guideMessageShowRemainTime;

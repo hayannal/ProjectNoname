@@ -55,8 +55,8 @@ public class Ground : MonoBehaviour
 			navMeshSurface.collectObjects = CollectObjects.Volume;
 			navMeshSurface.useGeometry = NavMeshCollectGeometry.PhysicsColliders;
 			navMeshSurface.center = _bounds.center;
-			// 쿼드만큼 딱 볼륨 잡아서 구으면 경계면이 이쁘게 안나와서 1씩 더해서 뽑는다.
-			navMeshSurface.size = _bounds.size + Vector3.one;
+			// 쿼드만큼 딱 볼륨 잡아서 구으면 경계면이 이쁘게 안나와서 0.5씩 더해서 뽑는다. 1더하니 네비가 Quad넘어서 미세하게 구워져서 0.5로 바꾼다.
+			navMeshSurface.size = _bounds.size + Vector3.one * 0.5f;
 			_dicNavMeshSurface.Add(agentTypeID, navMeshSurface);
 		}
 		navMeshSurface.BuildNavMesh();

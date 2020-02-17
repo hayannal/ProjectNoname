@@ -255,6 +255,7 @@ AnimatorState:
   - {fileID: -332535259690792094}
   m_StateMachineBehaviours:
   - {fileID: -3355672805492836666}
+  - {fileID: -2672761617375863590}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -270,6 +271,33 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!114 &-2672761617375863590
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 730425ac1b42c454d818b8c323f30bae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0
+  EndTime: 1
+  indicatorType: 1
+  attackIndicatorPrefab: {fileID: 7007741959307709203, guid: f3166d643d5b9074a9a2ce79f816506e,
+    type: 3}
+  offset: {x: 0, y: 1, z: 0}
+  startDirection: {x: 0, y: 0, z: 1}
+  areaRadius: 1
+  attachPrefab: 1
+  createPositionType: 0
+  lineMaxDistance: 2.7
+  lineWidth: 1
+  sphereCastRadius: 0.2
+  wallThrough: 0
+  quadThrough: 0
 --- !u!114 &-2658795307953692815
 MonoBehaviour:
   m_ObjectHideFlags: 3

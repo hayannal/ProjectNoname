@@ -130,7 +130,10 @@ public class MeSummon : MecanimEventBase
 		if (groupMonster != null)
 		{
 			for (int i = 0; i < groupMonster.listMonsterActor.Count; ++i)
+			{
+				groupMonster.listMonsterActor[i].summonMonster = true;
 				groupMonster.listMonsterActor[i].checkOverlapPositionFrameCount = 100;
+			}
 		}
 
 		MonsterActor monsterActor = null;
@@ -138,7 +141,10 @@ public class MeSummon : MecanimEventBase
 		{
 			monsterActor = newObject.GetComponent<MonsterActor>();
 			if (monsterActor != null)
+			{
+				monsterActor.summonMonster = true;
 				monsterActor.checkOverlapPositionFrameCount = 100;
+			}
 		}
 	}
 

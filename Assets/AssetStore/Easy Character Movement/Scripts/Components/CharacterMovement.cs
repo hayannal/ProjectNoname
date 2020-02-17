@@ -1202,6 +1202,11 @@ namespace ECM.Components
         
         private void SnapToGround()
         {
+#if OPTIMIZE_DETECT_GROUND
+			if (_ignoreDetectGround && isOnGround)
+				return;
+#endif
+
             // If distance to 'ground' is ~small, return
 
             if (groundDistance < 0.001f)

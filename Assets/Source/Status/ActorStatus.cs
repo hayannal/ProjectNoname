@@ -244,6 +244,16 @@ public class ActorStatus : MonoBehaviour
 
 	public virtual void AddHP(float addHP)
 	{
+#if UNITY_EDITOR
+		if (HUDDPS.isActive && actor.IsMonsterActor() && addHP < 0.0f)
+		{
+			float damage = -addHP;
+			float overDamage = damage - _statusBase._hp;
+			if (overDamage < 0.0f) overDamage = 0.0f;
+			damage -= overDamage;
+			HUDDPS.instance.AddDamage(damage, overDamage);
+		}
+#endif
 		_statusBase._hp += addHP;
 		_statusBase._hp = Mathf.Clamp(_statusBase._hp, 0, GetValue(eActorStatus.MaxHp));
 

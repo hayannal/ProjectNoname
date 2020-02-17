@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿//#define HUDDPS
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using MEC;
@@ -53,6 +55,12 @@ public class BattleModeProcessorBase
 			if (BattleInstanceManager.instance.playerActor != null)
 				CallAffectorValueAffector.OnEvent(BattleInstanceManager.instance.playerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnStartStage);
 		}
+
+#if HUDDPS
+#if UNITY_EDITOR
+		HUDDPS.instance.OnStartStage(StageManager.instance.playChapter, StageManager.instance.playStage, StageManager.instance.bossStage);
+#endif
+#endif
 	}
 
 	public void OnSpawnMonster(MonsterActor monsterActor)
@@ -82,6 +90,12 @@ public class BattleModeProcessorBase
 			{
 				BattleManager.instance.OnClearStage();
 			}
+
+#if HUDDPS
+#if UNITY_EDITOR
+			HUDDPS.instance.OnClearStage();
+#endif
+#endif
 		}
 	}
 

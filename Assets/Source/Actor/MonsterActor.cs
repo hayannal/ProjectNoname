@@ -353,10 +353,6 @@ public class MonsterActor : Actor
 
 	void Drop()
 	{
-		// summon 시그널로 만들어진 몬스터는 아무것도 드랍하지 않는다.
-		if (summonMonster)
-			return;
-
 		// 보스 몬스터는 보스몬스터끼리만 검사해서 마지막 보스몹에서만 드랍되게 해야한다.
 		// 이래야 혹시 여러 그룹의 보스들을 소환해도 마지막 보스한테서만 드랍이 1회 발동되게 된다.
 		if (bossMonster)
@@ -380,6 +376,10 @@ public class MonsterActor : Actor
 		bool lastMonsterInStage = (BattleManager.instance.GetSpawnedMonsterCount() == 1);
 		if (lastMonsterInStage)
 			BattleInstanceManager.instance.OnDropLastMonsterInStage();
+
+		// summon 시그널로 만들어진 몬스터는 아무것도 드랍하지 않는다.
+		if (summonMonster)
+			return;
 
 		string dropId = "";
 		if (cachedMonsterTableData.defaultDropUse && StageManager.instance.currentStageTableData != null)

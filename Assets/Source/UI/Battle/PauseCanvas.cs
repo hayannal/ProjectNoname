@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿#define CHEAT_RESURRECT
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -197,6 +199,11 @@ public class PauseCanvas : MonoBehaviour
 		OptionManager.instance.lockIcon = 1;
 		lockIconOnOffText.text = "ON";
 		lockIconOnOffText.color = Color.white;
+
+#if CHEAT_RESURRECT
+		if (BattleInstanceManager.instance.playerActor.actorStatus.IsDie())
+			BattleInstanceManager.instance.playerActor.Resurrect();
+#endif
 	}
 
 	public void OnSwitchOffLockIcon()

@@ -118,6 +118,30 @@ public class BattleTestTool : EditorWindow
 				{
 					_playerActor.skillProcessor.AddLevelPack(_levelPackId, false, 0);
 				}
+				GUILayout.BeginHorizontal();
+				{
+					if (GUILayout.Button("Better Pack Set"))
+					{
+						_playerActor.skillProcessor.AddLevelPack("AtkBetter", false, 0);
+						_playerActor.skillProcessor.AddLevelPack("AtkBetter", false, 0);
+						_playerActor.skillProcessor.AddLevelPack("AtkSpeedBetter", false, 0);
+						_playerActor.skillProcessor.AddLevelPack("AtkSpeedBetter", false, 0);
+						_playerActor.skillProcessor.AddLevelPack("CritBetter", false, 0);
+						_playerActor.skillProcessor.AddLevelPack("CritBetter", false, 0);
+					}
+					if (GUILayout.Button("5Lv Pack"))
+					{
+						string exclusiveLevelPackId = TableDataManager.instance.FindActorLevelPackByLevel(BattleInstanceManager.instance.playerActor.actorId, 5);
+						if (string.IsNullOrEmpty(exclusiveLevelPackId) == false)
+						{
+							// 전용팩은 레벨팩 데이터 매니저에 넣으면 안된다.
+							//LevelPackDataManager.instance.AddLevelPack(BattleInstanceManager.instance.playerActor.actorId, exclusiveLevelPackId);
+							BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack(exclusiveLevelPackId, true, 5);
+						}
+					}
+				}
+				GUILayout.EndHorizontal();
+				
 			}
 		}
 		GUILayout.EndVertical();	

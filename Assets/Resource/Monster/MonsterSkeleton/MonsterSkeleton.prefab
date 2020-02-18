@@ -197,14 +197,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startDelayRange: {x: 0, y: 1.75}
-  startState: 0
+  startState: 2
   useStateList: 010001010100
   moveTimeRange: {x: 1.5, y: 2.25}
   refreshTickTimeRange: {x: 1, y: 1}
   desireDistance: 5
   straightMoveTimeRange: {x: 0, y: 0}
   straightRefreshTickTimeRange: {x: 0, y: 0}
-  straightRefreshTickWaitTime: 0
   straightMoveType: 0
   customActionPlayType: 1
   customActionName: 
@@ -225,6 +224,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7251054121766686289}
     m_Modifications:
+    - target: {fileID: 100078, guid: 5a35c5f0a89b9654d897ccd7c8f81bd0, type: 3}
+      propertyPath: m_Name
+      value: Skeleton@Skin
+      objectReference: {fileID: 0}
     - target: {fileID: 400078, guid: 5a35c5f0a89b9654d897ccd7c8f81bd0, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -280,10 +283,6 @@ PrefabInstance:
     - target: {fileID: 400078, guid: 5a35c5f0a89b9654d897ccd7c8f81bd0, type: 3}
       propertyPath: m_LocalScale.z
       value: 0.9
-      objectReference: {fileID: 0}
-    - target: {fileID: 100078, guid: 5a35c5f0a89b9654d897ccd7c8f81bd0, type: 3}
-      propertyPath: m_Name
-      value: Skeleton@Skin
       objectReference: {fileID: 0}
     - target: {fileID: 9500000, guid: 5a35c5f0a89b9654d897ccd7c8f81bd0, type: 3}
       propertyPath: m_Controller

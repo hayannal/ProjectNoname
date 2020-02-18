@@ -64,6 +64,12 @@ public class TeleportedAffector : AffectorBase
 
 		// 쿨타임 준비. 왜 이런게 필요한지는 아래 읽어볼 것.
 		PrepareCooltime();
+
+		// 텔레포트와 Rush는 동시에 있기 어렵다. 무조건 떼어낸다.
+		// 시간에 의해 없어지지 않는 Rush타입을 가지고 있는 상태에서 텔레포트 하고와고 되돌아오면
+		// 이미 AI스탭은 다른거로 진행중인데 RushAffector가 적용될 수 있다. 그래서 지워주는거다.
+		RushAffector rushAffector = (RushAffector)_actor.affectorProcessor.GetFirstContinuousAffector(eAffectorType.Rush);
+		if (rushAffector != null) rushAffector.finalized = true;
 	}
 
 	public override void UpdateAffector()

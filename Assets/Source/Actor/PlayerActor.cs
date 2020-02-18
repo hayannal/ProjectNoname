@@ -293,6 +293,18 @@ public class PlayerActor : Actor
 		playerAI.enabled = enable;
 	}
 
+	public void Resurrect()
+	{
+		if (actorStatus.IsDie() == false)
+			return;
+
+		// 우선은 연출없이
+		actionController.PlayActionByActionName("Idle");
+		actionController.idleAnimator.enabled = true;
+		HitObject.EnableRigidbodyAndCollider(true, _rigidbody, _collider);
+		actorStatus.AddHP(actorStatus.GetValue(eActorStatus.MaxHp));
+	}
+
 
 	#region Ultimate Indicator
 	Transform _cachedUltimateIndicatorTransform;

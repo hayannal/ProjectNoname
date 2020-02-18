@@ -227,7 +227,7 @@ public class MonsterActor : Actor
 		if (BurrowAffector.CheckDie(affectorProcessor))
 			yield break;
 
-		yield return Timing.WaitForSeconds(1.2f);
+		yield return Timing.WaitForSeconds(bossMonster ? 1.7f : 1.2f);
 
 		// avoid gc
 		if (this == null)

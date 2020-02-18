@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using ActorStatusDefine;
+using MEC;
 
 public class PlayerActor : Actor
 {
@@ -101,9 +102,11 @@ public class PlayerActor : Actor
 					// 레벨팩 이전
 					LevelPackDataManager.instance.TransferLevelPackList(BattleInstanceManager.instance.playerActor, this);
 
-					// Hp비율 이전. Sp는 최대로 회복
+					// Hp비율 Sp비율 이전
 					float hpRatio = BattleInstanceManager.instance.playerActor.actorStatus.GetHPRatio();
 					actorStatus.SetHpRatio(hpRatio);
+					float spRatio = BattleInstanceManager.instance.playerActor.actorStatus.GetSPRatio();
+					actorStatus.SetSpRatio(spRatio);
 
 					// 처음 스왑이라면 힐과 sp회복 적용
 					if (firstEnter)
@@ -114,6 +117,9 @@ public class PlayerActor : Actor
 						healAffectorValue.fValue3 = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("SwapHeal");
 						healAffectorValue.fValue3 += affectorProcessor.actor.actorStatus.GetValue(eActorStatus.SwapHealRate);
 						affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Heal, healAffectorValue, affectorProcessor.actor, false);
+						BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.healEffectPrefab, cachedTransform.position, Quaternion.identity, cachedTransform);
+
+						Timing.RunCoroutine(ScreenHealEffectProcess());
 					}
 
 					// 스테이지 디버프
@@ -138,6 +144,20 @@ public class PlayerActor : Actor
 			if (BattleInstanceManager.instance.playerActor == null)
 				OnChangedMainCharacter();
 		}
+	}
+
+	IEnumerator<float> ScreenHealEffectProcess()
+	{
+		FadeCanvas.instance.FadeOut(0.2f, 0.6f);
+		yield return Timing.WaitForSeconds(0.2f);
+
+		if (this == null)
+			yield break;
+		if (gameObject.activeSelf == false)
+			yield break;
+
+		BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("AfterSwapUI_Heal"), 2.0f);
+		FadeCanvas.instance.FadeIn(1.3f);
 	}
 
 	void OnChangedMainCharacter(bool experience = false)

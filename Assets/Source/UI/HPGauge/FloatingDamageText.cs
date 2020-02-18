@@ -15,6 +15,7 @@ public class FloatingDamageText : MonoBehaviour
 		ReduceContinuousDamage,
 		DefenseStrongDamage,
 		PaybackSp,
+		HealSpOnAttack,
 		Critical,
 	}
 
@@ -46,6 +47,9 @@ public class FloatingDamageText : MonoBehaviour
 				break;
 			case eFloatingDamageType.PaybackSp:
 				damageText.SetLocalizedText(UIString.instance.GetString("GameUI_PaybackSp"));
+				break;
+			case eFloatingDamageType.HealSpOnAttack:
+				damageText.SetLocalizedText(UIString.instance.GetString("GameUI_HealSp"));
 				break;
 			case eFloatingDamageType.Critical:
 				damageText.SetLocalizedText(UIString.instance.GetString("GameUI_Critical"));

@@ -71,6 +71,8 @@ public class HealSpOnHitAffector : AffectorBase
 			return;
 		affectorProcessor.actor.actorStatus.AddSP(s_amountValueA);
 
+		FloatingDamageTextRootCanvas.instance.ShowText(FloatingDamageText.eFloatingDamageType.HealSpOnAttack, affectorProcessor.actor);
+
 		// 쿨타임 등록
 		AffectorValueLevelTableData affectorValueLevelTableData = new AffectorValueLevelTableData();
 		// OverrideAffector가 제대로 호출되기 위해서 임시 아이디를 지정해줘야한다.

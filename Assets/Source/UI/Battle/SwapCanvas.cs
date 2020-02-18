@@ -346,14 +346,12 @@ public class SwapCanvas : MonoBehaviour
 		// 그리고 기존 캐릭터를 위치 정보 얻어온 후 꺼두고
 		Vector3 position = BattleInstanceManager.instance.playerActor.cachedTransform.position;
 
-		// 새 캐릭터 재활성화
-		if (newPlayerActor.gameObject.activeSelf == false)
-			newPlayerActor.gameObject.SetActive(true);
-
 		// 포지션 맞춰주고
 		newPlayerActor.cachedTransform.position = position;
 
-		// 이펙트를 출력
+		// 새 캐릭터 재활성화
+		if (newPlayerActor.gameObject.activeSelf == false)
+			newPlayerActor.gameObject.SetActive(true);
 
 		/////////////////////////////////////////////////////////////////////
 		// 여기서 제일 문제가..

@@ -80,11 +80,17 @@ public class PowerSource : MonoBehaviour
 
 	IEnumerator<float> ScreenHealEffectProcess()
 	{
-		FadeCanvas.instance.FadeOut(0.2f, 0.7f);
+		FadeCanvas.instance.FadeOut(0.2f, 0.8f);
 		yield return Timing.WaitForSeconds(0.2f);
 
 		if (this == null)
 			yield break;
+
+		if (_objectIndicatorCanvas != null)
+		{
+			_objectIndicatorCanvas.gameObject.SetActive(false);
+			_objectIndicatorCanvas = null;
+		}
 
 		BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("PowerSourceUI_Heal"), 2.5f);
 		FadeCanvas.instance.FadeIn(1.5f);
@@ -102,8 +108,27 @@ public class PowerSource : MonoBehaviour
 			if (_guideMessageShowRemainTime <= 0.0f)
 			{
 				_guideMessageShowRemainTime = 0.0f;
-				BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("PowerSourceUI_ComeHere"), 4.0f);
+
+				// 가이드 문구를 마인드 텍스트대신 인디케이터로 바꾼다.
+				//BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("PowerSourceUI_ComeHere"), 4.0f);
+				ShowIndicator();
 			}
 		}
+	}
+
+	ObjectIndicatorCanvas _objectIndicatorCanvas;
+	void ShowIndicator()
+	{
+		AddressableAssetLoadManager.GetAddressableGameObject("PowerSourceIndicator", "Object", (prefab) =>
+		{
+			// 로딩하는 중간에 맵이동시 다음맵으로 넘어가서 인디케이터가 뜨는걸 방지. 이미 회복 받았으면 뜨지않게 방지.
+			if (this == null) return;
+			if (gameObject == null) return;
+			if (gameObject.activeSelf == false) return;
+			if (_spawnedGatePillar) return;
+
+			_objectIndicatorCanvas = UIInstanceManager.instance.GetCachedObjectIndicatorCanvas(prefab);
+			_objectIndicatorCanvas.targetTransform = transform;
+		});
 	}
 }

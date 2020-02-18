@@ -44,6 +44,10 @@ public class TeleportingHitObjectAffector : AffectorBase
 				return;
 		}
 
+		// 쿨타임 체크. 이미 한번 다녀왔다면 일정시간동안 다시 가지 않게 처리해둔다.
+		if (DefaultContainerAffector.ContainsValue(defenderAffectorProcessor, eAffectorType.Teleported.ToString()))
+			return;
+
 		MonsterActor defenderMonsterActor = null;
 		bool bossMonster = false;
 		if (defenderAffectorProcessor.actor.IsMonsterActor())

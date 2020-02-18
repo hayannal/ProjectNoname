@@ -61,6 +61,9 @@ public class TeleportedAffector : AffectorBase
 		_actor.cachedTransform.position = new Vector3(_actor.cachedTransform.position.x, TeleportedHeight, _actor.cachedTransform.position.z);
 		BattleInstanceManager.instance.AddTeleportedAffector(this);
 		_applied = true;
+
+		// 쿨타임 준비. 왜 이런게 필요한지는 아래 읽어볼 것.
+		PrepareCooltime();
 	}
 
 	public override void UpdateAffector()
@@ -69,6 +72,7 @@ public class TeleportedAffector : AffectorBase
 			return;
 	}
 
+	static string s_generatedId = "_generatedId_Teleported";
 	public override void FinalizeAffector()
 	{
 		if (_applied == false)
@@ -100,6 +104,36 @@ public class TeleportedAffector : AffectorBase
 				BattleInstanceManager.instance.GetCachedObject(onEndEffectPrefab, _actor.cachedTransform.position + new Vector3(0.0f, EffectOffetY, 0.0f), _actor.cachedTransform.rotation);
 		}
 		_applied = false;
+
+		ApplyCooltime();
+	}
+
+	void PrepareCooltime()
+	{
+		// 우리 쿨타임에 약간 문제점이라고 할게 하나 있는데
+		// 한번도 DefaultContainer이 적용되지 않는 affectorProcessor에 TeleportedAffector의 FinalizeAffector가 호출되면
+		// affectorProcessor.UpdateAffectorProcessor 함수를 돌던 도중에 새 DefaultContainer가 추가되는거라
+		// Enumerator가 무효하게 되버린다. 당연히 null처리에서 익셉션뜨고 이후 어펙터들의 Update가 호출되지 않게 되버린다.
+		// 그래서 이걸 막기위해 가장 안전한 시점인
+		// 텔레포트 어펙터가 추가될때 1초짜리 쿨타임으로 미리 넣어두기로 한다.
+		//
+		// 이전에는 쿨타임 추가되는 타이밍이 OnEvent쪽이라서 상관없었는데 이번에 처음으로 Update도중에 추가되는거라 이런 예외처리가 필요하게 되었다.
+		AffectorValueLevelTableData affectorValueLevelTableData = new AffectorValueLevelTableData();
+		affectorValueLevelTableData.affectorValueId = s_generatedId;
+		affectorValueLevelTableData.fValue1 = 1.0f;
+		affectorValueLevelTableData.sValue1 = eAffectorType.Teleported.ToString();
+		_affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.DefaultContainer, affectorValueLevelTableData, _actor, false);
+	}
+
+	void ApplyCooltime()
+	{
+		// 쿨타임 등록
+		AffectorValueLevelTableData affectorValueLevelTableData = new AffectorValueLevelTableData();
+		// OverrideAffector가 제대로 호출되기 위해서 임시 아이디를 지정해줘야한다. 거의 오버라이드 될 일이 없겠지만 안전하게 해둔다.
+		affectorValueLevelTableData.affectorValueId = s_generatedId;
+		affectorValueLevelTableData.fValue1 = _affectorValueLevelTableData.fValue2;
+		affectorValueLevelTableData.sValue1 = eAffectorType.Teleported.ToString();
+		_affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.DefaultContainer, affectorValueLevelTableData, _actor, false);
 	}
 
 	// 어펙터의 소멸자는 씬이 이동되어도 호출되지 않는다.(액터가 사라져도 호출되지 않는다.)

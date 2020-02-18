@@ -166,6 +166,14 @@ public class MonsterAI : MonoBehaviour
 		}
 	}
 
+	static float s_LongStartDelay = 5.0f;
+	public bool IsLongStartDelaying()
+	{
+		if (startDelayRange.x >= s_LongStartDelay && startDelayRange.y >= s_LongStartDelay && _startDelayRemainTime > 0.0f)
+			return true;
+		return false;
+	}
+
 	float _currentFindDelay;
 	void UpdateTargeting()
 	{

@@ -51,6 +51,10 @@ public class TeleportingHitObjectAffector : AffectorBase
 		if (defenderMonsterActor != null && defenderMonsterActor.bossMonster)
 			bossMonster = true;
 
+		// Start Delay가 긴 락워리어 같은 몹들이 잠들어있을땐 면역되서 텔레포트 되면 안된다. 혹시 툴에서 가만 스폰시킨 세워둔(AI끈) 락워리어일 경우는 제외하기로 한다. monsterAI enabled 체크.
+		if (defenderMonsterActor != null && defenderMonsterActor.monsterAI.IsLongStartDelaying() && defenderMonsterActor.monsterAI.enabled)
+			return;
+
 		//if (BattleInstanceManager.instance.GetActiveTeleportedCount() >= _affectorValueLevelTableData.iValue1)
 		//	return;
 		if (bossMonster == false && BattleInstanceManager.instance.GetActiveTeleportedCountByType(false) >= _affectorValueLevelTableData.iValue1)

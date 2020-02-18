@@ -81,6 +81,12 @@ public class TeleportedAffector : AffectorBase
 		_actor.actionController.idleAnimator.enabled = true;
 		_actor.actionController.PlayActionByActionName("Idle");
 		_actor.EnableAI(true);
+		if (_actor.IsMonsterActor())
+		{
+			MonsterActor monsterActor = _actor as MonsterActor;
+			if (monsterActor != null)
+				monsterActor.monsterAI.OnFinalizeTeleportedAffector();
+		}
 
 		if (_positionEffectObject != null)
 		{

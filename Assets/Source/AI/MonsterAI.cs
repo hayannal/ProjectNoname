@@ -781,4 +781,36 @@ public class MonsterAI : MonoBehaviour
 		}
 	}
 	#endregion
+
+	public void OnFinalizeTeleportedAffector()
+	{
+		// 원래 이 처리는 없었는데 텔레포트 하고와서 바로 공격하는 문제때문에 텔레포트가 오히려 더 안좋아졌다.
+		// 그래서 상태를 강제로 바꿔서 좀 더 유용하게 바꿔본다.
+
+		// 1. 랜덤무브를 가지고 있으면 랜덤무브로 보낸다.
+		// 2. 어택딜레이를 가지고 있으면..
+		// 3. 스트레이트무브를 가지고 있으면..
+		// 4. 커스텀 액션이 있으면
+		// 5. 어택이 있으면 어택의 다음으로 보낸다. 불가능할수도 있음.
+		// 6. 냅둔다.(현재 상태를 재시작한다.)
+
+		// 이미 AI는 한번 껐다가 켜진거라 Reset류는 호출하지 않는다.
+		if (useStateList[(int)eStateType.RandomMove])
+			_currentState = eStateType.RandomMove;
+		else if (useStateList[(int)eStateType.AttackDelay])
+			_currentState = eStateType.AttackDelay;
+		else if (useStateList[(int)eStateType.StraightMove])
+			_currentState = eStateType.StraightMove;
+		else if (useStateList[(int)eStateType.CustomAction])
+			_currentState = eStateType.CustomAction;
+		else if (useStateList[(int)eStateType.AttackAction])
+		{
+			_currentState = eStateType.AttackAction;
+			NextStep();
+		}
+		else
+		{
+			// 아무것도 하지 않는게 6번이다.
+		}
+	}
 }

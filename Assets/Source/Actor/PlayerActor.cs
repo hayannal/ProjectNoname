@@ -156,7 +156,7 @@ public class PlayerActor : Actor
 		if (gameObject.activeSelf == false)
 			yield break;
 
-		BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("AfterSwapUI_Heal"), 2.0f);
+		BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("AfterSwapUI_Heal"), 2.3f);
 		FadeCanvas.instance.FadeIn(1.3f);
 	}
 

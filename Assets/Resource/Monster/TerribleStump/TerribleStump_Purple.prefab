@@ -182,7 +182,7 @@ MonoBehaviour:
   actorId: TerribleStump_Purple
   commonPoolPreloadObjectList: []
   selfPassivePreloadObjectList: []
-  gaugeOffsetY: 0
+  gaugeOffsetY: 0.7
   monsterHpGaugeWidth: 1
 --- !u!114 &8136423928009863170
 MonoBehaviour:
@@ -198,10 +198,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startDelayRange: {x: 0, y: 0}
   startState: 3
-  useStateList: 0100010100
+  useStateList: 010001010000
   moveTimeRange: {x: 0, y: 2}
   refreshTickTimeRange: {x: 2, y: 2}
   desireDistance: 5
+  straightMoveTimeRange: {x: 0, y: 0}
+  straightRefreshTickTimeRange: {x: 0, y: 0}
+  straightRefreshTickWaitTime: 0
+  straightMoveType: 0
   customActionPlayType: 1
   customActionName: 
   customActionFadeDuration: 0.05

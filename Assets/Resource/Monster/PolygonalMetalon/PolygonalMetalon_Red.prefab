@@ -182,7 +182,7 @@ MonoBehaviour:
   actorId: PolygonalMetalon_Red
   commonPoolPreloadObjectList: []
   selfPassivePreloadObjectList: []
-  gaugeOffsetY: 0
+  gaugeOffsetY: 0.5
   monsterHpGaugeWidth: 1
 --- !u!114 &6038878198901292262
 MonoBehaviour:
@@ -198,10 +198,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startDelayRange: {x: 0, y: 0}
   startState: 3
-  useStateList: 0100000101
+  useStateList: 010000010100
   moveTimeRange: {x: 0.1, y: 3}
   refreshTickTimeRange: {x: 3, y: 3}
   desireDistance: 7
+  straightMoveTimeRange: {x: 0, y: 0}
+  straightRefreshTickTimeRange: {x: 0, y: 0}
+  straightRefreshTickWaitTime: 0
+  straightMoveType: 0
   customActionPlayType: 1
   customActionName: 
   customActionFadeDuration: 0.05

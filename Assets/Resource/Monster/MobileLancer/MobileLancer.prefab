@@ -182,7 +182,7 @@ MonoBehaviour:
   actorId: MobileLancer
   commonPoolPreloadObjectList: []
   selfPassivePreloadObjectList: []
-  gaugeOffsetY: 0
+  gaugeOffsetY: 0.8
   monsterHpGaugeWidth: 1
 --- !u!114 &4005870323028953569
 MonoBehaviour:
@@ -198,10 +198,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startDelayRange: {x: 0.25, y: 0.25}
   startState: 0
-  useStateList: 0100010101
+  useStateList: 010001010100
   moveTimeRange: {x: 5, y: 5}
   refreshTickTimeRange: {x: 1, y: 1}
   desireDistance: 5
+  straightMoveTimeRange: {x: 0, y: 0}
+  straightRefreshTickTimeRange: {x: 0, y: 0}
+  straightRefreshTickWaitTime: 0
+  straightMoveType: 0
   customActionPlayType: 1
   customActionName: 
   customActionFadeDuration: 0.05
@@ -281,10 +285,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1.1
       objectReference: {fileID: 0}
-    - target: {fileID: 9500000, guid: 3d170c97ad40fc448ae58187988a943c, type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: d1889370c4fb7474ba3bfe91e5cb956c, type: 2}
     - target: {fileID: 400000, guid: 3d170c97ad40fc448ae58187988a943c, type: 3}
       propertyPath: m_LocalRotation.x
       value: -0.387946
@@ -313,14 +313,14 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 1.0181277
       objectReference: {fileID: 0}
+    - target: {fileID: 9500000, guid: 3d170c97ad40fc448ae58187988a943c, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: d1889370c4fb7474ba3bfe91e5cb956c, type: 2}
     - target: {fileID: 13700000, guid: 3d170c97ad40fc448ae58187988a943c, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 455fa375c613afe42879d298894cb8e4, type: 2}
-    - target: {fileID: 13700002, guid: 3d170c97ad40fc448ae58187988a943c, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: b70be2b9f4f4e0947a447e365ae484f9, type: 2}
     - target: {fileID: 400112, guid: 3d170c97ad40fc448ae58187988a943c, type: 3}
       propertyPath: m_LocalRotation.x
       value: 0.00006148604
@@ -329,6 +329,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0.058149785
       objectReference: {fileID: 0}
+    - target: {fileID: 13700002, guid: 3d170c97ad40fc448ae58187988a943c, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b70be2b9f4f4e0947a447e365ae484f9, type: 2}
     m_RemovedComponents:
     - {fileID: 13700004, guid: 3d170c97ad40fc448ae58187988a943c, type: 3}
     - {fileID: 13700002, guid: 3d170c97ad40fc448ae58187988a943c, type: 3}

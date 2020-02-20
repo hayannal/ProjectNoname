@@ -631,7 +631,7 @@ MonoBehaviour:
   actorId: TrainingDummyBeast
   commonPoolPreloadObjectList: []
   selfPassivePreloadObjectList: []
-  gaugeOffsetY: 0
+  gaugeOffsetY: 2.2
   monsterHpGaugeWidth: 1
 --- !u!114 &852228643139402593
 MonoBehaviour:
@@ -647,10 +647,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startDelayRange: {x: 0.7, y: 0.7}
   startState: 3
-  useStateList: 0001000100
+  useStateList: 000100010000
   moveTimeRange: {x: 4, y: 4}
   refreshTickTimeRange: {x: 2, y: 2}
   desireDistance: 5
+  straightMoveTimeRange: {x: 0, y: 0}
+  straightRefreshTickTimeRange: {x: 0, y: 0}
+  straightRefreshTickWaitTime: 0
+  straightMoveType: 0
   customActionPlayType: 2
   customActionName: JumpGroup
   customActionFadeDuration: 0.05

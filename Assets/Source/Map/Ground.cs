@@ -36,6 +36,13 @@ public class Ground : MonoBehaviour
 			CustomFollowCamera.instance.OnLoadPlaneObject(_bounds.max.z, _bounds.min.z, _bounds.min.x, _bounds.max.x);
 	}
 
+	public bool IsInQuadBound(Vector3 position)
+	{
+		if (_bounds.size == Vector3.zero)
+			return true;
+		return _bounds.Contains(position);
+	}
+
 	#region Runtime NavMesh
 	Dictionary<int, NavMeshSurface> _dicNavMeshSurface = null;
 	public void BakeNavMesh(int agentTypeID)

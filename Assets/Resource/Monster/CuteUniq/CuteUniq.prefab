@@ -842,7 +842,7 @@ MonoBehaviour:
   actorId: CuteUniq
   commonPoolPreloadObjectList: []
   selfPassivePreloadObjectList: []
-  gaugeOffsetY: 0
+  gaugeOffsetY: 0.3
   monsterHpGaugeWidth: 1
 --- !u!114 &8083693306059842229
 MonoBehaviour:
@@ -858,10 +858,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startDelayRange: {x: 0.5, y: 0.5}
   startState: 3
-  useStateList: 0000000101
+  useStateList: 000000010100
   moveTimeRange: {x: 0.1, y: 4}
   refreshTickTimeRange: {x: 2, y: 2}
   desireDistance: 5
+  straightMoveTimeRange: {x: 0, y: 0}
+  straightRefreshTickTimeRange: {x: 0, y: 0}
+  straightRefreshTickWaitTime: 0
+  straightMoveType: 0
   customActionPlayType: 1
   customActionName: 
   customActionFadeDuration: 0.05

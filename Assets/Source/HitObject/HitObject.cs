@@ -99,6 +99,20 @@ public class HitObject : MonoBehaviour
 				}
 			}
 
+			// check area generator
+			bool ignoreAreaMainHitObjectByGenerator = false;
+			if (meHit.continuousHitObjectGeneratorBaseList != null)
+			{
+				for (int i = 0; i < meHit.continuousHitObjectGeneratorBaseList.Count; ++i)
+				{
+					ContinuousHitObjectGeneratorBase continuousHitObjectGenerator = BattleInstanceManager.instance.GetContinuousHitObjectGenerator(meHit.continuousHitObjectGeneratorBaseList[i].gameObject, areaPosition, Quaternion.LookRotation(areaDirection));
+					ignoreAreaMainHitObjectByGenerator |= continuousHitObjectGenerator.ignoreMainHitObject;
+					continuousHitObjectGenerator.InitializeGenerator(meHit, parentActor, statusBase, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, spawnTransform);
+				}
+			}
+			if (ignoreAreaMainHitObjectByGenerator)
+				return null;
+
 			// HitObject 프리팹이 있거나 lifeTime이 있다면 생성하고 아니면 패스.
 			Quaternion rotation = Quaternion.LookRotation(areaDirection);
 			HitObject hitObject = GetCachedHitObject(meHit, areaPosition, rotation);

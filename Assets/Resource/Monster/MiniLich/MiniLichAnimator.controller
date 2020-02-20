@@ -12,13 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.58
+  StartTime: 0.52
   EndTime: 1
   targetDetectType: 2
-  hitObjectPrefab: {fileID: 543431697849790876, guid: cc80c56f1d4401c499efa0abb9b1eb77,
+  hitObjectPrefab: {fileID: 5848472822562479349, guid: b719df7e41737594083d0fc791e3e390,
     type: 3}
-  lifeTime: 5
+  lifeTime: 15
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -26,7 +27,7 @@ MonoBehaviour:
   teamCheckType: 0
   createPositionType: 0
   boneName: 
-  offset: {x: 0, y: 1, z: 0.5}
+  offset: {x: -0.3, y: 1, z: 0.5}
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
@@ -51,7 +52,7 @@ MonoBehaviour:
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
   howitzerRandomPositionRadius: 0
-  speed: 4.5
+  speed: 4
   useSpeedChange: 0
   targetSpeed: 0
   speedChangeTime: 0
@@ -72,7 +73,8 @@ MonoBehaviour:
   circularSectorUseWorldSpace: 0
   circularSectorWorldSpaceCenterAngleY: 0
   ignoreMainHitObjectByCircularSector: 0
-  continuousHitObjectGeneratorBaseList: []
+  continuousHitObjectGeneratorBaseList:
+  - {fileID: 8632962272249483628, guid: 2c6ffb1bb6d38ae4996c8926e9abdbe6, type: 3}
   contactAll: 0
   monsterThroughCount: 0
   wallThrough: 0

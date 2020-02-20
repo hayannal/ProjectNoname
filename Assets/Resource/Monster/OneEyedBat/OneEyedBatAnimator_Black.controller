@@ -12,13 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.58
+  StartTime: 0.62
   EndTime: 1
   targetDetectType: 2
-  hitObjectPrefab: {fileID: 543431697849790876, guid: cc80c56f1d4401c499efa0abb9b1eb77,
+  hitObjectPrefab: {fileID: 5848472822562479349, guid: b719df7e41737594083d0fc791e3e390,
     type: 3}
-  lifeTime: 5
+  lifeTime: 15
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -40,8 +41,8 @@ MonoBehaviour:
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
-  startDirectionType: 2
-  startDirection: {x: 0, y: 0, z: 1}
+  startDirectionType: 1
+  startDirection: {x: 1, y: 0, z: 0}
   howitzerType: 0
   useWorldSpaceDirection: 0
   bothRandomAngle: 1
@@ -51,7 +52,7 @@ MonoBehaviour:
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
   howitzerRandomPositionRadius: 0
-  speed: 4.5
+  speed: 4
   useSpeedChange: 0
   targetSpeed: 0
   speedChangeTime: 0
@@ -67,11 +68,11 @@ MonoBehaviour:
   parallelCount: 0
   parallelDistance: 0
   ignoreMainHitObjectByParallel: 0
-  circularSectorCount: 0
-  circularSectorBetweenAngle: 0
+  circularSectorCount: 2
+  circularSectorBetweenAngle: 180
   circularSectorUseWorldSpace: 0
   circularSectorWorldSpaceCenterAngleY: 0
-  ignoreMainHitObjectByCircularSector: 0
+  ignoreMainHitObjectByCircularSector: 1
   continuousHitObjectGeneratorBaseList: []
   contactAll: 0
   monsterThroughCount: 0
@@ -90,7 +91,7 @@ MonoBehaviour:
   affectorValueIdList:
   - NormalAttack01
   showHitEffect: 1
-  hitEffectObject: {fileID: 1124335935880280, guid: b6d68723f7e26204d8f14d607141cc13,
+  hitEffectObject: {fileID: 1322770261676608, guid: 204b7eaaad459f64cbf1a248d336f391,
     type: 3}
   hitEffectLookAtNormal: 0
   useWeaponHitEffect: 0

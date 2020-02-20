@@ -48,7 +48,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 8397013727068604430}
   m_Enabled: 1
   m_AgentTypeID: 65107623
-  m_Radius: 0.5
+  m_Radius: 0.25
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -183,7 +183,7 @@ MonoBehaviour:
   commonPoolPreloadObjectList: []
   selfPassivePreloadObjectList: []
   gaugeOffsetY: 0
-  monsterHpGaugeWidth: 1
+  monsterHpGaugeWidth: 0.75
 --- !u!114 &4558014571924942623
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -197,8 +197,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startDelayRange: {x: 0.25, y: 0.25}
-  startState: 2
-  useStateList: 010001010100
+  startState: 0
+  useStateList: 010000010100
   moveTimeRange: {x: 5, y: 5}
   refreshTickTimeRange: {x: 1, y: 1}
   desireDistance: 5
@@ -214,8 +214,8 @@ MonoBehaviour:
   attackActionPlayType: 0
   attackActionName: Attack
   attackActionFadeDuration: 0.44
-  lookAtTargetBeforeAttack: 1
-  attackDelayTimeRange: {x: 1.5, y: 1.5}
+  lookAtTargetBeforeAttack: 0
+  attackDelayTimeRange: {x: 1, y: 1}
   useAnimatorParameterForAI: 0
   listAnimatorParameterForAI: 
 --- !u!1001 &3170722063295020276

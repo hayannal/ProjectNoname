@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.58
+  StartTime: 0.5
   EndTime: 1
   targetDetectType: 2
-  hitObjectPrefab: {fileID: 543431697849790876, guid: cc80c56f1d4401c499efa0abb9b1eb77,
+  hitObjectPrefab: {fileID: 5848472822562479349, guid: b719df7e41737594083d0fc791e3e390,
     type: 3}
-  lifeTime: 5
+  lifeTime: 15
   areaHitLifeTimeEarlyOffset: 0
   movable: 1
   maxDistance: 0
@@ -26,7 +26,7 @@ MonoBehaviour:
   teamCheckType: 0
   createPositionType: 0
   boneName: 
-  offset: {x: 0, y: 1, z: 0.5}
+  offset: {x: 0, y: 1, z: 0.65}
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
@@ -51,7 +51,7 @@ MonoBehaviour:
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
   howitzerRandomPositionRadius: 0
-  speed: 4.5
+  speed: 4
   useSpeedChange: 0
   targetSpeed: 0
   speedChangeTime: 0
@@ -72,7 +72,8 @@ MonoBehaviour:
   circularSectorUseWorldSpace: 0
   circularSectorWorldSpaceCenterAngleY: 0
   ignoreMainHitObjectByCircularSector: 0
-  continuousHitObjectGeneratorBaseList: []
+  continuousHitObjectGeneratorBaseList:
+  - {fileID: 5824825149802700135, guid: 79ebc0b7cff28a04f9838b79c65e18c7, type: 3}
   contactAll: 0
   monsterThroughCount: 0
   wallThrough: 0
@@ -90,7 +91,7 @@ MonoBehaviour:
   affectorValueIdList:
   - NormalAttack01
   showHitEffect: 1
-  hitEffectObject: {fileID: 1124335935880280, guid: b6d68723f7e26204d8f14d607141cc13,
+  hitEffectObject: {fileID: 1322770261676608, guid: 204b7eaaad459f64cbf1a248d336f391,
     type: 3}
   hitEffectLookAtNormal: 0
   useWeaponHitEffect: 0
@@ -195,7 +196,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 037e2d2e89051c94396034d90d46aeb2, type: 2}
+  m_Motion: {fileID: 7400000, guid: eb7fe1f8e20448f4c8ce2b3bde5b235c, type: 3}
   m_Tag: 
   m_SpeedParameter: AttackAniSpeedRatio
   m_MirrorParameter: 

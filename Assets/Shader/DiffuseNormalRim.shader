@@ -10,6 +10,7 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 		_RimColor ("Rim Color", Color) = (0.1, 0.3, 0.2)	// 유니티 에디터에서 직접 수정할 수 있도록 합니다.
 		_RimPower ("Rim Power", Range(-1.0, 2)) = 1
 		_RimDirAdjust ("Rim Dir Adjust", Vector) = (0, 0, 0, 0)
+		[Enum(UnityEngine.Rendering.CullMode)] _Cull("Cull Mode", Float) = 2
 
 		[Toggle(_CUTOFF)] _UseCutoff("========== Use Cutoff (A) ==========", Float) = 0
 		_Cutoff("Alpha cutoff", Range(0, 1)) = 0.5
@@ -32,6 +33,7 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 	}
 	SubShader {
 		Tags { "RenderType"="Opaque" }
+		Cull [_Cull]
 		
 		CGPROGRAM
 		#pragma surface surf Lambert exclude_path:prepass nolightmap noforwardadd

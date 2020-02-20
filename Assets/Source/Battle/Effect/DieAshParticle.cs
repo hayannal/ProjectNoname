@@ -34,20 +34,21 @@ public class DieAshParticle : MonoBehaviour
 				_listAshParticle.Add(ashParticle);
 			}
 
-			MeshRenderer[] meshRendererList = GetComponentsInChildren<MeshRenderer>();
-
-			duration = 0.0f;
-			if (skinnedMeshRendererList.Length == 0 && meshRendererList.Length > 0)
+			if (skinnedMeshRendererList.Length == 0)	
 			{
-				AnimationCurveAsset curveAsset = bossMonster ? BattleManager.instance.bossMonsterDieDissolveCurve : BattleManager.instance.monsterDieDissolveCurve;
-				duration = curveAsset.curve.keys[curveAsset.curve.length - 1].time;
-
-				for (int i = 0; i < meshRendererList.Length; ++i)
+				MeshRenderer[] meshRendererList = GetComponentsInChildren<MeshRenderer>();
+				if (meshRendererList.Length > 0)
 				{
-					GameObject newObject = BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.monsterDieAshParticlePrefab, meshRendererList[i].transform);
-					AshParticle ashParticle = newObject.GetComponent<AshParticle>();
-					ashParticle.SetParticleInfo(meshRendererList[i], duration, flakeMultiplier);
-					_listAshParticle.Add(ashParticle);
+					AnimationCurveAsset curveAsset = bossMonster ? BattleManager.instance.bossMonsterDieDissolveCurve : BattleManager.instance.monsterDieDissolveCurve;
+					duration = curveAsset.curve.keys[curveAsset.curve.length - 1].time;
+
+					for (int i = 0; i < meshRendererList.Length; ++i)
+					{
+						GameObject newObject = BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.monsterDieAshParticlePrefab, meshRendererList[i].transform);
+						AshParticle ashParticle = newObject.GetComponent<AshParticle>();
+						ashParticle.SetParticleInfo(meshRendererList[i], duration, flakeMultiplier);
+						_listAshParticle.Add(ashParticle);
+					}
 				}
 			}
 		}

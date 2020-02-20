@@ -85,7 +85,7 @@ public class HitObject : MonoBehaviour
 			Vector3 endPosition = Vector3.zero;
 
 			// RangeSignal은 같은 프레임의 Update에서 스스로 체크할거라 여기서 검사할 필요 없다.
-			if (meHit.RangeSignal == false)
+			if (meHit.RangeSignal == false && meHit.lifeTime == 0.0f)
 			{
 				if (meHit.targetDetectType == eTargetDetectType.Area)
 				{

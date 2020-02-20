@@ -18,6 +18,7 @@ public class MeHitObject : MecanimEventBase {
 	public GameObject hitObjectPrefab;
 	public float lifeTime;
 	public float areaHitLifeTimeEarlyOffset;
+	public Vector2 ignoreAreaHitLifeTimeRange;
 	public bool movable;
 	public float maxDistance;
 	public float defaultSphereCastDistance;
@@ -147,7 +148,10 @@ public class MeHitObject : MecanimEventBase {
 			if (lifeTime > 0.0f)
 			{
 				if (targetDetectType == HitObject.eTargetDetectType.Area)
-					areaHitLifeTimeEarlyOffset = EditorGUILayout.FloatField("Area Hit LifeTime :", areaHitLifeTimeEarlyOffset);
+				{
+					areaHitLifeTimeEarlyOffset = EditorGUILayout.FloatField("LifeTime Early Offset :", areaHitLifeTimeEarlyOffset);
+					ignoreAreaHitLifeTimeRange = EditorGUILayout.Vector2Field("Ignore Hit LifeTime Range :", ignoreAreaHitLifeTimeRange);
+				}
 				movable = EditorGUILayout.Toggle("Movable :", movable);
 			}
 			else movable = false;

@@ -1024,9 +1024,16 @@ public class HitObject : MonoBehaviour
 
 	public void UpdateAreaOrSphereCast()
 	{
-		if (_signal.targetDetectType == eTargetDetectType.Area && _signal.RangeSignal == false && _signal.areaHitLifeTimeEarlyOffset > 0.0f)
+		if (_signal.targetDetectType == eTargetDetectType.Area && _signal.RangeSignal == false)
 		{
-			if (Time.time < _createTime + _signal.areaHitLifeTimeEarlyOffset)
+			if (_signal.areaHitLifeTimeEarlyOffset > 0.0f && Time.time < _createTime + _signal.areaHitLifeTimeEarlyOffset)
+			{
+				Debug.LogError("Using areaHitLifeTimeEarlyOffset!!");
+				return;
+			}
+			if (_signal.ignoreAreaHitLifeTimeRange.x > 0.0f && Time.time < _createTime + _signal.ignoreAreaHitLifeTimeRange.x)
+				return;
+			if (_signal.ignoreAreaHitLifeTimeRange.y > 0.0f && Time.time > _createTime + _signal.ignoreAreaHitLifeTimeRange.y)
 				return;
 		}
 

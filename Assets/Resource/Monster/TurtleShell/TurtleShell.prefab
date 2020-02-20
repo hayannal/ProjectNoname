@@ -47,8 +47,8 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9218086327864121245}
   m_Enabled: 1
-  m_AgentTypeID: -1923039037
-  m_Radius: 0.5
+  m_AgentTypeID: -902729914
+  m_Radius: 0.65
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -87,7 +87,7 @@ CapsuleCollider:
   m_Material: {fileID: 13400000, guid: 176724f165ed631408775764c436d474, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.5
+  m_Radius: 0.65
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
@@ -107,7 +107,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   _groundLimit: 60
-  _stepOffset: 0.35
+  _stepOffset: 0.65
   _ledgeOffset: 0
   _castDistance: 0.5
   _triggerInteraction: 1
@@ -198,9 +198,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startDelayRange: {x: 0.25, y: 0.75}
   startState: 0
-  useStateList: 010000000100
-  moveTimeRange: {x: 1, y: 1}
-  refreshTickTimeRange: {x: 1, y: 1}
+  useStateList: 010001000100
+  moveTimeRange: {x: 3, y: 3}
+  refreshTickTimeRange: {x: 3, y: 3}
   desireDistance: 3
   straightMoveTimeRange: {x: 0, y: 0}
   straightRefreshTickTimeRange: {x: 0, y: 0}
@@ -215,7 +215,7 @@ MonoBehaviour:
   attackActionName: Attack
   attackActionFadeDuration: 0.44
   lookAtTargetBeforeAttack: 1
-  attackDelayTimeRange: {x: 1, y: 2}
+  attackDelayTimeRange: {x: 2, y: 2.5}
   useAnimatorParameterForAI: 0
   listAnimatorParameterForAI: 
 --- !u!1001 &500062358985617991

@@ -82,6 +82,7 @@ public class AttackIndicator : MonoBehaviour
 	{
 		UpdateAlpha();
 		UpdateLine();
+		UpdateLifeTime();
 	}
 
 	void UpdateAlpha()
@@ -172,6 +173,27 @@ public class AttackIndicator : MonoBehaviour
 
 		lineRootTransform.position = new Vector3(cachedTransform.position.x, 0.05f, cachedTransform.position.z);
 		lineRootTransform.localScale = new Vector3(lineRootTransform.localScale.x, lineRootTransform.localScale.y, reservedNearestDistance);
+	}
+
+	public void SetLifeTime(float lifeTime)
+	{
+		// Range시그널의 범위를 무시하고 lifeTime만큼 보여주고 싶을때 사용하는 방법이다.
+		// 이때는 Indicator스스로가 라이프타임을 세고있다가 사라지게 한다.
+		_remainLifeTime = lifeTime;
+	}
+
+	float _remainLifeTime = 0.0f;
+	void UpdateLifeTime()
+	{
+		if (_remainLifeTime == 0.0f)
+			return;
+
+		_remainLifeTime -= Time.deltaTime;
+		if (_remainLifeTime <= 0.0f)
+		{
+			_remainLifeTime = 0.0f;
+			FinalizeAttackIndicator();
+		}
 	}
 
 

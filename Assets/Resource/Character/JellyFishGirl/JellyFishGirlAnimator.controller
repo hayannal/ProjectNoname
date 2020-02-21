@@ -257,6 +257,7 @@ MonoBehaviour:
     type: 3}
   lifeTime: 5
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -273,6 +274,8 @@ MonoBehaviour:
   areaHeightMin: 0
   areaHeightMax: 0
   areaAngle: 0
+  checkRaycastWallInArea: 0
+  applyCollisionDamageInterval: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 3
@@ -288,6 +291,10 @@ MonoBehaviour:
   howitzerTargetPositionOffset: {x: 0, y: 0}
   howitzerRandomPositionRadius: 0.15
   speed: 4
+  useSpeedChange: 0
+  targetSpeed: 0
+  speedChangeTime: 0
+  speedChangeEase: 6
   curve: 0
   curveAdd: 0
   curveLockY: 0
@@ -320,7 +327,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttack01
+  - NormalAttackJellyFishGirl
   showHitEffect: 1
   hitEffectObject: {fileID: 1124335935880280, guid: b6d68723f7e26204d8f14d607141cc13,
     type: 3}
@@ -377,6 +384,7 @@ MonoBehaviour:
     type: 3}
   lifeTime: 5
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -393,6 +401,8 @@ MonoBehaviour:
   areaHeightMin: 0
   areaHeightMax: 0
   areaAngle: 0
+  checkRaycastWallInArea: 0
+  applyCollisionDamageInterval: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 3
@@ -406,8 +416,12 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0.8
+  howitzerRandomPositionRadius: 1.2
   speed: 4
+  useSpeedChange: 0
+  targetSpeed: 0
+  speedChangeTime: 0
+  speedChangeEase: 6
   curve: 0
   curveAdd: 0
   curveLockY: 0
@@ -441,7 +455,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttack01
+  - NormalAttackJellyFishGirl
   showHitEffect: 1
   hitEffectObject: {fileID: 1124335935880280, guid: b6d68723f7e26204d8f14d607141cc13,
     type: 3}

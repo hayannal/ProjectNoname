@@ -19,6 +19,7 @@ public class MeAttackIndicator : MecanimEventBase
 
 	public AttackIndicator.eIndicatorType indicatorType;
 	public GameObject attackIndicatorPrefab;
+	public float overrideLifeTime;
 	public Vector3 offset;
 	public Vector3 startDirection = Vector3.forward;
 	public float areaRadius = 1.0f;
@@ -36,7 +37,8 @@ public class MeAttackIndicator : MecanimEventBase
 	{
 		indicatorType = (AttackIndicator.eIndicatorType)EditorGUILayout.EnumPopup("Attack Indicator Type :", indicatorType);
 		attackIndicatorPrefab = (GameObject)EditorGUILayout.ObjectField("Object :", attackIndicatorPrefab, typeof(GameObject), false);
-		
+		overrideLifeTime = EditorGUILayout.FloatField("Override LifeTime :", overrideLifeTime);
+
 		if (indicatorType == AttackIndicator.eIndicatorType.Prefab)
 		{
 			areaRadius = EditorGUILayout.FloatField("Area Radius :", areaRadius);
@@ -144,11 +146,20 @@ public class MeAttackIndicator : MecanimEventBase
 			_attackIndicator.InitializeAttackIndicator(this);
 		}
 
-		_waitEnd = true;
+		if (overrideLifeTime == 0.0f)
+			_waitEnd = true;
+		else
+		{
+			_attackIndicator.SetLifeTime(overrideLifeTime);
+			_attackIndicator = null;
+		}
 	}
 
 	override public void OnRangeSignalEnd(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
+		if (_waitEnd == false)
+			return;
+
 		if (_attackIndicator != null)
 		{
 			_attackIndicator.FinalizeAttackIndicator();

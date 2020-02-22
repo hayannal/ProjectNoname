@@ -103,6 +103,35 @@ public class UIInstanceManager : MonoBehaviour
 	}
 	#endregion
 
+	#region Portal Gauge
+	Dictionary<GameObject, List<PortalGauge>> _dicPortalGaugeInstancePool = new Dictionary<GameObject, List<PortalGauge>>();
+	public PortalGauge GetCachedPortalGauge(GameObject prefab)
+	{
+		List<PortalGauge> listCachedPortalGauge = null;
+		if (_dicPortalGaugeInstancePool.ContainsKey(prefab))
+			listCachedPortalGauge = _dicPortalGaugeInstancePool[prefab];
+		else
+		{
+			listCachedPortalGauge = new List<PortalGauge>();
+			_dicPortalGaugeInstancePool.Add(prefab, listCachedPortalGauge);
+		}
+
+		for (int i = 0; i < listCachedPortalGauge.Count; ++i)
+		{
+			if (!listCachedPortalGauge[i].gameObject.activeSelf)
+			{
+				listCachedPortalGauge[i].gameObject.SetActive(true);
+				return listCachedPortalGauge[i];
+			}
+		}
+
+		GameObject newObject = Instantiate<GameObject>(prefab, GetCachedMonsterHPGaugeRootCanvas().cachedTransform);
+		PortalGauge portalGauge = newObject.GetComponent<PortalGauge>();
+		listCachedPortalGauge.Add(portalGauge);
+		return portalGauge;
+	}
+	#endregion
+
 	#region Object Pool
 	Dictionary<GameObject, List<GameObject>> _dicInstancePool = new Dictionary<GameObject, List<GameObject>>();
 	public GameObject GetCachedObject(GameObject prefab, Transform parentTransform)

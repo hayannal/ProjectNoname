@@ -34,6 +34,7 @@ public class BattleManager : MonoBehaviour
 	public GameObject[] dropObjectPrefabList;
 	public GameObject portalPrefab;
 	public GameObject portalMoveEffectPrefab;
+	public GameObject portalGaugePrefab;
 
 	// for level pack
 	public GameObject diagonalNwayGeneratorPrefab;

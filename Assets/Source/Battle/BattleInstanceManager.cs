@@ -931,6 +931,15 @@ public class BattleInstanceManager : MonoBehaviour
 		_listCachedPortal.Add(portal);
 		return portal;
 	}
+
+	List<Portal> _listOpenedPortal = new List<Portal>();
+	public void OnOpenedPortal(Portal portal)
+	{
+		for (int i = 0; i < _listOpenedPortal.Count; ++i)
+			_listOpenedPortal[i].ClosePortal();
+		_listOpenedPortal.Clear();
+		_listOpenedPortal.Add(portal);
+	}
 	#endregion
 
 	#region Sequential Monster

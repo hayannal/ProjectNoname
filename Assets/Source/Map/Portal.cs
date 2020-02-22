@@ -1,64 +1,104 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class Portal : MonoBehaviour
 {
 	public Collider portalTrigger;
-	public float portalOpenStartTime;
-	public float portalOpenEndTime;
-	public ParticleSystem _portalParticleSystem;
+	public float fillGaugeRadius = 2.0f;
+	public float fillGaugeTime = 3.0f;
+	public float portalOpenTime = 0.2f;
+	public Renderer portalPlaneRenderer;
+	public Color offColor;
+	public Color onColor;
 
 	public Vector3 targetPosition { get; set; }
 
 	void OnEnable()
 	{
 		portalTrigger.enabled = false;
+		_currentGaugeRatio = 0.0f;
+		_currentColor = _targetColor = offColor;
+		portalPlaneRenderer.material.SetColor(BattleInstanceManager.instance.GetShaderPropertyId("_TintColor"), offColor);
 	}
 
 	void OnDisable()
 	{
-		_portalEffectStarted = false;
+		DisablePortalGauge();
 	}
 
-	bool _portalEffectStarted = false;
-	float _portalEffectTime = 0.0f;
-	public void StartPortalEffect()
+	PortalGauge _portalGauge;
+	float _currentGaugeRatio = 0.0f;
+	void UpdateGauge()
 	{
-		_portalEffectStarted = true;
-		_portalEffectTime = 0.0f;
-		if (_portalParticleSystem != null)
-			_portalParticleSystem.Play(true);
-		_opened = false;
-	}
-
-	bool _opened = false;
-	void Update()
-	{
-		if (_portalEffectStarted == false)
+		if (BattleInstanceManager.instance.playerActor == null)
 			return;
 
-		_portalEffectTime += Time.deltaTime;
-		if (_opened)
+		Vector3 diff = BattleInstanceManager.instance.playerActor.cachedTransform.position - cachedTransform.position;
+		diff.y = 0.0f;
+		if (diff.sqrMagnitude > fillGaugeRadius * fillGaugeRadius)
 		{
-			if (_portalEffectTime > portalOpenEndTime)
+			if (_currentGaugeRatio == 0.0f)
+				return;
+			else if (_currentGaugeRatio < 1.0f)
 			{
-				_opened = false;
-				portalTrigger.enabled = false;
+				_currentGaugeRatio = 0.0f;
+				DisablePortalGauge();
+				return;
 			}
 		}
-		else
+
+		if (_currentGaugeRatio >= 1.0f)
+			return;
+
+		_currentGaugeRatio += Time.deltaTime / fillGaugeTime;
+
+		if (_portalGauge == null)
 		{
-			if (_portalEffectTime >= portalOpenStartTime && _portalEffectTime <= portalOpenEndTime)
-			{
-				_opened = true;
-				portalTrigger.enabled = true;
-			}
+			_portalGauge = UIInstanceManager.instance.GetCachedPortalGauge(BattleManager.instance.portalGaugePrefab);
+			_portalGauge.InitializeGauge(cachedTransform.position);
+		}
+		_portalGauge.OnChanged(_currentGaugeRatio);
+
+		if (_currentGaugeRatio >= 1.0f)
+		{
+			_currentGaugeRatio = 1.0f;
+			_targetColor = onColor;
+			BattleInstanceManager.instance.OnOpenedPortal(this);
+			DOTween.To(() => _currentColor, x => _currentColor = x, onColor, portalOpenTime).SetEase(Ease.OutQuad).OnComplete(() => portalTrigger.enabled = true);
+			DisablePortalGauge();
 		}
 	}
 
+	void DisablePortalGauge()
+	{
+		if (_portalGauge == null)
+			return;
+
+		_portalGauge.gameObject.SetActive(false);
+		_portalGauge = null;
+	}
+
+	Color _currentColor;
+	Color _targetColor;
+	void UpdateColor()
+	{
+		if (_currentColor == _targetColor)
+			return;
+
+		portalPlaneRenderer.material.SetColor(BattleInstanceManager.instance.GetShaderPropertyId("_TintColor"), _currentColor);
+	}
+
+	void Update()
+	{
+		UpdateGauge();
+		UpdateColor();
+	}
+
+	// 서있어도 이동해야하므로 Stay에서 처리. OnTriggerEnter 호출되는 프레임부터 같이 호출되기 때문에 Stay에서만 처리해도 괜찮다.
 	static int s_ignoreEnterFrameCount = 0;
-	void OnTriggerEnter(Collider other)
+	void OnTriggerStay(Collider other)
 	{
 		if (s_ignoreEnterFrameCount != 0 && Time.frameCount < s_ignoreEnterFrameCount)
 			return;
@@ -85,6 +125,16 @@ public class Portal : MonoBehaviour
 			TailAnimatorUpdater.UpdateAnimator(affectorProcessor.actor.cachedTransform, 5);
 
 		BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.portalMoveEffectPrefab, targetPosition, Quaternion.identity);
+
+		ClosePortal();
+	}
+
+	public void ClosePortal()
+	{
+		portalTrigger.enabled = false;
+		_currentGaugeRatio = 0.0f;
+		_targetColor = offColor;
+		DOTween.To(() => _currentColor, x => _currentColor = x, offColor, portalOpenTime).SetEase(Ease.OutQuad);
 	}
 
 	// Exit에선 딱히 안해도 Enter로만 처리 가능하다.
@@ -94,7 +144,7 @@ public class Portal : MonoBehaviour
 	//	Debug.Log("Portal Exit");
 	//}
 
-	
+
 
 	Transform _transform;
 	public Transform cachedTransform

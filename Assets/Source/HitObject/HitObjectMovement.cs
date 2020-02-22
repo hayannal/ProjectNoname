@@ -110,9 +110,33 @@ public class HitObjectMovement : MonoBehaviour {
 				{
 					howitzerTargetPosition += parentActor.cachedTransform.TransformVector(new Vector3(_signal.howitzerTargetPositionOffset.x, 0.0f, _signal.howitzerTargetPositionOffset.y));
 				}
-				if (_signal.howitzerRandomPositionRadius > 0.0f)
+				if (_signal.howitzerRandomPositionRadiusRange != Vector2.zero)
 				{
-					Vector2 randomRadius = Random.insideUnitCircle * _signal.howitzerRandomPositionRadius;
+					float attackRange = 0.0f;
+					if (parentActor.IsPlayerActor())
+					{
+						ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(parentActor.actorId);
+						if (actorTableData != null)
+							attackRange = actorTableData.attackRange;
+					}
+					Vector3 startPosition = cachedTransform.position;
+					startPosition.y = 0.0f;
+					Vector3 endPosition = howitzerTargetPosition;
+					endPosition.y = 0.0f;
+					float howitzerRandomPositionRadius = 0.0f;
+					if (attackRange == 0.0f)
+					{
+						// 무제한 사거리일때는 10미터를 기준으로 값을 적었다고 판단한다.
+						float distanceRatio = Vector3.Distance(startPosition, endPosition) / 10.0f;
+						howitzerRandomPositionRadius = _signal.howitzerRandomPositionRadiusRange.x + (_signal.howitzerRandomPositionRadiusRange.y - _signal.howitzerRandomPositionRadiusRange.x) * distanceRatio;
+					}
+					else
+					{
+						// 사거리가 있을땐 범위에서 뽑아내면 된다.
+						float distanceRatio = Vector3.Distance(startPosition, endPosition) / attackRange;
+						howitzerRandomPositionRadius = Mathf.Lerp(_signal.howitzerRandomPositionRadiusRange.x, _signal.howitzerRandomPositionRadiusRange.y, distanceRatio);
+					}
+					Vector2 randomRadius = Random.insideUnitCircle * howitzerRandomPositionRadius;
 					howitzerTargetPosition += new Vector3(randomRadius.x, 0.0f, randomRadius.y);
 				}
 				ComputeHowitzer();

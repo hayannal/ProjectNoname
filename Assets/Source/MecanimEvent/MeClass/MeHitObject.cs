@@ -53,7 +53,7 @@ public class MeHitObject : MecanimEventBase {
 	public float rightRandomAngle;
 	public float upDownRandomAngle;
 	public Vector2 howitzerTargetPositionOffset;
-	public float howitzerRandomPositionRadius;
+	public Vector2 howitzerRandomPositionRadiusRange;
 	public float speed;
 	public bool useSpeedChange;
 	public float targetSpeed;
@@ -220,7 +220,7 @@ public class MeHitObject : MecanimEventBase {
 			if (movementType == HitObjectMovement.eMovementType.Howitzer)
 			{
 				howitzerTargetPositionOffset = EditorGUILayout.Vector2Field("TargetPosition Offset :", howitzerTargetPositionOffset);
-				howitzerRandomPositionRadius = EditorGUILayout.FloatField("Random Raidus :", howitzerRandomPositionRadius);
+				howitzerRandomPositionRadiusRange = EditorGUILayout.Vector2Field("Random Radius Range :", howitzerRandomPositionRadiusRange);
 			}
 			else
 			{

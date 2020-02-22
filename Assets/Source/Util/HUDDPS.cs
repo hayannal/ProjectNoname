@@ -150,7 +150,7 @@ public class HUDDPS : MonoBehaviour
 			style = new GUIStyle(GUI.skin.label);
 			style.normal.textColor = Color.white;
 			style.alignment = TextAnchor.MiddleCenter;
-			style.fontSize = 24;
+			style.fontSize = 28;
 		}
 
 		GUI.color = Color.white;

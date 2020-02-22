@@ -198,10 +198,10 @@ public sealed class LocalPlayerController : BaseCharacterController
 			
 			if ((groundHitted || raycastHitted) && actionController.PlayActionByControl(Control.eControllerType.ScreenController, Control.eInputType.Tab))
 			{
-				actor.targetingProcessor.SetCustomTargetPosition(targetPosition);
 				_clearCustomTargetWaitCount = 10;
 				RotateTowards(targetPosition - cachedTransform.position);
-				CheckAttackRange(targetPosition, targetCollider);
+				targetPosition = CheckAttackRange(targetPosition, targetCollider);
+				actor.targetingProcessor.SetCustomTargetPosition(targetPosition);
 				if (GatePillar.instance != null && GatePillar.instance.gameObject.activeSelf)
 					++GatePillar.instance.raycastCount;
 			}
@@ -226,18 +226,23 @@ public sealed class LocalPlayerController : BaseCharacterController
 		}
 	}
 
-	void CheckAttackRange(Vector3 targetPosition, Collider targetCollider)
+	Vector3 CheckAttackRange(Vector3 targetPosition, Collider targetCollider)
 	{
 		if (_actorTableAttackRange == 0.0f)
-			return;
+			return targetPosition;
 
 		float targetRadius = 0.0f;
 		if (targetCollider != null) targetRadius = ColliderUtil.GetRadius(targetCollider);
+		if (targetRadius < 0.0f) targetRadius = 0.0f;
 
 		Vector3 diff = targetPosition - actor.cachedTransform.position;
 		diff.y = 0.0f;
 		if (diff.sqrMagnitude - (targetRadius * targetRadius) > _actorTableAttackRange * _actorTableAttackRange)
+		{
 			RangeIndicator.instance.ShowIndicator(_actorTableAttackRange, true, cachedTransform, true);
+			targetPosition = actor.cachedTransform.position + diff.normalized * _actorTableAttackRange;
+		}
+		return targetPosition;
 	}
 
 	bool IsAutoPlay()

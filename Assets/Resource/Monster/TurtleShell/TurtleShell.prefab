@@ -69,7 +69,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9218086327864121245}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 5
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 0
@@ -196,16 +196,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16c7fbc98e43a374b85a6a2909d657eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startDelayRange: {x: 0.25, y: 0.75}
-  startState: 0
-  useStateList: 010001000100
+  startDelayRange: {x: 1, y: 1}
+  startState: 5
+  useStateList: 000000000101
   moveTimeRange: {x: 3, y: 3}
   refreshTickTimeRange: {x: 3, y: 3}
   desireDistance: 5
-  straightMoveTimeRange: {x: 0, y: 0}
-  straightRefreshTickTimeRange: {x: 0, y: 0}
-  straightRefreshTickWaitTime: 0
-  straightMoveType: 0
+  straightMoveTimeRange: {x: 1, y: 1}
+  straightRefreshTickTimeRange: {x: 1, y: 1}
+  straightMoveType: 1
   customActionPlayType: 1
   customActionName: 
   customActionFadeDuration: 0.05
@@ -215,7 +214,7 @@ MonoBehaviour:
   attackActionName: Attack
   attackActionFadeDuration: 0.44
   lookAtTargetBeforeAttack: 1
-  attackDelayTimeRange: {x: 2, y: 2.5}
+  attackDelayTimeRange: {x: 1, y: 1}
   useAnimatorParameterForAI: 0
   listAnimatorParameterForAI: 
 --- !u!1001 &500062358985617991

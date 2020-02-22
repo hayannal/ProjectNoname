@@ -262,7 +262,7 @@ public class HitObjectMovement : MonoBehaviour {
 				_forward = cachedTransform.forward;
 				break;
 			case eMovementType.Turn:
-				_rigidbody.MoveRotation(_rigidbody.rotation * Quaternion.Euler(0.0f, _signal.accelTurn * Time.deltaTime, 0.0f));
+				_rigidbody.MoveRotation(_rigidbody.rotation * Quaternion.Euler(0.0f, _signal.accelTurn * Time.fixedDeltaTime, 0.0f));
 				cachedTransform.rotation = _rigidbody.rotation;
 				//cachedTransform.Rotate(0.0f, _signal.accelTurn * Time.deltaTime, 0.0f, Space.Self);
 				_velocity = _rigidbody.velocity = cachedTransform.forward * _speed;

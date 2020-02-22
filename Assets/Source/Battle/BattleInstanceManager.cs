@@ -932,11 +932,18 @@ public class BattleInstanceManager : MonoBehaviour
 		return portal;
 	}
 
+	// OnClosedPortal 이벤트를 받지 않기에 현재 오픈되어있는거와 완벽하게 일치하진 않지만(맵 넘어갈땐 Opened에 남아있는다.)
+	// 저 리스트가 필요한게 아니라서 느슨하게 짜둔다.
+	// 현재 오픈하려는 portal이면 ClosePortal호출하지 않는거로도 충분하다.
 	List<Portal> _listOpenedPortal = new List<Portal>();
 	public void OnOpenedPortal(Portal portal)
 	{
 		for (int i = 0; i < _listOpenedPortal.Count; ++i)
+		{
+			if (_listOpenedPortal[i] == portal)
+				continue;
 			_listOpenedPortal[i].ClosePortal();
+		}
 		_listOpenedPortal.Clear();
 		_listOpenedPortal.Add(portal);
 	}

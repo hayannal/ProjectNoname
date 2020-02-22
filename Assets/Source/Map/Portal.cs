@@ -133,6 +133,7 @@ public class Portal : MonoBehaviour
 	{
 		portalTrigger.enabled = false;
 		_currentGaugeRatio = 0.0f;
+		DisablePortalGauge();
 		_targetColor = offColor;
 		DOTween.To(() => _currentColor, x => _currentColor = x, offColor, portalOpenTime).SetEase(Ease.OutQuad);
 	}

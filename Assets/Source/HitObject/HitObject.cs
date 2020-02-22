@@ -887,7 +887,7 @@ public class HitObject : MonoBehaviour
 				}
 				break;
 		}
-		Team.SetTeamLayer(gameObject, teamLayerType);
+		Team.SetTeamLayer(gameObject, teamLayerType, true, true);
 
 		if (_rigidbody == null) _rigidbody = GetComponent<Rigidbody>();
 		if (_collider == null) _collider = GetComponentInChildren<Collider>();

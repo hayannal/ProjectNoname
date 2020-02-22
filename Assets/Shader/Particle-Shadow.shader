@@ -9,7 +9,7 @@ Shader "FrameworkNG/Particle/Shadow"
 
 		[Enum(UnityEngine.Rendering.BlendMode)] _SrcBlend ("SrcBlend Mode", Float) = 1
 		[Enum(UnityEngine.Rendering.BlendMode)] _DstBlend ("DstBlend Mode", Float) = 1
-		//[Enum(UnityEngine.Rendering.CompareFunction)] _ZTestMode("ZTest", Float) = 4
+		[Enum(UnityEngine.Rendering.CompareFunction)] _ZTest("ZTest Mode", Float) = 4
 		[Enum(UnityEngine.Rendering.CullMode)] _Cull("Cull Mode", Float) = 0
 		_ShadowCutoff("Shadow Cutoff", Range(0, 1)) = 0.05
 		[KeywordEnum(A,R)] _Shadow_Channel("Shadow Channel", Float) = 0
@@ -25,7 +25,7 @@ Shader "FrameworkNG/Particle/Shadow"
 		Pass
 		{
 			Blend [_SrcBlend] [_DstBlend]
-			//ZTest [_ZTestMode]
+			ZTest [_ZTest]
 			Cull [_Cull]
 			Lighting Off
 			ZWrite Off

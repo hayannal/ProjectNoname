@@ -519,7 +519,19 @@ public class HitObject : MonoBehaviour
 			// check wall
 			if (meHit.checkRaycastWallInArea)
 			{
-				if (CheckRaycastWall(areaPosition, areaForward, diff.magnitude))
+				Vector3 attackerPosition = areaPosition;
+				Vector3 attackerForward = areaForward;
+				float length = diff.magnitude;
+				Actor attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(statusForHitObject.actorInstanceId);
+				if (attackerActor != null)
+				{
+					attackerPosition = attackerActor.cachedTransform.position;
+					attackerForward = attackerActor.cachedTransform.forward;
+					Vector3 attackerPositionDiff = BattleInstanceManager.instance.GetTransformFromCollider(col).position - attackerPosition;
+					attackerPositionDiff.y = 0.0f;
+					length = attackerPositionDiff.magnitude;
+				}
+				if (CheckRaycastWall(attackerPosition, attackerForward, length))
 					continue;
 			}
 

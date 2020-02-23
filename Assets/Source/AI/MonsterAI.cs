@@ -337,7 +337,7 @@ public class MonsterAI : MonoBehaviour
 		{
 			_moveRemainTime = Random.Range(straightMoveTimeRange.x, straightMoveTimeRange.y);
 			_moveRefreshRemainTime = Random.Range(straightRefreshTickTimeRange.x, straightRefreshTickTimeRange.y);
-			CaleStraightMovePosition();
+			CalcStraightMovePosition();
 			pathFinderController.diableAnimate = true;
 			actor.actionController.PlayActionByActionName("Move");
 		}
@@ -355,7 +355,7 @@ public class MonsterAI : MonoBehaviour
 			if (_moveRefreshRemainTime <= 0.0f)
 			{
 				_moveRefreshRemainTime += Random.Range(straightRefreshTickTimeRange.x, straightRefreshTickTimeRange.y);
-				CaleStraightMovePosition();
+				CalcStraightMovePosition();
 			}
 		}
 
@@ -377,11 +377,10 @@ public class MonsterAI : MonoBehaviour
 	}
 
 	Vector3 _straightMoveDirection;
-	void CaleStraightMovePosition()
+	void CalcStraightMovePosition()
 	{
 		Vector3 randomDirection = Vector3.zero;
 		float distance = actor.baseCharacterController.speed * straightRefreshTickTimeRange.x;
-		int tryCount = 0;
 		int tryBreakCount = 0;
 		while (true)
 		{
@@ -413,22 +412,20 @@ public class MonsterAI : MonoBehaviour
 					break;
 			}
 
-			Vector3 desirePosition = actor.cachedTransform.position + randomDirection * distance;
+			Vector3 desirePosition = actor.cachedTransform.position + randomDirection;
 			desirePosition.y = 0.0f;
 
 			NavMeshHit hit;
 			if (NavMesh.SamplePosition(desirePosition, out hit, 1.0f, NavMesh.AllAreas))
 			{
-				_straightMoveDirection = randomDirection.normalized;
-				return;
-			}
-
-			// exception handling
-			++tryCount;
-			if (tryCount > 20)
-			{
-				tryCount = 0;
-				distance += 1.0f;
+				// 바로앞에 Wall있는데 가는건 좀 이상하다. 이때는 패스다.
+				Vector3 startPosition = actor.cachedTransform.position + randomDirection.normalized * actorRadius * 0.9f;
+				Vector3 endPosition = startPosition + randomDirection;
+				if (TargetingProcessor.CheckWall(startPosition, endPosition, 0.1f) == false)
+				{
+					_straightMoveDirection = randomDirection.normalized;
+					return;
+				}
 			}
 
 			++tryBreakCount;

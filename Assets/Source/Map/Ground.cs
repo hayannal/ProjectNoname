@@ -43,6 +43,21 @@ public class Ground : MonoBehaviour
 		return _bounds.Contains(position);
 	}
 
+	public Vector3 SamplePositionInQuadBound(Vector3 position)
+	{
+		if (IsInQuadBound(position))
+			return position;
+		if (position.x < _bounds.min.x)
+			position.x = _bounds.min.x;
+		if (position.x > _bounds.max.x)
+			position.x = _bounds.max.x;
+		if (position.z < _bounds.min.z)
+			position.z = _bounds.min.z;
+		if (position.z > _bounds.max.z)
+			position.z = _bounds.max.z;
+		return position;
+	}
+
 	#region Runtime NavMesh
 	Dictionary<int, NavMeshSurface> _dicNavMeshSurface = null;
 	public void BakeNavMesh(int agentTypeID)

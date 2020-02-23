@@ -26,6 +26,7 @@ public class BattleModeProcessorBase
 		BattleInstanceManager.instance.FinalizeAllPositionBuffAffector(true);
 		BattleInstanceManager.instance.DisableAllHitObjectMoving();
 		BattleInstanceManager.instance.FinalizeAllHitObject();
+		BattleInstanceManager.instance.FinalizeAllSummonObject();
 	}
 
 	public void OnLoadedMap()

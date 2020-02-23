@@ -1035,6 +1035,29 @@ public class BattleInstanceManager : MonoBehaviour
 	}
 	#endregion
 
+	#region Summon Object
+	List<GameObject> _listSummonObject = new List<GameObject>();
+	public void OnInitializeSummonObject(GameObject summonObject)
+	{
+		if (_listSummonObject.Contains(summonObject))
+			return;
+		_listSummonObject.Add(summonObject);
+	}
+
+	public void FinalizeAllSummonObject()
+	{
+		for (int i = 0; i < _listSummonObject.Count; ++i)
+		{
+			if (_listSummonObject[i] == null)
+				continue;
+			if (_listSummonObject[i].gameObject.activeSelf == false)
+				continue;
+			_listSummonObject[i].gameObject.SetActive(false);
+		}
+		_listSummonObject.Clear();
+	}
+	#endregion
+
 
 
 

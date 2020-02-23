@@ -29,11 +29,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0.28
   EndTime: 0.77
-  monsterPrefab: {fileID: 3616744984291118293, guid: 37f9b1f89938c204b8dcf4ecc0a2b8ed,
+  summonPrefab: {fileID: 3616744984291118293, guid: 37f9b1f89938c204b8dcf4ecc0a2b8ed,
     type: 3}
+  summonMonster: 1
   createPositionType: 1
   offset: {x: -2, y: 0, z: 0}
   direction: {x: 0, y: 0, z: 1}
+  checkNavPosition: 1
+  calcCreatePositionInEndSignal: 0
+  disableOnMapChanged: 0
   castingLoopEffectPrefab: {fileID: 3517638324648547652, guid: 251d6f804aa864041a1ff5bfd99b811b,
     type: 3}
   summonEffectPrefab: {fileID: 1646713447070204173, guid: 0f34b0cfc73429041919ae60abb1a0b8,
@@ -52,11 +56,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0.28
   EndTime: 0.77
-  monsterPrefab: {fileID: 5076220618283419467, guid: 5d1368d02c3dae24183dff8220c4e6fe,
+  summonPrefab: {fileID: 5076220618283419467, guid: 5d1368d02c3dae24183dff8220c4e6fe,
     type: 3}
+  summonMonster: 1
   createPositionType: 1
   offset: {x: 0, y: 0, z: 2}
   direction: {x: 0, y: 0, z: 1}
+  checkNavPosition: 1
+  calcCreatePositionInEndSignal: 0
+  disableOnMapChanged: 0
   castingLoopEffectPrefab: {fileID: 3517638324648547652, guid: 251d6f804aa864041a1ff5bfd99b811b,
     type: 3}
   summonEffectPrefab: {fileID: 1646713447070204173, guid: 0f34b0cfc73429041919ae60abb1a0b8,
@@ -95,6 +103,7 @@ MonoBehaviour:
     type: 3}
   lifeTime: 5
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -126,7 +135,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 4
   useSpeedChange: 0
   targetSpeed: 0
@@ -221,6 +230,7 @@ MonoBehaviour:
     type: 3}
   lifeTime: 5
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -252,7 +262,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 4
   useSpeedChange: 0
   targetSpeed: 0
@@ -320,6 +330,7 @@ MonoBehaviour:
     type: 3}
   lifeTime: 5
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -351,7 +362,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 4
   useSpeedChange: 0
   targetSpeed: 0
@@ -414,11 +425,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0.28
   EndTime: 0.77
-  monsterPrefab: {fileID: 5076220618283419467, guid: 5d1368d02c3dae24183dff8220c4e6fe,
+  summonPrefab: {fileID: 5076220618283419467, guid: 5d1368d02c3dae24183dff8220c4e6fe,
     type: 3}
+  summonMonster: 1
   createPositionType: 1
   offset: {x: -2, y: 0, z: 0}
   direction: {x: 0, y: 0, z: 1}
+  checkNavPosition: 1
+  calcCreatePositionInEndSignal: 0
+  disableOnMapChanged: 0
   castingLoopEffectPrefab: {fileID: 3517638324648547652, guid: 251d6f804aa864041a1ff5bfd99b811b,
     type: 3}
   summonEffectPrefab: {fileID: 1646713447070204173, guid: 0f34b0cfc73429041919ae60abb1a0b8,
@@ -437,11 +452,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0.28
   EndTime: 0.77
-  monsterPrefab: {fileID: 3616744984291118293, guid: 37f9b1f89938c204b8dcf4ecc0a2b8ed,
+  summonPrefab: {fileID: 3616744984291118293, guid: 37f9b1f89938c204b8dcf4ecc0a2b8ed,
     type: 3}
+  summonMonster: 1
   createPositionType: 1
   offset: {x: 2, y: 0, z: 0}
   direction: {x: 0, y: 0, z: 1}
+  checkNavPosition: 1
+  calcCreatePositionInEndSignal: 0
+  disableOnMapChanged: 0
   castingLoopEffectPrefab: {fileID: 3517638324648547652, guid: 251d6f804aa864041a1ff5bfd99b811b,
     type: 3}
   summonEffectPrefab: {fileID: 1646713447070204173, guid: 0f34b0cfc73429041919ae60abb1a0b8,
@@ -542,11 +561,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0.28
   EndTime: 0.77
-  monsterPrefab: {fileID: 5076220618283419467, guid: 5d1368d02c3dae24183dff8220c4e6fe,
+  summonPrefab: {fileID: 5076220618283419467, guid: 5d1368d02c3dae24183dff8220c4e6fe,
     type: 3}
+  summonMonster: 1
   createPositionType: 1
   offset: {x: 2, y: 0, z: 0}
   direction: {x: 0, y: 0, z: 1}
+  checkNavPosition: 1
+  calcCreatePositionInEndSignal: 0
+  disableOnMapChanged: 0
   castingLoopEffectPrefab: {fileID: 3517638324648547652, guid: 251d6f804aa864041a1ff5bfd99b811b,
     type: 3}
   summonEffectPrefab: {fileID: 1646713447070204173, guid: 0f34b0cfc73429041919ae60abb1a0b8,
@@ -565,11 +588,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0.28
   EndTime: 0.77
-  monsterPrefab: {fileID: 3616744984291118293, guid: 37f9b1f89938c204b8dcf4ecc0a2b8ed,
+  summonPrefab: {fileID: 3616744984291118293, guid: 37f9b1f89938c204b8dcf4ecc0a2b8ed,
     type: 3}
+  summonMonster: 1
   createPositionType: 1
   offset: {x: 1, y: 0, z: 2}
   direction: {x: 0, y: 0, z: 1}
+  checkNavPosition: 1
+  calcCreatePositionInEndSignal: 0
+  disableOnMapChanged: 0
   castingLoopEffectPrefab: {fileID: 3517638324648547652, guid: 251d6f804aa864041a1ff5bfd99b811b,
     type: 3}
   summonEffectPrefab: {fileID: 1646713447070204173, guid: 0f34b0cfc73429041919ae60abb1a0b8,
@@ -632,11 +659,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0.28
   EndTime: 0.77
-  monsterPrefab: {fileID: 3616744984291118293, guid: 37f9b1f89938c204b8dcf4ecc0a2b8ed,
+  summonPrefab: {fileID: 3616744984291118293, guid: 37f9b1f89938c204b8dcf4ecc0a2b8ed,
     type: 3}
+  summonMonster: 1
   createPositionType: 1
   offset: {x: 0, y: 0, z: 2}
   direction: {x: 0, y: 0, z: 1}
+  checkNavPosition: 1
+  calcCreatePositionInEndSignal: 0
+  disableOnMapChanged: 0
   castingLoopEffectPrefab: {fileID: 3517638324648547652, guid: 251d6f804aa864041a1ff5bfd99b811b,
     type: 3}
   summonEffectPrefab: {fileID: 1646713447070204173, guid: 0f34b0cfc73429041919ae60abb1a0b8,
@@ -660,6 +691,7 @@ MonoBehaviour:
     type: 3}
   lifeTime: 5
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -691,7 +723,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 4
   useSpeedChange: 0
   targetSpeed: 0
@@ -784,11 +816,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0.28
   EndTime: 0.77
-  monsterPrefab: {fileID: 5076220618283419467, guid: 5d1368d02c3dae24183dff8220c4e6fe,
+  summonPrefab: {fileID: 5076220618283419467, guid: 5d1368d02c3dae24183dff8220c4e6fe,
     type: 3}
+  summonMonster: 1
   createPositionType: 1
   offset: {x: 0, y: 0, z: 2}
   direction: {x: 0, y: 0, z: 1}
+  checkNavPosition: 1
+  calcCreatePositionInEndSignal: 0
+  disableOnMapChanged: 0
   castingLoopEffectPrefab: {fileID: 3517638324648547652, guid: 251d6f804aa864041a1ff5bfd99b811b,
     type: 3}
   summonEffectPrefab: {fileID: 1646713447070204173, guid: 0f34b0cfc73429041919ae60abb1a0b8,
@@ -807,11 +843,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0.28
   EndTime: 0.77
-  monsterPrefab: {fileID: 3616744984291118293, guid: 37f9b1f89938c204b8dcf4ecc0a2b8ed,
+  summonPrefab: {fileID: 3616744984291118293, guid: 37f9b1f89938c204b8dcf4ecc0a2b8ed,
     type: 3}
+  summonMonster: 1
   createPositionType: 1
   offset: {x: -1, y: 0, z: 2}
   direction: {x: 0, y: 0, z: 1}
+  checkNavPosition: 1
+  calcCreatePositionInEndSignal: 0
+  disableOnMapChanged: 0
   castingLoopEffectPrefab: {fileID: 3517638324648547652, guid: 251d6f804aa864041a1ff5bfd99b811b,
     type: 3}
   summonEffectPrefab: {fileID: 1646713447070204173, guid: 0f34b0cfc73429041919ae60abb1a0b8,
@@ -845,11 +885,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0.28
   EndTime: 0.77
-  monsterPrefab: {fileID: 3616744984291118293, guid: 37f9b1f89938c204b8dcf4ecc0a2b8ed,
+  summonPrefab: {fileID: 3616744984291118293, guid: 37f9b1f89938c204b8dcf4ecc0a2b8ed,
     type: 3}
+  summonMonster: 1
   createPositionType: 1
   offset: {x: 0, y: 0, z: 2}
   direction: {x: 0, y: 0, z: 1}
+  checkNavPosition: 1
+  calcCreatePositionInEndSignal: 0
+  disableOnMapChanged: 0
   castingLoopEffectPrefab: {fileID: 3517638324648547652, guid: 251d6f804aa864041a1ff5bfd99b811b,
     type: 3}
   summonEffectPrefab: {fileID: 1646713447070204173, guid: 0f34b0cfc73429041919ae60abb1a0b8,
@@ -1073,11 +1117,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0.28
   EndTime: 0.77
-  monsterPrefab: {fileID: 9197338620315243461, guid: 6d7e330a2a1d3df49b37a021c8fadf6f,
+  summonPrefab: {fileID: 9197338620315243461, guid: 6d7e330a2a1d3df49b37a021c8fadf6f,
     type: 3}
+  summonMonster: 1
   createPositionType: 1
   offset: {x: 0, y: 0, z: 2}
   direction: {x: 0, y: 0, z: 1}
+  checkNavPosition: 1
+  calcCreatePositionInEndSignal: 0
+  disableOnMapChanged: 0
   castingLoopEffectPrefab: {fileID: 3517638324648547652, guid: 251d6f804aa864041a1ff5bfd99b811b,
     type: 3}
   summonEffectPrefab: {fileID: 1646713447070204173, guid: 0f34b0cfc73429041919ae60abb1a0b8,
@@ -1096,11 +1144,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0.28
   EndTime: 0.77
-  monsterPrefab: {fileID: 1297748105637138170, guid: 9e0a8e7f9aaf1674e9d609cee467eb26,
+  summonPrefab: {fileID: 1297748105637138170, guid: 9e0a8e7f9aaf1674e9d609cee467eb26,
     type: 3}
+  summonMonster: 1
   createPositionType: 1
   offset: {x: 2, y: 0, z: 0}
   direction: {x: 0, y: 0, z: 1}
+  checkNavPosition: 1
+  calcCreatePositionInEndSignal: 0
+  disableOnMapChanged: 0
   castingLoopEffectPrefab: {fileID: 3517638324648547652, guid: 251d6f804aa864041a1ff5bfd99b811b,
     type: 3}
   summonEffectPrefab: {fileID: 1646713447070204173, guid: 0f34b0cfc73429041919ae60abb1a0b8,
@@ -1246,6 +1298,7 @@ MonoBehaviour:
     type: 3}
   lifeTime: 5
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -1277,7 +1330,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 4.5
   useSpeedChange: 0
   targetSpeed: 0
@@ -1355,11 +1408,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0.28
   EndTime: 0.77
-  monsterPrefab: {fileID: 1297748105637138170, guid: 9e0a8e7f9aaf1674e9d609cee467eb26,
+  summonPrefab: {fileID: 1297748105637138170, guid: 9e0a8e7f9aaf1674e9d609cee467eb26,
     type: 3}
+  summonMonster: 1
   createPositionType: 1
   offset: {x: -1, y: 0, z: 2}
   direction: {x: 0, y: 0, z: 1}
+  checkNavPosition: 1
+  calcCreatePositionInEndSignal: 0
+  disableOnMapChanged: 0
   castingLoopEffectPrefab: {fileID: 3517638324648547652, guid: 251d6f804aa864041a1ff5bfd99b811b,
     type: 3}
   summonEffectPrefab: {fileID: 1646713447070204173, guid: 0f34b0cfc73429041919ae60abb1a0b8,
@@ -1697,11 +1754,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0.28
   EndTime: 0.77
-  monsterPrefab: {fileID: 5076220618283419467, guid: 5d1368d02c3dae24183dff8220c4e6fe,
+  summonPrefab: {fileID: 5076220618283419467, guid: 5d1368d02c3dae24183dff8220c4e6fe,
     type: 3}
+  summonMonster: 1
   createPositionType: 1
   offset: {x: -1, y: 0, z: 2}
   direction: {x: 0, y: 0, z: 1}
+  checkNavPosition: 1
+  calcCreatePositionInEndSignal: 0
+  disableOnMapChanged: 0
   castingLoopEffectPrefab: {fileID: 3517638324648547652, guid: 251d6f804aa864041a1ff5bfd99b811b,
     type: 3}
   summonEffectPrefab: {fileID: 1646713447070204173, guid: 0f34b0cfc73429041919ae60abb1a0b8,
@@ -1720,11 +1781,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0.28
   EndTime: 0.77
-  monsterPrefab: {fileID: 1297748105637138170, guid: 9e0a8e7f9aaf1674e9d609cee467eb26,
+  summonPrefab: {fileID: 1297748105637138170, guid: 9e0a8e7f9aaf1674e9d609cee467eb26,
     type: 3}
+  summonMonster: 1
   createPositionType: 1
   offset: {x: 1, y: 0, z: 2}
   direction: {x: 0, y: 0, z: 1}
+  checkNavPosition: 1
+  calcCreatePositionInEndSignal: 0
+  disableOnMapChanged: 0
   castingLoopEffectPrefab: {fileID: 3517638324648547652, guid: 251d6f804aa864041a1ff5bfd99b811b,
     type: 3}
   summonEffectPrefab: {fileID: 1646713447070204173, guid: 0f34b0cfc73429041919ae60abb1a0b8,
@@ -1743,11 +1808,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0.28
   EndTime: 0.77
-  monsterPrefab: {fileID: 1297748105637138170, guid: 9e0a8e7f9aaf1674e9d609cee467eb26,
+  summonPrefab: {fileID: 1297748105637138170, guid: 9e0a8e7f9aaf1674e9d609cee467eb26,
     type: 3}
+  summonMonster: 1
   createPositionType: 1
   offset: {x: 0, y: 0, z: 2}
   direction: {x: 0, y: 0, z: 1}
+  checkNavPosition: 1
+  calcCreatePositionInEndSignal: 0
+  disableOnMapChanged: 0
   castingLoopEffectPrefab: {fileID: 3517638324648547652, guid: 251d6f804aa864041a1ff5bfd99b811b,
     type: 3}
   summonEffectPrefab: {fileID: 1646713447070204173, guid: 0f34b0cfc73429041919ae60abb1a0b8,
@@ -1836,11 +1905,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0.28
   EndTime: 0.77
-  monsterPrefab: {fileID: 1297748105637138170, guid: 9e0a8e7f9aaf1674e9d609cee467eb26,
+  summonPrefab: {fileID: 1297748105637138170, guid: 9e0a8e7f9aaf1674e9d609cee467eb26,
     type: 3}
+  summonMonster: 1
   createPositionType: 1
   offset: {x: 0, y: 0, z: 2}
   direction: {x: 0, y: 0, z: 1}
+  checkNavPosition: 1
+  calcCreatePositionInEndSignal: 0
+  disableOnMapChanged: 0
   castingLoopEffectPrefab: {fileID: 3517638324648547652, guid: 251d6f804aa864041a1ff5bfd99b811b,
     type: 3}
   summonEffectPrefab: {fileID: 1646713447070204173, guid: 0f34b0cfc73429041919ae60abb1a0b8,
@@ -1864,6 +1937,7 @@ MonoBehaviour:
     type: 3}
   lifeTime: 5
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -1895,7 +1969,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 4
   useSpeedChange: 0
   targetSpeed: 0
@@ -1990,6 +2064,7 @@ MonoBehaviour:
     type: 3}
   lifeTime: 5
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -2021,7 +2096,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 4
   useSpeedChange: 0
   targetSpeed: 0
@@ -2112,11 +2187,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0.28
   EndTime: 0.77
-  monsterPrefab: {fileID: 5076220618283419467, guid: 5d1368d02c3dae24183dff8220c4e6fe,
+  summonPrefab: {fileID: 5076220618283419467, guid: 5d1368d02c3dae24183dff8220c4e6fe,
     type: 3}
+  summonMonster: 1
   createPositionType: 1
   offset: {x: 1, y: 0, z: 2}
   direction: {x: 0, y: 0, z: 1}
+  checkNavPosition: 1
+  calcCreatePositionInEndSignal: 0
+  disableOnMapChanged: 0
   castingLoopEffectPrefab: {fileID: 3517638324648547652, guid: 251d6f804aa864041a1ff5bfd99b811b,
     type: 3}
   summonEffectPrefab: {fileID: 1646713447070204173, guid: 0f34b0cfc73429041919ae60abb1a0b8,
@@ -2140,6 +2219,7 @@ MonoBehaviour:
     type: 3}
   lifeTime: 5
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -2171,7 +2251,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 4
   useSpeedChange: 0
   targetSpeed: 0
@@ -2234,11 +2314,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0.28
   EndTime: 0.77
-  monsterPrefab: {fileID: 1297748105637138170, guid: 9e0a8e7f9aaf1674e9d609cee467eb26,
+  summonPrefab: {fileID: 1297748105637138170, guid: 9e0a8e7f9aaf1674e9d609cee467eb26,
     type: 3}
+  summonMonster: 1
   createPositionType: 1
   offset: {x: -2, y: 0, z: 0}
   direction: {x: 0, y: 0, z: 1}
+  checkNavPosition: 1
+  calcCreatePositionInEndSignal: 0
+  disableOnMapChanged: 0
   castingLoopEffectPrefab: {fileID: 3517638324648547652, guid: 251d6f804aa864041a1ff5bfd99b811b,
     type: 3}
   summonEffectPrefab: {fileID: 1646713447070204173, guid: 0f34b0cfc73429041919ae60abb1a0b8,
@@ -2262,6 +2346,7 @@ MonoBehaviour:
     type: 3}
   lifeTime: 5
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -2293,7 +2378,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 4
   useSpeedChange: 0
   targetSpeed: 0
@@ -2419,6 +2504,7 @@ MonoBehaviour:
     type: 3}
   lifeTime: 5
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -2450,7 +2536,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 4
   useSpeedChange: 0
   targetSpeed: 0

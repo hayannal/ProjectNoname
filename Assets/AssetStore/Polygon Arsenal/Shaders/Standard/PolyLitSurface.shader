@@ -5,11 +5,13 @@ Shader "PolygonArsenal/PolyLitSurface"
 	Properties
 	{
 		_GlowIntensity("Glow Intensity", Range(0, 5)) = 1
+		[Enum(UnityEngine.Rendering.CompareFunction)] _ZTest ("ZTest Mode", Float) = 4
 	}
 
 	SubShader
 	{
 		Tags{ "RenderType" = "Opaque"  "Queue" = "Geometry+0" "IsEmissive" = "true"  }
+		ZTest [_ZTest]
 		Cull Back
 		CGPROGRAM
 		#pragma target 3.0

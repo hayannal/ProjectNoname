@@ -4,7 +4,7 @@ Shader "PolygonArsenal/PolyLitSurface"
 {
 	Properties
 	{
-		_GlowIntensity("Glow Intensity", Range(1, 5)) = 1
+		_GlowIntensity("Glow Intensity", Range(0, 5)) = 1
 	}
 
 	SubShader

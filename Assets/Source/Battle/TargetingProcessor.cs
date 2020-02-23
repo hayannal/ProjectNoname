@@ -198,7 +198,7 @@ public class TargetingProcessor : MonoBehaviour {
 	}
 
 	static RaycastHit[] s_raycastHitList = null;
-	static bool CheckWall(Vector3 position, Vector3 targetPosition, float radius)
+	public static bool CheckWall(Vector3 position, Vector3 targetPosition, float radius)
 	{
 		// temp - check wall
 		if (s_raycastHitList == null)

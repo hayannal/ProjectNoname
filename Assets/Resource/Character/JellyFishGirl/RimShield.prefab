@@ -5123,8 +5123,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4084802799172039609}
-  - component: {fileID: 1642016916}
   - component: {fileID: 1642016917}
+  - component: {fileID: 1642016916}
+  - component: {fileID: 8289498930156202412}
   m_Layer: 0
   m_Name: RimShield
   m_TagString: Untagged
@@ -5147,18 +5148,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1642016916
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5499179704966785161}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 20c586151f86924468ad4b9f891f6ba6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1642016917
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5289,6 +5278,41 @@ MonoBehaviour:
   optionalRotationMode: 0
   optionalScrambleMode: 0
   optionalString: 
+--- !u!114 &1642016916
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5499179704966785161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20c586151f86924468ad4b9f891f6ba6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8289498930156202412
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5499179704966785161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da6612240c354cb4abb66363c62ab797, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startDelay: 0
+  numberOfShakes: 3
+  shakeAmountMin: {x: 0, y: 0, z: 0}
+  shakeAmountMax: {x: 0.3, y: 0.3, z: 0.3}
+  rotationAmountMin: {x: 0, y: 0, z: 0.01}
+  rotationAmountMax: {x: 0, y: 0, z: 0.08}
+  distanceMin: 0.01
+  distanceMax: 0.08
+  speedMin: 15
+  speedMax: 20
+  decay: 0.75
 --- !u!65 &2719261529291645496
 BoxCollider:
   m_ObjectHideFlags: 0

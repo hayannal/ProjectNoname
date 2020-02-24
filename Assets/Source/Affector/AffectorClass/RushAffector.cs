@@ -10,9 +10,11 @@ public class RushAffector : AffectorBase
 		Target,
 		TargetPosition,
 		RandomPosition,
+		TargetWithDistance,	// 0을 기본베이스로 일정거리 달리면 끝나는 형태다.
 	}
 
 	float _endTime;
+	float _checkBetweenDistance;
 
 	Collider _targetCollider;
 	Vector3 _startPosition;
@@ -67,6 +69,9 @@ public class RushAffector : AffectorBase
 				diff = _targetPosition - _actor.cachedTransform.position;
 				//_actor.baseCharacterController.movement.rotation = Quaternion.LookRotation(diff);
 				break;
+			case eRushType.TargetWithDistance:
+				diff = _targetPosition - _actor.cachedTransform.position;
+				break;
 		}
 
 		_actorRadius = ColliderUtil.GetRadius(_actor.GetCollider());
@@ -77,6 +82,7 @@ public class RushAffector : AffectorBase
 		{
 			case eRushType.TargetPosition:
 			case eRushType.RandomPosition:
+			case eRushType.TargetWithDistance:
 				float rushDistance = diff.magnitude;
 				if (rushDistance + _affectorValueLevelTableData.fValue3 > 0.0f)
 					rushDistance += _affectorValueLevelTableData.fValue3;
@@ -85,6 +91,11 @@ public class RushAffector : AffectorBase
 					rushTime = _minimunRushTime;
 				break;
 		}
+
+		if (_affectorValueLevelTableData.iValue2 == -1)
+			_checkBetweenDistance = -1.0f;
+		else
+			_checkBetweenDistance = _affectorValueLevelTableData.iValue2 * 0.01f;
 
 		// lifeTime
 		_endTime = CalcEndTime(rushTime);
@@ -216,19 +227,18 @@ public class RushAffector : AffectorBase
 					}
 				}
 				break;
-			case eRushType.TargetPosition:
-			case eRushType.RandomPosition:
-				if (_affectorValueLevelTableData.iValue2 == 0)
-					break;
-				// 근접하면 돌진을 취소하고 공격한다.
-				Vector3 diff = _actor.cachedTransform.position - targetPosition;
-				float sqrDiff = diff.sqrMagnitude;
-				if (sqrDiff <= sqrRadius + (_affectorValueLevelTableData.fValue4 * _affectorValueLevelTableData.fValue4))
-				{
-					finalized = true;
-					return;
-				}
-				break;
+		}
+
+		if (_checkBetweenDistance == -1.0f)
+			return;
+
+		// 근접하면 돌진을 취소하고 공격한다. iValue1과 상관없이 설정되어있다면 체크한다.
+		Vector3 diff = _actor.cachedTransform.position - targetPosition;
+		float sqrDiff = diff.sqrMagnitude;
+		if (sqrDiff <= sqrRadius + (_checkBetweenDistance * _checkBetweenDistance))
+		{
+			finalized = true;
+			return;
 		}
 	}
 
@@ -248,13 +258,14 @@ public class RushAffector : AffectorBase
 		switch ((eRushType)_affectorValueLevelTableData.iValue1)
 		{
 			case eRushType.Target:
+			case eRushType.TargetWithDistance:
 				if (_targetCollider == null)
 					break;
 				if (_targetCollider.gameObject.activeSelf == false)
 					break;
 				if (_affectorValueLevelTableData.fValue4 <= 0.0f)
 					break;
-				if (_endTime != 0.0f)
+				if ((eRushType)_affectorValueLevelTableData.iValue1 == eRushType.Target && _endTime != 0.0f)
 					break;
 
 				// 발사체 추적기능의 Curve 코드를 사용한 예시다. 추적거리로 체크할 순 없으나 적당히 값만 입력하면 자연스럽게 보인다.

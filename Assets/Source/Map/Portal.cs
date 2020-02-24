@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
 
 public class Portal : MonoBehaviour
 {
@@ -17,6 +19,7 @@ public class Portal : MonoBehaviour
 
 	void OnEnable()
 	{
+		OnInitialized(this);
 		portalTrigger.enabled = false;
 		_currentGaugeRatio = 0.0f;
 		_currentColor = _targetColor = offColor;
@@ -26,6 +29,7 @@ public class Portal : MonoBehaviour
 	void OnDisable()
 	{
 		DisablePortalGauge();
+		OnFinalized(this);
 	}
 
 	PortalGauge _portalGauge;
@@ -37,7 +41,7 @@ public class Portal : MonoBehaviour
 
 		Vector3 diff = BattleInstanceManager.instance.playerActor.cachedTransform.position - cachedTransform.position;
 		diff.y = 0.0f;
-		if (diff.sqrMagnitude > fillGaugeRadius * fillGaugeRadius)
+		if (diff.sqrMagnitude > fillGaugeRadius * fillGaugeRadius || IsNearestPortal(this) == false)
 		{
 			if (_currentGaugeRatio == 0.0f)
 				return;
@@ -64,11 +68,21 @@ public class Portal : MonoBehaviour
 		if (_currentGaugeRatio >= 1.0f)
 		{
 			_currentGaugeRatio = 1.0f;
-			_targetColor = onColor;
 			BattleInstanceManager.instance.OnOpenedPortal(this);
-			DOTween.To(() => _currentColor, x => _currentColor = x, onColor, portalOpenTime).SetEase(Ease.OutQuad).OnComplete(() => portalTrigger.enabled = true);
+			Color peakColor = onColor;
+			peakColor.a = (peakColor.a + 1.0f) * 0.4f;
+			_targetColor = peakColor;
+			DOTween.To(() => _currentColor, x => _currentColor = x, peakColor, portalOpenTime).SetEase(Ease.OutBack).OnComplete(OnPeakColor);
 			DisablePortalGauge();
 		}
+	}
+
+	TweenerCore<Color, Color, ColorOptions> _tweenReferenceForPeakColor;
+	void OnPeakColor()
+	{
+		portalTrigger.enabled = true;
+		_targetColor = onColor;
+		_tweenReferenceForPeakColor = DOTween.To(() => _currentColor, x => _currentColor = x, onColor, portalOpenTime * 2.0f).SetEase(Ease.Linear);
 	}
 
 	void DisablePortalGauge()
@@ -135,6 +149,9 @@ public class Portal : MonoBehaviour
 		_currentGaugeRatio = 0.0f;
 		DisablePortalGauge();
 		_targetColor = offColor;
+
+		if (_tweenReferenceForPeakColor != null)
+			_tweenReferenceForPeakColor.Kill();
 		DOTween.To(() => _currentColor, x => _currentColor = x, offColor, portalOpenTime).SetEase(Ease.OutQuad);
 	}
 
@@ -144,6 +161,67 @@ public class Portal : MonoBehaviour
 	//	// 트리거 위에 서있는채로 collider.enabled = false 해도 exit가 오지 않으니 별도로 처리해줘야한다.
 	//	Debug.Log("Portal Exit");
 	//}
+
+
+
+	static List<Portal> s_listInitializedPortal;
+	static void OnInitialized(Portal portal)
+	{
+		if (s_listInitializedPortal == null)
+			s_listInitializedPortal = new List<Portal>();
+
+		if (s_listInitializedPortal.Contains(portal) == false)
+			s_listInitializedPortal.Add(portal);
+	}
+
+	static void OnFinalized(Portal portal)
+	{
+		if (s_listInitializedPortal == null)
+			return;
+
+		s_listInitializedPortal.Remove(portal);
+	}
+
+	static Vector3 s_lastLocalPlayerPosition = Vector3.up;
+	static Portal s_lastNearestPortal = null;
+	static bool IsNearestPortal(Portal portal)
+	{
+		if (BattleInstanceManager.instance.playerActor == null)
+			return false;
+		if (s_listInitializedPortal == null)
+			return false;
+
+		Vector3 currentPosition = BattleInstanceManager.instance.playerActor.cachedTransform.position;
+		if (currentPosition == s_lastLocalPlayerPosition && s_lastNearestPortal != null)
+		{
+			if (s_lastNearestPortal == portal)
+				return true;
+			else
+				return false;
+		}
+		else
+		{
+			int nearestIndex = -1;
+			float sqrDistance = float.MaxValue;
+			for (int i = 0; i < s_listInitializedPortal.Count; ++i)
+			{
+				Vector3 diff = s_listInitializedPortal[i].cachedTransform.position - currentPosition;
+				if (diff.sqrMagnitude < sqrDistance)
+				{
+					sqrDistance = diff.sqrMagnitude;
+					nearestIndex = i;
+				}
+			}
+			if (nearestIndex != -1)
+			{
+				s_lastNearestPortal = s_listInitializedPortal[nearestIndex];
+				s_lastLocalPlayerPosition = currentPosition;
+				if (portal == s_lastNearestPortal)
+					return true;
+			}
+			return false;
+		}
+	}
 
 
 

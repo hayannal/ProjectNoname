@@ -181,7 +181,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actorId: OneEyedWizard_Blue
   commonPoolPreloadObjectList: []
-  selfPassivePreloadObjectList: []
+  selfPassivePreloadObjectList:
+  - {fileID: 1961478501609223962, guid: 256189656cab2ea46a0ac087f3ac5d7c, type: 3}
   gaugeOffsetY: 1.8
   monsterHpGaugeWidth: 1
 --- !u!114 &2175972312095634678
@@ -211,8 +212,8 @@ MonoBehaviour:
   customActionFadeDuration: 0.05
   chaseDistanceRange: {x: 0, y: 0}
   chaseCancelTimeRange: {x: 0, y: 0}
-  attackActionPlayType: 0
-  attackActionName: Attack
+  attackActionPlayType: 2
+  attackActionName: AttackGroup
   attackActionFadeDuration: 0.05
   lookAtTargetBeforeAttack: 1
   attackDelayTimeRange: {x: 0, y: 0}

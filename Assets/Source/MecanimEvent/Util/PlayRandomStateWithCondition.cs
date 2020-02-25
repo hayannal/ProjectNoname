@@ -28,21 +28,32 @@ public class PlayRandomStateWithCondition : ControlStateBase
 	public class RandomStateWithConditionInfo : PlayRandomState.RandomStateInfo
 	{
 		public bool useDistance1;
+		[ConditionalHide("useDistance1", true)]
 		public Condition.eCompareType distanceCompareType1;
+		[ConditionalHide("useDistance1", true)]
 		public float distanceParameter1;
 		public bool useDistance2;
+		[ConditionalHide("useDistance2", true)]
 		public Condition.eCompareType distanceCompareType2;
+		[ConditionalHide("useDistance2", true)]
 		public float distanceParameter2;
 		public bool useHpRatio1;
+		[ConditionalHide("useHpRatio1", true)]
 		public Condition.eCompareType hpRatioCompareType1;
+		[ConditionalHide("useHpRatio1", true)]
 		public float hpRatioParameter1;
 		public bool useHpRatio2;
+		[ConditionalHide("useHpRatio2", true)]
 		public Condition.eCompareType hpRatioCompareType2;
+		[ConditionalHide("useHpRatio2", true)]
 		public float hpRatioParameter2;
 		public bool useTargetActorState;
+		[ConditionalHide("useTargetActorState", true)]
 		public string actorStateId;
 		public bool useMonsterCount;
+		[ConditionalHide("useMonsterCount", true)]
 		public Condition.eCompareType monsterCountCompareType;
+		[ConditionalHide("useMonsterCount", true)]
 		public int monsterCountParameter;
 		public int actionCountLimit;
 	}

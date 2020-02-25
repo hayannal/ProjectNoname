@@ -55,6 +55,9 @@ public class PlayRandomStateWithCondition : ControlStateBase
 		public Condition.eCompareType monsterCountCompareType;
 		[ConditionalHide("useMonsterCount", true)]
 		public int monsterCountParameter;
+		public bool useCheckWall;
+		[ConditionalHide("useCheckWall", true)]
+		public bool existWallParameter;
 		public int actionCountLimit;
 	}
 	public RandomStateWithConditionInfo[] randomStateWithConditionInfoList;
@@ -144,6 +147,20 @@ public class PlayRandomStateWithCondition : ControlStateBase
 			if (randomStateWithConditionInfoList[i].useMonsterCount)
 			{
 				if (Condition.CompareValue(randomStateWithConditionInfoList[i].monsterCountCompareType, BattleManager.instance.GetSpawnedMonsterCount(), randomStateWithConditionInfoList[i].monsterCountParameter) == false)
+					continue;
+			}
+
+			if (randomStateWithConditionInfoList[i].useCheckWall)
+			{
+				if (_actor.targetingProcessor.GetTarget() == null)
+					continue;
+
+				Collider targetCollider = _actor.targetingProcessor.GetTarget();
+				bool wallResult = TargetingProcessor.CheckWall(_actor.cachedTransform.position, BattleInstanceManager.instance.GetTransformFromCollider(targetCollider).position, 0.1f);
+
+				if (randomStateWithConditionInfoList[i].existWallParameter && wallResult == false)
+					continue;
+				if (randomStateWithConditionInfoList[i].existWallParameter == false && wallResult)
 					continue;
 			}
 

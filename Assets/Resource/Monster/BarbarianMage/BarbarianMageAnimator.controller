@@ -42,11 +42,11 @@ MonoBehaviour:
   StartTime: 0.524
   EndTime: 1
   targetDetectType: 1
-  hitObjectPrefab: {fileID: 6892869063333059673, guid: f39b7e61210119846b3cd6f638f693a6,
+  hitObjectPrefab: {fileID: 1694381769261270, guid: b6f6a3cbc5ecc6b48846251f8fe7b809,
     type: 3}
   lifeTime: 1.5
   areaHitLifeTimeEarlyOffset: 0
-  ignoreAreaHitLifeTimeRange: {x: 0.12, y: 0.35}
+  ignoreAreaHitLifeTimeRange: {x: 0.04, y: 0.35}
   movable: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -59,11 +59,11 @@ MonoBehaviour:
   fixedWorldPositionY: 0
   areaRotationY: 0
   areaDistanceMin: 0
-  areaDistanceMax: 0.5
+  areaDistanceMax: 0.3
   areaHeightMin: 0
   areaHeightMax: 2
   areaAngle: 360
-  checkRaycastWallInArea: 1
+  checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
   repeatCount: 0
   repeatInterval: 0
@@ -78,7 +78,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 0
   useSpeedChange: 0
   targetSpeed: 0
@@ -117,7 +117,7 @@ MonoBehaviour:
   oneHitPerTarget: 1
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttackMelee01
+  - NormalAttack01
   showHitEffect: 0
   hitEffectObject: {fileID: 0}
   hitEffectLookAtNormal: 0

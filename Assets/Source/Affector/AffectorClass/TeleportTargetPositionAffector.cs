@@ -52,22 +52,29 @@ public class TeleportTargetPositionAffector : AffectorBase
 
 		_actor.baseCharacterController.movement.useGravity = true;
 
-		bool findTargetTransform = false;
-		if (_actor.targetingProcessor.GetTargetCount() > 0)
+		switch (_affectorValueLevelTableData.iValue1)
 		{
-			Collider targetCollider = _actor.targetingProcessor.GetTarget();
-			Transform targetTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
-			if (targetTransform != null)
-			{
-				findTargetTransform = true;
-				Vector3 teleportPosition = GetTeleportPosition(targetTransform.position);
-				_actor.cachedTransform.position = teleportPosition;
-				_actor.cachedTransform.rotation = Quaternion.LookRotation(targetTransform.position - teleportPosition);
-			}
+			case 0:
+				bool findTargetTransform = false;
+				if (_actor.targetingProcessor.GetTargetCount() > 0)
+				{
+					Collider targetCollider = _actor.targetingProcessor.GetTarget();
+					Transform targetTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
+					if (targetTransform != null)
+					{
+						findTargetTransform = true;
+						Vector3 teleportPosition = GetTeleportPosition(targetTransform.position);
+						_actor.cachedTransform.position = teleportPosition;
+						_actor.cachedTransform.rotation = Quaternion.LookRotation(targetTransform.position - teleportPosition);
+					}
+				}
+				if (findTargetTransform == false)
+					_actor.cachedTransform.position = _origPosition;
+				break;
+			case 1:
+				_actor.cachedTransform.position = new Vector3(_affectorValueLevelTableData.fValue3, 0.0f, _affectorValueLevelTableData.fValue4);
+				break;
 		}
-		
-		if (findTargetTransform == false)
-			_actor.cachedTransform.position = _origPosition;
 
 		if (_onStartEffectPrefab != null)
 			BattleInstanceManager.instance.GetCachedObject(_onStartEffectPrefab, _actor.cachedTransform.position, _actor.cachedTransform.rotation, null);

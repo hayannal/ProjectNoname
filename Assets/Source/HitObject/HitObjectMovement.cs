@@ -106,6 +106,7 @@ public class HitObjectMovement : MonoBehaviour {
 				break;
 			case eMovementType.Howitzer:
 				howitzerTargetPosition = HitObject.GetTargetPosition(_signal, parentActor, hitSignalIndexInAction);
+				howitzerTargetPosition = new Vector3(howitzerTargetPosition.x, parentActor.cachedTransform.position.y, howitzerTargetPosition.z);
 				if (_signal.howitzerTargetPositionOffset != Vector2.zero)
 				{
 					howitzerTargetPosition += parentActor.cachedTransform.TransformVector(new Vector3(_signal.howitzerTargetPositionOffset.x, 0.0f, _signal.howitzerTargetPositionOffset.y));

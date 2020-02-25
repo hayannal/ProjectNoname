@@ -66,5 +66,6 @@ public enum eAffectorType
 	Vampire,
 	Rush,
 	TeleportTargetPosition,
+	Rotate,
 }
 #endregion

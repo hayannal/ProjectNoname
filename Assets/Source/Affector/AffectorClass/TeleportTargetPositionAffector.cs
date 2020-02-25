@@ -13,6 +13,7 @@ public class TeleportTargetPositionAffector : AffectorBase
 	Vector3 _origPosition;
 	GameObject _onStartEffectPrefab;
 	AffectorValueLevelTableData _affectorValueLevelTableData;
+	List<Vector3> _listCandidatePosition;
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
 		if (_actor == null)
@@ -24,6 +25,23 @@ public class TeleportTargetPositionAffector : AffectorBase
 		}
 
 		_affectorValueLevelTableData = affectorValueLevelTableData;
+
+		switch (_affectorValueLevelTableData.iValue1)
+		{
+			case 2:
+			case 3:
+				float[] valueList = BattleInstanceManager.instance.GetCachedMultiHitDamageRatioList(_affectorValueLevelTableData.sValue2);
+				if (valueList.Length < 2)
+				{
+					finalized = true;
+					return;
+				}
+				if (_listCandidatePosition == null) _listCandidatePosition = new List<Vector3>();
+				_listCandidatePosition.Clear();
+				for (int i = 0; i < valueList.Length; i += 2)
+					_listCandidatePosition.Add(new Vector3(valueList[i], 0.0f, valueList[i + 1]));
+				break;
+		}
 
 		if (!string.IsNullOrEmpty(affectorValueLevelTableData.sValue4))
 			_onStartEffectPrefab = FindPreloadObject(affectorValueLevelTableData.sValue4);
@@ -52,10 +70,10 @@ public class TeleportTargetPositionAffector : AffectorBase
 
 		_actor.baseCharacterController.movement.useGravity = true;
 
+		bool findTargetTransform = false;
 		switch (_affectorValueLevelTableData.iValue1)
 		{
 			case 0:
-				bool findTargetTransform = false;
 				if (_actor.targetingProcessor.GetTargetCount() > 0)
 				{
 					Collider targetCollider = _actor.targetingProcessor.GetTarget();
@@ -73,6 +91,20 @@ public class TeleportTargetPositionAffector : AffectorBase
 				break;
 			case 1:
 				_actor.cachedTransform.position = new Vector3(_affectorValueLevelTableData.fValue3, 0.0f, _affectorValueLevelTableData.fValue4);
+				break;
+			case 2:
+			case 3:
+				if (_actor.targetingProcessor.GetTargetCount() > 0)
+				{
+					Collider targetCollider = _actor.targetingProcessor.GetTarget();
+					Transform targetTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
+					if (targetTransform != null)
+					{
+						Vector3 teleportPosition = GetNearestTeleportPosition(targetTransform.position, _affectorValueLevelTableData.iValue1 == 2);
+						_actor.cachedTransform.position = teleportPosition;
+						_actor.cachedTransform.rotation = Quaternion.LookRotation(targetTransform.position - teleportPosition);
+					}
+				}
 				break;
 		}
 
@@ -105,5 +137,44 @@ public class TeleportTargetPositionAffector : AffectorBase
 				return _origPosition;
 			}
 		}
+	}
+
+	Vector3 GetNearestTeleportPosition(Vector3 targetPosition, bool nearest)
+	{
+		float current = nearest ? float.MaxValue : 0.0f;
+		int index = -1;
+		for (int i = 0; i < _listCandidatePosition.Count; ++i)
+		{
+			Vector3 diff = _listCandidatePosition[i] - targetPosition;
+			if (nearest)
+			{
+				if (diff.sqrMagnitude < current)
+				{
+					current = diff.sqrMagnitude;
+					index = i;
+				}
+			}
+			else
+			{
+				if (diff.sqrMagnitude > current)
+				{
+					current = diff.sqrMagnitude;
+					index = i;
+				}
+			}
+		}
+		if (index == -1)
+			return _listCandidatePosition[0];
+
+		Vector3 desirePosition = Vector3.zero;
+		if (index == -1)
+			desirePosition = _listCandidatePosition[0];
+		else
+			desirePosition = _listCandidatePosition[index];
+
+		Vector2 randomCircle = Random.insideUnitCircle * _affectorValueLevelTableData.fValue2;
+		desirePosition.x += randomCircle.x;
+		desirePosition.z += randomCircle.y;
+		return desirePosition;
 	}
 }

@@ -12,6 +12,7 @@ public class MeLookAt : MecanimEventBase
 	override public bool RangeSignal { get { return true; } }
 	public bool lookAtTarget;
 	public float leftRightRandomAngle;
+	public float lootAtTargetOffsetAngle;
 	public bool lookAtRandom;
 	public float desireDistance = 5.0f;
 	public float lerpPower = 60.0f;
@@ -24,6 +25,9 @@ public class MeLookAt : MecanimEventBase
 		{
 			lookAtRandom = false;
 			leftRightRandomAngle = EditorGUILayout.FloatField("LeftRight Random Angle :", leftRightRandomAngle);
+			if (leftRightRandomAngle > 0.0f) lootAtTargetOffsetAngle = 0.0f;
+			lootAtTargetOffsetAngle = EditorGUILayout.FloatField("Offset Angle :", lootAtTargetOffsetAngle);
+			if (lootAtTargetOffsetAngle != 0.0f) leftRightRandomAngle = 0.0f;
 		}
 		lookAtRandom = EditorGUILayout.Toggle("LookAt Random :", lookAtRandom);
 		if (lookAtRandom)
@@ -95,6 +99,11 @@ public class MeLookAt : MecanimEventBase
 		if (lookAtTarget && leftRightRandomAngle > 0.0f && _initializedRandom)
 		{
 			Quaternion rotation = Quaternion.AngleAxis(_randomAngle, Vector3.up);
+			lookRotation *= rotation;
+		}
+		if (lootAtTargetOffsetAngle != 0.0f)
+		{
+			Quaternion rotation = Quaternion.AngleAxis(lootAtTargetOffsetAngle, Vector3.up);
 			lookRotation *= rotation;
 		}
 

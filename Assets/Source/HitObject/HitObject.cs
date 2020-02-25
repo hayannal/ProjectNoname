@@ -1321,7 +1321,7 @@ public class HitObject : MonoBehaviour
 					monsterCollided = true;
 
 					if (_remainMonsterThroughCount > 0 || _remainMonsterThroughCount == -1)
-						AddIgnoreList(col);
+						AddIgnoreList(col, true);
 					// 리코세는 가능여부 판단하고 해야해서 OnPostCollided함수 안에서 한다.
 
 					s_listAppliedAffectorProcessor.Add(affectorProcessor);
@@ -1335,7 +1335,7 @@ public class HitObject : MonoBehaviour
 					// 이펙트는 뜨지 않게 하기위해 하단에서 wallCollided를 true로 바꾼다.
 					//wallCollided = true;
 					forceBarrierThrough = true;
-					AddIgnoreList(col);
+					AddIgnoreList(col, true);
 				}
 				else
 				{
@@ -1343,7 +1343,7 @@ public class HitObject : MonoBehaviour
 					wallNormal = contact.normal;
 
 					if (_signal.wallThrough)
-						AddIgnoreList(col);
+						AddIgnoreList(col, false);
 				}
 			}
 
@@ -1407,7 +1407,7 @@ public class HitObject : MonoBehaviour
 						{
 							Collider lastRicochetCollider = _hitObjectMovement.GetLastRicochetCollider();
 							if (lastRicochetCollider != null)
-								AddIgnoreList(lastRicochetCollider);
+								AddIgnoreList(lastRicochetCollider, true);
 						}
 						useThrough = true;
 					}
@@ -1637,12 +1637,15 @@ public class HitObject : MonoBehaviour
 	#region Ignore List
 	List<Collider> _listIgnoreCollider;
 	Dictionary<Collider, bool> _dicIgnoreColliderAddFrame;
-	void AddIgnoreList(Collider collider)
+	Dictionary<Collider, Vector3> _dicIgnoreColliderAddPosition;
+	void AddIgnoreList(Collider collider, bool movableObject)
 	{
 		if (_listIgnoreCollider == null)
 			_listIgnoreCollider = new List<Collider>();
 		if (_dicIgnoreColliderAddFrame == null)
 			_dicIgnoreColliderAddFrame = new Dictionary<Collider, bool>();
+		if (_dicIgnoreColliderAddPosition == null)
+			_dicIgnoreColliderAddPosition = new Dictionary<Collider, Vector3>();
 		if (_listIgnoreCollider.Contains(collider))
 			return;
 		_listIgnoreCollider.Add(collider);
@@ -1652,6 +1655,17 @@ public class HitObject : MonoBehaviour
 			_dicIgnoreColliderAddFrame[collider] = true;
 		else
 			_dicIgnoreColliderAddFrame.Add(collider, true);
+
+		// WallThrough로 천천히 쏠때 투과하지 못한채 진입시점에 막히는 현상이 나타났다.
+		// 그래서 충돌시점의 위치를 기억해놨다가 0.1이상은 움직여야 제거처리를 하게 막아둔다.
+		// 움직이는 오브젝트일 경우엔 안하는게 맞을거 같아서 actor나 배리어가 아닐때만 체크해본다.
+		if (movableObject == false)
+		{
+			if (_dicIgnoreColliderAddPosition.ContainsKey(collider))
+				_dicIgnoreColliderAddPosition[collider] = cachedTransform.position;
+			else
+				_dicIgnoreColliderAddPosition.Add(collider, cachedTransform.position);
+		}
 	}
 
 	void RemoveIgnoreList(Collider collider)
@@ -1665,6 +1679,8 @@ public class HitObject : MonoBehaviour
 
 		if (_dicIgnoreColliderAddFrame.ContainsKey(collider))
 			_dicIgnoreColliderAddFrame[collider] = false;
+		if (_dicIgnoreColliderAddPosition.ContainsKey(collider))
+			_dicIgnoreColliderAddPosition[collider] = Vector3.down;
 	}
 
 	void ClearIgnoreList()
@@ -1693,6 +1709,13 @@ public class HitObject : MonoBehaviour
 			{
 				_dicIgnoreColliderAddFrame[_listIgnoreCollider[i]] = false;
 				continue;
+			}
+
+			if (_dicIgnoreColliderAddPosition.ContainsKey(_listIgnoreCollider[i]) && _dicIgnoreColliderAddPosition[_listIgnoreCollider[i]] != Vector3.down)
+			{
+				Vector3 diff = _dicIgnoreColliderAddPosition[_listIgnoreCollider[i]] - cachedTransform.position;
+				if (diff.sqrMagnitude < 0.01f)
+					continue;
 			}
 
 			if (_collider.bounds.Intersects(_listIgnoreCollider[i].bounds) == false)

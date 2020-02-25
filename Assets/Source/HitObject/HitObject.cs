@@ -1353,6 +1353,8 @@ public class HitObject : MonoBehaviour
 				bool ignoreEffect = false;
 				if (_signal.movementType == HitObjectMovement.eMovementType.Howitzer && _signal.wallThrough && wallCollided)
 					ignoreEffect = true;
+				if (wallCollided && _signal.wallThrough && _statusStructForHitObject.monsterActor && _signal.movementType == HitObjectMovement.eMovementType.Direct)
+					ignoreEffect = true;
 
 				if (ignoreEffect == false)
 				{

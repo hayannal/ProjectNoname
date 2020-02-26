@@ -80,7 +80,7 @@ public class MonsterAIEditor : ReorderableArrayInspector
 		{
 			t.moveTimeRange = EditorGUILayout.Vector2Field("Move Total Time", t.moveTimeRange);
 			t.refreshTickTimeRange = EditorGUILayout.Vector2Field("Refresh Tick Time", t.refreshTickTimeRange);
-			t.desireDistance = EditorGUILayout.FloatField("Disire Distance", t.desireDistance);
+			t.desireDistance = EditorGUILayout.FloatField("Desire Distance", t.desireDistance);
 		}
 
 		DrawUILine(Color.grey);

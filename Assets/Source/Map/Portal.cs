@@ -14,8 +14,15 @@ public class Portal : MonoBehaviour
 	public Renderer portalPlaneRenderer;
 	public Color offColor;
 	public Color onColor;
+	public bool checkWall;
 
 	public Vector3 targetPosition { get; set; }
+
+	float _colliderRadius;
+	void Awake()
+	{
+		_colliderRadius = GetComponent<CapsuleCollider>().radius;
+	}
 
 	void OnEnable()
 	{
@@ -41,7 +48,7 @@ public class Portal : MonoBehaviour
 
 		Vector3 diff = BattleInstanceManager.instance.playerActor.cachedTransform.position - cachedTransform.position;
 		diff.y = 0.0f;
-		if (diff.sqrMagnitude > fillGaugeRadius * fillGaugeRadius || IsNearestPortal(this) == false || BattleInstanceManager.instance.playerActor.actorStatus.IsDie())
+		if (diff.sqrMagnitude > fillGaugeRadius * fillGaugeRadius || IsNearestPortal(this) == false || BattleInstanceManager.instance.playerActor.actorStatus.IsDie() || CheckWall() == true)
 		{
 			if (_currentGaugeRatio == 0.0f)
 				return;
@@ -162,6 +169,19 @@ public class Portal : MonoBehaviour
 	//	Debug.Log("Portal Exit");
 	//}
 
+	bool CheckWall()
+	{
+		if (checkWall == false)
+			return false;
+
+		Vector3 position = cachedTransform.position;
+		Vector3 targetPosition = BattleInstanceManager.instance.playerActor.cachedTransform.position;
+		Vector3 diff = targetPosition - position;
+		Vector3 leftDir = Vector3.Cross(diff.normalized, Vector3.up);
+		if (TargetingProcessor.CheckWall((position + leftDir * _colliderRadius), targetPosition, 0.01f) && TargetingProcessor.CheckWall((position - leftDir * _colliderRadius), targetPosition, 0.01f))
+			return true;
+		return false;
+	}
 
 
 	static List<Portal> s_listInitializedPortal;

@@ -5,6 +5,7 @@ using UnityEngine;
 public class PortalSpawn : MonoBehaviour
 {
 	public Transform targetTransform;
+	public bool checkWall;
 
 	Portal _portal = null;
 
@@ -26,6 +27,7 @@ public class PortalSpawn : MonoBehaviour
 	{
 		_portal = BattleInstanceManager.instance.GetCachedPortal(cachedTransform.position, Quaternion.identity);
 		_portal.targetPosition = targetTransform.position;
+		_portal.checkWall = checkWall;
 	}
 
 	void OnDisable()

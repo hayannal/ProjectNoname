@@ -84,8 +84,9 @@ public class RushAffector : AffectorBase
 			case eRushType.RandomPosition:
 			case eRushType.TargetWithDistance:
 				float rushDistance = diff.magnitude;
-				if (rushDistance + _affectorValueLevelTableData.fValue3 > 0.0f)
-					rushDistance += _affectorValueLevelTableData.fValue3;
+				rushDistance += _affectorValueLevelTableData.fValue3;
+				if (rushDistance < 0.0f)
+					rushDistance = 0.0f;
 				rushTime = rushDistance / affectorValueLevelTableData.fValue1;
 				if (rushTime < _minimunRushTime)
 					rushTime = _minimunRushTime;

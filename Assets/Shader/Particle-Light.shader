@@ -51,8 +51,8 @@ void vert(inout appdata_t v, out Input o)
 
 void surf (Input IN, inout SurfaceOutput o) {
     fixed4 c = tex2D(_MainTex, IN.uv_MainTex);
-    o.Albedo = 2.0f * IN.color * _TintColor * c.rgb;
-    o.Alpha = c.a;
+    o.Albedo = 2.0f * IN.color.rgb * _TintColor.rgb * c.rgb;
+    o.Alpha = 2.0f * IN.color.a * _TintColor.a * c.a;
 }
 ENDCG
 }

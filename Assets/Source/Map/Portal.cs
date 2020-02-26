@@ -41,7 +41,7 @@ public class Portal : MonoBehaviour
 
 		Vector3 diff = BattleInstanceManager.instance.playerActor.cachedTransform.position - cachedTransform.position;
 		diff.y = 0.0f;
-		if (diff.sqrMagnitude > fillGaugeRadius * fillGaugeRadius || IsNearestPortal(this) == false)
+		if (diff.sqrMagnitude > fillGaugeRadius * fillGaugeRadius || IsNearestPortal(this) == false || BattleInstanceManager.instance.playerActor.actorStatus.IsDie())
 		{
 			if (_currentGaugeRatio == 0.0f)
 				return;

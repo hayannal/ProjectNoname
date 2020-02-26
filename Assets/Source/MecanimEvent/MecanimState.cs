@@ -35,7 +35,7 @@ public class MecanimState : MonoBehaviour {
 		{
 			for (int i = m_listStateInfo.Count - 1; i >= 0; --i)
 			{
-				if (m_listStateInfo[i].stateID != (int)MecanimStateDefine.eMecanimState.Move)
+				if (m_listStateInfo[i].stateID == (int)MecanimStateDefine.eMecanimState.Move)
 					m_listStateInfo.RemoveAt(i);
 			}
 		}

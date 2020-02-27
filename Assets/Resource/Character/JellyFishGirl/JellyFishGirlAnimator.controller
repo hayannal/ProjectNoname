@@ -31,6 +31,7 @@ AnimatorState:
   - {fileID: -6746493259596147473}
   - {fileID: -825634644392166769}
   - {fileID: 8068113124181150090}
+  - {fileID: 3494512611224675356}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -424,6 +425,7 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 1
+  meAttackIndicatorReference: {fileID: 0}
 --- !u!114 &461210008758674794
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -582,6 +584,27 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 1
+  meAttackIndicatorReference: {fileID: 0}
+--- !u!114 &3494512611224675356
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8516055b55eb644780db6f97bb409f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0
+  EndTime: 0.6
+  lookAtTarget: 1
+  leftRightRandomAngle: 0
+  lootAtTargetOffsetAngle: 0
+  lookAtRandom: 0
+  desireDistance: 5
+  lerpPower: 5
 --- !u!114 &6496396515182662070
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -701,6 +724,7 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 1
+  meAttackIndicatorReference: {fileID: 0}
 --- !u!114 &8068113124181150090
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -831,6 +855,7 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 1
+  meAttackIndicatorReference: {fileID: 0}
 --- !u!1102 &8503796429965771016
 AnimatorState:
   serializedVersion: 5

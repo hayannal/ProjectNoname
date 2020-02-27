@@ -421,7 +421,7 @@ public class MonsterAI : MonoBehaviour
 				// 바로앞에 Wall있는데 가는건 좀 이상하다. 이때는 패스다.
 				Vector3 startPosition = actor.cachedTransform.position + randomDirection.normalized * actorRadius * 0.9f;
 				Vector3 endPosition = startPosition + randomDirection;
-				if (TargetingProcessor.CheckWall(startPosition, endPosition, 0.1f) == false)
+				if (TargetingProcessor.CheckWall(startPosition, endPosition, 0.3f) == false)
 				{
 					_straightMoveDirection = randomDirection.normalized;
 					return;

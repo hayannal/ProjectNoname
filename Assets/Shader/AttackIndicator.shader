@@ -54,5 +54,6 @@ void surf (Input IN, inout SurfaceOutput o) {
 ENDCG
 }
 
-Fallback "Mobile/VertexLit"
+// no shadowcast
+//Fallback "Mobile/VertexLit"
 }

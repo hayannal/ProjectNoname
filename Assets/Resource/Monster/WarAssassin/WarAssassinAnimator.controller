@@ -288,16 +288,18 @@ MonoBehaviour:
   indicatorType: 1
   attackIndicatorPrefab: {fileID: 7007741959307709203, guid: f3166d643d5b9074a9a2ce79f816506e,
     type: 3}
+  overrideLifeTime: 0
   offset: {x: 0, y: 1, z: 0}
   startDirection: {x: 0, y: 0, z: 1}
   areaRadius: 1
   attachPrefab: 1
   createPositionType: 0
-  lineMaxDistance: 2.7
+  lineMaxDistance: 3.1
   lineWidth: 1
   sphereCastRadius: 0.2
   wallThrough: 0
   quadThrough: 0
+  dontSelfUse: 0
 --- !u!114 &-2658795307953692815
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -317,6 +319,7 @@ MonoBehaviour:
     type: 3}
   lifeTime: 5
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -348,7 +351,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 4.5
   useSpeedChange: 0
   targetSpeed: 0
@@ -397,6 +400,7 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 0
+  meAttackIndicatorReference: {fileID: 0}
 --- !u!1102 &-1215575675028676736
 AnimatorState:
   serializedVersion: 5
@@ -483,6 +487,7 @@ MonoBehaviour:
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -514,7 +519,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 0
   useSpeedChange: 0
   targetSpeed: 0
@@ -562,6 +567,7 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 0
+  meAttackIndicatorReference: {fileID: 0}
 --- !u!1101 &-332535259690792094
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -603,6 +609,7 @@ MonoBehaviour:
     type: 3}
   lifeTime: 5
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -634,7 +641,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 5
   useSpeedChange: 0
   targetSpeed: 0
@@ -684,6 +691,7 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 0
+  meAttackIndicatorReference: {fileID: 0}
 --- !u!91 &9100000
 AnimatorController:
   m_ObjectHideFlags: 0

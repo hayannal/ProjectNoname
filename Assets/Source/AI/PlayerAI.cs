@@ -218,7 +218,7 @@ public class PlayerAI : MonoBehaviour
 
 		Vector3 diff1 = _lastSourcePosition - sourcePosition;
 		Vector3 diff2 = _lastTargetPosition - targetPosition;
-		if (diff1.sqrMagnitude < 1.0f && diff1.sqrMagnitude < 1.0f)
+		if (diff1.sqrMagnitude < 1.0f && diff2.sqrMagnitude < 1.0f)
 			return _lastNavMeshResult;
 
 		_lastNavMeshResult = NavMesh.CalculatePath(sourcePosition, targetPosition, NavMesh.AllAreas, _navMeshPath);
@@ -226,7 +226,10 @@ public class PlayerAI : MonoBehaviour
 		_lastTargetPosition = targetPosition;
 
 		if (_lastNavMeshResult == false || _navMeshPath.status != NavMeshPathStatus.PathComplete)
+		{
+			_lastNavMeshResult = false;
 			return false;
+		}
 		return _lastNavMeshResult;
 	}
 }

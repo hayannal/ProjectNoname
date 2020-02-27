@@ -111,7 +111,7 @@ public class MeSummon : MecanimEventBase
 					{
 						_createPosition = Vector3.Lerp(_actor.cachedTransform.position, targetTransform.position, offset.x);
 						if (checkNavPosition) _createPosition = GetNavPosition(_createPosition);
-						_createRotation = Quaternion.LookRotation(_actor.cachedTransform.TransformDirection(direction));
+						_createRotation = Quaternion.LookRotation(targetTransform.position - _actor.cachedTransform.position);
 					}
 				}
 				else

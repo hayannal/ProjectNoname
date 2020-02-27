@@ -164,6 +164,12 @@ MonoBehaviour:
     hpRatioParameter2: 0
     useTargetActorState: 0
     actorStateId: 
+    useMonsterCount: 0
+    monsterCountCompareType: 0
+    monsterCountParameter: 0
+    useCheckWall: 0
+    existWallParameter: 0
+    actionCountLimit: 0
   - stateName: Base Layer.AttackGroup.Shout
     weight: 1
     useDistance1: 0
@@ -180,6 +186,12 @@ MonoBehaviour:
     hpRatioParameter2: 0
     useTargetActorState: 0
     actorStateId: 
+    useMonsterCount: 0
+    monsterCountCompareType: 0
+    monsterCountParameter: 0
+    useCheckWall: 0
+    existWallParameter: 0
+    actionCountLimit: 0
   - stateName: Base Layer.AttackGroup.MeleeAttack3
     weight: 1
     useDistance1: 0
@@ -196,6 +208,12 @@ MonoBehaviour:
     hpRatioParameter2: 0
     useTargetActorState: 0
     actorStateId: 
+    useMonsterCount: 0
+    monsterCountCompareType: 0
+    monsterCountParameter: 0
+    useCheckWall: 0
+    existWallParameter: 0
+    actionCountLimit: 0
   - stateName: Base Layer.AttackGroup.MeleeAttack3Fast
     weight: 99
     useDistance1: 0
@@ -212,6 +230,12 @@ MonoBehaviour:
     hpRatioParameter2: 0
     useTargetActorState: 1
     actorStateId: SlowCyc
+    useMonsterCount: 0
+    monsterCountCompareType: 0
+    monsterCountParameter: 0
+    useCheckWall: 0
+    existWallParameter: 0
+    actionCountLimit: 0
 --- !u!114 &-5603415528849164599
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -245,6 +269,7 @@ MonoBehaviour:
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -276,7 +301,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 0
   useSpeedChange: 0
   targetSpeed: 0
@@ -324,6 +349,7 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 0
+  meAttackIndicatorReference: {fileID: 0}
 --- !u!114 &-5078432254042696792
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -341,14 +367,18 @@ MonoBehaviour:
   indicatorType: 0
   attackIndicatorPrefab: {fileID: 2161458790205252103, guid: d67d8c65d73e4fe4981d78ac959fe07f,
     type: 3}
+  overrideLifeTime: 0
   offset: {x: 0, y: 0, z: 0}
   startDirection: {x: 0, y: 0, z: 1}
   areaRadius: 5
+  attachPrefab: 1
+  createPositionType: 0
   lineMaxDistance: 0
   lineWidth: 1
   sphereCastRadius: 0.2
   wallThrough: 0
   quadThrough: 0
+  dontSelfUse: 0
 --- !u!1102 &-4817427863211959166
 AnimatorState:
   serializedVersion: 5
@@ -392,16 +422,20 @@ MonoBehaviour:
   StartTime: 0
   EndTime: 0.615
   indicatorType: 0
-  attackIndicatorPrefab: {fileID: 4278332168957269136, guid: 143fc6b1d64b4d545a774052d744d656,
+  attackIndicatorPrefab: {fileID: 2605427065908731200, guid: 42316df8d29b8af42b13fb54eaf8dfe1,
     type: 3}
+  overrideLifeTime: 0
   offset: {x: 0, y: 0, z: 0}
   startDirection: {x: 0, y: 0, z: 1}
   areaRadius: 5
+  attachPrefab: 1
+  createPositionType: 0
   lineMaxDistance: 0
   lineWidth: 1
   sphereCastRadius: 0.2
   wallThrough: 0
   quadThrough: 0
+  dontSelfUse: 0
 --- !u!114 &-4680068913999021737
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -477,6 +511,7 @@ MonoBehaviour:
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -508,7 +543,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 0
   useSpeedChange: 0
   targetSpeed: 0
@@ -556,6 +591,7 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 0
+  meAttackIndicatorReference: {fileID: 0}
 --- !u!114 &-2012698091461431799
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -575,6 +611,7 @@ MonoBehaviour:
     type: 3}
   lifeTime: 5
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -606,7 +643,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 6
   useSpeedChange: 0
   targetSpeed: 0
@@ -655,6 +692,7 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 0
+  meAttackIndicatorReference: {fileID: 0}
 --- !u!114 &-1551869584603301359
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -759,6 +797,7 @@ MonoBehaviour:
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -790,7 +829,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 0
   useSpeedChange: 0
   targetSpeed: 0
@@ -838,6 +877,7 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 0
+  meAttackIndicatorReference: {fileID: 0}
 --- !u!114 &-14133547379689438
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -856,6 +896,7 @@ MonoBehaviour:
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -887,7 +928,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 0
   useSpeedChange: 0
   targetSpeed: 0
@@ -935,6 +976,7 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 0
+  meAttackIndicatorReference: {fileID: 0}
 --- !u!91 &9100000
 AnimatorController:
   m_ObjectHideFlags: 0
@@ -1018,6 +1060,7 @@ MonoBehaviour:
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -1049,7 +1092,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 0
   useSpeedChange: 0
   targetSpeed: 0
@@ -1097,6 +1140,7 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 0
+  meAttackIndicatorReference: {fileID: 0}
 --- !u!114 &1504451008470047546
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1210,16 +1254,20 @@ MonoBehaviour:
   StartTime: 0
   EndTime: 0.615
   indicatorType: 0
-  attackIndicatorPrefab: {fileID: 4278332168957269136, guid: 143fc6b1d64b4d545a774052d744d656,
+  attackIndicatorPrefab: {fileID: 2605427065908731200, guid: 42316df8d29b8af42b13fb54eaf8dfe1,
     type: 3}
+  overrideLifeTime: 0
   offset: {x: 0, y: 0, z: 0}
   startDirection: {x: 0, y: 0, z: 1}
   areaRadius: 5
+  attachPrefab: 1
+  createPositionType: 0
   lineMaxDistance: 0
   lineWidth: 1
   sphereCastRadius: 0.2
   wallThrough: 0
   quadThrough: 0
+  dontSelfUse: 0
 --- !u!1102 &3482385607189912764
 AnimatorState:
   serializedVersion: 5
@@ -1271,6 +1319,7 @@ MonoBehaviour:
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -1302,7 +1351,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 4.5
   useSpeedChange: 0
   targetSpeed: 0
@@ -1350,6 +1399,7 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 0
+  meAttackIndicatorReference: {fileID: 0}
 --- !u!1101 &4388477209128367714
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -1421,6 +1471,7 @@ MonoBehaviour:
   EndTime: 0.3
   lookAtTarget: 1
   leftRightRandomAngle: 0
+  lootAtTargetOffsetAngle: 0
   lookAtRandom: 0
   desireDistance: 5
   lerpPower: 4
@@ -1480,6 +1531,7 @@ MonoBehaviour:
   EndTime: 0.3
   lookAtTarget: 1
   leftRightRandomAngle: 0
+  lootAtTargetOffsetAngle: 0
   lookAtRandom: 0
   desireDistance: 5
   lerpPower: 4

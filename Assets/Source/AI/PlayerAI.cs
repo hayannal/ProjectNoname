@@ -221,7 +221,10 @@ public class PlayerAI : MonoBehaviour
 		if (diff1.sqrMagnitude < 1.0f && diff2.sqrMagnitude < 1.0f)
 			return _lastNavMeshResult;
 
-		_lastNavMeshResult = NavMesh.CalculatePath(sourcePosition, targetPosition, NavMesh.AllAreas, _navMeshPath);
+		NavMeshQueryFilter navMeshQueryFilter = new NavMeshQueryFilter();
+		navMeshQueryFilter.areaMask = NavMesh.AllAreas;
+		navMeshQueryFilter.agentTypeID = BattleInstanceManager.instance.bulletFlyingAgentTypeID;
+		_lastNavMeshResult = NavMesh.CalculatePath(sourcePosition, targetPosition, navMeshQueryFilter, _navMeshPath);
 		_lastSourcePosition = sourcePosition;
 		_lastTargetPosition = targetPosition;
 

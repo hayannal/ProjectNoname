@@ -560,10 +560,12 @@ public class BattleInstanceManager : MonoBehaviour
 		{
 			_dicPathFinderAgentRefCount.Add(agentTypeID, 1);
 			currentGround.BakeNavMesh(agentTypeID);
+			AddTotalPathFinderAgentRefCount(1);
 			return;
 		}
 
 		_dicPathFinderAgentRefCount[agentTypeID] += 1;
+		AddTotalPathFinderAgentRefCount(1);
 	}
 
 	// 어차피 NavMeshSurface는 컴포넌트라서 맵 지워질때 날아갈텐데 바닥판 안바뀔걸 대비해서 지워두는게 나으려나
@@ -580,7 +582,36 @@ public class BattleInstanceManager : MonoBehaviour
 			// 마지막 몹 사라질때 지우니 웨이브 넘어갈땐 굳이 안지워도 되는데 지워진다. 웨이브는 거의 없으니 상관없으려나
 			currentGround.ClearNavMesh(agentTypeID);
 		}
+		AddTotalPathFinderAgentRefCount(-1);
 	}
+
+	#region BulletFlying AgentType
+	// 현재 타겟이 닫혀있는 맵 밖에 있는지 판단해서 자동 공격을 취소하는 로직이 있는데, 이게 제대로 동작하려면
+	// 매우 작은 radius를 가진 NavAgent, 그것도 Trap을 무시하기 위해 Flying으로 된 NavAgent에 맞는 네비를 구워놔야한다.
+	// 구워놓는 시점은 첫번째 몹의 네비가 구워질때 굽고 삭제는 모든 네비가 사라지는 시점이다.
+	// 이 과정을 위해 괜히 쓰지도 않는 NavMeshAgent를 붙이는거보다 아래처럼 직접 AgentID전달해서 굽는 방식으로 가는게 깔끔해서 이렇게 해본다.
+	// 참고로 이 AgentType아이디는 변경될리 없으니 NavMeshAreas.asset에서 가져왔다.
+	int _totalPathFinderAgentRefCount = 0;
+	int _bulletFlyingAgentTypeID = -562324683;
+	public int bulletFlyingAgentTypeID { get { return _bulletFlyingAgentTypeID; } }
+	void AddTotalPathFinderAgentRefCount(int addCount)
+	{
+		if (addCount > 0)
+		{
+			_totalPathFinderAgentRefCount += addCount;
+			if (_totalPathFinderAgentRefCount == 1)
+				currentGround.BakeNavMesh(_bulletFlyingAgentTypeID);
+		}
+		else
+		{
+			if (_totalPathFinderAgentRefCount <= 0)
+				return;
+			_totalPathFinderAgentRefCount += addCount;
+			if (_totalPathFinderAgentRefCount <= 0)
+				currentGround.ClearNavMesh(_bulletFlyingAgentTypeID);
+		}
+	}
+	#endregion
 
 	public void BakeNavMesh()
 	{

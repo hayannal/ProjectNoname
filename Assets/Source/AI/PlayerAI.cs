@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using MecanimStateDefine;
 using ECM.Controllers;
 
@@ -169,6 +170,9 @@ public class PlayerAI : MonoBehaviour
 		if (IsInAttackRange(diff) == false)
 			return;
 
+		if (CheckNavMeshReachable(actor.cachedTransform.position, targetTransform.position) == false)
+			return;
+
 		baseCharacterController.movement.rotation = Quaternion.LookRotation(diff);
 		if (actor.actionController.PlayActionByActionName(NormalAttackName))
 			_normalAttackCooltime = actor.cooltimeProcessor.GetCooltime(NormalAttackName);
@@ -198,5 +202,31 @@ public class PlayerAI : MonoBehaviour
 		Vector3 diff = targetTransform.position - actor.cachedTransform.position;
 		diff.y = 0.0f;
 		RangeIndicator.instance.ShowIndicator(_actorTableAttackRange, !IsInAttackRange(diff), actor.cachedTransform, false);
+	}
+
+	NavMeshPath _navMeshPath;
+	Vector3 _lastSourcePosition = Vector3.down;
+	Vector3 _lastTargetPosition = Vector3.down;
+	bool _lastNavMeshResult = true;
+	bool CheckNavMeshReachable(Vector3 sourcePosition, Vector3 targetPosition)
+	{
+		if (actor.targetingProcessor.sphereCastRadiusForCheckWall == 0.0f)
+			return true;
+
+		if (_navMeshPath == null)
+			_navMeshPath = new NavMeshPath();
+
+		Vector3 diff1 = _lastSourcePosition - sourcePosition;
+		Vector3 diff2 = _lastTargetPosition - targetPosition;
+		if (diff1.sqrMagnitude < 1.0f && diff1.sqrMagnitude < 1.0f)
+			return _lastNavMeshResult;
+
+		_lastNavMeshResult = NavMesh.CalculatePath(sourcePosition, targetPosition, NavMesh.AllAreas, _navMeshPath);
+		_lastSourcePosition = sourcePosition;
+		_lastTargetPosition = targetPosition;
+
+		if (_lastNavMeshResult == false || _navMeshPath.status != NavMeshPathStatus.PathComplete)
+			return false;
+		return _lastNavMeshResult;
 	}
 }

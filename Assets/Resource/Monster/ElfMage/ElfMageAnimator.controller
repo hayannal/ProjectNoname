@@ -70,7 +70,7 @@ MonoBehaviour:
   lootAtTargetOffsetAngle: 0
   lookAtRandom: 0
   desireDistance: 5
-  lerpPower: 5
+  lerpPower: 25
 --- !u!1102 &-7966719907205306231
 AnimatorState:
   serializedVersion: 5
@@ -79,7 +79,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: ShortAttack4
-  m_Speed: 1
+  m_Speed: 1.1
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 7780617831792225525}
@@ -146,9 +146,9 @@ MonoBehaviour:
   - stateName: Base Layer.AttackGroup.CastAttack2
     weight: 1
   - stateName: Base Layer.AttackGroup.CastAttack3
-    weight: 0.5
+    weight: 3
   - stateName: Base Layer.AttackGroup.CastAttack4
-    weight: 0.8
+    weight: 5
 --- !u!1107 &-6540346028188328965
 AnimatorStateMachine:
   serializedVersion: 5
@@ -262,8 +262,8 @@ MonoBehaviour:
   areaAngle: 0
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
-  repeatCount: 4
-  repeatInterval: 0.2
+  repeatCount: 2
+  repeatInterval: 0.08
   movementType: 0
   startDirectionType: 0
   startDirection: {x: 0, y: 0, z: 1}
@@ -341,6 +341,7 @@ AnimatorState:
   - {fileID: 263739552574020738}
   - {fileID: -4985702089219448737}
   - {fileID: -2048439699831450985}
+  - {fileID: 3036561820460627545}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -393,8 +394,8 @@ MonoBehaviour:
   areaAngle: 0
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
-  repeatCount: 2
-  repeatInterval: 0.15
+  repeatCount: 1
+  repeatInterval: 0.1
   movementType: 0
   startDirectionType: 0
   startDirection: {x: 0, y: 0, z: 1}
@@ -493,8 +494,8 @@ MonoBehaviour:
   areaAngle: 0
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
-  repeatCount: 2
-  repeatInterval: 0.15
+  repeatCount: 1
+  repeatInterval: 0.1
   movementType: 0
   startDirectionType: 0
   startDirection: {x: 0, y: 0, z: 1}
@@ -583,7 +584,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartTime: 0
-  EndTime: 0.55
+  EndTime: 0.2
   lookAtTarget: 1
   leftRightRandomAngle: 0
   lootAtTargetOffsetAngle: 0
@@ -657,7 +658,7 @@ MonoBehaviour:
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
   repeatCount: 2
-  repeatInterval: 0.2
+  repeatInterval: 0.08
   movementType: 0
   startDirectionType: 0
   startDirection: {x: 0, y: 0, z: 1}
@@ -824,8 +825,8 @@ MonoBehaviour:
   areaAngle: 0
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
-  repeatCount: 2
-  repeatInterval: 0.15
+  repeatCount: 1
+  repeatInterval: 0.1
   movementType: 0
   startDirectionType: 0
   startDirection: {x: 0, y: 0, z: 1}
@@ -964,7 +965,7 @@ MonoBehaviour:
   lootAtTargetOffsetAngle: 0
   lookAtRandom: 0
   desireDistance: 5
-  lerpPower: 5
+  lerpPower: 25
 --- !u!114 &-2412510766166914354
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1112,7 +1113,7 @@ MonoBehaviour:
   lootAtTargetOffsetAngle: 0
   lookAtRandom: 0
   desireDistance: 5
-  lerpPower: 5
+  lerpPower: 25
 --- !u!114 &-934138226225706683
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1151,8 +1152,8 @@ MonoBehaviour:
   areaAngle: 0
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
-  repeatCount: 2
-  repeatInterval: 0.15
+  repeatCount: 1
+  repeatInterval: 0.1
   movementType: 0
   startDirectionType: 0
   startDirection: {x: 0, y: 0, z: 1}
@@ -1292,7 +1293,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: ShortAttack6
-  m_Speed: 1
+  m_Speed: 1.1
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: -6183737591837650970}
@@ -1452,8 +1453,8 @@ MonoBehaviour:
   areaAngle: 0
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
-  repeatCount: 2
-  repeatInterval: 0.15
+  repeatCount: 1
+  repeatInterval: 0.1
   movementType: 0
   startDirectionType: 0
   startDirection: {x: 0, y: 0, z: 1}
@@ -1791,7 +1792,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: ShortAttack5
-  m_Speed: 1
+  m_Speed: 1.1
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 7669409802202549079}
@@ -1813,6 +1814,21 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!114 &3036561820460627545
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2e6805f699075e4eae576dc1aabd338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.05
+  EndTime: 0.2
+  speed: 2
 --- !u!114 &3264908734077295256
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1836,7 +1852,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: ShortAttack2
-  m_Speed: 1
+  m_Speed: 1.1
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: -3851654640249388328}
@@ -1866,7 +1882,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: ShortAttack3
-  m_Speed: 1
+  m_Speed: 1.1
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: -287319619418873489}
@@ -1896,7 +1912,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: ShortAttack7
-  m_Speed: 1
+  m_Speed: 1.1
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: -8236339040285382368}
@@ -1937,7 +1953,7 @@ MonoBehaviour:
   lootAtTargetOffsetAngle: 0
   lookAtRandom: 0
   desireDistance: 5
-  lerpPower: 5
+  lerpPower: 25
 --- !u!1102 &4173652971437060493
 AnimatorState:
   serializedVersion: 5
@@ -1946,7 +1962,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: ShortAttack1
-  m_Speed: 1
+  m_Speed: 1.1
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: -3426472839931487261}
@@ -2157,7 +2173,7 @@ MonoBehaviour:
   lootAtTargetOffsetAngle: 0
   lookAtRandom: 0
   desireDistance: 5
-  lerpPower: 5
+  lerpPower: 25
 --- !u!114 &6617581160911829894
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2177,7 +2193,7 @@ MonoBehaviour:
   lootAtTargetOffsetAngle: 0
   lookAtRandom: 0
   desireDistance: 5
-  lerpPower: 5
+  lerpPower: 25
 --- !u!114 &6892550502079999409
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2320,7 +2336,7 @@ MonoBehaviour:
   lootAtTargetOffsetAngle: 0
   lookAtRandom: 0
   desireDistance: 5
-  lerpPower: 5
+  lerpPower: 25
 --- !u!1101 &7669409802202549079
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -2461,8 +2477,8 @@ MonoBehaviour:
   areaAngle: 0
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
-  repeatCount: 2
-  repeatInterval: 0.15
+  repeatCount: 1
+  repeatInterval: 0.1
   movementType: 0
   startDirectionType: 0
   startDirection: {x: 0, y: 0, z: 1}
@@ -2542,7 +2558,7 @@ MonoBehaviour:
   lootAtTargetOffsetAngle: 0
   lookAtRandom: 0
   desireDistance: 5
-  lerpPower: 5
+  lerpPower: 25
 --- !u!114 &9101036132265660665
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2581,8 +2597,8 @@ MonoBehaviour:
   areaAngle: 0
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
-  repeatCount: 2
-  repeatInterval: 0.15
+  repeatCount: 1
+  repeatInterval: 0.1
   movementType: 0
   startDirectionType: 0
   startDirection: {x: 0, y: 0, z: 1}

@@ -297,6 +297,7 @@ AnimatorState:
   m_StateMachineBehaviours:
   - {fileID: 3385950277409516849}
   - {fileID: -4273927384874802580}
+  - {fileID: -316703407776946461}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -488,8 +489,8 @@ MonoBehaviour:
   parallelCount: 0
   parallelDistance: 0
   ignoreMainHitObjectByParallel: 0
-  circularSectorCount: 4
-  circularSectorBetweenAngle: 20
+  circularSectorCount: 12
+  circularSectorBetweenAngle: 10
   circularSectorUseWorldSpace: 0
   circularSectorWorldSpaceCenterAngleY: 0
   ignoreMainHitObjectByCircularSector: 1
@@ -815,7 +816,7 @@ MonoBehaviour:
   howitzerType: 0
   useWorldSpaceDirection: 0
   bothRandomAngle: 1
-  leftRightRandomAngle: 20
+  leftRightRandomAngle: 45
   leftRandomAngle: 0
   rightRandomAngle: 0
   upDownRandomAngle: 0
@@ -957,6 +958,21 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!114 &-316703407776946461
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2e6805f699075e4eae576dc1aabd338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.15
+  EndTime: 0.4
+  speed: 0.5
 --- !u!91 &9100000
 AnimatorController:
   m_ObjectHideFlags: 0
@@ -1027,7 +1043,7 @@ MonoBehaviour:
     existWallParameter: 0
     actionCountLimit: 0
   - stateName: Base Layer.AttackGroup.CloseAttack1
-    weight: 1
+    weight: 3
     useDistance1: 0
     distanceCompareType1: 0
     distanceParameter1: 0
@@ -1049,7 +1065,7 @@ MonoBehaviour:
     existWallParameter: 1
     actionCountLimit: 0
   - stateName: Base Layer.AttackGroup.FarAttack1
-    weight: 1
+    weight: 2
     useDistance1: 0
     distanceCompareType1: 0
     distanceParameter1: 0
@@ -1071,7 +1087,7 @@ MonoBehaviour:
     existWallParameter: 0
     actionCountLimit: 0
   - stateName: Base Layer.AttackGroup.NoWallAttack1
-    weight: 1
+    weight: 4
     useDistance1: 0
     distanceCompareType1: 0
     distanceParameter1: 0
@@ -1093,7 +1109,7 @@ MonoBehaviour:
     existWallParameter: 0
     actionCountLimit: 0
   - stateName: Base Layer.AttackGroup.ThroughAttack2
-    weight: 1
+    weight: 2
     useDistance1: 0
     distanceCompareType1: 0
     distanceParameter1: 0
@@ -1319,7 +1335,7 @@ MonoBehaviour:
   howitzerType: 0
   useWorldSpaceDirection: 0
   bothRandomAngle: 1
-  leftRightRandomAngle: 20
+  leftRightRandomAngle: 45
   leftRandomAngle: 0
   rightRandomAngle: 0
   upDownRandomAngle: 0

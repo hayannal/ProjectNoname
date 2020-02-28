@@ -73,7 +73,7 @@ MonoBehaviour:
   circularSectorWorldSpaceCenterAngleY: 0
   ignoreMainHitObjectByCircularSector: 0
   continuousHitObjectGeneratorBaseList:
-  - {fileID: 3121899063806915254, guid: 69a405c52ee10584bb2224260f13df24, type: 3}
+  - {fileID: 439218921487834056, guid: 00ee6b32066a5cd4c913962b4ff86ed9, type: 3}
   contactAll: 0
   monsterThroughCount: 0
   wallThrough: 0
@@ -99,7 +99,6 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 0
-  meAttackIndicatorReference: {fileID: 0}
 --- !u!114 &-7934483339405519081
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -187,7 +186,6 @@ AnimatorState:
   m_StateMachineBehaviours:
   - {fileID: -7934483339405519081}
   - {fileID: -8072175094259478716}
-  - {fileID: 4525558044401740679}
   - {fileID: 4420498766636702037}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -304,35 +302,6 @@ MonoBehaviour:
   fixedWorldPositionY: 0
   direction: {x: 0, y: 0, z: 1}
   parentName: 
---- !u!114 &4525558044401740679
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 730425ac1b42c454d818b8c323f30bae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTime: 0.22
-  EndTime: 0.82
-  indicatorType: 0
-  attackIndicatorPrefab: {fileID: 2161458790205252103, guid: f585d58d6ffc9ee4e812e4051e9415ea,
-    type: 3}
-  overrideLifeTime: 1.5
-  offset: {x: 0, y: 0, z: 0}
-  startDirection: {x: 0, y: 0, z: 1}
-  areaRadius: 0.9
-  attachPrefab: 0
-  createPositionType: 1
-  lineMaxDistance: 0
-  lineWidth: 1
-  sphereCastRadius: 0.2
-  wallThrough: 0
-  quadThrough: 0
-  dontSelfUse: 0
 --- !u!114 &7143102186761374112
 MonoBehaviour:
   m_ObjectHideFlags: 1

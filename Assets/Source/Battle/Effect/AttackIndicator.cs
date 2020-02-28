@@ -60,7 +60,8 @@ public class AttackIndicator : MonoBehaviour
 		switch (meAttackIndicator.indicatorType)
 		{
 			case eIndicatorType.Prefab:
-				cachedTransform.localScale = new Vector3(meAttackIndicator.areaRadius, meAttackIndicator.areaRadius, meAttackIndicator.areaRadius);
+				if (meAttackIndicator.createPositionType != MeAttackIndicator.eCreatePositionType.WorldPosition)
+					cachedTransform.localScale = new Vector3(meAttackIndicator.areaRadius, meAttackIndicator.areaRadius, meAttackIndicator.areaRadius);
 				break;
 			case eIndicatorType.Line:
 				lineRootTransform.localScale = new Vector3(meAttackIndicator.lineWidth, lineRootTransform.localScale.y, lineRootTransform.localScale.z);

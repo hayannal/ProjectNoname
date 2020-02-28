@@ -13,7 +13,7 @@ public class MeAttackIndicator : MecanimEventBase
 		LocalPosition,
 		TargetPosition,
 		RushPosition,
-		//WorldPosition,
+		WorldPosition,
 	}
 
 	override public bool RangeSignal { get { return true; } }
@@ -53,6 +53,9 @@ public class MeAttackIndicator : MecanimEventBase
 					break;
 				case eCreatePositionType.RushPosition:
 					offset.z = EditorGUILayout.FloatField("Distance Offset :", offset.z);
+					break;
+				case eCreatePositionType.WorldPosition:
+					offset = EditorGUILayout.Vector3Field("Position :", offset);
 					break;
 			}
 			startDirection = EditorGUILayout.Vector3Field("Direction :", startDirection);
@@ -141,6 +144,11 @@ public class MeAttackIndicator : MecanimEventBase
 						else
 							return;
 					}
+					break;
+				case eCreatePositionType.WorldPosition:
+					createPosition = offset;
+					createRotation = Quaternion.LookRotation(startDirection);
+					parentTransform = null;
 					break;
 			}
 			_attackIndicator = BattleInstanceManager.instance.GetCachedAttackIndicator(attackIndicatorPrefab, createPosition, createRotation, attachPrefab ? parentTransform : null);

@@ -284,7 +284,10 @@ public class MonsterAI : MonoBehaviour
 			randomPosition.y = 0.0f;
 
 			NavMeshHit hit;
-			if (NavMesh.SamplePosition(randomPosition, out hit, maxDistance, NavMesh.AllAreas))
+			NavMeshQueryFilter navMeshQueryFilter = new NavMeshQueryFilter();
+			navMeshQueryFilter.areaMask = NavMesh.AllAreas;
+			navMeshQueryFilter.agentTypeID = pathFinderController.agent.agentTypeID;
+			if (NavMesh.SamplePosition(randomPosition, out hit, maxDistance, navMeshQueryFilter))
 			{
 				result = hit.position;
 				break;
@@ -416,7 +419,10 @@ public class MonsterAI : MonoBehaviour
 			desirePosition.y = 0.0f;
 
 			NavMeshHit hit;
-			if (NavMesh.SamplePosition(desirePosition, out hit, 1.0f, NavMesh.AllAreas))
+			NavMeshQueryFilter navMeshQueryFilter = new NavMeshQueryFilter();
+			navMeshQueryFilter.areaMask = NavMesh.AllAreas;
+			navMeshQueryFilter.agentTypeID = pathFinderController.agent.agentTypeID;
+			if (NavMesh.SamplePosition(desirePosition, out hit, 1.0f, navMeshQueryFilter))
 			{
 				// 바로앞에 Wall있는데 가는건 좀 이상하다. 이때는 패스다.
 				Vector3 startPosition = actor.cachedTransform.position + randomDirection.normalized * actorRadius * 0.9f;

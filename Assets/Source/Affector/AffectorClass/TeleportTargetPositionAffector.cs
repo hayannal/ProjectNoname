@@ -115,9 +115,11 @@ public class TeleportTargetPositionAffector : AffectorBase
 		finalized = true;
 	}
 
+	int _agentTypeID = -1;
 	Vector3 GetTeleportPosition(Vector3 targetPosition)
 	{
 		int tryBreakCount = 0;
+		if (_agentTypeID == -1) _agentTypeID = MeLookAt.GetAgentTypeID(_actor);
 		while (true)
 		{
 			Vector2 randomCircle = Random.insideUnitCircle.normalized * _affectorValueLevelTableData.fValue2;
@@ -126,7 +128,10 @@ public class TeleportTargetPositionAffector : AffectorBase
 			desirePosition.z += randomCircle.y;
 
 			NavMeshHit hit;
-			if (NavMesh.SamplePosition(desirePosition, out hit, 0.1f, NavMesh.AllAreas))
+			NavMeshQueryFilter navMeshQueryFilter = new NavMeshQueryFilter();
+			navMeshQueryFilter.areaMask = NavMesh.AllAreas;
+			navMeshQueryFilter.agentTypeID = _agentTypeID;
+			if (NavMesh.SamplePosition(desirePosition, out hit, 0.1f, navMeshQueryFilter))
 				return desirePosition;
 
 			// exception handling

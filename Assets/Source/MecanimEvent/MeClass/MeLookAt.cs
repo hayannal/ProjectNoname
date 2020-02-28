@@ -115,6 +115,7 @@ public class MeLookAt : MecanimEventBase
 
 
 
+	int _agentTypeID = -1;
 	Vector3 GetRandomPosition()
 	{
 		Vector3 randomPosition = Vector3.zero;
@@ -122,6 +123,7 @@ public class MeLookAt : MecanimEventBase
 		float maxDistance = 1.0f;
 		int tryCount = 0;
 		int tryBreakCount = 0;
+		if (_agentTypeID == -1) _agentTypeID = GetAgentTypeID(_actor);
 		while (true)
 		{
 			Vector2 randomCircle = Random.insideUnitCircle.normalized;
@@ -132,7 +134,10 @@ public class MeLookAt : MecanimEventBase
 			randomPosition.y = 0.0f;
 
 			NavMeshHit hit;
-			if (NavMesh.SamplePosition(randomPosition, out hit, maxDistance, NavMesh.AllAreas))
+			NavMeshQueryFilter navMeshQueryFilter = new NavMeshQueryFilter();
+			navMeshQueryFilter.areaMask = NavMesh.AllAreas;
+			navMeshQueryFilter.agentTypeID = _agentTypeID;
+			if (NavMesh.SamplePosition(randomPosition, out hit, maxDistance, navMeshQueryFilter))
 			{
 				result = hit.position;
 				break;
@@ -154,5 +159,16 @@ public class MeLookAt : MecanimEventBase
 			}
 		}
 		return result;
+	}
+
+	public static int GetAgentTypeID(Actor actor)
+	{
+		if (actor.IsMonsterActor())
+		{
+			MonsterActor monsterActor = actor as MonsterActor;
+			if (monsterActor != null)
+				return monsterActor.pathFinderController.agent.agentTypeID;
+		}
+		return 0;
 	}
 }

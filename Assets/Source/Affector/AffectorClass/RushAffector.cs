@@ -109,6 +109,7 @@ public class RushAffector : AffectorBase
 		Debug.LogError("Invalid call. Duplicated Rush Affector.");
 	}
 
+	int _agentTypeID = -1;
 	Vector3 GetRandomPosition()
 	{
 		Vector3 randomPosition = Vector3.zero;
@@ -116,6 +117,7 @@ public class RushAffector : AffectorBase
 		float maxDistance = 1.0f;
 		int tryCount = 0;
 		int tryBreakCount = 0;
+		if (_agentTypeID == -1) _agentTypeID = MeLookAt.GetAgentTypeID(_actor);
 		while (true)
 		{
 			randomPosition = _actor.cachedTransform.position + _actor.cachedTransform.forward * Random.Range(0.0f, 10.0f);
@@ -124,7 +126,10 @@ public class RushAffector : AffectorBase
 			randomPosition.y = 0.0f;
 
 			NavMeshHit hit;
-			if (NavMesh.SamplePosition(randomPosition, out hit, maxDistance, NavMesh.AllAreas))
+			NavMeshQueryFilter navMeshQueryFilter = new NavMeshQueryFilter();
+			navMeshQueryFilter.areaMask = NavMesh.AllAreas;
+			navMeshQueryFilter.agentTypeID = _agentTypeID;
+			if (NavMesh.SamplePosition(randomPosition, out hit, maxDistance, navMeshQueryFilter))
 			{
 				result = hit.position;
 				break;

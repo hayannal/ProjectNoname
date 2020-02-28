@@ -129,17 +129,22 @@ public class MeSummon : MecanimEventBase
 		}
 	}
 
+	int _agentTypeID = -1;
 	Vector3 GetNavPosition(Vector3 desirePosition)
 	{
 		Vector3 result = Vector3.zero;
 		float maxDistance = 1.0f;
 		int tryBreakCount = 0;
 		desirePosition.y = 0.0f;
+		if (_agentTypeID == -1) _agentTypeID = MeLookAt.GetAgentTypeID(_actor);
 		while (true)
 		{
 			// AI쪽 코드에서 가져와서 변형
 			NavMeshHit hit;
-			if (NavMesh.SamplePosition(desirePosition, out hit, maxDistance, NavMesh.AllAreas))
+			NavMeshQueryFilter navMeshQueryFilter = new NavMeshQueryFilter();
+			navMeshQueryFilter.areaMask = NavMesh.AllAreas;
+			navMeshQueryFilter.agentTypeID = _agentTypeID;
+			if (NavMesh.SamplePosition(desirePosition, out hit, maxDistance, navMeshQueryFilter))
 			{
 				result = hit.position;
 				break;

@@ -224,7 +224,7 @@ public class PlayerAI : MonoBehaviour
 		NavMeshQueryFilter navMeshQueryFilter = new NavMeshQueryFilter();
 		navMeshQueryFilter.areaMask = NavMesh.AllAreas;
 		navMeshQueryFilter.agentTypeID = BattleInstanceManager.instance.bulletFlyingAgentTypeID;
-		_lastNavMeshResult = NavMesh.CalculatePath(sourcePosition, targetPosition, navMeshQueryFilter, _navMeshPath);
+		_lastNavMeshResult = NavMesh.CalculatePath(sourcePosition, new Vector3(targetPosition.x, 0.0f, targetPosition.z), navMeshQueryFilter, _navMeshPath);
 		_lastSourcePosition = sourcePosition;
 		_lastTargetPosition = targetPosition;
 

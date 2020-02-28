@@ -157,13 +157,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartTime: 0
-  EndTime: 0.45
+  EndTime: 0.55
   lookAtTarget: 1
   leftRightRandomAngle: 0
   lootAtTargetOffsetAngle: 0
   lookAtRandom: 0
   desireDistance: 5
-  lerpPower: 5
+  lerpPower: 20
 --- !u!1107 &-6540346028188328965
 AnimatorStateMachine:
   serializedVersion: 5
@@ -378,7 +378,7 @@ MonoBehaviour:
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
   howitzerRandomPositionRadiusRange: {x: 0, y: 0}
-  speed: 5
+  speed: 5.5
   useSpeedChange: 0
   targetSpeed: 0
   speedChangeTime: 0
@@ -426,7 +426,6 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 0
-  meAttackIndicatorReference: {fileID: 0}
 --- !u!114 &-4033088349303942762
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -540,7 +539,7 @@ MonoBehaviour:
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
   howitzerRandomPositionRadiusRange: {x: 0, y: 0}
-  speed: 5
+  speed: 5.5
   useSpeedChange: 0
   targetSpeed: 0
   speedChangeTime: 0
@@ -588,7 +587,6 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 0
-  meAttackIndicatorReference: {fileID: 0}
 --- !u!1102 &-2405036331252820940
 AnimatorState:
   serializedVersion: 5
@@ -695,7 +693,7 @@ MonoBehaviour:
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
   howitzerRandomPositionRadiusRange: {x: 0, y: 0}
-  speed: 5
+  speed: 5.5
   useSpeedChange: 0
   targetSpeed: 0
   speedChangeTime: 0
@@ -743,7 +741,6 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 0
-  meAttackIndicatorReference: {fileID: 0}
 --- !u!114 &-2120240598177264927
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -958,7 +955,7 @@ MonoBehaviour:
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
   howitzerRandomPositionRadiusRange: {x: 0, y: 0}
-  speed: 5
+  speed: 5.5
   useSpeedChange: 0
   targetSpeed: 0
   speedChangeTime: 0
@@ -1006,7 +1003,6 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 0
-  meAttackIndicatorReference: {fileID: 0}
 --- !u!91 &9100000
 AnimatorController:
   m_ObjectHideFlags: 0
@@ -1084,13 +1080,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartTime: 0.1
-  EndTime: 0.5
+  EndTime: 0.57
   lookAtTarget: 1
   leftRightRandomAngle: 0
   lootAtTargetOffsetAngle: 0
   lookAtRandom: 0
   desireDistance: 5
-  lerpPower: 3
+  lerpPower: 5
 --- !u!1107 &1716283751575539540
 AnimatorStateMachine:
   serializedVersion: 5
@@ -1279,7 +1275,6 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 0
-  meAttackIndicatorReference: {fileID: 0}
 --- !u!114 &3504806632949339525
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1421,7 +1416,7 @@ MonoBehaviour:
   oneHitPerTarget: 1
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttackMelee01
+  - NormalAttackMelee1.5
   showHitEffect: 0
   hitEffectObject: {fileID: 0}
   hitEffectLookAtNormal: 0
@@ -1431,7 +1426,6 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 0
-  meAttackIndicatorReference: {fileID: 0}
 --- !u!1102 &3654734499201750231
 AnimatorState:
   serializedVersion: 5
@@ -1574,7 +1568,6 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 0
-  meAttackIndicatorReference: {fileID: 0}
 --- !u!114 &5395870670472927790
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1701,7 +1694,7 @@ AnimatorState:
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
   m_Mirror: 0
-  m_SpeedParameterActive: 0
+  m_SpeedParameterActive: 1
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
@@ -1739,7 +1732,6 @@ MonoBehaviour:
   sphereCastRadius: 0.2
   wallThrough: 0
   quadThrough: 0
-  dontSelfUse: 0
 --- !u!114 &7363083532164061960
 MonoBehaviour:
   m_ObjectHideFlags: 1

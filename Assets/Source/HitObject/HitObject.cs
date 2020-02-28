@@ -901,13 +901,16 @@ public class HitObject : MonoBehaviour
 
 		// hitStay를 쓰면 트리거 하나를 추가로 가지고 있어야한다. 여기에 몹Through를 켜면 긁고 지나가는 투과형 다단히트 오브젝트가 된다.
 		_tempTriggerOnCollision = false;
-		if (_collider != null) _collider.isTrigger = false;
-		if (_signal.useHitStay && _signal.targetDetectType == eTargetDetectType.Collider)
+		if (_signal.onlyUsedAsTrigger == false)
 		{
-			if (_triggerForHitStay == null)
+			if (_collider != null) _collider.isTrigger = false;
+			if (_signal.useHitStay && _signal.targetDetectType == eTargetDetectType.Collider)
 			{
-				_triggerForHitStay = ObjectUtil.CopyComponent<Collider>(_collider, gameObject);
-				_triggerForHitStay.isTrigger = true;
+				if (_triggerForHitStay == null)
+				{
+					_triggerForHitStay = ObjectUtil.CopyComponent<Collider>(_collider, gameObject);
+					_triggerForHitStay.isTrigger = true;
+				}
 			}
 		}
 
@@ -1525,7 +1528,7 @@ public class HitObject : MonoBehaviour
 			// 여기서 리턴시켜버리면 hitStay오브젝트가 관통하는 순간엔 체크가 안되서 하면 안된다.
 			//return;
 		}
-		if (_triggerForHitStay == null)
+		if (_triggerForHitStay == null && _signal.onlyUsedAsTrigger == false)
 			return;
 		if (other.isTrigger)
 			return;

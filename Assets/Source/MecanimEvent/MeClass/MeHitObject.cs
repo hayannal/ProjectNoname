@@ -95,6 +95,8 @@ public class MeHitObject : MecanimEventBase {
 	// HitStay의 중첩을 관리하기 위해 쓰는 아이디. 해당 액터안에서만 독립적이면 된다. 그러니 하나만 쓸거라면 0으로 둬도 무방하다.
 	public int hitStayIdForIgnoreDuplicate;
 	public bool hitStayLineRendererTrigger;
+	// 네모영역 지역공격을 위해 collision으로 변환하지 않고 오로지 trigger로만 동작해야하는 경우가 생겼다.
+	public bool onlyUsedAsTrigger;
 	public bool oneHitPerTarget = false;
 	public bool useLineRenderer;
 	
@@ -307,6 +309,7 @@ public class MeHitObject : MecanimEventBase {
 				hitStayIgnoreDuplicate = EditorGUILayout.Toggle("Hit Stay No Duplicate", hitStayIgnoreDuplicate);
 				if (hitStayIgnoreDuplicate)
 					hitStayIdForIgnoreDuplicate = EditorGUILayout.IntField("Hit Stay Id in Actor :", hitStayIdForIgnoreDuplicate);
+				onlyUsedAsTrigger = EditorGUILayout.Toggle("Only Used As Trigger :", onlyUsedAsTrigger);
 			}
 			if (useHitStay == false)
 			{

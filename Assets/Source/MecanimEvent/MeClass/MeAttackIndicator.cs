@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
+[CreateAssetMenu(fileName = "NewMeAttackIndicator", menuName = "CustomAsset/Create MeAttackIndicator", order = 1102)]
 public class MeAttackIndicator : MecanimEventBase
 {
 	public enum eCreatePositionType
@@ -153,6 +154,21 @@ public class MeAttackIndicator : MecanimEventBase
 			_attackIndicator.SetLifeTime(overrideLifeTime);
 			_attackIndicator = null;
 		}
+	}
+
+	public void InitializeForGenerator(Vector3 position, Quaternion rotation, Transform spawnTransform)
+	{
+#if UNITY_EDITOR
+		if (overrideLifeTime == 0.0f)
+		{
+			Debug.LogError("AttackIndicator for Generator need overrideLifeTime!");
+			return;
+		}
+#endif
+
+		AttackIndicator attackIndicator = BattleInstanceManager.instance.GetCachedAttackIndicator(attackIndicatorPrefab, position, rotation, attachPrefab ? spawnTransform : null);
+		attackIndicator.InitializeAttackIndicator(this);
+		attackIndicator.SetLifeTime(overrideLifeTime);
 	}
 
 	override public void OnRangeSignalEnd(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

@@ -507,7 +507,7 @@ public class MonsterAI : MonoBehaviour
 	bool _initChaseCancelTime = false;
 	float _chaseCancelTime = 0.0f;
 	Vector3 _lastGoalPosition = Vector3.up;
-	void UpdateChase(bool callByAttackAction = false)
+	void UpdateChase()
 	{
 		if (targetActor == null)
 		{
@@ -538,13 +538,10 @@ public class MonsterAI : MonoBehaviour
 		float sqrRadius = (targetRadius + actorRadius) * (targetRadius + actorRadius) + (_chaseDistance > 0.0f ? 0.01f : 0.0f) + (_chaseDistance * _chaseDistance);
 		if (sqrDiff <= sqrRadius)
 		{
-			if (callByAttackAction == false)
-			{
-				if (pathFinderController.agent.hasPath)
-					pathFinderController.agent.ResetPath();
-				ResetChaseStateInfo();
-				NextStep();
-			}
+			if (pathFinderController.agent.hasPath)
+				pathFinderController.agent.ResetPath();
+			ResetChaseStateInfo();
+			NextStep();
 			return;
 		}
 
@@ -661,28 +658,6 @@ public class MonsterAI : MonoBehaviour
 			{
 				if (lookAtTargetBeforeAttack)
 					pathFinderController.movement.rotation = Quaternion.LookRotation(targetActor.cachedTransform.position - actor.cachedTransform.position);
-			}
-		}
-
-		// Start State를 Attack Action으로 해두면 무조건 Attack 한번 시작하고 나가야 할거 같은데
-		// 이 코드가 위쪽에 있으면 시작과 동시에 UpdateChase를 호출해서 destination을 설정해버린다. 그래서 아래쪽으로 옮긴다.
-		if (useStateList[(int)eStateType.Chase] && actor.actionController.mecanimState.IsState((int)eMecanimState.Idle))
-		{
-			bool enable = false;
-			// 후딜이 없을때 혹은 후딜이 있더라도 어택을 실행하기 전에만 처리해야
-			// 어택하고 후딜 있는데 후딜 안하고 넘어가는 경우가 생기지 않는다.
-			if (useStateList[(int)eStateType.AttackDelay] == false) enable = true;
-			if (useStateList[(int)eStateType.AttackDelay] && _attackPlayed == false) enable = true;
-			if (_waitAttackState) enable = false;
-			if (enable)
-			{
-				UpdateChase(true);
-				// 정확히는 다음 프레임에 hasPath가 true로 된다. 그냥 이렇게 처리해도 괜찮은건가
-				if (pathFinderController.agent.hasPath)
-				{
-					_currentState = eStateType.Chase;
-					return;
-				}
 			}
 		}
 	}

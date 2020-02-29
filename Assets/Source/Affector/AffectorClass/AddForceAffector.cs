@@ -19,7 +19,7 @@ public class AddForceAffector : AffectorBase
 		switch (affectorValueLevelTableData.iValue1)
 		{
 			case 0:
-				_actor.GetRigidbody().AddForce(hitParameter.contactNormal * affectorValueLevelTableData.fValue1, ForceMode.Impulse);
+				_actor.GetRigidbody().AddForce(-hitParameter.contactNormal * affectorValueLevelTableData.fValue1, ForceMode.Impulse);
 				break;
 			case 1:
 				Actor attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(hitParameter.statusStructForHitObject.actorInstanceId);

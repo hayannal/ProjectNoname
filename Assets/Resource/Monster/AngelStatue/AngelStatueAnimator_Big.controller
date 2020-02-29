@@ -17,7 +17,7 @@ MonoBehaviour:
   indicatorType: 0
   attackIndicatorPrefab: {fileID: 2827028742784260837, guid: 92e3acf5375f3b746a2ae1e80bdac085,
     type: 3}
-  overrideLifeTime: 5
+  overrideLifeTime: 3.5
   offset: {x: 1.44, y: 0, z: 2.5}
   startDirection: {x: 0, y: 0, z: 1}
   areaRadius: 1
@@ -80,7 +80,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.645
+  StartTime: 0.45
   EndTime: 1
   targetDetectType: 2
   hitObjectPrefab: {fileID: 1213669126786022100, guid: 769c6d562eabbd849a6858b150f9200d,
@@ -158,7 +158,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttack2.0
+  - NormalAttackEtc1.25
   - AddForceCommon
   showHitEffect: 0
   hitEffectObject: {fileID: 0}
@@ -349,7 +349,7 @@ MonoBehaviour:
   indicatorType: 0
   attackIndicatorPrefab: {fileID: 2827028742784260837, guid: ac06f8fbaf87d264aa4e9cdcea7a3e69,
     type: 3}
-  overrideLifeTime: 5
+  overrideLifeTime: 3.5
   offset: {x: -2.78, y: 0, z: -1.55}
   startDirection: {x: 0, y: 0, z: 1}
   areaRadius: 1
@@ -376,7 +376,7 @@ AnimatorStateTransition:
   serializedVersion: 3
   m_TransitionDuration: 0.01
   m_TransitionOffset: 0
-  m_ExitTime: 0.99
+  m_ExitTime: 0.46
   m_HasExitTime: 1
   m_HasFixedDuration: 0
   m_InterruptionSource: 0
@@ -433,7 +433,7 @@ MonoBehaviour:
     existWallParameter: 0
     actionCountLimit: 0
   - stateName: Base Layer.AttackGroup.AreaAttack1
-    weight: 0.5
+    weight: 1
     useDistance1: 0
     distanceCompareType1: 0
     distanceParameter1: 0
@@ -471,13 +471,13 @@ MonoBehaviour:
     useTargetActorState: 0
     actorStateId: 
     useMonsterCount: 1
-    monsterCountCompareType: 1
-    monsterCountParameter: 1
+    monsterCountCompareType: 5
+    monsterCountParameter: 2
     useCheckWall: 0
     existWallParameter: 0
     actionCountLimit: 0
   - stateName: Base Layer.AttackGroup.FirstSoloAttack1
-    weight: 999
+    weight: 99999
     useDistance1: 0
     distanceCompareType1: 0
     distanceParameter1: 0
@@ -493,11 +493,55 @@ MonoBehaviour:
     useTargetActorState: 0
     actorStateId: 
     useMonsterCount: 1
-    monsterCountCompareType: 1
-    monsterCountParameter: 1
+    monsterCountCompareType: 5
+    monsterCountParameter: 2
     useCheckWall: 0
     existWallParameter: 0
     actionCountLimit: 1
+  - stateName: Base Layer.AttackGroup.AreaAttack1
+    weight: 99999
+    useDistance1: 0
+    distanceCompareType1: 0
+    distanceParameter1: 0
+    useDistance2: 0
+    distanceCompareType2: 0
+    distanceParameter2: 0
+    useHpRatio1: 0
+    hpRatioCompareType1: 0
+    hpRatioParameter1: 0
+    useHpRatio2: 0
+    hpRatioCompareType2: 0
+    hpRatioParameter2: 0
+    useTargetActorState: 0
+    actorStateId: 
+    useMonsterCount: 0
+    monsterCountCompareType: 5
+    monsterCountParameter: 2
+    useCheckWall: 0
+    existWallParameter: 0
+    actionCountLimit: 1
+  - stateName: Base Layer.AttackGroup.AreaAttack1
+    weight: 2
+    useDistance1: 0
+    distanceCompareType1: 0
+    distanceParameter1: 0
+    useDistance2: 0
+    distanceCompareType2: 0
+    distanceParameter2: 0
+    useHpRatio1: 0
+    hpRatioCompareType1: 0
+    hpRatioParameter1: 0
+    useHpRatio2: 0
+    hpRatioCompareType2: 0
+    hpRatioParameter2: 0
+    useTargetActorState: 0
+    actorStateId: 
+    useMonsterCount: 1
+    monsterCountCompareType: 4
+    monsterCountParameter: 1
+    useCheckWall: 1
+    existWallParameter: 0
+    actionCountLimit: 0
 --- !u!1102 &-2473529730778767166
 AnimatorState:
   serializedVersion: 5
@@ -590,7 +634,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.64
+  StartTime: 0.445
   EndTime: 1
   effectData: {fileID: 6970001894827192747, guid: d11c6981264fcc448816e994cbf92173,
     type: 3}
@@ -614,7 +658,7 @@ AnimatorStateTransition:
   serializedVersion: 3
   m_TransitionDuration: 0.01
   m_TransitionOffset: 0
-  m_ExitTime: 0.99
+  m_ExitTime: 0.46
   m_HasExitTime: 1
   m_HasFixedDuration: 0
   m_InterruptionSource: 0
@@ -637,6 +681,7 @@ AnimatorState:
   - {fileID: -2175381089220481282}
   - {fileID: 8135257257021352476}
   - {fileID: 1925188658290411348}
+  - {fileID: 3078108809921339422}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -791,7 +836,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartTime: 0
-  EndTime: 1
+  EndTime: 0.8
   state: 3
 --- !u!114 &-524504399664116735
 MonoBehaviour:
@@ -859,7 +904,7 @@ MonoBehaviour:
   indicatorType: 0
   attackIndicatorPrefab: {fileID: 2827028742784260837, guid: 81ab4092a73010143ad2f439daaa98ae,
     type: 3}
-  overrideLifeTime: 5
+  overrideLifeTime: 3.5
   offset: {x: 1.44, y: 0, z: -6.62}
   startDirection: {x: 0, y: 0, z: 1}
   areaRadius: 1
@@ -1137,7 +1182,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 103a63d9ada304948adbac0e5356a9c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.5
+  StartTime: 0.2
   EndTime: 1
   enable: 1
 --- !u!114 &2201458702498679606
@@ -1200,6 +1245,23 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: AttackAniSpeedRatio
+--- !u!114 &3078108809921339422
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 581a8090da5e72244af0dc2cfadca170, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.46
+  EndTime: 1
+  rate: 1
+  stateName: Idle
+  fadeDuration: 0.01
 --- !u!1107 &3309604146399992188
 AnimatorStateMachine:
   serializedVersion: 5
@@ -1249,7 +1311,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.645
+  StartTime: 0.45
   EndTime: 1
   targetDetectType: 2
   hitObjectPrefab: {fileID: 1213669126786022100, guid: 888c0a78f5af0bc4a8ece0056f08dcc3,
@@ -1327,7 +1389,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttack2.0
+  - NormalAttackEtc1.25
   - AddForceCommon
   showHitEffect: 0
   hitEffectObject: {fileID: 0}
@@ -1416,7 +1478,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.64
+  StartTime: 0.445
   EndTime: 1
   effectData: {fileID: 4952491793597954335, guid: e432bb673ac574a4caeec424c716dcf6,
     type: 3}
@@ -1563,7 +1625,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.64
+  StartTime: 0.445
   EndTime: 1
   effectData: {fileID: 7135899216470490236, guid: 2bed6f8310651814aabc6b3ae11085d9,
     type: 3}
@@ -1614,7 +1676,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.645
+  StartTime: 0.45
   EndTime: 1
   targetDetectType: 2
   hitObjectPrefab: {fileID: 1213669126786022100, guid: 3d20ac88ce36c4044a4a1df94af3a6e8,
@@ -1692,7 +1754,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttack2.0
+  - NormalAttackEtc1.25
   - AddForceCommon
   showHitEffect: 0
   hitEffectObject: {fileID: 0}

@@ -196,7 +196,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16c7fbc98e43a374b85a6a2909d657eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startDelayRange: {x: 0, y: 0}
+  startDelayRange: {x: 0.2, y: 0.2}
   startState: 3
   useStateList: 000000010100
   moveTimeRange: {x: 4, y: 4}
@@ -204,7 +204,6 @@ MonoBehaviour:
   desireDistance: 5
   straightMoveTimeRange: {x: 0, y: 0}
   straightRefreshTickTimeRange: {x: 0, y: 0}
-  straightRefreshTickWaitTime: 0
   straightMoveType: 0
   customActionPlayType: 1
   customActionName: 
@@ -215,7 +214,7 @@ MonoBehaviour:
   attackActionName: AttackGroup
   attackActionFadeDuration: 0.05
   lookAtTargetBeforeAttack: 0
-  attackDelayTimeRange: {x: 2, y: 4}
+  attackDelayTimeRange: {x: 1, y: 2}
   useAnimatorParameterForAI: 0
   listAnimatorParameterForAI: 
 --- !u!1001 &761896660025407399
@@ -225,6 +224,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6434532658791129960}
     m_Modifications:
+    - target: {fileID: 100000, guid: 12b340d4f3cecea4c9012c4820f458ef, type: 3}
+      propertyPath: m_Name
+      value: angelStatue
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 12b340d4f3cecea4c9012c4820f458ef, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0
@@ -280,10 +283,6 @@ PrefabInstance:
     - target: {fileID: 400000, guid: 12b340d4f3cecea4c9012c4820f458ef, type: 3}
       propertyPath: m_LocalScale.z
       value: 1.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: 12b340d4f3cecea4c9012c4820f458ef, type: 3}
-      propertyPath: m_Name
-      value: angelStatue
       objectReference: {fileID: 0}
     - target: {fileID: 9500000, guid: 12b340d4f3cecea4c9012c4820f458ef, type: 3}
       propertyPath: m_Controller

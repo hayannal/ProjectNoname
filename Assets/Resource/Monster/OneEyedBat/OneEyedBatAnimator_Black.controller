@@ -42,16 +42,16 @@ MonoBehaviour:
   repeatInterval: 0
   movementType: 0
   startDirectionType: 1
-  startDirection: {x: 1, y: 0, z: 0}
+  startDirection: {x: 0, y: 0, z: 1}
   howitzerType: 0
   useWorldSpaceDirection: 0
   bothRandomAngle: 1
-  leftRightRandomAngle: 0
+  leftRightRandomAngle: 45
   leftRandomAngle: 0
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 4
   useSpeedChange: 0
   targetSpeed: 0
@@ -68,8 +68,8 @@ MonoBehaviour:
   parallelCount: 0
   parallelDistance: 0
   ignoreMainHitObjectByParallel: 0
-  circularSectorCount: 2
-  circularSectorBetweenAngle: 180
+  circularSectorCount: 3
+  circularSectorBetweenAngle: 120
   circularSectorUseWorldSpace: 0
   circularSectorWorldSpaceCenterAngleY: 0
   ignoreMainHitObjectByCircularSector: 1
@@ -86,6 +86,7 @@ MonoBehaviour:
   hitStayIgnoreDuplicate: 0
   hitStayIdForIgnoreDuplicate: 0
   hitStayLineRendererTrigger: 0
+  onlyUsedAsTrigger: 0
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:

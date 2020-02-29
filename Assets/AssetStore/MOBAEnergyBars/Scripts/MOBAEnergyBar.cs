@@ -118,16 +118,22 @@ public class MOBAEnergyBar : MonoBehaviour {
     }
 
 #if USE_LERP_DAMAGE
-	public bool UpdateLerpDamage()
+	public bool IsDamageZero()
 	{
+		if (damage == 0.0f)
+			return true;
+		return false;
+	}
+
+	public void UpdateLerpDamage()
+	{
+		if (damage == 0.0f)
+			return;
+
 		damage = Mathf.Lerp(damage, 0.0f, Time.deltaTime * 4.0f);
 
 		if (Mathf.Abs(damage) < MaxValue * 0.01f)
-		{
 			damage = 0.0f;
-			return true;
-		}
-		return false;
 	}
 #endif
 

@@ -50,7 +50,6 @@ public class PlayerGaugeCanvas : MonoBehaviour
 	void OnEnable()
 	{
 		_lateFillDelayRemainTime = 0.0f;
-		_lateFillLerpStarted = false;
 		_prevTargetPosition = -Vector3.up;
 		_initialized = false;
 	}
@@ -134,7 +133,7 @@ public class PlayerGaugeCanvas : MonoBehaviour
 		}
 		else
 		{
-			if (_lateFillLerpStarted == false && _lateFillDelayRemainTime == 0.0f)
+			if (mobaEnergyBar.IsDamageZero() && _lateFillDelayRemainTime == 0.0f)
 				_lateFillDelayRemainTime = LateFillDelay;
 		}
 
@@ -144,24 +143,17 @@ public class PlayerGaugeCanvas : MonoBehaviour
 
 	const float LateFillDelay = 0.9f;
 	float _lateFillDelayRemainTime = 0.0f;
-	bool _lateFillLerpStarted = false;
 	void UpdateLateFill()
 	{
 		if (_lateFillDelayRemainTime > 0.0f)
 		{
 			_lateFillDelayRemainTime -= Time.deltaTime;
 			if (_lateFillDelayRemainTime <= 0.0f)
-			{
 				_lateFillDelayRemainTime = 0.0f;
-				_lateFillLerpStarted = true;
-			}
+			return;
 		}
 
-		if (_lateFillLerpStarted == false)
-			return;
-
-		if (mobaEnergyBar.UpdateLerpDamage())
-			_lateFillLerpStarted = false;
+		mobaEnergyBar.UpdateLerpDamage();
 	}
 
 	const float DEFAULT_CANVAS_GROUP_ALPHA = 0.78125f;

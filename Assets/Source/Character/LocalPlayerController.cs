@@ -95,7 +95,7 @@ public sealed class LocalPlayerController : BaseCharacterController
 	/// 
 	/// </summary>
 
-	int _clearCustomTargetWaitCount = 0;
+	bool _waitAttackState = false;
 	bool _standbyClearCustomTarget = false;
 	RaycastHit[] _raycastHitList = null;
 	protected override void Animate()
@@ -198,7 +198,7 @@ public sealed class LocalPlayerController : BaseCharacterController
 			
 			if ((groundHitted || raycastHitted) && actionController.PlayActionByControl(Control.eControllerType.ScreenController, Control.eInputType.Tab))
 			{
-				_clearCustomTargetWaitCount = 10;
+				_waitAttackState = true;
 				RotateTowards(targetPosition - cachedTransform.position);
 				targetPosition = CheckAttackRange(targetPosition, targetCollider);
 				actor.targetingProcessor.SetCustomTargetPosition(targetPosition);
@@ -212,14 +212,23 @@ public sealed class LocalPlayerController : BaseCharacterController
 			actionController.PlayActionByControl(Control.eControllerType.UltimateSkillSlot, Control.eInputType.Tab);
 		}
 
-		if (_clearCustomTargetWaitCount > 0)
+		if (_waitAttackState)
 		{
-			_clearCustomTargetWaitCount -= 1;
-			if (_clearCustomTargetWaitCount == 0)
+			if (actor.actionController.mecanimState.IsState((int)eMecanimState.Attack))
+			{
+				_waitAttackState = false;
 				_standbyClearCustomTarget = true;
+				return;
+			}
+			if (actor.actionController.mecanimState.IsState((int)eMecanimState.Move))
+			{
+				// for attack cancel
+				// 그렇지만 Attack State가 0부터 시작되어있을 경우 클릭한 바로 다음 프레임에 움직여야 들어오는거라 일반적인 경우라면 불가능할거다. 안전장치 겸 해둔다.
+				_waitAttackState = false;
+			}
 		}
 
-		if (_standbyClearCustomTarget && actionController.mecanimState.IsState((int)eMecanimState.Idle))
+		if (_standbyClearCustomTarget && actionController.mecanimState.IsState((int)eMecanimState.Attack) == false && actionController.mecanimState.IsState((int)eMecanimState.Idle))
 		{
 			actor.targetingProcessor.ClearCustomTargetPosition();
 			_standbyClearCustomTarget = false;

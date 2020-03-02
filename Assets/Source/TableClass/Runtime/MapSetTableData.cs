@@ -21,6 +21,10 @@ public class MapSetTableData
   public string[] angelMap { get { return _angelMap; } set { _angelMap = value; } }
   
   [SerializeField]
+  string[] _rightBeforeBossMap = new string[0];
+  public string[] rightBeforeBossMap { get { return _rightBeforeBossMap; } set { _rightBeforeBossMap = value; } }
+  
+  [SerializeField]
   string[] _bossMap = new string[0];
   public string[] bossMap { get { return _bossMap; } set { _bossMap = value; } }
   

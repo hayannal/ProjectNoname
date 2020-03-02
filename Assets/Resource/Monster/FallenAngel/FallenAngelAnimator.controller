@@ -18,6 +18,7 @@ MonoBehaviour:
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -49,7 +50,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 0
   useSpeedChange: 0
   targetSpeed: 0
@@ -84,6 +85,7 @@ MonoBehaviour:
   hitStayIgnoreDuplicate: 0
   hitStayIdForIgnoreDuplicate: 0
   hitStayLineRendererTrigger: 0
+  onlyUsedAsTrigger: 0
   oneHitPerTarget: 1
   useLineRenderer: 0
   affectorValueIdList:
@@ -115,6 +117,7 @@ MonoBehaviour:
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -146,7 +149,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 0
   useSpeedChange: 0
   targetSpeed: 0
@@ -181,6 +184,7 @@ MonoBehaviour:
   hitStayIgnoreDuplicate: 0
   hitStayIdForIgnoreDuplicate: 0
   hitStayLineRendererTrigger: 0
+  onlyUsedAsTrigger: 0
   oneHitPerTarget: 1
   useLineRenderer: 0
   affectorValueIdList:
@@ -212,6 +216,7 @@ MonoBehaviour:
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -243,7 +248,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 0
   useSpeedChange: 0
   targetSpeed: 0
@@ -278,6 +283,7 @@ MonoBehaviour:
   hitStayIgnoreDuplicate: 0
   hitStayIdForIgnoreDuplicate: 0
   hitStayLineRendererTrigger: 0
+  onlyUsedAsTrigger: 0
   oneHitPerTarget: 1
   useLineRenderer: 0
   affectorValueIdList:
@@ -336,6 +342,7 @@ MonoBehaviour:
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -367,7 +374,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 0
   useSpeedChange: 0
   targetSpeed: 0
@@ -402,6 +409,7 @@ MonoBehaviour:
   hitStayIgnoreDuplicate: 0
   hitStayIdForIgnoreDuplicate: 0
   hitStayLineRendererTrigger: 0
+  onlyUsedAsTrigger: 0
   oneHitPerTarget: 1
   useLineRenderer: 0
   affectorValueIdList:
@@ -444,6 +452,12 @@ MonoBehaviour:
     hpRatioParameter2: 0
     useTargetActorState: 0
     actorStateId: 
+    useMonsterCount: 0
+    monsterCountCompareType: 0
+    monsterCountParameter: 0
+    useCheckWall: 0
+    existWallParameter: 0
+    actionCountLimit: 0
   - stateName: Base Layer.AttackGroup.MeleeAttack2
     weight: 1
     useDistance1: 0
@@ -460,6 +474,12 @@ MonoBehaviour:
     hpRatioParameter2: 0
     useTargetActorState: 0
     actorStateId: 
+    useMonsterCount: 0
+    monsterCountCompareType: 0
+    monsterCountParameter: 0
+    useCheckWall: 0
+    existWallParameter: 0
+    actionCountLimit: 0
   - stateName: Base Layer.AttackGroup.MeleeAttack3
     weight: 3
     useDistance1: 1
@@ -476,6 +496,12 @@ MonoBehaviour:
     hpRatioParameter2: 0
     useTargetActorState: 0
     actorStateId: 
+    useMonsterCount: 0
+    monsterCountCompareType: 0
+    monsterCountParameter: 0
+    useCheckWall: 0
+    existWallParameter: 0
+    actionCountLimit: 0
 --- !u!1101 &-7344895036983689022
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -519,6 +545,7 @@ MonoBehaviour:
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -550,7 +577,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 0
   useSpeedChange: 0
   targetSpeed: 0
@@ -585,6 +612,7 @@ MonoBehaviour:
   hitStayIgnoreDuplicate: 0
   hitStayIdForIgnoreDuplicate: 0
   hitStayLineRendererTrigger: 0
+  onlyUsedAsTrigger: 0
   oneHitPerTarget: 1
   useLineRenderer: 0
   affectorValueIdList:
@@ -616,6 +644,7 @@ MonoBehaviour:
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -647,7 +676,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 0
   useSpeedChange: 0
   targetSpeed: 0
@@ -682,6 +711,7 @@ MonoBehaviour:
   hitStayIgnoreDuplicate: 0
   hitStayIdForIgnoreDuplicate: 0
   hitStayLineRendererTrigger: 0
+  onlyUsedAsTrigger: 0
   oneHitPerTarget: 1
   useLineRenderer: 0
   affectorValueIdList:
@@ -810,6 +840,7 @@ MonoBehaviour:
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -841,7 +872,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 0
   useSpeedChange: 0
   targetSpeed: 0
@@ -876,6 +907,7 @@ MonoBehaviour:
   hitStayIgnoreDuplicate: 0
   hitStayIdForIgnoreDuplicate: 0
   hitStayLineRendererTrigger: 0
+  onlyUsedAsTrigger: 0
   oneHitPerTarget: 1
   useLineRenderer: 0
   affectorValueIdList:
@@ -1054,6 +1086,7 @@ MonoBehaviour:
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -1085,7 +1118,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 0
   useSpeedChange: 0
   targetSpeed: 0
@@ -1120,6 +1153,7 @@ MonoBehaviour:
   hitStayIgnoreDuplicate: 0
   hitStayIdForIgnoreDuplicate: 0
   hitStayLineRendererTrigger: 0
+  onlyUsedAsTrigger: 0
   oneHitPerTarget: 1
   useLineRenderer: 0
   affectorValueIdList:
@@ -1149,6 +1183,7 @@ MonoBehaviour:
   EndTime: 0.25
   lookAtTarget: 1
   leftRightRandomAngle: 0
+  lootAtTargetOffsetAngle: 0
   lookAtRandom: 0
   desireDistance: 5
   lerpPower: 4
@@ -1170,6 +1205,7 @@ MonoBehaviour:
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -1201,7 +1237,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 0
   useSpeedChange: 0
   targetSpeed: 0
@@ -1236,6 +1272,7 @@ MonoBehaviour:
   hitStayIgnoreDuplicate: 0
   hitStayIdForIgnoreDuplicate: 0
   hitStayLineRendererTrigger: 0
+  onlyUsedAsTrigger: 0
   oneHitPerTarget: 1
   useLineRenderer: 0
   affectorValueIdList:
@@ -1282,6 +1319,7 @@ MonoBehaviour:
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -1313,7 +1351,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 0
   useSpeedChange: 0
   targetSpeed: 0
@@ -1348,6 +1386,7 @@ MonoBehaviour:
   hitStayIgnoreDuplicate: 0
   hitStayIdForIgnoreDuplicate: 0
   hitStayLineRendererTrigger: 0
+  onlyUsedAsTrigger: 0
   oneHitPerTarget: 1
   useLineRenderer: 0
   affectorValueIdList:
@@ -1394,6 +1433,7 @@ MonoBehaviour:
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -1425,7 +1465,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 0
   useSpeedChange: 0
   targetSpeed: 0
@@ -1460,6 +1500,7 @@ MonoBehaviour:
   hitStayIgnoreDuplicate: 0
   hitStayIdForIgnoreDuplicate: 0
   hitStayLineRendererTrigger: 0
+  onlyUsedAsTrigger: 0
   oneHitPerTarget: 1
   useLineRenderer: 0
   affectorValueIdList:
@@ -1492,6 +1533,7 @@ MonoBehaviour:
     type: 3}
   lifeTime: 5
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -1523,8 +1565,8 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
-  speed: 3.5
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
+  speed: 4.5
   useSpeedChange: 0
   targetSpeed: 0
   speedChangeTime: 0
@@ -1559,6 +1601,7 @@ MonoBehaviour:
   hitStayIgnoreDuplicate: 0
   hitStayIdForIgnoreDuplicate: 0
   hitStayLineRendererTrigger: 0
+  onlyUsedAsTrigger: 0
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
@@ -1635,6 +1678,7 @@ MonoBehaviour:
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -1666,7 +1710,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 0
   useSpeedChange: 0
   targetSpeed: 0
@@ -1701,6 +1745,7 @@ MonoBehaviour:
   hitStayIgnoreDuplicate: 0
   hitStayIdForIgnoreDuplicate: 0
   hitStayLineRendererTrigger: 0
+  onlyUsedAsTrigger: 0
   oneHitPerTarget: 1
   useLineRenderer: 0
   affectorValueIdList:
@@ -1779,6 +1824,7 @@ MonoBehaviour:
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -1810,7 +1856,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 4.5
   useSpeedChange: 0
   targetSpeed: 0
@@ -1845,6 +1891,7 @@ MonoBehaviour:
   hitStayIgnoreDuplicate: 0
   hitStayIdForIgnoreDuplicate: 0
   hitStayLineRendererTrigger: 0
+  onlyUsedAsTrigger: 0
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
@@ -1876,6 +1923,7 @@ MonoBehaviour:
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -1907,7 +1955,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 0
   useSpeedChange: 0
   targetSpeed: 0
@@ -1942,6 +1990,7 @@ MonoBehaviour:
   hitStayIgnoreDuplicate: 0
   hitStayIdForIgnoreDuplicate: 0
   hitStayLineRendererTrigger: 0
+  onlyUsedAsTrigger: 0
   oneHitPerTarget: 1
   useLineRenderer: 0
   affectorValueIdList:
@@ -1973,6 +2022,7 @@ MonoBehaviour:
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -2004,7 +2054,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 0
   useSpeedChange: 0
   targetSpeed: 0
@@ -2039,6 +2089,7 @@ MonoBehaviour:
   hitStayIgnoreDuplicate: 0
   hitStayIdForIgnoreDuplicate: 0
   hitStayLineRendererTrigger: 0
+  onlyUsedAsTrigger: 0
   oneHitPerTarget: 1
   useLineRenderer: 0
   affectorValueIdList:
@@ -2070,6 +2121,7 @@ MonoBehaviour:
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -2101,7 +2153,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 0
   useSpeedChange: 0
   targetSpeed: 0
@@ -2136,6 +2188,7 @@ MonoBehaviour:
   hitStayIgnoreDuplicate: 0
   hitStayIdForIgnoreDuplicate: 0
   hitStayLineRendererTrigger: 0
+  onlyUsedAsTrigger: 0
   oneHitPerTarget: 1
   useLineRenderer: 0
   affectorValueIdList:
@@ -2182,6 +2235,7 @@ MonoBehaviour:
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -2213,7 +2267,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 0
   useSpeedChange: 0
   targetSpeed: 0
@@ -2248,6 +2302,7 @@ MonoBehaviour:
   hitStayIgnoreDuplicate: 0
   hitStayIdForIgnoreDuplicate: 0
   hitStayLineRendererTrigger: 0
+  onlyUsedAsTrigger: 0
   oneHitPerTarget: 1
   useLineRenderer: 0
   affectorValueIdList:
@@ -2307,6 +2362,7 @@ MonoBehaviour:
     type: 3}
   lifeTime: 5
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -2338,8 +2394,8 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
-  speed: 3.5
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
+  speed: 4.5
   useSpeedChange: 0
   targetSpeed: 0
   speedChangeTime: 0
@@ -2374,6 +2430,7 @@ MonoBehaviour:
   hitStayIgnoreDuplicate: 0
   hitStayIdForIgnoreDuplicate: 0
   hitStayLineRendererTrigger: 0
+  onlyUsedAsTrigger: 0
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
@@ -2474,6 +2531,7 @@ MonoBehaviour:
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -2505,7 +2563,7 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 0
   useSpeedChange: 0
   targetSpeed: 0
@@ -2540,6 +2598,7 @@ MonoBehaviour:
   hitStayIgnoreDuplicate: 0
   hitStayIdForIgnoreDuplicate: 0
   hitStayLineRendererTrigger: 0
+  onlyUsedAsTrigger: 0
   oneHitPerTarget: 1
   useLineRenderer: 0
   affectorValueIdList:

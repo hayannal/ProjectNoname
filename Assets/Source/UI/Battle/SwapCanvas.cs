@@ -52,6 +52,8 @@ public class SwapCanvas : MonoBehaviour
 	{
 		if (MainSceneBuilder.instance.lobby)
 			RefreshChapterInfo();
+		else if (PlayerData.instance.chaosMode && string.IsNullOrEmpty(StageManager.instance.nextMapTableData.bossName))
+			RefreshChapterInfo();
 		else
 			RefreshSwapInfo();
 		RefreshGrid();

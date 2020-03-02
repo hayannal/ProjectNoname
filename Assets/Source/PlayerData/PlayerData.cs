@@ -44,6 +44,7 @@ public class PlayerData : MonoBehaviour
 		highestPlayChapter = 2;
 		highestClearStage = 0;
 		selectedChapter = 1;
+		chaosMode = false;
 
 		// temp
 		loginned = true;

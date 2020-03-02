@@ -127,6 +127,28 @@ public sealed class LocalPlayerController : BaseCharacterController
 		{
 			if (actionController.mecanimState.IsState((int)eMecanimState.Move))
 				actionController.PlayActionByActionName("Idle");
+
+			#region Invalid Move
+			// 정말 두기 싫은 코드인데 이동중에 MoveState가 없어지는 경우가 생겼다.
+			// 이러면 위 코드에서 true가 되지않아 Idle로도 가지 않고 계속 Move애니가 돌게 된다.
+			// 그러다가 다음번 Move(루프니까)가 올때 Idle로 가는데
+			// 하필 root motion 쓰는 캐릭터-간파울의 경우에는 진짜로 앞으로 이동해버린다.
+			// 애니만 나오는거면 몰라도 이러면 너무 치명적이라 원인을 찾기 전까진 아래 코드로 검사해본다.
+			if (actionController.mecanimState.IsState((int)eMecanimState.Move) == false)
+			{
+				// 진행중인걸 얻어와야하므로 Transition중이라면 Next를 구해온다.
+				AnimatorStateInfo animatorStateInfo = actionController.animator.GetCurrentAnimatorStateInfo(0);
+				if (actionController.animator.IsInTransition(0))
+					animatorStateInfo = actionController.animator.GetNextAnimatorStateInfo(0);
+				if (animatorStateInfo.loop && animatorStateInfo.IsName("Move"))
+				{
+#if UNITY_EDITOR
+					Debug.LogError("Invalid Move!!!!!");
+#endif
+					actionController.PlayActionByActionName("Idle");
+				}
+			}
+			#endregion
 		}
 
 		if (ScreenJoystick.instance.CheckInput(Control.eInputType.Tab) && IsAutoPlay() == false)

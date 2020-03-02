@@ -22,7 +22,8 @@ public class StageDataManager : MonoBehaviour
 	public bool CalcNextStageInfo(int chapter, int nextStage, int highestPlayChapter, int highestClearStage)
 	{
 		nextStageTableData = null;
-		StageTableData stageTableData = BattleInstanceManager.instance.GetCachedStageTableData(chapter, nextStage, PlayerData.instance.chaosMode);
+		bool selectedChaosMode = PlayerData.instance.chaosMode;
+		StageTableData stageTableData = BattleInstanceManager.instance.GetCachedStageTableData(chapter, nextStage, nextStage == 0 ? false : selectedChaosMode);
 		if (stageTableData == null)
 		{
 #if UNITY_EDITOR
@@ -31,7 +32,7 @@ public class StageDataManager : MonoBehaviour
 			return false;
 		}
 		nextStageTableData = stageTableData;
-		reservedNextMap = CalcNextMap(stageTableData, chapter, nextStage, highestPlayChapter, highestClearStage);
+		reservedNextMap = CalcNextMap(stageTableData, chapter, nextStage, selectedChaosMode, highestPlayChapter, highestClearStage);
 		return true;
 	}
 
@@ -39,16 +40,16 @@ public class StageDataManager : MonoBehaviour
 	// 차후 튕겼을때 복구해주는거 하게될때 이 딕셔너리만 복구시켜주면 될거다.
 	// 챕터 변경시 씬을 리로드하지 않는다면 클리어가 필요하다.
 	Dictionary<int, string> _dicCachedMap = new Dictionary<int, string>();
-	string CalcNextMap(StageTableData stageTableData, int chapter, int nextStage, int highestPlayChapter, int highestClearStage)
+	string CalcNextMap(StageTableData stageTableData, int chapter, int nextStage, bool chaos, int highestPlayChapter, int highestClearStage)
 	{
 		if (_dicCachedMap.Count == 0)
 		{
 			int maxStage = TableDataManager.instance.FindChapterTableData(chapter).maxStage;
 			for (int i = nextStage; i <= maxStage; ++i)
 			{
-				StageTableData diffData = BattleInstanceManager.instance.GetCachedStageTableData(chapter, i, stageTableData.chaos);
+				StageTableData diffData = BattleInstanceManager.instance.GetCachedStageTableData(chapter, i, i == 0 ? false : chaos);
 				string mapId = "";
-				if (stageTableData.chaos)
+				if (chaos)
 					mapId = CalcChaosNextMap(diffData, chapter, i);
 				else
 					mapId = CalcNormalNextMap(diffData, chapter, i, highestPlayChapter, highestClearStage);
@@ -149,9 +150,11 @@ public class StageDataManager : MonoBehaviour
 	Dictionary<int, string> _dicStageMapSet = new Dictionary<int, string>();
 	Dictionary<string, List<string>> _dicNormalMonsterMapListByMapSet = new Dictionary<string, List<string>>();
 	Dictionary<string, List<string>> _dicAngelMapListByMapSet = new Dictionary<string, List<string>>();
+	Dictionary<string, List<string>> _dicRightBeforeBossMapListByMapSet = new Dictionary<string, List<string>>();
 	Dictionary<string, List<string>> _dicBossMapListByMapSet = new Dictionary<string, List<string>>();
 	Dictionary<string, int> _dicNormalMonsterMapIndexByMapSet = new Dictionary<string, int>();
 	Dictionary<string, int> _dicAngelMapIndexByMapSet = new Dictionary<string, int>();
+	Dictionary<string, int> _dicRightBeforeBossMapIndexByMapSet = new Dictionary<string, int>();
 	Dictionary<string, int> _dicBossMapIndexByMapSet = new Dictionary<string, int>();
 	string CalcChaosNextMap(StageTableData stageTableData, int chapter, int nextStage)
 	{
@@ -196,13 +199,7 @@ public class StageDataManager : MonoBehaviour
 					for (int i = 0; i < mapSetTableData.normalMonsterMap.Length; ++i)
 						normalMonsterMapList.Add(mapSetTableData.normalMonsterMap[i]);
 
-					for (int i = 0; i < normalMonsterMapList.Count; ++i)
-					{
-						string temp = normalMonsterMapList[i];
-						int randomIndex = Random.Range(i, normalMonsterMapList.Count);
-						normalMonsterMapList[i] = normalMonsterMapList[randomIndex];
-						normalMonsterMapList[randomIndex] = temp;
-					}
+					ObjectUtil.Shuffle<string>(normalMonsterMapList);
 					_dicNormalMonsterMapListByMapSet.Add(mapSetId, normalMonsterMapList);
 					_dicNormalMonsterMapIndexByMapSet.Add(mapSetId, 0);
 				}
@@ -213,15 +210,20 @@ public class StageDataManager : MonoBehaviour
 					for (int i = 0; i < mapSetTableData.angelMap.Length; ++i)
 						angelMapList.Add(mapSetTableData.angelMap[i]);
 
-					for (int i = 0; i < angelMapList.Count; ++i)
-					{
-						string temp = angelMapList[i];
-						int randomIndex = Random.Range(i, angelMapList.Count);
-						angelMapList[i] = angelMapList[randomIndex];
-						angelMapList[randomIndex] = temp;
-					}
+					ObjectUtil.Shuffle<string>(angelMapList);
 					_dicAngelMapListByMapSet.Add(mapSetId, angelMapList);
 					_dicAngelMapIndexByMapSet.Add(mapSetId, 0);
+				}
+
+				if (_dicRightBeforeBossMapListByMapSet.ContainsKey(mapSetId) == false)
+				{
+					List<string> rightBeforeBossMapList = new List<string>();
+					for (int i = 0; i < mapSetTableData.rightBeforeBossMap.Length; ++i)
+						rightBeforeBossMapList.Add(mapSetTableData.rightBeforeBossMap[i]);
+
+					ObjectUtil.Shuffle<string>(rightBeforeBossMapList);
+					_dicRightBeforeBossMapListByMapSet.Add(mapSetId, rightBeforeBossMapList);
+					_dicRightBeforeBossMapIndexByMapSet.Add(mapSetId, 0);
 				}
 
 				if (_dicBossMapListByMapSet.ContainsKey(mapSetId) == false)
@@ -230,13 +232,7 @@ public class StageDataManager : MonoBehaviour
 					for (int i = 0; i < mapSetTableData.bossMap.Length; ++i)
 						bossMapList.Add(mapSetTableData.bossMap[i]);
 
-					for (int i = 0; i < bossMapList.Count; ++i)
-					{
-						string temp = bossMapList[i];
-						int randomIndex = Random.Range(i, bossMapList.Count);
-						bossMapList[i] = bossMapList[randomIndex];
-						bossMapList[randomIndex] = temp;
-					}
+					ObjectUtil.Shuffle<string>(bossMapList);
 					_dicBossMapListByMapSet.Add(mapSetId, bossMapList);
 					_dicBossMapIndexByMapSet.Add(mapSetId, 0);
 				}
@@ -276,6 +272,18 @@ public class StageDataManager : MonoBehaviour
 				}
 				break;
 			case 2:
+				if (_dicRightBeforeBossMapListByMapSet.ContainsKey(selectedMapSetId))
+				{
+					List<string> listMap = _dicRightBeforeBossMapListByMapSet[selectedMapSetId];
+					int index = _dicRightBeforeBossMapIndexByMapSet[selectedMapSetId];
+					selectedMap = listMap[index];
+					++index;
+					if (index > listMap.Count)
+						index = 0;
+					_dicRightBeforeBossMapIndexByMapSet[selectedMapSetId] = index;
+				}
+				break;
+			case 3:
 				if (_dicBossMapListByMapSet.ContainsKey(selectedMapSetId))
 				{
 					List<string> listMap = _dicBossMapListByMapSet[selectedMapSetId];

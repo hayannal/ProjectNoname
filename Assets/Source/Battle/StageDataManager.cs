@@ -148,12 +148,14 @@ public class StageDataManager : MonoBehaviour
 	}
 
 	Dictionary<int, string> _dicStageMapSet = new Dictionary<int, string>();
-	Dictionary<string, List<string>> _dicNormalMonsterMapListByMapSet = new Dictionary<string, List<string>>();
+	Dictionary<string, List<string>> _dicNormalMonsterMapEarlyListByMapSet = new Dictionary<string, List<string>>();
 	Dictionary<string, List<string>> _dicAngelMapListByMapSet = new Dictionary<string, List<string>>();
+	Dictionary<string, List<string>> _dicNormalMonsterMapLateListByMapSet = new Dictionary<string, List<string>>();
 	Dictionary<string, List<string>> _dicRightBeforeBossMapListByMapSet = new Dictionary<string, List<string>>();
 	Dictionary<string, List<string>> _dicBossMapListByMapSet = new Dictionary<string, List<string>>();
-	Dictionary<string, int> _dicNormalMonsterMapIndexByMapSet = new Dictionary<string, int>();
+	Dictionary<string, int> _dicNormalMonsterMapEarlyIndexByMapSet = new Dictionary<string, int>();
 	Dictionary<string, int> _dicAngelMapIndexByMapSet = new Dictionary<string, int>();
+	Dictionary<string, int> _dicNormalMonsterMapLateIndexByMapSet = new Dictionary<string, int>();
 	Dictionary<string, int> _dicRightBeforeBossMapIndexByMapSet = new Dictionary<string, int>();
 	Dictionary<string, int> _dicBossMapIndexByMapSet = new Dictionary<string, int>();
 	string CalcChaosNextMap(StageTableData stageTableData, int chapter, int nextStage)
@@ -193,15 +195,15 @@ public class StageDataManager : MonoBehaviour
 					_dicStageMapSet.Add(nextStage + i, mapSetId);
 
 				// 리스트를 저장해두고 셔플시켜놓는다. 이미 들어있을땐 캐싱 필요없음.
-				if (_dicNormalMonsterMapListByMapSet.ContainsKey(mapSetId) == false)
+				if (_dicNormalMonsterMapEarlyListByMapSet.ContainsKey(mapSetId) == false)
 				{
-					List<string> normalMonsterMapList = new List<string>();
-					for (int i = 0; i < mapSetTableData.normalMonsterMap.Length; ++i)
-						normalMonsterMapList.Add(mapSetTableData.normalMonsterMap[i]);
+					List<string> normalMonsterMapEarlyList = new List<string>();
+					for (int i = 0; i < mapSetTableData.normalMonsterMapEarly.Length; ++i)
+						normalMonsterMapEarlyList.Add(mapSetTableData.normalMonsterMapEarly[i]);
 
-					ObjectUtil.Shuffle<string>(normalMonsterMapList);
-					_dicNormalMonsterMapListByMapSet.Add(mapSetId, normalMonsterMapList);
-					_dicNormalMonsterMapIndexByMapSet.Add(mapSetId, 0);
+					ObjectUtil.Shuffle<string>(normalMonsterMapEarlyList);
+					_dicNormalMonsterMapEarlyListByMapSet.Add(mapSetId, normalMonsterMapEarlyList);
+					_dicNormalMonsterMapEarlyIndexByMapSet.Add(mapSetId, 0);
 				}
 
 				if (_dicAngelMapListByMapSet.ContainsKey(mapSetId) == false)
@@ -213,6 +215,17 @@ public class StageDataManager : MonoBehaviour
 					ObjectUtil.Shuffle<string>(angelMapList);
 					_dicAngelMapListByMapSet.Add(mapSetId, angelMapList);
 					_dicAngelMapIndexByMapSet.Add(mapSetId, 0);
+				}
+
+				if (_dicNormalMonsterMapLateListByMapSet.ContainsKey(mapSetId) == false)
+				{
+					List<string> normalMonsterMapLateList = new List<string>();
+					for (int i = 0; i < mapSetTableData.normalMonsterMapLate.Length; ++i)
+						normalMonsterMapLateList.Add(mapSetTableData.normalMonsterMapLate[i]);
+
+					ObjectUtil.Shuffle<string>(normalMonsterMapLateList);
+					_dicNormalMonsterMapLateListByMapSet.Add(mapSetId, normalMonsterMapLateList);
+					_dicNormalMonsterMapLateIndexByMapSet.Add(mapSetId, 0);
 				}
 
 				if (_dicRightBeforeBossMapListByMapSet.ContainsKey(mapSetId) == false)
@@ -248,15 +261,15 @@ public class StageDataManager : MonoBehaviour
 		switch (stageTableData.stageType)
 		{
 			case 0:
-				if (_dicNormalMonsterMapListByMapSet.ContainsKey(selectedMapSetId))
+				if (_dicNormalMonsterMapEarlyListByMapSet.ContainsKey(selectedMapSetId))
 				{
-					List<string> listMap = _dicNormalMonsterMapListByMapSet[selectedMapSetId];
-					int index = _dicNormalMonsterMapIndexByMapSet[selectedMapSetId];
+					List<string> listMap = _dicNormalMonsterMapEarlyListByMapSet[selectedMapSetId];
+					int index = _dicNormalMonsterMapEarlyIndexByMapSet[selectedMapSetId];
 					selectedMap = listMap[index];
 					++index;
 					if (index > listMap.Count)
 						index = 0;
-					_dicNormalMonsterMapIndexByMapSet[selectedMapSetId] = index;
+					_dicNormalMonsterMapEarlyIndexByMapSet[selectedMapSetId] = index;
 				}
 				break;
 			case 1:
@@ -272,6 +285,18 @@ public class StageDataManager : MonoBehaviour
 				}
 				break;
 			case 2:
+				if (_dicNormalMonsterMapLateListByMapSet.ContainsKey(selectedMapSetId))
+				{
+					List<string> listMap = _dicNormalMonsterMapLateListByMapSet[selectedMapSetId];
+					int index = _dicNormalMonsterMapLateIndexByMapSet[selectedMapSetId];
+					selectedMap = listMap[index];
+					++index;
+					if (index > listMap.Count)
+						index = 0;
+					_dicNormalMonsterMapLateIndexByMapSet[selectedMapSetId] = index;
+				}
+				break;
+			case 3:
 				if (_dicRightBeforeBossMapListByMapSet.ContainsKey(selectedMapSetId))
 				{
 					List<string> listMap = _dicRightBeforeBossMapListByMapSet[selectedMapSetId];
@@ -283,7 +308,7 @@ public class StageDataManager : MonoBehaviour
 					_dicRightBeforeBossMapIndexByMapSet[selectedMapSetId] = index;
 				}
 				break;
-			case 3:
+			case 4:
 				if (_dicBossMapListByMapSet.ContainsKey(selectedMapSetId))
 				{
 					List<string> listMap = _dicBossMapListByMapSet[selectedMapSetId];

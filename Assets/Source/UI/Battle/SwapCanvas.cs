@@ -131,14 +131,14 @@ public class SwapCanvas : MonoBehaviour
 		if (PlayerData.instance.chaosMode)
 		{
 			chapterNameText.SetLocalizedText(UIString.instance.GetString("GameUI_ChaosMode"));
-			chapterInfoButton.interactable = false;
-			chapterInfoImage.gameObject.SetActive(false);
+			//chapterInfoButton.interactable = false;
+			//chapterInfoImage.gameObject.SetActive(false);
 		}
 		else
 		{
 			chapterNameText.SetLocalizedText(UIString.instance.GetString(chapterTableData.nameId));
-			chapterInfoButton.interactable = true;
-			chapterInfoImage.gameObject.SetActive(true);
+			//chapterInfoButton.interactable = true;
+			//chapterInfoImage.gameObject.SetActive(true);
 		}
 
 		RefreshCommonInfo();
@@ -194,9 +194,9 @@ public class SwapCanvas : MonoBehaviour
 		string[] suggestedActorIdList = null;
 		if (MainSceneBuilder.instance.lobby == false)
 		{
-			MapTableData nextBossMapTableData = StageManager.instance.nextBossMapTableData;
-			if (nextBossMapTableData != null)
-				suggestedActorIdList = nextBossMapTableData.suggestedActorId;
+			MapTableData nextMapTableData = StageManager.instance.nextMapTableData;
+			if (nextMapTableData != null && string.IsNullOrEmpty(nextMapTableData.bossName) == false)
+				suggestedActorIdList = nextMapTableData.suggestedActorId;
 		}
 
 		List<CharacterData> listCharacterData = PlayerData.instance.listCharacterData;
@@ -266,6 +266,12 @@ public class SwapCanvas : MonoBehaviour
 
 	public void OnClickChapterInfoButton()
 	{
+		if (PlayerData.instance.chaosMode)
+		{
+			TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, UIString.instance.GetString("GameUI_ChaosModeDesc"), 200, chapterInfoButton.transform, new Vector2(0.0f, -35.0f));
+			return;
+		}
+
 		ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
 		if (chapterTableData == null)
 			return;

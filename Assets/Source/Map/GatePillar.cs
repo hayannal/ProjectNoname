@@ -231,8 +231,9 @@ public class GatePillar : MonoBehaviour
 			// 다음번 보스의 suggest 캐릭터를 보유하고 있고, 이 캐릭터의 파워레벨이 권장파워레벨 이상이라면
 			if (_checkedStageSwapSuggest == false && StageManager.instance.currentStageTableData != null && StageManager.instance.currentStageTableData.swap)
 			{
-				MapTableData nextBossMapTableData = StageManager.instance.nextBossMapTableData;
-				if (nextBossMapTableData != null && CheckSuggestedActor(nextBossMapTableData.suggestedActorId, BattleInstanceManager.instance.playerActor.actorId) == false && HasSuggestedActor(nextBossMapTableData.suggestedActorId))
+				MapTableData nextMapTableData = StageManager.instance.nextMapTableData;
+				if (nextMapTableData != null && string.IsNullOrEmpty(nextMapTableData.bossName) == false &&
+					CheckSuggestedActor(nextMapTableData.suggestedActorId, BattleInstanceManager.instance.playerActor.actorId) == false && HasSuggestedActor(nextMapTableData.suggestedActorId))
 				{
 					raycastCount = 0;
 					FullscreenYesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_EnterInfo"), UIString.instance.GetString("GameUI_EnterRecommendDesc"), () => {

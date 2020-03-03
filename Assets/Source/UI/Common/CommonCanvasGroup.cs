@@ -11,6 +11,7 @@ public class CommonCanvasGroup : MonoBehaviour
 	public GameObject yesNoCanvasPrefab;
 	public GameObject okCanvasPrefab;
 	public GameObject delayedLoadingCanvasPrefab;
+	public GameObject waitingNetworkCanvasPrefab;
 	public GameObject tooltipCanvasPrefab;
 
 	void Awake()

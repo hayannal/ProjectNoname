@@ -13,12 +13,16 @@ public class MapSetTableData
   public string mapSetId { get { return _mapSetId; } set { _mapSetId = value; } }
   
   [SerializeField]
-  string[] _normalMonsterMap = new string[0];
-  public string[] normalMonsterMap { get { return _normalMonsterMap; } set { _normalMonsterMap = value; } }
+  string[] _normalMonsterMapEarly = new string[0];
+  public string[] normalMonsterMapEarly { get { return _normalMonsterMapEarly; } set { _normalMonsterMapEarly = value; } }
   
   [SerializeField]
   string[] _angelMap = new string[0];
   public string[] angelMap { get { return _angelMap; } set { _angelMap = value; } }
+  
+  [SerializeField]
+  string[] _normalMonsterMapLate = new string[0];
+  public string[] normalMonsterMapLate { get { return _normalMonsterMapLate; } set { _normalMonsterMapLate = value; } }
   
   [SerializeField]
   string[] _rightBeforeBossMap = new string[0];

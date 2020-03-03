@@ -114,7 +114,7 @@ public class BattleModeProcessorBase
 
 		PlayerIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform);
 
-		Timing.RunCoroutine(DelayedShowGatePillar(1.3f));
+		Timing.RunCoroutine(DelayedShowGatePillar(0.1f));
 	}
 
 	public bool IsAutoPlay()

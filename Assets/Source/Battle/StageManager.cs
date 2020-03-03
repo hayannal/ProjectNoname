@@ -105,7 +105,7 @@ public class StageManager : MonoBehaviour
 	{
 		get
 		{
-			int maxStage = TableDataManager.instance.FindChapterTableData(playChapter).maxStage;
+			int maxStage = GetMaxStage(playChapter);
 			for (int i = playStage + 1; i <= maxStage; ++i)
 			{
 				string reservedMap = StageDataManager.instance.GetCachedMap(i);
@@ -120,6 +120,13 @@ public class StageManager : MonoBehaviour
 			}
 			return null;
 		}
+	}
+
+	public int GetMaxStage(int chapter)
+	{
+		if (chapter == 0)
+			return BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxTutorialStage");
+		return TableDataManager.instance.FindChapterTableData(playChapter).maxStage;
 	}
 
 	public float currentMonstrStandardHp { get { return _currentStageTableData.standardHp; } }

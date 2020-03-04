@@ -1,3 +1,6 @@
+//#define PLAYFAB				// 싱글버전으로 돌아가는 디파인이다. 테스트용을 위해 남겨둔다.
+#define NEWPLAYER_LEVEL1	// 실제 튜토리얼 들어갈때 무조건 없애야하는 디파인이다. 1레벨 임시 캐릭 생성용 버전.
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,10 +25,15 @@ public class MainSceneBuilder : MonoBehaviour
 	public bool mainSceneBuilding { get; private set; }
 	public bool waitSpawnFlag { get; set; }
 	public bool lobby { get; private set; }
+	public bool playAfterInstallation { get; private set; }
 
 	void OnDestroy()
 	{
 		Addressables.Release<GameObject>(_handleTableDataManager);
+
+		// 서버오류로 인해 접속못했을 경우 대비해서 체크해둔다.
+		if (PlayerData.instance.loginned == false && _handleStageManager.IsValid() == false) return;
+
 		Addressables.Release<GameObject>(_handleStageManager);
 		Addressables.Release<GameObject>(_handleStartCharacter);
 		Addressables.Release<GameObject>(_handleLobbyCanvas);
@@ -99,14 +107,63 @@ public class MainSceneBuilder : MonoBehaviour
 		// step 2. font & string
 		UIString.instance.InitializeFont(OptionManager.instance.language);
 
-		// step 3. temp login
+		// step 3. login
+#if PLAYFAB
+		if (AuthManager.instance.IsCachedLastLoginInfo() == false)
+		{
+#if NEWPLAYER_LEVEL1
+			// 원래라면 아래 PlayAfterInstallationCoroutine호출하는게 맞다.
+			// 그러나 튜토를 나중에 만들거고 설령 지금 만든다해도 매번 튜토챕터로 시작하는게 불편해서
+			// 개발용으로 쓸 신캐 생성버전을 이 디파인에 묶어서 쓰도록 한다.
+			// 처음 캐릭터를 만들면 게스트로그인으로 생성되며 챕터는 1이 선택되어있고 0스테이지 로비에서 시작된다.
+			//
+			// 캐릭터 만드는 패킷인데 인자라도 다르게 해서 구분을 해야할까?
+			float createAccountStartTime = Time.time;
+			AuthManager.instance.CreateGuestAccount();
+			while (string.IsNullOrEmpty(AuthManager.instance.playFabId)) yield return null;
+
+			PlayFabApiManager.instance.RequestPlayerData();
+
+			// login and recv player data
+			PlayerData.instance.OnRecvPlayerInfoForClient();
+			PlayerData.instance.OnRecvCharacterListForClient();
+			TimeSpaceData.instance.OnRecvEquipInventory();
+
+			while (PlayerData.instance.loginned == false) yield return null;
+			Debug.LogFormat("Create Account Time : {0:0.###}", Time.time - createAccountStartTime);
+#else
+			// 사이사이에 플래그 쓰면서 할까 하다가 너무 코드가 지저분해져서 그냥 따로 빼기로 한다.
+			yield return PlayAfterInstallationCoroutine();
+			yield break;
+#endif
+		}
+
+		if (PlayerData.instance.loginned == false)
+		{
+			float serverLoginStartTime = Time.time;
+			AuthManager.instance.LoginWithLastLoginType();
+
+			// 여기서 패킷 받을때까진 대기
+			while (string.IsNullOrEmpty(AuthManager.instance.playFabId)) yield return null;
+
+			PlayFabApiManager.instance.RequestPlayerData();
+
+			// login and recv player data
+			PlayerData.instance.OnRecvPlayerInfoForClient();
+			PlayerData.instance.OnRecvCharacterListForClient();
+			TimeSpaceData.instance.OnRecvEquipInventory();
+
+			while (PlayerData.instance.loginned == false) yield return null;
+			Debug.LogFormat("Server Login Time : {0:0.###}", Time.time - serverLoginStartTime);
+		}
+#else
 		if (PlayerData.instance.loginned == false)
 		{
 			// login and recv player data
-			PlayerData.instance.OnRecvPlayerInfo();
-			PlayerData.instance.OnRecvCharacterList();
-			TimeSpaceData.instance.OnRecvEquipInventory();
+			PlayerData.instance.OnRecvPlayerInfoForClient();
+			PlayerData.instance.OnRecvCharacterListForClient();
 		}
+#endif
 
 		// step 4. set lobby
 		lobby = true;
@@ -218,8 +275,19 @@ public class MainSceneBuilder : MonoBehaviour
 					_listCachingObject.Clear();
 				}
 				// step 12. fade out
-				LoadingCanvas.instance.FadeOut();
-				StartCoroutine(LateInitialize());
+				if (playAfterInstallation)
+				{
+					// 0챕터 1스테이지에서 시작하는거라 강제로 전투모드로 바꿔준다.
+					StartCoroutine(LateInitialize());
+					LobbyCanvas.instance.OnExitLobby();
+					// 튜토때만 보이는 계정연동 버튼 처리
+				}
+				else
+				{
+					// 일반적인 경우엔 FadeOut하고 LateInitialize를 호출해둔다.
+					LoadingCanvas.instance.FadeOut();
+					StartCoroutine(LateInitialize());
+				}
 			}
 		}
     }
@@ -231,6 +299,12 @@ public class MainSceneBuilder : MonoBehaviour
 		_handleBattleManager = Addressables.LoadAssetAsync<GameObject>("BattleManager");
 		yield return _handleBattleManager;
 		Instantiate<GameObject>(_handleBattleManager.Result);
+
+		if (playAfterInstallation)
+		{
+			BattleManager.instance.OnSpawnFlag();
+			LoadingCanvas.instance.FadeOut();
+		}
 	}
 
 	public bool IsDoneLateInitialized()
@@ -253,4 +327,84 @@ public class MainSceneBuilder : MonoBehaviour
 		if (BattleInstanceManager.instance.playerActor != null)
 			BattleInstanceManager.instance.playerActor.InitializeCanvas();
 	}
+
+
+#if PLAYFAB
+#region Play After Installation
+	// 설치 직후 플레이 혹은 데이터 리셋 후 플레이
+	IEnumerator PlayAfterInstallationCoroutine()
+	{
+		playAfterInstallation = true;
+
+		// 캐릭터 만드는 패킷
+		float createAccountStartTime = Time.time;
+		AuthManager.instance.CreateGuestAccount();
+		while (string.IsNullOrEmpty(AuthManager.instance.playFabId)) yield return null;
+
+		PlayFabApiManager.instance.RequestPlayerData();
+
+		// login and recv player data
+		PlayerData.instance.OnRecvPlayerInfoForClient();
+		PlayerData.instance.OnRecvCharacterListForClient();
+		TimeSpaceData.instance.OnRecvEquipInventory();
+
+		while (PlayerData.instance.loginned == false) yield return null;
+		Debug.LogFormat("Create Account Time : {0:0.###}", Time.time - createAccountStartTime);
+
+		// step 4. set lobby
+		_handleLobbyCanvas = Addressables.LoadAssetAsync<GameObject>("LobbyCanvas");
+		_handleCommonCanvasGroup = Addressables.LoadAssetAsync<GameObject>("CommonCanvasGroup");
+
+		// step 5, 6
+		LoadingCanvas.instance.SetProgressBarPoint(0.6f);
+		_handleStageManager = Addressables.LoadAssetAsync<GameObject>("StageManager");
+		_handleStartCharacter = Addressables.LoadAssetAsync<GameObject>(CharacterData.GetAddressByActorId(PlayerData.instance.mainCharacterId));
+		while (!_handleStageManager.IsDone || !_handleStartCharacter.IsDone) yield return null;
+		Instantiate<GameObject>(_handleStageManager.Result);
+#if UNITY_EDITOR
+		Vector3 tutorialPosition = new Vector3(BattleInstanceManager.instance.GetCachedGlobalConstantFloat("TutorialStartX"), 0.0f, BattleInstanceManager.instance.GetCachedGlobalConstantFloat("TutorialStartZ"));
+		GameObject newObject = Instantiate<GameObject>(_handleStartCharacter.Result, tutorialPosition, Quaternion.identity);
+		AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+		if (settings.ActivePlayModeDataBuilderIndex == 2)
+			ObjectUtil.ReloadShader(newObject);
+#else
+		Instantiate<GameObject>(_handleStartCharacter.Result);
+#endif
+
+		// 로딩 자체를 안해버리면 handle없어서 오류 날 수 있으니 Instantiate는 안해도 로딩은 해두자.
+		LoadingCanvas.instance.SetProgressBarPoint(0.9f);
+		_handleTreasureChest = Addressables.LoadAssetAsync<GameObject>("TreasureChest");
+
+		// 강제로 시작하는거니 항상 0챕터 1스테이지
+		StageManager.instance.InitializeStage(0, 1);
+		while (StageManager.instance.IsDoneLoadAsyncNextStage() == false)
+			yield return null;
+		StageManager.instance.MoveToNextStage(true);
+
+		// step 8. gate pillar & TreasureChest
+		yield return new WaitUntil(() => waitSpawnFlag);
+
+		StageManager.instance.GetNextStageInfo();
+		while (UIString.instance.IsDoneLoadAsyncFont() == false)
+			yield return null;
+		// step 9-2. lobby ui
+		while (!_handleLobbyCanvas.IsDone || !_handleCommonCanvasGroup.IsDone) yield return null;
+		Instantiate<GameObject>(_handleLobbyCanvas.Result);
+		Instantiate<GameObject>(_handleCommonCanvasGroup.Result);
+
+		// step 10. player hit object caching
+		LoadingCanvas.instance.SetProgressBarPoint(1.0f, 0.0f, true);
+		if (BattleInstanceManager.instance.playerActor.cachingObjectList != null && BattleInstanceManager.instance.playerActor.cachingObjectList.Length > 0)
+		{
+			_listCachingObject = new List<GameObject>();
+			for (int i = 0; i < BattleInstanceManager.instance.playerActor.cachingObjectList.Length; ++i)
+				_listCachingObject.Add(BattleInstanceManager.instance.GetCachedObject(BattleInstanceManager.instance.playerActor.cachingObjectList[i], Vector3.right, Quaternion.identity));
+		}
+
+		// 마무리 셋팅
+		_waitUpdateRemainCount = 2;
+		mainSceneBuilding = false;
+	}
+#endregion
+#endif
 }

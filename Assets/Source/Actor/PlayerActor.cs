@@ -172,7 +172,8 @@ public class PlayerActor : Actor
 		if (experience)
 			return;
 
-		if (lobby == false)
+		// 첫 플레이 튜토에서는 궁극기 버튼도 보여주면 안되서 예외처리한다.
+		if (lobby == false && MainSceneBuilder.instance.playAfterInstallation == false)
 			InitializeCanvas();
 
 		StageManager.instance.PreparePowerSource();

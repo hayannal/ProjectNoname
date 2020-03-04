@@ -37,8 +37,8 @@ public class PlayerData : MonoBehaviour
 
 	public bool tutorialChapter { get { return highestPlayChapter == 0; } }
 
-	#region Player Info
-	public void OnRecvPlayerInfo()
+	#region Player Info For Client
+	public void OnRecvPlayerInfoForClient()
 	{
 		// 디비 및 훈련챕터 들어가기 전까지 임시로 쓰는 값이다. 1챕터 정보를 부른다.
 		highestPlayChapter = 2;
@@ -49,14 +49,8 @@ public class PlayerData : MonoBehaviour
 		// temp
 		loginned = true;
 	}
-	#endregion
 
-
-	#region Character List
-	List<CharacterData> _listCharacterData = new List<CharacterData>();
-	public List<CharacterData> listCharacterData { get { return _listCharacterData; } }
-
-	public void OnRecvCharacterList()
+	public void OnRecvCharacterListForClient()
 	{
 		// 지금은 패킷 구조를 모르니.. 형태만 만들어두기로 한다.
 		// list를 먼저 쭉 받아서 기억해두고 메인 캐릭터 설정하면 될듯
@@ -210,6 +204,14 @@ public class PlayerData : MonoBehaviour
 		characterData.powerLevel = 1;
 		_listCharacterData.Add(characterData);
 	}
+	#endregion
+
+
+	#region Character List
+	List<CharacterData> _listCharacterData = new List<CharacterData>();
+	public List<CharacterData> listCharacterData { get { return _listCharacterData; } }
+
+	
 
 	public CharacterData GetCharacterData(string actorId)
 	{

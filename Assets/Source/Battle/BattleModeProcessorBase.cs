@@ -72,6 +72,8 @@ public class BattleModeProcessorBase
 
 	public void OnDiePlayer(PlayerActor playerActor)
 	{
+		if (PlayerData.instance.highestClearStage < StageManager.instance.playStage - 1)
+			PlayFabApiManager.instance.RequestEndGame(PlayerData.instance.highestPlayChapter, StageManager.instance.playStage - 1, 0);
 	}
 
 	public void OnDieMonster(MonsterActor monsterActor)

@@ -263,7 +263,7 @@ public class PlayFabApiManager : MonoBehaviour
 	{
 		_requestMainCharacterId = mainCharacterId;
 		UpdateUserDataRequest request = new UpdateUserDataRequest() { Data = new Dictionary<string, string>() { { "mainCharacterId", mainCharacterId } } };
-		System.Action action = () =>
+		Action action = () =>
 		{
 			PlayFabClientAPI.UpdateUserData(request, (success) =>
 			{
@@ -286,7 +286,7 @@ public class PlayFabApiManager : MonoBehaviour
 		_requestChangeChapter = chapter;
 		_requestChangeChaos = chaos;
 		UpdateUserDataRequest request = new UpdateUserDataRequest() { Data = new Dictionary<string, string>() { { "selectedChapter", chapter.ToString() }, { "chaos", chaos ? "1" : "0" } } };
-		System.Action action = () =>
+		Action action = () =>
 		{
 			PlayFabClientAPI.UpdateUserData(request, (success) =>
 			{
@@ -305,7 +305,8 @@ public class PlayFabApiManager : MonoBehaviour
 #endif
 	#endregion
 
-	public void RequestPlayerStatistics(int highestPlayChapter, int highestClearStage)
+	#region InGame End
+	public void RequestEndGame(int highestPlayChapter, int highestClearStage, int addGold)
 	{
 		// 인게임 플레이 하고 정산할때 호출되는 함수인데
 		// Statistics 갱신과 인벤획득처리 골드 갱신 등으로 나뉘어져있다.
@@ -320,7 +321,28 @@ public class PlayFabApiManager : MonoBehaviour
 		// 층만 반영되고 템이 저장안되도 큰일이다. 즉 정산땐 모든게 다 제대로 복구되야한다.
 		//
 		// 이러려면 RetrySendManager의 RequestAction이 동시에 여러개 호출되어도 알아서 각자 복구되는 기능이 필요하다.
+		// 사실은 cloud script의 제한이 없었다면 정산함수 캐릭강화함수 장비강화함수 초월함수 다 따로 만들었을거 같다.
+		// 그런데 지금 PlayFab 한계때문에 그럴수 없는 상황이라 나눠서 전송하는 식으로 해본다.
+		StatisticUpdate highestPlayChapterRecord = new StatisticUpdate() { StatisticName = "highestPlayChapter", Value = highestPlayChapter };
+		StatisticUpdate highestClearStageRecord = new StatisticUpdate() { StatisticName = "highestClearStage", Value = highestClearStage };
+		UpdatePlayerStatisticsRequest request0 = new UpdatePlayerStatisticsRequest() { Statistics = new List<StatisticUpdate>() { highestPlayChapterRecord, highestClearStageRecord } };
+		Action action0 = () =>
+		{
+			PlayFabClientAPI.UpdatePlayerStatistics(request0, (success) =>
+			{
+				RetrySendManager.instance.OnSuccessForList(0);
+				PlayerData.instance.highestPlayChapter = highestPlayChapter;
+				PlayerData.instance.highestClearStage = highestClearStage;
+			}, (error) =>
+			{
+				RetrySendManager.instance.OnFailureForList(0);
+			});
+		};
+		List<Action> listAction = new List<Action>();
+		listAction.Add(action0);
+		RetrySendManager.instance.RequestActionList(listAction, true);
 	}
+	#endregion
 
 	#region Modify CharacterData
 	// 이것도 서버에 저장되는 Entity Object
@@ -401,7 +423,7 @@ public class PlayFabApiManager : MonoBehaviour
 	{
 		// 직접 Send하는 대신 RetrySendManager에게 맡긴다.
 		GetPlayerProfileRequest request = new GetPlayerProfileRequest() { PlayFabId = playFabId };
-		System.Action action = () =>
+		Action action = () =>
 		{
 			PlayFabClientAPI.GetPlayerProfile(request, OnChangeMainCharacterSuccess, OnChangeMainCharacterFailure);
 		};

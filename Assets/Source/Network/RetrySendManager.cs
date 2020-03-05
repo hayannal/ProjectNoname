@@ -73,4 +73,84 @@ public class RetrySendManager : MonoBehaviour {
 			SceneManager.LoadScene(0);
 		});
 	}
+
+	#region Multi Request
+	List<Action> _listRequestAction;
+	public void RequestActionList(List<Action> listRequestAction, bool showWaitingNetworkCanvas)
+	{
+		_listRequestAction = listRequestAction;
+		_showWaitingNetworkCanvas = showWaitingNetworkCanvas;
+
+		if (_showWaitingNetworkCanvas)
+			WaitingNetworkCanvas.Show(true);
+
+		_listFailureIndex.Clear();
+		for (int i = 0; i < _listRequestAction.Count; ++i)
+			_listRequestAction[i].Invoke();
+	}
+
+	public void OnSuccessForList(int index)
+	{
+		if (index < _listRequestAction.Count)
+			_listRequestAction[index] = null;
+
+		bool allSuccess = true;
+		for (int i = 0; i < _listRequestAction.Count; ++i)
+		{
+			if (_listRequestAction[i] != null)
+			{
+				allSuccess = false;
+				break;
+			}
+		}
+		if (allSuccess == false)
+			return;
+
+		if (_showWaitingNetworkCanvas)
+			WaitingNetworkCanvas.Show(false);
+
+		_showWaitingNetworkCanvas = false;
+		_listFailureIndex.Clear();
+		_listRequestAction = null;
+	}
+
+	List<int> _listFailureIndex = new List<int>();
+	public void OnFailureForList(int index)
+	{
+		if (_showWaitingNetworkCanvas)
+			WaitingNetworkCanvas.Show(false);
+
+		// 여기가 핵심인데 이미 어느 누군가 실패한 상태에서 리스트에 들어있는 또다른 항목이 실패했을때
+		// 이미 YesNoCanvas는 띄워져있을테니 그냥 호출하면 덮어버리게 된다.
+		// 그러니 카운트로 분기타서 창을 띄울지 실패리스트에 넣을지 처리한다.
+		if (_listFailureIndex.Count == 0)
+		{
+			_listFailureIndex.Add(index);
+			YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("SystemUI_Reconnect"), OnClickRetryForList, () =>
+			{
+				// To Main Scene?
+				SceneManager.LoadScene(0);
+			});
+		}
+		else
+		{
+			if (_listFailureIndex.Contains(index) == false)
+				_listFailureIndex.Add(index);
+		}
+	}
+
+	void OnClickRetryForList()
+	{
+		if (_showWaitingNetworkCanvas)
+			WaitingNetworkCanvas.Show(true);
+
+		for (int i = 0; i < _listFailureIndex.Count; ++i)
+		{
+			int index = _listFailureIndex[i];
+			if (index < _listRequestAction.Count && _listRequestAction[index] != null)
+				_listRequestAction[index].Invoke();
+		}
+		_listFailureIndex.Clear();
+	}
+	#endregion
 }

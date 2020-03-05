@@ -202,7 +202,7 @@ public class GatePillar : MonoBehaviour
 
 			// check lobby suggest
 			ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
-			if (OptionManager.instance.suggestedChapter != StageManager.instance.playChapter && chapterTableData != null)
+			if (OptionManager.instance.suggestedChapter != StageManager.instance.playChapter && PlayerData.instance.swappable && chapterTableData != null)
 			{
 				CharacterData mainCharacterData = PlayerData.instance.GetCharacterData(PlayerData.instance.mainCharacterId);
 				bool showSwapCanvas = false;
@@ -229,7 +229,7 @@ public class GatePillar : MonoBehaviour
 			// swappable이면서
 			// 다음번 보스의 suggest 캐릭터가 아니면서
 			// 다음번 보스의 suggest 캐릭터를 보유하고 있고, 이 캐릭터의 파워레벨이 권장파워레벨 이상이라면
-			if (_checkedStageSwapSuggest == false && StageManager.instance.currentStageTableData != null && StageManager.instance.currentStageTableData.swap)
+			if (_checkedStageSwapSuggest == false && StageManager.instance.currentStageTableData != null && StageManager.instance.currentStageTableData.swap && PlayerData.instance.swappable)
 			{
 				MapTableData nextMapTableData = StageManager.instance.nextMapTableData;
 				if (nextMapTableData != null && string.IsNullOrEmpty(nextMapTableData.bossName) == false &&

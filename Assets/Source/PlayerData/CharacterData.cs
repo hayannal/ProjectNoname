@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using CodeStage.AntiCheat.ObscuredTypes;
+using PlayFab.DataModels;
 
 public class CharacterData
 {
 	public ObscuredString actorId;
 	public ObscuredInt powerLevel;
+	public EntityKey entityKey;
 
 
 

@@ -46,7 +46,6 @@ public class AuthManager : MonoBehaviour
 
 	eAuthType _requestAuthType;
 	System.Guid _guid;
-	ObscuredString _playFabId;
 
 	Action _onLinkSuccess;
 	Action<bool> _onLinkFailure;
@@ -60,8 +59,8 @@ public class AuthManager : MonoBehaviour
 
 #if UNITY_EDITOR
 	// Add a menu item named "Do Something" to MyMenu in the menu bar.
-	[MenuItem("Tools/Network/Delete Cached Login Info")]
-	static void DeleteCachedLastLoginInfo()
+	//[MenuItem("Tools/Network/Delete Cached Login Info")]
+	public static void DeleteCachedLastLoginInfo()
 	{
 		ObscuredPrefs.DeleteKey(LAST_AUTH_KEY);
 		ObscuredPrefs.DeleteKey(GUEST_CUSTOM_ID_KEY);
@@ -70,8 +69,6 @@ public class AuthManager : MonoBehaviour
 #endif
 
 	#region Helper Function
-	public string playFabId { get { return _playFabId; } }
-
 	public void LoginWithLastLoginType()
 	{
 		eAuthType lastAuthType = GetLastLoginType();
@@ -88,7 +85,7 @@ public class AuthManager : MonoBehaviour
 		}
 	}
 
-	public void CreateGuestAccount()
+	public void RequestCreateGuestAccount()
 	{
 		_guid = System.Guid.NewGuid();
 		RequestLoginWithGuestId(_guid.ToString(), true);
@@ -133,9 +130,14 @@ public class AuthManager : MonoBehaviour
 		return (eAuthType)lastLogin;
 	}
 
-	string GetLastGuestCustomId()
+	public static string GetLastGuestCustomId()
 	{
 		return ObscuredPrefs.GetString(GUEST_CUSTOM_ID_KEY);
+	}
+
+	public static void SetGuestCustomId(string id)
+	{
+		ObscuredPrefs.SetString(GUEST_CUSTOM_ID_KEY, id);
 	}
 
 	void ClearCachedLastLoginInfo()
@@ -144,11 +146,29 @@ public class AuthManager : MonoBehaviour
 	}
 
 
+	GetPlayerCombinedInfoRequestParams CreateLoginParameters()
+	{
+		List<string> playerStatisticNames = new List<string>();
+		playerStatisticNames.Add("highestPlayChapter");
+		playerStatisticNames.Add("highestClearStage");
+		GetPlayerCombinedInfoRequestParams parameters = new GetPlayerCombinedInfoRequestParams();
+		parameters.GetCharacterList = true;
+		parameters.GetPlayerProfile = true;
+		parameters.GetPlayerStatistics = true;
+		parameters.GetUserAccountInfo = true;
+		parameters.GetUserData = true;
+		parameters.GetUserVirtualCurrency = true;
+		parameters.PlayerStatisticNames = playerStatisticNames;
+		return parameters;
+	}
+
 	void RequestLoginWithGuestId(string customId, bool createAccount)
 	{
 		PlayFabApiManager.instance.StartTimeRecord("Login");
 		_requestAuthType = eAuthType.Guest;
-		var request = new LoginWithCustomIDRequest { CustomId = customId, CreateAccount = createAccount };
+
+		GetPlayerCombinedInfoRequestParams parameters = CreateLoginParameters();
+		var request = new LoginWithCustomIDRequest { CustomId = customId, CreateAccount = createAccount, InfoRequestParameters = parameters };
 		PlayFabClientAPI.LoginWithCustomID(request, OnLoginSuccess, OnLoginFailure);
 	}
 
@@ -156,7 +176,9 @@ public class AuthManager : MonoBehaviour
 	{
 		PlayFabApiManager.instance.StartTimeRecord("Login");
 		_requestAuthType = eAuthType.Google;
-		var request = new LoginWithGoogleAccountRequest { ServerAuthCode = authCode, CreateAccount = false };
+
+		GetPlayerCombinedInfoRequestParams parameters = CreateLoginParameters();
+		var request = new LoginWithGoogleAccountRequest { ServerAuthCode = authCode, CreateAccount = false, InfoRequestParameters = parameters };
 		PlayFabClientAPI.LoginWithGoogleAccount(request, OnLoginSuccess, OnLoginFailure);
 	}
 
@@ -170,8 +192,8 @@ public class AuthManager : MonoBehaviour
 		if (IsCachedLastLoginInfo() == false || _requestAuthType != GetLastLoginType())
 			ObscuredPrefs.SetInt(LAST_AUTH_KEY, (int)_requestAuthType);
 
-		_playFabId = result.PlayFabId;
-		Debug.LogFormat("Login Successed! PlayFabId : {0}", _playFabId);
+		Debug.LogFormat("Login Successed! PlayFabId : {0}", result.PlayFabId);
+		PlayFabApiManager.instance.OnRecvLoginResult(result);
 	}
 
 	void OnLoginFailure(PlayFabError error)
@@ -184,7 +206,7 @@ public class AuthManager : MonoBehaviour
 		StartCoroutine(RestartProcess());
 	}
 
-	IEnumerator RestartProcess()
+	public IEnumerator RestartProcess()
 	{
 		// 이땐 로딩 속도를 위해 commonCanvasGroup도 로딩하지 않은 상태라서 직접 로드해서 보여줘야한다.
 		AsyncOperationHandle<GameObject> handleCommonCanvasGroup = Addressables.LoadAssetAsync<GameObject>("CommonCanvasGroup");

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using CodeStage.AntiCheat.ObscuredTypes;
+using PlayFab.ClientModels;
+using PlayFab.DataModels;
 
 public class PlayerData : MonoBehaviour
 {
@@ -207,11 +209,117 @@ public class PlayerData : MonoBehaviour
 	#endregion
 
 
+	#region Server
+	public void OnNewlyCreatedPlayer()
+	{
+		highestPlayChapter = 0;
+		highestClearStage = 0;
+		selectedChapter = 0;
+		chaosMode = false;
+		purifyCount = 0;
+
+		// 나중에 지울 코드이긴 한데 MainSceneBuilder에서 NEWPLAYER_LEVEL1 디파인 켜둔채로 생성하는 테스트용 루틴일땐
+		// 1챕터에서 시작하게 처리해둔다.
+		// NEWPLAYER_LEVEL1 디파인 지울때 같이 지우면 된다.
+		if (MainSceneBuilder.instance.playAfterInstallation == false)
+		{
+			highestPlayChapter = 1;
+			selectedChapter = 1;
+		}
+
+		_listCharacterData.Clear();
+		CharacterData characterData = new CharacterData();
+		characterData.actorId = "Actor001";
+		characterData.powerLevel = 1;
+		_listCharacterData.Add(characterData);
+
+		// 임의로 생성한거라 EntityKey를 만들어둘수가 없다.
+		// 그렇다고 loginned 를 풀어서 통째로 받으면 괜히 커져서 EntityKey 리프레쉬 함수 하나 만들어서 호출하기로 한다.
+		StartCoroutine(DelayedSyncCharacterEntity(5.0f));
+
+		_mainCharacterId = "Actor001";
+		loginned = true;
+	}
+
+	IEnumerator DelayedSyncCharacterEntity(float delay)
+	{
+		yield return new WaitForSeconds(delay);
+
+		PlayFabApiManager.instance.RequestSyncCharacterEntity();
+	}
+
+	public void OnRecvSyncCharacterEntity(List<CharacterResult> characterList)
+	{
+		for (int i = 0; i < characterList.Count; ++i)
+		{
+			CharacterData characterData = PlayerData.instance.GetCharacterData(characterList[i].CharacterName);
+			if (characterData == null)
+				continue;
+			characterData.entityKey = new PlayFab.DataModels.EntityKey() { Id = characterList[i].CharacterId, Type = "character" };
+		}
+	}
+
+	public void OnRecvPlayerData(List<StatisticValue> playerStatistics, Dictionary<string, UserDataRecord> userData)
+	{
+		for (int i = 0; i < playerStatistics.Count; ++i)
+		{
+			switch (playerStatistics[i].StatisticName)
+			{
+				case "highestPlayChapter": highestPlayChapter = playerStatistics[i].Value; break;
+				case "highestClearStage": highestClearStage = playerStatistics[i].Value; break;
+			}
+		}
+
+		if (userData.ContainsKey("mainCharacterId"))
+			_mainCharacterId = userData["mainCharacterId"].Value;
+
+		if (userData.ContainsKey("selectedChapter"))
+		{
+			int intValue = 0;
+			if (int.TryParse(userData["selectedChapter"].Value, out intValue))
+				selectedChapter = intValue;
+		}
+
+		if (userData.ContainsKey("chaos"))
+		{
+			int intValue = 0;
+			if (int.TryParse(userData["chaos"].Value, out intValue))
+				chaosMode = (intValue == 1);
+		}
+
+		loginned = true;
+	}
+
+	public void OnRecvCharacterList(List<CharacterResult> characterList, List<ObjectResult> characterEntityObjectList)
+	{
+		_listCharacterData.Clear();
+		for (int i = 0; i < characterList.Count; ++i)
+		{
+			CharacterData newCharacterData = new CharacterData();
+			newCharacterData.actorId = characterList[i].CharacterName;
+			newCharacterData.entityKey = new PlayFab.DataModels.EntityKey { Id = characterList[i].CharacterId, Type = "character" };
+
+			PlayFabApiManager.CharacterDataEntity1 dataObject = null;
+			for (int j = 0; j < characterEntityObjectList.Count; ++j)
+			{
+				if (characterEntityObjectList[j].ObjectName == newCharacterData.actorId)
+				{
+					dataObject = JsonUtility.FromJson<PlayFabApiManager.CharacterDataEntity1>(characterEntityObjectList[j].DataObject.ToString());
+					break;
+				}
+			}
+			if (dataObject == null)
+				continue;
+
+			newCharacterData.powerLevel = dataObject.pow;
+			_listCharacterData.Add(newCharacterData);
+		}
+	}
+	#endregion
+
 	#region Character List
 	List<CharacterData> _listCharacterData = new List<CharacterData>();
 	public List<CharacterData> listCharacterData { get { return _listCharacterData; } }
-
-	
 
 	public CharacterData GetCharacterData(string actorId)
 	{

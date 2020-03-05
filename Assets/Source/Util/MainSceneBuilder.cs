@@ -32,7 +32,7 @@ public class MainSceneBuilder : MonoBehaviour
 		Addressables.Release<GameObject>(_handleTableDataManager);
 
 		// 서버오류로 인해 접속못했을 경우 대비해서 체크해둔다.
-		if (PlayerData.instance.loginned == false && _handleStageManager.IsValid() == false) return;
+		if (_handleStageManager.IsValid() == false && mainSceneBuilding) return;
 
 		Addressables.Release<GameObject>(_handleStageManager);
 		Addressables.Release<GameObject>(_handleStartCharacter);
@@ -119,16 +119,7 @@ public class MainSceneBuilder : MonoBehaviour
 			//
 			// 캐릭터 만드는 패킷인데 인자라도 다르게 해서 구분을 해야할까?
 			float createAccountStartTime = Time.time;
-			AuthManager.instance.CreateGuestAccount();
-			while (string.IsNullOrEmpty(AuthManager.instance.playFabId)) yield return null;
-
-			PlayFabApiManager.instance.RequestPlayerData();
-
-			// login and recv player data
-			PlayerData.instance.OnRecvPlayerInfoForClient();
-			PlayerData.instance.OnRecvCharacterListForClient();
-			TimeSpaceData.instance.OnRecvEquipInventory();
-
+			AuthManager.instance.RequestCreateGuestAccount();
 			while (PlayerData.instance.loginned == false) yield return null;
 			Debug.LogFormat("Create Account Time : {0:0.###}", Time.time - createAccountStartTime);
 #else
@@ -142,21 +133,11 @@ public class MainSceneBuilder : MonoBehaviour
 		{
 			float serverLoginStartTime = Time.time;
 			AuthManager.instance.LoginWithLastLoginType();
-
-			// 여기서 패킷 받을때까진 대기
-			while (string.IsNullOrEmpty(AuthManager.instance.playFabId)) yield return null;
-
-			PlayFabApiManager.instance.RequestPlayerData();
-
-			// login and recv player data
-			PlayerData.instance.OnRecvPlayerInfoForClient();
-			PlayerData.instance.OnRecvCharacterListForClient();
-			TimeSpaceData.instance.OnRecvEquipInventory();
-
 			while (PlayerData.instance.loginned == false) yield return null;
 			Debug.LogFormat("Server Login Time : {0:0.###}", Time.time - serverLoginStartTime);
 		}
 #else
+		// only client
 		if (PlayerData.instance.loginned == false)
 		{
 			// login and recv player data
@@ -338,16 +319,7 @@ public class MainSceneBuilder : MonoBehaviour
 
 		// 캐릭터 만드는 패킷
 		float createAccountStartTime = Time.time;
-		AuthManager.instance.CreateGuestAccount();
-		while (string.IsNullOrEmpty(AuthManager.instance.playFabId)) yield return null;
-
-		PlayFabApiManager.instance.RequestPlayerData();
-
-		// login and recv player data
-		PlayerData.instance.OnRecvPlayerInfoForClient();
-		PlayerData.instance.OnRecvCharacterListForClient();
-		TimeSpaceData.instance.OnRecvEquipInventory();
-
+		AuthManager.instance.RequestCreateGuestAccount();
 		while (PlayerData.instance.loginned == false) yield return null;
 		Debug.LogFormat("Create Account Time : {0:0.###}", Time.time - createAccountStartTime);
 

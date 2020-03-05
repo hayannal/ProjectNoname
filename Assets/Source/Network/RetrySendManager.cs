@@ -48,6 +48,9 @@ public class RetrySendManager : MonoBehaviour {
 
 	public void OnSuccess()
 	{
+		if (_showWaitingNetworkCanvas)
+			WaitingNetworkCanvas.Show(false);
+
 		_cachedAction = null;
 		_showWaitingNetworkCanvas = false;
 	}

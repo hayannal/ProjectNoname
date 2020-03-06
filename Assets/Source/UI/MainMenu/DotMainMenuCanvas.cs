@@ -240,6 +240,12 @@ public class DotMainMenuCanvas : MonoBehaviour
 	}
 
 	#region Button Event
+	public void OnClickBackButton()
+	{
+		if (_reservedHide == false)
+			ToggleShow();
+	}
+
 	public void OnClickCharacterButton()
 	{
 		UIInstanceManager.instance.ShowCanvasAsync("CharacterInfoCanvas", () =>

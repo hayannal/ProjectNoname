@@ -146,6 +146,19 @@ public class MainSceneBuilder : MonoBehaviour
 		}
 #endif
 
+		// 서버와 연동 후 64비트 빌드를 뽑아봤는데 하필 요 부분쯤부터-40% 근처 프로그래스바가 올라가지 않으면서 프리징 되는 현상이 발생했다.
+		// 이상하게도 32비트도 정상이고 64비트인데 PLAYFAB디파인을 주석처리한 빌드도 정상인데
+		// PLAYFAB 디파인 켠 빌드에서만 거의 0.5%? 수준으로 프리징이 발생한다.
+		// 아무리봐도 네트워크 문제는 아닌거 같은게
+		// 딱 한번 70%쯤에서 멈췄었고 한번은 100% 다 차고 로딩화면 없어지려는 알파 반투명쯤에서 프리징이 걸렸기에
+		// 아무래도 Addressables.LoadAssetAsync의 문제로 의심하고 있다.
+		// 로그캣으로 로그도 찍어봤는데
+		// 유니티 로그는 멈추고나서 한참 후 Timeout while trying to pause the Unity Engine. 뜨는게 전부고
+		// 일반 로그로 찍어봐도 정상일때랑 아닐때랑 별다른 차이가 없다.
+		// 그러다가 유니티에 Addressables.LoadAssetAsync 함수 프리징 된다는 글이 있어서 보니
+		// 엔진팀에서 수정중이라 한다.
+		// 우선은 버전업을 해서 고쳐지길 기대하는 수밖에 없을 듯 하다.
+
 		// step 4. set lobby
 		lobby = true;
 		_handleLobbyCanvas = Addressables.LoadAssetAsync<GameObject>("LobbyCanvas");

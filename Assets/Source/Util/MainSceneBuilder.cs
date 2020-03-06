@@ -1,4 +1,4 @@
-//#define PLAYFAB				// 싱글버전으로 돌아가는 디파인이다. 테스트용을 위해 남겨둔다.
+#define PLAYFAB				// 싱글버전으로 돌아가는 디파인이다. 테스트용을 위해 남겨둔다.
 #define NEWPLAYER_LEVEL1	// 실제 튜토리얼 들어갈때 무조건 없애야하는 디파인이다. 1레벨 임시 캐릭 생성용 버전.
 
 using System.Collections;

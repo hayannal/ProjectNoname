@@ -96,6 +96,8 @@ public class PlayFabApiManager : MonoBehaviour
 		_titlePlayerEntityKey = new PlayFab.DataModels.EntityKey { Id = loginResult.EntityToken.Entity.Id, Type = loginResult.EntityToken.Entity.Type };
 #endif
 
+		CurrencyData.instance.OnRecvCurrencyData(loginResult.InfoResultPayload.UserVirtualCurrency, loginResult.InfoResultPayload.UserVirtualCurrencyRechargeTimes);
+
 		if (loginResult.NewlyCreated)
 		{
 			// 처음 만든 계정이면 어차피 읽어올게 없다.

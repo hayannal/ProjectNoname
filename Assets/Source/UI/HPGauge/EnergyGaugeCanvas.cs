@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,15 +26,23 @@ public class EnergyGaugeCanvas : MonoBehaviour
 
 	void Update()
 	{
+		if (PlayerData.instance.clientOnly)
+			return;
+
 		UpdateFillRemainTime();
+		UpdateRefresh();
 	}
 
 	public void RefreshEnergy()
 	{
-		int current = 13;
-		int max = 30;
+		if (PlayerData.instance.clientOnly)
+			return;
+
+		int current = CurrencyData.instance.energy;
+		int max = CurrencyData.instance.energyMax;
 		energyRatioSlider.value = (float)current / max;
 		energyText.text = string.Format("{0}/{1}", current, max);
+		_lastCurrent = current;
 		if (current == max)
 		{
 			fillRemainTimeText.text = "";
@@ -41,33 +50,50 @@ public class EnergyGaugeCanvas : MonoBehaviour
 		}
 		else
 		{
-			_nextFillDateTime = System.DateTime.Now + System.TimeSpan.FromSeconds(248);
+			_nextFillDateTime = CurrencyData.instance.energyRechargeTime;
 			_needUpdate = true;
 			_lastRemainTimeSecond = -1;
 		}
 	}
 
 	bool _needUpdate = false;
-	System.DateTime _nextFillDateTime;
+	DateTime _nextFillDateTime;
 	int _lastRemainTimeSecond = -1;
 	void UpdateFillRemainTime()
 	{
 		if (_needUpdate == false)
 			return;
 
-		if (System.DateTime.Now < _nextFillDateTime)
+		if (DateTime.UtcNow < _nextFillDateTime)
 		{
-			System.TimeSpan remainTime = _nextFillDateTime - System.DateTime.Now;
-			if (_lastRemainTimeSecond != remainTime.Seconds)
+			TimeSpan remainTime = _nextFillDateTime - DateTime.UtcNow;
+			if (_lastRemainTimeSecond != (int)remainTime.TotalSeconds)
+			{
 				fillRemainTimeText.text = string.Format("{0}:{1:00}", remainTime.Minutes, remainTime.Seconds);
+				_lastRemainTimeSecond = (int)remainTime.TotalSeconds;
+			}
 		}
 		else
 		{
-			// 클라단에서 미리 올려놓고 서버에 보내봐야하나?
-			// ++current;
-			// 이쪽은 이제 플레이팹 연동할때 맞춰봐야할듯. 서버에서 어찌 보내주는지 보자.
-			// 저거 할때 홈키 눌렀다가 오는것도 같이 봐야한다.
+			// 우선 클라단에서 하기로 했으니 서버랑 통신해서 바꾸진 않는다.
+			// 대신 CurrencyData의 값과 비교하면서 바뀌는지 확인한다.
+			_needUpdate = false;
+			fillRemainTimeText.text = "0:00";
+			_needRefresh = true;
+		}
+	}
+
+	bool _needRefresh = false;
+	int _lastCurrent;
+	void UpdateRefresh()
+	{
+		if (_needRefresh == false)
+			return;
+
+		if (_lastCurrent != CurrencyData.instance.energy)
+		{
 			RefreshEnergy();
+			_needRefresh = false;
 		}
 	}
 

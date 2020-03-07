@@ -22,6 +22,7 @@ public class PlayerData : MonoBehaviour
 	static PlayerData _instance = null;
 
 	public bool loginned { get; private set; }
+	public bool clientOnly { get; private set; }
 
 	// 변수 이름이 헷갈릴 수 있는데 로직상 이게 가장 필요한 정보라 그렇다.
 	// 하나는 최대로 플레이한 챕터 번호고 하나는 최대로 클리어한 스테이지 번호다.
@@ -48,6 +49,7 @@ public class PlayerData : MonoBehaviour
 
 		// temp
 		loginned = true;
+		clientOnly = true;
 	}
 
 	public void OnRecvCharacterListForClient()

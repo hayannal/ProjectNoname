@@ -14,23 +14,29 @@ public class DotMainMenuCanvas : MonoBehaviour
 	public enum eButtonType
 	{
 		Shop,
-		Chapter,
 		Character,
+		Chapter,
+		Research,
 		Mail,
-		Option,
-		Chaos,
-		TimeSpaceStatus,
 	}
-	public Transform[] mainMenuButtonTransformList;	
+	public Transform[] mainMenuButtonTransformList;
 
 	int[][] MenuIndexList =
 	{
 		new int[] { 0 },
 		new int[] { 0, 1 },
-		new int[] { 0, 1, 3 },
-		new int[] { 0, 1, 2, 3 },
-		new int[] { 0, 1, 2, 3, 5 },
-		new int[] { 0, 1, 2, 3, 4, 5 },
+		new int[] { 0, 1, 4 },
+		new int[] { 2, 0, 1, 4 },
+		new int[] { 2, 0, 1, 3, 4 },
+	};
+
+	float[] StartAngleList =
+	{
+		180.0f,
+		0.0f,
+		60.0f,
+		0.0f,
+		0.0f,
 	};
 
 	float[] RadiusList =
@@ -38,9 +44,8 @@ public class DotMainMenuCanvas : MonoBehaviour
 		1.5f,
 		1.5f,
 		1.5f,
-		1.5f,
 		1.75f,
-		1.75f
+		2.0f,
 	};
 
 	void Awake()
@@ -75,7 +80,10 @@ public class DotMainMenuCanvas : MonoBehaviour
 
 		// initialize menu content
 		_elementCount = 3;
-
+		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Research))
+			_elementCount = 5;
+		else if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Chapter))
+			_elementCount = 4;
 
 		// initialize flag
 		_targetPrevPosition = targetTransform.position;
@@ -103,7 +111,7 @@ public class DotMainMenuCanvas : MonoBehaviour
 		for (int i = 0; i < _elementCount; ++i)
 		{
 			int angle = 360 / _elementCount;
-			_listElementAngle.Add(i * angle);
+			_listElementAngle.Add(i * angle + StartAngleList[_elementCount - 1]);
 			_listTargetPosition.Add(Vector3.zero);
 		}
 	}
@@ -167,7 +175,7 @@ public class DotMainMenuCanvas : MonoBehaviour
 				if (_adjustTargetDirection != Vector3.zero)
 					_listTargetPosition[i] = Vector3.Slerp(_listTargetPosition[i], _adjustTargetDirection, _adjustDirectionRatio);
 
-				_listTargetPosition[i] *= RadiusList[_elementCount];
+				_listTargetPosition[i] *= RadiusList[_elementCount - 1];
 			}
 			_lastAdjustTargetDirection = _adjustTargetDirection;
 		}
@@ -246,6 +254,11 @@ public class DotMainMenuCanvas : MonoBehaviour
 			ToggleShow();
 	}
 
+	public void OnClickShopButton()
+	{
+
+	}
+
 	public void OnClickCharacterButton()
 	{
 		UIInstanceManager.instance.ShowCanvasAsync("CharacterInfoCanvas", () =>
@@ -253,6 +266,21 @@ public class DotMainMenuCanvas : MonoBehaviour
 
 		});
 		gameObject.SetActive(false);
+	}
+
+	public void OnClickChapterButton()
+	{
+
+	}
+
+	public void OnClickResearchButton()
+	{
+
+	}
+
+	public void OnClickMailButton()
+	{
+
 	}
 	#endregion
 

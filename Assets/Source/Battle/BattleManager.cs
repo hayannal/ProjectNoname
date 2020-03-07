@@ -132,6 +132,7 @@ public class BattleManager : MonoBehaviour
 	{
 		// Stack된걸 적용하기 직전에 현재 맵의 보정치를 적용시킨다.
 		_stackDropExp += StageManager.instance.addDropExp;
+		_stackDropExp = (int)(_stackDropExp * StageManager.instance.currentStageTableData.DropExpAdjustment);
 
 		//Debug.LogFormat("Drop Exp Add {0} / Get Exp : {1}", StageManager.instance.addDropExp, _stackDropExp);
 		

@@ -96,4 +96,12 @@ public class StageTableData
   float _initialDropSpAdjustment;
   public float initialDropSpAdjustment { get { return _initialDropSpAdjustment; } set { _initialDropSpAdjustment = value; } }
   
+  [SerializeField]
+  float _DropHeartAdjustment;
+  public float DropHeartAdjustment { get { return _DropHeartAdjustment; } set { _DropHeartAdjustment = value; } }
+  
+  [SerializeField]
+  float _DropExpAdjustment;
+  public float DropExpAdjustment { get { return _DropExpAdjustment; } set { _DropExpAdjustment = value; } }
+  
 }

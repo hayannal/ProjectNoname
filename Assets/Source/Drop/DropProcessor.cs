@@ -69,6 +69,7 @@ public class DropProcessor : MonoBehaviour
 						probability *= (1.0f + itemDropAdjust);
 					break;
 				case eDropType.Heart:
+					probability *= StageManager.instance.currentStageTableData.DropHeartAdjustment;
 					float heartDropAdjust = DropAdjustAffector.GetValue(BattleInstanceManager.instance.playerActor.affectorProcessor, DropAdjustAffector.eDropAdjustType.HeartDropRate);
 					if (heartDropAdjust != 0.0f)
 						probability *= (1.0f + heartDropAdjust);

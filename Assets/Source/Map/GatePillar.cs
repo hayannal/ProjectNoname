@@ -106,10 +106,10 @@ public class GatePillar : MonoBehaviour
 			}
 		}
 
-		if (TitleCanvas.instance != null && TitleCanvas.instance.gameObject.activeSelf && TitleCanvas.instance.maskObject.activeSelf)
+		if (TitleCanvas.instance != null && TitleCanvas.instance.gameObject.activeSelf && TitleCanvas.instance.gameObject.activeSelf)
 			return;
 
-		// 설명 인디케이터는 타이틀 있을 경우엔 검은화면 지나가고 시간 재는게 맞다.
+		// 설명 인디케이터는 타이틀 있을 경우엔 안나오는게 맞다. 지나가고 시간 재는게 맞다.
 		if (_descriptionObjectIndicatorShowRemainTime > 0.0f)
 		{
 			_descriptionObjectIndicatorShowRemainTime -= Time.deltaTime;

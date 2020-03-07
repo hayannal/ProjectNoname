@@ -37,8 +37,6 @@ public class PlayerData : MonoBehaviour
 	public ObscuredBool chaosMode { get; set; }
 	public ObscuredInt purifyCount { get; set; }
 
-	public bool tutorialChapter { get { return highestPlayChapter == 0; } }
-
 	#region Player Info For Client
 	public void OnRecvPlayerInfoForClient()
 	{

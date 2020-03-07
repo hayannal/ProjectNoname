@@ -45,7 +45,7 @@ public class LobbyCanvas : MonoBehaviour
 		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null)
 			TitleCanvas.instance.FadeTitle();
 
-		if (PlayerData.instance.tutorialChapter)
+		if (ContentsManager.IsTutorialChapter())
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_PossibleAfterTraining"), 2.0f);
 			return;

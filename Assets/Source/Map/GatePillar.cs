@@ -17,7 +17,7 @@ public class GatePillar : MonoBehaviour
 	public GameObject changeEffectParticleRootObject;
 
 	// 동적 로드하는 것들을 외부로 뺄까 했는데 크기가 크지 않고 자주 쓰이는거라면 굳이 뺄필요가 없어서 안빼기로 한다.
-	ObjectIndicatorCanvas _objectIndicatorCanvas;
+	DescriptionObjectIndicatorCanvas _descriptionObjectIndicatorCanvas;
 	public GameObject descriptionObjectIndicatorPrefab;
 	public float descriptionObjectIndicatorShowDelayTime = 5.0f;
 	public float energyGaugeShowDelayTime = 0.2f;
@@ -49,11 +49,15 @@ public class GatePillar : MonoBehaviour
 		floorText.text = "";
 
 		_spawnTime = Time.time;
-		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && PlayerData.instance.tutorialChapter == false)
+		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby)
 		{
-			// 일부러 조금 뒤에 보이게 한다. 초기 로딩 줄이기 위해.
-			_energyGaugeShowRemainTime = energyGaugeShowDelayTime;
-			return;
+			if (ContentsManager.IsTutorialChapter() == false)
+			{
+				// 일부러 조금 뒤에 보이게 한다. 초기 로딩 줄이기 위해.
+				_energyGaugeShowRemainTime = energyGaugeShowDelayTime;
+			}
+			if (ContentsManager.IsTutorialChapter() == false && ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Chapter) == false)
+				return;
 		}
 		// 보스 인디케이터는 빠르게 등장한다.
 		if (string.IsNullOrEmpty(StageManager.instance.nextMapTableData.bossName))
@@ -73,10 +77,10 @@ public class GatePillar : MonoBehaviour
 		particleRootObject.SetActive(false);
 		changeEffectParticleRootObject.SetActive(false);
 
-		if (_objectIndicatorCanvas != null)
+		if (_descriptionObjectIndicatorCanvas != null)
 		{
-			_objectIndicatorCanvas.gameObject.SetActive(false);
-			_objectIndicatorCanvas = null;
+			_descriptionObjectIndicatorCanvas.gameObject.SetActive(false);
+			_descriptionObjectIndicatorCanvas = null;
 		}
 
 		if (DragThresholdController.instance != null)
@@ -112,10 +116,20 @@ public class GatePillar : MonoBehaviour
 			if (_descriptionObjectIndicatorShowRemainTime <= 0.0f)
 			{
 				_descriptionObjectIndicatorShowRemainTime = 0.0f;
-				_objectIndicatorCanvas = UIInstanceManager.instance.GetCachedObjectIndicatorCanvas(descriptionObjectIndicatorPrefab);
-				_objectIndicatorCanvas.targetTransform = cachedTransform;
+				_descriptionObjectIndicatorCanvas = (DescriptionObjectIndicatorCanvas)UIInstanceManager.instance.GetCachedObjectIndicatorCanvas(descriptionObjectIndicatorPrefab);
+				_descriptionObjectIndicatorCanvas.targetTransform = cachedTransform;
+
+				RefreshChapterText();
 			}
 		}
+	}
+
+	public void RefreshChapterText()
+	{
+		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && ContentsManager.IsTutorialChapter() == false)
+			_descriptionObjectIndicatorCanvas.contextText.SetLocalizedText(UIString.instance.GetString("GameUI_ChapterInIndicator", PlayerData.instance.selectedChapter, PlayerData.instance.chaosMode ? UIString.instance.GetString("GameUI_ChapterIndicatorParam") : ""));
+		else
+			_descriptionObjectIndicatorCanvas.contextText.SetLocalizedText(UIString.instance.GetString("GameUI_TouchToMove"));
 	}
 
 	void OnCollisionEnter(Collision collision)

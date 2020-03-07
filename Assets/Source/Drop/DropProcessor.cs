@@ -22,6 +22,7 @@ public class DropProcessor : MonoBehaviour
 	{
 		switch (dropType)
 		{
+			case eDropType.Gold:
 			case eDropType.Ultimate:
 				return true;
 		}
@@ -95,7 +96,7 @@ public class DropProcessor : MonoBehaviour
 				case eDropType.Gold:
 					float goldDropAdjust = DropAdjustAffector.GetValue(BattleInstanceManager.instance.playerActor.affectorProcessor, DropAdjustAffector.eDropAdjustType.GoldDropAmount);
 					if (goldDropAdjust != 0.0f)
-						intValue = Mathf.CeilToInt(intValue * (1.0f + goldDropAdjust));
+						floatValue = floatValue * (1.0f + goldDropAdjust);
 					dropProcessor.Add(dropType, floatValue, intValue);
 					break;
 				case eDropType.LevelPack:
@@ -158,14 +159,11 @@ public class DropProcessor : MonoBehaviour
 				int randomCount = Random.Range(4, 7);
 				float goldDropAdjust = DropAdjustAffector.GetValue(BattleInstanceManager.instance.playerActor.affectorProcessor, DropAdjustAffector.eDropAdjustType.GoldDropAmount);
 				if (goldDropAdjust > 0.0f) randomCount += 1;
-				int quotient = intValue / randomCount;
-				int remainder = intValue % randomCount;
 				for (int i = 0; i < randomCount; ++i)
 				{
-					int currentCount = quotient + ((i < remainder) ? 1 : 0);
 					newInfo = new DropObjectInfo();
 					newInfo.dropType = dropType;
-					newInfo.intValue = currentCount;
+					newInfo.floatValue = floatValue / randomCount;
 					_listDropObjectInfo.Add(newInfo);
 				}
 				break;

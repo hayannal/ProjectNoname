@@ -249,6 +249,9 @@ public class DropObject : MonoBehaviour
 
 		switch (_dropType)
 		{
+			case DropProcessor.eDropType.Gold:
+				DropManager.instance.AddDropGold(_floatValue);
+				break;
 			case DropProcessor.eDropType.LevelPack:
 				int levelPackCount = (_floatValue == 0.0f) ? 1 : 0;
 				int noHitLevelPackCount = (_floatValue > 0.0f) ? 1 : 0;
@@ -258,6 +261,9 @@ public class DropObject : MonoBehaviour
 				AffectorValueLevelTableData healAffectorValue = new AffectorValueLevelTableData();
 				healAffectorValue.fValue3 = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("DropHeal");
 				BattleInstanceManager.instance.playerActor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Heal, healAffectorValue, BattleInstanceManager.instance.playerActor, false);
+				break;
+			case DropProcessor.eDropType.Gacha:
+				//DropManager.instance.AddDropItem();
 				break;
 		}
 

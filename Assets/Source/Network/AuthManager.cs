@@ -153,9 +153,7 @@ public class AuthManager : MonoBehaviour
 		playerStatisticNames.Add("highestClearStage");
 		GetPlayerCombinedInfoRequestParams parameters = new GetPlayerCombinedInfoRequestParams();
 		parameters.GetCharacterList = true;
-		parameters.GetPlayerProfile = true;
 		parameters.GetPlayerStatistics = true;
-		parameters.GetUserAccountInfo = true;
 		parameters.GetUserData = true;
 		parameters.GetUserVirtualCurrency = true;
 		parameters.PlayerStatisticNames = playerStatisticNames;
@@ -201,18 +199,22 @@ public class AuthManager : MonoBehaviour
 		PlayFabApiManager.instance.EndTimeRecord("Login");
 		Debug.LogError(error.GenerateErrorReport());
 
+		string stringId = "SystemUI_DisconnectServer";
+		if (error.Error == PlayFabErrorCode.AccountBanned)
+			stringId = "SystemUI_Banned";
+
 		//PlayFabApiManager.instance.HandleCommonError(error); 호출하는 대신
 		// 로딩 구조 및 sortOrder를 바꿔야해서 직접 처리한다.
-		StartCoroutine(RestartProcess());
+		StartCoroutine(RestartProcess(stringId));
 	}
 
-	public IEnumerator RestartProcess()
+	public IEnumerator RestartProcess(string stringId = "SystemUI_DisconnectServer")
 	{
 		// 이땐 로딩 속도를 위해 commonCanvasGroup도 로딩하지 않은 상태라서 직접 로드해서 보여줘야한다.
 		AsyncOperationHandle<GameObject> handleCommonCanvasGroup = Addressables.LoadAssetAsync<GameObject>("CommonCanvasGroup");
 		while (!handleCommonCanvasGroup.IsDone) yield return null;
 		Instantiate<GameObject>(handleCommonCanvasGroup.Result);
-		OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("SystemUI_DisconnectServer"), () =>
+		OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString(stringId), () =>
 		{
 			Addressables.Release<GameObject>(handleCommonCanvasGroup);
 			SceneManager.LoadScene(0);

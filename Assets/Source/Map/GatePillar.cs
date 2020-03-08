@@ -72,10 +72,10 @@ public class GatePillar : MonoBehaviour
 	void OnDisable()
 	{
 		raycastCount = 0;
-		_checkedStageSwapSuggest = false;
-
 		particleRootObject.SetActive(false);
 		changeEffectParticleRootObject.SetActive(false);
+		
+		_checkedStageSwapSuggest = false;
 
 		if (_descriptionObjectIndicatorCanvas != null)
 		{
@@ -85,6 +85,12 @@ public class GatePillar : MonoBehaviour
 
 		if (DragThresholdController.instance != null)
 			DragThresholdController.instance.ResetUIDragThreshold();
+	}
+
+	void ResetFlagForServerFailure()
+	{
+		raycastCount = 0;
+		changeEffectParticleRootObject.SetActive(false);
 	}
 
 	float _descriptionObjectIndicatorShowRemainTime;
@@ -213,6 +219,8 @@ public class GatePillar : MonoBehaviour
 		if (MainSceneBuilder.instance.lobby)
 		{
 			// check lobby energy
+			if (CheckEnergy() == false)
+				return false;
 
 			// check lobby suggest
 			ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
@@ -265,6 +273,60 @@ public class GatePillar : MonoBehaviour
 		return true;
 	}
 
+	#region Energy
+	bool CheckEnergy()
+	{
+		if (PlayerData.instance.clientOnly)
+			return true;
+
+		if (ContentsManager.IsTutorialChapter())
+			return true;
+
+		// 강종으로 인해 재접속 하는 경우에도 소모하지 않는다.
+		//if (IsRetryByCrash)
+
+		if (CurrencyData.instance.energy < BattleInstanceManager.instance.GetCachedGlobalConstantInt("RequiredEnergyToPlay"))
+		{
+			// 선 클라 처리. 오히려 이건 쉽다.
+			//ConfirmSpendCanvas.instance.ShowCanvas(true, string message, CurrencyData.eCurrencyType spendCurrencyType, System.Action yesAction, System.Action noAction = null)
+			return false;
+		}
+
+		return true;
+	}
+
+	// 클라이언트 에너지 선처리. 패킷을 날려놓고 페이드아웃쯤에 오는 서버 응답에 따라 처리가 나뉜다.
+	bool _waitEnergyServerResponse;
+	bool _enterGameServerFailure;
+	void PrepareUseEnergy()
+	{
+		if (PlayerData.instance.clientOnly)
+			return;
+
+		int useAmount = BattleInstanceManager.instance.GetCachedGlobalConstantInt("RequiredEnergyToPlay");
+		if (ContentsManager.IsTutorialChapter()) // || IsRetryByCrash) 강종에 의한 재도전도 포함해야한다.
+			useAmount = 0;
+
+		// 클라이언트에서 먼저 삭제한 다음
+		if (useAmount > 0)
+		{
+			CurrencyData.instance.UseEnergy(useAmount);
+			if (EnergyGaugeCanvas.instance != null)
+				EnergyGaugeCanvas.instance.RefreshEnergy();
+		}
+		// 입장패킷 보내서 서버로부터 제대로 응답오는지 기다려야한다.
+		PlayFabApiManager.instance.RequestEnterGame(false, (success) =>
+		{
+			if (_waitEnergyServerResponse)
+			{
+				_enterGameServerFailure = ((string)success.FunctionResult == "1");
+				_waitEnergyServerResponse = false;
+			}
+		});
+		_waitEnergyServerResponse = true;
+	}
+	#endregion
+
 	bool _checkedStageSwapSuggest = false;
 	bool HasSuggestedActor(string[] suggestedActorIdList)
 	{
@@ -306,6 +368,8 @@ public class GatePillar : MonoBehaviour
 
 		_processing = true;
 
+		PrepareUseEnergy();
+
 		yield return Timing.WaitForSeconds(0.2f);
 		changeEffectParticleRootObject.SetActive(true);
 #if UNITY_EDITOR
@@ -322,6 +386,21 @@ public class GatePillar : MonoBehaviour
 
 		if (MainSceneBuilder.instance.lobby)
 		{
+			while (_waitEnergyServerResponse)
+				yield return Timing.WaitForOneFrame;
+			if (_enterGameServerFailure)
+			{
+				ResetFlagForServerFailure();
+				FadeCanvas.instance.FadeIn(0.4f);
+				OkCanvas.instance.ShowCanvas(true, "error", "Energy error");
+				_enterGameServerFailure = false;
+				// 알파가 어느정도 빠지면 _processing을 풀어준다.
+				yield return Timing.WaitForSeconds(0.2f);
+				_processing = false;				
+				yield break;
+			}
+			if (PlayerData.instance.clientOnly == false)
+				Timing.RunCoroutine(CurrencyData.instance.DelayedSyncEnergyRechargeTime(5.0f));
 			while (MainSceneBuilder.instance.IsDoneLateInitialized() == false)
 				yield return Timing.WaitForOneFrame;
 			if (TitleCanvas.instance != null)

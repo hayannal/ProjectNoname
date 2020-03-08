@@ -43,7 +43,7 @@ public class EnergyGaugeCanvas : MonoBehaviour
 		energyRatioSlider.value = (float)current / max;
 		energyText.text = string.Format("{0}/{1}", current, max);
 		_lastCurrent = current;
-		if (current == max)
+		if (current >= max)
 		{
 			fillRemainTimeText.text = "";
 			_needUpdate = false;

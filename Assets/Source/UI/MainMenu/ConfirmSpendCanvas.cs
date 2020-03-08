@@ -19,7 +19,7 @@ public class ConfirmSpendCanvas : MonoBehaviour
 		instance = this;
 	}
 
-	public void ShowCanvas(bool show, string title, string message, int spendCount, System.Action okAction = null)
+	public void ShowCanvas(bool show, string title, string message, CurrencyData.eCurrencyType currencyType, int spendCount, System.Action okAction = null)
 	{
 		gameObject.SetActive(show);
 		if (show == false)
@@ -29,6 +29,14 @@ public class ConfirmSpendCanvas : MonoBehaviour
 		messageText.SetLocalizedText(message);
 		spendCountText.text = spendCount.ToString();
 		_okAction = okAction;
+
+		spendItemImage.color = Color.clear;
+		AddressableAssetLoadManager.GetAddressableSprite(CurrencyData.CurrencyType2Address(currencyType), "Icon", (sprite) =>
+		{
+			spendItemImage.sprite = null;
+			spendItemImage.sprite = sprite;
+			spendItemImage.color = Color.white;
+		});
 	}
 
 	public void OnClickOkButton()

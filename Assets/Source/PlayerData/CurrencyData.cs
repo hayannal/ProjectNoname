@@ -22,6 +22,13 @@ public class CurrencyData : MonoBehaviour
 	}
 	static CurrencyData _instance = null;
 
+	public enum eCurrencyType
+	{
+		Gold,
+		Diamond,
+		// Ticket
+	}
+
 	public ObscuredInt gold { get; set; }
 	public ObscuredInt energy { get; set; }
 	public ObscuredInt dia { get; set; }    // 서버가 모아서 보내주는 기능이 없으니 클라가 합산한다.
@@ -29,6 +36,16 @@ public class CurrencyData : MonoBehaviour
 	public int diaTotal { get { return dia + diaFree; } }
 
 	public ObscuredInt energyMax { get; set; }
+
+	public static string CurrencyType2Address(eCurrencyType currencyType)
+	{
+		switch (currencyType)
+		{
+			case eCurrencyType.Gold: return "Currency_Gold";
+			case eCurrencyType.Diamond: return "Currency_Diamond";
+		}
+		return "";
+	}
 
 	public void OnRecvCurrencyData(Dictionary<string, int> userVirtualCurrency, Dictionary<string, VirtualCurrencyRechargeTime> userVirtualCurrencyRechargeTimes)
 	{

@@ -303,8 +303,9 @@ public class GatePillar : MonoBehaviour
 			if (gameObject == null) return;
 			if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby == false) return;
 
+			string title = UIString.instance.GetString("SystemUI_Info");
 			string message = UIString.instance.GetString("GameUI_RefillEnergy", BattleInstanceManager.instance.GetCachedGlobalConstantInt("RequiredEnergyToPlay"), CurrencyData.instance.energyMax);
-			ConfirmSpendCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), message, BattleInstanceManager.instance.GetCachedGlobalConstantInt("RefillEnergyDiamond"), () =>
+			ConfirmSpendCanvas.instance.ShowCanvas(true, title, message, CurrencyData.eCurrencyType.Diamond, BattleInstanceManager.instance.GetCachedGlobalConstantInt("RefillEnergyDiamond"), () =>
 			{
 			});
 		});

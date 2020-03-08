@@ -8,6 +8,7 @@ public class EnergyGaugeCanvas : MonoBehaviour
 {
 	public static EnergyGaugeCanvas instance;
 
+	public Transform offsetRootTransform;
 	public Slider energyRatioSlider;
 	public Text energyText;
 	public Text fillRemainTimeText;
@@ -15,6 +16,7 @@ public class EnergyGaugeCanvas : MonoBehaviour
 	void Awake()
 	{
 		instance = this;
+		_defaultOffsetPosition = offsetRootTransform.localPosition;
 	}
 
 	void Start()
@@ -31,6 +33,7 @@ public class EnergyGaugeCanvas : MonoBehaviour
 
 		UpdateFillRemainTime();
 		UpdateRefresh();
+		UpdateOffsetTransform();
 	}
 
 	public void RefreshEnergy()
@@ -95,6 +98,20 @@ public class EnergyGaugeCanvas : MonoBehaviour
 			RefreshEnergy();
 			_needRefresh = false;
 		}
+	}
+
+	Vector3 _defaultOffsetPosition;
+	float _offsetX = -0.25f;
+	void UpdateOffsetTransform()
+	{
+		bool applyOffset = !string.IsNullOrEmpty(fillRemainTimeText.text);
+		float targetPositionX = _defaultOffsetPosition.x + (applyOffset ? _offsetX : 0.0f);
+		float diff = Mathf.Abs(offsetRootTransform.localPosition.x - targetPositionX);
+		if (diff < 0.005f)
+			return;
+
+		float result = Mathf.Lerp(offsetRootTransform.localPosition.x, targetPositionX, Time.deltaTime * 4.0f);
+		offsetRootTransform.localPosition = new Vector3(result, offsetRootTransform.localPosition.y, offsetRootTransform.localPosition.z);
 	}
 
 

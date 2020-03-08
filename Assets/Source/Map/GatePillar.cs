@@ -288,11 +288,26 @@ public class GatePillar : MonoBehaviour
 		if (CurrencyData.instance.energy < BattleInstanceManager.instance.GetCachedGlobalConstantInt("RequiredEnergyToPlay"))
 		{
 			// 선 클라 처리. 오히려 이건 쉽다.
-			//ConfirmSpendCanvas.instance.ShowCanvas(true, string message, CurrencyData.eCurrencyType spendCurrencyType, System.Action yesAction, System.Action noAction = null)
+			ShowRefillEnergyCanvas();
 			return false;
 		}
 
 		return true;
+	}
+
+	void ShowRefillEnergyCanvas()
+	{
+		UIInstanceManager.instance.ShowCanvasAsync("ConfirmSpendCanvas", () => {
+
+			if (this == null) return;
+			if (gameObject == null) return;
+			if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby == false) return;
+
+			string message = UIString.instance.GetString("GameUI_RefillEnergy", BattleInstanceManager.instance.GetCachedGlobalConstantInt("RequiredEnergyToPlay"), CurrencyData.instance.energyMax);
+			ConfirmSpendCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), message, BattleInstanceManager.instance.GetCachedGlobalConstantInt("RefillEnergyDiamond"), () =>
+			{
+			});
+		});
 	}
 
 	// 클라이언트 에너지 선처리. 패킷을 날려놓고 페이드아웃쯤에 오는 서버 응답에 따라 처리가 나뉜다.
@@ -392,7 +407,7 @@ public class GatePillar : MonoBehaviour
 			{
 				ResetFlagForServerFailure();
 				FadeCanvas.instance.FadeIn(0.4f);
-				OkCanvas.instance.ShowCanvas(true, "error", "Energy error");
+				ShowRefillEnergyCanvas();
 				_enterGameServerFailure = false;
 				// 알파가 어느정도 빠지면 _processing을 풀어준다.
 				yield return Timing.WaitForSeconds(0.2f);

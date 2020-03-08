@@ -45,7 +45,7 @@ public class AuthManager : MonoBehaviour
 	static string GUEST_CUSTOM_ID_KEY = "_bjkeqevpzzrem";
 
 	eAuthType _requestAuthType;
-	System.Guid _guid;
+	string _customId;
 
 	Action _onLinkSuccess;
 	Action<bool> _onLinkFailure;
@@ -87,8 +87,14 @@ public class AuthManager : MonoBehaviour
 
 	public void RequestCreateGuestAccount()
 	{
-		_guid = System.Guid.NewGuid();
-		RequestLoginWithGuestId(_guid.ToString(), true);
+		_customId = SystemInfo.deviceUniqueIdentifier;
+#if UNITY_IOS || UNITY_IPHONE
+#endif
+#if UNITY_EDITOR
+		_customId = Guid.NewGuid().ToString();
+#endif
+		
+		RequestLoginWithGuestId(_customId, true);
 	}
 
 #if Google
@@ -185,7 +191,7 @@ public class AuthManager : MonoBehaviour
 		PlayFabApiManager.instance.EndTimeRecord("Login");
 
 		if (result.NewlyCreated)
-			ObscuredPrefs.SetString(GUEST_CUSTOM_ID_KEY, _guid.ToString());
+			ObscuredPrefs.SetString(GUEST_CUSTOM_ID_KEY, _customId);
 
 		if (IsCachedLastLoginInfo() == false || _requestAuthType != GetLastLoginType())
 			ObscuredPrefs.SetInt(LAST_AUTH_KEY, (int)_requestAuthType);

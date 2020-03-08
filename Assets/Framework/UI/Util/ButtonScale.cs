@@ -22,6 +22,7 @@ public class ButtonScale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 	public bool lockCanvasInputInAnimation;
 
 	Transform _transform;
+	Vector3 _defaultLocalScale;
 	Button _button;
 	Toggle _toggle;
 	bool _applyLerp = false;
@@ -31,6 +32,7 @@ public class ButtonScale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 	void Start()
 	{
 		_transform = GetComponent<Transform>();
+		_defaultLocalScale = _transform.localScale;
 		_button = GetComponent<Button>();
 		if (_button != null)
 		{
@@ -41,34 +43,37 @@ public class ButtonScale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 		{
 			_toggle.onValueChanged.AddListener(OnToggle);
 		}
-		_targetScale = 1.0f;
+		_targetScale = _defaultLocalScale;
 		_applyLerp = false;
 		if (adjustRectTransform != null)
 			_cachedAdjustRectScale = adjustRectTransform.localScale;
 	}
 
-	float _targetScale;
+	Vector3 _targetScale;
 	float _lerpSpeed = 10.0f;
 	void Update()
 	{
 		bool apply = (_applyLerp && _exitWhenPressed == false);
 		if (apply)
-			_transform.localScale = Vector3.Lerp(_transform.localScale, new Vector3(_targetScale, _targetScale, 1.0f), Time.unscaledDeltaTime * _lerpSpeed);
+			_transform.localScale = Vector3.Lerp(_transform.localScale, _targetScale, Time.unscaledDeltaTime * _lerpSpeed);
 		if (adjustRectTransform != null && (apply || _clickAnimation))
-			adjustRectTransform.localScale = _cachedAdjustRectScale / _transform.localScale.x;
+			adjustRectTransform.localScale = new Vector3(
+				_cachedAdjustRectScale.x * _defaultLocalScale.x / _transform.localScale.x,
+				_cachedAdjustRectScale.y * _defaultLocalScale.y / _transform.localScale.y,
+				_cachedAdjustRectScale.z * _defaultLocalScale.z / _transform.localScale.z);
 	}
 
 	public void OnPointerDown(PointerEventData eventData)
 	{
 		_applyLerp = true;
-		_targetScale = downScale;
+		_targetScale = _defaultLocalScale * downScale;
 		_transform.DOComplete(false);
 	}
 
 	public void OnPointerUp(PointerEventData eventData)
 	{
 		_applyLerp = false;
-		_targetScale = 1.0f;
+		_targetScale = _defaultLocalScale;
 	}
 
 	public void OnPointerEnter(PointerEventData eventData)
@@ -82,7 +87,7 @@ public class ButtonScale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 		if (_applyLerp)
 		{
 			_exitWhenPressed = true;
-			_transform.localScale = Vector3.one;
+			_transform.localScale = _defaultLocalScale;
 			if (adjustRectTransform != null)
 				adjustRectTransform.localScale = _cachedAdjustRectScale;
 		}
@@ -107,7 +112,7 @@ public class ButtonScale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 			return;
 
 		_clickAnimation = true;
-		_transform.DOScale(clickScale, clickAnimationDuration * 0.5f).SetEase(Ease.OutQuad).OnComplete(OnCompleteScale).SetUpdate(true);
+		_transform.DOScale(_defaultLocalScale * clickScale, clickAnimationDuration * 0.5f).SetEase(Ease.OutQuad).OnComplete(OnCompleteScale).SetUpdate(true);
 
 		if (lockCanvasInputInAnimation)
 		{
@@ -120,7 +125,7 @@ public class ButtonScale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 	
 	void OnCompleteScale()
 	{
-		_transform.DOScale(1.0f, clickAnimationDuration * 0.5f).SetEase(Ease.OutQuad).OnComplete(OnCompleteScaleEnd).SetUpdate(true);
+		_transform.DOScale(_defaultLocalScale, clickAnimationDuration * 0.5f).SetEase(Ease.OutQuad).OnComplete(OnCompleteScaleEnd).SetUpdate(true);
 	}
 
 	void OnCompleteScaleEnd()

@@ -190,11 +190,13 @@ public class AuthManager : MonoBehaviour
 	{
 		PlayFabApiManager.instance.EndTimeRecord("Login");
 
-		if (result.NewlyCreated)
-			ObscuredPrefs.SetString(GUEST_CUSTOM_ID_KEY, _customId);
-
 		if (IsCachedLastLoginInfo() == false || _requestAuthType != GetLastLoginType())
+		{
 			ObscuredPrefs.SetInt(LAST_AUTH_KEY, (int)_requestAuthType);
+
+			if (_requestAuthType == eAuthType.Guest)
+				SetGuestCustomId(_customId);
+		}
 
 		Debug.LogFormat("Login Successed! PlayFabId : {0}", result.PlayFabId);
 		PlayFabApiManager.instance.OnRecvLoginResult(result);

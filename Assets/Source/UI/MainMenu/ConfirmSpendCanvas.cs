@@ -27,16 +27,9 @@ public class ConfirmSpendCanvas : MonoBehaviour
 
 		titleText.SetLocalizedText(title);
 		messageText.SetLocalizedText(message);
+		spendItemImage.sprite = CurrencyData.CurrencyType2Sprite(currencyType);
 		spendCountText.text = spendCount.ToString();
 		_okAction = okAction;
-
-		spendItemImage.color = Color.clear;
-		AddressableAssetLoadManager.GetAddressableSprite(CurrencyData.CurrencyType2Address(currencyType), "Icon", (sprite) =>
-		{
-			spendItemImage.sprite = null;
-			spendItemImage.sprite = sprite;
-			spendItemImage.color = Color.white;
-		});
 	}
 
 	public void OnClickOkButton()

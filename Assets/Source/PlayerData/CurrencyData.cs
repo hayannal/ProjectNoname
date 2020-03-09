@@ -38,14 +38,16 @@ public class CurrencyData : MonoBehaviour
 
 	public ObscuredInt energyMax { get; set; }
 
-	public static string CurrencyType2Address(eCurrencyType currencyType)
+	public static Sprite CurrencyType2Sprite(eCurrencyType currencyType)
 	{
 		switch (currencyType)
 		{
-			case eCurrencyType.Gold: return "Currency_Gold";
-			case eCurrencyType.Diamond: return "Currency_Diamond";
+			case eCurrencyType.Gold:
+				return CommonCanvasGroup.instance.currencyGoldSprite;
+			case eCurrencyType.Diamond:
+				return CommonCanvasGroup.instance.currencyDiamondSprite;
 		}
-		return "";
+		return null;
 	}
 
 	public void OnRecvCurrencyData(Dictionary<string, int> userVirtualCurrency, Dictionary<string, VirtualCurrencyRechargeTime> userVirtualCurrencyRechargeTimes)

@@ -16,6 +16,14 @@ public class CurrencySmallInfoCanvas : MonoBehaviour
 		{
 			if (IsShow())
 			{
+				if (_instance._reserveHide)
+				{
+					_instance._reserveHide = false;
+					_instance.gameObject.SetActive(false);
+					Show(true);
+					return;
+				}
+
 				++s_refCount;
 				return;
 			}
@@ -39,6 +47,12 @@ public class CurrencySmallInfoCanvas : MonoBehaviour
 		return false;
 	}
 
+	public static void RefreshInfo()
+	{
+		if (IsShow())
+			_instance.InternalRefreshInfo();
+	}
+
 	public Text diamondText;
 	public Text goldText;
 	public DOTweenAnimation moveTweenAnimation;
@@ -50,18 +64,22 @@ public class CurrencySmallInfoCanvas : MonoBehaviour
 
 	void OnEnable()
 	{
-		RefreshInfo();
+		InternalRefreshInfo();
 	}
 
-	public void RefreshInfo()
+	public void InternalRefreshInfo()
 	{
 		diamondText.text = CurrencyData.instance.dia.ToString();
 		goldText.text = CurrencyData.instance.gold.ToString();
 	}
 
-	bool _reserveHide;
+	bool _reserveHide = false;
 	void HideWithTween()
 	{
+		if (_reserveHide)
+			return;
+
+		_reserveHide = true;
 		moveTweenAnimation.DOPlayBackwards();
 		Timing.RunCoroutine(DelayedDisable(moveTweenAnimation.duration));
 	}
@@ -76,6 +94,10 @@ public class CurrencySmallInfoCanvas : MonoBehaviour
 		if (gameObject.activeSelf == false)
 			yield break;
 
-		gameObject.SetActive(false);
+		if (_reserveHide)
+		{
+			gameObject.SetActive(false);
+			_reserveHide = false;
+		}
 	}
 }

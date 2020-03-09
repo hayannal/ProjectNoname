@@ -24,6 +24,11 @@ public class DropManager : MonoBehaviour
 		_dropGold += gold;
 	}
 
+	public int GetStackedDropGold()
+	{
+		return (int)_dropGold;
+	}
+
 	public void AddDropItem()
 	{
 

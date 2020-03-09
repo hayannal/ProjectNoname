@@ -72,8 +72,29 @@ public class BattleModeProcessorBase
 
 	public void OnDiePlayer(PlayerActor playerActor)
 	{
-		if (PlayerData.instance.highestClearStage < StageManager.instance.playStage - 1)
-			PlayFabApiManager.instance.RequestEndGame(PlayerData.instance.highestPlayChapter, StageManager.instance.playStage - 1, 0);
+		PlayFabApiManager.instance.RequestEndGame(false, StageManager.instance.playStage - 1, DropManager.instance.GetStackedDropGold(), (result) =>
+		{
+			OnRecvEndGame(result);
+		});
+	}
+
+	public void OnRecvEndGame(bool clear)
+	{
+		if (PlayerData.instance.highestPlayChapter == PlayerData.instance.selectedChapter)
+		{
+			if (clear)
+			{
+				PlayerData.instance.highestPlayChapter += 1;
+				PlayerData.instance.highestClearStage = 0;
+				PlayerData.instance.selectedChapter += 1;
+			}
+			else
+			{
+				if (PlayerData.instance.highestClearStage < StageManager.instance.playStage - 1)
+					PlayerData.instance.highestClearStage = StageManager.instance.playStage - 1;
+			}
+		}
+		CurrencyData.instance.gold += DropManager.instance.GetStackedDropGold();
 	}
 
 	public void OnDieMonster(MonsterActor monsterActor)

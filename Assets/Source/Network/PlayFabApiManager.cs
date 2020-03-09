@@ -319,7 +319,7 @@ public class PlayFabApiManager : MonoBehaviour
 	#endregion
 
 	#region InGame End
-	public void RequestEndGame(int highestPlayChapter, int highestClearStage, int addGold)
+	public void RequestEndGame(bool clear, int stage, int addGold, Action<bool> successCallback)	// List<Item>
 	{
 		// 인게임 플레이 하고 정산할때 호출되는 함수인데
 		// Statistics 갱신과 인벤획득처리 골드 갱신 등으로 나뉘어져있다.
@@ -336,6 +336,7 @@ public class PlayFabApiManager : MonoBehaviour
 		// 이러려면 RetrySendManager의 RequestAction이 동시에 여러개 호출되어도 알아서 각자 복구되는 기능이 필요하다.
 		// 사실은 cloud script의 제한이 없었다면 정산함수 캐릭강화함수 장비강화함수 초월함수 다 따로 만들었을거 같다.
 		// 그런데 지금 PlayFab 한계때문에 그럴수 없는 상황이라 나눠서 전송하는 식으로 해본다.
+		/*
 		StatisticUpdate highestPlayChapterRecord = new StatisticUpdate() { StatisticName = "highestPlayChapter", Value = highestPlayChapter };
 		StatisticUpdate highestClearStageRecord = new StatisticUpdate() { StatisticName = "highestClearStage", Value = highestClearStage };
 		UpdatePlayerStatisticsRequest request0 = new UpdatePlayerStatisticsRequest() { Statistics = new List<StatisticUpdate>() { highestPlayChapterRecord, highestClearStageRecord } };
@@ -354,6 +355,28 @@ public class PlayFabApiManager : MonoBehaviour
 		List<Action> listAction = new List<Action>();
 		listAction.Add(action0);
 		RetrySendManager.instance.RequestActionList(listAction, true);
+		*/
+		// 위에꺼로 하려고 했다가 입장 카운트를 확인하고 처리하는 식으로 바꿔야해서 클라우드 스크립트 쓰기로 한다.
+		// 위의 형태는 나중에 언젠가 필요한 곳에 쓰자.
+		ExecuteCloudScriptRequest request = new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "EndGame",
+			FunctionParameter = new { Cl = (clear ? 1 : 0), St = stage, Go = addGold },
+			GeneratePlayStreamEvent = true,
+		};
+		Action action = () =>
+		{
+			PlayFabClientAPI.ExecuteCloudScript(request, (success) =>
+			{
+				RetrySendManager.instance.OnSuccess();
+
+				if (successCallback != null) successCallback.Invoke(clear);
+			}, (error) =>
+			{
+				RetrySendManager.instance.OnFailure();
+			});
+		};
+		RetrySendManager.instance.RequestAction(action, true);
 	}
 	#endregion
 

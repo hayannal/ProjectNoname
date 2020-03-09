@@ -119,7 +119,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1352038492008219892}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1635732120911252178}
+        m_MethodName: OnClickDiamondButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &8736515963248544828
@@ -789,6 +800,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   diamondText: {fileID: 7769641980366253429}
   goldText: {fileID: 6553065889334427255}
+  diamondIconTransform: {fileID: 3156700885964015708}
+  goldIconTransform: {fileID: 8114101509093847480}
   moveTweenAnimation: {fileID: 4151905029374266081}
 --- !u!1 &7214616870038146522
 GameObject:
@@ -909,7 +922,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 9139398309613467140}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1635732120911252178}
+        m_MethodName: OnClickGoldButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &946276748035930456

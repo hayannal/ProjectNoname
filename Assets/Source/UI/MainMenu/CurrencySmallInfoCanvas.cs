@@ -55,6 +55,8 @@ public class CurrencySmallInfoCanvas : MonoBehaviour
 
 	public Text diamondText;
 	public Text goldText;
+	public Transform diamondIconTransform;
+	public Transform goldIconTransform;
 	public DOTweenAnimation moveTweenAnimation;
 
 	void Awake()
@@ -99,5 +101,15 @@ public class CurrencySmallInfoCanvas : MonoBehaviour
 			gameObject.SetActive(false);
 			_reserveHide = false;
 		}
+	}
+
+	public void OnClickDiamondButton()
+	{
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.LeftBottom, UIString.instance.GetString("GameUI_ChaosModeDesc"), 200, diamondIconTransform, new Vector2(-40.0f, 0.0f));
+	}
+
+	public void OnClickGoldButton()
+	{
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.LeftBottom, UIString.instance.GetString("GameUI_ChaosModeDesc"), 200, goldIconTransform, new Vector2(-40.0f, 0.0f));
 	}
 }

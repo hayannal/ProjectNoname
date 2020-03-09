@@ -29,11 +29,12 @@ public class CurrencyData : MonoBehaviour
 		// Ticket
 	}
 
+	public static string DiamondCode() { return "DI"; }
+	public static string GoldCode() { return "GO"; }
+
 	public ObscuredInt gold { get; set; }
 	public ObscuredInt energy { get; set; }
-	public ObscuredInt dia { get; set; }    // 서버가 모아서 보내주는 기능이 없으니 클라가 합산한다.
-	public ObscuredInt diaFree { get; set; }
-	public int diaTotal { get { return dia + diaFree; } }
+	public ObscuredInt dia { get; set; }    // 서버 상점에서 모아서 처리하는 기능이 없어서 free와 구매 다 합쳐서 처리하기로 한다.
 
 	public ObscuredInt energyMax { get; set; }
 
@@ -55,8 +56,6 @@ public class CurrencyData : MonoBehaviour
 			energy = userVirtualCurrency["EN"];
 		if (userVirtualCurrency.ContainsKey("DI"))
 			dia = userVirtualCurrency["DI"];
-		if (userVirtualCurrency.ContainsKey("DF"))
-			diaFree = userVirtualCurrency["DF"];
 
 		if (userVirtualCurrencyRechargeTimes != null && userVirtualCurrencyRechargeTimes.ContainsKey("EN"))
 		{
@@ -138,5 +137,16 @@ public class CurrencyData : MonoBehaviour
 			yield break;
 
 		PlayFabApiManager.instance.RequestSyncEnergyRechargeTime();
+	}
+
+	public void OnRecvRefillEnergy(int refillAmount)
+	{
+		energy += refillAmount;
+
+		if (energy >= energyMax)
+			_rechargingEnergy = false;
+
+		if (EnergyGaugeCanvas.instance != null)
+			EnergyGaugeCanvas.instance.RefreshEnergy();
 	}
 }

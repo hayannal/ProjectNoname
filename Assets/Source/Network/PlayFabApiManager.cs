@@ -419,6 +419,32 @@ public class PlayFabApiManager : MonoBehaviour
 			HandleCommonError(error);
 		});
 	}
+
+	public void RequestRefillEnergy(int price, int refillAmount, Action successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		PlayFabClientAPI.PurchaseItem(new PurchaseItemRequest()
+		{
+			ItemId = "RefillEnergy",
+			Price = price,
+			VirtualCurrency = CurrencyData.DiamondCode()
+		}, (success) =>
+		{
+			WaitingNetworkCanvas.Show(false);
+
+			// 게시판에 사람들이 적은대로 bundle 안에 있는건 날아오지 않는다. 그래서 success만 오면 알아서 리필한다.
+			//for (int i = 0; i < success.Items.Count; ++i)
+			//{	
+			//}
+			CurrencyData.instance.OnRecvRefillEnergy(refillAmount);
+			
+			if (successCallback != null) successCallback.Invoke();
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
 	#endregion
 
 

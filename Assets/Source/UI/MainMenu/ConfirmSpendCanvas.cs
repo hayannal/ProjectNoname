@@ -41,7 +41,7 @@ public class ConfirmSpendCanvas : MonoBehaviour
 
 	public void OnClickOkButton()
 	{
-		gameObject.SetActive(false);
+		//gameObject.SetActive(false);
 		if (_okAction != null)
 			_okAction();
 	}

@@ -19,6 +19,16 @@ public class ConfirmSpendCanvas : MonoBehaviour
 		instance = this;
 	}
 
+	void OnEnable()
+	{
+		CurrencySmallInfoCanvas.Show(true);
+	}
+
+	void OnDisable()
+	{
+		CurrencySmallInfoCanvas.Show(false);
+	}
+
 	public void ShowCanvas(bool show, string title, string message, CurrencyData.eCurrencyType currencyType, int spendCount, System.Action okAction = null)
 	{
 		gameObject.SetActive(show);

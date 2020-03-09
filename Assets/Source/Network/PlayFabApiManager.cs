@@ -67,6 +67,17 @@ public class PlayFabApiManager : MonoBehaviour
 		if (WaitingNetworkCanvas.IsShow())
 			WaitingNetworkCanvas.Show(false);
 
+		switch (error.Error)
+		{
+			case PlayFabErrorCode.InsufficientFunds:
+				PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest() {
+					FunctionName = "IncCliSus",
+					FunctionParameter = new { Pa = (int)error.Error },
+					GeneratePlayStreamEvent = true
+				}, null, null);
+				break;
+		}
+
 		if (error.Error == PlayFabErrorCode.ServiceUnavailable || error.HttpCode == 400)
 		{
 			OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("SystemUI_DisconnectServer"), () =>

@@ -15,6 +15,7 @@ public class DropProcessor : MonoBehaviour
 		Heart,
 		Gacha,
 		Ultimate,
+		Seal,
 	}
 
 	#region Static Fuction
@@ -116,6 +117,11 @@ public class DropProcessor : MonoBehaviour
 				case eDropType.Ultimate:
 					DropSp(floatValue);
 					break;
+				case eDropType.Seal:
+					// if (PlayerData.instance.CheckDailyBoxOpened
+					//	break;
+					dropProcessor.Add(dropType, floatValue, intValue);
+					break;
 			}
 		}
 	}
@@ -171,6 +177,7 @@ public class DropProcessor : MonoBehaviour
 			case eDropType.LevelPack:
 			case eDropType.Heart:
 			case eDropType.Gacha:
+			case eDropType.Seal:
 				for (int i = 0; i < intValue; ++i)
 				{
 					newInfo = new DropObjectInfo();

@@ -70,11 +70,7 @@ public class PlayFabApiManager : MonoBehaviour
 		switch (error.Error)
 		{
 			case PlayFabErrorCode.InsufficientFunds:
-				PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest() {
-					FunctionName = "IncCliSus",
-					FunctionParameter = new { Pa = (int)error.Error },
-					GeneratePlayStreamEvent = true
-				}, null, null);
+				RequestIncCliSus((int)error.Error, 0);
 				break;
 		}
 
@@ -85,6 +81,16 @@ public class PlayFabApiManager : MonoBehaviour
 				SceneManager.LoadScene(0);
 			});
 		}
+	}
+
+	void RequestIncCliSus(int error, int param)
+	{
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "IncCliSus",
+			FunctionParameter = new { Er = error, Pa = param },
+			GeneratePlayStreamEvent = true
+		}, null, null);
 	}
 
 	#region Login with PlayerData, Entity Objects

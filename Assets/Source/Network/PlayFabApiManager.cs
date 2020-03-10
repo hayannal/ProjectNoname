@@ -18,7 +18,10 @@ public class PlayFabApiManager : MonoBehaviour
 		get
 		{
 			if (_instance == null)
+			{
 				_instance = (new GameObject("PlayFabApiManager")).AddComponent<PlayFabApiManager>();
+				DontDestroyOnLoad(_instance.gameObject);
+			}
 			return _instance;
 		}
 	}

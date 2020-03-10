@@ -390,6 +390,28 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 32, y: 54}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &8863492238122611623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2473415519211905676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c053344bdf97a5b4aa014f89c04c947a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  downScale: 0.9
+  clickScale: 1.1
+  clickAnimationDuration: 0.2
+  adjustRectTransform: {fileID: 4978047329551821809}
+  onCompleteAnimation:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  lockCanvasInputInAnimation: 0
 --- !u!114 &8866439214659471195
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -446,28 +468,6 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!114 &8863492238122611623
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2473415519211905676}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c053344bdf97a5b4aa014f89c04c947a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  downScale: 0.9
-  clickScale: 1.1
-  clickAnimationDuration: 0.2
-  adjustRectTransform: {fileID: 4978047329551821809}
-  onCompleteAnimation:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  lockCanvasInputInAnimation: 0
 --- !u!1 &2624387094847174873
 GameObject:
   m_ObjectHideFlags: 0
@@ -823,8 +823,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   diamondText: {fileID: 7769641980366253429}
   goldText: {fileID: 6553065889334427255}
-  diamondIconTransform: {fileID: 0}
-  goldIconTransform: {fileID: 0}
+  diamondIconTransform: {fileID: 1526430006753769770}
+  goldIconTransform: {fileID: 7443767307621913529}
   moveTweenAnimation: {fileID: 4151905029374266081}
 --- !u!1 &8221137151665504258
 GameObject:

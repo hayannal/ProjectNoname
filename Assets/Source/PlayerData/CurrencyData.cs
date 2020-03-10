@@ -24,8 +24,8 @@ public class CurrencyData : MonoBehaviour
 
 	public enum eCurrencyType
 	{
-		Gold,
 		Diamond,
+		Gold,
 		// Ticket
 	}
 
@@ -37,18 +37,6 @@ public class CurrencyData : MonoBehaviour
 	public ObscuredInt dia { get; set; }    // 서버 상점에서 모아서 처리하는 기능이 없어서 free와 구매 다 합쳐서 처리하기로 한다.
 
 	public ObscuredInt energyMax { get; set; }
-
-	public static Sprite CurrencyType2Sprite(eCurrencyType currencyType)
-	{
-		switch (currencyType)
-		{
-			case eCurrencyType.Gold:
-				return CommonCanvasGroup.instance.currencyGoldSprite;
-			case eCurrencyType.Diamond:
-				return CommonCanvasGroup.instance.currencyDiamondSprite;
-		}
-		return null;
-	}
 
 	public void OnRecvCurrencyData(Dictionary<string, int> userVirtualCurrency, Dictionary<string, VirtualCurrencyRechargeTime> userVirtualCurrencyRechargeTimes)
 	{

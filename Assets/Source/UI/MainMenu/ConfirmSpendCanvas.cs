@@ -10,7 +10,7 @@ public class ConfirmSpendCanvas : MonoBehaviour
 	public Text titleText;
 	public Text messageText;
 	public Text spendCountText;
-	public Image spendItemImage;
+	public GameObject[] currencyTypeObjectList;
 
 	System.Action _okAction;
 
@@ -37,7 +37,8 @@ public class ConfirmSpendCanvas : MonoBehaviour
 
 		titleText.SetLocalizedText(title);
 		messageText.SetLocalizedText(message);
-		spendItemImage.sprite = CurrencyData.CurrencyType2Sprite(currencyType);
+		for (int i = 0; i < currencyTypeObjectList.Length; ++i)
+			currencyTypeObjectList[i].SetActive((int)currencyType == i);
 		spendCountText.text = spendCount.ToString();
 		_okAction = okAction;
 	}

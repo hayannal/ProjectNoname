@@ -147,6 +147,13 @@ public class AuthManager : MonoBehaviour
 		return customId;
 	}
 
+	public static void SetGuestCustomId(string id)
+	{
+#if UNITY_EDITOR
+		ObscuredPrefs.SetString(GUEST_CUSTOM_ID_KEY, id);
+#endif
+	}
+
 
 	GetPlayerCombinedInfoRequestParams CreateLoginParameters()
 	{
@@ -192,7 +199,7 @@ public class AuthManager : MonoBehaviour
 
 #if UNITY_EDITOR
 			if (_requestAuthType == eAuthType.Guest)
-				ObscuredPrefs.SetString(GUEST_CUSTOM_ID_KEY, _customId);
+				SetGuestCustomId(_customId);
 #endif
 		}
 

@@ -39,7 +39,7 @@ public class ConfirmSpendCanvas : MonoBehaviour
 		messageText.SetLocalizedText(message);
 		for (int i = 0; i < currencyTypeObjectList.Length; ++i)
 			currencyTypeObjectList[i].SetActive((int)currencyType == i);
-		spendCountText.text = spendCount.ToString();
+		spendCountText.text = spendCount.ToString("N0");
 		_okAction = okAction;
 	}
 

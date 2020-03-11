@@ -71,8 +71,8 @@ public class CurrencySmallInfoCanvas : MonoBehaviour
 
 	public void InternalRefreshInfo()
 	{
-		diamondText.text = CurrencyData.instance.dia.ToString();
-		goldText.text = CurrencyData.instance.gold.ToString();
+		diamondText.text = CurrencyData.instance.dia.ToString("N0");
+		goldText.text = CurrencyData.instance.gold.ToString("N0");
 	}
 
 	bool _reserveHide = false;

@@ -269,9 +269,12 @@ public class PlayFabApiManager : MonoBehaviour
 
 
 	#region InGame
+	// 입장시마다 랜덤으로 된 숫자키를 하나 받는다. 정산시 보내서 서버랑 비교하기 위함이다.
+	public ObscuredString _serverEnterKey;
+
 	// 게이트 필라 쳐서 들어가는 패킷. 에너지를 소모하지 않는 튜토때도 패킷은 보낸다.
 	// 클라우드 스크립트로 처리해서 정산을 할 기회를 1회 올린다.
-	public void RequestEnterGame(bool retryByCrash, Action<ExecuteCloudScriptResult> successCallback)
+	public void RequestEnterGame(bool retryByCrash, Action<bool> successCallback)
 	{
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
@@ -280,7 +283,10 @@ public class PlayFabApiManager : MonoBehaviour
 			GeneratePlayStreamEvent = true,
 		}, (success) =>
 		{
-			if (successCallback != null) successCallback.Invoke(success);
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			_serverEnterKey = failure ? "" : resultString;
+			if (successCallback != null) successCallback.Invoke(failure);
 		}, (error) =>
 		{
 			HandleCommonError(error);
@@ -291,7 +297,7 @@ public class PlayFabApiManager : MonoBehaviour
 	{
 		PlayFabClientAPI.UpdateUserData(new UpdateUserDataRequest()
 		{
-			Data = new Dictionary<string, string>() { { "entFlg", "0" } }
+			Data = new Dictionary<string, string>() { { "entFlg", "" } }
 		}, null, null);
 	}
 
@@ -337,7 +343,7 @@ public class PlayFabApiManager : MonoBehaviour
 		ExecuteCloudScriptRequest request = new ExecuteCloudScriptRequest()
 		{
 			FunctionName = "EndGame",
-			FunctionParameter = new { Cl = (clear ? 1 : 0), St = stage, Go = addGold },
+			FunctionParameter = new { Flg = (string)_serverEnterKey, Cl = (clear ? 1 : 0), St = stage, Go = addGold },
 			GeneratePlayStreamEvent = true,
 		};
 		Action action = () =>
@@ -345,7 +351,7 @@ public class PlayFabApiManager : MonoBehaviour
 			PlayFabClientAPI.ExecuteCloudScript(request, (success) =>
 			{
 				RetrySendManager.instance.OnSuccess();
-
+				_serverEnterKey = "";
 				if (successCallback != null) successCallback.Invoke(clear);
 			}, (error) =>
 			{

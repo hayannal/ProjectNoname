@@ -247,7 +247,7 @@ public class BaseDamageAffector : AffectorBase {
 					ignoreOnKill = true;
 				// 한방에 보스 몹 처리..
 				if (PlayerData.instance.clientOnly == false && monsterActor.bossMonster && monsterActor.sequentialMonster == false &&
-					damage > monsterActor.actorStatus.GetValue(eActorStatus.MaxHp) && PlayerData.instance.highestPlayChapter == PlayerData.instance.selectedChapter)
+					PlayerData.instance.highestPlayChapter == PlayerData.instance.selectedChapter && damage > monsterActor.actorStatus.GetValue(eActorStatus.MaxHp))
 				{
 					int powerLevel = 1;
 					CharacterData characterData = PlayerData.instance.GetCharacterData(BattleInstanceManager.instance.playerActor.actorId);

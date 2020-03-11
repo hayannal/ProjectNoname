@@ -138,17 +138,13 @@ public class AuthManager : MonoBehaviour
 
 	public static string GetLastGuestCustomId()
 	{
-		return ObscuredPrefs.GetString(GUEST_CUSTOM_ID_KEY);
-	}
-
-	public static void SetGuestCustomId(string id)
-	{
-		ObscuredPrefs.SetString(GUEST_CUSTOM_ID_KEY, id);
-	}
-
-	void ClearCachedLastLoginInfo()
-	{
-		ObscuredPrefs.DeleteKey(LAST_AUTH_KEY);
+		string customId = SystemInfo.deviceUniqueIdentifier;
+#if UNITY_IOS || UNITY_IPHONE
+#endif
+#if UNITY_EDITOR
+		customId = ObscuredPrefs.GetString(GUEST_CUSTOM_ID_KEY);
+#endif
+		return customId;
 	}
 
 
@@ -194,8 +190,10 @@ public class AuthManager : MonoBehaviour
 		{
 			ObscuredPrefs.SetInt(LAST_AUTH_KEY, (int)_requestAuthType);
 
+#if UNITY_EDITOR
 			if (_requestAuthType == eAuthType.Guest)
-				SetGuestCustomId(_customId);
+				ObscuredPrefs.SetString(GUEST_CUSTOM_ID_KEY, _customId);
+#endif
 		}
 
 		Debug.LogFormat("Login Successed! PlayFabId : {0}", result.PlayFabId);

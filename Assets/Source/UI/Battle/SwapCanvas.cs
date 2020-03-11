@@ -255,13 +255,28 @@ public class SwapCanvas : MonoBehaviour
 		for (int i = 0; i < _listSwapCanvasListItem.Count; ++i)
 			_listSwapCanvasListItem[i].ShowSelectObject(_listSwapCanvasListItem[i].actorId == actorId);
 
-		if (!MainSceneBuilder.instance.lobby)
+		string firstText = "";
+		if (MainSceneBuilder.instance.lobby == false && StageManager.instance.IsInBattlePlayerList(actorId))
+			firstText = UIString.instance.GetString("GameUI_FirstSwapHealNotApplied");
+
+		string secondText = "";
+		ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
+		if (chapterTableData != null)
 		{
-			if (StageManager.instance.IsInBattlePlayerList(actorId))
-				selectResultText.SetLocalizedText(UIString.instance.GetString("GameUI_FirstSwapHealNotApplied"));
-			else
-				selectResultText.text = "";
+			CharacterData characterData = PlayerData.instance.GetCharacterData(actorId);
+			if (characterData.powerLevel > chapterTableData.suggestedMaxPowerLevel)
+				secondText = UIString.instance.GetString("GameUI_TooPowerfulToReward");
 		}
+		bool firstResult = string.IsNullOrEmpty(firstText);
+		bool secondResult = string.IsNullOrEmpty(secondText);
+		if (firstResult && secondResult)
+			selectResultText.text = "";
+		else if (firstResult == false && secondResult)
+			selectResultText.SetLocalizedText(firstText);
+		else if (firstResult && secondResult == false)
+			selectResultText.SetLocalizedText(secondText);
+		else
+			selectResultText.SetLocalizedText(string.Format("{0}\n{1}", firstText, secondText));
 	}
 
 	public void OnClickChapterInfoButton()

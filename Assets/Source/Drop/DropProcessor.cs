@@ -61,6 +61,16 @@ public class DropProcessor : MonoBehaviour
 		for (int i = 0; i < dropTableData.dropEnum.Length; ++i)
 		{
 			eDropType dropType = (eDropType)dropTableData.dropEnum[i];
+			switch (dropType)
+			{
+				case eDropType.Gold:
+				case eDropType.Gacha:
+					ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
+					CharacterData mainCharacterData = PlayerData.instance.GetCharacterData(PlayerData.instance.mainCharacterId);
+					if (chapterTableData != null && mainCharacterData.powerLevel > chapterTableData.suggestedMaxPowerLevel)
+						continue;
+					break;
+			}
 			float probability = dropTableData.probability[i];
 			switch (dropType)
 			{

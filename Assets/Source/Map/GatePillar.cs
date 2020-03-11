@@ -243,12 +243,21 @@ public class GatePillar : MonoBehaviour
 			{
 				CharacterData mainCharacterData = PlayerData.instance.GetCharacterData(PlayerData.instance.mainCharacterId);
 				bool showSwapCanvas = false;
+				string descStringId = "";
 				if (mainCharacterData.powerLevel < chapterTableData.suggestedPowerLevel)
+				{
 					showSwapCanvas = true;
+					descStringId = "GameUI_EnterInfoDesc";
+				}
+				if (mainCharacterData.powerLevel > chapterTableData.suggestedMaxPowerLevel)
+				{
+					showSwapCanvas = true;
+					descStringId = "GameUI_EnterTooPowerfulDesc";
+				}
 				if (showSwapCanvas)
 				{
 					raycastCount = 0;
-					FullscreenYesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_EnterInfo"), UIString.instance.GetString("GameUI_EnterInfoDesc"), () => {
+					FullscreenYesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_EnterInfo"), UIString.instance.GetString(descStringId), () => {
 						OptionManager.instance.suggestedChapter = StageManager.instance.playChapter;
 						FullscreenYesNoCanvas.instance.ShowCanvas(false, "", "", null);
 						UIInstanceManager.instance.ShowCanvasAsync("SwapCanvas", null);

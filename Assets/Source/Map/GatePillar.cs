@@ -17,7 +17,7 @@ public class GatePillar : MonoBehaviour
 	public GameObject changeEffectParticleRootObject;
 
 	// 동적 로드하는 것들을 외부로 뺄까 했는데 크기가 크지 않고 자주 쓰이는거라면 굳이 뺄필요가 없어서 안빼기로 한다.
-	DescriptionObjectIndicatorCanvas _descriptionObjectIndicatorCanvas;
+	ObjectIndicatorCanvas _objectIndicatorCanvas;
 	public GameObject descriptionObjectIndicatorPrefab;
 	public float descriptionObjectIndicatorShowDelayTime = 5.0f;
 	public float energyGaugeShowDelayTime = 0.2f;
@@ -77,10 +77,10 @@ public class GatePillar : MonoBehaviour
 		
 		_checkedStageSwapSuggest = false;
 
-		if (_descriptionObjectIndicatorCanvas != null)
+		if (_objectIndicatorCanvas != null)
 		{
-			_descriptionObjectIndicatorCanvas.gameObject.SetActive(false);
-			_descriptionObjectIndicatorCanvas = null;
+			_objectIndicatorCanvas.gameObject.SetActive(false);
+			_objectIndicatorCanvas = null;
 		}
 
 		if (DragThresholdController.instance != null)
@@ -122,8 +122,8 @@ public class GatePillar : MonoBehaviour
 			if (_descriptionObjectIndicatorShowRemainTime <= 0.0f)
 			{
 				_descriptionObjectIndicatorShowRemainTime = 0.0f;
-				_descriptionObjectIndicatorCanvas = (DescriptionObjectIndicatorCanvas)UIInstanceManager.instance.GetCachedObjectIndicatorCanvas(descriptionObjectIndicatorPrefab);
-				_descriptionObjectIndicatorCanvas.targetTransform = cachedTransform;
+				_objectIndicatorCanvas = UIInstanceManager.instance.GetCachedObjectIndicatorCanvas(descriptionObjectIndicatorPrefab);
+				_objectIndicatorCanvas.targetTransform = cachedTransform;
 
 				RefreshChapterText();
 			}
@@ -132,10 +132,25 @@ public class GatePillar : MonoBehaviour
 
 	public void RefreshChapterText()
 	{
-		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && ContentsManager.IsTutorialChapter() == false)
-			_descriptionObjectIndicatorCanvas.contextText.SetLocalizedText(UIString.instance.GetString("GameUI_ChapterInIndicator", PlayerData.instance.selectedChapter, PlayerData.instance.chaosMode ? UIString.instance.GetString("GameUI_ChapterIndicatorParam") : ""));
+		string text = "";
+		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby)
+		{
+			if (ContentsManager.IsTutorialChapter())
+				text = UIString.instance.GetString("GameUI_TouchToMove");
+			else
+				text = UIString.instance.GetString("GameUI_ChapterInIndicator", PlayerData.instance.selectedChapter, PlayerData.instance.chaosMode ? UIString.instance.GetString("GameUI_ChapterIndicatorParam") : "");	
+		}
 		else
-			_descriptionObjectIndicatorCanvas.contextText.SetLocalizedText(UIString.instance.GetString("GameUI_TouchToMove"));
+		{
+			if (string.IsNullOrEmpty(StageManager.instance.nextMapTableData.bossName))
+				text = UIString.instance.GetString("GameUI_TouchToMove");
+		}
+		if (string.IsNullOrEmpty(text))
+			return;
+
+		DescriptionObjectIndicatorCanvas descriptionObjectIndicatorCanvas = _objectIndicatorCanvas as DescriptionObjectIndicatorCanvas;
+		if (descriptionObjectIndicatorCanvas != null)
+			descriptionObjectIndicatorCanvas.contextText.SetLocalizedText(text);
 	}
 
 	void OnCollisionEnter(Collision collision)

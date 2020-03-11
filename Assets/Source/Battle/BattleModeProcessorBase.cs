@@ -80,7 +80,7 @@ public class BattleModeProcessorBase
 
 	public void OnRecvEndGame(bool clear)
 	{
-		if (PlayerData.instance.highestPlayChapter == PlayerData.instance.selectedChapter)
+		if (PlayerData.instance.chaosMode == false && PlayerData.instance.highestPlayChapter == PlayerData.instance.selectedChapter)
 		{
 			if (clear)
 			{

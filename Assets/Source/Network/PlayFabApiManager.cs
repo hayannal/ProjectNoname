@@ -86,7 +86,7 @@ public class PlayFabApiManager : MonoBehaviour
 		}
 	}
 
-	void RequestIncCliSus(int error, int param)
+	public void RequestIncCliSus(int error, int param)
 	{
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
@@ -225,6 +225,138 @@ public class PlayFabApiManager : MonoBehaviour
 		});
 	}
 
+
+	#region Energy
+	public void RequestSyncEnergyRechargeTime()
+	{
+		PlayFabClientAPI.GetUserInventory(new GetUserInventoryRequest()
+		{
+		}, (success) =>
+		{
+			CurrencyData.instance.OnRecvCurrencyData(success.VirtualCurrency, success.VirtualCurrencyRechargeTimes);
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+
+	public void RequestRefillEnergy(int price, int refillAmount, Action successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		PlayFabClientAPI.PurchaseItem(new PurchaseItemRequest()
+		{
+			ItemId = "RefillEnergy",
+			Price = price,
+			VirtualCurrency = CurrencyData.DiamondCode()
+		}, (success) =>
+		{
+			WaitingNetworkCanvas.Show(false);
+
+			// 게시판에 사람들이 적은대로 bundle 안에 있는건 날아오지 않는다. 그래서 success만 오면 알아서 리필한다.
+			//for (int i = 0; i < success.Items.Count; ++i)
+			//{	
+			//}
+			CurrencyData.instance.OnRecvRefillEnergy(refillAmount);
+
+			if (successCallback != null) successCallback.Invoke();
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+	#endregion
+
+
+	#region InGame
+	// 게이트 필라 쳐서 들어가는 패킷. 에너지를 소모하지 않는 튜토때도 패킷은 보낸다.
+	// 클라우드 스크립트로 처리해서 정산을 할 기회를 1회 올린다.
+	public void RequestEnterGame(bool retryByCrash, Action<ExecuteCloudScriptResult> successCallback)
+	{
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "EnterGame",
+			FunctionParameter = new { ByCrash = (retryByCrash ? 1 : 0) },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			if (successCallback != null) successCallback.Invoke(success);
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+
+	public void RequestCancelGame()
+	{
+		PlayFabClientAPI.UpdateUserData(new UpdateUserDataRequest()
+		{
+			Data = new Dictionary<string, string>() { { "entFlg", "0" } }
+		}, null, null);
+	}
+
+	public void RequestEndGame(bool clear, int stage, int addGold, Action<bool> successCallback)    // List<Item>
+	{
+		// 인게임 플레이 하고 정산할때 호출되는 함수인데
+		// Statistics 갱신과 인벤획득처리 골드 갱신 등으로 나뉘어져있다.
+		// 그런데 셋다 한번에 보냈다가 누군 처리되고 누군 처리 안되면 어떻게 구별할 것이며 어떻게 재전송 할 것인가.
+		// 그렇다고 하나 보내고 성공시 하나 또 보내는 방식은 시간도 너무 오래 걸리고 그러다가 실패시 앞에 로직을 복구할거냐는 의문도 생긴다.
+		//
+		// 결국 RetrySendManager의 RequestAction이 하나의 액션만을 저장할 수 있다는 점에서
+		// 여러 패킷을 동시에 전달해야하는 상황을 커버할 수 없게 된거다.
+		//
+		// 근데 다른건 복구 안해도 인게임 정산은 무조건 복구해야하는데..
+		// 위에 SelectMainCharacter따위는 홈가도 그만이다. 어차피 다시 켜서 바꾸면 되니까.. 그런데 50층 깨고 정산타이밍에 네트워크 오류 생겨서 다 날아가면 정말 큰일이다.
+		// 층만 반영되고 템이 저장안되도 큰일이다. 즉 정산땐 모든게 다 제대로 복구되야한다.
+		//
+		// 이러려면 RetrySendManager의 RequestAction이 동시에 여러개 호출되어도 알아서 각자 복구되는 기능이 필요하다.
+		// 사실은 cloud script의 제한이 없었다면 정산함수 캐릭강화함수 장비강화함수 초월함수 다 따로 만들었을거 같다.
+		// 그런데 지금 PlayFab 한계때문에 그럴수 없는 상황이라 나눠서 전송하는 식으로 해본다.
+		/*
+		StatisticUpdate highestPlayChapterRecord = new StatisticUpdate() { StatisticName = "highestPlayChapter", Value = highestPlayChapter };
+		StatisticUpdate highestClearStageRecord = new StatisticUpdate() { StatisticName = "highestClearStage", Value = highestClearStage };
+		UpdatePlayerStatisticsRequest request0 = new UpdatePlayerStatisticsRequest() { Statistics = new List<StatisticUpdate>() { highestPlayChapterRecord, highestClearStageRecord } };
+		Action action0 = () =>
+		{
+			PlayFabClientAPI.UpdatePlayerStatistics(request0, (success) =>
+			{
+				RetrySendManager.instance.OnSuccessForList(0);
+				PlayerData.instance.highestPlayChapter = highestPlayChapter;
+				PlayerData.instance.highestClearStage = highestClearStage;
+			}, (error) =>
+			{
+				RetrySendManager.instance.OnFailureForList(0);
+			});
+		};
+		List<Action> listAction = new List<Action>();
+		listAction.Add(action0);
+		RetrySendManager.instance.RequestActionList(listAction, true);
+		*/
+		// 위에꺼로 하려고 했다가 입장 카운트를 확인하고 처리하는 식으로 바꿔야해서 클라우드 스크립트 쓰기로 한다.
+		// 위의 형태는 나중에 언젠가 필요한 곳에 쓰자.
+		ExecuteCloudScriptRequest request = new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "EndGame",
+			FunctionParameter = new { Cl = (clear ? 1 : 0), St = stage, Go = addGold },
+			GeneratePlayStreamEvent = true,
+		};
+		Action action = () =>
+		{
+			PlayFabClientAPI.ExecuteCloudScript(request, (success) =>
+			{
+				RetrySendManager.instance.OnSuccess();
+
+				if (successCallback != null) successCallback.Invoke(clear);
+			}, (error) =>
+			{
+				RetrySendManager.instance.OnFailure();
+			});
+		};
+		RetrySendManager.instance.RequestAction(action, true);
+	}
+	#endregion
+
+
 	#region Modify PlayerData
 #if USE_TITLE_PLAYER_ENTITY
 	// 이런식으로 헬퍼를 만들어도 되고 너무 많을거 같으면 안만들어도 된다.
@@ -327,67 +459,6 @@ public class PlayFabApiManager : MonoBehaviour
 #endif
 	#endregion
 
-	#region InGame End
-	public void RequestEndGame(bool clear, int stage, int addGold, Action<bool> successCallback)	// List<Item>
-	{
-		// 인게임 플레이 하고 정산할때 호출되는 함수인데
-		// Statistics 갱신과 인벤획득처리 골드 갱신 등으로 나뉘어져있다.
-		// 그런데 셋다 한번에 보냈다가 누군 처리되고 누군 처리 안되면 어떻게 구별할 것이며 어떻게 재전송 할 것인가.
-		// 그렇다고 하나 보내고 성공시 하나 또 보내는 방식은 시간도 너무 오래 걸리고 그러다가 실패시 앞에 로직을 복구할거냐는 의문도 생긴다.
-		//
-		// 결국 RetrySendManager의 RequestAction이 하나의 액션만을 저장할 수 있다는 점에서
-		// 여러 패킷을 동시에 전달해야하는 상황을 커버할 수 없게 된거다.
-		//
-		// 근데 다른건 복구 안해도 인게임 정산은 무조건 복구해야하는데..
-		// 위에 SelectMainCharacter따위는 홈가도 그만이다. 어차피 다시 켜서 바꾸면 되니까.. 그런데 50층 깨고 정산타이밍에 네트워크 오류 생겨서 다 날아가면 정말 큰일이다.
-		// 층만 반영되고 템이 저장안되도 큰일이다. 즉 정산땐 모든게 다 제대로 복구되야한다.
-		//
-		// 이러려면 RetrySendManager의 RequestAction이 동시에 여러개 호출되어도 알아서 각자 복구되는 기능이 필요하다.
-		// 사실은 cloud script의 제한이 없었다면 정산함수 캐릭강화함수 장비강화함수 초월함수 다 따로 만들었을거 같다.
-		// 그런데 지금 PlayFab 한계때문에 그럴수 없는 상황이라 나눠서 전송하는 식으로 해본다.
-		/*
-		StatisticUpdate highestPlayChapterRecord = new StatisticUpdate() { StatisticName = "highestPlayChapter", Value = highestPlayChapter };
-		StatisticUpdate highestClearStageRecord = new StatisticUpdate() { StatisticName = "highestClearStage", Value = highestClearStage };
-		UpdatePlayerStatisticsRequest request0 = new UpdatePlayerStatisticsRequest() { Statistics = new List<StatisticUpdate>() { highestPlayChapterRecord, highestClearStageRecord } };
-		Action action0 = () =>
-		{
-			PlayFabClientAPI.UpdatePlayerStatistics(request0, (success) =>
-			{
-				RetrySendManager.instance.OnSuccessForList(0);
-				PlayerData.instance.highestPlayChapter = highestPlayChapter;
-				PlayerData.instance.highestClearStage = highestClearStage;
-			}, (error) =>
-			{
-				RetrySendManager.instance.OnFailureForList(0);
-			});
-		};
-		List<Action> listAction = new List<Action>();
-		listAction.Add(action0);
-		RetrySendManager.instance.RequestActionList(listAction, true);
-		*/
-		// 위에꺼로 하려고 했다가 입장 카운트를 확인하고 처리하는 식으로 바꿔야해서 클라우드 스크립트 쓰기로 한다.
-		// 위의 형태는 나중에 언젠가 필요한 곳에 쓰자.
-		ExecuteCloudScriptRequest request = new ExecuteCloudScriptRequest()
-		{
-			FunctionName = "EndGame",
-			FunctionParameter = new { Cl = (clear ? 1 : 0), St = stage, Go = addGold },
-			GeneratePlayStreamEvent = true,
-		};
-		Action action = () =>
-		{
-			PlayFabClientAPI.ExecuteCloudScript(request, (success) =>
-			{
-				RetrySendManager.instance.OnSuccess();
-
-				if (successCallback != null) successCallback.Invoke(clear);
-			}, (error) =>
-			{
-				RetrySendManager.instance.OnFailure();
-			});
-		};
-		RetrySendManager.instance.RequestAction(action, true);
-	}
-	#endregion
 
 	#region Modify CharacterData
 	// 이것도 서버에 저장되는 Entity Object
@@ -430,72 +501,6 @@ public class PlayFabApiManager : MonoBehaviour
 		}, HandleCommonError);
 	}
 	#endregion
-
-	#region Energy
-	// 게이트 필라 쳐서 들어가는 패킷. 에너지를 소모하지 않는 튜토때도 패킷은 보낸다.
-	// 클라우드 스크립트로 처리해서 정산을 할 기회를 1회 올린다.
-	public void RequestEnterGame(bool retryByCrash, Action<ExecuteCloudScriptResult> successCallback)
-	{
-		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
-		{
-			FunctionName = "EnterGame",
-			FunctionParameter = new { ByCrash = (retryByCrash ? 1 : 0) },
-			GeneratePlayStreamEvent = true,
-		}, (success) =>
-		{
-			if (successCallback != null) successCallback.Invoke(success);
-		}, (error) =>
-		{
-			HandleCommonError(error);
-		});
-	}
-
-	public void RequestSyncEnergyRechargeTime()
-	{
-		PlayFabClientAPI.GetUserInventory(new GetUserInventoryRequest()
-		{
-		}, (success) =>
-		{
-			CurrencyData.instance.OnRecvCurrencyData(success.VirtualCurrency, success.VirtualCurrencyRechargeTimes);	
-		}, (error) =>
-		{
-			HandleCommonError(error);
-		});
-	}
-
-	public void RequestRefillEnergy(int price, int refillAmount, Action successCallback)
-	{
-		WaitingNetworkCanvas.Show(true);
-
-		PlayFabClientAPI.PurchaseItem(new PurchaseItemRequest()
-		{
-			ItemId = "RefillEnergy",
-			Price = price,
-			VirtualCurrency = CurrencyData.DiamondCode()
-		}, (success) =>
-		{
-			WaitingNetworkCanvas.Show(false);
-
-			// 게시판에 사람들이 적은대로 bundle 안에 있는건 날아오지 않는다. 그래서 success만 오면 알아서 리필한다.
-			//for (int i = 0; i < success.Items.Count; ++i)
-			//{	
-			//}
-			CurrencyData.instance.OnRecvRefillEnergy(refillAmount);
-			
-			if (successCallback != null) successCallback.Invoke();
-		}, (error) =>
-		{
-			HandleCommonError(error);
-		});
-	}
-	#endregion
-
-
-
-
-
-
-
 
 
 

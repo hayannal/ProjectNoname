@@ -148,6 +148,7 @@ public class PauseCanvas : MonoBehaviour
 	public void OnClickHomeButton()
 	{
 		YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_BackToLobby"), UIString.instance.GetString("GameUI_BackToLobbyDescription"), () => {
+			PlayFabApiManager.instance.RequestCancelGame();
 			SaveOption();
 			SceneManager.LoadScene(0);
 		});

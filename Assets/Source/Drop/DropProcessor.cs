@@ -217,6 +217,7 @@ public class DropProcessor : MonoBehaviour
 
 	IEnumerator<float> DropProcess()
 	{
+		DropObject dropObjectForException = null;
 		for (int i = 0; i < _listDropObjectInfo.Count; ++i)
 		{
 			string prefabName = string.Format("Drop{0}", _listDropObjectInfo[i].dropType.ToString());
@@ -235,6 +236,10 @@ public class DropProcessor : MonoBehaviour
 			if (cachedItem.getAfterAllDropAnimationInStage && cachedItem.useIncreaseSearchRange == false)
 				BattleInstanceManager.instance.ReserveLastDropObject(cachedItem);
 
+			// 저 아래 템을 못얻는 상황에 대한 예외처리를 위한 코드다.
+			if (cachedItem.getAfterAllDropAnimationInStage && cachedItem.useIncreaseSearchRange)
+				dropObjectForException = cachedItem;
+
 			// 마지막 스폰이 끝날땐 드랍프로세서가 바로 사라지게 yield return 하지 않는다.
 			if (i < _listDropObjectInfo.Count - 1)
 				yield return Timing.WaitForSeconds(0.2f);
@@ -247,7 +252,21 @@ public class DropProcessor : MonoBehaviour
 		// 마지막으로 등록된 드랍 오브젝트를 진짜 라스트 드랍으로 지정하기로 한다.
 		// 그럼 이게 발동될때 떨어져있던 골드나 레벨팩이 흡수될거다.
 		if (BattleInstanceManager.instance.IsLastDropProcessorInStage(this))
-			BattleInstanceManager.instance.ApplyLastDropObject();
+		{
+			if (BattleInstanceManager.instance.IsExistReservedLastDropObject())
+				BattleInstanceManager.instance.ApplyLastDropObject();
+			else
+			{
+				// 템을 못얻는 상황에서는 골드가 드랍되지 않기 때문에 _reservedLastDropObject값이 null인 상태일거다.
+				// 이럴땐 어쩔 수 없이 마지막 드랍 프로세서의 드랍 오브젝트 리스트의 역 순서대로 검사해서
+				// getAfterAllDropAnimationInStage 값이 true인 오브젝트를 강제로 LastDropObject로 설정해야한다.
+				if (dropObjectForException != null)
+				{
+					BattleInstanceManager.instance.ReserveLastDropObject(dropObjectForException);
+					BattleInstanceManager.instance.ApplyLastDropObject();
+				}
+			}
+		}
 
 		_listDropObjectInfo.Clear();
 		gameObject.SetActive(false);

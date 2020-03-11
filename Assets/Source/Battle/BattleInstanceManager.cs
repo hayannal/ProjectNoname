@@ -812,6 +812,11 @@ public class BattleInstanceManager : MonoBehaviour
 		_reservedLastDropObject = dropObject;
 	}
 
+	public bool IsExistReservedLastDropObject()
+	{
+		return (_reservedLastDropObject != null);
+	}
+
 	public void ApplyLastDropObject()
 	{
 		if (_reservedLastDropObject != null)

@@ -108,7 +108,12 @@ public class BattleModeProcessorBase
 		if (clear)	// && IsRetryByCrash == false
 		{
 			TimeSpan timeSpan = DateTime.Now - _startDateTime;
-			if (timeSpan < TimeSpan.FromMinutes(5))
+			bool sus = false;
+			if (timeSpan < TimeSpan.FromMinutes(10) && PlayerData.instance.highestPlayChapter == PlayerData.instance.selectedChapter)
+				sus = true;
+			if (sus == false && timeSpan < TimeSpan.FromSeconds(30))
+				sus = true;
+			if (sus)
 			{
 				int powerLevel = 1;
 				CharacterData characterData = PlayerData.instance.GetCharacterData(BattleInstanceManager.instance.playerActor.actorId);

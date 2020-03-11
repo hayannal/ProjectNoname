@@ -245,6 +245,15 @@ public class BaseDamageAffector : AffectorBase {
 				MonsterActor monsterActor = _actor as MonsterActor;
 				if (monsterActor != null && monsterActor.groupMonster && monsterActor.group.IsLastAliveMonster(monsterActor) == false)
 					ignoreOnKill = true;
+				// 한방에 보스 몹 처리..
+				if (PlayerData.instance.clientOnly == false && monsterActor.bossMonster && damage > monsterActor.actorStatus.GetValue(eActorStatus.MaxHp) && PlayerData.instance.highestPlayChapter == PlayerData.instance.selectedChapter)
+				{
+					int powerLevel = 1;
+					CharacterData characterData = PlayerData.instance.GetCharacterData(BattleInstanceManager.instance.playerActor.actorId);
+					if (characterData != null) powerLevel = characterData.powerLevel;
+					int errorCode = 200000 + PlayerData.instance.selectedChapter * 100 + powerLevel;
+					PlayFabApiManager.instance.RequestIncCliSus(errorCode, (int)damage);
+				}
 			}
 			if (ignoreOnKill == false)
 			{

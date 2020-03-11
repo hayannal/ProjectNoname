@@ -104,7 +104,8 @@ public class BattleModeProcessorBase
 		CurrencyData.instance.gold += DropManager.instance.GetStackedDropGold();
 
 		// 클리어 했다면 시간 체크 한번 해본다.
-		if (clear)
+		// 강종으로 인한 재접속때 안하는거 추가해야한다.
+		if (clear)	// && IsRetryByCrash == false
 		{
 			TimeSpan timeSpan = DateTime.Now - _startDateTime;
 			if (timeSpan < TimeSpan.FromMinutes(5))

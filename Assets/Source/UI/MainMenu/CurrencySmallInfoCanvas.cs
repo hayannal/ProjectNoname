@@ -110,6 +110,6 @@ public class CurrencySmallInfoCanvas : MonoBehaviour
 
 	public void OnClickGoldButton()
 	{
-		TooltipCanvas.Show(true, TooltipCanvas.eDirection.LeftBottom, UIString.instance.GetString("GameUI_GoldDesc"), 200, goldIconTransform, new Vector2(-40.0f, 0.0f));
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.LeftBottom, UIString.instance.GetString("GameUI_GoldDesc"), 200, goldIconTransform, new Vector2(-40.0f, 7.0f));
 	}
 }

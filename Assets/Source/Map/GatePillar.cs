@@ -447,6 +447,7 @@ public class GatePillar : MonoBehaviour
 			if (TitleCanvas.instance != null)
 				TitleCanvas.instance.gameObject.SetActive(false);
 			MainSceneBuilder.instance.OnExitLobby();
+			BattleManager.instance.OnStartBattle();
 			StageManager.instance.AddBattlePlayer(BattleInstanceManager.instance.playerActor.actorId);
 		}
 		while (StageManager.instance.IsDoneLoadAsyncNextStage() == false)

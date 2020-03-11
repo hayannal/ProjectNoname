@@ -66,6 +66,11 @@ public class BattleManager : MonoBehaviour
 		}
 	}
 
+	public void OnStartBattle()
+	{
+		_currentBattleMode.OnStartBattle();
+	}
+
 	public void OnPreInstantiateMap()
 	{
 		_currentBattleMode.OnPreInstantiateMap();

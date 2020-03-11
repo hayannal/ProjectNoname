@@ -1,5 +1,6 @@
 ﻿//#define HUDDPS
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,12 @@ public class BattleModeProcessorBase
 	bool _monsterSpawned = false;
 	int _monsterSpawnCount = 0;
 	int _damageCountInStage = 0;
+
+	DateTime _startDateTime;
+	public void OnStartBattle()
+	{
+		_startDateTime = DateTime.Now;
+	}
 
 	public void OnPreInstantiateMap()
 	{
@@ -44,7 +51,7 @@ public class BattleModeProcessorBase
 		// environmentSetting처럼 있으면 랜덤하게 골라서 적용하고 없을땐 그냥 냅둬서 유지시킨다.
 		if (StageManager.instance.currentStageTableData != null && StageManager.instance.currentStageTableData.stagePenaltyId.Length > 0)
 		{
-			string stagePenaltyId = StageManager.instance.currentStageTableData.stagePenaltyId[Random.Range(0, StageManager.instance.currentStageTableData.stagePenaltyId.Length)];
+			string stagePenaltyId = StageManager.instance.currentStageTableData.stagePenaltyId[UnityEngine.Random.Range(0, StageManager.instance.currentStageTableData.stagePenaltyId.Length)];
 			if (BattleInstanceManager.instance.playerActor != null)
 				BattleInstanceManager.instance.playerActor.RefreshStagePenaltyAffector(stagePenaltyId, true);
 		}
@@ -95,6 +102,20 @@ public class BattleModeProcessorBase
 			}
 		}
 		CurrencyData.instance.gold += DropManager.instance.GetStackedDropGold();
+
+		// 클리어 했다면 시간 체크 한번 해본다.
+		if (clear)
+		{
+			TimeSpan timeSpan = DateTime.Now - _startDateTime;
+			if (timeSpan < TimeSpan.FromMinutes(5))
+			{
+				int powerLevel = 1;
+				CharacterData characterData = PlayerData.instance.GetCharacterData(BattleInstanceManager.instance.playerActor.actorId);
+				if (characterData != null) powerLevel = characterData.powerLevel;
+				int errorCode = 100000 + PlayerData.instance.selectedChapter * 100 + powerLevel;
+				PlayFabApiManager.instance.RequestIncCliSus(errorCode, (int)timeSpan.TotalSeconds);
+			}
+		}
 	}
 
 	public void OnDieMonster(MonsterActor monsterActor)

@@ -32,8 +32,4 @@ public class ChapterTableData
   string _descriptionId;
   public string descriptionId { get { return _descriptionId; } set { _descriptionId = value; } }
   
-  [SerializeField]
-  int _chapterGoldReward;
-  public int chapterGoldReward { get { return _chapterGoldReward; } set { _chapterGoldReward = value; } }
-  
 }

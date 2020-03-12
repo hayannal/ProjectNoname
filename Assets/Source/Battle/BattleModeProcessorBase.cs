@@ -13,6 +13,11 @@ public class BattleModeProcessorBase
 	int _monsterSpawnCount = 0;
 	int _damageCountInStage = 0;
 
+	public void Update()
+	{
+		UpdateEndProcess();
+	}
+
 	DateTime _startDateTime;
 	public void OnStartBattle()
 	{
@@ -79,10 +84,18 @@ public class BattleModeProcessorBase
 
 	public void OnDiePlayer(PlayerActor playerActor)
 	{
-		PlayFabApiManager.instance.RequestEndGame(false, StageManager.instance.playStage - 1, DropManager.instance.GetStackedDropGold(), (result, newCharacterId) =>
-		{
-			OnRecvEndGame(result, newCharacterId);
-		});
+		if (PlayerData.instance.clientOnly)
+			return;
+
+		// 여기서 인풋은 막되
+		LobbyCanvas.instance.battlePauseButton.interactable = false;
+
+		// 바로 정산처리 하면 안되고
+		// 드랍 아이템 존재하는지 확인 후 없으면 바로 1초 타이머를 센다.
+		// 획득할 수 있는 드랍 아이템이 존재하면 다 획득 후 1초 타이머를 센다.
+		// 이건 마지막 보스 클리어 후에도 동일하게 적용해야한다.
+		_endProcess = true;
+		_endProcessWaitRemainTime = 2.0f;
 	}
 
 	public void OnRecvEndGame(bool clear, string newCharacterId)
@@ -154,6 +167,15 @@ public class BattleModeProcessorBase
 
 	public void OnClearStage()
 	{
+		// last stage
+		if (StageManager.instance.playStage == StageManager.instance.GetMaxStage(StageManager.instance.playChapter))
+		{
+			LobbyCanvas.instance.battlePauseButton.interactable = false;
+			_endProcess = true;
+			_endProcessWaitRemainTime = 3.0f;
+			return;
+		}
+
 		bool showPlayerIndicator = false;
 		if (StageManager.instance.currentStageTableData != null && StageManager.instance.currentStageTableData.swap && PlayerData.instance.swappable)
 			showPlayerIndicator = true;
@@ -168,6 +190,42 @@ public class BattleModeProcessorBase
 
 		Timing.RunCoroutine(DelayedShowGatePillar(0.1f));
 	}
+
+	#region EndGame
+	bool _endProcess = false;
+	float _endProcessWaitRemainTime = 0.0f;	// 최소 대기타임
+	void UpdateEndProcess()
+	{
+		if (_endProcess == false)
+			return;
+
+		if (_endProcessWaitRemainTime > 0.0f)
+		{
+			_endProcessWaitRemainTime -= Time.deltaTime;
+			if (_endProcessWaitRemainTime <= 0.0f)
+				_endProcessWaitRemainTime = 0.0f;
+			return;
+		}
+
+		if (DropManager.instance.IsExistAcquirableDropObject())
+		{
+			// 하나라도 존재하면 waitRemainTime을 늘려서 대기시켰다가 체크한다.
+			_endProcessWaitRemainTime = 0.5f;
+			return;
+		}
+
+		if (BattleInstanceManager.instance.playerActor.actorStatus.IsDie() == false)
+			HitObject.EnableRigidbodyAndCollider(false, null, BattleInstanceManager.instance.playerActor.GetCollider());
+
+		PlayFabApiManager.instance.RequestEndGame(false, StageManager.instance.playStage - 1, DropManager.instance.GetStackedDropGold(), (result, newCharacterId) =>
+		{
+			OnRecvEndGame(result, newCharacterId);
+			BattleResultCanvas.instance.gameObject.SetActive(true);
+		});
+
+		_endProcess = false;
+	}
+	#endregion
 
 	public bool IsAutoPlay()
 	{

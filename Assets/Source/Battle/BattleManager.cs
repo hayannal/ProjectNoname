@@ -67,6 +67,11 @@ public class BattleManager : MonoBehaviour
 		}
 	}
 
+	void Update()
+	{
+		_currentBattleMode.Update();
+	}
+
 	public void OnStartBattle()
 	{
 		_currentBattleMode.OnStartBattle();

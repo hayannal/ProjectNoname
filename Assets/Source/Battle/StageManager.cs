@@ -431,20 +431,7 @@ public class StageManager : MonoBehaviour
 	}
 	#endregion
 
-	#region Player List
-	List<string> _listBattlePlayerActorIdList = new List<string>();
-	public void AddBattlePlayer(string actorId)
-	{
-		if (_listBattlePlayerActorIdList.Contains(actorId))
-			return;
-		_listBattlePlayerActorIdList.Add(actorId);
-	}
-
-	public bool IsInBattlePlayerList(string actorId)
-	{
-		return _listBattlePlayerActorIdList.Contains(actorId);
-	}
-	#endregion
+	
 
 
 	#region Battle Result

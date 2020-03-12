@@ -256,7 +256,7 @@ public class SwapCanvas : MonoBehaviour
 			_listSwapCanvasListItem[i].ShowSelectObject(_listSwapCanvasListItem[i].actorId == actorId);
 
 		string firstText = "";
-		if (MainSceneBuilder.instance.lobby == false && StageManager.instance.IsInBattlePlayerList(actorId))
+		if (MainSceneBuilder.instance.lobby == false && BattleInstanceManager.instance.IsInBattlePlayerList(actorId))
 			firstText = UIString.instance.GetString("GameUI_FirstSwapHealNotApplied");
 
 		string secondText = "";

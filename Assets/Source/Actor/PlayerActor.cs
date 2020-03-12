@@ -97,7 +97,7 @@ public class PlayerActor : Actor
 				if (lobby == false)
 				{
 					// 한번이라도 썼던 캐릭터인지 확인
-					bool firstEnter = !StageManager.instance.IsInBattlePlayerList(actorId);
+					bool firstEnter = !BattleInstanceManager.instance.IsInBattlePlayerList(actorId);
 
 					// 레벨팩 이전
 					LevelPackDataManager.instance.TransferLevelPackList(BattleInstanceManager.instance.playerActor, this);
@@ -164,7 +164,7 @@ public class PlayerActor : Actor
 	{
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
 		if (lobby == false)
-			StageManager.instance.AddBattlePlayer(actorId);
+			BattleInstanceManager.instance.AddBattlePlayer(actorId);
 
 		BattleInstanceManager.instance.playerActor = this;
 		CustomFollowCamera.instance.targetTransform = cachedTransform;

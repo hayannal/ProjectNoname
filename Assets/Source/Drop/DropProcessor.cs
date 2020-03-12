@@ -112,7 +112,7 @@ public class DropProcessor : MonoBehaviour
 					dropProcessor.Add(dropType, floatValue, intValue);
 					break;
 				case eDropType.LevelPack:
-					++BattleManager.instance.reservedLevelPackCount;
+					++DropManager.instance.reservedLevelPackCount;
 					// check no hit levelpack
 					if (BattleManager.instance.GetDamageCountOnStage() == 0)
 						floatValue = 1.0f;
@@ -155,7 +155,7 @@ public class DropProcessor : MonoBehaviour
 
 		//Debug.Log("dropExp : " + dropExpValue);
 
-		BattleManager.instance.StackDropExp(dropExpValue);
+		DropManager.instance.StackDropExp(dropExpValue);
 	}
 	#endregion
 

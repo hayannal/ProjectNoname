@@ -132,12 +132,12 @@ public class BattleModeProcessorBase
 		if (_mapLoaded && _monsterSpawned && _monsterSpawnCount == 0 && BattleInstanceManager.instance.CheckFinishSequentialMonster())
 		{
 			// all kill monster
-			BattleManager.instance.GetStackedDropExp();
-			if (LevelUpIndicatorCanvas.IsShow() || BattleManager.instance.reservedLevelPackCount > 0)
+			DropManager.instance.GetStackedDropExp();
+			if (LevelUpIndicatorCanvas.IsShow() || DropManager.instance.reservedLevelPackCount > 0)
 			{
 				// 게이트 필라 생성하는 타이밍이 카운트를 지정하기에 가장 적당한 곳이다.
-				LevelUpIndicatorCanvas.SetTargetLevelUpCount(StageManager.instance.needLevelUpCount + BattleManager.instance.reservedLevelPackCount);
-				StageManager.instance.needLevelUpCount = BattleManager.instance.reservedLevelPackCount = 0;
+				LevelUpIndicatorCanvas.SetTargetLevelUpCount(StageManager.instance.needLevelUpCount + DropManager.instance.reservedLevelPackCount);
+				StageManager.instance.needLevelUpCount = DropManager.instance.reservedLevelPackCount = 0;
 			}
 			else
 			{

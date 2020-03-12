@@ -51,7 +51,7 @@ public class GatePillar : MonoBehaviour
 		_spawnTime = Time.time;
 		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby)
 		{
-			if (ContentsManager.IsTutorialChapter() == false)
+			if (ContentsManager.IsTutorialChapter() == false && DownloadManager.instance.IsDownloaded())
 			{
 				// 일부러 조금 뒤에 보이게 한다. 초기 로딩 줄이기 위해.
 				_energyGaugeShowRemainTime = energyGaugeShowDelayTime;

@@ -234,7 +234,7 @@ public class DropProcessor : MonoBehaviour
 			// 여러개의 드랍프로세서가 서로 다른 드랍오브젝트를 만들고 있을때는 누가 마지막 골드 드랍인지를 알수가 없게된다.
 			// 그래서 생성시 라스트를 등록하고 있다가
 			if (cachedItem.getAfterAllDropAnimationInStage && cachedItem.useIncreaseSearchRange == false)
-				BattleInstanceManager.instance.ReserveLastDropObject(cachedItem);
+				DropManager.instance.ReserveLastDropObject(cachedItem);
 
 			// 저 아래 템을 못얻는 상황에 대한 예외처리를 위한 코드다.
 			if (cachedItem.getAfterAllDropAnimationInStage && cachedItem.useIncreaseSearchRange)
@@ -253,8 +253,8 @@ public class DropProcessor : MonoBehaviour
 		// 그럼 이게 발동될때 떨어져있던 골드나 레벨팩이 흡수될거다.
 		if (BattleInstanceManager.instance.IsLastDropProcessorInStage(this))
 		{
-			if (BattleInstanceManager.instance.IsExistReservedLastDropObject())
-				BattleInstanceManager.instance.ApplyLastDropObject();
+			if (DropManager.instance.IsExistReservedLastDropObject())
+				DropManager.instance.ApplyLastDropObject();
 			else
 			{
 				// 템을 못얻는 상황에서는 골드가 드랍되지 않기 때문에 _reservedLastDropObject값이 null인 상태일거다.
@@ -262,8 +262,8 @@ public class DropProcessor : MonoBehaviour
 				// getAfterAllDropAnimationInStage 값이 true인 오브젝트를 강제로 LastDropObject로 설정해야한다.
 				if (dropObjectForException != null)
 				{
-					BattleInstanceManager.instance.ReserveLastDropObject(dropObjectForException);
-					BattleInstanceManager.instance.ApplyLastDropObject();
+					DropManager.instance.ReserveLastDropObject(dropObjectForException);
+					DropManager.instance.ApplyLastDropObject();
 				}
 			}
 		}

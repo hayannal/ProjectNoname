@@ -16,6 +16,8 @@ public class DropManager : MonoBehaviour
 	}
 	static DropManager _instance = null;
 
+
+	#region Drop Info
 	ObscuredFloat _dropGold;
 	ObscuredInt _dropSeal;
 
@@ -51,8 +53,6 @@ public class DropManager : MonoBehaviour
 	}
 
 
-
-	#region Common
 	int _stackDropExp = 0;
 	public void StackDropExp(int exp)
 	{
@@ -79,5 +79,78 @@ public class DropManager : MonoBehaviour
 
 	// 레벨팩이 드랍되면 체크해놨다가 먹어야 GatePillar가 나오게 해야한다.
 	public int reservedLevelPackCount { get; set; }
+	#endregion
+
+
+
+	#region Drop Object
+	List<DropObject> _listDropObject = new List<DropObject>();
+	public void OnInitializeDropObject(DropObject dropObject)
+	{
+		_listDropObject.Add(dropObject);
+	}
+
+	public void OnFinalizeDropObject(DropObject dropObject)
+	{
+		_listDropObject.Remove(dropObject);
+	}
+
+	DropObject _reservedLastDropObject;
+	public void ReserveLastDropObject(DropObject dropObject)
+	{
+		_reservedLastDropObject = dropObject;
+	}
+
+	public bool IsExistReservedLastDropObject()
+	{
+		return (_reservedLastDropObject != null);
+	}
+
+	public void ApplyLastDropObject()
+	{
+		if (_reservedLastDropObject != null)
+		{
+			_reservedLastDropObject.ApplyLastDropObject();
+			_reservedLastDropObject = null;
+		}
+	}
+
+	public void OnDropLastMonsterInStage()
+	{
+		for (int i = 0; i < _listDropObject.Count; ++i)
+			_listDropObject[i].OnAfterBattle();
+	}
+
+	public void OnFinishLastDropAnimation()
+	{
+		for (int i = 0; i < _listDropObject.Count; ++i)
+		{
+			// 다음 스테이지에 드랍된 템들은 켜져있지 않을거다. 패스.
+			if (_listDropObject[i].onAfterBattle == false)
+				continue;
+
+			_listDropObject[i].OnAfterAllDropAnimation();
+		}
+	}
+	#endregion
+
+
+	#region EndGame
+	public bool IsExistAcquirableDropObject()
+	{
+		// 정산 직전에 쓰는 함수다. 획득할 수 있는 드랍 오브젝트가 하나도 없어야 정산이 가능하다.
+
+		// 드랍 오브젝트가 생성되기 전이라서 드랍정보만 가지고는 알기 어렵기 때문에 DropProcessor가 하나라도 살아있다면 우선 기다린다.
+		if (BattleInstanceManager.instance.IsAliveAnyDropProcessor())
+			return true;
+
+		// 생성되어있는 DropObject를 뒤져서 획득할 수 있는게 하나도 없어야 한다.
+		for (int i = 0; i < _listDropObject.Count; ++i)
+		{
+			if (_listDropObject[i].IsAcquirableForEnd())
+				return true;
+		}
+		return false;
+	}
 	#endregion
 }

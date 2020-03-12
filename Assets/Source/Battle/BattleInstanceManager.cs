@@ -795,49 +795,13 @@ public class BattleInstanceManager : MonoBehaviour
 		return dropObject;
 	}
 
-	List<DropObject> _listDropObject = new List<DropObject>();
-	public void OnInitializeDropObject(DropObject dropObject)
-	{
-		_listDropObject.Add(dropObject);
-	}
-
-	public void OnFinalizeDropObject(DropObject dropObject)
-	{
-		_listDropObject.Remove(dropObject);
-	}
-
 	public void OnDropLastMonsterInStage()
 	{
-		// 막타 이전에 죽은 몬스터의 DropProcessor에서 아직 스폰되지 않은 아이템이 남아있을 수 있으니
-		// 스폰된 드랍템에 적용 후 DropProcessor에도 적용해야한다.
-		for (int i = 0; i < _listDropObject.Count; ++i)
-			_listDropObject[i].OnAfterBattle();
-
 		for (int i = 0; i < _listCachedDropProcessor.Count; ++i)
 		{
 			if (!_listCachedDropProcessor[i].gameObject.activeSelf)
 				continue;
 			_listCachedDropProcessor[i].onAfterBattle = true;
-		}
-	}
-
-	DropObject _reservedLastDropObject;
-	public void ReserveLastDropObject(DropObject dropObject)
-	{
-		_reservedLastDropObject = dropObject;
-	}
-
-	public bool IsExistReservedLastDropObject()
-	{
-		return (_reservedLastDropObject != null);
-	}
-
-	public void ApplyLastDropObject()
-	{
-		if (_reservedLastDropObject != null)
-		{
-			_reservedLastDropObject.ApplyLastDropObject();
-			_reservedLastDropObject = null;
 		}
 	}
 
@@ -865,16 +829,14 @@ public class BattleInstanceManager : MonoBehaviour
 		return exist;
 	}
 
-	public void OnFinishLastDropAnimation()
+	public bool IsAliveAnyDropProcessor()
 	{
-		for (int i = 0; i < _listDropObject.Count; ++i)
+		for (int i = 0; i < _listCachedDropProcessor.Count; ++i)
 		{
-			// 다음 스테이지에 드랍된 템들은 켜져있지 않을거다. 패스.
-			if (_listDropObject[i].onAfterBattle == false)
-				continue;
-
-			_listDropObject[i].OnAfterAllDropAnimation();
+			if (_listCachedDropProcessor[i].gameObject.activeSelf)
+				return true;
 		}
+		return false;
 	}
 	#endregion
 

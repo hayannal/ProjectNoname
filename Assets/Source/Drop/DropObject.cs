@@ -89,7 +89,7 @@ public class DropObject : MonoBehaviour
 		_rotateEuler.z = Random.Range(360.0f, 720.0f) * (Random.value > 0.5f ? 1.0f : -1.0f);
 
 		_initialized = true;
-		BattleInstanceManager.instance.OnInitializeDropObject(this);
+		DropManager.instance.OnInitializeDropObject(this);
 	}
 
 	#region state flag
@@ -123,7 +123,7 @@ public class DropObject : MonoBehaviour
 		if (_initialized && _jumpRemainTime <= 0.0f)
 		{
 			if (getAfterAllDropAnimationInStage && _onAfterBattle)
-				BattleInstanceManager.instance.OnFinishLastDropAnimation();
+				DropManager.instance.OnFinishLastDropAnimation();
 		}
 	}
 	#endregion
@@ -198,7 +198,7 @@ public class DropObject : MonoBehaviour
 			{
 				_jumpRemainTime = 0.0f;
 				if (getAfterAllDropAnimationInStage && _onAfterBattle && _lastDropObject)
-					BattleInstanceManager.instance.OnFinishLastDropAnimation();
+					DropManager.instance.OnFinishLastDropAnimation();
 				CheckShowNameCanvas();
 				CheckPull();
 			}
@@ -271,7 +271,7 @@ public class DropObject : MonoBehaviour
 		}
 
 		_initialized = false;
-		BattleInstanceManager.instance.OnFinalizeDropObject(this);
+		DropManager.instance.OnFinalizeDropObject(this);
 		gameObject.SetActive(false);
 	}
 
@@ -352,6 +352,31 @@ public class DropObject : MonoBehaviour
 		// 우선 임시로 LocalizedText 함수만 호출해둔다.
 		if (nameText != null)
 			nameText.SetLocalizedText(nameText.text);
+	}
+
+	// 정산을 위해 추가한 함수. 획득가능한지 본다.
+	public bool IsAcquirableForEnd()
+	{
+		// 이미 pull이 시작되었으면 언제나 가능
+		if (_pullStarted)
+			return true;
+
+		// 범위 늘려가고 있는 중이어도 가능
+		if (_increaseSearchRangeStarted)
+			return true;
+
+		// 점프만 끝나면 pullStart가 시작될거기 때문에 가능
+		if (getAfterAllDropAnimationInStage == false)
+			return true;
+
+		// 전투 종료가 되야 획득가능한 오브젝트들에게 _onAfterBattle 켜져있단건
+		// 해당 스테이지에서의 마지막 몹이 죽어서 전투가 끝났음이 체크되어있는거다.
+		// 단지 드랍 애니나 나머지 항목을 기다리는 중인거라 시간이 지나면 획득가능할거다.
+		// _onAfterDropAnimation 는 드랍 애니를 기다리는거라 체크하지 않아야한다.
+		if (getAfterAllDropAnimationInStage && _onAfterBattle)
+			return true;
+
+		return false;
 	}
 
 

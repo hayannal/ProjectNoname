@@ -375,7 +375,14 @@ public class MonsterActor : Actor
 		// 기존 드랍템들에 회수 표시를 걸어두고 해당 몹이 드랍할 템들에도 회수 표시를 걸어둔다. 이래야 다음판 드랍템과 섞여도 현재판 드랍템들만 회수할 수 있다.
 		bool lastMonsterInStage = (BattleManager.instance.GetSpawnedMonsterCount() == 1);
 		if (lastMonsterInStage)
+		{
+			// 스폰된 드랍템에 AfterBattle을 적용
+			DropManager.instance.OnDropLastMonsterInStage();
+
+			// 막타 이전에 죽은 몬스터의 DropProcessor에서 아직 스폰되지 않은 아이템이 남아있을 수 있으니
+			// DropProcessor에도 적용해야한다.
 			BattleInstanceManager.instance.OnDropLastMonsterInStage();
+		}
 
 		// summon 시그널로 만들어진 몬스터는 아무것도 드랍하지 않는다.
 		if (summonMonster)

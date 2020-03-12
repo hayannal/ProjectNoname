@@ -365,7 +365,7 @@ public class GatePillar : MonoBehaviour
 				EnergyGaugeCanvas.instance.RefreshEnergy();
 		}
 		// 입장패킷 보내서 서버로부터 제대로 응답오는지 기다려야한다.
-		PlayFabApiManager.instance.RequestEnterGame(false, (serverFailure) =>
+		PlayFabApiManager.instance.RequestEnterGame(false, "", (serverFailure) =>
 		{
 			if (_waitEnergyServerResponse)
 			{

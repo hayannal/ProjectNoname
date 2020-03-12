@@ -17,6 +17,7 @@ public class DropManager : MonoBehaviour
 	static DropManager _instance = null;
 
 	ObscuredFloat _dropGold;
+	ObscuredInt _dropSeal;
 
 	public void AddDropGold(float gold)
 	{
@@ -32,5 +33,20 @@ public class DropManager : MonoBehaviour
 	public void AddDropItem()
 	{
 
+	}
+
+	public int GetDropItemCount()
+	{
+		return 0;
+	}
+
+	public void AddDropSeal(int amount)
+	{
+		_dropSeal += amount;
+	}
+
+	public int GetStackedDropSeal()
+	{
+		return _dropSeal;
 	}
 }

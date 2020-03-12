@@ -265,6 +265,9 @@ public class DropObject : MonoBehaviour
 			case DropProcessor.eDropType.Gacha:
 				//DropManager.instance.AddDropItem();
 				break;
+			case DropProcessor.eDropType.Seal:
+				DropManager.instance.AddDropSeal(1);
+				break;
 		}
 
 		_initialized = false;

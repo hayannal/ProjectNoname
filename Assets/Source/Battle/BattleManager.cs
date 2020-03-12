@@ -30,6 +30,7 @@ public class BattleManager : MonoBehaviour
 
 	public GameObject floatingDamageTextRootCanvasPrefab;
 	public GameObject pauseCanvasPrefab;
+	public GameObject battleResultPrefab;
 
 	public GameObject[] dropObjectPrefabList;
 	public GameObject portalPrefab;

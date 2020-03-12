@@ -295,6 +295,9 @@ public class PlayFabApiManager : MonoBehaviour
 
 	public void RequestCancelGame()
 	{
+		if (PlayerData.instance.clientOnly)
+			return;
+
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
 			FunctionName = "CancelGame",

@@ -98,47 +98,6 @@ public class BattleModeProcessorBase
 		_endProcessWaitRemainTime = 2.0f;
 	}
 
-	public void OnRecvEndGame(bool clear, string newCharacterId)
-	{
-		if (PlayerData.instance.chaosMode == false && PlayerData.instance.highestPlayChapter == PlayerData.instance.selectedChapter)
-		{
-			if (clear)
-			{
-				PlayerData.instance.highestPlayChapter += 1;
-				PlayerData.instance.highestClearStage = 0;
-				PlayerData.instance.selectedChapter += 1;
-
-				EventManager.instance.OnEventClearChapter(PlayerData.instance.highestPlayChapter, newCharacterId);
-			}
-			else
-			{
-				if (PlayerData.instance.highestClearStage < StageManager.instance.playStage - 1)
-					PlayerData.instance.highestClearStage = StageManager.instance.playStage - 1;
-			}
-		}
-		CurrencyData.instance.gold += DropManager.instance.GetStackedDropGold();
-
-		// 클리어 했다면 시간 체크 한번 해본다.
-		// 강종으로 인한 재접속때 안하는거 추가해야한다.
-		if (clear)	// && IsRetryByCrash == false
-		{
-			TimeSpan timeSpan = DateTime.Now - _startDateTime;
-			bool sus = false;
-			if (timeSpan < TimeSpan.FromMinutes(10) && PlayerData.instance.highestPlayChapter == PlayerData.instance.selectedChapter)
-				sus = true;
-			if (sus == false && timeSpan < TimeSpan.FromSeconds(30))
-				sus = true;
-			if (sus)
-			{
-				int powerLevel = 1;
-				CharacterData characterData = PlayerData.instance.GetCharacterData(BattleInstanceManager.instance.playerActor.actorId);
-				if (characterData != null) powerLevel = characterData.powerLevel;
-				int errorCode = 100000 + PlayerData.instance.selectedChapter * 100 + powerLevel;
-				PlayFabApiManager.instance.RequestIncCliSus(errorCode, (int)timeSpan.TotalSeconds);
-			}
-		}
-	}
-
 	public void OnDieMonster(MonsterActor monsterActor)
 	{
 		--_monsterSpawnCount;
@@ -214,16 +173,62 @@ public class BattleModeProcessorBase
 			return;
 		}
 
+		bool clear = false;
 		if (BattleInstanceManager.instance.playerActor.actorStatus.IsDie() == false)
+		{
 			HitObject.EnableRigidbodyAndCollider(false, null, BattleInstanceManager.instance.playerActor.GetCollider());
+			if (StageManager.instance.playStage == StageManager.instance.GetMaxStage(StageManager.instance.playChapter))
+				clear = true;
+		}
 
-		PlayFabApiManager.instance.RequestEndGame(false, StageManager.instance.playStage - 1, DropManager.instance.GetStackedDropGold(), (result, newCharacterId) =>
+		PlayFabApiManager.instance.RequestEndGame(clear, StageManager.instance.playStage - 1, DropManager.instance.GetStackedDropGold(), (result, newCharacterId) =>
 		{
 			OnRecvEndGame(result, newCharacterId);
 			BattleResultCanvas.instance.gameObject.SetActive(true);
 		});
 
 		_endProcess = false;
+	}
+
+	void OnRecvEndGame(bool clear, string newCharacterId)
+	{
+		if (PlayerData.instance.chaosMode == false && PlayerData.instance.highestPlayChapter == PlayerData.instance.selectedChapter)
+		{
+			if (clear)
+			{
+				PlayerData.instance.highestPlayChapter += 1;
+				PlayerData.instance.highestClearStage = 0;
+				PlayerData.instance.selectedChapter += 1;
+
+				EventManager.instance.OnEventClearChapter(PlayerData.instance.highestPlayChapter, newCharacterId);
+			}
+			else
+			{
+				if (PlayerData.instance.highestClearStage < StageManager.instance.playStage - 1)
+					PlayerData.instance.highestClearStage = StageManager.instance.playStage - 1;
+			}
+		}
+		CurrencyData.instance.gold += DropManager.instance.GetStackedDropGold();
+
+		// 클리어 했다면 시간 체크 한번 해본다.
+		// 강종으로 인한 재접속때 안하는거 추가해야한다.
+		if (clear)  // && IsRetryByCrash == false
+		{
+			TimeSpan timeSpan = DateTime.Now - _startDateTime;
+			bool sus = false;
+			if (timeSpan < TimeSpan.FromMinutes(10) && PlayerData.instance.highestPlayChapter == PlayerData.instance.selectedChapter)
+				sus = true;
+			if (sus == false && timeSpan < TimeSpan.FromSeconds(30))
+				sus = true;
+			if (sus)
+			{
+				int powerLevel = 1;
+				CharacterData characterData = PlayerData.instance.GetCharacterData(BattleInstanceManager.instance.playerActor.actorId);
+				if (characterData != null) powerLevel = characterData.powerLevel;
+				int errorCode = 100000 + PlayerData.instance.selectedChapter * 100 + powerLevel;
+				PlayFabApiManager.instance.RequestIncCliSus(errorCode, (int)timeSpan.TotalSeconds);
+			}
+		}
 	}
 	#endregion
 

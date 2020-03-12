@@ -5,7 +5,6 @@ using UnityEngine.EventSystems;
 
 public class CharacterInfoCanvas : MonoBehaviour
 {
-	public GameObject infoCameraGroundPrefab;
 	public Transform infoCameraTransform;
 	public float infoCameraFov = 40.0f;
 	public float charactorY = 180.0f;
@@ -73,7 +72,7 @@ public class CharacterInfoCanvas : MonoBehaviour
 			StageManager.instance.EnableEnvironmentSettingForUI(false);
 			if (_groundTransform == null)
 			{
-				_groundTransform = Instantiate<GameObject>(infoCameraGroundPrefab, _rootOffsetPosition, Quaternion.identity).transform;
+				_groundTransform = Instantiate<GameObject>(StageManager.instance.characterInfoGroundPrefab, _rootOffsetPosition, Quaternion.identity).transform;
 				_environmentSetting = _groundTransform.GetComponentInChildren<EnvironmentSetting>();
 				_defaultLightIntensity = _environmentSetting.defaultDirectionalLightIntensity;
 

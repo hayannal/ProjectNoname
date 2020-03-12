@@ -418,7 +418,8 @@ public class GatePillar : MonoBehaviour
 
 		_processing = true;
 
-		PrepareUseEnergy();
+		if (MainSceneBuilder.instance.lobby)
+			PrepareUseEnergy();
 
 		yield return Timing.WaitForSeconds(0.2f);
 		changeEffectParticleRootObject.SetActive(true);

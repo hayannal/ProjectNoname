@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿#define CHEAT_RESURRECT
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 //using UnityEngine.Networking;
@@ -242,6 +244,10 @@ public class ActorStatus : MonoBehaviour
 	}
 	*/
 
+#if CHEAT_RESURRECT
+	public bool cheatDontDie { get; set; }
+	public int cheatDontDieUseCount { get; private set; }
+#endif
 	public virtual void AddHP(float addHP)
 	{
 #if UNITY_EDITOR
@@ -265,6 +271,14 @@ public class ActorStatus : MonoBehaviour
 			bool dontDie = false;
 			if (actor.actionController.mecanimState.IsState((int)eMecanimState.DontDie) || ImmortalWillAffector.CheckImmortal(actor.affectorProcessor))
 				dontDie = true;
+#if CHEAT_RESURRECT
+			if (cheatDontDie)
+			{
+				dontDie = true;
+				cheatDontDieUseCount += 1;
+				Debug.LogFormat("Cheat Resurrect Count = {0}", cheatDontDieUseCount);
+			}
+#endif
 			if (dontDie)
 			{
 				_statusBase._hp = 1.0f;
@@ -273,6 +287,10 @@ public class ActorStatus : MonoBehaviour
 			{
 				onDie = true;
 			}
+#if CHEAT_RESURRECT
+			if (cheatDontDie)
+				_statusBase._hp = GetValue(eActorStatus.MaxHp);
+#endif
 		}
 		actor.OnChangedHP();
 		if (onDie) actor.OnDie();

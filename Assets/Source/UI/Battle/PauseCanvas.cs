@@ -202,8 +202,8 @@ public class PauseCanvas : MonoBehaviour
 		lockIconOnOffText.color = Color.white;
 
 #if CHEAT_RESURRECT
-		if (BattleInstanceManager.instance.playerActor.actorStatus.IsDie())
-			BattleInstanceManager.instance.playerActor.Resurrect();
+		if (BattleInstanceManager.instance.playerActor.actorStatus.IsDie() == false)
+			BattleInstanceManager.instance.playerActor.actorStatus.cheatDontDie = true;
 #endif
 	}
 

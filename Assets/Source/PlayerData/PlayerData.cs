@@ -259,7 +259,7 @@ public class PlayerData : MonoBehaviour
 		}
 	}
 
-	public void OnRecvPlayerData(List<StatisticValue> playerStatistics, Dictionary<string, UserDataRecord> userData)
+	public void OnRecvPlayerData(List<StatisticValue> playerStatistics, Dictionary<string, UserDataRecord> userData, List<CharacterResult> characterList)
 	{
 		for (int i = 0; i < playerStatistics.Count; ++i)
 		{
@@ -271,7 +271,25 @@ public class PlayerData : MonoBehaviour
 		}
 
 		if (userData.ContainsKey("mainCharacterId"))
-			_mainCharacterId = userData["mainCharacterId"].Value;
+		{
+			string actorId = userData["mainCharacterId"].Value;
+			bool find = false;
+			for (int i = 0; i < characterList.Count; ++i)
+			{
+				if (characterList[i].CharacterName == actorId)
+				{
+					find = true;
+					break;
+				}
+			}
+			if (find)
+				_mainCharacterId = actorId;
+			else
+			{
+				_mainCharacterId = "Actor001";
+				PlayFabApiManager.instance.RequestIncCliSus(300000, 0);
+			}
+		}
 
 		if (userData.ContainsKey("selectedChapter"))
 		{

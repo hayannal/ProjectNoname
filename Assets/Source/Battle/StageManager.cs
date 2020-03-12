@@ -94,6 +94,12 @@ public class StageManager : MonoBehaviour
 
 	public void GetNextStageInfo()
 	{
+		if (playStage == GetMaxStage(playChapter))
+		{
+			// last stage
+			return;
+		}
+
 		int nextStage = playStage + 1;
 		GetStageInfo(playChapter, nextStage);
 	}

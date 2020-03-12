@@ -62,6 +62,8 @@ public class BattleResultCanvas : MonoBehaviour
 
 	void OnEnable()
 	{
+		Time.timeScale = 0.0f;
+
 		if (DragThresholdController.instance != null)
 			DragThresholdController.instance.ApplyUIDragThreshold();
 
@@ -70,6 +72,8 @@ public class BattleResultCanvas : MonoBehaviour
 
 	void OnDisable()
 	{
+		Time.timeScale = 1.0f;
+
 		if (DragThresholdController.instance != null)
 			DragThresholdController.instance.ResetUIDragThreshold();
 	}

@@ -302,7 +302,7 @@ public class PlayFabApiManager : MonoBehaviour
 		}, null, null);
 	}
 
-	public void RequestEndGame(bool clear, int stage, int addGold, Action<bool> successCallback)    // List<Item>
+	public void RequestEndGame(bool clear, int stage, int addGold, Action<bool, string> successCallback)    // List<Item>
 	{
 		// 인게임 플레이 하고 정산할때 호출되는 함수인데
 		// Statistics 갱신과 인벤획득처리 골드 갱신 등으로 나뉘어져있다.
@@ -352,8 +352,9 @@ public class PlayFabApiManager : MonoBehaviour
 			PlayFabClientAPI.ExecuteCloudScript(request, (success) =>
 			{
 				RetrySendManager.instance.OnSuccess();
+				string resultString = (string)success.FunctionResult;
 				_serverEnterKey = "";
-				if (successCallback != null) successCallback.Invoke(clear);
+				if (successCallback != null) successCallback.Invoke(clear, resultString);
 			}, (error) =>
 			{
 				RetrySendManager.instance.OnFailure();

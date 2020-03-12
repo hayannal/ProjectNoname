@@ -79,13 +79,13 @@ public class BattleModeProcessorBase
 
 	public void OnDiePlayer(PlayerActor playerActor)
 	{
-		PlayFabApiManager.instance.RequestEndGame(false, StageManager.instance.playStage - 1, DropManager.instance.GetStackedDropGold(), (result) =>
+		PlayFabApiManager.instance.RequestEndGame(false, StageManager.instance.playStage - 1, DropManager.instance.GetStackedDropGold(), (result, newCharacterId) =>
 		{
-			OnRecvEndGame(result);
+			OnRecvEndGame(result, newCharacterId);
 		});
 	}
 
-	public void OnRecvEndGame(bool clear)
+	public void OnRecvEndGame(bool clear, string newCharacterId)
 	{
 		if (PlayerData.instance.chaosMode == false && PlayerData.instance.highestPlayChapter == PlayerData.instance.selectedChapter)
 		{
@@ -94,6 +94,8 @@ public class BattleModeProcessorBase
 				PlayerData.instance.highestPlayChapter += 1;
 				PlayerData.instance.highestClearStage = 0;
 				PlayerData.instance.selectedChapter += 1;
+
+				EventManager.instance.OnEventClearChapter(PlayerData.instance.highestPlayChapter, newCharacterId);
 			}
 			else
 			{

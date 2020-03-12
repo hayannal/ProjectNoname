@@ -97,7 +97,7 @@ public class LobbyCanvas : MonoBehaviour
 		}
 		else
 		{
-			if (battlePauseButton.gameObject.activeSelf)
+			if (battlePauseButton.gameObject.activeSelf && battlePauseButton.interactable)
 				OnClickBattlePauseButton();
 		}
 	}
@@ -235,8 +235,8 @@ public class LobbyCanvas : MonoBehaviour
 			return;
 		if (battlePauseButton.gameObject.activeSelf == false)
 			return;
-
-		// check die
+		if (battlePauseButton.interactable == false)
+			return;
 
 		if (pauseStatus)
 			PauseCanvas.instance.gameObject.SetActive(true);

@@ -377,6 +377,52 @@ public class PlayFabApiManager : MonoBehaviour
 	#endregion
 
 
+	#region Daily
+	public void RequestOpenDailyBox(Action<bool> successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "OpenDailyBox",
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+				// 성공시에는 서버에서 방금 기록한 마지막 오픈 타임이 날아온다.
+				PlayerData.instance.OnRecvDailyBoxInfo(resultString);
+			}
+			if (successCallback != null) successCallback.Invoke(failure);
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+
+	public void RequestRefreshDailyInfo(Action<bool> successCallback)
+	{
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "RefreshDailyInfo",
+			FunctionParameter = new { Test = 0, },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			if (successCallback != null) successCallback.Invoke(failure);
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+	#endregion
+
+
 	#region Modify PlayerData
 #if USE_TITLE_PLAYER_ENTITY
 	// 이런식으로 헬퍼를 만들어도 되고 너무 많을거 같으면 안만들어도 된다.

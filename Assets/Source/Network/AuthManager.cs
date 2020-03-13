@@ -166,7 +166,7 @@ public class AuthManager : MonoBehaviour
 		parameters.GetUserData = true;
 		// 뛰어난 해커의 경우 로그인 정보로 오는 ReadOnlyData를 가져다가 패킷 스니핑에 쓸수도 있으니 ReadOnlyData 대신 InternalData를 사용하기로 한다.
 		// 대신 InternalData이지만 보여주기 용으로 필요한 일퀘 완료 등의 상태값은
-		// 같은 이름의 UserData로도 추가해서 로그인시 받아올 수 있게 한다. 대표적인 예가 SHdaBx. 앞에 Share의 약자인 "SH"를 써서 공용 변수인지 구분하기로 한다.
+		// 같은 이름의 UserData로도 추가해서 로그인시 받아올 수 있게 한다. 대표적인 예가 SHlstBxDat. 앞에 Share의 약자인 "SH"를 써서 공용 변수인지 구분하기로 한다.
 		parameters.GetUserReadOnlyData = false;
 		parameters.GetUserVirtualCurrency = true;
 		parameters.PlayerStatisticNames = playerStatisticNames;

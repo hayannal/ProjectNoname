@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using CodeStage.AntiCheat.ObscuredTypes;
@@ -214,6 +215,11 @@ public class PlayerData : MonoBehaviour
 
 
 	#region Server
+	void Update()
+	{
+		UpdateDailyBoxResetTime();
+	}
+
 	public void OnNewlyCreatedPlayer()
 	{
 		highestPlayChapter = 0;
@@ -325,11 +331,14 @@ public class PlayerData : MonoBehaviour
 				sealCount = intValue;
 		}
 
-		if (userData.ContainsKey("SHdaBx"))
+		// 원래는 서버가 계산해서 넘겨받으려고 했는데
+		// 계정 생성과 마찬가지로 로그인 이후에 rules사용해서 서버에서 클라우드 스크립트를 돌려도
+		// 이미 로그인은 실행되고 있어서 그 안에 있는 UserData에는 실어줄 수가 없다.
+		// 그래서 마지막 오픈 시간을 받아서 직접 계산하기로 한다.
+		if (userData.ContainsKey("SHlstBxDat"))
 		{
-			int intValue = 0;
-			if (int.TryParse(userData["SHdaBx"].Value, out intValue))
-				sharedDailyBoxOpened = (intValue == 1);
+			if (string.IsNullOrEmpty(userData["SHlstBxDat"].Value) == false)
+				OnRecvDailyBoxInfo(userData["SHlstBxDat"].Value);
 		}
 
 		loginned = true;
@@ -359,6 +368,63 @@ public class PlayerData : MonoBehaviour
 			newCharacterData.powerLevel = dataObject.pow;
 			_listCharacterData.Add(newCharacterData);
 		}
+	}
+
+	void OnRecvDailyBoxInfo(DateTime lastDailyBoxOpenTime)
+	{
+		if (DateTime.UtcNow < lastDailyBoxOpenTime)
+		{
+			// 어떻게 미래로 설정되어있을 수가 있나. 이건 무효.
+			sharedDailyBoxOpened = false;
+			return;
+		}
+
+		if (DateTime.UtcNow.Year == lastDailyBoxOpenTime.Year && DateTime.UtcNow.Month == lastDailyBoxOpenTime.Month && DateTime.UtcNow.Day == lastDailyBoxOpenTime.Day)
+		{
+			sharedDailyBoxOpened = true;
+			dailyBoxResetTime = new DateTime(lastDailyBoxOpenTime.Year, lastDailyBoxOpenTime.Month, lastDailyBoxOpenTime.Day) + TimeSpan.FromDays(1);
+		}
+		else
+			sharedDailyBoxOpened = false;
+	}
+
+	public void OnRecvDailyBoxInfo(string lastDailyBoxOpenTimeString)
+	{
+		DateTime lastDailyBoxOpenTime = new DateTime();
+		DateTime.TryParse(lastDailyBoxOpenTimeString, out lastDailyBoxOpenTime);
+		DateTime universalTime = lastDailyBoxOpenTime.ToUniversalTime();
+		OnRecvDailyBoxInfo(universalTime);
+	}
+
+	bool _waitServerResponseForDailyBoxResetTime;
+	void UpdateDailyBoxResetTime()
+	{
+		if (_waitServerResponseForDailyBoxResetTime)
+			return;
+
+		if (sharedDailyBoxOpened == false)
+			return;
+
+		if (DateTime.Compare(DateTime.UtcNow, dailyBoxResetTime) < 0)
+			return;
+
+		// Energy와 달리 여긴 서버응답 꼭 받고 넘겨야해서 클라가 선처리 하지 않는다.
+		_waitServerResponseForDailyBoxResetTime = true;
+		PlayFabApiManager.instance.RequestRefreshDailyInfo((serverFailure) =>
+		{
+			_waitServerResponseForDailyBoxResetTime = false;
+			if (serverFailure)
+			{
+				// 뭔가 잘못 된거다. 재접해서 새로 받기 전까진 15초마다 다시 보내보자.
+				dailyBoxResetTime += TimeSpan.FromSeconds(15);
+			}
+			else
+			{
+				// 날짜 바꾸는거에 대해 ok가 떨어졌다. 데일리상자가 초기화 된거로 처리해둔다.
+				sharedDailyBoxOpened = false;
+				dailyBoxResetTime += TimeSpan.FromDays(1);
+			}
+		});
 	}
 	#endregion
 

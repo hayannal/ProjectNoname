@@ -76,6 +76,7 @@ public class DailyBoxGaugeCanvas : MonoBehaviour
 		{
 			_nextResetDateTime = PlayerData.instance.dailyBoxResetTime;
 			_needUpdate = true;
+			remainTimeText.gameObject.SetActive(true);
 		}
 		else
 		{

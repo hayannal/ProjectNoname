@@ -27,8 +27,7 @@ public class TreasureChest : MonoBehaviour
 	void Start()
 	{
 		// 차후 알람이 들어가게되면 자동으로 보여주게 처리해야한다.
-		bool alarmInShop = false;
-		if (alarmInShop)
+		if (TreasureChestIndicatorCanvas.IsSpecialTreasureChest())
 		{
 			ShowIndicator();
 		}

@@ -233,6 +233,13 @@ public class GatePillar : MonoBehaviour
 
 		if (MainSceneBuilder.instance.lobby)
 		{
+			// check download
+			if (DownloadManager.instance.standbyDownload)
+			{
+				// show download info canvas
+				return false;
+			}
+
 			// check lobby energy
 			if (CheckEnergy() == false)
 				return false;

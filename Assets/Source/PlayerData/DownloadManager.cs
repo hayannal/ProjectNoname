@@ -28,4 +28,10 @@ public class DownloadManager : MonoBehaviour
 		// 우선 지금은 풀빌드를 사용하기때문에 항상 true를 리턴하게 해둔다.
 		return true;
 	}
+
+	// 다운로드 받아야 진행할 수 있게 된 상태.
+	// 아마도 0챕터를 깨서 1챕터로 넘어간 상태고 로비로 들어왔는데
+	// 번들 데이터가 없어서 로딩하지 못한 상태일거다.
+	// 이땐 0챕터로 강제로 로드하며 이후 스테이지 캐싱도 안하고 전투 진입도 못하게 막혀야한다.
+	public bool standbyDownload { get; set; }
 }

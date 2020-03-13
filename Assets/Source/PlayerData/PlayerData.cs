@@ -36,6 +36,8 @@ public class PlayerData : MonoBehaviour
 	public ObscuredInt highestClearStage { get; set; }
 	public ObscuredInt selectedChapter { get; set; }
 	public ObscuredBool chaosMode { get; set; }
+	public ObscuredInt sealCount { get; set; }
+	public ObscuredBool sharedDailyBoxOpened { get; set; }
 	public ObscuredInt purifyCount { get; set; }
 
 	#region Player Info For Client
@@ -216,6 +218,8 @@ public class PlayerData : MonoBehaviour
 		highestClearStage = 0;
 		selectedChapter = 0;
 		chaosMode = false;
+		sealCount = 0;
+		sharedDailyBoxOpened = false;
 		purifyCount = 0;
 
 		// 나중에 지울 코드이긴 한데 MainSceneBuilder에서 NEWPLAYER_LEVEL1 디파인 켜둔채로 생성하는 테스트용 루틴일땐
@@ -310,6 +314,20 @@ public class PlayerData : MonoBehaviour
 			int intValue = 0;
 			if (int.TryParse(userData["chaos"].Value, out intValue))
 				chaosMode = (intValue == 1);
+		}
+
+		if (userData.ContainsKey("seal"))
+		{
+			int intValue = 0;
+			if (int.TryParse(userData["seal"].Value, out intValue))
+				sealCount = intValue;
+		}
+
+		if (userData.ContainsKey("SHdaBx"))
+		{
+			int intValue = 0;
+			if (int.TryParse(userData["SHdaBx"].Value, out intValue))
+				sharedDailyBoxOpened = (intValue == 1);
 		}
 
 		loginned = true;

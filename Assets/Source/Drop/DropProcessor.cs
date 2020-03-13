@@ -128,8 +128,8 @@ public class DropProcessor : MonoBehaviour
 					DropSp(floatValue);
 					break;
 				case eDropType.Seal:
-					// if (PlayerData.instance.CheckDailyBoxOpened
-					//	break;
+					if (PlayerData.instance.sharedDailyBoxOpened)
+						break;
 					if (PlayerData.instance.highestPlayChapter != PlayerData.instance.selectedChapter)
 						break;
 					dropProcessor.Add(dropType, floatValue, intValue);

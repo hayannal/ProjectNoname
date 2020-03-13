@@ -219,7 +219,7 @@ public class BattleResultCanvas : MonoBehaviour
 			yield break;
 		}
 
-		if (true)   // CheckDailyBoxOpened
+		if (PlayerData.instance.sharedDailyBoxOpened)
 			sealCompletedText.gameObject.SetActive(true);
 		else
 		{
@@ -309,10 +309,10 @@ public class BattleResultCanvas : MonoBehaviour
 		string text = UIString.instance.GetString("GameUI_SealDesc");
 
 		// check highest
-		if (PlayerData.instance.highestPlayChapter != PlayerData.instance.selectedChapter) // && CheckDailyBoxOpened
+		if (PlayerData.instance.highestPlayChapter != PlayerData.instance.selectedChapter && PlayerData.instance.sharedDailyBoxOpened == false)
 			text = string.Format("{0} {1}", text, UIString.instance.GetString("GameUI_SealAddedDesc"));
 
-		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, text, 200, sealInfoButtonTransform.transform, new Vector2(25.0f, -35.0f));
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, text, 200, sealInfoButtonTransform, new Vector2(25.0f, -35.0f));
 	}
 	#endregion
 

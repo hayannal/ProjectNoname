@@ -184,7 +184,7 @@ public class BattleModeProcessorBase
 				clear = true;
 		}
 
-		PlayFabApiManager.instance.RequestEndGame(clear, StageManager.instance.playStage - 1, DropManager.instance.GetStackedDropGold(), (result, newCharacterId) =>
+		PlayFabApiManager.instance.RequestEndGame(clear, StageManager.instance.playStage - 1, DropManager.instance.GetStackedDropGold(), DropManager.instance.GetStackedDropSeal(), (result, newCharacterId) =>
 		{
 			OnRecvEndGame(result, newCharacterId);
 			BattleResultCanvas.instance.gameObject.SetActive(true);
@@ -212,6 +212,7 @@ public class BattleModeProcessorBase
 			}
 		}
 		CurrencyData.instance.gold += DropManager.instance.GetStackedDropGold();
+		PlayerData.instance.sealCount += DropManager.instance.GetStackedDropSeal();
 
 		// 클리어 했다면 시간 체크 한번 해본다.
 		// 강종으로 인한 재접속때 안하는거 추가해야한다.

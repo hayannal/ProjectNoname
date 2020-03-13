@@ -92,6 +92,12 @@ public class PlayRandomStateWithCondition : ControlStateBase
 		if (_actor == null)
 			return;
 
+		if (_actor.actorStatus.IsDie())
+		{
+			_actor.actionController.PlayActionByActionName("Die");
+			return;
+		}
+
 		if (_listRandomState == null)
 			_listRandomState = new List<RandomStateWithConditionInfo>();
 		_listRandomState.Clear();

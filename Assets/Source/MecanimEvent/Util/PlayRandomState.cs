@@ -16,6 +16,7 @@ public class PlayRandomState : ControlStateBase
 	public RandomStateInfo[] randomStateInfoList;
 
 	float _sum = 0.0f;
+	Actor _actor = null;
 	int _lastState = 0;
 	// OnStateEnter is called before OnStateEnter is called on any state inside this state machine
 	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -25,6 +26,25 @@ public class PlayRandomState : ControlStateBase
 
 		if (animator.GetNextAnimatorStateInfo(0).fullPathHash == _lastState)
 			return;
+
+		if (_actor == null)
+		{
+			if (animator.transform.parent != null)
+				_actor = animator.transform.parent.GetComponent<Actor>();
+			if (_actor == null)
+				_actor = animator.GetComponent<Actor>();
+		}
+
+		if (_actor == null)
+			return;
+
+		// 여기서 피검사를 해야 안전하려나. 자꾸 죽고나서 액션을 쓰는 경우가 발생하는거 같다.
+		// 그냥 리턴하면 오히려 애니가 프리징 될테니 차라리 Die액션을 실행시켜본다.
+		if (_actor.actorStatus.IsDie())
+		{
+			_actor.actionController.PlayActionByActionName("Die");
+			return;
+		}
 
 		// 자꾸 이 루틴때문에 Random State 들어와서 아무것도 안할때가 있어서
 		// 우선 제거해본다.

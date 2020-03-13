@@ -281,17 +281,20 @@ public class SwapCanvas : MonoBehaviour
 
 	public void OnClickChapterInfoButton()
 	{
+		string descriptionId = "";
 		if (PlayerData.instance.chaosMode)
+			descriptionId = "GameUI_ChaosModeDesc";
+		else
 		{
-			TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, UIString.instance.GetString("GameUI_ChaosModeDesc"), 200, chapterInfoButton.transform, new Vector2(0.0f, -35.0f));
-			return;
+			ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
+			if (chapterTableData != null)
+				descriptionId = chapterTableData.descriptionId;
 		}
 
-		ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
-		if (chapterTableData == null)
+		if (string.IsNullOrEmpty(descriptionId))
 			return;
 
-		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, UIString.instance.GetString(chapterTableData.descriptionId), 200, chapterInfoButton.transform, new Vector2(0.0f, -35.0f));
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, UIString.instance.GetString(descriptionId), 200, chapterInfoButton.transform, new Vector2(0.0f, -35.0f));
 	}
 
 	public void OnClickBossInfoButton()

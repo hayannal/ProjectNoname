@@ -22,6 +22,8 @@ public class BattleResultCanvas : MonoBehaviour
 
 	public Text chapterRomanNumberText;
 	public Text chapterNameText;
+	public Button chapterInfoButton;
+	public Image chapterInfoImage;
 
 	public Text stageValueText;
 	public Text stageValueMaxText;
@@ -102,6 +104,8 @@ public class BattleResultCanvas : MonoBehaviour
 		{
 			chapterRomanNumberText.text =  UIString.instance.GetString("GameUI_Chapter", "?");
 			chapterNameText.SetLocalizedText(UIString.instance.GetString("GameUI_TrainingChapterName"));
+			chapterInfoButton.interactable = false;
+			chapterInfoImage.gameObject.SetActive(false);
 			clearRewardText.SetLocalizedText(UIString.instance.GetString(_clear ? "GameUI_Chp0ClearRewardGot" : "GameUI_Chp0ClearReward"));
 			clearRewardText.gameObject.SetActive(true);
 			return;
@@ -122,6 +126,24 @@ public class BattleResultCanvas : MonoBehaviour
 			chapterNameText.SetLocalizedText(UIString.instance.GetString("GameUI_ChaosMode"));
 		else
 			chapterNameText.SetLocalizedText(UIString.instance.GetString(chapterTableData.nameId));
+	}
+
+	public void OnClickChapterInfoButton()
+	{
+		string descriptionId = "";
+		if (PlayerData.instance.chaosMode)
+			descriptionId = "GameUI_ChaosModeDesc";
+		else
+		{
+			ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
+			if (chapterTableData != null)
+				descriptionId = chapterTableData.descriptionId;
+		}
+
+		if (string.IsNullOrEmpty(descriptionId))
+			return;
+
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, UIString.instance.GetString(descriptionId), 200, chapterInfoButton.transform, new Vector2(0.0f, -35.0f));
 	}
 
 	#region Stage

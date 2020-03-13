@@ -311,6 +311,8 @@ public class BattleResultCanvas : MonoBehaviour
 			exitGroupObject.SetActive(true);
 			yield break;
 		}
+
+		itemScrollViewObject.SetActive(true);
 	}
 
 	List<SwapCanvasListItem> _listSwapCanvasListItem = new List<SwapCanvasListItem>();

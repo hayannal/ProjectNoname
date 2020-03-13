@@ -7,7 +7,12 @@ public static class ContentsManager
 	public enum eOpenContentsByChapter
 	{
 		Chapter = 2,
-		Research = 3
+		Research = 3,
+	}
+
+	public enum eOpenContentsByResearchLevel
+	{
+		SecondDailyBox = 5,
 	}
 
 	public static bool IsTutorialChapter()
@@ -21,6 +26,13 @@ public static class ContentsManager
 	{
 		if (PlayerData.instance.highestPlayChapter >= (int)content)
 			return true;
+		return false;
+	}
+
+	public static bool IsOpen(eOpenContentsByResearchLevel content)
+	{
+		//if (PlayerData.instance.researchLevel >= (int)content)
+		//	return true;
 		return false;
 	}
 }

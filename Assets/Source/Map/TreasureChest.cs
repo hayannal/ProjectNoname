@@ -8,6 +8,8 @@ public class TreasureChest : MonoBehaviour
 
 	public Transform openCharacterTransform;
 
+	const float gaugeShowDelayTime = 0.2f;
+
 	void Awake()
 	{
 		instance = this;
@@ -29,6 +31,29 @@ public class TreasureChest : MonoBehaviour
 		if (alarmInShop)
 		{
 			ShowIndicator();
+		}
+
+		if (ContentsManager.IsTutorialChapter() == false && DownloadManager.instance.IsDownloaded())
+		{
+			// 일부러 조금 뒤에 보이게 한다. 초기 로딩 줄이기 위해.
+			_gaugeShowRemainTime = gaugeShowDelayTime;
+		}
+	}
+
+	float _gaugeShowRemainTime;
+	void Update()
+	{
+		if (_gaugeShowRemainTime > 0.0f)
+		{
+			_gaugeShowRemainTime -= Time.deltaTime;
+			if (_gaugeShowRemainTime <= 0.0f)
+			{
+				_gaugeShowRemainTime = 0.0f;
+				AddressableAssetLoadManager.GetAddressableGameObject("DailyBoxGaugeCanvas", "Object", (prefab) =>
+				{
+					BattleInstanceManager.instance.GetCachedObject(prefab, null);
+				});
+			}
 		}
 	}
 

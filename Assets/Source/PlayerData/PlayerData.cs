@@ -40,6 +40,8 @@ public class PlayerData : MonoBehaviour
 	public ObscuredBool sharedDailyBoxOpened { get; set; }
 	public ObscuredInt purifyCount { get; set; }
 
+	public DateTime dailyBoxResetTime { get; private set; }
+
 	#region Player Info For Client
 	public void OnRecvPlayerInfoForClient()
 	{

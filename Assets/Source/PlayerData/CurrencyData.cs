@@ -109,7 +109,10 @@ public class CurrencyData : MonoBehaviour
 		bool full = (energy >= energyMax);
 		energy -= amount;
 		if (full && energy < energyMax)
+		{
 			_energyRechargeTime = DateTime.UtcNow + TimeSpan.FromSeconds(BattleInstanceManager.instance.GetCachedGlobalConstantInt("TimeSecToGetOneEnergy"));
+			_rechargingEnergy = true;
+		}
 		return true;
 	}
 

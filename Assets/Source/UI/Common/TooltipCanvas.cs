@@ -120,12 +120,12 @@ public class TooltipCanvas : MonoBehaviour
 	void PlayStartAnimation()
 	{
 		tooltipTextRectTransform[_currentIndex].localScale = new Vector3(downScale, downScale, 1.0f);
-		tooltipTextRectTransform[_currentIndex].DOScale(startScale, startAnimationDuration * 0.5f).SetEase(Ease.OutQuad).OnComplete(OnCompleteScale);
+		tooltipTextRectTransform[_currentIndex].DOScale(startScale, startAnimationDuration * 0.5f).SetEase(Ease.OutQuad).OnComplete(OnCompleteScale).SetUpdate(true);
 	}
 
 	void OnCompleteScale()
 	{
-		tooltipTextRectTransform[_currentIndex].DOScale(1.0f, startAnimationDuration * 0.5f).SetEase(Ease.OutQuad);
+		tooltipTextRectTransform[_currentIndex].DOScale(1.0f, startAnimationDuration * 0.5f).SetEase(Ease.OutQuad).SetUpdate(true);
 	}
 	#endregion
 }

@@ -93,7 +93,16 @@ public class PlayFabApiManager : MonoBehaviour
 			FunctionName = "IncCliSus",
 			FunctionParameter = new { Er = error, Pa = param },
 			GeneratePlayStreamEvent = true
-		}, null, null);
+		}, null, (errorCallback) =>
+		{
+			int errorCategory = error / 100000;
+			switch (errorCategory)
+			{
+				case 2:	// boss oneshot kill
+					HandleCommonError(errorCallback);
+					break;
+			}
+		});
 	}
 
 	#region Login with PlayerData, Entity Objects

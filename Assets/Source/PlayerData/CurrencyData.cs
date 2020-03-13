@@ -50,7 +50,7 @@ public class CurrencyData : MonoBehaviour
 		if (userVirtualCurrencyRechargeTimes != null && userVirtualCurrencyRechargeTimes.ContainsKey("EN"))
 		{
 			energyMax = userVirtualCurrencyRechargeTimes["EN"].RechargeMax;
-			if (userVirtualCurrencyRechargeTimes["EN"].SecondsToRecharge > 0)
+			if (userVirtualCurrencyRechargeTimes["EN"].SecondsToRecharge > 0 && energy < energyMax)
 			{
 				_rechargingEnergy = true;
 				_energyRechargeTime = userVirtualCurrencyRechargeTimes["EN"].RechargeTime;

@@ -166,10 +166,13 @@ public class BattleModeProcessorBase
 			return;
 		}
 
+		// 현재 드랍템 동기화 구조는 템을 먹을때마다 미리 패킷을 보내뒀다가 정산때 쓰는 방식이 아니라
+		// 먹었던걸 기억하고 있다가 마지막 패킷 날릴때 몰아서 보내는 구조다보니
+		// 모든 드랍을 먹고나서 정산 패킷을 보내야만 한다. 안그러면 템을 저장할 수 없게 된다.
 		if (DropManager.instance.IsExistAcquirableDropObject())
 		{
 			// 하나라도 존재하면 waitRemainTime을 늘려서 대기시켰다가 체크한다.
-			_endProcessWaitRemainTime = 0.5f;
+			_endProcessWaitRemainTime = 0.333f;
 			return;
 		}
 

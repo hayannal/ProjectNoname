@@ -310,7 +310,7 @@ public class BattleResultCanvas : MonoBehaviour
 
 		// check highest
 		if (PlayerData.instance.highestPlayChapter != PlayerData.instance.selectedChapter && PlayerData.instance.sharedDailyBoxOpened == false)
-			text = string.Format("{0} {1}", text, UIString.instance.GetString("GameUI_SealAddedDesc"));
+			text = string.Format("{0}.\n\n{1}.", text, UIString.instance.GetString("GameUI_SealAddedDesc"));
 
 		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, text, 200, sealInfoButtonTransform, new Vector2(25.0f, -35.0f));
 	}

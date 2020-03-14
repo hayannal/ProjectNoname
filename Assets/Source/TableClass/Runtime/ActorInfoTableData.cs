@@ -24,4 +24,8 @@ public class ActorInfoTableData
   bool _useHeadLook;
   public bool useHeadLook { get { return _useHeadLook; } set { _useHeadLook = value; } }
   
+  [SerializeField]
+  float _infoRotate;
+  public float infoRotate { get { return _infoRotate; } set { _infoRotate = value; } }
+  
 }

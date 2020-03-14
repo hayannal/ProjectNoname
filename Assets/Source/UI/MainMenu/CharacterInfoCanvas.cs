@@ -93,7 +93,10 @@ public class CharacterInfoCanvas : MonoBehaviour
 
 			// player setting
 			BattleInstanceManager.instance.playerActor.cachedTransform.position = _rootOffsetPosition;
-			BattleInstanceManager.instance.playerActor.cachedTransform.rotation = Quaternion.Euler(0.0f, charactorY, 0.0f);
+			float yaw = charactorY;
+			if (_cachedActorInfoTableData != null && _cachedActorInfoTableData.infoRotate != 0.0f)
+				yaw = _cachedActorInfoTableData.infoRotate;
+			BattleInstanceManager.instance.playerActor.cachedTransform.rotation = Quaternion.Euler(0.0f, yaw, 0.0f);
 			TailAnimatorUpdater.UpdateAnimator(BattleInstanceManager.instance.playerActor.cachedTransform, 15);
 			if (_cachedActorInfoTableData != null && _cachedActorInfoTableData.useInfoIdle)
 				BattleInstanceManager.instance.playerActor.actionController.animator.Play("InfoIdle");

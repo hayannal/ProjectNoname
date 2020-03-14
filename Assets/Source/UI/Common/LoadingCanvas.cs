@@ -62,10 +62,11 @@ public class LoadingCanvas : MonoBehaviour
 				progressImage.fillAmount = 1.0f;
 		}
 	}
+	#endregion
 
 	public bool onlyObjectFade { get; set; }
 
-	public void FadeOut()
+	public void FadeOutObject()
 	{
 		progressObject.SetActive(false);
 		objectFadeTweenAnimation.DOPlay();
@@ -82,5 +83,12 @@ public class LoadingCanvas : MonoBehaviour
 		else
 			backgroundFadeTweenAnimation.DOPlay();
 	}
-	#endregion
+
+	public void OnCompleteBackgroundFade()
+	{
+		gameObject.SetActive(false);
+
+		// 타이틀 안나올때의 로비 진입 이벤트
+		EventManager.instance.OnLobby();
+	}
 }

@@ -278,8 +278,8 @@ public class MainSceneBuilder : MonoBehaviour
 				}
 				else
 				{
-					// 일반적인 경우엔 FadeOut하고 LateInitialize를 호출해둔다.
-					LoadingCanvas.instance.FadeOut();
+					// 일반적인 경우엔 가운데 오브젝트만 FadeOut하고 LateInitialize를 호출해둔다.
+					LoadingCanvas.instance.FadeOutObject();
 					StartCoroutine(LateInitialize());
 				}
 			}
@@ -297,7 +297,7 @@ public class MainSceneBuilder : MonoBehaviour
 		if (playAfterInstallation)
 		{
 			BattleManager.instance.OnSpawnFlag();
-			LoadingCanvas.instance.FadeOut();
+			LoadingCanvas.instance.FadeOutObject();
 		}
 	}
 

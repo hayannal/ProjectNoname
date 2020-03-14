@@ -35,6 +35,20 @@ public class TitleCanvas : MonoBehaviour
 		unmaskMoveTweenAnimation.DOPlayForward();
 	}
 
+	public void OnCompleteBlackScreenFade()
+	{
+		// Mask를 클릭해서 스킵한거라면 이벤트를 날리지 않는다.
+		if (maskObject.activeSelf == false)
+			return;
+
+		maskObject.SetActive(false);
+
+		// 이 타이밍이 타이틀 나올때 어두운 백그라운드가 사라지는 타이밍이다.
+		// TitleImage는 이 타이밍에 맞춰서 하얀색으로 바뀌어져있을거다.
+		// 이때 EventManager에게 Lobby화면이 시작됨을 알린다.
+		EventManager.instance.OnLobby();
+	}
+
 	bool _fade = false;
 	public void FadeTitle()
 	{
@@ -50,6 +64,9 @@ public class TitleCanvas : MonoBehaviour
 		maskObject.SetActive(false);
 		titleImge.color = Color.white;
 		Timing.RunCoroutine(ShowLogoObject(1.0f));
+
+		// 타이틀 나올때 스킵하면 이쪽을 통해서 OnLobby 호출
+		EventManager.instance.OnLobby();
 	}
 
 	IEnumerator<float> ShowLogoObject(float delayTime)

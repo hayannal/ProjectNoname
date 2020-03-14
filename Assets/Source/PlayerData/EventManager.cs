@@ -18,20 +18,100 @@ public class EventManager : MonoBehaviour
 	}
 	static EventManager _instance = null;
 
-	public void OnEventClearChapter(int chapter, string newCharacterId)
+	// 서버이벤트는 서버에 저장되서 클라를 지워도 유지되게 해준다. 사실상 퀘스트 느낌.
+	public enum eServerEvent
 	{
-		// 정산창에서 호출될거다. 인벤 동기화 패킷을 따로 날려도 되긴한데 괜히 시간걸릴까봐 클라단에서 선처리해서 캐릭터 넣어둔다. 아이디는 전달받은거로 셋팅
-		if (chapter == 1)
-		{
-			PlayerData.instance.AddNewCharacter("Actor002", newCharacterId);
+		GainNewCharacter,
+		OpenChaos,
+	}
 
-			// 연출 플래그도 걸어야한다.(이건 서버에서 걸어주니 할필요 없나..)
+	// 클라 이벤트는 메모리에만 기억되는 거라서 종료하면 더이상 볼 수 없다. 그래서 중요하지 않은 것들 위주다.
+	// 서버 이벤트가 로비에서 이미 진행중이라면 기다렸다가 다 끝난 후에 재생된다.
+	public enum eClientEvent
+	{
+		NewChapter,
+	}
 
-			// 클라용 챕터 표시 플래그도 걸어야한다.
-		}
-		else if (chapter == 2)
+	struct ServerEventInfo
+	{
+		public eServerEvent eventType;
+		public string sValue;
+		public int iValue;
+	}
+	struct ClientEventInfo
+	{
+		public eClientEvent eventType;
+		public string sValue;
+		public int iValue;
+	}
+	Queue<ServerEventInfo> _queServerEventInfo = new Queue<ServerEventInfo>();
+	Queue<ClientEventInfo> _queClientEventInfo = new Queue<ClientEventInfo>();
+
+	#region OnEvent
+	public void OnEventClearHighestChapter(int chapter, string newCharacterId)
+	{
+	}
+
+	public void OnEventPlayHighestChapter(int chapter)
+	{
+	}
+
+	public void OnRecvServerEvent(string json)
+	{
+	}
+	#endregion
+
+	void PushServerEvent(eServerEvent serverEvent, string sValue = "", int iValue = 0)
+	{
+		ServerEventInfo serverEventInfo = new ServerEventInfo();
+		serverEventInfo.eventType = serverEvent;
+		serverEventInfo.sValue = sValue;
+		serverEventInfo.iValue = iValue;
+		_queServerEventInfo.Enqueue(serverEventInfo);
+	}
+
+	void PushClientEvent(eClientEvent clientEvent, string sValue = "", int iValue = 0)
+	{
+		ClientEventInfo clientEventInfo = new ClientEventInfo();
+		clientEventInfo.eventType = clientEvent;
+		clientEventInfo.sValue = sValue;
+		clientEventInfo.iValue = iValue;
+		_queClientEventInfo.Enqueue(clientEventInfo);
+	}
+
+	#region Play on lobby
+	public void OnLobby()
+	{
+	}
+
+	void PlayEventProcess(ServerEventInfo serverEventInfo)
+	{
+		// 이벤트에 쓸 Canvas나 오브젝트들을 로딩할때까지 인풋이 들어와 씬이 넘어가면 안되므로 먼저 화면을 막아야한다.
+		DelayedLoadingCanvas.Show(true);
+
+		switch (serverEventInfo.eventType)
 		{
-			PlayerData.instance.AddNewCharacter("Actor003", newCharacterId);
+			case eServerEvent.GainNewCharacter:
+				break;
 		}
 	}
+
+	void PlayEventProcess(ClientEventInfo clientEventInfo)
+	{
+		// 클라이언트 이벤트 중에선 인풋락 없이 되는게 있을거 같아서 조건문 처리.
+		switch (clientEventInfo.eventType)
+		{
+			case eClientEvent.NewChapter:
+				DelayedLoadingCanvas.Show(true);
+				break;
+		}
+
+		switch (clientEventInfo.eventType)
+		{
+			case eClientEvent.NewChapter:
+				UIInstanceManager.instance.ShowCanvasAsync("NewChapterCanvas", () => { NewChapterCanvas.instance.RefreshChapterInfo(clientEventInfo.iValue); });
+				break;
+		}
+	}
+	#endregion
 }

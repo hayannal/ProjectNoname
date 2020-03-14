@@ -203,12 +203,14 @@ public class BattleModeProcessorBase
 				PlayerData.instance.highestClearStage = 0;
 				PlayerData.instance.selectedChapter += 1;
 
-				EventManager.instance.OnEventClearChapter(PlayerData.instance.highestPlayChapter, newCharacterId);
+				EventManager.instance.OnEventClearHighestChapter(PlayerData.instance.highestPlayChapter, newCharacterId);
 			}
 			else
 			{
 				if (PlayerData.instance.highestClearStage < StageManager.instance.playStage - 1)
 					PlayerData.instance.highestClearStage = StageManager.instance.playStage - 1;
+
+				EventManager.instance.OnEventPlayHighestChapter(PlayerData.instance.highestPlayChapter);
 			}
 		}
 		CurrencyData.instance.gold += DropManager.instance.GetStackedDropGold();

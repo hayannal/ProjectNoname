@@ -318,6 +318,8 @@ public class MainSceneBuilder : MonoBehaviour
 		LobbyCanvas.instance.OnExitLobby();
 		if (EnergyGaugeCanvas.instance != null)
 			EnergyGaugeCanvas.instance.gameObject.SetActive(false);
+		if (DailyBoxGaugeCanvas.instance != null)
+			DailyBoxGaugeCanvas.instance.gameObject.SetActive(false);
 		if (BattleInstanceManager.instance.playerActor != null)
 			BattleInstanceManager.instance.playerActor.InitializeCanvas();
 	}

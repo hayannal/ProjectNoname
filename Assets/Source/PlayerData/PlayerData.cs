@@ -397,9 +397,13 @@ public class PlayerData : MonoBehaviour
 	}
 
 	bool _waitServerResponseForDailyBoxResetTime;
+	int _dailyBoxRefreshRetryRemainCount = 2;
 	void UpdateDailyBoxResetTime()
 	{
 		if (_waitServerResponseForDailyBoxResetTime)
+			return;
+
+		if (_dailyBoxRefreshRetryRemainCount == 0)
 			return;
 
 		if (sharedDailyBoxOpened == false)
@@ -415,14 +419,16 @@ public class PlayerData : MonoBehaviour
 			_waitServerResponseForDailyBoxResetTime = false;
 			if (serverFailure)
 			{
-				// 뭔가 잘못 된거다. 재접해서 새로 받기 전까진 15초마다 다시 보내보자.
+				// 뭔가 잘못 된거다. 재접해서 새로 받기 전까진 15초마다 다시 보내보자. 재시도는 2회만 하도록 한다.
 				dailyBoxResetTime += TimeSpan.FromSeconds(15);
+				_dailyBoxRefreshRetryRemainCount--;
 			}
 			else
 			{
 				// 날짜 바꾸는거에 대해 ok가 떨어졌다. 데일리상자가 초기화 된거로 처리해둔다.
 				sharedDailyBoxOpened = false;
 				dailyBoxResetTime += TimeSpan.FromDays(1);
+				_dailyBoxRefreshRetryRemainCount = 2;
 			}
 		});
 	}

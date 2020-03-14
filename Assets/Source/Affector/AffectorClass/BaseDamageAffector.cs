@@ -249,11 +249,7 @@ public class BaseDamageAffector : AffectorBase {
 				if (PlayerData.instance.clientOnly == false && monsterActor.bossMonster && monsterActor.sequentialMonster == false &&
 					PlayerData.instance.highestPlayChapter == PlayerData.instance.selectedChapter && damage > monsterActor.actorStatus.GetValue(eActorStatus.MaxHp))
 				{
-					int powerLevel = 1;
-					CharacterData characterData = PlayerData.instance.GetCharacterData(BattleInstanceManager.instance.playerActor.actorId);
-					if (characterData != null) powerLevel = characterData.powerLevel;
-					int errorCode = 200000 + PlayerData.instance.selectedChapter * 100 + powerLevel;
-					PlayFabApiManager.instance.RequestIncCliSus(errorCode, (int)damage);
+					PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.OneShotKillBoss, true, (int)damage);
 				}
 			}
 			if (ignoreOnKill == false)

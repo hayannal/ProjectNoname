@@ -9,6 +9,7 @@ using CodeStage.AntiCheat.ObscuredTypes;
 using PlayFab;
 using PlayFab.ClientModels;
 using PlayFab.DataModels;
+using ClientSuspect;
 
 
 public class PlayFabApiManager : MonoBehaviour
@@ -73,7 +74,12 @@ public class PlayFabApiManager : MonoBehaviour
 		switch (error.Error)
 		{
 			case PlayFabErrorCode.InsufficientFunds:
-				RequestIncCliSus((int)error.Error, 0);
+				PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+				{
+					FunctionName = "IncCliSus",
+					FunctionParameter = new { Er = (int)error.Error, Pa1 = 0, Pa2 = 0 },
+					GeneratePlayStreamEvent = true
+				}, null, null);
 				break;
 		}
 
@@ -86,19 +92,27 @@ public class PlayFabApiManager : MonoBehaviour
 		}
 	}
 
-	public void RequestIncCliSus(int error, int param)
+	public void RequestIncCliSus(eClientSuspectCode clientSuspectCode, bool sendBattleInfo = false, int param2 = 0)
 	{
+		int param1 = 0;
+		if (sendBattleInfo)
+		{
+			int powerLevel = 1;
+			CharacterData characterData = PlayerData.instance.GetCharacterData(BattleInstanceManager.instance.playerActor.actorId);
+			if (characterData != null) powerLevel = characterData.powerLevel;
+			param1 = PlayerData.instance.selectedChapter * 100 + powerLevel;
+		}
+
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
 			FunctionName = "IncCliSus",
-			FunctionParameter = new { Er = error, Pa = param },
+			FunctionParameter = new { Er = (int)clientSuspectCode, Pa1 = param1, Pa2 = param2 },
 			GeneratePlayStreamEvent = true
 		}, null, (errorCallback) =>
 		{
-			int errorCategory = error / 100000;
-			switch (errorCategory)
+			switch (clientSuspectCode)
 			{
-				case 2:	// boss oneshot kill
+				case eClientSuspectCode.OneShotKillBoss:
 					HandleCommonError(errorCallback);
 					break;
 			}

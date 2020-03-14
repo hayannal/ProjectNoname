@@ -225,13 +225,7 @@ public class BattleModeProcessorBase
 			if (sus == false && timeSpan < TimeSpan.FromSeconds(30))
 				sus = true;
 			if (sus)
-			{
-				int powerLevel = 1;
-				CharacterData characterData = PlayerData.instance.GetCharacterData(BattleInstanceManager.instance.playerActor.actorId);
-				if (characterData != null) powerLevel = characterData.powerLevel;
-				int errorCode = 100000 + PlayerData.instance.selectedChapter * 100 + powerLevel;
-				PlayFabApiManager.instance.RequestIncCliSus(errorCode, (int)timeSpan.TotalSeconds);
-			}
+				PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.FastEndGame, true, (int)timeSpan.TotalSeconds);
 		}
 	}
 	#endregion

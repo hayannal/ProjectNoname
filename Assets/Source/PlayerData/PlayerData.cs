@@ -306,7 +306,7 @@ public class PlayerData : MonoBehaviour
 			else
 			{
 				_mainCharacterId = "Actor001";
-				PlayFabApiManager.instance.RequestIncCliSus(300000, 0);
+				PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidMainCharacter);
 			}
 		}
 
@@ -315,6 +315,11 @@ public class PlayerData : MonoBehaviour
 			int intValue = 0;
 			if (int.TryParse(userData["selectedChapter"].Value, out intValue))
 				selectedChapter = intValue;
+			if (selectedChapter > highestPlayChapter)
+			{
+				selectedChapter = highestPlayChapter;
+				PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidSelectedChapter);
+			}
 		}
 
 		if (userData.ContainsKey("chaos"))

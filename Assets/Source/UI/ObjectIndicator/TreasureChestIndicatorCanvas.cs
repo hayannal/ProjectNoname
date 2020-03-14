@@ -9,6 +9,7 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 	{
 		Shop,
 		DailyBox,
+		AttendanceBox,
 	}
 	eButtonType _buttonType;
 
@@ -28,6 +29,8 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 
 		if (IsDailyBoxType())
 			_buttonType = eButtonType.DailyBox;
+		else if (IsAttendanceBoxType())
+			_buttonType = eButtonType.AttendanceBox;
 
 		string stringId = "";
 		switch (_buttonType)
@@ -36,7 +39,13 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 				stringId = "GameUI_Shop";
 				break;
 			case eButtonType.DailyBox:
-				stringId = "GameUI_Open";
+				//if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByResearchLevel.SecondDailyBox) && IsClear)
+				//	stringId = "GameUI_Open";
+				//else
+					stringId = "GameUI_OneCharBox";
+				break;
+			case eButtonType.AttendanceBox:
+				stringId = "GameUI_AttendanceBox";
 				break;
 		}
 		for (int i = 0; i < buttonTextList.Length; ++i)
@@ -50,9 +59,16 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 		return false;
 	}
 
+	public static bool IsAttendanceBoxType()
+	{
+		return false;
+	}
+
 	public static bool IsSpecialTreasureChest()
 	{
 		if (IsDailyBoxType())
+			return true;
+		if (IsAttendanceBoxType())
 			return true;
 		return false;
 	}
@@ -71,6 +87,9 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 				break;
 			case eButtonType.DailyBox:
 				OnClickOpenDailyBox();
+				return;
+			case eButtonType.AttendanceBox:
+				OnClickOpenAttendanceBox();
 				return;
 		}
 
@@ -95,5 +114,10 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 				DailyBoxGaugeCanvas.instance.RefreshGauge();
 			}
 		});
+	}
+
+	public void OnClickOpenAttendanceBox()
+	{
+
 	}
 }

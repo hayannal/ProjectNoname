@@ -203,7 +203,7 @@ public class PauseCanvas : MonoBehaviour
 
 #if CHEAT_RESURRECT
 		if (BattleInstanceManager.instance.playerActor.actorStatus.IsDie() == false)
-			BattleInstanceManager.instance.playerActor.actorStatus.cheatDontDie = true;
+			BattleInstanceManager.instance.playerActor.actorStatus.cheatDontDie ^= true;
 #endif
 	}
 

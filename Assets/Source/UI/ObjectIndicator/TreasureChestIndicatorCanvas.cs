@@ -39,8 +39,8 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 				stringId = "GameUI_Shop";
 				break;
 			case eButtonType.DailyBox:
-				//if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByResearchLevel.SecondDailyBox) && IsClear)
-				//	stringId = "GameUI_Open";
+				//if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByResearchLevel.SecondDailyBox) && IsClearSecondDaily)
+				//	stringId = "GameUI_ThreeCharBox";
 				//else
 					stringId = "GameUI_OneCharBox";
 				break;

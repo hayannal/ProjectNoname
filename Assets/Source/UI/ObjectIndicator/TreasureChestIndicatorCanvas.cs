@@ -45,7 +45,7 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 
 	public static bool IsDailyBoxType()
 	{
-		if (PlayerData.instance.sharedDailyBoxOpened == false && PlayerData.instance.sealCount >= 8)//BattleInstanceManager.instance.GetCachedGlobalConstantInt("SealMaxCount"))
+		if (PlayerData.instance.sharedDailyBoxOpened == false && PlayerData.instance.sealCount >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("SealMaxCount"))
 			return true;
 		return false;
 	}

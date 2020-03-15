@@ -80,8 +80,37 @@ public class EventManager : MonoBehaviour
 	}
 
 	#region Play on lobby
+	public void OnLobbyPrepare()
+	{
+		// 캐릭터만큼은 미리 로딩해놓지 않으면 창 뜨는 시간이 오래 걸릴거 같다. 그래서 메인씬에서 플레이어 액터 생성 후 이 액터도 걸어두기로 한다.
+		if (_queServerEventInfo.Count > 0)
+		{
+			ServerEventInfo serverEventInfo = _queServerEventInfo.Peek();
+			switch (serverEventInfo.eventType)
+			{
+				case eServerEvent.GainNewCharacter:
+					AddressableAssetLoadManager.GetAddressableGameObject(CharacterData.GetAddressByActorId(serverEventInfo.sValue));
+					break;
+			}
+		}
+	}
+
 	public void OnLobby()
 	{
+		// 이벤트 진행할게 있다면 진행. 먼저 서버이벤트를 체크한다.
+		if (_queServerEventInfo.Count > 0)
+		{
+			ServerEventInfo serverEventInfo = _queServerEventInfo.Dequeue();
+			PlayEventProcess(serverEventInfo);
+			return;
+		}
+
+		// 
+		if (_queClientEventInfo.Count > 0)
+		{
+			ClientEventInfo clientEventInfo = _queClientEventInfo.Dequeue();
+			PlayEventProcess(clientEventInfo);
+		}
 	}
 
 	void PlayEventProcess(ServerEventInfo serverEventInfo)
@@ -92,6 +121,10 @@ public class EventManager : MonoBehaviour
 		switch (serverEventInfo.eventType)
 		{
 			case eServerEvent.GainNewCharacter:
+				UIInstanceManager.instance.ShowCanvasAsync("RecruitCanvas", () =>
+				{
+					RecruitCanvas.instance.ShowCanvas(serverEventInfo.sValue);
+				});
 				break;
 		}
 	}
@@ -101,9 +134,9 @@ public class EventManager : MonoBehaviour
 		// 클라이언트 이벤트 중에선 인풋락 없이 되는게 있을거 같아서 조건문 처리.
 		switch (clientEventInfo.eventType)
 		{
-			case eClientEvent.NewChapter:
-				DelayedLoadingCanvas.Show(true);
-				break;
+			//case eClientEvent.NewChapter:
+			//	DelayedLoadingCanvas.Show(true);
+			//	break;
 		}
 
 		switch (clientEventInfo.eventType)

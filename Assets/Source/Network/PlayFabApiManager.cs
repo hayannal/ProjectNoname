@@ -170,6 +170,14 @@ public class PlayFabApiManager : MonoBehaviour
 			PlayFabDataAPI.GetObjects(getCharacterEntityRequest, OnGetObjectsCharacter, OnRecvPlayerDataFailure);
 			++_requestCountForGetPlayerData;
 		}
+
+		// 서버의 utcTime도 받아두기로 한다. 그래서 클라가 가지고 있는 utcTime과 차이를 구해놓고 이후 클라의 utcNow를 얻을때 보정에 쓰도록 한다.
+		_getServerUtcSendTime = Time.time;
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "GetServerUtc",
+		}, OnGetServerUtc, OnRecvPlayerDataFailure);
+		++_requestCountForGetPlayerData;
 	}
 
 #if USE_TITLE_PLAYER_ENTITY
@@ -197,6 +205,24 @@ public class PlayFabApiManager : MonoBehaviour
 
 		if (objectResult != null)
 			_characterEntityObjects.Add(objectResult);
+
+		--_requestCountForGetPlayerData;
+		CheckCompleteRecvPlayerData();
+	}
+
+	float _getServerUtcSendTime;
+	TimeSpan _timeSpanForServerUtc;
+	void OnGetServerUtc(ExecuteCloudScriptResult success)
+	{
+		string serverUtcTimeString = (string)success.FunctionResult;
+		DateTime serverUtcTime = new DateTime();
+		if (DateTime.TryParse(serverUtcTimeString, out serverUtcTime))
+		{
+			DateTime universalTime = serverUtcTime.ToUniversalTime();
+			_timeSpanForServerUtc = universalTime - DateTime.UtcNow;
+			// for latency
+			_timeSpanForServerUtc += TimeSpan.FromSeconds((Time.time - _getServerUtcSendTime) * 0.5f);
+		}
 
 		--_requestCountForGetPlayerData;
 		CheckCompleteRecvPlayerData();

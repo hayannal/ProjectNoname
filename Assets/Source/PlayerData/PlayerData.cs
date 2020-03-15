@@ -396,9 +396,11 @@ public class PlayerData : MonoBehaviour
 	public void OnRecvDailyBoxInfo(string lastDailyBoxOpenTimeString)
 	{
 		DateTime lastDailyBoxOpenTime = new DateTime();
-		DateTime.TryParse(lastDailyBoxOpenTimeString, out lastDailyBoxOpenTime);
-		DateTime universalTime = lastDailyBoxOpenTime.ToUniversalTime();
-		OnRecvDailyBoxInfo(universalTime);
+		if (DateTime.TryParse(lastDailyBoxOpenTimeString, out lastDailyBoxOpenTime))
+		{
+			DateTime universalTime = lastDailyBoxOpenTime.ToUniversalTime();
+			OnRecvDailyBoxInfo(universalTime);
+		}
 	}
 
 	bool _waitServerResponseForDailyBoxResetTime;

@@ -94,9 +94,9 @@ public class DailyBoxGaugeCanvas : MonoBehaviour
 		if (_needUpdate == false)
 			return;
 
-		if (DateTime.UtcNow < _nextResetDateTime)
+		if (ServerTime.UtcNow < _nextResetDateTime)
 		{
-			TimeSpan remainTime = _nextResetDateTime - DateTime.UtcNow;
+			TimeSpan remainTime = _nextResetDateTime - ServerTime.UtcNow;
 			if (_lastRemainTimeSecond != (int)remainTime.TotalSeconds)
 			{
 				remainTimeText.text = string.Format("{0:00}:{1:00}:{2:00}", remainTime.Hours, remainTime.Minutes, remainTime.Seconds);

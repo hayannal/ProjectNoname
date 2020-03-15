@@ -79,7 +79,7 @@ public class CurrencyData : MonoBehaviour
 		int loopCount = 0;
 		for (int i = 0; i < 120; ++i)
 		{
-			if (DateTime.Compare(DateTime.UtcNow, _energyRechargeTime) < 0)
+			if (DateTime.Compare(ServerTime.UtcNow, _energyRechargeTime) < 0)
 				break;
 
 			loopCount += 1;
@@ -110,7 +110,7 @@ public class CurrencyData : MonoBehaviour
 		energy -= amount;
 		if (full && energy < energyMax)
 		{
-			_energyRechargeTime = DateTime.UtcNow + TimeSpan.FromSeconds(BattleInstanceManager.instance.GetCachedGlobalConstantInt("TimeSecToGetOneEnergy"));
+			_energyRechargeTime = ServerTime.UtcNow + TimeSpan.FromSeconds(BattleInstanceManager.instance.GetCachedGlobalConstantInt("TimeSecToGetOneEnergy"));
 			_rechargingEnergy = true;
 		}
 		return true;

@@ -377,14 +377,14 @@ public class PlayerData : MonoBehaviour
 
 	void OnRecvDailyBoxInfo(DateTime lastDailyBoxOpenTime)
 	{
-		if (DateTime.UtcNow < lastDailyBoxOpenTime)
+		if (ServerTime.UtcNow < lastDailyBoxOpenTime)
 		{
 			// 어떻게 미래로 설정되어있을 수가 있나. 이건 무효.
 			sharedDailyBoxOpened = false;
 			return;
 		}
 
-		if (DateTime.UtcNow.Year == lastDailyBoxOpenTime.Year && DateTime.UtcNow.Month == lastDailyBoxOpenTime.Month && DateTime.UtcNow.Day == lastDailyBoxOpenTime.Day)
+		if (ServerTime.UtcNow.Year == lastDailyBoxOpenTime.Year && ServerTime.UtcNow.Month == lastDailyBoxOpenTime.Month && ServerTime.UtcNow.Day == lastDailyBoxOpenTime.Day)
 		{
 			sharedDailyBoxOpened = true;
 			dailyBoxResetTime = new DateTime(lastDailyBoxOpenTime.Year, lastDailyBoxOpenTime.Month, lastDailyBoxOpenTime.Day) + TimeSpan.FromDays(1);
@@ -414,7 +414,7 @@ public class PlayerData : MonoBehaviour
 		if (sharedDailyBoxOpened == false)
 			return;
 
-		if (DateTime.Compare(DateTime.UtcNow, dailyBoxResetTime) < 0)
+		if (DateTime.Compare(ServerTime.UtcNow, dailyBoxResetTime) < 0)
 			return;
 
 		// Energy와 달리 여긴 서버응답 꼭 받고 넘겨야해서 클라가 선처리 하지 않는다.

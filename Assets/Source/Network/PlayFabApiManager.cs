@@ -228,6 +228,11 @@ public class PlayFabApiManager : MonoBehaviour
 		CheckCompleteRecvPlayerData();
 	}
 
+	public DateTime GetServerUtcTime()
+	{
+		return DateTime.UtcNow + _timeSpanForServerUtc;
+	}
+
 	void OnRecvPlayerDataFailure(PlayFabError error)
 	{
 		// 로그인이 성공한 이상 실패할거 같진 않지만 그래도 혹시 모르니 해둔다.

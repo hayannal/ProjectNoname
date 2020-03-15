@@ -67,9 +67,9 @@ public class EnergyGaugeCanvas : MonoBehaviour
 		if (_needUpdate == false)
 			return;
 
-		if (DateTime.UtcNow < _nextFillDateTime)
+		if (ServerTime.UtcNow < _nextFillDateTime)
 		{
-			TimeSpan remainTime = _nextFillDateTime - DateTime.UtcNow;
+			TimeSpan remainTime = _nextFillDateTime - ServerTime.UtcNow;
 			if (_lastRemainTimeSecond != (int)remainTime.TotalSeconds)
 			{
 				fillRemainTimeText.text = string.Format("{0}:{1:00}", remainTime.Minutes, remainTime.Seconds);

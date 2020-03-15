@@ -17,6 +17,10 @@ public class ActorTableData
   public string nameId { get { return _nameId; } set { _nameId = value; } }
   
   [SerializeField]
+  string _storyId;
+  public string storyId { get { return _storyId; } set { _storyId = value; } }
+  
+  [SerializeField]
   string _descId;
   public string descId { get { return _descId; } set { _descId = value; } }
   
@@ -71,5 +75,9 @@ public class ActorTableData
   [SerializeField]
   int _orderIndex;
   public int orderIndex { get { return _orderIndex; } set { _orderIndex = value; } }
+  
+  [SerializeField]
+  bool _infoShow;
+  public bool infoShow { get { return _infoShow; } set { _infoShow = value; } }
   
 }

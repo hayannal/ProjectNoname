@@ -72,7 +72,7 @@ public class BattleResultCanvas : MonoBehaviour
 		RefreshChapterInfo();
 	}
 
-	void OnDisable()
+	void OnDestroy()
 	{
 		Time.timeScale = 1.0f;
 
@@ -351,6 +351,8 @@ public class BattleResultCanvas : MonoBehaviour
 
 	public void OnClickExitButton()
 	{
-		SceneManager.LoadScene(0);
+		bool result = EventManager.instance.OnExitBattleResult();
+		if (result == false)
+			SceneManager.LoadScene(0);
 	}
 }

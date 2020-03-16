@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
 #endif
+using UnityEngine.SceneManagement;
 
 public class RecruitCanvas : CharacterShowCanvasBase
 {
@@ -65,6 +66,15 @@ public class RecruitCanvas : CharacterShowCanvasBase
 
 		_playerActor = playerActor;
 		base.OnLoadedPlayerActor();
+
+		//GameObject effectObject = BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.playerLevelUpEffectPrefab, _rootOffsetPosition, Quaternion.identity, null);
+		//ParticleSystem[] particleSystems = effectObject.GetComponentsInChildren<ParticleSystem>();
+		//for (int i = 0; i < particleSystems.Length; ++i)
+		//{
+		//	// 어차피 씬 이동할거니 캐싱은 전부 삭제될거다. 그래서 복구 루틴도 없다.
+		//	ParticleSystem.MainModule main = particleSystems[i].main;
+		//	main.useUnscaledTime = true;
+		//}
 	}
 
 	#region Info
@@ -92,7 +102,7 @@ public class RecruitCanvas : CharacterShowCanvasBase
 		if (actorTableData == null)
 			return;
 
-		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, UIString.instance.GetString(actorTableData.storyId), 200, characterNameText.transform, new Vector2(0.0f, -30.0f));
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, UIString.instance.GetString(actorTableData.storyId), 200, characterNameText.transform, new Vector2(0.0f, -35.0f));
 	}
 
 	public void OnClickDetailButton()
@@ -101,13 +111,13 @@ public class RecruitCanvas : CharacterShowCanvasBase
 		if (actorTableData == null)
 			return;
 
-		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Top, UIString.instance.GetString("GameUI_Chp1AcceptingDesc"), 200, acceptingDescTransform, new Vector2(0.0f, 35.0f));
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Top, UIString.instance.GetString("GameUI_Chp1AcceptingDesc"), 200, acceptingDescTransform, new Vector2(0.0f, 30.0f));
 	}
 
 	public void OnClickRecruitButton()
 	{
-		// 영입버튼을 누르면 이벤트 확인 패킷을 보내며
-		// 이때 자동으로 셀렉트도 바꾸고
-		// 이벤트 플래그도 끄고 등등.
+		// 클라이벤트로 바뀌면서 이벤트 확인패킷이 필요없게 되었다.
+		// 이미 메인캐릭터도 바꿔둔 상태니 메인씬으로 돌아가면 끝이다.
+		SceneManager.LoadScene(0);
 	}
 }

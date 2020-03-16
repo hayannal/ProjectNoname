@@ -181,9 +181,6 @@ public class MainSceneBuilder : MonoBehaviour
 		Instantiate<GameObject>(_handleStartCharacter.Result);
 #endif
 
-		// character pre load
-		EventManager.instance.OnLobbyPrepare();
-
 		// 흠.. 어드레서블 에셋으로 뺐더니 5.7초까지 늘어났다. 번들에서 읽으니 어쩔 수 없는건가.
 
 		// 그냥 Resources.Load는 4.111초 4.126초 이정도 걸린다.

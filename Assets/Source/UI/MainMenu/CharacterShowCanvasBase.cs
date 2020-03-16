@@ -12,7 +12,7 @@ public class CharacterShowCanvasBase : MonoBehaviour
 	protected PlayerActor _playerActor;
 
 	#region Info Camera
-	Vector3 _rootOffsetPosition = new Vector3(0.0f, 0.0f, 75.0f);
+	protected Vector3 _rootOffsetPosition = new Vector3(0.0f, 0.0f, 75.0f);
 	bool _infoCameraMode = false;
 	float _lastRendererResolutionFactor;
 	float _lastBloomResolutionFactor;
@@ -33,7 +33,16 @@ public class CharacterShowCanvasBase : MonoBehaviour
 
 		if (enable)
 		{
-			LobbyCanvas.instance.OnEnterMainMenu(true);
+			if (MainSceneBuilder.instance.lobby)
+				LobbyCanvas.instance.OnEnterMainMenu(true);
+			else
+			{
+				// lobby가 아닐때란건 아마 전투 후 열리는 영입창이란 얘기다. 불필요한 캔버스들을 다 가려둔다.
+				LobbyCanvas.instance.gameObject.SetActive(false);
+				SkillSlotCanvas.instance.gameObject.SetActive(false);
+				if (BattleResultCanvas.instance != null)
+					BattleResultCanvas.instance.gameObject.SetActive(false);
+			}
 
 			// disable prev component
 			CameraFovController.instance.enabled = false;
@@ -136,6 +145,12 @@ public class CharacterShowCanvasBase : MonoBehaviour
 		TailAnimatorUpdater.UpdateAnimator(_playerActor.cachedTransform, 15);
 		if (_cachedActorInfoTableData != null && _cachedActorInfoTableData.useInfoIdle)
 			_playerActor.actionController.animator.Play("InfoIdle");
+		if (MainSceneBuilder.instance.lobby == false)
+		{
+			// lobby가 아닐때란건 아마 전투 후 열리는 영입창이란 얘기다. TimeScale 걸려있을테니 Unscaled로 바꿔둔다. 어차피 씬 이동 할테니 복구코드는 없다.
+			_playerActor.actionController.animator.updateMode = AnimatorUpdateMode.UnscaledTime;
+			_playerActor.playerAI.enabled = false;
+		}
 	}
 	#endregion
 

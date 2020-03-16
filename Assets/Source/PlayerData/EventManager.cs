@@ -21,7 +21,6 @@ public class EventManager : MonoBehaviour
 	// 서버이벤트는 서버에 저장되서 클라를 지워도 유지되게 해준다. 사실상 퀘스트 느낌.
 	public enum eServerEvent
 	{
-		GainNewCharacter,
 		OpenChaos,
 	}
 
@@ -29,6 +28,7 @@ public class EventManager : MonoBehaviour
 	// 서버 이벤트가 로비에서 이미 진행중이라면 기다렸다가 다 끝난 후에 재생된다.
 	public enum eClientEvent
 	{
+		GainNewCharacter,
 		NewChapter,
 	}
 
@@ -46,10 +46,27 @@ public class EventManager : MonoBehaviour
 	}
 	Queue<ServerEventInfo> _queServerEventInfo = new Queue<ServerEventInfo>();
 	Queue<ClientEventInfo> _queClientEventInfo = new Queue<ClientEventInfo>();
+	Queue<ClientEventInfo> _queClientEventInfoForBattleResult = new Queue<ClientEventInfo>();
 
 	#region OnEvent
 	public void OnEventClearHighestChapter(int chapter, string newCharacterId)
 	{
+		// 정산창에서 호출될거다. 인벤 동기화 패킷을 따로 날려도 되긴한데 괜히 시간걸릴까봐 클라단에서 선처리해서 캐릭터 넣어둔다. 아이디는 전달받은거로 셋팅
+		if (chapter == 1)
+		{
+			PlayerData.instance.AddNewCharacter("Actor002", newCharacterId);
+			PlayerData.instance.mainCharacterId = "Actor002";
+			PushClientEvent(eClientEvent.GainNewCharacter, "Actor002");
+		}
+		else if (chapter == 2)
+		{
+			PlayerData.instance.AddNewCharacter("Actor003", newCharacterId);
+			PlayerData.instance.mainCharacterId = "Actor003";
+			PushClientEvent(eClientEvent.GainNewCharacter, "Actor003");
+		}
+
+		// 챕터를 깨면 클라 이벤트로 새챕터 표시 이벤트도 넣어둔다.
+		PushClientEvent(eClientEvent.NewChapter, "", chapter);
 	}
 
 	public void OnEventPlayHighestChapter(int chapter)
@@ -59,7 +76,6 @@ public class EventManager : MonoBehaviour
 	public void OnRecvServerEvent(string json)
 	{
 	}
-	#endregion
 
 	void PushServerEvent(eServerEvent serverEvent, string sValue = "", int iValue = 0)
 	{
@@ -76,23 +92,31 @@ public class EventManager : MonoBehaviour
 		clientEventInfo.eventType = clientEvent;
 		clientEventInfo.sValue = sValue;
 		clientEventInfo.iValue = iValue;
+
+		// 원래 기본적으로 다 로비에서 발생하는 이벤트인데 캐릭터 영입창만 유일하게 전투결과창 끝나고 나오는 이벤트다.
+		if (clientEvent == eClientEvent.GainNewCharacter)
+		{
+			_queClientEventInfoForBattleResult.Enqueue(clientEventInfo);
+
+			// 캐릭터만큼은 미리 로딩해놓지 않으면 창 뜨는 시간이 오래 걸릴거 같다. 그래서 이벤트 Push해둘때 해당 액터도 걸어두기로 한다.
+			AddressableAssetLoadManager.GetAddressableGameObject(CharacterData.GetAddressByActorId(clientEventInfo.sValue));
+			return;
+		}
+
 		_queClientEventInfo.Enqueue(clientEventInfo);
 	}
+	#endregion
 
-	#region Play on lobby
-	public void OnLobbyPrepare()
+	#region Play
+	public bool OnExitBattleResult()
 	{
-		// 캐릭터만큼은 미리 로딩해놓지 않으면 창 뜨는 시간이 오래 걸릴거 같다. 그래서 메인씬에서 플레이어 액터 생성 후 이 액터도 걸어두기로 한다.
-		if (_queServerEventInfo.Count > 0)
+		if (_queClientEventInfoForBattleResult.Count > 0)
 		{
-			ServerEventInfo serverEventInfo = _queServerEventInfo.Peek();
-			switch (serverEventInfo.eventType)
-			{
-				case eServerEvent.GainNewCharacter:
-					AddressableAssetLoadManager.GetAddressableGameObject(CharacterData.GetAddressByActorId(serverEventInfo.sValue));
-					break;
-			}
+			ClientEventInfo clientEventInfo = _queClientEventInfoForBattleResult.Dequeue();
+			PlayEventProcess(clientEventInfo);
+			return true;
 		}
+		return false;
 	}
 
 	public void OnLobby()
@@ -105,7 +129,13 @@ public class EventManager : MonoBehaviour
 			return;
 		}
 
-		// 
+		// 서버이벤트 없을때만 즉시 실행
+		OnCompleteServerLobbyEvent();
+	}
+
+	public void OnCompleteServerLobbyEvent()
+	{
+		// 로비에서 진행된 서버 이벤트가 끝나면 클라 이벤트를 1회 실행시켜준다.
 		if (_queClientEventInfo.Count > 0)
 		{
 			ClientEventInfo clientEventInfo = _queClientEventInfo.Dequeue();
@@ -120,29 +150,25 @@ public class EventManager : MonoBehaviour
 
 		switch (serverEventInfo.eventType)
 		{
-			case eServerEvent.GainNewCharacter:
-				UIInstanceManager.instance.ShowCanvasAsync("RecruitCanvas", () =>
-				{
-					RecruitCanvas.instance.ShowCanvas(serverEventInfo.sValue);
-				});
-				break;
+			
 		}
 	}
 
 	void PlayEventProcess(ClientEventInfo clientEventInfo)
 	{
-		// 클라이언트 이벤트 중에선 인풋락 없이 되는게 있을거 같아서 조건문 처리.
 		switch (clientEventInfo.eventType)
 		{
-			//case eClientEvent.NewChapter:
-			//	DelayedLoadingCanvas.Show(true);
-			//	break;
-		}
-
-		switch (clientEventInfo.eventType)
-		{
+			case eClientEvent.GainNewCharacter:
+				UIInstanceManager.instance.ShowCanvasAsync("RecruitCanvas", () =>
+				{
+					RecruitCanvas.instance.ShowCanvas(clientEventInfo.sValue);
+				});
+				break;
 			case eClientEvent.NewChapter:
-				UIInstanceManager.instance.ShowCanvasAsync("NewChapterCanvas", () => { NewChapterCanvas.instance.RefreshChapterInfo(clientEventInfo.iValue); });
+				UIInstanceManager.instance.ShowCanvasAsync("NewChapterCanvas", () =>
+				{
+					NewChapterCanvas.instance.RefreshChapterInfo(clientEventInfo.iValue);
+				}, false);
 				break;
 		}
 	}

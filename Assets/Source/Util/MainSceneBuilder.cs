@@ -1,5 +1,6 @@
 #define PLAYFAB				// 싱글버전으로 돌아가는 디파인이다. 테스트용을 위해 남겨둔다.
 #define NEWPLAYER_LEVEL1	// 실제 튜토리얼 들어갈때 무조건 없애야하는 디파인이다. 1레벨 임시 캐릭 생성용 버전.
+#define NEWPLAYER_ADD_KEEP	// 사실 킵이 있는게 1챕터의 시작이라 위 LEVEL1가지고는 정상적인 흐름대로 진행하기가 어렵다. 위와 마찬가지로 지워야한다. 지울때 꼭!! 서버의 rules에서 OnCreatePlayer4 빼야함
 
 using System.Collections;
 using System.Collections.Generic;
@@ -112,12 +113,13 @@ public class MainSceneBuilder : MonoBehaviour
 		if (AuthManager.instance.IsCachedLastLoginInfo() == false)
 		{
 #if NEWPLAYER_LEVEL1
+#if NEWPLAYER_ADD_KEEP
+			PlayerData.instance.newPlayerAddKeep = true;
+#endif
 			// 원래라면 아래 PlayAfterInstallationCoroutine호출하는게 맞다.
 			// 그러나 튜토를 나중에 만들거고 설령 지금 만든다해도 매번 튜토챕터로 시작하는게 불편해서
 			// 개발용으로 쓸 신캐 생성버전을 이 디파인에 묶어서 쓰도록 한다.
 			// 처음 캐릭터를 만들면 게스트로그인으로 생성되며 챕터는 1이 선택되어있고 0스테이지 로비에서 시작된다.
-			//
-			// 캐릭터 만드는 패킷인데 인자라도 다르게 해서 구분을 해야할까?
 			float createAccountStartTime = Time.time;
 			AuthManager.instance.RequestCreateGuestAccount();
 			while (PlayerData.instance.loginned == false) yield return null;

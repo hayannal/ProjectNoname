@@ -220,6 +220,7 @@ public class PlayerData : MonoBehaviour
 		UpdateDailyBoxResetTime();
 	}
 
+	public bool newPlayerAddKeep { get; set; }
 	public void OnNewlyCreatedPlayer()
 	{
 		highestPlayChapter = 0;
@@ -248,6 +249,12 @@ public class PlayerData : MonoBehaviour
 
 		_mainCharacterId = "Actor001";
 		loginned = true;
+
+		if (newPlayerAddKeep)
+		{
+			AddNewCharacter("Actor002", "", 1);
+			_mainCharacterId = "Actor002";
+		}
 	}
 
 	public void AddNewCharacter(string actorId, string serverCharacterId, int powerLevel)

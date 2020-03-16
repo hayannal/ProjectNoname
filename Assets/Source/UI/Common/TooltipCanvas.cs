@@ -39,6 +39,9 @@ public class TooltipCanvas : MonoBehaviour
 	{
 		if (show)
 		{
+			if (_instance != null && _instance.gameObject != null && _instance.gameObject.activeSelf)
+				_instance.SetIgnoreHideFrameCount(1);
+
 			instance.SetDirectionType(direction);
 			instance.SetTooltipText(text, textWidth);
 			instance.SetTextPosition(targetTransform, offset);
@@ -62,8 +65,20 @@ public class TooltipCanvas : MonoBehaviour
 	public Text[] tooltipTextList;
 	public RectTransform[] tooltipTextRectTransform;
 
+	public void SetIgnoreHideFrameCount(int frameCount)
+	{
+		_ignoreFrameCount = frameCount;
+	}
+
+	int _ignoreFrameCount;
 	void Update()
 	{
+		if (_ignoreFrameCount > 0)
+		{
+			--_ignoreFrameCount;
+			return;
+		}
+
 		if (Input.GetMouseButtonUp(0))
 			gameObject.SetActive(false);
 	}

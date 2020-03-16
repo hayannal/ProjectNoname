@@ -40,6 +40,7 @@ public class DailyBoxGaugeCanvas : MonoBehaviour
 			return;
 
 		UpdateRemainTime();
+		UpdateRefresh();
 	}
 
 	public void RefreshGauge()

@@ -240,7 +240,7 @@ public class PlayerData : MonoBehaviour
 		}
 
 		_listCharacterData.Clear();
-		AddNewCharacter("Actor001", "");
+		AddNewCharacter("Actor001", "", 1);
 
 		// 임의로 생성한거라 EntityKey를 만들어둘수가 없다.
 		// 그렇다고 loginned 를 풀어서 통째로 받으면 괜히 커져서 EntityKey 리프레쉬 함수 하나 만들어서 호출하기로 한다.
@@ -250,11 +250,11 @@ public class PlayerData : MonoBehaviour
 		loginned = true;
 	}
 
-	public void AddNewCharacter(string actorId, string serverCharacterId)
+	public void AddNewCharacter(string actorId, string serverCharacterId, int powerLevel)
 	{
 		CharacterData characterData = new CharacterData();
 		characterData.actorId = actorId;
-		characterData.powerLevel = 1;
+		characterData.powerLevel = powerLevel;
 		if (string.IsNullOrEmpty(serverCharacterId) == false)
 			characterData.entityKey = new PlayFab.DataModels.EntityKey() { Id = serverCharacterId, Type = "character" };
 		_listCharacterData.Add(characterData);

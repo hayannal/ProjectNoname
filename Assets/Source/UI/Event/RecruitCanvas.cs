@@ -111,7 +111,7 @@ public class RecruitCanvas : CharacterShowCanvasBase
 		if (actorTableData == null)
 			return;
 
-		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Top, UIString.instance.GetString("GameUI_Chp1AcceptingDesc"), 200, acceptingDescTransform, new Vector2(0.0f, 30.0f));
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Top, UIString.instance.GetString("GameUI_Chp1AcceptingDesc"), 300, acceptingDescTransform, new Vector2(0.0f, 30.0f));
 	}
 
 	public void OnClickRecruitButton()

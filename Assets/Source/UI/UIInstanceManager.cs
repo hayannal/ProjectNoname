@@ -174,21 +174,12 @@ public class UIInstanceManager : MonoBehaviour
 		public string canvasAddress;
 		public AsyncOperationGameObjectResult handleCanvasPrefab;
 		public System.Action calllback;
+		public bool showDelayedLoadingCanvas;
 	}
 	List<LoadCanvasAsync> _listAsyncOperationResult = new List<LoadCanvasAsync>();
 	Dictionary<string, GameObject> _dicCanvasPool = new Dictionary<string, GameObject>();
-	public void ShowCanvasAsync(string canvasAddress)
-	{
-		if (_dicCanvasPool.ContainsKey(canvasAddress))
-		{
-			_dicCanvasPool[canvasAddress].SetActive(true);
-			return;
-		}
-
-		ShowCanvasAsync(canvasAddress, null);
-	}
-
-	public void ShowCanvasAsync(string canvasAddress, System.Action callback)
+	// 사실 여러개가 동시에 호출되면 showWaitingNetworkCanvas를 보장하지 않으나 한번에 하나의 창만 로드할땐 보장해준다.
+	public void ShowCanvasAsync(string canvasAddress, System.Action callback, bool showDelayedLoadingCanvas = true)
 	{
 		if (_dicCanvasPool.ContainsKey(canvasAddress))
 		{
@@ -202,14 +193,17 @@ public class UIInstanceManager : MonoBehaviour
 		loadCanvasAsync.canvasAddress = canvasAddress;
 		loadCanvasAsync.handleCanvasPrefab = AddressableAssetLoadManager.GetAddressableGameObject(canvasAddress, "Canvas");
 		loadCanvasAsync.calllback = callback;
+		loadCanvasAsync.showDelayedLoadingCanvas = showDelayedLoadingCanvas;
 		_listAsyncOperationResult.Add(loadCanvasAsync);
 
-		DelayedLoadingCanvas.Show(true);
+		if (showDelayedLoadingCanvas)
+			DelayedLoadingCanvas.Show(true);
 	}
 
 	void UpdateAsyncOperation()
 	{
 		bool loadFinish = false;
+		bool showDelayedLoadingCanvas = false;
 		for (int i = _listAsyncOperationResult.Count - 1; i >= 0; --i)
 		{
 			if (_listAsyncOperationResult[i].handleCanvasPrefab.IsDone == false)
@@ -227,11 +221,12 @@ public class UIInstanceManager : MonoBehaviour
 			}
 			if (_listAsyncOperationResult[i].calllback != null)
 				_listAsyncOperationResult[i].calllback();
+			showDelayedLoadingCanvas = _listAsyncOperationResult[i].showDelayedLoadingCanvas;
 			_listAsyncOperationResult.Remove(_listAsyncOperationResult[i]);
 			loadFinish = true;
 		}
 
-		if (loadFinish && _listAsyncOperationResult.Count == 0)
+		if (loadFinish && _listAsyncOperationResult.Count == 0 && showDelayedLoadingCanvas)
 			DelayedLoadingCanvas.Show(false);
 	}
 	#endregion

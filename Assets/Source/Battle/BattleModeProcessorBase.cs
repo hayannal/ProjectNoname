@@ -84,9 +84,6 @@ public class BattleModeProcessorBase
 
 	public void OnDiePlayer(PlayerActor playerActor)
 	{
-		if (PlayerData.instance.clientOnly)
-			return;
-
 		// 여기서 인풋은 막되
 		LobbyCanvas.instance.battlePauseButton.interactable = false;
 
@@ -173,6 +170,13 @@ public class BattleModeProcessorBase
 		{
 			// 하나라도 존재하면 waitRemainTime을 늘려서 대기시켰다가 체크한다.
 			_endProcessWaitRemainTime = 0.333f;
+			return;
+		}
+
+		if (PlayerData.instance.clientOnly)
+		{
+			_endProcess = false;
+			BattleResultCanvas.instance.gameObject.SetActive(true);
 			return;
 		}
 

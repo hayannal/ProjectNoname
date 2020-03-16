@@ -19,16 +19,18 @@ public class RecruitCanvas : CharacterShowCanvasBase
 	public Text characterDescText;
 	public Transform acceptingDescTransform;
 	public GameObject detailButtonObject;
+	public GameObject effectPrefab;
 
 	void Awake()
 	{
 		instance = this;
 	}
 
-	void OnDisable()
-	{
-		SetInfoCameraMode(false, "");
-	}
+	// 전투결과에서 홈으로 돌아가는거라면 어차피 새로 만들어질테니 호출할 필요가 없다.
+	//void OnDisable()
+	//{
+	//	SetInfoCameraMode(false, "");
+	//}
 
 	string _actorId;
 	public void ShowCanvas(string actorId)
@@ -67,14 +69,14 @@ public class RecruitCanvas : CharacterShowCanvasBase
 		_playerActor = playerActor;
 		base.OnLoadedPlayerActor();
 
-		//GameObject effectObject = BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.playerLevelUpEffectPrefab, _rootOffsetPosition, Quaternion.identity, null);
-		//ParticleSystem[] particleSystems = effectObject.GetComponentsInChildren<ParticleSystem>();
-		//for (int i = 0; i < particleSystems.Length; ++i)
-		//{
-		//	// 어차피 씬 이동할거니 캐싱은 전부 삭제될거다. 그래서 복구 루틴도 없다.
-		//	ParticleSystem.MainModule main = particleSystems[i].main;
-		//	main.useUnscaledTime = true;
-		//}
+		GameObject effectObject = BattleInstanceManager.instance.GetCachedObject(effectPrefab, _rootOffsetPosition, Quaternion.identity, null);
+		ParticleSystem[] particleSystems = effectObject.GetComponentsInChildren<ParticleSystem>();
+		for (int i = 0; i < particleSystems.Length; ++i)
+		{
+			// 어차피 씬 이동할거니 캐싱은 전부 삭제될거다. 그래서 복구 루틴도 없다.
+			ParticleSystem.MainModule main = particleSystems[i].main;
+			main.useUnscaledTime = true;
+		}
 	}
 
 	#region Info

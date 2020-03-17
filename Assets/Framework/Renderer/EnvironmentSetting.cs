@@ -46,6 +46,7 @@ public class EnvironmentSetting : MonoBehaviour
 	public void SetDefaultLightIntensity(float intensity)
 	{
 		_defaultDirectionalLightIntensity = intensity;
+		s_globalLightIntensityChanged = true;
 	}
 
 	void SetEnvironment()
@@ -139,8 +140,9 @@ public class EnvironmentSetting : MonoBehaviour
 		// 그러니 스태틱 함수를 호출해도 1회만 될거라 괜찮다.
 		UpdateGlobalLightIntensityRatio();
 
-		if (_lastGlobalLightIntensityRatio != s_currentGlobalLightIntensityRatio)
+		if (_lastGlobalLightIntensityRatio != s_currentGlobalLightIntensityRatio || s_globalLightIntensityChanged)
 		{
+			s_globalLightIntensityChanged = false;
 			_lastGlobalLightIntensityRatio = s_currentGlobalLightIntensityRatio;
 			_directionalLight.intensity = _defaultDirectionalLightIntensity * _lastGlobalLightIntensityRatio;
 			RenderSettings.ambientLight = ambientColor * _lastGlobalLightIntensityRatio;			
@@ -149,6 +151,7 @@ public class EnvironmentSetting : MonoBehaviour
 
 
 	#region Global Effect
+	static bool s_globalLightIntensityChanged = false;
 	static int s_globalRefCount = 0;
 	static float s_currentGlobalLightIntensityRatio = 1.0f;
 	static float s_targetGlobalLightIntensityRatio = 1.0f;
@@ -156,6 +159,7 @@ public class EnvironmentSetting : MonoBehaviour
 	static float s_globalLightIntensityLerpPower = 3.0f;
 	public static void SetGlobalLightIntensityRatio(float intensityRatio, float resetTimer, float lerpPower = 3.0f)
 	{
+		s_globalLightIntensityChanged = true;
 		++s_globalRefCount;
 		s_targetGlobalLightIntensityRatio = intensityRatio;
 		s_globalLightIntensityLerpPower = lerpPower;
@@ -176,6 +180,7 @@ public class EnvironmentSetting : MonoBehaviour
 			return;
 
 		// Reset
+		s_globalLightIntensityChanged = true;
 		s_targetGlobalLightIntensityRatio = 1.0f;
 		s_globalLightIntensityLerpPower = lerpPower;
 		s_resetTime = 0.0f;

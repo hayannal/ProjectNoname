@@ -103,6 +103,10 @@ public class CharacterShowCanvasBase : MonoBehaviour
 		{
 			if (CustomFollowCamera.instance == null || CameraFovController.instance == null || LobbyCanvas.instance == null)
 				return;
+			if (CustomFollowCamera.instance.gameObject == null)
+				return;
+			if (BattleInstanceManager.instance.playerActor.gameObject == null)
+				return;
 
 			_groundTransform.gameObject.SetActive(false);
 			StageManager.instance.EnableEnvironmentSettingForUI(true);

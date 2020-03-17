@@ -138,6 +138,9 @@ public class MainSceneBuilder : MonoBehaviour
 			while (PlayerData.instance.loginned == false) yield return null;
 			Debug.LogFormat("Server Login Time : {0:0.###}", Time.time - serverLoginStartTime);
 		}
+#if !UNITY_EDITOR
+		Debug.LogWarning("000000000");
+#endif
 #else
 		// only client
 		if (PlayerData.instance.loginned == false)
@@ -163,17 +166,44 @@ public class MainSceneBuilder : MonoBehaviour
 
 		// step 4. set lobby
 		lobby = true;
+#if !UNITY_EDITOR
+		Debug.LogWarning("111111111");
+#endif
 		_handleLobbyCanvas = Addressables.LoadAssetAsync<GameObject>("LobbyCanvas");
+#if !UNITY_EDITOR
+		Debug.LogWarning("222222222");
+#endif
 		_handleCommonCanvasGroup = Addressables.LoadAssetAsync<GameObject>("CommonCanvasGroup");
+#if !UNITY_EDITOR
+		Debug.LogWarning("333333333");
+#endif
 		if (s_firstTimeAfterLaunch)
 			_handleTitleCanvas = Addressables.LoadAssetAsync<GameObject>("TitleCanvas");
+#if !UNITY_EDITOR
+		Debug.LogWarning("444444444");
+#endif
 
 		// step 5, 6
 		LoadingCanvas.instance.SetProgressBarPoint(0.6f);
+#if !UNITY_EDITOR
+		Debug.LogWarning("555555555");
+#endif
 		_handleStageManager = Addressables.LoadAssetAsync<GameObject>("StageManager");
+#if !UNITY_EDITOR
+		Debug.LogWarning("666666666");
+#endif
 		_handleStartCharacter = Addressables.LoadAssetAsync<GameObject>(CharacterData.GetAddressByActorId(PlayerData.instance.mainCharacterId));
+#if !UNITY_EDITOR
+		Debug.LogWarning("777777777");
+#endif
 		while (!_handleStageManager.IsDone || !_handleStartCharacter.IsDone) yield return null;
+#if !UNITY_EDITOR
+		Debug.LogWarning("888888888");
+#endif
 		Instantiate<GameObject>(_handleStageManager.Result);
+#if !UNITY_EDITOR
+		Debug.LogWarning("888888888-1");
+#endif
 #if UNITY_EDITOR
 		GameObject newObject = Instantiate<GameObject>(_handleStartCharacter.Result);
 		AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
@@ -199,17 +229,44 @@ public class MainSceneBuilder : MonoBehaviour
 		// 3. 스테이지 매니저가 언제나 살아있는 싱글톤 클래스가 되는 방법
 		// 3은 다른 리소스도 들고있는데 살려둘 순 없으니 패스고 1은 너무 어거지다.
 		// 결국 재부팅시 데이터 캐싱등의 처리까지 하려면 2번이 제일 낫다.
+#if !UNITY_EDITOR
+		Debug.LogWarning("999999999");
+#endif
 		LoadingCanvas.instance.SetProgressBarPoint(0.9f);
+#if !UNITY_EDITOR
+		Debug.LogWarning("AAAAAAAAA");
+#endif
 		_handleTreasureChest = Addressables.LoadAssetAsync<GameObject>("TreasureChest");
+#if !UNITY_EDITOR
+		Debug.LogWarning("BBBBBBBBB");
+#endif
 		StageManager.instance.InitializeStage(PlayerData.instance.selectedChapter, 0);
+#if !UNITY_EDITOR
+		Debug.LogWarning("CCCCCCCCC");
+#endif
 		while (StageManager.instance.IsDoneLoadAsyncNextStage() == false)
 			yield return null;
+#if !UNITY_EDITOR
+		Debug.LogWarning("DDDDDDDDD");
+#endif
 		StageManager.instance.MoveToNextStage(true);
+#if !UNITY_EDITOR
+		Debug.LogWarning("EEEEEEEEE");
+#endif
 
 		// step 8. gate pillar & TreasureChest
 		yield return new WaitUntil(() => waitSpawnFlag);
+#if !UNITY_EDITOR
+		Debug.LogWarning("FFFFFFFFF");
+#endif
 		BattleInstanceManager.instance.GetCachedObject(StageManager.instance.gatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
+#if !UNITY_EDITOR
+		Debug.LogWarning("GGGGGGGGG");
+#endif
 		HitRimBlink.ShowHitRimBlink(GatePillar.instance.cachedTransform, Vector3.forward, true);
+#if !UNITY_EDITOR
+		Debug.LogWarning("HHHHHHHHH");
+#endif
 		yield return _handleTreasureChest;
 #if UNITY_EDITOR
 		newObject = Instantiate<GameObject>(_handleTreasureChest.Result);
@@ -223,22 +280,40 @@ public class MainSceneBuilder : MonoBehaviour
 		// 원래라면 몹 다 죽이고 호출되는 함수인데 초기 씬 구축에선 할 타이밍이 로비맵 로딩 직후밖에 없다.
 		StageManager.instance.GetNextStageInfo();
 
+#if !UNITY_EDITOR
+		Debug.LogWarning("IIIIIIIII");
+#endif
 		// step 9-1. 첫번재 UI를 소환하기 전에 UIString Font의 로드가 완료되어있는지 체크해야한다.
 		while (UIString.instance.IsDoneLoadAsyncFont() == false)
 			yield return null;
+#if !UNITY_EDITOR
+		Debug.LogWarning("JJJJJJJJJ");
+#endif
 		// step 9-2. lobby ui
 		while (!_handleLobbyCanvas.IsDone || !_handleCommonCanvasGroup.IsDone) yield return null;
+#if !UNITY_EDITOR
+		Debug.LogWarning("KKKKKKKKK");
+#endif
 		Instantiate<GameObject>(_handleLobbyCanvas.Result);
 		Instantiate<GameObject>(_handleCommonCanvasGroup.Result);
+#if !UNITY_EDITOR
+		Debug.LogWarning("LLLLLLLLL");
+#endif
 
 		// step 10. player hit object caching
 		LoadingCanvas.instance.SetProgressBarPoint(1.0f, 0.0f, true);
+#if !UNITY_EDITOR
+		Debug.LogWarning("MMMMMMMMM");
+#endif
 		if (BattleInstanceManager.instance.playerActor.cachingObjectList != null && BattleInstanceManager.instance.playerActor.cachingObjectList.Length > 0)
 		{
 			_listCachingObject = new List<GameObject>();
 			for (int i = 0; i < BattleInstanceManager.instance.playerActor.cachingObjectList.Length; ++i)
 				_listCachingObject.Add(BattleInstanceManager.instance.GetCachedObject(BattleInstanceManager.instance.playerActor.cachingObjectList[i], Vector3.right, Quaternion.identity));
 		}
+#if !UNITY_EDITOR
+		Debug.LogWarning("OOOOOOOOO");
+#endif
 
 		// step 11. title ui
 		if (s_firstTimeAfterLaunch)

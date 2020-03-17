@@ -400,7 +400,7 @@ public class PlayerData : MonoBehaviour
 			sharedDailyBoxOpened = false;
 	}
 
-	public void OnRecvDailyBoxInfo(string lastDailyBoxOpenTimeString)
+	public void OnRecvDailyBoxInfo(string lastDailyBoxOpenTimeString, bool openResult = false)
 	{
 		DateTime lastDailyBoxOpenTime = new DateTime();
 		if (DateTime.TryParse(lastDailyBoxOpenTimeString, out lastDailyBoxOpenTime))
@@ -408,6 +408,9 @@ public class PlayerData : MonoBehaviour
 			DateTime universalTime = lastDailyBoxOpenTime.ToUniversalTime();
 			OnRecvDailyBoxInfo(universalTime);
 		}
+
+		if (openResult && sharedDailyBoxOpened)
+			sealCount = 0;
 	}
 
 	bool _waitServerResponseForDailyBoxResetTime;

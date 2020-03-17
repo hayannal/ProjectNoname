@@ -439,7 +439,7 @@ public class PlayFabApiManager : MonoBehaviour
 			{
 				WaitingNetworkCanvas.Show(false);
 				// 성공시에는 서버에서 방금 기록한 마지막 오픈 타임이 날아온다.
-				PlayerData.instance.OnRecvDailyBoxInfo(resultString);
+				PlayerData.instance.OnRecvDailyBoxInfo(resultString, true);
 			}
 			if (successCallback != null) successCallback.Invoke(failure);
 		}, (error) =>

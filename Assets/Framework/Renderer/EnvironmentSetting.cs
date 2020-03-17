@@ -153,16 +153,18 @@ public class EnvironmentSetting : MonoBehaviour
 	static float s_currentGlobalLightIntensityRatio = 1.0f;
 	static float s_targetGlobalLightIntensityRatio = 1.0f;
 	static float s_resetTime = 0.0f;
-	public static void SetGlobalLightIntensityRatio(float intensityRatio, float resetTimer)
+	static float s_globalLightIntensityLerpPower = 3.0f;
+	public static void SetGlobalLightIntensityRatio(float intensityRatio, float resetTimer, float lerpPower = 3.0f)
 	{
 		++s_globalRefCount;
 		s_targetGlobalLightIntensityRatio = intensityRatio;
+		s_globalLightIntensityLerpPower = lerpPower;
 
 		if (resetTimer > 0.0f && s_resetTime < Time.time + resetTimer)
 			s_resetTime = Time.time + resetTimer;
 	}
 
-	public static void ResetGlobalLightIntensityRatio()
+	public static void ResetGlobalLightIntensityRatio(float lerpPower = 3.0f)
 	{
 		if (s_globalRefCount <= 0)
 		{
@@ -175,6 +177,7 @@ public class EnvironmentSetting : MonoBehaviour
 
 		// Reset
 		s_targetGlobalLightIntensityRatio = 1.0f;
+		s_globalLightIntensityLerpPower = lerpPower;
 		s_resetTime = 0.0f;
 	}
 
@@ -191,7 +194,7 @@ public class EnvironmentSetting : MonoBehaviour
 		if (s_currentGlobalLightIntensityRatio == s_targetGlobalLightIntensityRatio)
 			return;
 
-		s_currentGlobalLightIntensityRatio = Mathf.Lerp(s_currentGlobalLightIntensityRatio, s_targetGlobalLightIntensityRatio, Time.deltaTime * 3.0f);
+		s_currentGlobalLightIntensityRatio = Mathf.Lerp(s_currentGlobalLightIntensityRatio, s_targetGlobalLightIntensityRatio, Time.deltaTime * s_globalLightIntensityLerpPower);
 		if (Mathf.Abs(s_targetGlobalLightIntensityRatio - s_currentGlobalLightIntensityRatio) < 0.01f)
 			s_currentGlobalLightIntensityRatio = s_targetGlobalLightIntensityRatio;
 	}

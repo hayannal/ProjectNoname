@@ -27,6 +27,9 @@ public class SwapCanvas : MonoBehaviour
 	public Text stagePenaltyText;
 	public Text selectResultText;
 
+	public SortButton sortButton;
+	SortButton.eSortType _currentSortType;
+
 	public GameObject contentItemPrefab;
 	public RectTransform contentRootRectTransform;
 
@@ -50,13 +53,21 @@ public class SwapCanvas : MonoBehaviour
 
 	void OnEnable()
 	{
+		if (sortButton.onChangedCallback == null)
+		{
+			int sortType = PlayerPrefs.GetInt("_SwapSort", 0);
+			_currentSortType = (SortButton.eSortType)sortType;
+			sortButton.SetSortType(_currentSortType);
+			sortButton.onChangedCallback = OnChangedSortType;
+		}
+
 		if (MainSceneBuilder.instance.lobby)
 			RefreshChapterInfo();
 		else if (PlayerData.instance.chaosMode && string.IsNullOrEmpty(StageManager.instance.nextMapTableData.bossName))
 			RefreshChapterInfo();
 		else
 			RefreshSwapInfo();
-		RefreshGrid();
+		RefreshGrid(true);
 
 		if (DragThresholdController.instance != null)
 			DragThresholdController.instance.ApplyUIDragThreshold();
@@ -180,8 +191,17 @@ public class SwapCanvas : MonoBehaviour
 		RefreshCommonInfo();
 	}
 
+
+	void OnChangedSortType(SortButton.eSortType sortType)
+	{
+		_currentSortType = sortType;
+		int sortTypeValue = (int)sortType;
+		PlayerPrefs.SetInt("_SwapSort", sortTypeValue);
+		RefreshGrid(false);
+	}
+
 	List<SwapCanvasListItem> _listSwapCanvasListItem = new List<SwapCanvasListItem>();
-	void RefreshGrid()
+	void RefreshGrid(bool onEnable)
 	{
 		for (int i = 0; i < _listSwapCanvasListItem.Count; ++i)
 			_listSwapCanvasListItem[i].gameObject.SetActive(false);
@@ -202,12 +222,26 @@ public class SwapCanvas : MonoBehaviour
 		List<CharacterData> listCharacterData = PlayerData.instance.listCharacterData;
 		listCharacterData.Sort(delegate (CharacterData x, CharacterData y)
 		{
-			if (x.powerLevel > y.powerLevel) return -1;
-			else if (x.powerLevel < y.powerLevel) return 1;
+			switch (_currentSortType)
+			{
+				case SortButton.eSortType.PowerLevel:
+					if (x.powerLevel > y.powerLevel) return -1;
+					else if (x.powerLevel < y.powerLevel) return 1;
+					break;
+				case SortButton.eSortType.PowerLevelDescending:
+					if (x.powerLevel > y.powerLevel) return 1;
+					else if (x.powerLevel < y.powerLevel) return -1;
+					break;
+			}
 			ActorTableData xActorTableData = TableDataManager.instance.FindActorTableData(x.actorId);
 			ActorTableData yActorTableData = TableDataManager.instance.FindActorTableData(y.actorId);
 			if (xActorTableData != null && yActorTableData != null)
 			{
+				if (_currentSortType == SortButton.eSortType.PowerSource)
+				{
+					if (xActorTableData.powerSource < yActorTableData.powerSource) return -1;
+					else if (xActorTableData.powerSource < yActorTableData.powerSource) return 1;
+				}
 				if (xActorTableData.grade > yActorTableData.grade) return -1;
 				else if (xActorTableData.grade < yActorTableData.grade) return 1;
 				if (xActorTableData.orderIndex < yActorTableData.orderIndex) return -1;
@@ -225,8 +259,10 @@ public class SwapCanvas : MonoBehaviour
 			if (firstIndex == -1 && listCharacterData[i].actorId != BattleInstanceManager.instance.playerActor.actorId)
 				firstIndex = i;
 		}
-		if (firstIndex != -1)
+		if (onEnable && firstIndex != -1)
 			OnClickListItem(_listSwapCanvasListItem[firstIndex].actorId);
+		else
+			OnClickListItem(_selectedActorId);
 
 		// 항목이 적을땐 가운데 정렬 하려고 했는데 안쓰게 되면서 지울까 하다가 혹시 몰라서 코드는 남겨둔다.
 		//RefreshContentPosition();

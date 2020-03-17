@@ -139,8 +139,19 @@ public class CharacterShowCanvasBase : MonoBehaviour
 	}
 
 	// 해당 Canvas보다 늦게 로딩될걸 대비해서 캐릭터 OnLoaded함수를 만들어놓는다.
-	protected void OnLoadedPlayerActor()
+	protected void OnLoadedPlayerActor(bool refreshActorInfoTable = false)
 	{
+		if (refreshActorInfoTable)
+		{
+			_cachedActorInfoTableData = TableDataManager.instance.FindActorInfoTableData(_playerActor.actorId);
+
+			// override setting
+			if (_cachedActorInfoTableData != null && _cachedActorInfoTableData.infoLightIntensity > 0.0f)
+				_environmentSetting.SetDefaultLightIntensity(_cachedActorInfoTableData.infoLightIntensity);
+			else
+				_environmentSetting.SetDefaultLightIntensity(_defaultLightIntensity);
+		}
+
 		_playerActor.cachedTransform.position = _rootOffsetPosition;
 		float yaw = charactorY;
 		if (_cachedActorInfoTableData != null && _cachedActorInfoTableData.infoRotate != 0.0f)

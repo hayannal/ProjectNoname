@@ -170,6 +170,7 @@ GameObject:
   - component: {fileID: 4622964153966193486}
   - component: {fileID: 5283233058354312350}
   - component: {fileID: 931311953804782337}
+  - component: {fileID: 4681456505329414881}
   m_Layer: 5
   m_Name: BackButton
   m_TagString: Untagged
@@ -290,6 +291,18 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &4681456505329414881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 795353658905813036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99f27832db332944d94c102c4d4d0868, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1000068784927640905
 GameObject:
   m_ObjectHideFlags: 0
@@ -322,7 +335,6 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 8399049704659086420}
-  - {fileID: 2538435373691621398}
   - {fileID: 7857559211368873303}
   - {fileID: 7834269886081810516}
   - {fileID: 8100509570542605799}
@@ -406,11 +418,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6480e7cbbc74b3f4ebcc30ce527390e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  infoCameraGroundPrefab: {fileID: 3247642708296175866, guid: 8cc9cb48f7236fc4987c9408b5d466e9,
-    type: 3}
-  infoCameraTransform: {fileID: 2538435373691621398}
-  infoCameraFov: 43
-  charactorY: 180
 --- !u!1 &1279623287751103303
 GameObject:
   m_ObjectHideFlags: 0
@@ -799,7 +806,7 @@ RectTransform:
   m_Children:
   - {fileID: 6995428187474259579}
   m_Father: {fileID: 7018870258588129536}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -1099,36 +1106,6 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
---- !u!1 &6187740848785050175
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2538435373691621398}
-  m_Layer: 0
-  m_Name: InfoCameraTransform
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2538435373691621398
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6187740848785050175}
-  m_LocalRotation: {x: 0.13713601, y: -0.0663349, z: 0.00920473, w: 0.9882857}
-  m_LocalPosition: {x: 0, y: 1.9, z: -3.5}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 7018870258588129536}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 15.8, y: -7.68, z: 0}
 --- !u!1 &6345327864226390680
 GameObject:
   m_ObjectHideFlags: 0
@@ -1457,7 +1434,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7018870258588129536}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -1557,7 +1534,7 @@ RectTransform:
   - {fileID: 7171469934724821843}
   - {fileID: 2293130343523867414}
   m_Father: {fileID: 7018870258588129536}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: -22.5, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}

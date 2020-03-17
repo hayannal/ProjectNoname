@@ -49,6 +49,11 @@ namespace FIMSpace.FTail
         /// </summary>
         public override void CalculateOffsets()
         {
+			if (TailTransforms == null || TailTransforms.Count == 0)
+				return;
+			//if (proceduralPoints == null || proceduralPoints.Count == 0)
+			//	return;
+
             // Just calculating animation variables
             float delta;
 

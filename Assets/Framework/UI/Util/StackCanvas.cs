@@ -76,6 +76,7 @@ public class StackCanvas : MonoBehaviour
 		if (prevInfo != null && prevInfo.canvasObject == canvasObject && prevInfo.forceShow == false)
 			return true;
 
+		// 새로운 캔버스를 추가로 스택하는거라면
 		CanvasStackInfo stackInfo = new CanvasStackInfo();
 		stackInfo.canvasObject = canvasObject;
 		stackInfo.forceShow = forceShow;
@@ -83,6 +84,10 @@ public class StackCanvas : MonoBehaviour
 		stackInfo.optionalPopAction = optionalPopAction;
 		_stackCanvas.Push(stackInfo);
 
+		// Push보다 이걸 먼저 수행해버리면 아래 Pop의 리턴값을 구별해낼 수 없게되버려서 꼭 Push보다 아래 호출되어야한다.
+		// 왜냐면 이걸 먼저 수행할 경우
+		// 새 창이 스택되면서 꺼지는 경우와 그냥 끄려고 하는 경우 둘다 first item이기 때문에 peek로 얻어보면 구분이 안된다.
+		// 그래서 이렇게 Push후 disable처리하는거다.
 		if (prevInfo != null)
 		{
 			if (prevInfo.optionalPopAction != null)
@@ -106,14 +111,41 @@ public class StackCanvas : MonoBehaviour
 			return false;
 
 		if (info.canvasObject != canvasObject)
-			return true;
+		{
+			if (info.forceShow == false)
+			{
+				// 바로 이전창인지 검사해서 stacked으로 인해 disable되는지 판단한다.
+				int index = 0;
+				bool secondItem = false;
+				Stack<CanvasStackInfo>.Enumerator e = _stackCanvas.GetEnumerator();
+				while (e.MoveNext())
+				{
+					if (e.Current == null)
+						continue;
+					if (index == 1)
+					{
+						if (e.Current.canvasObject == canvasObject)
+						{
+							secondItem = true;
+							break;
+						}
+					}
+					++index;
+				}
+				if (secondItem)
+					return true;
+			}
+			return false;
+		}
 
+		// 진짜 최상단 캔버스가 pop되는거라면
 		_stackCanvas.Pop();
 
 		CanvasStackInfo currentInfo = null;
 		if (_stackCanvas.Count > 0)
 			currentInfo = _stackCanvas.Peek();
 
+		// 그 아래 창을 얻어와서 켜주는 처리를 한다.
 		if (currentInfo != null)
 		{
 			if (currentInfo.optionalPushAction != null)

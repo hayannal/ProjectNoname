@@ -118,6 +118,7 @@ public class DotMainMenuCanvas : MonoBehaviour
 
 	void OnEnable()
 	{
+		StackCanvas.Push(gameObject, true, OnPushStack, OnPopStack);
 		EnvironmentSetting.SetGlobalLightIntensityRatio(0.3f, 0.0f);
 		Initialize(targetTransform);
 	}
@@ -126,12 +127,26 @@ public class DotMainMenuCanvas : MonoBehaviour
 	{
 		EnvironmentSetting.ResetGlobalLightIntensityRatio();
 		_reservedHide = false;
+		StackCanvas.Pop(gameObject);
+	}
+
+	void OnPushStack()
+	{
+		EnvironmentSetting.SetGlobalLightIntensityRatio(0.3f, 0.0f, 100.0f);
+	}
+
+	void OnPopStack()
+	{
+		EnvironmentSetting.ResetGlobalLightIntensityRatio(100.0f);
 	}
 
 	// Update is called once per frame
 	Transform _prevTargetTransform;
 	void Update()
     {
+		if (StackCanvas.IsInStack(gameObject))
+			return;
+
 		if (_prevTargetTransform != targetTransform && targetTransform != null)
 		{
 			Initialize(targetTransform);
@@ -261,11 +276,13 @@ public class DotMainMenuCanvas : MonoBehaviour
 
 	public void OnClickCharacterButton()
 	{
-		UIInstanceManager.instance.ShowCanvasAsync("CharacterInfoCanvas", () =>
+		// DotMainMenu는 열려있는채로 냅두고 다른 창을 연다.
+		// 대신 화면 어둡게 한건 풀어야한다. - 이건 Stack구조에서 알아서 호출해준다.
+		//gameObject.SetActive(false);
+		UIInstanceManager.instance.ShowCanvasAsync("CharacterListCanvas", () =>
 		{
 
 		});
-		gameObject.SetActive(false);
 	}
 
 	public void OnClickChapterButton()

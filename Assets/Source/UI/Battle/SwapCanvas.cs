@@ -220,40 +220,24 @@ public class SwapCanvas : MonoBehaviour
 		}
 
 		List<CharacterData> listCharacterData = PlayerData.instance.listCharacterData;
-		listCharacterData.Sort(delegate (CharacterData x, CharacterData y)
+		switch (_currentSortType)
 		{
-			switch (_currentSortType)
-			{
-				case SortButton.eSortType.PowerLevel:
-					if (x.powerLevel > y.powerLevel) return -1;
-					else if (x.powerLevel < y.powerLevel) return 1;
-					break;
-				case SortButton.eSortType.PowerLevelDescending:
-					if (x.powerLevel > y.powerLevel) return 1;
-					else if (x.powerLevel < y.powerLevel) return -1;
-					break;
-			}
-			ActorTableData xActorTableData = TableDataManager.instance.FindActorTableData(x.actorId);
-			ActorTableData yActorTableData = TableDataManager.instance.FindActorTableData(y.actorId);
-			if (xActorTableData != null && yActorTableData != null)
-			{
-				if (_currentSortType == SortButton.eSortType.PowerSource)
-				{
-					if (xActorTableData.powerSource < yActorTableData.powerSource) return -1;
-					else if (xActorTableData.powerSource < yActorTableData.powerSource) return 1;
-				}
-				if (xActorTableData.grade > yActorTableData.grade) return -1;
-				else if (xActorTableData.grade < yActorTableData.grade) return 1;
-				if (xActorTableData.orderIndex < yActorTableData.orderIndex) return -1;
-				else if (xActorTableData.orderIndex > yActorTableData.orderIndex) return 1;
-			}
-			return 0;
-		});
+			case SortButton.eSortType.PowerLevel:
+				listCharacterData.Sort(sortButton.comparisonPowerLevel);
+				break;
+			case SortButton.eSortType.PowerLevelDescending:
+				listCharacterData.Sort(sortButton.comparisonPowerLevelDescending);
+				break;
+			case SortButton.eSortType.PowerSource:
+				listCharacterData.Sort(sortButton.comparisonPowerSource);
+				break;
+		}
+
 		int firstIndex = -1;
 		for (int i = 0; i < listCharacterData.Count; ++i)
 		{
 			SwapCanvasListItem swapCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
-			swapCanvasListItem.Initialize(listCharacterData[i], chapterTableData.suggestedPowerLevel, suggestedActorIdList);
+			swapCanvasListItem.Initialize(listCharacterData[i], chapterTableData.suggestedPowerLevel, suggestedActorIdList, OnClickListItem);
 			_listSwapCanvasListItem.Add(swapCanvasListItem);
 
 			if (firstIndex == -1 && listCharacterData[i].actorId != BattleInstanceManager.instance.playerActor.actorId)

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,7 +18,7 @@ public class SwapCanvasListItem : MonoBehaviour
 	public GameObject selectObject;
 
 	public string actorId { get; set; }
-	public void Initialize(CharacterData characterData, int suggestedPowerLevel, string[] suggestedActorIdList)
+	public void Initialize(CharacterData characterData, int suggestedPowerLevel, string[] suggestedActorIdList, Action<string> clickCallback)
 	{
 		actorId = characterData.actorId;
 
@@ -63,11 +64,14 @@ public class SwapCanvasListItem : MonoBehaviour
 		}
 		
 		selectObject.SetActive(false);
+		_clickAction = clickCallback;
 	}
 
+	Action<string> _clickAction;
 	public void OnClickButton()
 	{
-		SwapCanvas.instance.OnClickListItem(actorId);
+		if (_clickAction != null)
+			_clickAction.Invoke(actorId);
 	}
 
 	public void ShowSelectObject(bool show)

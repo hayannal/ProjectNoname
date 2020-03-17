@@ -100,6 +100,59 @@ public class SortButton : MonoBehaviour
 
 
 
+
+	public Comparison<CharacterData> comparisonPowerLevel = delegate (CharacterData x, CharacterData y)
+	{
+		if (x.powerLevel > y.powerLevel) return -1;
+		else if (x.powerLevel < y.powerLevel) return 1;	
+		ActorTableData xActorTableData = TableDataManager.instance.FindActorTableData(x.actorId);
+		ActorTableData yActorTableData = TableDataManager.instance.FindActorTableData(y.actorId);
+		if (xActorTableData != null && yActorTableData != null)
+		{
+			if (xActorTableData.grade > yActorTableData.grade) return -1;
+			else if (xActorTableData.grade < yActorTableData.grade) return 1;
+			if (xActorTableData.orderIndex < yActorTableData.orderIndex) return -1;
+			else if (xActorTableData.orderIndex > yActorTableData.orderIndex) return 1;
+		}
+		return 0;
+	};
+
+	public Comparison<CharacterData> comparisonPowerLevelDescending = delegate (CharacterData x, CharacterData y)
+	{
+		if (x.powerLevel > y.powerLevel) return 1;
+		else if (x.powerLevel < y.powerLevel) return -1;
+		ActorTableData xActorTableData = TableDataManager.instance.FindActorTableData(x.actorId);
+		ActorTableData yActorTableData = TableDataManager.instance.FindActorTableData(y.actorId);
+		if (xActorTableData != null && yActorTableData != null)
+		{
+			if (xActorTableData.grade > yActorTableData.grade) return -1;
+			else if (xActorTableData.grade < yActorTableData.grade) return 1;
+			if (xActorTableData.orderIndex < yActorTableData.orderIndex) return -1;
+			else if (xActorTableData.orderIndex > yActorTableData.orderIndex) return 1;
+		}
+		return 0;
+	};
+
+	public Comparison<CharacterData> comparisonPowerSource = delegate (CharacterData x, CharacterData y)
+	{
+		ActorTableData xActorTableData = TableDataManager.instance.FindActorTableData(x.actorId);
+		ActorTableData yActorTableData = TableDataManager.instance.FindActorTableData(y.actorId);
+		if (xActorTableData != null && yActorTableData != null)
+		{
+			if (xActorTableData.powerSource < yActorTableData.powerSource) return -1;
+			else if (xActorTableData.powerSource > yActorTableData.powerSource) return 1;
+			if (xActorTableData.grade > yActorTableData.grade) return -1;
+			else if (xActorTableData.grade < yActorTableData.grade) return 1;
+			if (xActorTableData.orderIndex < yActorTableData.orderIndex) return -1;
+			else if (xActorTableData.orderIndex > yActorTableData.orderIndex) return 1;
+		}
+		return 0;
+	};
+
+
+
+
+
 	RectTransform _rectTransform;
 	public RectTransform cachedRectTransform
 	{

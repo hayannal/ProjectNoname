@@ -173,7 +173,10 @@ public class PlayerActor : Actor
 			return;
 
 		// 첫 플레이 튜토에서는 궁극기 버튼도 보여주면 안되서 예외처리한다.
-		if (lobby == false && MainSceneBuilder.instance.playAfterInstallation == false)
+		bool showPlayerCanvas = true;
+		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.playAfterInstallation)
+			showPlayerCanvas = false;
+		if (lobby == false && showPlayerCanvas)
 			InitializeCanvas();
 
 		StageManager.instance.PreparePowerSource();

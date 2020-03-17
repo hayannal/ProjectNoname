@@ -26,13 +26,18 @@ public class SortButton : MonoBehaviour
 
 	void Awake()
 	{
-		Canvas parentCanvas = cachedRectTransform.parent.GetComponentInParent<Canvas>();
-		buttonTextCanvas.sortingOrder = parentCanvas.sortingOrder + 2;
-		backgroundImageCanvas.sortingOrder = parentCanvas.sortingOrder + 1;
+		_parentCanvas = cachedRectTransform.parent.GetComponentInParent<Canvas>();
 	}
 
+	Canvas _parentCanvas;
 	void OnEnable()
 	{
+		if (_parentCanvas != null)
+		{
+			buttonTextCanvas.sortingOrder = _parentCanvas.sortingOrder + 2;
+			backgroundImageCanvas.sortingOrder = _parentCanvas.sortingOrder + 1;
+		}
+
 		textCanvasGroup.alpha = 0.0f;
 	}
 

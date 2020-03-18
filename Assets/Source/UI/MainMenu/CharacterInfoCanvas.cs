@@ -9,6 +9,7 @@ public class CharacterInfoCanvas : MonoBehaviour
 	public static CharacterInfoCanvas instance;
 
 	public GameObject characterInfoInnerCanvasPrefab;
+	public CurrencySmallInfo currencySmallInfo;
 
 	void Awake()
 	{

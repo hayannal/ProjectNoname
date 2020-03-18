@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-#if UNITY_EDITOR
-using UnityEditor.AddressableAssets;
-using UnityEditor.AddressableAssets.Settings;
-#endif
 
 public class CharacterInfoCanvas : MonoBehaviour
 {
 	public static CharacterInfoCanvas instance;
+
+	public GameObject characterInfoInnerCanvasPrefab;
 
 	void Awake()
 	{
@@ -19,27 +17,42 @@ public class CharacterInfoCanvas : MonoBehaviour
 
 	void Start()
 	{
-		GetComponent<Canvas>().worldCamera = UIInstanceManager.instance.GetCachedCameraMain();
+		Instantiate<GameObject>(characterInfoInnerCanvasPrefab);
 	}
 
 	void OnEnable()
 	{
+		if (CharacterInfoInnerCanvas.instance != null)
+			CharacterInfoInnerCanvas.instance.gameObject.SetActive(true);
+
 		StackCanvas.Push(gameObject);
 	}
 
 	void OnDisable()
 	{
+		if (CharacterInfoInnerCanvas.instance != null)
+			CharacterInfoInnerCanvas.instance.gameObject.SetActive(false);
+
 		StackCanvas.Pop(gameObject);
 	}
 
+	public void OnClickBackButton()
+	{
+		gameObject.SetActive(false);
+		//StackCanvas.Back();
+	}
+
+	public void OnClickHomeButton()
+	{
+		// 현재 상태에 따라
+		StackCanvas.Home();
+	}
+
 	#region Info
+	public string currentActorId { get; private set; }
 	public void RefreshInfo(string actorId)
 	{
-		// tooltip
-		// CharStory + "\n\n" + CharDesc
-
-		// 뽑기창에서는 이와 다르게
-		// Char CharDesc는 기본으로 나오고 돋보기로만 Story를 본다.
+		currentActorId = actorId;
 	}
 	#endregion
 

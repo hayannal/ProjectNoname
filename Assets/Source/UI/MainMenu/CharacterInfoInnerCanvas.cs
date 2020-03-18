@@ -53,6 +53,10 @@ public class CharacterInfoInnerCanvas : MonoBehaviour
 			return;
 		}
 
+		CharacterData characterData = PlayerData.instance.GetCharacterData(CharacterInfoCanvas.instance.currentActorId);
+		if (characterData == null)
+			return;
+
 		// Request
 		// GameUI_MainCharacterChanged
 	}

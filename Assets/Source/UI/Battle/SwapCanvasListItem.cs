@@ -11,25 +11,28 @@ public class SwapCanvasListItem : MonoBehaviour
 	public Image blurImage;
 	public Coffee.UIExtensions.UIGradient gradient;
 	public Image lineColorImage;
+	public GameObject powerLevelObject;
 	public Text powerLevelText;
 	public Text nameText;
 	public Text powerSourceText;
 	public Text recommandedText;
 	public GameObject selectObject;
+	public GameObject blackObject;
 
 	public string actorId { get; set; }
-	public void Initialize(CharacterData characterData, int suggestedPowerLevel, string[] suggestedActorIdList, Action<string> clickCallback)
+	public void Initialize(string actorId, int powerLevel, int suggestedPowerLevel, string[] suggestedActorIdList, Action<string> clickCallback)
 	{
-		actorId = characterData.actorId;
+		this.actorId = actorId;
 
-		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(characterData.actorId);
+		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(actorId);
 		AddressableAssetLoadManager.GetAddressableSprite(actorTableData.portraitAddress, "Icon", (sprite) =>
 		{
 			characterImage.sprite = null;
 			characterImage.sprite = sprite;
 		});
 
-		powerLevelText.text = UIString.instance.GetString("GameUI_Power", characterData.powerLevel);
+		powerLevelObject.SetActive(powerLevel > 0);
+		powerLevelText.text = UIString.instance.GetString("GameUI_Power", powerLevel);
 		//powerLevelText.color = (characterData.powerLevel < suggestedPowerLevel) ? new Color(1.0f, 0.1f, 0.1f) : Color.white;
 		nameText.SetLocalizedText(UIString.instance.GetString(actorTableData.nameId));
 		powerSourceText.SetLocalizedText(PowerSource.Index2Name(actorTableData.powerSource));
@@ -57,11 +60,13 @@ public class SwapCanvasListItem : MonoBehaviour
 		}
 
 		recommandedText.gameObject.SetActive(false);
-		if (GatePillar.CheckSuggestedActor(suggestedActorIdList, characterData.actorId))
+		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
+		if (lobby == false && GatePillar.CheckSuggestedActor(suggestedActorIdList, actorId))
 		{
 			recommandedText.SetLocalizedText(UIString.instance.GetString("GameUI_Suggested"));
 			recommandedText.gameObject.SetActive(true);
 		}
+		blackObject.SetActive(lobby && powerLevel == 0);
 		
 		selectObject.SetActive(false);
 		_clickAction = clickCallback;

@@ -93,6 +93,12 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 	}
 
 	List<SwapCanvasListItem> _listSwapCanvasListItem = new List<SwapCanvasListItem>();
+	class CharacterInfo
+	{
+		public ActorTableData actorTableData;
+		public CharacterData characterData;
+	}
+	List<CharacterInfo> _listAllCharacterInfo = new List<CharacterInfo>();
 	void RefreshGrid(bool onEnable)
 	{
 		for (int i = 0; i < _listSwapCanvasListItem.Count; ++i)
@@ -102,25 +108,61 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 		ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
 		if (chapterTableData == null)
 			return;
-		
-		List<CharacterData> listCharacterData = PlayerData.instance.listCharacterData;
-		switch (_currentSortType)
+
+		// 이 창은 유일하게 얻지않은 캐릭들도 다 나오는 창이다.
+		if (onEnable)
 		{
-			case SortButton.eSortType.PowerLevel:
-				listCharacterData.Sort(sortButton.comparisonPowerLevel);
-				break;
-			case SortButton.eSortType.PowerLevelDescending:
-				listCharacterData.Sort(sortButton.comparisonPowerLevelDescending);
-				break;
-			case SortButton.eSortType.PowerSource:
-				listCharacterData.Sort(sortButton.comparisonPowerSource);
-				break;
+			_listAllCharacterInfo.Clear();
+			for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)
+			{
+				if (TableDataManager.instance.actorTable.dataArray[i].infoShow == false)
+					continue;
+				CharacterInfo characterInfo = new CharacterInfo();
+				characterInfo.actorTableData = TableDataManager.instance.actorTable.dataArray[i];
+				characterInfo.characterData = PlayerData.instance.GetCharacterData(characterInfo.actorTableData.actorId);
+				_listAllCharacterInfo.Add(characterInfo);
+			}
 		}
 
-		for (int i = 0; i < listCharacterData.Count; ++i)
+		_listAllCharacterInfo.Sort(delegate (CharacterInfo x, CharacterInfo y)
+		{
+			if (x.characterData != null && y.characterData == null) return -1;
+			else if (x.characterData == null && y.characterData != null) return 1;
+
+			if (x.characterData != null && y.characterData != null)
+			{
+				if (_currentSortType == SortButton.eSortType.PowerLevel)
+				{
+					if (x.characterData.powerLevel > y.characterData.powerLevel) return -1;
+					else if (x.characterData.powerLevel < y.characterData.powerLevel) return 1;
+				}
+				else if (_currentSortType == SortButton.eSortType.PowerLevelDescending)
+				{
+					if (x.characterData.powerLevel > y.characterData.powerLevel) return 1;
+					else if (x.characterData.powerLevel < y.characterData.powerLevel) return -1;
+				}
+			}
+
+			if (_currentSortType == SortButton.eSortType.PowerSource)
+			{
+				if (x.actorTableData.powerSource < y.actorTableData.powerSource) return -1;
+				else if (x.actorTableData.powerSource > y.actorTableData.powerSource) return 1;
+			}
+
+			if (x.actorTableData.grade > y.actorTableData.grade) return -1;
+			else if (x.actorTableData.grade < y.actorTableData.grade) return 1;
+			if (x.actorTableData.orderIndex < y.actorTableData.orderIndex) return -1;
+			else if (x.actorTableData.orderIndex > y.actorTableData.orderIndex) return 1;
+			return 0;
+		});
+
+		for (int i = 0; i < _listAllCharacterInfo.Count; ++i)
 		{
 			SwapCanvasListItem swapCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
-			swapCanvasListItem.Initialize(listCharacterData[i], chapterTableData.suggestedPowerLevel, null, OnClickListItem);
+			int powerLevel = 0;
+			if (_listAllCharacterInfo[i].characterData != null)
+				powerLevel = _listAllCharacterInfo[i].characterData.powerLevel;
+			swapCanvasListItem.Initialize(_listAllCharacterInfo[i].actorTableData.actorId, powerLevel, chapterTableData.suggestedPowerLevel, null, OnClickListItem);
 			_listSwapCanvasListItem.Add(swapCanvasListItem);
 		}
 		if (onEnable)

@@ -1,6 +1,7 @@
 ﻿Shader "SupGames/PlanarReflection/Diffuse" {
 	Properties{
 		_Color("Color", Color) = (1,1,1,1)
+		_AmbientColor("Ambient Color", Color) = (0,0,0,0)
 		_MainTex("Texture For Diffuse Material Color", 2D) = "white" {}
 	}
 		SubShader{
@@ -22,6 +23,7 @@
 					fixed _RefAlpha;
 					fixed4 _MainTex_ST;
 					fixed4 _Color;
+					fixed4 _AmbientColor;
 
 					struct appdata {
 						fixed4 vertex : POSITION;
@@ -52,7 +54,7 @@
 					{
 						fixed4 color = tex2D(_MainTex, i.uv1)*i.ref;
 						fixed4 reflection = tex2D(_ReflectionTex, i.uv.xy / i.uv.w);
-						return (lerp(color, reflection, _RefAlpha) + lerp(reflection, color, 1 - _RefAlpha))*_Color / 2;
+						return (lerp(color, reflection, _RefAlpha) + lerp(reflection, color, 1 - _RefAlpha))*_Color / 2 + _AmbientColor;
 					}
 					ENDCG
 				}

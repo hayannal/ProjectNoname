@@ -53,10 +53,7 @@ public class CurrencySmallInfoCanvas : MonoBehaviour
 			_instance.InternalRefreshInfo();
 	}
 
-	public Text diamondText;
-	public Text goldText;
-	public Transform diamondIconTransform;
-	public Transform goldIconTransform;
+	public CurrencySmallInfo currencySmallInfo;
 	public DOTweenAnimation moveTweenAnimation;
 
 	void Awake()
@@ -64,15 +61,9 @@ public class CurrencySmallInfoCanvas : MonoBehaviour
 		_instance = this;
 	}
 
-	void OnEnable()
-	{
-		InternalRefreshInfo();
-	}
-
 	public void InternalRefreshInfo()
 	{
-		diamondText.text = CurrencyData.instance.dia.ToString("N0");
-		goldText.text = CurrencyData.instance.gold.ToString("N0");
+		currencySmallInfo.RefreshInfo();
 	}
 
 	bool _reserveHide = false;
@@ -101,15 +92,5 @@ public class CurrencySmallInfoCanvas : MonoBehaviour
 			gameObject.SetActive(false);
 			_reserveHide = false;
 		}
-	}
-
-	public void OnClickDiamondButton()
-	{
-		TooltipCanvas.Show(true, TooltipCanvas.eDirection.LeftBottom, UIString.instance.GetString("GameUI_DiamondDesc"), 200, diamondIconTransform, new Vector2(-40.0f, 0.0f));
-	}
-
-	public void OnClickGoldButton()
-	{
-		TooltipCanvas.Show(true, TooltipCanvas.eDirection.LeftBottom, UIString.instance.GetString("GameUI_GoldDesc"), 200, goldIconTransform, new Vector2(-40.0f, 7.0f));
 	}
 }

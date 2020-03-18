@@ -311,6 +311,7 @@ public class PlayFabApiManager : MonoBehaviour
 			//for (int i = 0; i < success.Items.Count; ++i)
 			//{	
 			//}
+			CurrencyData.instance.dia -= price;
 			CurrencyData.instance.OnRecvRefillEnergy(refillAmount);
 
 			if (successCallback != null) successCallback.Invoke();

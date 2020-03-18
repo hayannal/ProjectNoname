@@ -346,6 +346,7 @@ public class GatePillar : MonoBehaviour
 				}
 				PlayFabApiManager.instance.RequestRefillEnergy(price, CurrencyData.instance.energyMax, () =>
 				{
+					CurrencySmallInfoCanvas.RefreshInfo();
 					ConfirmSpendCanvas.instance.gameObject.SetActive(false);
 				});
 			});

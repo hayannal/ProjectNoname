@@ -88,7 +88,7 @@ public class StackCanvas : MonoBehaviour
 		// 왜냐면 이걸 먼저 수행할 경우
 		// 새 창이 스택되면서 꺼지는 경우와 그냥 끄려고 하는 경우 둘다 first item이기 때문에 peek로 얻어보면 구분이 안된다.
 		// 그래서 이렇게 Push후 disable처리하는거다.
-		if (prevInfo != null)
+		if (prevInfo != null && prevInfo.canvasObject != null)
 		{
 			if (prevInfo.forceShow && optionalPopAction != null)
 				prevInfo.optionalPopAction.Invoke();
@@ -146,7 +146,7 @@ public class StackCanvas : MonoBehaviour
 			currentInfo = _stackCanvas.Peek();
 
 		// 그 아래 창을 얻어와서 켜주는 처리를 한다.
-		if (currentInfo != null)
+		if (currentInfo != null && currentInfo.canvasObject != null)
 		{
 			if (currentInfo.forceShow && currentInfo.optionalPushAction != null)
 				currentInfo.optionalPushAction.Invoke();

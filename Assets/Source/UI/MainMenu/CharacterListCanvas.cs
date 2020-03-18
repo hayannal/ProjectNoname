@@ -18,10 +18,18 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 	public GameObject contentItemPrefab;
 	public RectTransform contentRootRectTransform;
 
+	// 가짜 라인을 만들기 위한 프리팹
+	public GameObject contentFakeItemPrefab;
+
 	public class CustomItemContainer : CachedItemHave<SwapCanvasListItem>
 	{
 	}
 	CustomItemContainer _container = new CustomItemContainer();
+
+	public class CustomItemSubContainer : CachedItemHave<CharacterListCanvasFakeItem>
+	{
+	}
+	CustomItemSubContainer _subContainer = new CustomItemSubContainer();
 
 	void Awake()
 	{
@@ -31,6 +39,7 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 	void Start()
 	{
 		contentItemPrefab.SetActive(false);
+		contentFakeItemPrefab.SetActive(false);
 	}
 
 	void OnEnable()
@@ -96,6 +105,7 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 	}
 
 	List<SwapCanvasListItem> _listSwapCanvasListItem = new List<SwapCanvasListItem>();
+	List<CharacterListCanvasFakeItem> _listFakeItem = new List<CharacterListCanvasFakeItem>();
 	class CharacterInfo
 	{
 		public ActorTableData actorTableData;
@@ -107,6 +117,9 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 		for (int i = 0; i < _listSwapCanvasListItem.Count; ++i)
 			_listSwapCanvasListItem[i].gameObject.SetActive(false);
 		_listSwapCanvasListItem.Clear();
+		for (int i = 0; i < _listFakeItem.Count; ++i)
+			_listFakeItem[i].gameObject.SetActive(false);
+		_listFakeItem.Clear();
 
 		ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
 		if (chapterTableData == null)
@@ -159,6 +172,7 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 			return 0;
 		});
 
+		bool existNotYetJoined = (PlayerData.instance.listCharacterData.Count < _listAllCharacterInfo.Count);
 		for (int i = 0; i < _listAllCharacterInfo.Count; ++i)
 		{
 			SwapCanvasListItem swapCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
@@ -167,6 +181,26 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 				powerLevel = _listAllCharacterInfo[i].characterData.powerLevel;
 			swapCanvasListItem.Initialize(_listAllCharacterInfo[i].actorTableData.actorId, powerLevel, chapterTableData.suggestedPowerLevel, null, OnClickListItem);
 			_listSwapCanvasListItem.Add(swapCanvasListItem);
+			// 빈슬롯과 함께 포함되어있는채로 재활용 해야하니 형제들 중 가장 마지막으로 밀어서 순서를 맞춘다.
+			swapCanvasListItem.cachedRectTransform.SetAsLastSibling();
+
+			// 줄이 바뀔만큼의 빈 슬롯을 넣는다.
+			if (existNotYetJoined && i == (PlayerData.instance.listCharacterData.Count - 1))
+			{
+				int needCount = 3;
+				int remainder = PlayerData.instance.listCharacterData.Count % 3;
+				if (remainder > 0) needCount += (needCount - remainder);
+
+				for (int j = 0; j < needCount; ++j)
+				{
+					CharacterListCanvasFakeItem fakeItem = _subContainer.GetCachedItem(contentFakeItemPrefab, contentRootRectTransform);
+					// 마지막줄 중앙 아이템에만 라인이 보이도록 설정
+					fakeItem.Initialize(j == (needCount - 2));
+					_listFakeItem.Add(fakeItem);
+					// 이거 역시 형제들 중 가장 마지막으로 밀어서 순서를 맞춰야한다.
+					fakeItem.cachedRectTransform.SetAsLastSibling();
+				}
+			}
 		}
 		if (onEnable)
 			OnClickListItem(BattleInstanceManager.instance.playerActor.actorId);

@@ -38,4 +38,27 @@ public class CharacterInfoInnerCanvas : MonoBehaviour
 		// Char CharDesc는 기본으로 나오고 돋보기로만 Story를 본다.
 	}
 	#endregion
+
+	public void OnClickMainCharacter()
+	{
+		if (CharacterInfoCanvas.instance.currentActorId == BattleInstanceManager.instance.playerActor.actorId)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_MainCharacterAlready"), 2.0f);
+			return;
+		}
+
+		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Chapter) == false)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_Chp1SwapUnavailable"), 2.0f);
+			return;
+		}
+
+		// Request
+		// GameUI_MainCharacterChanged
+	}
+
+	public void OnClickExperience()
+	{
+
+	}
 }

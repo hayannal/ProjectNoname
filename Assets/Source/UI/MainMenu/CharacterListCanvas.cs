@@ -43,7 +43,7 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 			sortButton.onChangedCallback = OnChangedSortType;
 		}
 
-		bool restore = StackCanvas.Push(gameObject);
+		bool restore = StackCanvas.Push(gameObject, false, null, OnPopStack);
 
 		if (DragThresholdController.instance != null)
 			DragThresholdController.instance.ApplyUIDragThreshold();
@@ -67,6 +67,13 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 		if (StackCanvas.Pop(gameObject))
 			return;
 
+		// 인포창 같은거에 stacked 되어서 disable 상태중에 Home키를 누르면 InfoCamera 모드를 복구해야한다.
+		// 이걸 위해 OnPop Action으로 감싸고 Push할때 넣어둔다.
+		OnPopStack();
+	}
+
+	void OnPopStack()
+	{
 		// 캐릭터 교체하다보면 _playerActor가 바뀌어져있을거다. 복구시켜준다.
 		if (_playerActor != BattleInstanceManager.instance.playerActor)
 		{

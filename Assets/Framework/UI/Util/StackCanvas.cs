@@ -90,7 +90,7 @@ public class StackCanvas : MonoBehaviour
 		// 그래서 이렇게 Push후 disable처리하는거다.
 		if (prevInfo != null)
 		{
-			if (prevInfo.optionalPopAction != null)
+			if (prevInfo.forceShow && optionalPopAction != null)
 				prevInfo.optionalPopAction.Invoke();
 			if (prevInfo.forceShow == false && prevInfo.canvasObject.activeSelf)
 				prevInfo.canvasObject.SetActive(false);
@@ -148,7 +148,7 @@ public class StackCanvas : MonoBehaviour
 		// 그 아래 창을 얻어와서 켜주는 처리를 한다.
 		if (currentInfo != null)
 		{
-			if (currentInfo.optionalPushAction != null)
+			if (currentInfo.forceShow && currentInfo.optionalPushAction != null)
 				currentInfo.optionalPushAction.Invoke();
 			if (currentInfo.forceShow == false && currentInfo.canvasObject.activeSelf == false)
 				currentInfo.canvasObject.SetActive(true);
@@ -171,8 +171,13 @@ public class StackCanvas : MonoBehaviour
 		{
 			if (e.Current == null)
 				continue;
-			if (index != 0 && e.Current.optionalPushAction != null)
-				e.Current.optionalPushAction.Invoke();
+			if (index != 0)
+			{
+				if (e.Current.forceShow && e.Current.optionalPushAction != null)
+					e.Current.optionalPushAction.Invoke();
+				if (e.Current.forceShow == false && e.Current.optionalPopAction != null)
+					e.Current.optionalPopAction.Invoke();
+			}
 			e.Current.canvasObject.SetActive(false);
 			++index;
 		}

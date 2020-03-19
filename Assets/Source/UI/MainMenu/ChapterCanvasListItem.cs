@@ -64,11 +64,8 @@ public class ChapterCanvasListItem : MonoBehaviour
 		if (chapterTableData == null)
 			return;
 
-		Vector2 screenPoint = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
-		Vector2 localPoint = Vector2.zero;
-		RectTransformUtility.ScreenPointToLocalPointInRectangle(contentRectTransform, screenPoint, UIInstanceManager.instance.GetCachedCameraMain(), out localPoint);
 		bool up = false;
-		if (localPoint.y > 0.0f)
+		if (contentRectTransform.position.y < Screen.height * 0.5f)
 			up = true;
 
 		string text = string.Format("{0}\n\n{1}", UIString.instance.GetString(chapterTableData.nameId), UIString.instance.GetString(chapterTableData.descriptionId));

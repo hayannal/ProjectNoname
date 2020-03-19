@@ -283,15 +283,12 @@ public class DotMainMenuCanvas : MonoBehaviour
 		// DotMainMenu는 열려있는채로 냅두고 다른 창을 연다.
 		// 대신 화면 어둡게 한건 풀어야한다. - 이건 Stack구조에서 알아서 호출해준다.
 		//gameObject.SetActive(false);
-		UIInstanceManager.instance.ShowCanvasAsync("CharacterListCanvas", () =>
-		{
-
-		});
+		UIInstanceManager.instance.ShowCanvasAsync("CharacterListCanvas", null);
 	}
 
 	public void OnClickChapterButton()
 	{
-
+		UIInstanceManager.instance.ShowCanvasAsync("ChapterCanvas", null);
 	}
 
 	public void OnClickResearchButton()

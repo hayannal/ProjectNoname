@@ -40,7 +40,10 @@ public class TooltipCanvas : MonoBehaviour
 		if (show)
 		{
 			if (_instance != null && _instance.gameObject != null && _instance.gameObject.activeSelf)
-				_instance.SetIgnoreHideFrameCount(1);
+			{
+				// 같을때는 Ignore하면 안된다. 그래서 인자를 전달한다.
+				_instance.CheckIgnoreHideFrameCount(direction, text, textWidth, targetTransform, offset);
+			}
 
 			instance.SetDirectionType(direction);
 			instance.SetTooltipText(text, textWidth);
@@ -65,9 +68,15 @@ public class TooltipCanvas : MonoBehaviour
 	public Text[] tooltipTextList;
 	public RectTransform[] tooltipTextRectTransform;
 
-	public void SetIgnoreHideFrameCount(int frameCount)
+	public void CheckIgnoreHideFrameCount(eDirection direction, string text, float textWidth, Transform targetTransform, Vector2 offset)
 	{
-		_ignoreFrameCount = frameCount;
+		bool differentTooltip = false;
+		// 다 검사하기엔 너무 많아서..
+		if ((int)direction != _currentIndex || cachedRectTransform.parent != targetTransform.parent)
+			differentTooltip = true;
+
+		if (differentTooltip)
+			_ignoreFrameCount = 1;
 	}
 
 	int _ignoreFrameCount;

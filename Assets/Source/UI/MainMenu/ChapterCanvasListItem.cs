@@ -13,6 +13,7 @@ public class ChapterCanvasListItem : MonoBehaviour
 	public Text stageText;
 	public GameObject clearObject;
 	public GameObject selectObject;
+	public GameObject blackObject;
 
 	public int chapter { get; set; }
 	public void Initialize(int chapter)
@@ -30,6 +31,7 @@ public class ChapterCanvasListItem : MonoBehaviour
 			stage = PlayerData.instance.highestClearStage;
 		stageText.text = UIString.instance.GetString("GameUI_StageFraction", stage, StageManager.instance.GetMaxStage(chapter));
 		clearObject.SetActive(clearChapter);
+		blackObject.SetActive(disableChapter);
 
 		if (disableChapter)
 		{
@@ -39,13 +41,13 @@ public class ChapterCanvasListItem : MonoBehaviour
 		}
 		else if (clearChapter)
 		{
-			blurImage.color = new Color(0.4f, 1.0f, 0.4f, 0.0f);
-			gradient.color1 = new Color(0.0f, 1.0f, 0.0f);
+			blurImage.color = new Color(0.192f, 0.866f, 0.819f, 0.0f);
+			gradient.color1 = new Color(0.117f, 0.914f, 0.914f);
 			gradient.color2 = new Color(0.8f, 0.8f, 0.8f);
 		}
 		else
 		{
-			blurImage.color = new Color(1.0f, 0.4f, 0.4f, 0.0f);
+			blurImage.color = new Color(0.792f, 0.776f, 0.615f, 0.0f);
 			gradient.color1 = new Color(1.0f, 0.0f, 0.0f);
 			gradient.color2 = new Color(0.8f, 0.8f, 0.8f);
 		}

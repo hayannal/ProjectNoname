@@ -184,4 +184,15 @@ public class CharacterShowCanvasBase : MonoBehaviour
 		_playerActor.cachedTransform.Rotate(0.0f, ratio, 0.0f, Space.Self);
 	}
 	#endregion
+
+	public void ChangeExperience()
+	{
+		CustomRenderer.instance.RenderTextureResolutionFactor = _lastRendererResolutionFactor;
+		UIInstanceManager.instance.GetCachedCameraMain().fieldOfView = _lastFov;
+		_playerActor.actionController.PlayActionByActionName("Idle");
+
+		CameraFovController.instance.enabled = true;
+		CustomFollowCamera.instance.enabled = true;
+		CustomFollowCamera.instance.targetTransform = _playerActor.cachedTransform;
+	}
 }

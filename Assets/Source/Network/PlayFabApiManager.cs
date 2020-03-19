@@ -87,8 +87,10 @@ public class PlayFabApiManager : MonoBehaviour
 		{
 			OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("SystemUI_DisconnectServer"), () =>
 			{
+				// 모든 정보를 다시 받아야하기 때문에 로그인부터 하는게 맞다.
+				PlayerData.instance.ResetData();
 				SceneManager.LoadScene(0);
-			});
+			}, 100);
 		}
 	}
 

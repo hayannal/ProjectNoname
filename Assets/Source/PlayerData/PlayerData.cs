@@ -257,6 +257,14 @@ public class PlayerData : MonoBehaviour
 		}
 	}
 
+	public void ResetData()
+	{
+		// 이게 가장 중요. 다른 것들은 받을때 알아서 다 비우고 다시 셋팅한다.
+		loginned = false;
+
+		// OnRecvPlayerData 함수들 두번 받아도 아무 문제없게 짜두면 여기서 딱히 할일은 없을거다.
+	}
+
 	public void AddNewCharacter(string actorId, string serverCharacterId, int powerLevel)
 	{
 		CharacterData characterData = new CharacterData();

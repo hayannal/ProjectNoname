@@ -541,19 +541,16 @@ public class PlayFabApiManager : MonoBehaviour
 	}
 
 	int _requestChangeChapter;
-	bool _requestChangeChaos;
-	public void RequestChangeChapter(int chapter, bool chaos, Action successCallback, Action failureCallback = null)
+	public void RequestChangeChapter(int chapter, Action successCallback, Action failureCallback = null)
 	{
 		_requestChangeChapter = chapter;
-		_requestChangeChaos = chaos;
-		UpdateUserDataRequest request = new UpdateUserDataRequest() { Data = new Dictionary<string, string>() { { "selectedChapter", chapter.ToString() }, { "chaos", chaos ? "1" : "0" } } };
+		UpdateUserDataRequest request = new UpdateUserDataRequest() { Data = new Dictionary<string, string>() { { "selectedChapter", chapter.ToString() } } };
 		Action action = () =>
 		{
 			PlayFabClientAPI.UpdateUserData(request, (success) =>
 			{
 				RetrySendManager.instance.OnSuccess();
 				PlayerData.instance.selectedChapter = _requestChangeChapter;
-				PlayerData.instance.chaosMode = _requestChangeChaos;
 				if (successCallback != null) successCallback.Invoke();
 			}, (error) =>
 			{

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class ChapterCanvas : MonoBehaviour
 {
@@ -131,14 +132,20 @@ public class ChapterCanvas : MonoBehaviour
 		if (_selectedChapter == 0)
 			return;
 
+		if (_selectedChapter == PlayerData.instance.selectedChapter)
+		{
+			OnClickHomeButton();
+			return;
+		}
+
+		if (_selectedChapter > PlayerData.instance.highestPlayChapter)
+			return;
+
 		// Request
-
-		
-		
-	}
-
-	void ChangeChapter()
-	{
-		DelayedLoadingCanvas.Show(true);
+		PlayFabApiManager.instance.RequestChangeChapter(_selectedChapter, () =>
+		{
+			DelayedLoadingCanvas.Show(true);
+			SceneManager.LoadScene(0);
+		});
 	}
 }

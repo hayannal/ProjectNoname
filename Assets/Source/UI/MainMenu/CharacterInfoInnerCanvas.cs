@@ -58,7 +58,22 @@ public class CharacterInfoInnerCanvas : MonoBehaviour
 			return;
 
 		// Request
-		// GameUI_MainCharacterChanged
+		PlayFabApiManager.instance.RequestSelectMainCharacter(CharacterInfoCanvas.instance.currentActorId, () =>
+		{
+			ChangeMainCharacter(CharacterInfoCanvas.instance.currentActorId);
+		});
+	}
+
+	void ChangeMainCharacter(string actorId)
+	{
+		// 이미 이 버튼을 누를 수 있다는건 액터로딩이 끝나있단 얘기다. 찾으면 있어야한다.
+		PlayerActor newPlayerActor = BattleInstanceManager.instance.GetCachedPlayerActor(actorId);
+		if (newPlayerActor == null)
+			return;
+
+		newPlayerActor.OnChangedMainCharacter();
+		PlayerData.instance.mainCharacterId = newPlayerActor.actorId;
+		ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_MainCharacterChanged"), 2.0f);
 	}
 
 	public void OnClickExperience()

@@ -160,7 +160,7 @@ public class PlayerActor : Actor
 		FadeCanvas.instance.FadeIn(1.3f);
 	}
 
-	void OnChangedMainCharacter(bool experience = false)
+	public void OnChangedMainCharacter(bool experience = false)
 	{
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
 		if (lobby == false)
@@ -168,6 +168,8 @@ public class PlayerActor : Actor
 
 		BattleInstanceManager.instance.playerActor = this;
 		CustomFollowCamera.instance.targetTransform = cachedTransform;
+		if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
+			DotMainMenuCanvas.instance.targetTransform = cachedTransform;
 
 		if (experience)
 			return;
@@ -180,21 +182,6 @@ public class PlayerActor : Actor
 			InitializeCanvas();
 
 		StageManager.instance.PreparePowerSource();
-	}
-
-	public void ChangeMainCharacter()
-	{
-		// UI에서 대표캐릭터 바꿀때 쓰는 함수
-		// OnChangedMainCharacter 호출이 패스되면서 BattleInstanceManager.instance.playerActor 에 설정되어있지 않은 상태다.
-		// 이미 교체할 캐릭터는 만들어진 상태니 GetCachedPlayerActor 함수로 찾으면 찾아져야한다.
-
-		// 먼저 이전 playerActor를 비활성화
-		Vector3 position = BattleInstanceManager.instance.playerActor.cachedTransform.position;
-		BattleInstanceManager.instance.playerActor.gameObject.SetActive(false);
-
-		// 메인 캐릭터 처리.
-		OnChangedMainCharacter();
-		BattleInstanceManager.instance.playerActor.cachedTransform.position = position;
 	}
 
 	void Update()

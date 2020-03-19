@@ -145,7 +145,11 @@ public class DotMainMenuCanvas : MonoBehaviour
 	void Update()
     {
 		if (StackCanvas.IsInStack(gameObject))
+		{
+			if (_prevTargetTransform != targetTransform && targetTransform != null)
+				_prevTargetTransform = targetTransform;
 			return;
+		}
 
 		if (_prevTargetTransform != targetTransform && targetTransform != null)
 		{

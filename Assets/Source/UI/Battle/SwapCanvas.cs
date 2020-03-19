@@ -90,24 +90,13 @@ public class SwapCanvas : MonoBehaviour
 		stagePenaltyText.gameObject.SetActive(false);
 		if (StageDataManager.instance.existNextStageInfo)
 		{
-			string penaltyString = "";
-			if (!string.IsNullOrEmpty(StageDataManager.instance.nextStageTableData.penaltyRepresentative))
+			string penaltyString = GetPenaltyString(StageDataManager.instance.nextStageTableData);
+			// 카오스 모드 중에는 현재 걸려있는걸 추가로 검사한다.
+			if (string.IsNullOrEmpty(penaltyString) && PlayerData.instance.chaosMode && MainSceneBuilder.instance.lobby == false && BattleInstanceManager.instance.playerActor.currentStagePenaltyTableData != null)
 			{
-				string[] penaltyParameterList = UIString.instance.ParseParameterString(StageDataManager.instance.nextStageTableData.repreParameter);
-				penaltyString = UIString.instance.GetString(StageDataManager.instance.nextStageTableData.penaltyRepresentative, penaltyParameterList);
-			}
-			else
-			{
-				if (StageDataManager.instance.nextStageTableData.stagePenaltyId.Length == 1)
-				{
-					// 패널티가 하나만 있을땐 직접 구해와서 표시해준다.
-					StagePenaltyTableData stagePenaltyTableData = TableDataManager.instance.FindStagePenaltyTableData(StageDataManager.instance.nextStageTableData.stagePenaltyId[0]);
-					if (stagePenaltyTableData != null)
-					{
-						string[] nameParameterList = UIString.instance.ParseParameterString(stagePenaltyTableData.nameParameter);
-						penaltyString = UIString.instance.GetString(stagePenaltyTableData.penaltyName, nameParameterList);
-					}
-				}
+				StagePenaltyTableData stagePenaltyTableData = BattleInstanceManager.instance.playerActor.currentStagePenaltyTableData;
+				string[] nameParameterList = UIString.instance.ParseParameterString(stagePenaltyTableData.nameParameter);
+				penaltyString = UIString.instance.GetString(stagePenaltyTableData.penaltyName, nameParameterList);
 			}
 			if (string.IsNullOrEmpty(penaltyString) == false)
 			{
@@ -125,6 +114,30 @@ public class SwapCanvas : MonoBehaviour
 		// 파워레벨은 항상 표시
 		string rangeString = UIString.instance.GetString("GameUI_NumberRange", chapterTableData.suggestedPowerLevel, chapterTableData.suggestedMaxPowerLevel);
 		suggestPowerLevelText.SetLocalizedText(string.Format("{0} {1}", UIString.instance.GetString("GameUI_SuggestedPowerLevel"), rangeString));
+	}
+
+	public static string GetPenaltyString(StageTableData stageTableData)
+	{
+		string penaltyString = "";
+		if (!string.IsNullOrEmpty(stageTableData.penaltyRepresentative))
+		{
+			string[] penaltyParameterList = UIString.instance.ParseParameterString(stageTableData.repreParameter);
+			penaltyString = UIString.instance.GetString(stageTableData.penaltyRepresentative, penaltyParameterList);
+		}
+		else
+		{
+			if (stageTableData.stagePenaltyId.Length == 1)
+			{
+				// 패널티가 하나만 있을땐 직접 구해와서 표시해준다.
+				StagePenaltyTableData stagePenaltyTableData = TableDataManager.instance.FindStagePenaltyTableData(stageTableData.stagePenaltyId[0]);
+				if (stagePenaltyTableData != null)
+				{
+					string[] nameParameterList = UIString.instance.ParseParameterString(stagePenaltyTableData.nameParameter);
+					penaltyString = UIString.instance.GetString(stagePenaltyTableData.penaltyName, nameParameterList);
+				}
+			}
+		}
+		return penaltyString;
 	}
 
 	void RefreshChapterInfo()

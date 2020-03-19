@@ -277,6 +277,7 @@ public class PlayerData : MonoBehaviour
 		loginned = false;
 
 		// OnRecvPlayerData 함수들 두번 받아도 아무 문제없게 짜두면 여기서 딱히 할일은 없을거다.
+		// 두번 받는거 뿐만 아니라 모든 변수를 다 덮어서 기록하는지도 확인하면 완벽하다.(건너뛰면 이전값이 남을테니 위험)
 	}
 
 	public void AddNewCharacter(string actorId, string serverCharacterId, int powerLevel)

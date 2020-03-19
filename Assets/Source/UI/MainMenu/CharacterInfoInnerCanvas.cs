@@ -57,11 +57,9 @@ public class CharacterInfoInnerCanvas : MonoBehaviour
 		if (characterData == null)
 			return;
 
-		// Request
-		PlayFabApiManager.instance.RequestSelectMainCharacter(CharacterInfoCanvas.instance.currentActorId, () =>
-		{
-			ChangeMainCharacter(CharacterInfoCanvas.instance.currentActorId);
-		});
+		// 선처리하고 에러가 나면 그때 에러팝업 뜨는 형태로 바꾸기로 한다.
+		ChangeMainCharacter(CharacterInfoCanvas.instance.currentActorId);
+		PlayFabApiManager.instance.RequestSelectMainCharacter(CharacterInfoCanvas.instance.currentActorId, null);
 	}
 
 	void ChangeMainCharacter(string actorId)

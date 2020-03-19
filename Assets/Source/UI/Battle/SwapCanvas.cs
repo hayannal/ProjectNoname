@@ -63,7 +63,7 @@ public class SwapCanvas : MonoBehaviour
 
 		if (MainSceneBuilder.instance.lobby)
 			RefreshChapterInfo();
-		else if (PlayerData.instance.chaosMode && string.IsNullOrEmpty(StageManager.instance.nextMapTableData.bossName))
+		else if (PlayerData.instance.currentChaosMode && string.IsNullOrEmpty(StageManager.instance.nextMapTableData.bossName))
 			RefreshChapterInfo();
 		else
 			RefreshSwapInfo();
@@ -92,7 +92,7 @@ public class SwapCanvas : MonoBehaviour
 		{
 			string penaltyString = GetPenaltyString(StageDataManager.instance.nextStageTableData);
 			// 카오스 모드 중에는 현재 걸려있는걸 추가로 검사한다.
-			if (string.IsNullOrEmpty(penaltyString) && PlayerData.instance.chaosMode && MainSceneBuilder.instance.lobby == false && BattleInstanceManager.instance.playerActor.currentStagePenaltyTableData != null)
+			if (string.IsNullOrEmpty(penaltyString) && PlayerData.instance.currentChaosMode && MainSceneBuilder.instance.lobby == false && BattleInstanceManager.instance.playerActor.currentStagePenaltyTableData != null)
 			{
 				StagePenaltyTableData stagePenaltyTableData = BattleInstanceManager.instance.playerActor.currentStagePenaltyTableData;
 				string[] nameParameterList = UIString.instance.ParseParameterString(stagePenaltyTableData.nameParameter);
@@ -152,7 +152,7 @@ public class SwapCanvas : MonoBehaviour
 			return;
 
 		chapterRomanNumberText.text = GetChapterRomanNumberString(StageManager.instance.playChapter);
-		if (PlayerData.instance.chaosMode)
+		if (PlayerData.instance.currentChaosMode)
 		{
 			chapterNameText.SetLocalizedText(UIString.instance.GetString("GameUI_ChaosMode"));
 			//chapterInfoButton.interactable = false;
@@ -315,7 +315,7 @@ public class SwapCanvas : MonoBehaviour
 	public void OnClickChapterInfoButton()
 	{
 		string descriptionId = "";
-		if (PlayerData.instance.chaosMode)
+		if (PlayerData.instance.currentChaosMode)
 			descriptionId = "GameUI_ChaosModeDesc";
 		else
 		{

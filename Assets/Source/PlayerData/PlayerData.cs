@@ -36,12 +36,26 @@ public class PlayerData : MonoBehaviour
 	public ObscuredInt highestPlayChapter { get; set; }
 	public ObscuredInt highestClearStage { get; set; }
 	public ObscuredInt selectedChapter { get; set; }
+	// 이 카오스는 마지막 챕터의 카오스 상태를 저장하는 값이다. 이건 4챕터 이후에 도전모드 상태에서 질때 바뀌며 유저가 선택으로 바꾸는 값이 아니다.
 	public ObscuredBool chaosMode { get; set; }
+	public ObscuredInt purifyCount { get; set; }
 	public ObscuredInt sealCount { get; set; }
 	public ObscuredBool sharedDailyBoxOpened { get; set; }
-	public ObscuredInt purifyCount { get; set; }
 
 	public DateTime dailyBoxResetTime { get; private set; }
+
+	// 이 카오스가 현재 카오스 상태로 스테이지가 셋팅되어있는지를 알려주는 값이다.
+	// 이전 챕터로 내려갈 경우 서버에 저장된 chaosMode는 1이더라도 스테이지 구성은 도전모드로 셋팅하게 되며
+	// 이땐 false를 리턴하게 될 것이다.
+	public bool currentChaosMode
+	{
+		get
+		{
+			if (selectedChapter < highestPlayChapter)
+				return false;
+			return chaosMode;
+		}
+	}
 
 	#region Player Info For Client
 	public void OnRecvPlayerInfoForClient()

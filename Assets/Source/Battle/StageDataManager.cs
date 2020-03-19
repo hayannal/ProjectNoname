@@ -22,12 +22,12 @@ public class StageDataManager : MonoBehaviour
 	public bool CalcNextStageInfo(int chapter, int nextStage, int highestPlayChapter, int highestClearStage)
 	{
 		nextStageTableData = null;
-		bool selectedChaosMode = PlayerData.instance.chaosMode;
+		bool selectedChaosMode = PlayerData.instance.currentChaosMode;
 		StageTableData stageTableData = BattleInstanceManager.instance.GetCachedStageTableData(chapter, nextStage, nextStage == 0 ? false : selectedChaosMode);
 		if (stageTableData == null)
 		{
 #if UNITY_EDITOR
-			Debug.LogErrorFormat("Not found StageTableData. chapter = {0} / stage = {1} / chaos = {2}", chapter, nextStage, PlayerData.instance.chaosMode);
+			Debug.LogErrorFormat("Not found StageTableData. chapter = {0} / stage = {1} / chaos = {2}", chapter, nextStage, selectedChaosMode);
 #endif
 			return false;
 		}
@@ -92,7 +92,7 @@ public class StageDataManager : MonoBehaviour
 				int maxStage = StageManager.instance.GetMaxStage(chapter);
 				for (int i = 0; i <= maxStage; ++i)
 				{
-					StageTableData diffData = BattleInstanceManager.instance.GetCachedStageTableData(chapter, i, PlayerData.instance.chaosMode);
+					StageTableData diffData = BattleInstanceManager.instance.GetCachedStageTableData(chapter, i, PlayerData.instance.currentChaosMode);
 					if (stageTableData.grouping != diffData.grouping)
 						continue;
 

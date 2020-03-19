@@ -138,7 +138,7 @@ public class GatePillar : MonoBehaviour
 			if (ContentsManager.IsTutorialChapter())
 				text = UIString.instance.GetString("GameUI_TouchToMove");
 			else
-				text = UIString.instance.GetString("GameUI_ChapterInIndicator", PlayerData.instance.selectedChapter, PlayerData.instance.chaosMode ? UIString.instance.GetString("GameUI_ChapterIndicatorParam") : "");	
+				text = UIString.instance.GetString("GameUI_ChapterInIndicator", PlayerData.instance.selectedChapter, PlayerData.instance.currentChaosMode ? UIString.instance.GetString("GameUI_ChapterIndicatorParam") : "");	
 		}
 		else
 		{

@@ -199,7 +199,7 @@ public class BattleModeProcessorBase
 
 	void OnRecvEndGame(bool clear, string newCharacterId)
 	{
-		if (PlayerData.instance.chaosMode == false && PlayerData.instance.highestPlayChapter == PlayerData.instance.selectedChapter)
+		if (PlayerData.instance.currentChaosMode == false && PlayerData.instance.highestPlayChapter == PlayerData.instance.selectedChapter)
 		{
 			if (clear)
 			{

@@ -90,7 +90,7 @@ public class StackCanvas : MonoBehaviour
 		// 그래서 이렇게 Push후 disable처리하는거다.
 		if (prevInfo != null && prevInfo.canvasObject != null)
 		{
-			if (prevInfo.forceShow && optionalPopAction != null)
+			if (prevInfo.forceShow && prevInfo.optionalPopAction != null)
 				prevInfo.optionalPopAction.Invoke();
 			if (prevInfo.forceShow == false && prevInfo.canvasObject.activeSelf)
 				prevInfo.canvasObject.SetActive(false);

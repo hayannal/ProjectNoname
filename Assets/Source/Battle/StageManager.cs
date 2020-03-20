@@ -145,8 +145,6 @@ public class StageManager : MonoBehaviour
 
 	public int GetMaxStage(int chapter)
 	{
-		if (chapter == 0)
-			return BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxTutorialStage");
 		return TableDataManager.instance.FindChapterTableData(playChapter).maxStage;
 	}
 

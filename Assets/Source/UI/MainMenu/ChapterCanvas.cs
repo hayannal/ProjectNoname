@@ -88,6 +88,11 @@ public class ChapterCanvas : MonoBehaviour
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_CannotGoChapter", PlayerData.instance.highestPlayChapter), 1.0f);
 			return;
 		}
+		if (chapter == 0)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_CannotGoTrainingChapter"), 1.0f);
+			return;
+		}
 
 		_selectedChapter = chapter;
 		RefreshChapterInfo();

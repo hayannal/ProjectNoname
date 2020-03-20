@@ -102,13 +102,8 @@ public class BattleResultCanvas : MonoBehaviour
 
 		if (StageManager.instance.playChapter == 0)
 		{
-			chapterRomanNumberText.text =  UIString.instance.GetString("GameUI_Chapter", "?");
-			chapterNameText.SetLocalizedText(UIString.instance.GetString("GameUI_TrainingChapterName"));
-			chapterInfoButton.interactable = false;
-			chapterInfoImage.gameObject.SetActive(false);
 			clearRewardText.SetLocalizedText(UIString.instance.GetString(_clear ? "GameUI_Chp0ClearRewardGot" : "GameUI_Chp0ClearReward"));
 			clearRewardText.gameObject.SetActive(true);
-			return;
 		}
 
 		if (StageManager.instance.playChapter == 1)

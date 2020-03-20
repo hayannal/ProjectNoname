@@ -33,7 +33,13 @@ public class ChapterCanvasListItem : MonoBehaviour
 		clearObject.SetActive(clearChapter);
 		blackObject.SetActive(disableChapter);
 
-		if (disableChapter)
+		if (chapter == 0)
+		{
+			blurImage.color = new Color(0.623f, 0.623f, 0.443f, 0.0f);
+			gradient.color1 = new Color(0.411f, 0.411f, 0.094f);
+			gradient.color2 = new Color(0.8f, 0.8f, 0.8f);
+		}
+		else if (disableChapter)
 		{
 			blurImage.color = new Color(0.5f, 0.5f, 0.5f, 0.0f);
 			gradient.color1 = Color.white;

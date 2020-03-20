@@ -226,6 +226,8 @@ public sealed class LocalPlayerController : BaseCharacterController
 				actor.targetingProcessor.SetCustomTargetPosition(targetPosition);
 				if (GatePillar.instance != null && GatePillar.instance.gameObject.activeSelf)
 					++GatePillar.instance.raycastCount;
+				if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
+					DotMainMenuCanvas.instance.OnClickBackButton();
 			}
 		}
 

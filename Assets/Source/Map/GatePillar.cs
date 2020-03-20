@@ -273,8 +273,6 @@ public class GatePillar : MonoBehaviour
 					}, () => {
 						OptionManager.instance.suggestedChapter = StageManager.instance.playChapter;
 					});
-					if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
-						DotMainMenuCanvas.instance.ToggleShow();
 					return false;
 				}
 			}

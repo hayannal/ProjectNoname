@@ -331,7 +331,7 @@ public class PlayFabApiManager : MonoBehaviour
 
 	// 게이트 필라 쳐서 들어가는 패킷. 에너지를 소모하지 않는 튜토때도 패킷은 보낸다.
 	// 클라우드 스크립트로 처리해서 정산을 할 기회를 1회 올린다.
-	public void RequestEnterGame(bool retryByCrash, string entFlgByCrash, Action<bool> successCallback)
+	public void RequestEnterGame(bool retryByCrash, string entFlgByCrash, Action<bool> successCallback, Action failureCallback)
 	{
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
@@ -347,6 +347,7 @@ public class PlayFabApiManager : MonoBehaviour
 		}, (error) =>
 		{
 			HandleCommonError(error);
+			if (failureCallback != null) failureCallback.Invoke();
 		});
 	}
 

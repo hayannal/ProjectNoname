@@ -356,6 +356,7 @@ public class GatePillar : MonoBehaviour
 	// 클라이언트 에너지 선처리. 패킷을 날려놓고 페이드아웃쯤에 오는 서버 응답에 따라 처리가 나뉜다.
 	bool _waitEnergyServerResponse;
 	bool _enterGameServerFailure;
+	bool _networkFailure;
 	void PrepareUseEnergy()
 	{
 		if (PlayerData.instance.clientOnly)
@@ -377,7 +378,16 @@ public class GatePillar : MonoBehaviour
 		{
 			if (_waitEnergyServerResponse)
 			{
+				// 에너지 부족
 				_enterGameServerFailure = serverFailure;
+				_waitEnergyServerResponse = false;
+			}
+		}, () =>
+		{
+			if (_waitEnergyServerResponse)
+			{
+				// 그외 접속불가 네트워크 에러
+				_networkFailure = true;
 				_waitEnergyServerResponse = false;
 			}
 		});
@@ -447,12 +457,14 @@ public class GatePillar : MonoBehaviour
 		{
 			while (_waitEnergyServerResponse)
 				yield return Timing.WaitForOneFrame;
-			if (_enterGameServerFailure)
+			if (_enterGameServerFailure || _networkFailure)
 			{
 				ResetFlagForServerFailure();
 				FadeCanvas.instance.FadeIn(0.4f);
-				ShowRefillEnergyCanvas();
+				if (_enterGameServerFailure)
+					ShowRefillEnergyCanvas();
 				_enterGameServerFailure = false;
+				_networkFailure = false;
 				// 알파가 어느정도 빠지면 _processing을 풀어준다.
 				yield return Timing.WaitForSeconds(0.2f);
 				_processing = false;				

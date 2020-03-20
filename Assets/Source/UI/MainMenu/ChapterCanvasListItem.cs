@@ -70,7 +70,7 @@ public class ChapterCanvasListItem : MonoBehaviour
 		if (contentRectTransform.position.y < Screen.height * 0.5f)
 			up = true;
 
-		string text = string.Format("{0}\n\n{1}", UIString.instance.GetString(chapterTableData.nameId), UIString.instance.GetString(chapterTableData.descriptionId));
+		string text = string.Format("<size=18>{0}</size>\n\n{1}", UIString.instance.GetString(chapterTableData.nameId), UIString.instance.GetString(chapterTableData.descriptionId));
 		TooltipCanvas.Show(true, up ? TooltipCanvas.eDirection.Top: TooltipCanvas.eDirection.Bottom, text, 300, contentRectTransform.transform, new Vector2(0.0f, up ? 45.0f : -45.0f));
 	}
 

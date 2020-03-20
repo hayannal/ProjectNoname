@@ -259,7 +259,7 @@ public class MainSceneBuilder : MonoBehaviour
 #if !UNITY_EDITOR
 		Debug.LogWarning("FFFFFFFFF");
 #endif
-		BattleInstanceManager.instance.GetCachedObject(StageManager.instance.gatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
+		BattleInstanceManager.instance.GetCachedObject(GetCurrentGatePillarPrefab(), StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
 #if !UNITY_EDITOR
 		Debug.LogWarning("GGGGGGGGG");
 #endif
@@ -327,6 +327,11 @@ public class MainSceneBuilder : MonoBehaviour
 		_waitUpdateRemainCount = 2;
 		mainSceneBuilding = false;
 		s_firstTimeAfterLaunch = false;
+	}
+
+	GameObject GetCurrentGatePillarPrefab()
+	{
+		return StageManager.instance.gatePillarPrefab;
 	}
 
 	// Update is called once per frame

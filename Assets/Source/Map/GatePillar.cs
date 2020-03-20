@@ -230,6 +230,8 @@ public class GatePillar : MonoBehaviour
 			return false;
 		if (DelayedLoadingCanvas.IsShow())
 			return false;
+		if (_processing)
+			return false;
 
 		if (MainSceneBuilder.instance.lobby)
 		{

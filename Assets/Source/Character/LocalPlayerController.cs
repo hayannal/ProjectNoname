@@ -156,6 +156,12 @@ public sealed class LocalPlayerController : BaseCharacterController
 			if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null)
 				TitleCanvas.instance.FadeTitle();
 
+			if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
+			{
+				DotMainMenuCanvas.instance.OnClickBackButton();
+				return;
+			}
+
 			if (_raycastHitList == null)
 				_raycastHitList = new RaycastHit[20];
 
@@ -226,8 +232,6 @@ public sealed class LocalPlayerController : BaseCharacterController
 				actor.targetingProcessor.SetCustomTargetPosition(targetPosition);
 				if (GatePillar.instance != null && GatePillar.instance.gameObject.activeSelf)
 					++GatePillar.instance.raycastCount;
-				if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
-					DotMainMenuCanvas.instance.OnClickBackButton();
 			}
 		}
 

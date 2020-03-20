@@ -33,6 +33,9 @@ public class SettingCanvas : MonoBehaviour
 		if (LobbyCanvas.instance != null)
 			LobbyCanvas.instance.lobbyOptionButton.gameObject.SetActive(false);
 
+		if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
+			DotMainMenuCanvas.instance.OnClickBackButton();
+
 		LoadOption();
 	}
 

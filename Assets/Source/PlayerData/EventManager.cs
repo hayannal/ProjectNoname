@@ -19,6 +19,7 @@ public class EventManager : MonoBehaviour
 	static EventManager _instance = null;
 
 	// 서버이벤트는 서버에 저장되서 클라를 지워도 유지되게 해준다. 사실상 퀘스트 느낌.
+	// 그래서 맨앞에 안보이는 투명판을 깔고 클릭할때부터 이벤트가 진행되게 한다.
 	public enum eServerEvent
 	{
 		OpenChaos,
@@ -30,6 +31,9 @@ public class EventManager : MonoBehaviour
 	{
 		GainNewCharacter,
 		NewChapter,
+		OpenTimeSpace,
+		//OpenAnnihilation,
+		NeedUpdate,
 	}
 
 	struct ServerEventInfo
@@ -130,10 +134,10 @@ public class EventManager : MonoBehaviour
 		}
 
 		// 서버이벤트 없을때만 즉시 실행
-		OnCompleteServerLobbyEvent();
+		OnCompleteLobbyEvent();
 	}
 
-	public void OnCompleteServerLobbyEvent()
+	public void OnCompleteLobbyEvent()
 	{
 		// 로비에서 진행된 서버 이벤트가 끝나면 클라 이벤트를 1회 실행시켜준다.
 		if (_queClientEventInfo.Count > 0)
@@ -169,6 +173,14 @@ public class EventManager : MonoBehaviour
 				{
 					NewChapterCanvas.instance.RefreshChapterInfo(clientEventInfo.iValue);
 				}, false);
+				break;
+			case eClientEvent.OpenTimeSpace:
+				// 여긴 터치 받고 이펙트 보여주고 캔버스 띄워야하니 코루틴으로 처리한다.
+				// OpenChaos처럼 투명판 깔고 진행하도록 한다.
+				break;
+			case eClientEvent.NeedUpdate:
+				// 다른 이벤트와 달리 게이트필라에 플래그를 걸어두기만 하고
+				// 게이트필라를 칠때 안내메시지가 뜨게 처리한다.
 				break;
 		}
 	}

@@ -327,7 +327,7 @@ public class SwapCanvas : MonoBehaviour
 		if (string.IsNullOrEmpty(descriptionId))
 			return;
 
-		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, UIString.instance.GetString(descriptionId), 200, chapterInfoButton.transform, new Vector2(0.0f, -35.0f));
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, UIString.instance.GetString(descriptionId), 300, chapterInfoButton.transform, new Vector2(0.0f, -35.0f));
 	}
 
 	public void OnClickBossInfoButton()

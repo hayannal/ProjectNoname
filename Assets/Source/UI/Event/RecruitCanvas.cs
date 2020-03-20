@@ -104,7 +104,7 @@ public class RecruitCanvas : CharacterShowCanvasBase
 		if (actorTableData == null)
 			return;
 
-		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, UIString.instance.GetString(actorTableData.storyId), 200, characterNameText.transform, new Vector2(0.0f, -35.0f));
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, UIString.instance.GetString(actorTableData.storyId), 300, characterNameText.transform, new Vector2(0.0f, -35.0f));
 	}
 
 	public void OnClickDetailButton()

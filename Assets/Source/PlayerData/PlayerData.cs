@@ -352,10 +352,13 @@ public class PlayerData : MonoBehaviour
 			}
 		}
 
-		if (userData.ContainsKey("chaos"))
+		// 만약 디비에 정보가 없을 수 있다면(나중에 추가됐거나 하는 이유 등등) 이렇게 직접 초기화 하는게 안전하다.
+		// 이 SHcha값은 항상 들어있을테지만 샘플로 이렇게 초기화 하는 형태를 보여주기 위해 남겨둔다.
+		chaosMode = false;
+		if (userData.ContainsKey("SHcha"))
 		{
 			int intValue = 0;
-			if (int.TryParse(userData["chaos"].Value, out intValue))
+			if (int.TryParse(userData["SHcha"].Value, out intValue))
 				chaosMode = (intValue == 1);
 		}
 

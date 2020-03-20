@@ -8,11 +8,18 @@ public static class ContentsManager
 	{
 		Chapter = 2,
 		Research = 3,
+		//Annihilation = 5,
 	}
 
 	public enum eOpenContentsByResearchLevel
 	{
 		SecondDailyBox = 5,
+	}
+
+	public enum eOpenContensByChapterStage
+	{
+		TimeSpace,
+		EquipBox,
 	}
 
 	public static bool IsTutorialChapter()
@@ -33,6 +40,23 @@ public static class ContentsManager
 	{
 		//if (PlayerData.instance.researchLevel >= (int)content)
 		//	return true;
+		return false;
+	}
+
+	public static bool IsOpen(eOpenContensByChapterStage content)
+	{
+		switch (content)
+		{
+			// 여기 이건 챕터랑 스테이지 둘다 체크해야해서 enum값으로 안하고 이렇게 처리해둔다.
+			case eOpenContensByChapterStage.TimeSpace:
+				if (PlayerData.instance.highestPlayChapter > 2 || (PlayerData.instance.highestPlayChapter == 2 && PlayerData.instance.highestClearStage > 10))
+					return true;
+				break;
+			case eOpenContensByChapterStage.EquipBox:
+				if (PlayerData.instance.highestPlayChapter > 3 || (PlayerData.instance.highestPlayChapter == 3 && PlayerData.instance.highestClearStage > 10))
+					return true;
+				break;
+		}
 		return false;
 	}
 }

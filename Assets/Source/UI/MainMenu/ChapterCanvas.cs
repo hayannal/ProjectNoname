@@ -67,6 +67,7 @@ public class ChapterCanvas : MonoBehaviour
 			_listChapterCanvasListItem[i].gameObject.SetActive(false);
 		_listChapterCanvasListItem.Clear();
 
+		int chapterLimit = BattleInstanceManager.instance.GetCachedGlobalConstantInt("ChaosChapterLimit");
 		for (int i = 0; i < TableDataManager.instance.chapterTable.dataArray.Length; ++i)
 		{
 			ChapterCanvasListItem chapterCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
@@ -75,6 +76,8 @@ public class ChapterCanvas : MonoBehaviour
 
 			// 현재 챕터 넘어서는거 1개까지만 표기하고 break
 			if (TableDataManager.instance.chapterTable.dataArray[i].chapter > PlayerData.instance.highestPlayChapter)
+				break;
+			if (TableDataManager.instance.chapterTable.dataArray[i].chapter >= chapterLimit)
 				break;
 		}
 		_selectedChapter = PlayerData.instance.selectedChapter;
@@ -126,6 +129,9 @@ public class ChapterCanvas : MonoBehaviour
 		selectResultText.text = "";
 		if (_selectedChapter < PlayerData.instance.highestPlayChapter)
 			selectResultText.SetLocalizedText(UIString.instance.GetString("GameUI_ChapterTooLow", PlayerData.instance.highestPlayChapter - 1));
+		int chapterLimit = BattleInstanceManager.instance.GetCachedGlobalConstantInt("ChaosChapterLimit");
+		if (_selectedChapter >= chapterLimit)
+			selectResultText.SetLocalizedText(UIString.instance.GetString("GameUI_ChapterWaitUpdate"));
 	}
 
 

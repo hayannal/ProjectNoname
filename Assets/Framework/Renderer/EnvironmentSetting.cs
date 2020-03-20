@@ -18,6 +18,10 @@ public class EnvironmentSetting : MonoBehaviour
 			return;
 
 		SetEnvironment();
+
+		// 캐릭터창 갈때마다 EnableEnvironmentSettingForUI 호출로 인해 한프레임 깜박이는 현상이 생겨서
+		// 아예 재시작할때 전역조명 Intensity 업데이트를 한프레임 강제로 호출하기로 한다.
+		UpdateApplyGlobalLightIntensity();
 	}
 
 	Light _directionalLight;

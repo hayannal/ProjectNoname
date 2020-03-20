@@ -24,6 +24,10 @@ public class GatePillar : MonoBehaviour
 
 	public Canvas worldCanvas;
 	public Text floorText;
+	public GameObject chaosRootObject;
+	public Image[] chaosPurifyImageList;
+	public Sprite purifyFillSprite;
+	public Sprite purifyStrokeSprite;
 
 	void Awake()
 	{

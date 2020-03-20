@@ -26,12 +26,19 @@ public class ChapterCanvasListItem : MonoBehaviour
 		bool disableChapter = (chapter > PlayerData.instance.highestPlayChapter);
 		bool clearChapter = (chapter < PlayerData.instance.highestPlayChapter);
 		stageText.gameObject.SetActive(disableChapter || clearChapter == false);
-		int stage = 0;
-		if (chapter == PlayerData.instance.highestPlayChapter)
-			stage = PlayerData.instance.highestClearStage;
-		stageText.text = UIString.instance.GetString("GameUI_StageFraction", stage, StageManager.instance.GetMaxStage(chapter));
 		clearObject.SetActive(clearChapter);
 		blackObject.SetActive(disableChapter);
+
+		int chapterLimit = BattleInstanceManager.instance.GetCachedGlobalConstantInt("ChaosChapterLimit");
+		if (chapter >= chapterLimit || disableChapter)
+			stageText.text = "???";
+		else
+		{
+			int stage = 0;
+			if (chapter == PlayerData.instance.highestPlayChapter)
+				stage = PlayerData.instance.highestClearStage;
+			stageText.text = UIString.instance.GetString("GameUI_StageFraction", stage, StageManager.instance.GetMaxStage(chapter));
+		}
 
 		if (chapter == 0)
 		{

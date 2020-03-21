@@ -29,6 +29,7 @@ public class GatePillar : MonoBehaviour
 	public Image[] chaosPurifyImageList;
 	public Sprite purifyFillSprite;
 	public Sprite purifyStrokeSprite;
+	public Color purifyHighlightColor;
 
 	void Awake()
 	{
@@ -60,6 +61,7 @@ public class GatePillar : MonoBehaviour
 			if (PlayerData.instance.currentChaosMode)
 			{
 				_purifyCountShowRemainTime = purifyShowDelayTime;
+				_maxPurify = (PlayerData.instance.purifyCount >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("PurifyMaxCount"));
 			}
 			if (ContentsManager.IsTutorialChapter() == false && DownloadManager.instance.IsDownloaded())
 			{
@@ -106,6 +108,7 @@ public class GatePillar : MonoBehaviour
 	float _descriptionObjectIndicatorShowRemainTime;
 	float _energyGaugeShowRemainTime;
 	float _purifyCountShowRemainTime;
+	bool _maxPurify;
 	void Update()
 	{
 		// 타이틀 캔버스와 상관없이 에너지 게이지를 띄워야한다면 시간 체크 후 띄운다.
@@ -130,13 +133,16 @@ public class GatePillar : MonoBehaviour
 			{
 				_purifyCountShowRemainTime = 0.0f;
 				for (int i = 0; i < chaosPurifyImageList.Length; ++i)
+				{
 					chaosPurifyImageList[i].sprite = (i < PlayerData.instance.purifyCount) ? purifyFillSprite : purifyStrokeSprite;
+					chaosPurifyImageList[i].color = _maxPurify ? purifyHighlightColor : Color.white;
+				}
 				chaosRootObject.SetActive(true);
 				return;
 			}
 		}
 
-		if (TitleCanvas.instance != null && TitleCanvas.instance.gameObject.activeSelf && TitleCanvas.instance.gameObject.activeSelf)
+		if (TitleCanvas.instance != null && TitleCanvas.instance.gameObject.activeSelf && _maxPurify == false)
 			return;
 
 		// 설명 인디케이터는 타이틀 있을 경우엔 안나오는게 맞다. 지나가고 시간 재는게 맞다.
@@ -252,6 +258,10 @@ public class GatePillar : MonoBehaviour
 	{
 		if (SwapCanvas.instance != null && SwapCanvas.instance.gameObject.activeSelf)
 			return false;
+		if (ConfirmSpendCanvas.instance != null && ConfirmSpendCanvas.instance.gameObject.activeSelf)
+			return false;
+		if (FullChaosSelectCanvas.instance != null && FullChaosSelectCanvas.instance.gameObject.activeSelf)
+			return false;
 		if (DelayedLoadingCanvas.IsShow())
 			return false;
 		if (_processing)
@@ -263,6 +273,12 @@ public class GatePillar : MonoBehaviour
 			if (DownloadManager.instance.standbyDownload)
 			{
 				// show download info canvas
+				return false;
+			}
+
+			if (_maxPurify)
+			{
+				UIInstanceManager.instance.ShowCanvasAsync("FullChaosSelectCanvas", null);
 				return false;
 			}
 

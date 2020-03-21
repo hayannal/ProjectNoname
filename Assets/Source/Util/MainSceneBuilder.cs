@@ -331,6 +331,8 @@ public class MainSceneBuilder : MonoBehaviour
 
 	GameObject GetCurrentGatePillarPrefab()
 	{
+		if (PlayerData.instance.currentChaosMode && PlayerData.instance.purifyCount >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("PurifyMaxCount"))
+			return StageManager.instance.fullChaosGatePillarPrefab;
 		return StageManager.instance.gatePillarPrefab;
 	}
 

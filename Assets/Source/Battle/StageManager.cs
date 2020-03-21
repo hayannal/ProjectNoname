@@ -25,6 +25,7 @@ public class StageManager : MonoBehaviour
 
 	public GameObject gatePillarPrefab;
 	public GameObject bossGatePillarPrefab;
+	public GameObject fullChaosGatePillarPrefab;
 	public GameObject fadeCanvasPrefab;
 	public GameObject characterInfoGroundPrefab;
 

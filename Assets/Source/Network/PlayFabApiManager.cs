@@ -363,7 +363,7 @@ public class PlayFabApiManager : MonoBehaviour
 		}, null, null);
 	}
 
-	public void RequestEndGame(bool clear, int stage, int addGold, int addSeal, Action<bool, string> successCallback)    // List<Item>
+	public void RequestEndGame(bool clear, bool currentChaos, int playChapter, int stage, int addGold, int addSeal, Action<bool, string> successCallback)    // List<Item>
 	{
 		// 인게임 플레이 하고 정산할때 호출되는 함수인데
 		// Statistics 갱신과 인벤획득처리 골드 갱신 등으로 나뉘어져있다.
@@ -405,16 +405,23 @@ public class PlayFabApiManager : MonoBehaviour
 		ExecuteCloudScriptRequest request = new ExecuteCloudScriptRequest()
 		{
 			FunctionName = "EndGame",
-			FunctionParameter = new { Flg = (string)_serverEnterKey, Cl = (clear ? 1 : 0), St = stage, Go = addGold, Se = addSeal },
+			// playChapter와 currentChaos는 서버 검증용이다.
+			FunctionParameter = new { Flg = (string)_serverEnterKey, Cl = (clear ? 1 : 0), Cha = currentChaos ? "1" : "0", Plch = playChapter, St = stage, Go = addGold, Se = addSeal },
 			GeneratePlayStreamEvent = true,
 		};
 		Action action = () =>
 		{
 			PlayFabClientAPI.ExecuteCloudScript(request, (success) =>
 			{
-				RetrySendManager.instance.OnSuccess();
 				string resultString = (string)success.FunctionResult;
+				bool failure = (resultString == "1");
 				_serverEnterKey = "";
+				if (!failure)
+				{
+					// 서버에러가 떠도 정산창은 띄되 WaitingNetworkCanvas은 닫지 않기로 한다.
+					// 골드나 인장 같은건 얻되 다음 챕터로 넘어가지 못하게 하기 위함이다.
+					RetrySendManager.instance.OnSuccess();
+				}
 				if (successCallback != null) successCallback.Invoke(clear, resultString);
 			}, (error) =>
 			{

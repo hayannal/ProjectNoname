@@ -188,7 +188,8 @@ public class BattleModeProcessorBase
 				clear = true;
 		}
 
-		PlayFabApiManager.instance.RequestEndGame(clear, StageManager.instance.playStage - 1, DropManager.instance.GetStackedDropGold(), DropManager.instance.GetStackedDropSeal(), (result, newCharacterId) =>
+		PlayFabApiManager.instance.RequestEndGame(clear, PlayerData.instance.currentChaosMode, StageManager.instance.playChapter, StageManager.instance.playStage - 1,
+			DropManager.instance.GetStackedDropGold(), DropManager.instance.GetStackedDropSeal(), (result, newCharacterId) =>
 		{
 			OnRecvEndGame(result, newCharacterId);
 			BattleResultCanvas.instance.gameObject.SetActive(true);

@@ -362,6 +362,14 @@ public class PlayerData : MonoBehaviour
 				chaosMode = (intValue == 1);
 		}
 
+		purifyCount = 0;
+		if (userData.ContainsKey("SHpur"))
+		{
+			int intValue = 0;
+			if (int.TryParse(userData["SHpur"].Value, out intValue))
+				purifyCount = intValue;
+		}
+
 		if (userData.ContainsKey("seal"))
 		{
 			int intValue = 0;

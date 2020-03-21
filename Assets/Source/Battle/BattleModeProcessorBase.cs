@@ -191,8 +191,9 @@ public class BattleModeProcessorBase
 		PlayFabApiManager.instance.RequestEndGame(clear, PlayerData.instance.currentChaosMode, StageManager.instance.playChapter, StageManager.instance.playStage - 1,
 			DropManager.instance.GetStackedDropGold(), DropManager.instance.GetStackedDropSeal(), (result, newCharacterId) =>
 		{
-			OnRecvEndGame(result, newCharacterId);
+			// 정보를 갱신하기 전에 먼저 BattleResult를 보여준다.
 			BattleResultCanvas.instance.gameObject.SetActive(true);
+			OnRecvEndGame(result, newCharacterId);
 		});
 
 		_endProcess = false;

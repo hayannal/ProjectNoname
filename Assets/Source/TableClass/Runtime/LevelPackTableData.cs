@@ -56,4 +56,8 @@ public class LevelPackTableData
   string[] _effectAddress = new string[0];
   public string[] effectAddress { get { return _effectAddress; } set { _effectAddress = value; } }
   
+  [SerializeField]
+  int _openChapter;
+  public int openChapter { get { return _openChapter; } set { _openChapter = value; } }
+  
 }

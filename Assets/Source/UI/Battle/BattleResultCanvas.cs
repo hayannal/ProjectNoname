@@ -117,16 +117,18 @@ public class BattleResultCanvas : MonoBehaviour
 			return;
 
 		chapterRomanNumberText.text = SwapCanvas.GetChapterRomanNumberString(StageManager.instance.playChapter);
-		if (PlayerData.instance.currentChaosMode)
+		_currentChaosMode = PlayerData.instance.currentChaosMode;
+		if (_currentChaosMode)
 			chapterNameText.SetLocalizedText(UIString.instance.GetString("GameUI_ChaosMode"));
 		else
 			chapterNameText.SetLocalizedText(UIString.instance.GetString(chapterTableData.nameId));
 	}
 
+	bool _currentChaosMode = false;
 	public void OnClickChapterInfoButton()
 	{
 		string descriptionId = "";
-		if (PlayerData.instance.currentChaosMode)
+		if (_currentChaosMode)
 			descriptionId = "GameUI_ChaosModeDesc";
 		else
 		{

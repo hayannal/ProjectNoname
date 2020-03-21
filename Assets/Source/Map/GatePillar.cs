@@ -21,6 +21,7 @@ public class GatePillar : MonoBehaviour
 	public GameObject descriptionObjectIndicatorPrefab;
 	public float descriptionObjectIndicatorShowDelayTime = 5.0f;
 	public float energyGaugeShowDelayTime = 0.2f;
+	float purifyShowDelayTime = 0.3f;
 
 	public Canvas worldCanvas;
 	public Text floorText;
@@ -53,8 +54,13 @@ public class GatePillar : MonoBehaviour
 		floorText.text = "";
 
 		_spawnTime = Time.time;
+		chaosRootObject.SetActive(false);
 		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby)
 		{
+			if (PlayerData.instance.currentChaosMode)
+			{
+				_purifyCountShowRemainTime = purifyShowDelayTime;
+			}
 			if (ContentsManager.IsTutorialChapter() == false && DownloadManager.instance.IsDownloaded())
 			{
 				// 일부러 조금 뒤에 보이게 한다. 초기 로딩 줄이기 위해.
@@ -99,6 +105,7 @@ public class GatePillar : MonoBehaviour
 
 	float _descriptionObjectIndicatorShowRemainTime;
 	float _energyGaugeShowRemainTime;
+	float _purifyCountShowRemainTime;
 	void Update()
 	{
 		// 타이틀 캔버스와 상관없이 에너지 게이지를 띄워야한다면 시간 체크 후 띄운다.
@@ -112,6 +119,19 @@ public class GatePillar : MonoBehaviour
 				{
 					BattleInstanceManager.instance.GetCachedObject(prefab, null);
 				});
+				return;
+			}
+		}
+
+		if (_purifyCountShowRemainTime > 0.0f)
+		{
+			_purifyCountShowRemainTime -= Time.deltaTime;
+			if (_purifyCountShowRemainTime <= 0.0f)
+			{
+				_purifyCountShowRemainTime = 0.0f;
+				for (int i = 0; i < chaosPurifyImageList.Length; ++i)
+					chaosPurifyImageList[i].sprite = (i < PlayerData.instance.purifyCount) ? purifyFillSprite : purifyStrokeSprite;
+				chaosRootObject.SetActive(true);
 				return;
 			}
 		}

@@ -201,6 +201,11 @@ public class BattleModeProcessorBase
 
 	void OnRecvEndGame(bool clear, string newCharacterId)
 	{
+		if (PlayerData.instance.currentChaosMode)
+		{
+			// 클리어 여부에 상관없이 purify를 채워야한다. 어차피 최대가 되면 로비에서 알아서 최대치 표시로 넘어갈테니 여기선 수량증가만 해둔다.
+			++PlayerData.instance.purifyCount;
+		}
 		if (PlayerData.instance.currentChaosMode == false && PlayerData.instance.highestPlayChapter == PlayerData.instance.selectedChapter)
 		{
 			if (clear)
@@ -226,11 +231,6 @@ public class BattleModeProcessorBase
 
 				EventManager.instance.OnEventPlayHighestChapter(PlayerData.instance.highestPlayChapter);
 			}
-		}
-		if (PlayerData.instance.currentChaosMode)
-		{
-			// 클리어 여부에 상관없이 purify를 채워야한다. 어차피 최대가 되면 로비에서 알아서 최대치 표시로 넘어갈테니 여기선 수량증가만 해둔다.
-			++PlayerData.instance.purifyCount;
 		}
 		CurrencyData.instance.gold += DropManager.instance.GetStackedDropGold();
 		PlayerData.instance.sealCount += DropManager.instance.GetStackedDropSeal();

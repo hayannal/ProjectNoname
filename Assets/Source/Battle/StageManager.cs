@@ -466,24 +466,5 @@ public class StageManager : MonoBehaviour
 			// 곧바로 카오스 모드로 진입시켜야한다.
 		}
 	}
-
-	public void OnFail()
-	{
-		int purifyStartChapter = BattleInstanceManager.instance.GetCachedGlobalConstantInt("PurifyStartChapter");
-		if (playChapter >= purifyStartChapter)
-		{
-			// 카오스 모드를 발동해야하는 시기다. 튜토리얼도 있을 예정.
-		}
-	}
-
-	public void OnResult()
-	{
-		// 이기거나 지는거에 상관없이, 혹은 카오스 모드 여부에 상관없이
-		// 최종 챕터를 플레이 했다면 보스를 클리어한 스테이지 수만큼 상자를 채워야한다.
-		if (playChapter == PlayerData.instance.highestPlayChapter)
-		{
-
-		}
-	}
 	#endregion
 }

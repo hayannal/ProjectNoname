@@ -7,6 +7,7 @@ public class FullChaosSelectCanvas : MonoBehaviour
 	public static FullChaosSelectCanvas instance;
 
 	public Transform subTitleTextTransform;
+	public GameObject challengeGatePillarSpawnEffectPrefab;
 
 	void Awake()
 	{
@@ -32,6 +33,7 @@ public class FullChaosSelectCanvas : MonoBehaviour
 			// 알아서 인디케이터도 삭제될테니 GatePillar만 교체
 			GatePillar.instance.gameObject.SetActive(false);
 			BattleInstanceManager.instance.GetCachedObject(StageManager.instance.challengeGatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
+			BattleInstanceManager.instance.GetCachedObject(challengeGatePillarSpawnEffectPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
 
 			// 가장 중요한 맵 재구축. 씬 이동 없이 해야한다.
 			StageManager.instance.ChangeChallengeMode();

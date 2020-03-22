@@ -64,7 +64,7 @@ public class EventManager : MonoBehaviour
 		}
 		else if (chapter == 2)
 		{
-			PlayerData.instance.AddNewCharacter("Actor003", newCharacterId, 2);
+			PlayerData.instance.AddNewCharacter("Actor003", newCharacterId, 1);
 			PlayerData.instance.mainCharacterId = "Actor003";
 			PushClientEvent(eClientEvent.GainNewCharacter, "Actor003");
 		}

@@ -33,7 +33,7 @@ public class EventManager : MonoBehaviour
 		NewChapter,
 		OpenTimeSpace,
 		//OpenAnnihilation,
-		NeedUpdate,
+		ClearMaxChapter,
 	}
 
 	struct ServerEventInfo
@@ -67,6 +67,14 @@ public class EventManager : MonoBehaviour
 			PlayerData.instance.AddNewCharacter("Actor003", newCharacterId, 1);
 			PlayerData.instance.mainCharacterId = "Actor003";
 			PushClientEvent(eClientEvent.GainNewCharacter, "Actor003");
+		}
+
+		int chapterLimit = BattleInstanceManager.instance.GetCachedGlobalConstantInt("ChaosChapterLimit");
+		if (chapter >= chapterLimit)
+		{
+			// 최종 챕터를 깬거라 더이상 진행하면 안되서
+			// 곧바로 카오스 모드로 진입시켜야한다.
+			PushClientEvent(eClientEvent.ClearMaxChapter);
 		}
 
 		// 챕터를 깨면 클라 이벤트로 새챕터 표시 이벤트도 넣어둔다.
@@ -178,9 +186,11 @@ public class EventManager : MonoBehaviour
 				// 여긴 터치 받고 이펙트 보여주고 캔버스 띄워야하니 코루틴으로 처리한다.
 				// OpenChaos처럼 투명판 깔고 진행하도록 한다.
 				break;
-			case eClientEvent.NeedUpdate:
-				// 다른 이벤트와 달리 게이트필라에 플래그를 걸어두기만 하고
-				// 게이트필라를 칠때 안내메시지가 뜨게 처리한다.
+			case eClientEvent.ClearMaxChapter:
+				OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_WaitForUpdateEvent"), () =>
+				{
+					OnCompleteLobbyEvent();
+				});
 				break;
 		}
 	}

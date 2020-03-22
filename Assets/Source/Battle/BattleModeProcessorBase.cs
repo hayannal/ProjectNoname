@@ -214,6 +214,10 @@ public class BattleModeProcessorBase
 				PlayerData.instance.highestClearStage = 0;
 				PlayerData.instance.selectedChapter += 1;
 
+				int chapterLimit = BattleInstanceManager.instance.GetCachedGlobalConstantInt("ChaosChapterLimit");
+				if (PlayerData.instance.highestPlayChapter >= chapterLimit)
+					PlayerData.instance.chaosMode = true;
+
 				EventManager.instance.OnEventClearHighestChapter(PlayerData.instance.highestPlayChapter, newCharacterId);
 			}
 			else

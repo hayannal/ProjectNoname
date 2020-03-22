@@ -51,6 +51,7 @@ public class BattleResultCanvas : MonoBehaviour
 	public RectTransform contentRootRectTransform;
 
 	public GameObject exitGroupObject;
+	public GameObject challengeFailTextObject;
 
 	public class CustomItemContainer : CachedItemHave<SwapCanvasListItem>
 	{
@@ -122,6 +123,9 @@ public class BattleResultCanvas : MonoBehaviour
 			chapterNameText.SetLocalizedText(UIString.instance.GetString("GameUI_ChaosMode"));
 		else
 			chapterNameText.SetLocalizedText(UIString.instance.GetString(chapterTableData.nameId));
+
+		if (PlayerData.instance.currentChallengeMode && _clear == false)
+			challengeFailTextObject.SetActive(true);
 	}
 
 	bool _currentChaosMode = false;

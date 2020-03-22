@@ -37,7 +37,7 @@ Shader "FXV/FXVShieldEffectMobile_D" {
 		_BlendDstMode("BlendDstMode", Int) = 0
 	}
 	SubShader {
-		Tags {"Queue"="Transparent-1" "IgnoreProjector"="True" "RenderType"="Transparent"}
+		Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
 		LOD 300
 
 		BlendOp Add

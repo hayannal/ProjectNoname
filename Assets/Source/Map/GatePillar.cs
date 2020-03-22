@@ -29,6 +29,7 @@ public class GatePillar : MonoBehaviour
 	public Image[] chaosPurifyImageList;
 	public Sprite purifyFillSprite;
 	public Sprite purifyStrokeSprite;
+	public Color purifyNormalColor;
 	public Color purifyHighlightColor;
 
 	void Awake()
@@ -135,14 +136,14 @@ public class GatePillar : MonoBehaviour
 				for (int i = 0; i < chaosPurifyImageList.Length; ++i)
 				{
 					chaosPurifyImageList[i].sprite = (i < PlayerData.instance.purifyCount) ? purifyFillSprite : purifyStrokeSprite;
-					chaosPurifyImageList[i].color = _maxPurify ? purifyHighlightColor : Color.white;
+					chaosPurifyImageList[i].color = _maxPurify ? purifyHighlightColor : purifyNormalColor;
 				}
 				chaosRootObject.SetActive(true);
 				return;
 			}
 		}
 
-		if (TitleCanvas.instance != null && TitleCanvas.instance.gameObject.activeSelf && _maxPurify == false)
+		if (TitleCanvas.instance != null && TitleCanvas.instance.gameObject.activeSelf && PlayerData.instance.currentChallengeMode == false)
 			return;
 
 		// 설명 인디케이터는 타이틀 있을 경우엔 안나오는게 맞다. 지나가고 시간 재는게 맞다.
@@ -167,8 +168,12 @@ public class GatePillar : MonoBehaviour
 		{
 			if (ContentsManager.IsTutorialChapter())
 				text = UIString.instance.GetString("GameUI_TouchToMove");
+			else if (PlayerData.instance.currentChaosMode)
+				text = UIString.instance.GetString("GameUI_ChapterInIndicator", PlayerData.instance.selectedChapter, UIString.instance.GetString("GameUI_ChapterIndicatorParam"));
+			else if (PlayerData.instance.currentChallengeMode)
+				text = UIString.instance.GetString("GameUI_ChapterInIndicator", PlayerData.instance.selectedChapter, UIString.instance.GetString("GameUI_ChapterIndicatorChallenge"));
 			else
-				text = UIString.instance.GetString("GameUI_ChapterInIndicator", PlayerData.instance.selectedChapter, PlayerData.instance.currentChaosMode ? UIString.instance.GetString("GameUI_ChapterIndicatorParam") : "");	
+				text = UIString.instance.GetString("GameUI_ChapterInIndicator", PlayerData.instance.selectedChapter, "");
 		}
 		else
 		{

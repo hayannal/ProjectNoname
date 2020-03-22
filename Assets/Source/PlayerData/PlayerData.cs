@@ -57,6 +57,18 @@ public class PlayerData : MonoBehaviour
 		}
 	}
 
+	public bool currentChallengeMode
+	{
+		get
+		{
+			if (selectedChapter < highestPlayChapter)
+				return false;
+			if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Chaos) == false)
+				return false;
+			return !chaosMode;
+		}
+	}
+
 	#region Player Info For Client
 	public void OnRecvPlayerInfoForClient()
 	{

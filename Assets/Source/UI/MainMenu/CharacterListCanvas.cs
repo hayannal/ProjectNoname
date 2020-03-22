@@ -131,8 +131,6 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 			_listAllCharacterInfo.Clear();
 			for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)
 			{
-				if (TableDataManager.instance.actorTable.dataArray[i].infoShow == false)
-					continue;
 				CharacterInfo characterInfo = new CharacterInfo();
 				characterInfo.actorTableData = TableDataManager.instance.actorTable.dataArray[i];
 				characterInfo.characterData = PlayerData.instance.GetCharacterData(characterInfo.actorTableData.actorId);

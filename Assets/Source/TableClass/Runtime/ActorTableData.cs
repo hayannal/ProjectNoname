@@ -76,8 +76,4 @@ public class ActorTableData
   int _orderIndex;
   public int orderIndex { get { return _orderIndex; } set { _orderIndex = value; } }
   
-  [SerializeField]
-  bool _infoShow;
-  public bool infoShow { get { return _infoShow; } set { _infoShow = value; } }
-  
 }

@@ -571,6 +571,35 @@ public class PlayFabApiManager : MonoBehaviour
 #endif
 	#endregion
 
+	#region Chaos
+	public void RequestSelectFullChaos(bool challenge, Action successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "SelectFullChaos",
+			FunctionParameter = new { Chl = challenge ? 1 : 0 },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+				if (challenge)
+					PlayerData.instance.chaosMode = false;
+				PlayerData.instance.purifyCount = 0;
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+	#endregion
+
 
 	#region Modify CharacterData
 	// 이것도 서버에 저장되는 Entity Object

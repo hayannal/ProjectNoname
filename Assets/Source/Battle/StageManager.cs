@@ -76,6 +76,17 @@ public class StageManager : MonoBehaviour
 				PrepareNextMap(nextMapTableData, StageDataManager.instance.nextStageTableData.environmentSetting);
 		}
 	}
+
+	// for switch challenge mode
+	public void ChangeChallengeMode()
+	{
+		// 1. StageDataManager를 삭제
+		// 2. StageDataManager.instance.CalcNextStageInfo 로 재계산. 이미 로비에 진입해있으니 0부터 할필요 없이 1부터 계산해서 새로운 맵을 로딩해둔다.
+		// 이렇게 해두고나서 치고 들어가면 도전모드가 진행된다.
+		StageDataManager.DestroyInstance();
+		_handleNextPlanePrefab = _handleNextGroundPrefab = _handleNextWallPrefab = _handleNextSpawnFlagPrefab = _handleNextPortalFlagPrefab = _handleEnvironmentSettingPrefab = null;
+		GetStageInfo(playChapter, playStage + 1);
+	}
 #else
 	void Start()
 	{

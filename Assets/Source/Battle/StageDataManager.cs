@@ -15,6 +15,15 @@ public class StageDataManager : MonoBehaviour
 	}
 	static StageDataManager _instance = null;
 
+	public static void DestroyInstance()
+	{
+		if (_instance != null)
+		{
+			Destroy(_instance.gameObject);
+			_instance = null;
+		}
+	}
+
 	public StageTableData nextStageTableData { get; set; }
 	public string reservedNextMap { get; set; }
 	public bool existNextStageInfo { get { return (nextStageTableData != null && string.IsNullOrEmpty(reservedNextMap) == false); } }

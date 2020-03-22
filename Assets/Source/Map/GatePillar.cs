@@ -64,7 +64,7 @@ public class GatePillar : MonoBehaviour
 				_purifyCountShowRemainTime = purifyShowDelayTime;
 				_maxPurify = (PlayerData.instance.purifyCount >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("PurifyMaxCount"));
 			}
-			if (ContentsManager.IsTutorialChapter() == false && DownloadManager.instance.IsDownloaded())
+			if (ContentsManager.IsTutorialChapter() == false && DownloadManager.instance.IsDownloaded() && EnergyGaugeCanvas.instance == null)
 			{
 				// 일부러 조금 뒤에 보이게 한다. 초기 로딩 줄이기 위해.
 				_energyGaugeShowRemainTime = energyGaugeShowDelayTime;
@@ -133,12 +133,7 @@ public class GatePillar : MonoBehaviour
 			if (_purifyCountShowRemainTime <= 0.0f)
 			{
 				_purifyCountShowRemainTime = 0.0f;
-				for (int i = 0; i < chaosPurifyImageList.Length; ++i)
-				{
-					chaosPurifyImageList[i].sprite = (i < PlayerData.instance.purifyCount) ? purifyFillSprite : purifyStrokeSprite;
-					chaosPurifyImageList[i].color = _maxPurify ? purifyHighlightColor : purifyNormalColor;
-				}
-				chaosRootObject.SetActive(true);
+				RefreshPurify();
 				return;
 			}
 		}
@@ -186,6 +181,17 @@ public class GatePillar : MonoBehaviour
 		DescriptionObjectIndicatorCanvas descriptionObjectIndicatorCanvas = _objectIndicatorCanvas as DescriptionObjectIndicatorCanvas;
 		if (descriptionObjectIndicatorCanvas != null)
 			descriptionObjectIndicatorCanvas.contextText.SetLocalizedText(text);
+	}
+
+	public void RefreshPurify()
+	{
+		_maxPurify = (PlayerData.instance.purifyCount >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("PurifyMaxCount"));
+		for (int i = 0; i < chaosPurifyImageList.Length; ++i)
+		{
+			chaosPurifyImageList[i].sprite = (i < PlayerData.instance.purifyCount) ? purifyFillSprite : purifyStrokeSprite;
+			chaosPurifyImageList[i].color = _maxPurify ? purifyHighlightColor : purifyNormalColor;
+		}
+		chaosRootObject.SetActive(true);
 	}
 
 	void OnCollisionEnter(Collision collision)

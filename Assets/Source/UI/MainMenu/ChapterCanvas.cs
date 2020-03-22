@@ -127,7 +127,7 @@ public class ChapterCanvas : MonoBehaviour
 		suggestPowerLevelText.SetLocalizedText(string.Format("{0} {1}", UIString.instance.GetString("GameUI_SuggestedPowerLevel"), rangeString));
 
 		selectResultText.text = "";
-		if (_selectedChapter < PlayerData.instance.highestPlayChapter)
+		if (_selectedChapter < PlayerData.instance.highestPlayChapter && PlayerData.instance.sharedDailyBoxOpened == false)
 			selectResultText.SetLocalizedText(UIString.instance.GetString("GameUI_ChapterTooLow", PlayerData.instance.highestPlayChapter - 1));
 		int chapterLimit = BattleInstanceManager.instance.GetCachedGlobalConstantInt("ChaosChapterLimit");
 		if (_selectedChapter >= chapterLimit)

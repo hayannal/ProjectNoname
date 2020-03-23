@@ -23,6 +23,11 @@ public static class ContentsManager
 		EquipBox,
 	}
 
+	public enum eOpenContensByCharacter
+	{
+		Transcendence,
+	}
+
 	public static bool IsTutorialChapter()
 	{
 		if (PlayerData.instance.highestPlayChapter == 0)
@@ -72,6 +77,25 @@ public static class ContentsManager
 				if (prevStage < 10 && stage >= 10)
 					return true;
 				return false;
+		}
+		return false;
+	}
+
+	static bool _cachedTranscendence = false;
+	public static bool IsOpen(eOpenContensByCharacter content, bool useCachedValue)
+	{
+		switch (content)
+		{
+			case eOpenContensByCharacter.Transcendence:
+				// 매번 검색하는건 불필요한 일이니 캐싱할 수 있는 구조로 간다. static이니 초기화에 신경쓸 것.
+				if (useCachedValue)
+					return _cachedTranscendence;
+				List<CharacterData> listCharacterData = PlayerData.instance.listCharacterData;
+				for (int i = 0; i < listCharacterData.Count; ++i)
+				{
+					// 한명이라도 초월했으면 초월메뉴가 오픈된다.
+				}
+				break;
 		}
 		return false;
 	}

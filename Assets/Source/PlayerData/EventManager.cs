@@ -297,18 +297,16 @@ public class EventManager : MonoBehaviour
 		UIInstanceManager.instance.ShowCanvasAsync("EventInfoCanvas", () =>
 		{
 			EventInputLockCanvas.instance.gameObject.SetActive(false);
-
 			OpenChaosEventGatePillar.instance.gameObject.SetActive(false);
+
+			// 멀리 생성해둔 게이트 필라 가져오면서 곧바로 indicator 뜨도록 설정.
 			origGatePillarObject.transform.position = StageManager.instance.currentGatePillarSpawnPosition;
-			EnergyGaugeCanvas.instance.cachedTransform.position = StageManager.instance.currentGatePillarSpawnPosition;
+			GatePillar.instance.descriptionObjectIndicatorShowDelayTime = 0.5f;
 
 			EventInfoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_OpenChaosName"), UIString.instance.GetString("GameUI_OpenChaosDesc"), UIString.instance.GetString("GameUI_OpenChaosMore"), () =>
 			{
 				_listCompleteServerEvent.Add(eServerEvent.chaos);
-				PlayFabApiManager.instance.RequestPushServerEvent(CreateServerEventJson(), () =>
-				{
-					EventInfoCanvas.instance.gameObject.SetActive(false);
-				});
+				PlayFabApiManager.instance.RequestPushServerEvent(CreateServerEventJson());
 			});
 		});
 	}

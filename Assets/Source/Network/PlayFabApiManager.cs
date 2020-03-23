@@ -569,7 +569,7 @@ public class PlayFabApiManager : MonoBehaviour
 		RetrySendManager.instance.RequestAction(action, true);
 	}
 
-	public void RequestPushServerEvent(string jsonServerEvent, Action successCallback, Action failureCallback = null)
+	public void RequestPushServerEvent(string jsonServerEvent, Action successCallback = null, Action failureCallback = null)
 	{
 		UpdateUserDataRequest request = new UpdateUserDataRequest() { Data = new Dictionary<string, string>() { { "even", jsonServerEvent } } };
 		Action action = () =>

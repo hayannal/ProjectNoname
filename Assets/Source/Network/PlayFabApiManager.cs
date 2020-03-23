@@ -568,6 +568,24 @@ public class PlayFabApiManager : MonoBehaviour
 		};
 		RetrySendManager.instance.RequestAction(action, true);
 	}
+
+	public void RequestPushServerEvent(string jsonServerEvent, Action successCallback, Action failureCallback = null)
+	{
+		UpdateUserDataRequest request = new UpdateUserDataRequest() { Data = new Dictionary<string, string>() { { "even", jsonServerEvent } } };
+		Action action = () =>
+		{
+			PlayFabClientAPI.UpdateUserData(request, (success) =>
+			{
+				RetrySendManager.instance.OnSuccess();
+				if (successCallback != null) successCallback.Invoke();
+			}, (error) =>
+			{
+				RetrySendManager.instance.OnFailure();
+				if (failureCallback != null) failureCallback.Invoke();
+			});
+		};
+		RetrySendManager.instance.RequestAction(action, true);
+	}
 #endif
 	#endregion
 

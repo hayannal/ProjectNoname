@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PlayFab;
 
 public class EventManager : MonoBehaviour
 {
@@ -20,9 +21,10 @@ public class EventManager : MonoBehaviour
 
 	// 서버이벤트는 서버에 저장되서 클라를 지워도 유지되게 해준다. 사실상 퀘스트 느낌.
 	// 그래서 맨앞에 안보이는 투명판을 깔고 클릭할때부터 이벤트가 진행되게 한다.
+	// 클라 이벤트와 달리 이거 자체가 서버에 저장되는 키이자 완료를 판단하는 id로 쓰이니 겹치지 않게 만들어야한다. 그래서 소문자로 한다.
 	public enum eServerEvent
 	{
-		OpenChaos,
+		chaos,
 	}
 
 	// 클라 이벤트는 메모리에만 기억되는 거라서 종료하면 더이상 볼 수 없다. 그래서 중요하지 않은 것들 위주다.
@@ -83,10 +85,85 @@ public class EventManager : MonoBehaviour
 
 	public void OnEventPlayHighestChapter(int chapter)
 	{
+		// ClearChapter와 달리 못깨고 그냥 플레이할때 오는거다. 카오스때는 들어오지 않는다.
+
+		// 4챕터 이후에 최초로 죽었을때.
+		// 최초를 구분하려면 결국 이 이벤트를 진행했는지에 대한 리스트가 필요하다.
+		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Chaos) && IsCompleteServerEvent(eServerEvent.chaos) == false)
+		{
+			// 이벤트가 이미 진행중인 상태인지까지는 판단할 필요 없다. 어차피 이벤트가 걸려있다면 전투를 진행할 수 없을거다.
+			PushServerEvent(eServerEvent.chaos);
+		}
 	}
 
 	public void OnRecvServerEvent(string json)
 	{
+		// 서버는 재설치해도 동작해야해서 UserData에 기록해놓는다.
+		// 정산타이밍에는 괜히 UserData 받기 뭐하니 클라가 직접 넣었다가 메인씬으로 돌아왔을때 처리한다.
+		// 이 타이밍에 재접하면 서버한테 다시 받을거고
+		// 재접하지 않는다면 진행 후 마지막 스텝에서 서버로 보내 플래그를 끌거다.
+		//
+		// 원래는 이런식으로 파라미터까지 저장하려고 했다가
+		// 사실 저장용으로는 아이디만 있어도 충분하기 때문에
+		// 아이디 리스트로 판단하기로 한다.
+		_queServerEventInfo.Clear();
+		_listCompleteServerEvent.Clear();
+		if (string.IsNullOrEmpty(json))
+			return;
+
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		Dictionary<string, int> dicEventState = serializer.DeserializeObject<Dictionary<string, int>>(json);
+		if (dicEventState.Count == 0)
+			return;
+
+		Dictionary<string, int>.Enumerator e = dicEventState.GetEnumerator();
+		while (e.MoveNext())
+		{
+			eServerEvent serverEvent;
+			if (System.Enum.TryParse<eServerEvent>(e.Current.Key, out serverEvent) == false)
+				continue;
+
+			// 1 : 진행 필요
+			// 2 : 완료
+			switch (e.Current.Value)
+			{
+				case 1:
+					PushServerEvent(serverEvent);
+					break;
+				case 2:
+					_listCompleteServerEvent.Add(serverEvent);
+					break;
+			}
+		}
+	}
+
+	string CreateServerEventJson()
+	{
+		Dictionary<string, int> dicEventState = new Dictionary<string, int>();
+
+		Queue<ServerEventInfo>.Enumerator e = _queServerEventInfo.GetEnumerator();
+		while (e.MoveNext())
+			dicEventState.Add(e.Current.eventType.ToString(), 1);
+		for (int i = 0; i < _listCompleteServerEvent.Count; ++i)
+			dicEventState.Add(_listCompleteServerEvent[i].ToString(), 2);
+
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		return serializer.SerializeObject(dicEventState);
+	}
+
+	List<eServerEvent> _listCompleteServerEvent = new List<eServerEvent>();
+	public bool IsCompleteServerEvent(eServerEvent serverEvent)
+	{
+		return _listCompleteServerEvent.Contains(serverEvent);
+	}
+
+	public bool IsStandbyServerEvent(eServerEvent serverEvent)
+	{
+		if (_queServerEventInfo.Count == 0)
+			return false;
+
+		ServerEventInfo serverEventInfo = _queServerEventInfo.Peek();
+		return (serverEventInfo.eventType == serverEvent);
 	}
 
 	void PushServerEvent(eServerEvent serverEvent, string sValue = "", int iValue = 0)
@@ -157,12 +234,11 @@ public class EventManager : MonoBehaviour
 
 	void PlayEventProcess(ServerEventInfo serverEventInfo)
 	{
-		// 이벤트에 쓸 Canvas나 오브젝트들을 로딩할때까지 인풋이 들어와 씬이 넘어가면 안되므로 먼저 화면을 막아야한다.
-		DelayedLoadingCanvas.Show(true);
-
 		switch (serverEventInfo.eventType)
 		{
-			
+			case eServerEvent.chaos:
+				StartCoroutine(ChaosProcess());
+				break;
 		}
 	}
 
@@ -184,7 +260,7 @@ public class EventManager : MonoBehaviour
 				break;
 			case eClientEvent.OpenTimeSpace:
 				// 여긴 터치 받고 이펙트 보여주고 캔버스 띄워야하니 코루틴으로 처리한다.
-				// OpenChaos처럼 투명판 깔고 진행하도록 한다.
+				// 서버이벤트 chaos처럼 EventInputLockCanvas 깔고 진행하도록 한다.
 				break;
 			case eClientEvent.ClearMaxChapter:
 				OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_WaitForUpdateEvent"), () =>
@@ -193,6 +269,58 @@ public class EventManager : MonoBehaviour
 				});
 				break;
 		}
+	}
+
+	bool _waitTouch;
+	bool _waitCompleteAnimation;
+	IEnumerator ChaosProcess()
+	{
+		_waitTouch = true;
+		UIInstanceManager.instance.ShowCanvasAsync("EventInputLockCanvas", null);
+
+		// 등장 애니때문에 미리 멀리 만들어둔다.
+		GameObject origGatePillarObject = BattleInstanceManager.instance.GetCachedObject(StageManager.instance.gatePillarPrefab, new Vector3(0.0f, 0.0f, -100.0f), Quaternion.identity);
+
+		while (_waitTouch)
+			yield return null;
+
+		// 연출
+		_waitCompleteAnimation = true;
+		OpenChaosEventGatePillar.instance.OnTouch();
+
+		while (_waitCompleteAnimation)
+			yield return null;
+
+		yield return new WaitForSeconds(0.2f);
+
+		// 연출 이후
+		UIInstanceManager.instance.ShowCanvasAsync("EventInfoCanvas", () =>
+		{
+			EventInputLockCanvas.instance.gameObject.SetActive(false);
+
+			OpenChaosEventGatePillar.instance.gameObject.SetActive(false);
+			origGatePillarObject.transform.position = StageManager.instance.currentGatePillarSpawnPosition;
+			EnergyGaugeCanvas.instance.cachedTransform.position = StageManager.instance.currentGatePillarSpawnPosition;
+
+			EventInfoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_OpenChaosName"), UIString.instance.GetString("GameUI_OpenChaosMore"), UIString.instance.GetString("GameUI_OpenChaosDesc"), () =>
+			{
+				_listCompleteServerEvent.Add(eServerEvent.chaos);
+				PlayFabApiManager.instance.RequestPushServerEvent(CreateServerEventJson(), () =>
+				{
+					EventInfoCanvas.instance.gameObject.SetActive(false);
+				});
+			});
+		});
+	}
+
+	public void OnClickScreen()
+	{
+		_waitTouch = false;
+	}
+
+	public void OnCompleteOpenChaosGatePillarAnimation()
+	{
+		_waitCompleteAnimation = false;
 	}
 	#endregion
 }

@@ -37,7 +37,8 @@ public class EventInfoCanvas : MonoBehaviour
 
 	public void OnClickExitButton()
 	{
-		gameObject.SetActive(false);
+		// 서버통신 하고 닫아야할때가 많으니 여기선 바로 닫지 않도록 한다.
+		//gameObject.SetActive(false);
 		if (_okAction != null)
 			_okAction();
 	}

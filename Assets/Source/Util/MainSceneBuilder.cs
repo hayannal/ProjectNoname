@@ -41,6 +41,10 @@ public class MainSceneBuilder : MonoBehaviour
 		Addressables.Release<GameObject>(_handleCommonCanvasGroup);
 		Addressables.Release<GameObject>(_handleTreasureChest);
 
+		// 이벤트용이라 항상 로드되는게 아니다보니 IsValue체크가 필수다.
+		if (_handleEventGatePillar.IsValid())
+			Addressables.Release<GameObject>(_handleEventGatePillar);
+
 		// 로딩속도를 위해 배틀매니저는 천천히 로딩한다. 그래서 다른 로딩 오브젝트와 달리 Valid 검사를 해야한다.
 		if (_handleBattleManager.IsValid())
 			Addressables.Release<GameObject>(_handleBattleManager);
@@ -58,6 +62,7 @@ public class MainSceneBuilder : MonoBehaviour
 	AsyncOperationHandle<GameObject> _handleLobbyCanvas;
 	AsyncOperationHandle<GameObject> _handleCommonCanvasGroup;
 	AsyncOperationHandle<GameObject> _handleTreasureChest;
+	AsyncOperationHandle<GameObject> _handleEventGatePillar;
 	IEnumerator Start()
     {
 		// 씬 빌더는 항상 이 씬이 시작될때 1회만 동작하며 로딩씬을 띄워놓고 현재 상황에 맞춰서 스텝을 진행한다.
@@ -259,11 +264,19 @@ public class MainSceneBuilder : MonoBehaviour
 #if !UNITY_EDITOR
 		Debug.LogWarning("FFFFFFFFF");
 #endif
-		BattleInstanceManager.instance.GetCachedObject(GetCurrentGatePillarPrefab(), StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
-#if !UNITY_EDITOR
-		Debug.LogWarning("GGGGGGGGG");
-#endif
-		HitRimBlink.ShowHitRimBlink(GatePillar.instance.cachedTransform, Vector3.forward, true);
+		if (EventManager.instance.IsStandbyServerEvent(EventManager.eServerEvent.chaos))
+		{
+			_handleEventGatePillar = Addressables.LoadAssetAsync<GameObject>("OpenChaosGatePillar");
+			Debug.LogWarning("GGGGGGGGG-1");
+			yield return _handleEventGatePillar;
+			Instantiate<GameObject>(_handleEventGatePillar.Result, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
+		}
+		else
+		{
+			BattleInstanceManager.instance.GetCachedObject(GetCurrentGatePillarPrefab(), StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
+			Debug.LogWarning("GGGGGGGGG");
+			HitRimBlink.ShowHitRimBlink(GatePillar.instance.cachedTransform, Vector3.forward, true);
+		}
 #if !UNITY_EDITOR
 		Debug.LogWarning("HHHHHHHHH");
 #endif
@@ -331,7 +344,7 @@ public class MainSceneBuilder : MonoBehaviour
 
 	GameObject GetCurrentGatePillarPrefab()
 	{
-		if (PlayerData.instance.currentChallengeMode)
+		if (PlayerData.instance.currentChallengeMode && EventManager.instance.IsCompleteServerEvent(EventManager.eServerEvent.chaos))
 			return StageManager.instance.challengeGatePillarPrefab;
 		return StageManager.instance.gatePillarPrefab;
 	}

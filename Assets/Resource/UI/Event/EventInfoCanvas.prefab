@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 7001945614128274402}
   - component: {fileID: 149460994988154638}
   - component: {fileID: 4886677345742205984}
-  - component: {fileID: 1402963096877821330}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -132,18 +131,19 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!114 &1402963096877821330
+--- !u!114 &873651914009529321
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 838002489511187721}
+  m_GameObject: {fileID: 1095227906676681159}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 99f27832db332944d94c102c4d4d0868, type: 3}
+  m_Script: {fileID: 11500000, guid: f12479a3eb790ef4abc68cb914116b15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  uiStringKey: SystemUI_Info
 --- !u!1 &1610290258354648178
 GameObject:
   m_ObjectHideFlags: 0
@@ -217,6 +217,7 @@ GameObject:
   - component: {fileID: 85799321569951659}
   - component: {fileID: 52651774339137844}
   - component: {fileID: 423368678488667297}
+  - component: {fileID: 1062780442514299163}
   m_Layer: 5
   m_Name: ExitText
   m_TagString: Untagged
@@ -354,6 +355,18 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &1062780442514299163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2170288445730047307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99f27832db332944d94c102c4d4d0868, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3227035037781050300
 GameObject:
   m_ObjectHideFlags: 0
@@ -890,19 +903,6 @@ MonoBehaviour:
   startScale: 1.05
   startAnimationDuration: 0.25
   ignoreTimeScale: 1
---- !u!114 &873651914009529321
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1095227906676681159}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f12479a3eb790ef4abc68cb914116b15, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  uiStringKey: SystemUI_Info
 --- !u!1 &7662833287744402571
 GameObject:
   m_ObjectHideFlags: 0
@@ -1175,15 +1175,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 085bc674e269ae346bcb5eaf4d3cdd6e, type: 3}
---- !u!1 &1095227906676681159 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7594490250724020564, guid: 085bc674e269ae346bcb5eaf4d3cdd6e,
-    type: 3}
-  m_PrefabInstance: {fileID: 7374093943473731731}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &6851915759372347572 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4125559267737882663, guid: 085bc674e269ae346bcb5eaf4d3cdd6e,
+    type: 3}
+  m_PrefabInstance: {fileID: 7374093943473731731}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1095227906676681159 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7594490250724020564, guid: 085bc674e269ae346bcb5eaf4d3cdd6e,
     type: 3}
   m_PrefabInstance: {fileID: 7374093943473731731}
   m_PrefabAsset: {fileID: 0}

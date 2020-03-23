@@ -229,8 +229,6 @@ public class BattleModeProcessorBase
 				{
 					PlayerData.instance.chaosMode = true;
 					PlayerData.instance.purifyCount = 0;
-
-					// 이벤트 체크
 				}
 
 				EventManager.instance.OnEventPlayHighestChapter(PlayerData.instance.highestPlayChapter);

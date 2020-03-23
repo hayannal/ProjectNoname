@@ -124,7 +124,7 @@ public class BattleResultCanvas : MonoBehaviour
 		else
 			chapterNameText.SetLocalizedText(UIString.instance.GetString(chapterTableData.nameId));
 
-		if (PlayerData.instance.currentChallengeMode && _clear == false)
+		if (PlayerData.instance.currentChallengeMode && _clear == false && EventManager.instance.IsCompleteServerEvent(EventManager.eServerEvent.chaos))
 			challengeFailTextObject.SetActive(true);
 	}
 

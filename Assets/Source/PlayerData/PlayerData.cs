@@ -399,6 +399,11 @@ public class PlayerData : MonoBehaviour
 				OnRecvDailyBoxInfo(userData["SHlstBxDat"].Value);
 		}
 
+		string eventState = "";
+		if (userData.ContainsKey("even"))
+			eventState = userData["even"].Value;
+		EventManager.instance.OnRecvServerEvent(eventState);
+
 		loginned = true;
 	}
 

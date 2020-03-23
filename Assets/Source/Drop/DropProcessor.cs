@@ -67,7 +67,7 @@ public class DropProcessor : MonoBehaviour
 				case eDropType.Gacha:
 					ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
 					CharacterData mainCharacterData = PlayerData.instance.GetCharacterData(PlayerData.instance.mainCharacterId);
-					if (chapterTableData != null && mainCharacterData.powerLevel > chapterTableData.suggestedMaxPowerLevel)
+					if (chapterTableData != null && mainCharacterData != null && mainCharacterData.powerLevel > chapterTableData.suggestedMaxPowerLevel)
 						continue;
 					break;
 			}

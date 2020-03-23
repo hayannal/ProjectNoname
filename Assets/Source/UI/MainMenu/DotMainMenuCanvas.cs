@@ -275,11 +275,20 @@ public class DotMainMenuCanvas : MonoBehaviour
 
 	public void OnClickShopButton()
 	{
-
+		if (_reservedHide)
+			return;
 	}
 
 	public void OnClickCharacterButton()
 	{
+		// 닫히는 도중에 메뉴를 열어버리면 새 메뉴가 열리고나서 OnCompleteScaleZero가 호출되면서 StackCanvas가 꼬이게 된다.
+		// (최상단 스택을 닫지 않고 사이에 있는걸 닫아버렸기 때문)
+		// 그렇다고 닫히는 도중에 메뉴 열때 닫히던 DotMainMenu를 그대로 멈춰두기도 애매하니 선택권은 두개다.
+		// 닫히는 애니를 취소하고 도로 열어두면서 메뉴를 열던가
+		// 아니면 닫히는건 그대로 두되 메뉴를 열지 말던가. 선택은 후자다.
+		if (_reservedHide)
+			return;
+
 		// DotMainMenu는 열려있는채로 냅두고 다른 창을 연다.
 		// 대신 화면 어둡게 한건 풀어야한다. - 이건 Stack구조에서 알아서 호출해준다.
 		//gameObject.SetActive(false);
@@ -288,17 +297,22 @@ public class DotMainMenuCanvas : MonoBehaviour
 
 	public void OnClickChapterButton()
 	{
+		if (_reservedHide)
+			return;
+
 		UIInstanceManager.instance.ShowCanvasAsync("ChapterCanvas", null);
 	}
 
 	public void OnClickResearchButton()
 	{
-
+		if (_reservedHide)
+			return;
 	}
 
 	public void OnClickMailButton()
 	{
-
+		if (_reservedHide)
+			return;
 	}
 	#endregion
 

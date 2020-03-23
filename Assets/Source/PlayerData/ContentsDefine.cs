@@ -60,4 +60,19 @@ public static class ContentsManager
 		}
 		return false;
 	}
+
+	// for Event
+	public static bool IsPlayable(eOpenContensByChapterStage content, int chapter, int prevStage, int stage)
+	{
+		switch (content)
+		{
+			case eOpenContensByChapterStage.TimeSpace:
+				if (chapter != 2)
+					return false;
+				if (prevStage < 10 && stage >= 10)
+					return true;
+				return false;
+		}
+		return false;
+	}
 }

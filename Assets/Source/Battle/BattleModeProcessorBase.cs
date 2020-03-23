@@ -208,6 +208,7 @@ public class BattleModeProcessorBase
 		}
 		if (PlayerData.instance.currentChaosMode == false && PlayerData.instance.highestPlayChapter == PlayerData.instance.selectedChapter)
 		{
+			int prevHighestStage = PlayerData.instance.highestClearStage;
 			if (clear)
 			{
 				PlayerData.instance.highestPlayChapter += 1;
@@ -218,12 +219,16 @@ public class BattleModeProcessorBase
 				if (PlayerData.instance.highestPlayChapter >= chapterLimit)
 					PlayerData.instance.chaosMode = true;
 
+				EventManager.instance.OnEventPlayHighestStage(PlayerData.instance.highestPlayChapter - 1, prevHighestStage, 50);
 				EventManager.instance.OnEventClearHighestChapter(PlayerData.instance.highestPlayChapter, newCharacterId);
 			}
 			else
 			{
 				if (PlayerData.instance.highestClearStage < StageManager.instance.playStage - 1)
+				{
 					PlayerData.instance.highestClearStage = StageManager.instance.playStage - 1;
+					EventManager.instance.OnEventPlayHighestStage(PlayerData.instance.highestPlayChapter, prevHighestStage, PlayerData.instance.highestClearStage);
+				}
 
 				if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Chaos))
 				{

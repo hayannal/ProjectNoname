@@ -302,7 +302,7 @@ public class EventManager : MonoBehaviour
 			origGatePillarObject.transform.position = StageManager.instance.currentGatePillarSpawnPosition;
 			EnergyGaugeCanvas.instance.cachedTransform.position = StageManager.instance.currentGatePillarSpawnPosition;
 
-			EventInfoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_OpenChaosName"), UIString.instance.GetString("GameUI_OpenChaosMore"), UIString.instance.GetString("GameUI_OpenChaosDesc"), () =>
+			EventInfoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_OpenChaosName"), UIString.instance.GetString("GameUI_OpenChaosDesc"), UIString.instance.GetString("GameUI_OpenChaosMore"), () =>
 			{
 				_listCompleteServerEvent.Add(eServerEvent.chaos);
 				PlayFabApiManager.instance.RequestPushServerEvent(CreateServerEventJson(), () =>

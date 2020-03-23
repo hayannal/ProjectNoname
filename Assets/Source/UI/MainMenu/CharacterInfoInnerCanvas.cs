@@ -57,9 +57,12 @@ public class CharacterInfoInnerCanvas : MonoBehaviour
 		if (characterData == null)
 			return;
 
-		// 선처리하고 에러가 나면 그때 에러팝업 뜨는 형태로 바꾸기로 한다.
-		ChangeMainCharacter(CharacterInfoCanvas.instance.currentActorId);
-		PlayFabApiManager.instance.RequestSelectMainCharacter(CharacterInfoCanvas.instance.currentActorId, null);
+		// 토스트만 미리 띄우고 서버 응답 후 바꾸도록 한다.
+		ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_MainCharacterChanged"), 2.0f);
+		PlayFabApiManager.instance.RequestSelectMainCharacter(CharacterInfoCanvas.instance.currentActorId, () =>
+		{
+			ChangeMainCharacter(CharacterInfoCanvas.instance.currentActorId);
+		});
 	}
 
 	void ChangeMainCharacter(string actorId)
@@ -70,8 +73,6 @@ public class CharacterInfoInnerCanvas : MonoBehaviour
 			return;
 
 		newPlayerActor.OnChangedMainCharacter();
-		PlayerData.instance.mainCharacterId = newPlayerActor.actorId;
-		ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_MainCharacterChanged"), 2.0f);
 	}
 
 	public void OnClickExperience()

@@ -537,28 +537,30 @@ public class PlayFabApiManager : MonoBehaviour
 	public void RequestSelectMainCharacter(string mainCharacterId, Action successCallback)
 	{
 		UpdateUserDataRequest request = new UpdateUserDataRequest() { Data = new Dictionary<string, string>() { { "mainCharacterId", mainCharacterId } } };
-		PlayFabClientAPI.UpdateUserData(request, (success) =>
+		Action action = () =>
 		{
-			// 선처리로 바꾸면서 할필요 없어졌다.
-			//PlayerData.instance.mainCharacterId = mainCharacterId;
-			if (successCallback != null) successCallback.Invoke();
-		}, (error) =>
-		{
-			HandleCommonError(error);
-		});
+			PlayFabClientAPI.UpdateUserData(request, (success) =>
+			{
+				RetrySendManager.instance.OnSuccess();
+				PlayerData.instance.mainCharacterId = mainCharacterId;
+				if (successCallback != null) successCallback.Invoke();
+			}, (error) =>
+			{
+				RetrySendManager.instance.OnFailure();
+			});
+		};
+		RetrySendManager.instance.RequestAction(action, true);
 	}
 
-	int _requestChangeChapter;
 	public void RequestChangeChapter(int chapter, Action successCallback, Action failureCallback = null)
 	{
-		_requestChangeChapter = chapter;
 		UpdateUserDataRequest request = new UpdateUserDataRequest() { Data = new Dictionary<string, string>() { { "selectedChapter", chapter.ToString() } } };
 		Action action = () =>
 		{
 			PlayFabClientAPI.UpdateUserData(request, (success) =>
 			{
 				RetrySendManager.instance.OnSuccess();
-				PlayerData.instance.selectedChapter = _requestChangeChapter;
+				PlayerData.instance.selectedChapter = chapter;
 				if (successCallback != null) successCallback.Invoke();
 			}, (error) =>
 			{

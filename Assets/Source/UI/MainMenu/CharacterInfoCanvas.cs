@@ -136,6 +136,6 @@ public class CharacterInfoCanvas : MonoBehaviour
 
 	public void OnClickDetailButton()
 	{
-
+		UIInstanceManager.instance.ShowCanvasAsync("CharacterInfoDetailCanvas", null);
 	}
 }

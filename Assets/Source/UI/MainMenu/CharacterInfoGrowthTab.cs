@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CharacterInfoInnerCanvas : MonoBehaviour
+public class CharacterInfoGrowthTab : MonoBehaviour
 {
-	public static CharacterInfoInnerCanvas instance;
+	public static CharacterInfoGrowthTab instance;
 
 	public Button swapButton;
 	public Button experienceButton;
@@ -13,11 +13,6 @@ public class CharacterInfoInnerCanvas : MonoBehaviour
 	void Awake()
 	{
 		instance = this;
-	}
-
-	void Start()
-	{
-		GetComponent<Canvas>().worldCamera = UIInstanceManager.instance.GetCachedCameraMain();
 	}
 
 	void OnEnable()
@@ -77,6 +72,5 @@ public class CharacterInfoInnerCanvas : MonoBehaviour
 
 	public void OnClickExperience()
 	{
-
 	}
 }

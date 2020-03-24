@@ -267,14 +267,18 @@ public class MainSceneBuilder : MonoBehaviour
 		if (EventManager.instance.IsStandbyServerEvent(EventManager.eServerEvent.chaos))
 		{
 			_handleEventGatePillar = Addressables.LoadAssetAsync<GameObject>("OpenChaosGatePillar");
+#if !UNITY_EDITOR
 			Debug.LogWarning("GGGGGGGGG-1");
+#endif
 			yield return _handleEventGatePillar;
 			Instantiate<GameObject>(_handleEventGatePillar.Result, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
 		}
 		else
 		{
 			BattleInstanceManager.instance.GetCachedObject(GetCurrentGatePillarPrefab(), StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
+#if !UNITY_EDITOR
 			Debug.LogWarning("GGGGGGGGG");
+#endif
 			HitRimBlink.ShowHitRimBlink(GatePillar.instance.cachedTransform, Vector3.forward, true);
 		}
 #if !UNITY_EDITOR

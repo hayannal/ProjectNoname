@@ -9,7 +9,6 @@ public class CharacterInfoCanvas : MonoBehaviour
 	public static CharacterInfoCanvas instance;
 
 	public CurrencySmallInfo currencySmallInfo;
-	public Transform menuRootTransform;
 	public GameObject[] innerMenuPrefabList;
 	public MenuButton[] menuButtonList;
 	public GameObject menuRootObject;
@@ -42,6 +41,13 @@ public class CharacterInfoCanvas : MonoBehaviour
 
 	void OnDisable()
 	{
+		for (int i = 0; i < _listMenuTransform.Count; ++i)
+		{
+			if (_listMenuTransform[i] == null)
+				continue;
+			_listMenuTransform[i].gameObject.SetActive(false);
+		}
+
 		StackCanvas.Pop(gameObject);
 	}
 
@@ -80,7 +86,7 @@ public class CharacterInfoCanvas : MonoBehaviour
 
 		if (_listMenuTransform[index] == null && innerMenuPrefabList[index] != null)
 		{
-			GameObject newObject = Instantiate<GameObject>(innerMenuPrefabList[index], menuRootTransform);
+			GameObject newObject = Instantiate<GameObject>(innerMenuPrefabList[index]);
 			_listMenuTransform[index] = newObject.transform;
 		}
 
@@ -113,6 +119,15 @@ public class CharacterInfoCanvas : MonoBehaviour
 		menuRootObject.SetActive(contains);
 		if (contains == false)
 			OnValueChangedToggle(0);
+
+		// 별도의 카메라 스페이스 캔버스로 되어있기 때문에 들어올때마다 마지막 탭으로 켜줘야한다.
+		// OnEnable에서 하면 현재 actorId와 동기를 맞출 수 없어서 여기서 처리한다.
+		for (int i = 0; i < _listMenuTransform.Count; ++i)
+		{
+			if (_listMenuTransform[i] == null)
+				continue;
+			_listMenuTransform[i].gameObject.SetActive(_lastIndex == i);
+		}
 	}
 	#endregion
 

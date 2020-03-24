@@ -17,6 +17,7 @@ public class ActorStatus : MonoBehaviour
 	StatusBase _statusBase;
 	public StatusBase statusBase { get { return _statusBase; } }
 	public Actor actor { get; private set; }
+	public int powerLevel { get; private set; }
 
 	static float s_criticalPowerConstantA = 5.0f;
 	static float s_criticalPowerConstantB = 3.0f;
@@ -34,7 +35,7 @@ public class ActorStatus : MonoBehaviour
 		else
 			_statusBase.ClearValue();
 
-		int powerLevel = 1;
+		powerLevel = 1;
 		CharacterData characterData = PlayerData.instance.GetCharacterData(actor.actorId);
 		if (characterData != null) powerLevel = characterData.powerLevel;
 
@@ -170,6 +171,24 @@ public class ActorStatus : MonoBehaviour
 				break;
 		}
 		return value;
+	}
+
+	static float LnAtkConstant1 = 49.3260692475286f;
+	static float LnAtkConstant2 = -127.154943490703f;
+	public int GetDisplayAttack()
+	{
+		float value = GetValue(eActorStatus.Attack);
+		float result = LnAtkConstant1 * Mathf.Log(value) + LnAtkConstant2;
+		return (int)result;
+	}
+
+	static float LnHpConstant1 = 73.9891038712929f;
+	static float LnHpConstant2 = -293.303092717141f;
+	public int GetDisplayMaxHp()
+	{
+		float value = GetValue(eActorStatus.MaxHp);
+		float result = LnHpConstant1 * Mathf.Log(value) + LnHpConstant2;
+		return (int)result;
 	}
 
 	public bool IsDie()

@@ -23,7 +23,7 @@ public class MenuButton : MonoBehaviour
 
 	void UpdateSelectPosition()
 	{
-		Vector2 selectOffset = new Vector2(-10.0f, 10.0f);
+		Vector2 selectOffset = new Vector2(-8.0f, 8.0f);
 		if (isOn)
 		{
 			if (foregroundTransform.anchoredPosition != selectOffset)

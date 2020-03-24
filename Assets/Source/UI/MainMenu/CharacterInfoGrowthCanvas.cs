@@ -7,6 +7,7 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 {
 	public static CharacterInfoGrowthCanvas instance;
 
+	public Image gradeBackImage;
 	public Text gradeText;
 	public Text nameText;
 	public Button experienceButton;
@@ -15,7 +16,10 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 
 	public Text powerSourceText;
 	public Image ultimateSkillIconImage;
-	public Transform exclusivePackRootTransform;
+	public GameObject noExclusivePackObject;
+	public GameObject exclusivePackObject;
+	public CharacterInfoPackIcon[] packIconList;
+	public Transform[] packIconContentTransformList;
 	public Text powerLevelText;
 	public Text hpText;
 	public Text atkText;
@@ -45,12 +49,48 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 		string actorId = CharacterInfoCanvas.instance.currentActorId;
 		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(actorId);
 
+		switch (actorTableData.grade)
+		{
+			case 0:
+				gradeBackImage.color = new Color(0.5f, 0.5f, 0.5f);
+				break;
+			case 1:
+				gradeBackImage.color = new Color(0.0f, 0.51f, 1.0f);
+				break;
+			case 2:
+				gradeBackImage.color = new Color(1.0f, 0.5f, 0.0f);
+				break;
+		}
 		gradeText.SetLocalizedText(UIString.instance.GetString(string.Format("GameUI_CharGrade{0}", actorTableData.grade)));
 		nameText.SetLocalizedText(UIString.instance.GetString(actorTableData.nameId));
 
 		powerSourceText.SetLocalizedText(PowerSource.Index2Name(actorTableData.powerSource));
 		ultimateSkillIconImage.sprite = null;
 		ultimateSkillIconImage.sprite = CommonCanvasGroup.instance.powerSourceIconSpriteList[actorTableData.powerSource];
+
+		int maxStageLevel = StageManager.instance.GetMaxStageLevel();
+		int exclusiveLevelPackCount = 0;
+		for (int i = 0; i < packIconList.Length; ++i)
+			packIconList[i].gameObject.SetActive(false);
+		for (int i = 1; i <= maxStageLevel; ++i)
+		{
+			string exclusiveLevelPackId = TableDataManager.instance.FindActorLevelPackByLevel(actorId, i);
+			if (string.IsNullOrEmpty(exclusiveLevelPackId))
+				continue;
+			LevelPackTableData levelPackTableData = TableDataManager.instance.FindLevelPackTableData(exclusiveLevelPackId);
+			if (levelPackTableData == null)
+				continue;
+
+			packIconList[exclusiveLevelPackCount].Initialize(levelPackTableData, i);
+			packIconList[exclusiveLevelPackCount].gameObject.SetActive(true);
+			if (exclusiveLevelPackCount == 0) _exclusiveLevelPack1 = exclusiveLevelPackId;
+			else if (exclusiveLevelPackCount == 1) _exclusiveLevelPack2 = exclusiveLevelPackId;
+			++exclusiveLevelPackCount;
+			if (exclusiveLevelPackCount == packIconList.Length)
+				break;
+		}
+		noExclusivePackObject.SetActive(exclusiveLevelPackCount == 0);
+		exclusivePackObject.SetActive(exclusiveLevelPackCount > 0);
 
 		PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(actorId);
 		if (playerActor != null)
@@ -123,7 +163,35 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 
 	public void OnClickUltimate()
 	{
+		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(_actorId);
+		if (actorTableData == null)
+			return;
 
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, UIString.instance.GetString(actorTableData.descId), 300, ultimateSkillIconImage.transform, new Vector2(0.0f, -45.0f));
+	}
+
+	string _exclusiveLevelPack1;
+	public void OnClickLevelPack1Button()
+	{
+		LevelPackTableData levelPackTableData = TableDataManager.instance.FindLevelPackTableData(_exclusiveLevelPack1);
+		if (levelPackTableData == null)
+			return;
+
+		string name = UIString.instance.GetString(levelPackTableData.nameId);
+		string desc = UIString.instance.GetString(levelPackTableData.descriptionId);
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, string.Format("{0}\n\n{1}", name, desc), 300, packIconContentTransformList[0].transform, new Vector2(0.0f, -40.0f));
+	}
+
+	string _exclusiveLevelPack2;
+	public void OnClickLevelPack2Button()
+	{
+		LevelPackTableData levelPackTableData = TableDataManager.instance.FindLevelPackTableData(_exclusiveLevelPack2);
+		if (levelPackTableData == null)
+			return;
+
+		string name = UIString.instance.GetString(levelPackTableData.nameId);
+		string desc = UIString.instance.GetString(levelPackTableData.descriptionId);
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, string.Format("{0}\n\n{1}", name, desc), 300, packIconContentTransformList[1].transform, new Vector2(0.0f, -40.0f));
 	}
 
 	public void OnClickLevelUpButton()

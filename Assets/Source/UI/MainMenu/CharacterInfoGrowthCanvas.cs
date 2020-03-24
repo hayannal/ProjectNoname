@@ -93,9 +93,14 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 		exclusivePackObject.SetActive(exclusiveLevelPackCount > 0);
 
 		PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(actorId);
-		powerLevelText.text = UIString.instance.GetString("GameUI_CharPower", playerActor.actorStatus.powerLevel);
-		hpText.text = playerActor.actorStatus.GetDisplayMaxHp().ToString();
-		atkText.text = playerActor.actorStatus.GetDisplayAttack().ToString();
+		if (playerActor != null)
+		{
+			// 구조 바꾸면서 플레이 중에 못찾는건 없어졌는데 Canvas켜둔채 종료하니 자꾸 뜬다.
+			powerLevelText.text = UIString.instance.GetString("GameUI_CharPower", playerActor.actorStatus.powerLevel);
+			hpText.text = playerActor.actorStatus.GetDisplayMaxHp().ToString();
+			atkText.text = playerActor.actorStatus.GetDisplayAttack().ToString();
+		}
+		
 		ppText.text = UIString.instance.GetString("GameUI_StageFraction", 2, 20);
 		priceText.text = 1000.ToString("N0");
 

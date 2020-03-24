@@ -21,7 +21,6 @@ public class SkillSlotCanvas : MonoBehaviour
 	public GameObject skillSlotIconPrefab;
 	//public GameObject castingControllerPrefab;
 	public Transform ultimateSkillSlotTransform;
-	public Sprite[] powerSourceIconSpriteList;
 
 	public class CustomItemContainer : CachedItemHave<SkillSlotIcon>
 	{

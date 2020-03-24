@@ -127,7 +127,7 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 		if (actorTableData != null)
 			playerPowerSourceIndex = actorTableData.powerSource;
 		powerSourceIconImage.sprite = null;
-		powerSourceIconImage.sprite = SkillSlotCanvas.instance.powerSourceIconSpriteList[playerPowerSourceIndex];
+		powerSourceIconImage.sprite = CommonCanvasGroup.instance.powerSourceIconSpriteList[playerPowerSourceIndex];
 		OnChangedSP(playerActor, true);
 	}
 

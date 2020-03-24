@@ -13,6 +13,7 @@ public class CommonCanvasGroup : MonoBehaviour
 	public GameObject delayedLoadingCanvasPrefab;
 	public GameObject waitingNetworkCanvasPrefab;
 	public GameObject tooltipCanvasPrefab;
+	public Sprite[] powerSourceIconSpriteList;
 
 	void Awake()
 	{

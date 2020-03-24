@@ -49,6 +49,8 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 		nameText.SetLocalizedText(UIString.instance.GetString(actorTableData.nameId));
 
 		powerSourceText.SetLocalizedText(PowerSource.Index2Name(actorTableData.powerSource));
+		ultimateSkillIconImage.sprite = null;
+		ultimateSkillIconImage.sprite = CommonCanvasGroup.instance.powerSourceIconSpriteList[actorTableData.powerSource];
 
 		PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(actorId);
 		if (playerActor != null)

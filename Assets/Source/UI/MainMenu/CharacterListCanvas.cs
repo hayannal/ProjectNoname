@@ -85,6 +85,8 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 	{
 		if (StageManager.instance == null)
 			return;
+		if (_playerActor == null || _playerActor.gameObject == null)
+			return;
 
 		// 캐릭터 교체하다보면 _playerActor가 바뀌어져있을거다. 복구시켜준다.
 		if (_playerActor != BattleInstanceManager.instance.playerActor)

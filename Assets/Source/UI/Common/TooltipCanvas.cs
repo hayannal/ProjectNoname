@@ -33,6 +33,7 @@ public class TooltipCanvas : MonoBehaviour
 		Bottom,
 		Top,
 		LeftBottom,
+		CharacterInfo,
 	}
 
 	public static void Show(bool show, eDirection direction, string text, float textWidth, Transform targetTransform, Vector2 offset)

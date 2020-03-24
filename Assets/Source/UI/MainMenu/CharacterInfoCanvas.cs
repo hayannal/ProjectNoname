@@ -36,6 +36,8 @@ public class CharacterInfoCanvas : MonoBehaviour
 
 	void OnEnable()
 	{
+		RefreshInfo();
+
 		StackCanvas.Push(gameObject);
 	}
 
@@ -49,6 +51,26 @@ public class CharacterInfoCanvas : MonoBehaviour
 		}
 
 		StackCanvas.Pop(gameObject);
+	}
+
+	void RefreshInfo()
+	{
+		bool contains = PlayerData.instance.ContainsActor(CharacterListCanvas.instance.selectedActorId);
+
+		// 원래라면 현재 가지고 있는 캐릭터들의 초월 상태를 보고 거기에 맞춰서 메뉴를 오픈해야하지만
+		// 인벤에 없는 캐릭을 보는거라면 무조건 성장탭으로 바꾸고 탭을 숨겨야한다. 당연히 원래 캐릭으로 돌아갈때는 하단 탭들을 다시 보여줘야한다.
+		// 그래서 아예 버튼 루트를 캐릭터 존재 여부에 따라서 컨트롤 하기로 한다.
+		menuRootObject.SetActive(contains);
+		if (contains == false)
+			OnValueChangedToggle(0);
+
+		// 별도의 카메라 스페이스 캔버스로 되어있기 때문에 들어올때마다 마지막 탭으로 켜줘야한다.
+		for (int i = 0; i < _listMenuTransform.Count; ++i)
+		{
+			if (_listMenuTransform[i] == null)
+				continue;
+			_listMenuTransform[i].gameObject.SetActive(_lastIndex == i);
+		}
 	}
 
 	public void OnClickBackButton()
@@ -105,35 +127,15 @@ public class CharacterInfoCanvas : MonoBehaviour
 
 
 
-	#region Info
-	public string currentActorId { get; private set; }
-	public void RefreshInfo(string actorId)
-	{
-		currentActorId = actorId;
-
-		bool contains = PlayerData.instance.ContainsActor(actorId);
-
-		// 원래라면 현재 가지고 있는 캐릭터들의 초월 상태를 보고 거기에 맞춰서 메뉴를 오픈해야하지만
-		// 인벤에 없는 캐릭을 보는거라면 무조건 성장탭으로 바꾸고 탭을 숨겨야한다. 당연히 원래 캐릭으로 돌아갈때는 하단 탭들을 다시 보여줘야한다.
-		// 그래서 아예 버튼 루트를 캐릭터 존재 여부에 따라서 컨트롤 하기로 한다.
-		menuRootObject.SetActive(contains);
-		if (contains == false)
-			OnValueChangedToggle(0);
-
-		// 별도의 카메라 스페이스 캔버스로 되어있기 때문에 들어올때마다 마지막 탭으로 켜줘야한다.
-		// OnEnable에서 하면 현재 actorId와 동기를 맞출 수 없어서 여기서 처리한다.
-		for (int i = 0; i < _listMenuTransform.Count; ++i)
-		{
-			if (_listMenuTransform[i] == null)
-				continue;
-			_listMenuTransform[i].gameObject.SetActive(_lastIndex == i);
-		}
-	}
-	#endregion
 
 
 	public void OnDragRect(BaseEventData baseEventData)
 	{
 		CharacterListCanvas.instance.OnDragRect(baseEventData);
+	}
+
+	public void OnClickDetailButton()
+	{
+
 	}
 }

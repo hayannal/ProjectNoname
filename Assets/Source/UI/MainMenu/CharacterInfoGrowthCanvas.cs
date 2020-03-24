@@ -46,7 +46,7 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 	string _actorId;
 	public void RefreshInfo()
 	{
-		string actorId = CharacterInfoCanvas.instance.currentActorId;
+		string actorId = CharacterListCanvas.instance.selectedActorId;
 		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(actorId);
 
 		switch (actorTableData.grade)
@@ -93,12 +93,9 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 		exclusivePackObject.SetActive(exclusiveLevelPackCount > 0);
 
 		PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(actorId);
-		if (playerActor != null)
-		{
-			powerLevelText.text = UIString.instance.GetString("GameUI_CharPower", playerActor.actorStatus.powerLevel);
-			hpText.text = playerActor.actorStatus.GetDisplayMaxHp().ToString();
-			atkText.text = playerActor.actorStatus.GetDisplayAttack().ToString();
-		}
+		powerLevelText.text = UIString.instance.GetString("GameUI_CharPower", playerActor.actorStatus.powerLevel);
+		hpText.text = playerActor.actorStatus.GetDisplayMaxHp().ToString();
+		atkText.text = playerActor.actorStatus.GetDisplayAttack().ToString();
 		ppText.text = UIString.instance.GetString("GameUI_StageFraction", 2, 20);
 		priceText.text = 1000.ToString("N0");
 
@@ -127,7 +124,7 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 
 	public void OnClickMainCharacter()
 	{
-		if (CharacterInfoCanvas.instance.currentActorId == BattleInstanceManager.instance.playerActor.actorId)
+		if (CharacterListCanvas.instance.selectedActorId == BattleInstanceManager.instance.playerActor.actorId)
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_MainCharacterAlready"), 2.0f);
 			return;
@@ -139,15 +136,15 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 			return;
 		}
 
-		CharacterData characterData = PlayerData.instance.GetCharacterData(CharacterInfoCanvas.instance.currentActorId);
+		CharacterData characterData = PlayerData.instance.GetCharacterData(CharacterListCanvas.instance.selectedActorId);
 		if (characterData == null)
 			return;
 
 		// 토스트만 미리 띄우고 서버 응답 후 바꾸도록 한다.
 		ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_MainCharacterChanged"), 2.0f);
-		PlayFabApiManager.instance.RequestSelectMainCharacter(CharacterInfoCanvas.instance.currentActorId, () =>
+		PlayFabApiManager.instance.RequestSelectMainCharacter(CharacterListCanvas.instance.selectedActorId, () =>
 		{
-			ChangeMainCharacter(CharacterInfoCanvas.instance.currentActorId);
+			ChangeMainCharacter(CharacterListCanvas.instance.selectedActorId);
 		});
 	}
 

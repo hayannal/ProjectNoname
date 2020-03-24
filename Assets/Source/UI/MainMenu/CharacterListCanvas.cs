@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
 #endif
-using System.Text;
+using MEC;
 
 public class CharacterListCanvas : CharacterShowCanvasBase
 {
@@ -237,6 +237,7 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 	string _selectedActorId;
 	float _buttonClickTime;
 	bool _wait = false;
+	public string selectedActorId { get { return _selectedActorId; } }
 	public void OnClickYesButton()
 	{
 		if (string.IsNullOrEmpty(_selectedActorId))
@@ -273,10 +274,7 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 		// StackCanvas인데 이렇게 그냥 꺼버리면 스택에서 빼라는거로 인식해서 뒤로 돌아오려고 할때 이쪽으로 못오게 된다.
 		// 그러니 진짜로 뒤로 가는게 아닌이상 호출하면 안된다.
 		//gameObject.SetActive(false);
-		UIInstanceManager.instance.ShowCanvasAsync("CharacterInfoCanvas", () =>
-		{
-			CharacterInfoCanvas.instance.RefreshInfo(_selectedActorId);
-		});
+		UIInstanceManager.instance.ShowCanvasAsync("CharacterInfoCanvas", null);
 	}
 
 	void OnLoadedPlayerActor(GameObject prefab)
@@ -301,6 +299,18 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 			_playerActor = playerActor;
 		}
 		base.OnLoadedPlayerActor(true);
+
+		// 하필 캐릭을 만들어내는 타이밍에 캔버스가 이미 만들어져서 대기중이라면
+		// PlayerActor의 Start는 호출되지 않았는데 Canvas들의 OnEnable에서 Refresh를 하게 된다.
+		// 이 결과 BattleInstanceManager에 등록되지 않은 PlayerActor로 되서 검색이 안되기 때문에
+		// 차라리 플레이어 만든 직후라면 한프레임 쉬고 호출하는거로 해본다.
+		// 여기서 처리 안하면 각각의 창에서 예외처리 해야해서 이쪽에서 한번에 하기로 한다.
+		Timing.RunCoroutine(DelayedShowCharacterInfoCanvas());
+	}
+
+	IEnumerator<float> DelayedShowCharacterInfoCanvas()
+	{
+		yield return Timing.WaitForOneFrame;
 		ShowCharacterInfoCanvas();
 	}
 }

@@ -9,10 +9,15 @@ public class CharacterInfoDetailCanvas : MonoBehaviour
 	public static CharacterInfoDetailCanvas instance;
 
 	public Transform infoCameraTransform;
+	public RectTransform backButtonRectTransform;
+	public RectTransform backButtonHideRectTransform;
+	public float noInputTime = 3.0f;
 
+	Vector2 _defaultBackButtonPosition;
 	void Awake()
 	{
 		instance = this;
+		_defaultBackButtonPosition = backButtonRectTransform.anchoredPosition;
 	}
 
 	Vector3 _origPosition;
@@ -26,6 +31,9 @@ public class CharacterInfoDetailCanvas : MonoBehaviour
 		_reservedHide = false;
 		_lerpRemainTime = 3.0f;
 
+		_noInputRemainTime = noInputTime;
+		backButtonRectTransform.anchoredPosition = _defaultBackButtonPosition;
+
 		StackCanvas.Push(gameObject);
 	}
 
@@ -37,6 +45,12 @@ public class CharacterInfoDetailCanvas : MonoBehaviour
 	bool _reservedHide = false;
 	public void OnClickBackButton()
 	{
+		if (_buttonHideState)
+		{
+			_buttonHideState = false;
+			return;
+		}
+
 		if (_reservedHide)
 			return;
 
@@ -55,6 +69,8 @@ public class CharacterInfoDetailCanvas : MonoBehaviour
 	float _lerpRemainTime = 0.0f;
 	void Update()
 	{
+		UpdateNoInput();
+
 		if (_lerpRemainTime > 0.0f)
 		{
 			CustomFollowCamera.instance.cachedTransform.position = Vector3.Lerp(CustomFollowCamera.instance.cachedTransform.position, _targetPosition, Time.deltaTime * (_reservedHide ? 12.0f : 6.0f));
@@ -73,9 +89,34 @@ public class CharacterInfoDetailCanvas : MonoBehaviour
 		}
 	}
 
+	float _noInputRemainTime = 0.0f;
+	bool _buttonHideState = false;
+	void UpdateNoInput()
+	{
+		if (_noInputRemainTime > 0.0f)
+		{
+			_noInputRemainTime -= Time.deltaTime;
+			if (_noInputRemainTime <= 0.0f)
+			{
+				_buttonHideState = true;
+				_noInputRemainTime = 0.0f;
+			}
+		}
+
+		backButtonRectTransform.anchoredPosition = Vector3.Lerp(backButtonRectTransform.anchoredPosition, _buttonHideState ? backButtonHideRectTransform.anchoredPosition : _defaultBackButtonPosition, Time.deltaTime * 5.0f);
+	}
+
 
 	public void OnDragRect(BaseEventData baseEventData)
 	{
+		_buttonHideState = false;
+		_noInputRemainTime = noInputTime;
 		CharacterListCanvas.instance.OnDragRect(baseEventData);
+	}
+
+	public void OnPointerDown(BaseEventData baseEventData)
+	{
+		_buttonHideState = false;
+		_noInputRemainTime = noInputTime;
 	}
 }

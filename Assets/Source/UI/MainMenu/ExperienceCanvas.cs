@@ -70,8 +70,14 @@ public class ExperienceCanvas : MonoBehaviour
 
 	void ResetExperienceMode()
 	{
-		CharacterInfoGround.instance.EnableExperienceMode(false);
+		// reset sp
+		PlayerActor playerActor = CharacterListCanvas.instance.selectedPlayerActor;
+		if (playerActor != null)
+			playerActor.actorStatus.AddSP(-playerActor.actorStatus.GetSP());
+
 		CharacterListCanvas.instance.ResetExperience();
+		CharacterInfoGround.instance.EnableExperienceMode(false);
+		SkillSlotCanvas.instance.HideSkillSlot();
 	}
 
 
@@ -99,6 +105,7 @@ public class ExperienceCanvas : MonoBehaviour
 
 				backButtonRectTransform.DOAnchorPos(_defaultBackButtonPosition, 1.0f);
 
+				SkillSlotCanvas.instance.InitializeSkillSlot(CharacterListCanvas.instance.selectedPlayerActor);
 				CameraFovController.instance.enabled = true;
 				CustomFollowCamera.instance.enabled = true;
 				inputLockObject.SetActive(false);

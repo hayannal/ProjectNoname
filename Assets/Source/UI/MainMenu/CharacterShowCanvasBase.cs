@@ -196,6 +196,9 @@ public class CharacterShowCanvasBase : MonoBehaviour
 
 	public void ResetExperience()
 	{
+		if (CustomFollowCamera.instance == null || CameraFovController.instance == null || LobbyCanvas.instance == null)
+			return;
+
 		// disable prev component
 		CameraFovController.instance.enabled = false;
 		CustomFollowCamera.instance.enabled = false;
@@ -211,6 +214,8 @@ public class CharacterShowCanvasBase : MonoBehaviour
 		CustomFollowCamera.instance.cachedTransform.position = infoCameraTransform.localPosition + _rootOffsetPosition;
 		CustomFollowCamera.instance.cachedTransform.rotation = infoCameraTransform.localRotation;
 	}
+
+	public PlayerActor selectedPlayerActor { get { return _playerActor; } }
 
 	public float GetLastFov()
 	{

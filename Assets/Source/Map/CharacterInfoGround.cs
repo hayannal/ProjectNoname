@@ -6,6 +6,7 @@ public class CharacterInfoGround : MonoBehaviour
 {
 	public static CharacterInfoGround instance;
 
+	public Collider planeCollider;
 	public GameObject experienceRootObject;
 	public GameObject monsterPrefab;
 	public float monsterSpawnLineZ = 72.0f;

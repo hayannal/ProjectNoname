@@ -160,7 +160,7 @@ public class PlayerActor : Actor
 		FadeCanvas.instance.FadeIn(1.3f);
 	}
 
-	public void OnChangedMainCharacter(bool experience = false)
+	public void OnChangedMainCharacter()
 	{
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
 		if (lobby == false)
@@ -170,9 +170,6 @@ public class PlayerActor : Actor
 		CustomFollowCamera.instance.targetTransform = cachedTransform;
 		if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
 			DotMainMenuCanvas.instance.targetTransform = cachedTransform;
-
-		if (experience)
-			return;
 
 		// 첫 플레이 튜토에서는 궁극기 버튼도 보여주면 안되서 예외처리한다.
 		bool showPlayerCanvas = true;
@@ -231,48 +228,6 @@ public class PlayerActor : Actor
 
 		string[] penaltyMindParameterList = UIString.instance.ParseParameterString(stagePenaltyTableData.mindParameter);
 		BattleToastCanvas.instance.ShowToast(UIString.instance.GetString(stagePenaltyTableData.penaltyMindText, penaltyMindParameterList), 2.5f);
-	}
-	#endregion
-
-	#region Experience
-	// 아마도 대표캐릭터 셋팅하는 UI로 옮겨야할거 같다.
-	PlayerActor _prevPlayerActor;
-	bool _experienceMode = false;
-	public void ExperienceCharacter()
-	{
-		_experienceMode = true;
-
-		// UI에서 체함하기 누를때 쓰는 함수
-		// 이때도 ChangeMainCharacter 함수와 마찬가지로 교체할 캐릭터는 이미 만들어진 상태고 OnChangedMainCharacter함수는 호출이 패스된 상태다.
-		_prevPlayerActor = BattleInstanceManager.instance.playerActor;
-		_prevPlayerActor.gameObject.SetActive(false);
-		OnChangedMainCharacter(true);
-
-		// 체험모드에서도 플레이어를 때리는 몹이 있을테니 HP 리셋
-		actorStatus.SetHpRatio(1.0f);
-		actorStatus.SetSpRatio(0.0f);
-
-		// 들어갈때 피 게이지는 안떠도 상관없다고 해서 패스.
-		//PlayerGaugeCanvas.instance.InitializeGauge(this);
-		SkillSlotCanvas.instance.InitializeSkillSlot(this);
-	}
-
-	public void FinishExperienceCharacter()
-	{
-		if (_prevPlayerActor == null)
-			return;
-
-		// 체험모드에서도 플레이어를 때리는 몹이 있을테니 HP 리셋
-		actorStatus.SetHpRatio(1.0f);
-		actorStatus.SetSpRatio(0.0f);
-
-		BattleInstanceManager.instance.playerActor.gameObject.SetActive(false);
-		_prevPlayerActor.OnChangedMainCharacter(true);
-		_prevPlayerActor = null;
-
-		SkillSlotCanvas.instance.HideSkillSlot();
-
-		_experienceMode = false;
 	}
 	#endregion
 

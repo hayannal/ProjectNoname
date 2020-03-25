@@ -18,11 +18,18 @@ public class ExperienceCanvas : MonoBehaviour
 	public Ease rotationEase = Ease.OutQuad;
 	public Ease fovEase = Ease.OutQuad;
 
+	public GameObject experienceGroundPrefab;
+
 	Vector2 _defaultBackButtonPosition;
 	void Awake()
 	{
 		instance = this;
 		_defaultBackButtonPosition = backButtonRectTransform.anchoredPosition;
+	}
+
+	void Start()
+	{
+		Instantiate<GameObject>(experienceGroundPrefab, CharacterInfoGround.instance.transform);
 	}
 
 	void OnEnable()
@@ -65,7 +72,8 @@ public class ExperienceCanvas : MonoBehaviour
 		backButtonRectTransform.anchoredPosition = backButtonHideRectTransform.anchoredPosition;
 
 		CharacterListCanvas.instance.ChangeExperience();
-		CharacterInfoGround.instance.EnableExperienceMode(true);
+		if (ExperienceGround.instance != null)
+			ExperienceGround.instance.gameObject.SetActive(true);
 	}
 
 	void ResetExperienceMode()
@@ -76,7 +84,8 @@ public class ExperienceCanvas : MonoBehaviour
 			playerActor.actorStatus.AddSP(-playerActor.actorStatus.GetSP());
 
 		CharacterListCanvas.instance.ResetExperience();
-		CharacterInfoGround.instance.EnableExperienceMode(false);
+		if (ExperienceGround.instance != null)
+			ExperienceGround.instance.gameObject.SetActive(false);
 		SkillSlotCanvas.instance.HideSkillSlot();
 	}
 

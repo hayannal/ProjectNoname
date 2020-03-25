@@ -12,6 +12,7 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 	public Text nameText;
 	public Button experienceButton;
 	public Button swapButton;
+	public Image swapButtonImage;
 	public Text swapButtonText;
 
 	public Text powerSourceText;
@@ -20,12 +21,15 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 	public GameObject exclusivePackObject;
 	public CharacterInfoPackIcon[] packIconList;
 	public Transform[] packIconContentTransformList;
+
 	public Text powerLevelText;
 	public Text hpText;
 	public Text atkText;
 	public Slider ppSlider;
 	public Text ppText;
+	public Image priceButtonImage;
 	public Text priceText;
+	public Coffee.UIExtensions.UIEffect goldGrayscaleEffect;
 
 	void Awake()
 	{
@@ -92,7 +96,13 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 		noExclusivePackObject.SetActive(exclusiveLevelPackCount == 0);
 		exclusivePackObject.SetActive(exclusiveLevelPackCount > 0);
 
-		PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(actorId);
+		_actorId = actorId;
+		RefreshStatus();
+	}
+
+	void RefreshStatus()
+	{
+		PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(_actorId);
 		if (playerActor != null)
 		{
 			// 구조 바꾸면서 플레이 중에 못찾는건 없어졌는데 Canvas켜둔채 종료하니 자꾸 뜬다.
@@ -100,18 +110,11 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 			hpText.text = playerActor.actorStatus.GetDisplayMaxHp().ToString();
 			atkText.text = playerActor.actorStatus.GetDisplayAttack().ToString();
 		}
-		
+
 		ppText.text = UIString.instance.GetString("GameUI_StageFraction", 2, 20);
 		priceText.text = 1000.ToString("N0");
-
-		_actorId = actorId;
 	}
 	#endregion
-
-	public void OnClickExperience()
-	{
-		UIInstanceManager.instance.ShowCanvasAsync("ExperienceCanvas", null);
-	}
 
 	public void OnClickStoryButton()
 	{
@@ -125,6 +128,11 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 
 		// 뽑기창에서는 이와 다르게
 		// Char CharDesc는 기본으로 나오고 돋보기로만 Story를 본다.
+	}
+
+	public void OnClickExperience()
+	{
+		UIInstanceManager.instance.ShowCanvasAsync("ExperienceCanvas", null);
 	}
 
 	public void OnClickMainCharacter()
@@ -198,6 +206,11 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 		name = string.Format("<size=16>{0}</size>", name);
 		string desc = UIString.instance.GetString(levelPackTableData.descriptionId);
 		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, string.Format("{0}\n\n{1}", name, desc), 250, packIconContentTransformList[1].transform, new Vector2(0.0f, -40.0f));
+	}
+
+	public void OnClickGaugeDetailButton()
+	{
+
 	}
 
 	public void OnClickLevelUpButton()

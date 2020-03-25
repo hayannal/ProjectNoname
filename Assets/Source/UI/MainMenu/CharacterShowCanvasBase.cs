@@ -13,6 +13,7 @@ public class CharacterShowCanvasBase : MonoBehaviour
 
 	#region Info Camera
 	protected Vector3 _rootOffsetPosition = new Vector3(0.0f, 0.0f, 75.0f);
+	public Vector3 rootOffsetPosition { get { return _rootOffsetPosition; } }
 	bool _infoCameraMode = false;
 	float _lastRendererResolutionFactor;
 	float _lastBloomResolutionFactor;

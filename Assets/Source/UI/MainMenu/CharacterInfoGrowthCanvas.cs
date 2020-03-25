@@ -169,7 +169,7 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 		if (actorTableData == null)
 			return;
 
-		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, UIString.instance.GetString(actorTableData.descId), 250, ultimateSkillIconImage.transform, new Vector2(0.0f, -45.0f));
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, UIString.instance.GetString(actorTableData.ultimateId), 250, ultimateSkillIconImage.transform, new Vector2(0.0f, -45.0f));
 	}
 
 	string _exclusiveLevelPack1;

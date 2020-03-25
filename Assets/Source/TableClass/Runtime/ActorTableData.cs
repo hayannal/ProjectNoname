@@ -25,6 +25,10 @@ public class ActorTableData
   public string descId { get { return _descId; } set { _descId = value; } }
   
   [SerializeField]
+  string _ultimateId;
+  public string ultimateId { get { return _ultimateId; } set { _ultimateId = value; } }
+  
+  [SerializeField]
   int _grade;
   public int grade { get { return _grade; } set { _grade = value; } }
   

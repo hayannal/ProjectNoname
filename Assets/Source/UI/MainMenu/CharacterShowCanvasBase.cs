@@ -186,14 +186,47 @@ public class CharacterShowCanvasBase : MonoBehaviour
 	}
 	#endregion
 
+	#region Experience
 	public void ChangeExperience()
 	{
 		CustomRenderer.instance.RenderTextureResolutionFactor = _lastRendererResolutionFactor;
-		UIInstanceManager.instance.GetCachedCameraMain().fieldOfView = _lastFov;
-		_playerActor.actionController.PlayActionByActionName("Idle");
-
-		CameraFovController.instance.enabled = true;
-		CustomFollowCamera.instance.enabled = true;
 		CustomFollowCamera.instance.targetTransform = _playerActor.cachedTransform;
+		_playerActor.actionController.PlayActionByActionName("Idle");
 	}
+
+	public void ResetExperience()
+	{
+		// disable prev component
+		CameraFovController.instance.enabled = false;
+		CustomFollowCamera.instance.enabled = false;
+		CustomFollowCamera.instance.targetTransform = BattleInstanceManager.instance.playerActor.cachedTransform;
+
+		// player setting
+		if (_playerActor != null)
+			OnLoadedPlayerActor();
+
+		// setting
+		CustomRenderer.instance.RenderTextureResolutionFactor = (CustomRenderer.instance.RenderTextureResolutionFactor + 1.0f) * 0.5f;
+		UIInstanceManager.instance.GetCachedCameraMain().fieldOfView = infoCameraFov;
+		CustomFollowCamera.instance.cachedTransform.position = infoCameraTransform.localPosition + _rootOffsetPosition;
+		CustomFollowCamera.instance.cachedTransform.rotation = infoCameraTransform.localRotation;
+	}
+
+	public float GetLastFov()
+	{
+		return _lastFov;
+	}
+
+	public Vector3 GetLastCameraOffset()
+	{
+		Vector3 diff = _lastCameraPosition - _lastCharacterPosition;
+		diff.x = 0.0f;
+		return diff;
+	}
+
+	public Quaternion GetLastCameraRotation()
+	{
+		return _lastCameraRotation;
+	}
+	#endregion
 }

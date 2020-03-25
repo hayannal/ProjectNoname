@@ -169,7 +169,7 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 		if (actorTableData == null)
 			return;
 
-		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, UIString.instance.GetString(actorTableData.descId), 300, ultimateSkillIconImage.transform, new Vector2(0.0f, -45.0f));
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, UIString.instance.GetString(actorTableData.descId), 250, ultimateSkillIconImage.transform, new Vector2(0.0f, -45.0f));
 	}
 
 	string _exclusiveLevelPack1;
@@ -180,8 +180,10 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 			return;
 
 		string name = UIString.instance.GetString(levelPackTableData.nameId);
+		name = name.Replace("FFC080", "DE7100");
+		name = string.Format("<size=16>{0}</size>", name);
 		string desc = UIString.instance.GetString(levelPackTableData.descriptionId);
-		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, string.Format("{0}\n\n{1}", name, desc), 300, packIconContentTransformList[0].transform, new Vector2(0.0f, -40.0f));
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, string.Format("{0}\n\n{1}", name, desc), 250, packIconContentTransformList[0].transform, new Vector2(0.0f, -40.0f));
 	}
 
 	string _exclusiveLevelPack2;
@@ -192,8 +194,10 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 			return;
 
 		string name = UIString.instance.GetString(levelPackTableData.nameId);
+		name = name.Replace("FFC080", "DE7100");
+		name = string.Format("<size=16>{0}</size>", name);
 		string desc = UIString.instance.GetString(levelPackTableData.descriptionId);
-		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, string.Format("{0}\n\n{1}", name, desc), 300, packIconContentTransformList[1].transform, new Vector2(0.0f, -40.0f));
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, string.Format("{0}\n\n{1}", name, desc), 250, packIconContentTransformList[1].transform, new Vector2(0.0f, -40.0f));
 	}
 
 	public void OnClickLevelUpButton()

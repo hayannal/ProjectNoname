@@ -39,6 +39,7 @@ public class SortButton : MonoBehaviour
 		}
 
 		textCanvasGroup.alpha = 0.0f;
+		_fadeTime = _lastClickRemainTime = 0.0f;
 	}
 
 	public void OnClickButton()

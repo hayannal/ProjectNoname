@@ -68,6 +68,10 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 		gradeText.SetLocalizedText(UIString.instance.GetString(string.Format("GameUI_CharGrade{0}", actorTableData.grade)));
 		nameText.SetLocalizedText(UIString.instance.GetString(actorTableData.nameId));
 
+		bool contains = PlayerData.instance.ContainsActor(actorId);
+		swapButtonImage.color = contains ? Color.white : Color.gray;
+		swapButtonText.color = contains ? Color.white : Color.gray;
+
 		powerSourceText.SetLocalizedText(PowerSource.Index2Name(actorTableData.powerSource));
 		ultimateSkillIconImage.sprite = null;
 		ultimateSkillIconImage.sprite = CommonCanvasGroup.instance.powerSourceIconSpriteList[actorTableData.powerSource];
@@ -151,7 +155,10 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 
 		CharacterData characterData = PlayerData.instance.GetCharacterData(CharacterListCanvas.instance.selectedActorId);
 		if (characterData == null)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_MainCharacterDontHave"), 2.0f);
 			return;
+		}
 
 		// 토스트만 미리 띄우고 서버 응답 후 바꾸도록 한다.
 		ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_MainCharacterChanged"), 2.0f);

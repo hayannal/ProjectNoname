@@ -119,6 +119,7 @@ public class CharacterInfoCanvas : MonoBehaviour
 				continue;
 			_listMenuTransform[i].gameObject.SetActive(index == i);
 		}
+		TooltipCanvas.Show(false, TooltipCanvas.eDirection.CharacterInfo, "", 0.0f, null, Vector2.zero);
 
 		_lastIndex = index;
 	}

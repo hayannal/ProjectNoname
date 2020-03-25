@@ -65,10 +65,12 @@ public class ExperienceCanvas : MonoBehaviour
 		backButtonRectTransform.anchoredPosition = backButtonHideRectTransform.anchoredPosition;
 
 		CharacterListCanvas.instance.ChangeExperience();
+		CharacterInfoGround.instance.EnableExperienceMode(true);
 	}
 
 	void ResetExperienceMode()
 	{
+		CharacterInfoGround.instance.EnableExperienceMode(false);
 		CharacterListCanvas.instance.ResetExperience();
 	}
 

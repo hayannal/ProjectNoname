@@ -210,6 +210,8 @@ public class PlayerAI : MonoBehaviour
 	bool _lastNavMeshResult = true;
 	bool CheckNavMeshReachable(Vector3 sourcePosition, Vector3 targetPosition)
 	{
+		if (ExperienceCanvas.instance != null && ExperienceCanvas.instance.gameObject.activeSelf)
+			return true;
 		if (actor.targetingProcessor.sphereCastRadiusForCheckWall == 0.0f)
 			return true;
 

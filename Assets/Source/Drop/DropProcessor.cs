@@ -46,7 +46,11 @@ public class DropProcessor : MonoBehaviour
 				Drop(dropProcess, dropTableData);
 		}
 
-		if (!string.IsNullOrEmpty(addDropId))
+		bool invalid = false;
+		if (addDropId == "9752476" && (ExperienceCanvas.instance == null || ExperienceCanvas.instance.gameObject == null || ExperienceCanvas.instance.gameObject.activeSelf == false))
+			invalid = true;
+
+		if (!string.IsNullOrEmpty(addDropId) && invalid == false)
 		{
 			DropTableData dropTableData = TableDataManager.instance.FindDropTableData(addDropId);
 			if (dropTableData != null)

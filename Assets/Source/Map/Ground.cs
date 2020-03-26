@@ -6,6 +6,7 @@ using UnityEngine.AI;
 public class Ground : MonoBehaviour
 {
 	public GameObject quadRootObject;
+	public bool fakeGround;
 
 	Bounds _bounds = new Bounds();
 
@@ -15,12 +16,21 @@ public class Ground : MonoBehaviour
 		_bounds.max = new Vector3(quadRootTransform.Find("QuadRight").localPosition.x, 10.0f, quadRootTransform.Find("QuadUp").localPosition.z);
 		_bounds.min = new Vector3(quadRootTransform.Find("QuadLeft").localPosition.x, -10.0f, quadRootTransform.Find("QuadDown").localPosition.z);
 		_colliderList = quadRootTransform.GetComponentsInChildren<Collider>();
+
+		if (fakeGround)
+			_bounds.center = transform.position;
 	}
 
 	// Start is called before the first frame update
 	bool _started = false;
 	void Start()
 	{
+		if (fakeGround)
+		{
+			_started = true;
+			return;
+		}
+
 		StaticBatchingUtility.Combine(gameObject);
 
 		if (CustomFollowCamera.instance != null)
@@ -30,6 +40,9 @@ public class Ground : MonoBehaviour
 
 	void OnEnable()
 	{
+		if (fakeGround)
+			return;
+
 		BattleInstanceManager.instance.currentGround = this;
 
 		if (_started && CustomFollowCamera.instance != null)

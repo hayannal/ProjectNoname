@@ -119,7 +119,7 @@ public class CharacterInfoCanvas : MonoBehaviour
 				continue;
 			_listMenuTransform[i].gameObject.SetActive(index == i);
 		}
-		TooltipCanvas.Show(false, TooltipCanvas.eDirection.CharacterInfo, "", 0.0f, null, Vector2.zero);
+		TooltipCanvas.Hide();
 
 		_lastIndex = index;
 	}
@@ -137,6 +137,7 @@ public class CharacterInfoCanvas : MonoBehaviour
 
 	public void OnClickDetailButton()
 	{
+		TooltipCanvas.Hide();
 		UIInstanceManager.instance.ShowCanvasAsync("CharacterInfoDetailCanvas", null);
 	}
 }

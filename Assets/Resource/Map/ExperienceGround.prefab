@@ -4765,6 +4765,20 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!114 &1082795969931398359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1767689384567088804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe30f697f13ac5d448e4f3fbc0391eeb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  quadRootObject: {fileID: 1767689384567088804}
+  fakeGround: 1
 --- !u!1 &2542449806493731238
 GameObject:
   m_ObjectHideFlags: 0
@@ -18896,6 +18910,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1e4fc8f9db68bb4c92477bd65bbde7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ground: {fileID: 1082795969931398359}
   monsterSpawnLineZ: 72
   monsterPrefab: {fileID: 4714752786521564253, guid: 13863ad72ae15084f966b568e098df40,
     type: 3}
@@ -38091,6 +38106,12 @@ PrefabInstance:
 --- !u!4 &6696047385367835535 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2524054421636382234, guid: 3bc2c45d5a190fd4bacabf16d91482a8,
+    type: 3}
+  m_PrefabInstance: {fileID: 9217212028184923541}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1767689384567088804 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7449522918497856305, guid: 3bc2c45d5a190fd4bacabf16d91482a8,
     type: 3}
   m_PrefabInstance: {fileID: 9217212028184923541}
   m_PrefabAsset: {fileID: 0}

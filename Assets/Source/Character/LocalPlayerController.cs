@@ -205,13 +205,7 @@ public sealed class LocalPlayerController : BaseCharacterController
 						if (_raycastHitList[i].collider == null || _raycastHitList[i].collider.isTrigger)
 							continue;
 
-						bool checkPlaneCollider = false;
 						if (_raycastHitList[i].collider == BattleInstanceManager.instance.planeCollider)
-							checkPlaneCollider = true;
-						if (checkPlaneCollider == false && CharacterInfoGround.instance != null && CharacterInfoGround.instance.gameObject.activeSelf && CharacterInfoGround.instance.planeCollider == _raycastHitList[i].collider)
-							checkPlaneCollider = true;
-
-						if (checkPlaneCollider)
 						{
 							targetPosition = _raycastHitList[i].point;
 							targetCollider = _raycastHitList[i].collider;

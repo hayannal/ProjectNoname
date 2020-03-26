@@ -7,6 +7,7 @@ public class ExperienceGround : MonoBehaviour
 {
 	public static ExperienceGround instance;
 
+	public Ground ground;
 	public float monsterSpawnLineZ = 72.0f;
 	public GameObject monsterPrefab;
 	public Canvas worldCanvas;
@@ -22,13 +23,23 @@ public class ExperienceGround : MonoBehaviour
 		worldCanvas.worldCamera = UIInstanceManager.instance.GetCachedCameraMain();
 	}
 
+	Collider _prevPlaneCollider;
+	Ground _prevGround;
 	void OnEnable()
 	{
 		_spawnRemainTime = 0.0f;
+
+		_prevPlaneCollider = BattleInstanceManager.instance.planeCollider;
+		_prevGround = BattleInstanceManager.instance.currentGround;
+		BattleInstanceManager.instance.planeCollider = CharacterInfoGround.instance.planeCollider;
+		BattleInstanceManager.instance.currentGround = ground;
 	}
 
 	void OnDisable()
 	{
+		BattleInstanceManager.instance.planeCollider = _prevPlaneCollider;
+		BattleInstanceManager.instance.currentGround = _prevGround;
+
 		List<MonsterActor> listLiveMonster = BattleInstanceManager.instance.GetLiveMonsterList();
 		if (listLiveMonster.Count > 0)
 			Debug.LogError("Invalid Call. Monsters remain.");

@@ -269,6 +269,9 @@ public class ActorStatus : MonoBehaviour
 #endif
 	public virtual void AddHP(float addHP)
 	{
+		if (addHP == 0.0f)
+			return;
+
 #if UNITY_EDITOR
 		if (HUDDPS.isActive && actor.IsMonsterActor() && addHP < 0.0f)
 		{

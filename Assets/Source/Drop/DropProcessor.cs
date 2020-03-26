@@ -147,9 +147,12 @@ public class DropProcessor : MonoBehaviour
 		if (dropSpValue == 0.0f)
 			return;
 
-		float spGainAddRate = BattleInstanceManager.instance.playerActor.actorStatus.GetValue(eActorStatus.SpGainAddRate);
+		PlayerActor playerActor = BattleInstanceManager.instance.playerActor;
+		if (ExperienceCanvas.instance != null && ExperienceCanvas.instance.gameObject.activeSelf)
+			playerActor = CharacterListCanvas.instance.selectedPlayerActor;
+		float spGainAddRate = playerActor.actorStatus.GetValue(eActorStatus.SpGainAddRate);
 		if (spGainAddRate != 0.0f) dropSpValue *= (1.0f + spGainAddRate);
-		BattleInstanceManager.instance.playerActor.actorStatus.AddSP(dropSpValue);
+		playerActor.actorStatus.AddSP(dropSpValue);
 	}
 
 	static void DropExp(int dropExpValue)

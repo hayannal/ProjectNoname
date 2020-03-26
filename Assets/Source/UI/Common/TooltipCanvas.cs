@@ -61,6 +61,13 @@ public class TooltipCanvas : MonoBehaviour
 		}
 	}
 
+	public static void Hide()
+	{
+		if (_instance == null)
+			return;
+		_instance.gameObject.SetActive(false);
+	}
+
 	Canvas _canvas;
 	void Awake()
 	{

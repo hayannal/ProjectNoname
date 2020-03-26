@@ -418,6 +418,12 @@ public class MonsterAI : MonoBehaviour
 			Vector3 desirePosition = actor.cachedTransform.position + randomDirection;
 			desirePosition.y = 0.0f;
 
+			if (ExperienceCanvas.instance != null && ExperienceCanvas.instance.gameObject.activeSelf && straightMoveType == eStraightMoveType.Random)
+			{
+				_straightMoveDirection = randomDirection.normalized;
+				return;
+			}
+
 			NavMeshHit hit;
 			NavMeshQueryFilter navMeshQueryFilter = new NavMeshQueryFilter();
 			navMeshQueryFilter.areaMask = NavMesh.AllAreas;

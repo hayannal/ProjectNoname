@@ -217,7 +217,8 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 
 	public void OnClickGaugeDetailButton()
 	{
-
+		//GameUI_CharTranscendenceDesc
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, UIString.instance.GetString("GameUI_CharGaugeDesc"), 250, ppSlider.transform, new Vector2(10.0f, -35.0f));
 	}
 
 	public void OnClickLevelUpButton()

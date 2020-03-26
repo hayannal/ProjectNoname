@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using DG.Tweening;
 
 public class ExperienceCanvas : MonoBehaviour
@@ -10,6 +11,7 @@ public class ExperienceCanvas : MonoBehaviour
 	public GameObject inputLockObject;
 	public RectTransform backButtonRectTransform;
 	public RectTransform backButtonHideRectTransform;
+	public Button backButton;
 
 	public float positionTweenTime = 1.8f;
 	public float rotationTweenTime = 0.5f;

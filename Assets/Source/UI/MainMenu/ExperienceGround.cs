@@ -27,6 +27,16 @@ public class ExperienceGround : MonoBehaviour
 		_spawnRemainTime = 0.0f;
 	}
 
+	void OnDisable()
+	{
+		List<MonsterActor> listLiveMonster = BattleInstanceManager.instance.GetLiveMonsterList();
+		if (listLiveMonster.Count > 0)
+			Debug.LogError("Invalid Call. Monsters remain.");
+
+		BattleInstanceManager.instance.FinalizeAllPositionBuffAffector(true);
+		BattleInstanceManager.instance.FinalizeAllHitObject();
+	}
+
 	// Update is called once per frame
 	void Update()
     {
@@ -35,8 +45,23 @@ public class ExperienceGround : MonoBehaviour
 
 	float _spawnRemainTime;
 	int _monsterCount;
+	bool _createFrame = false;
 	void UpdateSpawnMonster()
 	{
+		List<MonsterActor> listLiveMonster = BattleInstanceManager.instance.GetLiveMonsterList();
+		if (listLiveMonster.Count > 0)
+		{
+			if (_createFrame)
+			{
+				for (int i = 0; i < listLiveMonster.Count; ++i)
+					listLiveMonster[i].actorStatus.ChangeExperienceMode(CharacterListCanvas.instance.selectedPlayerActor);
+				_createFrame = false;
+			}
+		}
+
+		if (ExperienceCanvas.instance.backButton.interactable == false && _createFrame == false && listLiveMonster.Count == 0)
+			ExperienceCanvas.instance.backButton.interactable = true;
+
 		if (_spawnRemainTime > 0.0f)
 		{
 			_spawnRemainTime -= Time.deltaTime;
@@ -45,7 +70,6 @@ public class ExperienceGround : MonoBehaviour
 			return;
 		}
 
-		List<MonsterActor> listLiveMonster = BattleInstanceManager.instance.GetLiveMonsterList();
 		if (listLiveMonster.Count > 0)
 			return;
 
@@ -55,7 +79,23 @@ public class ExperienceGround : MonoBehaviour
 		float randomX = Random.Range(-2.5f, 2.5f);
 		float randomZ = Random.Range(77.0f, 80.0f);
 		Vector3 randomPosition = new Vector3(randomX, 0.0f, randomZ);
-		GameObject newObject = BattleInstanceManager.instance.GetCachedObject(monsterPrefab, randomPosition, Quaternion.LookRotation(new Vector3(0.0f, 0.0f, 70.0f) - randomPosition));
+
+		for (int i = 0; i < 3; ++i)
+		{
+			GameObject newObject = BattleInstanceManager.instance.GetCachedObject(monsterPrefab, randomPosition, Quaternion.LookRotation(new Vector3(0.0f, 0.0f, 70.0f) - randomPosition));
+			MonsterActor newMonsterActor = newObject.GetComponent<MonsterActor>();
+			switch (i)
+			{
+				case 0: newMonsterActor.cachedTransform.Translate(0.0f, 0.0f, 0.5f, Space.Self); break;
+				case 1: newMonsterActor.cachedTransform.Translate(-0.5f, 0.0f, -0.5f, Space.Self); break;
+				case 2: newMonsterActor.cachedTransform.Translate(0.5f, 0.0f, -0.5f, Space.Self); break;
+			}
+		}
+
+		// 생성하고나서 즉시 스탯을 수정할 수 없는게 Start 함수를 지나야 수정이 된다.
+		// 그래서 차라리 _created 걸어두고 한프레임 뒤에 몬스터 리스트 받아와서 셋팅하는거로 한다.
+		_createFrame = true;
+		ExperienceCanvas.instance.backButton.interactable = false;
 
 		_spawnRemainTime = 3.0f;
 	}

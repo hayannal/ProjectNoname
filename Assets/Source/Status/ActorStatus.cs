@@ -346,4 +346,16 @@ public class ActorStatus : MonoBehaviour
 	{
 		_statusBase._sp = GetValue(eActorStatus.MaxSp) * ratio;
 	}
+
+
+	// for Experience
+	public void ChangeExperienceMode(PlayerActor attackerPlayerActor)
+	{
+		float value = attackerPlayerActor.actorStatus.GetValue(eActorStatus.Attack);
+		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(attackerPlayerActor.actorId);
+		if (actorTableData == null)
+			return;
+		float result = value * 1.2f / actorTableData.multiAtk;
+		_statusBase._hp = _statusBase.valueList[(int)eActorStatus.MaxHp] = result;
+	}
 }

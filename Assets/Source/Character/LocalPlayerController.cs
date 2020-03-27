@@ -156,8 +156,7 @@ public sealed class LocalPlayerController : BaseCharacterController
 			if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null)
 				TitleCanvas.instance.FadeTitle();
 
-			bool experienceMode = (ExperienceCanvas.instance != null && ExperienceCanvas.instance.gameObject.activeSelf);
-			if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf && experienceMode == false)
+			if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf && StackCanvas.IsInStack(DotMainMenuCanvas.instance.gameObject) == false)
 			{
 				DotMainMenuCanvas.instance.OnClickBackButton();
 				return;

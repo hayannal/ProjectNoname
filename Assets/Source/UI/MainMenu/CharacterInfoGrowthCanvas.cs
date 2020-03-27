@@ -298,8 +298,8 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 
 	public void OnClickLevelUpButton()
 	{
-		bool contains = PlayerData.instance.ContainsActor(_actorId);
-		if (contains == false)
+		CharacterData characterData = PlayerData.instance.GetCharacterData(_actorId);
+		if (characterData == null)
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_PowerLevelUpDontHave"), 2.0f);
 			return;
@@ -320,6 +320,20 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughGold"), 2.0f);
 			return;
+		}
+
+		if (characterData.needLimitBreak)
+		{
+
+		}
+		else
+		{
+			PlayFabApiManager.instance.RequestCharacterPowerLevelUp(characterData, _price, () =>
+			{
+				RefreshStatus();
+				RefreshRequired();
+				CharacterInfoCanvas.instance.currencySmallInfo.RefreshInfo();
+			});
 		}
 	}
 }

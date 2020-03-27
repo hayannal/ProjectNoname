@@ -86,4 +86,14 @@ public class CharacterData
 		_pp = pp;
 		_limitBreakLevel = lb;
 	}
+
+	public void OnPowerLevelUp()
+	{
+		_powerLevel += 1;
+
+		// 캐릭터 데이터가 변경되면 이걸 사용하는 PlayerActor의 ActorStatus도 새로 스탯을 계산해야한다.
+		PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(actorId);
+		if (playerActor != null)
+			playerActor.actorStatus.InitializeActorStatus();
+	}
 }

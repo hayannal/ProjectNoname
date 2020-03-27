@@ -85,6 +85,8 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 	{
 		if (StageManager.instance == null)
 			return;
+		if (MainSceneBuilder.instance == null)
+			return;
 		if (_playerActor == null || _playerActor.gameObject == null)
 			return;
 

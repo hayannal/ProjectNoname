@@ -655,23 +655,46 @@ public class PlayFabApiManager : MonoBehaviour
 
 
 	#region Modify CharacterData
+	// 파워레벨쪽은 정석대로 서버에서 처리된다.
+	public void RequestCharacterPowerLevelUp(CharacterData characterData, int price, Action successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "PowerLevelUp",
+			FunctionParameter = new { ChrId = characterData.entityKey.Id },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+				CurrencyData.instance.gold -= price;
+				characterData.OnPowerLevelUp();
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+
 	// 이것도 서버에 저장되는 Entity Object
 	public class CharacterDataEntity1
 	{
-		public int pow;
+		// 아마도 잠재부터 이쪽에 들어갈거 같다.
+		public int poten;
 	}
 
-	public void RequestPowerUpCharacter(CharacterData characterData, Action successCallback)
-	{
-		RequestCharacterData(characterData, characterData.powerLevel + 1, successCallback);
-	}
-
-	void RequestCharacterData(CharacterData characterData, int powerLevel, Action successCallback)
+	void RequestCharacterObjectData(CharacterData characterData, int potential, Action successCallback)
 	{
 		// 몰아서 저장하기 때문에 모든 정보를 다 적어야한다.
 		CharacterDataEntity1 entity1Object = new CharacterDataEntity1
 		{
-			pow = powerLevel
+			poten = potential
 		};
 		string entity1Data = JsonUtility.ToJson(entity1Object);
 
@@ -685,6 +708,8 @@ public class PlayFabApiManager : MonoBehaviour
 			// A free-tier customer may store up to 3 objects on each entit
 		};
 
+		// 아마 근데 이렇게 오브젝트를 통째로 밀면 checkSum 처리할 곳도 없어지기 때문에 이렇게는 안하고 클라우드 스크립트 통해서 할거 같다.
+		// 우선 클라이언트에서 보낼 수도 있다는 걸 보여주기 위한 샘플로만 놔둔다.
 		PlayFabDataAPI.SetObjects(new SetObjectsRequest()
 		{
 			Entity = characterData.entityKey, // Saved from GetEntityToken, or a specified key created from a titlePlayerId, CharacterId, etc

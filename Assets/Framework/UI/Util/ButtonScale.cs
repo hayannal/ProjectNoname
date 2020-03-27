@@ -116,10 +116,14 @@ public class ButtonScale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
 		if (lockCanvasInputInAnimation)
 		{
-			if (_graphicRaycaster == null)
-				_graphicRaycaster = GetComponentInParent<GraphicRaycaster>();
-			if (_graphicRaycaster != null)
-				_graphicRaycaster.enabled = false;
+			// 처음에는 이렇게 graphicRaycaster를 끄는거로 구현했었는데
+			//if (_graphicRaycaster == null)
+			//	_graphicRaycaster = GetComponentInParent<GraphicRaycaster>();
+			//if (_graphicRaycaster != null)
+			//	_graphicRaycaster.enabled = false;
+			// 이렇게 하니까 뒤에 있는게 눌려져서 원하지 않는 결과가 나왔다.
+			// 그래서 EventSystem을 막기로 해본다.
+			DragThresholdController.instance.EnableEventSystem(false);
 		}
 	}
 	
@@ -133,8 +137,11 @@ public class ButtonScale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 		_clickAnimation = false;
 		if (onCompleteAnimation != null)
 			onCompleteAnimation.Invoke();
-		if (lockCanvasInputInAnimation && _graphicRaycaster != null)
-			_graphicRaycaster.enabled = true;
+		if (lockCanvasInputInAnimation)// && _graphicRaycaster != null)
+		{
+			//_graphicRaycaster.enabled = true;
+			DragThresholdController.instance.EnableEventSystem(true);
+		}
 	}
 }
 

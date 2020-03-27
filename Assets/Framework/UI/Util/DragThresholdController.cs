@@ -42,4 +42,13 @@ public class DragThresholdController : MonoBehaviour {
 		if (_uiDragThresholdRefCount == 0)
 			eventSystem.pixelDragThreshold = _defaultPixelDragThreshold;
 	}
+
+	#region Global Input Lock
+	public void EnableEventSystem(bool enable)
+	{
+		eventSystem.enabled = enable;
+	}
+
+	public bool IsEnableEventSystem() { return eventSystem.enabled; }
+	#endregion
 }

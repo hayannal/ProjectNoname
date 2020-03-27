@@ -29,6 +29,9 @@ public class BackKeyButton : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+			if (DragThresholdController.instance.IsEnableEventSystem() == false)
+				return;
+
             for (int i = s_backKeyButtonList.Count - 1; i >= 0; --i)
             {
                 if (s_backKeyButtonList[i] == null)

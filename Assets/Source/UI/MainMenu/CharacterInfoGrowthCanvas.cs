@@ -22,14 +22,21 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 	public CharacterInfoPackIcon[] packIconList;
 	public Transform[] packIconContentTransformList;
 
+	public GameObject limitBreakRectObject;
+	public Text limitBreakLevelText;
 	public Text powerLevelText;
 	public Text hpText;
 	public Text atkText;
+	public GameObject sliderRectObject;
 	public Slider ppSlider;
 	public Text ppText;
+	public GameObject priceButtonObject;
 	public Image priceButtonImage;
 	public Text priceText;
 	public Coffee.UIExtensions.UIEffect goldGrayscaleEffect;
+	public GameObject maxButtonObject;
+	public Image maxButtonImage;
+	public Text maxButtonText;
 
 	void Awake()
 	{
@@ -69,8 +76,8 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 		nameText.SetLocalizedText(UIString.instance.GetString(actorTableData.nameId));
 
 		bool contains = PlayerData.instance.ContainsActor(actorId);
-		swapButtonImage.color = contains ? Color.white : Color.gray;
-		swapButtonText.color = contains ? Color.white : Color.gray;
+		swapButtonImage.color = contains ? Color.white : ColorUtil.halfGray;
+		swapButtonText.color = contains ? Color.white : ColorUtil.halfGray;
 
 		powerSourceText.SetLocalizedText(PowerSource.Index2Name(actorTableData.powerSource));
 		ultimateSkillIconImage.sprite = null;
@@ -102,21 +109,90 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 
 		_actorId = actorId;
 		RefreshStatus();
+		RefreshRequired();
 	}
 
 	void RefreshStatus()
 	{
+		// 구조 바꾸면서 플레이 중에 못찾는건 없어졌는데 Canvas켜둔채 종료하니 자꾸 뜬다.
 		PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(_actorId);
-		if (playerActor != null)
+		if (playerActor == null)
+			return;
+
+		int limitBreakLevel = 0;
+		CharacterData characterData = PlayerData.instance.GetCharacterData(_actorId);
+		if (characterData != null)
+			limitBreakLevel = characterData.limitBreakLevel;
+		limitBreakRectObject.SetActive(limitBreakLevel > 0);
+		if (limitBreakLevel > 0)
+			limitBreakLevelText.text = UIString.instance.GetString("GameUI_CharLimitBreak", limitBreakLevel);
+		powerLevelText.text = UIString.instance.GetString("GameUI_CharPower", playerActor.actorStatus.powerLevel);
+		hpText.text = playerActor.actorStatus.GetDisplayMaxHp().ToString();
+		atkText.text = playerActor.actorStatus.GetDisplayAttack().ToString();
+	}
+
+	int _price;
+	bool _needPp;
+	bool _needTranscendenceItem;
+	void RefreshRequired()
+	{
+		int powerLevel = 1;
+		int pp = 0;
+		int limitBreakLevel = 0;
+		bool dontHave = true;
+		CharacterData characterData = PlayerData.instance.GetCharacterData(_actorId);
+		if (characterData != null)
 		{
-			// 구조 바꾸면서 플레이 중에 못찾는건 없어졌는데 Canvas켜둔채 종료하니 자꾸 뜬다.
-			powerLevelText.text = UIString.instance.GetString("GameUI_CharPower", playerActor.actorStatus.powerLevel);
-			hpText.text = playerActor.actorStatus.GetDisplayMaxHp().ToString();
-			atkText.text = playerActor.actorStatus.GetDisplayAttack().ToString();
+			powerLevel = characterData.powerLevel;
+			pp = characterData.pp;
+			limitBreakLevel = characterData.limitBreakLevel;
+			dontHave = false;
 		}
 
-		ppText.text = UIString.instance.GetString("GameUI_StageFraction", 2, 20);
-		priceText.text = 1000.ToString("N0");
+		_needPp = false;
+		_needTranscendenceItem = false;
+		if (powerLevel >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxPowerLevel"))
+		{
+			sliderRectObject.SetActive(false);
+			priceButtonObject.SetActive(false);
+
+			maxButtonImage.color = ColorUtil.halfGray;
+			maxButtonText.color = ColorUtil.halfGray;
+			maxButtonObject.SetActive(true);
+			maxButtonText.SetLocalizedText(UIString.instance.GetString("GameUI_"));
+		}
+		else
+		{
+			int current = 0;
+			int max = 0;
+			PowerLevelTableData powerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(powerLevel);
+			PowerLevelTableData nextPowerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(powerLevel + 1);
+			if (characterData != null && characterData.needLimitBreak)
+			{
+				current = 0;
+				max = 1;
+				_needTranscendenceItem = true;
+			}
+			else
+			{
+				current = pp - powerLevelTableData.requiredAccumulatedPowerPoint;
+				max = nextPowerLevelTableData.requiredPowerPoint;
+				_needPp = current < max;
+			}
+			ppText.text = UIString.instance.GetString("GameUI_StageFraction", current, max);
+			ppSlider.value = Mathf.Min(1.0f, (float)current / (float)max);
+			sliderRectObject.SetActive(true);
+
+			int requiredGold = nextPowerLevelTableData.requiredGold;
+			priceText.text = nextPowerLevelTableData.requiredGold.ToString("N0");
+			bool disablePrice = (dontHave || CurrencyData.instance.gold < requiredGold || current < max);
+			priceButtonImage.color = !disablePrice ? Color.white : ColorUtil.halfGray;
+			priceText.color = !disablePrice ? Color.white : ColorUtil.halfGray;
+			goldGrayscaleEffect.enabled = disablePrice;
+			priceButtonObject.SetActive(true);
+			maxButtonObject.SetActive(false);
+			_price = requiredGold;
+		}
 	}
 	#endregion
 
@@ -217,12 +293,33 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 
 	public void OnClickGaugeDetailButton()
 	{
-		//GameUI_CharTranscendenceDesc
-		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, UIString.instance.GetString("GameUI_CharGaugeDesc"), 250, ppSlider.transform, new Vector2(10.0f, -35.0f));
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, UIString.instance.GetString(_needPp ? "GameUI_CharGaugeDesc" : "GameUI_CharTranscendenceDesc"), 250, ppSlider.transform, new Vector2(10.0f, -35.0f));
 	}
 
 	public void OnClickLevelUpButton()
 	{
+		bool contains = PlayerData.instance.ContainsActor(_actorId);
+		if (contains == false)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_PowerLevelUpDontHave"), 2.0f);
+			return;
+		}
 
+		if (_needTranscendenceItem)
+		{
+
+		}
+
+		if (_needPp)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughPp"), 2.0f);
+			return;
+		}
+
+		if (CurrencyData.instance.gold < _price)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughGold"), 2.0f);
+			return;
+		}
 	}
 }

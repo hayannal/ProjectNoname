@@ -16,7 +16,18 @@ public class CharacterData
 	public int pp { get { return _pp; } }
 	public int limitBreakLevel { get { return _limitBreakLevel; } }
 
-
+	public bool needLimitBreak
+	{
+		get
+		{
+			PowerLevelTableData nextPowerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(powerLevel + 1);
+			if (nextPowerLevelTableData == null)
+				return false;
+			if (limitBreakLevel < nextPowerLevelTableData.requiredLimitBreak)
+				return true;
+			return false;
+		}
+	}
 
 	public static string GetAddressByActorId(string actorId)
 	{

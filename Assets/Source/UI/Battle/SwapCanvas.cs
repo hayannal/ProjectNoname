@@ -429,6 +429,10 @@ public class SwapCanvas : MonoBehaviour
 		float deltaTime = Time.time - _buttonClickTime;
 		Debug.LogFormat("Change Time : {0}", deltaTime);
 
+		// 게이트 필라에게 스왑을 알려서 SwapSuggest를 하지 말라고 알려야한다.
+		if (GatePillar.instance != null && GatePillar.instance.gameObject.activeSelf && MainSceneBuilder.instance.lobby == false)
+			GatePillar.instance.OnCompleteStageSwap();
+
 		// 로딩 대기창 닫는다.
 		DelayedLoadingCanvas.Show(false);
 

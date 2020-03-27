@@ -357,6 +357,11 @@ public class GatePillar : MonoBehaviour
 		return true;
 	}
 
+	public void OnCompleteStageSwap()
+	{
+		_checkedStageSwapSuggest = true;
+	}
+
 	#region Energy
 	bool CheckEnergy()
 	{

@@ -407,28 +407,33 @@ public class PlayerData : MonoBehaviour
 		loginned = true;
 	}
 
-	public void OnRecvCharacterList(List<CharacterResult> characterList, List<ObjectResult> characterEntityObjectList)
+	public void OnRecvCharacterList(List<CharacterResult> characterList, Dictionary<string, GetCharacterStatisticsResult> dicCharacterStatistics, List<ObjectResult> characterEntityObjectList)
 	{
 		_listCharacterData.Clear();
 		for (int i = 0; i < characterList.Count; ++i)
 		{
-			CharacterData newCharacterData = new CharacterData();
-			newCharacterData.actorId = characterList[i].CharacterName;
-			newCharacterData.entityKey = new PlayFab.DataModels.EntityKey { Id = characterList[i].CharacterId, Type = "character" };
+			string actorId = characterList[i].CharacterName;
+			string serverCharacterId = characterList[i].CharacterId;
+			if (dicCharacterStatistics.ContainsKey(serverCharacterId) == false)
+				continue;
+			if (dicCharacterStatistics[serverCharacterId].CharacterStatistics == null)
+				continue;
 
+			// 이건 필수항목이 아니라서 없을수도 있다.
 			PlayFabApiManager.CharacterDataEntity1 dataObject = null;
 			for (int j = 0; j < characterEntityObjectList.Count; ++j)
 			{
-				if (characterEntityObjectList[j].ObjectName == newCharacterData.actorId)
+				if (characterEntityObjectList[j].ObjectName == actorId)
 				{
 					dataObject = JsonUtility.FromJson<PlayFabApiManager.CharacterDataEntity1>(characterEntityObjectList[j].DataObject.ToString());
 					break;
 				}
 			}
-			if (dataObject == null)
-				continue;
 
-			newCharacterData.powerLevel = dataObject.pow;
+			CharacterData newCharacterData = new CharacterData();
+			newCharacterData.actorId = actorId;
+			newCharacterData.entityKey = new PlayFab.DataModels.EntityKey { Id = serverCharacterId, Type = "character" };
+			newCharacterData.Initialize(dicCharacterStatistics[serverCharacterId].CharacterStatistics, dataObject);
 			_listCharacterData.Add(newCharacterData);
 		}
 	}

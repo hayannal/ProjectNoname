@@ -144,7 +144,8 @@ public class PlayFabApiManager : MonoBehaviour
 #if USE_TITLE_PLAYER_ENTITY
 	GetObjectsResponse _titlePlayerEntityObject;
 #endif
-	List<ObjectResult> _characterEntityObjects = new List<ObjectResult>();
+	Dictionary<string, GetCharacterStatisticsResult> _dicCharacterStatisticsResult = new Dictionary<string, GetCharacterStatisticsResult>();
+	List<ObjectResult> _listCharacterEntityObject = new List<ObjectResult>();
 	public void OnRecvLoginResult(LoginResult loginResult)
 	{
 		_playFabId = loginResult.PlayFabId;
@@ -165,6 +166,9 @@ public class PlayFabApiManager : MonoBehaviour
 		}
 
 		_loginResult = loginResult;
+		_dicCharacterStatisticsResult.Clear();
+		_listCharacterEntityObject.Clear();
+
 		StartTimeRecord("PlayerData");
 
 #if USE_TITLE_PLAYER_ENTITY
@@ -179,6 +183,9 @@ public class PlayFabApiManager : MonoBehaviour
 		for (int i = 0; i < loginResult.InfoResultPayload.CharacterList.Count; ++i)
 		{
 			string characterId = loginResult.InfoResultPayload.CharacterList[i].CharacterId;
+			GetCharacterStatisticsRequest getCharacterStatisticsRequest = new GetCharacterStatisticsRequest { CharacterId = characterId };
+			PlayFabClientAPI.GetCharacterStatistics(getCharacterStatisticsRequest, OnGetCharacterStatistics, OnRecvPlayerDataFailure);
+			++_requestCountForGetPlayerData;
 			GetObjectsRequest getCharacterEntityRequest = new GetObjectsRequest { Entity = new PlayFab.DataModels.EntityKey { Id = characterId, Type = "character" } };
 			PlayFabDataAPI.GetObjects(getCharacterEntityRequest, OnGetObjectsCharacter, OnRecvPlayerDataFailure);
 			++_requestCountForGetPlayerData;
@@ -202,6 +209,20 @@ public class PlayFabApiManager : MonoBehaviour
 	}
 #endif
 
+	void OnGetCharacterStatistics(GetCharacterStatisticsResult result)
+	{
+		string characterId = "";
+		GetCharacterStatisticsRequest getCharacterStatisticsRequest = result.Request as GetCharacterStatisticsRequest;
+		if (getCharacterStatisticsRequest != null)
+			characterId = getCharacterStatisticsRequest.CharacterId;
+
+		if (string.IsNullOrEmpty(characterId) == false)
+			_dicCharacterStatisticsResult.Add(characterId, result);
+
+		--_requestCountForGetPlayerData;
+		CheckCompleteRecvPlayerData();
+	}
+
 	void OnGetObjectsCharacter(GetObjectsResponse result)
 	{
 		Dictionary<string, ObjectResult>.Enumerator e = result.Objects.GetEnumerator();
@@ -217,7 +238,7 @@ public class PlayFabApiManager : MonoBehaviour
 		}
 
 		if (objectResult != null)
-			_characterEntityObjects.Add(objectResult);
+			_listCharacterEntityObject.Add(objectResult);
 
 		--_requestCountForGetPlayerData;
 		CheckCompleteRecvPlayerData();
@@ -270,13 +291,14 @@ public class PlayFabApiManager : MonoBehaviour
 		}
 #endif
 		PlayerData.instance.OnRecvPlayerData(_loginResult.InfoResultPayload.PlayerStatistics, _loginResult.InfoResultPayload.UserData, _loginResult.InfoResultPayload.CharacterList);
-		PlayerData.instance.OnRecvCharacterList(_loginResult.InfoResultPayload.CharacterList, _characterEntityObjects);
+		PlayerData.instance.OnRecvCharacterList(_loginResult.InfoResultPayload.CharacterList, _dicCharacterStatisticsResult, _listCharacterEntityObject);
 
 		_loginResult = null;
 #if USE_TITLE_PLAYER_ENTITY
 		_titlePlayerEntityObject = null;
 #endif
-		_characterEntityObjects.Clear();
+		_dicCharacterStatisticsResult.Clear();
+		_listCharacterEntityObject.Clear();
 	}
 	#endregion
 

@@ -121,6 +121,17 @@ public class PlayFabApiManager : MonoBehaviour
 		});
 	}
 
+	string CheckSum(string input)
+	{
+		int chk = 0x68319547;
+		int length = input.Length;
+		for (int i = 0; i < length; ++i)
+		{
+			chk += (Convert.ToInt32((int)input[i]) * (i + 1));
+		}
+		return Convert.ToString((chk & 0xffffffff), 16);
+	}
+
 	#region Login with PlayerData, Entity Objects
 	// 자주 사용되는 걸 UserData로 보냈더니 15초당 10개 제한에 걸려서 위험하기도 해서
 	// 차라리 Entity Objects를 사용하기로 한다.

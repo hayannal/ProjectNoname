@@ -145,11 +145,7 @@ public class DotMainMenuCanvas : MonoBehaviour
 	void Update()
     {
 		if (StackCanvas.IsInStack(gameObject))
-		{
-			if (_prevTargetTransform != targetTransform && targetTransform != null)
-				_prevTargetTransform = targetTransform;
 			return;
-		}
 
 		if (_prevTargetTransform != targetTransform && targetTransform != null)
 		{
@@ -159,6 +155,12 @@ public class DotMainMenuCanvas : MonoBehaviour
 		UpdateRootPosition();
 		UpdateElementRotation();
 		UpdateElementPosition();
+	}
+
+	// 메인캐릭터 교체할땐 DotMainMenu가 열려있는채로 해야해서 Prev까지 덮어야했다. 이렇게 해야 열리는 애니가 나오지 않으면서 새 캐릭터에 적용된다.
+	public void ForceSetTargetTransform(Transform newTransform)
+	{
+		_prevTargetTransform = targetTransform = newTransform;
 	}
 
 	Vector3 _targetPrevPosition;

@@ -169,7 +169,7 @@ public class PlayerActor : Actor
 		BattleInstanceManager.instance.playerActor = this;
 		CustomFollowCamera.instance.targetTransform = cachedTransform;
 		if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
-			DotMainMenuCanvas.instance.targetTransform = cachedTransform;
+			DotMainMenuCanvas.instance.ForceSetTargetTransform(cachedTransform);
 
 		// 첫 플레이 튜토에서는 궁극기 버튼도 보여주면 안되서 예외처리한다.
 		bool showPlayerCanvas = true;

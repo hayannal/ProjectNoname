@@ -187,6 +187,9 @@ public class StackCanvas : MonoBehaviour
 
 	public bool InternalIsInStack(GameObject canvasObject, bool exceptFirst)
 	{
+		if (_stackCanvas.Count == 0)
+			return false;
+
 		bool find = false;
 		int index = 0;
 		Stack<CanvasStackInfo>.Enumerator e = _stackCanvas.GetEnumerator();

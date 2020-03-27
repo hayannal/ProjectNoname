@@ -47,6 +47,25 @@ public class CharacterData
 		if (CharacterStatistics.ContainsKey("lb"))
 			lb = CharacterStatistics["lb"];
 
+		// 검증
+		bool invalid = false;
+		if (pow > BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxPowerLevel"))
+		{
+			PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidPowerLevel, false, pow);
+			invalid = true;
+		}
+
+		PowerLevelTableData powerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(pow);
+		if (invalid == false && pp < powerLevelTableData.requiredAccumulatedPowerPoint)
+		{
+			PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidPp, false, pp);
+			invalid = true;
+		}
+
+		if (invalid == false && lb != powerLevelTableData.requiredLimitBreak)
+			PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidLimitBreakLevel, false, lb);
+
+		// 추가 데이터. 잠재 염색 날개 등등.
 		if (dataObject != null)
 		{
 

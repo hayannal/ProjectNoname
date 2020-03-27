@@ -20,4 +20,20 @@ public class PowerLevelTableData
   float _atk;
   public float atk { get { return _atk; } set { _atk = value; } }
   
+  [SerializeField]
+  int _requiredLimitBreak;
+  public int requiredLimitBreak { get { return _requiredLimitBreak; } set { _requiredLimitBreak = value; } }
+  
+  [SerializeField]
+  int _requiredPowerPoint;
+  public int requiredPowerPoint { get { return _requiredPowerPoint; } set { _requiredPowerPoint = value; } }
+  
+  [SerializeField]
+  int _requiredAccumulatedPowerPoint;
+  public int requiredAccumulatedPowerPoint { get { return _requiredAccumulatedPowerPoint; } set { _requiredAccumulatedPowerPoint = value; } }
+  
+  [SerializeField]
+  int _requiredGold;
+  public int requiredGold { get { return _requiredGold; } set { _requiredGold = value; } }
+  
 }

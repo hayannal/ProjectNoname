@@ -13,5 +13,8 @@ namespace ClientSuspect
 		OneShotKillBoss			= 100002,
 		InvalidMainCharacter	= 100003,
 		InvalidSelectedChapter	= 100004,
+		InvalidPowerLevel		= 100005,
+		InvalidPp				= 100006,
+		InvalidLimitBreakLevel	= 100007,
 	}
 }

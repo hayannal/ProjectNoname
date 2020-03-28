@@ -25,6 +25,10 @@ public class PowerLevelTableData
   public int requiredLimitBreak { get { return _requiredLimitBreak; } set { _requiredLimitBreak = value; } }
   
   [SerializeField]
+  int _requiredLimitBreakGold;
+  public int requiredLimitBreakGold { get { return _requiredLimitBreakGold; } set { _requiredLimitBreakGold = value; } }
+  
+  [SerializeField]
   int _requiredPowerPoint;
   public int requiredPowerPoint { get { return _requiredPowerPoint; } set { _requiredPowerPoint = value; } }
   

@@ -125,12 +125,17 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 			limitBreakLevel = characterData.limitBreakLevel;
 		limitBreakRectObject.SetActive(limitBreakLevel > 0);
 		if (limitBreakLevel > 0)
-			limitBreakLevelText.text = UIString.instance.GetString("GameUI_CharLimitBreak", limitBreakLevel);
-		powerLevelText.text = UIString.instance.GetString("GameUI_CharPower", playerActor.actorStatus.powerLevel);
-		hpText.text = playerActor.actorStatus.GetDisplayMaxHp().ToString();
-		atkText.text = playerActor.actorStatus.GetDisplayAttack().ToString();
+		{
+			limitBreakLevelText.SetLocalizedText(UIString.instance.GetString("GameUI_CharLimitBreak", limitBreakLevel));
+			powerLevelText.text = UIString.instance.GetString("GameUI_CharLbPower", playerActor.actorStatus.powerLevel, characterData.maxPowerLevelOfCurrentLimitBreak);
+		}
+		else
+			powerLevelText.text = UIString.instance.GetString("GameUI_CharPower", playerActor.actorStatus.powerLevel);
+		hpText.text = playerActor.actorStatus.GetDisplayMaxHp().ToString("N0");
+		atkText.text = playerActor.actorStatus.GetDisplayAttack().ToString("N0");
 	}
 
+	bool _limitBreakMode = false;
 	int _price;
 	bool _needPp;
 	bool _needLimitBreakPoint;
@@ -138,17 +143,16 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 	{
 		int powerLevel = 1;
 		int pp = 0;
-		int limitBreakLevel = 0;
 		bool dontHave = true;
 		CharacterData characterData = PlayerData.instance.GetCharacterData(_actorId);
 		if (characterData != null)
 		{
 			powerLevel = characterData.powerLevel;
 			pp = characterData.pp;
-			limitBreakLevel = characterData.limitBreakLevel;
 			dontHave = false;
 		}
 
+		_limitBreakMode = false;
 		_needPp = false;
 		_needLimitBreakPoint = false;
 		if (powerLevel >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxPowerLevel"))
@@ -157,7 +161,7 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 			priceButtonObject.SetActive(false);
 
 			maxButtonImage.color = ColorUtil.halfGray;
-			maxButtonText.color = Color.gray;
+			maxButtonText.color = ColorUtil.halfGray;
 			maxButtonObject.SetActive(true);
 		}
 		else
@@ -168,9 +172,10 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 			PowerLevelTableData nextPowerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(powerLevel + 1);
 			if (characterData != null && characterData.needLimitBreak)
 			{
-				current = 0;
+				_limitBreakMode = true;
+				current = characterData.limitBreakPoint - powerLevelTableData.requiredLimitBreak;
 				max = 1;
-				_needLimitBreakPoint = true;
+				_needLimitBreakPoint = current < max;
 			}
 			else
 			{
@@ -187,7 +192,9 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 			sliderRectObject.SetActive(!dontHave);
 
 			int requiredGold = nextPowerLevelTableData.requiredGold;
-			priceText.text = nextPowerLevelTableData.requiredGold.ToString("N0");
+			if (_limitBreakMode) requiredGold = nextPowerLevelTableData.requiredLimitBreakGold;
+			priceText.text = requiredGold.ToString("N0");
+
 			bool disablePrice = (dontHave || CurrencyData.instance.gold < requiredGold || current < max);
 			priceButtonImage.color = !disablePrice ? Color.white : ColorUtil.halfGray;
 			priceText.color = !disablePrice ? Color.white : Color.gray;
@@ -296,7 +303,7 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 
 	public void OnClickGaugeDetailButton()
 	{
-		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, UIString.instance.GetString(_needLimitBreakPoint ? "GameUI_CharTranscendenceDesc" : "GameUI_CharGaugeDesc"), 250, ppSlider.transform, new Vector2(10.0f, -35.0f));
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, UIString.instance.GetString(_limitBreakMode ? "GameUI_CharTranscendenceDesc" : "GameUI_CharGaugeDesc"), 250, ppSlider.transform, new Vector2(10.0f, -35.0f));
 	}
 
 	public void OnClickLevelUpButton()
@@ -305,6 +312,12 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 		if (characterData == null)
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_MainCharacterDontHave"), 2.0f);
+			return;
+		}
+
+		if (characterData.powerLevel >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxPowerLevel"))
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_MaxReachToast"), 2.0f);
 			return;
 		}
 
@@ -328,7 +341,12 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 
 		if (characterData.needLimitBreak)
 		{
-
+			PlayFabApiManager.instance.RequestCharacterLimitBreak(characterData, _price, () =>
+			{
+				RefreshStatus();
+				RefreshRequired();
+				CharacterInfoCanvas.instance.currencySmallInfo.RefreshInfo();
+			});
 		}
 		else
 		{
@@ -337,6 +355,7 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 				RefreshStatus();
 				RefreshRequired();
 				CharacterInfoCanvas.instance.currencySmallInfo.RefreshInfo();
+				CharacterListCanvas.instance.RefreshGrid(false);
 			});
 		}
 	}

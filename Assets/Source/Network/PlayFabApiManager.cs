@@ -682,6 +682,32 @@ public class PlayFabApiManager : MonoBehaviour
 		});
 	}
 
+	public void RequestCharacterLimitBreak(CharacterData characterData, int price, Action successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "LimitBreak",
+			FunctionParameter = new { ChrId = characterData.entityKey.Id },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+				CurrencyData.instance.gold -= price;
+				characterData.OnLimitBreak();
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+
 	// 이것도 서버에 저장되는 Entity Object
 	public class CharacterDataEntity1
 	{

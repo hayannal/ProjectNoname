@@ -12,9 +12,11 @@ public class CharacterData
 	ObscuredInt _powerLevel;
 	ObscuredInt _pp;
 	ObscuredInt _limitBreakLevel;
+	ObscuredInt _limitBreakPoint;
 	public int powerLevel { get { return _powerLevel; } set { _powerLevel = value; } }
 	public int pp { get { return _pp; } }
 	public int limitBreakLevel { get { return _limitBreakLevel; } }
+	public int limitBreakPoint { get { return _limitBreakPoint; } }
 
 	public bool needLimitBreak
 	{
@@ -26,6 +28,44 @@ public class CharacterData
 			if (limitBreakLevel < nextPowerLevelTableData.requiredLimitBreak)
 				return true;
 			return false;
+		}
+	}
+
+	public int maxPowerLevelOfCurrentLimitBreak
+	{
+		get
+		{
+			int max = 0;
+			int maxPowerLevel = BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxPowerLevel");
+			for (int i = powerLevel; i <= maxPowerLevel; ++i)
+			{
+				PowerLevelTableData powerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(i);
+				if (powerLevelTableData == null)
+					continue;
+				if (limitBreakLevel != powerLevelTableData.requiredLimitBreak)
+					break;
+				max = i;
+			}
+			return max;
+		}
+	}
+
+	public int maxPpOfCurrentLimitBreak
+	{
+		get
+		{
+			PowerLevelTableData powerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(maxPowerLevelOfCurrentLimitBreak);
+			if (powerLevelTableData == null)
+				return 0;
+			return powerLevelTableData.requiredAccumulatedPowerPoint;
+		}
+	}
+
+	public int getablePpOfCurrentLimitBreak
+	{
+		get
+		{
+			return maxPpOfCurrentLimitBreak - pp;
 		}
 	}
 
@@ -51,12 +91,15 @@ public class CharacterData
 		int pow = 1;
 		int pp = 0;
 		int lb = 0;
+		int lbp = 0;
 		if (CharacterStatistics.ContainsKey("pow"))
 			pow = CharacterStatistics["pow"];
 		if (CharacterStatistics.ContainsKey("pp"))
 			pp = CharacterStatistics["pp"];
 		if (CharacterStatistics.ContainsKey("lb"))
 			lb = CharacterStatistics["lb"];
+		if (CharacterStatistics.ContainsKey("lbp"))
+			lbp = CharacterStatistics["lbp"];
 
 		// 검증
 		bool invalid = false;
@@ -85,6 +128,7 @@ public class CharacterData
 		_powerLevel = pow;
 		_pp = pp;
 		_limitBreakLevel = lb;
+		_limitBreakPoint = lbp;
 	}
 
 	public void OnPowerLevelUp()
@@ -95,5 +139,11 @@ public class CharacterData
 		PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(actorId);
 		if (playerActor != null)
 			playerActor.actorStatus.InitializeActorStatus();
+	}
+
+	public void OnLimitBreak()
+	{
+		// 한계돌파는 레벨업을 스탯 변화 없이 레벨업을 할 수 있어지는거라서 재계산 안한다.
+		_limitBreakLevel += 1;
 	}
 }

@@ -116,7 +116,7 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 		public CharacterData characterData;
 	}
 	List<CharacterInfo> _listAllCharacterInfo = new List<CharacterInfo>();
-	void RefreshGrid(bool onEnable)
+	public void RefreshGrid(bool onEnable)
 	{
 		for (int i = 0; i < _listSwapCanvasListItem.Count; ++i)
 			_listSwapCanvasListItem[i].gameObject.SetActive(false);

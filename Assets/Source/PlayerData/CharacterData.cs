@@ -42,7 +42,7 @@ public class CharacterData
 				PowerLevelTableData powerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(i);
 				if (powerLevelTableData == null)
 					continue;
-				if (limitBreakLevel != powerLevelTableData.requiredLimitBreak)
+				if (limitBreakLevel < powerLevelTableData.requiredLimitBreak)
 					break;
 				max = i;
 			}

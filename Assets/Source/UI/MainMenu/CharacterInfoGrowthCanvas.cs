@@ -77,7 +77,7 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 
 		bool contains = PlayerData.instance.ContainsActor(actorId);
 		swapButtonImage.color = contains ? Color.white : ColorUtil.halfGray;
-		swapButtonText.color = contains ? Color.white : ColorUtil.halfGray;
+		swapButtonText.color = contains ? Color.white : Color.gray;
 
 		powerSourceText.SetLocalizedText(PowerSource.Index2Name(actorTableData.powerSource));
 		ultimateSkillIconImage.sprite = null;
@@ -133,7 +133,7 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 
 	int _price;
 	bool _needPp;
-	bool _needTranscendenceItem;
+	bool _needLimitBreakPoint;
 	void RefreshRequired()
 	{
 		int powerLevel = 1;
@@ -150,16 +150,15 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 		}
 
 		_needPp = false;
-		_needTranscendenceItem = false;
+		_needLimitBreakPoint = false;
 		if (powerLevel >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxPowerLevel"))
 		{
 			sliderRectObject.SetActive(false);
 			priceButtonObject.SetActive(false);
 
 			maxButtonImage.color = ColorUtil.halfGray;
-			maxButtonText.color = ColorUtil.halfGray;
+			maxButtonText.color = Color.gray;
 			maxButtonObject.SetActive(true);
-			maxButtonText.SetLocalizedText(UIString.instance.GetString("GameUI_"));
 		}
 		else
 		{
@@ -171,7 +170,7 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 			{
 				current = 0;
 				max = 1;
-				_needTranscendenceItem = true;
+				_needLimitBreakPoint = true;
 			}
 			else
 			{
@@ -179,15 +178,19 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 				max = nextPowerLevelTableData.requiredPowerPoint;
 				_needPp = current < max;
 			}
-			ppText.text = UIString.instance.GetString("GameUI_StageFraction", current, max);
-			ppSlider.value = Mathf.Min(1.0f, (float)current / (float)max);
-			sliderRectObject.SetActive(true);
+
+			if (!dontHave)
+			{
+				ppText.text = UIString.instance.GetString("GameUI_StageFraction", current, max);
+				ppSlider.value = Mathf.Min(1.0f, (float)current / (float)max);
+			}
+			sliderRectObject.SetActive(!dontHave);
 
 			int requiredGold = nextPowerLevelTableData.requiredGold;
 			priceText.text = nextPowerLevelTableData.requiredGold.ToString("N0");
 			bool disablePrice = (dontHave || CurrencyData.instance.gold < requiredGold || current < max);
 			priceButtonImage.color = !disablePrice ? Color.white : ColorUtil.halfGray;
-			priceText.color = !disablePrice ? Color.white : ColorUtil.halfGray;
+			priceText.color = !disablePrice ? Color.white : Color.gray;
 			goldGrayscaleEffect.enabled = disablePrice;
 			priceButtonObject.SetActive(true);
 			maxButtonObject.SetActive(false);
@@ -293,7 +296,7 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 
 	public void OnClickGaugeDetailButton()
 	{
-		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, UIString.instance.GetString(_needPp ? "GameUI_CharGaugeDesc" : "GameUI_CharTranscendenceDesc"), 250, ppSlider.transform, new Vector2(10.0f, -35.0f));
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, UIString.instance.GetString(_needLimitBreakPoint ? "GameUI_CharTranscendenceDesc" : "GameUI_CharGaugeDesc"), 250, ppSlider.transform, new Vector2(10.0f, -35.0f));
 	}
 
 	public void OnClickLevelUpButton()
@@ -301,13 +304,14 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 		CharacterData characterData = PlayerData.instance.GetCharacterData(_actorId);
 		if (characterData == null)
 		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_PowerLevelUpDontHave"), 2.0f);
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_MainCharacterDontHave"), 2.0f);
 			return;
 		}
 
-		if (_needTranscendenceItem)
+		if (_needLimitBreakPoint)
 		{
-
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughLbp"), 2.0f);
+			return;
 		}
 
 		if (_needPp)

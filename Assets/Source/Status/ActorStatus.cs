@@ -28,16 +28,21 @@ public class ActorStatus : MonoBehaviour
 	}
 
 	// 로비에서 파워레벨이 바뀌든 연구소 장비가 바뀌든 이 함수 호출해주면 알아서 모든 스탯을 재계산하게 된다.
-	public void InitializeActorStatus()
+	public void InitializeActorStatus(int overridePowerLevel = -1)
 	{
 		if (_statusBase == null)
 			_statusBase = new ActorStatusList();
 		else
 			_statusBase.ClearValue();
 
-		powerLevel = 1;
-		CharacterData characterData = PlayerData.instance.GetCharacterData(actor.actorId);
-		if (characterData != null) powerLevel = characterData.powerLevel;
+		if (overridePowerLevel == -1)
+		{
+			powerLevel = 1;
+			CharacterData characterData = PlayerData.instance.GetCharacterData(actor.actorId);
+			if (characterData != null) powerLevel = characterData.powerLevel;
+		}
+		else
+			powerLevel = overridePowerLevel;
 
 		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(actor.actorId);
 		PowerLevelTableData powerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(powerLevel);
@@ -189,6 +194,14 @@ public class ActorStatus : MonoBehaviour
 		float value = GetValue(eActorStatus.MaxHp);
 		float result = LnHpConstant1 * Mathf.Log(value) + LnHpConstant2;
 		return (int)result;
+	}
+
+	public void GetNextPowerLevelDisplayValue(ref int nextAttack, ref int nextMaxHp)
+	{
+		InitializeActorStatus(powerLevel + 1);
+		nextAttack = GetDisplayAttack();
+		nextMaxHp = GetDisplayMaxHp();
+		InitializeActorStatus();
 	}
 
 	public bool IsDie()

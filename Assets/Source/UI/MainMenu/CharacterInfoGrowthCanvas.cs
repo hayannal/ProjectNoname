@@ -346,6 +346,7 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 				RefreshStatus();
 				RefreshRequired();
 				CharacterInfoCanvas.instance.currencySmallInfo.RefreshInfo();
+				CharacterInfoCanvas.instance.RefreshOpenMenuSlot(characterData.limitBreakLevel);
 			});
 		}
 		else

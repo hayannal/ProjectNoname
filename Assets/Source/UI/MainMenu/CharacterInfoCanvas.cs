@@ -18,20 +18,37 @@ public class CharacterInfoCanvas : MonoBehaviour
 		instance = this;
 	}
 
-	int _openMenuIndex = -1;
 	void Start()
 	{
 		// 항상 최초 시작에는 현재 메뉴를 어디까지 보여줄지 체크해본다.
 		// 이후 초월할때마다 한번씩 갱신하면 될거다.
-		bool result = ContentsManager.IsOpen(ContentsManager.eOpenContensByCharacter.Transcendence, false);
-		_openMenuIndex = 2;
-
-		// 결과가 나오면 우선 그에 맞춰서 숨길거 숨긴다.
-		for (int i = 0; i < menuButtonList.Length; ++i)
-			menuButtonList[i].gameObject.SetActive(i <= _openMenuIndex);
+		int highestLimitBreakLevel = 0;
+		for (int i = 0; i < PlayerData.instance.listCharacterData.Count; ++i)
+			highestLimitBreakLevel = Mathf.Max(highestLimitBreakLevel, PlayerData.instance.listCharacterData[i].limitBreakLevel);
+		RefreshOpenMenuSlot(highestLimitBreakLevel);
 
 		// 항상 게임을 처음 켤땐 0번탭을 보게 해준다.
 		OnValueChangedToggle(0);
+	}
+
+	int _highestLimitBreakLevel = -1;
+	public void RefreshOpenMenuSlot(int newLimitBreakLevel)
+	{
+		if (newLimitBreakLevel <= _highestLimitBreakLevel)
+			return;
+
+		_highestLimitBreakLevel = newLimitBreakLevel;
+		int openMenuIndex = 0;
+		switch (_highestLimitBreakLevel)
+		{
+			case 0: openMenuIndex = -1; break;
+			case 1: openMenuIndex = 1; break;
+			case 2: openMenuIndex = 2; break;
+			case 3: openMenuIndex = 3; break;
+		}
+		// 결과가 나오면 우선 그에 맞춰서 숨길거 숨긴다.
+		for (int i = 0; i < menuButtonList.Length; ++i)
+			menuButtonList[i].gameObject.SetActive(i <= openMenuIndex);
 	}
 
 	void OnEnable()

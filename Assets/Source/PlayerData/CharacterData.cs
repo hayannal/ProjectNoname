@@ -116,8 +116,32 @@ public class CharacterData
 			invalid = true;
 		}
 
-		if (invalid == false && lb != powerLevelTableData.requiredLimitBreak)
-			PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidLimitBreakLevel, false, lb);
+		if (invalid == false)
+		{
+			// lbp보다 높거나 2단계 이상 차이나도 이상한거다.
+			if (lb > lbp)
+				invalid = true;
+			if (lbp - lb >= 2)
+				invalid = true;
+
+			if (invalid == false)
+			{
+				// 원래는 자신의 limitBreak값과 같은게 기본이지만 10렙일땐 lb가 0일수도 1일수도 있다.
+				if (lb != powerLevelTableData.requiredLimitBreak)
+				{
+					PowerLevelTableData nextPowerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(pow + 1);
+					if (nextPowerLevelTableData == null)
+						invalid = true;
+					else
+					{
+						if (lb != nextPowerLevelTableData.requiredLimitBreak)
+							invalid = true;
+					}
+				}
+			}
+			if (invalid)
+				PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidLimitBreakLevel, false, lb);
+		}
 
 		// 추가 데이터. 잠재 염색 날개 등등.
 		if (dataObject != null)

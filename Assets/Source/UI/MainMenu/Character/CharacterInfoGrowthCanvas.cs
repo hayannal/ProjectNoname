@@ -341,12 +341,9 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 
 		if (characterData.needLimitBreak)
 		{
-			PlayFabApiManager.instance.RequestCharacterLimitBreak(characterData, _price, () =>
+			UIInstanceManager.instance.ShowCanvasAsync("CharacterLimitBreakCanvas", () =>
 			{
-				RefreshStatus();
-				RefreshRequired();
-				CharacterInfoCanvas.instance.currencySmallInfo.RefreshInfo();
-				CharacterInfoCanvas.instance.RefreshOpenMenuSlot(characterData.limitBreakLevel);
+				CharacterLimitBreakCanvas.instance.ShowCanvas(true, characterData, _price);
 			});
 		}
 		else

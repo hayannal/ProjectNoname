@@ -138,6 +138,21 @@ public class CharacterData
 							invalid = true;
 					}
 				}
+				if (invalid == false)
+				{
+					// 위 절차를 lbp에 대해서도 해준다.
+					if (lbp != powerLevelTableData.requiredLimitBreak)
+					{
+						PowerLevelTableData nextPowerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(pow + 1);
+						if (nextPowerLevelTableData == null)
+							invalid = true;
+						else
+						{
+							if (lbp != nextPowerLevelTableData.requiredLimitBreak)
+								invalid = true;
+						}
+					}
+				}
 			}
 			if (invalid)
 				PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidLimitBreakLevel, false, lb);

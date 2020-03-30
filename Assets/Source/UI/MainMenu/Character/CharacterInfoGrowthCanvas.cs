@@ -112,7 +112,7 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 		RefreshRequired();
 	}
 
-	public void RefreshStatus()
+	void RefreshStatus()
 	{
 		// 구조 바꾸면서 플레이 중에 못찾는건 없어졌는데 Canvas켜둔채 종료하니 자꾸 뜬다.
 		PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(_actorId);
@@ -139,7 +139,7 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 	int _price;
 	bool _needPp;
 	bool _needLimitBreakPoint;
-	public void RefreshRequired()
+	void RefreshRequired()
 	{
 		int powerLevel = 1;
 		int pp = 0;

@@ -290,6 +290,7 @@ public class PlayFabApiManager : MonoBehaviour
 			entity1Object = JsonUtility.FromJson<PlayerDataEntity1>(playerDataObjectResult.DataObject.ToString());
 		}
 #endif
+		TimeSpaceData.instance.OnRecvEquipInventory(_loginResult.InfoResultPayload.UserInventory, _loginResult.InfoResultPayload.UserData);
 		PlayerData.instance.OnRecvPlayerData(_loginResult.InfoResultPayload.PlayerStatistics, _loginResult.InfoResultPayload.UserData, _loginResult.InfoResultPayload.CharacterList);
 		PlayerData.instance.OnRecvCharacterList(_loginResult.InfoResultPayload.CharacterList, _dicCharacterStatisticsResult, _listCharacterEntityObject);
 
@@ -744,6 +745,74 @@ public class PlayFabApiManager : MonoBehaviour
 			Debug.Log(setResult.ProfileVersion);
 			if (successCallback != null) successCallback.Invoke();
 		}, HandleCommonError);
+	}
+	#endregion
+
+
+	#region Equip
+	public void RequestEquip(EquipData equipData, Action successCallback)
+	{
+		string equipSlotKey = string.Format("eqPo{0}", equipData.cachedEquipTableData.equipType);
+		UpdateUserDataRequest request = new UpdateUserDataRequest() { Data = new Dictionary<string, string>() { { equipSlotKey, equipData.uniqueId } } };
+		Action action = () =>
+		{
+			PlayFabClientAPI.UpdateUserData(request, (success) =>
+			{
+				RetrySendManager.instance.OnSuccess();
+				TimeSpaceData.instance.OnEquip(equipData);
+				if (successCallback != null) successCallback.Invoke();
+			}, (error) =>
+			{
+				RetrySendManager.instance.OnFailure();
+			});
+		};
+		RetrySendManager.instance.RequestAction(action, true);
+	}
+
+	public void RequestUnEquip(EquipData equipData, Action successCallback)
+	{
+		string equipSlotKey = string.Format("eqPo{0}", equipData.cachedEquipTableData.equipType);
+		UpdateUserDataRequest request = new UpdateUserDataRequest() { Data = new Dictionary<string, string>() { { equipSlotKey, "" } } };
+		Action action = () =>
+		{
+			PlayFabClientAPI.UpdateUserData(request, (success) =>
+			{
+				RetrySendManager.instance.OnSuccess();
+				TimeSpaceData.instance.OnUnequip(equipData);
+				if (successCallback != null) successCallback.Invoke();
+			}, (error) =>
+			{
+				RetrySendManager.instance.OnFailure();
+			});
+		};
+		RetrySendManager.instance.RequestAction(action, true);
+	}
+
+	// 임시로 만들어본 장비강화 함수. 나중에 재료도 전달해야한다.
+	public void RequestEnhance(EquipData equipData, int price, Action successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "Enhance",
+			FunctionParameter = new { EqpId = equipData.uniqueId },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+				CurrencyData.instance.gold -= price;
+				equipData.OnEnhance();
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
 	}
 	#endregion
 

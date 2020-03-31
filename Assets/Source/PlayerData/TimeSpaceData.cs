@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using ActorStatusDefine;
+using PlayFab.ClientModels;
 
 public class TimeSpaceData
 {
@@ -16,33 +17,77 @@ public class TimeSpaceData
 	}
 	static TimeSpaceData _instance = null;
 
+	public enum eEquipSlotType
+	{
+		Axe,
+		Dagger,
+		Bow,
+		Staff,
+		Hammer,
+		Sword,
+		Gun,
+		Shield,
+		TwoHanded,
+
+		Amount,
+	}
+
 	EquipStatusList _cachedEquipStatusList = new EquipStatusList();
 	public EquipStatusList cachedEquipStatusList { get { return _cachedEquipStatusList; } }
 
 	List<EquipData> _listEquipData = new List<EquipData>();
-	Dictionary<int, EquipData> _dicEquipedData = new Dictionary<int, EquipData>();
+	Dictionary<int, EquipData> _dicEquippedData = new Dictionary<int, EquipData>();
 
-	public void OnRecvEquipInventory()
+	public void OnRecvEquipInventory(List<ItemInstance> userInventory, Dictionary<string, UserDataRecord> userData)
 	{
-		// 지금은 패킷 구조를 모르니.. 형태만 만들어두기로 한다.
-		// list를 먼저 쭉 받아서 기억해두고 equip 여부에 따라서 dictionary 에 넣어둔다.
-
 		// list
+		_listEquipData.Clear();
+		for (int i = 0; i < userInventory.Count; ++i)
+		{
+			EquipTableData equipTableData = TableDataManager.instance.FindEquipTableData(userInventory[i].ItemId);
+			if (equipTableData == null)
+				continue;
+
+			EquipData newEquipData = new EquipData();
+			newEquipData.uniqueId = userInventory[i].ItemInstanceId;
+			newEquipData.equipId = userInventory[i].ItemId;
+			newEquipData.Initialize(userInventory[i].CustomData);
+			_listEquipData.Add(newEquipData);
+		}
 
 		// dictionary
+		bool invalidEquipSlot = false;
+		_dicEquippedData.Clear();
+		for (int i = 0; i < (int)eEquipSlotType.Amount; ++i)
+		{
+			string key = string.Format("eqPo{0}", i);
+			if (userData.ContainsKey(key))
+			{
+				string uniqueId = userData[key].Value;
+				if (string.IsNullOrEmpty(uniqueId))
+					continue;
+				EquipData equipData = FindEquipData(uniqueId);
+				if (equipData == null)
+				{
+					invalidEquipSlot = true;
+					continue;
+				}
+				if (equipData.cachedEquipTableData.equipType != i)
+				{
+					// 슬롯에 맞지않는 아이템이 장착되어있다. 이것도 잘못된 케이스다.
+					invalidEquipSlot = true;
+					continue;
+				}
+				_dicEquippedData.Add(i, equipData);
+			}
+		}
+		if (invalidEquipSlot)
+		{
+
+		}
 
 		// 
 		RefreshCachedStatus();
-	}
-
-	public void Equip(EquipData equipData, int positionId)
-	{
-
-	}
-
-	public void UnEquip(int positionId)
-	{
-
 	}
 
 	void RefreshCachedStatus()
@@ -50,22 +95,76 @@ public class TimeSpaceData
 		for (int i = 0; i < _cachedEquipStatusList.valueList.Length; ++i)
 			_cachedEquipStatusList.valueList[i] = 0.0f;
 
-		Dictionary<int, EquipData>.Enumerator e = _dicEquipedData.GetEnumerator();
+		Dictionary<int, EquipData>.Enumerator e = _dicEquippedData.GetEnumerator();
 		while (e.MoveNext())
 		{
 			EquipData equipData = e.Current.Value;
 			if (equipData == null)
 				continue;
 
-			float mainStatusMulti = TableDataManager.instance.FindTimeSpacePositionTableData(e.Current.Key).multi;
-			switch ((EquipData.eEquipType)equipData.cachedEquipTableData.equipType)
-			{
-				case EquipData.eEquipType.Weapon: _cachedEquipStatusList.valueList[(int)eActorStatus.Attack] += (equipData.mainStatusValue * mainStatusMulti); break;
-				case EquipData.eEquipType.Armor: _cachedEquipStatusList.valueList[(int)eActorStatus.MaxHp] += (equipData.mainStatusValue * mainStatusMulti); break;
-			}
+			// 이제 모든 템은 기본값이 Attack이다.
+			_cachedEquipStatusList.valueList[(int)eActorStatus.Attack] += equipData.mainStatusValue;
 
 			for (int i = 0; i < _cachedEquipStatusList.valueList.Length; ++i)
 				_cachedEquipStatusList.valueList[i] += equipData.equipStatusList.valueList[i];
 		}
+	}
+
+	EquipData FindEquipData(string uniqueId)
+	{
+		for (int i = 0; i < _listEquipData.Count; ++i)
+		{
+			if (_listEquipData[i].uniqueId == uniqueId)
+				return _listEquipData[i];
+		}
+		return null;
+	}
+
+	public bool IsEquipped(EquipData equipData)
+	{
+		bool equipped = false;
+		int equipType = equipData.cachedEquipTableData.equipType;
+		if (_dicEquippedData.ContainsKey(equipType))
+		{
+			if (_dicEquippedData[equipType].uniqueId == equipData.uniqueId)
+				equipped = true;
+		}
+		return equipped;
+	}
+
+	#region Packet
+	public void OnEquip(EquipData equipData)
+	{
+		int equipType = equipData.cachedEquipTableData.equipType;
+		if (_dicEquippedData.ContainsKey(equipType))
+			_dicEquippedData[equipType] = equipData;
+		else
+			_dicEquippedData.Add(equipType, equipData);
+
+		OnChangedEquippedData();
+	}
+
+	public void OnUnequip(EquipData equipData)
+	{
+		int equipType = equipData.cachedEquipTableData.equipType;
+		if (_dicEquippedData.ContainsKey(equipType))
+			_dicEquippedData.Remove(equipType);
+
+		OnChangedEquippedData();
+	}
+	#endregion
+
+
+
+
+
+
+	public void OnChangedEquippedData()
+	{
+		// 장착되어있는 장비 중 하나가 변경된거다. 해당 장비는 장착 혹은 탈착 혹은 속성 변경으로 인한 데이터 갱신이 완료된 상태일테니
+		// 전체 장비 재계산 후
+		RefreshCachedStatus();
+
+		// 모든 캐릭터의 스탯을 재계산 하도록 알려야한다.
 	}
 }

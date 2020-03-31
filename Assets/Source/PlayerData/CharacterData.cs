@@ -86,20 +86,20 @@ public class CharacterData
 	}
 
 
-	public void Initialize(Dictionary<string, int> CharacterStatistics, PlayFabApiManager.CharacterDataEntity1 dataObject)
+	public void Initialize(Dictionary<string, int> characterStatistics, PlayFabApiManager.CharacterDataEntity1 dataObject)
 	{
 		int pow = 1;
 		int pp = 0;
 		int lb = 0;
 		int lbp = 0;
-		if (CharacterStatistics.ContainsKey("pow"))
-			pow = CharacterStatistics["pow"];
-		if (CharacterStatistics.ContainsKey("pp"))
-			pp = CharacterStatistics["pp"];
-		if (CharacterStatistics.ContainsKey("lb"))
-			lb = CharacterStatistics["lb"];
-		if (CharacterStatistics.ContainsKey("lbp"))
-			lbp = CharacterStatistics["lbp"];
+		if (characterStatistics.ContainsKey("pow"))
+			pow = characterStatistics["pow"];
+		if (characterStatistics.ContainsKey("pp"))
+			pp = characterStatistics["pp"];
+		if (characterStatistics.ContainsKey("lb"))
+			lb = characterStatistics["lb"];
+		if (characterStatistics.ContainsKey("lbp"))
+			lbp = characterStatistics["lbp"];
 
 		// 검증
 		bool invalid = false;

@@ -52,16 +52,20 @@ public class ActorStatus : MonoBehaviour
 		_statusBase.valueList[(int)eActorStatus.MoveSpeed] = actorTableData.moveSpeed;
 		_statusBase.valueList[(int)eActorStatus.MaxSp] = actorTableData.sp;
 
-		// _statusBase 에 로비에서의 스탯을 caching해둔다.
-		// 이걸 완전히 합쳐버릴때의 단점이 장비로 올라가는 공% 합산값만 따로 확인하기 어렵다는건데
-		// 어차피 TimeSpace에서는 별도로 캐싱된 값을 가지고 표시하기 때문에 상관없다.
-		// equip
-		for (int i = 0; i < _statusBase.valueList.Length; ++i)
-			_statusBase.valueList[i] += TimeSpaceData.instance.cachedEquipStatusList.valueList[i];
+		// 내가 가지고 있는 캐릭터들에 한해서만 장비 계산을 적용한다.
+		if (PlayerData.instance.ContainsActor(actor.actorId))
+		{
+			// _statusBase 에 로비에서의 스탯을 caching해둔다.
+			// 이걸 완전히 합쳐버릴때의 단점이 장비로 올라가는 공% 합산값만 따로 확인하기 어렵다는건데
+			// 어차피 TimeSpace에서는 별도로 캐싱된 값을 가지고 표시하기 때문에 상관없다.
+			// equip
+			for (int i = 0; i < _statusBase.valueList.Length; ++i)
+				_statusBase.valueList[i] += TimeSpaceData.instance.cachedEquipStatusList.valueList[i];
 
-		// equip rate + potential stat rate
-		_statusBase.valueList[(int)eActorStatus.MaxHp] *= (1.0f + TimeSpaceData.instance.cachedEquipStatusList.valueList[(int)eActorStatus.MaxHpAddRate]);
-		_statusBase.valueList[(int)eActorStatus.Attack] *= (1.0f + TimeSpaceData.instance.cachedEquipStatusList.valueList[(int)eActorStatus.AttackAddRate]);
+			// equip rate + potential stat rate
+			_statusBase.valueList[(int)eActorStatus.MaxHp] *= (1.0f + TimeSpaceData.instance.cachedEquipStatusList.valueList[(int)eActorStatus.MaxHpAddRate]);
+			_statusBase.valueList[(int)eActorStatus.Attack] *= (1.0f + TimeSpaceData.instance.cachedEquipStatusList.valueList[(int)eActorStatus.AttackAddRate]);
+		}
 
 		// actor multi
 		_statusBase.valueList[(int)eActorStatus.MaxHp] *= actorTableData.multiHp;

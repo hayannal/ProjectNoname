@@ -16,5 +16,8 @@ namespace ClientSuspect
 		InvalidPowerLevel		= 100005,
 		InvalidPp				= 100006,
 		InvalidLimitBreakLevel	= 100007,
+		InvalidEquipType		= 100008,
+		InvalidEquipOption		= 100009,
+		InvalidEquipEnhance		= 100010,
 	}
 }

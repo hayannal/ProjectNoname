@@ -56,7 +56,7 @@ public class TimeSpaceData
 		}
 
 		// dictionary
-		bool invalidEquipSlot = false;
+		int invalidEquipSlotIndex = -1;
 		_dicEquippedData.Clear();
 		for (int i = 0; i < (int)eEquipSlotType.Amount; ++i)
 		{
@@ -69,21 +69,21 @@ public class TimeSpaceData
 				EquipData equipData = FindEquipData(uniqueId);
 				if (equipData == null)
 				{
-					invalidEquipSlot = true;
+					invalidEquipSlotIndex = i;
 					continue;
 				}
 				if (equipData.cachedEquipTableData.equipType != i)
 				{
 					// 슬롯에 맞지않는 아이템이 장착되어있다. 이것도 잘못된 케이스다.
-					invalidEquipSlot = true;
+					invalidEquipSlotIndex = i;
 					continue;
 				}
 				_dicEquippedData.Add(i, equipData);
 			}
 		}
-		if (invalidEquipSlot)
+		if (invalidEquipSlotIndex != -1)
 		{
-
+			PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidEquipType, false, invalidEquipSlotIndex);
 		}
 
 		// 

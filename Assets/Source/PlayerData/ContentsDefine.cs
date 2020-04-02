@@ -50,11 +50,11 @@ public static class ContentsManager
 		{
 			// 여기 이건 챕터랑 스테이지 둘다 체크해야해서 enum값으로 안하고 이렇게 처리해둔다.
 			case eOpenContensByChapterStage.TimeSpace:
-				if (PlayerData.instance.highestPlayChapter > 2 || (PlayerData.instance.highestPlayChapter == 2 && PlayerData.instance.highestClearStage > 10))
+				if (PlayerData.instance.highestPlayChapter > 2 || (PlayerData.instance.highestPlayChapter == 2 && PlayerData.instance.highestClearStage >= 10))
 					return true;
 				break;
 			case eOpenContensByChapterStage.EquipBox:
-				if (PlayerData.instance.highestPlayChapter > 3 || (PlayerData.instance.highestPlayChapter == 3 && PlayerData.instance.highestClearStage > 10))
+				if (PlayerData.instance.highestPlayChapter > 3 || (PlayerData.instance.highestPlayChapter == 3 && PlayerData.instance.highestClearStage >= 10))
 					return true;
 				break;
 		}

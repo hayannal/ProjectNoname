@@ -114,12 +114,12 @@ public class CharacterLimitBreakCanvas : DetailShowCanvasBase
 		// 나머지 창들도 다 닫고 캐릭터 중앙으로
 		StackCanvas.Push(gameObject);
 		CenterOn();
-		yield return Timing.WaitForSeconds(0.4f);
+		yield return Timing.WaitForSeconds(0.2f);
 		canvasGroup.gameObject.SetActive(false);
 
 		// 캐릭터 이펙트
 		BattleInstanceManager.instance.GetCachedObject(effectPrefab, CharacterListCanvas.instance.rootOffsetPosition, Quaternion.identity, null);
-		yield return Timing.WaitForSeconds(1.2f);
+		yield return Timing.WaitForSeconds(3.5f);
 
 		// 새로운 Toast Back Image
 		toastBackImageRectTransform.gameObject.SetActive(true);

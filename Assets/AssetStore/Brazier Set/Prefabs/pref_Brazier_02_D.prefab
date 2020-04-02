@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 3370142}
   - component: {fileID: 2344138}
   - component: {fileID: 907171004101111671}
+  - component: {fileID: 6259575301935428653}
+  - component: {fileID: 97462331137416641}
   m_Layer: 0
   m_Name: pref_Brazier_02_D
   m_TagString: Untagged
@@ -93,6 +95,32 @@ CapsuleCollider:
   m_Height: 1.2307558
   m_Direction: 1
   m_Center: {x: 0, y: 0.6153779, z: 0}
+--- !u!114 &6259575301935428653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 109036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e67bdcfe4d6814843b36ff9b31b1fb5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  positionIndex: 0
+--- !u!135 &97462331137416641
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 109036}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.65
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &4837200261744890265
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -100,10 +128,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 410436}
     m_Modifications:
-    - target: {fileID: 100000, guid: 7844b3ad5d0fa9e40af4a16976decf5a, type: 3}
-      propertyPath: m_Name
-      value: mesh_Brazier_01
-      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 7844b3ad5d0fa9e40af4a16976decf5a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -159,6 +183,10 @@ PrefabInstance:
     - target: {fileID: 400000, guid: 7844b3ad5d0fa9e40af4a16976decf5a, type: 3}
       propertyPath: m_LocalScale.z
       value: 0.38
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 7844b3ad5d0fa9e40af4a16976decf5a, type: 3}
+      propertyPath: m_Name
+      value: mesh_Brazier_01
       objectReference: {fileID: 0}
     - target: {fileID: 2300000, guid: 7844b3ad5d0fa9e40af4a16976decf5a, type: 3}
       propertyPath: m_Materials.Array.data[0]

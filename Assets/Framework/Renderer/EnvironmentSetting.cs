@@ -17,6 +17,7 @@ public class EnvironmentSetting : MonoBehaviour
 		if (!_started)
 			return;
 
+		_lastGlobalLightIntensityRatio = 1.0f;
 		SetEnvironment();
 
 		// 캐릭터창 갈때마다 EnableEnvironmentSettingForUI 호출로 인해 한프레임 깜박이는 현상이 생겨서

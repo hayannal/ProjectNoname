@@ -51,7 +51,7 @@ public class TimeSpacePortal : MonoBehaviour
 		yield return Timing.WaitForSeconds(0.2f);
 		//changeEffectParticleRootObject.SetActive(true);
 
-		FadeCanvas.instance.FadeOut(0.2f, 0.7f);
+		FadeCanvas.instance.FadeOut(0.2f, 0.7f, true);
 		yield return Timing.WaitForSeconds(0.2f);
 
 		if (MainSceneBuilder.instance.lobby)

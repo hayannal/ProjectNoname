@@ -449,6 +449,8 @@ public class MainSceneBuilder : MonoBehaviour
 	{
 		lobby = false;
 		TreasureChest.instance.gameObject.SetActive(false);
+		if (TimeSpacePortal.instance != null)
+			TimeSpacePortal.instance.gameObject.SetActive(false);
 		LobbyCanvas.instance.OnExitLobby();
 		if (EnergyGaugeCanvas.instance != null)
 			EnergyGaugeCanvas.instance.gameObject.SetActive(false);

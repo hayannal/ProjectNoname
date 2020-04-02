@@ -5,7 +5,16 @@ using MEC;
 
 public class TimeSpacePortal : MonoBehaviour
 {
+	public static TimeSpacePortal instance;
+
 	Vector3 _rootOffsetPosition = new Vector3(0.0f, 0.0f, -75.0f);
+
+	void Awake()
+	{
+		// 로비에 있는 것만 instance로 등록한다.
+		if (instance == null)
+			instance = this;
+	}
 
 	void OnTriggerEnter(Collider other)
 	{
@@ -57,7 +66,6 @@ public class TimeSpacePortal : MonoBehaviour
 			while (_timeSpaceGroundPrefab == null)
 				yield return Timing.WaitForOneFrame;
 			Instantiate<GameObject>(_timeSpaceGroundPrefab, _rootOffsetPosition, Quaternion.identity);
-			TimeSpaceGround.instance.SetOrigTimeSpacePortal(this);
 		}
 		else
 		{

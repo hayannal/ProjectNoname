@@ -43,18 +43,12 @@ public class TimeSpaceGround : MonoBehaviour
 
 		translationEffectorTransform.gameObject.SetActive(false);
 
-		_origTimeSpacePortal.gameObject.SetActive(false);
-		_origTimeSpacePortal.gameObject.SetActive(true);
+		TimeSpacePortal.instance.gameObject.SetActive(false);
+		TimeSpacePortal.instance.gameObject.SetActive(true);
 
 		BattleInstanceManager.instance.playerActor.cachedTransform.position = returnPosition;
 		TailAnimatorUpdater.UpdateAnimator(BattleInstanceManager.instance.playerActor.cachedTransform, 5);
 		CustomFollowCamera.instance.immediatelyUpdate = true;
-	}
-
-	TimeSpacePortal _origTimeSpacePortal;
-	public void SetOrigTimeSpacePortal(TimeSpacePortal timeSpacePortal)
-	{
-		_origTimeSpacePortal = timeSpacePortal;
 	}
 
 

@@ -12,6 +12,7 @@ public class ObjectScaleEffectorDeformer : MonoBehaviour {
 	public GameObject Effector;
 	private float EffectorDistance = 3.0f;
 	private float EffectorRecoverySpeed = 10.0f;
+	private float EffectorRecoverySpeedOutDistance = 10.0f;
 	private float[] OriginalY,OriginalX,OriginalZ;
 	private float[] oriScaleX, oriScaleY, oriScaleZ;
 	private Vector3 originalsLerper,OriginalsPos;
@@ -22,6 +23,7 @@ public class ObjectScaleEffectorDeformer : MonoBehaviour {
 	private AnimationCurve Refinecurve;
 	private float rangeSmallest = 0f;
 
+	bool _startedFirstCall = false;
 	void Start () 
 	{
 		if (Effector == null) {
@@ -61,6 +63,7 @@ public class ObjectScaleEffectorDeformer : MonoBehaviour {
 			oriScaleX [i] = originalObjects [i].transform.localScale.x;
 			oriScaleZ [i] = originalObjects [i].transform.localScale.z;
 		}
+		_startedFirstCall = true;
 	}
 
 	public void SetEffector(GameObject effectorObject)
@@ -89,6 +92,13 @@ public class ObjectScaleEffectorDeformer : MonoBehaviour {
 		Refinecurve = theEffector.FallOffCurve;
 		EffectorDistance = theEffector.EffectorDistance;
 		EffectorRecoverySpeed = theEffector.EffectorRecoverySpeed;
+		EffectorRecoverySpeedOutDistance = theEffector.EffectorRecoverySpeed;
+
+		if (_startedFirstCall)
+		{
+			EffectorRecoverySpeedOutDistance = 50.0f;
+			_startedFirstCall = false;
+		}
 
 		for (int i = 0; i < originalObjects.Length; i++) {
 			float x, y, z;
@@ -121,14 +131,14 @@ public class ObjectScaleEffectorDeformer : MonoBehaviour {
 					movedObjects [x].localScale = Vector3.Lerp (movedObjects [x].transform.localScale, displacedObjects [x], EffectorRecoverySpeed * Time.deltaTime);
 				} else {
 					originalsLerper.Set (oriScaleX [x], oriScaleX [x], oriScaleX [x]);
-					movedObjects [x].localScale = Vector3.Lerp (movedObjects [x].transform.localScale, originalsLerper, EffectorRecoverySpeed * Time.deltaTime); 
+					movedObjects [x].localScale = Vector3.Lerp (movedObjects [x].transform.localScale, originalsLerper, EffectorRecoverySpeedOutDistance * Time.deltaTime); 
 				}
 			}
 		} else {
 			for (int x = 0; x < originalObjects.Length; x++) {
 				OriginalsPos.Set (OriginalX [x], OriginalY [x], OriginalZ [x]);
 				if (Vector3.Distance (OriginalsPos, Effector.transform.position) > EffectorDistance) {
-					movedObjects [x].localScale = Vector3.Lerp (movedObjects [x].transform.localScale, displacedObjects [x], EffectorRecoverySpeed * Time.deltaTime);
+					movedObjects [x].localScale = Vector3.Lerp (movedObjects [x].transform.localScale, displacedObjects [x], EffectorRecoverySpeedOutDistance * Time.deltaTime);
 				} else {
 					originalsLerper.Set (oriScaleX [x], oriScaleX [x], oriScaleX [x]);
 					movedObjects [x].localScale = Vector3.Lerp (movedObjects [x].transform.localScale, originalsLerper, EffectorRecoverySpeed * Time.deltaTime); 

@@ -289,7 +289,10 @@ public class StageManager : MonoBehaviour
 		if (_handleEnvironmentSettingPrefab != null)
 		{
 			if (_currentEnvironmentSettingObject != null)
+			{
 				_currentEnvironmentSettingObject.SetActive(false);
+				_currentEnvironmentSettingObject = null;
+			}
 			_currentEnvironmentSettingObject = BattleInstanceManager.instance.GetCachedObject(_handleEnvironmentSettingPrefab.Result, null);
 		}
 #else
@@ -359,11 +362,37 @@ public class StageManager : MonoBehaviour
 	public bool spawnPowerSourcePrefab { get; set; }
 	public Vector3 currentPowerSourceSpawnPosition { get; set; }
 
-	#region LobbyUI
-	public void EnableEnvironmentSettingForUI(bool show)
+	#region For Canvas EnvironmentSetting
+	public GameObject currentEnvironmentSettingObjectForCanvas { get; set; }
+	public void OnEnableEnvironmentSetting(GameObject newObject)
 	{
+		// 필드로 쓰려는게 올땐 아무것도 할 필요 없다.
+		if (_currentEnvironmentSettingObject == newObject)
+			return;
+		// 혹은 필드에서 교체시 _currentEnvironmentSettingObject 이 null로 셋팅하고 교체하기 때문에 이때도 그냥 리턴한다.
+		if (_currentEnvironmentSettingObject == null)
+			return;
+
+		// 캔버스가 독자적으로 가지고 있는거라면 현재 지형이 사용하는 환경셋팅과 분명 다를거다.
+		// 이때만 임시 변수에 등록하면 된다.
+		// 각각의 연출 캔버스-환경셋팅을 가지고 있는 캔버스-들이 이전 오브젝트를 기억하는 구조라 여기서는 마지막꺼 하나만 기억해두면 된다.
+		currentEnvironmentSettingObjectForCanvas = newObject;
+	}
+
+	public GameObject DisableCurrentEnvironmentSetting()
+	{
+		// 시공간에서 캐릭터 창을 열때처럼 로비로 돌아가는게 아니라 별도의 환경셋팅을 사용하는 창끼리 넘어다닐때를 위해 이렇게 체크한다.
+		if (currentEnvironmentSettingObjectForCanvas != null && currentEnvironmentSettingObjectForCanvas.activeInHierarchy)
+		{
+			currentEnvironmentSettingObjectForCanvas.SetActive(false);
+			return currentEnvironmentSettingObjectForCanvas;
+		}
+
+		// 이게 아니라면 로비에 있는 메인 환경셋팅을 끄면 될거다.
+		// 한번에 하나의 환경셋팅만 켜있을거기 때문에 위에 있는 임시값 아니면 이 아래있는 진짜 월드값 둘중 하나다.
 		if (_currentEnvironmentSettingObject != null)
-			_currentEnvironmentSettingObject.SetActive(show);
+			_currentEnvironmentSettingObject.SetActive(false);
+		return _currentEnvironmentSettingObject;
 	}
 	#endregion
 

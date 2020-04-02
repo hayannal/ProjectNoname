@@ -15,14 +15,17 @@ public class TimeSpaceGround : MonoBehaviour
 	{
 		instance = this;
 	}
-	
+
+	GameObject _prevEnvironmentSettingObject;
 	void OnEnable()
 	{
 		translationEffectorTransform.parent = BattleInstanceManager.instance.playerActor.cachedTransform;
 		translationEffectorTransform.localPosition = Vector2.zero;
 		translationEffectorTransform.gameObject.SetActive(true);
 
-		StageManager.instance.EnableEnvironmentSettingForUI(false);
+		// 먼저 이렇게 Disable 처리하고 자신의 환경셋팅을 켜야한다.
+		// 이래야 제대로 임시 환경셋팅에 등록된다.
+		_prevEnvironmentSettingObject = StageManager.instance.DisableCurrentEnvironmentSetting();
 		environmentSetting.gameObject.SetActive(true);
 
 		// teleport
@@ -38,8 +41,9 @@ public class TimeSpaceGround : MonoBehaviour
 		if (translationEffectorTransform == null)
 			return;
 
+		// 되돌아갈때도 새로 셋팅한 환경값을 끄고나서 예전 환경값을 켜는 형태다.
 		environmentSetting.gameObject.SetActive(false);
-		StageManager.instance.EnableEnvironmentSettingForUI(true);
+		_prevEnvironmentSettingObject.SetActive(true);
 
 		translationEffectorTransform.gameObject.SetActive(false);
 

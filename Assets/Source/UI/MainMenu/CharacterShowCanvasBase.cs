@@ -25,6 +25,7 @@ public class CharacterShowCanvasBase : MonoBehaviour
 	Quaternion _lastCharacterRotation;
 	Transform _groundTransform;
 	EnvironmentSetting _environmentSetting;
+	GameObject _prevEnvironmentSettingObject;
 	float _defaultLightIntensity;
 	ActorInfoTableData _cachedActorInfoTableData;
 	protected void SetInfoCameraMode(bool enable, string actorId)
@@ -66,7 +67,7 @@ public class CharacterShowCanvasBase : MonoBehaviour
 			_cachedActorInfoTableData = TableDataManager.instance.FindActorInfoTableData(actorId);
 
 			// ground setting
-			StageManager.instance.EnableEnvironmentSettingForUI(false);
+			_prevEnvironmentSettingObject = StageManager.instance.DisableCurrentEnvironmentSetting();
 			if (_groundTransform == null)
 			{
 				_groundTransform = Instantiate<GameObject>(StageManager.instance.characterInfoGroundPrefab, _rootOffsetPosition, Quaternion.identity).transform;
@@ -106,11 +107,13 @@ public class CharacterShowCanvasBase : MonoBehaviour
 				return;
 			if (CustomFollowCamera.instance.gameObject == null)
 				return;
+			if (StageManager.instance == null)
+				return;
 			if (BattleInstanceManager.instance.playerActor.gameObject == null)
 				return;
 
 			_groundTransform.gameObject.SetActive(false);
-			StageManager.instance.EnableEnvironmentSettingForUI(true);
+			_prevEnvironmentSettingObject.SetActive(true);
 
 			CustomRenderer.instance.RenderTextureResolutionFactor = _lastRendererResolutionFactor;
 			CustomRenderer.instance.bloom.RenderTextureResolutoinFactor = _lastBloomResolutionFactor;

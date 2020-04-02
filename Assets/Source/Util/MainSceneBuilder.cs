@@ -41,9 +41,13 @@ public class MainSceneBuilder : MonoBehaviour
 		Addressables.Release<GameObject>(_handleCommonCanvasGroup);
 		Addressables.Release<GameObject>(_handleTreasureChest);
 
-		// 이벤트용이라 항상 로드되는게 아니다보니 IsValue체크가 필수다.
+		// 이벤트용이라 항상 로드되는게 아니다보니 IsValid체크가 필수다.
 		if (_handleEventGatePillar.IsValid())
 			Addressables.Release<GameObject>(_handleEventGatePillar);
+
+		// TimeSpace역시 초반에 로드하지 않을때가 많으니 IsValid체크 해야한다.
+		if (_handleTimeSpacePortal.IsValid())
+			Addressables.Release<GameObject>(_handleTimeSpacePortal);
 
 		// 로딩속도를 위해 배틀매니저는 천천히 로딩한다. 그래서 다른 로딩 오브젝트와 달리 Valid 검사를 해야한다.
 		if (_handleBattleManager.IsValid())
@@ -63,6 +67,7 @@ public class MainSceneBuilder : MonoBehaviour
 	AsyncOperationHandle<GameObject> _handleCommonCanvasGroup;
 	AsyncOperationHandle<GameObject> _handleTreasureChest;
 	AsyncOperationHandle<GameObject> _handleEventGatePillar;
+	AsyncOperationHandle<GameObject> _handleTimeSpacePortal;
 	IEnumerator Start()
     {
 		// 씬 빌더는 항상 이 씬이 시작될때 1회만 동작하며 로딩씬을 띄워놓고 현재 상황에 맞춰서 스텝을 진행한다.
@@ -245,6 +250,20 @@ public class MainSceneBuilder : MonoBehaviour
 #if !UNITY_EDITOR
 		Debug.LogWarning("BBBBBBBBB");
 #endif
+		bool useTimeSpace = false;
+		if (EventManager.instance.IsStandbyClientEvent(EventManager.eClientEvent.OpenTimeSpace))
+		{
+			_handleTimeSpacePortal = Addressables.LoadAssetAsync<GameObject>("OpenTimeSpacePortal");
+			useTimeSpace = true;
+		}
+		else if (ContentsManager.IsOpen(ContentsManager.eOpenContensByChapterStage.TimeSpace))
+		{
+			_handleTimeSpacePortal = Addressables.LoadAssetAsync<GameObject>("TimeSpacePortal");
+			useTimeSpace = true;
+		}
+#if !UNITY_EDITOR
+		Debug.LogWarning("BBBBBBBBB-1");
+#endif
 		StageManager.instance.InitializeStage(PlayerData.instance.selectedChapter, 0);
 #if !UNITY_EDITOR
 		Debug.LogWarning("CCCCCCCCC");
@@ -292,6 +311,20 @@ public class MainSceneBuilder : MonoBehaviour
 #else
 		Instantiate<GameObject>(_handleTreasureChest.Result);
 #endif
+		if (useTimeSpace)
+		{
+			yield return _handleTimeSpacePortal;
+#if UNITY_EDITOR
+			newObject = Instantiate<GameObject>(_handleTimeSpacePortal.Result);
+			if (settings.ActivePlayModeDataBuilderIndex == 2)
+				ObjectUtil.ReloadShader(newObject);
+#else
+			Instantiate<GameObject>(_handleTimeSpacePortal.Result);
+#endif
+#if !UNITY_EDITOR
+			Debug.LogWarning("HHHHHHHHH-1");
+#endif
+		}
 
 		// 현재맵의 로딩이 끝나면 다음맵의 프리팹을 로딩해놔야 게이트 필라로 이동시 곧바로 이동할 수 있게 된다.
 		// 원래라면 몹 다 죽이고 호출되는 함수인데 초기 씬 구축에선 할 타이밍이 로비맵 로딩 직후밖에 없다.

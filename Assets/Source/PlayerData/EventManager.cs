@@ -205,6 +205,15 @@ public class EventManager : MonoBehaviour
 		_queClientEventInfo.Enqueue(clientEventInfo);
 	}
 
+	public bool IsStandbyClientEvent(eClientEvent clientEvent)
+	{
+		if (_queClientEventInfo.Count == 0)
+			return false;
+
+		ClientEventInfo clientEventInfo = _queClientEventInfo.Peek();
+		return (clientEventInfo.eventType == clientEvent);
+	}
+
 	#region Play
 	public bool OnExitBattleResult()
 	{

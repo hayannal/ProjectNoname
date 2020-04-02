@@ -162,6 +162,12 @@ public sealed class LocalPlayerController : BaseCharacterController
 				return;
 			}
 
+			if (TimeSpaceGround.instance != null && TimeSpaceGround.instance.gameObject.activeSelf)
+			{
+				BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("TimeSpaceUI_CantAttack"), 2.5f);
+				return;
+			}
+
 			if (_raycastHitList == null)
 				_raycastHitList = new RaycastHit[20];
 

@@ -10,7 +10,9 @@ public class LobbyCanvas : MonoBehaviour
 	public static LobbyCanvas instance;
 
 	public Button dotMainMenuButton;
+	public GameObject rightTopRootObject;
 	public Button lobbyOptionButton;
+	public Button timeSpaceHomeButton;
 	public Button battlePauseButton;
 	public Text levelText;
 	public Slider expGaugeSlider;
@@ -76,6 +78,11 @@ public class LobbyCanvas : MonoBehaviour
 		UIInstanceManager.instance.ShowCanvasAsync("SettingCanvas", null);
 	}
 
+	public void OnClickTimeSpaceHomeButton()
+	{
+		TimeSpacePortal.instance.MoveProcessByCanvas();
+	}
+
 	public void OnClickBattlePauseButton()
 	{
 		PauseCanvas.instance.gameObject.SetActive(true);
@@ -120,7 +127,13 @@ public class LobbyCanvas : MonoBehaviour
 	public void OnEnterMainMenu(bool enter)
 	{
 		dotMainMenuButton.gameObject.SetActive(!enter);
+		rightTopRootObject.SetActive(!enter);
+	}
+
+	public void OnEnterTimeSpace(bool enter)
+	{
 		lobbyOptionButton.gameObject.SetActive(!enter);
+		timeSpaceHomeButton.gameObject.SetActive(enter);
 	}
 
 	#region Exp Percent Gauge

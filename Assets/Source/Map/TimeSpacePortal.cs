@@ -61,14 +61,21 @@ public class TimeSpacePortal : MonoBehaviour
 			while (_timeSpaceGroundPrefab == null)
 				yield return Timing.WaitForOneFrame;
 			Instantiate<GameObject>(_timeSpaceGroundPrefab, _rootOffsetPosition, Quaternion.identity);
+			LobbyCanvas.instance.OnEnterTimeSpace(true);
 		}
 		else
 		{
 			TimeSpaceGround.instance.gameObject.SetActive(!TimeSpaceGround.instance.gameObject.activeSelf);
+			LobbyCanvas.instance.OnEnterTimeSpace(TimeSpaceGround.instance.gameObject.activeSelf);
 		}
 
 		FadeCanvas.instance.FadeIn(0.4f);
 
 		_processing = false;
+	}
+
+	public void MoveProcessByCanvas()
+	{
+		Timing.RunCoroutine(MoveProcess());
 	}
 }

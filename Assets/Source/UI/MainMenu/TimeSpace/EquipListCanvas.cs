@@ -1,12 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-#if UNITY_EDITOR
-using UnityEditor.AddressableAssets;
-using UnityEditor.AddressableAssets.Settings;
-#endif
-using MEC;
 
 public class EquipListCanvas : EquipShowCanvasBase
 {
@@ -19,7 +13,7 @@ public class EquipListCanvas : EquipShowCanvasBase
 	public GameObject contentItemPrefab;
 	public RectTransform contentRootRectTransform;
 
-	public class CustomItemContainer : CachedItemHave<SwapCanvasListItem>
+	public class CustomItemContainer : CachedItemHave<EquipCanvasListItem>
 	{
 	}
 	CustomItemContainer _container = new CustomItemContainer();
@@ -89,7 +83,7 @@ public class EquipListCanvas : EquipShowCanvasBase
 		RefreshGrid(true);
 	}
 
-	List<SwapCanvasListItem> _listSwapCanvasListItem = new List<SwapCanvasListItem>();
+	List<EquipCanvasListItem> _listEquipCanvasListItem = new List<EquipCanvasListItem>();
 	List<EquipData> _listCurrentEquipData = new List<EquipData>();
 	TimeSpaceData.eEquipSlotType _currentEquipType;
 	public void RefreshInfo(int equipType, bool onlySort = false)
@@ -100,9 +94,9 @@ public class EquipListCanvas : EquipShowCanvasBase
 
 	void RefreshGrid(bool onlySort)
 	{
-		for (int i = 0; i < _listSwapCanvasListItem.Count; ++i)
-			_listSwapCanvasListItem[i].gameObject.SetActive(false);
-		_listSwapCanvasListItem.Clear();
+		for (int i = 0; i < _listEquipCanvasListItem.Count; ++i)
+			_listEquipCanvasListItem[i].gameObject.SetActive(false);
+		_listEquipCanvasListItem.Clear();
 
 		if (onlySort == false)
 		{
@@ -136,10 +130,40 @@ public class EquipListCanvas : EquipShowCanvasBase
 				_listCurrentEquipData.Sort(equipSortButton.comparisonEnhance);
 				break;
 		}
+
+		for (int i = 0; i < _listCurrentEquipData.Count; ++i)
+		{
+			EquipCanvasListItem equipCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
+			equipCanvasListItem.Initialize(_listCurrentEquipData[i], OnClickListItem);
+			_listEquipCanvasListItem.Add(equipCanvasListItem);
+		}
+		if (onlySort)
+			OnClickListItem(_selectedEquipData);
+		else
+			OnClickListItem(null);
 	}
 
+	EquipData _selectedEquipData;
 	public void OnClickListItem(EquipData equipData)
 	{
+		_selectedEquipData = equipData;
+
+		string selectedUniqueId = "";
+		if (_selectedEquipData != null)
+			selectedUniqueId = _selectedEquipData.uniqueId;
+
+		for (int i = 0; i < _listEquipCanvasListItem.Count; ++i)
+			_listEquipCanvasListItem[i].ShowSelectObject(_listEquipCanvasListItem[i].equipData.uniqueId == selectedUniqueId);
+
+		if (_selectedEquipData == null)
+			return;
+
+		RefreshDiffItem(equipData);
+	}
+
+	void RefreshDiffItem(EquipData equipData)
+	{
+
 	}
 
 

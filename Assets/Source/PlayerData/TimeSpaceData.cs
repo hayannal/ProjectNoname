@@ -36,6 +36,8 @@ public class TimeSpaceData
 	public EquipStatusList cachedEquipStatusList { get { return _cachedEquipStatusList; } }
 
 	List<EquipData> _listEquipData = new List<EquipData>();
+	public List<EquipData> listEquipData { get { return _listEquipData; } }
+
 	Dictionary<int, EquipData> _dicEquippedData = new Dictionary<int, EquipData>();
 
 	public void OnRecvEquipInventory(List<ItemInstance> userInventory, Dictionary<string, UserDataRecord> userData)

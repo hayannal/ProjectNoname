@@ -10,6 +10,8 @@ public class TimeSpaceGround : MonoBehaviour
 	public EnvironmentSetting environmentSetting;
 	public Vector3 teleportPosition;
 	public Vector3 returnPosition;
+	public ObjectTransformEffectorDeformer objectTransformEffectorDeformer;
+	public ObjectScaleEffectorDeformer objectScaleEffectorDeformer;
 
 	void Awake()
 	{
@@ -55,7 +57,11 @@ public class TimeSpaceGround : MonoBehaviour
 		CustomFollowCamera.instance.immediatelyUpdate = true;
 	}
 
-
+	public void EnableObjectDeformer(bool enable)
+	{
+		objectTransformEffectorDeformer.enabled = enable;
+		objectScaleEffectorDeformer.enabled = enable;
+	}
 
 
 

@@ -89,6 +89,9 @@ public class CharacterShowCanvasBase : MonoBehaviour
 				_groundTransform.gameObject.SetActive(true);
 			}
 
+			if (TimeSpaceGround.instance != null && TimeSpaceGround.instance.gameObject.activeSelf)
+				TimeSpaceGround.instance.EnableObjectDeformer(false);
+
 			// player setting
 			if (_playerActor != null)
 				OnLoadedPlayerActor();
@@ -134,6 +137,9 @@ public class CharacterShowCanvasBase : MonoBehaviour
 					_playerActor.actionController.PlayActionByActionName("Idle");
 				_cachedActorInfoTableData = null;
 			}
+
+			if (TimeSpaceGround.instance != null && TimeSpaceGround.instance.gameObject.activeSelf)
+				TimeSpaceGround.instance.EnableObjectDeformer(true);
 
 			CameraFovController.instance.enabled = true;
 			CustomFollowCamera.instance.enabled = true;

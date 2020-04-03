@@ -40,4 +40,12 @@ public class EquipTableData
   float _max;
   public float max { get { return _max; } set { _max = value; } }
   
+  [SerializeField]
+  string _prefabAddress;
+  public string prefabAddress { get { return _prefabAddress; } set { _prefabAddress = value; } }
+  
+  [SerializeField]
+  string _shotAddress;
+  public string shotAddress { get { return _shotAddress; } set { _shotAddress = value; } }
+  
 }

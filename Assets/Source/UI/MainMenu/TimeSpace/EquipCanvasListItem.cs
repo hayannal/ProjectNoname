@@ -32,13 +32,13 @@ public class EquipCanvasListItem : MonoBehaviour
 
 		switch (equipData.cachedEquipTableData.grade)
 		{
-			case 1:
+			case 0:
 				blurImage.color = new Color(0.5f, 0.5f, 0.5f, 0.0f);
 				gradient.color1 = Color.white;
 				gradient.color2 = Color.black;
 				lineColorImage.color = new Color(0.5f, 0.5f, 0.5f);
 				break;
-			case 0:
+			case 1:
 				blurImage.color = new Color(0.28f, 1.0f, 0.78f, 0.0f);
 				gradient.color1 = new Color(0.0f, 1.0f, 0.7f);
 				gradient.color2 = new Color(0.8f, 0.8f, 0.8f);

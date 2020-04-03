@@ -44,16 +44,11 @@ public class SettingCanvas : MonoBehaviour
 		if (LobbyCanvas.instance != null)
 			LobbyCanvas.instance.lobbyOptionButton.gameObject.SetActive(true);
 	}
-	
-	public void OnClickBackButton()
-	{
-		SaveOption();
-		gameObject.SetActive(false);
-	}
 
 	public void OnClickHomeButton()
 	{
-		OnClickBackButton();
+		SaveOption();
+		gameObject.SetActive(false);
 	}
 
 

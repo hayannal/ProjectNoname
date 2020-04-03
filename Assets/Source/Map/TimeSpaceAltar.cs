@@ -18,6 +18,7 @@ public class TimeSpaceAltar : MonoBehaviour
 			_objectIndicatorCanvas.gameObject.SetActive(false);
 			_objectIndicatorCanvas = null;
 		}
+		_spawnedIndicator = false;
 	}
 
 	Vector3 _position;

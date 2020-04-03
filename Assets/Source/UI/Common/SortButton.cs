@@ -11,6 +11,7 @@ public class SortButton : MonoBehaviour
 		PowerLevel,
 		PowerLevelDescending,
 		PowerSource,
+		Grade,
 
 		Amount,
 	}
@@ -56,6 +57,7 @@ public class SortButton : MonoBehaviour
 			case eSortType.PowerLevel: stringId = "GameUI_OrderByPowerLevel"; break;
 			case eSortType.PowerLevelDescending: stringId = "GameUI_OrderByPowerLevelDescending"; break;
 			case eSortType.PowerSource: stringId = "GameUI_OrderByPowerSource"; break;
+			case eSortType.Grade: stringId = "GameUI_OrderByGrade"; break;
 		}
 		sortText.SetLocalizedText(UIString.instance.GetString(stringId));
 
@@ -73,7 +75,7 @@ public class SortButton : MonoBehaviour
 		UpdateFade();
 	}
 
-	float _lastClickRemainTime;
+	protected float _lastClickRemainTime;
 	void UpdateLastClickTime()
 	{
 		if (_lastClickRemainTime > 0.0f)
@@ -87,7 +89,7 @@ public class SortButton : MonoBehaviour
 		}
 	}
 
-	float _fadeTime;
+	protected float _fadeTime;
 	void UpdateFade()
 	{
 		if (_fadeTime > 0.0f)
@@ -147,8 +149,26 @@ public class SortButton : MonoBehaviour
 		{
 			if (xActorTableData.powerSource < yActorTableData.powerSource) return -1;
 			else if (xActorTableData.powerSource > yActorTableData.powerSource) return 1;
+			if (x.powerLevel > y.powerLevel) return -1;
+			else if (x.powerLevel < y.powerLevel) return 1;
 			if (xActorTableData.grade > yActorTableData.grade) return -1;
 			else if (xActorTableData.grade < yActorTableData.grade) return 1;
+			if (xActorTableData.orderIndex < yActorTableData.orderIndex) return -1;
+			else if (xActorTableData.orderIndex > yActorTableData.orderIndex) return 1;
+		}
+		return 0;
+	};
+
+	public Comparison<CharacterData> comparisonGrade = delegate (CharacterData x, CharacterData y)
+	{
+		ActorTableData xActorTableData = TableDataManager.instance.FindActorTableData(x.actorId);
+		ActorTableData yActorTableData = TableDataManager.instance.FindActorTableData(y.actorId);
+		if (xActorTableData != null && yActorTableData != null)
+		{
+			if (xActorTableData.grade > yActorTableData.grade) return -1;
+			else if (xActorTableData.grade < yActorTableData.grade) return 1;
+			if (x.powerLevel > y.powerLevel) return -1;
+			else if (x.powerLevel < y.powerLevel) return 1;
 			if (xActorTableData.orderIndex < yActorTableData.orderIndex) return -1;
 			else if (xActorTableData.orderIndex > yActorTableData.orderIndex) return 1;
 		}

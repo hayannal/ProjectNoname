@@ -147,30 +147,53 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 			if (x.characterData != null && y.characterData == null) return -1;
 			else if (x.characterData == null && y.characterData != null) return 1;
 
-			if (x.characterData != null && y.characterData != null)
+			switch (_currentSortType)
 			{
-				if (_currentSortType == SortButton.eSortType.PowerLevel)
-				{
-					if (x.characterData.powerLevel > y.characterData.powerLevel) return -1;
-					else if (x.characterData.powerLevel < y.characterData.powerLevel) return 1;
-				}
-				else if (_currentSortType == SortButton.eSortType.PowerLevelDescending)
-				{
-					if (x.characterData.powerLevel > y.characterData.powerLevel) return 1;
-					else if (x.characterData.powerLevel < y.characterData.powerLevel) return -1;
-				}
+				case SortButton.eSortType.PowerLevel:
+				case SortButton.eSortType.PowerLevelDescending:
+					if (x.characterData != null && y.characterData != null)
+					{
+						if (_currentSortType == SortButton.eSortType.PowerLevel)
+						{
+							if (x.characterData.powerLevel > y.characterData.powerLevel) return -1;
+							else if (x.characterData.powerLevel < y.characterData.powerLevel) return 1;
+						}
+						else
+						{
+							if (x.characterData.powerLevel > y.characterData.powerLevel) return 1;
+							else if (x.characterData.powerLevel < y.characterData.powerLevel) return -1;
+						}
+					}
+					if (x.actorTableData.grade > y.actorTableData.grade) return -1;
+					else if (x.actorTableData.grade < y.actorTableData.grade) return 1;
+					if (x.actorTableData.orderIndex < y.actorTableData.orderIndex) return -1;
+					else if (x.actorTableData.orderIndex > y.actorTableData.orderIndex) return 1;
+					break;
+				case SortButton.eSortType.PowerSource:
+					if (x.actorTableData.powerSource < y.actorTableData.powerSource) return -1;
+					else if (x.actorTableData.powerSource > y.actorTableData.powerSource) return 1;
+					if (x.characterData != null && y.characterData != null)
+					{
+						if (x.characterData.powerLevel > y.characterData.powerLevel) return -1;
+						else if (x.characterData.powerLevel < y.characterData.powerLevel) return 1;
+					}
+					if (x.actorTableData.grade > y.actorTableData.grade) return -1;
+					else if (x.actorTableData.grade < y.actorTableData.grade) return 1;
+					if (x.actorTableData.orderIndex < y.actorTableData.orderIndex) return -1;
+					else if (x.actorTableData.orderIndex > y.actorTableData.orderIndex) return 1;
+					break;
+				case SortButton.eSortType.Grade:
+					if (x.actorTableData.grade > y.actorTableData.grade) return -1;
+					else if (x.actorTableData.grade < y.actorTableData.grade) return 1;
+					if (x.characterData != null && y.characterData != null)
+					{
+						if (x.characterData.powerLevel > y.characterData.powerLevel) return -1;
+						else if (x.characterData.powerLevel < y.characterData.powerLevel) return 1;
+					}
+					if (x.actorTableData.orderIndex < y.actorTableData.orderIndex) return -1;
+					else if (x.actorTableData.orderIndex > y.actorTableData.orderIndex) return 1;
+					break;
 			}
-
-			if (_currentSortType == SortButton.eSortType.PowerSource)
-			{
-				if (x.actorTableData.powerSource < y.actorTableData.powerSource) return -1;
-				else if (x.actorTableData.powerSource > y.actorTableData.powerSource) return 1;
-			}
-
-			if (x.actorTableData.grade > y.actorTableData.grade) return -1;
-			else if (x.actorTableData.grade < y.actorTableData.grade) return 1;
-			if (x.actorTableData.orderIndex < y.actorTableData.orderIndex) return -1;
-			else if (x.actorTableData.orderIndex > y.actorTableData.orderIndex) return 1;
 			return 0;
 		});
 

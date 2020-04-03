@@ -244,6 +244,9 @@ public class SwapCanvas : MonoBehaviour
 			case SortButton.eSortType.PowerSource:
 				listCharacterData.Sort(sortButton.comparisonPowerSource);
 				break;
+			case SortButton.eSortType.Grade:
+				listCharacterData.Sort(sortButton.comparisonGrade);
+				break;
 		}
 
 		int firstIndex = -1;

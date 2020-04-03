@@ -40,7 +40,7 @@ public class TimeSpacePortal : MonoBehaviour
 			yield break;
 
 		_processing = true;
-		if (_timeSpaceGroundPrefab == null)
+		if (TimeSpaceGround.instance == null && _timeSpaceGroundPrefab == null)
 		{
 			AddressableAssetLoadManager.GetAddressableGameObject("TimeSpaceGround", "Map", (prefab) =>
 			{
@@ -48,19 +48,14 @@ public class TimeSpacePortal : MonoBehaviour
 			});
 		}
 
-		yield return Timing.WaitForSeconds(0.2f);
+		yield return Timing.WaitForSeconds(0.1f);
 		//changeEffectParticleRootObject.SetActive(true);
 
 		FadeCanvas.instance.FadeOut(0.2f, 0.7f, true);
 		yield return Timing.WaitForSeconds(0.2f);
 
-		if (MainSceneBuilder.instance.lobby)
-		{
-			while (MainSceneBuilder.instance.IsDoneLateInitialized() == false)
-				yield return Timing.WaitForOneFrame;
-			if (TitleCanvas.instance != null)
-				TitleCanvas.instance.gameObject.SetActive(false);
-		}
+		if (TitleCanvas.instance != null)
+			TitleCanvas.instance.gameObject.SetActive(false);
 		if (TimeSpaceGround.instance == null)
 		{
 			while (_timeSpaceGroundPrefab == null)

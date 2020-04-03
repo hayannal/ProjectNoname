@@ -56,7 +56,7 @@ public class ChapterCanvas : MonoBehaviour
 
 	public void OnClickHomeButton()
 	{
-		StackCanvas.Home();
+		LobbyCanvas.Home();
 	}
 	
 

@@ -231,7 +231,7 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 	public void OnClickHomeButton()
 	{
 		// 현재 상태에 따라
-		StackCanvas.Home();
+		LobbyCanvas.Home();
 	}
 
 

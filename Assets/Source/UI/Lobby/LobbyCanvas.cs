@@ -80,7 +80,7 @@ public class LobbyCanvas : MonoBehaviour
 
 	public void OnClickTimeSpaceHomeButton()
 	{
-		TimeSpacePortal.instance.MoveProcessByCanvas();
+		TimeSpacePortal.instance.HomeProcessByCanvas();
 	}
 
 	public void OnClickBattlePauseButton()
@@ -135,6 +135,21 @@ public class LobbyCanvas : MonoBehaviour
 		lobbyOptionButton.gameObject.SetActive(!enter);
 		timeSpaceHomeButton.gameObject.SetActive(enter);
 	}
+
+	#region Home
+	public static void Home()
+	{
+		StackCanvas.Home();
+
+		// 하필 홈을 눌렀는데 서브 로비인 시공간에 가있었다면 예외처리.
+		// StackCanvas 안에 하려다가 프레임워크기도 하고
+		// ChapterCanvas 같은 경우엔 또 할필요가 없기 때문에 선별해서 넣기로 한다.
+		if (TimeSpaceGround.instance != null && TimeSpaceGround.instance.gameObject.activeSelf)
+			TimeSpacePortal.instance.HomeProcessByCanvas();
+	}
+	#endregion
+
+
 
 	#region Exp Percent Gauge
 	public void RefreshLevelText(int level)

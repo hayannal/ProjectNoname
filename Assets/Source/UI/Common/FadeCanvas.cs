@@ -38,6 +38,16 @@ public class FadeCanvas : MonoBehaviour
 		_duration = duration;
 	}
 
+	// FadeOut 없이 In만 단독으로 실행할때 사용하는 함수
+	public void FadeInOnly(float duration, float startValue = 1.0f, bool blackFadeColor = false)
+	{
+		if (!gameObject.activeSelf)
+			gameObject.SetActive(true);
+
+		fadeImage.color = new Color(blackFadeColor ? 0.0f : 1.0f, blackFadeColor ? 0.0f : 1.0f, blackFadeColor ? 0.0f : 1.0f, startValue);
+		FadeIn(duration);
+	}
+
 	float _duration;
 	void Update()
 	{

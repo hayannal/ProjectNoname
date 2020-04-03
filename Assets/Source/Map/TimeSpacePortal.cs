@@ -74,8 +74,10 @@ public class TimeSpacePortal : MonoBehaviour
 		_processing = false;
 	}
 
-	public void MoveProcessByCanvas()
+	public void HomeProcessByCanvas()
 	{
-		Timing.RunCoroutine(MoveProcess());
+		TimeSpaceGround.instance.gameObject.SetActive(false);
+		LobbyCanvas.instance.OnEnterTimeSpace(false);
+		FadeCanvas.instance.FadeInOnly(0.5f, 0.9f, true);
 	}
 }

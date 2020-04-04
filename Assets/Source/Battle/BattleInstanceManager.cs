@@ -1071,6 +1071,41 @@ public class BattleInstanceManager : MonoBehaviour
 	}
 	#endregion
 
+	#region Equip Object
+	Dictionary<GameObject, List<EquipPrefabInfo>> _dicEquipObjectInstancePool = new Dictionary<GameObject, List<EquipPrefabInfo>>();
+	public EquipPrefabInfo GetCachedEquipObject(GameObject prefab, Transform parentTransform)
+	{
+		List<EquipPrefabInfo> listCachedEquipPrefabInfo = null;
+		if (_dicEquipObjectInstancePool.ContainsKey(prefab))
+			listCachedEquipPrefabInfo = _dicEquipObjectInstancePool[prefab];
+		else
+		{
+			listCachedEquipPrefabInfo = new List<EquipPrefabInfo>();
+			_dicEquipObjectInstancePool.Add(prefab, listCachedEquipPrefabInfo);
+		}
+
+		for (int i = 0; i < listCachedEquipPrefabInfo.Count; ++i)
+		{
+			if (!listCachedEquipPrefabInfo[i].gameObject.activeSelf)
+			{
+				listCachedEquipPrefabInfo[i].transform.parent = parentTransform;
+				listCachedEquipPrefabInfo[i].gameObject.SetActive(true);
+				return listCachedEquipPrefabInfo[i];
+			}
+		}
+
+		GameObject newObject = Instantiate<GameObject>(prefab, parentTransform);
+#if UNITY_EDITOR
+		AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+		if (settings.ActivePlayModeDataBuilderIndex == 2)
+			ObjectUtil.ReloadShader(newObject);
+#endif
+		EquipPrefabInfo equipPrefabInfo = newObject.GetComponent<EquipPrefabInfo>();
+		listCachedEquipPrefabInfo.Add(equipPrefabInfo);
+		return equipPrefabInfo;
+	}
+	#endregion
+
 
 
 

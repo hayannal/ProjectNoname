@@ -43,6 +43,12 @@ public class DropObject : MonoBehaviour
 	public RectTransform nameCanvasRectTransform;
 	public Text nameText;
 
+	float _defaultRotateTransformPositionY;
+	private void Awake()
+	{
+		_defaultRotateTransformPositionY = rotateTransform.localPosition.y;
+	}
+
 	DropProcessor.eDropType _dropType;
 	float _floatValue;
 	int _intValue;
@@ -74,8 +80,7 @@ public class DropObject : MonoBehaviour
 			float pivotOffset = equipPrefabComponent.pivotOffset;
 			if (trailTransform != null) trailTransform.localPosition = new Vector3(0.0f, pivotOffset + rotateTransform.localPosition.y, 0.0f);
 			if (nameCanvasRectTransform != null) nameCanvasRectTransform.localPosition = new Vector3(0.0f, pivotOffset * 2.0f + rotateTransform.localPosition.y + 0.75f, 0.0f);
-			equipPrefabComponent.transform.localPosition = Vector3.zero;
-			equipPrefabComponent.transform.Translate(0.0f, pivotOffset, 0.0f, Space.World);
+			rotateTransform.localPosition = new Vector3(0.0f, _defaultRotateTransformPositionY + pivotOffset, 0.0f);
 		}
 
 		if (useLootEffect && lootEffectPrefab != null)

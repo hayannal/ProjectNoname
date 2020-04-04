@@ -1,14 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class TimeSpaceAltar : MonoBehaviour
 {
 	public int positionIndex;
+	public Transform equipRootTransform;
+	public DOTweenAnimation rotateTweenAnimation;
 
 	void Start()
 	{
 		_position = transform.position;
+	}
+
+	void OnEnable()
+	{
+		RefreshEquipObject();
 	}
 
 	void OnDisable()
@@ -42,7 +50,7 @@ public class TimeSpaceAltar : MonoBehaviour
 
 	void ShowIndicator()
 	{
-		AddressableAssetLoadManager.GetAddressableGameObject("TimeSpaceAltarIndicator", "Object", (prefab) =>
+		AddressableAssetLoadManager.GetAddressableGameObject("TimeSpaceAltarIndicator", "Canvas", (prefab) =>
 		{
 			if (this == null) return;
 			if (gameObject == null) return;
@@ -72,5 +80,41 @@ public class TimeSpaceAltar : MonoBehaviour
 			return;
 
 		ShowIndicator();
+	}
+
+	bool _wait = false;
+	EquipPrefabInfo _currentEquipObject = null;
+	void RefreshEquipObject()
+	{
+		if (_wait)
+			return;
+
+		EquipData equipData = TimeSpaceData.instance.GetEquipDataByType((TimeSpaceData.eEquipSlotType)positionIndex);
+		if (equipData == null)
+		{
+			if (_currentEquipObject != null)
+			{
+				_currentEquipObject.gameObject.SetActive(false);
+				_currentEquipObject = null;
+				rotateTweenAnimation.DOComplete();
+			}
+			return;
+		}
+
+		_wait = true;
+		AddressableAssetLoadManager.GetAddressableGameObject(equipData.cachedEquipTableData.prefabAddress, "Equip", OnLoadedEquip);
+	}
+
+	void OnLoadedEquip(GameObject prefab)
+	{
+		_wait = false;
+		if (this == null) return;
+		if (gameObject == null) return;
+		if (gameObject.activeSelf == false) return;
+
+		EquipPrefabInfo newEquipPrefabInfo = BattleInstanceManager.instance.GetCachedEquipObject(prefab, equipRootTransform);
+		newEquipPrefabInfo.cachedTransform.localPosition = Vector3.zero;
+		newEquipPrefabInfo.cachedTransform.Translate(0.0f, newEquipPrefabInfo.pivotOffset, 0.0f, Space.World);
+		rotateTweenAnimation.DORestart();
 	}
 }

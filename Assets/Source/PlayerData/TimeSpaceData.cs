@@ -134,6 +134,13 @@ public class TimeSpaceData
 		return equipped;
 	}
 
+	public EquipData GetEquipDataByType(eEquipSlotType equipSlotType)
+	{
+		if (_dicEquippedData.ContainsKey((int)equipSlotType))
+			return _dicEquippedData[(int)equipSlotType];
+		return null;
+	}
+
 	#region Packet
 	public void OnEquip(EquipData equipData)
 	{

@@ -45,7 +45,7 @@ public class RecruitCanvas : CharacterShowCanvasBase
 		{
 			// 없다면 로딩 걸어두고 SetInfoCameraMode를 호출해둔다.
 			// SetInfoCameraMode 안에는 이미 캐릭터가 없을때를 대비해서 코드가 짜여져있긴 하다.
-			AddressableAssetLoadManager.GetAddressableGameObject(CharacterData.GetAddressByActorId(actorId), "", OnLoadedPlayerActor);
+			AddressableAssetLoadManager.GetAddressableGameObject(CharacterData.GetAddressByActorId(actorId), "Character", OnLoadedPlayerActor);
 		}
 		SetInfoCameraMode(true, actorId);
 		RefreshInfo(actorId);

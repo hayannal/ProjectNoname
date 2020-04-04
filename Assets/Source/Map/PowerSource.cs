@@ -119,7 +119,7 @@ public class PowerSource : MonoBehaviour
 	ObjectIndicatorCanvas _objectIndicatorCanvas;
 	void ShowIndicator()
 	{
-		AddressableAssetLoadManager.GetAddressableGameObject("PowerSourceIndicator", "Object", (prefab) =>
+		AddressableAssetLoadManager.GetAddressableGameObject("PowerSourceIndicator", "Canvas", (prefab) =>
 		{
 			// 로딩하는 중간에 맵이동시 다음맵으로 넘어가서 인디케이터가 뜨는걸 방지. 이미 회복 받았으면 뜨지않게 방지.
 			if (this == null) return;

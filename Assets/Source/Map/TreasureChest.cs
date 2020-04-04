@@ -48,7 +48,7 @@ public class TreasureChest : MonoBehaviour
 			if (_gaugeShowRemainTime <= 0.0f)
 			{
 				_gaugeShowRemainTime = 0.0f;
-				AddressableAssetLoadManager.GetAddressableGameObject("DailyBoxGaugeCanvas", "Object", (prefab) =>
+				AddressableAssetLoadManager.GetAddressableGameObject("DailyBoxGaugeCanvas", "Canvas", (prefab) =>
 				{
 					BattleInstanceManager.instance.GetCachedObject(prefab, null);
 				});
@@ -58,7 +58,7 @@ public class TreasureChest : MonoBehaviour
 
 	void ShowIndicator()
 	{
-		AddressableAssetLoadManager.GetAddressableGameObject("TreasureChestIndicator", "Object", (prefab) =>
+		AddressableAssetLoadManager.GetAddressableGameObject("TreasureChestIndicator", "Canvas", (prefab) =>
 		{
 			// 로딩하는 중간에 맵이동시 전투맵으로 들어가고 나서 TreasureChestIndicator가 나와버리게 된다. 그래서 체크로직 추가한다.
 			if (this == null) return;

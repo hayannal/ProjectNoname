@@ -241,7 +241,7 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 			_listSwapCanvasListItem[i].ShowSelectObject(_listSwapCanvasListItem[i].actorId == actorId);
 
 		// 선택을 누를때마다 조금이라도 로딩시간 줄이기 위해 어드레서블 로드를 걸어둔다.
-		AddressableAssetLoadManager.GetAddressableGameObject(CharacterData.GetAddressByActorId(actorId));
+		AddressableAssetLoadManager.GetAddressableGameObject(CharacterData.GetAddressByActorId(actorId), "Character");
 	}
 
 

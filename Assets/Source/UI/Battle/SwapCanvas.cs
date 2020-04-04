@@ -372,7 +372,7 @@ public class SwapCanvas : MonoBehaviour
 			SwapCharacter(playerActor);
 			return;
 		}
-		AddressableAssetLoadManager.GetAddressableGameObject(CharacterData.GetAddressByActorId(_selectedActorId), "", OnLoadedPlayerActor);
+		AddressableAssetLoadManager.GetAddressableGameObject(CharacterData.GetAddressByActorId(_selectedActorId), "Character", OnLoadedPlayerActor);
 	}
 
 	void OnLoadedPlayerActor(GameObject prefab)

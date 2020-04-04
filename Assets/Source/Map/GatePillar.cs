@@ -119,7 +119,7 @@ public class GatePillar : MonoBehaviour
 			if (_energyGaugeShowRemainTime <= 0.0f)
 			{
 				_energyGaugeShowRemainTime = 0.0f;
-				AddressableAssetLoadManager.GetAddressableGameObject("EnergyGaugeCanvas", "Object", (prefab) =>
+				AddressableAssetLoadManager.GetAddressableGameObject("EnergyGaugeCanvas", "Canvas", (prefab) =>
 				{
 					BattleInstanceManager.instance.GetCachedObject(prefab, null);
 				});

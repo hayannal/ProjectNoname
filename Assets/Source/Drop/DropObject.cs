@@ -76,8 +76,8 @@ public class DropObject : MonoBehaviour
 			//GameObject itemObject = rotateTransform.GetChild(0).gameObject;
 
 			// object height
-			EquipPrefab equipPrefabComponent = GetComponentInChildren<EquipPrefab>();
-			float pivotOffset = equipPrefabComponent.pivotOffset;
+			EquipPrefabInfo equipPrefabInfo = GetComponentInChildren<EquipPrefabInfo>();
+			float pivotOffset = equipPrefabInfo.pivotOffset;
 			if (trailTransform != null) trailTransform.localPosition = new Vector3(0.0f, pivotOffset + rotateTransform.localPosition.y, 0.0f);
 			if (nameCanvasRectTransform != null) nameCanvasRectTransform.localPosition = new Vector3(0.0f, pivotOffset * 2.0f + rotateTransform.localPosition.y + 0.75f, 0.0f);
 			rotateTransform.localPosition = new Vector3(0.0f, _defaultRotateTransformPositionY + pivotOffset, 0.0f);

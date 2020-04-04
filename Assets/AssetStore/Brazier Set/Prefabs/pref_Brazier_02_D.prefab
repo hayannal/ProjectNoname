@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 109036}
   m_LocalRotation: {x: 0, y: 0.38268343, z: 0, w: 0.92387956}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.5, y: 1, z: 1.5}
+  m_LocalScale: {x: 1.5, y: 0.5, z: 1.5}
   m_Children:
   - {fileID: 4837200261745019673}
   m_Father: {fileID: 0}
@@ -92,9 +92,9 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.3
-  m_Height: 1.2307558
+  m_Height: 2.5
   m_Direction: 1
-  m_Center: {x: 0, y: 0.6153779, z: 0}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &6259575301935428653
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -119,7 +119,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.65
+  m_Radius: 0.8
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &4837200261744890265
 PrefabInstance:
@@ -128,6 +128,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 410436}
     m_Modifications:
+    - target: {fileID: 100000, guid: 7844b3ad5d0fa9e40af4a16976decf5a, type: 3}
+      propertyPath: m_Name
+      value: mesh_Brazier_01
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 7844b3ad5d0fa9e40af4a16976decf5a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -178,15 +182,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 7844b3ad5d0fa9e40af4a16976decf5a, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.38
+      value: 1.14
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 7844b3ad5d0fa9e40af4a16976decf5a, type: 3}
       propertyPath: m_LocalScale.z
       value: 0.38
-      objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: 7844b3ad5d0fa9e40af4a16976decf5a, type: 3}
-      propertyPath: m_Name
-      value: mesh_Brazier_01
       objectReference: {fileID: 0}
     - target: {fileID: 2300000, guid: 7844b3ad5d0fa9e40af4a16976decf5a, type: 3}
       propertyPath: m_Materials.Array.data[0]

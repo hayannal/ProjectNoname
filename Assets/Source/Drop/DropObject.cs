@@ -70,9 +70,12 @@ public class DropObject : MonoBehaviour
 			//GameObject itemObject = rotateTransform.GetChild(0).gameObject;
 
 			// object height
-			float itemHeight = ColliderUtil.GetHeight(GetComponentInChildren<Collider>());
-			if (trailTransform != null) trailTransform.localPosition = new Vector3(0.0f, itemHeight * 0.5f, 0.0f);
-			if (nameCanvasRectTransform != null) nameCanvasRectTransform.localPosition = new Vector3(0.0f, itemHeight, 0.0f);
+			EquipPrefab equipPrefabComponent = GetComponentInChildren<EquipPrefab>();
+			float pivotOffset = equipPrefabComponent.pivotOffset;
+			if (trailTransform != null) trailTransform.localPosition = new Vector3(0.0f, pivotOffset + rotateTransform.localPosition.y, 0.0f);
+			if (nameCanvasRectTransform != null) nameCanvasRectTransform.localPosition = new Vector3(0.0f, pivotOffset * 2.0f + rotateTransform.localPosition.y + 0.75f, 0.0f);
+			equipPrefabComponent.transform.localPosition = Vector3.zero;
+			equipPrefabComponent.transform.Translate(0.0f, pivotOffset, 0.0f, Space.World);
 		}
 
 		if (useLootEffect && lootEffectPrefab != null)

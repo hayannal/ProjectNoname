@@ -7,9 +7,9 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: TimeSpaceBackground
-  m_Shader: {fileID: 4800000, guid: af96cba0ce400244e8f086910e74d586, type: 3}
-  m_ShaderKeywords: _FLOW _FLOW_CHANNEL_R _MATCAP_NONE
+  m_Name: TimeSpaceBackground_D
+  m_Shader: {fileID: 4800000, guid: 8ab1cf33154377343b946cce7fb67af1, type: 3}
+  m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -39,31 +39,15 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _FlowTex:
-        m_Texture: {fileID: 2800000, guid: ed33187bfd14d024cae935aeb23f0ebb, type: 3}
-        m_Scale: {x: 1, y: 8}
-        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: ed33187bfd14d024cae935aeb23f0ebb, type: 3}
-        m_Scale: {x: 0.5, y: 10}
+        m_Scale: {x: 1, y: 3.33333}
         m_Offset: {x: 0, y: 0}
     - _MainTex2:
         m_Texture: {fileID: 0}
         m_Scale: {x: 3, y: 10}
         m_Offset: {x: 0, y: 0}
-    - _MaskTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MatCapTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _NormalMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -75,44 +59,29 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _RimMaskTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     m_Floats:
     - _AdjustShininess: 0
     - _BlendStrength: 0.1
     - _BumpScale: 1
-    - _ColorIntensity: 0.5
     - _CrossTime: 0.2
-    - _Cull: 2
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DotHalfDirAdjust: 0
     - _DstBlend: 0
-    - _FlowPower: 0.75
-    - _Flow_Channel: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _MatCap: 0
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _RimPower: 0
     - _Shininess: 5
     - _Shininess2: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _Speed: 4
+    - _Speed: 1
     - _SrcBlend: 1
     - _UVSec: 0
-    - _UseCutoff: 0
-    - _UseEmissive: 0
-    - _UseFlow: 1
-    - _UseNormal: 0
-    - _UseRimLight: 0
     - _UseSubSpecular: 0
     - _ZWrite: 1
     m_Colors:
@@ -121,6 +90,3 @@ Material:
     - _Color3: {r: 0, g: 0, b: 1, a: 1}
     - _Color4: {r: 0, g: 0, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _EmissiveColor: {r: 1, g: 1, b: 1, a: 1}
-    - _FlowSpeed: {r: 0.05, g: 0.0125, b: 0, a: 0}
-    - _RimColor: {r: 0.26, g: 0.19, b: 0.16, a: 0}

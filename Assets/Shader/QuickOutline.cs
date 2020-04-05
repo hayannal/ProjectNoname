@@ -1,0 +1,285 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+
+[DisallowMultipleComponent]
+public class QuickOutline : MonoBehaviour
+{
+	private static HashSet<Mesh> registeredMeshes = new HashSet<Mesh>();
+
+	public Color OutlineColor
+	{
+		get { return outlineColor; }
+		set
+		{
+			outlineColor = value;
+			needsUpdate = true;
+		}
+	}
+
+	public float OutlineWidth
+	{
+		get { return outlineWidth; }
+		set
+		{
+			outlineWidth = value;
+			needsUpdate = true;
+		}
+	}
+
+	public bool UseBlink
+	{
+		get { return useBlink; }
+		set
+		{
+			useBlink = value;
+			needsUpdate = true;
+		}
+	}
+
+	[Serializable]
+	private class ListVector3
+	{
+		public List<Vector3> data;
+	}
+
+	[SerializeField]
+	private Color outlineColor = Color.white;
+
+	[SerializeField, Range(0f, 3f)]
+	private float outlineWidth = 2f;
+
+	[SerializeField]
+	private bool useBlink = false;
+
+	[Header("Optional")]
+
+	[SerializeField, Tooltip("Precompute enabled: Per-vertex calculations are performed in the editor and serialized with the object. "
+	+ "Precompute disabled: Per-vertex calculations are performed at runtime in Awake(). This may cause a pause for large meshes.")]
+	private bool precomputeOutline;
+
+	[SerializeField, HideInInspector]
+	private List<Mesh> bakeKeys = new List<Mesh>();
+
+	[SerializeField, HideInInspector]
+	private List<ListVector3> bakeValues = new List<ListVector3>();
+
+	private Renderer[] renderers;
+	private Material quickOutlineStencilMaterial;
+	private Material quickOutlineMaterial;
+
+	private bool needsUpdate;
+
+	void Awake()
+	{
+		// Cache renderers
+		renderers = GetComponentsInChildren<Renderer>();
+
+		// Instantiate outline materials
+		quickOutlineStencilMaterial = Instantiate(Resources.Load<Material>(@"QuickOutlineStencil"));
+		quickOutlineMaterial = Instantiate(Resources.Load<Material>(@"QuickOutline"));
+		quickOutlineStencilMaterial.name = "QuickOutlineStencil (Instance)";
+		quickOutlineMaterial.name = "QuickOutline (Instance)";
+
+		// Retrieve or generate smooth normals
+		LoadSmoothNormals();
+
+		// Apply material properties immediately
+		needsUpdate = true;
+	}
+
+	void Start()
+	{
+		_startTime = Time.time;
+	}
+
+	void OnEnable()
+	{
+		foreach (var renderer in renderers)
+		{
+			// Append outline shaders
+			var materials = renderer.sharedMaterials.ToList();
+
+			materials.Add(quickOutlineStencilMaterial);
+			materials.Add(quickOutlineMaterial);
+
+			renderer.materials = materials.ToArray();
+		}
+	}
+
+	void OnValidate()
+	{
+		// Update material properties
+		needsUpdate = true;
+
+		// Clear cache when baking is disabled or corrupted
+		if (!precomputeOutline && bakeKeys.Count != 0 || bakeKeys.Count != bakeValues.Count)
+		{
+			bakeKeys.Clear();
+			bakeValues.Clear();
+		}
+
+		// Generate smooth normals when baking is enabled
+		if (precomputeOutline && bakeKeys.Count == 0)
+		{
+			Bake();
+		}
+	}
+
+	void Update()
+	{
+		if (needsUpdate)
+		{
+			needsUpdate = false;
+
+			UpdateMaterialProperties();
+		}
+		UpdateBlink();
+	}
+
+	void OnDisable()
+	{
+		foreach (var renderer in renderers)
+		{
+			// Remove outline shaders
+			var materials = renderer.sharedMaterials.ToList();
+
+			materials.Remove(quickOutlineStencilMaterial);
+			materials.Remove(quickOutlineMaterial);
+
+			renderer.materials = materials.ToArray();
+		}
+	}
+
+	void OnDestroy()
+	{
+		// Destroy material instances
+		Destroy(quickOutlineStencilMaterial);
+		Destroy(quickOutlineMaterial);
+	}
+
+	void Bake()
+	{
+		// Generate smooth normals for each mesh
+		var bakedMeshes = new HashSet<Mesh>();
+
+		foreach (var meshFilter in GetComponentsInChildren<MeshFilter>())
+		{
+			// Skip duplicates
+			if (!bakedMeshes.Add(meshFilter.sharedMesh))
+			{
+				continue;
+			}
+
+			// Serialize smooth normals
+			var smoothNormals = SmoothNormals(meshFilter.sharedMesh);
+
+			bakeKeys.Add(meshFilter.sharedMesh);
+			bakeValues.Add(new ListVector3() { data = smoothNormals });
+		}
+	}
+
+	void LoadSmoothNormals()
+	{
+		// Retrieve or generate smooth normals
+		foreach (var meshFilter in GetComponentsInChildren<MeshFilter>())
+		{
+			// Skip if smooth normals have already been adopted
+			if (!registeredMeshes.Add(meshFilter.sharedMesh))
+			{
+				continue;
+			}
+
+			// Retrieve or generate smooth normals
+			var index = bakeKeys.IndexOf(meshFilter.sharedMesh);
+			var smoothNormals = (index >= 0) ? bakeValues[index].data : SmoothNormals(meshFilter.sharedMesh);
+
+			// Store smooth normals in UV3
+			meshFilter.sharedMesh.SetUVs(3, smoothNormals);
+		}
+
+		// Clear UV3 on skinned mesh renderers
+		foreach (var skinnedMeshRenderer in GetComponentsInChildren<SkinnedMeshRenderer>())
+		{
+			if (registeredMeshes.Add(skinnedMeshRenderer.sharedMesh))
+			{
+				skinnedMeshRenderer.sharedMesh.uv4 = new Vector2[skinnedMeshRenderer.sharedMesh.vertexCount];
+			}
+		}
+	}
+
+	List<Vector3> SmoothNormals(Mesh mesh)
+	{
+		// Group vertices by location
+		var groups = mesh.vertices.Select((vertex, index) => new KeyValuePair<Vector3, int>(vertex, index)).GroupBy(pair => pair.Key);
+
+		// Copy normals to a new list
+		var smoothNormals = new List<Vector3>(mesh.normals);
+
+		// Average normals for grouped vertices
+		foreach (var group in groups)
+		{
+			// Skip single vertices
+			if (group.Count() == 1)
+			{
+				continue;
+			}
+
+			// Calculate the average normal
+			var smoothNormal = Vector3.zero;
+
+			foreach (var pair in group)
+			{
+				smoothNormal += mesh.normals[pair.Value];
+			}
+
+			smoothNormal.Normalize();
+
+			// Assign smooth normal to each vertex
+			foreach (var pair in group)
+			{
+				smoothNormals[pair.Value] = smoothNormal;
+			}
+		}
+
+		return smoothNormals;
+	}
+
+	void UpdateMaterialProperties()
+	{
+		// Apply properties according to mode
+		quickOutlineMaterial.SetColor("_OutlineColor", outlineColor);
+		quickOutlineMaterial.SetFloat("_OutlineWidth", outlineWidth);
+	}
+
+	public void SetBlink(float blinkSpeed, float blinkWidthRange = 0.5f, float blinkAlphaRange = 0.3f)
+	{
+		useBlink = true;
+		_blinkSpeed = blinkSpeed;
+		_blinkWidthRange = blinkWidthRange;
+		_blinkAlphaRange = blinkAlphaRange;
+	}
+
+	float _startTime;
+	float _blinkSpeed = 1.0f;
+	float _blinkWidthRange = 0.5f;
+	float _blinkAlphaRange = 0.3f;
+	void UpdateBlink()
+	{
+		if (useBlink == false)
+			return;
+
+		float fTime = Time.time - _startTime;
+		float value = Mathf.PingPong(fTime / _blinkSpeed, 1.0f);
+
+		Color blinkColor = outlineColor;
+		blinkColor.a -= value * _blinkAlphaRange;
+		quickOutlineMaterial.SetColor("_OutlineColor", blinkColor);
+
+		float blinkWidth = outlineWidth;
+		blinkWidth -= value * _blinkWidthRange;
+		quickOutlineMaterial.SetFloat("_OutlineWidth", blinkWidth);
+	}
+}

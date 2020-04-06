@@ -49,7 +49,7 @@ public class QuickOutline : MonoBehaviour
 	private Color outlineColor = Color.white;
 
 	[SerializeField, Range(0f, 3f)]
-	private float outlineWidth = 2f;
+	private float outlineWidth = 1f;
 
 	[SerializeField]
 	private bool useBlink = false;

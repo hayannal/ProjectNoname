@@ -10,6 +10,7 @@ public class TimeSpaceAltar : MonoBehaviour
 	public Transform equipRootTransform;
 	public DOTweenAnimation rotateTweenAnimation;
 	public GameObject emptyIconObject;
+	public ParticleSystem gradeParticleSystem;
 	public Text enhanceText;
 
 	void Start()
@@ -98,6 +99,7 @@ public class TimeSpaceAltar : MonoBehaviour
 			enhanceText.text = "";
 			enhanceText.gameObject.SetActive(false);
 			emptyIconObject.SetActive(true);
+			gradeParticleSystem.gameObject.SetActive(false);
 
 			if (_currentEquipObject != null)
 			{
@@ -107,6 +109,27 @@ public class TimeSpaceAltar : MonoBehaviour
 			}
 			return;
 		}
+
+		ParticleSystem.MainModule main = gradeParticleSystem.main;
+		switch (equipData.cachedEquipTableData.grade)
+		{
+			case 0:
+				main.startColor = new Color(0.5f, 0.5f, 0.5f);
+				break;
+			case 1:
+				main.startColor = new Color(0.0f, 1.0f, 0.51f);
+				break;
+			case 2:
+				main.startColor = new Color(0.0f, 0.51f, 1.0f);
+				break;
+			case 3:
+				main.startColor = new Color(0.63f, 0.0f, 1.0f);
+				break;
+			case 4:
+				main.startColor = new Color(1.0f, 0.5f, 0.0f);
+				break;
+		}
+		gradeParticleSystem.gameObject.SetActive(false);
 
 		_wait = true;
 		emptyIconObject.SetActive(false);

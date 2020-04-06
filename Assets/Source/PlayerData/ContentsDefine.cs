@@ -15,6 +15,7 @@ public static class ContentsManager
 	public enum eOpenContentsByResearchLevel
 	{
 		SecondDailyBox = 5,
+		EquipOption = 9,
 	}
 
 	public enum eOpenContensByChapterStage

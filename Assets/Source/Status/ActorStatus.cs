@@ -186,7 +186,11 @@ public class ActorStatus : MonoBehaviour
 	static float LnAtkConstant2 = -127.154943490703f;
 	public int GetDisplayAttack()
 	{
-		float value = GetValue(eActorStatus.Attack);
+		return GetDisplayAttack(GetValue(eActorStatus.Attack));
+	}
+
+	public static int GetDisplayAttack(float value)
+	{
 		float result = LnAtkConstant1 * Mathf.Log(value) + LnAtkConstant2;
 		return (int)result;
 	}

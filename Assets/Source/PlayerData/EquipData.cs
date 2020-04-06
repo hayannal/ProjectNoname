@@ -15,6 +15,8 @@ public class EquipData
 	public bool isLock { get { return _isLock; } }
 	public int enhanceLevel { get { return _enhanceLevel; } }
 
+	public int optionCount { get { return 0; } }
+
 	// 메인 공격력 스탯 및 랜덤옵 합산
 	ObscuredFloat _mainStatusValue = 0.0f;
 	public float mainStatusValue { get { return _mainStatusValue; } }
@@ -95,6 +97,10 @@ public class EquipData
 			TimeSpaceData.instance.OnChangedEquippedData();
 	}
 
+	public float GetMainStatusRatio()
+	{
+		return ((_mainOption - cachedEquipTableData.min) / (cachedEquipTableData.max - cachedEquipTableData.min));
+	}
 
 
 

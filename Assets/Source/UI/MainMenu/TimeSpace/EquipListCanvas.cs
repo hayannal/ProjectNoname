@@ -7,6 +7,8 @@ public class EquipListCanvas : EquipShowCanvasBase
 	public static EquipListCanvas instance;
 
 	public EquipTypeButton[] equipTypeButtonList;
+	public EquipListStatusInfo diffStatusInfo;
+	public EquipListStatusInfo equippedStatusInfo;
 
 	public EquipSortButton equipSortButton;
 	EquipSortButton.eSortType _currentSortType;
@@ -159,7 +161,14 @@ public class EquipListCanvas : EquipShowCanvasBase
 
 	void RefreshDiffItem(EquipData equipData)
 	{
+		diffStatusInfo.RefreshInfo(equipData, false);
+		diffStatusInfo.gameObject.SetActive(true);
+	}
 
+	void RefreshEquippedItem(EquipData equipData)
+	{
+		equippedStatusInfo.RefreshInfo(equipData, true);
+		equippedStatusInfo.gameObject.SetActive(true);
 	}
 
 	#region EquipTypeButton
@@ -170,8 +179,22 @@ public class EquipListCanvas : EquipShowCanvasBase
 
 		_currentEquipType = (TimeSpaceData.eEquipSlotType)positionIndex;
 		RefreshGrid(false);
+
+		diffStatusInfo.gameObject.SetActive(false);
+		EquipData equipData = TimeSpaceData.instance.GetEquipDataByType((TimeSpaceData.eEquipSlotType)positionIndex);
+		if (equipData == null)
+		{
+			equippedStatusInfo.gameObject.SetActive(false);
+			return;
+		}
 	}
 	#endregion
+
+	public void OnClickDetailButton()
+	{
+		// 현재 보여지고 있는 장착된 템이라서 카메라만 옮겨주면 될거다.
+		//UIInstanceManager.instance.ShowCanvasAsync("EquipInfoDetailCanvas", null);
+	}
 
 	public void OnClickBackButton()
 	{

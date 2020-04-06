@@ -48,4 +48,8 @@ public class EquipTableData
   string _shotAddress;
   public string shotAddress { get { return _shotAddress; } set { _shotAddress = value; } }
   
+  [SerializeField]
+  string _nameId;
+  public string nameId { get { return _nameId; } set { _nameId = value; } }
+  
 }

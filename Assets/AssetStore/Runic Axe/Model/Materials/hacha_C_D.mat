@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: hacha_C_D
   m_Shader: {fileID: 4800000, guid: 746ea00b76d737d47b606f8586a83dff, type: 3}
-  m_ShaderKeywords: _FLOW_CHANNEL_R _MATCAP_NONE
+  m_ShaderKeywords: _EMISSIVE _FLOW_CHANNEL_R _MATCAP_SINGLE _NORMAL
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -48,11 +48,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 4933a314ca7d6fc4c95fa54580f5e0f8, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MatCapTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 95e6c9dfdc75f924aa49d0d5406048a2, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -60,7 +60,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 9411cf911a7bf854c8651ede53c9093f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -74,6 +74,7 @@ Material:
     m_Floats:
     - _BumpScale: 1
     - _ColorIntensity: 1
+    - _Cull: 2
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
@@ -82,7 +83,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0
     - _GlossyReflections: 1
-    - _MatCap: 0
+    - _MatCap: 1
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
@@ -95,9 +96,9 @@ Material:
     - _SrcBlend: 1
     - _UVSec: 0
     - _UseCutoff: 0
-    - _UseEmissive: 0
+    - _UseEmissive: 1
     - _UseFlow: 0
-    - _UseNormal: 0
+    - _UseNormal: 1
     - _UseRimLight: 0
     - _ZWrite: 1
     m_Colors:

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using DG.Tweening;
 
 public class TimeSpaceAltar : MonoBehaviour
@@ -8,6 +9,8 @@ public class TimeSpaceAltar : MonoBehaviour
 	public int positionIndex;
 	public Transform equipRootTransform;
 	public DOTweenAnimation rotateTweenAnimation;
+	public GameObject emptyIconObject;
+	public Text enhanceText;
 
 	void Start()
 	{
@@ -92,6 +95,10 @@ public class TimeSpaceAltar : MonoBehaviour
 		EquipData equipData = TimeSpaceData.instance.GetEquipDataByType((TimeSpaceData.eEquipSlotType)positionIndex);
 		if (equipData == null)
 		{
+			enhanceText.text = "";
+			enhanceText.gameObject.SetActive(false);
+			emptyIconObject.SetActive(true);
+
 			if (_currentEquipObject != null)
 			{
 				_currentEquipObject.gameObject.SetActive(false);
@@ -102,6 +109,9 @@ public class TimeSpaceAltar : MonoBehaviour
 		}
 
 		_wait = true;
+		emptyIconObject.SetActive(false);
+		enhanceText.text = string.Format("+{0}", equipData.enhanceLevel);
+		enhanceText.gameObject.SetActive(equipData.enhanceLevel > 0);
 		AddressableAssetLoadManager.GetAddressableGameObject(equipData.cachedEquipTableData.prefabAddress, "Equip", OnLoadedEquip);
 	}
 

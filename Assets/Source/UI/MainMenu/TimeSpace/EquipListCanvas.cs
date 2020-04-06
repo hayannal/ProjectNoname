@@ -9,6 +9,9 @@ public class EquipListCanvas : EquipShowCanvasBase
 	public EquipTypeButton[] equipTypeButtonList;
 	public EquipListStatusInfo diffStatusInfo;
 	public EquipListStatusInfo equippedStatusInfo;
+	public GameObject reopenEquippedStatusInfoTextObject;
+	bool _closeEquippedStatusInfoByUser;
+	public GameObject detailButtonObject;
 
 	public EquipSortButton equipSortButton;
 	EquipSortButton.eSortType _currentSortType;
@@ -87,6 +90,7 @@ public class EquipListCanvas : EquipShowCanvasBase
 		EquipData equipData = TimeSpaceData.instance.GetEquipDataByType((TimeSpaceData.eEquipSlotType)positionIndex);
 		if (equipData != null)
 			RefreshEquippedStatusInfo(equipData);
+		_closeEquippedStatusInfoByUser = false;
 	}
 
 	#region EquipTypeButton
@@ -101,8 +105,8 @@ public class EquipListCanvas : EquipShowCanvasBase
 
 		// 탭바뀔땐 비교창 하이드
 		diffStatusInfo.gameObject.SetActive(false);
-		// 탭이 바뀔때 여전히 장착된 아이템이 보여지고 있는 중이라면 리프레쉬
-		if (equippedStatusInfo.gameObject.activeSelf)
+		// 탭이 바뀔때 장착된 아이템이 있고 유저가 닫기버튼을 직접 누르지 않은 상태라면
+		if (_closeEquippedStatusInfoByUser == false)
 		{
 			EquipData equipData = TimeSpaceData.instance.GetEquipDataByType((TimeSpaceData.eEquipSlotType)positionIndex);
 			if (equipData != null)
@@ -212,12 +216,26 @@ public class EquipListCanvas : EquipShowCanvasBase
 	{
 		diffStatusInfo.RefreshInfo(equipData, false);
 		diffStatusInfo.gameObject.SetActive(true);
+		detailButtonObject.gameObject.SetActive(false);
 	}
 
 	void RefreshEquippedStatusInfo(EquipData equipData)
 	{
 		equippedStatusInfo.RefreshInfo(equipData, true);
 		equippedStatusInfo.gameObject.SetActive(true);
+	}
+
+	public void OnCloseDiffStatusInfo()
+	{
+		OnClickListItem(null);
+		if (EquipInfoGround.instance.IsShowEquippedObject())
+			detailButtonObject.gameObject.SetActive(true);
+	}
+
+	public void OnCloseEquippedStatusInfo()
+	{
+		reopenEquippedStatusInfoTextObject.SetActive(true);
+		_closeEquippedStatusInfoByUser = true;
 	}
 
 	public void OnEquip(EquipData equipData)
@@ -261,8 +279,14 @@ public class EquipListCanvas : EquipShowCanvasBase
 
 	public void OnClickEquippedInfoButton()
 	{
-		if (equippedStatusInfo.gameObject.activeSelf == false)
-			equippedStatusInfo.gameObject.SetActive(true);
+		EquipData equipData = TimeSpaceData.instance.GetEquipDataByType(_currentEquipType);
+		if (equipData == null)
+			return;
+
+		RefreshEquippedStatusInfo(equipData);
+
+		// 장비 오브젝트를 탭해서 켜면 플래그를 초기화시킨다.
+		_closeEquippedStatusInfoByUser = false;
 	}
 
 	public void OnClickDetailButton()

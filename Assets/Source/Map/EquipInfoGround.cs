@@ -31,6 +31,9 @@ public class EquipInfoGround : MonoBehaviour
 			rotateTweenAnimation.DOComplete();
 		}
 		gradeParticleSystem.gameObject.SetActive(false);
+
+		// 오브젝트의 Show 상태와 동일해야하기 때문에 여기서 대신 관리한다.
+		EquipListCanvas.instance.detailButtonObject.gameObject.SetActive(false);
 	}
 
 	EquipData _currentEquipData;
@@ -66,7 +69,11 @@ public class EquipInfoGround : MonoBehaviour
 		main.startColor = TimeSpaceAltar.GetGradeParticleColor(_currentEquipData.cachedEquipTableData.grade);
 		gradeParticleSystem.gameObject.SetActive(true);
 		equipPositionRootTransform.localPosition = Vector3.zero;
+
+		EquipListCanvas.instance.detailButtonObject.gameObject.SetActive(true);
 	}
+
+	public bool IsShowEquippedObject() { return gradeParticleSystem.gameObject.activeSelf; }
 
 	public void PlayEquipAnimation()
 	{

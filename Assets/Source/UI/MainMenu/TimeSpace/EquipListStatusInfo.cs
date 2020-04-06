@@ -122,6 +122,13 @@ public class EquipListStatusInfo : MonoBehaviour
 
 	public void OnClickCloseButton()
 	{
-
+		if (EquipListCanvas.instance != null)
+		{
+			if (_equipped)
+				EquipListCanvas.instance.OnCloseEquippedStatusInfo();
+			else
+				EquipListCanvas.instance.OnCloseDiffStatusInfo();
+		}
+		gameObject.SetActive(false);
 	}
 }

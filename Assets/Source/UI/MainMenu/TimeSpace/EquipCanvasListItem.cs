@@ -86,7 +86,7 @@ public class EquipCanvasListItem : MonoBehaviour
 
 	void UpdateSelectPosition()
 	{
-		Vector2 selectOffset = new Vector2(-13.0f, 8.0f);
+		Vector2 selectOffset = new Vector2(-11.0f, 7.0f);
 		if (selectObject.activeSelf)
 		{
 			if (contentRectTransform.anchoredPosition != selectOffset)

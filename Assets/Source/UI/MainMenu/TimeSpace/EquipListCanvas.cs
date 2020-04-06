@@ -6,6 +6,8 @@ public class EquipListCanvas : EquipShowCanvasBase
 {
 	public static EquipListCanvas instance;
 
+	public EquipTypeButton[] equipTypeButtonList;
+
 	public EquipSortButton equipSortButton;
 	EquipSortButton.eSortType _currentSortType;
 	public GameObject emptyEquipObject;
@@ -86,12 +88,6 @@ public class EquipListCanvas : EquipShowCanvasBase
 	List<EquipCanvasListItem> _listEquipCanvasListItem = new List<EquipCanvasListItem>();
 	List<EquipData> _listCurrentEquipData = new List<EquipData>();
 	TimeSpaceData.eEquipSlotType _currentEquipType;
-	public void RefreshInfo(int equipType, bool onlySort = false)
-	{
-		_currentEquipType = (TimeSpaceData.eEquipSlotType)equipType;
-		RefreshGrid(onlySort);
-	}
-
 	void RefreshGrid(bool onlySort)
 	{
 		for (int i = 0; i < _listEquipCanvasListItem.Count; ++i)
@@ -166,6 +162,16 @@ public class EquipListCanvas : EquipShowCanvasBase
 
 	}
 
+	#region EquipTypeButton
+	public void OnSelectEquipType(int positionIndex)
+	{
+		for (int i = 0; i < equipTypeButtonList.Length; ++i)
+			equipTypeButtonList[i].selected = (equipTypeButtonList[i].positionIndex == positionIndex);
+
+		_currentEquipType = (TimeSpaceData.eEquipSlotType)positionIndex;
+		RefreshGrid(false);
+	}
+	#endregion
 
 	public void OnClickBackButton()
 	{

@@ -27,7 +27,7 @@ public class TimeSpaceAltarIndicatorCanvas : ObjectIndicatorCanvas
 	{
 		UIInstanceManager.instance.ShowCanvasAsync("EquipListCanvas", () =>
 		{
-			EquipListCanvas.instance.RefreshInfo(positionIndex);
+			EquipListCanvas.instance.OnSelectEquipType(positionIndex);
 		});
 	}
 }

@@ -12,6 +12,7 @@ public class TimeSpaceGround : MonoBehaviour
 	public Vector3 returnPosition;
 	public ObjectTransformEffectorDeformer objectTransformEffectorDeformer;
 	public ObjectScaleEffectorDeformer objectScaleEffectorDeformer;
+	public TimeSpaceAltar[] timeSpaceAltarList;
 
 	void Awake()
 	{
@@ -41,6 +42,8 @@ public class TimeSpaceGround : MonoBehaviour
 		if (StageManager.instance == null)
 			return;
 		if (translationEffectorTransform == null)
+			return;
+		if (BattleInstanceManager.instance.playerActor == null || BattleInstanceManager.instance.playerActor.gameObject == null)
 			return;
 
 		// 되돌아갈때도 새로 셋팅한 환경값을 끄고나서 예전 환경값을 켜는 형태다.

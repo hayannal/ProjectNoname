@@ -86,7 +86,7 @@ public class EquipShowCanvasBase : MonoBehaviour
 				return;
 			if (StageManager.instance == null)
 				return;
-			if (BattleInstanceManager.instance.playerActor.gameObject == null)
+			if (BattleInstanceManager.instance.playerActor == null || BattleInstanceManager.instance.playerActor.gameObject == null)
 				return;
 
 			_groundTransform.gameObject.SetActive(false);

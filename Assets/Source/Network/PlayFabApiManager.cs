@@ -769,7 +769,7 @@ public class PlayFabApiManager : MonoBehaviour
 		RetrySendManager.instance.RequestAction(action, true);
 	}
 
-	public void RequestUnEquip(EquipData equipData, Action successCallback)
+	public void RequestUnequip(EquipData equipData, Action successCallback)
 	{
 		string equipSlotKey = string.Format("eqPo{0}", equipData.cachedEquipTableData.equipType);
 		UpdateUserDataRequest request = new UpdateUserDataRequest() { Data = new Dictionary<string, string>() { { equipSlotKey, "" } } };

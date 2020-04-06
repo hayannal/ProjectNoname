@@ -25,9 +25,11 @@ public class EquipListStatusInfo : MonoBehaviour
 	public Text optionButtonText;
 
 	bool _equipped = false;
+	EquipData _equipData = null;
 	public void RefreshInfo(EquipData equipData, bool equipped)
 	{
 		_equipped = equipped;
+		_equipData = equipData;
 		switch (equipData.cachedEquipTableData.grade)
 		{
 			case 0:
@@ -73,17 +75,35 @@ public class EquipListStatusInfo : MonoBehaviour
 
 	public void OnClickDetailShowButton()
 	{
-		// 장착되지 않은거라 별도의 공간으로 보내야한다.
+		// 장착되지 않은거라 별도의 공간으로 보내야한다. 로딩도 그쪽에서 담당한다.
 		//UIInstanceManager.instance.ShowCanvasAsync("DiffEquipDetailCanvas", null);
 	}
 
 	public void OnClickEquipButton()
 	{
+		if (_equipped)
+			return;
+		if (_equipData == null)
+			return;
 
+		PlayFabApiManager.instance.RequestEquip(_equipData, () =>
+		{
+			// 대부분 다 EquipList가 해야하는 것들이라 ListCanvas에게 알린다.
+			EquipListCanvas.instance.OnEquip(_equipData);
+		});
 	}
 
 	public void OnClickUnequipButton()
 	{
+		if (!_equipped)
+			return;
+		if (_equipData == null)
+			return;
+
+		PlayFabApiManager.instance.RequestUnequip(_equipData, () =>
+		{
+			EquipListCanvas.instance.OnUnequip(_equipData);
+		});
 	}
 
 	public void OnClickEnhanceButton()

@@ -79,6 +79,53 @@ public class EquipListCanvas : EquipShowCanvasBase
 		SetInfoCameraMode(false);
 	}
 
+	public void RefreshInfo(int positionIndex)
+	{
+		OnSelectEquipType(positionIndex);
+
+		// 외부에서 제단 인디케이터를 클릭해서 들어온거니 장착이 되어있다면 자동으로 정보창을 보여준다.
+		EquipData equipData = TimeSpaceData.instance.GetEquipDataByType((TimeSpaceData.eEquipSlotType)positionIndex);
+		if (equipData != null)
+			RefreshEquippedStatusInfo(equipData);
+	}
+
+	#region EquipTypeButton
+	public void OnSelectEquipType(int positionIndex)
+	{
+		for (int i = 0; i < equipTypeButtonList.Length; ++i)
+			equipTypeButtonList[i].selected = (equipTypeButtonList[i].positionIndex == positionIndex);
+
+		_currentEquipType = (TimeSpaceData.eEquipSlotType)positionIndex;
+		RefreshGrid(false);
+		RefreshEquippedObject();
+
+		// 탭바뀔땐 비교창 하이드
+		diffStatusInfo.gameObject.SetActive(false);
+		// 탭이 바뀔때 여전히 장착된 아이템이 보여지고 있는 중이라면 리프레쉬
+		if (equippedStatusInfo.gameObject.activeSelf)
+		{
+			EquipData equipData = TimeSpaceData.instance.GetEquipDataByType((TimeSpaceData.eEquipSlotType)positionIndex);
+			if (equipData != null)
+				RefreshEquippedStatusInfo(equipData);
+			else
+				equippedStatusInfo.gameObject.SetActive(false);
+		}
+	}
+	#endregion
+
+	void RefreshEquippedObject()
+	{
+		// 빠르게 탭을 바꾸다보면 로딩중에 취소되고 다음 템을 로드할수도 있을거다.
+		EquipData equipData = TimeSpaceData.instance.GetEquipDataByType(_currentEquipType);
+		if (equipData == null)
+		{
+			EquipInfoGround.instance.ResetEquipObject();
+			return;
+		}
+
+		EquipInfoGround.instance.CreateEquipObject(equipData);
+	}
+
 	void OnChangedSortType(EquipSortButton.eSortType sortType)
 	{
 		_currentSortType = sortType;
@@ -106,6 +153,8 @@ public class EquipListCanvas : EquipShowCanvasBase
 					if (_currentEquipType != (TimeSpaceData.eEquipSlotType)TimeSpaceData.instance.listEquipData[i].cachedEquipTableData.equipType)
 						continue;
 				}
+				if (TimeSpaceData.instance.IsEquipped(TimeSpaceData.instance.listEquipData[i]))
+					continue;
 				_listCurrentEquipData.Add(TimeSpaceData.instance.listEquipData[i]);
 			}
 		}
@@ -156,39 +205,65 @@ public class EquipListCanvas : EquipShowCanvasBase
 		if (_selectedEquipData == null)
 			return;
 
-		RefreshDiffItem(equipData);
+		RefreshDiffStatusInfo(equipData);
 	}
 
-	void RefreshDiffItem(EquipData equipData)
+	void RefreshDiffStatusInfo(EquipData equipData)
 	{
 		diffStatusInfo.RefreshInfo(equipData, false);
 		diffStatusInfo.gameObject.SetActive(true);
 	}
 
-	void RefreshEquippedItem(EquipData equipData)
+	void RefreshEquippedStatusInfo(EquipData equipData)
 	{
 		equippedStatusInfo.RefreshInfo(equipData, true);
 		equippedStatusInfo.gameObject.SetActive(true);
 	}
 
-	#region EquipTypeButton
-	public void OnSelectEquipType(int positionIndex)
+	public void OnEquip(EquipData equipData)
 	{
-		for (int i = 0; i < equipTypeButtonList.Length; ++i)
-			equipTypeButtonList[i].selected = (equipTypeButtonList[i].positionIndex == positionIndex);
-
-		_currentEquipType = (TimeSpaceData.eEquipSlotType)positionIndex;
-		RefreshGrid(false);
-
-		diffStatusInfo.gameObject.SetActive(false);
-		EquipData equipData = TimeSpaceData.instance.GetEquipDataByType((TimeSpaceData.eEquipSlotType)positionIndex);
-		if (equipData == null)
+		if (_selectedEquipData != equipData)
 		{
-			equippedStatusInfo.gameObject.SetActive(false);
+			// 선택하지 않은걸 장착할 수 있나?
 			return;
 		}
+
+		RefreshGrid(false);
+		RefreshEquippedObject();
+
+		// 장착시 내려오는 애니 적용
+		EquipInfoGround.instance.PlayEquipAnimation();
+
+		// 모든 비교창을 닫는다.
+		diffStatusInfo.gameObject.SetActive(false);
+		equippedStatusInfo.gameObject.SetActive(false);
+
+		// 밖에 있는 시공간 제단을 업데이트 해줘야한다.
+		int positionIndex = equipData.cachedEquipTableData.equipType;
+		TimeSpaceGround.instance.timeSpaceAltarList[positionIndex].RefreshEquipObject();
 	}
-	#endregion
+
+	public void OnUnequip(EquipData equipData)
+	{
+		RefreshGrid(false);
+		RefreshEquippedObject();
+
+		// 모든 비교창을 닫는다.
+		diffStatusInfo.gameObject.SetActive(false);
+		equippedStatusInfo.gameObject.SetActive(false);
+
+		// 밖에 있는 시공간 제단을 업데이트 해줘야한다.
+		int positionIndex = equipData.cachedEquipTableData.equipType;
+		TimeSpaceGround.instance.timeSpaceAltarList[positionIndex].RefreshEquipObject();
+	}
+
+	
+
+	public void OnClickEquippedInfoButton()
+	{
+		if (equippedStatusInfo.gameObject.activeSelf == false)
+			equippedStatusInfo.gameObject.SetActive(true);
+	}
 
 	public void OnClickDetailButton()
 	{

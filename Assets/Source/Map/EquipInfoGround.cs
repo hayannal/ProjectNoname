@@ -8,8 +8,13 @@ public class EquipInfoGround : MonoBehaviour
 {
 	public static EquipInfoGround instance;
 
-	public GameObject altarObject;
-	public GameObject emptyAltarObject;
+	public MeshRenderer brazier01Renderer;
+	public MeshRenderer brazier02Renderer;
+	public Material brazier01Material;
+	public Material brazier02Material;
+	public Material brazier01MaterialForDiff;
+	public Material brazier02MaterialForDiff;
+
 	public Transform equipPositionRootTransform;
 	public Transform equipRootTransform;
 	public DOTweenAnimation rotateTweenAnimation;
@@ -59,20 +64,26 @@ public class EquipInfoGround : MonoBehaviour
 		if (_currentEquipData.cachedEquipTableData.prefabAddress != prefab.name)
 			return;
 
+		_currentEquipObject = RefreshInfo(prefab, _currentEquipData.cachedEquipTableData.grade);
+		rotateTweenAnimation.DORestart();
+
+		EquipListCanvas.instance.detailButtonObject.gameObject.SetActive(true);
+	}
+
+	EquipPrefabInfo RefreshInfo(GameObject prefab, int grade)
+	{
 		EquipPrefabInfo newEquipPrefabInfo = BattleInstanceManager.instance.GetCachedEquipObject(prefab, equipRootTransform);
 		newEquipPrefabInfo.cachedTransform.localPosition = Vector3.zero;
 		newEquipPrefabInfo.cachedTransform.localRotation = Quaternion.identity;
 		newEquipPrefabInfo.cachedTransform.Translate(0.0f, newEquipPrefabInfo.pivotOffset, 0.0f, Space.World);
-		_currentEquipObject = newEquipPrefabInfo;
-		rotateTweenAnimation.DORestart();
+		equipPositionRootTransform.localPosition = Vector3.zero;
 
 		// 화면에 하나의 오브젝트만 뜨는거라 Altar와 달리 오브젝트 로딩이 끝나야만 파티클 처리를 한다.
 		ParticleSystem.MainModule main = gradeParticleSystem.main;
-		main.startColor = TimeSpaceAltar.GetGradeParticleColor(_currentEquipData.cachedEquipTableData.grade);
+		main.startColor = TimeSpaceAltar.GetGradeParticleColor(grade);
 		gradeParticleSystem.gameObject.SetActive(true);
-		equipPositionRootTransform.localPosition = Vector3.zero;
 
-		EquipListCanvas.instance.detailButtonObject.gameObject.SetActive(true);
+		return newEquipPrefabInfo;
 	}
 
 	public bool IsShowEquippedObject() { return gradeParticleSystem.gameObject.activeSelf; }
@@ -106,6 +117,64 @@ public class EquipInfoGround : MonoBehaviour
 		ratio /= Screen.dpi;
 		ratio *= 80.0f;
 		_currentEquipObject.cachedTransform.Rotate(0.0f, ratio, 0.0f, Space.Self);
+	}
+	#endregion
+
+
+
+	#region Diff Equip Item
+	// 별도의 공간으로 뺄까 하다가 어차피 그거나 이거나 작업량은 비슷할거 같아서 차라리 같은 공간에서 바꿔치기 하는 형태로 가기로 한다.
+	public bool diffMode { get; set; }
+	public void ChangeDiffMode(EquipData diffEquipData)
+	{
+		if (diffMode)
+			return;
+
+		// 이미 로드는 되어있는 상태니 바로 콜백이 올거다.
+		AddressableAssetLoadManager.GetAddressableGameObject(diffEquipData.cachedEquipTableData.prefabAddress, "Equip", (prefab) =>
+		{
+			// 기존 오브젝트는 복구시 다시 만들테니 날린다.
+			if (_currentEquipObject != null)
+			{
+				_currentEquipObject.gameObject.SetActive(false);
+				_currentEquipObject = null;
+			}
+
+			// 오브젝트 셋팅을 하고
+			_currentEquipObject = RefreshInfo(prefab, diffEquipData.cachedEquipTableData.grade);
+
+			// 회전할때는 괜찮았는데 초기화 각도로 멈춰있으니 안예쁘게 나와서 45도 돌려두기로 한다.
+			rotateTweenAnimation.transform.localRotation = Quaternion.Euler(0.0f, 45.0f, 0.0f);
+			// 본체의 회전도 바꿔야 더 예쁘게 나와서 이것도 45도 추가로 돌려놓는다. 이게 강화창에서도 통할진 모르겠다.
+			_currentEquipObject.cachedTransform.localRotation = Quaternion.Euler(0.0f, 45.0f, 0.0f);
+
+			// 제단의 모양을 비장착 아이템용으로 전환한다.
+			brazier01Renderer.material = brazier01MaterialForDiff;
+			brazier02Renderer.material = brazier02MaterialForDiff;
+		});
+
+		diffMode = true;
+	}
+
+	public void RestoreDiffMode()
+	{
+		if (diffMode == false)
+			return;
+
+		// _currentEquipData는 그대로 남겨놨으니 이 정보로 복구하면 된다.
+		_currentEquipObject.gameObject.SetActive(false);
+		brazier01Renderer.material = brazier01Material;
+		brazier02Renderer.material = brazier02Material;
+
+		if (_currentEquipData != null)
+		{
+			AddressableAssetLoadManager.GetAddressableGameObject(_currentEquipData.cachedEquipTableData.prefabAddress, "Equip", (prefab) =>
+			{
+				_currentEquipObject = RefreshInfo(prefab, _currentEquipData.cachedEquipTableData.grade);
+			});
+		}
+
+		diffMode = false;
 	}
 	#endregion
 }

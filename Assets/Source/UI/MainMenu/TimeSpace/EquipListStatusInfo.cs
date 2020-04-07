@@ -90,8 +90,18 @@ public class EquipListStatusInfo : MonoBehaviour
 
 	public void OnClickDetailShowButton()
 	{
-		// 장착되지 않은거라 별도의 공간으로 보내야한다. 로딩도 그쪽에서 담당한다.
-		//UIInstanceManager.instance.ShowCanvasAsync("DiffEquipDetailCanvas", null);
+		// 장착되지 않은거라 새로 로딩부터 해야한다.
+		// 전환할 캔버스를 열어두고 로딩한답시고 대기할 순 없으니 여기서 로딩이 끝나는걸 확인한 후 처리하기로 한다.
+		DelayedLoadingCanvas.Show(true);
+		AddressableAssetLoadManager.GetAddressableGameObject(_equipData.cachedEquipTableData.prefabAddress, "Equip", (prefab) =>
+		{
+			UIInstanceManager.instance.ShowCanvasAsync("EquipInfoDetailCanvas", () =>
+			{
+				// 비교템을 보여주는 모드로 전환
+				EquipInfoGround.instance.ChangeDiffMode(_equipData);
+				DelayedLoadingCanvas.Show(false);
+			});
+		});
 	}
 
 	public void OnClickEquipButton()

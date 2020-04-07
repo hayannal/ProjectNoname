@@ -186,8 +186,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f05715ece7a9a09429c5edebbb053c08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  altarObject: {fileID: 8784893498670462020}
-  emptyAltarObject: {fileID: 4506215166998246929}
+  brazier01Renderer: {fileID: 4236486565317940305}
+  brazier02Renderer: {fileID: 8784893498668505442}
+  brazier01Material: {fileID: 2100000, guid: f2ac89dd323b5c94391258695e7b9761, type: 2}
+  brazier02Material: {fileID: 2100000, guid: 449739b0adf7ec342beadebc3d9bbd63, type: 2}
+  brazier01MaterialForDiff: {fileID: 2100000, guid: 23b81bcabde9aa1438724b0855669575,
+    type: 2}
+  brazier02MaterialForDiff: {fileID: 2100000, guid: c108ea7c0d0d63b4a9f1312c3ed12d77,
+    type: 2}
   equipPositionRootTransform: {fileID: 1074782847356101093}
   equipRootTransform: {fileID: 5750252263297651069}
   rotateTweenAnimation: {fileID: 8491712042927946386}
@@ -640,6 +646,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 4236486565315906609}
   m_PrefabAsset: {fileID: 0}
+--- !u!23 &4236486565317940305 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2300000, guid: 7844b3ad5d0fa9e40af4a16976decf5a,
+    type: 3}
+  m_PrefabInstance: {fileID: 4236486565315906609}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4506215166998339581
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -701,12 +713,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 215abfe2c0db61043bae0ec8eb93d11b, type: 3}
---- !u!1 &4506215166998246929 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 109036, guid: 215abfe2c0db61043bae0ec8eb93d11b,
-    type: 3}
-  m_PrefabInstance: {fileID: 4506215166998339581}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4506215166998715577 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 410436, guid: 215abfe2c0db61043bae0ec8eb93d11b,

@@ -297,6 +297,9 @@ public class EquipListCanvas : EquipShowCanvasBase
 		if (equipData == null)
 			return;
 
+		if (equippedStatusInfo.gameObject.activeSelf)
+			return;
+
 		reopenEquippedStatusInfoTextObject.gameObject.SetActive(false);
 		RefreshEquippedStatusInfo(equipData);
 

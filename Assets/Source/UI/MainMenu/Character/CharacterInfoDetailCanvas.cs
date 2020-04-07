@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class CharacterInfoDetailCanvas : DetailShowCanvasBase
@@ -19,8 +18,6 @@ public class CharacterInfoDetailCanvas : DetailShowCanvasBase
 		_defaultBackButtonPosition = backButtonRectTransform.anchoredPosition;
 	}
 
-	Vector3 _origPosition;
-	Quaternion _origRotation;
 	void OnEnable()
 	{
 		CenterOn();
@@ -36,7 +33,6 @@ public class CharacterInfoDetailCanvas : DetailShowCanvasBase
 		StackCanvas.Pop(gameObject);
 	}
 
-	bool _reservedHide = false;
 	public void OnClickBackButton()
 	{
 		if (_buttonHideState)

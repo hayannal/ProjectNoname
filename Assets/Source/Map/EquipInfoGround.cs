@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using DG.Tweening;
 
 public class EquipInfoGround : MonoBehaviour
@@ -60,6 +61,7 @@ public class EquipInfoGround : MonoBehaviour
 
 		EquipPrefabInfo newEquipPrefabInfo = BattleInstanceManager.instance.GetCachedEquipObject(prefab, equipRootTransform);
 		newEquipPrefabInfo.cachedTransform.localPosition = Vector3.zero;
+		newEquipPrefabInfo.cachedTransform.localRotation = Quaternion.identity;
 		newEquipPrefabInfo.cachedTransform.Translate(0.0f, newEquipPrefabInfo.pivotOffset, 0.0f, Space.World);
 		_currentEquipObject = newEquipPrefabInfo;
 		rotateTweenAnimation.DORestart();
@@ -80,4 +82,30 @@ public class EquipInfoGround : MonoBehaviour
 		equipPositionRootTransform.localPosition = new Vector3(0.0f, 0.7f, 0.0f);
 		equipPositionRootTransform.DOLocalMoveY(0.0f, 0.8f).SetEase(Ease.OutBack);
 	}
+
+
+
+	#region Equip
+	public void EnableRotationTweenAnimation(bool enable)
+	{
+		if (enable)
+			rotateTweenAnimation.DOTogglePause();
+		else
+			rotateTweenAnimation.DOPause();
+	}
+
+	public void OnDragRect(BaseEventData baseEventData)
+	{
+		PointerEventData pointerEventData = baseEventData as PointerEventData;
+		if (pointerEventData == null)
+			return;
+		if (_currentEquipObject == null)
+			return;
+
+		float ratio = -pointerEventData.delta.x * 2.54f;
+		ratio /= Screen.dpi;
+		ratio *= 80.0f;
+		_currentEquipObject.cachedTransform.Rotate(0.0f, ratio, 0.0f, Space.Self);
+	}
+	#endregion
 }

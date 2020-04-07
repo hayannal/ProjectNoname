@@ -292,7 +292,7 @@ public class EquipListCanvas : EquipShowCanvasBase
 	public void OnClickDetailButton()
 	{
 		// 현재 보여지고 있는 장착된 템이라서 카메라만 옮겨주면 될거다.
-		//UIInstanceManager.instance.ShowCanvasAsync("EquipInfoDetailCanvas", null);
+		UIInstanceManager.instance.ShowCanvasAsync("EquipInfoDetailCanvas", null);
 	}
 
 	public void OnClickBackButton()

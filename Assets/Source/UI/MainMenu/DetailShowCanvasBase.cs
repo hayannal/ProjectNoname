@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class DetailShowCanvasBase : MonoBehaviour
@@ -14,7 +13,10 @@ public class DetailShowCanvasBase : MonoBehaviour
 	{
 		_origPosition = CustomFollowCamera.instance.cachedTransform.position;
 		_origRotation = CustomFollowCamera.instance.cachedTransform.rotation;
-		_targetPosition = infoCameraTransform.localPosition + CharacterListCanvas.instance.rootOffsetPosition;
+		Vector3 basePosition = Vector3.zero;
+		if (CharacterInfoCanvas.instance != null && CharacterInfoCanvas.instance.gameObject.activeSelf) basePosition = CharacterListCanvas.instance.rootOffsetPosition;
+		else if (EquipListCanvas.instance != null && EquipListCanvas.instance.gameObject.activeSelf) basePosition = EquipListCanvas.instance.rootOffsetPosition;
+		_targetPosition = infoCameraTransform.localPosition + basePosition;
 		_targetRotation = infoCameraTransform.localRotation;
 		_reservedHide = false;
 		_lerpRemainTime = 3.0f;

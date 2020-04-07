@@ -12,6 +12,7 @@ public class EquipCanvasListItem : MonoBehaviour
 	public Coffee.UIExtensions.UIGradient gradient;
 	public Image lineColorImage;
 	public Text enhanceLevelText;
+	public Image lockImage;
 	public GameObject selectObject;
 
 	public EquipData equipData { get; set; }
@@ -24,11 +25,6 @@ public class EquipCanvasListItem : MonoBehaviour
 			equipIconImage.sprite = null;
 			equipIconImage.sprite = sprite;
 		});
-
-		if (equipData.enhanceLevel > 0)
-			enhanceLevelText.text = string.Format("+{0}", equipData.enhanceLevel);
-		else
-			enhanceLevelText.text = "";
 
 		switch (equipData.cachedEquipTableData.grade)
 		{
@@ -63,8 +59,22 @@ public class EquipCanvasListItem : MonoBehaviour
 				lineColorImage.color = new Color(1.0f, 0.5f, 0.0f);
 				break;
 		}
+		RefreshStatus();
+
 		selectObject.SetActive(false);
 		_clickAction = clickCallback;
+	}
+
+	// 변할 수 있는 정보들만 따로 빼둔다.
+	public void RefreshStatus()
+	{
+		if (equipData.enhanceLevel > 0)
+			enhanceLevelText.text = string.Format("+{0}", equipData.enhanceLevel);
+		else
+			enhanceLevelText.text = "";
+
+		// isLock
+		lockImage.gameObject.SetActive(equipData.isLock);
 	}
 
 	Action<EquipData> _clickAction;

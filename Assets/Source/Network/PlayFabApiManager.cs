@@ -814,6 +814,29 @@ public class PlayFabApiManager : MonoBehaviour
 		RetrySendManager.instance.RequestAction(action, true);
 	}
 
+	public void RequestLockEquip(EquipData equipData, bool lockState, Action successCallback)
+	{
+		ExecuteCloudScriptRequest request = new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "LockEquip",
+			FunctionParameter = new { EqpId = equipData.uniqueId, lck = lockState ? 1 : 0 },
+			GeneratePlayStreamEvent = true,
+		};
+		Action action = () =>
+		{
+			PlayFabClientAPI.ExecuteCloudScript(request, (success) =>
+			{
+				RetrySendManager.instance.OnSuccess();
+				equipData.SetLock(lockState);
+				if (successCallback != null) successCallback.Invoke();
+			}, (error) =>
+			{
+				RetrySendManager.instance.OnFailure();
+			});
+		};
+		RetrySendManager.instance.RequestAction(action, true);
+	}
+
 	// 임시로 만들어본 장비강화 함수. 나중에 재료도 전달해야한다.
 	public void RequestEnhance(EquipData equipData, int price, Action successCallback)
 	{

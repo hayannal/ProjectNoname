@@ -86,6 +86,11 @@ public class EquipData
 			_equipStatusList.valueList[i] = 0.0f;
 	}
 
+	public void SetLock(bool lockState)
+	{
+		_isLock = lockState;
+	}
+
 	public void OnEnhance()
 	{
 		_enhanceLevel += 1;

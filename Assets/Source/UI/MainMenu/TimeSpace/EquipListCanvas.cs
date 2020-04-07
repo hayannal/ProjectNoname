@@ -240,6 +240,18 @@ public class EquipListCanvas : EquipShowCanvasBase
 		_closeEquippedStatusInfoByUser = true;
 	}
 
+	public void RefreshSelectedItem()
+	{
+		if (_selectedEquipData == null)
+			return;
+
+		for (int i = 0; i < _listEquipCanvasListItem.Count; ++i)
+		{
+			if (_listEquipCanvasListItem[i].equipData.uniqueId == _selectedEquipData.uniqueId)
+				_listEquipCanvasListItem[i].RefreshStatus();
+		}
+	}
+
 	public void OnEquip(EquipData equipData)
 	{
 		if (_selectedEquipData != equipData)

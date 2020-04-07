@@ -56,9 +56,28 @@ public class EquipListStatusInfo : MonoBehaviour
 		detailShowButton.gameObject.SetActive(!equipped);
 
 		equipListItem.Initialize(equipData, null);
-		mainStatusText.text = ActorStatus.GetDisplayAttack(equipData.mainStatusValue).ToString("N0");
-		mainStatusFillImage.fillAmount = equipData.GetMainStatusRatio();
-		int optionCount = equipData.optionCount;
+		RefreshLockInfo();
+		RefreshStatus();
+
+		equipButtonObject.gameObject.SetActive(!equipped);
+		unequipButtonObject.gameObject.SetActive(equipped);
+
+		bool usableEquipOption = ContentsManager.IsOpen(ContentsManager.eOpenContentsByResearchLevel.EquipOption);
+		optionButtonImage.color = usableEquipOption ? Color.white : ColorUtil.halfGray;
+		optionButtonText.color = usableEquipOption ? Color.white : Color.gray;
+	}
+
+	void RefreshLockInfo()
+	{
+		lockButton.gameObject.SetActive(_equipData.isLock);
+		unlockButton.gameObject.SetActive(!_equipData.isLock);
+	}
+
+	void RefreshStatus()
+	{
+		mainStatusText.text = ActorStatus.GetDisplayAttack(_equipData.mainStatusValue).ToString("N0");
+		mainStatusFillImage.fillAmount = _equipData.GetMainStatusRatio();
+		int optionCount = _equipData.optionCount;
 		for (int i = 0; i < optionStatusObjectList.Length; ++i)
 			optionStatusObjectList[i].gameObject.SetActive(i < optionCount);
 
@@ -67,13 +86,6 @@ public class EquipListStatusInfo : MonoBehaviour
 		{
 			//optionStatusTextList[i].SetLocalizedText()
 		}
-
-		equipButtonObject.gameObject.SetActive(!equipped);
-		unequipButtonObject.gameObject.SetActive(equipped);
-
-		bool usableEquipOption = ContentsManager.IsOpen(ContentsManager.eOpenContentsByResearchLevel.EquipOption);
-		optionButtonImage.color = usableEquipOption ? Color.white : ColorUtil.halfGray;
-		optionButtonText.color = usableEquipOption ? Color.white : Color.gray;
 	}
 
 	public void OnClickDetailShowButton()
@@ -123,14 +135,36 @@ public class EquipListStatusInfo : MonoBehaviour
 		}
 	}
 
-	public void OnClickLockButton()
-	{
-
-	}
-
 	public void OnClickUnlockButton()
 	{
+		if (_equipData == null)
+			return;
 
+		// 장비가 생성되면 기본이 언락상태고 언락 버튼이 보이게 된다.
+		// 이 회색 언락버튼을 눌러야 lock 상태로 바뀌게 된다.
+		PlayFabApiManager.instance.RequestLockEquip(_equipData, true, () =>
+		{
+			// 장착된 아이템이라면 정보창만 갱신하면 되지만
+			// 장착되지 않은 아이템이라면 하단 그리드도 갱신해야하니 ListCanvas에 알려야한다.
+			equipListItem.Initialize(_equipData, null);
+			RefreshLockInfo();
+			if (!_equipped)
+				EquipListCanvas.instance.RefreshSelectedItem();
+		});
+	}
+
+	public void OnClickLockButton()
+	{
+		if (_equipData == null)
+			return;
+		
+		PlayFabApiManager.instance.RequestLockEquip(_equipData, false, () =>
+		{
+			equipListItem.Initialize(_equipData, null);
+			RefreshLockInfo();
+			if (!_equipped)
+				EquipListCanvas.instance.RefreshSelectedItem();
+		});
 	}
 
 	public void OnClickCloseButton()

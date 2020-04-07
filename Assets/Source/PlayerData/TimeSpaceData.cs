@@ -141,6 +141,16 @@ public class TimeSpaceData
 		return null;
 	}
 
+	public bool IsExistEquipByType(eEquipSlotType equipSlotType)
+	{
+		for (int i = 0; i < _listEquipData.Count; ++i)
+		{
+			if (_listEquipData[i].cachedEquipTableData.equipType == (int)equipSlotType)
+				return true;
+		}
+		return false;
+	}
+
 	#region Packet
 	public void OnEquip(EquipData equipData)
 	{

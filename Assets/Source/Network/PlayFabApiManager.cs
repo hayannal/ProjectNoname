@@ -788,6 +788,32 @@ public class PlayFabApiManager : MonoBehaviour
 		RetrySendManager.instance.RequestAction(action, true);
 	}
 
+	Dictionary<string, string> _dicEquipListInfo = new Dictionary<string, string>();
+	public void RequestEquipList(List<EquipData> listEquipData, Action successCallback)
+	{
+		_dicEquipListInfo.Clear();
+		for (int i = 0; i < listEquipData.Count; ++i)
+		{
+			string equipSlotKey = string.Format("eqPo{0}", listEquipData[i].cachedEquipTableData.equipType);
+			_dicEquipListInfo.Add(equipSlotKey, listEquipData[i].uniqueId);
+		}
+		UpdateUserDataRequest request = new UpdateUserDataRequest() { Data = _dicEquipListInfo };
+		Action action = () =>
+		{
+			PlayFabClientAPI.UpdateUserData(request, (success) =>
+			{
+				RetrySendManager.instance.OnSuccess();
+				for (int i = 0; i < listEquipData.Count; ++i)
+					TimeSpaceData.instance.OnEquip(listEquipData[i]);
+				if (successCallback != null) successCallback.Invoke();
+			}, (error) =>
+			{
+				RetrySendManager.instance.OnFailure();
+			});
+		};
+		RetrySendManager.instance.RequestAction(action, true);
+	}
+
 	// 임시로 만들어본 장비강화 함수. 나중에 재료도 전달해야한다.
 	public void RequestEnhance(EquipData equipData, int price, Action successCallback)
 	{

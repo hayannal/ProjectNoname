@@ -35,15 +35,26 @@ public class TimeSpaceData
 	EquipStatusList _cachedEquipStatusList = new EquipStatusList();
 	public EquipStatusList cachedEquipStatusList { get { return _cachedEquipStatusList; } }
 
-	List<EquipData> _listEquipData = new List<EquipData>();
-	public List<EquipData> listEquipData { get { return _listEquipData; } }
-
+	// 하나의 리스트로 관리하려고 하다가 아무리봐도 타입별 리스트로 관리하는게 이득이라 바꿔둔다.
+	//List<EquipData> _listEquipData = new List<EquipData>();
+	//public List<EquipData> listEquipData { get { return _listEquipData; } }
+	List<List<EquipData>> _listEquipData = new List<List<EquipData>>();
 	Dictionary<int, EquipData> _dicEquippedData = new Dictionary<int, EquipData>();
 
 	public void OnRecvEquipInventory(List<ItemInstance> userInventory, Dictionary<string, UserDataRecord> userData)
 	{
 		// list
-		_listEquipData.Clear();
+		if (_listEquipData.Count == 0)
+		{
+			for (int i = 0; i < (int)eEquipSlotType.Amount; ++i)
+			{
+				List<EquipData> listEquipData = new List<EquipData>();
+				_listEquipData.Add(listEquipData);
+			}
+		}
+		for (int i = 0; i < _listEquipData.Count; ++i)
+			_listEquipData[i].Clear();
+		
 		for (int i = 0; i < userInventory.Count; ++i)
 		{
 			EquipTableData equipTableData = TableDataManager.instance.FindEquipTableData(userInventory[i].ItemId);
@@ -54,7 +65,7 @@ public class TimeSpaceData
 			newEquipData.uniqueId = userInventory[i].ItemInstanceId;
 			newEquipData.equipId = userInventory[i].ItemId;
 			newEquipData.Initialize(userInventory[i].CustomData);
-			_listEquipData.Add(newEquipData);
+			_listEquipData[newEquipData.cachedEquipTableData.equipType].Add(newEquipData);
 		}
 
 		// dictionary
@@ -68,7 +79,7 @@ public class TimeSpaceData
 				string uniqueId = userData[key].Value;
 				if (string.IsNullOrEmpty(uniqueId))
 					continue;
-				EquipData equipData = FindEquipData(uniqueId);
+				EquipData equipData = FindEquipData(uniqueId, (eEquipSlotType)i);
 				if (equipData == null)
 				{
 					invalidEquipSlotIndex = i;
@@ -112,14 +123,20 @@ public class TimeSpaceData
 		}
 	}
 
-	EquipData FindEquipData(string uniqueId)
+	EquipData FindEquipData(string uniqueId, eEquipSlotType equipSlotType)
 	{
-		for (int i = 0; i < _listEquipData.Count; ++i)
+		List<EquipData> listEquipData = GetEquipListByType(equipSlotType);
+		for (int i = 0; i < listEquipData.Count; ++i)
 		{
-			if (_listEquipData[i].uniqueId == uniqueId)
-				return _listEquipData[i];
+			if (listEquipData[i].uniqueId == uniqueId)
+				return listEquipData[i];
 		}
 		return null;
+	}
+
+	public List<EquipData> GetEquipListByType(eEquipSlotType equipSlotType)
+	{
+		return _listEquipData[(int)equipSlotType];
 	}
 
 	public bool IsEquipped(EquipData equipData)
@@ -134,7 +151,7 @@ public class TimeSpaceData
 		return equipped;
 	}
 
-	public EquipData GetEquipDataByType(eEquipSlotType equipSlotType)
+	public EquipData GetEquippedDataByType(eEquipSlotType equipSlotType)
 	{
 		if (_dicEquippedData.ContainsKey((int)equipSlotType))
 			return _dicEquippedData[(int)equipSlotType];
@@ -143,12 +160,8 @@ public class TimeSpaceData
 
 	public bool IsExistEquipByType(eEquipSlotType equipSlotType)
 	{
-		for (int i = 0; i < _listEquipData.Count; ++i)
-		{
-			if (_listEquipData[i].cachedEquipTableData.equipType == (int)equipSlotType)
-				return true;
-		}
-		return false;
+		List<EquipData> listEquipData = GetEquipListByType(equipSlotType);
+		return listEquipData.Count > 0;
 	}
 
 	#region Packet
@@ -170,6 +183,59 @@ public class TimeSpaceData
 			_dicEquippedData.Remove(equipType);
 
 		OnChangedEquippedData();
+	}
+
+	List<EquipData> _listAutoEquipData = new List<EquipData>();
+	public void AutoEquip()
+	{
+		// 현재 장착된 장비보다 공격력이 높다면 auto리스트에 넣는다.
+		_listAutoEquipData.Clear();
+		for (int i = 0; i < (int)eEquipSlotType.Amount; ++i)
+		{
+			List<EquipData> listEquipData = GetEquipListByType((eEquipSlotType)i);
+			if (listEquipData.Count == 0)
+				continue;
+
+			EquipData selectedEquipData = null;
+			float maxValue = 0;
+			EquipData equippedData = GetEquippedDataByType((eEquipSlotType)i);
+			if (equippedData != null)
+				maxValue = equippedData.mainStatusValue;
+
+			for (int j = 0; j < listEquipData.Count; ++j)
+			{
+				if (maxValue < listEquipData[j].mainStatusValue)
+				{
+					maxValue = listEquipData[j].mainStatusValue;
+					selectedEquipData = listEquipData[j];
+				}
+			}
+
+			if (selectedEquipData != null)
+				_listAutoEquipData.Add(selectedEquipData);
+		}
+
+		// auto리스트가 하나도 없다면 변경할게 없는거니 안내 토스트를 출력한다.
+		if (_listAutoEquipData.Count == 0)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_"), 2.0f);
+			return;
+		}
+
+		// 변경할게 있다면
+		PlayFabApiManager.instance.RequestEquipList(_listAutoEquipData, () =>
+		{
+			// 변경 완료를 알리고
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_"), 2.0f);
+
+			// 제단을 갱신한다.
+			for (int i = 0; i < _listAutoEquipData.Count; ++i)
+			{
+				int positionIndex = _listAutoEquipData[i].cachedEquipTableData.equipType;
+				TimeSpaceGround.instance.timeSpaceAltarList[positionIndex].RefreshEquipObject();
+			}
+			_listAutoEquipData.Clear();
+		});
 	}
 	#endregion
 

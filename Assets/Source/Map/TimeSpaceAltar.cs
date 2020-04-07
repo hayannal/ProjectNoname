@@ -94,7 +94,7 @@ public class TimeSpaceAltar : MonoBehaviour
 		// 비쥬얼용 오브젝트들은 우선 끄고 처리
 		DisableEquipObject();
 
-		EquipData equipData = TimeSpaceData.instance.GetEquipDataByType((TimeSpaceData.eEquipSlotType)positionIndex);
+		EquipData equipData = TimeSpaceData.instance.GetEquippedDataByType((TimeSpaceData.eEquipSlotType)positionIndex);
 		if (equipData == null)
 		{
 			gradeParticleSystem.gameObject.SetActive(false);
@@ -161,7 +161,7 @@ public class TimeSpaceAltar : MonoBehaviour
 		if (gameObject.activeSelf == false) return;
 
 		// 로딩 중에 다른 장비로 Refresh되었다면 이전 로드를 반영하지 않고 그냥 리턴
-		EquipData equipData = TimeSpaceData.instance.GetEquipDataByType((TimeSpaceData.eEquipSlotType)positionIndex);
+		EquipData equipData = TimeSpaceData.instance.GetEquippedDataByType((TimeSpaceData.eEquipSlotType)positionIndex);
 		if (equipData == null)
 			return;
 		if (equipData.cachedEquipTableData.prefabAddress != prefab.name)

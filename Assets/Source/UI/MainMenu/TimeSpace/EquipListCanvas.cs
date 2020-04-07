@@ -89,7 +89,7 @@ public class EquipListCanvas : EquipShowCanvasBase
 		OnSelectEquipType(positionIndex);
 
 		// 외부에서 제단 인디케이터를 클릭해서 들어온거니 장착이 되어있다면 자동으로 정보창을 보여준다.
-		EquipData equipData = TimeSpaceData.instance.GetEquipDataByType((TimeSpaceData.eEquipSlotType)positionIndex);
+		EquipData equipData = TimeSpaceData.instance.GetEquippedDataByType((TimeSpaceData.eEquipSlotType)positionIndex);
 		if (equipData != null)
 			RefreshEquippedStatusInfo(equipData);
 		_closeEquippedStatusInfoByUser = false;
@@ -110,7 +110,7 @@ public class EquipListCanvas : EquipShowCanvasBase
 		// 탭이 바뀔때 장착된 아이템이 있고 유저가 닫기버튼을 직접 누르지 않은 상태라면
 		if (_closeEquippedStatusInfoByUser == false)
 		{
-			EquipData equipData = TimeSpaceData.instance.GetEquipDataByType((TimeSpaceData.eEquipSlotType)positionIndex);
+			EquipData equipData = TimeSpaceData.instance.GetEquippedDataByType((TimeSpaceData.eEquipSlotType)positionIndex);
 			if (equipData != null)
 				RefreshEquippedStatusInfo(equipData);
 			else
@@ -122,7 +122,7 @@ public class EquipListCanvas : EquipShowCanvasBase
 	void RefreshEquippedObject()
 	{
 		// 빠르게 탭을 바꾸다보면 로딩중에 취소되고 다음 템을 로드할수도 있을거다.
-		EquipData equipData = TimeSpaceData.instance.GetEquipDataByType(_currentEquipType);
+		EquipData equipData = TimeSpaceData.instance.GetEquippedDataByType(_currentEquipType);
 		if (equipData == null)
 		{
 			EquipInfoGround.instance.ResetEquipObject();
@@ -152,16 +152,12 @@ public class EquipListCanvas : EquipShowCanvasBase
 		if (onlySort == false)
 		{
 			_listCurrentEquipData.Clear();
-			for (int i = 0; i < TimeSpaceData.instance.listEquipData.Count; ++i)
+			List<EquipData> listEquipData = TimeSpaceData.instance.GetEquipListByType(_currentEquipType);
+			for (int i = 0; i < listEquipData.Count; ++i)
 			{
-				if (_currentEquipType != TimeSpaceData.eEquipSlotType.Amount)
-				{
-					if (_currentEquipType != (TimeSpaceData.eEquipSlotType)TimeSpaceData.instance.listEquipData[i].cachedEquipTableData.equipType)
-						continue;
-				}
-				if (TimeSpaceData.instance.IsEquipped(TimeSpaceData.instance.listEquipData[i]))
+				if (TimeSpaceData.instance.IsEquipped(listEquipData[i]))
 					continue;
-				_listCurrentEquipData.Add(TimeSpaceData.instance.listEquipData[i]);
+				_listCurrentEquipData.Add(listEquipData[i]);
 			}
 		}
 		if (_listCurrentEquipData.Count == 0)
@@ -285,7 +281,7 @@ public class EquipListCanvas : EquipShowCanvasBase
 
 	public void OnClickEquippedInfoButton()
 	{
-		EquipData equipData = TimeSpaceData.instance.GetEquipDataByType(_currentEquipType);
+		EquipData equipData = TimeSpaceData.instance.GetEquippedDataByType(_currentEquipType);
 		if (equipData == null)
 			return;
 

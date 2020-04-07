@@ -43,7 +43,7 @@ public class TimeSpaceObjectIndicatorCanvas : ObjectIndicatorCanvas
 		switch (_timeSpaceObjectType)
 		{
 			case TimeSpaceObject.eTimeSpaceObjectType.AutoEquip:
-				Debug.Log("Auto Equip!");
+				TimeSpaceData.instance.AutoEquip();
 				break;
 			case TimeSpaceObject.eTimeSpaceObjectType.Sell:
 				//UIInstanceManager.instance.ShowCanvasAsync("EquipSellCanvas", null);

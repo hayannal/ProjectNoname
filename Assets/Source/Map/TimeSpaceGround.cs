@@ -33,7 +33,7 @@ public class TimeSpaceGround : MonoBehaviour
 
 		// teleport
 		BattleInstanceManager.instance.playerActor.cachedTransform.position = cachedTransform.position + teleportPosition;
-		TailAnimatorUpdater.UpdateAnimator(BattleInstanceManager.instance.playerActor.cachedTransform, 5);
+		TailAnimatorUpdater.UpdateAnimator(BattleInstanceManager.instance.playerActor.cachedTransform, 15);
 		CustomFollowCamera.instance.immediatelyUpdate = true;
 	}
 
@@ -56,7 +56,7 @@ public class TimeSpaceGround : MonoBehaviour
 		TimeSpacePortal.instance.gameObject.SetActive(true);
 
 		BattleInstanceManager.instance.playerActor.cachedTransform.position = returnPosition;
-		TailAnimatorUpdater.UpdateAnimator(BattleInstanceManager.instance.playerActor.cachedTransform, 5);
+		TailAnimatorUpdater.UpdateAnimator(BattleInstanceManager.instance.playerActor.cachedTransform, 15);
 		CustomFollowCamera.instance.immediatelyUpdate = true;
 	}
 

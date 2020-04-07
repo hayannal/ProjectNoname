@@ -12,6 +12,9 @@ public class EquipListStatusInfo : MonoBehaviour
 
 	public EquipCanvasListItem equipListItem;
 
+	public Button lockButton;
+	public Button unlockButton;
+
 	public Text mainStatusText;
 	public Image mainStatusFillImage;
 	public GameObject[] optionStatusObjectList;
@@ -118,6 +121,16 @@ public class EquipListStatusInfo : MonoBehaviour
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("EquipUI_RequiredResearch"), 2.0f);
 			return;
 		}
+	}
+
+	public void OnClickLockButton()
+	{
+
+	}
+
+	public void OnClickUnlockButton()
+	{
+
 	}
 
 	public void OnClickCloseButton()

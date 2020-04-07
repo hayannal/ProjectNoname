@@ -50,6 +50,8 @@ public class EquipListCanvas : EquipShowCanvasBase
 		if (DragThresholdController.instance != null)
 			DragThresholdController.instance.ApplyUIDragThreshold();
 
+		reopenEquippedStatusInfoTextObject.gameObject.SetActive(false);
+
 		// CharacterListCanvas 와 비슷한 구조다.
 		if (restore)
 			return;
@@ -214,6 +216,8 @@ public class EquipListCanvas : EquipShowCanvasBase
 
 	void RefreshDiffStatusInfo(EquipData equipData)
 	{
+		if (diffStatusInfo.gameObject.activeSelf)
+			diffStatusInfo.gameObject.SetActive(false);
 		diffStatusInfo.RefreshInfo(equipData, false);
 		diffStatusInfo.gameObject.SetActive(true);
 		detailButtonObject.gameObject.SetActive(false);
@@ -221,6 +225,8 @@ public class EquipListCanvas : EquipShowCanvasBase
 
 	void RefreshEquippedStatusInfo(EquipData equipData)
 	{
+		if (equippedStatusInfo.gameObject.activeSelf)
+			equippedStatusInfo.gameObject.SetActive(false);
 		equippedStatusInfo.RefreshInfo(equipData, true);
 		equippedStatusInfo.gameObject.SetActive(true);
 	}
@@ -283,6 +289,7 @@ public class EquipListCanvas : EquipShowCanvasBase
 		if (equipData == null)
 			return;
 
+		reopenEquippedStatusInfoTextObject.gameObject.SetActive(false);
 		RefreshEquippedStatusInfo(equipData);
 
 		// 장비 오브젝트를 탭해서 켜면 플래그를 초기화시킨다.

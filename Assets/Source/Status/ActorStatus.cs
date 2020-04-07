@@ -184,27 +184,27 @@ public class ActorStatus : MonoBehaviour
 
 	static float LnAtkConstant1 = 49.3260692475286f;
 	static float LnAtkConstant2 = -127.154943490703f;
-	public int GetDisplayAttack()
+	public float GetDisplayAttack()
 	{
 		return GetDisplayAttack(GetValue(eActorStatus.Attack));
 	}
 
-	public static int GetDisplayAttack(float value)
+	public static float GetDisplayAttack(float value)
 	{
 		float result = LnAtkConstant1 * Mathf.Log(value) + LnAtkConstant2;
-		return (int)result;
+		return result;
 	}
 
 	static float LnHpConstant1 = 73.9891038712929f;
 	static float LnHpConstant2 = -293.303092717141f;
-	public int GetDisplayMaxHp()
+	public float GetDisplayMaxHp()
 	{
 		float value = GetValue(eActorStatus.MaxHp);
 		float result = LnHpConstant1 * Mathf.Log(value) + LnHpConstant2;
-		return (int)result;
+		return result;
 	}
 
-	public void GetNextPowerLevelDisplayValue(ref int nextAttack, ref int nextMaxHp)
+	public void GetNextPowerLevelDisplayValue(ref float nextAttack, ref float nextMaxHp)
 	{
 		InitializeActorStatus(powerLevel + 1);
 		nextAttack = GetDisplayAttack();

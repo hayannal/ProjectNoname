@@ -82,10 +82,10 @@ public class CharacterPowerLevelUpCanvas : DetailShowCanvasBase
 
 	CharacterData _characterData;
 	int _price;
-	int _currentMaxHp;
-	int _currentAtk;
-	int _addMaxHp;
-	int _addAtk;
+	float _currentMaxHp;
+	float _currentAtk;
+	float _addMaxHp;
+	float _addAtk;
 	public void ShowCanvas(bool show, CharacterData characterData, int price)
 	{
 		gameObject.SetActive(show);
@@ -104,8 +104,8 @@ public class CharacterPowerLevelUpCanvas : DetailShowCanvasBase
 		_currentAtk = playerActor.actorStatus.GetDisplayAttack();
 		currentHpText.text = _currentMaxHp.ToString("N0");
 		currentAtkText.text = _currentAtk.ToString("N0");
-		int nextAtk = 0;
-		int nextMaxHp = 0;
+		float nextAtk = 0;
+		float nextMaxHp = 0;
 		playerActor.actorStatus.GetNextPowerLevelDisplayValue(ref nextAtk, ref nextMaxHp);
 		_addMaxHp = nextMaxHp - _currentMaxHp;
 		_addAtk = nextAtk - _currentAtk;

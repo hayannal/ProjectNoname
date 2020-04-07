@@ -41,6 +41,18 @@ public class EquipTableData
   public float max { get { return _max; } set { _max = value; } }
   
   [SerializeField]
+  int _randType;
+  public int randType { get { return _randType; } set { _randType = value; } }
+  
+  [SerializeField]
+  float _f1;
+  public float f1 { get { return _f1; } set { _f1 = value; } }
+  
+  [SerializeField]
+  int _leftRight;
+  public int leftRight { get { return _leftRight; } set { _leftRight = value; } }
+  
+  [SerializeField]
   string _prefabAddress;
   public string prefabAddress { get { return _prefabAddress; } set { _prefabAddress = value; } }
   

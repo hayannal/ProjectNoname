@@ -304,6 +304,12 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 
 	void OnLoadedPlayerActor(GameObject prefab)
 	{
+		// 플레이어 캐릭터가 아닌 다른 캐릭터를 선택 후 Ok 누른다음에 로딩이 완료되기 전에 창을 나가버리면
+		// 새 캐릭터를 만들 이유도 없고 인포창으로 넘어가서도 안된다.
+		if (this == null) return;
+		if (gameObject == null) return;
+		if (gameObject.activeSelf == false) return;
+
 #if UNITY_EDITOR
 		GameObject newObject = Instantiate<GameObject>(prefab);
 		AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;

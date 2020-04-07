@@ -25,6 +25,8 @@ public class TimeSpaceAltar : MonoBehaviour
 
 	void OnDisable()
 	{
+		DisableEquipObject();
+
 		if (_objectIndicatorCanvas != null)
 		{
 			_objectIndicatorCanvas.gameObject.SetActive(false);
@@ -90,12 +92,7 @@ public class TimeSpaceAltar : MonoBehaviour
 	public void RefreshEquipObject()
 	{
 		// 비쥬얼용 오브젝트들은 우선 끄고 처리
-		if (_currentEquipObject != null)
-		{
-			_currentEquipObject.gameObject.SetActive(false);
-			_currentEquipObject = null;
-			rotateTweenAnimation.DOComplete();
-		}
+		DisableEquipObject();
 
 		EquipData equipData = TimeSpaceData.instance.GetEquipDataByType((TimeSpaceData.eEquipSlotType)positionIndex);
 		if (equipData == null)
@@ -120,11 +117,35 @@ public class TimeSpaceAltar : MonoBehaviour
 		AddressableAssetLoadManager.GetAddressableGameObject(equipData.cachedEquipTableData.prefabAddress, "Equip", OnLoadedEquip);
 	}
 
+	void DisableEquipObject()
+	{
+		if (_currentEquipObject != null)
+		{
+			ShowOutline(false, _currentEquipObject.gameObject, -1);
+			_currentEquipObject.gameObject.SetActive(false);
+			_currentEquipObject = null;
+			rotateTweenAnimation.DOComplete();
+		}
+	}
+
 	public static Color GetGradeParticleColor(int grade)
 	{
 		switch (grade)
 		{
 			case 0: return new Color(0.5f, 0.5f, 0.5f);
+			case 1: return new Color(0.0f, 1.0f, 0.51f);
+			case 2: return new Color(0.0f, 0.51f, 1.0f);
+			case 3: return new Color(0.63f, 0.0f, 1.0f);
+			case 4: return new Color(1.0f, 0.5f, 0.0f);
+		}
+		return Color.white;
+	}
+
+	public static Color GetGradeOutlineColor(int grade)
+	{
+		switch (grade)
+		{
+			case 0: return new Color(0.8f, 0.8f, 0.8f);
 			case 1: return new Color(0.0f, 1.0f, 0.51f);
 			case 2: return new Color(0.0f, 0.51f, 1.0f);
 			case 3: return new Color(0.63f, 0.0f, 1.0f);
@@ -149,7 +170,30 @@ public class TimeSpaceAltar : MonoBehaviour
 		EquipPrefabInfo newEquipPrefabInfo = BattleInstanceManager.instance.GetCachedEquipObject(prefab, equipRootTransform);
 		newEquipPrefabInfo.cachedTransform.localPosition = Vector3.zero;
 		newEquipPrefabInfo.cachedTransform.Translate(0.0f, newEquipPrefabInfo.pivotOffset, 0.0f, Space.World);
+		ShowOutline(true, newEquipPrefabInfo.gameObject, equipData.cachedEquipTableData.grade);
 		_currentEquipObject = newEquipPrefabInfo;
 		rotateTweenAnimation.DORestart();
+	}
+
+	void ShowOutline(bool show, GameObject newObject, int grade)
+	{
+		if (show)
+		{
+			QuickOutline quickOutline = newObject.GetComponent<QuickOutline>();
+			if (quickOutline == null)
+			{
+				quickOutline = newObject.AddComponent<QuickOutline>();
+				quickOutline.OutlineColor = GetGradeOutlineColor(grade);
+				quickOutline.OutlineWidth = 0.9f;
+				quickOutline.SetBlink(1.0f);
+			}
+			quickOutline.enabled = true;
+		}
+		else
+		{
+			QuickOutline quickOutline = newObject.GetComponent<QuickOutline>();
+			if (quickOutline != null)
+				quickOutline.enabled = false;
+		}
 	}
 }

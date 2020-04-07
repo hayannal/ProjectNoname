@@ -93,14 +93,11 @@ public class QuickOutline : MonoBehaviour
 	void Start()
 	{
 		_startTime = Time.time;
-	}
 
-	void OnEnable()
-	{
 		foreach (var renderer in renderers)
 		{
 			// Append outline shaders
-			var materials = renderer.sharedMaterials.ToList();
+			var materials = renderer.materials.ToList();
 
 			materials.Add(quickOutlineStencilMaterial);
 			materials.Add(quickOutlineMaterial);
@@ -139,8 +136,9 @@ public class QuickOutline : MonoBehaviour
 		UpdateBlink();
 	}
 
-	void OnDisable()
+	void OnDestroy()
 	{
+		// 사실 Destroy 단계에선 안해도 될거 같긴 하지만 우선은 그냥 지워둔다.
 		foreach (var renderer in renderers)
 		{
 			// Remove outline shaders
@@ -151,10 +149,7 @@ public class QuickOutline : MonoBehaviour
 
 			renderer.materials = materials.ToArray();
 		}
-	}
 
-	void OnDestroy()
-	{
 		// Destroy material instances
 		Destroy(quickOutlineStencilMaterial);
 		Destroy(quickOutlineMaterial);

@@ -27,6 +27,14 @@ public class EquipInfoGround : MonoBehaviour
 		instance = this;
 	}
 
+#if UNITY_EDITOR
+	Transform _diffEquipRootTransform;
+	void Start()
+	{
+		_diffEquipRootTransform = rotateTweenAnimation.transform.Find("DiffEquipRootForEditor");
+	}
+#endif
+
 	public void ResetEquipObject()
 	{
 		_currentEquipData = null;
@@ -112,6 +120,19 @@ public class EquipInfoGround : MonoBehaviour
 		PointerEventData pointerEventData = baseEventData as PointerEventData;
 		if (pointerEventData == null)
 			return;
+#if UNITY_EDITOR
+		if (_diffEquipRootTransform != null && _diffEquipRootTransform.childCount > 0)
+		{
+			Transform childTransform = _diffEquipRootTransform.GetChild(0);
+			if (childTransform != null)
+			{
+				float ratioForEditor = -pointerEventData.delta.x * 2.54f;
+				ratioForEditor /= Screen.dpi;
+				ratioForEditor *= 80.0f;
+				childTransform.Rotate(0.0f, ratioForEditor, 0.0f, Space.Self);
+			}
+		}
+#endif
 		if (_currentEquipObject == null)
 			return;
 

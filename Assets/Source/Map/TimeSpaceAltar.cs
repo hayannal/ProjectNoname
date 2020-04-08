@@ -99,6 +99,8 @@ public class TimeSpaceAltar : MonoBehaviour
 		{
 			gradeParticleSystem.gameObject.SetActive(false);
 			emptyIconObject.SetActive(true);
+			// 두가지 조건이다. 제단이 비어있는데 장착할 수 있는 장비가 있거나 새로운 템을 얻었거나
+			//alarm3dObject.SetActive(TimeSpaceData.instance.IsExistEquipByType((TimeSpaceData.eEquipSlotType)positionIndex);
 			enhanceText.text = "";
 			enhanceText.gameObject.SetActive(false);
 			return;

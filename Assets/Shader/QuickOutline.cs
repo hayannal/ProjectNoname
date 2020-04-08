@@ -66,7 +66,7 @@ public class QuickOutline : MonoBehaviour
 	[SerializeField, HideInInspector]
 	private List<ListVector3> bakeValues = new List<ListVector3>();
 
-	private Renderer[] renderers;
+	private MeshRenderer[] meshRenderers;
 	private Material quickOutlineStencilMaterial;
 	private Material quickOutlineMaterial;
 
@@ -75,7 +75,7 @@ public class QuickOutline : MonoBehaviour
 	void Awake()
 	{
 		// Cache renderers
-		renderers = GetComponentsInChildren<Renderer>();
+		meshRenderers = GetComponentsInChildren<MeshRenderer>();
 
 		// Instantiate outline materials
 		quickOutlineStencilMaterial = Instantiate(Resources.Load<Material>(@"QuickOutlineStencil"));
@@ -90,17 +90,65 @@ public class QuickOutline : MonoBehaviour
 		needsUpdate = true;
 	}
 
+	bool _started = false;
 	void Start()
 	{
 		_startTime = Time.time;
 
-		foreach (var renderer in renderers)
+		AddMaterial();
+		_started = true;
+	}
+
+	void OnEnable()
+	{
+		if (_started == false)
+			return;
+
+		AddMaterial();
+	}
+
+	void OnDisable()
+	{
+		RemoveMaterial();
+	}
+
+	void AddMaterial()
+	{
+		foreach (var renderer in meshRenderers)
 		{
 			// Append outline shaders
 			var materials = renderer.materials.ToList();
 
 			materials.Add(quickOutlineStencilMaterial);
 			materials.Add(quickOutlineMaterial);
+
+			renderer.materials = materials.ToArray();
+		}
+	}
+
+	void RemoveMaterial()
+	{
+		foreach (var renderer in meshRenderers)
+		{
+			// Remove outline shaders
+			var materials = renderer.materials.ToList();
+
+			for (int i = materials.Count - 1; i >= 0; --i)
+			{
+				if (materials[i].name.Contains(quickOutlineStencilMaterial.name))
+				{
+					materials.RemoveAt(i);
+					continue;
+				}
+				if (materials[i].name.Contains(quickOutlineMaterial.name))
+				{
+					materials.RemoveAt(i);
+					continue;
+				}
+			}
+			// shared일땐 가능해도 materials면 사본이 생기는거라 안된다.
+			//materials.Remove(quickOutlineStencilMaterial);
+			//materials.Remove(quickOutlineMaterial);
 
 			renderer.materials = materials.ToArray();
 		}
@@ -138,18 +186,6 @@ public class QuickOutline : MonoBehaviour
 
 	void OnDestroy()
 	{
-		// 사실 Destroy 단계에선 안해도 될거 같긴 하지만 우선은 그냥 지워둔다.
-		foreach (var renderer in renderers)
-		{
-			// Remove outline shaders
-			var materials = renderer.sharedMaterials.ToList();
-
-			materials.Remove(quickOutlineStencilMaterial);
-			materials.Remove(quickOutlineMaterial);
-
-			renderer.materials = materials.ToArray();
-		}
-
 		// Destroy material instances
 		Destroy(quickOutlineStencilMaterial);
 		Destroy(quickOutlineMaterial);

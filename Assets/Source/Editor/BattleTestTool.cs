@@ -557,7 +557,7 @@ public class BattleTestTool : EditorWindow
 
 	void OnGUI_Capture()
 	{
-		if (SceneManager.GetActiveScene().name == "CaptureScene")
+		if (SceneManager.GetActiveScene().name == "CaptureScene" || SceneManager.GetActiveScene().name == "CaptureScene2")
 		{
 			GUILayout.BeginVertical("box");
 			{

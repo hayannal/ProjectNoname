@@ -33,7 +33,8 @@ public static class RandomOption
 
 	public static float GetRandomEquipMainOption(EquipTableData equipTableData)
 	{
-		return GetRandomRange(equipTableData.min, equipTableData.max, (eRandomCalculateType)equipTableData.randType, equipTableData.f1,
+		float result = GetRandomRange(equipTableData.min, equipTableData.max, (eRandomCalculateType)equipTableData.randType, equipTableData.f1,
 			(equipTableData.leftRight == 1) ? RandomFromDistribution.Direction_e.Left : RandomFromDistribution.Direction_e.Right);
+		return (float)(System.Math.Truncate(result * 1000.0) / 1000.0);
 	}
 }

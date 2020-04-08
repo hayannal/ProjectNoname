@@ -20,6 +20,7 @@ Shader "FrameworkNG/Specular"
 		_Cutoff ("Alpha cutoff", Range(0, 1)) = 0.5
 		[KeywordEnum(None, Single, Dual)] _MatCap("========== Use MatCap ==========", Float) = 0
 		_MatCapTex ("MatCap (RGB)", 2D) = "white" {}
+		_MatCapIntensity ("MatCap Intensity", Range(0, 2)) = 1.0
 		[Toggle(_EMISSIVE)] _UseEmissive("======== Use Emissive (Updater) ========", Float) = 0
 		_EmissiveColor ("Emissive Color", Color) = (1, 1, 1, 1)
 		[Toggle(_FLOW)] _UseFlow("========== Use Flow ==========", Float) = 0
@@ -78,7 +79,7 @@ inline fixed SelectFlowChannel(fixed3 mask)
 
 #define NG_MATCAP_SINGLE	\
 	fixed3 mc = tex2D(_MatCapTex, IN.matcapUV);	\
-	mc = lerp(0.5f, mc, mask.g);	\
+	mc = lerp(0.5f, mc, (mask.g * _MatCapIntensity));	\
 	c *= mc * 2.0f;
 
 #define NG_MATCAP_DUAL	\
@@ -86,7 +87,7 @@ inline fixed SelectFlowChannel(fixed3 mask)
 	fixed3 mc1 = tex2D(_MatCapTex, IN.matcapUV);	\
 	IN.matcapUV.x += 0.5f;	\
 	fixed3 mc2 = tex2D(_MatCapTex, IN.matcapUV);	\
-	mc1 = lerp(mc1, mc2, mask.g);	\
+	mc1 = lerp(mc1, mc2, (mask.g * _MatCapIntensity));	\
 	c *= mc1 * 2.0f;
 
 #define NG_CUTOFF	\
@@ -153,6 +154,7 @@ inline fixed SelectFlowChannel(fixed3 mask)
 		#endif
 		#if _MATCAP_SINGLE || _MATCAP_DUAL
 			sampler2D _MatCapTex;
+			half _MatCapIntensity;
 		#endif
 		#if _EMISSIVE
 			fixed4 _EmissiveColor;

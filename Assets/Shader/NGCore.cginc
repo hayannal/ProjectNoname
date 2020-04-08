@@ -28,7 +28,7 @@ inline fixed SelectFlowChannel(fixed3 mask)
 
 #define NG_MATCAP_SINGLE	\
 	fixed3 mc = tex2D(_MatCapTex, IN.matcapUV);	\
-	mc = lerp(0.5f, mc, mask.g);	\
+	mc = lerp(0.5f, mc, (mask.g * _MatCapIntensity));	\
 	c *= mc * 2.0f;
 
 #define NG_MATCAP_DUAL	\
@@ -36,7 +36,7 @@ inline fixed SelectFlowChannel(fixed3 mask)
 	fixed3 mc1 = tex2D(_MatCapTex, IN.matcapUV);	\
 	IN.matcapUV.x += 0.5f;	\
 	fixed3 mc2 = tex2D(_MatCapTex, IN.matcapUV);	\
-	mc1 = lerp(mc1, mc2, mask.g);	\
+	mc1 = lerp(mc1, mc2, (mask.g * _MatCapIntensity));	\
 	c *= mc1 * 2.0f;
 
 #define NG_CUTOFF	\

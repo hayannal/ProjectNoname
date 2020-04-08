@@ -8,8 +8,8 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Ken_sword
-  m_Shader: {fileID: 4800000, guid: 746ea00b76d737d47b606f8586a83dff, type: 3}
-  m_ShaderKeywords: _EMISSION _FLOW_CHANNEL_R _MATCAP_NONE
+  m_Shader: {fileID: 4800000, guid: af96cba0ce400244e8f086910e74d586, type: 3}
+  m_ShaderKeywords: _EMISSION _FLOW_CHANNEL_R _MATCAP_SINGLE
   m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -52,11 +52,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 962030a0ab9a4f141a97e11bf530c648, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MatCapTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 95e6c9dfdc75f924aa49d0d5406048a2, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -97,7 +97,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _MatCap: 0
+    - _MatCap: 1
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1

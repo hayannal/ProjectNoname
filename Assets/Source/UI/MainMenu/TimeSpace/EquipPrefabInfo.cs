@@ -5,6 +5,7 @@ using UnityEngine;
 public class EquipPrefabInfo : MonoBehaviour
 {
 	public float pivotOffset;
+	public float infoPivotAddOffset;
 
 
 

@@ -72,10 +72,12 @@ public class EquipInfoGround : MonoBehaviour
 
 	EquipPrefabInfo RefreshInfo(GameObject prefab, int grade)
 	{
+		// DropGacha나 Altar와 달리 화면 중앙에서 보는거라 pivotOffset을 사용하진 않고
+		// 대신 미세조정을 위해 infoPivotAddOffset을 사용한다.
 		EquipPrefabInfo newEquipPrefabInfo = BattleInstanceManager.instance.GetCachedEquipObject(prefab, equipRootTransform);
 		newEquipPrefabInfo.cachedTransform.localPosition = Vector3.zero;
 		newEquipPrefabInfo.cachedTransform.localRotation = Quaternion.identity;
-		newEquipPrefabInfo.cachedTransform.Translate(0.0f, newEquipPrefabInfo.pivotOffset, 0.0f, Space.World);
+		newEquipPrefabInfo.cachedTransform.Translate(0.0f, newEquipPrefabInfo.infoPivotAddOffset, 0.0f, Space.World);
 		equipPositionRootTransform.localPosition = Vector3.zero;
 
 		// 화면에 하나의 오브젝트만 뜨는거라 Altar와 달리 오브젝트 로딩이 끝나야만 파티클 처리를 한다.

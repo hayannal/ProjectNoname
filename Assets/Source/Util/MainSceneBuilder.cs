@@ -256,7 +256,7 @@ public class MainSceneBuilder : MonoBehaviour
 			_handleTimeSpacePortal = Addressables.LoadAssetAsync<GameObject>("OpenTimeSpacePortal");
 			useTimeSpace = true;
 		}
-		else if (ContentsManager.IsOpen(ContentsManager.eOpenContensByChapterStage.TimeSpace))
+		else if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapterStage.TimeSpace))
 		{
 			_handleTimeSpacePortal = Addressables.LoadAssetAsync<GameObject>("TimeSpacePortal");
 			useTimeSpace = true;

@@ -49,14 +49,26 @@ public class DropObject : MonoBehaviour
 		_defaultRotateTransformPositionY = rotateTransform.localPosition.y;
 	}
 
+	EquipPrefabInfo _currentEquipObject;
+	void OnDisable()
+	{
+		if (_currentEquipObject != null)
+		{
+			_currentEquipObject.gameObject.SetActive(false);
+			_currentEquipObject = null;
+		}
+	}
+
 	DropProcessor.eDropType _dropType;
 	float _floatValue;
 	int _intValue;
-	public void Initialize(DropProcessor.eDropType dropType, float floatValue, int intValue, bool forceAfterBattle)
+	string _stringValue;
+	public void Initialize(DropProcessor.eDropType dropType, float floatValue, int intValue, string stringValue, bool forceAfterBattle)
 	{
 		_dropType = dropType;
 		_floatValue = floatValue;
 		_intValue = intValue;
+		_stringValue = stringValue;
 
 		_onAfterBattle = forceAfterBattle ? forceAfterBattle : false;
 		_onAfterDropAnimation = false;
@@ -71,16 +83,35 @@ public class DropObject : MonoBehaviour
 
 		if (dropType == DropProcessor.eDropType.Gacha)
 		{
-			// create item prefab
-			// temp code
-			//GameObject itemObject = rotateTransform.GetChild(0).gameObject;
+			// 로딩이 늦어질걸 대비해서 기본값을 미리 정해둔다.
+			// 이 방법 대신 DropObject의 생성 자체를 늦추는 방법도 있었는데
+			// 로딩이 느려질 경우 게임의 진행에 방해가 된다는 점에서 그냥 이렇게 진행은 진행대로 가고 비쥬얼이 늦게 뜨는 형태로 가기로 한다.
+			float tempPivotOffset = 0.5f;
+			if (nameCanvasRectTransform != null) nameCanvasRectTransform.localPosition = new Vector3(0.0f, tempPivotOffset * 2.0f + rotateTransform.localPosition.y + 0.5f, 0.0f);
+			rotateTransform.localPosition = new Vector3(0.0f, _defaultRotateTransformPositionY + tempPivotOffset, 0.0f);
 
-			// object height
-			EquipPrefabInfo equipPrefabInfo = GetComponentInChildren<EquipPrefabInfo>();
-			float pivotOffset = equipPrefabInfo.pivotOffset;
-			if (trailTransform != null) trailTransform.localPosition = new Vector3(0.0f, pivotOffset + rotateTransform.localPosition.y, 0.0f);
-			if (nameCanvasRectTransform != null) nameCanvasRectTransform.localPosition = new Vector3(0.0f, pivotOffset * 2.0f + rotateTransform.localPosition.y + 0.75f, 0.0f);
-			rotateTransform.localPosition = new Vector3(0.0f, _defaultRotateTransformPositionY + pivotOffset, 0.0f);
+			// create object
+			Transform itemRootTransform = rotateTransform.GetChild(0);
+			EquipTableData equipTableData = TableDataManager.instance.FindEquipTableData(stringValue);
+			if (equipTableData != null)
+			{
+				AddressableAssetLoadManager.GetAddressableGameObject(equipTableData.prefabAddress, "Equip", (prefab) =>
+				{
+					if (this == null) return;
+					if (gameObject == null) return;
+					if (gameObject.activeSelf == false) return;
+
+					EquipPrefabInfo newEquipPrefabInfo = BattleInstanceManager.instance.GetCachedEquipObject(prefab, itemRootTransform);
+					newEquipPrefabInfo.cachedTransform.localPosition = Vector3.zero;
+					newEquipPrefabInfo.cachedTransform.localRotation = Quaternion.identity;
+					_currentEquipObject = newEquipPrefabInfo;
+
+					float pivotOffset = newEquipPrefabInfo.pivotOffset;
+					if (trailTransform != null) trailTransform.localPosition = new Vector3(0.0f, pivotOffset + rotateTransform.localPosition.y, 0.0f);
+					if (nameCanvasRectTransform != null) nameCanvasRectTransform.localPosition = new Vector3(0.0f, pivotOffset * 2.0f + rotateTransform.localPosition.y + 0.5f, 0.0f);
+					rotateTransform.localPosition = new Vector3(0.0f, _defaultRotateTransformPositionY + pivotOffset, 0.0f);
+				});
+			}
 		}
 
 		if (useLootEffect && lootEffectPrefab != null)
@@ -271,7 +302,7 @@ public class DropObject : MonoBehaviour
 				BattleInstanceManager.instance.playerActor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Heal, healAffectorValue, BattleInstanceManager.instance.playerActor, false);
 				break;
 			case DropProcessor.eDropType.Gacha:
-				//DropManager.instance.AddDropItem();
+				DropManager.instance.AddDropItem(_stringValue);
 				break;
 			case DropProcessor.eDropType.Seal:
 				DropManager.instance.AddDropSeal(1);

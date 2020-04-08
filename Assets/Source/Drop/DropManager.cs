@@ -20,6 +20,7 @@ public class DropManager : MonoBehaviour
 	#region Drop Info
 	ObscuredFloat _dropGold;
 	ObscuredInt _dropSeal;
+	List<ObscuredString> _listDropEquip;
 
 	public void AddDropGold(float gold)
 	{
@@ -32,9 +33,18 @@ public class DropManager : MonoBehaviour
 		return (int)_dropGold;
 	}
 
-	public void AddDropItem()
+	public void AddDropItem(string equipId)
 	{
+		if (string.IsNullOrEmpty(equipId))
+			return;
 
+		if (_listDropEquip == null)
+			_listDropEquip = new List<ObscuredString>();
+
+		_listDropEquip.Add(equipId);
+
+		// 장비 획득이 되면 서버에 카운트를 증가시켜둔다. EndGame에서 검증하기 위함.
+		//PlayFabApiManager.instance.RequestAddDropEquipCount(1);
 	}
 
 	public int GetDropItemCount()

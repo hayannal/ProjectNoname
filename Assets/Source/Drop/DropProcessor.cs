@@ -57,6 +57,10 @@ public class DropProcessor : MonoBehaviour
 				Drop(dropProcess, dropTableData);
 		}
 
+		// drop event
+		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapterStage.TimeSpace) == false && ContentsManager.IsDropChapterStage(StageManager.instance.playChapter, StageManager.instance.playStage))
+			dropProcess.AdjustDrop();
+
 		dropProcess.StartDrop();
 	}
 
@@ -95,6 +99,7 @@ public class DropProcessor : MonoBehaviour
 
 			float floatValue = 0.0f;
 			int intValue = 0;
+			string stringValue = "";
 			if (FloatRange(dropType))
 				floatValue = Random.Range(dropTableData.minValue[i], dropTableData.maxValue[i]);
 			else
@@ -102,6 +107,15 @@ public class DropProcessor : MonoBehaviour
 				int minValue = Mathf.RoundToInt(dropTableData.minValue[i]);
 				int maxValue = Mathf.RoundToInt(dropTableData.maxValue[i]);
 				intValue = Random.Range(minValue, maxValue + 1);
+
+				if (dropType == eDropType.Gacha)
+				{
+					// 가차는 이 subValue로부터 가차 테이블을 돌려서 구해야한다.
+					//stringValue = dropTableData.subValue
+
+					// 지금은 임시로 테이블 돌리기 전까진 강제 고정
+					stringValue = "Equip0001";
+				}
 			}
 
 			switch (dropType)
@@ -113,20 +127,20 @@ public class DropProcessor : MonoBehaviour
 					float goldDropAdjust = DropAdjustAffector.GetValue(BattleInstanceManager.instance.playerActor.affectorProcessor, DropAdjustAffector.eDropAdjustType.GoldDropAmount);
 					if (goldDropAdjust != 0.0f)
 						floatValue = floatValue * (1.0f + goldDropAdjust);
-					dropProcessor.Add(dropType, floatValue, intValue);
+					dropProcessor.Add(dropType, floatValue, intValue, stringValue);
 					break;
 				case eDropType.LevelPack:
 					++DropManager.instance.reservedLevelPackCount;
 					// check no hit levelpack
 					if (BattleManager.instance.GetDamageCountOnStage() == 0)
 						floatValue = 1.0f;
-					dropProcessor.Add(dropType, floatValue, intValue);
+					dropProcessor.Add(dropType, floatValue, intValue, stringValue);
 					break;
 				case eDropType.Heart:
-					dropProcessor.Add(dropType, floatValue, intValue);
+					dropProcessor.Add(dropType, floatValue, intValue, stringValue);
 					break;
 				case eDropType.Gacha:
-					dropProcessor.Add(dropType, floatValue, intValue);
+					dropProcessor.Add(dropType, floatValue, intValue, stringValue);
 					break;
 				case eDropType.Ultimate:
 					DropSp(floatValue);
@@ -136,7 +150,7 @@ public class DropProcessor : MonoBehaviour
 						break;
 					if (PlayerData.instance.highestPlayChapter != PlayerData.instance.selectedChapter)
 						break;
-					dropProcessor.Add(dropType, floatValue, intValue);
+					dropProcessor.Add(dropType, floatValue, intValue, stringValue);
 					break;
 			}
 		}
@@ -171,10 +185,11 @@ public class DropProcessor : MonoBehaviour
 		public eDropType dropType;
 		public float floatValue;
 		public int intValue;
+		public string stringValue;
 	}
 	List<DropObjectInfo> _listDropObjectInfo = new List<DropObjectInfo>();
 
-    public void Add(eDropType dropType, float floatValue, int intValue)
+    public void Add(eDropType dropType, float floatValue, int intValue, string stringValue)
 	{
 		DropObjectInfo newInfo = null;
 		switch (dropType)
@@ -203,7 +218,16 @@ public class DropProcessor : MonoBehaviour
 					newInfo.dropType = dropType;
 					if (newInfo.dropType == eDropType.LevelPack) newInfo.floatValue = floatValue;
 					newInfo.intValue = 1;
+					newInfo.stringValue = stringValue;
 					_listDropObjectInfo.Add(newInfo);
+				}
+				if (dropType == eDropType.Gacha)
+				{
+					// 가차인 경우 사용할 오브젝트를 미리 로드 걸어둔다.
+					// 앞에 골드들 떨어지는 동안 최대한 로딩이 끝나길 기대.
+					EquipTableData equipTableData = TableDataManager.instance.FindEquipTableData(stringValue);
+					if (equipTableData != null)
+						AddressableAssetLoadManager.GetAddressableGameObject(equipTableData.prefabAddress, "Equip", null);
 				}
 				break;
 			case eDropType.Ultimate:
@@ -236,7 +260,7 @@ public class DropProcessor : MonoBehaviour
 				continue;
 
 			DropObject cachedItem = BattleInstanceManager.instance.GetCachedDropObject(dropObjectPrefab, GetRandomDropPosition(), Quaternion.identity);
-			cachedItem.Initialize(_listDropObjectInfo[i].dropType, _listDropObjectInfo[i].floatValue, _listDropObjectInfo[i].intValue, onAfterBattle);
+			cachedItem.Initialize(_listDropObjectInfo[i].dropType, _listDropObjectInfo[i].floatValue, _listDropObjectInfo[i].intValue, _listDropObjectInfo[i].stringValue, onAfterBattle);
 
 			// 여러개의 드랍프로세서가 서로 다른 드랍오브젝트를 만들고 있을때는 누가 마지막 골드 드랍인지를 알수가 없게된다.
 			// 그래서 생성시 라스트를 등록하고 있다가
@@ -299,6 +323,42 @@ public class DropProcessor : MonoBehaviour
 	// 마지막 몹을 잡을때 기존몹의 드랍 프로세서가 진행중일 수 있다.
 	// 이땐 afterBattle을 전달받아서 기록해두고 전달한다.
 	public bool onAfterBattle { get; set; }
+
+
+
+
+	#region Drop Event
+	public void AdjustDrop()
+	{
+		// 최초로 2챕터 10스테이지를 깰때 강제 드랍처리를 해준다.
+		// 먼저 리스트 내에 드랍할 장비가 있는지 판단.
+		int gachaCount = 0;
+		int firstGachaIndex = -1;
+		for (int i = 0; i < _listDropObjectInfo.Count; ++i)
+		{
+			if (_listDropObjectInfo[i].dropType == eDropType.Gacha)
+			{
+				if (firstGachaIndex == -1)
+					firstGachaIndex = i;
+				++gachaCount;
+			}
+		}
+		if (gachaCount == 0)
+			Add(eDropType.Gacha, 0.0f, 1, "Equip0001");
+		else if (gachaCount > 1)
+		{
+			// 최초 드랍이니 한개만 드랍되게 마지막걸 지운다.
+			for (int i = _listDropObjectInfo.Count - 1; i >= 0; --i)
+			{
+				if (_listDropObjectInfo[i].dropType == eDropType.Gacha)
+				{
+					if (firstGachaIndex != i)
+						_listDropObjectInfo.RemoveAt(i);
+				}
+			}
+		}
+	}
+	#endregion
 
 
 

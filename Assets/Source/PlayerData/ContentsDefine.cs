@@ -18,11 +18,12 @@ public static class ContentsManager
 		EquipOption = 9,
 	}
 
-	public enum eOpenContensByChapterStage
+	public enum eOpenContentsByChapterStage
 	{
 		TimeSpace,
-		EquipBox,
 	}
+	const int TimeSpaceChpater = 2;
+	const int TimeSpaceStage = 10;
 
 	public static bool IsTutorialChapter()
 	{
@@ -45,35 +46,40 @@ public static class ContentsManager
 		return false;
 	}
 
-	public static bool IsOpen(eOpenContensByChapterStage content)
+	public static bool IsOpen(eOpenContentsByChapterStage content)
 	{
 		switch (content)
 		{
 			// 여기 이건 챕터랑 스테이지 둘다 체크해야해서 enum값으로 안하고 이렇게 처리해둔다.
-			case eOpenContensByChapterStage.TimeSpace:
-				if (PlayerData.instance.highestPlayChapter > 2 || (PlayerData.instance.highestPlayChapter == 2 && PlayerData.instance.highestClearStage >= 10))
-					return true;
-				break;
-			case eOpenContensByChapterStage.EquipBox:
-				if (PlayerData.instance.highestPlayChapter > 3 || (PlayerData.instance.highestPlayChapter == 3 && PlayerData.instance.highestClearStage >= 10))
+			case eOpenContentsByChapterStage.TimeSpace:
+				if (PlayerData.instance.highestPlayChapter > TimeSpaceChpater || (PlayerData.instance.highestPlayChapter == TimeSpaceChpater && PlayerData.instance.highestClearStage >= TimeSpaceStage))
 					return true;
 				break;
 		}
 		return false;
 	}
 
+
+
 	// for Event
-	public static bool IsPlayable(eOpenContensByChapterStage content, int chapter, int prevStage, int stage)
+	public static bool IsPlayable(eOpenContentsByChapterStage content, int chapter, int prevStage, int stage)
 	{
 		switch (content)
 		{
-			case eOpenContensByChapterStage.TimeSpace:
-				if (chapter != 2)
+			case eOpenContentsByChapterStage.TimeSpace:
+				if (chapter != TimeSpaceChpater)
 					return false;
-				if (prevStage < 10 && stage >= 10)
+				if (prevStage < TimeSpaceStage && stage >= TimeSpaceStage)
 					return true;
 				return false;
 		}
+		return false;
+	}
+
+	public static bool IsDropChapterStage(int chapter, int stage)
+	{
+		if (chapter == TimeSpaceChpater && stage == TimeSpaceStage)
+			return true;
 		return false;
 	}
 }

@@ -99,7 +99,7 @@ public class EventManager : MonoBehaviour
 	public void OnEventPlayHighestStage(int chapter, int prevStage, int stage)
 	{
 		// 최고 챕터의 스테이지를 갱신할때 오는 이벤트다. 클리어 할때도 50층으로 온다. 서버에서는 필요가 없어서 클라에만 있는 함수다. 카오스는 당연히 제외.
-		if (ContentsManager.IsPlayable(ContentsManager.eOpenContensByChapterStage.TimeSpace, chapter, prevStage, stage))
+		if (ContentsManager.IsPlayable(ContentsManager.eOpenContentsByChapterStage.TimeSpace, chapter, prevStage, stage))
 			PushClientEvent(eClientEvent.OpenTimeSpace);
 	}
 	#endregion

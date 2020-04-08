@@ -12,7 +12,7 @@ Shader "FrameworkNG/Lightmap/Diffuse"
 		_Cutoff ("Alpha cutoff", Range(0, 1)) = 0.5
 		[KeywordEnum(None, Single, Dual)] _MatCap("========== Use MatCap ==========", Float) = 0
 		_MatCapTex ("MatCap (RGB)", 2D) = "white" {}
-		_MatCapIntensity ("MatCap Intensity", Range(0, 2)) = 1.0
+		_MatCapIntensity ("MatCap Intensity", Range(0, 5)) = 1.0
 		[Toggle(_EMISSIVE)] _UseEmissive("======== Use Emissive (Updater) ========", Float) = 0
 		_EmissiveColor ("Emissive Color", Color) = (1, 1, 1, 1)
 		[KeywordEnum(None, Updater, VertexCos)] _Wind("========== Use Wind ==========", Float) = 0

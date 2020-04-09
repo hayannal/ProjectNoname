@@ -20,7 +20,7 @@ public class DropManager : MonoBehaviour
 	#region Drop Info
 	ObscuredFloat _dropGold;
 	ObscuredInt _dropSeal;
-	List<ObscuredString> _listDropEquip;
+	List<ObscuredString> _listDropEquipId;
 
 	public void AddDropGold(float gold)
 	{
@@ -33,25 +33,6 @@ public class DropManager : MonoBehaviour
 		return (int)_dropGold;
 	}
 
-	public void AddDropItem(string equipId)
-	{
-		if (string.IsNullOrEmpty(equipId))
-			return;
-
-		if (_listDropEquip == null)
-			_listDropEquip = new List<ObscuredString>();
-
-		_listDropEquip.Add(equipId);
-
-		// 장비 획득이 되면 서버에 카운트를 증가시켜둔다. EndGame에서 검증하기 위함.
-		//PlayFabApiManager.instance.RequestAddDropEquipCount(1);
-	}
-
-	public int GetDropItemCount()
-	{
-		return 0;
-	}
-
 	public void AddDropSeal(int amount)
 	{
 		_dropSeal += amount;
@@ -60,6 +41,26 @@ public class DropManager : MonoBehaviour
 	public int GetStackedDropSeal()
 	{
 		return _dropSeal;
+	}
+
+	public void AddDropItem(string equipId)
+	{
+		if (string.IsNullOrEmpty(equipId))
+			return;
+
+		if (_listDropEquipId == null)
+			_listDropEquipId = new List<ObscuredString>();
+
+		_listDropEquipId.Add(equipId);
+
+		// 장비 획득이 되면 서버에 카운트를 증가시켜둔다. EndGame에서 검증하기 위함으로 하려다가 오히려 선량한 유저의 플레이를 방해할까봐 안하기로 한다.
+		// 적어도 전설에 대해선 황금열쇠 체크를 하니 패스하기로 해본다.
+		//PlayFabApiManager.instance.RequestAddDropEquipCount();
+	}
+
+	public List<ObscuredString> GetStackedDropEquipList()
+	{
+		return _listDropEquipId;
 	}
 
 

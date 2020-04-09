@@ -121,7 +121,7 @@ public class PlayFabApiManager : MonoBehaviour
 		});
 	}
 
-	string CheckSum(string input)
+	public static string CheckSum(string input)
 	{
 		int chk = 0x68319547;
 		int length = input.Length;
@@ -397,7 +397,7 @@ public class PlayFabApiManager : MonoBehaviour
 		}, null, null);
 	}
 
-	public void RequestEndGame(bool clear, bool currentChaos, int playChapter, int stage, int addGold, int addSeal, Action<bool, string> successCallback)    // List<Item>
+	public void RequestEndGame(bool clear, bool currentChaos, int playChapter, int stage, int addGold, int addSeal, List<ObscuredString> listDropItemId, Action<bool, string, string> successCallback)    // List<Item>
 	{
 		// 인게임 플레이 하고 정산할때 호출되는 함수인데
 		// Statistics 갱신과 인벤획득처리 골드 갱신 등으로 나뉘어져있다.
@@ -436,19 +436,26 @@ public class PlayFabApiManager : MonoBehaviour
 		*/
 		// 위에꺼로 하려고 했다가 입장 카운트를 확인하고 처리하는 식으로 바꿔야해서 클라우드 스크립트 쓰기로 한다.
 		// 위의 형태는 나중에 언젠가 필요한 곳에 쓰자.
+
+		// 다른 정보와 달리 아이템은 리스트를 구축해서 서버로 넘겨야한다. 공용 로직.
+		string checkSum = "";
+		List<TimeSpaceData.ItemGrantRequest> listItemGrantRequest = TimeSpaceData.instance.GenerateGrantRequestInfo(listDropItemId, ref checkSum);
 		ExecuteCloudScriptRequest request = new ExecuteCloudScriptRequest()
 		{
 			FunctionName = "EndGame",
 			// playChapter와 currentChaos는 서버 검증용이다.
-			FunctionParameter = new { Flg = (string)_serverEnterKey, Cl = (clear ? 1 : 0), Cha = currentChaos ? "1" : "0", Plch = playChapter, St = stage, Go = addGold, Se = addSeal },
+			FunctionParameter = new { Flg = (string)_serverEnterKey, Cl = (clear ? 1 : 0), Cha = currentChaos ? "1" : "0", Plch = playChapter, St = stage, Go = addGold, Se = addSeal, Lst = listItemGrantRequest, LstCs = checkSum },
 			GeneratePlayStreamEvent = true,
 		};
 		Action action = () =>
 		{
 			PlayFabClientAPI.ExecuteCloudScript(request, (success) =>
 			{
-				string resultString = (string)success.FunctionResult;
-				bool failure = (resultString == "1");
+				PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
+				jsonResult.TryGetValue("retErr", out object retErr);
+				jsonResult.TryGetValue("adChrId", out object adChrId);
+				jsonResult.TryGetValue("itmRet", out object itmRet);
+				bool failure = ((retErr.ToString()) == "1");
 				_serverEnterKey = "";
 				if (!failure)
 				{
@@ -456,7 +463,7 @@ public class PlayFabApiManager : MonoBehaviour
 					// 골드나 인장 같은건 얻되 다음 챕터로 넘어가지 못하게 하기 위함이다.
 					RetrySendManager.instance.OnSuccess();
 				}
-				if (successCallback != null) successCallback.Invoke(clear, resultString);
+				if (successCallback != null) successCallback.Invoke(clear, (string)adChrId, (string)itmRet);
 			}, (error) =>
 			{
 				RetrySendManager.instance.OnFailure();

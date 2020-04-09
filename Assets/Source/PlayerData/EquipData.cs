@@ -11,7 +11,7 @@ public class EquipData
 
 	ObscuredBool _isLock;
 	ObscuredInt _enhanceLevel;
-	ObscuredInt _mainOption;
+	ObscuredFloat _mainOption;
 	public bool isLock { get { return _isLock; } }
 	public int enhanceLevel { get { return _enhanceLevel; } }
 
@@ -27,7 +27,7 @@ public class EquipData
 	{
 		bool lockState = false;
 		int enhan = 0;
-		int mainOp = 0;
+		float mainOp = 0.0f;
 		if (customData.ContainsKey("enhan"))
 		{
 			int intValue = 0;
@@ -42,20 +42,21 @@ public class EquipData
 		}
 		if (customData.ContainsKey("mainOp"))
 		{
-			int intValue = 0;
-			if (int.TryParse(customData["mainOp"], out intValue))
-				mainOp = intValue;
+			float floatValue = 0;
+			if (float.TryParse(customData["mainOp"], out floatValue))
+				mainOp = floatValue;
 		}
 		// temp code
-		mainOp = (int)cachedEquipTableData.min;
+		if (mainOp == 0.0f)
+			mainOp = cachedEquipTableData.min;
 
 		// 데이터 검증
 		// 메인옵부터 체크. 메인옵의 범위가 테이블 범위를 넘어섰다면
 		bool invalidEquipOption = false;
-		if (mainOp < (int)cachedEquipTableData.min - 1 || mainOp > (int)cachedEquipTableData.max + 1)
+		if (mainOp < cachedEquipTableData.min || mainOp > cachedEquipTableData.max)
 		{
 			invalidEquipOption = true;
-			mainOp = (int)cachedEquipTableData.min;
+			mainOp = cachedEquipTableData.min;
 		}
 		if (invalidEquipOption)
 		{

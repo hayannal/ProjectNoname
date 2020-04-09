@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using ActorStatusDefine;
+using PlayFab;
 using PlayFab.ClientModels;
+using CodeStage.AntiCheat.ObscuredTypes;
 
 public class TimeSpaceData
 {
@@ -236,6 +238,98 @@ public class TimeSpaceData
 			}
 			_listAutoEquipData.Clear();
 		});
+	}
+	#endregion
+
+	#region Grant
+	public class ItemGrantRequest
+	{
+		public Dictionary<string, string> Data;
+		public string ItemId;
+	}
+
+	List<ItemGrantRequest> _listGrantRequest = new List<ItemGrantRequest>();
+	public List<ItemGrantRequest> GenerateGrantInfo(List<string> listEquipId, ref string checkSum)
+	{
+		if (_listGrantRequest == null)
+			_listGrantRequest = new List<ItemGrantRequest>();
+		_listGrantRequest.Clear();
+
+		for (int i = 0; i < listEquipId.Count; ++i)
+		{
+			EquipTableData equipTableData = TableDataManager.instance.FindEquipTableData(listEquipId[i]);
+			if (equipTableData == null)
+				continue;
+
+			ItemGrantRequest info = new ItemGrantRequest();
+			info.ItemId = listEquipId[i];
+			info.Data = new Dictionary<string, string>();
+			info.Data.Add("mainOp", RandomOption.GetRandomEquipMainOption(equipTableData).ToString());
+			info.Data.Add("lock", "0");
+			_listGrantRequest.Add(info);
+		}
+
+		if (_listGrantRequest.Count > 0)
+		{
+			var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+			string jsonItemGrants = serializer.SerializeObject(_listGrantRequest);
+			checkSum = PlayFabApiManager.CheckSum(jsonItemGrants);
+		}
+
+		// 임시 리스트를 가지고 있을 필요 없으니 클리어
+		_listEquipId.Clear();
+
+		return _listGrantRequest;
+	}
+
+	List<string> _listEquipId = new List<string>();
+	public List<ItemGrantRequest> GenerateGrantRequestInfo(List<ObscuredString> listDropEquipId, ref string checkSum)
+	{
+		_listGrantRequest.Clear();
+		if (listDropEquipId == null || listDropEquipId.Count == 0)
+			return _listGrantRequest;
+
+		_listEquipId.Clear();
+		for (int i = 0; i < listDropEquipId.Count; ++i)
+			_listEquipId.Add(listDropEquipId[i]);
+		return GenerateGrantInfo(_listEquipId, ref checkSum);
+	}
+
+	public List<ItemGrantRequest> GenerateGrantInfo(string equipId, ref string checkSum)
+	{
+		_listEquipId.Clear();
+		_listEquipId.Add(equipId);
+		return GenerateGrantInfo(_listEquipId, ref checkSum);
+	}
+
+	public class GrantItemsToUsersResult
+	{
+		public List<ItemInstance> ItemGrantResults;
+	}
+
+	public List<ItemInstance> DeserializeItemGrantResult(string jsonItemGrantResults)
+	{
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		GrantItemsToUsersResult result = serializer.DeserializeObject<GrantItemsToUsersResult>(jsonItemGrantResults);
+		return result.ItemGrantResults;
+	}
+
+	// 대부분의 아이템 획득은 이걸 써서 처리하게 될거다.
+	public void OnRecvItemGrantResult(string jsonItemGrantResults)
+	{
+		List<ItemInstance> listItemInstance = DeserializeItemGrantResult(jsonItemGrantResults);
+		for (int i = 0; i < listItemInstance.Count; ++i)
+		{
+			EquipTableData equipTableData = TableDataManager.instance.FindEquipTableData(listItemInstance[i].ItemId);
+			if (equipTableData == null)
+				continue;
+
+			EquipData newEquipData = new EquipData();
+			newEquipData.uniqueId = listItemInstance[i].ItemInstanceId;
+			newEquipData.equipId = listItemInstance[i].ItemId;
+			newEquipData.Initialize(listItemInstance[i].CustomData);
+			_listEquipData[newEquipData.cachedEquipTableData.equipType].Add(newEquipData);
+		}
 	}
 	#endregion
 

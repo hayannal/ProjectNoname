@@ -189,17 +189,17 @@ public class BattleModeProcessorBase
 		}
 
 		PlayFabApiManager.instance.RequestEndGame(clear, PlayerData.instance.currentChaosMode, StageManager.instance.playChapter, StageManager.instance.playStage - 1,
-			DropManager.instance.GetStackedDropGold(), DropManager.instance.GetStackedDropSeal(), (result, newCharacterId) =>
+			DropManager.instance.GetStackedDropGold(), DropManager.instance.GetStackedDropSeal(), DropManager.instance.GetStackedDropEquipList(), (result, newCharacterId, itemGrantString) =>
 		{
 			// 정보를 갱신하기 전에 먼저 BattleResult를 보여준다.
-			BattleResultCanvas.instance.gameObject.SetActive(true);
-			OnRecvEndGame(result, newCharacterId);
+			BattleResultCanvas.instance.RefreshChapterInfo(itemGrantString);
+			OnRecvEndGame(result, newCharacterId, itemGrantString);
 		});
 
 		_endProcess = false;
 	}
 
-	void OnRecvEndGame(bool clear, string newCharacterId)
+	void OnRecvEndGame(bool clear, string newCharacterId, string itemGrantString)
 	{
 		if (PlayerData.instance.currentChaosMode)
 		{
@@ -241,6 +241,9 @@ public class BattleModeProcessorBase
 		}
 		CurrencyData.instance.gold += DropManager.instance.GetStackedDropGold();
 		PlayerData.instance.sealCount += DropManager.instance.GetStackedDropSeal();
+
+		if (itemGrantString != "")
+			TimeSpaceData.instance.OnRecvItemGrantResult(itemGrantString);
 
 		// 클리어 했다면 시간 체크 한번 해본다.
 		// 강종으로 인한 재접속때 안하는거 추가해야한다.

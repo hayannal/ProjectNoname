@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using DG.Tweening;
+using PlayFab.ClientModels;
 
 public class BattleResultCanvas : MonoBehaviour
 {
@@ -69,8 +70,6 @@ public class BattleResultCanvas : MonoBehaviour
 
 		if (DragThresholdController.instance != null)
 			DragThresholdController.instance.ApplyUIDragThreshold();
-
-		RefreshChapterInfo();
 	}
 
 	void OnDestroy()
@@ -88,7 +87,8 @@ public class BattleResultCanvas : MonoBehaviour
 	}
 
 	bool _clear = false;
-	void RefreshChapterInfo()
+	List<ItemInstance> _listGrantItem;
+	public void RefreshChapterInfo(string jsonItemGrantResults)
 	{
 		_clear = true;
 		if (BattleInstanceManager.instance.playerActor.actorStatus.IsDie())
@@ -126,6 +126,11 @@ public class BattleResultCanvas : MonoBehaviour
 
 		if (PlayerData.instance.currentChallengeMode && _clear == false && EventManager.instance.IsCompleteServerEvent(EventManager.eServerEvent.chaos))
 			challengeFailTextObject.SetActive(true);
+
+		if (jsonItemGrantResults != "")
+			_listGrantItem = TimeSpaceData.instance.DeserializeItemGrantResult(jsonItemGrantResults);
+
+		gameObject.SetActive(true);
 	}
 
 	bool _currentChaosMode = false;
@@ -328,7 +333,9 @@ public class BattleResultCanvas : MonoBehaviour
 
 		yield return new WaitForSecondsRealtime(0.1f);
 
-		if (DropManager.instance.GetDropItemCount() == 0)
+		// 드랍매니저가 가지고 있는 아이템 리스트에는 아이디밖에 들어있지 않아서 정보를 구성할 수 없기 때문에 사용할 수 없다.
+		// 결과패킷으로 받은 실제 아이템 리스트를 사용해야한다.
+		if (_listGrantItem == null || _listGrantItem.Count == 0 || _listGrantItem.Count > 0)
 		{
 			yield return new WaitForSecondsRealtime(0.2f);
 			exitGroupObject.SetActive(true);

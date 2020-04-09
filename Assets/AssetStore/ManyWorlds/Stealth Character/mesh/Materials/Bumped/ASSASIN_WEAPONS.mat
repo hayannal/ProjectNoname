@@ -1,0 +1,130 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: ASSASIN_WEAPONS
+  m_Shader: {fileID: 4800000, guid: 746ea00b76d737d47b606f8586a83dff, type: 3}
+  m_ShaderKeywords: _AOACTIVE_ON _CUSTOMSPECULAR_ON _FLOW_CHANNEL_R _MATCAP_SINGLE
+    _NORMAL _USEGLOSSMAP_ON
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AOMapAlpha:
+        m_Texture: {fileID: 2800000, guid: b5b5816641751ba4a97f0c9303a5416e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Base:
+        m_Texture: {fileID: 2800000, guid: 16a69ce6717917440987bb15f9e6301e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Displacement:
+        m_Texture: {fileID: 2800000, guid: 2b2029aa053ab71469714d14470700de, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FlowTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Gloss:
+        m_Texture: {fileID: 2800000, guid: 4fbe5e386b171d148a402bda61af47d8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: ec3b45f2ea33ced4ebb35bb83a3f4bfb, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 2800000, guid: 8c19910f619939a438d39df862f4090a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MatCapTex:
+        m_Texture: {fileID: 2800000, guid: 95e6c9dfdc75f924aa49d0d5406048a2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Normal:
+        m_Texture: {fileID: 2800000, guid: f362257d497593042bd91dd076d641e5, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 2800000, guid: f362257d497593042bd91dd076d641e5, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Reflection:
+        m_Texture: {fileID: 8900000, guid: 9b2d3ffa79837de4eb9a3cc995c07db3, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ReflectionMask:
+        m_Texture: {fileID: 2800000, guid: 7685d0836686fe44da34f99b11385e79, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RimMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RimMaskTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SpecularCustomMap:
+        m_Texture: {fileID: 2800000, guid: bc5728960f618ae499c562fab9c6d6d6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WrapMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _AOActive: 1
+    - _AOBurn: 1
+    - _AOMultiplier: 1
+    - _AmbientPower: 1
+    - _ColorIntensity: 1.2
+    - _Cull: 2
+    - _CustomAmbient: 0
+    - _CustomSpecular: 1
+    - _Cutoff: 0.5
+    - _DisplaceBurn: 0.5
+    - _DisplacePower: 0.2
+    - _FlowPower: 1
+    - _Flow_Channel: 0
+    - _LightWrap: 0
+    - _MatCap: 1
+    - _MatCapIntensity: 1
+    - _NormalBurn: -0.07142856
+    - _OffsetDisplace: -0.045
+    - _RefFresnelPower: 1
+    - _RefFresnelRim: 0.48
+    - _ReflectionPower: 0.7
+    - _RimFresnel: 1.45
+    - _RimPower: 0.66
+    - _Shininess: 0.6903617
+    - _SpecBurn: 1
+    - _SpecPower: 1.58
+    - _TesellationLevel: 12
+    - _UseCutoff: 0
+    - _UseEmissive: 0
+    - _UseFlow: 0
+    - _UseGlossMap: 1
+    - _UseLightWrap: 0
+    - _UseNormal: 1
+    - _UseRimLight: 0
+    m_Colors:
+    - _Color: {r: 0.588, g: 0.588, b: 0.588, a: 1}
+    - _EmissiveColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FlowSpeed: {r: 0, g: 0, b: 0, a: 0}
+    - _MainColor: {r: 1, g: 1, b: 1, a: 1}
+    - _ReflectionColor: {r: 1, g: 0.9926978, b: 0.9338235, a: 1}
+    - _RimColor: {r: 0.9632353, g: 0.82617456, b: 0.53119594, a: 1}
+    - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _SpecularColor: {r: 0.97311926, g: 1, b: 0.8308824, a: 1}

@@ -35,6 +35,7 @@ public class CurrencyData : MonoBehaviour
 	public ObscuredInt gold { get; set; }
 	public ObscuredInt energy { get; set; }
 	public ObscuredInt dia { get; set; }    // 서버 상점에서 모아서 처리하는 기능이 없어서 free와 구매 다 합쳐서 처리하기로 한다.
+	public ObscuredInt legendKey { get; set; }
 
 	public ObscuredInt energyMax { get; set; }
 
@@ -46,6 +47,8 @@ public class CurrencyData : MonoBehaviour
 			energy = userVirtualCurrency["EN"];
 		if (userVirtualCurrency.ContainsKey("DI"))
 			dia = userVirtualCurrency["DI"];
+		if (userVirtualCurrency.ContainsKey("LE"))	// 충전쿨이 길어서 현재수량만 기억해둔다.
+			legendKey = userVirtualCurrency["LE"];
 
 		if (userVirtualCurrencyRechargeTimes != null && userVirtualCurrencyRechargeTimes.ContainsKey("EN"))
 		{

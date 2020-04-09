@@ -278,7 +278,7 @@ public class EventManager : MonoBehaviour
 				break;
 			case eClientEvent.OpenTimeSpace:
 				// 여긴 터치 받고 이펙트 보여주고 캔버스 띄워야하니 코루틴으로 처리한다.
-				// 서버이벤트 chaos처럼 EventInputLockCanvas 깔고 진행하도록 한다.
+				StartCoroutine(OpenTimeSpaceProcess());
 				break;
 			case eClientEvent.ClearMaxChapter:
 				OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_WaitForUpdateEvent"), () =>
@@ -334,9 +334,35 @@ public class EventManager : MonoBehaviour
 		_waitTouch = false;
 	}
 
-	public void OnCompleteOpenChaosGatePillarAnimation()
+	public void OnCompleteAnimation()
 	{
 		_waitCompleteAnimation = false;
+	}
+
+	IEnumerator OpenTimeSpaceProcess()
+	{
+		// 서버이벤트 chaos처럼 EventInputLockCanvas 깔고 진행하도록 한다.
+		_waitTouch = true;
+		UIInstanceManager.instance.ShowCanvasAsync("EventInputLockCanvas", null);
+
+		while (_waitTouch)
+			yield return null;
+
+		// 연출
+		_waitCompleteAnimation = true;
+		OpenTimeSpacePortal.instance.OnTouch();
+
+		while (_waitCompleteAnimation)
+			yield return null;
+
+		yield return new WaitForSeconds(0.2f);
+
+		// 연출 이후
+		UIInstanceManager.instance.ShowCanvasAsync("EventInfoCanvas", () =>
+		{
+			EventInputLockCanvas.instance.gameObject.SetActive(false);
+			EventInfoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_OpenTimeSpaceName"), UIString.instance.GetString("GameUI_OpenTimeSpaceDesc"), UIString.instance.GetString("GameUI_OpenTimeSpaceMore"));
+		});
 	}
 	#endregion
 }

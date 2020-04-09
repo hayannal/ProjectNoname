@@ -25,6 +25,6 @@ public class OpenChaosEventGatePillar : MonoBehaviour
 
 	public void OnCompleteAllAnimation()
 	{
-		EventManager.instance.OnCompleteOpenChaosGatePillarAnimation();
+		EventManager.instance.OnCompleteAnimation();
 	}
 }

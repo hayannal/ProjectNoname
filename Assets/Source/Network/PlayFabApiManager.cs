@@ -826,7 +826,7 @@ public class PlayFabApiManager : MonoBehaviour
 		ExecuteCloudScriptRequest request = new ExecuteCloudScriptRequest()
 		{
 			FunctionName = "LockEquip",
-			FunctionParameter = new { EqpId = equipData.uniqueId, lck = lockState ? 1 : 0 },
+			FunctionParameter = new { EqpId = (string)equipData.uniqueId, Lck = lockState ? 1 : 0 },
 			GeneratePlayStreamEvent = true,
 		};
 		Action action = () =>

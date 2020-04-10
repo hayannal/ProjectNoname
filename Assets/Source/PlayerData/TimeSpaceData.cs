@@ -188,10 +188,14 @@ public class TimeSpaceData
 	}
 
 	List<EquipData> _listAutoEquipData = new List<EquipData>();
+	float _sumPrevValue = 0.0f;
+	float _sumNextValue = 0.0f;
 	public void AutoEquip()
 	{
 		// 현재 장착된 장비보다 공격력이 높다면 auto리스트에 넣는다.
 		_listAutoEquipData.Clear();
+		_sumPrevValue = 0.0f;
+		_sumNextValue = 0.0f;
 		for (int i = 0; i < (int)eEquipSlotType.Amount; ++i)
 		{
 			List<EquipData> listEquipData = GetEquipListByType((eEquipSlotType)i);
@@ -203,6 +207,7 @@ public class TimeSpaceData
 			EquipData equippedData = GetEquippedDataByType((eEquipSlotType)i);
 			if (equippedData != null)
 				maxValue = equippedData.mainStatusValue;
+			_sumPrevValue += maxValue;
 
 			for (int j = 0; j < listEquipData.Count; ++j)
 			{
@@ -215,6 +220,8 @@ public class TimeSpaceData
 
 			if (selectedEquipData != null)
 				_listAutoEquipData.Add(selectedEquipData);
+
+			_sumNextValue += maxValue;
 		}
 
 		// auto리스트가 하나도 없다면 변경할게 없는거니 안내 토스트를 출력한다.
@@ -228,7 +235,10 @@ public class TimeSpaceData
 		PlayFabApiManager.instance.RequestEquipList(_listAutoEquipData, () =>
 		{
 			// 변경 완료를 알리고
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_"), 2.0f);
+			UIInstanceManager.instance.ShowCanvasAsync("AutoEquipResultCanvas", () =>
+			{
+				AutoEquipResultCanvas.instance.ShowInfo(_sumPrevValue, _sumNextValue);
+			});
 
 			// 제단을 갱신한다.
 			for (int i = 0; i < _listAutoEquipData.Count; ++i)

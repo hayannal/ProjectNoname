@@ -220,7 +220,7 @@ public class TimeSpaceData
 		// auto리스트가 하나도 없다면 변경할게 없는거니 안내 토스트를 출력한다.
 		if (_listAutoEquipData.Count == 0)
 		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_"), 2.0f);
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_CompleteAuto"), 2.0f);
 			return;
 		}
 

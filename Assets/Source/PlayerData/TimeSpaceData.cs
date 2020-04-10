@@ -264,8 +264,9 @@ public class TimeSpaceData
 			ItemGrantRequest info = new ItemGrantRequest();
 			info.ItemId = listEquipId[i];
 			info.Data = new Dictionary<string, string>();
-			info.Data.Add("mainOp", RandomOption.GetRandomEquipMainOption(equipTableData).ToString());
-			info.Data.Add("lock", "0");
+			info.Data.Add(EquipData.KeyMainOp, RandomOption.GetRandomEquipMainOption(equipTableData).ToString());
+			// 이거 5개 제한이라서 나중에 모자라지면 lock은 안해도 된다.
+			info.Data.Add(EquipData.KeyLock, "0");
 			_listGrantRequest.Add(info);
 		}
 

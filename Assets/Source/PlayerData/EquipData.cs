@@ -23,32 +23,33 @@ public class EquipData
 	EquipStatusList _equipStatusList = new EquipStatusList();
 	public EquipStatusList equipStatusList { get { return _equipStatusList; } }
 
+	public static string KeyMainOp = "mainOp";
+	public static string KeyLock = "lock";
+	public static string KeyEnhan = "enhan";
+
 	public void Initialize(Dictionary<string, string> customData)
 	{
 		bool lockState = false;
 		int enhan = 0;
 		float mainOp = 0.0f;
-		if (customData.ContainsKey("enhan"))
+		if (customData.ContainsKey(KeyEnhan))
 		{
 			int intValue = 0;
-			if (int.TryParse(customData["enhan"], out intValue))
+			if (int.TryParse(customData[KeyEnhan], out intValue))
 				enhan = intValue;
 		}
-		if (customData.ContainsKey("lock"))
+		if (customData.ContainsKey(KeyLock))
 		{
 			int intValue = 0;
-			if (int.TryParse(customData["lock"], out intValue))
+			if (int.TryParse(customData[KeyLock], out intValue))
 				lockState = (intValue == 1);
 		}
-		if (customData.ContainsKey("mainOp"))
+		if (customData.ContainsKey(KeyMainOp))
 		{
 			float floatValue = 0;
-			if (float.TryParse(customData["mainOp"], out floatValue))
+			if (float.TryParse(customData[KeyMainOp], out floatValue))
 				mainOp = floatValue;
 		}
-		// temp code
-		if (mainOp == 0.0f)
-			mainOp = cachedEquipTableData.min;
 
 		// 데이터 검증
 		// 메인옵부터 체크. 메인옵의 범위가 테이블 범위를 넘어섰다면

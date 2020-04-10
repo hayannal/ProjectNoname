@@ -275,7 +275,7 @@ public class BattleResultCanvas : MonoBehaviour
 		if (currentGoldInt != _lastGold)
 		{
 			_lastGold = currentGoldInt;
-			goldValueText.text = _lastGold.ToString();
+			goldValueText.text = _lastGold.ToString("N0");
 		}
 	}
 	#endregion

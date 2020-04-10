@@ -127,7 +127,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.8
+  m_Radius: 1.1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &303905920760006373
 GameObject:
@@ -704,6 +704,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: GlowCircle_D
       objectReference: {fileID: 0}
+    - target: {fileID: 7661385235819507676, guid: 5f6033d470e0b3b4da052395f7ee4f4c,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3270856892084170818, guid: 5f6033d470e0b3b4da052395f7ee4f4c,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -774,11 +779,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0.66666675
       objectReference: {fileID: 0}
-    - target: {fileID: 7661385235819507676, guid: 5f6033d470e0b3b4da052395f7ee4f4c,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5f6033d470e0b3b4da052395f7ee4f4c, type: 3}
 --- !u!4 &1137689359029564600 stripped
@@ -804,6 +804,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: mesh_Brazier_01
       objectReference: {fileID: 0}
+    - target: {fileID: 2300000, guid: 7844b3ad5d0fa9e40af4a16976decf5a, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: f2ac89dd323b5c94391258695e7b9761, type: 2}
     - target: {fileID: 400000, guid: 7844b3ad5d0fa9e40af4a16976decf5a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -860,10 +864,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0.38
       objectReference: {fileID: 0}
-    - target: {fileID: 2300000, guid: 7844b3ad5d0fa9e40af4a16976decf5a, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: f2ac89dd323b5c94391258695e7b9761, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7844b3ad5d0fa9e40af4a16976decf5a, type: 3}
 --- !u!4 &4837200261745019673 stripped

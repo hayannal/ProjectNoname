@@ -47,7 +47,7 @@ public class TimeSpaceAltar : MonoBehaviour
 
 		Vector3 diff = BattleInstanceManager.instance.playerActor.cachedTransform.position - _position;
 		diff.y = 0.0f;
-		if ((diff.x * diff.x + diff.z * diff.z) > 2.0f * 2.0f)
+		if ((diff.x * diff.x + diff.z * diff.z) > 2.1f * 2.1f)
 		{
 			_objectIndicatorCanvas.gameObject.SetActive(false);
 			_spawnedIndicator = false;

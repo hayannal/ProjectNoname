@@ -54,7 +54,7 @@ public class BattleResultCanvas : MonoBehaviour
 	public GameObject exitGroupObject;
 	public GameObject challengeFailTextObject;
 
-	public class CustomItemContainer : CachedItemHave<SwapCanvasListItem>
+	public class CustomItemContainer : CachedItemHave<EquipCanvasListItem>
 	{
 	}
 	CustomItemContainer _container = new CustomItemContainer();
@@ -335,7 +335,7 @@ public class BattleResultCanvas : MonoBehaviour
 
 		// 드랍매니저가 가지고 있는 아이템 리스트에는 아이디밖에 들어있지 않아서 정보를 구성할 수 없기 때문에 사용할 수 없다.
 		// 결과패킷으로 받은 실제 아이템 리스트를 사용해야한다.
-		if (_listGrantItem == null || _listGrantItem.Count == 0 || _listGrantItem.Count > 0)
+		if (_listGrantItem == null || _listGrantItem.Count == 0)
 		{
 			yield return new WaitForSecondsRealtime(0.2f);
 			exitGroupObject.SetActive(true);
@@ -343,15 +343,24 @@ public class BattleResultCanvas : MonoBehaviour
 		}
 
 		itemScrollViewObject.SetActive(true);
+
+		for (int i = 0; i < _listGrantItem.Count; ++i)
+		{
+			EquipData newEquipData = new EquipData();
+			newEquipData.equipId = _listGrantItem[i].ItemId;
+			newEquipData.Initialize(_listGrantItem[i].CustomData);
+
+			EquipCanvasListItem equipCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
+			equipCanvasListItem.Initialize(newEquipData, OnClickListItem);
+			yield return new WaitForSecondsRealtime(0.2f);
+		}
+
+		exitGroupObject.SetActive(true);
 	}
 
 	List<SwapCanvasListItem> _listSwapCanvasListItem = new List<SwapCanvasListItem>();
-	void RefreshGrid()
-	{
-		
-	}
 
-	public void OnClickListItem(string actorId)
+	public void OnClickListItem(EquipData equipData)
 	{
 		
 	}

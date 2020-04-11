@@ -41,7 +41,7 @@ public class CharacterInfoDetailCanvas : DetailShowCanvasBase
 			return;
 		}
 
-		Hide();
+		Hide(0.25f);
 	}
 	
 	void Update()

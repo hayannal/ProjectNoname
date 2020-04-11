@@ -50,7 +50,7 @@ public class EquipInfoDetailShowCanvas : DetailShowCanvasBase
 			return;
 		}
 
-		Hide();
+		Hide(0.28f);
 
 		//if (EquipInfoGround.instance.diffMode)
 		//	EquipInfoGround.instance.RestoreDiffMode();

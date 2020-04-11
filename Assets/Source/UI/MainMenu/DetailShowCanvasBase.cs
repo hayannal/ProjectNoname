@@ -23,7 +23,7 @@ public class DetailShowCanvasBase : MonoBehaviour
 	}
 
 	bool _reservedHide = false;
-	protected void Hide()
+	protected void Hide(float overrideLerpTime = 0.0f)
 	{
 		if (_reservedHide)
 			return;
@@ -32,6 +32,7 @@ public class DetailShowCanvasBase : MonoBehaviour
 		_targetPosition = _origPosition;
 		_targetRotation = _origRotation;
 		_lerpRemainTime = 0.2f;
+		if (overrideLerpTime != 0.0f) _lerpRemainTime = overrideLerpTime;
 		return;
 	}
 

@@ -12,6 +12,7 @@ public class TimeSpaceAltar : MonoBehaviour
 	public GameObject emptyIconObject;
 	public ParticleSystem gradeParticleSystem;
 	public Text enhanceText;
+	public GameObject[] optionObjectList;
 
 	void Start()
 	{
@@ -103,6 +104,8 @@ public class TimeSpaceAltar : MonoBehaviour
 			//alarm3dObject.SetActive(TimeSpaceData.instance.IsExistEquipByType((TimeSpaceData.eEquipSlotType)positionIndex);
 			enhanceText.text = "";
 			enhanceText.gameObject.SetActive(false);
+			for (int i = 0; i < optionObjectList.Length; ++i)
+				optionObjectList[i].SetActive(false);
 			return;
 		}
 
@@ -116,6 +119,8 @@ public class TimeSpaceAltar : MonoBehaviour
 		emptyIconObject.SetActive(false);
 		enhanceText.text = string.Format("+{0}", equipData.enhanceLevel);
 		enhanceText.gameObject.SetActive(equipData.enhanceLevel > 0);
+		for (int i = 0; i < optionObjectList.Length; ++i)
+			optionObjectList[i].SetActive(i < equipData.optionCount);
 		AddressableAssetLoadManager.GetAddressableGameObject(equipData.cachedEquipTableData.prefabAddress, "Equip", OnLoadedEquip);
 	}
 

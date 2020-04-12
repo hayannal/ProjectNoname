@@ -21,6 +21,7 @@ public class EquipListStatusInfo : MonoBehaviour
 	public Text[] optionStatusTextList;
 	public Text[] optionStatusValueTextList;
 	public Image[] optionStatusFillImageList;
+	public GameObject noOptionTextObject;
 
 	public GameObject equipButtonObject;
 	public GameObject unequipButtonObject;
@@ -75,8 +76,20 @@ public class EquipListStatusInfo : MonoBehaviour
 
 	void RefreshStatus()
 	{
-		mainStatusText.text = ActorStatus.GetDisplayAttack(_equipData.mainStatusValue).ToString("N0");
 		mainStatusFillImage.fillAmount = _equipData.GetMainStatusRatio();
+		bool fullGauge = (mainStatusFillImage.fillAmount == 1.0f);
+		float displayValue = ActorStatus.GetDisplayAttack(_equipData.mainStatusValue);
+		string displayString = displayValue.ToString("N0");
+		bool adjustValue = false;
+		if (!fullGauge)
+		{
+			string maxDisplayString = ActorStatus.GetDisplayAttack(_equipData.cachedEquipTableData.max).ToString("N0");
+			if (displayString == maxDisplayString)
+				adjustValue = true;
+		}
+		mainStatusText.text = adjustValue ? (displayValue - 1.0f).ToString("N0") : displayString;
+		mainStatusFillImage.color = (fullGauge) ? new Color(0.819f, 0.505f, 0.458f, 0.862f) : new Color(0.937f, 0.937f, 0.298f, 0.862f);
+
 		int optionCount = _equipData.optionCount;
 		for (int i = 0; i < optionStatusObjectList.Length; ++i)
 			optionStatusObjectList[i].gameObject.SetActive(i < optionCount);
@@ -86,6 +99,7 @@ public class EquipListStatusInfo : MonoBehaviour
 		{
 			//optionStatusTextList[i].SetLocalizedText()
 		}
+		noOptionTextObject.SetActive(optionCount == 0);
 	}
 
 	public void OnClickDetailShowButton()
@@ -160,6 +174,8 @@ public class EquipListStatusInfo : MonoBehaviour
 			RefreshLockInfo();
 			if (!_equipped)
 				EquipListCanvas.instance.RefreshSelectedItem();
+
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("EquipUI_Locked"), 2.0f);
 		});
 	}
 
@@ -174,6 +190,8 @@ public class EquipListStatusInfo : MonoBehaviour
 			RefreshLockInfo();
 			if (!_equipped)
 				EquipListCanvas.instance.RefreshSelectedItem();
+
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("EquipUI_Unlocked"), 2.0f);
 		});
 	}
 

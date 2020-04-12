@@ -12,6 +12,7 @@ public class EquipCanvasListItem : MonoBehaviour
 	public Coffee.UIExtensions.UIGradient gradient;
 	public Image lineColorImage;
 	public Text enhanceLevelText;
+	public GameObject[] optionObjectList;
 	public Image lockImage;
 	public GameObject selectObject;
 

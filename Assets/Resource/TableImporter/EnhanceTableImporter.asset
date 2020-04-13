@@ -10,73 +10,58 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 80e14a72067f1ad408ec8d661bc560ce, type: 3}
-  m_Name: EquipTableImporter
+  m_Name: EnhanceTableImporter
   m_EditorClassIdentifier: 
   templatePath: AssetStore/QuickSheet/ExcelPlugin/Templates
   scriptFilePath: Source/TableClass/Runtime
   editorScriptFilePath: Source/TableClass/Editor
   sheetName: Equip.xlsx
-  workSheetName: EquipTable
+  workSheetName: EnhanceTable
   columnHeaderList:
-  - type: 1
-    name: equipId
-    isEnable: 0
-    isArray: 0
-  - type: 3
-    name: equipType
-    isEnable: 0
-    isArray: 0
-  - type: 3
-    name: grade
-    isEnable: 0
-    isArray: 0
   - type: 3
     name: innerGrade
     isEnable: 0
     isArray: 0
   - type: 3
-    name: optionType
-    isEnable: 0
-    isArray: 0
-  - type: 3
-    name: optionCount
+    name: enhance
     isEnable: 0
     isArray: 0
   - type: 5
-    name: min
+    name: multi
     isEnable: 0
     isArray: 0
   - type: 5
-    name: max
-    isEnable: 0
-    isArray: 0
-  - type: 3
-    name: randType
+    name: innerGradeZeroProb
     isEnable: 0
     isArray: 0
   - type: 5
-    name: f1
+    name: innerGradeOneProb
     isEnable: 0
     isArray: 0
-  - type: 3
-    name: leftRight
+  - type: 5
+    name: innerGradeTwoProb
     isEnable: 0
     isArray: 0
-  - type: 1
-    name: prefabAddress
+  - type: 5
+    name: innerGradeThreeProb
     isEnable: 0
     isArray: 0
-  - type: 1
-    name: shotAddress
+  - type: 5
+    name: innerGradeFourProb
     isEnable: 0
     isArray: 0
-  - type: 1
-    name: nameId
+  - type: 5
+    name: innerGradeFiveProb
+    isEnable: 0
+    isArray: 0
+  - type: 5
+    name: innerGradeSixProb
     isEnable: 0
     isArray: 0
   excelFilePath: ../Excel/Equip.xlsx
   SheetNames:
   - EquipTable
   - EnhanceTable
-  - EquipOptionTable
-  currentSelectedSheet: 0
+  - InnerGradeTable
+  - OptionTable
+  currentSelectedSheet: 1

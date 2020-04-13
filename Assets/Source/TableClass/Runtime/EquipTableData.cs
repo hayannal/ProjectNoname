@@ -21,8 +21,8 @@ public class EquipTableData
   public int grade { get { return _grade; } set { _grade = value; } }
   
   [SerializeField]
-  int _innergrade;
-  public int innergrade { get { return _innergrade; } set { _innergrade = value; } }
+  int _innerGrade;
+  public int innerGrade { get { return _innerGrade; } set { _innerGrade = value; } }
   
   [SerializeField]
   int _optionType;

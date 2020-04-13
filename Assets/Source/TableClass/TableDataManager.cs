@@ -31,6 +31,9 @@ public class TableDataManager : MonoBehaviour
 	public DropTable dropTable;
 	public FontTable fontTable;
 	public EquipTable equipTable;
+	public InnerGradeTable innerGradeTable;
+	public OptionTable optionTable;
+	public EnhanceTable enhanceTable;
 	public StageExpTable stageExpTable;
 	public DamageRateTable damageRateTable;
 	public ActorInfoTable actorInfoTable;
@@ -277,6 +280,36 @@ public class TableDataManager : MonoBehaviour
 		{
 			if (equipTable.dataArray[i].equipId == equipId)
 				return equipTable.dataArray[i];
+		}
+		return null;
+	}
+
+	public InnerGradeTableData FindInnerGradeTableData(int innerGrade)
+	{
+		for (int i = 0; i < innerGradeTable.dataArray.Length; ++i)
+		{
+			if (innerGradeTable.dataArray[i].innerGrade == innerGrade)
+				return innerGradeTable.dataArray[i];
+		}
+		return null;
+	}
+
+	public EnhanceTableData FindEnhanceTableData(int innerGrade, int enhance)
+	{
+		for (int i = 0; i < enhanceTable.dataArray.Length; ++i)
+		{
+			if (enhanceTable.dataArray[i].innerGrade == innerGrade && enhanceTable.dataArray[i].enhance == enhance)
+				return enhanceTable.dataArray[i];
+		}
+		return null;
+	}
+
+	public OptionTableData FindOptionTableData(string optionString, int innerGrade)
+	{
+		for (int i = 0; i < optionTable.dataArray.Length; ++i)
+		{
+			if (optionTable.dataArray[i].innerGrade == innerGrade && optionTable.dataArray[i].option == optionString)
+				return optionTable.dataArray[i];
 		}
 		return null;
 	}

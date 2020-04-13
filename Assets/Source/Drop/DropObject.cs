@@ -109,6 +109,7 @@ public class DropObject : MonoBehaviour
 					float pivotOffset = newEquipPrefabInfo.pivotOffset;
 					if (trailTransform != null) trailTransform.localPosition = new Vector3(0.0f, pivotOffset + rotateTransform.localPosition.y, 0.0f);
 					if (nameCanvasRectTransform != null) nameCanvasRectTransform.localPosition = new Vector3(0.0f, pivotOffset * 2.0f + rotateTransform.localPosition.y + 0.5f, 0.0f);
+					if (nameText != null) nameText.SetLocalizedText(UIString.instance.GetString(equipTableData.nameId));
 					rotateTransform.localPosition = new Vector3(0.0f, _defaultRotateTransformPositionY + pivotOffset, 0.0f);
 				});
 			}
@@ -387,10 +388,6 @@ public class DropObject : MonoBehaviour
 	{
 		if (nameCanvasRectTransform != null)
 			nameCanvasRectTransform.gameObject.SetActive(true);
-
-		// 우선 임시로 LocalizedText 함수만 호출해둔다.
-		if (nameText != null)
-			nameText.SetLocalizedText(nameText.text);
 	}
 
 	// 정산을 위해 추가한 함수. 획득가능한지 본다.

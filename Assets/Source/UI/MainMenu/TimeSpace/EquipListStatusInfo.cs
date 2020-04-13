@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using ActorStatusDefine;
 
 public class EquipListStatusInfo : MonoBehaviour
 {
@@ -74,6 +75,8 @@ public class EquipListStatusInfo : MonoBehaviour
 		unlockButton.gameObject.SetActive(!_equipData.isLock);
 	}
 
+	static Color _gaugeColor = new Color(0.819f, 0.505f, 0.458f, 0.862f);
+	static Color _fullGaugeColor = new Color(0.937f, 0.937f, 0.298f, 0.862f);
 	void RefreshStatus()
 	{
 		mainStatusFillImage.fillAmount = _equipData.GetMainStatusRatio();
@@ -88,7 +91,7 @@ public class EquipListStatusInfo : MonoBehaviour
 				adjustValue = true;
 		}
 		mainStatusText.text = adjustValue ? (displayValue - 1.0f).ToString("N0") : displayString;
-		mainStatusFillImage.color = (fullGauge) ? new Color(0.819f, 0.505f, 0.458f, 0.862f) : new Color(0.937f, 0.937f, 0.298f, 0.862f);
+		mainStatusFillImage.color = fullGauge ? _fullGaugeColor : _gaugeColor;
 
 		int optionCount = _equipData.optionCount;
 		for (int i = 0; i < optionStatusObjectList.Length; ++i)
@@ -97,7 +100,55 @@ public class EquipListStatusInfo : MonoBehaviour
 		// option
 		for (int i = 0; i < optionCount; ++i)
 		{
-			//optionStatusTextList[i].SetLocalizedText()
+			EquipData.RandomOptionInfo info = _equipData.GetOption(i);
+			optionStatusTextList[i].SetLocalizedText(UIString.instance.GetString(string.Format("Op_{0}", info.statusType.ToString())));
+			optionStatusFillImageList[i].fillAmount = info.GetRandomStatusRatio();
+			fullGauge = (optionStatusFillImageList[i].fillAmount == 1.0f);
+			adjustValue = false;
+			switch (info.statusType)
+			{
+				case eActorStatus.MaxHp:
+					displayValue = ActorStatus.GetDisplayMaxHp(info.value);
+					displayString = displayValue.ToString("N0");
+					break;
+				case eActorStatus.Attack:
+					displayValue = ActorStatus.GetDisplayAttack(info.value);
+					displayString = displayValue.ToString("N0");
+					break;
+				default:
+					// 나머진 일괄 %
+					displayValue = info.value;
+					displayString = string.Format("{0:0.##}%", displayValue * 100.0f);
+					break;
+			}
+			if (!fullGauge)
+			{
+				string maxDisplayString = "";
+				switch (info.statusType)
+				{
+					case eActorStatus.MaxHp: maxDisplayString = ActorStatus.GetDisplayMaxHp(info.cachedOptionTableData.max).ToString("N0"); break;
+					case eActorStatus.Attack: maxDisplayString = ActorStatus.GetDisplayAttack(info.cachedOptionTableData.max).ToString("N0"); break;
+					default: maxDisplayString = string.Format("{0:0.##}%", info.cachedOptionTableData.max * 100.0f); break;
+				}
+				if (displayString == maxDisplayString)
+					adjustValue = true;
+			}
+			if (adjustValue)
+			{
+				switch (info.statusType)
+				{
+					case eActorStatus.MaxHp:
+					case eActorStatus.Attack:
+						optionStatusValueTextList[i].text = (displayValue - 1.0f).ToString("N0");
+						break;
+					default:
+						optionStatusValueTextList[i].text = string.Format("{0:0.##}%", (info.cachedOptionTableData.max * 100.0f) - 0.01f);
+						break;
+				}
+			}
+			else
+				optionStatusValueTextList[i].text = displayString;
+			optionStatusFillImageList[i].color = fullGauge ? _fullGaugeColor : _gaugeColor;
 		}
 		noOptionTextObject.SetActive(optionCount == 0);
 	}

@@ -199,7 +199,11 @@ public class ActorStatus : MonoBehaviour
 	static float LnHpConstant2 = -293.303092717141f;
 	public float GetDisplayMaxHp()
 	{
-		float value = GetValue(eActorStatus.MaxHp);
+		return GetDisplayMaxHp(GetValue(eActorStatus.MaxHp));
+	}
+
+	public static float GetDisplayMaxHp(float value)
+	{
 		float result = LnHpConstant1 * Mathf.Log(value) + LnHpConstant2;
 		return result;
 	}

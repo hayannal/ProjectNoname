@@ -275,8 +275,17 @@ public class TimeSpaceData
 			info.ItemId = listEquipId[i];
 			info.Data = new Dictionary<string, string>();
 			info.Data.Add(EquipData.KeyMainOp, RandomOption.GetRandomEquipMainOption(equipTableData).ToString());
-			// 이거 5개 제한이라서 나중에 모자라지면 lock은 안해도 된다.
-			info.Data.Add(EquipData.KeyLock, "0");
+
+			int createOptionCount = RandomOption.GetRandomOptionCount(equipTableData.innerGrade);
+			for (int j = 0; j < createOptionCount; ++j)
+			{
+				eActorStatus eType = eActorStatus.ExAmount;
+				float value = 0.0f;
+				RandomOption.GenerateRandomOption(equipTableData.optionType, equipTableData.innerGrade, ref eType, ref value);
+				info.Data.Add(string.Format("{0}{1}", EquipData.KeyRandomOp, j), string.Format("{0}:{1}", eType.ToString(), value.ToString()));
+			}
+			// 이거 5개 제한이라서 lock대신 옵션 변경 제한횟수에 사용하기로 한다.
+			//info.Data.Add(EquipData.KeyLock, "0");
 			_listGrantRequest.Add(info);
 		}
 

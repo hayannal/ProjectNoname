@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using ActorStatusDefine;
 
 public static class RandomOption
 {
@@ -12,6 +13,8 @@ public static class RandomOption
 		Linear,
 		Distribution,
 	}
+
+	public static int RandomOptionCountMax = 3;
 
 	public static float GetRandomRange(float min, float max, eRandomCalculateType randType, float f1, RandomFromDistribution.Direction_e direction)
 	{
@@ -35,6 +38,91 @@ public static class RandomOption
 	{
 		float result = GetRandomRange(equipTableData.min, equipTableData.max, (eRandomCalculateType)equipTableData.randType, equipTableData.f1,
 			(equipTableData.leftRight == 1) ? RandomFromDistribution.Direction_e.Left : RandomFromDistribution.Direction_e.Right);
-		return (float)(System.Math.Truncate(result * 1000.0) / 1000.0);
+		return (float)(System.Math.Truncate(result * 10000.0) / 10000.0);
+	}
+
+	public static float GetRandomEquipSubOption(OptionTableData optionTableData)
+	{
+		float result = GetRandomRange(optionTableData.min, optionTableData.max, (eRandomCalculateType)optionTableData.randType, optionTableData.f1,
+			(optionTableData.leftRight == 1) ? RandomFromDistribution.Direction_e.Left : RandomFromDistribution.Direction_e.Right);
+		return (float)(System.Math.Truncate(result * 10000.0) / 10000.0);
+	}
+
+	static List<float> _listSumRandomOptionWeight;
+	public static int GetRandomOptionCount(int innerGrade)
+	{
+		if (_listSumRandomOptionWeight == null)
+			_listSumRandomOptionWeight = new List<float>();
+
+		InnerGradeTableData innerGradeTableData = TableDataManager.instance.FindInnerGradeTableData(innerGrade);
+		if (innerGradeTableData == null)
+			return 0;
+
+		_listSumRandomOptionWeight.Clear();
+		float sumWeight = innerGradeTableData.zeroOptionWeight;
+		_listSumRandomOptionWeight.Add(sumWeight);
+		sumWeight += innerGradeTableData.oneOptionWeight;
+		_listSumRandomOptionWeight.Add(sumWeight);
+		sumWeight += innerGradeTableData.twoOptionWeight;
+		_listSumRandomOptionWeight.Add(sumWeight);
+		sumWeight += innerGradeTableData.threeOptionWeight;
+		_listSumRandomOptionWeight.Add(sumWeight);
+
+		int index = -1;
+		float result = Random.Range(0.0f, sumWeight);
+		for (int i = 0; i < _listSumRandomOptionWeight.Count; ++i)
+		{
+			if (result <= _listSumRandomOptionWeight[i])
+			{
+				index = i;
+				break;
+			}
+		}
+		return (index == -1) ? 0 : index;
+	}
+
+	class RandomOptionData
+	{
+		public OptionTableData optionTableData;
+		public float sumWeight;
+	}
+	static List<RandomOptionData> _listRandomOptionInfo;
+	public static void GenerateRandomOption(int optionType, int innerGrade, ref eActorStatus eType, ref float value)
+	{
+		if (_listRandomOptionInfo == null)
+			_listRandomOptionInfo = new List<RandomOptionData>();
+		_listRandomOptionInfo.Clear();
+
+		float sumWeight = 0.0f;
+		for (int i = 0; i < TableDataManager.instance.optionTable.dataArray.Length; ++i)
+		{
+			if (TableDataManager.instance.optionTable.dataArray[i].optionType != optionType)
+				continue;
+			if (TableDataManager.instance.optionTable.dataArray[i].innerGrade != innerGrade)
+				continue;
+
+			sumWeight += TableDataManager.instance.optionTable.dataArray[i].createWeight;
+			RandomOptionData newInfo = new RandomOptionData();
+			newInfo.optionTableData = TableDataManager.instance.optionTable.dataArray[i];
+			newInfo.sumWeight = sumWeight;
+			_listRandomOptionInfo.Add(newInfo);
+		}
+
+		int index = -1;
+		float result = Random.Range(0.0f, sumWeight);
+		for (int i = 0; i < _listRandomOptionInfo.Count; ++i)
+		{
+			if (result <= _listRandomOptionInfo[i].sumWeight)
+			{
+				index = i;
+				break;
+			}
+		}
+		if (index != -1)
+		{
+			OptionTableData optionTableData = _listRandomOptionInfo[index].optionTableData;
+			System.Enum.TryParse<eActorStatus>(optionTableData.option, out eType);
+			value = GetRandomEquipSubOption(optionTableData);
+		}
 	}
 }

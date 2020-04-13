@@ -15,17 +15,50 @@ public class EquipData
 	public bool isLock { get { return _isLock; } }
 	public int enhanceLevel { get { return _enhanceLevel; } }
 
-	public int optionCount { get { return 0; } }
-
 	// 메인 공격력 스탯 및 랜덤옵 합산
 	ObscuredFloat _mainStatusValue = 0.0f;
 	public float mainStatusValue { get { return _mainStatusValue; } }
 	EquipStatusList _equipStatusList = new EquipStatusList();
 	public EquipStatusList equipStatusList { get { return _equipStatusList; } }
 
+	public class RandomOptionInfo
+	{
+		public int innerGrade;
+		public eActorStatus statusType;
+		public ObscuredFloat value;
+
+		OptionTableData _cachedOptionTableData = null;
+		public OptionTableData cachedOptionTableData
+		{
+			get
+			{
+				if (_cachedOptionTableData == null)
+					_cachedOptionTableData = TableDataManager.instance.FindOptionTableData(statusType.ToString(), innerGrade);
+				return _cachedOptionTableData;
+			}
+		}
+
+		public float GetRandomStatusRatio()
+		{
+			return ((value - cachedOptionTableData.min) / (cachedOptionTableData.max - cachedOptionTableData.min));
+		}
+	}
+	List<RandomOptionInfo> _listRandomOptionInfo;
+
+	public int optionCount
+	{
+		get
+		{
+			if (_listRandomOptionInfo == null)
+				return 0;
+			return _listRandomOptionInfo.Count;
+		}
+	}
+
 	public static string KeyMainOp = "mainOp";
 	public static string KeyLock = "lock";
 	public static string KeyEnhan = "enhan";
+	public static string KeyRandomOp = "randOp";
 
 	public void Initialize(Dictionary<string, string> customData)
 	{
@@ -50,6 +83,32 @@ public class EquipData
 			if (float.TryParse(customData[KeyMainOp], out floatValue))
 				mainOp = floatValue;
 		}
+		for (int i = 0; i < RandomOption.RandomOptionCountMax; ++i)
+		{
+			string optionKey = string.Format("{0}{1}", EquipData.KeyRandomOp, i);
+			if (customData.ContainsKey(optionKey))
+			{
+				string optionValue = customData[optionKey];
+				string[] split = optionValue.Split(':');
+				if (split == null || split.Length != 2)
+					continue;
+				eActorStatus randomOptionType = eActorStatus.ExAmount;
+				System.Enum.TryParse<eActorStatus>(split[0], out randomOptionType);
+				float value = 0.0f;
+				float.TryParse(split[1], out value);
+				if (randomOptionType != eActorStatus.ExAmount)
+				{
+					if (_listRandomOptionInfo == null)
+						_listRandomOptionInfo = new List<RandomOptionInfo>();
+
+					RandomOptionInfo info = new RandomOptionInfo();
+					info.innerGrade = cachedEquipTableData.innerGrade;
+					info.statusType = randomOptionType;
+					info.value = value;
+					_listRandomOptionInfo.Add(info);
+				}
+			}
+		}
 
 		// 데이터 검증
 		// 메인옵부터 체크. 메인옵의 범위가 테이블 범위를 넘어섰다면
@@ -58,6 +117,11 @@ public class EquipData
 		{
 			invalidEquipOption = true;
 			mainOp = cachedEquipTableData.min;
+		}
+		// 랜덤옵션 카운트가 붙일 수 있는 최대 랜덤옵션 개수보다 많다면
+		if (optionCount > cachedEquipTableData.optionCount)
+		{
+			invalidEquipOption = true;
 		}
 		if (invalidEquipOption)
 		{
@@ -107,6 +171,13 @@ public class EquipData
 	public float GetMainStatusRatio()
 	{
 		return ((_mainOption - cachedEquipTableData.min) / (cachedEquipTableData.max - cachedEquipTableData.min));
+	}
+
+	public RandomOptionInfo GetOption(int index)
+	{
+		if (_listRandomOptionInfo != null && index < _listRandomOptionInfo.Count)
+			return _listRandomOptionInfo[index];
+		return null;
 	}
 
 

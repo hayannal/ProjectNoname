@@ -182,8 +182,8 @@ public class ActorStatus : MonoBehaviour
 		return value;
 	}
 
-	static float LnAtkConstant1 = 49.3260692475286f;
-	static float LnAtkConstant2 = -127.154943490703f;
+	static float LnAtkConstant1 = 123.315173118822f;
+	static float LnAtkConstant2 = -282.943679363379f;
 	public float GetDisplayAttack()
 	{
 		return GetDisplayAttack(GetValue(eActorStatus.Attack));
@@ -195,8 +195,8 @@ public class ActorStatus : MonoBehaviour
 		return result;
 	}
 
-	static float LnHpConstant1 = 73.9891038712929f;
-	static float LnHpConstant2 = -293.303092717141f;
+	static float LnHpConstant1 = 197.304276990115f;
+	static float LnHpConstant2 = -766.858870654696f;
 	public float GetDisplayMaxHp()
 	{
 		return GetDisplayMaxHp(GetValue(eActorStatus.MaxHp));

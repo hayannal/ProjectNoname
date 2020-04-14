@@ -284,6 +284,7 @@ public class TimeSpaceData
 				RandomOption.GenerateRandomOption(equipTableData.optionType, equipTableData.innerGrade, ref eType, ref value);
 				info.Data.Add(string.Format("{0}{1}", EquipData.KeyRandomOp, j), string.Format("{0}:{1}", eType.ToString(), value.ToString()));
 			}
+			info.Data.Add(EquipData.KeyTransmuteRemainCount, RandomOption.GetTransmuteRemainCount(equipTableData.innerGrade).ToString());
 			// 이거 5개 제한이라서 lock대신 옵션 변경 제한횟수에 사용하기로 한다.
 			//info.Data.Add(EquipData.KeyLock, "0");
 			_listGrantRequest.Add(info);

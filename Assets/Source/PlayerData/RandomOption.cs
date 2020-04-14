@@ -53,12 +53,12 @@ public static class RandomOption
 	{
 		if (_listSumRandomOptionWeight == null)
 			_listSumRandomOptionWeight = new List<float>();
+		_listSumRandomOptionWeight.Clear();
 
 		InnerGradeTableData innerGradeTableData = TableDataManager.instance.FindInnerGradeTableData(innerGrade);
 		if (innerGradeTableData == null)
 			return 0;
 
-		_listSumRandomOptionWeight.Clear();
 		float sumWeight = innerGradeTableData.zeroOptionWeight;
 		_listSumRandomOptionWeight.Add(sumWeight);
 		sumWeight += innerGradeTableData.oneOptionWeight;
@@ -66,6 +66,46 @@ public static class RandomOption
 		sumWeight += innerGradeTableData.twoOptionWeight;
 		_listSumRandomOptionWeight.Add(sumWeight);
 		sumWeight += innerGradeTableData.threeOptionWeight;
+		_listSumRandomOptionWeight.Add(sumWeight);
+
+		int index = -1;
+		float result = Random.Range(0.0f, sumWeight);
+		for (int i = 0; i < _listSumRandomOptionWeight.Count; ++i)
+		{
+			if (result <= _listSumRandomOptionWeight[i])
+			{
+				index = i;
+				break;
+			}
+		}
+		return (index == -1) ? 0 : index;
+	}
+
+	public static int GetTransmuteRemainCount(int innerGrade)
+	{
+		if (_listSumRandomOptionWeight == null)
+			_listSumRandomOptionWeight = new List<float>();
+		_listSumRandomOptionWeight.Clear();
+
+		InnerGradeTableData innerGradeTableData = TableDataManager.instance.FindInnerGradeTableData(innerGrade);
+		if (innerGradeTableData == null)
+			return 0;
+
+		float sumWeight = innerGradeTableData.zeroTransmuteWeight;
+		_listSumRandomOptionWeight.Add(sumWeight);
+		sumWeight += innerGradeTableData.oneTransmuteWeight;
+		_listSumRandomOptionWeight.Add(sumWeight);
+		sumWeight += innerGradeTableData.twoTransmuteWeight;
+		_listSumRandomOptionWeight.Add(sumWeight);
+		sumWeight += innerGradeTableData.threeTransmuteWeight;
+		_listSumRandomOptionWeight.Add(sumWeight);
+		sumWeight += innerGradeTableData.fourTransmuteWeight;
+		_listSumRandomOptionWeight.Add(sumWeight);
+		sumWeight += innerGradeTableData.fiveTransmuteWeight;
+		_listSumRandomOptionWeight.Add(sumWeight);
+		sumWeight += innerGradeTableData.sixTransmuteWeight;
+		_listSumRandomOptionWeight.Add(sumWeight);
+		sumWeight += innerGradeTableData.sevenTransmuteWeight;
 		_listSumRandomOptionWeight.Add(sumWeight);
 
 		int index = -1;

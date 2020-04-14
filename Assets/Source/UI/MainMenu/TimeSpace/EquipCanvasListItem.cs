@@ -62,6 +62,9 @@ public class EquipCanvasListItem : MonoBehaviour
 		}
 		RefreshStatus();
 
+		for (int i = 0; i < optionObjectList.Length; ++i)
+			optionObjectList[i].SetActive(i < equipData.optionCount);
+
 		selectObject.SetActive(false);
 		_clickAction = clickCallback;
 	}

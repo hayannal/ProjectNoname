@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Michsky.UI.Hexart;
 using CodeStage.AntiCheat.ObscuredTypes;
+using MEC;
 
 public class EquipEnhanceCanvas : MonoBehaviour
 {
@@ -43,6 +44,12 @@ public class EquipEnhanceCanvas : MonoBehaviour
 		priceButtonText.text = "0";
 	}
 
+	IEnumerator<float> DelayedResetSwitch()
+	{
+		yield return Timing.WaitForOneFrame;
+		transferSwitch.AnimateSwitch();
+	}
+
 	public void OnSwitchOnTransfer()
 	{
 		// On을 했는데 On할 수 없는 아이템이라면 다시 되돌려야한다.
@@ -50,7 +57,7 @@ public class EquipEnhanceCanvas : MonoBehaviour
 		if (_equipData.enhanceLevel > limit)
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("EquipUI_LimitTransferReceive", limit), 2.0f);
-			transferSwitch.AnimateSwitch();
+			Timing.RunCoroutine(DelayedResetSwitch());
 			return;
 		}
 

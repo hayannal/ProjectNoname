@@ -14,6 +14,7 @@ public class EquipCanvasListItem : MonoBehaviour
 	public Text enhanceLevelText;
 	public GameObject[] optionObjectList;
 	public Image lockImage;
+	public Text equippedText;
 	public GameObject selectObject;
 
 	public EquipData equipData { get; set; }
@@ -65,6 +66,7 @@ public class EquipCanvasListItem : MonoBehaviour
 		for (int i = 0; i < optionObjectList.Length; ++i)
 			optionObjectList[i].SetActive(i < equipData.optionCount);
 
+		equippedText.gameObject.SetActive(false);
 		selectObject.SetActive(false);
 		_clickAction = clickCallback;
 	}

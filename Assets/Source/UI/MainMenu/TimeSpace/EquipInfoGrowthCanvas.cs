@@ -315,6 +315,8 @@ public class EquipInfoGrowthCanvas : MonoBehaviour
 		{
 			EquipCanvasListItem equipCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
 			equipCanvasListItem.Initialize(_listCurrentEquipData[i], OnClickListItem);
+			if (gridType == eGrowthGridType.Transfer && TimeSpaceData.instance.IsEquipped(_listCurrentEquipData[i]))
+				equipCanvasListItem.equippedText.gameObject.SetActive(true);
 			_listEquipCanvasListItem.Add(equipCanvasListItem);
 		}
 	}

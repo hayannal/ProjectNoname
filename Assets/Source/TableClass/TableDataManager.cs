@@ -34,6 +34,7 @@ public class TableDataManager : MonoBehaviour
 	public InnerGradeTable innerGradeTable;
 	public OptionTable optionTable;
 	public EnhanceTable enhanceTable;
+	public TransferTable transferTable;
 	public StageExpTable stageExpTable;
 	public DamageRateTable damageRateTable;
 	public ActorInfoTable actorInfoTable;

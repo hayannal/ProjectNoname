@@ -57,14 +57,6 @@ public class EquipOptionCanvas : MonoBehaviour
 		equipStatusInfo.RefreshInfo(equipData, false);
 		RefreshOption();
 
-		transmuteRemainCountValueText.text = UIString.instance.GetString(transmuteSwitch.isOn ? "EquipUI_LeftCountValueOn" : "EquipUI_LeftCountValueOff", equipData.transmuteRemainCount.ToString());
-		if (transmuteSwitch.isOn)
-			EquipInfoGrowthCanvas.instance.RefreshGrid(EquipInfoGrowthCanvas.eGrowthGridType.Transmute);
-		else
-			EquipInfoGrowthCanvas.instance.RefreshGrid(EquipInfoGrowthCanvas.eGrowthGridType.Amplify);
-		_price = 0;
-		RefreshPriceButton();
-
 		// 처음 들어왔을때 
 		// 옵션1 옵션2 옵션3 메인1 순서대로 있는지 확인 후 선택박스를 체크해놔야한다.
 		int optionCount = _equipData.optionCount;
@@ -72,6 +64,14 @@ public class EquipOptionCanvas : MonoBehaviour
 			OnClickRandomOptionRect0();
 		else
 			OnClickMainStatusRect();
+
+		transmuteRemainCountValueText.text = UIString.instance.GetString(transmuteSwitch.isOn ? "EquipUI_LeftCountValueOn" : "EquipUI_LeftCountValueOff", equipData.transmuteRemainCount.ToString());
+		if (transmuteSwitch.isOn)
+			EquipInfoGrowthCanvas.instance.RefreshGrid(EquipInfoGrowthCanvas.eGrowthGridType.Transmute);
+		else
+			EquipInfoGrowthCanvas.instance.RefreshGrid(EquipInfoGrowthCanvas.eGrowthGridType.Amplify, _selectMain);
+		_price = 0;
+		RefreshPriceButton();
 	}
 
 	void RefreshOption()
@@ -123,23 +123,30 @@ public class EquipOptionCanvas : MonoBehaviour
 	public void OnClickMainStatusRect()
 	{
 		_targetRectTransform = mainRectTransform;
+		_selectMain = true;
 	}
 
 	public void OnClickRandomOptionRect0()
 	{
 		_targetRectTransform = optionRectTransformList[0];
+		_selectMain = false;
+		_selectRendomIndex = 0;
 	}
 
 	public void OnClickRandomOptionRect1()
 	{
 		_targetRectTransform = optionRectTransformList[1];
+		_selectRendomIndex = 1;
 	}
 
 	public void OnClickRandomOptionRect2()
 	{
 		_targetRectTransform = optionRectTransformList[2];
+		_selectRendomIndex = 2;
 	}
 
+	bool _selectMain = false;
+	int _selectRendomIndex = -1;
 	RectTransform _targetRectTransform;
 	void UpdateSelectImage()
 	{
@@ -196,7 +203,7 @@ public class EquipOptionCanvas : MonoBehaviour
 		transmuteOnOffText.color = new Color(0.176f, 0.176f, 0.176f);
 		transmuteRemainCountText.SetLocalizedText(UIString.instance.GetString("EquipUI_LeftCountOff"));
 		transmuteRemainCountValueText.text = UIString.instance.GetString("EquipUI_LeftCountValueOff", transmuteRemainCount.ToString());
-		EquipInfoGrowthCanvas.instance.RefreshGrid(EquipInfoGrowthCanvas.eGrowthGridType.Amplify);
+		EquipInfoGrowthCanvas.instance.RefreshGrid(EquipInfoGrowthCanvas.eGrowthGridType.Amplify, _selectMain);
 
 		_price = 0;
 		RefreshPriceButton();
@@ -227,6 +234,19 @@ public class EquipOptionCanvas : MonoBehaviour
 		InnerGradeTableData innerGradeTableData = TableDataManager.instance.FindInnerGradeTableData(_equipData.cachedEquipTableData.innerGrade);
 		if (innerGradeTableData == null)
 			return;
+
+		for (int i = 0; i < listSelectedEquipData.Count; ++i)
+		{
+			if (_selectMain)
+				_price += innerGradeTableData.amplifyMainGold;
+			else
+			{
+				EquipData.RandomOptionInfo info = _equipData.GetOption(_selectRendomIndex);
+				if (info != null)
+					_price += info.cachedOptionTableData.amplifyGold;
+			}
+		}
+		RefreshPriceButton();
 	}
 
 	public void OnSelectMaterial(EquipData equipData)

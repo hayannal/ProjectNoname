@@ -55,14 +55,14 @@ public class EquipListStatusInfo : MonoBehaviour
 		}
 		gradeText.SetLocalizedText(UIString.instance.GetString(string.Format("GameUI_EquipGrade{0}", equipData.cachedEquipTableData.grade)));
 		nameText.SetLocalizedText(UIString.instance.GetString(equipData.cachedEquipTableData.nameId));
-		detailShowButton.gameObject.SetActive(!equipped);
+		if (detailShowButton != null) detailShowButton.gameObject.SetActive(!equipped);
 
 		equipListItem.Initialize(equipData, null);
 		RefreshLockInfo();
 		RefreshStatus();
 
-		equipButtonObject.gameObject.SetActive(!equipped);
-		unequipButtonObject.gameObject.SetActive(equipped);
+		if (equipButtonObject != null) equipButtonObject.gameObject.SetActive(!equipped);
+		if (unequipButtonObject != null) unequipButtonObject.gameObject.SetActive(equipped);
 
 		bool usableEquipOption = ContentsManager.IsOpen(ContentsManager.eOpenContentsByResearchLevel.EquipOption);
 		optionButtonImage.color = usableEquipOption ? Color.white : ColorUtil.halfGray;
@@ -71,8 +71,8 @@ public class EquipListStatusInfo : MonoBehaviour
 
 	void RefreshLockInfo()
 	{
-		lockButton.gameObject.SetActive(_equipData.isLock);
-		unlockButton.gameObject.SetActive(!_equipData.isLock);
+		if (lockButton != null) lockButton.gameObject.SetActive(_equipData.isLock);
+		if (unlockButton != null) unlockButton.gameObject.SetActive(!_equipData.isLock);
 	}
 
 	static Color _gaugeColor = new Color(0.819f, 0.505f, 0.458f, 0.862f);
@@ -198,7 +198,17 @@ public class EquipListStatusInfo : MonoBehaviour
 
 	public void OnClickEnhanceButton()
 	{
-
+		DelayedLoadingCanvas.Show(true);
+		AddressableAssetLoadManager.GetAddressableGameObject(_equipData.cachedEquipTableData.prefabAddress, "Equip", (prefab) =>
+		{
+			UIInstanceManager.instance.ShowCanvasAsync("EquipInfoGrowthCanvas", () =>
+			{
+				if (_equipped == false)
+					EquipInfoGround.instance.ChangeDiffMode(_equipData);
+				EquipInfoGrowthCanvas.instance.RefreshInfo(0, _equipData);
+				DelayedLoadingCanvas.Show(false);
+			});
+		});
 	}
 
 	public void OnClickOptionButton()
@@ -208,6 +218,18 @@ public class EquipListStatusInfo : MonoBehaviour
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("EquipUI_RequiredResearch"), 2.0f);
 			return;
 		}
+
+		DelayedLoadingCanvas.Show(true);
+		AddressableAssetLoadManager.GetAddressableGameObject(_equipData.cachedEquipTableData.prefabAddress, "Equip", (prefab) =>
+		{
+			UIInstanceManager.instance.ShowCanvasAsync("EquipInfoGrowthCanvas", () =>
+			{
+				if (_equipped == false)
+					EquipInfoGround.instance.ChangeDiffMode(_equipData);
+				EquipInfoGrowthCanvas.instance.RefreshInfo(1, _equipData);
+				DelayedLoadingCanvas.Show(false);
+			});
+		});
 	}
 
 	public void OnClickUnlockButton()

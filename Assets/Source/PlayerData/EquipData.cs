@@ -54,6 +54,8 @@ public class EquipData
 			return _listRandomOptionInfo.Count;
 		}
 	}
+	ObscuredInt _transmuteRemainCount;
+	public int transmuteRemainCount { get { return _transmuteRemainCount; } }
 
 	public static string KeyMainOp = "mainOp";
 	public static string KeyLock = "lock";
@@ -66,6 +68,7 @@ public class EquipData
 		bool lockState = false;
 		int enhan = 0;
 		float mainOp = 0.0f;
+		int trsmtCount = 0;
 		if (customData.ContainsKey(KeyEnhan))
 		{
 			int intValue = 0;
@@ -111,6 +114,13 @@ public class EquipData
 			}
 		}
 
+		if (customData.ContainsKey(KeyTransmuteRemainCount))
+		{
+			int intValue = 0;
+			if (int.TryParse(customData[KeyTransmuteRemainCount], out intValue))
+				trsmtCount = intValue;
+		}
+
 		// 데이터 검증
 		// 메인옵부터 체크. 메인옵의 범위가 테이블 범위를 넘어섰다면
 		bool invalidEquipOption = false;
@@ -137,6 +147,7 @@ public class EquipData
 		_isLock = lockState;
 		_enhanceLevel = enhan;
 		_mainOption = mainOp;
+		_transmuteRemainCount = trsmtCount;
 
 		// 이후 Status 계산
 		RefreshCachedStatus();

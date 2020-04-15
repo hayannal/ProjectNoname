@@ -15,7 +15,15 @@ public class EquipEnhanceCanvas : MonoBehaviour
 	public Text transferNameText;
 	public Text transferOnOffText;
 	public Button autoSelectButton;
+
+	public GameObject priceButtonObject;
+	public Image priceButtonImage;
 	public Text priceButtonText;
+	public Coffee.UIExtensions.UIEffect goldGrayscaleEffect;
+
+	public GameObject maxButtonObject;
+	public Image maxButtonImage;
+	public Text maxButtonText;
 
 	ObscuredInt _price;
 
@@ -41,7 +49,44 @@ public class EquipEnhanceCanvas : MonoBehaviour
 			EquipInfoGrowthCanvas.instance.RefreshGrid(EquipInfoGrowthCanvas.eGrowthGridType.Transfer);
 		else
 			EquipInfoGrowthCanvas.instance.RefreshGrid(EquipInfoGrowthCanvas.eGrowthGridType.Enhance);
-		priceButtonText.text = "0";
+
+		InnerGradeTableData innerGradeTableData = TableDataManager.instance.FindInnerGradeTableData(equipData.cachedEquipTableData.innerGrade);
+		if (innerGradeTableData == null)
+			return;
+		RefreshButton(equipData.enhanceLevel >= innerGradeTableData.max);
+	}
+
+	void RefreshButton(bool showMaxButton)
+	{
+		if (showMaxButton)
+		{
+			priceButtonObject.SetActive(false);
+
+			maxButtonImage.color = ColorUtil.halfGray;
+			maxButtonText.color = ColorUtil.halfGray;
+			maxButtonObject.SetActive(true);
+		}
+		else
+		{
+			priceButtonText.text = "0";
+			priceButtonImage.color = ColorUtil.halfGray;
+			priceButtonText.color = Color.gray;
+			goldGrayscaleEffect.enabled = true;
+			priceButtonObject.SetActive(true);
+			maxButtonObject.SetActive(false);
+		}
+	}
+
+	void RefreshPriceButton()
+	{
+		if (priceButtonObject.activeSelf == false)
+			return;
+
+		bool disablePrice = (CurrencyData.instance.gold < _price || _price == 0);
+		priceButtonImage.color = !disablePrice ? Color.white : ColorUtil.halfGray;
+		priceButtonText.color = !disablePrice ? Color.white : Color.gray;
+		priceButtonText.text = _price.ToString("N0");
+		goldGrayscaleEffect.enabled = disablePrice;
 	}
 
 	IEnumerator<float> DelayedResetSwitch()
@@ -66,7 +111,7 @@ public class EquipEnhanceCanvas : MonoBehaviour
 		transferOnOffText.color = Color.white;
 		autoSelectButton.gameObject.SetActive(false);
 		EquipInfoGrowthCanvas.instance.RefreshGrid(EquipInfoGrowthCanvas.eGrowthGridType.Transfer);
-		priceButtonText.text = "0";
+		RefreshButton(false);
 	}
 
 	public void OnSwitchOffTransfer()
@@ -76,7 +121,13 @@ public class EquipEnhanceCanvas : MonoBehaviour
 		transferOnOffText.color = new Color(0.176f, 0.176f, 0.176f);
 		autoSelectButton.gameObject.SetActive(true);
 		EquipInfoGrowthCanvas.instance.RefreshGrid(EquipInfoGrowthCanvas.eGrowthGridType.Enhance);
-		priceButtonText.text = "0";
+
+		if (_equipData == null)
+			return;
+		InnerGradeTableData innerGradeTableData = TableDataManager.instance.FindInnerGradeTableData(_equipData.cachedEquipTableData.innerGrade);
+		if (innerGradeTableData == null)
+			return;
+		RefreshButton(_equipData.enhanceLevel >= innerGradeTableData.max);
 	}
 
 	public void OnClickAutoSelect()
@@ -89,7 +140,23 @@ public class EquipEnhanceCanvas : MonoBehaviour
 
 	public void OnClickPriceButton()
 	{
+		if (_equipData.enhanceLevel >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxPowerLevel"))
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_MaxReachToast"), 2.0f);
+			return;
+		}
 
+		if (_price == 0)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_"), 2.0f);
+			return;
+		}
+
+		if (CurrencyData.instance.gold < _price)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughGold"), 2.0f);
+			return;
+		}
 	}
 
 
@@ -118,7 +185,7 @@ public class EquipEnhanceCanvas : MonoBehaviour
 			}
 			_price += price;
 		}
-		priceButtonText.text = _price.ToString("N0");
+		RefreshPriceButton();
 	}
 
 	public void OnSelectMaterial(EquipData equipData)
@@ -132,6 +199,6 @@ public class EquipEnhanceCanvas : MonoBehaviour
 			return;
 
 		_price = innerGradeTableData.transferGold;
-		priceButtonText.text = _price.ToString("N0");
+		RefreshPriceButton();
 	}
 }

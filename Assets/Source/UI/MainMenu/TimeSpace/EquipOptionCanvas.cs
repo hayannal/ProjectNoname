@@ -16,7 +16,10 @@ public class EquipOptionCanvas : MonoBehaviour
 	public Text transmuteOnOffText;
 	public Text transmuteRemainCountText;
 	public Text transmuteRemainCountValueText;
+
+	public Image priceButtonImage;
 	public Text priceButtonText;
+	public Coffee.UIExtensions.UIEffect goldGrayscaleEffect;
 
 	ObscuredInt _price;
 
@@ -42,10 +45,20 @@ public class EquipOptionCanvas : MonoBehaviour
 			EquipInfoGrowthCanvas.instance.RefreshGrid(EquipInfoGrowthCanvas.eGrowthGridType.Transmute);
 		else
 			EquipInfoGrowthCanvas.instance.RefreshGrid(EquipInfoGrowthCanvas.eGrowthGridType.Amplify);
-		priceButtonText.text = "0";
+		_price = 0;
+		RefreshPriceButton();
 
 		// 처음 들어왔을때 
 		// 옵션1 옵션2 옵션3 메인1 순서대로 풀로 차있는지 확인 후 선택해주는 절차가 필요하다.
+	}
+
+	void RefreshPriceButton()
+	{
+		bool disablePrice = (CurrencyData.instance.gold < _price || _price == 0);
+		priceButtonImage.color = !disablePrice ? Color.white : ColorUtil.halfGray;
+		priceButtonText.color = !disablePrice ? Color.white : Color.gray;
+		priceButtonText.text = _price.ToString("N0");
+		goldGrayscaleEffect.enabled = disablePrice;
 	}
 
 	IEnumerator<float> DelayedResetSwitch()
@@ -73,7 +86,9 @@ public class EquipOptionCanvas : MonoBehaviour
 		transmuteRemainCountText.SetLocalizedText(UIString.instance.GetString("EquipUI_LeftCountOn"));
 		transmuteRemainCountValueText.text = UIString.instance.GetString("EquipUI_LeftCountValueOn", transmuteRemainCount.ToString());
 		EquipInfoGrowthCanvas.instance.RefreshGrid(EquipInfoGrowthCanvas.eGrowthGridType.Transmute);
-		priceButtonText.text = "0";
+
+		_price = 0;
+		RefreshPriceButton();
 	}
 
 	public void OnSwitchOffTransmute()
@@ -87,12 +102,24 @@ public class EquipOptionCanvas : MonoBehaviour
 		transmuteRemainCountText.SetLocalizedText(UIString.instance.GetString("EquipUI_LeftCountOff"));
 		transmuteRemainCountValueText.text = UIString.instance.GetString("EquipUI_LeftCountValueOff", transmuteRemainCount.ToString());
 		EquipInfoGrowthCanvas.instance.RefreshGrid(EquipInfoGrowthCanvas.eGrowthGridType.Amplify);
-		priceButtonText.text = "0";
+
+		_price = 0;
+		RefreshPriceButton();
 	}
 
 	public void OnClickPriceButton()
 	{
+		if (_price == 0)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_"), 2.0f);
+			return;
+		}
 
+		if (CurrencyData.instance.gold < _price)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughGold"), 2.0f);
+			return;
+		}
 	}
 
 
@@ -118,6 +145,6 @@ public class EquipOptionCanvas : MonoBehaviour
 			return;
 
 		_price = innerGradeTableData.transmuteRandomGold;
-		priceButtonText.text = _price.ToString("N0");
+		RefreshPriceButton();
 	}
 }

@@ -88,6 +88,12 @@ public class AutoSelectCanvas : MonoBehaviour
 
 	public void OnClickApplyButton()
 	{
+		if (_listGrade.Count == 0)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("EquipUI_"), 2.0f);
+			return;
+		}
+
 		EquipInfoGrowthCanvas.instance.OnAutoSelect(_listGrade, enhancedSwitch.isOn);
 		gameObject.SetActive(false);
 	}

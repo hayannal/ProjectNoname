@@ -5,12 +5,23 @@ using UnityEngine.UI;
 using Michsky.UI.Hexart;
 using CodeStage.AntiCheat.ObscuredTypes;
 using MEC;
+using ActorStatusDefine;
 
 public class EquipOptionCanvas : MonoBehaviour
 {
 	public static EquipOptionCanvas instance;
 
 	public EquipListStatusInfo equipStatusInfo;
+	public Text mainMinText;
+	public Text mainMaxText;
+	public RectTransform mainRectTransform;
+	public GameObject[] optionRectObjectList;
+	public Text[] optionMinTextList;
+	public Text[] optionMaxTextList;
+	public RectTransform[] optionRectTransformList;
+	public RectTransform selectObjectRectTransform;
+	public RectTransform selectImageRectTransform;
+
 	public SwitchAnim transmuteSwitch;
 	public Text transmuteNameText;
 	public Text transmuteOnOffText;
@@ -34,11 +45,17 @@ public class EquipOptionCanvas : MonoBehaviour
 			transmuteSwitch.AnimateSwitch();
 	}
 
+	void Update()
+	{
+		UpdateSelectImage();
+	}
+
 	EquipData _equipData;
 	public void RefreshInfo(EquipData equipData)
 	{
 		_equipData = equipData;
 		equipStatusInfo.RefreshInfo(equipData, false);
+		RefreshOption();
 
 		transmuteRemainCountValueText.text = UIString.instance.GetString(transmuteSwitch.isOn ? "EquipUI_LeftCountValueOn" : "EquipUI_LeftCountValueOff", equipData.transmuteRemainCount.ToString());
 		if (transmuteSwitch.isOn)
@@ -49,7 +66,43 @@ public class EquipOptionCanvas : MonoBehaviour
 		RefreshPriceButton();
 
 		// 처음 들어왔을때 
-		// 옵션1 옵션2 옵션3 메인1 순서대로 풀로 차있는지 확인 후 선택해주는 절차가 필요하다.
+		// 옵션1 옵션2 옵션3 메인1 순서대로 있는지 확인 후 선택박스를 체크해놔야한다.
+		int optionCount = _equipData.optionCount;
+		if (optionCount > 0)
+			OnClickRandomOptionRect0();
+		else
+			OnClickMainStatusRect();
+	}
+
+	void RefreshOption()
+	{
+		mainMinText.text = ActorStatus.GetDisplayAttack(_equipData.cachedEquipTableData.min).ToString("N0");
+		mainMaxText.text = ActorStatus.GetDisplayAttack(_equipData.cachedEquipTableData.max).ToString("N0");
+
+		int optionCount = _equipData.optionCount;
+		for (int i = 0; i < optionRectObjectList.Length; ++i)
+			optionRectObjectList[i].gameObject.SetActive(i < optionCount);
+
+		for (int i = 0; i < optionCount; ++i)
+		{
+			EquipData.RandomOptionInfo info = _equipData.GetOption(i);
+			
+			switch (info.statusType)
+			{
+				case eActorStatus.MaxHp:
+					optionMinTextList[i].text = ActorStatus.GetDisplayMaxHp(info.cachedOptionTableData.min).ToString("N0");
+					optionMaxTextList[i].text = ActorStatus.GetDisplayMaxHp(info.cachedOptionTableData.max).ToString("N0");
+					break;
+				case eActorStatus.Attack:
+					optionMinTextList[i].text = ActorStatus.GetDisplayAttack(info.cachedOptionTableData.min).ToString("N0");
+					optionMaxTextList[i].text = ActorStatus.GetDisplayAttack(info.cachedOptionTableData.max).ToString("N0");
+					break;
+				default:
+					optionMinTextList[i].text = string.Format("{0:0.##}%", info.cachedOptionTableData.min * 100.0f);
+					optionMaxTextList[i].text = string.Format("{0:0.##}%", info.cachedOptionTableData.max * 100.0f);
+					break;
+			}
+		}
 	}
 
 	void RefreshPriceButton()
@@ -65,6 +118,48 @@ public class EquipOptionCanvas : MonoBehaviour
 	{
 		yield return Timing.WaitForOneFrame;
 		transmuteSwitch.AnimateSwitch();
+	}
+
+	public void OnClickMainStatusRect()
+	{
+		_targetRectTransform = mainRectTransform;
+	}
+
+	public void OnClickRandomOptionRect0()
+	{
+		_targetRectTransform = optionRectTransformList[0];
+	}
+
+	public void OnClickRandomOptionRect1()
+	{
+		_targetRectTransform = optionRectTransformList[1];
+	}
+
+	public void OnClickRandomOptionRect2()
+	{
+		_targetRectTransform = optionRectTransformList[2];
+	}
+
+	RectTransform _targetRectTransform;
+	void UpdateSelectImage()
+	{
+		if (_targetRectTransform == null)
+			return;
+
+		float diff = _targetRectTransform.position.y - selectObjectRectTransform.position.y;
+		if (diff == 0.0f)
+			return;
+
+		if (Mathf.Abs(diff) < 0.01f)
+		{
+			selectObjectRectTransform.position = new Vector3(selectObjectRectTransform.position.x, _targetRectTransform.position.y, selectObjectRectTransform.position.z);
+			return;
+		}
+
+		float resultY = Mathf.Lerp(selectObjectRectTransform.position.y, _targetRectTransform.position.y, Time.deltaTime * 10.0f);
+		selectObjectRectTransform.position = new Vector3(selectObjectRectTransform.position.x, resultY, selectObjectRectTransform.position.z);
+		selectImageRectTransform.position = Vector3.Lerp(selectImageRectTransform.position, _targetRectTransform.position, Time.deltaTime * 11.0f);
+		selectImageRectTransform.sizeDelta = Vector2.Lerp(selectImageRectTransform.sizeDelta, _targetRectTransform.sizeDelta, Time.deltaTime * 11.0f);
 	}
 
 	public void OnSwitchOnTransmute()

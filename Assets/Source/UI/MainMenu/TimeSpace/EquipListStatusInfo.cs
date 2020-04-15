@@ -35,24 +35,7 @@ public class EquipListStatusInfo : MonoBehaviour
 	{
 		_equipped = equipped;
 		_equipData = equipData;
-		switch (equipData.cachedEquipTableData.grade)
-		{
-			case 0:
-				gradeBackImage.color = new Color(0.5f, 0.5f, 0.5f);
-				break;
-			case 1:
-				gradeBackImage.color = new Color(0.0f, 1.0f, 0.51f);
-				break;
-			case 2:
-				gradeBackImage.color = new Color(0.0f, 0.51f, 1.0f);
-				break;
-			case 3:
-				gradeBackImage.color = new Color(0.63f, 0.0f, 1.0f);
-				break;
-			case 4:
-				gradeBackImage.color = new Color(1.0f, 0.5f, 0.0f);
-				break;
-		}
+		gradeBackImage.color = GetGradeTitleBarColor(equipData.cachedEquipTableData.grade);
 		gradeText.SetLocalizedText(UIString.instance.GetString(string.Format("GameUI_EquipGrade{0}", equipData.cachedEquipTableData.grade)));
 		nameText.SetLocalizedText(UIString.instance.GetString(equipData.cachedEquipTableData.nameId));
 		if (detailShowButton != null) detailShowButton.gameObject.SetActive(!equipped);
@@ -73,6 +56,19 @@ public class EquipListStatusInfo : MonoBehaviour
 	{
 		if (lockButton != null) lockButton.gameObject.SetActive(_equipData.isLock);
 		if (unlockButton != null) unlockButton.gameObject.SetActive(!_equipData.isLock);
+	}
+
+	public static Color GetGradeTitleBarColor(int grade)
+	{
+		switch (grade)
+		{
+			case 0: return new Color(0.5f, 0.5f, 0.5f);
+			case 1: return new Color(0.0f, 1.0f, 0.51f);
+			case 2: return new Color(0.0f, 0.51f, 1.0f);
+			case 3: return new Color(0.63f, 0.0f, 1.0f);
+			case 4: return new Color(1.0f, 0.5f, 0.0f);
+		}
+		return Color.white;
 	}
 
 	static Color _gaugeColor = new Color(0.819f, 0.505f, 0.458f, 0.862f);

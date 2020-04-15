@@ -393,4 +393,38 @@ public class EquipInfoGrowthCanvas : MonoBehaviour
 			case 1: EquipOptionCanvas.instance.OnSelectMaterial(_selectedEquipData); break;
 		}
 	}
+
+	public void OnAutoSelect(List<int> listGrade, bool includeEnhanced)
+	{
+		_listMultiSelectUniqueId.Clear();
+		_listMultiSelectEquipData.Clear();
+
+		for (int i = 0; i < _listEquipCanvasListItem.Count; ++i)
+		{
+			bool result = true;
+			if (includeEnhanced == false && _listEquipCanvasListItem[i].equipData.enhanceLevel > 0)
+				result = false;
+
+			if (result && listGrade.Contains(_listEquipCanvasListItem[i].equipData.cachedEquipTableData.grade) == false)
+				result = false;
+
+			if (result)
+			{
+				_listMultiSelectUniqueId.Add(_listEquipCanvasListItem[i].equipData.uniqueId);
+				_listMultiSelectEquipData.Add(_listEquipCanvasListItem[i].equipData);
+			}
+			_listEquipCanvasListItem[i].ShowSelectObject(result);
+
+			if (_listMultiSelectUniqueId.Count >= MAX_SELECT_COUNT)
+				break;
+		}
+
+		RefreshCountText();
+
+		switch (_lastIndex)
+		{
+			case 0: EquipEnhanceCanvas.instance.OnMultiSelectMaterial(_listMultiSelectEquipData); break;
+			case 1: EquipOptionCanvas.instance.OnMultiSelectMaterial(_listMultiSelectEquipData); break;
+		}
+	}
 }

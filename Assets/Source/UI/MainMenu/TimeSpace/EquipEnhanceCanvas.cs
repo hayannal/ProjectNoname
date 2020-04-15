@@ -81,7 +81,10 @@ public class EquipEnhanceCanvas : MonoBehaviour
 
 	public void OnClickAutoSelect()
 	{
-
+		UIInstanceManager.instance.ShowCanvasAsync("AutoSelectCanvas", () =>
+		{
+			AutoSelectCanvas.instance.InitializeGrade(_equipData.cachedEquipTableData.grade);
+		});
 	}
 
 	public void OnClickPriceButton()

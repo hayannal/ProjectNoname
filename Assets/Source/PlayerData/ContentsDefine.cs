@@ -43,7 +43,7 @@ public static class ContentsManager
 	{
 		//if (PlayerData.instance.researchLevel >= (int)content)
 		//	return true;
-		return false;
+		return true;
 	}
 
 	public static bool IsOpen(eOpenContentsByChapterStage content)

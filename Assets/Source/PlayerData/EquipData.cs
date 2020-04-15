@@ -61,7 +61,7 @@ public class EquipData
 	public static string KeyLock = "lock";
 	public static string KeyEnhan = "enhan";
 	public static string KeyRandomOp = "randOp";
-	public static string KeyTransmuteRemainCount = "TrsmtReCnt";
+	public static string KeyTransmuteRemainCount = "trsmtReCnt";
 
 	public void Initialize(Dictionary<string, string> customData)
 	{

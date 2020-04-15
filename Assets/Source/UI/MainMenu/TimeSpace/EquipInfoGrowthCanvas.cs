@@ -211,7 +211,7 @@ public class EquipInfoGrowthCanvas : MonoBehaviour
 					//	continue;
 					if (listEquipData[i].isLock)
 						continue;
-					if (_equipData.enhanceLevel == 0)
+					if (listEquipData[i].enhanceLevel == 0)
 						continue;
 					if (_equipData.uniqueId == listEquipData[i].uniqueId)
 						continue;

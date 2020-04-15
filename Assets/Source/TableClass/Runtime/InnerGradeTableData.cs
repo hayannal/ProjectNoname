@@ -120,4 +120,8 @@ public class InnerGradeTableData
   int _transmuteRandomGold;
   public int transmuteRandomGold { get { return _transmuteRandomGold; } set { _transmuteRandomGold = value; } }
   
+  [SerializeField]
+  int _transferGold;
+  public int transferGold { get { return _transferGold; } set { _transferGold = value; } }
+  
 }

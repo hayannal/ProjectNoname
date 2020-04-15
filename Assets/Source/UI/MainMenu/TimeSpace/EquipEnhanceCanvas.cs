@@ -125,5 +125,13 @@ public class EquipEnhanceCanvas : MonoBehaviour
 	{
 		if (transferSwitch.isOn == false)
 			return;
+
+		_price = 0;
+		InnerGradeTableData innerGradeTableData = TableDataManager.instance.FindInnerGradeTableData(_equipData.cachedEquipTableData.innerGrade);
+		if (innerGradeTableData == null)
+			return;
+
+		_price = innerGradeTableData.transferGold;
+		priceButtonText.text = _price.ToString("N0");
 	}
 }

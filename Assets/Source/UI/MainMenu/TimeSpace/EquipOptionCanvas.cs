@@ -22,21 +22,35 @@ public class EquipOptionCanvas : MonoBehaviour
 	public RectTransform selectObjectRectTransform;
 	public RectTransform selectImageRectTransform;
 
+	public RectTransform switchRootRectTransform;
+	public RectTransform switchRootOutRectTransform;
 	public SwitchAnim transmuteSwitch;
 	public Text transmuteNameText;
 	public Text transmuteOnOffText;
 	public Text transmuteRemainCountText;
 	public Text transmuteRemainCountValueText;
 
+	public GameObject priceButtonObject;
 	public Image priceButtonImage;
 	public Text priceButtonText;
 	public Coffee.UIExtensions.UIEffect goldGrayscaleEffect;
 
+	public GameObject maxButtonObject;
+	public Image maxButtonImage;
+	public Text maxButtonText;
+
 	ObscuredInt _price;
 
+	Vector2 _defaultSwitchRootPosition;
 	void Awake()
 	{
 		instance = this;
+		_defaultSwitchRootPosition = switchRootRectTransform.anchoredPosition;
+	}
+
+	void Start()
+	{
+		selectImageRectTransform.SetAsFirstSibling();
 	}
 
 	void OnEnable()
@@ -57,21 +71,34 @@ public class EquipOptionCanvas : MonoBehaviour
 		equipStatusInfo.RefreshInfo(equipData, false);
 		RefreshOption();
 
-		// 처음 들어왔을때 
-		// 옵션1 옵션2 옵션3 메인1 순서대로 있는지 확인 후 선택박스를 체크해놔야한다.
-		int optionCount = _equipData.optionCount;
-		if (optionCount > 0)
-			OnClickRandomOptionRect0();
-		else
-			OnClickMainStatusRect();
-
+		// 처음 들어왔을때 시작은 항상 연마모드
 		transmuteRemainCountValueText.text = UIString.instance.GetString(transmuteSwitch.isOn ? "EquipUI_LeftCountValueOn" : "EquipUI_LeftCountValueOff", equipData.transmuteRemainCount.ToString());
-		if (transmuteSwitch.isOn)
-			EquipInfoGrowthCanvas.instance.RefreshGrid(EquipInfoGrowthCanvas.eGrowthGridType.Transmute);
-		else
-			EquipInfoGrowthCanvas.instance.RefreshGrid(EquipInfoGrowthCanvas.eGrowthGridType.Amplify, _selectMain);
-		_price = 0;
-		RefreshPriceButton();
+
+		// 옵션1 옵션2 옵션3 메인1 순서대로 있는지 확인 후 선택박스를 체크해놔야한다.
+		int selectedIndex = -1;
+		int optionCount = _equipData.optionCount;
+		for (int i = 0; i < optionCount; ++i)
+		{
+			EquipData.RandomOptionInfo info = _equipData.GetOption(i);
+			if (info.GetRandomStatusRatio() != 1.0f)
+			{
+				switch (i)
+				{
+					case 0: OnClickRandomOptionRect(0, true); break;
+					case 1: OnClickRandomOptionRect(1, true); break;
+					case 2: OnClickRandomOptionRect(2, true); break;
+				}
+				selectedIndex = i;
+				break;
+			}
+		}
+		if (selectedIndex == -1)
+		{
+			if (_equipData.GetMainStatusRatio() != 1.0f)
+				OnClickMainStatusRectInternal(true);
+			else
+				OnClickRandomOptionRect(0, true);
+		}
 	}
 
 	void RefreshOption()
@@ -105,8 +132,33 @@ public class EquipOptionCanvas : MonoBehaviour
 		}
 	}
 
+	void RefreshButton(bool showMaxButton)
+	{
+		_price = 0;
+		if (showMaxButton)
+		{
+			priceButtonObject.SetActive(false);
+
+			maxButtonImage.color = ColorUtil.halfGray;
+			maxButtonText.color = ColorUtil.halfGray;
+			maxButtonObject.SetActive(true);
+		}
+		else
+		{
+			priceButtonText.text = "0";
+			priceButtonImage.color = ColorUtil.halfGray;
+			priceButtonText.color = Color.gray;
+			goldGrayscaleEffect.enabled = true;
+			priceButtonObject.SetActive(true);
+			maxButtonObject.SetActive(false);
+		}
+	}
+
 	void RefreshPriceButton()
 	{
+		if (priceButtonObject.activeSelf == false)
+			return;
+
 		bool disablePrice = (CurrencyData.instance.gold < _price || _price == 0);
 		priceButtonImage.color = !disablePrice ? Color.white : ColorUtil.halfGray;
 		priceButtonText.color = !disablePrice ? Color.white : Color.gray;
@@ -120,30 +172,50 @@ public class EquipOptionCanvas : MonoBehaviour
 		transmuteSwitch.AnimateSwitch();
 	}
 
-	public void OnClickMainStatusRect()
+	public void OnClickMainStatusRectInternal(bool forceRefresh = false)
 	{
 		_targetRectTransform = mainRectTransform;
-		_selectMain = true;
+		if (_selectMain == false || forceRefresh)
+		{
+			_selectMain = true;
+
+			// 메인옵은 무조건 Amplify만 되기 때문에 스위치 자체는 건드리지 않은채 그리드만 연마 모드로 바꾼다.
+			// 이래야 다시 랜덤옵션 선택했을때 변경모드로 돌아갈 수 있다.
+			EquipInfoGrowthCanvas.instance.RefreshGrid(EquipInfoGrowthCanvas.eGrowthGridType.Amplify, _selectMain);
+			RefreshButton(_equipData.GetMainStatusRatio() == 1.0f);
+		}
+		// 스위치를 끄니 OnEnable때 AnimateSwitch걸어둔 애니가 적용되지 않아서 이상하게 보인다. 그래서 화면밖으로 옮기도록 한다.
+		//switchObject.SetActive(false);
+		switchRootRectTransform.anchoredPosition = switchRootOutRectTransform.anchoredPosition;
 	}
 
-	public void OnClickRandomOptionRect0()
+	void OnClickRandomOptionRect(int randomIndex, bool forceRefresh = false)
 	{
-		_targetRectTransform = optionRectTransformList[0];
-		_selectMain = false;
-		_selectRendomIndex = 0;
+		_targetRectTransform = optionRectTransformList[randomIndex];
+		if (_selectMain || forceRefresh)
+		{
+			_selectMain = false;
+			if (transmuteSwitch.isOn)
+			{
+				EquipInfoGrowthCanvas.instance.RefreshGrid(EquipInfoGrowthCanvas.eGrowthGridType.Transmute);
+				RefreshButton(false);
+			}
+			else
+			{
+				EquipInfoGrowthCanvas.instance.RefreshGrid(EquipInfoGrowthCanvas.eGrowthGridType.Amplify, _selectMain);
+				EquipData.RandomOptionInfo info = _equipData.GetOption(randomIndex);
+				RefreshButton(info.GetRandomStatusRatio() == 1.0f);
+			}
+		}
+		_selectRendomIndex = randomIndex;
+		//switchObject.SetActive(true);
+		switchRootRectTransform.anchoredPosition = _defaultSwitchRootPosition;
 	}
 
-	public void OnClickRandomOptionRect1()
-	{
-		_targetRectTransform = optionRectTransformList[1];
-		_selectRendomIndex = 1;
-	}
-
-	public void OnClickRandomOptionRect2()
-	{
-		_targetRectTransform = optionRectTransformList[2];
-		_selectRendomIndex = 2;
-	}
+	public void OnClickMainStatusRect() { OnClickMainStatusRectInternal(); }
+	public void OnClickRandomOptionRect0() { OnClickRandomOptionRect(0); }
+	public void OnClickRandomOptionRect1() { OnClickRandomOptionRect(1); }
+	public void OnClickRandomOptionRect2() { OnClickRandomOptionRect(2); }
 
 	bool _selectMain = false;
 	int _selectRendomIndex = -1;
@@ -188,9 +260,7 @@ public class EquipOptionCanvas : MonoBehaviour
 		transmuteRemainCountText.SetLocalizedText(UIString.instance.GetString("EquipUI_LeftCountOn"));
 		transmuteRemainCountValueText.text = UIString.instance.GetString("EquipUI_LeftCountValueOn", transmuteRemainCount.ToString());
 		EquipInfoGrowthCanvas.instance.RefreshGrid(EquipInfoGrowthCanvas.eGrowthGridType.Transmute);
-
-		_price = 0;
-		RefreshPriceButton();
+		RefreshButton(false);
 	}
 
 	public void OnSwitchOffTransmute()
@@ -205,15 +275,47 @@ public class EquipOptionCanvas : MonoBehaviour
 		transmuteRemainCountValueText.text = UIString.instance.GetString("EquipUI_LeftCountValueOff", transmuteRemainCount.ToString());
 		EquipInfoGrowthCanvas.instance.RefreshGrid(EquipInfoGrowthCanvas.eGrowthGridType.Amplify, _selectMain);
 
-		_price = 0;
-		RefreshPriceButton();
+		if (_equipData != null)
+		{
+			float ratio = 0.0f;
+			if (_selectMain)
+				ratio = _equipData.GetMainStatusRatio();
+			else
+			{
+				EquipData.RandomOptionInfo info = _equipData.GetOption(_selectRendomIndex);
+				ratio = info.GetRandomStatusRatio();
+			}
+			RefreshButton(ratio == 1.0f);
+		}
+		else
+		{
+			_price = 0;
+			RefreshPriceButton();
+		}
 	}
 
 	public void OnClickPriceButton()
 	{
+		if (_equipData != null && (_selectMain || transmuteSwitch.isOn == false))
+		{
+			float ratio = 0.0f;
+			if (_selectMain)
+				ratio = _equipData.GetMainStatusRatio();
+			else
+			{
+				EquipData.RandomOptionInfo info = _equipData.GetOption(_selectRendomIndex);
+				ratio = info.GetRandomStatusRatio();
+			}
+			if (ratio == 1.0f)
+			{
+				ToastCanvas.instance.ShowToast(UIString.instance.GetString("EquipUI_MaxReachAmplifyToast"), 2.0f);
+				return;
+			}
+		}
+
 		if (_price == 0)
 		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_"), 2.0f);
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("EquipUI_SelectMaterial"), 2.0f);
 			return;
 		}
 
@@ -227,7 +329,7 @@ public class EquipOptionCanvas : MonoBehaviour
 
 	public void OnMultiSelectMaterial(List<EquipData> listSelectedEquipData)
 	{
-		if (transmuteSwitch.isOn)
+		if (transmuteSwitch.isOn && _selectMain == false)
 			return;
 
 		_price = 0;
@@ -235,17 +337,10 @@ public class EquipOptionCanvas : MonoBehaviour
 		if (innerGradeTableData == null)
 			return;
 
-		for (int i = 0; i < listSelectedEquipData.Count; ++i)
-		{
-			if (_selectMain)
-				_price += innerGradeTableData.amplifyMainGold;
-			else
-			{
-				EquipData.RandomOptionInfo info = _equipData.GetOption(_selectRendomIndex);
-				if (info != null)
-					_price += info.cachedOptionTableData.amplifyGold;
-			}
-		}
+		if (_selectMain)
+			_price += (innerGradeTableData.amplifyMainGold * listSelectedEquipData.Count);
+		else
+			_price += (innerGradeTableData.amplifyRandomGold * listSelectedEquipData.Count);
 		RefreshPriceButton();
 	}
 

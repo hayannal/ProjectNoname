@@ -64,8 +64,4 @@ public class OptionTableData
   int _amplifyLeftRight;
   public int amplifyLeftRight { get { return _amplifyLeftRight; } set { _amplifyLeftRight = value; } }
   
-  [SerializeField]
-  int _amplifyGold;
-  public int amplifyGold { get { return _amplifyGold; } set { _amplifyGold = value; } }
-  
 }

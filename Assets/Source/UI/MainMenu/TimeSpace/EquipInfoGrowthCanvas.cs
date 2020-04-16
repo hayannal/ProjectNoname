@@ -178,7 +178,7 @@ public class EquipInfoGrowthCanvas : MonoBehaviour
 			case eGrowthGridType.Enhance: selectMaterialText.SetLocalizedText(UIString.instance.GetString("EquipUI_MaterialForEnhance")); break;
 			case eGrowthGridType.Transfer: selectMaterialText.SetLocalizedText(UIString.instance.GetString("EquipUI_MaterialForTransfer")); break;
 			case eGrowthGridType.Transmute: selectMaterialText.SetLocalizedText(UIString.instance.GetString("EquipUI_MaterialForTransmute")); break;
-			case eGrowthGridType.Amplify: selectMaterialText.SetLocalizedText(UIString.instance.GetString("EquipUI_MaterialForAmplify")); break;
+			case eGrowthGridType.Amplify: selectMaterialText.SetLocalizedText(UIString.instance.GetString(amplifyMain ? "EquipUI_MaterialForAmplifyMain" : "EquipUI_MaterialForAmplifyRandom")); break;
 		}
 		List<EquipData> listEquipData = null;
 		switch (gridType)

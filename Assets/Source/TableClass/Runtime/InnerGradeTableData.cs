@@ -117,6 +117,10 @@ public class InnerGradeTableData
   public int amplifyMainGold { get { return _amplifyMainGold; } set { _amplifyMainGold = value; } }
   
   [SerializeField]
+  int _amplifyRandomGold;
+  public int amplifyRandomGold { get { return _amplifyRandomGold; } set { _amplifyRandomGold = value; } }
+  
+  [SerializeField]
   int _transmuteRandomGold;
   public int transmuteRandomGold { get { return _transmuteRandomGold; } set { _transmuteRandomGold = value; } }
   

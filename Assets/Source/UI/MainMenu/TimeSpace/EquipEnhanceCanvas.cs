@@ -162,6 +162,22 @@ public class EquipEnhanceCanvas : MonoBehaviour
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughGold"), 2.0f);
 			return;
 		}
+
+
+		if (transferSwitch.isOn)
+		{
+			//UIInstanceManager.instance.ShowCanvasAsync("EquipTransferConfirmCanvas", () =>
+			//{
+				//CharacterLimitBreakCanvas.instance.ShowCanvas(true, characterData, _price);
+			//});
+		}
+		else
+		{
+			UIInstanceManager.instance.ShowCanvasAsync("EquipEnhanceConfirmCanvas", () =>
+			{
+				EquipEnhanceConfirmCanvas.instance.ShowCanvas(true, _equipData, equipStatusInfo.mainStatusText.text, EquipInfoGrowthCanvas.instance.multiSelectCount, _price);
+			});
+		}
 	}
 
 

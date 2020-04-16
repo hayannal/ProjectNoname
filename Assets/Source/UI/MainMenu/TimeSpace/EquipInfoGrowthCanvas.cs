@@ -46,6 +46,11 @@ public class EquipInfoGrowthCanvas : MonoBehaviour
 
 	void OnEnable()
 	{
+		// 연출로 인해 닫힌거면 _lastIndex 가 -1이 아닐거다.
+		// 이땐 
+		if (_lastIndex != -1)
+			_listMenuTransform[_lastIndex].gameObject.SetActive(true);
+
 		StackCanvas.Push(gameObject);
 	}
 
@@ -57,14 +62,16 @@ public class EquipInfoGrowthCanvas : MonoBehaviour
 				continue;
 			_listMenuTransform[i].gameObject.SetActive(false);
 		}
+
+		materialSmallStatusInfo.gameObject.SetActive(false);
+
+		if (StackCanvas.Pop(gameObject))
+			return;
+
 		_lastIndex = -1;
 
 		if (EquipInfoGround.instance.diffMode)
 			EquipInfoGround.instance.RestoreDiffMode();
-
-		materialSmallStatusInfo.gameObject.SetActive(false);
-
-		StackCanvas.Pop(gameObject);
 	}
 
 	float _materialSmallStatusInfoShowRemainTime;
@@ -344,6 +351,7 @@ public class EquipInfoGrowthCanvas : MonoBehaviour
 
 	List<string> _listMultiSelectUniqueId = new List<string>();
 	List<EquipData> _listMultiSelectEquipData = new List<EquipData>();
+	public int multiSelectCount { get { return _listMultiSelectEquipData.Count; } }
 	public void OnMultiSelectListItem(EquipData equipData)
 	{
 		bool contains = _listMultiSelectUniqueId.Contains(equipData.uniqueId);

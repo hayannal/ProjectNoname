@@ -252,7 +252,7 @@ public class CharacterPowerLevelUpCanvas : DetailShowCanvasBase
 		if (_updateAtkText == false)
 			return;
 
-		_floatCurrentAtk += _hpChangeSpeed * Time.deltaTime;
+		_floatCurrentAtk += _atkChangeSpeed * Time.deltaTime;
 		int currentAtkInt = (int)_floatCurrentAtk;
 		if (currentAtkInt <= 0)
 		{

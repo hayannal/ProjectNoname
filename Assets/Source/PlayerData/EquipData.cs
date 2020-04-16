@@ -156,8 +156,13 @@ public class EquipData
 	void RefreshCachedStatus()
 	{
 		// 자리별 보너스 같은건 사라졌지만 UI표기를 위해서라도 따로 가지고 있는게 편하다. 이 캐싱엔 강화 정보까지 포함되어있다.
-		_mainStatusValue = 0.0f;
-		_mainStatusValue = _mainOption;// * cachedEquipTableData.multi;
+		_mainStatusValue = _mainOption;
+		if (_enhanceLevel > 0)
+		{
+			EnhanceTableData enhanceTableData = TableDataManager.instance.FindEnhanceTableData(cachedEquipTableData.innerGrade, _enhanceLevel);
+			if (enhanceTableData != null)
+				_mainStatusValue *= enhanceTableData.multi;
+		}
 
 		// 서브 옵션들을 돌면서 equipStatusList에 모아야한다. 같은 옵은 같은 옵션끼리.
 		for (int i = 0; i < _equipStatusList.valueList.Length; ++i)

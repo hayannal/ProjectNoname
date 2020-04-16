@@ -58,6 +58,7 @@ public class EquipEnhanceCanvas : MonoBehaviour
 
 	void RefreshButton(bool showMaxButton)
 	{
+		_price = 0;
 		if (showMaxButton)
 		{
 			priceButtonObject.SetActive(false);
@@ -140,15 +141,19 @@ public class EquipEnhanceCanvas : MonoBehaviour
 
 	public void OnClickPriceButton()
 	{
-		if (_equipData.enhanceLevel >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxPowerLevel"))
+		InnerGradeTableData innerGradeTableData = TableDataManager.instance.FindInnerGradeTableData(_equipData.cachedEquipTableData.innerGrade);
+		if (innerGradeTableData == null)
+			return;
+
+		if (_equipData.enhanceLevel >= innerGradeTableData.max)
 		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_MaxReachToast"), 2.0f);
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("EquipUI_MaxReachEnhanceToast"), 2.0f);
 			return;
 		}
 
 		if (_price == 0)
 		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_"), 2.0f);
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("EquipUI_SelectMaterial"), 2.0f);
 			return;
 		}
 

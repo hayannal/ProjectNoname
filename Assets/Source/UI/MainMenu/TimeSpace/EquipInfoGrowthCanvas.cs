@@ -253,7 +253,7 @@ public class EquipInfoGrowthCanvas : MonoBehaviour
 						continue;
 					if (_equipData.uniqueId == listEquipData[i].uniqueId)
 						continue;
-					if (_equipData.cachedEquipTableData.equipId != listEquipData[i].cachedEquipTableData.equipId)
+					if (amplifyMain && _equipData.cachedEquipTableData.equipId != listEquipData[i].cachedEquipTableData.equipId)
 						continue;
 					_listCurrentEquipData.Add(listEquipData[i]);
 				}

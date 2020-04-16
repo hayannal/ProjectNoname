@@ -90,7 +90,7 @@ public class AutoSelectCanvas : MonoBehaviour
 	{
 		if (_listGrade.Count == 0)
 		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("EquipUI_"), 2.0f);
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("EquipUI_SelectGrade"), 2.0f);
 			return;
 		}
 

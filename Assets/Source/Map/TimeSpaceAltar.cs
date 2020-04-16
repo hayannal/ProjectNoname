@@ -140,10 +140,10 @@ public class TimeSpaceAltar : MonoBehaviour
 		switch (grade)
 		{
 			case 0: return new Color(0.5f, 0.5f, 0.5f);
-			case 1: return new Color(0.0f, 1.0f, 0.51f);
-			case 2: return new Color(0.0f, 0.51f, 1.0f);
-			case 3: return new Color(0.63f, 0.0f, 1.0f);
-			case 4: return new Color(1.0f, 0.5f, 0.0f);
+			case 1: return new Color(0.35f, 0.84f, 0.35f);
+			case 2: return new Color(0.2f, 0.51f, 1.0f);
+			case 3: return new Color(0.63f, 0.2f, 1.0f);
+			case 4: return new Color(1.0f, 0.5f, 0.2f);
 		}
 		return Color.white;
 	}
@@ -153,9 +153,9 @@ public class TimeSpaceAltar : MonoBehaviour
 		switch (grade)
 		{
 			case 0: return new Color(0.8f, 0.8f, 0.8f);
-			case 1: return new Color(0.0f, 1.0f, 0.51f);
+			case 1: return new Color(0.1f, 0.84f, 0.1f);
 			case 2: return new Color(0.0f, 0.51f, 1.0f);
-			case 3: return new Color(0.63f, 0.0f, 1.0f);
+			case 3: return new Color(0.75f, 0.0f, 1.0f);
 			case 4: return new Color(1.0f, 0.5f, 0.0f);
 		}
 		return Color.white;

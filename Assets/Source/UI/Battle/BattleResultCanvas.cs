@@ -51,6 +51,9 @@ public class BattleResultCanvas : MonoBehaviour
 	public GameObject contentItemPrefab;
 	public RectTransform contentRootRectTransform;
 
+	public EquipListStatusInfo equipSmallStatusInfo;
+	public RectTransform smallStatusBackBlurImage;
+
 	public GameObject exitGroupObject;
 	public GameObject challengeFailTextObject;
 
@@ -62,6 +65,7 @@ public class BattleResultCanvas : MonoBehaviour
 	void Start()
 	{
 		contentItemPrefab.SetActive(false);
+		smallStatusBackBlurImage.SetAsFirstSibling();
 	}
 
 	void OnEnable()
@@ -84,6 +88,7 @@ public class BattleResultCanvas : MonoBehaviour
 	{
 		UpdateStageText();
 		UpdateGoldText();
+		UpdateEquipSmallStatusInfo();
 	}
 
 	bool _clear = false;
@@ -362,7 +367,24 @@ public class BattleResultCanvas : MonoBehaviour
 
 	public void OnClickListItem(EquipData equipData)
 	{
-		
+		equipSmallStatusInfo.RefreshInfo(equipData, false);
+		equipSmallStatusInfo.gameObject.SetActive(false);
+		equipSmallStatusInfo.gameObject.SetActive(true);
+		_materialSmallStatusInfoShowRemainTime = 2.0f;
+	}
+
+	float _materialSmallStatusInfoShowRemainTime;
+	void UpdateEquipSmallStatusInfo()
+	{
+		if (_materialSmallStatusInfoShowRemainTime > 0.0f)
+		{
+			_materialSmallStatusInfoShowRemainTime -= Time.unscaledDeltaTime;
+			if (_materialSmallStatusInfoShowRemainTime <= 0.0f)
+			{
+				_materialSmallStatusInfoShowRemainTime = 0.0f;
+				equipSmallStatusInfo.gameObject.SetActive(false);
+			}
+		}
 	}
 	#endregion
 

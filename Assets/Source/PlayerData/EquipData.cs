@@ -124,23 +124,32 @@ public class EquipData
 		// 데이터 검증
 		// 메인옵부터 체크. 메인옵의 범위가 테이블 범위를 넘어섰다면
 		bool invalidEquipOption = false;
+		int invalidEquipOptionParam2 = 0;
 		if (mainOp < cachedEquipTableData.min || mainOp > cachedEquipTableData.max)
 		{
 			invalidEquipOption = true;
+			invalidEquipOptionParam2 = 1;
 			mainOp = cachedEquipTableData.min;
 		}
 		// 랜덤옵션 카운트가 붙일 수 있는 최대 랜덤옵션 개수보다 많다면
 		if (optionCount > cachedEquipTableData.optionCount)
 		{
 			invalidEquipOption = true;
+			invalidEquipOptionParam2 = 2;
 		}
 		if (invalidEquipOption)
 		{
-			PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidEquipOption, false, 100);
+			PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidEquipOption, false, invalidEquipOptionParam2);
 		}
 
 		// 타입에 따라 최대 강화레벨이 정해져있는데 그 범위를 넘어섰다면
 		bool invalidEquipEnhance = false;
+		if (enhan > 0)
+		{
+			InnerGradeTableData innerGradeTableData = TableDataManager.instance.FindInnerGradeTableData(cachedEquipTableData.innerGrade);
+			if (enhan > innerGradeTableData.max)
+				invalidEquipEnhance = true;
+		}
 		if (invalidEquipEnhance)
 			PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidEquipEnhance, false, enhan);
 

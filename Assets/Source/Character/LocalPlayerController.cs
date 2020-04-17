@@ -162,7 +162,7 @@ public sealed class LocalPlayerController : BaseCharacterController
 				return;
 			}
 
-			if (TimeSpaceGround.instance != null && TimeSpaceGround.instance.gameObject.activeSelf)
+			if (TimeSpaceGround.instance != null && TimeSpaceGround.instance.gameObject.activeSelf && (ExperienceCanvas.instance == null || ExperienceCanvas.instance.gameObject == null || ExperienceCanvas.instance.gameObject.activeSelf == false))
 			{
 				BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("TimeSpaceUI_CantAttack"), 2.5f);
 				return;

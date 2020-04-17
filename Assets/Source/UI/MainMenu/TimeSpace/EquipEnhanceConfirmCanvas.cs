@@ -110,7 +110,7 @@ public class EquipEnhanceConfirmCanvas : MonoBehaviour
 		int materialIndex = -1;
 		int sumPrice = 0;
 		InnerGradeTableData innerGradeTableData = TableDataManager.instance.FindInnerGradeTableData(_equipData.cachedEquipTableData.innerGrade);
-		EnhanceTableData enhanceTableData = TableDataManager.instance.FindEnhanceTableData(_equipData.cachedEquipTableData.innerGrade, enhanceLevel);
+		EnhanceTableData nextEnhanceTableData = TableDataManager.instance.FindEnhanceTableData(_equipData.cachedEquipTableData.innerGrade, enhanceLevel + 1);
 		List<EquipData> listMultiSelectEquipData = EquipInfoGrowthCanvas.instance.listMultiSelectEquipData;
 		for (int i = 0; i < listMultiSelectEquipData.Count; ++i)
 		{
@@ -118,13 +118,13 @@ public class EquipEnhanceConfirmCanvas : MonoBehaviour
 			int price = 0;
 			switch (listMultiSelectEquipData[i].cachedEquipTableData.innerGrade)
 			{
-				case 0: probability = enhanceTableData.innerGradeZeroProb; price = innerGradeTableData.innerGradeZeroEnhanceGold; break;
-				case 1: probability = enhanceTableData.innerGradeOneProb; price = innerGradeTableData.innerGradeOneEnhanceGold; break;
-				case 2: probability = enhanceTableData.innerGradeTwoProb; price = innerGradeTableData.innerGradeTwoEnhanceGold; break;
-				case 3: probability = enhanceTableData.innerGradeThreeProb; price = innerGradeTableData.innerGradeThreeEnhanceGold; break;
-				case 4: probability = enhanceTableData.innerGradeFourProb; price = innerGradeTableData.innerGradeFourEnhanceGold; break;
-				case 5: probability = enhanceTableData.innerGradeFiveProb; price = innerGradeTableData.innerGradeFiveEnhanceGold; break;
-				case 6: probability = enhanceTableData.innerGradeSixProb; price = innerGradeTableData.innerGradeSixEnhanceGold; break;
+				case 0: probability = nextEnhanceTableData.innerGradeZeroProb; price = innerGradeTableData.innerGradeZeroEnhanceGold; break;
+				case 1: probability = nextEnhanceTableData.innerGradeOneProb; price = innerGradeTableData.innerGradeOneEnhanceGold; break;
+				case 2: probability = nextEnhanceTableData.innerGradeTwoProb; price = innerGradeTableData.innerGradeTwoEnhanceGold; break;
+				case 3: probability = nextEnhanceTableData.innerGradeThreeProb; price = innerGradeTableData.innerGradeThreeEnhanceGold; break;
+				case 4: probability = nextEnhanceTableData.innerGradeFourProb; price = innerGradeTableData.innerGradeFourEnhanceGold; break;
+				case 5: probability = nextEnhanceTableData.innerGradeFiveProb; price = innerGradeTableData.innerGradeFiveEnhanceGold; break;
+				case 6: probability = nextEnhanceTableData.innerGradeSixProb; price = innerGradeTableData.innerGradeSixEnhanceGold; break;
 			}
 			sumPrice += price;
 			materialIndex = i;
@@ -136,7 +136,7 @@ public class EquipEnhanceConfirmCanvas : MonoBehaviour
 					maxReached = true;
 					break;
 				}
-				enhanceTableData = TableDataManager.instance.FindEnhanceTableData(_equipData.cachedEquipTableData.innerGrade, enhanceLevel);
+				nextEnhanceTableData = TableDataManager.instance.FindEnhanceTableData(_equipData.cachedEquipTableData.innerGrade, enhanceLevel + 1);
 			}
 		}
 

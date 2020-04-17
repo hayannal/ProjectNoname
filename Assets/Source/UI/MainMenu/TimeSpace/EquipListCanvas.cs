@@ -190,6 +190,14 @@ public class EquipListCanvas : EquipShowCanvasBase
 			OnClickListItem(null);
 		else
 			OnClickListItem(_selectedEquipData);
+
+		// 강화나 옵션탭에서 장비를 업하면서 재료로 소모했다면 인벤토리는 리프레쉬 하되 현재 선택된건 유지해야한다.
+		// 이럴때 대비해서 몇가지 예외처리 해둔다.
+		if (refreshInventory && resetSelected == false)
+		{
+			if (equippedStatusInfo.gameObject.activeSelf)
+				equippedStatusInfo.RefreshStatus();
+		}
 	}
 
 	EquipData _selectedEquipData;

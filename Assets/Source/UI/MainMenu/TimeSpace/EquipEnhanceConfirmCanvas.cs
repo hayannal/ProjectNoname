@@ -19,7 +19,9 @@ public class EquipEnhanceConfirmCanvas : MonoBehaviour
 	public Text increaseAtkText;
 	public Text materialCountText;
 
-	public GameObject effectPrefab;
+	public GameObject standbyEffectPrefab;
+	public GameObject successEffectPrefab;
+	public GameObject failureEffectPrefab;
 	public RectTransform toastBackImageRectTransform;
 	public CanvasGroup processCanvasGroup;
 
@@ -27,9 +29,12 @@ public class EquipEnhanceConfirmCanvas : MonoBehaviour
 	public Text successCountText;
 	public GameObject failureObject;
 	public EquipCanvasListItem resultEquipListItem;
+	public DOTweenAnimation enhanceTweenAnimation;
 	public Text resultMainStatusText;
+	public DOTweenAnimation resultMainStatusTweenAnimation;
 	public Text addAtkText;
-
+	public DOTweenAnimation addAtkTweenAnimation;
+	
 	public Button priceButton;
 	public Text priceText;
 	public Text exitText;
@@ -55,9 +60,7 @@ public class EquipEnhanceConfirmCanvas : MonoBehaviour
 		
 		priceButton.gameObject.SetActive(true);
 		exitText.gameObject.SetActive(false);
-
-		//nextPowerLevelText.color = Color.white;
-		//arrowImage.color = Color.white;
+		
 		_processed = false;
 	}
 
@@ -77,8 +80,6 @@ public class EquipEnhanceConfirmCanvas : MonoBehaviour
 
 	EquipData _equipData;
 	int _price;
-	float _currentAtk;	
-	float _addAtk;
 	public void ShowCanvas(bool show, EquipData equipData, string displayAttack, int price)
 	{
 		gameObject.SetActive(show);
@@ -89,6 +90,7 @@ public class EquipEnhanceConfirmCanvas : MonoBehaviour
 		_price = price;
 		equipListItem.Initialize(equipData, null);
 		mainStatusText.text = displayAttack;
+		increaseAtkText.text =  string.Format("+{0}", BattleInstanceManager.instance.GetCachedGlobalConstantInt("LnEquipEnhance"));
 		materialCountText.text = EquipInfoGrowthCanvas.instance.listMultiSelectEquipData.Count.ToString();
 
 		resultEquipListItem.Initialize(equipData, null);
@@ -109,6 +111,7 @@ public class EquipEnhanceConfirmCanvas : MonoBehaviour
 		bool maxReached = false;
 		int materialIndex = -1;
 		int sumPrice = 0;
+		int successCount = 0;
 		InnerGradeTableData innerGradeTableData = TableDataManager.instance.FindInnerGradeTableData(_equipData.cachedEquipTableData.innerGrade);
 		EnhanceTableData nextEnhanceTableData = TableDataManager.instance.FindEnhanceTableData(_equipData.cachedEquipTableData.innerGrade, enhanceLevel + 1);
 		List<EquipData> listMultiSelectEquipData = EquipInfoGrowthCanvas.instance.listMultiSelectEquipData;
@@ -130,6 +133,7 @@ public class EquipEnhanceConfirmCanvas : MonoBehaviour
 			materialIndex = i;
 			if (probability > 0.0f && Random.value <= probability)
 			{
+				successCount += 1;
 				enhanceLevel += 1;
 				if (enhanceLevel >= innerGradeTableData.max)
 				{
@@ -141,28 +145,38 @@ public class EquipEnhanceConfirmCanvas : MonoBehaviour
 		}
 
 		// 일부만 소모된건지 체크 후 리스트 재설정
+		bool returnForMax = false;
 		if (maxReached && materialIndex < (listMultiSelectEquipData.Count - 1))
 		{
 			for (int i = listMultiSelectEquipData.Count - 1; i >= 0; --i)
 			{
 				if (i > materialIndex)
+				{
 					listMultiSelectEquipData.RemoveAt(i);
+					returnForMax = true;
+				}
 			}
 		}
 
 		priceButton.gameObject.SetActive(false);
 
-		// 동기화 해야할건 3개다. 재료 장비들 삭제. 골드. 강화도달
-		PlayFabApiManager.instance.RequestEnhance(_equipData, enhanceLevel, listMultiSelectEquipData, sumPrice, () =>
-		{
-			EquipInfoGrowthCanvas.instance.currencySmallInfo.RefreshInfo();
-			Timing.RunCoroutine(EnhanceProcess());
-		});
+		// 선 이펙트가 있기 때문에 Process를 먼저 실행시킨다.
+		Timing.RunCoroutine(EnhanceProcess(successCount, enhanceLevel, listMultiSelectEquipData, sumPrice, returnForMax));
 	}
 
-	IEnumerator<float> EnhanceProcess()
+	bool _waitRecv = false;
+	void OnRecvEnhance()
 	{
-		bool enhanceResult = false;
+		_waitRecv = false;
+		EquipInfoGrowthCanvas.instance.currencySmallInfo.RefreshInfo();
+	}
+
+	float _standbyEffectWaitTime;
+	float _currentAtk;
+	float _addAtk;
+	IEnumerator<float> EnhanceProcess(int successCount, int enhanceLevel, List<EquipData> listMultiSelectEquipData, int sumPrice, bool returnForMax)
+	{
+		bool enhanceResult = successCount > 0;
 
 		// 인풋 차단
 		backKeyButton.interactable = false;
@@ -176,28 +190,86 @@ public class EquipEnhanceConfirmCanvas : MonoBehaviour
 		yield return Timing.WaitForSeconds(0.2f);
 		canvasGroup.gameObject.SetActive(false);
 
-		// 이펙트
-		BattleInstanceManager.instance.GetCachedObject(effectPrefab, EquipListCanvas.instance.rootOffsetPosition, Quaternion.identity, null);
+		// 선이펙트
+		_standbyEffectWaitTime = Time.time + 3.0f;
+		BattleInstanceManager.instance.GetCachedObject(standbyEffectPrefab, EquipInfoGround.instance.enhanceEffectRootTransform);
+
+		// 선이펙트와 동시에 패킷을 보낸다.
+		_waitRecv = true;
+		PlayFabApiManager.instance.RequestEnhance(_equipData, enhanceLevel, listMultiSelectEquipData, sumPrice, OnRecvEnhance);
+
+		// 패킷 온다고 바로 처리하지 않고 원래 대기하려던 타임까지 기다린다.
+		while (Time.time < _standbyEffectWaitTime)
+			yield return Timing.WaitForOneFrame;
+
+		// 아직까지도 패킷이 오지 않았다면 패킷 대기창을 띄운다.
+		if (_waitRecv)
+			WaitingNetworkCanvas.Show(true);
+		while (_waitRecv)
+			yield return Timing.WaitForOneFrame;
+		WaitingNetworkCanvas.Show(false);
+
+		// 결과에 따라 이펙트 출력
+		BattleInstanceManager.instance.GetCachedObject(enhanceResult ? successEffectPrefab : failureEffectPrefab, EquipListCanvas.instance.rootOffsetPosition, Quaternion.identity, null);
 		yield return Timing.WaitForSeconds(1.5f);
 
 		// 새로운 Toast Back Image
 		toastBackImageRectTransform.gameObject.SetActive(true);
 		yield return Timing.WaitForSeconds(0.2f);
 
-		successObject.SetActive(enhanceResult);
-		successCountText.text = "4";
-		failureObject.SetActive(!enhanceResult);
-		addAtkText.text = "+20";
+		successObject.SetActive(false);
+		failureObject.SetActive(false);
+		addAtkText.text = "";
 		processCanvasGroup.gameObject.SetActive(true);
 		yield return Timing.WaitForOneFrame;
 		DOTween.To(() => processCanvasGroup.alpha, x => processCanvasGroup.alpha = x, 1.0f, 0.1f);
 		yield return Timing.WaitForSeconds(0.3f);
 
-		// exit
-		exitText.SetLocalizedText(UIString.instance.GetString("GameUI_TouchToExit"));
-		//"EquipUI_ReturnForMax"
+		if (enhanceResult)
+		{
+			successObject.SetActive(enhanceResult);
+			successCountText.text = successCount.ToString();
+			yield return Timing.WaitForSeconds(0.3f);
+
+			float tweenDelay = 0.3f;
+			resultEquipListItem.RefreshStatus();
+			enhanceTweenAnimation.DORestart();
+			yield return Timing.WaitForSeconds(tweenDelay);
+
+			// 디스플레이용 공격력을 구하기 위해 강제로 Refresh를 호출한다.
+			EquipEnhanceCanvas.instance.equipStatusInfo.RefreshStatus();
+			string targetText = EquipEnhanceCanvas.instance.equipStatusInfo.mainStatusText.text;
+			string currentText = mainStatusText.text;
+			int currentValue = 0;
+			int targetValue = 0;
+			int.TryParse(currentText.Replace(",", ""), out currentValue);
+			int.TryParse(targetText.Replace(",", ""), out targetValue);
+			_addAtk = targetValue - currentValue;
+			_currentAtk = currentValue;
+			addAtkText.text = string.Format("+{0:N0}", _addAtk);
+			addAtkTweenAnimation.DORestart();
+			yield return Timing.WaitForSeconds(tweenDelay);
+
+			_atkChangeSpeed = -_addAtk / atkChangeTime;
+			_floatCurrentAtk = _addAtk;
+			_updateAtkText = true;
+			yield return Timing.WaitForSeconds(atkChangeTime);
+			resultMainStatusTweenAnimation.DORestart();
+			yield return Timing.WaitForSeconds(tweenDelay);
+
+			string text = UIString.instance.GetString("GameUI_TouchToExit");
+			if (returnForMax)
+				text = string.Format("{0}\n\n<size=16>{1}</size>", text, UIString.instance.GetString("EquipUI_ReturnForMax"));
+			exitText.SetLocalizedText(text);
+		}
+		else
+		{
+			failureObject.SetActive(true);
+			yield return Timing.WaitForSeconds(0.3f);
+
+			exitText.SetLocalizedText(UIString.instance.GetString("GameUI_TouchToExit"));
+		}
 		exitText.gameObject.SetActive(true);
-		//yield return Timing.WaitForSeconds(0.2f);
 
 		// 인풋 복구
 		backKeyButton.interactable = true;
@@ -205,6 +277,13 @@ public class EquipEnhanceConfirmCanvas : MonoBehaviour
 		_processed = true;
 
 		EquipListCanvas.instance.RefreshGrid(true, false);
+
+		// 밖에 있는 시공간 제단을 업데이트 해줘야한다.
+		if (enhanceResult && TimeSpaceData.instance.IsEquipped(_equipData))
+		{
+			int positionIndex = _equipData.cachedEquipTableData.equipType;
+			TimeSpaceGround.instance.timeSpaceAltarList[positionIndex].RefreshEnhanceInfo();
+		}
 	}
 
 	bool _processed = false;

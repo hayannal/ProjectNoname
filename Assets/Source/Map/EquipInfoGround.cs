@@ -19,6 +19,7 @@ public class EquipInfoGround : MonoBehaviour
 	public Transform equipRootTransform;
 	public DOTweenAnimation rotateTweenAnimation;
 	public ParticleSystem gradeParticleSystem;
+	public Transform enhanceEffectRootTransform;
 
 	EquipPrefabInfo _currentEquipObject = null;
 

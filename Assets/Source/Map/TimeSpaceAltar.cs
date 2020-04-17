@@ -92,6 +92,8 @@ public class TimeSpaceAltar : MonoBehaviour
 	EquipPrefabInfo _currentEquipObject = null;
 	public void RefreshEquipObject()
 	{
+		RefreshEnhanceInfo();
+
 		// 비쥬얼용 오브젝트들은 우선 끄고 처리
 		DisableEquipObject();
 
@@ -102,8 +104,6 @@ public class TimeSpaceAltar : MonoBehaviour
 			emptyIconObject.SetActive(true);
 			// 두가지 조건이다. 제단이 비어있는데 장착할 수 있는 장비가 있거나 새로운 템을 얻었거나
 			//alarm3dObject.SetActive(TimeSpaceData.instance.IsExistEquipByType((TimeSpaceData.eEquipSlotType)positionIndex);
-			enhanceText.text = "";
-			enhanceText.gameObject.SetActive(false);
 			for (int i = 0; i < optionObjectList.Length; ++i)
 				optionObjectList[i].SetActive(false);
 			return;
@@ -117,11 +117,22 @@ public class TimeSpaceAltar : MonoBehaviour
 		gradeParticleSystem.gameObject.SetActive(true);
 
 		emptyIconObject.SetActive(false);
-		enhanceText.text = string.Format("+{0}", equipData.enhanceLevel);
-		enhanceText.gameObject.SetActive(equipData.enhanceLevel > 0);
 		for (int i = 0; i < optionObjectList.Length; ++i)
 			optionObjectList[i].SetActive(i < equipData.optionCount);
 		AddressableAssetLoadManager.GetAddressableGameObject(equipData.cachedEquipTableData.prefabAddress, "Equip", OnLoadedEquip);
+	}
+
+	public void RefreshEnhanceInfo()
+	{
+		EquipData equipData = TimeSpaceData.instance.GetEquippedDataByType((TimeSpaceData.eEquipSlotType)positionIndex);
+		if (equipData == null)
+		{
+			enhanceText.text = "";
+			enhanceText.gameObject.SetActive(false);
+			return;
+		}
+		enhanceText.text = string.Format("+{0}", equipData.enhanceLevel);
+		enhanceText.gameObject.SetActive(equipData.enhanceLevel > 0);
 	}
 
 	void DisableEquipObject()

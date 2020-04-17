@@ -40,7 +40,6 @@ public class EquipListStatusInfo : MonoBehaviour
 		nameText.SetLocalizedText(UIString.instance.GetString(equipData.cachedEquipTableData.nameId));
 		if (detailShowButton != null) detailShowButton.gameObject.SetActive(!equipped);
 
-		equipListItem.Initialize(equipData, null);
 		RefreshLockInfo();
 		RefreshStatus();
 
@@ -73,8 +72,10 @@ public class EquipListStatusInfo : MonoBehaviour
 
 	static Color _gaugeColor = new Color(0.819f, 0.505f, 0.458f, 0.862f);
 	static Color _fullGaugeColor = new Color(0.937f, 0.937f, 0.298f, 0.862f);
-	void RefreshStatus()
+	public void RefreshStatus()
 	{
+		equipListItem.Initialize(_equipData, null);
+
 		mainStatusFillImage.fillAmount = _equipData.GetMainStatusRatio();
 		bool fullGauge = (mainStatusFillImage.fillAmount == 1.0f);
 		float displayValue = ActorStatus.GetDisplayAttack(_equipData.mainStatusValue);

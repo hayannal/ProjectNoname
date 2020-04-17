@@ -844,13 +844,13 @@ public class PlayFabApiManager : MonoBehaviour
 		RetrySendManager.instance.RequestAction(action, true);
 	}
 
-	// 임시로 만들어본 장비강화 함수. 나중에 재료도 전달해야한다.
 	public void RequestEnhance(EquipData equipData, int targetEnhanceLevel, List<EquipData> listMaterialEquipData, int price, Action successCallback)
 	{
 		string checkSum = "";
 		List<TimeSpaceData.RevokeInventoryItemRequest> listRevokeRequest = TimeSpaceData.instance.GenerateRevokeInfo(listMaterialEquipData, price, targetEnhanceLevel.ToString(), ref checkSum);
 
-		WaitingNetworkCanvas.Show(true);
+		// 선이펙트와 함께 처리하는 형태라서 WaitingNetworkCanvas를 내부 코루틴에서 관리한다.
+		//WaitingNetworkCanvas.Show(true);
 
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
@@ -863,10 +863,11 @@ public class PlayFabApiManager : MonoBehaviour
 			bool failure = (resultString == "1");
 			if (!failure)
 			{
-				WaitingNetworkCanvas.Show(false);
+				//WaitingNetworkCanvas.Show(false);
 				CurrencyData.instance.gold -= price;
 				TimeSpaceData.instance.OnRevokeInventory(listMaterialEquipData);
-				equipData.OnEnhance(targetEnhanceLevel);
+				if (equipData.enhanceLevel != targetEnhanceLevel)
+					equipData.OnEnhance(targetEnhanceLevel);
 				if (successCallback != null) successCallback.Invoke();
 			}
 		}, (error) =>

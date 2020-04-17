@@ -87,6 +87,8 @@ public class EquipData
 			if (float.TryParse(customData[KeyMainOp], out floatValue))
 				mainOp = floatValue;
 		}
+		bool invalidEquipOption = false;
+		int invalidEquipOptionParam2 = 0;
 		for (int i = 0; i < RandomOption.RandomOptionCountMax; ++i)
 		{
 			string optionKey = string.Format("{0}{1}", EquipData.KeyRandomOp, i);
@@ -109,6 +111,11 @@ public class EquipData
 					info.innerGrade = cachedEquipTableData.innerGrade;
 					info.statusType = randomOptionType;
 					info.value = value;
+					if (value < info.cachedOptionTableData.min || value > info.cachedOptionTableData.max)
+					{
+						invalidEquipOption = true;
+						invalidEquipOptionParam2 = i;
+					}
 					_listRandomOptionInfo.Add(info);
 				}
 			}
@@ -123,19 +130,17 @@ public class EquipData
 
 		// 데이터 검증
 		// 메인옵부터 체크. 메인옵의 범위가 테이블 범위를 넘어섰다면
-		bool invalidEquipOption = false;
-		int invalidEquipOptionParam2 = 0;
 		if (mainOp < cachedEquipTableData.min || mainOp > cachedEquipTableData.max)
 		{
 			invalidEquipOption = true;
-			invalidEquipOptionParam2 = 1;
+			invalidEquipOptionParam2 = 100;
 			mainOp = cachedEquipTableData.min;
 		}
 		// 랜덤옵션 카운트가 붙일 수 있는 최대 랜덤옵션 개수보다 많다면
 		if (optionCount > cachedEquipTableData.optionCount)
 		{
 			invalidEquipOption = true;
-			invalidEquipOptionParam2 = 2;
+			invalidEquipOptionParam2 = 101;
 		}
 		if (invalidEquipOption)
 		{

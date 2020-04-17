@@ -174,9 +174,9 @@ public class EquipData
 		_isLock = lockState;
 	}
 
-	public void OnEnhance()
+	public void OnEnhance(int targetEnhanceLevel)
 	{
-		_enhanceLevel += 1;
+		_enhanceLevel = targetEnhanceLevel;
 
 		RefreshCachedStatus();
 

@@ -261,8 +261,6 @@ public class TimeSpaceData
 	List<ItemGrantRequest> _listGrantRequest = new List<ItemGrantRequest>();
 	public List<ItemGrantRequest> GenerateGrantInfo(List<string> listEquipId, ref string checkSum)
 	{
-		if (_listGrantRequest == null)
-			_listGrantRequest = new List<ItemGrantRequest>();
 		_listGrantRequest.Clear();
 
 		for (int i = 0; i < listEquipId.Count; ++i)
@@ -352,6 +350,63 @@ public class TimeSpaceData
 			newEquipData.Initialize(listItemInstance[i].CustomData);
 			_listEquipData[newEquipData.cachedEquipTableData.equipType].Add(newEquipData);
 		}
+	}
+	#endregion
+
+	#region Revoke
+	public class RevokeInventoryItemRequest
+	{
+		public string ItemInstanceId;
+	}
+	List<RevokeInventoryItemRequest> _listRevokeInventoryItemRequest = new List<RevokeInventoryItemRequest>();
+
+	public List<RevokeInventoryItemRequest> GenerateRevokeInfo(List<EquipData> listRevokeEquipData, int price, string additionalData, ref string checkSum)
+	{
+		_listRevokeInventoryItemRequest.Clear();
+
+		for (int i = 0; i < listRevokeEquipData.Count; ++i)
+		{
+			RevokeInventoryItemRequest info = new RevokeInventoryItemRequest();
+			info.ItemInstanceId = listRevokeEquipData[i].uniqueId;
+			_listRevokeInventoryItemRequest.Add(info);
+		}
+
+		if (_listRevokeInventoryItemRequest.Count > 0)
+		{
+			var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+			string jsonRevokeInventory = serializer.SerializeObject(_listRevokeInventoryItemRequest);
+			checkSum = PlayFabApiManager.CheckSum(string.Format("{0}_{1}_{2}", jsonRevokeInventory, price, additionalData));
+		}
+
+		return _listRevokeInventoryItemRequest;
+	}
+
+	public void OnRevokeInventory(List<EquipData> listRevokeEquipData, bool checkEquipped = false)
+	{
+		bool unequip = false;
+		for (int i = 0; i < listRevokeEquipData.Count; ++i)
+		{
+			TimeSpaceData.eEquipSlotType equipType = (TimeSpaceData.eEquipSlotType)listRevokeEquipData[i].cachedEquipTableData.equipType;
+			if (checkEquipped && IsEquipped(listRevokeEquipData[i]))
+			{
+				_dicEquippedData.Remove((int)equipType);
+				unequip = true;
+			}
+
+			List<EquipData> listEquipData = TimeSpaceData.instance.GetEquipListByType(equipType);
+			if (listEquipData.Contains(listRevokeEquipData[i]))
+			{
+				listEquipData.Remove(listRevokeEquipData[i]);
+			}
+			else
+			{
+				Debug.LogErrorFormat("Revoke Inventory Error. Not found Equip : {0}", listRevokeEquipData[i].uniqueId);
+			}
+		}
+
+		// 장착된걸 지웠을땐 바로 스탯을 재계산한다.
+		if (unequip)
+			OnChangedEquippedData();
 	}
 	#endregion
 

@@ -79,7 +79,7 @@ public class EquipEnhanceConfirmCanvas : MonoBehaviour
 	int _price;
 	float _currentAtk;	
 	float _addAtk;
-	public void ShowCanvas(bool show, EquipData equipData, string displayAttack, int materialCount, int price)
+	public void ShowCanvas(bool show, EquipData equipData, string displayAttack, int price)
 	{
 		gameObject.SetActive(show);
 		if (show == false)
@@ -89,7 +89,7 @@ public class EquipEnhanceConfirmCanvas : MonoBehaviour
 		_price = price;
 		equipListItem.Initialize(equipData, null);
 		mainStatusText.text = displayAttack;
-		materialCountText.text = materialCount.ToString();
+		materialCountText.text = EquipInfoGrowthCanvas.instance.listMultiSelectEquipData.Count.ToString();
 
 		resultEquipListItem.Initialize(equipData, null);
 		resultMainStatusText.text = displayAttack;
@@ -104,6 +104,60 @@ public class EquipEnhanceConfirmCanvas : MonoBehaviour
 
 	public void OnClickOkButton()
 	{
+		// 장비 관련해서는 클라가 처리해야한다.
+		int enhanceLevel = _equipData.enhanceLevel;
+		bool maxReached = false;
+		int materialIndex = -1;
+		int sumPrice = 0;
+		InnerGradeTableData innerGradeTableData = TableDataManager.instance.FindInnerGradeTableData(_equipData.cachedEquipTableData.innerGrade);
+		EnhanceTableData enhanceTableData = TableDataManager.instance.FindEnhanceTableData(_equipData.cachedEquipTableData.innerGrade, enhanceLevel);
+		List<EquipData> listMultiSelectEquipData = EquipInfoGrowthCanvas.instance.listMultiSelectEquipData;
+		for (int i = 0; i < listMultiSelectEquipData.Count; ++i)
+		{
+			float probability = 0.0f;
+			int price = 0;
+			switch (listMultiSelectEquipData[i].cachedEquipTableData.innerGrade)
+			{
+				case 0: probability = enhanceTableData.innerGradeZeroProb; price = innerGradeTableData.innerGradeZeroEnhanceGold; break;
+				case 1: probability = enhanceTableData.innerGradeOneProb; price = innerGradeTableData.innerGradeOneEnhanceGold; break;
+				case 2: probability = enhanceTableData.innerGradeTwoProb; price = innerGradeTableData.innerGradeTwoEnhanceGold; break;
+				case 3: probability = enhanceTableData.innerGradeThreeProb; price = innerGradeTableData.innerGradeThreeEnhanceGold; break;
+				case 4: probability = enhanceTableData.innerGradeFourProb; price = innerGradeTableData.innerGradeFourEnhanceGold; break;
+				case 5: probability = enhanceTableData.innerGradeFiveProb; price = innerGradeTableData.innerGradeFiveEnhanceGold; break;
+				case 6: probability = enhanceTableData.innerGradeSixProb; price = innerGradeTableData.innerGradeSixEnhanceGold; break;
+			}
+			sumPrice += price;
+			materialIndex = i;
+			if (probability > 0.0f && Random.value <= probability)
+			{
+				enhanceLevel += 1;
+				if (enhanceLevel >= innerGradeTableData.max)
+				{
+					maxReached = true;
+					break;
+				}
+				enhanceTableData = TableDataManager.instance.FindEnhanceTableData(_equipData.cachedEquipTableData.innerGrade, enhanceLevel);
+			}
+		}
+
+		// 일부만 소모된건지 체크 후 리스트 재설정
+		if (maxReached && materialIndex < (listMultiSelectEquipData.Count - 1))
+		{
+			for (int i = listMultiSelectEquipData.Count - 1; i >= 0; --i)
+			{
+				if (i > materialIndex)
+					listMultiSelectEquipData.RemoveAt(i);
+			}
+		}
+
+		priceButton.gameObject.SetActive(false);
+
+		// 동기화 해야할건 3개다. 재료 장비들 삭제. 골드. 강화도달
+		PlayFabApiManager.instance.RequestEnhance(_equipData, enhanceLevel, listMultiSelectEquipData, sumPrice, () =>
+		{
+			EquipInfoGrowthCanvas.instance.currencySmallInfo.RefreshInfo();
+			Timing.RunCoroutine(EnhanceProcess());
+		});
 	}
 
 	IEnumerator<float> EnhanceProcess()
@@ -150,7 +204,7 @@ public class EquipEnhanceConfirmCanvas : MonoBehaviour
 		processGraphicElement.raycastTarget = false;
 		_processed = true;
 
-		//EquipListCanvas.instance.RefreshGrid(false);
+		EquipListCanvas.instance.RefreshGrid(true, false);
 	}
 
 	bool _processed = false;

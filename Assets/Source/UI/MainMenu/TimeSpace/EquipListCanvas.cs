@@ -102,7 +102,7 @@ public class EquipListCanvas : EquipShowCanvasBase
 			equipTypeButtonList[i].selected = (equipTypeButtonList[i].positionIndex == positionIndex);
 
 		_currentEquipType = (TimeSpaceData.eEquipSlotType)positionIndex;
-		RefreshGrid(false);
+		RefreshGrid(true, true);
 		RefreshEquippedObject();
 
 		// 탭바뀔땐 비교창 하이드
@@ -137,19 +137,19 @@ public class EquipListCanvas : EquipShowCanvasBase
 		_currentSortType = sortType;
 		int sortTypeValue = (int)sortType;
 		PlayerPrefs.SetInt("_EquipListSort", sortTypeValue);
-		RefreshGrid(true);
+		RefreshGrid(false, false);
 	}
 
 	List<EquipCanvasListItem> _listEquipCanvasListItem = new List<EquipCanvasListItem>();
 	List<EquipData> _listCurrentEquipData = new List<EquipData>();
 	TimeSpaceData.eEquipSlotType _currentEquipType;
-	void RefreshGrid(bool onlySort)
+	public void RefreshGrid(bool refreshInventory, bool resetSelected)
 	{
 		for (int i = 0; i < _listEquipCanvasListItem.Count; ++i)
 			_listEquipCanvasListItem[i].gameObject.SetActive(false);
 		_listEquipCanvasListItem.Clear();
 
-		if (onlySort == false)
+		if (refreshInventory)
 		{
 			_listCurrentEquipData.Clear();
 			List<EquipData> listEquipData = TimeSpaceData.instance.GetEquipListByType(_currentEquipType);
@@ -186,10 +186,10 @@ public class EquipListCanvas : EquipShowCanvasBase
 			equipCanvasListItem.Initialize(_listCurrentEquipData[i], OnClickListItem);
 			_listEquipCanvasListItem.Add(equipCanvasListItem);
 		}
-		if (onlySort)
-			OnClickListItem(_selectedEquipData);
-		else
+		if (resetSelected)
 			OnClickListItem(null);
+		else
+			OnClickListItem(_selectedEquipData);
 	}
 
 	EquipData _selectedEquipData;
@@ -260,7 +260,7 @@ public class EquipListCanvas : EquipShowCanvasBase
 			return;
 		}
 
-		RefreshGrid(false);
+		RefreshGrid(true, true);
 		RefreshEquippedObject();
 
 		// 장착시 내려오는 애니 적용
@@ -277,7 +277,7 @@ public class EquipListCanvas : EquipShowCanvasBase
 
 	public void OnUnequip(EquipData equipData)
 	{
-		RefreshGrid(false);
+		RefreshGrid(true, true);
 		RefreshEquippedObject();
 
 		// 모든 비교창을 닫는다.

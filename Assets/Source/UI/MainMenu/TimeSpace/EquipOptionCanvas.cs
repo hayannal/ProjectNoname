@@ -55,9 +55,23 @@ public class EquipOptionCanvas : MonoBehaviour
 
 	void OnEnable()
 	{
+		if (_restore)
+			return;
+
 		if (transmuteSwitch.isOn)
 			transmuteSwitch.AnimateSwitch();
 	}
+
+	#region Restore Canvas
+	bool _restore = false;
+	public void RestoreInfo(EquipData equipData)
+	{
+		_restore = true;
+		gameObject.SetActive(true);
+		RefreshInfo(equipData);
+		_restore = false;
+	}
+	#endregion
 
 	void Update()
 	{

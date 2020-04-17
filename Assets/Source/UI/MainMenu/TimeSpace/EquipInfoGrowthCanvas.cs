@@ -47,10 +47,17 @@ public class EquipInfoGrowthCanvas : MonoBehaviour
 	void OnEnable()
 	{
 		// 연출로 인해 닫힌거면 _lastIndex 가 -1이 아닐거다.
-		// 이땐 
+		// 
 		if (_lastIndex != -1)
-			_listMenuTransform[_lastIndex].gameObject.SetActive(true);
-
+		{
+			// 별도의 제어가 필요해서 restore를 호출하기로 한다.
+			//_listMenuTransform[_lastIndex].gameObject.SetActive(true);
+			switch (_lastIndex)
+			{
+				case 0: EquipEnhanceCanvas.instance.RestoreInfo(_equipData); break;
+				case 1: EquipOptionCanvas.instance.RestoreInfo(_equipData); break;
+			}
+		}
 		StackCanvas.Push(gameObject);
 	}
 
@@ -351,7 +358,7 @@ public class EquipInfoGrowthCanvas : MonoBehaviour
 
 	List<string> _listMultiSelectUniqueId = new List<string>();
 	List<EquipData> _listMultiSelectEquipData = new List<EquipData>();
-	public int multiSelectCount { get { return _listMultiSelectEquipData.Count; } }
+	public List<EquipData> listMultiSelectEquipData { get { return _listMultiSelectEquipData; } }
 	public void OnMultiSelectListItem(EquipData equipData)
 	{
 		bool contains = _listMultiSelectUniqueId.Contains(equipData.uniqueId);

@@ -845,14 +845,17 @@ public class PlayFabApiManager : MonoBehaviour
 	}
 
 	// 임시로 만들어본 장비강화 함수. 나중에 재료도 전달해야한다.
-	public void RequestEnhance(EquipData equipData, int price, Action successCallback)
+	public void RequestEnhance(EquipData equipData, int targetEnhanceLevel, List<EquipData> listMaterialEquipData, int price, Action successCallback)
 	{
+		string checkSum = "";
+		List<TimeSpaceData.RevokeInventoryItemRequest> listRevokeRequest = TimeSpaceData.instance.GenerateRevokeInfo(listMaterialEquipData, price, targetEnhanceLevel.ToString(), ref checkSum);
+
 		WaitingNetworkCanvas.Show(true);
 
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
 			FunctionName = "Enhance",
-			FunctionParameter = new { EqpId = equipData.uniqueId },
+			FunctionParameter = new { EqpId = (string)equipData.uniqueId, T = targetEnhanceLevel, Lst = listRevokeRequest, Pri = price, LstCs = checkSum },
 			GeneratePlayStreamEvent = true,
 		}, (success) =>
 		{
@@ -862,7 +865,8 @@ public class PlayFabApiManager : MonoBehaviour
 			{
 				WaitingNetworkCanvas.Show(false);
 				CurrencyData.instance.gold -= price;
-				equipData.OnEnhance();
+				TimeSpaceData.instance.OnRevokeInventory(listMaterialEquipData);
+				equipData.OnEnhance(targetEnhanceLevel);
 				if (successCallback != null) successCallback.Invoke();
 			}
 		}, (error) =>

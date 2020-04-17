@@ -34,10 +34,28 @@ public class EquipEnhanceCanvas : MonoBehaviour
 
 	void OnEnable()
 	{
+		// EquipInfoGrowthCanvas와 달리 Stack으로 관리할수도 없는게
+		// EquipInfoGrowthCanvas는 보여지는 상태에서 그 위에 이 Canvas가 보여야한다.
+		// 그래서 이렇게 OnEnable에서 처리해버리면 연출하고 왔을때도 실행이 되서 모드가 강제로 바뀌어버리게 된다.
+		// 이걸 막기 위해 Restore플래그를 추가해 제어하기로 한다.
+		if (_restore)
+			return;
+
 		if (transferSwitch.isOn)
 			transferSwitch.AnimateSwitch();
 		autoSelectButton.gameObject.SetActive(true);
 	}
+
+	#region Restore Canvas
+	bool _restore = false;
+	public void RestoreInfo(EquipData equipData)
+	{
+		_restore = true;
+		gameObject.SetActive(true);
+		RefreshInfo(equipData);
+		_restore = false;
+	}
+	#endregion
 
 	EquipData _equipData;
 	public void RefreshInfo(EquipData equipData)
@@ -175,7 +193,7 @@ public class EquipEnhanceCanvas : MonoBehaviour
 		{
 			UIInstanceManager.instance.ShowCanvasAsync("EquipEnhanceConfirmCanvas", () =>
 			{
-				EquipEnhanceConfirmCanvas.instance.ShowCanvas(true, _equipData, equipStatusInfo.mainStatusText.text, EquipInfoGrowthCanvas.instance.multiSelectCount, _price);
+				EquipEnhanceConfirmCanvas.instance.ShowCanvas(true, _equipData, equipStatusInfo.mainStatusText.text, _price);
 			});
 		}
 	}

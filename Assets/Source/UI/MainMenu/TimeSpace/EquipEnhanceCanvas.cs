@@ -191,11 +191,30 @@ public class EquipEnhanceCanvas : MonoBehaviour
 		}
 		else
 		{
-			UIInstanceManager.instance.ShowCanvasAsync("EquipEnhanceConfirmCanvas", () =>
+			string alertStirngId = CheckEnhanceAlert();
+			System.Action action = () =>
 			{
-				EquipEnhanceConfirmCanvas.instance.ShowCanvas(true, _equipData, equipStatusInfo.mainStatusText.text, _price);
-			});
+				UIInstanceManager.instance.ShowCanvasAsync("EquipEnhanceConfirmCanvas", () =>
+				{
+					EquipEnhanceConfirmCanvas.instance.ShowCanvas(true, _equipData, equipStatusInfo.mainStatusText.text, _price);
+				});
+			};
+
+			if (string.IsNullOrEmpty(alertStirngId))
+				action.Invoke();
+			else
+			{
+				YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString(alertStirngId), () =>
+				{
+					action.Invoke();
+				});
+			}
 		}
+	}
+
+	string CheckEnhanceAlert()
+	{
+		return "";
 	}
 
 

@@ -269,9 +269,15 @@ public class PlayFabApiManager : MonoBehaviour
 
 	void OnRecvPlayerDataFailure(PlayFabError error)
 	{
+		// 정말 이상하게도 갑자기 PlayFab로그인은 되는데 그 뒤 모든 패킷을 보내봐도(클라이언트측 함수나 클라우드 스크립트 둘다) 503 에러를 뱉어냈다.
+		// 이때는 PlayFab 서버가 동작 안하는 상태라 종료시간같은걸 정할수도 없으니 전용 스트링 하나 만들어서 보여주기로 한다.
+		string stringId = "SystemUI_DisconnectServer";
+		if (error.Error == PlayFabErrorCode.ServiceUnavailable)
+			stringId = "SystemUI_Error503";
+
 		// 로그인이 성공한 이상 실패할거 같진 않지만 그래도 혹시 모르니 해둔다.
 		Debug.LogError(error.GenerateErrorReport());
-		StartCoroutine(AuthManager.instance.RestartProcess());
+		StartCoroutine(AuthManager.instance.RestartProcess(stringId));
 	}
 
 	void CheckCompleteRecvPlayerData()

@@ -45,11 +45,11 @@ public class OptionManager : MonoBehaviour
 		if (ObscuredPrefs.HasKey(OPTION_SYSTEM_LANGUAGE_KEY))
 			return;
 
-		switch (Application.systemLanguage)
-		{
-			case SystemLanguage.Korean: _language = "KOR"; break;
-			default: _language = "ENG"; break;
-		}
+		LanguageTableData languageTableData = TableDataManager.instance.FindLanguageTableDataBySystemLanguage((int)Application.systemLanguage);
+		if (languageTableData != null)
+			_language = languageTableData.id;
+		else
+			_language = "ENG";
 		PlayerPrefs.SetString(OPTION_LANGUAGE_KEY, _language);
 		ObscuredPrefs.SetInt(OPTION_SYSTEM_LANGUAGE_KEY, 1);
 	}

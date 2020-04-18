@@ -370,4 +370,14 @@ public class TableDataManager : MonoBehaviour
 		}
 		return null;
 	}
+
+	public LanguageTableData FindLanguageTableDataBySystemLanguage(int systemLanguage)
+	{
+		for (int i = 0; i < languageTable.dataArray.Length; ++i)
+		{
+			if (languageTable.dataArray[i].unityLanguageCode == systemLanguage)
+				return languageTable.dataArray[i];
+		}
+		return null;
+	}
 }

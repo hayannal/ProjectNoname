@@ -13,6 +13,10 @@ public class LanguageTableData
   public string id { get { return _id; } set { _id = value; } }
   
   [SerializeField]
+  int _unityLanguageCode;
+  public int unityLanguageCode { get { return _unityLanguageCode; } set { _unityLanguageCode = value; } }
+  
+  [SerializeField]
   string _languageName;
   public string languageName { get { return _languageName; } set { _languageName = value; } }
   

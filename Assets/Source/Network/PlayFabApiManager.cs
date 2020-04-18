@@ -896,7 +896,8 @@ public class PlayFabApiManager : MonoBehaviour
 
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
-			FunctionName = "Transfer",
+			// 함수 형태가 비슷해서 Enhance에다가 인자 추가해서 쓰기로 한다.
+			FunctionName = "Enhance",
 			FunctionParameter = new { EqpId = (string)equipData.uniqueId, T = targetEnhanceLevel, Lst = listRevokeRequest, Pri = price, LstCs = checkSum, EqpPos = equipSlotKey },
 			GeneratePlayStreamEvent = true,
 		}, (success) =>

@@ -83,7 +83,7 @@ public class EquipListStatusInfo : MonoBehaviour
 		bool adjustValue = false;
 		if (!fullGauge)
 		{
-			string maxDisplayString = ActorStatus.GetDisplayAttack(_equipData.cachedEquipTableData.max).ToString("N0");
+			string maxDisplayString = ActorStatus.GetDisplayAttack(_equipData.GetMainStatusValueMax()).ToString("N0");
 			if (displayString == maxDisplayString)
 				adjustValue = true;
 		}

@@ -117,8 +117,8 @@ public class EquipOptionCanvas : MonoBehaviour
 
 	void RefreshOption()
 	{
-		mainMinText.text = ActorStatus.GetDisplayAttack(_equipData.cachedEquipTableData.min).ToString("N0");
-		mainMaxText.text = ActorStatus.GetDisplayAttack(_equipData.cachedEquipTableData.max).ToString("N0");
+		mainMinText.text = ActorStatus.GetDisplayAttack(_equipData.GetMainStatusValueMin()).ToString("N0");
+		mainMaxText.text = ActorStatus.GetDisplayAttack(_equipData.GetMainStatusValueMax()).ToString("N0");
 
 		int optionCount = _equipData.optionCount;
 		for (int i = 0; i < optionRectObjectList.Length; ++i)

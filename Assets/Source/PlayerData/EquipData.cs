@@ -183,6 +183,51 @@ public class EquipData
 			_equipStatusList.valueList[i] = 0.0f;
 	}
 
+	public float GetMainStatusValueMin(int overrideEnhanceLevel = -1)
+	{
+		int selectedEnhanceLevel = _enhanceLevel;
+		if (overrideEnhanceLevel != -1)
+			selectedEnhanceLevel = overrideEnhanceLevel;
+
+		float value = cachedEquipTableData.min;
+		EnhanceTableData enhanceTableData = TableDataManager.instance.FindEnhanceTableData(cachedEquipTableData.innerGrade, selectedEnhanceLevel);
+		if (enhanceTableData != null)
+			value *= enhanceTableData.multi;
+		return value;
+	}
+
+	public float GetMainStatusValueMax(int overrideEnhanceLevel = -1)
+	{
+		int selectedEnhanceLevel = _enhanceLevel;
+		if (overrideEnhanceLevel != -1)
+			selectedEnhanceLevel = overrideEnhanceLevel;
+
+		float value = cachedEquipTableData.max;
+		EnhanceTableData enhanceTableData = TableDataManager.instance.FindEnhanceTableData(cachedEquipTableData.innerGrade, selectedEnhanceLevel);
+		if (enhanceTableData != null)
+			value *= enhanceTableData.multi;
+		return value;
+	}
+
+	public void GetMainStatusDisplayStringByEnhance(int targetEnhance, ref string targetDisplayString)
+	{
+		float value = _mainOption;
+		EnhanceTableData enhanceTableData = TableDataManager.instance.FindEnhanceTableData(cachedEquipTableData.innerGrade, targetEnhance);
+		if (enhanceTableData != null)
+			value *= enhanceTableData.multi;
+		bool fullGauge = (GetMainStatusRatio() == 1.0f);
+		float displayValue = ActorStatus.GetDisplayAttack(value);
+		string displayString = displayValue.ToString("N0");
+		bool adjustValue = false;
+		if (!fullGauge)
+		{
+			string maxDisplayString = ActorStatus.GetDisplayAttack(GetMainStatusValueMax(targetEnhance)).ToString("N0");
+			if (displayString == maxDisplayString)
+				adjustValue = true;
+		}
+		targetDisplayString = adjustValue ? (displayValue - 1.0f).ToString("N0") : displayString;
+	}
+
 	public void SetLock(bool lockState)
 	{
 		_isLock = lockState;

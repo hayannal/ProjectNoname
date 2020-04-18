@@ -90,7 +90,15 @@ public class EquipEnhanceConfirmCanvas : MonoBehaviour
 		_price = price;
 		equipListItem.Initialize(equipData, null);
 		mainStatusText.text = displayAttack;
-		increaseAtkText.text =  string.Format("+{0}", BattleInstanceManager.instance.GetCachedGlobalConstantInt("LnEquipEnhance"));
+
+		int prevValue = 0;
+		int.TryParse(displayAttack.Replace(",", ""), out prevValue);
+		string nextDisplayString = "";
+		equipData.GetMainStatusDisplayStringByEnhance(equipData.enhanceLevel + 1, ref nextDisplayString);
+		int nextValue = 0;
+		int.TryParse(nextDisplayString.Replace(",", ""), out nextValue);
+		increaseAtkText.text = string.Format("+{0}", nextValue - prevValue);
+
 		materialCountText.text = EquipInfoGrowthCanvas.instance.listMultiSelectEquipData.Count.ToString();
 
 		resultEquipListItem.Initialize(equipData, null);

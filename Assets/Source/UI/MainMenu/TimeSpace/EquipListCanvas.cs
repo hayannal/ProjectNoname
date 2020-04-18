@@ -167,6 +167,14 @@ public class EquipListCanvas : EquipShowCanvasBase
 					continue;
 				_listCurrentEquipData.Add(listEquipData[i]);
 			}
+
+			// 인벤토리를 리프레쉬 하는데 열려있는 정보창의 equipData가 삭제되었다면 템을 삭제한 후 리프레쉬 한걸거다. 이땐 정보창을 강제로 닫아준다.
+			if (equippedStatusInfo.gameObject.activeSelf && listEquipData.Contains(equippedStatusInfo.equipData) == false)
+				equippedStatusInfo.gameObject.SetActive(false);
+			if (diffStatusInfo.gameObject.activeSelf && _listCurrentEquipData.Contains(diffStatusInfo.equipData) == false)
+				diffStatusInfo.gameObject.SetActive(false);
+			if (_selectedEquipData != null && _listCurrentEquipData.Contains(_selectedEquipData) == false)
+				_selectedEquipData = null;
 		}
 		if (_listCurrentEquipData.Count == 0)
 		{

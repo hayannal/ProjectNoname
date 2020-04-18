@@ -97,7 +97,7 @@ public class EquipEnhanceConfirmCanvas : MonoBehaviour
 		equipData.GetMainStatusDisplayStringByEnhance(equipData.enhanceLevel + 1, ref nextDisplayString);
 		int nextValue = 0;
 		int.TryParse(nextDisplayString.Replace(",", ""), out nextValue);
-		increaseAtkText.text = string.Format("+{0}", nextValue - prevValue);
+		increaseAtkText.text = string.Format("+{0:N0}", nextValue - prevValue);
 
 		materialCountText.text = EquipInfoGrowthCanvas.instance.listMultiSelectEquipData.Count.ToString();
 

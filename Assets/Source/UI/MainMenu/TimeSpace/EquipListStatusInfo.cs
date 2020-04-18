@@ -73,6 +73,12 @@ public class EquipListStatusInfo : MonoBehaviour
 
 	static Color _gaugeColor = new Color(0.819f, 0.505f, 0.458f, 0.862f);
 	static Color _fullGaugeColor = new Color(0.937f, 0.937f, 0.298f, 0.862f);
+	public static Color GetGaugeColor(bool fullGauge)
+	{
+		if (fullGauge)
+			return _fullGaugeColor;
+		return _gaugeColor;
+	}
 	public void RefreshStatus()
 	{
 		equipListItem.Initialize(_equipData, null);
@@ -89,7 +95,7 @@ public class EquipListStatusInfo : MonoBehaviour
 				adjustValue = true;
 		}
 		mainStatusText.text = adjustValue ? (displayValue - 1.0f).ToString("N0") : displayString;
-		mainStatusFillImage.color = fullGauge ? _fullGaugeColor : _gaugeColor;
+		mainStatusFillImage.color = GetGaugeColor(fullGauge);
 
 		int optionCount = _equipData.optionCount;
 		for (int i = 0; i < optionStatusObjectList.Length; ++i)
@@ -146,7 +152,7 @@ public class EquipListStatusInfo : MonoBehaviour
 			}
 			else
 				optionStatusValueTextList[i].text = displayString;
-			optionStatusFillImageList[i].color = fullGauge ? _fullGaugeColor : _gaugeColor;
+			optionStatusFillImageList[i].color = GetGaugeColor(fullGauge);
 		}
 		noOptionTextObject.SetActive(optionCount == 0);
 	}

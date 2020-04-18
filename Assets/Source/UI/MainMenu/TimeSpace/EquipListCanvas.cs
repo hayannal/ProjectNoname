@@ -168,9 +168,18 @@ public class EquipListCanvas : EquipShowCanvasBase
 				_listCurrentEquipData.Add(listEquipData[i]);
 			}
 
+			// 장착된 템을 인벤에서 못찾는다면 아마도 강화이전을 통해 장착된걸 재료로 써버려서 삭제가 되었을 경우일거다.
+			// 이럴땐 새로 장착된 템이 있는지 보고 있으면 갱신하고 없으면 닫기로 한다.
+			if (equippedStatusInfo.gameObject.activeSelf)
+			{
+				EquipData equipData = TimeSpaceData.instance.GetEquippedDataByType(_currentEquipType);
+				if (equipData != null)
+					RefreshEquippedStatusInfo(equipData);
+				else
+					equippedStatusInfo.gameObject.SetActive(false);
+			}
+
 			// 인벤토리를 리프레쉬 하는데 열려있는 정보창의 equipData가 삭제되었다면 템을 삭제한 후 리프레쉬 한걸거다. 이땐 정보창을 강제로 닫아준다.
-			if (equippedStatusInfo.gameObject.activeSelf && listEquipData.Contains(equippedStatusInfo.equipData) == false)
-				equippedStatusInfo.gameObject.SetActive(false);
 			if (diffStatusInfo.gameObject.activeSelf && _listCurrentEquipData.Contains(diffStatusInfo.equipData) == false)
 				diffStatusInfo.gameObject.SetActive(false);
 			if (_selectedEquipData != null && _listCurrentEquipData.Contains(_selectedEquipData) == false)

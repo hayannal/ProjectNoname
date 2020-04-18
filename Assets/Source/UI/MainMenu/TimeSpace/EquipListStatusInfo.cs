@@ -31,6 +31,7 @@ public class EquipListStatusInfo : MonoBehaviour
 
 	bool _equipped = false;
 	EquipData _equipData = null;
+	public EquipData equipData { get { return _equipData; } }
 	public void RefreshInfo(EquipData equipData, bool equipped)
 	{
 		_equipped = equipped;

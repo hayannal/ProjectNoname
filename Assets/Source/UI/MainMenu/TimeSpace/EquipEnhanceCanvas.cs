@@ -184,10 +184,24 @@ public class EquipEnhanceCanvas : MonoBehaviour
 
 		if (transferSwitch.isOn)
 		{
-			//UIInstanceManager.instance.ShowCanvasAsync("EquipTransferConfirmCanvas", () =>
-			//{
-				//CharacterLimitBreakCanvas.instance.ShowCanvas(true, characterData, _price);
-			//});
+			string alertStirngId = CheckTransferAlert();
+			System.Action action = () =>
+			{
+				UIInstanceManager.instance.ShowCanvasAsync("EquipTransferConfirmCanvas", () =>
+				{
+					EquipTransferConfirmCanvas.instance.ShowCanvas(true, _equipData, equipStatusInfo.mainStatusText.text, _price);
+				});
+			};
+
+			if (string.IsNullOrEmpty(alertStirngId))
+				action.Invoke();
+			else
+			{
+				YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString(alertStirngId), () =>
+				{
+					action.Invoke();
+				});
+			}
 		}
 		else
 		{
@@ -213,6 +227,12 @@ public class EquipEnhanceCanvas : MonoBehaviour
 	}
 
 	string CheckEnhanceAlert()
+	{
+		// 옵션 메뉴가 열려있지 않을때는 동일 재료 체크를 하는게 맞는건가?
+		return "";
+	}
+
+	string CheckTransferAlert()
 	{
 		return "";
 	}

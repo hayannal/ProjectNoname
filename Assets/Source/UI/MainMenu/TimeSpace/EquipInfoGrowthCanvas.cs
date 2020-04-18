@@ -388,8 +388,22 @@ public class EquipInfoGrowthCanvas : MonoBehaviour
 	}
 
 	EquipData _selectedEquipData;
+	public EquipData selectedEquipData { get { return _selectedEquipData; } }
 	public void OnSelectListItem(EquipData equipData)
 	{
+		// 다른 경우는 다 괜찮은데 하필 강화이전할때는 리스트에서 보여도 선택이 안되는 상황이 존재한다.
+		// 아예 리스트에서 빼버리는 것도 방법인데 이러면 왜 보이지 않는지 알수가 없기 때문에
+		// 이렇게 리스트 안에서는 보이되 누르면 선택할 수 없다는 메세지가 뜨는 식으로 처리하기로 한다.
+		if (_lastIndex == 0 && EquipEnhanceCanvas.instance.gameObject.activeSelf && EquipEnhanceCanvas.instance.transferSwitch.isOn)
+		{
+			int expectEnhanceLevel = EquipTransferConfirmCanvas.GetTransferResult(_equipData, equipData);
+			if (_equipData.enhanceLevel == expectEnhanceLevel)
+			{
+				ToastCanvas.instance.ShowToast(UIString.instance.GetString("EquipUI_InsufficientMaterial"), 1.0f);
+				return;
+			}
+		}
+
 		_selectedEquipData = equipData;
 
 		string selectedUniqueId = "";

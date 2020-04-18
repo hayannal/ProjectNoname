@@ -315,6 +315,16 @@ public class TableDataManager : MonoBehaviour
 		return null;
 	}
 
+	public TransferTableData FindTransferTableData(int innerGrade, int enhance)
+	{
+		for (int i = 0; i < transferTable.dataArray.Length; ++i)
+		{
+			if (transferTable.dataArray[i].innerGrade == innerGrade && transferTable.dataArray[i].enhance == enhance)
+				return transferTable.dataArray[i];
+		}
+		return null;
+	}
+
 	public DamageRateTableData FindDamageTableData(string type, int addCount, string actorId)
 	{
 		for (int i = 0; i < damageRateTable.dataArray.Length; ++i)

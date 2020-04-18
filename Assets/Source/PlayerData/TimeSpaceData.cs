@@ -381,6 +381,20 @@ public class TimeSpaceData
 		return _listRevokeInventoryItemRequest;
 	}
 
+	List<EquipData> _listRevokeEquipData = new List<EquipData>();
+	public List<RevokeInventoryItemRequest> GenerateRevokeInfo(EquipData revokeEquipData, int price, string additionalData, ref string checkSum)
+	{
+		_listRevokeEquipData.Clear();
+		_listRevokeEquipData.Add(revokeEquipData);
+		return GenerateRevokeInfo(_listRevokeEquipData, price, additionalData, ref checkSum);
+	}
+
+	public void OnRevokeInventory(bool checkEquipped = false)
+	{
+		// 재료가 하나였을땐 내부 _listRevokeEquipData를 사용해서 한걸테니 그대로 전달한다.
+		OnRevokeInventory(_listRevokeEquipData, checkEquipped);
+	}
+
 	public void OnRevokeInventory(List<EquipData> listRevokeEquipData, bool checkEquipped = false)
 	{
 		bool unequip = false;

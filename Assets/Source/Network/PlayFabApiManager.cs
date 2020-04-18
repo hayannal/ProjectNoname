@@ -881,6 +881,44 @@ public class PlayFabApiManager : MonoBehaviour
 			HandleCommonError(error);
 		});
 	}
+
+	public void RequestTransfer(EquipData equipData, int targetEnhanceLevel, EquipData materialEquipData, int price, Action successCallback)
+	{
+		bool needEquip = TimeSpaceData.instance.IsEquipped(materialEquipData);
+		string equipSlotKey = "";
+		if (needEquip) equipSlotKey = string.Format("eqPo{0}", materialEquipData.cachedEquipTableData.equipType);
+
+		string checkSum = "";
+		List<TimeSpaceData.RevokeInventoryItemRequest> listRevokeRequest = TimeSpaceData.instance.GenerateRevokeInfo(materialEquipData, price, targetEnhanceLevel.ToString(), ref checkSum);
+
+		// 선이펙트와 함께 처리하는 형태라서 WaitingNetworkCanvas를 내부 코루틴에서 관리한다.
+		//WaitingNetworkCanvas.Show(true);
+
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "Transfer",
+			FunctionParameter = new { EqpId = (string)equipData.uniqueId, T = targetEnhanceLevel, Lst = listRevokeRequest, Pri = price, LstCs = checkSum, EqpPos = equipSlotKey },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			if (!failure)
+			{
+				//WaitingNetworkCanvas.Show(false);
+				CurrencyData.instance.gold -= price;
+				TimeSpaceData.instance.OnRevokeInventory();
+				if (equipData.enhanceLevel != targetEnhanceLevel)
+					equipData.OnEnhance(targetEnhanceLevel);
+				if (needEquip)
+					TimeSpaceData.instance.OnEquip(equipData);
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
 	#endregion
 
 

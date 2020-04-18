@@ -43,7 +43,9 @@ public class SelectLanguageButton : MonoBehaviour
 			else
 			{
 				// 나머지는 자기 폰트에서 뜨면 자신거로 아니면 시스템 폰트가 사용되게 처리해둔다.
-				buttonText.SetLocalizedText(languageName);
+				buttonText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+				buttonText.fontStyle = FontStyle.Bold;
+				buttonText.text = languageName;
 			}
 		}
 	}

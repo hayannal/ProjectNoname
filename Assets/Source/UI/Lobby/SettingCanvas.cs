@@ -113,7 +113,9 @@ public class SettingCanvas : MonoBehaviour
 	#region Language
 	void LoadLanguage()
 	{
-		languageText.SetLocalizedText(UIString.instance.GetString(string.Format("GameUI_Language_{0}", OptionManager.instance.language)));
+		LanguageTableData languageTableData = TableDataManager.instance.FindLanguageTableData(OptionManager.instance.language);
+		if (languageTableData != null)
+			languageText.SetLocalizedText(languageTableData.languageName);
 	}
 
 	public void OnClickLanguageButton()

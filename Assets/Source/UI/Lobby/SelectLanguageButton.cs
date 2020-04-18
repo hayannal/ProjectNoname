@@ -6,7 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class SelectLanguageButton : MonoBehaviour
 {
-	public string region = "KOR";
+	public string languageId = "KOR";
+	public string languageName { get; set; }
 	public Text buttonText;
 	Button _button;
 
@@ -26,8 +27,25 @@ public class SelectLanguageButton : MonoBehaviour
 
 	void RefreshButton()
 	{
-		_button.interactable = !(OptionManager.instance.language == region);
-		buttonText.SetLocalizedText(UIString.instance.GetString(string.Format("GameUI_Language_{0}", region)));
+		_button.interactable = !(OptionManager.instance.language == languageId);
+
+		if (OptionManager.instance.language == languageId)		
+			buttonText.SetLocalizedText(languageName);
+		else
+		{
+			LanguageTableData languageTableData = TableDataManager.instance.FindLanguageTableData(languageId);
+			if (languageTableData.useUnlocalized)
+			{
+				buttonText.font = UIString.instance.GetUnlocalizedFont();
+				buttonText.fontStyle = UIString.instance.useSystemUnlocalizedFont ? FontStyle.Bold : FontStyle.Normal;
+				buttonText.text = languageName;
+			}
+			else
+			{
+				// 나머지는 자기 폰트에서 뜨면 자신거로 아니면 시스템 폰트가 사용되게 처리해둔다.
+				buttonText.SetLocalizedText(languageName);
+			}
+		}
 	}
 
 	public void OnClickButton()
@@ -51,7 +69,7 @@ public class SelectLanguageButton : MonoBehaviour
 			// OptionManager.instance.language와 localizedText를 구분할 수 밖에 없는거다.
 			if (SettingCanvas.instance != null)
 				SettingCanvas.instance.SaveOption();
-			OptionManager.instance.language = region;
+			OptionManager.instance.language = languageId;
 			OptionManager.instance.SaveLanguagePlayerPref();
 			SceneManager.LoadScene(0);
 		});

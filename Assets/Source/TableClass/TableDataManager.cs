@@ -39,6 +39,7 @@ public class TableDataManager : MonoBehaviour
 	public DamageRateTable damageRateTable;
 	public ActorInfoTable actorInfoTable;
 	public ActorLevelPackTable actorLevelPackTable;
+	public LanguageTable languageTable;
 
 	void Awake()
 	{
@@ -356,6 +357,16 @@ public class TableDataManager : MonoBehaviour
 		{
 			if (actorLevelPackTable.dataArray[i].level == level && actorLevelPackTable.dataArray[i].actorId == actorId)
 				return actorLevelPackTable.dataArray[i].levelPack;
+		}
+		return null;
+	}
+
+	public LanguageTableData FindLanguageTableData(string languageId)
+	{
+		for (int i = 0; i < languageTable.dataArray.Length; ++i)
+		{
+			if (languageTable.dataArray[i].id == languageId)
+				return languageTable.dataArray[i];
 		}
 		return null;
 	}

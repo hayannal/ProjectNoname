@@ -11,13 +11,23 @@ public class SelectLanguageCanvas : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-		string languageList = BattleInstanceManager.instance.GetCachedGlobalConstantString("LanguageList");
-		string[] split = languageList.Split(',');
-		for (int i = 0; i < split.Length; ++i)
+		List<LanguageTableData> listLanguageTableData = new List<LanguageTableData>();
+		for (int i = 0; i < TableDataManager.instance.languageTable.dataArray.Length; ++i)
+			listLanguageTableData.Add(TableDataManager.instance.languageTable.dataArray[i]);
+
+		listLanguageTableData.Sort(delegate (LanguageTableData x, LanguageTableData y)
+		{
+			if (x.order < y.order) return -1;
+			else if (x.order > y.order) return 1;
+			return 0;
+		});
+
+		for (int i = 0; i < listLanguageTableData.Count; ++i)
 		{
 			GameObject newObject = Instantiate<GameObject>(buttonObject, gridRootTransform);
 			SelectLanguageButton selectLanguageButton = newObject.GetComponent<SelectLanguageButton>();
-			selectLanguageButton.region = split[i];
+			selectLanguageButton.languageId = listLanguageTableData[i].id;
+			selectLanguageButton.languageName = listLanguageTableData[i].languageName;
 		}
 		buttonObject.SetActive(false);
 	}

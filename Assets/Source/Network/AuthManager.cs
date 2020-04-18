@@ -226,14 +226,21 @@ public class AuthManager : MonoBehaviour
 		StartCoroutine(RestartProcess(stringId));
 	}
 
+	// 여러 패킷이 동시에 실패하면 여러개의 RestartProcess가 만들어질 수도 있어서 플래그를 걸어서 체크하기로 한다.
+	bool _restartProcessed = false;
 	public IEnumerator RestartProcess(string stringId = "SystemUI_DisconnectServer")
 	{
+		if (_restartProcessed)
+			yield break;
+		_restartProcessed = true;
+
 		// 이땐 로딩 속도를 위해 commonCanvasGroup도 로딩하지 않은 상태라서 직접 로드해서 보여줘야한다.
 		AsyncOperationHandle<GameObject> handleCommonCanvasGroup = Addressables.LoadAssetAsync<GameObject>("CommonCanvasGroup");
 		while (!handleCommonCanvasGroup.IsDone) yield return null;
 		Instantiate<GameObject>(handleCommonCanvasGroup.Result);
 		OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString(stringId), () =>
 		{
+			_restartProcessed = false;
 			Addressables.Release<GameObject>(handleCommonCanvasGroup);
 			SceneManager.LoadScene(0);
 		}, 100);

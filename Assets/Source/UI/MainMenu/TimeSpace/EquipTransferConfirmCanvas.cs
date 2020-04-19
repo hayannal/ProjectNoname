@@ -214,7 +214,8 @@ public class EquipTransferConfirmCanvas : MonoBehaviour
 
 		// 선이펙트와 동시에 패킷을 보낸다.
 		_waitRecv = true;
-		PlayFabApiManager.instance.RequestTransfer(_equipData, enhanceLevel, materialEquipData, sumPrice, OnRecvTransfer);
+		bool needEquip = TimeSpaceData.instance.IsEquipped(materialEquipData);
+		PlayFabApiManager.instance.RequestTransfer(_equipData, enhanceLevel, materialEquipData, sumPrice, needEquip, OnRecvTransfer);
 
 		// 패킷 온다고 바로 처리하지 않고 원래 대기하려던 타임까지 기다린다.
 		while (Time.time < _standbyEffectWaitTime)
@@ -275,7 +276,13 @@ public class EquipTransferConfirmCanvas : MonoBehaviour
 		if (TimeSpaceData.instance.IsEquipped(_equipData))
 		{
 			int positionIndex = _equipData.cachedEquipTableData.equipType;
-			TimeSpaceGround.instance.timeSpaceAltarList[positionIndex].RefreshEnhanceInfo();
+			if (needEquip)
+			{
+				// 장착중이던 재료에게 이전받아서 자동장착 된거라면 오브젝트 자체를 갱신
+				TimeSpaceGround.instance.timeSpaceAltarList[positionIndex].RefreshEquipObject();
+			}
+			else
+				TimeSpaceGround.instance.timeSpaceAltarList[positionIndex].RefreshEnhanceInfo();
 		}
 	}
 

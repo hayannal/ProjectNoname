@@ -882,9 +882,8 @@ public class PlayFabApiManager : MonoBehaviour
 		});
 	}
 
-	public void RequestTransfer(EquipData equipData, int targetEnhanceLevel, EquipData materialEquipData, int price, Action successCallback)
+	public void RequestTransfer(EquipData equipData, int targetEnhanceLevel, EquipData materialEquipData, int price, bool needEquip, Action successCallback)
 	{
-		bool needEquip = TimeSpaceData.instance.IsEquipped(materialEquipData);
 		string equipSlotKey = "";
 		if (needEquip) equipSlotKey = string.Format("eqPo{0}", materialEquipData.cachedEquipTableData.equipType);
 

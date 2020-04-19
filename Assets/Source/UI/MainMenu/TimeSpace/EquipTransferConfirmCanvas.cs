@@ -85,13 +85,21 @@ public class EquipTransferConfirmCanvas : MonoBehaviour
 		// 2. 이전받을 템의 시작위치를 구해야하니 등급과 템으로 Data를 다시 구해야하는데..
 		// 3. 이전해줄 템의 등급에 따라 흰템이면 innerGradeZeroAmount 녹템이면 innerGradeOneAmount 이렇게 어느 컬럼을 읽을지 결정해서 아래로 내려가면서
 		// 4. 누적된 값을 가지고 적용할 최대수치를 찾으면 된다.
-		TransferTableData materialTransferTableData = TableDataManager.instance.FindTransferTableData(materialEquipData.cachedEquipTableData.innerGrade, materialEquipData.enhanceLevel);
-		float materialTransferValue = materialTransferTableData.transferRate * materialTransferTableData.sameSum;
 		int enhanceLevel = equipData.enhanceLevel;
+		TransferTableData materialTransferTableData = TableDataManager.instance.FindTransferTableData(materialEquipData.cachedEquipTableData.innerGrade, materialEquipData.enhanceLevel);
+		if (materialTransferTableData == null)
+			return enhanceLevel;
+		float materialTransferValue = materialTransferTableData.transferRate * materialTransferTableData.sameSum;
 		float currentValue = 0.0f;
 		while (true)
 		{
+			// 이전하고 나니 여기가 null? 리턴. 클릭이 안된다. 재료.
 			TransferTableData transferTableData = TableDataManager.instance.FindTransferTableData(equipData.cachedEquipTableData.innerGrade, enhanceLevel + 1);
+			if (transferTableData == null)
+			{
+				// 맥스에 도달하면 테이블이 없다.
+				break;
+			}
 			float amount = 0.0f;
 			switch (materialEquipData.cachedEquipTableData.innerGrade)
 			{

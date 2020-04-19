@@ -39,7 +39,22 @@ public class EquipEnhanceCanvas : MonoBehaviour
 		// 그래서 이렇게 OnEnable에서 처리해버리면 연출하고 왔을때도 실행이 되서 모드가 강제로 바뀌어버리게 된다.
 		// 이걸 막기 위해 Restore플래그를 추가해 제어하기로 한다.
 		if (_restore)
-			return;
+		{
+			// 복구모드일때 한가지 예외상황이 있는데 강화이전 받아서 3강을 넘기는때다.
+			// 이땐 일반 강화모드로 되돌려야한다.
+			bool needReset = false;
+			if (transferSwitch.isOn)
+			{
+				int limit = BattleInstanceManager.instance.GetCachedGlobalConstantInt("ReceiveTransferMaxEnhance");
+				if (_equipData.enhanceLevel > limit)
+				{
+					needReset = true;
+					ToastCanvas.instance.ShowToast(UIString.instance.GetString("EquipUI_TransferOff"), 2.0f);
+				}
+			}
+			if (needReset == false)
+				return;
+		}
 
 		if (transferSwitch.isOn)
 			transferSwitch.AnimateSwitch();

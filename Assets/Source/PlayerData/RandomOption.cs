@@ -38,13 +38,18 @@ public static class RandomOption
 	{
 		float result = GetRandomRange(equipTableData.min, equipTableData.max, (eRandomCalculateType)equipTableData.randType, equipTableData.f1,
 			(equipTableData.leftRight == 1) ? RandomFromDistribution.Direction_e.Left : RandomFromDistribution.Direction_e.Right);
-		return (float)(System.Math.Truncate(result * 10000.0) / 10000.0);
+		return GetTruncate(result);
 	}
 
 	public static float GetRandomEquipSubOption(OptionTableData optionTableData)
 	{
 		float result = GetRandomRange(optionTableData.min, optionTableData.max, (eRandomCalculateType)optionTableData.randType, optionTableData.f1,
 			(optionTableData.leftRight == 1) ? RandomFromDistribution.Direction_e.Left : RandomFromDistribution.Direction_e.Right);
+		return GetTruncate(result);
+	}
+
+	public static float GetTruncate(float result)
+	{
 		return (float)(System.Math.Truncate(result * 10000.0) / 10000.0);
 	}
 

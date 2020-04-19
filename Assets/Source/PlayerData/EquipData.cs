@@ -13,6 +13,7 @@ public class EquipData
 	ObscuredInt _enhanceLevel;
 	ObscuredFloat _mainOption;
 	public bool isLock { get { return _isLock; } }
+	public float mainOption { get { return _mainOption; } }
 	public int enhanceLevel { get { return _enhanceLevel; } }
 
 	// 메인 공격력 스탯 및 랜덤옵 합산
@@ -240,6 +241,19 @@ public class EquipData
 		RefreshCachedStatus();
 
 		// 장착된 장비였을 경우엔 TimeSpace에도 알려서 모든 캐릭터를 재계산해야하니 
+		if (TimeSpaceData.instance.IsEquipped(this))
+			TimeSpaceData.instance.OnChangedEquippedData();
+	}
+
+	public void OnAmplifyMain(string mainOptionString)
+	{
+		// 로그인했을때랑 동일하게 파싱되게 스트링에서 추출하는 형태로 처리한다.
+		float floatValue = 0;
+		if (float.TryParse(mainOptionString, out floatValue))
+			_mainOption = floatValue;
+
+		RefreshCachedStatus();
+
 		if (TimeSpaceData.instance.IsEquipped(this))
 			TimeSpaceData.instance.OnChangedEquippedData();
 	}

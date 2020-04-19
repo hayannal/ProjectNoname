@@ -85,6 +85,30 @@ public class EquipOptionCanvas : MonoBehaviour
 		equipStatusInfo.RefreshInfo(equipData, false);
 		RefreshOption();
 
+		if (_restore)
+		{
+			// 복구할땐 인덱스 건드리는거 없이 그리드와 가격버튼만 갱신해야한다.
+			if (_selectMain || transmuteSwitch.isOn == false)
+			{
+				EquipInfoGrowthCanvas.instance.RefreshGrid(EquipInfoGrowthCanvas.eGrowthGridType.Amplify, _selectMain);
+				float ratio = 0.0f;
+				if (_selectMain)
+					ratio = _equipData.GetMainStatusRatio();
+				else
+				{
+					EquipData.RandomOptionInfo info = _equipData.GetOption(_selectRendomIndex);
+					ratio = info.GetRandomStatusRatio();
+				}
+				RefreshButton(ratio == 1.0f);
+			}
+			else
+			{
+				EquipInfoGrowthCanvas.instance.RefreshGrid(EquipInfoGrowthCanvas.eGrowthGridType.Transmute);
+				RefreshButton(false);
+			}
+			return;
+		}
+
 		// 처음 들어왔을때 시작은 항상 연마모드
 		transmuteRemainCountValueText.text = UIString.instance.GetString(transmuteSwitch.isOn ? "EquipUI_LeftCountValueOn" : "EquipUI_LeftCountValueOff", equipData.transmuteRemainCount.ToString());
 
@@ -338,6 +362,77 @@ public class EquipOptionCanvas : MonoBehaviour
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughGold"), 2.0f);
 			return;
 		}
+
+		if (_selectMain == false && transmuteSwitch.isOn)
+		{
+			string alertStirngId = CheckTransmuteAlert();
+			System.Action action = () =>
+			{
+				//UIInstanceManager.instance.ShowCanvasAsync("EquipTransmuteConfirmCanvas", () =>
+				//{
+				//	EquipTransmuteConfirmCanvas.instance.ShowCanvas(true, _equipData, equipStatusInfo.mainStatusText.text, _price);
+				//});
+			};
+
+			if (string.IsNullOrEmpty(alertStirngId))
+				action.Invoke();
+			else
+			{
+				YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString(alertStirngId), () =>
+				{
+					action.Invoke();
+				});
+			}
+		}
+		else
+		{
+			string alertStirngId = "";
+			if (_selectMain)
+				CheckAmplifyMainAlert();
+			else
+				CheckAmplifyRandomAlert();
+
+			System.Action action = () =>
+			{
+				if (_selectMain)
+				{
+					UIInstanceManager.instance.ShowCanvasAsync("EquipAmplifyMainConfirmCanvas", () =>
+					{
+						EquipAmplifyMainConfirmCanvas.instance.ShowCanvas(true, _equipData, equipStatusInfo.mainStatusText.text, mainMinText.text, mainMaxText.text, _price);
+					});
+				}
+				else
+				{
+
+				}
+				
+			};
+
+			if (string.IsNullOrEmpty(alertStirngId))
+				action.Invoke();
+			else
+			{
+				YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString(alertStirngId), () =>
+				{
+					action.Invoke();
+				});
+			}
+		}
+	}
+
+	string CheckTransmuteAlert()
+	{
+		return "";
+	}
+
+	string CheckAmplifyMainAlert()
+	{
+		return "";
+	}
+
+	string CheckAmplifyRandomAlert()
+	{
+		return "";
 	}
 
 

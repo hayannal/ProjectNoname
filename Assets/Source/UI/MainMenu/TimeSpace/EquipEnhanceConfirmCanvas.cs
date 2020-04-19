@@ -199,7 +199,7 @@ public class EquipEnhanceConfirmCanvas : MonoBehaviour
 		canvasGroup.gameObject.SetActive(false);
 
 		// 선이펙트
-		_standbyEffectWaitTime = Time.time + 3.0f;
+		_standbyEffectWaitTime = Time.time + 1.75f;
 		BattleInstanceManager.instance.GetCachedObject(standbyEffectPrefab, EquipListCanvas.instance.rootOffsetPosition, Quaternion.identity, null);
 
 		// 선이펙트와 동시에 패킷을 보낸다.

@@ -260,7 +260,12 @@ public class EquipData
 
 	public float GetMainStatusRatio()
 	{
-		return ((_mainOption - cachedEquipTableData.min) / (cachedEquipTableData.max - cachedEquipTableData.min));
+		float min = GetMainStatusValueMin();
+		float max = GetMainStatusValueMax();
+		float displayMin = ActorStatus.GetDisplayAttack(min);
+		float displayMax = ActorStatus.GetDisplayAttack(max);
+		float diplay = ActorStatus.GetDisplayAttack(mainStatusValue);
+		return ((diplay - displayMin) / (displayMax - displayMin));
 	}
 
 	public RandomOptionInfo GetOption(int index)

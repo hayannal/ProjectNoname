@@ -53,6 +53,10 @@ public class EquipInfoGround : MonoBehaviour
 	EquipData _currentEquipData;
 	public void CreateEquipObject(EquipData equipData)
 	{
+		// 중복 호출 되더라도 두번 생성 안하려면 여기서 검사하는게 맞다.
+		if (_currentEquipData == equipData)
+			return;
+
 		// 로딩걸기전에 항상 현재값을 리셋해놓고 로드하기로 한다.
 		ResetEquipObject();
 

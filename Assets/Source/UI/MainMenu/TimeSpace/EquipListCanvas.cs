@@ -86,7 +86,9 @@ public class EquipListCanvas : EquipShowCanvasBase
 
 	public void RefreshInfo(int positionIndex)
 	{
+		_forceRefresh = true;
 		OnSelectEquipType(positionIndex);
+		_forceRefresh = false;
 
 		// 외부에서 제단 인디케이터를 클릭해서 들어온거니 장착이 되어있다면 자동으로 정보창을 보여준다.
 		EquipData equipData = TimeSpaceData.instance.GetEquippedDataByType((TimeSpaceData.eEquipSlotType)positionIndex);
@@ -96,8 +98,12 @@ public class EquipListCanvas : EquipShowCanvasBase
 	}
 
 	#region EquipTypeButton
+	bool _forceRefresh = false;
 	public void OnSelectEquipType(int positionIndex)
 	{
+		if (_forceRefresh == false &&_currentEquipType == (TimeSpaceData.eEquipSlotType)positionIndex)
+			return;
+
 		for (int i = 0; i < equipTypeButtonList.Length; ++i)
 			equipTypeButtonList[i].selected = (equipTypeButtonList[i].positionIndex == positionIndex);
 

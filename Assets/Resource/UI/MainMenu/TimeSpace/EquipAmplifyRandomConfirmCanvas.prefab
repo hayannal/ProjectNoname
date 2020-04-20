@@ -1222,7 +1222,6 @@ GameObject:
   - component: {fileID: 1593808300239696417}
   - component: {fileID: 1593808300239696416}
   - component: {fileID: 1593808300239696419}
-  - component: {fileID: 1738936348454738223}
   - component: {fileID: 8488561156380820996}
   m_Layer: 5
   m_Name: EquipAmplifyRandomConfirmCanvas
@@ -1314,49 +1313,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &1738936348454738223
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1593808300239696421}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8271ab166f21c994090aefdb2504a02a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  canvasGroup: {fileID: 1593808299969468002}
-  backKeyButton: {fileID: 1593808298970298248}
-  backgroundImage: {fileID: 1593808298970298252}
-  titleTextTransform: {fileID: 1339642713684751214}
-  equipListItem: {fileID: 5937923228801438288}
-  mainStatusText: {fileID: 0}
-  mainStatusFillImage: {fileID: 0}
-  expectMainStatusFillImage: {fileID: 0}
-  mainMinText: {fileID: 0}
-  mainMaxText: {fileID: 0}
-  materialCountText: {fileID: 6596644299433227531}
-  completeEffectPrefab: {fileID: 6519955477757456939, guid: 6c6d1838cbf08b34da405e9d1d697a9b,
-    type: 3}
-  toastBackImageRectTransform: {fileID: 1593808299131468407}
-  processCanvasGroup: {fileID: 1593808300091583596}
-  completeObject: {fileID: 6475846548902739804}
-  resultEquipListItem: {fileID: 850016828458113431}
-  resultMainStatusText: {fileID: 0}
-  resultMainStatusTweenAnimation: {fileID: 0}
-  resultGaugeSlider: {fileID: 6975508194827610466}
-  resultGaugeImage: {fileID: 3155996294331581883}
-  resultGaugeColorTween: {fileID: 4833080707075649891}
-  resultGaugeEndPointImage: {fileID: 7763182293375833856}
-  addAtkText: {fileID: 1593808298808655764}
-  addAtkTweenAnimation: {fileID: 5303108813598490184}
-  resultMainMinText: {fileID: 0}
-  resultMainMaxText: {fileID: 0}
-  priceButton: {fileID: 8737497077134373804}
-  priceText: {fileID: 8737939512192294212}
-  exitText: {fileID: 1593808300364872367}
-  processGraphicElement: {fileID: 1593808300407491649}
 --- !u!114 &8488561156380820996
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2988,7 +2944,7 @@ MonoBehaviour:
   id: 
   isRelative: 0
   isFrom: 1
-  isIndependentUpdate: 1
+  isIndependentUpdate: 0
   autoKill: 0
   isActive: 1
   isValid: 1
@@ -4460,15 +4416,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 085bc674e269ae346bcb5eaf4d3cdd6e, type: 3}
---- !u!1 &9186028846854118907 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7594490250724020564, guid: 085bc674e269ae346bcb5eaf4d3cdd6e,
-    type: 3}
-  m_PrefabInstance: {fileID: 1593808299666017455}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &3413366228348034184 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4125559267737882663, guid: 085bc674e269ae346bcb5eaf4d3cdd6e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1593808299666017455}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &9186028846854118907 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7594490250724020564, guid: 085bc674e269ae346bcb5eaf4d3cdd6e,
     type: 3}
   m_PrefabInstance: {fileID: 1593808299666017455}
   m_PrefabAsset: {fileID: 0}

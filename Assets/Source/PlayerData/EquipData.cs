@@ -41,7 +41,24 @@ public class EquipData
 
 		public float GetRandomStatusRatio()
 		{
-			return ((value - cachedOptionTableData.min) / (cachedOptionTableData.max - cachedOptionTableData.min));
+			float displayMin = 0.0f;
+			float displayMax = 0.0f;
+			float display = 0.0f;
+			switch (statusType)
+			{
+				case eActorStatus.MaxHp:
+					displayMin = ActorStatus.GetDisplayMaxHp(cachedOptionTableData.min);
+					displayMax = ActorStatus.GetDisplayMaxHp(cachedOptionTableData.max);
+					display = ActorStatus.GetDisplayMaxHp(value);
+					return ((display - displayMin) / (displayMax - displayMin));
+				case eActorStatus.Attack:
+					displayMin = ActorStatus.GetDisplayAttack(cachedOptionTableData.min);
+					displayMax = ActorStatus.GetDisplayAttack(cachedOptionTableData.max);
+					display = ActorStatus.GetDisplayAttack(value);
+					return ((display - displayMin) / (displayMax - displayMin));
+				default:
+					return ((value - cachedOptionTableData.min) / (cachedOptionTableData.max - cachedOptionTableData.min));
+			}
 		}
 	}
 	List<RandomOptionInfo> _listRandomOptionInfo;

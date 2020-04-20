@@ -974,7 +974,7 @@ public class PlayFabApiManager : MonoBehaviour
 				WaitingNetworkCanvas.Show(false);
 				CurrencyData.instance.gold -= price;
 				TimeSpaceData.instance.OnRevokeInventory(listMaterialEquipData);
-				equipData.OnTransmute(randomIndex, randomOptionString);
+				equipData.OnTransmute(randomIndex, randomOptionString, true);
 				if (successCallback != null) successCallback.Invoke();
 			}
 		}, (error) =>
@@ -986,7 +986,9 @@ public class PlayFabApiManager : MonoBehaviour
 	public void RequestTransmute(EquipData equipData, int randomIndex, string randomOptionString, EquipData materialEquipData, int price, Action successCallback)
 	{
 		string checkSum = "";
-		List<TimeSpaceData.RevokeInventoryItemRequest> listRevokeRequest = TimeSpaceData.instance.GenerateRevokeInfo(materialEquipData, price, randomOptionString, ref checkSum);
+		// TransmuteRemainCount 삭제하라고 알리는 Cnt 인자는 해킹방지를 적용해야하는 인자라 additonal에 포함시켜야한다.
+		string additionalString = string.Format("{0}_{1}", randomOptionString, 1);
+		List<TimeSpaceData.RevokeInventoryItemRequest> listRevokeRequest = TimeSpaceData.instance.GenerateRevokeInfo(materialEquipData, price, additionalString, ref checkSum);
 
 		// 선이펙트 없이 일반 패킷처럼 처리
 		WaitingNetworkCanvas.Show(true);
@@ -994,7 +996,7 @@ public class PlayFabApiManager : MonoBehaviour
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
 			FunctionName = "Transmute",
-			FunctionParameter = new { EqpId = (string)equipData.uniqueId, Pos = randomIndex.ToString(), Op = randomOptionString, Lst = listRevokeRequest, Pri = price, LstCs = checkSum },
+			FunctionParameter = new { EqpId = (string)equipData.uniqueId, Pos = randomIndex.ToString(), Op = randomOptionString, Lst = listRevokeRequest, Pri = price, LstCs = checkSum, UsC = 1 },
 			GeneratePlayStreamEvent = true,
 		}, (success) =>
 		{
@@ -1005,7 +1007,7 @@ public class PlayFabApiManager : MonoBehaviour
 				WaitingNetworkCanvas.Show(false);
 				CurrencyData.instance.gold -= price;
 				TimeSpaceData.instance.OnRevokeInventory();
-				equipData.OnTransmute(randomIndex, randomOptionString);
+				equipData.OnTransmute(randomIndex, randomOptionString, false);
 				if (successCallback != null) successCallback.Invoke();
 			}
 		}, (error) =>

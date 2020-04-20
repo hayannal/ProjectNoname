@@ -287,7 +287,7 @@ public class EquipData
 			TimeSpaceData.instance.OnChangedEquippedData();
 	}
 
-	public void OnTransmute(int randomIndex, string randomOptionString)
+	public void OnTransmute(int randomIndex, string randomOptionString, bool ignoreTransmuteRemainCount)
 	{
 		string[] split = randomOptionString.Split(':');
 		eActorStatus randomOptionType = eActorStatus.ExAmount;
@@ -296,6 +296,17 @@ public class EquipData
 		float.TryParse(split[1], out value);
 		if (randomOptionType == eActorStatus.ExAmount)
 			return;
+
+		if (ignoreTransmuteRemainCount == false)
+		{
+			_transmuteRemainCount -= 1;
+			if (_transmuteRemainCount < 0)
+			{
+				// something wrong!
+				Debug.LogError("OnTransmute Error. Transmute Remain Count is negative.");
+				return;
+			}
+		}
 
 		// 새로 추가되는건 불가능하기때문에 null일리 없다. 없으면 해킹일거다.
 		RandomOptionInfo info = GetOption(randomIndex);

@@ -266,6 +266,7 @@ public class EquipTransferConfirmCanvas : MonoBehaviour
 
 		_atkChangeSpeed = -_addAtk / atkChangeTime;
 		_floatCurrentAtk = _addAtk;
+		_lastAtk = -1;
 		_updateAtkText = true;
 		yield return Timing.WaitForSeconds(atkChangeTime);
 		resultMainStatusTweenAnimation.DORestart();

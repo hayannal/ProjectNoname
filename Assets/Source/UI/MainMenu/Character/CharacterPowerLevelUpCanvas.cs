@@ -169,6 +169,7 @@ public class CharacterPowerLevelUpCanvas : DetailShowCanvasBase
 		// hp
 		_hpChangeSpeed = -_addMaxHp / hpChangeTime;
 		_floatCurrentHp = _addMaxHp;
+		_lastHp = -1;
 		_updateHpText = true;
 		yield return Timing.WaitForSeconds(hpChangeTime);
 		currentMaxHpTweenAnimation.DORestart();
@@ -177,6 +178,7 @@ public class CharacterPowerLevelUpCanvas : DetailShowCanvasBase
 		// atk
 		_atkChangeSpeed = -_addAtk / atkChangeTime;
 		_floatCurrentAtk = _addAtk;
+		_lastAtk = -1;
 		_updateAtkText = true;
 		yield return Timing.WaitForSeconds(atkChangeTime);
 		currentAtkTweenAnimation.DORestart();

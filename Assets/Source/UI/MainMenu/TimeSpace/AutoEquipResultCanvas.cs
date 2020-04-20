@@ -47,6 +47,7 @@ public class AutoEquipResultCanvas : MonoBehaviour
 	public void OnCompleteScaleAnimation()
 	{
 		textRootObject.SetActive(true);
+		_lastValue = -1;
 		_updateValueText = true;
 	}
 

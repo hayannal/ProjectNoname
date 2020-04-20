@@ -187,7 +187,6 @@ public class EquipAmplifyMainConfirmCanvas : MonoBehaviour
 		});
 	}
 
-	float _standbyEffectWaitTime;
 	float _currentAtk;
 	float _addAtk;
 	IEnumerator<float> AmplifyMainProcess(List<EquipData> listMultiSelectEquipData, int sumPrice, bool returnForMax)

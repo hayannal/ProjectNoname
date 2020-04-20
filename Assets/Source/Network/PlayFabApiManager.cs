@@ -951,10 +951,42 @@ public class PlayFabApiManager : MonoBehaviour
 		});
 	}
 
-	public void RequestTransmute(EquipData equipData, int randomIndex, string randomOptionString, List<EquipData> listMaterialEquipData, int price, Action successCallback)
+	public void RequestAmplifyRandom(EquipData equipData, int randomIndex, string randomOptionString, List<EquipData> listMaterialEquipData, int price, Action successCallback)
 	{
 		string checkSum = "";
 		List<TimeSpaceData.RevokeInventoryItemRequest> listRevokeRequest = TimeSpaceData.instance.GenerateRevokeInfo(listMaterialEquipData, price, randomOptionString, ref checkSum);
+
+		// 선이펙트 없이 일반 패킷처럼 처리
+		WaitingNetworkCanvas.Show(true);
+
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			// 옵션변경쪽은 선이펙트 없이 후이펙트로만 간다. 옵션 변경과 구조가 동일해서 같은 패킷을 사용하기로 한다.
+			FunctionName = "Transmute",
+			FunctionParameter = new { EqpId = (string)equipData.uniqueId, Pos = randomIndex.ToString(), Op = randomOptionString, Lst = listRevokeRequest, Pri = price, LstCs = checkSum },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+				CurrencyData.instance.gold -= price;
+				TimeSpaceData.instance.OnRevokeInventory(listMaterialEquipData);
+				equipData.OnTransmute(randomIndex, randomOptionString);
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+
+	public void RequestTransmute(EquipData equipData, int randomIndex, string randomOptionString, EquipData materialEquipData, int price, Action successCallback)
+	{
+		string checkSum = "";
+		List<TimeSpaceData.RevokeInventoryItemRequest> listRevokeRequest = TimeSpaceData.instance.GenerateRevokeInfo(materialEquipData, price, randomOptionString, ref checkSum);
 
 		// 선이펙트 없이 일반 패킷처럼 처리
 		WaitingNetworkCanvas.Show(true);
@@ -972,7 +1004,7 @@ public class PlayFabApiManager : MonoBehaviour
 			{
 				WaitingNetworkCanvas.Show(false);
 				CurrencyData.instance.gold -= price;
-				TimeSpaceData.instance.OnRevokeInventory(listMaterialEquipData);
+				TimeSpaceData.instance.OnRevokeInventory();
 				equipData.OnTransmute(randomIndex, randomOptionString);
 				if (successCallback != null) successCallback.Invoke();
 			}

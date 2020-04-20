@@ -139,7 +139,7 @@ public class EquipOptionCanvas : MonoBehaviour
 		}
 	}
 
-	void RefreshOption()
+	public void RefreshOption()
 	{
 		mainMinText.text = ActorStatus.GetDisplayAttack(_equipData.GetMainStatusValueMin()).ToString("N0");
 		mainMaxText.text = ActorStatus.GetDisplayAttack(_equipData.GetMainStatusValueMax()).ToString("N0");
@@ -368,10 +368,12 @@ public class EquipOptionCanvas : MonoBehaviour
 			string alertStirngId = CheckTransmuteAlert();
 			System.Action action = () =>
 			{
-				//UIInstanceManager.instance.ShowCanvasAsync("EquipTransmuteConfirmCanvas", () =>
-				//{
-				//	EquipTransmuteConfirmCanvas.instance.ShowCanvas(true, _equipData, equipStatusInfo.mainStatusText.text, _price);
-				//});
+				UIInstanceManager.instance.ShowCanvasAsync("EquipTransmuteConfirmCanvas", () =>
+				{
+					EquipTransmuteConfirmCanvas.instance.ShowCanvas(true, _equipData, _selectRendomIndex,
+						equipStatusInfo.optionStatusTextList[_selectRendomIndex].text, equipStatusInfo.optionStatusValueTextList[_selectRendomIndex].text,
+						optionMinTextList[_selectRendomIndex].text, optionMaxTextList[_selectRendomIndex].text, _price);
+				});
 			};
 
 			if (string.IsNullOrEmpty(alertStirngId))

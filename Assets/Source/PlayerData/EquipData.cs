@@ -25,7 +25,19 @@ public class EquipData
 	public class RandomOptionInfo
 	{
 		public int innerGrade;
-		public eActorStatus statusType;
+		eActorStatus _statusType;
+		public eActorStatus statusType
+		{
+			get
+			{
+				return _statusType;
+			}
+			set
+			{
+				_statusType = value;
+				_cachedOptionTableData = null;
+			}
+		}
 		public ObscuredFloat value;
 
 		OptionTableData _cachedOptionTableData = null;

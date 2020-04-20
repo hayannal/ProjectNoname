@@ -132,7 +132,7 @@ public static class RandomOption
 		public float sumWeight;
 	}
 	static List<RandomOptionData> _listRandomOptionInfo;
-	public static void GenerateRandomOption(int optionType, int innerGrade, ref eActorStatus eType, ref float value)
+	public static void GenerateRandomOption(int optionType, int innerGrade, ref eActorStatus eType, ref float value, eActorStatus exceptType = eActorStatus.ExAmount)
 	{
 		if (_listRandomOptionInfo == null)
 			_listRandomOptionInfo = new List<RandomOptionData>();
@@ -145,6 +145,15 @@ public static class RandomOption
 				continue;
 			if (TableDataManager.instance.optionTable.dataArray[i].innerGrade != innerGrade)
 				continue;
+
+			// 다시 붙일때는 특정 옵션을 제외하고 돌려야한다.
+			if (exceptType != eActorStatus.ExAmount)
+			{
+				eActorStatus type = eActorStatus.ExAmount;
+				System.Enum.TryParse<eActorStatus>(TableDataManager.instance.optionTable.dataArray[i].option, out eType);
+				if (type == exceptType)
+					continue;
+			}
 
 			sumWeight += TableDataManager.instance.optionTable.dataArray[i].createWeight;
 			RandomOptionData newInfo = new RandomOptionData();

@@ -87,7 +87,8 @@ public class EquipOptionCanvas : MonoBehaviour
 
 		if (_restore)
 		{
-			// 복구할땐 인덱스 건드리는거 없이 그리드와 가격버튼만 갱신해야한다.
+			// 복구할땐 기본 룰은 인덱스 건드리는거 없이 그리드와 가격버튼만 갱신하는 것이지만
+			bool needReset = false;
 			if (_selectMain || transmuteSwitch.isOn == false)
 			{
 				EquipInfoGrowthCanvas.instance.RefreshGrid(EquipInfoGrowthCanvas.eGrowthGridType.Amplify, _selectMain);
@@ -103,10 +104,22 @@ public class EquipOptionCanvas : MonoBehaviour
 			}
 			else
 			{
-				EquipInfoGrowthCanvas.instance.RefreshGrid(EquipInfoGrowthCanvas.eGrowthGridType.Transmute);
-				RefreshButton(false);
+				// 한가지 예외상황이 있는데 옵션 변경 횟수를 다 써서 0으로 될때이다. 이땐 강제로 연마모드로 바꾼다.
+				if (equipData.transmuteRemainCount <= 0)
+				{
+					needReset = true;
+					ToastCanvas.instance.ShowToast(UIString.instance.GetString("EquipUI_TransmuteOff"), 2.0f);
+					transmuteSwitch.AnimateSwitch();
+				}
+				else
+				{
+					EquipInfoGrowthCanvas.instance.RefreshGrid(EquipInfoGrowthCanvas.eGrowthGridType.Transmute);
+					RefreshButton(false);
+					transmuteRemainCountValueText.text = UIString.instance.GetString("EquipUI_LeftCountValueOn", equipData.transmuteRemainCount.ToString());
+				}
 			}
-			return;
+			if (needReset == false)
+				return;
 		}
 
 		// 처음 들어왔을때 시작은 항상 연마모드

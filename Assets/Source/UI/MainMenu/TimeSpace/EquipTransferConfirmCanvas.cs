@@ -120,7 +120,7 @@ public class EquipTransferConfirmCanvas : MonoBehaviour
 	}
 
 	EquipData _equipData;
-	int _price;
+	ObscuredInt _price;
 	ObscuredInt _targetEnhanceLevel;
 	public void ShowCanvas(bool show, EquipData equipData, string displayAttack, int price)
 	{

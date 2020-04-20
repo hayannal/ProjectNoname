@@ -950,6 +950,37 @@ public class PlayFabApiManager : MonoBehaviour
 			HandleCommonError(error);
 		});
 	}
+
+	public void RequestTransmute(EquipData equipData, int randomIndex, string randomOptionString, List<EquipData> listMaterialEquipData, int price, Action successCallback)
+	{
+		string checkSum = "";
+		List<TimeSpaceData.RevokeInventoryItemRequest> listRevokeRequest = TimeSpaceData.instance.GenerateRevokeInfo(listMaterialEquipData, price, randomOptionString, ref checkSum);
+
+		// 선이펙트 없이 일반 패킷처럼 처리
+		WaitingNetworkCanvas.Show(true);
+
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "Transmute",
+			FunctionParameter = new { EqpId = (string)equipData.uniqueId, Pos = randomIndex.ToString(), Op = randomOptionString, Lst = listRevokeRequest, Pri = price, LstCs = checkSum },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+				CurrencyData.instance.gold -= price;
+				TimeSpaceData.instance.OnRevokeInventory(listMaterialEquipData);
+				equipData.OnTransmute(randomIndex, randomOptionString);
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
 	#endregion
 
 

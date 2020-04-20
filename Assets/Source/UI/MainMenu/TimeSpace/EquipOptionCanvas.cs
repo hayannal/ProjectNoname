@@ -403,9 +403,13 @@ public class EquipOptionCanvas : MonoBehaviour
 				}
 				else
 				{
-
+					UIInstanceManager.instance.ShowCanvasAsync("EquipAmplifyRandomConfirmCanvas", () =>
+					{
+						EquipAmplifyRandomConfirmCanvas.instance.ShowCanvas(true, _equipData, _selectRendomIndex,
+							equipStatusInfo.optionStatusTextList[_selectRendomIndex].text, equipStatusInfo.optionStatusValueTextList[_selectRendomIndex].text,
+							optionMinTextList[_selectRendomIndex].text, optionMaxTextList[_selectRendomIndex].text, _price);
+					});
 				}
-				
 			};
 
 			if (string.IsNullOrEmpty(alertStirngId))

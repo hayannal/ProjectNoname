@@ -258,14 +258,35 @@ public class EquipData
 			TimeSpaceData.instance.OnChangedEquippedData();
 	}
 
+	public void OnTransmute(int randomIndex, string randomOptionString)
+	{
+		string[] split = randomOptionString.Split(':');
+		eActorStatus randomOptionType = eActorStatus.ExAmount;
+		System.Enum.TryParse<eActorStatus>(split[0], out randomOptionType);
+		float value = 0.0f;
+		float.TryParse(split[1], out value);
+		if (randomOptionType == eActorStatus.ExAmount)
+			return;
+
+		// 새로 추가되는건 불가능하기때문에 null일리 없다. 없으면 해킹일거다.
+		RandomOptionInfo info = GetOption(randomIndex);
+		info.statusType = randomOptionType;
+		info.value = value;
+
+		RefreshCachedStatus();
+
+		if (TimeSpaceData.instance.IsEquipped(this))
+			TimeSpaceData.instance.OnChangedEquippedData();
+	}
+
 	public float GetMainStatusRatio()
 	{
 		float min = GetMainStatusValueMin();
 		float max = GetMainStatusValueMax();
 		float displayMin = ActorStatus.GetDisplayAttack(min);
 		float displayMax = ActorStatus.GetDisplayAttack(max);
-		float diplay = ActorStatus.GetDisplayAttack(mainStatusValue);
-		return ((diplay - displayMin) / (displayMax - displayMin));
+		float display = ActorStatus.GetDisplayAttack(mainStatusValue);
+		return ((display - displayMin) / (displayMax - displayMin));
 	}
 
 	public RandomOptionInfo GetOption(int index)

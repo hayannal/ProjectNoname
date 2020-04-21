@@ -229,16 +229,23 @@ public class EquipEnhanceCanvas : MonoBehaviour
 
 	string CheckEnhanceAlert()
 	{
+		List<EquipData> listMaterialEquipData = EquipInfoGrowthCanvas.instance.listMultiSelectEquipData;
+
 		// 옵션 메뉴가 열려있을때만 옵션 관련 질문들을 한다.
 		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByResearchLevel.EquipOption))
 		{
-			// 옵션변경 쪽에 포함되어있으니 이거 하나만 호출하면 된다.
-			string alertStirngId = EquipOptionCanvas.CheckTransmuteAlert(_equipData);
+			// 코드 재활용. 옵션변경꺼는 재료가 list가 아니라서 안된다.
+			string alertStirngId = EquipOptionCanvas.CheckAmplifyRandomAlert(_equipData);
 			if (string.IsNullOrEmpty(alertStirngId) == false)
 				return alertStirngId;
+			
+			for (int i = 0; i < listMaterialEquipData.Count; ++i)
+			{
+				if (_equipData.cachedEquipTableData.equipType == listMaterialEquipData[i].cachedEquipTableData.equipType &&
+					_equipData.cachedEquipTableData.grade == listMaterialEquipData[i].cachedEquipTableData.grade)
+					return "EquipUI_WarningSameType";
+			}
 		}
-
-		List<EquipData> listMaterialEquipData = EquipInfoGrowthCanvas.instance.listMultiSelectEquipData;
 		if (_equipData.cachedEquipTableData.grade > 0)
 		{
 			for (int i = 0; i < listMaterialEquipData.Count; ++i)

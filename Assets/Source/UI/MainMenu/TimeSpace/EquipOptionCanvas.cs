@@ -447,18 +447,19 @@ public class EquipOptionCanvas : MonoBehaviour
 
 	public static string CheckTransmuteAlert(EquipData equipData)
 	{
-		string alertStirngId = CheckAmplifyRandomAlert(equipData);
-		if (string.IsNullOrEmpty(alertStirngId) == false)
-			return alertStirngId;
+		if (EquipInfoGrowthCanvas.instance.selectedEquipData == null)
+			return "";
 
-		List<EquipData> listMaterialEquipData = EquipInfoGrowthCanvas.instance.listMultiSelectEquipData;
-		for (int i = 0; i < listMaterialEquipData.Count; ++i)
-		{
-			if (equipData.cachedEquipTableData.equipType == listMaterialEquipData[i].cachedEquipTableData.equipType && equipData.cachedEquipTableData.grade == listMaterialEquipData[i].cachedEquipTableData.grade)
-				return "EquipUI_WarningSameType";
-		}
+		if (equipData.equipId == EquipInfoGrowthCanvas.instance.selectedEquipData.equipId)
+			return "EquipUI_WarningSameMaterial";
+
+		if (equipData.cachedEquipTableData.equipType == EquipInfoGrowthCanvas.instance.selectedEquipData.cachedEquipTableData.equipType &&
+			equipData.cachedEquipTableData.grade == EquipInfoGrowthCanvas.instance.selectedEquipData.cachedEquipTableData.grade)
+			return "EquipUI_WarningSameType";
 		return "";
 	}
+
+
 
 	public void OnMultiSelectMaterial(List<EquipData> listSelectedEquipData)
 	{

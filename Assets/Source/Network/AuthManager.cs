@@ -234,6 +234,13 @@ public class AuthManager : MonoBehaviour
 			yield break;
 		_restartProcessed = true;
 
+		// 로딩시간을 조금이라도 빠르게 줄이기 위해 MainSceneBuiler 초기화 부분에서 로딩이 끝나는걸 확인하지 않은채 넘겼기때문에
+		// 여기서 대신 기다려야한다.
+		while (UIString.instance.IsDoneLoadAsyncStringData() == false)
+			yield return null;
+		while (UIString.instance.IsDoneLoadAsyncFont() == false)
+			yield return null;
+
 		// 이땐 로딩 속도를 위해 commonCanvasGroup도 로딩하지 않은 상태라서 직접 로드해서 보여줘야한다.
 		AsyncOperationHandle<GameObject> handleCommonCanvasGroup = Addressables.LoadAssetAsync<GameObject>("CommonCanvasGroup");
 		while (!handleCommonCanvasGroup.IsDone) yield return null;

@@ -33,7 +33,7 @@ public class SelectLanguageButton : MonoBehaviour
 			buttonText.SetLocalizedText(languageName);
 		else
 		{
-			LanguageTableData languageTableData = TableDataManager.instance.FindLanguageTableData(languageId);
+			LanguageTableData languageTableData = UIString.instance.FindLanguageTableData(languageId);
 			if (languageTableData.useUnlocalized)
 			{
 				buttonText.font = UIString.instance.GetUnlocalizedFont();

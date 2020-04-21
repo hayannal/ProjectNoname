@@ -29,7 +29,6 @@ public class TableDataManager : MonoBehaviour
 	public GlobalConstantIntTable globalConstantIntTable;
 	public GlobalConstantStringTable globalConstantStringTable;
 	public DropTable dropTable;
-	public FontTable fontTable;
 	public EquipTable equipTable;
 	public InnerGradeTable innerGradeTable;
 	public OptionTable optionTable;
@@ -39,7 +38,6 @@ public class TableDataManager : MonoBehaviour
 	public DamageRateTable damageRateTable;
 	public ActorInfoTable actorInfoTable;
 	public ActorLevelPackTable actorLevelPackTable;
-	public LanguageTable languageTable;
 
 	void Awake()
 	{
@@ -266,16 +264,6 @@ public class TableDataManager : MonoBehaviour
 		return null;
 	}
 
-	public FontTableData FindFontTableData(string condition)
-	{
-		for (int i = 0; i < fontTable.dataArray.Length; ++i)
-		{
-			if (fontTable.dataArray[i].id == condition)
-				return fontTable.dataArray[i];
-		}
-		return null;
-	}
-
 	public EquipTableData FindEquipTableData(string equipId)
 	{
 		for (int i = 0; i < equipTable.dataArray.Length; ++i)
@@ -357,26 +345,6 @@ public class TableDataManager : MonoBehaviour
 		{
 			if (actorLevelPackTable.dataArray[i].level == level && actorLevelPackTable.dataArray[i].actorId == actorId)
 				return actorLevelPackTable.dataArray[i].levelPack;
-		}
-		return null;
-	}
-
-	public LanguageTableData FindLanguageTableData(string languageId)
-	{
-		for (int i = 0; i < languageTable.dataArray.Length; ++i)
-		{
-			if (languageTable.dataArray[i].id == languageId)
-				return languageTable.dataArray[i];
-		}
-		return null;
-	}
-
-	public LanguageTableData FindLanguageTableDataBySystemLanguage(int systemLanguage)
-	{
-		for (int i = 0; i < languageTable.dataArray.Length; ++i)
-		{
-			if (languageTable.dataArray[i].unityLanguageCode == systemLanguage)
-				return languageTable.dataArray[i];
 		}
 		return null;
 	}

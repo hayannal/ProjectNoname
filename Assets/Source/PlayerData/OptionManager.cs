@@ -45,7 +45,7 @@ public class OptionManager : MonoBehaviour
 		if (ObscuredPrefs.HasKey(OPTION_SYSTEM_LANGUAGE_KEY))
 			return;
 
-		LanguageTableData languageTableData = TableDataManager.instance.FindLanguageTableDataBySystemLanguage((int)Application.systemLanguage);
+		LanguageTableData languageTableData = UIString.instance.FindLanguageTableDataBySystemLanguage((int)Application.systemLanguage);
 		if (languageTableData != null)
 			_language = languageTableData.id;
 		else

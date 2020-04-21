@@ -20,7 +20,34 @@ public class UIString : MonoBehaviour
 	}
 	static UIString _instance = null;
 
-	public InApkStringTable inApkStringTable;
+	// 스트링 테이블을 패치 가능한 어드레서블 하나로 통합하면서 직접 연결하지 않기로 한다.
+	//public InApkStringTable inApkStringTable;
+
+	// 그리고 FontTable은 직접 가져와 쓰는거로 해서
+	// TableDataManaer의 패치가 필요할때에도 제대로 된 스트링과 폰트로 보여주면서 확인창을 띄울 수 있게 처리한다.
+	// 폰트테이블은 어차피 번역나라가 추가될때 재빌드 해야하므로 Resources에 포함되어도 상관없다.
+	public FontTable fontTable;
+	public LanguageTable languageTable;
+
+	public LanguageTableData FindLanguageTableData(string languageId)
+	{
+		for (int i = 0; i < languageTable.dataArray.Length; ++i)
+		{
+			if (languageTable.dataArray[i].id == languageId)
+				return languageTable.dataArray[i];
+		}
+		return null;
+	}
+
+	public LanguageTableData FindLanguageTableDataBySystemLanguage(int systemLanguage)
+	{
+		for (int i = 0; i < languageTable.dataArray.Length; ++i)
+		{
+			if (languageTable.dataArray[i].unityLanguageCode == systemLanguage)
+				return languageTable.dataArray[i];
+		}
+		return null;
+	}
 
 	string _currentRegion = "KOR";
 	public string currentRegion
@@ -39,10 +66,46 @@ public class UIString : MonoBehaviour
 		}
 	}
 
+	#region Initialize
+	bool _initialized = false;
+	public void Initialize(string overrideInitialRegion = "")
+	{
+		if (_initialized && currentRegion == overrideInitialRegion)
+			return;
+
+		ReloadStringData();
+		InitializeFont(overrideInitialRegion);
+
+		_initialized = true;
+	}
+	#endregion
+
+	#region StringData
+	AsyncOperationHandle<StringTable> _handleStringTable;
+	StringTable _stringTable;
+	void ReloadStringData()
+	{
+		_stringTable = null;
+		if (_handleStringTable.IsValid())
+			Addressables.Release<StringTable>(_handleStringTable);
+
+		_handleStringTable = Addressables.LoadAssetAsync<StringTable>("StringTable");
+	}
+
+	public bool IsDoneLoadAsyncStringData()
+	{
+		if (_handleStringTable.IsValid() == false || _handleStringTable.IsDone == false)
+			return false;
+
+		if (_stringTable == null)
+			_stringTable = _handleStringTable.Result;
+
+		return true;
+	}
+
 	// 스트링 비교는 많이 할수록 오래 걸릴테니 한번 찾을때마다 캐싱해서 넣어둔다.
 	// 국가 전환할때만 리셋해주면 된다.
 	Dictionary<string, string> _dicString = new Dictionary<string, string>();
-
 	public string GetString(string id)
 	{
 		if (_dicString.ContainsKey(id))
@@ -50,22 +113,52 @@ public class UIString : MonoBehaviour
 
 		string value = "";
 		bool find = false;
+
+		// 로딩속도와 메모리, 작업 환경등을 고려한 결과
+		// InApk를 구분하지 않고 나라도 구분하지 않고 패치는 통으로 받을 수 있도록 한 파일안에 모든 스트링 데이터를 넣는게
+		// 가장 효율적이란 결론을 내렸다. 그래서 MainSceneBuilder에서 
 		// check inApk string data
-		InApkStringTableData inApkStringTableData = FindInApkStringTableData(id);
-		if (inApkStringTableData != null)
+		StringTableData stringTableData = FindStringTableData(id);
+		if (stringTableData != null)
 		{
 			switch (_currentRegion)
 			{
-				case "KOR": value = inApkStringTableData.kor; find = true; break;
-				case "ENG": value = inApkStringTableData.eng; find = true; break;
+				case "KOR": value = stringTableData.kor; find = true; break;
+				case "ENG": value = stringTableData.eng; find = true; break;
+				case "JPN": value = stringTableData.jpn; find = true; break;
+				case "CHN": value = stringTableData.chn; find = true; break;
+				case "CHW": value = stringTableData.chw; find = true; break;
+				case "FRN": value = stringTableData.frn; find = true; break;
+				case "GMN": value = stringTableData.gmn; find = true; break;
+				case "IND": value = stringTableData.ind; find = true; break;
+				case "ITA": value = stringTableData.ita; find = true; break;
+				case "RUS": value = stringTableData.rus; find = true; break;
+				case "SPN": value = stringTableData.spn; find = true; break;
+				case "THA": value = stringTableData.tha; find = true; break;
+				case "VIE": value = stringTableData.vie; find = true; break;
+				case "PRT": value = stringTableData.prt; find = true; break;
+				case "ARB": value = stringTableData.arb; find = true; break;
+				case "BLR": value = stringTableData.blr; find = true; break;
+				case "BGR": value = stringTableData.bgr; find = true; break;
+				case "CZE": value = stringTableData.cze; find = true; break;
+				case "DUT": value = stringTableData.dut; find = true; break;
+				case "FIN": value = stringTableData.fin; find = true; break;
+				case "GRE": value = stringTableData.gre; find = true; break;
+				case "HBR": value = stringTableData.hbr; find = true; break;
+				case "HGR": value = stringTableData.hgr; find = true; break;
+				case "MLY": value = stringTableData.mly; find = true; break;
+				case "POL": value = stringTableData.pol; find = true; break;
+				case "RMN": value = stringTableData.rmn; find = true; break;
+				case "SVK": value = stringTableData.svk; find = true; break;
+				case "SWD": value = stringTableData.swd; find = true; break;
+				case "TUR": value = stringTableData.tur; find = true; break;
+				case "UKR": value = stringTableData.ukr; find = true; break;
+				default:
+#if UNITY_EDITOR
+					Debug.LogErrorFormat("Invalid localize region! : {0}", _currentRegion);
+#endif
+					break;
 			}
-		}
-
-		// check string data
-		// 번들을 받은 상태라면 로딩해도 된다. 지금은 아직 패치매니저를 만들기 전이니 로딩하지 않는다.
-		if (string.IsNullOrEmpty(value))
-		{
-
 		}
 
 		if (find)
@@ -120,32 +213,25 @@ public class UIString : MonoBehaviour
 		return resultList;
 	}
 
-	InApkStringTableData FindInApkStringTableData(string id)
+	StringTableData FindStringTableData(string id)
 	{
-		for (int i = 0; i < inApkStringTable.dataArray.Length; ++i)
+		for (int i = 0; i < _stringTable.dataArray.Length; ++i)
 		{
-			if (inApkStringTable.dataArray[i].id == id)
-				return inApkStringTable.dataArray[i];
+			if (_stringTable.dataArray[i].id == id)
+				return _stringTable.dataArray[i];
 		}
 		return null;
 	}
-
-
+	#endregion
 
 	#region Font
-	bool _initializedFont = false;
-	public void InitializeFont(string overrideInitialRegion = "")
+	void InitializeFont(string overrideInitialRegion = "")
 	{
-		if (_initializedFont && currentRegion == overrideInitialRegion)
-			return;
-
 		// 옵션매니저 같이 외부에서 받은 초기화 정보가 있다면 그걸로 덮어서 초기화한다.
 		if (string.IsNullOrEmpty(overrideInitialRegion) == false)
 			currentRegion = overrideInitialRegion;
 
 		ReloadRegionFont();
-
-		_initializedFont = true;
 	}
 
 	bool _ignoreUnlocalizedFont = false;
@@ -186,7 +272,7 @@ public class UIString : MonoBehaviour
 
 	bool LoadFont(string fontTableId)
 	{
-		FontTableData fontTableData = TableDataManager.instance.FindFontTableData(fontTableId);
+		FontTableData fontTableData = FindFontTableData(fontTableId);
 		if (fontTableData == null)
 			return false;
 
@@ -244,6 +330,16 @@ public class UIString : MonoBehaviour
 			return _handleLocalizedFont.Result;
 
 		return _handleUnlocalizedFont.Result;
+	}
+
+	FontTableData FindFontTableData(string condition)
+	{
+		for (int i = 0; i < fontTable.dataArray.Length; ++i)
+		{
+			if (fontTable.dataArray[i].id == condition)
+				return fontTable.dataArray[i];
+		}
+		return null;
 	}
 	#endregion
 }

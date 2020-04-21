@@ -12,8 +12,8 @@ public class SelectLanguageCanvas : MonoBehaviour
     void Start()
     {
 		List<LanguageTableData> listLanguageTableData = new List<LanguageTableData>();
-		for (int i = 0; i < TableDataManager.instance.languageTable.dataArray.Length; ++i)
-			listLanguageTableData.Add(TableDataManager.instance.languageTable.dataArray[i]);
+		for (int i = 0; i < UIString.instance.languageTable.dataArray.Length; ++i)
+			listLanguageTableData.Add(UIString.instance.languageTable.dataArray[i]);
 
 		listLanguageTableData.Sort(delegate (LanguageTableData x, LanguageTableData y)
 		{

@@ -80,9 +80,34 @@ public class MainSceneBuilder : MonoBehaviour
 		LoadingCanvas.instance.SetProgressBarPoint(0.1f, 0.0f, true);
 		yield return new WaitForEndOfFrame();
 
+		// 씬 초기화를 하기전에 필수항목부터 로드해야한다.
+		// 테이블을 새로 받으려고 해도 창을 띄우려면 적절한 폰트와 번역된 스트링이 필요하기 때문.
+		// 당연히 사운드 볼륨 설정 같은 것도 로드해야한다.
+		// 그런데 OptionManager는 내부적으로 LanguageTable을 필요로 한다.
+		// 괜히 파일을 나눠서 로드하는건 별로이기 때문에 어차피 로딩해야하는 UIString 프리팹에 넣어두기로 한다.
+		// 대신 UIString의 Initialize는 옵션매니저 생성 후에 호출해야한다.
+		//
+		// step 1-1. UIString 프리팹 로드
+		if (UIString.instance != null) { }
+
+		// step 1-2. 옵션 매니저
+		if (OptionManager.instance != null) { }
+
+		// step 1-3. initialize font & string
+		UIString.instance.Initialize(OptionManager.instance.language);
+
+		// 사실은 여기서 스트링 및 폰트 로딩이 끝나야 제대로 된 에러 메세지창을 띄울 수 있는건데
+		// 문제가 발생하지 않는다면 괜히 기다리는게 되버린다.
+		// 그래서 차라리 문제가 발생했을때 호출되는 AuthManager.RestartProcess 에서 로드를 기다리기로 하고
+		// 여기서는 그냥 넘어가기로 한다.
+		//while (UIString.instance.IsDoneLoadAsyncStringData() == false)
+		//	yield return null;
+		//while (UIString.instance.IsDoneLoadAsyncFont() == false)
+		//	yield return null;
+
 		// 초기화 해야할 항목들은 다음과 같다.
-		// 1. 테이블 번들패치. 테이블은 다른 번들과 달리 물어보지 않고 곧바로 패치한다. LoadorCache 함수 쓸테니 변경시에만 받게될거다. 현재는 번들구조가 없으므로 그냥 로드
-		// 2. 테이블매니저에는 타이틀 스트링만 있을거다. 일반 스트링은 최초 1회는 물어보지 않고 받아야하고(애플) 이후부터는 물어보고 받아야할거다.
+		// 1. 옵션매니저 초기화 및 스트링 데이터를 로드해둔다. 이래야 에러시 번역된 UI를 띄울 수 있다.
+		// 2. 테이블 번들패치. 테이블은 다른 번들과 달리 물어보지 않고 곧바로 패치한다. LoadorCache 함수 쓸테니 변경시에만 받게될거다. 현재는 번들구조가 없으므로 그냥 로드
 		// 3. 로그인을 해야한다. 최초 기동시엔 자동으로 게스트로 들어가고 이후 연동을 하고나면 해당 로그인으로 진행해서 플레이어 데이터를 받는다. 현재는 임시로 처리.
 		// - 플레이할 캐릭터와 마지막 스테이지 정보를 받았으면 이 정보를 가지고 데이터 로딩을 시작한다.
 		// 4. 데이터들을 로드하기전에 우선 이곳이 로비라는 것을 알려둔다.(강종되서 복구하는 중이더라도 로비에서 시작하고 복구 팝업을 띄우는게 맞다.)
@@ -105,18 +130,12 @@ public class MainSceneBuilder : MonoBehaviour
 		// - 만약 이 로딩이 오래 걸려서 1초를 넘어가면 우하단에 작게 로딩중을 표시해준다.
 		// - 매판 몹을 다 죽이고 게이트필라가 뜨는 순간마다 다음판의 맵 정보를 어싱크로 로딩해둔다.
 
-		// step 1. 테이블 임시 로드
+		// step 2. 테이블 임시 로드
 		// 지금은 우선 apk넣고 하지만 나중에 서버에서 받는거로 바꿔야한다. 이땐 확인창 안띄운다.
 		LoadingCanvas.instance.SetProgressBarPoint(0.3f);
 		_handleTableDataManager = Addressables.LoadAssetAsync<GameObject>("TableDataManager");
 		yield return _handleTableDataManager;
 		Instantiate<GameObject>(_handleTableDataManager.Result);
-
-		// step 1-2. 옵션 매니저
-		if (OptionManager.instance != null) { }
-
-		// step 2. font & string
-		UIString.instance.InitializeFont(OptionManager.instance.language);
 
 		// step 3. login
 #if PLAYFAB

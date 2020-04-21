@@ -113,7 +113,7 @@ public class SettingCanvas : MonoBehaviour
 	#region Language
 	void LoadLanguage()
 	{
-		LanguageTableData languageTableData = TableDataManager.instance.FindLanguageTableData(OptionManager.instance.language);
+		LanguageTableData languageTableData = UIString.instance.FindLanguageTableData(OptionManager.instance.language);
 		if (languageTableData != null)
 			languageText.SetLocalizedText(languageTableData.languageName);
 	}

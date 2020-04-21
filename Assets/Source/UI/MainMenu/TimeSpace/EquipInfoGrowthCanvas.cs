@@ -362,6 +362,12 @@ public class EquipInfoGrowthCanvas : MonoBehaviour
 	public void OnMultiSelectListItem(EquipData equipData)
 	{
 		bool contains = _listMultiSelectUniqueId.Contains(equipData.uniqueId);
+		if (contains == false && _listMultiSelectEquipData.Count >= MAX_SELECT_COUNT)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("EquipUI_CannotSelectMore"), 1.0f);
+			return;
+		}
+
 		for (int i = 0; i < _listEquipCanvasListItem.Count; ++i)
 		{
 			if (_listEquipCanvasListItem[i].equipData.uniqueId == equipData.uniqueId)

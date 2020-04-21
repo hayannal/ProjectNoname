@@ -243,6 +243,8 @@ public class EquipAmplifyRandomConfirmCanvas : MonoBehaviour
 		// 배경 페이드
 		DOTween.To(() => backgroundImage.color, x => backgroundImage.color = x, Color.clear, 0.3f).SetEase(Ease.Linear);
 		DOTween.To(() => canvasGroup.alpha, x => canvasGroup.alpha = x, 0.0f, 0.3f).SetEase(Ease.Linear);
+		// 제단 이펙트 작게
+		EquipInfoGround.instance.ScaleDownGradeParticle(true);
 		// 나머지 창들도 다 닫고
 		StackCanvas.Push(gameObject);
 		yield return Timing.WaitForSeconds(0.2f);
@@ -312,6 +314,9 @@ public class EquipAmplifyRandomConfirmCanvas : MonoBehaviour
 		backKeyButton.interactable = true;
 		processGraphicElement.raycastTarget = false;
 		_processed = true;
+
+		// 이펙트 복구
+		EquipInfoGround.instance.ScaleDownGradeParticle(false);
 
 		EquipListCanvas.instance.RefreshGrid(true, false);
 	}

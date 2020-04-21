@@ -19,12 +19,15 @@ public class EquipInfoGround : MonoBehaviour
 	public Transform equipRootTransform;
 	public DOTweenAnimation rotateTweenAnimation;
 	public ParticleSystem gradeParticleSystem;
+	public Transform gradeParticleTransform;
 
 	EquipPrefabInfo _currentEquipObject = null;
 
+	Vector3 _defaultGradeParticleScale;
 	void Awake()
 	{
 		instance = this;
+		_defaultGradeParticleScale = gradeParticleTransform.localScale;
 	}
 
 #if UNITY_EDITOR
@@ -106,6 +109,20 @@ public class EquipInfoGround : MonoBehaviour
 	{
 		equipPositionRootTransform.localPosition = new Vector3(0.0f, 0.7f, 0.0f);
 		equipPositionRootTransform.DOLocalMoveY(0.0f, 0.8f).SetEase(Ease.OutBack);
+	}
+
+	bool _scaleDownGradeParticle = false;
+	public void ScaleDownGradeParticle(bool down)
+	{
+		if (_scaleDownGradeParticle == down)
+			return;
+
+		if (down)
+			gradeParticleTransform.DOScaleZ(0.05f, 1.5f).SetEase(Ease.OutQuad);
+		else
+			gradeParticleTransform.DOScaleZ(_defaultGradeParticleScale.z, 1.0f).SetEase(Ease.OutQuad);
+
+		_scaleDownGradeParticle = down;
 	}
 
 

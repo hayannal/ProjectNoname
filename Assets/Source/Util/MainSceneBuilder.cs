@@ -352,7 +352,9 @@ public class MainSceneBuilder : MonoBehaviour
 #if !UNITY_EDITOR
 		Debug.LogWarning("IIIIIIIII");
 #endif
-		// step 9-1. 첫번재 UI를 소환하기 전에 UIString Font의 로드가 완료되어있는지 체크해야한다.
+		// step 9-1. 첫번재 UI를 소환하기 전에 UIString Font의 로드가 완료되어있는지 체크해야하고 StringTable을 캐싱해둔다.
+		while (UIString.instance.IsDoneLoadAsyncStringData() == false)
+			yield return null;
 		while (UIString.instance.IsDoneLoadAsyncFont() == false)
 			yield return null;
 #if !UNITY_EDITOR

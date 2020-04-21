@@ -12,6 +12,7 @@ public class CharacterLimitBreakCanvas : DetailShowCanvasBase
 	public CanvasGroup canvasGroup;
 	public Button backKeyButton;
 	public Image backgroundImage;
+	public Transform titleTextTransform;
 
 	public GameObject effectPrefab;
 	public RectTransform toastBackImageRectTransform;
@@ -88,6 +89,11 @@ public class CharacterLimitBreakCanvas : DetailShowCanvasBase
 		prevMaxPowerLevelText.text = characterData.maxPowerLevelOfCurrentLimitBreak.ToString();
 		nextMaxPowerLevelText.text = (characterData.maxPowerLevelOfCurrentLimitBreak + 2).ToString();
 		priceText.text = price.ToString("N0");
+	}
+
+	public void OnClickDetailButton()
+	{
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, UIString.instance.GetString("GameUI_LimitBreakMore"), 300, titleTextTransform, new Vector2(0.0f, -35.0f));
 	}
 
 	public void OnClickOkButton()

@@ -12,6 +12,7 @@ public class CharacterPowerLevelUpCanvas : DetailShowCanvasBase
 	public CanvasGroup canvasGroup;
 	public Button backKeyButton;
 	public Image backgroundImage;
+	public Transform titleTextTransform;
 
 	public GameObject effectPrefab;
 	public RectTransform toastBackImageRectTransform;
@@ -112,6 +113,11 @@ public class CharacterPowerLevelUpCanvas : DetailShowCanvasBase
 		addHpText.text = string.Format("+{0:N0}", _addMaxHp);
 		addAtkText.text = string.Format("+{0:N0}", _addAtk);
 		priceText.text = price.ToString("N0");
+	}
+
+	public void OnClickDetailButton()
+	{
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, UIString.instance.GetString("GameUI_PowerLevelUpMore"), 300, titleTextTransform, new Vector2(0.0f, -35.0f));
 	}
 
 	public void OnClickOkButton()

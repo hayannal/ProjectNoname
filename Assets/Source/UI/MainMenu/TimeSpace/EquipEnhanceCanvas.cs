@@ -199,24 +199,10 @@ public class EquipEnhanceCanvas : MonoBehaviour
 
 		if (transferSwitch.isOn)
 		{
-			string alertStirngId = CheckTransferAlert();
-			System.Action action = () =>
+			UIInstanceManager.instance.ShowCanvasAsync("EquipTransferConfirmCanvas", () =>
 			{
-				UIInstanceManager.instance.ShowCanvasAsync("EquipTransferConfirmCanvas", () =>
-				{
-					EquipTransferConfirmCanvas.instance.ShowCanvas(true, _equipData, equipStatusInfo.mainStatusText.text, _price);
-				});
-			};
-
-			if (string.IsNullOrEmpty(alertStirngId))
-				action.Invoke();
-			else
-			{
-				YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString(alertStirngId), () =>
-				{
-					action.Invoke();
-				});
-			}
+				EquipTransferConfirmCanvas.instance.ShowCanvas(true, _equipData, equipStatusInfo.mainStatusText.text, _price);
+			});
 		}
 		else
 		{
@@ -243,12 +229,29 @@ public class EquipEnhanceCanvas : MonoBehaviour
 
 	string CheckEnhanceAlert()
 	{
-		// 옵션 메뉴가 열려있지 않을때는 동일 재료 체크를 하는게 맞는건가?
-		return "";
-	}
+		// 옵션 메뉴가 열려있을때만 옵션 관련 질문들을 한다.
+		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByResearchLevel.EquipOption))
+		{
+			// 옵션변경 쪽에 포함되어있으니 이거 하나만 호출하면 된다.
+			string alertStirngId = EquipOptionCanvas.CheckTransmuteAlert(_equipData);
+			if (string.IsNullOrEmpty(alertStirngId) == false)
+				return alertStirngId;
+		}
 
-	string CheckTransferAlert()
-	{
+		List<EquipData> listMaterialEquipData = EquipInfoGrowthCanvas.instance.listMultiSelectEquipData;
+		if (_equipData.cachedEquipTableData.grade > 0)
+		{
+			for (int i = 0; i < listMaterialEquipData.Count; ++i)
+			{
+				if (_equipData.cachedEquipTableData.grade == listMaterialEquipData[i].cachedEquipTableData.grade)
+					return "EquipUI_WarningSameGrade";
+			}
+		}
+		for (int i = 0; i < listMaterialEquipData.Count; ++i)
+		{
+			if (_equipData.cachedEquipTableData.grade < listMaterialEquipData[i].cachedEquipTableData.grade)
+				return "EquipUI_WarningHighGrade";
+		}
 		return "";
 	}
 

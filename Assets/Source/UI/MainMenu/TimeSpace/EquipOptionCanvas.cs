@@ -376,9 +376,42 @@ public class EquipOptionCanvas : MonoBehaviour
 			return;
 		}
 
-		if (_selectMain == false && transmuteSwitch.isOn)
+		if (_selectMain || transmuteSwitch.isOn == false)
 		{
-			string alertStirngId = CheckTransmuteAlert();
+			if (_selectMain)
+			{
+				UIInstanceManager.instance.ShowCanvasAsync("EquipAmplifyMainConfirmCanvas", () =>
+				{
+					EquipAmplifyMainConfirmCanvas.instance.ShowCanvas(true, _equipData, equipStatusInfo.mainStatusText.text, mainMinText.text, mainMaxText.text, _price);
+				});
+			}
+			else
+			{
+				string alertStirngId = CheckAmplifyRandomAlert(_equipData);
+				System.Action action = () =>
+				{
+					UIInstanceManager.instance.ShowCanvasAsync("EquipAmplifyRandomConfirmCanvas", () =>
+					{
+						EquipAmplifyRandomConfirmCanvas.instance.ShowCanvas(true, _equipData, _selectRendomIndex,
+							equipStatusInfo.optionStatusTextList[_selectRendomIndex].text, equipStatusInfo.optionStatusValueTextList[_selectRendomIndex].text,
+							optionMinTextList[_selectRendomIndex].text, optionMaxTextList[_selectRendomIndex].text, _price);
+					});
+				};
+
+				if (string.IsNullOrEmpty(alertStirngId))
+					action.Invoke();
+				else
+				{
+					YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString(alertStirngId), () =>
+					{
+						action.Invoke();
+					});
+				}
+			}
+		}
+		else
+		{
+			string alertStirngId = CheckTransmuteAlert(_equipData);
 			System.Action action = () =>
 			{
 				UIInstanceManager.instance.ShowCanvasAsync("EquipTransmuteConfirmCanvas", () =>
@@ -399,61 +432,33 @@ public class EquipOptionCanvas : MonoBehaviour
 				});
 			}
 		}
-		else
+	}
+
+	public static string CheckAmplifyRandomAlert(EquipData equipData)
+	{
+		List<EquipData> listMaterialEquipData = EquipInfoGrowthCanvas.instance.listMultiSelectEquipData;
+		for (int i = 0; i < listMaterialEquipData.Count; ++i)
 		{
-			string alertStirngId = "";
-			if (_selectMain)
-				CheckAmplifyMainAlert();
-			else
-				CheckAmplifyRandomAlert();
-
-			System.Action action = () =>
-			{
-				if (_selectMain)
-				{
-					UIInstanceManager.instance.ShowCanvasAsync("EquipAmplifyMainConfirmCanvas", () =>
-					{
-						EquipAmplifyMainConfirmCanvas.instance.ShowCanvas(true, _equipData, equipStatusInfo.mainStatusText.text, mainMinText.text, mainMaxText.text, _price);
-					});
-				}
-				else
-				{
-					UIInstanceManager.instance.ShowCanvasAsync("EquipAmplifyRandomConfirmCanvas", () =>
-					{
-						EquipAmplifyRandomConfirmCanvas.instance.ShowCanvas(true, _equipData, _selectRendomIndex,
-							equipStatusInfo.optionStatusTextList[_selectRendomIndex].text, equipStatusInfo.optionStatusValueTextList[_selectRendomIndex].text,
-							optionMinTextList[_selectRendomIndex].text, optionMaxTextList[_selectRendomIndex].text, _price);
-					});
-				}
-			};
-
-			if (string.IsNullOrEmpty(alertStirngId))
-				action.Invoke();
-			else
-			{
-				YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString(alertStirngId), () =>
-				{
-					action.Invoke();
-				});
-			}
+			if (equipData.equipId == listMaterialEquipData[i].equipId)
+				return "EquipUI_WarningSameMaterial";
 		}
-	}
-
-	string CheckTransmuteAlert()
-	{
 		return "";
 	}
 
-	string CheckAmplifyMainAlert()
+	public static string CheckTransmuteAlert(EquipData equipData)
 	{
+		string alertStirngId = CheckAmplifyRandomAlert(equipData);
+		if (string.IsNullOrEmpty(alertStirngId) == false)
+			return alertStirngId;
+
+		List<EquipData> listMaterialEquipData = EquipInfoGrowthCanvas.instance.listMultiSelectEquipData;
+		for (int i = 0; i < listMaterialEquipData.Count; ++i)
+		{
+			if (equipData.cachedEquipTableData.equipType == listMaterialEquipData[i].cachedEquipTableData.equipType && equipData.cachedEquipTableData.grade == listMaterialEquipData[i].cachedEquipTableData.grade)
+				return "EquipUI_WarningSameType";
+		}
 		return "";
 	}
-
-	string CheckAmplifyRandomAlert()
-	{
-		return "";
-	}
-
 
 	public void OnMultiSelectMaterial(List<EquipData> listSelectedEquipData)
 	{

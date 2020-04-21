@@ -267,19 +267,19 @@ public class PlayerData : MonoBehaviour
 		}
 
 		_listCharacterData.Clear();
-		AddNewCharacter("Actor001", "", 1);
+		AddNewCharacter("Actor0201", "", 1);
 
 		// 임의로 생성한거라 EntityKey를 만들어둘수가 없다.
 		// 그렇다고 loginned 를 풀어서 통째로 받으면 괜히 커져서 EntityKey 리프레쉬 함수 하나 만들어서 호출하기로 한다.
 		StartCoroutine(DelayedSyncCharacterEntity(5.0f));
 
-		_mainCharacterId = "Actor001";
+		_mainCharacterId = "Actor0201";
 		loginned = true;
 
 		if (newPlayerAddKeep)
 		{
-			AddNewCharacter("Actor002", "", 1);
-			_mainCharacterId = "Actor002";
+			AddNewCharacter("Actor1002", "", 1);
+			_mainCharacterId = "Actor1002";
 		}
 	}
 
@@ -347,7 +347,7 @@ public class PlayerData : MonoBehaviour
 				_mainCharacterId = actorId;
 			else
 			{
-				_mainCharacterId = "Actor001";
+				_mainCharacterId = "Actor0201";
 				PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidMainCharacter);
 			}
 		}
@@ -521,7 +521,7 @@ public class PlayerData : MonoBehaviour
 		return null;
 	}
 
-	string _mainCharacterId = "Actor001";
+	string _mainCharacterId = "Actor0201";
 	public string mainCharacterId
 	{
 		get

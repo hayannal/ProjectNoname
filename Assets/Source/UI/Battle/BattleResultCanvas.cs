@@ -106,13 +106,13 @@ public class BattleResultCanvas : MonoBehaviour
 
 		stageValueMaxText.text = string.Format("/ {0}", maxStage);
 
-		if (StageManager.instance.playChapter == 0 && PlayerData.instance.ContainsActor("Actor002") == false)
+		if (StageManager.instance.playChapter == 0 && PlayerData.instance.ContainsActor("Actor1002") == false)
 		{
 			clearRewardText.SetLocalizedText(UIString.instance.GetString(_clear ? "GameUI_Chp0ClearRewardGot" : "GameUI_Chp0ClearReward"));
 			clearRewardText.gameObject.SetActive(true);
 		}
 
-		if (StageManager.instance.playChapter == 1 && PlayerData.instance.ContainsActor("Actor003") == false)
+		if (StageManager.instance.playChapter == 1 && PlayerData.instance.ContainsActor("Actor2103") == false)
 		{
 			clearRewardText.SetLocalizedText(UIString.instance.GetString(_clear ? "GameUI_Chp1ClearRewardGot" : "GameUI_Chp1ClearReward"));
 			clearRewardText.gameObject.SetActive(true);

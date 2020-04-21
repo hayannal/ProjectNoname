@@ -229,7 +229,7 @@ public class PlayFabApiManager : MonoBehaviour
 		ObjectResult objectResult = null;
 		while (e.MoveNext())
 		{
-			// 분명 첫번째 EntityObjects에 Actor001 처럼 캐릭 본인의 아이디로 된 key value가 들어있을거다. "Actor"스트링으로 검사해서 추출해낸다.
+			// 분명 첫번째 EntityObjects에 Actor0201 처럼 캐릭 본인의 아이디로 된 key value가 들어있을거다. "Actor"스트링으로 검사해서 추출해낸다.
 			if (e.Current.Key.Contains("Actor"))
 			{
 				objectResult = e.Current.Value;

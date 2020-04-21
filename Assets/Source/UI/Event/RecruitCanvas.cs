@@ -86,7 +86,7 @@ public class RecruitCanvas : CharacterShowCanvasBase
 		if (actorTableData == null)
 			return;
 
-		bool clearChapter0 = (actorId == "Actor002");
+		bool clearChapter0 = (actorId == "Actor1002");
 
 		characterNameText.SetLocalizedText(UIString.instance.GetString(actorTableData.nameId));
 		characterNameTextButton.interactable = (!clearChapter0);

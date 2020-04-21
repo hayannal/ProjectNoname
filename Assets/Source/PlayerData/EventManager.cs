@@ -60,15 +60,15 @@ public class EventManager : MonoBehaviour
 		// 정산창에서 호출될거다. 인벤 동기화 패킷을 따로 날려도 되긴한데 괜히 시간걸릴까봐 클라단에서 선처리해서 캐릭터 넣어둔다. 아이디는 전달받은거로 셋팅
 		if (chapter == 1)
 		{
-			PlayerData.instance.AddNewCharacter("Actor002", newCharacterId, 1);
-			PlayerData.instance.mainCharacterId = "Actor002";
-			PushClientEvent(eClientEvent.GainNewCharacter, "Actor002");
+			PlayerData.instance.AddNewCharacter("Actor1002", newCharacterId, 1);
+			PlayerData.instance.mainCharacterId = "Actor1002";
+			PushClientEvent(eClientEvent.GainNewCharacter, "Actor1002");
 		}
 		else if (chapter == 2)
 		{
-			PlayerData.instance.AddNewCharacter("Actor003", newCharacterId, 1);
-			PlayerData.instance.mainCharacterId = "Actor003";
-			PushClientEvent(eClientEvent.GainNewCharacter, "Actor003");
+			PlayerData.instance.AddNewCharacter("Actor2103", newCharacterId, 1);
+			PlayerData.instance.mainCharacterId = "Actor2103";
+			PushClientEvent(eClientEvent.GainNewCharacter, "Actor2103");
 		}
 
 		int chapterLimit = BattleInstanceManager.instance.GetCachedGlobalConstantInt("ChaosChapterLimit");

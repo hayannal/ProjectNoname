@@ -861,7 +861,7 @@ public class PlayFabApiManager : MonoBehaviour
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
 			FunctionName = "Enhance",
-			FunctionParameter = new { EqpId = (string)equipData.uniqueId, T = targetEnhanceLevel, Lst = listRevokeRequest, Pri = price, LstCs = checkSum },
+			FunctionParameter = new { EqpId = (string)equipData.uniqueId, T = targetEnhanceLevel, Lst = listRevokeRequest, Pri = price, LstCs = checkSum, EqpPos = "" },
 			GeneratePlayStreamEvent = true,
 		}, (success) =>
 		{

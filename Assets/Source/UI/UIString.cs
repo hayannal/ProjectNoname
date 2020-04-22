@@ -82,10 +82,8 @@ public class UIString : MonoBehaviour
 
 	#region StringData
 	AsyncOperationHandle<StringTable> _handleStringTable;
-	StringTable _stringTable;
 	void ReloadStringData()
 	{
-		_stringTable = null;
 		if (_handleStringTable.IsValid())
 			Addressables.Release<StringTable>(_handleStringTable);
 
@@ -96,9 +94,6 @@ public class UIString : MonoBehaviour
 	{
 		if (_handleStringTable.IsValid() == false || _handleStringTable.IsDone == false)
 			return false;
-
-		if (_stringTable == null)
-			_stringTable = _handleStringTable.Result;
 
 		return true;
 	}
@@ -215,10 +210,14 @@ public class UIString : MonoBehaviour
 
 	StringTableData FindStringTableData(string id)
 	{
-		for (int i = 0; i < _stringTable.dataArray.Length; ++i)
+		// MainSceneBuilder에서 로딩 완료를 확인하고 캔버스들을 초기화 했을테니 이미 로딩이 되었다고 판단하고 검사하지 않는다.
+		//if (IsDoneLoadAsyncStringData())
+		//	return null;
+		StringTable stringTable = _handleStringTable.Result;
+		for (int i = 0; i < stringTable.dataArray.Length; ++i)
 		{
-			if (_stringTable.dataArray[i].id == id)
-				return _stringTable.dataArray[i];
+			if (stringTable.dataArray[i].id == id)
+				return stringTable.dataArray[i];
 		}
 		return null;
 	}

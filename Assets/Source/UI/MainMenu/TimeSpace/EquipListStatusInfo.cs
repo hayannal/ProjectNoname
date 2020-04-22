@@ -39,6 +39,12 @@ public class EquipListStatusInfo : MonoBehaviour
 		gradeBackImage.color = GetGradeTitleBarColor(equipData.cachedEquipTableData.grade);
 		gradeText.SetLocalizedText(UIString.instance.GetString(string.Format("GameUI_EquipGrade{0}", equipData.cachedEquipTableData.grade)));
 		nameText.SetLocalizedText(UIString.instance.GetString(equipData.cachedEquipTableData.nameId));
+#if UNITY_EDITOR
+		if (Input.GetKey(KeyCode.LeftShift))
+			nameText.SetLocalizedText(equipData.cachedEquipTableData.equipId);
+		if (Input.GetKey(KeyCode.LeftControl))
+			nameText.SetLocalizedText(equipData.uniqueId);
+#endif
 		if (detailShowButton != null) detailShowButton.gameObject.SetActive(!equipped);
 
 		RefreshLockInfo();

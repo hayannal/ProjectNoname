@@ -93,6 +93,11 @@ public class EquipData
 	public static string KeyRandomOp = "randOp";
 	public static string KeyTransmuteRemainCount = "trsmtReCnt";
 
+	public static bool IsUseLegendKey(EquipTableData equipTableData)
+	{
+		return equipTableData.grade >= 4;
+	}
+
 	public void Initialize(Dictionary<string, string> customData)
 	{
 		bool lockState = false;

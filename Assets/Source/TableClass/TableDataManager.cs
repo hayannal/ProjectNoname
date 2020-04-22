@@ -34,6 +34,7 @@ public class TableDataManager : MonoBehaviour
 	public OptionTable optionTable;
 	public EnhanceTable enhanceTable;
 	public TransferTable transferTable;
+	public RemainTable remainTable;
 	public StageExpTable stageExpTable;
 	public DamageRateTable damageRateTable;
 	public ActorInfoTable actorInfoTable;
@@ -310,6 +311,16 @@ public class TableDataManager : MonoBehaviour
 		{
 			if (transferTable.dataArray[i].innerGrade == innerGrade && transferTable.dataArray[i].enhance == enhance)
 				return transferTable.dataArray[i];
+		}
+		return null;
+	}
+
+	public RemainTableData FindRemainTableData(int remainCount)
+	{
+		for (int i = 0; i < remainTable.dataArray.Length; ++i)
+		{
+			if (remainTable.dataArray[i].remainMin <= remainCount && remainCount <= remainTable.dataArray[i].remainMax)
+				return remainTable.dataArray[i];
 		}
 		return null;
 	}

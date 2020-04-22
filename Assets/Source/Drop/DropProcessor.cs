@@ -108,14 +108,9 @@ public class DropProcessor : MonoBehaviour
 				int maxValue = Mathf.RoundToInt(dropTableData.maxValue[i]);
 				intValue = Random.Range(minValue, maxValue + 1);
 
-				if (dropType == eDropType.Gacha)
-				{
-					// 가차는 이 subValue로부터 가차 테이블을 돌려서 구해야한다.
-					//stringValue = dropTableData.subValue
-
-					// 지금은 임시로 테이블 돌리기 전까진 강제 고정
-					stringValue = "Equip0001";
-				}
+				// subValue 확인
+				if (dropType == eDropType.Gacha && dropTableData.subValue[i] == "e")
+					stringValue = GetStageDropEquipId();
 			}
 
 			switch (dropType)
@@ -357,6 +352,99 @@ public class DropProcessor : MonoBehaviour
 				}
 			}
 		}
+	}
+	#endregion
+
+
+
+	#region Stage Drop Equip
+	public class RandomDropEquipInfo
+	{
+		public EquipTableData equipTableData;
+		public float sumWeight;
+	}
+	static List<RandomDropEquipInfo> _listRandomDropEquipInfo = null;
+	static int _lastDropChapter = -1;
+	static int _lastDropStage = -1;
+	static int _lastLegendKey = -1;
+	static string GetStageDropEquipId()
+	{
+		bool needRefresh = false;
+		if (_lastDropChapter != StageManager.instance.playChapter || _lastDropStage != StageManager.instance.playStage || _lastLegendKey != GetRemainLegendKey())
+		{
+			needRefresh = true;
+			_lastDropChapter = StageManager.instance.playChapter;
+			_lastDropStage = StageManager.instance.playStage;
+			_lastLegendKey = GetRemainLegendKey();
+		}
+
+		if (needRefresh)
+		{
+			if (_listRandomDropEquipInfo == null)
+				_listRandomDropEquipInfo = new List<RandomDropEquipInfo>();
+			_listRandomDropEquipInfo.Clear();
+
+			float sumWeight = 0.0f;
+			for (int i = 0; i < TableDataManager.instance.equipTable.dataArray.Length; ++i)
+			{
+				float weight = TableDataManager.instance.equipTable.dataArray[i].stageDropWeight;
+				if (weight <= 0.0f)
+					continue;
+
+				bool add = false;
+				if (StageManager.instance.playChapter > TableDataManager.instance.equipTable.dataArray[i].startingDropChapter)
+					add = true;
+				// MonsterActor.OnDie 함수 안에서 드랍의 모든 정보가 결정되기때문에 StageManager.instance.playStage을 사용해도 괜찮다.
+				// 다음 스테이지로 넘어가서 드랍아이템이 생성되더라도 이미 정보는 다 킬 시점에 결정되기 때문.
+				if (add == false && StageManager.instance.playChapter == TableDataManager.instance.equipTable.dataArray[i].startingDropChapter && StageManager.instance.playStage >= TableDataManager.instance.equipTable.dataArray[i].startingDropStage)
+					add = true;
+				if (add == false)
+					continue;
+
+				if (EquipData.IsUseLegendKey(TableDataManager.instance.equipTable.dataArray[i]))
+				{
+					float adjustWeight = 0.0f;
+					RemainTableData remainTableData = TableDataManager.instance.FindRemainTableData(GetRemainLegendKey());
+					if (remainTableData != null)
+						adjustWeight = remainTableData.adjustWeight;
+					weight *= adjustWeight;
+					if (weight <= 0.0f)
+						continue;
+				}
+
+				sumWeight += weight;
+				RandomDropEquipInfo newInfo = new RandomDropEquipInfo();
+				newInfo.equipTableData = TableDataManager.instance.equipTable.dataArray[i];
+				newInfo.sumWeight = sumWeight;
+				_listRandomDropEquipInfo.Add(newInfo);
+			}
+		}
+
+		if (_listRandomDropEquipInfo.Count == 0)
+			return "";
+
+		int index = -1;
+		float result = Random.Range(0.0f, _listRandomDropEquipInfo[_listRandomDropEquipInfo.Count - 1].sumWeight);
+		for (int i = 0; i < _listRandomDropEquipInfo.Count; ++i)
+		{
+			if (result <= _listRandomDropEquipInfo[i].sumWeight)
+			{
+				index = i;
+				break;
+			}
+		}
+		if (index == -1)
+			return "";
+
+		// 바로 감소시켜놔야 다음번 드랍될때 _lastLegendKey가 달라지면서 드랍 리스트를 리프레쉬 하게 된다.
+		if (EquipData.IsUseLegendKey(_listRandomDropEquipInfo[index].equipTableData))
+			++DropManager.instance.droppedLengendItemCount;
+		return _listRandomDropEquipInfo[index].equipTableData.equipId;
+	}
+
+	static int GetRemainLegendKey()
+	{
+		return CurrencyData.instance.legendKey - DropManager.instance.droppedLengendItemCount * 10;
 	}
 	#endregion
 

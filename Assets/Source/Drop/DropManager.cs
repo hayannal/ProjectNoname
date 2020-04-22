@@ -63,6 +63,17 @@ public class DropManager : MonoBehaviour
 		return _listDropEquipId;
 	}
 
+	#region Legend Key
+	// 전설키를 DropItem과 달리 따로 체크해야한다.
+	// 위 DropItem은 습득하고 난 아이템 리스트를 관리하는건데
+	// 전설키의 개수를 가지고 weight를 조정하는건 드랍되는 시점에서 바로 카운트에 반영되어야하는거라
+	// DropItem에 들어있는 전설로 하게되면 틀어질 수 있다.(전설키가 1개 남은 상황에서 2개의 전설이 드랍될 수 있다.)
+	//
+	// 그래서 차라리 별도의 드랍 카운트 변수를 만들고
+	// 드랍이 결정될때마다 증가시켜서 관리하기로 한다.
+	public int droppedLengendItemCount { get; set; }
+	#endregion
+
 
 	int _stackDropExp = 0;
 	public void StackDropExp(int exp)

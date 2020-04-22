@@ -335,8 +335,9 @@ public class TimeSpaceData
 	}
 
 	// 대부분의 아이템 획득은 이걸 써서 처리하게 될거다.
-	public void OnRecvItemGrantResult(string jsonItemGrantResults)
+	public void OnRecvItemGrantResult(string jsonItemGrantResults, bool useLegendKey)
 	{
+		int useLegendKeyItemCount = 0;
 		List<ItemInstance> listItemInstance = DeserializeItemGrantResult(jsonItemGrantResults);
 		for (int i = 0; i < listItemInstance.Count; ++i)
 		{
@@ -349,6 +350,21 @@ public class TimeSpaceData
 			newEquipData.equipId = listItemInstance[i].ItemId;
 			newEquipData.Initialize(listItemInstance[i].CustomData);
 			_listEquipData[newEquipData.cachedEquipTableData.equipType].Add(newEquipData);
+
+			if (useLegendKey && EquipData.IsUseLegendKey(newEquipData.cachedEquipTableData))
+				++useLegendKeyItemCount;
+		}
+		if (useLegendKey)
+		{
+			bool invalid = false;
+			if (useLegendKeyItemCount != DropManager.instance.droppedLengendItemCount)
+				invalid = true;
+			if ((useLegendKeyItemCount * 10) > CurrencyData.instance.legendKey)
+				invalid = true;
+			if (invalid)
+				PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidLegendKey);
+
+			CurrencyData.instance.legendKey -= useLegendKeyItemCount * 10;
 		}
 	}
 	#endregion

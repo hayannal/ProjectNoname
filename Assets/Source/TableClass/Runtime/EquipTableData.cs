@@ -64,4 +64,16 @@ public class EquipTableData
   string _nameId;
   public string nameId { get { return _nameId; } set { _nameId = value; } }
   
+  [SerializeField]
+  float _stageDropWeight;
+  public float stageDropWeight { get { return _stageDropWeight; } set { _stageDropWeight = value; } }
+  
+  [SerializeField]
+  int _startingDropChapter;
+  public int startingDropChapter { get { return _startingDropChapter; } set { _startingDropChapter = value; } }
+  
+  [SerializeField]
+  int _startingDropStage;
+  public int startingDropStage { get { return _startingDropStage; } set { _startingDropStage = value; } }
+  
 }

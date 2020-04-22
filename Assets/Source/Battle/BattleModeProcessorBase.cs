@@ -243,7 +243,7 @@ public class BattleModeProcessorBase
 		PlayerData.instance.sealCount += DropManager.instance.GetStackedDropSeal();
 
 		if (itemGrantString != "")
-			TimeSpaceData.instance.OnRecvItemGrantResult(itemGrantString);
+			TimeSpaceData.instance.OnRecvItemGrantResult(itemGrantString, true);
 
 		// 클리어 했다면 시간 체크 한번 해본다.
 		// 강종으로 인한 재접속때 안하는거 추가해야한다.

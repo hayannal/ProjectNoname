@@ -19,5 +19,6 @@ namespace ClientSuspect
 		InvalidEquipType		= 100008,
 		InvalidEquipOption		= 100009,
 		InvalidEquipEnhance		= 100010,
+		InvalidLegendKey		= 100011,
 	}
 }

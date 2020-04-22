@@ -41,9 +41,9 @@ public class EquipListStatusInfo : MonoBehaviour
 		nameText.SetLocalizedText(UIString.instance.GetString(equipData.cachedEquipTableData.nameId));
 #if UNITY_EDITOR
 		if (Input.GetKey(KeyCode.LeftShift))
-			nameText.SetLocalizedText(equipData.cachedEquipTableData.equipId);
+			Debug.LogFormat("equipId : {0}", equipData.cachedEquipTableData.equipId);
 		if (Input.GetKey(KeyCode.LeftControl))
-			nameText.SetLocalizedText(equipData.uniqueId);
+			Debug.LogFormat("uniqueId : {0}", equipData.uniqueId);
 #endif
 		if (detailShowButton != null) detailShowButton.gameObject.SetActive(!equipped);
 

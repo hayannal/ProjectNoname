@@ -28,12 +28,15 @@ public class TimeSpacePortal : MonoBehaviour
 			return;
 		if (affectorProcessor.actor.team.teamId == (int)Team.eTeamID.DefaultMonster)
 			return;
+		if (GatePillar.instance.processing)
+			return;
 
 		Timing.RunCoroutine(MoveProcess());
 	}
 
 	GameObject _timeSpaceGroundPrefab = null;
 	bool _processing = false;
+	public bool processing { get { return _processing; } }
 	IEnumerator<float> MoveProcess()
 	{
 		if (_processing)

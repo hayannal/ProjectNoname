@@ -281,6 +281,8 @@ public class GatePillar : MonoBehaviour
 			return false;
 		if (_processing)
 			return false;
+		if (TimeSpacePortal.instance.processing)
+			return false;
 
 		if (MainSceneBuilder.instance.lobby)
 		{
@@ -489,6 +491,7 @@ public class GatePillar : MonoBehaviour
 	}
 
 	bool _processing = false;
+	public bool processing { get { return _processing; } }
 	IEnumerator<float> NextMapProcess()
 	{
 		if (_processing)

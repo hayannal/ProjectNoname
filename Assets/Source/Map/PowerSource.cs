@@ -67,7 +67,7 @@ public class PowerSource : MonoBehaviour
 
 		AffectorValueLevelTableData healAffectorValue = new AffectorValueLevelTableData();
 		healAffectorValue.fValue3 = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("PowerSourceHeal");
-		healAffectorValue.fValue3 += affectorProcessor.actor.actorStatus.GetValue(eActorStatus.PowerSourceHealRate);
+		healAffectorValue.fValue3 += affectorProcessor.actor.actorStatus.GetValue(eActorStatus.PowerSourceHealAddRate);
 		affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Heal, healAffectorValue, affectorProcessor.actor, false);
 		affectorProcessor.actor.actorStatus.AddSP(affectorProcessor.actor.actorStatus.GetValue(eActorStatus.MaxSp) * BattleInstanceManager.instance.GetCachedGlobalConstantFloat("PowerSourceSpHeal"));
 		BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.healEffectPrefab, affectorProcessor.actor.cachedTransform.position, Quaternion.identity, affectorProcessor.actor.cachedTransform);

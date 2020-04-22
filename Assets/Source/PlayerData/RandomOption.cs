@@ -155,6 +155,16 @@ public static class RandomOption
 					continue;
 			}
 
+#if UNITY_EDITOR
+			// 옵션 검증. 에디터에서만 한다.
+			eActorStatus typeForValid = eActorStatus.ExAmount;
+			if (System.Enum.TryParse<eActorStatus>(TableDataManager.instance.optionTable.dataArray[i].option, out typeForValid) == false)
+			{
+				Debug.LogErrorFormat("Invalid Random Option Type! Option Name : {0}", TableDataManager.instance.optionTable.dataArray[i].option);
+				continue;
+			}
+#endif
+
 			sumWeight += TableDataManager.instance.optionTable.dataArray[i].createWeight;
 			RandomOptionData newInfo = new RandomOptionData();
 			newInfo.optionTableData = TableDataManager.instance.optionTable.dataArray[i];

@@ -531,6 +531,8 @@ public class MainSceneBuilder : MonoBehaviour
 		yield return new WaitUntil(() => waitSpawnFlag);
 
 		StageManager.instance.GetNextStageInfo();
+		while (UIString.instance.IsDoneLoadAsyncStringData() == false)
+			yield return null;
 		while (UIString.instance.IsDoneLoadAsyncFont() == false)
 			yield return null;
 		// step 9-2. lobby ui

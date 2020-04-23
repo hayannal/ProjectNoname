@@ -80,4 +80,8 @@ public class ActorTableData
   int _orderIndex;
   public int orderIndex { get { return _orderIndex; } set { _orderIndex = value; } }
   
+  [SerializeField]
+  float _charGachaWeight;
+  public float charGachaWeight { get { return _charGachaWeight; } set { _charGachaWeight = value; } }
+  
 }

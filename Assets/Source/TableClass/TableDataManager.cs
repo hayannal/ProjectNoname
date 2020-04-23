@@ -36,6 +36,7 @@ public class TableDataManager : MonoBehaviour
 	public TransferTable transferTable;
 	public RemainTable remainTable;
 	public NotStreakTable notStreakTable;
+	public NotCharTable notCharTable;
 	public StageExpTable stageExpTable;
 	public DamageRateTable damageRateTable;
 	public ActorInfoTable actorInfoTable;
@@ -332,6 +333,16 @@ public class TableDataManager : MonoBehaviour
 		{
 			if (notStreakTable.dataArray[i].accumulateMin <= count)
 				return notStreakTable.dataArray[i].adjustWeight;
+		}
+		return 0.0f;
+	}
+
+	public float FindNotCharAdjustProb(int count)
+	{
+		for (int i = notCharTable.dataArray.Length - 1; i >= 0; --i)
+		{
+			if (notCharTable.dataArray[i].accumulateMin <= count)
+				return notCharTable.dataArray[i].adjustProb;
 		}
 		return 0.0f;
 	}

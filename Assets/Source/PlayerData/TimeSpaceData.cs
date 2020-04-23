@@ -104,15 +104,6 @@ public class TimeSpaceData
 			PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidEquipType, false, invalidEquipSlotIndex);
 		}
 
-		// Etc
-		notStreakCount = 0;
-		if (userData.ContainsKey("SHstr"))
-		{
-			int intValue = 0;
-			if (int.TryParse(userData["SHstr"].Value, out intValue))
-				notStreakCount = intValue;
-		}
-
 		// status
 		RefreshCachedStatus();
 	}

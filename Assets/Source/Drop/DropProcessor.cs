@@ -76,8 +76,24 @@ public class DropProcessor : MonoBehaviour
 			eDropType dropType = (eDropType)dropTableData.dropEnum[i];
 			float probability = dropTableData.probability[i];
 
-			// 인게임에서만 보정처리 적용하는 것들.
-			if (lobby == false)
+			// 보정처리 적용하는 것들.
+			if (lobby)
+			{
+				// 드랍확률 보정처리.
+				switch (dropType)
+				{
+					case eDropType.Origin:
+						if (dropTableData.subValue[i] != "s")
+							break;
+						float weight = TableDataManager.instance.FindNotCharAdjustProb(GetCurrentNotSteakCharCount());
+						// NotCharTable Adjust Prob 검증
+						if (weight > 1.7f)
+							CheatingListener.OnDetectCheatTable();
+						probability *= weight;
+						break;
+				}
+			}
+			else
 			{
 				// suggested MaxPower Level 습득불가 처리
 				switch (dropType)
@@ -107,7 +123,11 @@ public class DropProcessor : MonoBehaviour
 				}
 			}
 			if (Random.value > probability)
+			{
+				if (dropType == eDropType.Origin && dropTableData.subValue[i] == "s")
+					++droppedNotStreakCharCount;
 				continue;
+			}
 
 			float floatValue = 0.0f;
 			int intValue = 0;
@@ -127,6 +147,13 @@ public class DropProcessor : MonoBehaviour
 					{
 						case "e": stringValue = GetStageDropEquipId(); break;
 						case "g": stringValue = GetGachaEquipId(); break;
+					}
+				}
+				else if (dropType == eDropType.Origin)
+				{
+					switch (dropTableData.subValue[i])
+					{
+						case "s": stringValue = GetGachaCharacterId(); break;
 					}
 				}
 			}
@@ -550,10 +577,78 @@ public class DropProcessor : MonoBehaviour
 	static int GetCurrentNotSteakCount()
 	{
 		// 임시변수를 만들어서 계산하다가 서버에서 리턴받을때 적용해보자
-		return TimeSpaceData.instance.notStreakCount + droppedNotStreakItemCount;
+		return PlayerData.instance.notStreakCount + droppedNotStreakItemCount;
 	}
 	#endregion
 
+	#region Gacha Character
+	public class RandomGachaActorInfo
+	{
+		public ActorTableData actorTableData;
+		public float sumWeight;
+	}
+	static List<RandomGachaActorInfo> _listRandomGachaActorInfo = null;
+	static string GetGachaCharacterId()
+	{
+		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
+		if (lobby == false)
+			return "";
+
+		if (_listRandomGachaActorInfo == null)
+			_listRandomGachaActorInfo = new List<RandomGachaActorInfo>();
+		_listRandomGachaActorInfo.Clear();
+
+		float sumWeight = 0.0f;
+		for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)
+		{
+			float weight = TableDataManager.instance.actorTable.dataArray[i].charGachaWeight;
+			if (weight <= 0.0f)
+				continue;
+
+			// 획득가능한지 물어봐야한다.
+			if (GetableOrigin(TableDataManager.instance.actorTable.dataArray[i].actorId) == false)
+				continue;
+
+			// charGachaWeight 검증
+			if (CharacterData.IsUseLegendWeight(TableDataManager.instance.actorTable.dataArray[i]) && weight > 1.0f)
+				CheatingListener.OnDetectCheatTable();
+
+			sumWeight += weight;
+			RandomGachaActorInfo newInfo = new RandomGachaActorInfo();
+			newInfo.actorTableData = TableDataManager.instance.actorTable.dataArray[i];
+			newInfo.sumWeight = sumWeight;
+			_listRandomGachaActorInfo.Add(newInfo);
+		}
+
+		if (_listRandomGachaActorInfo.Count == 0)
+			return "";
+
+		int index = -1;
+		float result = Random.Range(0.0f, _listRandomGachaActorInfo[_listRandomGachaActorInfo.Count - 1].sumWeight);
+		for (int i = 0; i < _listRandomGachaActorInfo.Count; ++i)
+		{
+			if (result <= _listRandomGachaActorInfo[i].sumWeight)
+			{
+				index = i;
+				break;
+			}
+		}
+		if (index == -1)
+			return "";
+		return _listRandomGachaActorInfo[index].actorTableData.actorId;
+	}
+	static int droppedNotStreakCharCount = 0;
+	static int GetCurrentNotSteakCharCount()
+	{
+		// 임시변수를 만들어서 계산하다가 서버에서 리턴받을때 적용해보자
+		return PlayerData.instance.notStreakCharCount + droppedNotStreakCharCount;
+	}
+
+	static bool GetableOrigin(string actorId)
+	{
+		return false;
+	}
+	#endregion
 
 
 

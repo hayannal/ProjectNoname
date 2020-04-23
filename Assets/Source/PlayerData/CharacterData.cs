@@ -85,6 +85,11 @@ public class CharacterData
 		return UIString.instance.GetString(actorTableData.nameId);
 	}
 
+	public static bool IsUseLegendWeight(ActorTableData actorTableData)
+	{
+		return actorTableData.grade >= 2;
+	}
+
 
 	public void Initialize(Dictionary<string, int> characterStatistics, PlayFabApiManager.CharacterDataEntity1 dataObject)
 	{

@@ -41,8 +41,11 @@ public class PlayerData : MonoBehaviour
 	public ObscuredInt purifyCount { get; set; }
 	public ObscuredInt sealCount { get; set; }
 	public ObscuredBool sharedDailyBoxOpened { get; set; }
-
 	public DateTime dailyBoxResetTime { get; private set; }
+
+	// 뽑기 관련 변수
+	public ObscuredInt notStreakCount { get; set; }
+	public ObscuredInt notStreakCharCount { get; set; }
 
 	// 이 카오스가 현재 카오스 상태로 스테이지가 셋팅되어있는지를 알려주는 값이다.
 	// 이전 챕터로 내려갈 경우 서버에 저장된 chaosMode는 1이더라도 스테이지 구성은 도전모드로 셋팅하게 되며
@@ -256,6 +259,8 @@ public class PlayerData : MonoBehaviour
 		sealCount = 0;
 		sharedDailyBoxOpened = false;
 		purifyCount = 0;
+		notStreakCount = 0;
+		notStreakCharCount = 0;
 
 		// 나중에 지울 코드이긴 한데 MainSceneBuilder에서 NEWPLAYER_LEVEL1 디파인 켜둔채로 생성하는 테스트용 루틴일땐
 		// 1챕터에서 시작하게 처리해둔다.
@@ -403,6 +408,23 @@ public class PlayerData : MonoBehaviour
 		if (userData.ContainsKey("even"))
 			eventState = userData["even"].Value;
 		EventManager.instance.OnRecvServerEvent(eventState);
+
+		// Etc
+		notStreakCount = 0;
+		if (userData.ContainsKey("SHstr"))
+		{
+			int intValue = 0;
+			if (int.TryParse(userData["SHstr"].Value, out intValue))
+				notStreakCount = intValue;
+		}
+
+		notStreakCharCount = 0;
+		if (userData.ContainsKey("SHstrCh"))
+		{
+			int intValue = 0;
+			if (int.TryParse(userData["SHstrCh"].Value, out intValue))
+				notStreakCharCount = intValue;
+		}
 
 		loginned = true;
 	}

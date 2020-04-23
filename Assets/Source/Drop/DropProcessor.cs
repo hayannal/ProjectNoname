@@ -16,6 +16,9 @@ public class DropProcessor : MonoBehaviour
 		Gacha,
 		Ultimate,
 		Seal,
+		Diamond,
+		Origin,
+		PowerPoint,
 	}
 
 	#region Static Fuction
@@ -66,33 +69,42 @@ public class DropProcessor : MonoBehaviour
 
 	static void Drop(DropProcessor dropProcessor, DropTableData dropTableData)
 	{
+		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
+
 		for (int i = 0; i < dropTableData.dropEnum.Length; ++i)
 		{
 			eDropType dropType = (eDropType)dropTableData.dropEnum[i];
-			switch (dropType)
-			{
-				case eDropType.Gold:
-				case eDropType.Gacha:
-					ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
-					CharacterData mainCharacterData = PlayerData.instance.GetCharacterData(PlayerData.instance.mainCharacterId);
-					if (chapterTableData != null && mainCharacterData != null && mainCharacterData.powerLevel > chapterTableData.suggestedMaxPowerLevel)
-						continue;
-					break;
-			}
 			float probability = dropTableData.probability[i];
-			switch (dropType)
+
+			// 인게임에서만 보정처리 적용하는 것들.
+			if (lobby == false)
 			{
-				case eDropType.Gacha:
-					float itemDropAdjust = DropAdjustAffector.GetValue(BattleInstanceManager.instance.playerActor.affectorProcessor, DropAdjustAffector.eDropAdjustType.ItemDropRate);
-					if (itemDropAdjust != 0.0f)
-						probability *= (1.0f + itemDropAdjust);
-					break;
-				case eDropType.Heart:
-					probability *= StageManager.instance.currentStageTableData.DropHeartAdjustment;
-					float heartDropAdjust = DropAdjustAffector.GetValue(BattleInstanceManager.instance.playerActor.affectorProcessor, DropAdjustAffector.eDropAdjustType.HeartDropRate);
-					if (heartDropAdjust != 0.0f)
-						probability *= (1.0f + heartDropAdjust);
-					break;
+				// suggested MaxPower Level 습득불가 처리
+				switch (dropType)
+				{
+					case eDropType.Gold:
+					case eDropType.Gacha:
+						ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
+						CharacterData mainCharacterData = PlayerData.instance.GetCharacterData(PlayerData.instance.mainCharacterId);
+						if (chapterTableData != null && mainCharacterData != null && mainCharacterData.powerLevel > chapterTableData.suggestedMaxPowerLevel)
+							continue;
+						break;
+				}
+				// 드랍확률 보정처리.
+				switch (dropType)
+				{
+					case eDropType.Gacha:
+						float itemDropAdjust = DropAdjustAffector.GetValue(BattleInstanceManager.instance.playerActor.affectorProcessor, DropAdjustAffector.eDropAdjustType.ItemDropRate);
+						if (itemDropAdjust != 0.0f)
+							probability *= (1.0f + itemDropAdjust);
+						break;
+					case eDropType.Heart:
+						probability *= StageManager.instance.currentStageTableData.DropHeartAdjustment;
+						float heartDropAdjust = DropAdjustAffector.GetValue(BattleInstanceManager.instance.playerActor.affectorProcessor, DropAdjustAffector.eDropAdjustType.HeartDropRate);
+						if (heartDropAdjust != 0.0f)
+							probability *= (1.0f + heartDropAdjust);
+						break;
+				}
 			}
 			if (Random.value > probability)
 				continue;
@@ -109,8 +121,14 @@ public class DropProcessor : MonoBehaviour
 				intValue = Random.Range(minValue, maxValue + 1);
 
 				// subValue 확인
-				if (dropType == eDropType.Gacha && dropTableData.subValue[i] == "e")
-					stringValue = GetStageDropEquipId();
+				if (dropType == eDropType.Gacha)
+				{
+					switch (dropTableData.subValue[i])
+					{
+						case "e": stringValue = GetStageDropEquipId(); break;
+						case "g": stringValue = GetGachaEquipId(); break;
+					}
+				}
 			}
 
 			switch (dropType)
@@ -145,6 +163,9 @@ public class DropProcessor : MonoBehaviour
 						break;
 					if (PlayerData.instance.highestPlayChapter != PlayerData.instance.selectedChapter)
 						break;
+					dropProcessor.Add(dropType, floatValue, intValue, stringValue);
+					break;
+				case eDropType.Diamond:
 					dropProcessor.Add(dropType, floatValue, intValue, stringValue);
 					break;
 			}
@@ -207,6 +228,7 @@ public class DropProcessor : MonoBehaviour
 			case eDropType.Heart:
 			case eDropType.Gacha:
 			case eDropType.Seal:
+			case eDropType.Diamond:
 				for (int i = 0; i < intValue; ++i)
 				{
 					newInfo = new DropObjectInfo();
@@ -369,6 +391,10 @@ public class DropProcessor : MonoBehaviour
 	static int _lastLegendKey = -1;
 	static string GetStageDropEquipId()
 	{
+		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
+		if (lobby)
+			return "";
+
 		bool needRefresh = false;
 		if (_lastDropChapter != StageManager.instance.playChapter || _lastDropStage != StageManager.instance.playStage || _lastLegendKey != GetRemainLegendKey())
 		{
@@ -407,6 +433,7 @@ public class DropProcessor : MonoBehaviour
 					RemainTableData remainTableData = TableDataManager.instance.FindRemainTableData(GetRemainLegendKey());
 					if (remainTableData != null)
 						adjustWeight = remainTableData.adjustWeight;
+					// adjustWeight 검증
 					if (adjustWeight > 1.0f)
 						CheatingListener.OnDetectCheatTable();
 					weight *= adjustWeight;
@@ -447,6 +474,83 @@ public class DropProcessor : MonoBehaviour
 	static int GetRemainLegendKey()
 	{
 		return CurrencyData.instance.legendKey - DropManager.instance.droppedLengendItemCount * 10;
+	}
+	#endregion
+
+
+	#region Gacha Drop Equip
+	static float _lastNotStreakAdjustWeight = -1.0f;
+	static string GetGachaEquipId()
+	{
+		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
+		if (lobby == false)
+			return "";
+		bool needRefresh = false;
+		float notStreakAdjustWeight = TableDataManager.instance.FindNotStreakAdjustWeight(GetCurrentNotSteakCount());
+		if (_lastNotStreakAdjustWeight != notStreakAdjustWeight)
+		{
+			needRefresh = true;
+			_lastNotStreakAdjustWeight = notStreakAdjustWeight;
+		}
+
+		if (needRefresh)
+		{
+			// AdjustWeight 검증
+			if (notStreakAdjustWeight > 1.7f)
+				CheatingListener.OnDetectCheatTable();
+
+			if (_listRandomDropEquipInfo == null)
+				_listRandomDropEquipInfo = new List<RandomDropEquipInfo>();
+			_listRandomDropEquipInfo.Clear();
+
+			float sumWeight = 0.0f;
+			for (int i = 0; i < TableDataManager.instance.equipTable.dataArray.Length; ++i)
+			{
+				float weight = TableDataManager.instance.equipTable.dataArray[i].equipGachaWeight;
+				if (weight <= 0.0f)
+					continue;
+
+				// equipGachaWeight 검증
+				if (EquipData.IsUseLegendKey(TableDataManager.instance.equipTable.dataArray[i]) && weight > 1.0f)
+					CheatingListener.OnDetectCheatTable();
+				
+				if (EquipData.IsUseNotStreakGacha(TableDataManager.instance.equipTable.dataArray[i]))
+					weight *= notStreakAdjustWeight;
+
+				sumWeight += weight;
+				RandomDropEquipInfo newInfo = new RandomDropEquipInfo();
+				newInfo.equipTableData = TableDataManager.instance.equipTable.dataArray[i];
+				newInfo.sumWeight = sumWeight;
+				_listRandomDropEquipInfo.Add(newInfo);
+			}
+		}
+
+		if (_listRandomDropEquipInfo.Count == 0)
+			return "";
+
+		int index = -1;
+		float result = Random.Range(0.0f, _listRandomDropEquipInfo[_listRandomDropEquipInfo.Count - 1].sumWeight);
+		for (int i = 0; i < _listRandomDropEquipInfo.Count; ++i)
+		{
+			if (result <= _listRandomDropEquipInfo[i].sumWeight)
+			{
+				index = i;
+				break;
+			}
+		}
+		if (index == -1)
+			return "";
+
+		// 전설이 나오지 않으면 바로 누적시켜놔야 다음번 드랍될때 GetCurrentNotSteakCount()값이 달라지면서 체크할 수 있게된다.
+		if (EquipData.IsUseLegendKey(_listRandomDropEquipInfo[index].equipTableData) == false)
+			++droppedNotStreakItemCount;
+		return _listRandomDropEquipInfo[index].equipTableData.equipId;
+	}
+	static int droppedNotStreakItemCount = 0;
+	static int GetCurrentNotSteakCount()
+	{
+		// 임시변수를 만들어서 계산하다가 서버에서 리턴받을때 적용해보자
+		return TimeSpaceData.instance.notStreakCount + droppedNotStreakItemCount;
 	}
 	#endregion
 

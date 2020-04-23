@@ -6,11 +6,11 @@ using System.Collections;
 /// !!! DO NOT CHANGE Tabs to Spaces !!!
 /// 
 [System.Serializable]
-public class RemainTableData
+public class NotStreakTableData
 {
   [SerializeField]
-  int _remainMin;
-  public int remainMin { get { return _remainMin; } set { _remainMin = value; } }
+  int _accumulateMin;
+  public int accumulateMin { get { return _accumulateMin; } set { _accumulateMin = value; } }
   
   [SerializeField]
   float _adjustWeight;

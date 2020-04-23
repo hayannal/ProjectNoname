@@ -43,6 +43,9 @@ public class TimeSpaceData
 	List<List<EquipData>> _listEquipData = new List<List<EquipData>>();
 	Dictionary<int, EquipData> _dicEquippedData = new Dictionary<int, EquipData>();
 
+	// 그 외 변수들
+	public ObscuredInt notStreakCount { get; set; }
+
 	public void OnRecvEquipInventory(List<ItemInstance> userInventory, Dictionary<string, UserDataRecord> userData)
 	{
 		// list
@@ -101,7 +104,16 @@ public class TimeSpaceData
 			PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidEquipType, false, invalidEquipSlotIndex);
 		}
 
-		// 
+		// Etc
+		notStreakCount = 0;
+		if (userData.ContainsKey("SHstr"))
+		{
+			int intValue = 0;
+			if (int.TryParse(userData["SHstr"].Value, out intValue))
+				notStreakCount = intValue;
+		}
+
+		// status
 		RefreshCachedStatus();
 	}
 

@@ -76,4 +76,8 @@ public class EquipTableData
   int _startingDropStage;
   public int startingDropStage { get { return _startingDropStage; } set { _startingDropStage = value; } }
   
+  [SerializeField]
+  float _equipGachaWeight;
+  public float equipGachaWeight { get { return _equipGachaWeight; } set { _equipGachaWeight = value; } }
+  
 }

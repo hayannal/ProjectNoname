@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 80e14a72067f1ad408ec8d661bc560ce, type: 3}
-  m_Name: RemainTableImporter
+  m_Name: NotStreakTableImporter
   m_EditorClassIdentifier: 
   templatePath: AssetStore/QuickSheet/ExcelPlugin/Templates
   scriptFilePath: Source/TableClass/Runtime
   editorScriptFilePath: Source/TableClass/Editor
   sheetName: Equip.xlsx
-  workSheetName: RemainTable
+  workSheetName: NotStreakTable
   columnHeaderList:
   - type: 3
-    name: remainMin
+    name: accumulateMin
     isEnable: 0
     isArray: 0
   - type: 5
@@ -34,4 +34,5 @@ MonoBehaviour:
   - OptionTable
   - TransferTable
   - RemainTable
-  currentSelectedSheet: 5
+  - NotStreakTable
+  currentSelectedSheet: 6

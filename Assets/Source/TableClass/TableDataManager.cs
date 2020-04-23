@@ -35,6 +35,7 @@ public class TableDataManager : MonoBehaviour
 	public EnhanceTable enhanceTable;
 	public TransferTable transferTable;
 	public RemainTable remainTable;
+	public NotStreakTable notStreakTable;
 	public StageExpTable stageExpTable;
 	public DamageRateTable damageRateTable;
 	public ActorInfoTable actorInfoTable;
@@ -319,10 +320,20 @@ public class TableDataManager : MonoBehaviour
 	{
 		for (int i = 0; i < remainTable.dataArray.Length; ++i)
 		{
-			if (remainTable.dataArray[i].remainMin <= remainCount && remainCount <= remainTable.dataArray[i].remainMax)
+			if (remainTable.dataArray[i].remainMin <= remainCount)
 				return remainTable.dataArray[i];
 		}
 		return null;
+	}
+
+	public float FindNotStreakAdjustWeight(int count)
+	{
+		for (int i = notStreakTable.dataArray.Length - 1; i >= 0; --i)
+		{
+			if (notStreakTable.dataArray[i].accumulateMin <= count)
+				return notStreakTable.dataArray[i].adjustWeight;
+		}
+		return 0.0f;
 	}
 
 	public DamageRateTableData FindDamageTableData(string type, int addCount, string actorId)

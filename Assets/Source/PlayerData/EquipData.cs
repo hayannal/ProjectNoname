@@ -98,6 +98,11 @@ public class EquipData
 		return equipTableData.grade >= 4;
 	}
 
+	public static bool IsUseNotStreakGacha(EquipTableData equipTableData)
+	{
+		return (equipTableData.innerGrade == 4 || equipTableData.innerGrade == 5);
+	}
+
 	public void Initialize(Dictionary<string, string> customData)
 	{
 		bool lockState = false;

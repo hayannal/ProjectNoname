@@ -50,24 +50,19 @@ public class CharacterData
 		}
 	}
 
-	public int maxPpOfCurrentLimitBreak
+	public int maxPp
 	{
 		get
 		{
-			PowerLevelTableData powerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(maxPowerLevelOfCurrentLimitBreak);
+			int maxPowerLevel = BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxPowerLevel");
+			PowerLevelTableData powerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(maxPowerLevel);
 			if (powerLevelTableData == null)
 				return 0;
 			return powerLevelTableData.requiredAccumulatedPowerPoint;
 		}
 	}
 
-	public int getablePpOfCurrentLimitBreak
-	{
-		get
-		{
-			return maxPpOfCurrentLimitBreak - pp;
-		}
-	}
+	public static int FixedCharacterGroupCount = 4;
 
 	public static string GetAddressByActorId(string actorId)
 	{

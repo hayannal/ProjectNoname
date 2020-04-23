@@ -135,6 +135,7 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 		atkText.text = playerActor.actorStatus.GetDisplayAttack().ToString("N0");
 	}
 
+	bool _overMaxMode = false;
 	bool _limitBreakMode = false;
 	int _price;
 	bool _needPp;
@@ -152,13 +153,14 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 			dontHave = false;
 		}
 
+		_overMaxMode = false;
 		_limitBreakMode = false;
 		_needPp = false;
 		_needLimitBreakPoint = false;
 		if (powerLevel >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxPowerLevel"))
 		{
-			PowerLevelTableData powerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(powerLevel);
-			ppText.text = UIString.instance.GetString("GameUI_StageFraction", pp - powerLevelTableData.requiredAccumulatedPowerPoint, "∞");
+			_overMaxMode = true;
+			ppText.text = UIString.instance.GetString("GameUI_OverPp", pp - characterData.maxPp);
 			ppSlider.value = 1.0f;
 			sliderRectObject.SetActive(true);
 			priceButtonObject.SetActive(false);
@@ -307,24 +309,16 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 	public void OnClickGaugeDetailButton()
 	{
 		string text = "";
-		if (_limitBreakMode)
+		if (_overMaxMode)
 		{
-			int powerLevel = 1;
-			int pp = 0;
-			CharacterData characterData = PlayerData.instance.GetCharacterData(_actorId);
-			if (characterData != null)
-			{
-				powerLevel = characterData.powerLevel;
-				pp = characterData.pp;
-			}
-
-			int current = 0;
-			PowerLevelTableData powerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(powerLevel);
-			if (characterData != null && characterData.needLimitBreak)
-				current = pp - powerLevelTableData.requiredAccumulatedPowerPoint;
-
-			text = string.Format("{0}\n\n{1}", UIString.instance.GetString("GameUI_CharTranscendenceDesc"), UIString.instance.GetString("GameUI_NowPp", current));
+			//CharacterData characterData = PlayerData.instance.GetCharacterData(_actorId);
+			//if (characterData != null)
+			//{
+			//}
+			text = UIString.instance.GetString("GameUI_OverMax", 0.0f);
 		}
+		else if (_limitBreakMode)
+			text = UIString.instance.GetString("GameUI_CharTranscendenceDesc");
 		else
 			text = UIString.instance.GetString("GameUI_CharGaugeDesc");
 		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, text, 250, ppSlider.transform, new Vector2(10.0f, -35.0f));

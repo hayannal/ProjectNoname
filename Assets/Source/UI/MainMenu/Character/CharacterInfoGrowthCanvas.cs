@@ -157,7 +157,10 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 		_needLimitBreakPoint = false;
 		if (powerLevel >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxPowerLevel"))
 		{
-			sliderRectObject.SetActive(false);
+			PowerLevelTableData powerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(powerLevel);
+			ppText.text = UIString.instance.GetString("GameUI_StageFraction", pp - powerLevelTableData.requiredAccumulatedPowerPoint, "∞");
+			ppSlider.value = 1.0f;
+			sliderRectObject.SetActive(true);
 			priceButtonObject.SetActive(false);
 
 			maxButtonImage.color = ColorUtil.halfGray;

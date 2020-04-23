@@ -303,7 +303,28 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 
 	public void OnClickGaugeDetailButton()
 	{
-		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, UIString.instance.GetString(_limitBreakMode ? "GameUI_CharTranscendenceDesc" : "GameUI_CharGaugeDesc"), 250, ppSlider.transform, new Vector2(10.0f, -35.0f));
+		string text = "";
+		if (_limitBreakMode)
+		{
+			int powerLevel = 1;
+			int pp = 0;
+			CharacterData characterData = PlayerData.instance.GetCharacterData(_actorId);
+			if (characterData != null)
+			{
+				powerLevel = characterData.powerLevel;
+				pp = characterData.pp;
+			}
+
+			int current = 0;
+			PowerLevelTableData powerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(powerLevel);
+			if (characterData != null && characterData.needLimitBreak)
+				current = pp - powerLevelTableData.requiredAccumulatedPowerPoint;
+
+			text = string.Format("{0}\n\n{1}", UIString.instance.GetString("GameUI_CharTranscendenceDesc"), UIString.instance.GetString("GameUI_NowPp", current));
+		}
+		else
+			text = UIString.instance.GetString("GameUI_CharGaugeDesc");
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, text, 250, ppSlider.transform, new Vector2(10.0f, -35.0f));
 	}
 
 	public void OnClickLevelUpButton()

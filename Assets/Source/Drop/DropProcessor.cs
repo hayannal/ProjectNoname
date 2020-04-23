@@ -407,6 +407,8 @@ public class DropProcessor : MonoBehaviour
 					RemainTableData remainTableData = TableDataManager.instance.FindRemainTableData(GetRemainLegendKey());
 					if (remainTableData != null)
 						adjustWeight = remainTableData.adjustWeight;
+					if (adjustWeight > 1.0f)
+						CheatingListener.OnDetectCheatTable();
 					weight *= adjustWeight;
 					if (weight <= 0.0f)
 						continue;

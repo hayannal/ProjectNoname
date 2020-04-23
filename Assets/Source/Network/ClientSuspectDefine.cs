@@ -20,5 +20,6 @@ namespace ClientSuspect
 		InvalidEquipOption		= 100009,
 		InvalidEquipEnhance		= 100010,
 		InvalidLegendKey		= 100011,
+		CheatTable				= 100012,
 	}
 }

@@ -180,6 +180,12 @@ public class BattleModeProcessorBase
 			return;
 		}
 
+		if (CheatingListener.detectedCheatTable)
+		{
+			_endProcess = false;
+			return;
+		}
+
 		bool clear = false;
 		if (BattleInstanceManager.instance.playerActor.actorStatus.IsDie() == false)
 		{

@@ -50,6 +50,17 @@ public class CharacterData
 		}
 	}
 
+	public int maxPpOfCurrentLimitBreak
+	{
+		get
+		{
+			PowerLevelTableData powerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(maxPowerLevelOfCurrentLimitBreak);
+			if (powerLevelTableData == null)
+				return 0;
+			return powerLevelTableData.requiredAccumulatedPowerPoint;
+		}
+	}
+
 	public int maxPp
 	{
 		get

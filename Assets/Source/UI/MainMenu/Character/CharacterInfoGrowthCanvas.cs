@@ -315,10 +315,20 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 			//if (characterData != null)
 			//{
 			//}
-			text = UIString.instance.GetString("GameUI_OverMax", 0.0f);
+			text = UIString.instance.GetString("GameUI_OverMaxDesc", 0.0f);
 		}
 		else if (_limitBreakMode)
-			text = UIString.instance.GetString("GameUI_CharTranscendenceDesc");
+		{
+			int pp = 0;
+			int maxPpOfCurrentLimitBreak = 0;
+			CharacterData characterData = PlayerData.instance.GetCharacterData(_actorId);
+			if (characterData != null)
+			{
+				pp = characterData.pp;
+				maxPpOfCurrentLimitBreak = characterData.maxPpOfCurrentLimitBreak;
+			}
+			text = string.Format("{0}\n\n{1}", UIString.instance.GetString("GameUI_CharTranscendenceDesc"), UIString.instance.GetString("GameUI_NowPp", pp - characterData.maxPpOfCurrentLimitBreak));
+		}
 		else
 			text = UIString.instance.GetString("GameUI_CharGaugeDesc");
 		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, text, 250, ppSlider.transform, new Vector2(10.0f, -35.0f));

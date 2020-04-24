@@ -17,6 +17,11 @@ public class CheatingListener : MonoBehaviour
 		if (detectedCheatTable)
 			return;
 
+#if UNITY_EDITOR
+		Debug.LogError("OnDetectCheatTable!!!!!!!!!");
+		Debug.LogError("OnDetectCheatTable!!!!!!!!!");
+#endif
+
 		PlayFabApiManager.instance.RequestIncCliSus(eClientSuspectCode.CheatTable);
 
 		Timing.RunCoroutine(DeleyedQuit(5.0f));

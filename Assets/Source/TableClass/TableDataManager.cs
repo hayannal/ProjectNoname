@@ -37,6 +37,7 @@ public class TableDataManager : MonoBehaviour
 	public RemainTable remainTable;
 	public NotStreakTable notStreakTable;
 	public NotCharTable notCharTable;
+	public FixedCharTable fixedCharTable;
 	public StageExpTable stageExpTable;
 	public DamageRateTable damageRateTable;
 	public ActorInfoTable actorInfoTable;

@@ -85,7 +85,7 @@ public class DropProcessor : MonoBehaviour
 					case eDropType.Origin:
 						if (dropTableData.subValue[i] != "s")
 							break;
-						float weight = TableDataManager.instance.FindNotCharAdjustProb(GetCurrentNotSteakCharCount());
+						float weight = TableDataManager.instance.FindNotCharAdjustProb(DropManager.instance.GetCurrentNotSteakCharCount());
 						// NotCharTable Adjust Prob 검증
 						if (weight > 1.7f)
 							CheatingListener.OnDetectCheatTable();
@@ -125,7 +125,7 @@ public class DropProcessor : MonoBehaviour
 			if (Random.value > probability)
 			{
 				if (dropType == eDropType.Origin && dropTableData.subValue[i] == "s")
-					++droppedNotStreakCharCount;
+					++DropManager.instance.droppedNotStreakCharCount;
 				continue;
 			}
 
@@ -145,16 +145,25 @@ public class DropProcessor : MonoBehaviour
 				{
 					switch (dropTableData.subValue[i])
 					{
-						case "e": stringValue = GetStageDropEquipId(); break;
-						case "g": stringValue = GetGachaEquipId(); break;
+						case "e": stringValue = DropManager.instance.GetStageDropEquipId(); break;
+						case "g": stringValue = DropManager.instance.GetGachaEquipId(); break;
 					}
 				}
 				else if (dropType == eDropType.Origin)
 				{
 					switch (dropTableData.subValue[i])
 					{
-						case "s": stringValue = GetGachaCharacterId(); break;
+						case "s": stringValue = DropManager.instance.GetGachaCharacterId(); break;
 					}
+					// Origin이나 아래 PowerPoint는 특정 조건에 의해(중복 방지라던지 등등) 안나올 수 있다. 이땐 건너뛰어야한다.
+					if (stringValue == "")
+						continue;
+				}
+				else if (dropType == eDropType.PowerPoint)
+				{
+					stringValue = DropManager.instance.GetGachaPowerPointId();
+					if (stringValue == "")
+						continue;
 				}
 			}
 
@@ -193,6 +202,9 @@ public class DropProcessor : MonoBehaviour
 					dropProcessor.Add(dropType, floatValue, intValue, stringValue);
 					break;
 				case eDropType.Diamond:
+					dropProcessor.Add(dropType, floatValue, intValue, stringValue);
+					break;
+				case eDropType.PowerPoint:
 					dropProcessor.Add(dropType, floatValue, intValue, stringValue);
 					break;
 			}
@@ -255,7 +267,6 @@ public class DropProcessor : MonoBehaviour
 			case eDropType.Heart:
 			case eDropType.Gacha:
 			case eDropType.Seal:
-			case eDropType.Diamond:
 				for (int i = 0; i < intValue; ++i)
 				{
 					newInfo = new DropObjectInfo();
@@ -275,6 +286,21 @@ public class DropProcessor : MonoBehaviour
 				}
 				break;
 			case eDropType.Ultimate:
+				break;
+			case eDropType.Diamond:
+			case eDropType.PowerPoint:
+				int splitCount = (dropType == eDropType.Diamond) ? Random.Range(1, 3) : Random.Range(3, 5);
+				int quotient = intValue / splitCount;
+				int remainder = intValue % splitCount;
+				for (int i = 0; i < splitCount; ++i)
+				{
+					int currentCount = quotient + ((i < remainder) ? 1 : 0);
+					newInfo = new DropObjectInfo();
+					newInfo.dropType = dropType;
+					newInfo.intValue = currentCount;
+					newInfo.stringValue = stringValue;
+					_listDropObjectInfo.Add(newInfo);
+				}
 				break;
 		}
 	}
@@ -406,249 +432,7 @@ public class DropProcessor : MonoBehaviour
 
 
 
-	#region Stage Drop Equip
-	public class RandomDropEquipInfo
-	{
-		public EquipTableData equipTableData;
-		public float sumWeight;
-	}
-	static List<RandomDropEquipInfo> _listRandomDropEquipInfo = null;
-	static int _lastDropChapter = -1;
-	static int _lastDropStage = -1;
-	static int _lastLegendKey = -1;
-	static string GetStageDropEquipId()
-	{
-		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
-		if (lobby)
-			return "";
-
-		bool needRefresh = false;
-		if (_lastDropChapter != StageManager.instance.playChapter || _lastDropStage != StageManager.instance.playStage || _lastLegendKey != GetRemainLegendKey())
-		{
-			needRefresh = true;
-			_lastDropChapter = StageManager.instance.playChapter;
-			_lastDropStage = StageManager.instance.playStage;
-			_lastLegendKey = GetRemainLegendKey();
-		}
-
-		if (needRefresh)
-		{
-			if (_listRandomDropEquipInfo == null)
-				_listRandomDropEquipInfo = new List<RandomDropEquipInfo>();
-			_listRandomDropEquipInfo.Clear();
-
-			float sumWeight = 0.0f;
-			for (int i = 0; i < TableDataManager.instance.equipTable.dataArray.Length; ++i)
-			{
-				float weight = TableDataManager.instance.equipTable.dataArray[i].stageDropWeight;
-				if (weight <= 0.0f)
-					continue;
-
-				bool add = false;
-				if (StageManager.instance.playChapter > TableDataManager.instance.equipTable.dataArray[i].startingDropChapter)
-					add = true;
-				// MonsterActor.OnDie 함수 안에서 드랍의 모든 정보가 결정되기때문에 StageManager.instance.playStage을 사용해도 괜찮다.
-				// 다음 스테이지로 넘어가서 드랍아이템이 생성되더라도 이미 정보는 다 킬 시점에 결정되기 때문.
-				if (add == false && StageManager.instance.playChapter == TableDataManager.instance.equipTable.dataArray[i].startingDropChapter && StageManager.instance.playStage >= TableDataManager.instance.equipTable.dataArray[i].startingDropStage)
-					add = true;
-				if (add == false)
-					continue;
-
-				if (EquipData.IsUseLegendKey(TableDataManager.instance.equipTable.dataArray[i]))
-				{
-					float adjustWeight = 0.0f;
-					RemainTableData remainTableData = TableDataManager.instance.FindRemainTableData(GetRemainLegendKey());
-					if (remainTableData != null)
-						adjustWeight = remainTableData.adjustWeight;
-					// adjustWeight 검증
-					if (adjustWeight > 1.0f)
-						CheatingListener.OnDetectCheatTable();
-					weight *= adjustWeight;
-					if (weight <= 0.0f)
-						continue;
-				}
-
-				sumWeight += weight;
-				RandomDropEquipInfo newInfo = new RandomDropEquipInfo();
-				newInfo.equipTableData = TableDataManager.instance.equipTable.dataArray[i];
-				newInfo.sumWeight = sumWeight;
-				_listRandomDropEquipInfo.Add(newInfo);
-			}
-		}
-
-		if (_listRandomDropEquipInfo.Count == 0)
-			return "";
-
-		int index = -1;
-		float result = Random.Range(0.0f, _listRandomDropEquipInfo[_listRandomDropEquipInfo.Count - 1].sumWeight);
-		for (int i = 0; i < _listRandomDropEquipInfo.Count; ++i)
-		{
-			if (result <= _listRandomDropEquipInfo[i].sumWeight)
-			{
-				index = i;
-				break;
-			}
-		}
-		if (index == -1)
-			return "";
-
-		// 바로 감소시켜놔야 다음번 드랍될때 _lastLegendKey가 달라지면서 드랍 리스트를 리프레쉬 하게 된다.
-		if (EquipData.IsUseLegendKey(_listRandomDropEquipInfo[index].equipTableData))
-			++DropManager.instance.droppedLengendItemCount;
-		return _listRandomDropEquipInfo[index].equipTableData.equipId;
-	}
-
-	static int GetRemainLegendKey()
-	{
-		return CurrencyData.instance.legendKey - DropManager.instance.droppedLengendItemCount * 10;
-	}
-	#endregion
-
-
-	#region Gacha Drop Equip
-	static float _lastNotStreakAdjustWeight = -1.0f;
-	static string GetGachaEquipId()
-	{
-		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
-		if (lobby == false)
-			return "";
-		bool needRefresh = false;
-		float notStreakAdjustWeight = TableDataManager.instance.FindNotStreakAdjustWeight(GetCurrentNotSteakCount());
-		if (_lastNotStreakAdjustWeight != notStreakAdjustWeight)
-		{
-			needRefresh = true;
-			_lastNotStreakAdjustWeight = notStreakAdjustWeight;
-		}
-
-		if (needRefresh)
-		{
-			// AdjustWeight 검증
-			if (notStreakAdjustWeight > 1.7f)
-				CheatingListener.OnDetectCheatTable();
-
-			if (_listRandomDropEquipInfo == null)
-				_listRandomDropEquipInfo = new List<RandomDropEquipInfo>();
-			_listRandomDropEquipInfo.Clear();
-
-			float sumWeight = 0.0f;
-			for (int i = 0; i < TableDataManager.instance.equipTable.dataArray.Length; ++i)
-			{
-				float weight = TableDataManager.instance.equipTable.dataArray[i].equipGachaWeight;
-				if (weight <= 0.0f)
-					continue;
-
-				// equipGachaWeight 검증
-				if (EquipData.IsUseLegendKey(TableDataManager.instance.equipTable.dataArray[i]) && weight > 1.0f)
-					CheatingListener.OnDetectCheatTable();
-				
-				if (EquipData.IsUseNotStreakGacha(TableDataManager.instance.equipTable.dataArray[i]))
-					weight *= notStreakAdjustWeight;
-
-				sumWeight += weight;
-				RandomDropEquipInfo newInfo = new RandomDropEquipInfo();
-				newInfo.equipTableData = TableDataManager.instance.equipTable.dataArray[i];
-				newInfo.sumWeight = sumWeight;
-				_listRandomDropEquipInfo.Add(newInfo);
-			}
-		}
-
-		if (_listRandomDropEquipInfo.Count == 0)
-			return "";
-
-		int index = -1;
-		float result = Random.Range(0.0f, _listRandomDropEquipInfo[_listRandomDropEquipInfo.Count - 1].sumWeight);
-		for (int i = 0; i < _listRandomDropEquipInfo.Count; ++i)
-		{
-			if (result <= _listRandomDropEquipInfo[i].sumWeight)
-			{
-				index = i;
-				break;
-			}
-		}
-		if (index == -1)
-			return "";
-
-		// 전설이 나오지 않으면 바로 누적시켜놔야 다음번 드랍될때 GetCurrentNotSteakCount()값이 달라지면서 체크할 수 있게된다.
-		if (EquipData.IsUseLegendKey(_listRandomDropEquipInfo[index].equipTableData) == false)
-			++droppedNotStreakItemCount;
-		return _listRandomDropEquipInfo[index].equipTableData.equipId;
-	}
-	static int droppedNotStreakItemCount = 0;
-	static int GetCurrentNotSteakCount()
-	{
-		// 임시변수를 만들어서 계산하다가 서버에서 리턴받을때 적용해보자
-		return PlayerData.instance.notStreakCount + droppedNotStreakItemCount;
-	}
-	#endregion
-
-	#region Gacha Character
-	public class RandomGachaActorInfo
-	{
-		public ActorTableData actorTableData;
-		public float sumWeight;
-	}
-	static List<RandomGachaActorInfo> _listRandomGachaActorInfo = null;
-	static string GetGachaCharacterId()
-	{
-		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
-		if (lobby == false)
-			return "";
-
-		if (_listRandomGachaActorInfo == null)
-			_listRandomGachaActorInfo = new List<RandomGachaActorInfo>();
-		_listRandomGachaActorInfo.Clear();
-
-		float sumWeight = 0.0f;
-		for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)
-		{
-			float weight = TableDataManager.instance.actorTable.dataArray[i].charGachaWeight;
-			if (weight <= 0.0f)
-				continue;
-
-			// 획득가능한지 물어봐야한다.
-			if (GetableOrigin(TableDataManager.instance.actorTable.dataArray[i].actorId) == false)
-				continue;
-
-			// charGachaWeight 검증
-			if (CharacterData.IsUseLegendWeight(TableDataManager.instance.actorTable.dataArray[i]) && weight > 1.0f)
-				CheatingListener.OnDetectCheatTable();
-
-			sumWeight += weight;
-			RandomGachaActorInfo newInfo = new RandomGachaActorInfo();
-			newInfo.actorTableData = TableDataManager.instance.actorTable.dataArray[i];
-			newInfo.sumWeight = sumWeight;
-			_listRandomGachaActorInfo.Add(newInfo);
-		}
-
-		if (_listRandomGachaActorInfo.Count == 0)
-			return "";
-
-		int index = -1;
-		float result = Random.Range(0.0f, _listRandomGachaActorInfo[_listRandomGachaActorInfo.Count - 1].sumWeight);
-		for (int i = 0; i < _listRandomGachaActorInfo.Count; ++i)
-		{
-			if (result <= _listRandomGachaActorInfo[i].sumWeight)
-			{
-				index = i;
-				break;
-			}
-		}
-		if (index == -1)
-			return "";
-		return _listRandomGachaActorInfo[index].actorTableData.actorId;
-	}
-	static int droppedNotStreakCharCount = 0;
-	static int GetCurrentNotSteakCharCount()
-	{
-		// 임시변수를 만들어서 계산하다가 서버에서 리턴받을때 적용해보자
-		return PlayerData.instance.notStreakCharCount + droppedNotStreakCharCount;
-	}
-
-	static bool GetableOrigin(string actorId)
-	{
-		return false;
-	}
-	#endregion
+	
 
 
 

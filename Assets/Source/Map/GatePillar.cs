@@ -281,7 +281,7 @@ public class GatePillar : MonoBehaviour
 			return false;
 		if (_processing)
 			return false;
-		if (TimeSpacePortal.instance.processing)
+		if (TimeSpacePortal.instance != null && TimeSpacePortal.instance.processing)
 			return false;
 
 		if (MainSceneBuilder.instance.lobby)

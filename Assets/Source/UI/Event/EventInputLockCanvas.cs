@@ -13,7 +13,7 @@ public class EventInputLockCanvas : MonoBehaviour
 
 	public void OnClickBackgroundButton()
 	{
-		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null)
+		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null && TitleCanvas.instance.gameObject.activeSelf)
 			TitleCanvas.instance.FadeTitle();
 
 		EventManager.instance.OnClickScreen();

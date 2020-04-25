@@ -44,7 +44,7 @@ public class LobbyCanvas : MonoBehaviour
 
 	public void OnClickDotButton()
 	{
-		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null)
+		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null && TitleCanvas.instance.gameObject.activeSelf)
 			TitleCanvas.instance.FadeTitle();
 
 		if (ContentsManager.IsTutorialChapter())
@@ -72,7 +72,7 @@ public class LobbyCanvas : MonoBehaviour
 
 	public void OnClickLobbyOptionButton()
 	{
-		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null)
+		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null && TitleCanvas.instance.gameObject.activeSelf)
 			TitleCanvas.instance.FadeTitle();
 
 		UIInstanceManager.instance.ShowCanvasAsync("SettingCanvas", null);

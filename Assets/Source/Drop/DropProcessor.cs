@@ -33,7 +33,7 @@ public class DropProcessor : MonoBehaviour
 		return false;
 	}
 
-	public static void Drop(Transform rootTransform, string dropId, string addDropId, bool onAfterBattle)
+	public static DropProcessor Drop(Transform rootTransform, string dropId, string addDropId, bool onAfterBattle, bool ignoreStartDrop)
 	{
 		//Debug.Log("dropId : " + dropId + " / addDropId : " + addDropId);
 
@@ -60,11 +60,17 @@ public class DropProcessor : MonoBehaviour
 				Drop(dropProcess, dropTableData);
 		}
 
-		// drop event
-		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapterStage.TimeSpace) == false && ContentsManager.IsDropChapterStage(StageManager.instance.playChapter, StageManager.instance.playStage))
-			dropProcess.AdjustDrop();
+		if (lobby == false)
+		{
+			// drop event
+			if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapterStage.TimeSpace) == false && ContentsManager.IsDropChapterStage(StageManager.instance.playChapter, StageManager.instance.playStage))
+				dropProcess.AdjustDrop();
+		}
 
-		dropProcess.StartDrop();
+		if (ignoreStartDrop == false)
+			dropProcess.StartDrop();
+
+		return dropProcess;
 	}
 
 	static void Drop(DropProcessor dropProcessor, DropTableData dropTableData)

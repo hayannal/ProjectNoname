@@ -395,7 +395,7 @@ public class MonsterActor : Actor
 			else dropId = StageManager.instance.currentStageTableData.defaultNormalDropId;
 		}
 		string addDropId = cachedMonsterTableData.addDropId;
-		DropProcessor.Drop(cachedTransform, dropId, addDropId, lastMonsterInStage);
+		DropProcessor.Drop(cachedTransform, dropId, addDropId, lastMonsterInStage, false);
 
 		// sp drop
 		DropProcessor.DropSp(_dropSpValue);

@@ -325,7 +325,7 @@ public class PlayerData : MonoBehaviour
 		}
 	}
 
-	public void OnRecvPlayerData(List<StatisticValue> playerStatistics, Dictionary<string, UserDataRecord> userData, List<CharacterResult> characterList)
+	public void OnRecvPlayerData(List<StatisticValue> playerStatistics, Dictionary<string, UserDataRecord> userData, Dictionary<string, UserDataRecord> userReadOnlyData, List<CharacterResult> characterList)
 	{
 		for (int i = 0; i < playerStatistics.Count; ++i)
 		{
@@ -398,10 +398,10 @@ public class PlayerData : MonoBehaviour
 		// 계정 생성과 마찬가지로 로그인 이후에 rules사용해서 서버에서 클라우드 스크립트를 돌려도
 		// 이미 로그인은 실행되고 있어서 그 안에 있는 UserData에는 실어줄 수가 없다.
 		// 그래서 마지막 오픈 시간을 받아서 직접 계산하기로 한다.
-		if (userData.ContainsKey("SHlstBxDat"))
+		if (userReadOnlyData.ContainsKey("lasBxDat"))
 		{
-			if (string.IsNullOrEmpty(userData["SHlstBxDat"].Value) == false)
-				OnRecvDailyBoxInfo(userData["SHlstBxDat"].Value);
+			if (string.IsNullOrEmpty(userReadOnlyData["lasBxDat"].Value) == false)
+				OnRecvDailyBoxInfo(userReadOnlyData["lasBxDat"].Value);
 		}
 
 		string eventState = "";
@@ -411,18 +411,18 @@ public class PlayerData : MonoBehaviour
 
 		// Etc
 		notStreakCount = 0;
-		if (userData.ContainsKey("SHstr"))
+		if (userReadOnlyData.ContainsKey("strCnt"))
 		{
 			int intValue = 0;
-			if (int.TryParse(userData["SHstr"].Value, out intValue))
+			if (int.TryParse(userReadOnlyData["strCnt"].Value, out intValue))
 				notStreakCount = intValue;
 		}
 
 		notStreakCharCount = 0;
-		if (userData.ContainsKey("SHstrCh"))
+		if (userReadOnlyData.ContainsKey("strCh"))
 		{
 			int intValue = 0;
-			if (int.TryParse(userData["SHstrCh"].Value, out intValue))
+			if (int.TryParse(userReadOnlyData["strCh"].Value, out intValue))
 				notStreakCharCount = intValue;
 		}
 

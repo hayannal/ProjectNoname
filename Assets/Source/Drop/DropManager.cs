@@ -71,6 +71,7 @@ public class DropManager : MonoBehaviour
 	//
 	// 그래서 차라리 별도의 드랍 카운트 변수를 만들고
 	// 드랍이 결정될때마다 증가시켜서 관리하기로 한다.
+	// 초기화는 신경쓸필요 없는게 전투끝나고 돌아올때 어차피 DropManager가 삭제되고 새로 만들어지기 때문에 신경쓰지 않아도 된다.
 	public int droppedLengendItemCount { get; set; }
 	#endregion
 
@@ -270,6 +271,7 @@ public class DropManager : MonoBehaviour
 			return "";
 
 		// 바로 감소시켜놔야 다음번 드랍될때 _lastLegendKey가 달라지면서 드랍 리스트를 리프레쉬 하게 된다.
+		// 인게임에서만 적용되는 수치로 장비뽑기할때는 적용받지 않는다.
 		if (EquipData.IsUseLegendKey(_listRandomDropEquipInfo[index].equipTableData))
 			++droppedLengendItemCount;
 		return _listRandomDropEquipInfo[index].equipTableData.equipId;
@@ -282,6 +284,23 @@ public class DropManager : MonoBehaviour
 	#endregion
 
 
+
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// 이 아래서부터는 Lobby에서 사용하는 가차용 뽑기 로직들이다.
+	// 한번 드랍프로세서가 동작하고 나서는 패킷 주고받은 후 초기화를 해줘야한다.
+	public void ClearLobbyDropInfo()
+	{
+		// 3연차 8연차 등등 하나의 연속가차 안에서 썼던 정보들이다.
+		// 연차 중에는 이왕이면 pp를 각각 나눠서 뽑는다. 캐릭터는 동시에 같은 캐릭터를 뽑을 수 없다. 연속으로 전설템을 못뽑으면 확률이 증가한다. 등등의 조건을 처리하기 위해 사용하는 임시 변수들이다.
+		_droppedNotStreakItemCount = 0;
+		droppedNotStreakCharCount = 0;
+		_listDroppedActorId.Clear();
+		_listDroppedPowerPointId.Clear();
+
+		// 위와 별개로 패킷으로 보낼때 쓴 정보도 초기화 해줘야한다.
+		ClearLobbyDropPacketInfo();
+	}
 
 	#region Gacha Drop Equip
 	float _lastNotStreakAdjustWeight = -1.0f;
@@ -364,7 +383,7 @@ public class DropManager : MonoBehaviour
 	#region Gacha Character
 	class RandomGachaActorInfo
 	{
-		public ActorTableData actorTableData;
+		public string actorId;
 		public float sumWeight;
 	}
 	List<RandomGachaActorInfo> _listRandomGachaActorInfo = null;
@@ -399,7 +418,7 @@ public class DropManager : MonoBehaviour
 				if (IsFixedCharacterIncompleteGroup(TableDataManager.instance.actorTable.dataArray[i].actorId))
 					getable = true;
 				// FixedCharTable 검증
-				if (TableDataManager.instance.actorTable.dataArray[i].grade > 0)
+				if (getable && TableDataManager.instance.actorTable.dataArray[i].grade > 0)
 					CheatingListener.OnDetectCheatTable();
 				// 필수캐릭이 아니더라도 이미 인벤에 들어있는 캐릭터라면(ganfaul, keepseries) 초월재료를 얻을 수 있게 해줘야한다.
 				if (getable == false && PlayerData.instance.ContainsActor(TableDataManager.instance.actorTable.dataArray[i].actorId) && GetableOrigin(TableDataManager.instance.actorTable.dataArray[i].actorId))
@@ -414,7 +433,7 @@ public class DropManager : MonoBehaviour
 
 			sumWeight += weight;
 			RandomGachaActorInfo newInfo = new RandomGachaActorInfo();
-			newInfo.actorTableData = TableDataManager.instance.actorTable.dataArray[i];
+			newInfo.actorId = TableDataManager.instance.actorTable.dataArray[i].actorId;
 			newInfo.sumWeight = sumWeight;
 			_listRandomGachaActorInfo.Add(newInfo);
 		}
@@ -434,7 +453,7 @@ public class DropManager : MonoBehaviour
 		}
 		if (index == -1)
 			return "";
-		string result = _listRandomGachaActorInfo[index].actorTableData.actorId;
+		string result = _listRandomGachaActorInfo[index].actorId;
 		_listRandomGachaActorInfo.Clear();
 		_listDroppedActorId.Add(result);
 		return result;
@@ -446,7 +465,7 @@ public class DropManager : MonoBehaviour
 		return PlayerData.instance.notStreakCharCount + droppedNotStreakCharCount;
 	}
 
-	List<string> _listDroppedActorId = null;
+	List<string> _listDroppedActorId = new List<string>();
 	bool GetableOrigin(string actorId)
 	{
 		//if (actorId != "Actor0201")
@@ -519,13 +538,17 @@ public class DropManager : MonoBehaviour
 	#endregion
 
 	#region Gacha PowerPoint
-	List<string> _listDroppedPowerPointId = null;
-	float _maxPowerPointRate = 1.5f;
+	List<string> _listDroppedPowerPointId = new List<string>();
+	const float _maxPowerPointRate = 1.5f;
 	public string GetGachaPowerPointId()
 	{
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
 		if (lobby == false)
 			return "";
+
+		if (_listRandomGachaActorInfo == null)
+			_listRandomGachaActorInfo = new List<RandomGachaActorInfo>();
+		_listRandomGachaActorInfo.Clear();
 
 		float maxPp = 0.0f;
 		for (int i = 0; i < PlayerData.instance.listCharacterData.Count; ++i)
@@ -536,6 +559,9 @@ public class DropManager : MonoBehaviour
 		for (int i = 0; i < PlayerData.instance.listCharacterData.Count; ++i)
 		{
 			string actorId = PlayerData.instance.listCharacterData[i].actorId;
+			// 원래는 중복해서 나오면 안되지만 캐릭터가 2개밖에 없는 상황에서 5개를 뽑아야한다면 중복을 허용한다.
+			if (_listDroppedPowerPointId != null && PlayerData.instance.listCharacterData.Count == _listDroppedPowerPointId.Count)
+				_listDroppedPowerPointId.Clear();
 			if (_listDroppedPowerPointId != null && _listDroppedPowerPointId.Contains(actorId))
 			{
 				// 이번 드랍으로 결정된거면 두번 나오지는 않게 한다.
@@ -545,7 +571,7 @@ public class DropManager : MonoBehaviour
 			float weight = baseWeight - PlayerData.instance.listCharacterData[i].pp;
 			sumWeight += weight;
 			RandomGachaActorInfo newInfo = new RandomGachaActorInfo();
-			newInfo.actorTableData = TableDataManager.instance.FindActorTableData(PlayerData.instance.listCharacterData[i].actorId);
+			newInfo.actorId = PlayerData.instance.listCharacterData[i].actorId;
 			newInfo.sumWeight = sumWeight;
 			_listRandomGachaActorInfo.Add(newInfo);
 		}
@@ -565,11 +591,129 @@ public class DropManager : MonoBehaviour
 		}
 		if (index == -1)
 			return "";
-		string result = _listRandomGachaActorInfo[index].actorTableData.actorId;
+		string result = _listRandomGachaActorInfo[index].actorId;
 		_listRandomGachaActorInfo.Clear();
 		_listDroppedPowerPointId.Add(result);
 		return result;
 	}
 	#endregion
 
+
+
+
+	#region Lobby Drop Packet
+	// 로비 가차 드랍은 따로 모아놔야 패킷 만들때 편하다.
+	// 이 아래부터는 패킷 정보들이다.
+	// 패킷 보낼때만 잠시 쓰는거라 Obscured안해놔도 될텐데 그냥 해둔다.
+	// Drop과 동시에 계산되서 여기에 다 쌓여있게 되니 바로 서버로 보내면 된다.
+	ObscuredInt _lobbyDia = 0;
+	ObscuredFloat _lobbyGold = 0.0f;
+
+	void ClearLobbyDropPacketInfo()
+	{
+		_lobbyDia = 0;
+		_lobbyGold = 0.0f;
+		_listCharacterPpRequest.Clear();
+		_listGrantCharacterRequest.Clear();		
+		_listCharacterLbpRequest.Clear();
+	}
+
+	public void AddLobbyDia(int dia)
+	{
+		_lobbyDia += dia;
+	}
+	public int GetLobbyDiaAmount()
+	{
+		return _lobbyDia;
+	}
+
+	public void AddLobbyGold(float gold)
+	{
+		_lobbyGold += gold;
+	}
+	public int GetLobbyGoldAmount()
+	{
+		float lobbyGold = _lobbyGold;
+		return (int)lobbyGold;
+	}
+
+	public class CharacterPpRequest
+	{
+		public string ChrId;
+		public int pp;
+
+		[System.NonSerialized]
+		public string actorId;
+	}
+	List<CharacterPpRequest> _listCharacterPpRequest = new List<CharacterPpRequest>();
+	public void AddPowerPoint(string actorId, int amount)
+	{
+		CharacterData characterData = PlayerData.instance.GetCharacterData(actorId);
+		if (characterData == null)
+			return;
+
+		// 캐릭터가 둘밖에 없을때 5인분의 pp를 뽑으려면 같은 캐릭터에 두어개씩 들어오게 된다. 합산해줘야한다.
+		bool find = false;
+		for (int i = 0; i < _listCharacterPpRequest.Count; ++i)
+		{
+			if (_listCharacterPpRequest[i].ChrId == characterData.entityKey.Id)
+			{
+				_listCharacterPpRequest[i].pp += amount;
+				find = true;
+				break;
+			}
+		}
+
+		if (find == false)
+		{
+			// pp는 Add 대신 Set을 쓸거기 때문에 처음 찾아질때 기존의 값에 더하는 형태로 기록해둔다.
+			CharacterPpRequest newInfo = new CharacterPpRequest();
+			newInfo.actorId = characterData.actorId;
+			newInfo.ChrId = characterData.entityKey.Id;
+			newInfo.pp = characterData.pp + amount;
+			_listCharacterPpRequest.Add(newInfo);
+		}
+	}
+	public List<CharacterPpRequest> GetPowerPointInfo()
+	{
+		return _listCharacterPpRequest;
+	}
+
+	List<string> _listGrantCharacterRequest = new List<string>();
+	public class CharacterLbpRequest
+	{
+		public string ChrId;
+		public int lbp;
+
+		[System.NonSerialized]
+		public string actorId;
+	}
+	List<CharacterLbpRequest> _listCharacterLbpRequest = new List<CharacterLbpRequest>();
+	public void AddOrigin(string actorId)
+	{
+		CharacterData characterData = PlayerData.instance.GetCharacterData(actorId);
+		if (characterData == null)
+		{
+			if (_listGrantCharacterRequest.Contains(actorId) == false)
+				_listGrantCharacterRequest.Add(actorId);
+		}
+		else
+		{
+			// 두개 이상 뽑힐리 없으니 기존값 구해와서 1 증가시키면 된다.
+			CharacterLbpRequest newInfo = new CharacterLbpRequest();
+			newInfo.actorId = characterData.actorId;
+			newInfo.ChrId = characterData.entityKey.Id;
+			newInfo.lbp = characterData.limitBreakPoint + 1;
+			_listCharacterLbpRequest.Add(newInfo);
+		}
+	}
+	public List<string> GetGrantCharacterInfo()
+	{
+		return _listGrantCharacterRequest;
+	}
+	public List<CharacterLbpRequest> GetLimitBreakPointInfo()
+	{
+		return _listCharacterLbpRequest;
+	}
+	#endregion
 }

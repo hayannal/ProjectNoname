@@ -103,7 +103,12 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 
 	public void OnClickOpenDailyBox()
 	{
-		PlayFabApiManager.instance.RequestOpenDailyBox((serverFailure) =>
+		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null && TitleCanvas.instance.gameObject.activeSelf)
+			TitleCanvas.instance.FadeTitle();
+
+		// 가장 핵심은 드랍부터 굴려서 보상정보를 얻어오는거다.
+		DropProcessor dropProcessor = DropProcessor.Drop(targetTransform, "Zoflr", "", false, true);
+		PlayFabApiManager.instance.RequestOpenDailyBox(dropProcessor, (serverFailure) =>
 		{
 			if (serverFailure)
 			{
@@ -112,7 +117,7 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 			else
 			{
 				// 뭔가 연출 및 보상 처리.
-				// 이건 나중에 템이랑 만들어지면 한다.
+				dropProcessor.StartDrop();
 
 				// 연출 다하고 나서는 UI도 갱신
 				RefreshButtonText();

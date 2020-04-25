@@ -481,23 +481,61 @@ public class PlayFabApiManager : MonoBehaviour
 
 
 	#region Daily
-	public void RequestOpenDailyBox(Action<bool> successCallback)
+	public void RequestOpenDailyBox(DropProcessor dropProcessor, Action<bool> successCallback)
 	{
 		WaitingNetworkCanvas.Show(true);
+
+		int addGold = DropManager.instance.GetLobbyGoldAmount();
+		int addDia = DropManager.instance.GetLobbyDiaAmount();
+		List<DropManager.CharacterPpRequest> listPpInfo = DropManager.instance.GetPowerPointInfo();
+		List<string> listGrantInfo = DropManager.instance.GetGrantCharacterInfo();
+		List<DropManager.CharacterLbpRequest> listLbpInfo = DropManager.instance.GetLimitBreakPointInfo();
+
+		int ppCount = listPpInfo.Count;
+		int originCount = listGrantInfo.Count + listLbpInfo.Count;
+		if (ppCount > 2 || originCount > 1)
+		{
+			// 수량 에러
+			CheatingListener.OnDetectCheatTable();
+			return;
+		}
+
+		string checkSum = "";
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		string jsonListPp = serializer.SerializeObject(listPpInfo);
+		string jsonListGr = serializer.SerializeObject(listGrantInfo);
+		string jsonListLbp = serializer.SerializeObject(listLbpInfo);
+		checkSum = CheckSum(string.Format("{0}_{1}_{2}_{3}_{4}", jsonListPp, jsonListGr, jsonListLbp, addGold, addDia));
 
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
 			FunctionName = "OpenDailyBox",
+			FunctionParameter = new { Go = addGold, Di = addDia, LstPp = listPpInfo, LstGr = listGrantInfo, LstLbp = listLbpInfo, LstCs = checkSum },
 			GeneratePlayStreamEvent = true,
 		}, (success) =>
 		{
-			string resultString = (string)success.FunctionResult;
-			bool failure = (resultString == "1");
+			PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
+			jsonResult.TryGetValue("retErr", out object retErr);
+			bool failure = ((retErr.ToString()) == "1");
 			if (!failure)
 			{
 				WaitingNetworkCanvas.Show(false);
+				jsonResult.TryGetValue("date", out object date);
+				jsonResult.TryGetValue("adChrIdPay", out object adChrIdPayload);
+
+				++PlayerData.instance.originOpenCount;
+				if ((listLbpInfo.Count + listGrantInfo.Count) == 0)
+					++PlayerData.instance.notStreakCharCount;
+				else
+					PlayerData.instance.notStreakCharCount = 0;
+
 				// 성공시에는 서버에서 방금 기록한 마지막 오픈 타임이 날아온다.
-				PlayerData.instance.OnRecvDailyBoxInfo(resultString, true);
+				PlayerData.instance.OnRecvDailyBoxInfo((string)date, true);
+
+				// 뽑기쪽 처리와 동일한 함수들
+				PlayerData.instance.OnRecvUpdateCharacterStatistics(listPpInfo, listLbpInfo);
+				PlayerData.instance.OnRecvGrantCharacterList(adChrIdPayload);
+				DropManager.instance.ClearLobbyDropInfo();
 			}
 			if (successCallback != null) successCallback.Invoke(failure);
 		}, (error) =>
@@ -1010,6 +1048,91 @@ public class PlayFabApiManager : MonoBehaviour
 				equipData.OnTransmute(randomIndex, randomOptionString, false);
 				if (successCallback != null) successCallback.Invoke();
 			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+	#endregion
+
+	#region Gacha
+	// RequestOpenDailyBox 과 상당히 비슷하다.
+	public void RequestCharacterBox(bool bigBox, DropProcessor dropProcessor, int price, Action<bool> successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+		
+		List<DropManager.CharacterPpRequest> listPpInfo = DropManager.instance.GetPowerPointInfo();
+		List<string> listGrantInfo = DropManager.instance.GetGrantCharacterInfo();
+		List<DropManager.CharacterLbpRequest> listLbpInfo = DropManager.instance.GetLimitBreakPointInfo();
+
+		int ppCount = listPpInfo.Count;
+		int originCount = listGrantInfo.Count + listLbpInfo.Count;
+		bool cheatTable = false;
+		if (bigBox)
+		{
+			if (ppCount > 6 || originCount > 10)
+				cheatTable = true;
+		}
+		else
+		{
+			if (ppCount > 4 || originCount > 3)
+				cheatTable = true;
+		}
+		if (cheatTable)
+		{
+			// 수량 에러
+			CheatingListener.OnDetectCheatTable();
+			return;
+		}
+
+		// default 4
+		int apiCallCount = 4;
+		apiCallCount += listPpInfo.Count;
+		apiCallCount += listGrantInfo.Count * 2;
+		apiCallCount += listLbpInfo.Count;
+
+		if (apiCallCount > 15)
+		{
+			// 15회 넘어가면 예외처리로 처리방식을 바꿔야한다.
+
+		}
+
+		string checkSum = "";
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		string jsonListPp = serializer.SerializeObject(listPpInfo);
+		string jsonListGr = serializer.SerializeObject(listGrantInfo);
+		string jsonListLbp = serializer.SerializeObject(listLbpInfo);
+		int bigState = bigBox ? 1 : 0;
+		checkSum = CheckSum(string.Format("{0}_{1}_{2}_{3}", jsonListPp, jsonListGr, jsonListLbp, bigState));
+
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "OpenCharBox",
+			FunctionParameter = new { Big = bigState, LstPp = listPpInfo, LstGr = listGrantInfo, LstLbp = listLbpInfo, LstCs = checkSum },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
+			jsonResult.TryGetValue("retErr", out object retErr);
+			bool failure = ((retErr.ToString()) == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+				jsonResult.TryGetValue("adChrIdPay", out object adChrIdPayload);
+
+				// 이거 마저 해야한다.
+				//++PlayerData.instance.originOpenCount;
+				//if ((listLbpInfo.Count + listGrantInfo.Count) == 0)
+				//	++PlayerData.instance.notStreakCharCount;
+				//else
+				//	PlayerData.instance.notStreakCharCount = 0;
+
+				// update
+				PlayerData.instance.OnRecvUpdateCharacterStatistics(listPpInfo, listLbpInfo);
+				PlayerData.instance.OnRecvGrantCharacterList(adChrIdPayload);
+				DropManager.instance.ClearLobbyDropInfo();
+			}
+			if (successCallback != null) successCallback.Invoke(failure);
 		}, (error) =>
 		{
 			HandleCommonError(error);

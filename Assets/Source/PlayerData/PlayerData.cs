@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using CodeStage.AntiCheat.ObscuredTypes;
+using PlayFab;
 using PlayFab.ClientModels;
 using PlayFab.DataModels;
 
@@ -46,6 +47,7 @@ public class PlayerData : MonoBehaviour
 	// 뽑기 관련 변수
 	public ObscuredInt notStreakCount { get; set; }
 	public ObscuredInt notStreakCharCount { get; set; }
+	public ObscuredInt originOpenCount { get; set; }
 
 	// 이 카오스가 현재 카오스 상태로 스테이지가 셋팅되어있는지를 알려주는 값이다.
 	// 이전 챕터로 내려갈 경우 서버에 저장된 chaosMode는 1이더라도 스테이지 구성은 도전모드로 셋팅하게 되며
@@ -426,6 +428,14 @@ public class PlayerData : MonoBehaviour
 				notStreakCharCount = intValue;
 		}
 
+		originOpenCount = 0;
+		if (userReadOnlyData.ContainsKey("orCnt"))
+		{
+			int intValue = 0;
+			if (int.TryParse(userReadOnlyData["orCnt"].Value, out intValue))
+				originOpenCount = intValue;
+		}
+
 		loginned = true;
 	}
 
@@ -457,6 +467,43 @@ public class PlayerData : MonoBehaviour
 			newCharacterData.entityKey = new PlayFab.DataModels.EntityKey { Id = serverCharacterId, Type = "character" };
 			newCharacterData.Initialize(dicCharacterStatistics[serverCharacterId].CharacterStatistics, dataObject);
 			_listCharacterData.Add(newCharacterData);
+		}
+	}
+
+	public void OnRecvUpdateCharacterStatistics(List<DropManager.CharacterPpRequest> listPpInfo, List<DropManager.CharacterLbpRequest> listLbpInfo)
+	{
+		for (int i = 0; i < listPpInfo.Count; ++i)
+		{
+			CharacterData characterData = PlayerData.instance.GetCharacterData(listPpInfo[i].actorId);
+			if (characterData == null)
+				continue;
+			characterData.pp = listPpInfo[i].pp;
+		}
+
+		for (int i = 0; i < listLbpInfo.Count; ++i)
+		{
+			CharacterData characterData = PlayerData.instance.GetCharacterData(listLbpInfo[i].actorId);
+			if (characterData == null)
+				continue;
+			characterData.limitBreakPoint = listLbpInfo[i].lbp;
+		}
+	}
+
+	public void OnRecvGrantCharacterList(object adCharIdPayload)
+	{
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		Dictionary<string, string> dicGrantCharacter = serializer.DeserializeObject<Dictionary<string, string>>(adCharIdPayload.ToString());
+		if (dicGrantCharacter == null)
+			return;
+		if (dicGrantCharacter.Count == 0)
+			return;
+
+		Dictionary<string, string>.Enumerator e = dicGrantCharacter.GetEnumerator();
+		while (e.MoveNext())
+		{
+			string actorId = e.Current.Key;
+			string characterId = e.Current.Value;
+			AddNewCharacter(actorId, characterId, 1);
 		}
 	}
 

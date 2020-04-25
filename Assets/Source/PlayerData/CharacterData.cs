@@ -14,9 +14,9 @@ public class CharacterData
 	ObscuredInt _limitBreakLevel;
 	ObscuredInt _limitBreakPoint;
 	public int powerLevel { get { return _powerLevel; } set { _powerLevel = value; } }
-	public int pp { get { return _pp; } }
+	public int pp { get { return _pp; } set { _pp = value; } }
 	public int limitBreakLevel { get { return _limitBreakLevel; } }
-	public int limitBreakPoint { get { return _limitBreakPoint; } }
+	public int limitBreakPoint { get { return _limitBreakPoint; } set { _limitBreakPoint = value; } }
 
 	public bool needLimitBreak
 	{

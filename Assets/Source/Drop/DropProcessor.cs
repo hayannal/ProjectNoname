@@ -60,6 +60,7 @@ public class DropProcessor : MonoBehaviour
 				Drop(dropProcess, dropTableData);
 		}
 
+		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
 		if (lobby == false)
 		{
 			// drop event
@@ -183,6 +184,7 @@ public class DropProcessor : MonoBehaviour
 					if (goldDropAdjust != 0.0f)
 						floatValue = floatValue * (1.0f + goldDropAdjust);
 					dropProcessor.Add(dropType, floatValue, intValue, stringValue);
+					if (lobby) DropManager.instance.AddLobbyGold(floatValue);
 					break;
 				case eDropType.LevelPack:
 					++DropManager.instance.reservedLevelPackCount;
@@ -209,9 +211,15 @@ public class DropProcessor : MonoBehaviour
 					break;
 				case eDropType.Diamond:
 					dropProcessor.Add(dropType, floatValue, intValue, stringValue);
+					if (lobby) DropManager.instance.AddLobbyDia(intValue);
+					break;
+				case eDropType.Origin:
+					dropProcessor.Add(dropType, floatValue, intValue, stringValue);
+					if (lobby) DropManager.instance.AddOrigin(stringValue);
 					break;
 				case eDropType.PowerPoint:
 					dropProcessor.Add(dropType, floatValue, intValue, stringValue);
+					if (lobby) DropManager.instance.AddPowerPoint(stringValue, intValue);
 					break;
 			}
 		}
@@ -250,7 +258,7 @@ public class DropProcessor : MonoBehaviour
 	}
 	List<DropObjectInfo> _listDropObjectInfo = new List<DropObjectInfo>();
 
-    public void Add(eDropType dropType, float floatValue, int intValue, string stringValue)
+	public void Add(eDropType dropType, float floatValue, int intValue, string stringValue)
 	{
 		DropObjectInfo newInfo = null;
 		switch (dropType)
@@ -273,6 +281,7 @@ public class DropProcessor : MonoBehaviour
 			case eDropType.Heart:
 			case eDropType.Gacha:
 			case eDropType.Seal:
+			case eDropType.Origin:
 				for (int i = 0; i < intValue; ++i)
 				{
 					newInfo = new DropObjectInfo();

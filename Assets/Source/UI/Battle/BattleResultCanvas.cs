@@ -231,7 +231,10 @@ public class BattleResultCanvas : MonoBehaviour
 		}
 
 		if (PlayerData.instance.sharedDailyBoxOpened)
+		{
 			sealCompletedText.gameObject.SetActive(true);
+			sealIconTransform.gameObject.SetActive(false);
+		}
 		else
 		{
 			int sealCount = DropManager.instance.GetStackedDropSeal();

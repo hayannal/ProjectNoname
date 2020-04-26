@@ -13,14 +13,24 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 	}
 	eButtonType _buttonType;
 
+	public GameObject buttonRootObject;
 	public Text[] buttonTextList;
 
 	// Start is called before the first frame update
 	void Start()
 	{
 		GetComponent<Canvas>().worldCamera = UIInstanceManager.instance.GetCachedCameraMain();
+	}
+
+	void OnEnable()
+	{
 		InitializeTarget(targetTransform);
 		RefreshButtonText();
+	}
+
+	void OnDisable()
+	{
+		buttonRootObject.SetActive(false);
 	}
 
 	void RefreshButtonText()

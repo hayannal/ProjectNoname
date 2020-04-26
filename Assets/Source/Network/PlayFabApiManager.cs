@@ -493,7 +493,7 @@ public class PlayFabApiManager : MonoBehaviour
 
 		int ppCount = listPpInfo.Count;
 		int originCount = listGrantInfo.Count + listLbpInfo.Count;
-		if (ppCount > 2 || originCount > 1)
+		if (ppCount > 5 || originCount > 1)
 		{
 			// 수량 에러
 			CheatingListener.OnDetectCheatTable();
@@ -1057,7 +1057,7 @@ public class PlayFabApiManager : MonoBehaviour
 
 	#region Gacha
 	// RequestOpenDailyBox 과 상당히 비슷하다.
-	public void RequestCharacterBox(bool bigBox, DropProcessor dropProcessor, int price, Action<bool> successCallback)
+	public void RequestCharacterBox(DropProcessor dropProcessor, int price, Action<bool> successCallback)
 	{
 		WaitingNetworkCanvas.Show(true);
 		
@@ -1067,18 +1067,7 @@ public class PlayFabApiManager : MonoBehaviour
 
 		int ppCount = listPpInfo.Count;
 		int originCount = listGrantInfo.Count + listLbpInfo.Count;
-		bool cheatTable = false;
-		if (bigBox)
-		{
-			if (ppCount > 6 || originCount > 10)
-				cheatTable = true;
-		}
-		else
-		{
-			if (ppCount > 4 || originCount > 3)
-				cheatTable = true;
-		}
-		if (cheatTable)
+		if (ppCount > 6 || originCount > 2)
 		{
 			// 수량 에러
 			CheatingListener.OnDetectCheatTable();
@@ -1094,7 +1083,9 @@ public class PlayFabApiManager : MonoBehaviour
 		if (apiCallCount > 15)
 		{
 			// 15회 넘어가면 예외처리로 처리방식을 바꿔야한다.
-
+			// 기획을 바꾸면서 15회 넘어갈일이 안생기게 되었다. 사실상 넘으면 뭔가 잘못된거다.
+			CheatingListener.OnDetectCheatTable();
+			return;
 		}
 
 		string checkSum = "";
@@ -1102,13 +1093,12 @@ public class PlayFabApiManager : MonoBehaviour
 		string jsonListPp = serializer.SerializeObject(listPpInfo);
 		string jsonListGr = serializer.SerializeObject(listGrantInfo);
 		string jsonListLbp = serializer.SerializeObject(listLbpInfo);
-		int bigState = bigBox ? 1 : 0;
-		checkSum = CheckSum(string.Format("{0}_{1}_{2}_{3}", jsonListPp, jsonListGr, jsonListLbp, bigState));
+		checkSum = CheckSum(string.Format("{0}_{1}_{2}", jsonListPp, jsonListGr, jsonListLbp));
 
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
 			FunctionName = "OpenCharBox",
-			FunctionParameter = new { Big = bigState, LstPp = listPpInfo, LstGr = listGrantInfo, LstLbp = listLbpInfo, LstCs = checkSum },
+			FunctionParameter = new { LstPp = listPpInfo, LstGr = listGrantInfo, LstLbp = listLbpInfo, LstCs = checkSum },
 			GeneratePlayStreamEvent = true,
 		}, (success) =>
 		{
@@ -1121,11 +1111,11 @@ public class PlayFabApiManager : MonoBehaviour
 				jsonResult.TryGetValue("adChrIdPay", out object adChrIdPayload);
 
 				// 이거 마저 해야한다.
-				//++PlayerData.instance.originOpenCount;
-				//if ((listLbpInfo.Count + listGrantInfo.Count) == 0)
-				//	++PlayerData.instance.notStreakCharCount;
-				//else
-				//	PlayerData.instance.notStreakCharCount = 0;
+				++PlayerData.instance.characterBoxOpenCount;
+				if ((listLbpInfo.Count + listGrantInfo.Count) == 0)
+					PlayerData.instance.notStreakCharCount += 2;
+				else
+					PlayerData.instance.notStreakCharCount = 0;
 
 				// update
 				PlayerData.instance.OnRecvUpdateCharacterStatistics(listPpInfo, listLbpInfo);

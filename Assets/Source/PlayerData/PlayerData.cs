@@ -48,6 +48,7 @@ public class PlayerData : MonoBehaviour
 	public ObscuredInt notStreakCount { get; set; }
 	public ObscuredInt notStreakCharCount { get; set; }
 	public ObscuredInt originOpenCount { get; set; }
+	public ObscuredInt characterBoxOpenCount { get; set; }
 
 	// 이 카오스가 현재 카오스 상태로 스테이지가 셋팅되어있는지를 알려주는 값이다.
 	// 이전 챕터로 내려갈 경우 서버에 저장된 chaosMode는 1이더라도 스테이지 구성은 도전모드로 셋팅하게 되며
@@ -434,6 +435,14 @@ public class PlayerData : MonoBehaviour
 			int intValue = 0;
 			if (int.TryParse(userReadOnlyData["orCnt"].Value, out intValue))
 				originOpenCount = intValue;
+		}
+
+		characterBoxOpenCount = 0;
+		if (userReadOnlyData.ContainsKey("chrBxCnt"))
+		{
+			int intValue = 0;
+			if (int.TryParse(userReadOnlyData["chrBxCnt"].Value, out intValue))
+				characterBoxOpenCount = intValue;
 		}
 
 		loginned = true;

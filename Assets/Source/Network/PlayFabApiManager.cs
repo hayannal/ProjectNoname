@@ -1110,7 +1110,6 @@ public class PlayFabApiManager : MonoBehaviour
 				WaitingNetworkCanvas.Show(false);
 				jsonResult.TryGetValue("adChrIdPay", out object adChrIdPayload);
 
-				// 이거 마저 해야한다.
 				++PlayerData.instance.characterBoxOpenCount;
 				if ((listLbpInfo.Count + listGrantInfo.Count) == 0)
 					PlayerData.instance.notStreakCharCount += 2;
@@ -1120,6 +1119,37 @@ public class PlayFabApiManager : MonoBehaviour
 				// update
 				PlayerData.instance.OnRecvUpdateCharacterStatistics(listPpInfo, listLbpInfo);
 				PlayerData.instance.OnRecvGrantCharacterList(adChrIdPayload);
+				DropManager.instance.ClearLobbyDropInfo();
+			}
+			if (successCallback != null) successCallback.Invoke(failure);
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+
+	public void RequestEquipBox(DropProcessor dropProcessor, int price, Action<bool> successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		string checkSum = "";
+		List<ObscuredString> listDropItemId = DropManager.instance.GetLobbyDropItemInfo();
+		List<TimeSpaceData.ItemGrantRequest> listItemGrantRequest = TimeSpaceData.instance.GenerateGrantRequestInfo(listDropItemId, ref checkSum);
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "OpenEquipBox",
+			FunctionParameter = new { Lst = listItemGrantRequest, LstCs = checkSum },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
+			jsonResult.TryGetValue("retErr", out object retErr);
+			bool failure = ((retErr.ToString()) == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+				jsonResult.TryGetValue("itmRet", out object itmRet);
+				TimeSpaceData.instance.OnRecvItemGrantResult((string)itmRet, false);
 				DropManager.instance.ClearLobbyDropInfo();
 			}
 			if (successCallback != null) successCallback.Invoke(failure);

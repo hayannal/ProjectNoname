@@ -198,6 +198,7 @@ public class DropProcessor : MonoBehaviour
 					break;
 				case eDropType.Gacha:
 					dropProcessor.Add(dropType, floatValue, intValue, stringValue);
+					if (lobby) DropManager.instance.AddLobbyDropItemId(stringValue);
 					break;
 				case eDropType.Ultimate:
 					DropSp(floatValue);

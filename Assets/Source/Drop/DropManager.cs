@@ -616,6 +616,7 @@ public class DropManager : MonoBehaviour
 		_listCharacterPpRequest.Clear();
 		_listGrantCharacterRequest.Clear();		
 		_listCharacterLbpRequest.Clear();
+		_listEquipIdRequest.Clear();
 	}
 
 	public void AddLobbyDia(int dia)
@@ -714,6 +715,16 @@ public class DropManager : MonoBehaviour
 	public List<CharacterLbpRequest> GetLimitBreakPointInfo()
 	{
 		return _listCharacterLbpRequest;
+	}
+
+	List<ObscuredString> _listEquipIdRequest = new List<ObscuredString>();
+	public void AddLobbyDropItemId(string equipId)
+	{
+		_listEquipIdRequest.Add(equipId);
+	}
+	public List<ObscuredString> GetLobbyDropItemInfo()
+	{
+		return _listEquipIdRequest;
 	}
 	#endregion
 }

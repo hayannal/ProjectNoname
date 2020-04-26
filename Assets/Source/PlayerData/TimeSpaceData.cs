@@ -340,7 +340,7 @@ public class TimeSpaceData
 	// 대부분의 아이템 획득은 이걸 써서 처리하게 될거다.
 	public void OnRecvItemGrantResult(string jsonItemGrantResults, bool useLegendKey)
 	{
-		int useLegendKeyItemCount = 0;
+		int legendItemCount = 0;
 		List<ItemInstance> listItemInstance = DeserializeItemGrantResult(jsonItemGrantResults);
 		for (int i = 0; i < listItemInstance.Count; ++i)
 		{
@@ -354,20 +354,28 @@ public class TimeSpaceData
 			newEquipData.Initialize(listItemInstance[i].CustomData);
 			_listEquipData[newEquipData.cachedEquipTableData.equipType].Add(newEquipData);
 
-			if (useLegendKey && EquipData.IsUseLegendKey(newEquipData.cachedEquipTableData))
-				++useLegendKeyItemCount;
+			if (EquipData.IsUseLegendKey(newEquipData.cachedEquipTableData))
+				++legendItemCount;
 		}
 		if (useLegendKey)
 		{
 			bool invalid = false;
-			if (useLegendKeyItemCount != DropManager.instance.droppedLengendItemCount)
+			if (legendItemCount != DropManager.instance.droppedLengendItemCount)
 				invalid = true;
-			if ((useLegendKeyItemCount * 10) > CurrencyData.instance.legendKey)
+			if ((legendItemCount * 10) > CurrencyData.instance.legendKey)
 				invalid = true;
 			if (invalid)
 				PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidLegendKey);
 
-			CurrencyData.instance.legendKey -= useLegendKeyItemCount * 10;
+			CurrencyData.instance.legendKey -= legendItemCount * 10;
+		}
+		else
+		{
+			// 전설키를 안쓴다는건 뽑기라는 얘기이므로 연속전설뽑기 못한 처리를 해준다.
+			if (legendItemCount == 0)
+				PlayerData.instance.notStreakCount += listItemInstance.Count;
+			else
+				PlayerData.instance.notStreakCount = 0;
 		}
 	}
 	#endregion

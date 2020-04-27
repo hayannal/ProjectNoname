@@ -140,6 +140,15 @@ public class DotMainMenuCanvas : MonoBehaviour
 		EnvironmentSetting.ResetGlobalLightIntensityRatio(100.0f);
 	}
 
+	#region Gacha
+	// 원래는 없었다가 가차 하면서 생긴 함수. 임시로 캔버스를 하이드 시키는 기능이다.
+	// 사실 하이드로 하려고 했는데 메시오브젝트까지 엮여있어서 차라리 스케일을 줄이는거로 해본다.
+	public void HideCanvas(bool hide)
+	{
+		cachedTransform.localScale = hide ? Vector3.zero : Vector3.one;
+	}
+	#endregion
+
 	// Update is called once per frame
 	Transform _prevTargetTransform;
 	void Update()
@@ -279,6 +288,8 @@ public class DotMainMenuCanvas : MonoBehaviour
 	{
 		if (_reservedHide)
 			return;
+
+		UIInstanceManager.instance.ShowCanvasAsync("CashShopCanvas", null);
 	}
 
 	public void OnClickCharacterButton()

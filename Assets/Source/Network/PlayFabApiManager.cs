@@ -1108,6 +1108,7 @@ public class PlayFabApiManager : MonoBehaviour
 			if (!failure)
 			{
 				WaitingNetworkCanvas.Show(false);
+				CurrencyData.instance.dia -= price;
 				jsonResult.TryGetValue("adChrIdPay", out object adChrIdPayload);
 
 				++PlayerData.instance.characterBoxOpenCount;
@@ -1128,7 +1129,7 @@ public class PlayFabApiManager : MonoBehaviour
 		});
 	}
 
-	public void RequestEquipBox(DropProcessor dropProcessor, int price, Action<bool> successCallback)
+	public void RequestEquipBox(DropProcessor dropProcessor, int price, Action<bool, string> successCallback)
 	{
 		WaitingNetworkCanvas.Show(true);
 
@@ -1144,15 +1145,16 @@ public class PlayFabApiManager : MonoBehaviour
 		{
 			PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
 			jsonResult.TryGetValue("retErr", out object retErr);
+			jsonResult.TryGetValue("itmRet", out object itmRet);
 			bool failure = ((retErr.ToString()) == "1");
 			if (!failure)
 			{
 				WaitingNetworkCanvas.Show(false);
-				jsonResult.TryGetValue("itmRet", out object itmRet);
+				CurrencyData.instance.dia -= price;
 				TimeSpaceData.instance.OnRecvItemGrantResult((string)itmRet, false);
 				DropManager.instance.ClearLobbyDropInfo();
 			}
-			if (successCallback != null) successCallback.Invoke(failure);
+			if (successCallback != null) successCallback.Invoke(failure, (string)itmRet);
 		}, (error) =>
 		{
 			HandleCommonError(error);

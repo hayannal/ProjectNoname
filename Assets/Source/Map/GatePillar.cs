@@ -144,6 +144,8 @@ public class GatePillar : MonoBehaviour
 			return;
 		if (OpenTimeSpacePortal.instance != null && EventInputLockCanvas.instance != null && EventInputLockCanvas.instance.gameObject.activeSelf)
 			return;
+		if (RandomBoxScreenCanvas.instance != null && RandomBoxScreenCanvas.instance.gameObject.activeSelf)
+			return;
 
 		// 설명 인디케이터는 타이틀 있을 경우엔 안나오는게 맞다. 지나가고 시간 재는게 맞다.
 		if (_descriptionObjectIndicatorShowRemainTime > 0.0f)
@@ -159,6 +161,23 @@ public class GatePillar : MonoBehaviour
 			}
 		}
 	}
+
+	#region Gacha
+	// 원래는 없었다가 가차 하면서 생긴 함수. 임시로 인디케이터 하이드 시키는 기능이다.
+	public bool IsShowIndicatorCanvas()
+	{
+		if (_objectIndicatorCanvas == null)
+			return false;
+		if (_objectIndicatorCanvas.gameObject == null)
+			return false;
+		return _objectIndicatorCanvas.gameObject.activeSelf;
+	}
+
+	public void HideIndicatorCanvas(bool hide)
+	{
+		_objectIndicatorCanvas.gameObject.SetActive(!hide);
+	}
+	#endregion
 
 	public void RefreshChapterText()
 	{

@@ -22,6 +22,7 @@ public class ObjectScaleEffectorDeformer : MonoBehaviour {
 	private float normalizedCurve, curveValue = 1f;
 	private AnimationCurve Refinecurve;
 	private float rangeSmallest = 0f;
+	public EffectorVal cachedEffector { get { return theEffector; } }
 
 	bool _startedFirstCall = false;
 	void Start () 

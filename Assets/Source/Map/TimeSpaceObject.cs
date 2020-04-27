@@ -46,6 +46,10 @@ public class TimeSpaceObject : MonoBehaviour
 		{
 			_objectIndicatorCanvas.gameObject.SetActive(false);
 			_spawnedIndicator = false;
+
+			// 자동장착이 사라지는 순간이 제단으로 다가가고 있을때를 알리는 순간이기도 하다. 이때 인벤에 들어있는 아이템들의 아이콘을 프리로드한다.
+			if (timeSpaceObjectType == eTimeSpaceObjectType.AutoEquip)
+				TimeSpaceData.instance.PreloadEquipIcon();
 		}
 	}
 

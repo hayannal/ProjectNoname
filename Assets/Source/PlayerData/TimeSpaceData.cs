@@ -169,6 +169,16 @@ public class TimeSpaceData
 		return listEquipData.Count > 0;
 	}
 
+	public void PreloadEquipIcon()
+	{
+		for (int i = 0; i < (int)eEquipSlotType.Amount; ++i)
+		{
+			List<EquipData> listEquipData = GetEquipListByType((eEquipSlotType)i);
+			for (int j = 0; j < listEquipData.Count; ++j)
+				AddressableAssetLoadManager.GetAddressableSprite(listEquipData[j].cachedEquipTableData.shotAddress, "Icon", null);
+		}	
+	}
+
 	#region Packet
 	public void OnEquip(EquipData equipData)
 	{

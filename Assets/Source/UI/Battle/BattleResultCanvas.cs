@@ -366,8 +366,6 @@ public class BattleResultCanvas : MonoBehaviour
 		exitGroupObject.SetActive(true);
 	}
 
-	List<SwapCanvasListItem> _listSwapCanvasListItem = new List<SwapCanvasListItem>();
-
 	public void OnClickListItem(EquipData equipData)
 	{
 		equipSmallStatusInfo.RefreshInfo(equipData, false);

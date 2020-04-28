@@ -642,6 +642,7 @@ public class DropManager : MonoBehaviour
 	{
 		public string ChrId;
 		public int pp;
+		public int add;
 
 		[System.NonSerialized]
 		public string actorId;
@@ -660,6 +661,7 @@ public class DropManager : MonoBehaviour
 			if (_listCharacterPpRequest[i].ChrId == characterData.entityKey.Id)
 			{
 				_listCharacterPpRequest[i].pp += amount;
+				_listCharacterPpRequest[i].add += amount;
 				find = true;
 				break;
 			}
@@ -672,6 +674,7 @@ public class DropManager : MonoBehaviour
 			newInfo.actorId = characterData.actorId;
 			newInfo.ChrId = characterData.entityKey.Id;
 			newInfo.pp = characterData.pp + amount;
+			newInfo.add = amount;
 			_listCharacterPpRequest.Add(newInfo);
 		}
 	}

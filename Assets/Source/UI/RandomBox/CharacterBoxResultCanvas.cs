@@ -142,7 +142,7 @@ public class CharacterBoxResultCanvas : MonoBehaviour
 			if (characterData != null)
 				powerLevel = characterData.powerLevel;
 			resultListItem.characterListItem.Initialize(listPpInfo[i].actorId, powerLevel, 0, null, null);
-			resultListItem.Initialize("", listPpInfo[i].pp);
+			resultListItem.Initialize("", listPpInfo[i].add);
 			_listResultListItem.Add(resultListItem);
 
 			// 빈슬롯과 함께 포함되어있는채로 재활용 해야하니 형제들 중 가장 마지막으로 밀어서 순서를 맞춘다.

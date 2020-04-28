@@ -217,6 +217,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 				{
 					find = true;
 					_listSumPpInfo[j].pp += listPpInfo[i].pp;
+					_listSumPpInfo[j].add += listPpInfo[i].add;
 					break;
 				}
 			}
@@ -227,6 +228,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 				newInfo.actorId = listPpInfo[i].actorId;
 				newInfo.ChrId = listPpInfo[i].ChrId;
 				newInfo.pp = listPpInfo[i].pp;
+				newInfo.add = listPpInfo[i].add;
 				_listSumPpInfo.Add(newInfo);
 			}
 		}

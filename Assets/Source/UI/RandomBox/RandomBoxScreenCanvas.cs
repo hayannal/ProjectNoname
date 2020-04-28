@@ -54,11 +54,14 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 
 	DropProcessor _dropProcessor;
 	bool _originBox;
+	int _repeatRemainCount;
 	System.Action _completeAction;
-	public void SetInfo(DropProcessor dropProcessor, bool originBox, System.Action completeAction = null)
+	
+	public void SetInfo(DropProcessor dropProcessor, bool originBox, int repeatRemainCount, System.Action completeAction = null)
 	{
 		_dropProcessor = dropProcessor;
 		_originBox = originBox;
+		_repeatRemainCount = repeatRemainCount;
 		_completeAction = completeAction;
 
 		Timing.RunCoroutine(OpenDropProcess());
@@ -143,6 +146,24 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		// 마지막 드랍이 들어오고나서 0.5초 대기
 		yield return Timing.WaitForSeconds(0.5f);
 
+		// 반복횟수가 설정되어있는 상태라면 첫번째 뽑기 이후부터 자동으로 해줘야한다.
+		if (_repeatRemainCount > 0)
+		{
+			// 최초로 반복을 시작
+			InitializeRepeat();
+			yield break;
+		}
+
+		ResetObject();
+
+		// 획득 결과 캔버스를 띄우면 된다.
+		// 각자 패킷처리하는 곳에서 할테니 completeAction을 실행시키면 될거다.
+		if (_completeAction != null)
+			_completeAction();
+	}
+
+	void ResetObject()
+	{
 		// 나머지 창들을 복구해야한다.
 		if (_originBox)
 		{
@@ -153,10 +174,159 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 			// 시공간이면 Effector 영역 넓힌거 복구
 			TimeSpaceGround.instance.objectScaleEffectorDeformer.cachedEffector.ResetTweenDistance();
 		}
+	}
+
+	#region Repeat CharacterBox
+	void InitializeRepeat()
+	{
+		// 가장 먼저 첫번째로 굴려진 정보를 누적시킨 후
+		ClearSumInfo();
+		SumReward();
+
+		// 누적이 끝나면 해당 드랍프로세서를 초기화 해야한다. 이래야 이전 드랍정보랑 섞이지 않게 된다.
+		// 보통 다른 경우엔 결과창 끝나고 초기화하거나 할텐데 여긴 반복 뽑기라서 이렇게 예외처리하는거다.
+		DropManager.instance.ClearLobbyDropInfo();
+
+		// 반복을 시작
+		ShowCancelRepeatButton(true);
+		RequestRepeat();
+	}
+
+	List<DropManager.CharacterPpRequest> _listSumPpInfo = null;
+	List<string> _listSumGrantInfo = null;
+	List<DropManager.CharacterLbpRequest> _listSumLbpInfo = null;
+	void SumReward()
+	{
+		// 오리진은 반복이 불가능하므로 골드와 다이아는 제외한채 캐릭터 정보 3개만 누적하도록 하겠다.
+		if (_listSumPpInfo == null)
+			_listSumPpInfo = new List<DropManager.CharacterPpRequest>();
+		if (_listSumGrantInfo == null)
+			_listSumGrantInfo = new List<string>();
+		if (_listSumLbpInfo == null)
+			_listSumLbpInfo = new List<DropManager.CharacterLbpRequest>();
+
+		List<DropManager.CharacterPpRequest> listPpInfo = DropManager.instance.GetPowerPointInfo();
+		List<string> listGrantInfo = DropManager.instance.GetGrantCharacterInfo();
+		List<DropManager.CharacterLbpRequest> listLbpInfo = DropManager.instance.GetLimitBreakPointInfo();
+		for (int i = 0; i < listPpInfo.Count; ++i)
+		{
+			bool find = false;
+			for (int j = 0; j < _listSumPpInfo.Count; ++j)
+			{
+				if (_listSumPpInfo[j].actorId == listPpInfo[i].actorId)
+				{
+					find = true;
+					_listSumPpInfo[j].pp += listPpInfo[i].pp;
+					break;
+				}
+			}
+
+			if (!find)
+			{
+				DropManager.CharacterPpRequest newInfo = new DropManager.CharacterPpRequest();
+				newInfo.actorId = listPpInfo[i].actorId;
+				newInfo.ChrId = listPpInfo[i].ChrId;
+				newInfo.pp = listPpInfo[i].pp;
+				_listSumPpInfo.Add(newInfo);
+			}
+		}
+		for (int i = 0; i < listGrantInfo.Count; ++i)
+		{
+			if (_listSumGrantInfo.Contains(listGrantInfo[i]) == false)
+				_listSumGrantInfo.Add(listGrantInfo[i]);
+		}
+		for (int i = 0; i < listLbpInfo.Count; ++i)
+		{
+			DropManager.CharacterLbpRequest newInfo = new DropManager.CharacterLbpRequest();
+			newInfo.actorId = listLbpInfo[i].actorId;
+			newInfo.ChrId = listLbpInfo[i].ChrId;
+			newInfo.lbp = listLbpInfo[i].lbp;
+			_listSumLbpInfo.Add(newInfo);
+		}
+	}
+
+	void ClearSumInfo()
+	{
+		if (_listSumPpInfo != null)
+			_listSumPpInfo.Clear();
+		if (_listSumGrantInfo != null)
+			_listSumGrantInfo.Clear();
+		if (_listSumLbpInfo != null)
+			_listSumLbpInfo.Clear();
+	}
+
+	void ShowCancelRepeatButton(bool show)
+	{
+
+	}
+
+	void RequestRepeat()
+	{
+		// 패킷을 날려서 응답부터 받아야한다.
+		// 반복 뽑기가 여러개 있었다면 타입별로 나눴겠지만 지금은 구조상 캐릭터뽑기만 반복이 되므로
+		// 조건문 없이 이대로 한다.
+		--_repeatRemainCount;
+		int characterBoxPrice = 50;
+		_dropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, "Zoflr", "", true, true);
+		PlayFabApiManager.instance.RequestCharacterBox(characterBoxPrice, OnRecvCharacterBox);
+	}
+
+	void OnRecvCharacterBox(bool serverFailure)
+	{
+		// 실패했는데 굳이 처리해줄 필요가 없다.
+		if (serverFailure)
+			return;
+
+		// 반복뽑기 결과도 누적
+		SumReward();
+		DropManager.instance.ClearLobbyDropInfo();
+
+		// UI부터 연출까지 이미 다 플레이 중인거니 바로 열기 루틴으로 넘어가면 된다.
+		Timing.RunCoroutine(RepeatOpenDropProcess());
+	}
+
+	IEnumerator<float> RepeatOpenDropProcess()
+	{
+		// 상자를 다시 그자리에 소환
+		_randomBoxAnimator.gameObject.SetActive(true);
+		yield return Timing.WaitForSeconds(1.5f);
+
+		// 반복 뽑기때는 터치를 기다리지 않는다.
+		_randomBoxAnimator.punchScaleTweenAnimation.DOPause();
+		_randomBoxAnimator.openAnimator.enabled = true;
+		yield return Timing.WaitForSeconds(0.8f);
+		_randomBoxAnimator.gameObject.SetActive(false);
+
+		// 드랍프로세서를 작동
+		_dropProcessor.StartDrop();
+
+		// 드랍프로세서는 드랍이 끝나면 알아서 active false로 바뀔테니 그때를 기다린다.
+		while (_dropProcessor.gameObject.activeSelf)
+			yield return Timing.WaitForOneFrame;
+
+		// 회수를 알리려고 했는데 onAfterBattle true로 생성하니 알아서 흡수된다.
+		while (DropManager.instance.IsExistAcquirableDropObject())
+			yield return Timing.WaitForSeconds(0.1f);
+
+		// 마지막 드랍이 들어오고나서 0.5초 대기
+		yield return Timing.WaitForSeconds(0.5f);
+
+		// 반복횟수가 아직 남아있다면 다음 반복으로 넘어가야한다.
+		if (_repeatRemainCount > 0)
+		{
+			RequestRepeat();
+			yield break;
+		}
+
+		ResetObject();
 
 		// 획득 결과 캔버스를 띄우면 된다.
-		// 각자 패킷처리하는 곳에서 할테니 competeAction을 실행시키면 될거다.
-		if (_completeAction != null)
-			_completeAction();
+		// 그런데 _completeAction에 들어있는건 최초 굴림에 대한 정보이기 때문에 여기선 예외처리로
+		// 누적시켜놓은 정보를 가지고 결과창을 보여준다.
+		UIInstanceManager.instance.ShowCanvasAsync("CharacterBoxResultCanvas", () =>
+		{
+			CharacterBoxResultCanvas.instance.RefreshInfo(false, 0, 0, _listSumPpInfo, _listSumGrantInfo, _listSumLbpInfo);
+		});
 	}
+	#endregion
 }

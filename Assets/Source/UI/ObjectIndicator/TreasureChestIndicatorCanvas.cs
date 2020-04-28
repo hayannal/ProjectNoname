@@ -116,22 +116,35 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null && TitleCanvas.instance.gameObject.activeSelf)
 			TitleCanvas.instance.FadeTitle();
 
+		if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
+			DotMainMenuCanvas.instance.OnClickBackButton();
+
 		// 가장 핵심은 드랍부터 굴려서 보상정보를 얻어오는거다.
-		DropProcessor dropProcessor = DropProcessor.Drop(targetTransform, "Zoflr", "", false, true);
-		PlayFabApiManager.instance.RequestOpenDailyBox(dropProcessor, (serverFailure) =>
+		DropProcessor dropProcessor = DropProcessor.Drop(targetTransform, "Zoflr", "", true, true);
+		PlayFabApiManager.instance.RequestOpenDailyBox((serverFailure) =>
 		{
-			if (serverFailure)
+			if (false)
 			{
 				// 뭔가 잘못된건데 응답을 할 필요가 있을까.
 			}
 			else
 			{
-				// 뭔가 연출 및 보상 처리.
-				dropProcessor.StartDrop();
+				// 연출 및 보상 처리.
 
-				// 연출 다하고 나서는 UI도 갱신
-				RefreshButtonText();
+				// TreasureChest는 숨겨도 하단 일퀘 갱신은 즉시 보여준다.
 				DailyBoxGaugeCanvas.instance.RefreshGauge();
+
+				UIInstanceManager.instance.ShowCanvasAsync("RandomBoxScreenCanvas", () =>
+				{
+					gameObject.SetActive(false);
+					RandomBoxScreenCanvas.instance.SetInfo(dropProcessor, true, 0, () =>
+					{
+						UIInstanceManager.instance.ShowCanvasAsync("CharacterBoxResultCanvas", () =>
+						{
+							CharacterBoxResultCanvas.instance.RefreshInfo(true);
+						});
+					});
+				});
 			}
 		});
 	}

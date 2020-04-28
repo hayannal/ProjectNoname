@@ -481,10 +481,11 @@ public class PlayFabApiManager : MonoBehaviour
 
 
 	#region Daily
-	public void RequestOpenDailyBox(DropProcessor dropProcessor, Action<bool> successCallback)
+	public void RequestOpenDailyBox(Action<bool> successCallback)
 	{
 		WaitingNetworkCanvas.Show(true);
 
+		// DropProcess를 1회 굴리고나면 DropManager에 정보가 쌓여있다. 이걸 보내면 된다.
 		int addGold = DropManager.instance.GetLobbyGoldAmount();
 		int addDia = DropManager.instance.GetLobbyDiaAmount();
 		List<DropManager.CharacterPpRequest> listPpInfo = DropManager.instance.GetPowerPointInfo();
@@ -520,6 +521,9 @@ public class PlayFabApiManager : MonoBehaviour
 			if (!failure)
 			{
 				WaitingNetworkCanvas.Show(false);
+				CurrencyData.instance.gold += addGold;
+				CurrencyData.instance.dia += addDia;
+
 				jsonResult.TryGetValue("date", out object date);
 				jsonResult.TryGetValue("adChrIdPay", out object adChrIdPayload);
 
@@ -535,9 +539,14 @@ public class PlayFabApiManager : MonoBehaviour
 				// 뽑기쪽 처리와 동일한 함수들
 				PlayerData.instance.OnRecvUpdateCharacterStatistics(listPpInfo, listLbpInfo);
 				PlayerData.instance.OnRecvGrantCharacterList(adChrIdPayload);
-				DropManager.instance.ClearLobbyDropInfo();
+
+				// 보통은 failure해도 successCallback 호출을 해줬는데 여기선 아예 뽑기 연출로 가지도 않도록 호출하지 않는다.
+				if (successCallback != null) successCallback.Invoke(failure);
+
+				// 클리어는 여기서 바로 하면 안된다.
+				// 장비와 달리 캐릭터쪽 정보는 DropManager가 들고있는걸 사용해서 보여주기 때문에 결과창에 대한 처리가 끝나면 해야한다.
+				//DropManager.instance.ClearLobbyDropInfo();
 			}
-			if (successCallback != null) successCallback.Invoke(failure);
 		}, (error) =>
 		{
 			HandleCommonError(error);
@@ -1057,10 +1066,11 @@ public class PlayFabApiManager : MonoBehaviour
 
 	#region Gacha
 	// RequestOpenDailyBox 과 상당히 비슷하다.
-	public void RequestCharacterBox(DropProcessor dropProcessor, int price, Action<bool> successCallback)
+	public void RequestCharacterBox(int price, Action<bool> successCallback)
 	{
 		WaitingNetworkCanvas.Show(true);
 		
+		// DropProcess를 1회 굴리고나면 DropManager에 정보가 쌓여있다. 이걸 보내면 된다.
 		List<DropManager.CharacterPpRequest> listPpInfo = DropManager.instance.GetPowerPointInfo();
 		List<string> listGrantInfo = DropManager.instance.GetGrantCharacterInfo();
 		List<DropManager.CharacterLbpRequest> listLbpInfo = DropManager.instance.GetLimitBreakPointInfo();
@@ -1120,21 +1130,22 @@ public class PlayFabApiManager : MonoBehaviour
 				// update
 				PlayerData.instance.OnRecvUpdateCharacterStatistics(listPpInfo, listLbpInfo);
 				PlayerData.instance.OnRecvGrantCharacterList(adChrIdPayload);
-				DropManager.instance.ClearLobbyDropInfo();
+				if (successCallback != null) successCallback.Invoke(failure);
+
+				// 장비와 달리 캐릭터쪽 정보는 DropManager가 들고있는걸 사용해서 보여주기 때문에 결과창에 대한 처리가 끝나면 해야한다.
+				//DropManager.instance.ClearLobbyDropInfo();
 			}
-			if (successCallback != null) successCallback.Invoke(failure);
 		}, (error) =>
 		{
 			HandleCommonError(error);
 		});
 	}
 
-	public void RequestEquipBox(DropProcessor dropProcessor, int price, Action<bool, string> successCallback)
+	public void RequestEquipBox(List<ObscuredString> listDropItemId, int price, Action<bool, string> successCallback)
 	{
 		WaitingNetworkCanvas.Show(true);
 
 		string checkSum = "";
-		List<ObscuredString> listDropItemId = DropManager.instance.GetLobbyDropItemInfo();
 		List<TimeSpaceData.ItemGrantRequest> listItemGrantRequest = TimeSpaceData.instance.GenerateGrantRequestInfo(listDropItemId, ref checkSum);
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
@@ -1152,9 +1163,11 @@ public class PlayFabApiManager : MonoBehaviour
 				WaitingNetworkCanvas.Show(false);
 				CurrencyData.instance.dia -= price;
 				TimeSpaceData.instance.OnRecvItemGrantResult((string)itmRet, false);
+				// 캐릭터와 달리 장비는 드랍프로세서에서 정보를 뽑아쓰는게 아니라서 미리 클리어해도 상관없다.
 				DropManager.instance.ClearLobbyDropInfo();
+				// 패킷 실패시엔 뽑기 프로세스를 타지 않도록 여기에서 호출한다.
+				if (successCallback != null) successCallback.Invoke(failure, (string)itmRet);
 			}
-			if (successCallback != null) successCallback.Invoke(failure, (string)itmRet);
 		}, (error) =>
 		{
 			HandleCommonError(error);

@@ -287,27 +287,33 @@ public class DropObject : MonoBehaviour
 		if (_pullStarted == false)
 			DiableEffectObject();
 
-		switch (_dropType)
+		// 로비에서 굴릴땐 굴림과 동시에 이미 다 계산해서 패킷으로 보내기때문에 이 아래항목들을 적용할 필요가 없다.
+		// 적용해버리면 스테이지 들어가서 정산할때 합산이 되니 하면 안된다.
+		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
+		if (lobby == false)
 		{
-			case DropProcessor.eDropType.Gold:
-				DropManager.instance.AddDropGold(_floatValue);
-				break;
-			case DropProcessor.eDropType.LevelPack:
-				int levelPackCount = (_floatValue == 0.0f) ? 1 : 0;
-				int noHitLevelPackCount = (_floatValue > 0.0f) ? 1 : 0;
-				LevelUpIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform, 0, levelPackCount, noHitLevelPackCount);
-				break;
-			case DropProcessor.eDropType.Heart:
-				AffectorValueLevelTableData healAffectorValue = new AffectorValueLevelTableData();
-				healAffectorValue.fValue3 = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("DropHeal");
-				BattleInstanceManager.instance.playerActor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Heal, healAffectorValue, BattleInstanceManager.instance.playerActor, false);
-				break;
-			case DropProcessor.eDropType.Gacha:
-				DropManager.instance.AddDropItem(_stringValue);
-				break;
-			case DropProcessor.eDropType.Seal:
-				DropManager.instance.AddDropSeal(1);
-				break;
+			switch (_dropType)
+			{
+				case DropProcessor.eDropType.Gold:
+					DropManager.instance.AddDropGold(_floatValue);
+					break;
+				case DropProcessor.eDropType.LevelPack:
+					int levelPackCount = (_floatValue == 0.0f) ? 1 : 0;
+					int noHitLevelPackCount = (_floatValue > 0.0f) ? 1 : 0;
+					LevelUpIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform, 0, levelPackCount, noHitLevelPackCount);
+					break;
+				case DropProcessor.eDropType.Heart:
+					AffectorValueLevelTableData healAffectorValue = new AffectorValueLevelTableData();
+					healAffectorValue.fValue3 = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("DropHeal");
+					BattleInstanceManager.instance.playerActor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Heal, healAffectorValue, BattleInstanceManager.instance.playerActor, false);
+					break;
+				case DropProcessor.eDropType.Gacha:
+					DropManager.instance.AddDropItem(_stringValue);
+					break;
+				case DropProcessor.eDropType.Seal:
+					DropManager.instance.AddDropSeal(1);
+					break;
+			}
 		}
 
 		_initialized = false;

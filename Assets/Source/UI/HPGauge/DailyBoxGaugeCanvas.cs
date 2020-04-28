@@ -63,7 +63,7 @@ public class DailyBoxGaugeCanvas : MonoBehaviour
 				gaugeList[i].color = highlightColor;
 		}
 
-		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByResearchLevel.SecondDailyBox))
+		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByResearchLevel.SecondDailyBox) && false)
 		{
 
 		}

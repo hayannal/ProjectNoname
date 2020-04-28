@@ -125,7 +125,7 @@ public class EquipListCanvas : EquipShowCanvasBase
 	}
 	#endregion
 
-	void RefreshEquippedObject()
+	void RefreshEquippedObject(bool playEquipAnimation = false)
 	{
 		// 빠르게 탭을 바꾸다보면 로딩중에 취소되고 다음 템을 로드할수도 있을거다.
 		EquipData equipData = TimeSpaceData.instance.GetEquippedDataByType(_currentEquipType);
@@ -135,7 +135,7 @@ public class EquipListCanvas : EquipShowCanvasBase
 			return;
 		}
 
-		EquipInfoGround.instance.CreateEquipObject(equipData);
+		EquipInfoGround.instance.CreateEquipObject(equipData, playEquipAnimation);
 	}
 
 	void OnChangedSortType(EquipSortButton.eSortType sortType)
@@ -294,11 +294,9 @@ public class EquipListCanvas : EquipShowCanvasBase
 			return;
 		}
 
-		RefreshGrid(true, true);
-		RefreshEquippedObject();
-
 		// 장착시 내려오는 애니 적용
-		EquipInfoGround.instance.PlayEquipAnimation();
+		RefreshEquippedObject(true);
+		RefreshGrid(true, true);
 
 		// 모든 비교창을 닫는다.
 		diffStatusInfo.gameObject.SetActive(false);

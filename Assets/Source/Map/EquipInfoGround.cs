@@ -54,7 +54,8 @@ public class EquipInfoGround : MonoBehaviour
 	}
 
 	EquipData _currentEquipData;
-	public void CreateEquipObject(EquipData equipData)
+	bool _playEquipAnimation;
+	public void CreateEquipObject(EquipData equipData, bool playEquipAnimation = false)
 	{
 		// 중복 호출 되더라도 두번 생성 안하려면 여기서 검사하는게 맞다.
 		if (_currentEquipData == equipData)
@@ -64,6 +65,7 @@ public class EquipInfoGround : MonoBehaviour
 		ResetEquipObject();
 
 		_currentEquipData = equipData;
+		_playEquipAnimation = playEquipAnimation;
 		AddressableAssetLoadManager.GetAddressableGameObject(equipData.cachedEquipTableData.prefabAddress, "Equip", OnLoadedEquip);
 	}
 
@@ -81,6 +83,9 @@ public class EquipInfoGround : MonoBehaviour
 
 		_currentEquipObject = RefreshInfo(prefab, _currentEquipData.cachedEquipTableData.grade);
 		rotateTweenAnimation.DORestart();
+
+		if (_playEquipAnimation)
+			PlayEquipAnimation();
 
 		EquipListCanvas.instance.detailButtonObject.gameObject.SetActive(true);
 	}
@@ -105,7 +110,7 @@ public class EquipInfoGround : MonoBehaviour
 
 	public bool IsShowEquippedObject() { return gradeParticleSystem.gameObject.activeSelf; }
 
-	public void PlayEquipAnimation()
+	void PlayEquipAnimation()
 	{
 		equipPositionRootTransform.localPosition = new Vector3(0.0f, 0.7f, 0.0f);
 		equipPositionRootTransform.DOLocalMoveY(0.0f, 0.8f).SetEase(Ease.OutBack);

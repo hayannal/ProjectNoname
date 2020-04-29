@@ -9,6 +9,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 	public static RandomBoxScreenCanvas instance;
 
 	public GameObject boxPrefab;
+	public GameObject repeatButtonObject;
 
 	void Awake()
 	{
@@ -18,6 +19,8 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 	bool _isShowGatePillarIndicator;
 	void OnEnable()
 	{
+		repeatButtonObject.SetActive(false);
+
 		// 스택 중에는 알아서 최상위 스택만 얹어도 알아서 중간 캔버스들이 날아갈텐데
 		// 로비에서 누를때는 스택이 없으므로 직접 호출해야한다.
 		LobbyCanvas.instance.OnEnterMainMenu(true);
@@ -145,6 +148,10 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		while (_waitTouch)
 			yield return Timing.WaitForOneFrame;
 
+		// 첫번째 터치가 입력되는 동시에 남은 횟수를 판단해서 반복횟수가 남았다면 캔슬버튼을 보여준다.
+		if (_repeatRemainCount > 0)
+			repeatButtonObject.SetActive(true);
+
 		// 터치가 오면 상자 연출을 보여주고
 		_randomBoxAnimator.punchScaleTweenAnimation.DOPause();
 		_randomBoxAnimator.openAnimator.enabled = true;
@@ -208,7 +215,6 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		DropManager.instance.ClearLobbyDropInfo();
 
 		// 반복을 시작
-		ShowCancelRepeatButton(true);
 		RequestRepeat();
 	}
 
@@ -277,9 +283,10 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 			_listSumLbpInfo.Clear();
 	}
 
-	void ShowCancelRepeatButton(bool show)
+	public void OnClickCancelRepeatButton()
 	{
-
+		_repeatRemainCount = 0;
+		repeatButtonObject.SetActive(false);
 	}
 
 	void RequestRepeat()

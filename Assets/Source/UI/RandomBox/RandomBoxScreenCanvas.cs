@@ -310,6 +310,10 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		SumReward();
 		DropManager.instance.ClearLobbyDropInfo();
 
+		// 누적까지 했으면 반복횟수가 0인지 확인 후 0이하면 버튼 하이드 시킨다. 어차피 이제 눌러봤자 의미없다.
+		if (_repeatRemainCount <= 0)
+			repeatButtonObject.SetActive(false);
+
 		// UI부터 연출까지 이미 다 플레이 중인거니 바로 열기 루틴으로 넘어가면 된다.
 		Timing.RunCoroutine(RepeatOpenDropProcess());
 	}

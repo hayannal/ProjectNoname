@@ -349,11 +349,19 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 
 		ResetObject();
 
+		CharacterBoxConfirmCanvas.OnCompleteRandomBoxScreen(_listSumGrantInfo, _listSumLbpInfo, OnResult);
+	}
+
+	void OnResult()
+	{
 		// 획득 결과 캔버스를 띄우면 된다.
 		// 그런데 _completeAction에 들어있는건 최초 굴림에 대한 정보이기 때문에 여기선 예외처리로
 		// 누적시켜놓은 정보를 가지고 결과창을 보여준다.
 		UIInstanceManager.instance.ShowCanvasAsync("CharacterBoxResultCanvas", () =>
 		{
+			if (CharacterBoxShowCanvas.instance != null && CharacterBoxShowCanvas.instance.gameObject.activeSelf)
+				CharacterBoxShowCanvas.instance.gameObject.SetActive(false);
+
 			CharacterBoxResultCanvas.instance.RefreshInfo(false, 0, 0, _listSumPpInfo, _listSumGrantInfo, _listSumLbpInfo);
 		});
 	}

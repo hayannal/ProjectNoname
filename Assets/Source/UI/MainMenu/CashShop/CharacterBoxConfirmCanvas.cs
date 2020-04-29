@@ -61,13 +61,83 @@ public class CharacterBoxConfirmCanvas : MonoBehaviour
 			// 하지만 이 값을 1 이상으로 보내면 내부적으로 n회 돌린 후 누적해서 보여주게 된다.
 			RandomBoxScreenCanvas.instance.SetInfo(_cachedDropProcessor, false, _repeatRemainCount, () =>
 			{
-				// 결과창은 각 패킷이 자신의 Response에 맞춰서 보여줘야한다.
-				// 결과창을 닫을때 RandomBoxScreenCanvas도 같이 닫아주면 알아서 시작점인 CashShopCanvas로 돌아오게 될거다.
-				UIInstanceManager.instance.ShowCanvasAsync("CharacterBoxResultCanvas", () =>
-				{
-					CharacterBoxResultCanvas.instance.RefreshInfo(false);
-				});
+				OnCompleteRandomBoxScreen(DropManager.instance.GetGrantCharacterInfo(), DropManager.instance.GetLimitBreakPointInfo(), OnResult);
 			});
+		});
+	}
+
+
+
+
+	public static void OnCompleteRandomBoxScreen(List<string> listGrantInfo, List<DropManager.CharacterLbpRequest> listLbpInfo, System.Action resultAction)
+	{
+		if (listGrantInfo.Count + listLbpInfo.Count > 0)
+		{
+			_listGrantInfo = listGrantInfo;
+			_listLbpInfo = listLbpInfo;
+			_resultAction = resultAction;
+
+			UIInstanceManager.instance.ShowCanvasAsync("CharacterBoxShowCanvas", () =>
+			{
+				// 여러개 있을거 대비해서 순차적으로 넣어야한다.
+				_grant = listGrantInfo.Count > 0;
+				_index = 0;
+				CharacterBoxShowCanvas.instance.ShowCanvas(_grant ? listGrantInfo[0] : listLbpInfo[0].actorId, OnConfirmCharacterShow);
+			});
+		}
+		else
+		{
+			if (resultAction != null)
+				resultAction();
+		}
+	}
+
+	// 임시로 들고있다가 연출 후 바로 null로 버린다. 복사없이 레퍼런스만 들고있다가 버리는거다.
+	static List<string> _listGrantInfo;
+	static List<DropManager.CharacterLbpRequest> _listLbpInfo;
+	static bool _grant;
+	static int _index;
+	static System.Action _resultAction;
+	static void OnConfirmCharacterShow()
+	{
+		++_index;
+		if (_grant)
+		{
+			if (_index < _listGrantInfo.Count)
+				CharacterBoxShowCanvas.instance.ShowCanvas(_listGrantInfo[_index], OnConfirmCharacterShow);
+			else
+			{
+				_grant = false;
+				_index = 0;
+			}
+		}
+		if (_grant == false)
+		{
+			if (_index < _listLbpInfo.Count)
+				CharacterBoxShowCanvas.instance.ShowCanvas(_listLbpInfo[_index].actorId, OnConfirmCharacterShow);
+			else
+			{
+				_listGrantInfo = null;
+				_listLbpInfo = null;
+
+				if (_resultAction != null)
+					_resultAction();
+				_resultAction = null;
+			}
+		}
+	}
+
+	public static void OnResult()
+	{
+		// 결과창은 각 패킷이 자신의 Response에 맞춰서 보여줘야한다.
+		// 결과창을 닫을때 RandomBoxScreenCanvas도 같이 닫아주면 알아서 시작점인 CashShopCanvas로 돌아오게 될거다.
+		UIInstanceManager.instance.ShowCanvasAsync("CharacterBoxResultCanvas", () =>
+		{
+			// 여기서 꺼야 제일 자연스럽다. 결과창이 로딩되서 보여지는 동시에 Show모드에서 돌아온다.
+			if (CharacterBoxShowCanvas.instance != null && CharacterBoxShowCanvas.instance.gameObject.activeSelf)
+				CharacterBoxShowCanvas.instance.gameObject.SetActive(false);
+
+			CharacterBoxResultCanvas.instance.RefreshInfo(true);
 		});
 	}
 }

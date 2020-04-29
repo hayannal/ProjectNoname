@@ -710,6 +710,11 @@ public class DropManager : MonoBehaviour
 			newInfo.lbp = characterData.limitBreakPoint + 1;
 			_listCharacterLbpRequest.Add(newInfo);
 		}
+
+		// 이 함수에 들어왔다는거 자체가 캐릭터를 뽑고있다는걸 의미하니 연출 끝나고 나올 결과창에서 보여줄 캐릭터를 미리 로딩해두기로 한다.
+		// 장비 아이콘의 경우엔 크기가 작기도 하고 그래서 패킷 받는 부분에서 했었는데
+		// 캐릭터의 경우엔 보내기 전부터 하기로 한다.
+		AddressableAssetLoadManager.GetAddressableGameObject(CharacterData.GetAddressByActorId(actorId));
 	}
 	public List<string> GetGrantCharacterInfo()
 	{

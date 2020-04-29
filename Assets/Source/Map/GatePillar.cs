@@ -302,6 +302,8 @@ public class GatePillar : MonoBehaviour
 			return false;
 		if (TimeSpacePortal.instance != null && TimeSpacePortal.instance.processing)
 			return false;
+		if (RandomBoxScreenCanvas.instance != null && RandomBoxScreenCanvas.instance.gameObject.activeSelf)
+			return false;
 
 		if (MainSceneBuilder.instance.lobby)
 		{

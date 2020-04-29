@@ -93,9 +93,30 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		}
 
 		// 플레이어가 상자 떨어질 자리에 너무 가까이에 있다면 아래로 내려준다
+		bool needMove = false;
+		bool needTeleport = false;
 		Vector3 diff = BattleInstanceManager.instance.playerActor.cachedTransform.position - targetPosition;
 		diff.y = 0.0f;
 		if (diff.magnitude < 1.5f)
+			needMove = true;
+		else
+		{
+			// 이번엔 반대로 movePosition 과의 거리가 얼마나 먼지를 체크
+			Vector3 movePosition = targetPosition - new Vector3(0.0f, 0.0f, 2.0f);
+			diff = BattleInstanceManager.instance.playerActor.cachedTransform.position - movePosition;
+			diff.y = 0.0f;
+			if (diff.magnitude > 3.0f)
+			{
+				// 너무 멀다고 판단되면 직선거리로 거리를 좁혀준 후 나머지를 이동시킨다.
+				BattleInstanceManager.instance.playerActor.cachedTransform.position = movePosition + diff.normalized * 2.0f;
+				TailAnimatorUpdater.UpdateAnimator(BattleInstanceManager.instance.playerActor.cachedTransform, 5);
+				CustomFollowCamera.instance.immediatelyUpdate = true;
+				needMove = true;
+			}
+			else if (diff.magnitude > 1.0f)
+				needMove = true;
+		}
+		if (needMove)
 		{
 			Vector3 movePosition = targetPosition - new Vector3(0.0f, 0.0f, 2.0f);
 			BattleInstanceManager.instance.playerActor.baseCharacterController.enabled = false;

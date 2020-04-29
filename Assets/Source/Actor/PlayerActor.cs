@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿#define CHEAT_RESURRECT
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using ActorStatusDefine;
@@ -107,6 +109,10 @@ public class PlayerActor : Actor
 					actorStatus.SetHpRatio(hpRatio);
 					float spRatio = BattleInstanceManager.instance.playerActor.actorStatus.GetSPRatio();
 					actorStatus.SetSpRatio(spRatio);
+#if CHEAT_RESURRECT
+					bool cheatDontDie = BattleInstanceManager.instance.playerActor.actorStatus.cheatDontDie;
+					actorStatus.cheatDontDie = cheatDontDie;
+#endif
 
 					// 처음 스왑이라면 힐과 sp회복 적용
 					if (firstEnter)

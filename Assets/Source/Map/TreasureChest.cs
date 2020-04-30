@@ -109,7 +109,7 @@ public class TreasureChest : MonoBehaviour
 	float _shieldActivationDir;
 	float _shieldActivationTime = 1.0f;
 	int _activationTimeProperty;
-	float _shieldActivationSpeed = 1.5f;
+	float _shieldActivationSpeed = 0.8f;
 	float _shieldActivationRim = 0.2f;
 	public void ActivateEffect(bool active)
 	{
@@ -131,7 +131,6 @@ public class TreasureChest : MonoBehaviour
 	{
 		if (_shieldActivationDir > 0.0f)
 		{
-			Debug.Log(_shieldActivationTime);
 			_shieldActivationTime += _shieldActivationSpeed * Time.deltaTime;
 			if (_shieldActivationTime >= 1.0f)
 			{
@@ -143,7 +142,6 @@ public class TreasureChest : MonoBehaviour
 		}
 		else if (_shieldActivationDir < 0.0f)
 		{
-			Debug.Log(_shieldActivationTime);
 			_shieldActivationTime -= _shieldActivationSpeed * Time.deltaTime;
 			if (_shieldActivationTime <= -_shieldActivationRim)
 			{

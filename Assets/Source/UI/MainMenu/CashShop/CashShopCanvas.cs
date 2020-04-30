@@ -87,7 +87,7 @@ public class CashShopCanvas : MonoBehaviour
 		YesNoCanvas.instance.ShowCanvas(true, "confirm", "equip box 8", () =>
 		{
 			_cachedDropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, "Wkdwkdql", "", true, true);
-			_cachedDropProcessor.AdjustDropRange(3.5f);
+			_cachedDropProcessor.AdjustDropRange(3.7f);
 			PlayFabApiManager.instance.RequestEquipBox(DropManager.instance.GetLobbyDropItemInfo(), equipBoxPrice, OnRecvEquipBox);
 		});
 	}

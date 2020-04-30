@@ -17,6 +17,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 	}
 
 	public GameObject[] boxPrefabList;
+	public GameObject boxOpenEffectPrefab;
 	public GameObject repeatButtonGroupObject;
 
 	void Awake()
@@ -92,24 +93,12 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 	{
 		Vector3 targetPosition = Vector3.zero;
 		if (_boxType == eBoxType.Origin)
-		{
 			targetPosition = TreasureChest.instance.transform.position;
-
-			// 오리진 박스일땐 TreasureChest부터 숨기고 떨어뜨려야한다.
-			TreasureChest.instance.ActivateEffect(false);
-			yield return Timing.WaitForSeconds(0.5f);
-		}
 		else if (TimeSpaceGround.instance != null && TimeSpaceGround.instance.gameObject.activeSelf)
-		{
 			targetPosition = TimeSpaceGround.instance.cachedTransform.position;
 
-			// 시공간이면 그라운드 영역을 넓혀야한다.
-			TimeSpaceGround.instance.objectScaleEffectorDeformer.cachedEffector.TweenDistance(15.0f, 0.8f);
-			yield return Timing.WaitForSeconds(0.8f);
-		}
-
-		// 플레이어가 상자 떨어질 자리에 너무 가까이에 있다면 아래로 내려준다
-		bool needMove = false;
+			// 플레이어가 상자 떨어질 자리에 너무 가까이에 있다면 아래로 내려준다
+			bool needMove = false;
 		Vector3 diff = BattleInstanceManager.instance.playerActor.cachedTransform.position - targetPosition;
 		diff.y = 0.0f;
 		if (diff.magnitude < 1.5f)
@@ -147,6 +136,19 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		// 이동하지 않아도 항상 쳐다보게는 하기
 		BattleInstanceManager.instance.playerActor.cachedTransform.rotation = Quaternion.LookRotation(targetPosition - BattleInstanceManager.instance.playerActor.cachedTransform.position);
 
+		if (_boxType == eBoxType.Origin)
+		{
+			// 오리진 박스일땐 TreasureChest부터 숨기고 떨어뜨려야한다.
+			TreasureChest.instance.ActivateEffect(false);
+			yield return Timing.WaitForSeconds(0.6f);
+		}
+		else if (TimeSpaceGround.instance != null && TimeSpaceGround.instance.gameObject.activeSelf)
+		{
+			// 시공간이면 그라운드 영역을 넓혀야한다.
+			TimeSpaceGround.instance.objectScaleEffectorDeformer.cachedEffector.TweenDistance(15.0f, 0.8f);
+			yield return Timing.WaitForSeconds(0.2f);
+		}
+
 		// 상자를 소환
 		_randomBoxAnimator = BattleInstanceManager.instance.GetCachedRandomBoxAnimator(boxPrefabList[(int)_boxType], targetPosition, Quaternion.identity);
 		yield return Timing.WaitForSeconds(1.5f);
@@ -165,9 +167,9 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		// 터치가 오면 상자 연출을 보여주고
 		_randomBoxAnimator.punchScaleTweenAnimation.DOPause();
 		_randomBoxAnimator.openAnimator.enabled = true;
+		_randomBoxAnimator.disableObjectComponent.enabled = true;
+		BattleInstanceManager.instance.GetCachedObject(boxOpenEffectPrefab, _randomBoxAnimator.cachedTransform.position, Quaternion.identity);
 		yield return Timing.WaitForSeconds(0.8f);
-		// 바로 끄니 섬광이펙트의 뒤가 보이지 않는다.
-		//_randomBoxAnimator.gameObject.SetActive(false);
 
 		// 드랍프로세서를 작동
 		_dropProcessor.cachedTransform.position = _randomBoxAnimator.cachedTransform.position;
@@ -180,9 +182,6 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		// 회수를 알리려고 했는데 onAfterBattle true로 생성하니 알아서 흡수된다.
 		while (DropManager.instance.IsExistAcquirableDropObject())
 			yield return Timing.WaitForSeconds(0.1f);
-
-		// 여기서 진짜 SetActive(false)를 호출. 이때 스케일부터 메시 렌더러 꺼둔거까지 복구시킨다.
-		_randomBoxAnimator.gameObject.SetActive(false);
 
 		// 마지막 드랍이 들어오고나서 0.5초 대기
 		yield return Timing.WaitForSeconds(0.5f);
@@ -342,9 +341,9 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		// 반복 뽑기때는 터치를 기다리지 않는다.
 		_randomBoxAnimator.punchScaleTweenAnimation.DOPause();
 		_randomBoxAnimator.openAnimator.enabled = true;
+		_randomBoxAnimator.disableObjectComponent.enabled = true;
+		BattleInstanceManager.instance.GetCachedObject(boxOpenEffectPrefab, _randomBoxAnimator.cachedTransform.position, Quaternion.identity);
 		yield return Timing.WaitForSeconds(0.8f);
-		// 바로 끄니 섬광이펙트의 뒤가 보이지 않는다.
-		//_randomBoxAnimator.gameObject.SetActive(false);
 
 		// 드랍프로세서를 작동
 		_dropProcessor.StartDrop();
@@ -356,9 +355,6 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		// 회수를 알리려고 했는데 onAfterBattle true로 생성하니 알아서 흡수된다.
 		while (DropManager.instance.IsExistAcquirableDropObject())
 			yield return Timing.WaitForSeconds(0.1f);
-
-		// 여기서 진짜 SetActive(false)를 호출. 이때 스케일부터 메시 렌더러 꺼둔거까지 복구시킨다.
-		_randomBoxAnimator.gameObject.SetActive(false);
 
 		// 반복횟수가 아직 남아있다면 다음 반복으로 넘어가야한다.
 		if (_repeatRemainCount > 0)

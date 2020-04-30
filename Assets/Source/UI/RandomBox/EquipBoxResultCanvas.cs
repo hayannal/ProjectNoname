@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using PlayFab.ClientModels;
+using MEC;
 
 public class EquipBoxResultCanvas : MonoBehaviour
 {
@@ -9,6 +11,9 @@ public class EquipBoxResultCanvas : MonoBehaviour
 
 	public GameObject contentItemPrefab;
 	public RectTransform contentRootRectTransform;
+	public GridLayoutGroup contentGridLayoutGroup;
+
+	public GameObject exitGroupObject;
 
 	public EquipListStatusInfo equipSmallStatusInfo;
 	public RectTransform smallStatusBackBlurImage;
@@ -31,6 +36,8 @@ public class EquipBoxResultCanvas : MonoBehaviour
 
 	void OnEnable()
 	{
+		exitGroupObject.SetActive(false);
+
 		if (DragThresholdController.instance != null)
 			DragThresholdController.instance.ApplyUIDragThreshold();
 	}
@@ -59,16 +66,28 @@ public class EquipBoxResultCanvas : MonoBehaviour
 		if (listGrantItem == null)
 			return;
 
+		contentGridLayoutGroup.childAlignment = (listGrantItem.Count == 1) ? TextAnchor.MiddleCenter : TextAnchor.UpperLeft;
+		Timing.RunCoroutine(ItemProcess(listGrantItem));
+	}
+
+	IEnumerator<float> ItemProcess(List<ItemInstance> listGrantItem)
+	{
 		for (int i = 0; i < listGrantItem.Count; ++i)
 		{
 			EquipData newEquipData = new EquipData();
 			newEquipData.equipId = listGrantItem[i].ItemId;
 			newEquipData.Initialize(listGrantItem[i].CustomData);
 
+			// 스케일 초기화를 해줘야 안줄어드는 경우 없이 잘 트윈이 먹는다.
+			contentItemPrefab.transform.localScale = Vector3.one;
+
 			EquipCanvasListItem equipCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
 			equipCanvasListItem.Initialize(newEquipData, OnClickListItem);
 			_listEquipCanvasListItem.Add(equipCanvasListItem);
+			yield return Timing.WaitForSeconds(0.2f);
 		}
+
+		exitGroupObject.SetActive(true);
 	}
 
 	public void OnClickListItem(EquipData equipData)

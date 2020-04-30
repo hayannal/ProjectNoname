@@ -415,11 +415,32 @@ public class DropProcessor : MonoBehaviour
 
 	Vector3 GetRandomDropPosition()
 	{
+		bool checkLocalPlayerPosition = false;
 		float defaultRadius = 2.0f;
 		if (_adjustDropRange > 0.0f)
+		{
 			defaultRadius = _adjustDropRange;
-		Vector2 randomOffset = Random.insideUnitCircle * Random.Range(0.2f, 1.0f) * defaultRadius;
-		return cachedTransform.position + new Vector3(randomOffset.x, 0.0f, randomOffset.y);
+			checkLocalPlayerPosition = true;
+		}
+
+		Vector3 localPlayerPosition = BattleInstanceManager.instance.playerActor.cachedTransform.position;
+		int tryBreakCount = 0;
+		while (true)
+		{
+			Vector2 randomOffset = Random.insideUnitCircle * Random.Range(0.2f, 1.0f) * defaultRadius;
+			Vector3 desirePosition = cachedTransform.position + new Vector3(randomOffset.x, 0.0f, randomOffset.y);
+
+			Vector3 diff = desirePosition - localPlayerPosition;
+			if (checkLocalPlayerPosition == false || diff.x * diff.x + diff.z * diff.z > 1.5f)
+				return desirePosition;
+
+			++tryBreakCount;
+			if (tryBreakCount > 200)
+			{
+				Debug.LogError("GetRandomDropPosition Error. Not found valid random position.");
+				return desirePosition;
+			}
+		}
 	}
 
 	// 마지막 몹을 잡을때 기존몹의 드랍 프로세서가 진행중일 수 있다.

@@ -137,7 +137,7 @@ public class CharacterBoxConfirmCanvas : MonoBehaviour
 			if (CharacterBoxShowCanvas.instance != null && CharacterBoxShowCanvas.instance.gameObject.activeSelf)
 				CharacterBoxShowCanvas.instance.gameObject.SetActive(false);
 
-			CharacterBoxResultCanvas.instance.RefreshInfo(true);
+			CharacterBoxResultCanvas.instance.RefreshInfo();
 		});
 	}
 }

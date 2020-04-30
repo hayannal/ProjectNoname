@@ -1106,6 +1106,43 @@ public class BattleInstanceManager : MonoBehaviour
 	}
 	#endregion
 
+	#region Equip Object
+	Dictionary<GameObject, List<RandomBoxAnimator>> _dicRandomBoxAnimatorInstancePool = new Dictionary<GameObject, List<RandomBoxAnimator>>();
+	public RandomBoxAnimator GetCachedRandomBoxAnimator(GameObject prefab, Vector3 position, Quaternion rotation, Transform parentTransform = null)
+	{
+		List<RandomBoxAnimator> listCachedRandomBoxAnimator = null;
+		if (_dicRandomBoxAnimatorInstancePool.ContainsKey(prefab))
+			listCachedRandomBoxAnimator = _dicRandomBoxAnimatorInstancePool[prefab];
+		else
+		{
+			listCachedRandomBoxAnimator = new List<RandomBoxAnimator>();
+			_dicRandomBoxAnimatorInstancePool.Add(prefab, listCachedRandomBoxAnimator);
+		}
+
+		for (int i = 0; i < listCachedRandomBoxAnimator.Count; ++i)
+		{
+			if (!listCachedRandomBoxAnimator[i].gameObject.activeSelf)
+			{
+				listCachedRandomBoxAnimator[i].transform.parent = parentTransform;
+				listCachedRandomBoxAnimator[i].transform.position = position;
+				listCachedRandomBoxAnimator[i].transform.rotation = rotation;
+				listCachedRandomBoxAnimator[i].gameObject.SetActive(true);
+				return listCachedRandomBoxAnimator[i];
+			}
+		}
+
+		GameObject newObject = Instantiate<GameObject>(prefab, position, rotation, parentTransform);
+#if UNITY_EDITOR
+		AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+		if (settings.ActivePlayModeDataBuilderIndex == 2)
+			ObjectUtil.ReloadShader(newObject);
+#endif
+		RandomBoxAnimator randomBoxAnimator = newObject.GetComponent<RandomBoxAnimator>();
+		listCachedRandomBoxAnimator.Add(randomBoxAnimator);
+		return randomBoxAnimator;
+	}
+	#endregion
+
 
 
 

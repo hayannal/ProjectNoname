@@ -9,6 +9,7 @@ public class RandomBoxAnimator : MonoBehaviour
 	public Animator openAnimator;
 	public Transform boxTransform;
 	public Transform topTransform;
+	public Renderer[] meshRendererList;
 
 	Vector3 _defaultBoxScale;
 	void Awake()
@@ -21,6 +22,9 @@ public class RandomBoxAnimator : MonoBehaviour
 		openAnimator.enabled = false;
 		boxTransform.localScale = _defaultBoxScale;
 		topTransform.localRotation = Quaternion.identity;
+
+		for (int i = 0; i < meshRendererList.Length; ++i)
+			meshRendererList[i].enabled = true;
 	}
 
 

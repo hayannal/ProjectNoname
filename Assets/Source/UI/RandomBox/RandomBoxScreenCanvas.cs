@@ -56,6 +56,9 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		if (_isShowGatePillarIndicator)
 			GatePillar.instance.HideIndicatorCanvas(false);
 
+		if (_boxType == eBoxType.Origin)
+			TreasureChest.instance.HideIndicatorCanvas(false);
+
 		if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf && StackCanvas.IsInStack(DotMainMenuCanvas.instance.gameObject))
 		{
 			DotMainMenuCanvas.instance.HideCanvas(false);
@@ -93,6 +96,8 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 			targetPosition = TreasureChest.instance.transform.position;
 
 			// 오리진 박스일땐 TreasureChest부터 숨기고 떨어뜨려야한다.
+			TreasureChest.instance.ActivateEffect(false);
+			yield return Timing.WaitForSeconds(0.5f);
 		}
 		else if (TimeSpaceGround.instance != null && TimeSpaceGround.instance.gameObject.activeSelf)
 		{
@@ -143,8 +148,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		BattleInstanceManager.instance.playerActor.cachedTransform.rotation = Quaternion.LookRotation(targetPosition - BattleInstanceManager.instance.playerActor.cachedTransform.position);
 
 		// 상자를 소환
-		GameObject newBoxObject = BattleInstanceManager.instance.GetCachedObject(boxPrefabList[(int)_boxType], targetPosition, Quaternion.identity);
-		_randomBoxAnimator = newBoxObject.GetComponent<RandomBoxAnimator>();
+		_randomBoxAnimator = BattleInstanceManager.instance.GetCachedRandomBoxAnimator(boxPrefabList[(int)_boxType], targetPosition, Quaternion.identity);
 		yield return Timing.WaitForSeconds(1.5f);
 
 		// 터치 이펙트를 소환
@@ -162,7 +166,8 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		_randomBoxAnimator.punchScaleTweenAnimation.DOPause();
 		_randomBoxAnimator.openAnimator.enabled = true;
 		yield return Timing.WaitForSeconds(0.8f);
-		_randomBoxAnimator.gameObject.SetActive(false);
+		// 바로 끄니 섬광이펙트의 뒤가 보이지 않는다.
+		//_randomBoxAnimator.gameObject.SetActive(false);
 
 		// 드랍프로세서를 작동
 		_dropProcessor.cachedTransform.position = _randomBoxAnimator.cachedTransform.position;
@@ -175,6 +180,9 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		// 회수를 알리려고 했는데 onAfterBattle true로 생성하니 알아서 흡수된다.
 		while (DropManager.instance.IsExistAcquirableDropObject())
 			yield return Timing.WaitForSeconds(0.1f);
+
+		// 여기서 진짜 SetActive(false)를 호출. 이때 스케일부터 메시 렌더러 꺼둔거까지 복구시킨다.
+		_randomBoxAnimator.gameObject.SetActive(false);
 
 		// 마지막 드랍이 들어오고나서 0.5초 대기
 		yield return Timing.WaitForSeconds(0.5f);
@@ -201,6 +209,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		if (_boxType == eBoxType.Origin)
 		{
 			// 오리진 박스 숨긴거 복구
+			TreasureChest.instance.ActivateEffect(true);
 		}
 		else if (TimeSpaceGround.instance != null && TimeSpaceGround.instance.gameObject.activeSelf)
 		{
@@ -334,7 +343,8 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		_randomBoxAnimator.punchScaleTweenAnimation.DOPause();
 		_randomBoxAnimator.openAnimator.enabled = true;
 		yield return Timing.WaitForSeconds(0.8f);
-		_randomBoxAnimator.gameObject.SetActive(false);
+		// 바로 끄니 섬광이펙트의 뒤가 보이지 않는다.
+		//_randomBoxAnimator.gameObject.SetActive(false);
 
 		// 드랍프로세서를 작동
 		_dropProcessor.StartDrop();
@@ -346,6 +356,9 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		// 회수를 알리려고 했는데 onAfterBattle true로 생성하니 알아서 흡수된다.
 		while (DropManager.instance.IsExistAcquirableDropObject())
 			yield return Timing.WaitForSeconds(0.1f);
+
+		// 여기서 진짜 SetActive(false)를 호출. 이때 스케일부터 메시 렌더러 꺼둔거까지 복구시킨다.
+		_randomBoxAnimator.gameObject.SetActive(false);
 
 		// 반복횟수가 아직 남아있다면 다음 반복으로 넘어가야한다.
 		if (_repeatRemainCount > 0)
@@ -372,7 +385,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 			if (CharacterBoxShowCanvas.instance != null && CharacterBoxShowCanvas.instance.gameObject.activeSelf)
 				CharacterBoxShowCanvas.instance.gameObject.SetActive(false);
 
-			CharacterBoxResultCanvas.instance.RefreshInfo(false, 0, 0, _listSumPpInfo, _listSumGrantInfo, _listSumLbpInfo);
+			CharacterBoxResultCanvas.instance.RefreshInfo(0, 0, _listSumPpInfo, _listSumGrantInfo, _listSumLbpInfo);
 		});
 	}
 	#endregion

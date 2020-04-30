@@ -56,7 +56,7 @@ public class CharacterBoxResultCanvas : MonoBehaviour
 			DragThresholdController.instance.ResetUIDragThreshold();
 	}
 
-	public void RefreshInfo(bool origin)
+	public void RefreshInfo()
 	{
 		// 인자가 없이 오면 DropManager에 들어있는걸 보여준다.
 		int addGold = DropManager.instance.GetLobbyGoldAmount();
@@ -64,18 +64,17 @@ public class CharacterBoxResultCanvas : MonoBehaviour
 		List<DropManager.CharacterPpRequest> listPpInfo = DropManager.instance.GetPowerPointInfo();
 		List<string> listGrantInfo = DropManager.instance.GetGrantCharacterInfo();
 		List<DropManager.CharacterLbpRequest> listLbpInfo = DropManager.instance.GetLimitBreakPointInfo();
-		RefreshInfo(origin, addGold, addDia, listPpInfo, listGrantInfo, listLbpInfo);
+		RefreshInfo(addGold, addDia, listPpInfo, listGrantInfo, listLbpInfo);
 	}
 
-	bool _origin;
 	List<CharacterBoxResultListItem> _listOriginResultItem = new List<CharacterBoxResultListItem>();
 	List<CharacterBoxResultListItem> _listResultListItem = new List<CharacterBoxResultListItem>();
-	public void RefreshInfo(bool origin, int addGold, int addDia, List<DropManager.CharacterPpRequest> listPpInfo, List<string> listGrantInfo, List<DropManager.CharacterLbpRequest> listLbpInfo)
+	public void RefreshInfo(int addGold, int addDia, List<DropManager.CharacterPpRequest> listPpInfo, List<string> listGrantInfo, List<DropManager.CharacterLbpRequest> listLbpInfo)
 	{
-		// 오리진일때랑 아닐때의 상단 영역 조정
-		_origin = origin;
-		goldDiaRootRectTransform.gameObject.SetActive(origin);
-		if (origin)
+		// 골드나 다이아가 
+		bool goldDia = (addDia > 0) || (addDia > 0);
+		goldDiaRootRectTransform.gameObject.SetActive(goldDia);
+		if (goldDia)
 		{
 			characterRootRectTransform.offsetMax = new Vector2(characterRootRectTransform.offsetMax.x, -goldDiaRootRectTransform.sizeDelta.y);
 			goldValueText.text = addGold.ToString("N0");
@@ -155,9 +154,6 @@ public class CharacterBoxResultCanvas : MonoBehaviour
 
 	public void OnClickExitButton()
 	{
-		if (_origin)
-			TreasureChest.instance.HideIndicatorCanvas(false);
-
 		gameObject.SetActive(false);
 		RandomBoxScreenCanvas.instance.gameObject.SetActive(false);
 	}

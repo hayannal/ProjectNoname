@@ -8,6 +8,10 @@ public class TreasureChest : MonoBehaviour
 
 	public Transform openCharacterTransform;
 
+	public Renderer topRenderer;
+	public Renderer bottomRenderer;
+	public ParticleSystem[] particleSystemList;
+
 	const float gaugeShowDelayTime = 0.2f;
 
 	void Awake()
@@ -54,6 +58,8 @@ public class TreasureChest : MonoBehaviour
 				});
 			}
 		}
+
+		UpdateActivate();
 	}
 
 	void ShowIndicator()
@@ -98,6 +104,55 @@ public class TreasureChest : MonoBehaviour
 			return;
 
 		_objectIndicatorCanvas.gameObject.SetActive(!hide);
+	}
+
+	float _shieldActivationDir;
+	float _shieldActivationTime = 1.0f;
+	int _activationTimeProperty;
+	float _shieldActivationSpeed = 1.5f;
+	float _shieldActivationRim = 0.2f;
+	public void ActivateEffect(bool active)
+	{
+		if (_activationTimeProperty == 0)
+			_activationTimeProperty = Shader.PropertyToID("_ActivationTime");
+
+		_shieldActivationDir = (active) ? 1.0f : -1.0f;
+		topRenderer.material.SetFloat(_activationTimeProperty, _shieldActivationTime);
+		bottomRenderer.material.SetFloat(_activationTimeProperty, _shieldActivationTime);
+
+		for (int i = 0; i < particleSystemList.Length; ++i)
+		{
+			ParticleSystem.EmissionModule emission = particleSystemList[i].emission;
+			emission.enabled = active;
+		}
+	}
+
+	void UpdateActivate()
+	{
+		if (_shieldActivationDir > 0.0f)
+		{
+			Debug.Log(_shieldActivationTime);
+			_shieldActivationTime += _shieldActivationSpeed * Time.deltaTime;
+			if (_shieldActivationTime >= 1.0f)
+			{
+				_shieldActivationTime = 1.0f;
+				_shieldActivationDir = 0.0f;
+			}
+			topRenderer.material.SetFloat(_activationTimeProperty, _shieldActivationTime);
+			bottomRenderer.material.SetFloat(_activationTimeProperty, _shieldActivationTime);
+		}
+		else if (_shieldActivationDir < 0.0f)
+		{
+			Debug.Log(_shieldActivationTime);
+			_shieldActivationTime -= _shieldActivationSpeed * Time.deltaTime;
+			if (_shieldActivationTime <= -_shieldActivationRim)
+			{
+				_shieldActivationTime = -_shieldActivationRim;
+				_shieldActivationDir = 0.0f;
+			}
+			topRenderer.material.SetFloat(_activationTimeProperty, _shieldActivationTime);
+			bottomRenderer.material.SetFloat(_activationTimeProperty, _shieldActivationTime);
+		}
 	}
 	#endregion
 }

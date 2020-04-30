@@ -129,9 +129,10 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 			BattleInstanceManager.instance.playerActor.actionController.PlayActionByActionName("Move");
 			yield return Timing.WaitForSeconds(time);
 			BattleInstanceManager.instance.playerActor.actionController.PlayActionByActionName("Idle");
-			BattleInstanceManager.instance.playerActor.cachedTransform.rotation = Quaternion.LookRotation(targetPosition - BattleInstanceManager.instance.playerActor.cachedTransform.position);
 			BattleInstanceManager.instance.playerActor.baseCharacterController.enabled = true;
 		}
+		// 이동하지 않아도 항상 쳐다보게는 하기
+		BattleInstanceManager.instance.playerActor.cachedTransform.rotation = Quaternion.LookRotation(targetPosition - BattleInstanceManager.instance.playerActor.cachedTransform.position);
 
 		// 상자를 소환
 		if (_randomBoxAnimator == null)

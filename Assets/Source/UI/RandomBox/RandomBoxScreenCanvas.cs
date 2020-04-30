@@ -26,6 +26,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 	}
 
 	bool _isShowGatePillarIndicator;
+	bool _isShowTreasureChestIndicator;
 	void OnEnable()
 	{
 		repeatButtonGroupObject.SetActive(false);
@@ -38,6 +39,10 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		_isShowGatePillarIndicator = GatePillar.instance.IsShowIndicatorCanvas();
 		if (_isShowGatePillarIndicator)
 			GatePillar.instance.HideIndicatorCanvas(true);
+
+		_isShowTreasureChestIndicator = TreasureChest.instance.IsShowIndicatorCanvas();
+		if (_isShowTreasureChestIndicator)
+			TreasureChest.instance.HideIndicatorCanvas(true);
 
 		// 캐시상점에서 열땐 이게 있어야하는데 로비에서 오리진 상자 열땐 이게 없어야한다.
 		if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf && StackCanvas.IsInStack(DotMainMenuCanvas.instance.gameObject))
@@ -57,7 +62,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		if (_isShowGatePillarIndicator)
 			GatePillar.instance.HideIndicatorCanvas(false);
 
-		if (_boxType == eBoxType.Origin)
+		if (_isShowTreasureChestIndicator)
 			TreasureChest.instance.HideIndicatorCanvas(false);
 
 		if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf && StackCanvas.IsInStack(DotMainMenuCanvas.instance.gameObject))

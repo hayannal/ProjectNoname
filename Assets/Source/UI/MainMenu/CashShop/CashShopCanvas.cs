@@ -50,7 +50,7 @@ public class CashShopCanvas : MonoBehaviour
 		int characterBoxPrice = 50;
 		if (CurrencyData.instance.dia < characterBoxPrice)
 		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughDia"), 2.0f);
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughDiamond"), 2.0f);
 			return;
 		}
 
@@ -63,7 +63,7 @@ public class CashShopCanvas : MonoBehaviour
 		int equipBoxPrice = 30;
 		if (CurrencyData.instance.dia < equipBoxPrice)
 		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughDia"), 2.0f);
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughDiamond"), 2.0f);
 			return;
 		}
 
@@ -80,7 +80,7 @@ public class CashShopCanvas : MonoBehaviour
 		int equipBoxPrice = 200;
 		if (CurrencyData.instance.dia < equipBoxPrice)
 		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughDia"), 2.0f);
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughDiamond"), 2.0f);
 			return;
 		}
 

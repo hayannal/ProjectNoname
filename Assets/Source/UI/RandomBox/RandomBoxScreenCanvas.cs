@@ -297,7 +297,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		// 조건문 없이 이대로 한다.
 		--_repeatRemainCount;
 		int characterBoxPrice = 50;
-		_dropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, "Zoflr", "", true, true);
+		_dropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, "Zoflrflr", "", true, true);
 		PlayFabApiManager.instance.RequestCharacterBox(characterBoxPrice, OnRecvCharacterBox);
 	}
 

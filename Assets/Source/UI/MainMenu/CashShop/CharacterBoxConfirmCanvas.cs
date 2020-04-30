@@ -37,7 +37,7 @@ public class CharacterBoxConfirmCanvas : MonoBehaviour
 	public void OnClickButton()
 	{
 		// 오리진 박스와 마찬가지로 먼저 드랍프로세서부터 만들어야한다.
-		_cachedDropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, "Zoflr", "", true, true);
+		_cachedDropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, "Zoflrflr", "", true, true);
 		PlayFabApiManager.instance.RequestCharacterBox(_priceOnce, OnRecvCharacterBox);
 
 		gameObject.SetActive(false);

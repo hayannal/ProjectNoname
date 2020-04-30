@@ -77,6 +77,19 @@ public class EquipListStatusInfo : MonoBehaviour
 		return Color.white;
 	}
 
+	public static Color GetGradeDropObjectNameColor(int grade)
+	{
+		switch (grade)
+		{
+			case 0: return new Color(0.85f, 0.85f, 0.85f);
+			case 1: return new Color(0.35f, 0.84f, 0.35f);
+			case 2: return new Color(0.38f, 0.65f, 1.0f);
+			case 3: return new Color(0.75f, 0.42f, 1.0f);
+			case 4: return new Color(1.0f, 0.5f, 0.2f);
+		}
+		return Color.white;
+	}
+
 	static Color _gaugeColor = new Color(0.819f, 0.505f, 0.458f, 0.862f);
 	static Color _fullGaugeColor = new Color(0.937f, 0.937f, 0.298f, 0.862f);
 	public static Color GetGaugeColor(bool fullGauge)

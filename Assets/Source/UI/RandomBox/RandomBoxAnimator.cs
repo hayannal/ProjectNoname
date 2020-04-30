@@ -10,10 +10,16 @@ public class RandomBoxAnimator : MonoBehaviour
 	public Transform boxTransform;
 	public Transform topTransform;
 
+	Vector3 _defaultBoxScale;
+	void Awake()
+	{
+		_defaultBoxScale = boxTransform.localScale;
+	}
+
 	void OnDisable()
 	{
 		openAnimator.enabled = false;
-		boxTransform.localScale = Vector3.one;
+		boxTransform.localScale = _defaultBoxScale;
 		topTransform.localRotation = Quaternion.identity;
 	}
 

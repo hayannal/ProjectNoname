@@ -385,6 +385,7 @@ public class DropProcessor : MonoBehaviour
 			}
 		}
 
+		_adjustDropRange = 0.0f;
 		_listDropObjectInfo.Clear();
 		gameObject.SetActive(false);
 	}
@@ -400,9 +401,18 @@ public class DropProcessor : MonoBehaviour
 		return null;
 	}
 
+	float _adjustDropRange = 0.0f;
+	public void AdjustDropRange(float adjustRadius)
+	{
+		_adjustDropRange = adjustRadius;
+	}
+
 	Vector3 GetRandomDropPosition()
 	{
-		Vector2 randomOffset = Random.insideUnitCircle * Random.value * 2.0f;
+		float defaultRadius = 2.0f;
+		if (_adjustDropRange > 0.0f)
+			defaultRadius = _adjustDropRange;
+		Vector2 randomOffset = Random.insideUnitCircle * Random.value * defaultRadius;
 		return cachedTransform.position + new Vector3(randomOffset.x, 0.0f, randomOffset.y);
 	}
 

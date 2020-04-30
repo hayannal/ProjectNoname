@@ -342,15 +342,15 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		while (DropManager.instance.IsExistAcquirableDropObject())
 			yield return Timing.WaitForSeconds(0.1f);
 
-		// 마지막 드랍이 들어오고나서 0.5초 대기
-		yield return Timing.WaitForSeconds(0.5f);
-
 		// 반복횟수가 아직 남아있다면 다음 반복으로 넘어가야한다.
 		if (_repeatRemainCount > 0)
 		{
 			RequestRepeat();
 			yield break;
 		}
+
+		// 마지막 드랍이 들어오고나서 0.5초 대기는 연속 굴림이 전부 끝났을때만 하기로 한다. 이래야 좀더 빨리 뽑는다.
+		yield return Timing.WaitForSeconds(0.5f);
 
 		ResetObject();
 

@@ -94,6 +94,9 @@ public class TreasureChest : MonoBehaviour
 	// 원래는 없었다가 가차 하면서 생긴 함수. 임시로 인디케이터 하이드 시키는 기능이다.
 	public void HideIndicatorCanvas(bool hide)
 	{
+		if (_objectIndicatorCanvas == null)
+			return;
+
 		_objectIndicatorCanvas.gameObject.SetActive(!hide);
 	}
 	#endregion

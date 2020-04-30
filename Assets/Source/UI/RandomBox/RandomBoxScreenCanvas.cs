@@ -156,9 +156,10 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 
 		// 상자를 소환
 		_randomBoxAnimator = BattleInstanceManager.instance.GetCachedRandomBoxAnimator(boxPrefabList[(int)_boxType], targetPosition, Quaternion.identity);
-		yield return Timing.WaitForSeconds(1.5f);
+		yield return Timing.WaitForSeconds(1.3f);
 
 		// 터치 이펙트를 소환
+		_randomBoxAnimator.touchCanvasObject.SetActive(true);
 
 		// 터치를 알리고 기다린다
 		_waitTouch = true;
@@ -170,6 +171,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 			repeatButtonGroupObject.SetActive(true);
 
 		// 터치가 오면 상자 연출을 보여주고
+		_randomBoxAnimator.touchCanvasObject.SetActive(false);
 		_randomBoxAnimator.punchScaleTweenAnimation.DOPause();
 		_randomBoxAnimator.openAnimator.enabled = true;
 		_randomBoxAnimator.disableObjectComponent.enabled = true;
@@ -342,7 +344,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 	{
 		// 상자를 다시 그자리에 소환
 		_randomBoxAnimator.gameObject.SetActive(true);
-		yield return Timing.WaitForSeconds(1.5f);
+		yield return Timing.WaitForSeconds(1.3f);
 
 		// 반복 뽑기때는 터치를 기다리지 않는다.
 		_randomBoxAnimator.punchScaleTweenAnimation.DOPause();

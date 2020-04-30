@@ -5,6 +5,7 @@ using DG.Tweening;
 
 public class RandomBoxAnimator : MonoBehaviour
 {
+	public GameObject touchCanvasObject;
 	public DisableObject disableObjectComponent;
 	public DOTweenAnimation punchScaleTweenAnimation;
 	public Animator openAnimator;

@@ -137,7 +137,7 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 				UIInstanceManager.instance.ShowCanvasAsync("RandomBoxScreenCanvas", () =>
 				{
 					gameObject.SetActive(false);
-					RandomBoxScreenCanvas.instance.SetInfo(dropProcessor, true, 0, () =>
+					RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Origin, dropProcessor, 0, () =>
 					{
 						CharacterBoxConfirmCanvas.OnCompleteRandomBoxScreen(DropManager.instance.GetGrantCharacterInfo(), DropManager.instance.GetLimitBreakPointInfo(), CharacterBoxConfirmCanvas.OnResult);
 					});

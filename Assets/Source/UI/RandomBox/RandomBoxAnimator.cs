@@ -7,11 +7,13 @@ public class RandomBoxAnimator : MonoBehaviour
 {
 	public DOTweenAnimation punchScaleTweenAnimation;
 	public Animator openAnimator;
+	public Transform boxTransform;
 	public Transform topTransform;
 
 	void OnDisable()
 	{
 		openAnimator.enabled = false;
+		boxTransform.localScale = Vector3.one;
 		topTransform.localRotation = Quaternion.identity;
 	}
 

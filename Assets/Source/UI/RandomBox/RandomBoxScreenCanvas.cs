@@ -8,7 +8,15 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 {
 	public static RandomBoxScreenCanvas instance;
 
-	public GameObject boxPrefab;
+	public enum eBoxType
+	{
+		Origin,
+		Character,
+		Equip1,
+		Equip8,
+	}
+
+	public GameObject[] boxPrefabList;
 	public GameObject repeatButtonGroupObject;
 
 	void Awake()
@@ -55,15 +63,15 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		}
 	}
 
+	eBoxType _boxType;
 	DropProcessor _dropProcessor;
-	bool _originBox;
 	int _repeatRemainCount;
 	System.Action _completeAction;
 	
-	public void SetInfo(DropProcessor dropProcessor, bool originBox, int repeatRemainCount, System.Action completeAction = null)
+	public void SetInfo(eBoxType boxType, DropProcessor dropProcessor, int repeatRemainCount, System.Action completeAction = null)
 	{
 		_dropProcessor = dropProcessor;
-		_originBox = originBox;
+		_boxType = boxType;
 		_repeatRemainCount = repeatRemainCount;
 		_completeAction = completeAction;
 
@@ -80,7 +88,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 	IEnumerator<float> OpenDropProcess()
 	{
 		Vector3 targetPosition = Vector3.zero;
-		if (_originBox)
+		if (_boxType == eBoxType.Origin)
 		{
 			targetPosition = TreasureChest.instance.transform.position;
 
@@ -135,11 +143,8 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		BattleInstanceManager.instance.playerActor.cachedTransform.rotation = Quaternion.LookRotation(targetPosition - BattleInstanceManager.instance.playerActor.cachedTransform.position);
 
 		// 상자를 소환
-		if (_randomBoxAnimator == null)
-			_randomBoxAnimator = Instantiate<GameObject>(boxPrefab).GetComponent<RandomBoxAnimator>();
-		else
-			_randomBoxAnimator.gameObject.SetActive(true);
-		_randomBoxAnimator.cachedTransform.position = targetPosition;
+		GameObject newBoxObject = BattleInstanceManager.instance.GetCachedObject(boxPrefabList[(int)_boxType], targetPosition, Quaternion.identity);
+		_randomBoxAnimator = newBoxObject.GetComponent<RandomBoxAnimator>();
 		yield return Timing.WaitForSeconds(1.5f);
 
 		// 터치 이펙트를 소환
@@ -193,7 +198,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 	void ResetObject()
 	{
 		// 나머지 창들을 복구해야한다.
-		if (_originBox)
+		if (_boxType == eBoxType.Origin)
 		{
 			// 오리진 박스 숨긴거 복구
 		}

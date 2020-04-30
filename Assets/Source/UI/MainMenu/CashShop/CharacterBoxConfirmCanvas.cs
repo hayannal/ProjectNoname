@@ -59,7 +59,7 @@ public class CharacterBoxConfirmCanvas : MonoBehaviour
 		{
 			// repeatRemainCount를 0으로 보내면 오리진 박스처럼 한번 굴려진 결과가 바로 결과창에 보이게 된다.
 			// 하지만 이 값을 1 이상으로 보내면 내부적으로 n회 돌린 후 누적해서 보여주게 된다.
-			RandomBoxScreenCanvas.instance.SetInfo(_cachedDropProcessor, false, _repeatRemainCount, () =>
+			RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Character, _cachedDropProcessor, _repeatRemainCount, () =>
 			{
 				OnCompleteRandomBoxScreen(DropManager.instance.GetGrantCharacterInfo(), DropManager.instance.GetLimitBreakPointInfo(), OnResult);
 			});

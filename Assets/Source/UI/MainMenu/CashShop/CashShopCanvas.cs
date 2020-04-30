@@ -103,10 +103,12 @@ public class CashShopCanvas : MonoBehaviour
 		// 연출은 연출대로 두고
 		// 연출 끝나고 나올 결과창에서 아이콘이 느리게 보이는걸 방지하기 위해 아이콘의 프리로드를 진행한다.
 		List<ItemInstance> listGrantItem = null;
+		int count = 0;
 		if (itemGrantString != "")
 		{
 			listGrantItem = TimeSpaceData.instance.DeserializeItemGrantResult(itemGrantString);
-			for (int i = 0; i < listGrantItem.Count; ++i)
+			count = listGrantItem.Count;
+			for (int i = 0; i < count; ++i)
 			{
 				EquipTableData equipTableData = TableDataManager.instance.FindEquipTableData(listGrantItem[i].ItemId);
 				if (equipTableData == null)
@@ -119,7 +121,7 @@ public class CashShopCanvas : MonoBehaviour
 		// 연출 및 보상 처리.
 		UIInstanceManager.instance.ShowCanvasAsync("RandomBoxScreenCanvas", () =>
 		{
-			RandomBoxScreenCanvas.instance.SetInfo(_cachedDropProcessor, false, 0, () =>
+			RandomBoxScreenCanvas.instance.SetInfo(count == 1 ? RandomBoxScreenCanvas.eBoxType.Equip1 : RandomBoxScreenCanvas.eBoxType.Equip8, _cachedDropProcessor, 0, () =>
 			{
 				// 결과창은 각 패킷이 자신의 Response에 맞춰서 보여줘야한다.
 				// 여기서는 장비 그리드를 띄운다.

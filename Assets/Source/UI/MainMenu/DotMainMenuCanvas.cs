@@ -153,7 +153,9 @@ public class DotMainMenuCanvas : MonoBehaviour
 	Transform _prevTargetTransform;
 	void Update()
     {
-		if (StackCanvas.IsInStack(gameObject))
+		// 예외상황이 하나 생겼는데 가차 뽑을때 하이드 시켜놓고 걸어가게 된다.
+		// 이때만큼은 플레이어를 따라가야하므로 하이드상태일때는 리턴하지 않게 한다.
+		if (cachedTransform.localScale.x != 0.0f && StackCanvas.IsInStack(gameObject))
 			return;
 
 		if (_prevTargetTransform != targetTransform && targetTransform != null)

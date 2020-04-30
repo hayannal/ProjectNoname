@@ -304,8 +304,7 @@ public class DropProcessor : MonoBehaviour
 			case eDropType.Ultimate:
 				break;
 			case eDropType.Diamond:
-			case eDropType.PowerPoint:
-				int splitCount = (dropType == eDropType.Diamond) ? Random.Range(1, 3) : Random.Range(3, 5);
+				int splitCount = Random.Range(1, 3);
 				int quotient = intValue / splitCount;
 				int remainder = intValue % splitCount;
 				for (int i = 0; i < splitCount; ++i)
@@ -317,6 +316,13 @@ public class DropProcessor : MonoBehaviour
 					newInfo.stringValue = stringValue;
 					_listDropObjectInfo.Add(newInfo);
 				}
+				break;
+			case eDropType.PowerPoint:
+				newInfo = new DropObjectInfo();
+				newInfo.dropType = dropType;
+				newInfo.intValue = intValue;
+				newInfo.stringValue = stringValue;
+				_listDropObjectInfo.Add(newInfo);
 				break;
 		}
 	}
@@ -412,7 +418,7 @@ public class DropProcessor : MonoBehaviour
 		float defaultRadius = 2.0f;
 		if (_adjustDropRange > 0.0f)
 			defaultRadius = _adjustDropRange;
-		Vector2 randomOffset = Random.insideUnitCircle * Random.value * defaultRadius;
+		Vector2 randomOffset = Random.insideUnitCircle * Random.Range(0.2f, 1.0f) * defaultRadius;
 		return cachedTransform.position + new Vector3(randomOffset.x, 0.0f, randomOffset.y);
 	}
 

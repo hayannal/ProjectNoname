@@ -114,6 +114,10 @@ public class DropObject : MonoBehaviour
 				});
 			}
 		}
+		else if (dropType == DropProcessor.eDropType.PowerPoint)
+		{
+			if (nameText != null) nameText.SetLocalizedText(CharacterData.GetNameByActorId(stringValue));
+		}
 
 		if (useLootEffect && lootEffectPrefab != null)
 			_lootEffectTransform = BattleInstanceManager.instance.GetCachedObject(lootEffectPrefab, cachedTransform.position, Quaternion.identity).transform;
@@ -195,7 +199,7 @@ public class DropObject : MonoBehaviour
 		_pullDelay = pullStartDelay;
 		_pullSpeed = pullStartSpeed;
 		if (trailTransform != null) trailTransform.gameObject.SetActive(true);
-		if (nameCanvasRectTransform != null) nameCanvasRectTransform.gameObject.SetActive(false);
+		if (nameCanvasRectTransform != null && _pullDelay == 0.0f) nameCanvasRectTransform.gameObject.SetActive(false);
 		DiableEffectObject();
 	}
 
@@ -347,7 +351,10 @@ public class DropObject : MonoBehaviour
 		{
 			_pullDelay -= Time.deltaTime;
 			if (_pullDelay <= 0.0f)
+			{
 				_pullDelay = 0.0f;
+				if (nameCanvasRectTransform != null) nameCanvasRectTransform.gameObject.SetActive(false);
+			}
 			return;
 		}
 

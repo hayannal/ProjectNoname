@@ -344,7 +344,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 	{
 		// 상자를 다시 그자리에 소환
 		_randomBoxAnimator.gameObject.SetActive(true);
-		yield return Timing.WaitForSeconds(1.3f);
+		yield return Timing.WaitForSeconds(1.0f);
 
 		// 반복 뽑기때는 터치를 기다리지 않는다.
 		_randomBoxAnimator.punchScaleTweenAnimation.DOPause();

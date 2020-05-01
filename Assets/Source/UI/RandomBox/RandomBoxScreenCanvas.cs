@@ -156,7 +156,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 
 		// 상자를 소환
 		_randomBoxAnimator = BattleInstanceManager.instance.GetCachedRandomBoxAnimator(boxPrefabList[(int)_boxType], targetPosition, Quaternion.identity);
-		yield return Timing.WaitForSeconds(1.3f);
+		yield return Timing.WaitForSeconds(0.8f);
 
 		// 터치 이펙트를 소환
 		_randomBoxAnimator.touchCanvasObject.SetActive(true);

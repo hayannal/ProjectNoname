@@ -448,6 +448,8 @@ public class PlayerData : MonoBehaviour
 		loginned = true;
 	}
 
+	const int PPMaxPerOriginBox = 125;
+	const int PPMaxPerCharacterBox = 270;
 	public void OnRecvCharacterList(List<CharacterResult> characterList, Dictionary<string, GetCharacterStatisticsResult> dicCharacterStatistics, List<ObjectResult> characterEntityObjectList)
 	{
 		_listCharacterData.Clear();
@@ -477,6 +479,13 @@ public class PlayerData : MonoBehaviour
 			newCharacterData.Initialize(dicCharacterStatistics[serverCharacterId].CharacterStatistics, dataObject);
 			_listCharacterData.Add(newCharacterData);
 		}
+
+		// 전캐릭터의 pp 합산값 계산. max체크만 한다.
+		int totalPp = 0;
+		for (int i = 0; i < _listCharacterData.Count; ++i)
+			totalPp += _listCharacterData[i].pp;
+		if (totalPp > (originOpenCount * PPMaxPerOriginBox + characterBoxOpenCount * PPMaxPerCharacterBox))
+			PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidTotalPp, false, totalPp);
 	}
 
 	public void OnRecvUpdateCharacterStatistics(List<DropManager.CharacterPpRequest> listPpInfo, List<DropManager.CharacterLbpRequest> listLbpInfo)

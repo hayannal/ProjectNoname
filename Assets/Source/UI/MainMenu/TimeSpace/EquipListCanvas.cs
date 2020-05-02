@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EquipListCanvas : EquipShowCanvasBase
 {
@@ -15,6 +16,7 @@ public class EquipListCanvas : EquipShowCanvasBase
 
 	public EquipSortButton equipSortButton;
 	EquipSortButton.eSortType _currentSortType;
+	public Text countText;
 	public GameObject emptyEquipObject;
 
 	public GameObject contentItemPrefab;
@@ -193,6 +195,8 @@ public class EquipListCanvas : EquipShowCanvasBase
 			}
 			if (_selectedEquipData != null && _listCurrentEquipData.Contains(_selectedEquipData) == false)
 				_selectedEquipData = null;
+
+			countText.text = string.Format(TimeSpaceData.instance.IsInventoryVisualMax() ? "<color=#FF2200>{0}</color> / {1}" : "{0} / {1}", TimeSpaceData.instance.inventoryItemCount, TimeSpaceData.InventoryVisualMax);
 		}
 		if (_listCurrentEquipData.Count == 0)
 		{

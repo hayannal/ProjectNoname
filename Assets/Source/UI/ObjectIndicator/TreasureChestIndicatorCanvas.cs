@@ -122,6 +122,8 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 		// 가장 핵심은 드랍부터 굴려서 보상정보를 얻어오는거다.
 		DropProcessor dropProcessor = DropProcessor.Drop(targetTransform, "Zoflr", "", true, true);
 		dropProcessor.AdjustDropRange(3.7f);
+		if (CheatingListener.detectedCheatTable)
+			return;
 		PlayFabApiManager.instance.RequestOpenDailyBox((serverFailure) =>
 		{
 			if (false)

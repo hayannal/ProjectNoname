@@ -88,6 +88,8 @@ public class CashShopCanvas : MonoBehaviour
 		{
 			_cachedDropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, "Wkdwkdql", "", true, true);
 			_cachedDropProcessor.AdjustDropRange(3.7f);
+			if (CheatingListener.detectedCheatTable)
+				return;
 			PlayFabApiManager.instance.RequestEquipBox(DropManager.instance.GetLobbyDropItemInfo(), equipBoxPrice, OnRecvEquipBox);
 		});
 	}

@@ -39,6 +39,8 @@ public class CharacterBoxConfirmCanvas : MonoBehaviour
 		// 오리진 박스와 마찬가지로 먼저 드랍프로세서부터 만들어야한다.
 		_cachedDropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, "Zoflrflr", "", true, true);
 		_cachedDropProcessor.AdjustDropRange(3.7f);
+		if (CheatingListener.detectedCheatTable)
+			return;
 		PlayFabApiManager.instance.RequestCharacterBox(_priceOnce, OnRecvCharacterBox);
 
 		gameObject.SetActive(false);

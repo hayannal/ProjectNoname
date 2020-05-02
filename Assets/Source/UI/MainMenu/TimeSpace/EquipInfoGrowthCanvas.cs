@@ -458,6 +458,9 @@ public class EquipInfoGrowthCanvas : MonoBehaviour
 
 		RefreshCountText();
 
+		if (_listMultiSelectEquipData.Count == 0)
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("EquipUI_NoneForCondition"), 2.0f);
+
 		switch (_lastIndex)
 		{
 			case 0: EquipEnhanceCanvas.instance.OnMultiSelectMaterial(_listMultiSelectEquipData); break;

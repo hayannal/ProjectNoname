@@ -71,6 +71,8 @@ public class CashShopCanvas : MonoBehaviour
 		{
 			// 오리진 박스와 마찬가지로 먼저 드랍프로세서부터 만들어야한다.
 			_cachedDropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, "Wkdql", "", true, true);
+			if (CheatingListener.detectedCheatTable)
+				return;
 			PlayFabApiManager.instance.RequestEquipBox(DropManager.instance.GetLobbyDropItemInfo(), equipBoxPrice, OnRecvEquipBox);
 		});
 	}

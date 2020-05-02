@@ -34,6 +34,9 @@ public class TimeSpaceData
 		Amount,
 	}
 
+	public const int InventoryVisualMax = 90;
+	public const int InventoryRealMax = 99;
+
 	EquipStatusList _cachedEquipStatusList = new EquipStatusList();
 	public EquipStatusList cachedEquipStatusList { get { return _cachedEquipStatusList; } }
 
@@ -177,6 +180,25 @@ public class TimeSpaceData
 			for (int j = 0; j < listEquipData.Count; ++j)
 				AddressableAssetLoadManager.GetAddressableSprite(listEquipData[j].cachedEquipTableData.shotAddress, "Icon", null);
 		}	
+	}
+
+	public bool IsInventoryVisualMax()
+	{
+		return (inventoryItemCount >= InventoryVisualMax);
+	}
+
+	public int inventoryItemCount
+	{
+		get
+		{
+			int count = 0;
+			for (int i = 0; i < (int)eEquipSlotType.Amount; ++i)
+			{
+				List<EquipData> listEquipData = GetEquipListByType((eEquipSlotType)i);
+				count += listEquipData.Count;
+			}
+			return count;
+		}
 	}
 
 	#region Packet

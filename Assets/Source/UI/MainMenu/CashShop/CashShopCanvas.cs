@@ -60,6 +60,12 @@ public class CashShopCanvas : MonoBehaviour
 	DropProcessor _cachedDropProcessor;
 	public void OnClickEquipBox1()
 	{
+		if (TimeSpaceData.instance.IsInventoryVisualMax())
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_ManageInventory"), 2.0f);
+			return;
+		}
+
 		int equipBoxPrice = 30;
 		if (CurrencyData.instance.dia < equipBoxPrice)
 		{
@@ -79,6 +85,12 @@ public class CashShopCanvas : MonoBehaviour
 
 	public void OnClickEquipBox8()
 	{
+		if (TimeSpaceData.instance.IsInventoryVisualMax())
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_ManageInventory"), 2.0f);
+			return;
+		}
+
 		int equipBoxPrice = 200;
 		if (CurrencyData.instance.dia < equipBoxPrice)
 		{

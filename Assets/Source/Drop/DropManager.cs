@@ -63,6 +63,8 @@ public class DropManager : MonoBehaviour
 		return _listDropEquipId;
 	}
 
+	public int droppedStageItemCount { get; set; }
+
 	#region Legend Key
 	// 전설키를 DropItem과 달리 따로 체크해야한다.
 	// 위 DropItem은 습득하고 난 아이템 리스트를 관리하는건데
@@ -269,6 +271,8 @@ public class DropManager : MonoBehaviour
 		}
 		if (index == -1)
 			return "";
+
+		++droppedStageItemCount;
 
 		// 바로 감소시켜놔야 다음번 드랍될때 _lastLegendKey가 달라지면서 드랍 리스트를 리프레쉬 하게 된다.
 		// 인게임에서만 적용되는 수치로 장비뽑기할때는 적용받지 않는다.

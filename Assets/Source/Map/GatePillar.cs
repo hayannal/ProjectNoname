@@ -320,6 +320,12 @@ public class GatePillar : MonoBehaviour
 				return false;
 			}
 
+			if (TimeSpaceData.instance.IsInventoryVisualMax())
+			{
+				ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_ManageInventory"), 2.0f);
+				return false;
+			}
+
 			// check lobby energy
 			if (CheckEnergy() == false)
 				return false;

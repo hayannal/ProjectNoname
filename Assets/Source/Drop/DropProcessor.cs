@@ -113,6 +113,12 @@ public class DropProcessor : MonoBehaviour
 							continue;
 						break;
 				}
+				if (dropType == eDropType.Gacha)
+				{
+					// 최대량을 넘지 못하게 처리
+					if (TimeSpaceData.instance.inventoryItemCount + DropManager.instance.droppedStageItemCount >= TimeSpaceData.InventoryRealMax)
+						continue;
+				}
 				// 드랍확률 보정처리.
 				switch (dropType)
 				{

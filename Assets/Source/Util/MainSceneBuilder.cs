@@ -52,6 +52,8 @@ public class MainSceneBuilder : MonoBehaviour
 		// 로딩속도를 위해 배틀매니저는 천천히 로딩한다. 그래서 다른 로딩 오브젝트와 달리 Valid 검사를 해야한다.
 		if (_handleBattleManager.IsValid())
 			Addressables.Release<GameObject>(_handleBattleManager);
+		if (_handleDropObjectGroup.IsValid())
+			Addressables.Release<GameObject>(_handleDropObjectGroup);
 
 		// 게임을 오래 켜두면 번들데이터가 점점 커지게 된다.
 		// 해제를 할만한 가장 적당한 곳은 씬이 파괴될때이다.
@@ -61,6 +63,7 @@ public class MainSceneBuilder : MonoBehaviour
 	AsyncOperationHandle<GameObject> _handleTableDataManager;
 	AsyncOperationHandle<GameObject> _handleStageManager;
 	AsyncOperationHandle<GameObject> _handleBattleManager;
+	AsyncOperationHandle<GameObject> _handleDropObjectGroup;
 	AsyncOperationHandle<GameObject> _handleStartCharacter;
 	AsyncOperationHandle<GameObject> _handleTitleCanvas;
 	AsyncOperationHandle<GameObject> _handleLobbyCanvas;
@@ -445,6 +448,11 @@ public class MainSceneBuilder : MonoBehaviour
 	{
 		for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)
 			AddressableAssetLoadManager.GetAddressableSprite(TableDataManager.instance.actorTable.dataArray[i].portraitAddress, "Icon", null);
+
+		// DropObject의 크기도 커지고 로비뽑기에서 써야해서 BattleManager에서 분리한다.
+		_handleDropObjectGroup = Addressables.LoadAssetAsync<GameObject>("DropObjectGroup");
+		yield return _handleDropObjectGroup;
+		Instantiate<GameObject>(_handleDropObjectGroup.Result);
 		_handleBattleManager = Addressables.LoadAssetAsync<GameObject>("BattleManager");
 		yield return _handleBattleManager;
 		Instantiate<GameObject>(_handleBattleManager.Result);
@@ -456,8 +464,14 @@ public class MainSceneBuilder : MonoBehaviour
 		}
 	}
 
-	public bool IsDoneLateInitialized()
+	public bool IsDoneLateInitialized(bool onlyDropObjectGroup = false)
 	{
+		if (_handleDropObjectGroup.IsValid() == false)
+			return false;
+
+		if (onlyDropObjectGroup)
+			return true;
+
 		return _handleBattleManager.IsValid();
 	}
 

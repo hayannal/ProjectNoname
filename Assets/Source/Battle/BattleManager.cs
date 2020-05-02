@@ -32,7 +32,6 @@ public class BattleManager : MonoBehaviour
 	public GameObject pauseCanvasPrefab;
 	public GameObject battleResultPrefab;
 
-	public GameObject[] dropObjectPrefabList;
 	public GameObject portalPrefab;
 	public GameObject portalMoveEffectPrefab;
 	public GameObject portalGaugePrefab;

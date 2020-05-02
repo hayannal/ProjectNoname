@@ -178,6 +178,10 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		BattleInstanceManager.instance.GetCachedObject(boxOpenEffectPrefab, _randomBoxAnimator.cachedTransform.position, Quaternion.identity);
 		yield return Timing.WaitForSeconds(0.8f);
 
+		// 거의 그럴일은 없겠지만 DropObjectGroup이 로딩되어있지 않다면 기다린다.
+		while (MainSceneBuilder.instance.IsDoneLateInitialized(true) == false)
+			yield return Timing.WaitForOneFrame;
+
 		// 드랍프로세서를 작동
 		_dropProcessor.cachedTransform.position = _randomBoxAnimator.cachedTransform.position;
 		_dropProcessor.StartDrop();

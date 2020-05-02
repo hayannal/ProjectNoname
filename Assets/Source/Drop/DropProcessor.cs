@@ -415,10 +415,10 @@ public class DropProcessor : MonoBehaviour
 	// temp code
 	GameObject GetDropObjectPrefab(string prefabName)
 	{
-		for (int i = 0; i < BattleManager.instance.dropObjectPrefabList.Length; ++i)
+		for (int i = 0; i < DropObjectGroup.instance.dropObjectPrefabList.Length; ++i)
 		{
-			if (BattleManager.instance.dropObjectPrefabList[i].name == prefabName)
-				return BattleManager.instance.dropObjectPrefabList[i];
+			if (DropObjectGroup.instance.dropObjectPrefabList[i].name == prefabName)
+				return DropObjectGroup.instance.dropObjectPrefabList[i];
 		}
 		return null;
 	}

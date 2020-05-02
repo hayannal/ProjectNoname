@@ -34,8 +34,6 @@ public class DropObject : MonoBehaviour
 
 	[Space(10)]
 	public bool useLootEffect = false;
-	public GameObject lootEffectPrefab;
-	public GameObject lootEndEffectPrefab;
 	public bool useIncreaseSearchRange = false;
 	public float searchRangeAddSpeed = 2.0f;
 
@@ -80,6 +78,7 @@ public class DropObject : MonoBehaviour
 
 		rotateTransform.localRotation = Quaternion.identity;
 		_getDelay = getDelay;
+		_lootEffectIndex = -1;
 
 		if (dropType == DropProcessor.eDropType.Gacha)
 		{
@@ -109,13 +108,28 @@ public class DropObject : MonoBehaviour
 					float pivotOffset = newEquipPrefabInfo.pivotOffset;
 					if (trailTransform != null) trailTransform.localPosition = new Vector3(0.0f, pivotOffset + rotateTransform.localPosition.y, 0.0f);
 					if (nameCanvasRectTransform != null) nameCanvasRectTransform.localPosition = new Vector3(0.0f, pivotOffset * 2.0f + rotateTransform.localPosition.y + 0.5f, 0.0f);
-					if (nameText != null)
-					{
-						nameText.SetLocalizedText(UIString.instance.GetString(equipTableData.nameId));
-						nameText.color = EquipListStatusInfo.GetGradeDropObjectNameColor(equipTableData.grade);
-					}
 					rotateTransform.localPosition = new Vector3(0.0f, _defaultRotateTransformPositionY + pivotOffset, 0.0f);
 				});
+				if (nameText != null)
+				{
+					nameText.SetLocalizedText(UIString.instance.GetString(equipTableData.nameId));
+					nameText.color = EquipListStatusInfo.GetGradeDropObjectNameColor(equipTableData.grade);
+				}
+				_lootEffectIndex = equipTableData.grade;
+			}
+		}
+		else if (dropType == DropProcessor.eDropType.Origin)
+		{
+			ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(stringValue);
+			if (actorTableData != null)
+			{
+				// 장비에 쓰던거를 같이 쓰는 구조라 이렇게 인덱스 변화시켜서 쓰면 된다.
+				switch (actorTableData.grade)
+				{
+					case 0: _lootEffectIndex = 0; break;
+					case 1: _lootEffectIndex = 2; break;
+					case 2: _lootEffectIndex = 4; break;
+				}
 			}
 		}
 		else if (dropType == DropProcessor.eDropType.PowerPoint)
@@ -123,8 +137,8 @@ public class DropObject : MonoBehaviour
 			if (nameText != null) nameText.SetLocalizedText(CharacterData.GetNameByActorId(stringValue));
 		}
 
-		if (useLootEffect && lootEffectPrefab != null)
-			_lootEffectTransform = BattleInstanceManager.instance.GetCachedObject(lootEffectPrefab, cachedTransform.position, Quaternion.identity).transform;
+		if (useLootEffect && _lootEffectIndex != -1)
+			_lootEffectTransform = BattleInstanceManager.instance.GetCachedObject(DropObjectGroup.instance.lootEffectPrefabList[_lootEffectIndex], cachedTransform.position, Quaternion.identity).transform;
 
 		if (nameCanvasRectTransform != null)
 			nameCanvasRectTransform.gameObject.SetActive(false);
@@ -329,11 +343,12 @@ public class DropObject : MonoBehaviour
 		gameObject.SetActive(false);
 	}
 
+	int _lootEffectIndex = -1;
 	Transform _lootEffectTransform;
 	void DiableEffectObject()
 	{
-		if (useLootEffect && lootEndEffectPrefab != null)
-			BattleInstanceManager.instance.GetCachedObject(lootEndEffectPrefab, (_lootEffectTransform != null) ? _lootEffectTransform.position : cachedTransform.position, Quaternion.identity);
+		if (useLootEffect && _lootEffectIndex != -1)
+			BattleInstanceManager.instance.GetCachedObject(DropObjectGroup.instance.lootEndEffectPrefabList[_lootEffectIndex], (_lootEffectTransform != null) ? _lootEffectTransform.position : cachedTransform.position, Quaternion.identity);
 
 		if (_lootEffectTransform != null)
 		{

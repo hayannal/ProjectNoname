@@ -333,10 +333,22 @@ public class DropProcessor : MonoBehaviour
 		}
 	}
 
+	void OnDisable()
+	{
+		_adjustDropRange = 0.0f;
+		_listDropObjectInfo.Clear();
+	}
+
 	public void StartDrop()
 	{
 		if (_listDropObjectInfo.Count == 0)
 		{
+			if (BattleInstanceManager.instance.IsLastDropProcessorInStage(this))
+			{
+				if (DropManager.instance.IsExistReservedLastDropObject())
+					DropManager.instance.ApplyLastDropObject();
+			}
+
 			gameObject.SetActive(false);
 			return;
 		}
@@ -396,9 +408,7 @@ public class DropProcessor : MonoBehaviour
 				}
 			}
 		}
-
-		_adjustDropRange = 0.0f;
-		_listDropObjectInfo.Clear();
+		
 		gameObject.SetActive(false);
 	}
 

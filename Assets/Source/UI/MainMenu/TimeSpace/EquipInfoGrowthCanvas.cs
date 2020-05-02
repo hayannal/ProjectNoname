@@ -298,12 +298,12 @@ public class EquipInfoGrowthCanvas : MonoBehaviour
 				{
 					if (x.cachedEquipTableData != null && y.cachedEquipTableData != null)
 					{
-						if (x.cachedEquipTableData.grade > y.cachedEquipTableData.grade) return -1;
-						else if (x.cachedEquipTableData.grade < y.cachedEquipTableData.grade) return 1;
-						if (x.mainStatusValue > y.mainStatusValue) return -1;
-						else if (x.mainStatusValue < y.mainStatusValue) return 1;
-						if (x.enhanceLevel > y.enhanceLevel) return -1;
-						else if (x.enhanceLevel < y.enhanceLevel) return 1;
+						if (x.cachedEquipTableData.grade < y.cachedEquipTableData.grade) return -1;
+						else if (x.cachedEquipTableData.grade > y.cachedEquipTableData.grade) return 1;
+						if (x.enhanceLevel < y.enhanceLevel) return -1;
+						else if (x.enhanceLevel > y.enhanceLevel) return 1;
+						if (x.mainStatusValue < y.mainStatusValue) return -1;
+						else if (x.mainStatusValue > y.mainStatusValue) return 1;
 					}
 					return 0;
 				});
@@ -313,12 +313,12 @@ public class EquipInfoGrowthCanvas : MonoBehaviour
 				{
 					if (x.cachedEquipTableData != null && y.cachedEquipTableData != null)
 					{
-						if (x.mainStatusValue > y.mainStatusValue) return -1;
-						else if (x.mainStatusValue < y.mainStatusValue) return 1;
 						if (x.cachedEquipTableData.grade > y.cachedEquipTableData.grade) return -1;
 						else if (x.cachedEquipTableData.grade < y.cachedEquipTableData.grade) return 1;
 						if (x.enhanceLevel > y.enhanceLevel) return -1;
 						else if (x.enhanceLevel < y.enhanceLevel) return 1;
+						if (x.mainStatusValue > y.mainStatusValue) return -1;
+						else if (x.mainStatusValue < y.mainStatusValue) return 1;
 					}
 					return 0;
 				});

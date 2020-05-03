@@ -224,6 +224,12 @@ public class EquipListCanvas : EquipShowCanvasBase
 			equipCanvasListItem.Initialize(_listCurrentEquipData[i], OnClickListItem);
 			_listEquipCanvasListItem.Add(equipCanvasListItem);
 		}
+
+		// 인벤도 리프레쉬하지 않고 selected아이템도 해제하지 않는거면 정렬같이 Grid 순서만 바꾸는 상황일거다.
+		// 이땐 아예 갱신하지 않는다.
+		if (refreshInventory == false && resetSelected == false)
+			return;
+
 		if (resetSelected)
 			OnClickListItem(null);
 		else

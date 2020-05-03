@@ -424,7 +424,8 @@ public class GatePillar : MonoBehaviour
 			if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby == false) return;
 
 			string title = UIString.instance.GetString("SystemUI_Info");
-			string message = UIString.instance.GetString("GameUI_RefillEnergy", BattleInstanceManager.instance.GetCachedGlobalConstantInt("RequiredEnergyToPlay"), CurrencyData.instance.energyMax);
+			int energyToPlay = BattleInstanceManager.instance.GetCachedGlobalConstantInt("RequiredEnergyToPlay");
+			string message = UIString.instance.GetString("GameUI_RefillEnergy", energyToPlay, energyToPlay);
 			int price = BattleInstanceManager.instance.GetCachedGlobalConstantInt("RefillEnergyDiamond");
 			ConfirmSpendCanvas.instance.ShowCanvas(true, title, message, CurrencyData.eCurrencyType.Diamond, price, () =>
 			{
@@ -433,7 +434,7 @@ public class GatePillar : MonoBehaviour
 					ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughDiamond"), 2.0f);
 					return;
 				}
-				PlayFabApiManager.instance.RequestRefillEnergy(price, CurrencyData.instance.energyMax, () =>
+				PlayFabApiManager.instance.RequestRefillEnergy(price, energyToPlay, () =>
 				{
 					CurrencySmallInfoCanvas.RefreshInfo();
 					ConfirmSpendCanvas.instance.gameObject.SetActive(false);

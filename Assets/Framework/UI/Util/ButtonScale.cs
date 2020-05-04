@@ -74,6 +74,13 @@ public class ButtonScale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 	{
 		_applyLerp = false;
 		_targetScale = _defaultLocalScale;
+
+		if (eventData.dragging)
+		{
+			_transform.localScale = _defaultLocalScale;
+			if (adjustRectTransform != null)
+				adjustRectTransform.localScale = _cachedAdjustRectScale;
+		}
 	}
 
 	public void OnPointerEnter(PointerEventData eventData)

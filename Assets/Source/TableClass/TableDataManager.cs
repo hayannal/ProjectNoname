@@ -42,6 +42,8 @@ public class TableDataManager : MonoBehaviour
 	public DamageRateTable damageRateTable;
 	public ActorInfoTable actorInfoTable;
 	public ActorLevelPackTable actorLevelPackTable;
+	public ShopGoldTable shopGoldTable;
+	public ShopDiamondTable shopDiamondTable;
 
 	void Awake()
 	{

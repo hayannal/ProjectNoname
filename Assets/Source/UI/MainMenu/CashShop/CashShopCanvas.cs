@@ -10,6 +10,9 @@ public class CashShopCanvas : MonoBehaviour
 
 	public CurrencySmallInfo currencySmallInfo;
 
+	public DiaListItem[] diaListItemList;
+	public GoldListItem[] goldListItemList;
+
 	void Awake()
 	{
 		instance = this;
@@ -17,6 +20,8 @@ public class CashShopCanvas : MonoBehaviour
 
 	void OnEnable()
 	{
+		RefreshInfo();
+
 		StackCanvas.Push(gameObject);
 
 		if (DragThresholdController.instance != null)
@@ -40,6 +45,23 @@ public class CashShopCanvas : MonoBehaviour
 	public void OnClickHomeButton()
 	{
 		LobbyCanvas.Home();
+	}
+
+	void RefreshInfo()
+	{
+		for (int i = 0; i < diaListItemList.Length; ++i)
+		{
+			if (i >= TableDataManager.instance.shopDiamondTable.dataArray.Length)
+				break;
+			diaListItemList[i].SetInfo(TableDataManager.instance.shopDiamondTable.dataArray[i]);
+		}
+
+		for (int i = 0; i < goldListItemList.Length; ++i)
+		{
+			if (i >= TableDataManager.instance.shopGoldTable.dataArray.Length)
+				break;
+			goldListItemList[i].SetInfo(TableDataManager.instance.shopGoldTable.dataArray[i]);
+		}
 	}
 
 	public void OnClickCharacterBox()

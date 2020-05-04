@@ -1175,6 +1175,31 @@ public class PlayFabApiManager : MonoBehaviour
 	}
 	#endregion
 
+	#region Shop
+	public void RequestBuyGoldBox(string serverItemId, int price, int buyingGold, Action successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		PlayFabClientAPI.PurchaseItem(new PurchaseItemRequest()
+		{
+			ItemId = serverItemId,
+			Price = price,
+			VirtualCurrency = CurrencyData.DiamondCode()
+		}, (success) =>
+		{
+			WaitingNetworkCanvas.Show(false);
+
+			// bundle 안에 있는건 날아오지 않는다. 그래서 success만 오면 알아서 올려줘야한다.
+			CurrencyData.instance.dia -= price;
+			CurrencyData.instance.gold += buyingGold;
+
+			if (successCallback != null) successCallback.Invoke();
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+	#endregion
 
 
 

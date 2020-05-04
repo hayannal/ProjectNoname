@@ -44,6 +44,7 @@ public class TableDataManager : MonoBehaviour
 	public ActorLevelPackTable actorLevelPackTable;
 	public ShopGoldTable shopGoldTable;
 	public ShopDiamondTable shopDiamondTable;
+	public ShopBoxTable shopBoxTable;
 
 	void Awake()
 	{
@@ -381,6 +382,16 @@ public class TableDataManager : MonoBehaviour
 		{
 			if (actorLevelPackTable.dataArray[i].level == level && actorLevelPackTable.dataArray[i].actorId == actorId)
 				return actorLevelPackTable.dataArray[i].levelPack;
+		}
+		return null;
+	}
+
+	public ShopBoxTableData FindShopBoxTableData(string boxId)
+	{
+		for (int i = 0; i < shopBoxTable.dataArray.Length; ++i)
+		{
+			if (shopBoxTable.dataArray[i].boxPack == boxId)
+				return shopBoxTable.dataArray[i];
 		}
 		return null;
 	}

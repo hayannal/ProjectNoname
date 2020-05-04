@@ -10,6 +10,13 @@ public class CashShopCanvas : MonoBehaviour
 
 	public CurrencySmallInfo currencySmallInfo;
 
+	public Text characterBoxNameText;
+	public Text characterBoxPriceText;
+	public Text equipBox1NameText;
+	public Text equipBox1PriceText;
+	public Text equipBox8NameText;
+	public Text equipBox8PriceText;
+
 	public DiaListItem[] diaListItemList;
 	public GoldListItem[] goldListItemList;
 
@@ -49,6 +56,27 @@ public class CashShopCanvas : MonoBehaviour
 
 	void RefreshInfo()
 	{
+		ShopBoxTableData characterBoxTableData = TableDataManager.instance.FindShopBoxTableData("CharacterBox");
+		if (characterBoxTableData != null)
+		{
+			characterBoxNameText.SetLocalizedText(UIString.instance.GetString(characterBoxTableData.boxName));
+			characterBoxPriceText.text = characterBoxTableData.requiredDiamond.ToString("N0");
+		}
+
+		ShopBoxTableData equipBox1TableData = TableDataManager.instance.FindShopBoxTableData("EquipmentBox1");
+		if (equipBox1TableData != null)
+		{
+			equipBox1NameText.SetLocalizedText(UIString.instance.GetString(equipBox1TableData.boxName));
+			equipBox1PriceText.text = equipBox1TableData.requiredDiamond.ToString("N0");
+		}
+
+		ShopBoxTableData equipBox8TableData = TableDataManager.instance.FindShopBoxTableData("EquipmentBox8");
+		if (equipBox8TableData != null)
+		{
+			equipBox8NameText.SetLocalizedText(UIString.instance.GetString(equipBox8TableData.boxName));
+			equipBox8PriceText.text = equipBox8TableData.requiredDiamond.ToString("N0");
+		}
+
 		for (int i = 0; i < diaListItemList.Length; ++i)
 		{
 			if (i >= TableDataManager.instance.shopDiamondTable.dataArray.Length)

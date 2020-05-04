@@ -32,7 +32,7 @@ public class DiaListItem : MonoBehaviour
 		bool useAdd = (string.IsNullOrEmpty(shopDiamondTableData.addText) == false);
 		addObject.SetActive(useAdd);
 		if (useAdd)
-			addText.text = UIString.instance.GetString(shopDiamondTableData.addText);
+			addText.SetLocalizedText(UIString.instance.GetString(shopDiamondTableData.addText));
 	}
 
 	public void OnClickButton()

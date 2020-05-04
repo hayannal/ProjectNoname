@@ -17,12 +17,12 @@ public class ShopDiamondTableData
   public string serverItemId { get { return _serverItemId; } set { _serverItemId = value; } }
   
   [SerializeField]
-  string _eng;
-  public string eng { get { return _eng; } set { _eng = value; } }
+  float _eng;
+  public float eng { get { return _eng; } set { _eng = value; } }
   
   [SerializeField]
-  string _kor;
-  public string kor { get { return _kor; } set { _kor = value; } }
+  int _kor;
+  public int kor { get { return _kor; } set { _kor = value; } }
   
   [SerializeField]
   int _buyingGems;

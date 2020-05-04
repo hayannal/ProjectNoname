@@ -18,14 +18,14 @@ public class DiaListItem : MonoBehaviour
 		if (OptionManager.instance.language == "KOR")
 		{
 			priceTextTransform.anchoredPosition = new Vector2(10.0f, 0.0f);
-			priceText.text = shopDiamondTableData.kor;
+			priceText.text = shopDiamondTableData.kor.ToString("N0");
 			wonText.gameObject.SetActive(true);
 			wonText.SetLocalizedText(BattleInstanceManager.instance.GetCachedGlobalConstantString("KoreaWon"));
 		}
 		else
 		{
 			priceTextTransform.anchoredPosition = Vector2.zero;
-			priceText.text = shopDiamondTableData.eng;
+			priceText.text = string.Format("$ {0:0.##}", shopDiamondTableData.eng);
 			wonText.gameObject.SetActive(false);
 		}
 

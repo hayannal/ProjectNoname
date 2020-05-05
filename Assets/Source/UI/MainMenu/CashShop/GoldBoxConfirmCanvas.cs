@@ -42,14 +42,18 @@ public class GoldBoxConfirmCanvas : MonoBehaviour
 		{
 			UIInstanceManager.instance.ShowCanvasAsync("RandomBoxScreenCanvas", () =>
 			{
-				DropProcessor dropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, "Zoflrflr", "", true, true);
+				DropProcessor dropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, "ShopGold", "", true, true);
 				dropProcessor.AdjustDropRange(3.7f);
 				RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Gold, dropProcessor, 0, () =>
 				{
+					// 다음번 드랍에 영향을 주지 않게 하기위해 미리 클리어해둔다.
+					DropManager.instance.ClearLobbyDropInfo();
+					CashShopCanvas.instance.currencySmallInfo.RefreshInfo();
+
 					// 결과로는 공용 재화 획득창을 띄워준다.
-					UIInstanceManager.instance.ShowCanvasAsync("CommonCurrencyResultCanvas", () =>
+					UIInstanceManager.instance.ShowCanvasAsync("CurrencyBoxResultCanvas", () =>
 					{
-						CharacterBoxResultCanvas.instance.RefreshInfo();
+						CurrencyBoxResultCanvas.instance.RefreshInfo(_shopGoldTableData.buyingGold, 0);
 					});
 				});
 			});

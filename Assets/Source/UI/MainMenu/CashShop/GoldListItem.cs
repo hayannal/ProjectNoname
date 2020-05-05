@@ -27,6 +27,12 @@ public class GoldListItem : MonoBehaviour
 
 	public void OnClickButton()
 	{
+		if (CurrencyData.instance.dia < _shopGoldTableData.requiredDiamond)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughDiamond"), 2.0f);
+			return;
+		}
+
 		UIInstanceManager.instance.ShowCanvasAsync("GoldBoxConfirmCanvas", () =>
 		{
 			GoldBoxConfirmCanvas.instance.ShowCanvas(true, _shopGoldTableData, goldBoxImage.sprite, goldBoxImageRectTransform.anchoredPosition, goldBoxImageRectTransform.sizeDelta);

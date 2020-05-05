@@ -98,6 +98,11 @@ public class DropProcessor : MonoBehaviour
 							CheatingListener.OnDetectCheatTable();
 						probability *= weight;
 						break;
+					case eDropType.Gold:
+					case eDropType.Diamond:
+						if (dropTableData.dropId.Contains("Shop"))
+							dropProcessor.AdjustDropDelay(0.05f);
+						break;
 				}
 			}
 			else
@@ -274,6 +279,7 @@ public class DropProcessor : MonoBehaviour
 				break;
 			case eDropType.Gold:
 				int randomCount = Random.Range(4, 7);
+				if (_adjustDropDelay > 0.0f) randomCount = Random.Range(20, 30);
 				float goldDropAdjust = DropAdjustAffector.GetValue(BattleInstanceManager.instance.playerActor.affectorProcessor, DropAdjustAffector.eDropAdjustType.GoldDropAmount);
 				if (goldDropAdjust > 0.0f) randomCount += 1;
 				for (int i = 0; i < randomCount; ++i)
@@ -311,6 +317,7 @@ public class DropProcessor : MonoBehaviour
 				break;
 			case eDropType.Diamond:
 				int splitCount = Random.Range(1, 3);
+				if (_adjustDropDelay > 0.0f) splitCount = Random.Range(12, 20);
 				int quotient = intValue / splitCount;
 				int remainder = intValue % splitCount;
 				for (int i = 0; i < splitCount; ++i)
@@ -335,6 +342,7 @@ public class DropProcessor : MonoBehaviour
 
 	void OnDisable()
 	{
+		_adjustDropDelay = 0.0f;
 		_adjustDropRange = 0.0f;
 		_listDropObjectInfo.Clear();
 	}
@@ -356,8 +364,13 @@ public class DropProcessor : MonoBehaviour
 		Timing.RunCoroutine(DropProcess());
 	}
 
+	
 	IEnumerator<float> DropProcess()
 	{
+		float delay = 0.2f;
+		if (_adjustDropDelay > 0.0f)
+			delay = _adjustDropDelay;
+
 		DropObject dropObjectForException = null;
 		for (int i = 0; i < _listDropObjectInfo.Count; ++i)
 		{
@@ -383,7 +396,7 @@ public class DropProcessor : MonoBehaviour
 
 			// 마지막 스폰이 끝날땐 드랍프로세서가 바로 사라지게 yield return 하지 않는다.
 			if (i < _listDropObjectInfo.Count - 1)
-				yield return Timing.WaitForSeconds(0.2f);
+				yield return Timing.WaitForSeconds(delay);
 
 			if (this == null)
 				yield break;
@@ -457,6 +470,12 @@ public class DropProcessor : MonoBehaviour
 				return desirePosition;
 			}
 		}
+	}
+
+	float _adjustDropDelay = 0.0f;
+	public void AdjustDropDelay(float adjustDelay)
+	{
+		_adjustDropDelay = adjustDelay;
 	}
 
 	// 마지막 몹을 잡을때 기존몹의 드랍 프로세서가 진행중일 수 있다.

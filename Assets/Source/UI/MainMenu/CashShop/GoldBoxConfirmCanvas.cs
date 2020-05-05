@@ -11,10 +11,16 @@ public class GoldBoxConfirmCanvas : MonoBehaviour
 	public Image goldBoxImage;
 	public RectTransform goldBoxImageRectTransform;
 	public Text priceText;
+	public GameObject buttonObject;
 
 	void Awake()
 	{
 		instance = this;
+	}
+
+	void OnEnable()
+	{
+		buttonObject.SetActive(true);
 	}
 
 	ShopGoldTableData _shopGoldTableData;
@@ -42,6 +48,9 @@ public class GoldBoxConfirmCanvas : MonoBehaviour
 		{
 			UIInstanceManager.instance.ShowCanvasAsync("RandomBoxScreenCanvas", () =>
 			{
+				// 연출에 의해 캐시샵 가려질때 같이 하이드 시켜야한다.
+				gameObject.SetActive(false);
+
 				DropProcessor dropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, "ShopGold", "", true, true);
 				dropProcessor.AdjustDropRange(3.7f);
 				RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Gold, dropProcessor, 0, () =>
@@ -59,7 +68,7 @@ public class GoldBoxConfirmCanvas : MonoBehaviour
 			});
 		});
 
-		// 패킷 보내고 바로 닫는다.
-		gameObject.SetActive(false);
+		// 패킷 보내고 먼저 버튼부터 하이드
+		buttonObject.SetActive(false);
 	}
 }

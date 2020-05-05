@@ -8,8 +8,6 @@ public class GoldBoxConfirmCanvas : MonoBehaviour
 	public static GoldBoxConfirmCanvas instance = null;
 
 	public GoldListItem goldListItem;
-	public Image goldBoxImage;
-	public RectTransform goldBoxImageRectTransform;
 	public Text priceText;
 	public GameObject buttonObject;
 
@@ -35,9 +33,9 @@ public class GoldBoxConfirmCanvas : MonoBehaviour
 
 		_shopGoldTableData = shopGoldTableData;
 		goldListItem.SetInfo(shopGoldTableData);
-		goldBoxImage.sprite = goldBoxSprite;
-		goldBoxImageRectTransform.anchoredPosition = anchoredPosition;
-		goldBoxImageRectTransform.sizeDelta = sizeDelta;
+		goldListItem.goldBoxImage.sprite = goldBoxSprite;
+		goldListItem.goldBoxImageRectTransform.anchoredPosition = anchoredPosition;
+		goldListItem.goldBoxImageRectTransform.sizeDelta = sizeDelta;
 		priceText.text = shopGoldTableData.requiredDiamond.ToString("N0");
 	}
 

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using PlayFab.ClientModels;
 
 public class CashShopCanvas : MonoBehaviour
 {
@@ -14,8 +13,12 @@ public class CashShopCanvas : MonoBehaviour
 	public Text characterBoxPriceText;
 	public Text equipBox1NameText;
 	public Text equipBox1PriceText;
+	public Image equipBox1IconImage;
+	public RectTransform equipBox1IconRectTransform;
 	public Text equipBox8NameText;
 	public Text equipBox8PriceText;
+	public Image equipBox8IconImage;
+	public RectTransform equipBox8IconRectTransform;
 
 	public DiaListItem[] diaListItemList;
 	public GoldListItem[] goldListItemList;
@@ -61,6 +64,7 @@ public class CashShopCanvas : MonoBehaviour
 		{
 			characterBoxNameText.SetLocalizedText(UIString.instance.GetString(characterBoxTableData.boxName));
 			characterBoxPriceText.text = characterBoxTableData.requiredDiamond.ToString("N0");
+			_characterBoxPrice = characterBoxTableData.requiredDiamond;
 		}
 
 		ShopBoxTableData equipBox1TableData = TableDataManager.instance.FindShopBoxTableData("EquipmentBox1");
@@ -68,6 +72,7 @@ public class CashShopCanvas : MonoBehaviour
 		{
 			equipBox1NameText.SetLocalizedText(UIString.instance.GetString(equipBox1TableData.boxName));
 			equipBox1PriceText.text = equipBox1TableData.requiredDiamond.ToString("N0");
+			_equipBox1Price = equipBox1TableData.requiredDiamond;
 		}
 
 		ShopBoxTableData equipBox8TableData = TableDataManager.instance.FindShopBoxTableData("EquipmentBox8");
@@ -75,6 +80,7 @@ public class CashShopCanvas : MonoBehaviour
 		{
 			equipBox8NameText.SetLocalizedText(UIString.instance.GetString(equipBox8TableData.boxName));
 			equipBox8PriceText.text = equipBox8TableData.requiredDiamond.ToString("N0");
+			_equipBox8Price = equipBox8TableData.requiredDiamond;
 		}
 
 		for (int i = 0; i < diaListItemList.Length; ++i)
@@ -92,22 +98,24 @@ public class CashShopCanvas : MonoBehaviour
 		}
 	}
 
+	int _characterBoxPrice;
 	public void OnClickCharacterBox()
 	{
 		// 오리진이나 장비 뽑기와 달리 연속뽑기가 있다.
 		// 첫번째 연출에서는 뽑기상자를 터치해서 열지만 두번째부터는 자동으로 패킷 보내면서 굴려져야한다.
-
-		int characterBoxPrice = 50;
-		if (CurrencyData.instance.dia < characterBoxPrice)
+		if (CurrencyData.instance.dia < _characterBoxPrice)
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughDiamond"), 2.0f);
 			return;
 		}
 
-		UIInstanceManager.instance.ShowCanvasAsync("CharacterBoxConfirmCanvas", null);
+		UIInstanceManager.instance.ShowCanvasAsync("CharacterBoxConfirmCanvas", () => {
+			CharacterBoxConfirmCanvas.instance.RefreshInfo(_characterBoxPrice, characterBoxNameText.text);
+		});
 	}
 
-	DropProcessor _cachedDropProcessor;
+	
+	int _equipBox1Price;
 	public void OnClickEquipBox1()
 	{
 		if (TimeSpaceData.instance.IsInventoryVisualMax())
@@ -116,23 +124,18 @@ public class CashShopCanvas : MonoBehaviour
 			return;
 		}
 
-		int equipBoxPrice = 30;
-		if (CurrencyData.instance.dia < equipBoxPrice)
+		if (CurrencyData.instance.dia < _equipBox1Price)
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughDiamond"), 2.0f);
 			return;
 		}
 
-		YesNoCanvas.instance.ShowCanvas(true, "confirm", "equip box 1", () =>
-		{
-			// 오리진 박스와 마찬가지로 먼저 드랍프로세서부터 만들어야한다.
-			_cachedDropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, "Wkdql", "", true, true);
-			if (CheatingListener.detectedCheatTable)
-				return;
-			PlayFabApiManager.instance.RequestEquipBox(DropManager.instance.GetLobbyDropItemInfo(), equipBoxPrice, OnRecvEquipBox);
+		UIInstanceManager.instance.ShowCanvasAsync("EquipBoxConfirmCanvas", () => {
+			EquipBoxConfirmCanvas.instance.ShowCanvas(true, true, _equipBox1Price, equipBox1NameText.text, equipBox1IconImage.sprite, equipBox1IconRectTransform.anchoredPosition, equipBox1IconRectTransform.sizeDelta);
 		});
 	}
 
+	int _equipBox8Price;
 	public void OnClickEquipBox8()
 	{
 		if (TimeSpaceData.instance.IsInventoryVisualMax())
@@ -141,62 +144,14 @@ public class CashShopCanvas : MonoBehaviour
 			return;
 		}
 
-		int equipBoxPrice = 200;
-		if (CurrencyData.instance.dia < equipBoxPrice)
+		if (CurrencyData.instance.dia < _equipBox8Price)
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughDiamond"), 2.0f);
 			return;
 		}
 
-		YesNoCanvas.instance.ShowCanvas(true, "confirm", "equip box 8", () =>
-		{
-			_cachedDropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, "Wkdwkdql", "", true, true);
-			_cachedDropProcessor.AdjustDropRange(3.7f);
-			if (CheatingListener.detectedCheatTable)
-				return;
-			PlayFabApiManager.instance.RequestEquipBox(DropManager.instance.GetLobbyDropItemInfo(), equipBoxPrice, OnRecvEquipBox);
-		});
-	}
-
-	void OnRecvEquipBox(bool serverFailure, string itemGrantString)
-	{
-		// 실패했는데 굳이 처리해줄 필요가 없다.
-		if (serverFailure)
-			return;
-
-		currencySmallInfo.RefreshInfo();
-
-		// 연출은 연출대로 두고
-		// 연출 끝나고 나올 결과창에서 아이콘이 느리게 보이는걸 방지하기 위해 아이콘의 프리로드를 진행한다.
-		List<ItemInstance> listGrantItem = null;
-		int count = 0;
-		if (itemGrantString != "")
-		{
-			listGrantItem = TimeSpaceData.instance.DeserializeItemGrantResult(itemGrantString);
-			count = listGrantItem.Count;
-			for (int i = 0; i < count; ++i)
-			{
-				EquipTableData equipTableData = TableDataManager.instance.FindEquipTableData(listGrantItem[i].ItemId);
-				if (equipTableData == null)
-					continue;
-
-				AddressableAssetLoadManager.GetAddressableSprite(equipTableData.shotAddress, "Icon", null);
-			}
-		}
-
-		// 연출 및 보상 처리.
-		UIInstanceManager.instance.ShowCanvasAsync("RandomBoxScreenCanvas", () =>
-		{
-			RandomBoxScreenCanvas.instance.SetInfo(count == 1 ? RandomBoxScreenCanvas.eBoxType.Equip1 : RandomBoxScreenCanvas.eBoxType.Equip8, _cachedDropProcessor, 0, () =>
-			{
-				// 결과창은 각 패킷이 자신의 Response에 맞춰서 보여줘야한다.
-				// 여기서는 장비 그리드를 띄운다.
-				// 결과창을 닫을때 RandomBoxScreenCanvas도 같이 닫아주면 알아서 시작점인 CashShopCanvas로 돌아오게 될거다.
-				UIInstanceManager.instance.ShowCanvasAsync("EquipBoxResultCanvas", () =>
-				{
-					EquipBoxResultCanvas.instance.RefreshInfo(listGrantItem);
-				});
-			});
+		UIInstanceManager.instance.ShowCanvasAsync("EquipBoxConfirmCanvas", () => {
+			EquipBoxConfirmCanvas.instance.ShowCanvas(true, false, _equipBox8Price, equipBox8NameText.text, equipBox8IconImage.sprite, equipBox8IconRectTransform.anchoredPosition, equipBox8IconRectTransform.sizeDelta);
 		});
 	}
 }

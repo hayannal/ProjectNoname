@@ -5,21 +5,33 @@ using UnityEngine.UI;
 
 public class CharacterBoxConfirmCanvas : MonoBehaviour
 {
+	public static CharacterBoxConfirmCanvas instance;
+
 	public Slider repeatCountSlider;
 	public Text repeatCountText;
+	public Text characterBoxNameText;
+
 	public Text priceText;
+	public GameObject buttonObject;
+
+	void Awake()
+	{
+		instance = this;
+	}
 
 	int _priceOnce;
-	void OnEnable()
+	public void RefreshInfo(int defaultPrice, string name)
 	{
-		int characterBoxPrice = 50;
-		_priceOnce = characterBoxPrice;
+		_priceOnce = defaultPrice;
+		characterBoxNameText.SetLocalizedText(name);
 
-		int maxCount = CurrencyData.instance.dia / characterBoxPrice;
+		int maxCount = CurrencyData.instance.dia / _priceOnce;
 		repeatCountSlider.minValue = 1.0f;
 		repeatCountSlider.maxValue = Mathf.Min(maxCount, 5);
 		repeatCountSlider.value = 1.0f;
 		OnValueChangedRepeatCount(1.0f);
+
+		buttonObject.SetActive(true);
 	}
 
 	public void OnValueChangedRepeatCount(float value)
@@ -43,7 +55,7 @@ public class CharacterBoxConfirmCanvas : MonoBehaviour
 			return;
 		PlayFabApiManager.instance.RequestCharacterBox(_priceOnce, OnRecvCharacterBox);
 
-		gameObject.SetActive(false);
+		buttonObject.SetActive(false);
 	}
 
 	void OnRecvCharacterBox(bool serverFailure)
@@ -60,6 +72,9 @@ public class CharacterBoxConfirmCanvas : MonoBehaviour
 		// 연출 및 보상 처리.
 		UIInstanceManager.instance.ShowCanvasAsync("RandomBoxScreenCanvas", () =>
 		{
+			// 연출에 의해 캐시샵 가려질때 같이 하이드 시켜야한다.
+			gameObject.SetActive(false);
+
 			// repeatRemainCount를 0으로 보내면 오리진 박스처럼 한번 굴려진 결과가 바로 결과창에 보이게 된다.
 			// 하지만 이 값을 1 이상으로 보내면 내부적으로 n회 돌린 후 누적해서 보여주게 된다.
 			RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Character, _cachedDropProcessor, _repeatRemainCount, () =>

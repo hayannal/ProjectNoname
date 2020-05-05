@@ -14,6 +14,9 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		Character,
 		Equip1,
 		Equip8,
+		Dia1_3,
+		Dia4_6,
+		Gold,
 	}
 
 	public GameObject[] boxPrefabList;

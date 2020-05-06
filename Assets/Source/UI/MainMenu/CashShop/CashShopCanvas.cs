@@ -9,6 +9,8 @@ public class CashShopCanvas : MonoBehaviour
 
 	public CurrencySmallInfo currencySmallInfo;
 
+	public LevelPackageInfo levelPackageInfo;
+
 	public Text characterBoxNameText;
 	public Text characterBoxPriceText;
 	public Text characterBoxAddText;
@@ -31,6 +33,27 @@ public class CashShopCanvas : MonoBehaviour
 	void Awake()
 	{
 		instance = this;
+	}
+
+	float _canvasMatchWidthOrHeightSize;
+	float _lineLengthRatio;
+	public float lineLengthRatio { get { return _lineLengthRatio; } }
+	void Start()
+	{
+		CanvasScaler parentCanvasScaler = GetComponentInParent<CanvasScaler>();
+		if (parentCanvasScaler == null)
+			return;
+
+		if (parentCanvasScaler.matchWidthOrHeight == 0.0f)
+		{
+			_canvasMatchWidthOrHeightSize = parentCanvasScaler.referenceResolution.x;
+			_lineLengthRatio = _canvasMatchWidthOrHeightSize / Screen.width;
+		}
+		else
+		{
+			_canvasMatchWidthOrHeightSize = parentCanvasScaler.referenceResolution.y;
+			_lineLengthRatio = _canvasMatchWidthOrHeightSize / Screen.height;
+		}
 	}
 
 	void OnEnable()
@@ -64,6 +87,8 @@ public class CashShopCanvas : MonoBehaviour
 
 	void RefreshInfo()
 	{
+		levelPackageInfo.RefreshInfo();
+
 		ShopBoxTableData characterBoxTableData = TableDataManager.instance.FindShopBoxTableData("CharacterBox");
 		if (characterBoxTableData != null)
 		{
@@ -71,7 +96,6 @@ public class CashShopCanvas : MonoBehaviour
 			characterBoxPriceText.text = characterBoxTableData.requiredDiamond.ToString("N0");
 			characterBoxAddText.SetLocalizedText(UIString.instance.GetString(characterBoxTableData.addText));
 			_characterBoxPrice = characterBoxTableData.requiredDiamond;
-
 		}
 
 		equipBoxRectObject.SetActive(ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapterStage.TimeSpace));

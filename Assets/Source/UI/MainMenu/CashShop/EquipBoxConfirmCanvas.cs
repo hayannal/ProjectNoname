@@ -10,6 +10,7 @@ public class EquipBoxConfirmCanvas : MonoBehaviour
 
 	public Text equipBoxNameText;
 	public Image equipBoxAddImage;
+	public Transform equipBoxAddImageTransform;
 	public Text equipBoxAddText;
 	public Image equipBoxImage;
 	public RectTransform equipBoxImageRectTransform;
@@ -24,6 +25,11 @@ public class EquipBoxConfirmCanvas : MonoBehaviour
 	void OnEnable()
 	{
 		buttonObject.SetActive(true);
+	}
+
+	void OnDisable()
+	{
+		TooltipCanvas.Hide();
 	}
 
 	bool _miniBox;
@@ -48,6 +54,68 @@ public class EquipBoxConfirmCanvas : MonoBehaviour
 		equipBoxImageRectTransform.anchoredPosition = anchoredPosition;
 		equipBoxImageRectTransform.sizeDelta = sizeDelta;
 		priceText.text = price.ToString("N0");
+	}
+
+	Dictionary<int, float> _dicGradeWeight;
+	public void OnClickInfoButton()
+	{
+		string detailText = UIString.instance.GetString(_miniBox ? "ShopUIMore_EquipmentBox1" : "ShopUIMore_EquipmentBox8");
+
+		if (_dicGradeWeight == null)
+			_dicGradeWeight = new Dictionary<int, float>();
+		_dicGradeWeight.Clear();
+		float notStreakAdjustWeight = TableDataManager.instance.FindNotStreakAdjustWeight(DropManager.instance.GetCurrentNotSteakCount());
+		float sumWeight = 0.0f;
+		for (int i = 0; i < TableDataManager.instance.equipTable.dataArray.Length; ++i)
+		{
+			float weight = TableDataManager.instance.equipTable.dataArray[i].equipGachaWeight;
+			if (weight <= 0.0f)
+				continue;
+
+			if (EquipData.IsUseNotStreakGacha(TableDataManager.instance.equipTable.dataArray[i]))
+				weight *= notStreakAdjustWeight;
+
+			sumWeight += weight;
+
+			if (_dicGradeWeight.ContainsKey(TableDataManager.instance.equipTable.dataArray[i].grade))
+				_dicGradeWeight[TableDataManager.instance.equipTable.dataArray[i].grade] += weight;
+			else
+				_dicGradeWeight.Add(TableDataManager.instance.equipTable.dataArray[i].grade, weight);
+		}
+		string rateText = "";
+
+		// 일반 장비의 확률은 1.0f - (1 ~ 4까지의 합산값) 으로 계산하기로 한다.
+		float sumExceptZero = 0.0f;
+		for (int i = 1; i < 5; ++i)
+		{
+			if (_dicGradeWeight.ContainsKey(i))
+				sumExceptZero += _dicGradeWeight[i];
+		}
+		if (_dicGradeWeight.ContainsKey(0))
+			_dicGradeWeight[0] = sumWeight - sumExceptZero;
+
+		// 장비 Grade에는 Enum이 없다... 0 1 2 3 4 체크해서 보여주기로 한다.
+		bool first = true;
+		for (int i = 0; i < 5; ++i)
+		{
+			if (first)
+				first = false;
+			else
+				rateText = string.Format("{0}\n", rateText);
+
+			if (_dicGradeWeight.ContainsKey(i) == false)
+				continue;
+
+			string gradeText = UIString.instance.GetString(string.Format("ShopUI_EquipmentByGrade{0}", i));
+			float resultRate = 0.0f;
+			if (sumWeight > 0.0f)
+				resultRate = _dicGradeWeight[i] / sumWeight;
+			string addText = string.Format("{0} {1:0.####}%", gradeText, resultRate * 100.0f);
+			rateText = string.Format("{0}{1}", rateText, addText);
+		}
+
+		string text = string.Format("{0}\n\n{1}", detailText, rateText);
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, text, 350, equipBoxAddImageTransform, new Vector2(0.0f, -20.0f));
 	}
 
 	DropProcessor _cachedDropProcessor;

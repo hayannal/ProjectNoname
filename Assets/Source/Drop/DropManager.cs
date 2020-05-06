@@ -375,7 +375,7 @@ public class DropManager : MonoBehaviour
 		return _listRandomDropEquipInfo[index].equipTableData.equipId;
 	}
 	int _droppedNotStreakItemCount = 0;
-	int GetCurrentNotSteakCount()
+	public int GetCurrentNotSteakCount()
 	{
 		// 임시변수를 만들어서 계산하다가 서버에서 리턴받을때 적용해보자
 		return PlayerData.instance.notStreakCount + _droppedNotStreakItemCount;
@@ -470,7 +470,7 @@ public class DropManager : MonoBehaviour
 	}
 
 	List<string> _listDroppedActorId = new List<string>();
-	bool GetableOrigin(string actorId)
+	public bool GetableOrigin(string actorId)
 	{
 		//if (actorId != "Actor0201")
 		//	return false;

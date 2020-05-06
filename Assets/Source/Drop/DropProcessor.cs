@@ -259,6 +259,29 @@ public class DropProcessor : MonoBehaviour
 
 		DropManager.instance.StackDropExp(dropExpValue);
 	}
+
+	public static float GetOriginProbability(string dropId)
+	{
+		DropTableData dropTableData = TableDataManager.instance.FindDropTableData(dropId);
+		if (dropTableData != null)
+		{
+			for (int i = 0; i < dropTableData.dropEnum.Length; ++i)
+			{
+				eDropType dropType = (eDropType)dropTableData.dropEnum[i];
+				float probability = dropTableData.probability[i];
+
+				// 드랍확률 보정처리.
+				switch (dropType)
+				{
+					case eDropType.Origin:
+						float weight = TableDataManager.instance.FindNotCharAdjustProb(DropManager.instance.GetCurrentNotSteakCharCount());
+						probability *= weight;
+						return probability;
+				}
+			}
+		}
+		return 0.0f;
+	}
 	#endregion
 
 	class DropObjectInfo

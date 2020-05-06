@@ -9,9 +9,10 @@ public class CharacterBoxConfirmCanvas : MonoBehaviour
 
 	public Slider repeatCountSlider;
 	public Text repeatCountText;
-	public Text repeatCountInfoText;
+	public Text repeatCountValueText;
 	public Text characterBoxNameText;
 	public Text characterBoxAddText;
+	public Transform characterBoxAddImageTransform;
 
 	public Text priceText;
 	public GameObject buttonObject;
@@ -19,6 +20,11 @@ public class CharacterBoxConfirmCanvas : MonoBehaviour
 	void Awake()
 	{
 		instance = this;
+	}
+
+	void OnDisable()
+	{
+		TooltipCanvas.Hide();
 	}
 
 	int _priceOnce;
@@ -43,9 +49,62 @@ public class CharacterBoxConfirmCanvas : MonoBehaviour
 		repeatCountText.text = count.ToString();
 		int totalPrice = _priceOnce * count;
 		priceText.text = totalPrice.ToString("N0");
-		repeatCountInfoText.SetLocalizedText(string.Format("{0} {1} / {2}", UIString.instance.GetString("ShopUI_NumberContinuousRoll"), count, Mathf.RoundToInt(repeatCountSlider.maxValue)));
+		repeatCountValueText.text = string.Format("{0} / {1}", count, Mathf.RoundToInt(repeatCountSlider.maxValue));
 
 		_repeatRemainCount = count;
+	}
+
+	Dictionary<int, float> _dicGradeWeight;
+	public void OnClickInfoButton()
+	{
+		string detailText = UIString.instance.GetString("ShopUIMore_CharacterBox");
+
+		if (_dicGradeWeight == null)
+			_dicGradeWeight = new Dictionary<int, float>();
+		_dicGradeWeight.Clear();
+		float sumWeight = 0.0f;
+		for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)
+		{
+			float weight = TableDataManager.instance.actorTable.dataArray[i].charGachaWeight;
+			if (weight <= 0.0f)
+				continue;
+
+			// 초기 필수캐릭 습득 여부랑 상관없이 획득가능한지만 체크한다. 못얻을땐 0%로 해놔야 표시하기 편하다.
+			if (DropManager.instance.GetableOrigin(TableDataManager.instance.actorTable.dataArray[i].actorId) == false)
+				weight = 0.0f;
+
+			sumWeight += weight;
+
+			if (_dicGradeWeight.ContainsKey(TableDataManager.instance.actorTable.dataArray[i].grade))
+				_dicGradeWeight[TableDataManager.instance.actorTable.dataArray[i].grade] += weight;
+			else
+				_dicGradeWeight.Add(TableDataManager.instance.actorTable.dataArray[i].grade, weight);
+		}
+		string rateText = "";
+
+		// 캐릭터 Grade에는 Enum이 없다... 0 1 2 체크해서 보여주기로 한다.
+		bool first = true;
+		for (int i = 0; i < 3; ++i)
+		{
+			if (first)
+				first = false;
+			else
+				rateText = string.Format("{0}\n", rateText);
+
+			if (_dicGradeWeight.ContainsKey(i) == false)
+				continue;
+
+			string gradeText = UIString.instance.GetString(string.Format("ShopUI_CharacterByGrade{0}", i));
+			float originRate = DropProcessor.GetOriginProbability("Zoflrflr");
+			float resultRate = 0.0f;
+			if (sumWeight > 0.0f)
+				resultRate = _dicGradeWeight[i] / sumWeight * originRate;
+			string addText = string.Format("{0} {1:0.####}%", gradeText, resultRate * 100.0f);
+			rateText = string.Format("{0}{1}", rateText, addText);
+		}
+		
+		string text = string.Format("{0}\n\n{1}", detailText, rateText);
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, text, 350, characterBoxAddImageTransform, new Vector2(0.0f, -20.0f));
 	}
 
 	DropProcessor _cachedDropProcessor;

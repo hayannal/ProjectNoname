@@ -1141,7 +1141,7 @@ public class PlayFabApiManager : MonoBehaviour
 		});
 	}
 
-	public void RequestEquipBox(List<ObscuredString> listDropItemId, int price, Action<bool, string> successCallback)
+	public void RequestEquipBox(List<ObscuredString> listDropItemId, int price, bool useEquipBoxKey, Action<bool, string> successCallback)
 	{
 		WaitingNetworkCanvas.Show(true);
 
@@ -1162,6 +1162,7 @@ public class PlayFabApiManager : MonoBehaviour
 			{
 				WaitingNetworkCanvas.Show(false);
 				CurrencyData.instance.dia -= price;
+				if (useEquipBoxKey) CurrencyData.instance.equipBoxKey -= 1;
 				TimeSpaceData.instance.OnRecvItemGrantResult((string)itmRet, false);
 				// 캐릭터와 달리 장비는 드랍프로세서에서 정보를 뽑아쓰는게 아니라서 미리 클리어해도 상관없다.
 				DropManager.instance.ClearLobbyDropInfo();

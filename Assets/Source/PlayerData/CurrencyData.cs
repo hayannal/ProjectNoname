@@ -36,6 +36,8 @@ public class CurrencyData : MonoBehaviour
 	public ObscuredInt energy { get; set; }
 	public ObscuredInt dia { get; set; }    // 서버 상점에서 모아서 처리하는 기능이 없어서 free와 구매 다 합쳐서 처리하기로 한다.
 	public ObscuredInt legendKey { get; set; }
+	public ObscuredInt equipBoxKey { get; set; }
+	public ObscuredInt dailyDiaRemainCount { get; set; }
 
 	public ObscuredInt energyMax { get; set; }
 
@@ -49,6 +51,10 @@ public class CurrencyData : MonoBehaviour
 			dia = userVirtualCurrency["DI"];
 		if (userVirtualCurrency.ContainsKey("LE"))	// 충전쿨이 길어서 현재수량만 기억해둔다.
 			legendKey = userVirtualCurrency["LE"];
+		if (userVirtualCurrency.ContainsKey("EQ"))
+			equipBoxKey = userVirtualCurrency["EQ"];
+		if (userVirtualCurrency.ContainsKey("DA"))
+			dailyDiaRemainCount = userVirtualCurrency["DA"];
 
 		if (userVirtualCurrencyRechargeTimes != null && userVirtualCurrencyRechargeTimes.ContainsKey("EN"))
 		{

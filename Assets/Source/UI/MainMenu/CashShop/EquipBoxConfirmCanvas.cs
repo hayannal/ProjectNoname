@@ -9,6 +9,8 @@ public class EquipBoxConfirmCanvas : MonoBehaviour
 	public static EquipBoxConfirmCanvas instance = null;
 
 	public Text equipBoxNameText;
+	public Image equipBoxAddImage;
+	public Text equipBoxAddText;
 	public Image equipBoxImage;
 	public RectTransform equipBoxImageRectTransform;
 	public Text priceText;
@@ -26,7 +28,7 @@ public class EquipBoxConfirmCanvas : MonoBehaviour
 
 	bool _miniBox;
 	int _price;
-	public void ShowCanvas(bool show, bool miniBox, int price, string name, Sprite equipBoxSprite, Vector2 anchoredPosition, Vector2 sizeDelta)
+	public void ShowCanvas(bool show, bool miniBox, int price, string name, string addText, Sprite equipBoxSprite, Vector2 anchoredPosition, Vector2 sizeDelta)
 	{
 		gameObject.SetActive(show);
 		if (show == false)
@@ -39,6 +41,9 @@ public class EquipBoxConfirmCanvas : MonoBehaviour
 		anchoredPosition.y -= 36.0f * 0.5f;
 
 		equipBoxNameText.SetLocalizedText(name);
+		bool existAddText = !string.IsNullOrEmpty(addText);
+		equipBoxAddImage.gameObject.SetActive(existAddText);
+		if (existAddText) equipBoxAddText.text = addText;
 		equipBoxImage.sprite = equipBoxSprite;
 		equipBoxImageRectTransform.anchoredPosition = anchoredPosition;
 		equipBoxImageRectTransform.sizeDelta = sizeDelta;

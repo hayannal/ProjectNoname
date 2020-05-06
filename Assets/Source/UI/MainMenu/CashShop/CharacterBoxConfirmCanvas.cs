@@ -9,7 +9,9 @@ public class CharacterBoxConfirmCanvas : MonoBehaviour
 
 	public Slider repeatCountSlider;
 	public Text repeatCountText;
+	public Text repeatCountInfoText;
 	public Text characterBoxNameText;
+	public Text characterBoxAddText;
 
 	public Text priceText;
 	public GameObject buttonObject;
@@ -20,10 +22,11 @@ public class CharacterBoxConfirmCanvas : MonoBehaviour
 	}
 
 	int _priceOnce;
-	public void RefreshInfo(int defaultPrice, string name)
+	public void RefreshInfo(int defaultPrice, string name, string addText)
 	{
 		_priceOnce = defaultPrice;
 		characterBoxNameText.SetLocalizedText(name);
+		characterBoxAddText.SetLocalizedText(addText);
 
 		int maxCount = CurrencyData.instance.dia / _priceOnce;
 		repeatCountSlider.minValue = 1.0f;
@@ -40,6 +43,7 @@ public class CharacterBoxConfirmCanvas : MonoBehaviour
 		repeatCountText.text = count.ToString();
 		int totalPrice = _priceOnce * count;
 		priceText.text = totalPrice.ToString("N0");
+		repeatCountInfoText.SetLocalizedText(string.Format("{0} {1} / {2}", UIString.instance.GetString("ShopUI_NumberContinuousRoll"), count, Mathf.RoundToInt(repeatCountSlider.maxValue)));
 
 		_repeatRemainCount = count;
 	}

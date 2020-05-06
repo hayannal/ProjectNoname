@@ -20,4 +20,8 @@ public class ShopBoxTableData
   string _boxName;
   public string boxName { get { return _boxName; } set { _boxName = value; } }
   
+  [SerializeField]
+  string _addText;
+  public string addText { get { return _addText; } set { _addText = value; } }
+  
 }

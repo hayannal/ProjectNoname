@@ -11,6 +11,9 @@ public class CashShopCanvas : MonoBehaviour
 
 	public Text characterBoxNameText;
 	public Text characterBoxPriceText;
+	public Text characterBoxAddText;
+
+	public GameObject equipBoxRectObject;
 	public Text equipBox1NameText;
 	public Text equipBox1PriceText;
 	public Image equipBox1IconImage;
@@ -19,6 +22,7 @@ public class CashShopCanvas : MonoBehaviour
 	public Text equipBox8PriceText;
 	public Image equipBox8IconImage;
 	public RectTransform equipBox8IconRectTransform;
+	public Text equipBox8AddText;
 
 	public DiaListItem[] diaListItemList;
 	public GoldListItem[] goldListItemList;
@@ -64,23 +68,30 @@ public class CashShopCanvas : MonoBehaviour
 		{
 			characterBoxNameText.SetLocalizedText(UIString.instance.GetString(characterBoxTableData.boxName));
 			characterBoxPriceText.text = characterBoxTableData.requiredDiamond.ToString("N0");
+			characterBoxAddText.SetLocalizedText(UIString.instance.GetString(characterBoxTableData.addText));
 			_characterBoxPrice = characterBoxTableData.requiredDiamond;
+
 		}
 
-		ShopBoxTableData equipBox1TableData = TableDataManager.instance.FindShopBoxTableData("EquipmentBox1");
-		if (equipBox1TableData != null)
+		equipBoxRectObject.SetActive(ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapterStage.TimeSpace));
+		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapterStage.TimeSpace))
 		{
-			equipBox1NameText.SetLocalizedText(UIString.instance.GetString(equipBox1TableData.boxName));
-			equipBox1PriceText.text = equipBox1TableData.requiredDiamond.ToString("N0");
-			_equipBox1Price = equipBox1TableData.requiredDiamond;
-		}
+			ShopBoxTableData equipBox1TableData = TableDataManager.instance.FindShopBoxTableData("EquipmentBox1");
+			if (equipBox1TableData != null)
+			{
+				equipBox1NameText.SetLocalizedText(UIString.instance.GetString(equipBox1TableData.boxName));
+				equipBox1PriceText.text = equipBox1TableData.requiredDiamond.ToString("N0");
+				_equipBox1Price = equipBox1TableData.requiredDiamond;
+			}
 
-		ShopBoxTableData equipBox8TableData = TableDataManager.instance.FindShopBoxTableData("EquipmentBox8");
-		if (equipBox8TableData != null)
-		{
-			equipBox8NameText.SetLocalizedText(UIString.instance.GetString(equipBox8TableData.boxName));
-			equipBox8PriceText.text = equipBox8TableData.requiredDiamond.ToString("N0");
-			_equipBox8Price = equipBox8TableData.requiredDiamond;
+			ShopBoxTableData equipBox8TableData = TableDataManager.instance.FindShopBoxTableData("EquipmentBox8");
+			if (equipBox8TableData != null)
+			{
+				equipBox8NameText.SetLocalizedText(UIString.instance.GetString(equipBox8TableData.boxName));
+				equipBox8PriceText.text = equipBox8TableData.requiredDiamond.ToString("N0");
+				equipBox8AddText.text = UIString.instance.GetString(equipBox8TableData.addText);
+				_equipBox8Price = equipBox8TableData.requiredDiamond;
+			}
 		}
 
 		for (int i = 0; i < diaListItemList.Length; ++i)
@@ -110,7 +121,7 @@ public class CashShopCanvas : MonoBehaviour
 		}
 
 		UIInstanceManager.instance.ShowCanvasAsync("CharacterBoxConfirmCanvas", () => {
-			CharacterBoxConfirmCanvas.instance.RefreshInfo(_characterBoxPrice, characterBoxNameText.text);
+			CharacterBoxConfirmCanvas.instance.RefreshInfo(_characterBoxPrice, characterBoxNameText.text, characterBoxAddText.text);
 		});
 	}
 
@@ -131,7 +142,7 @@ public class CashShopCanvas : MonoBehaviour
 		}
 
 		UIInstanceManager.instance.ShowCanvasAsync("EquipBoxConfirmCanvas", () => {
-			EquipBoxConfirmCanvas.instance.ShowCanvas(true, true, _equipBox1Price, equipBox1NameText.text, equipBox1IconImage.sprite, equipBox1IconRectTransform.anchoredPosition, equipBox1IconRectTransform.sizeDelta);
+			EquipBoxConfirmCanvas.instance.ShowCanvas(true, true, _equipBox1Price, equipBox1NameText.text, "", equipBox1IconImage.sprite, equipBox1IconRectTransform.anchoredPosition, equipBox1IconRectTransform.sizeDelta);
 		});
 	}
 
@@ -151,7 +162,7 @@ public class CashShopCanvas : MonoBehaviour
 		}
 
 		UIInstanceManager.instance.ShowCanvasAsync("EquipBoxConfirmCanvas", () => {
-			EquipBoxConfirmCanvas.instance.ShowCanvas(true, false, _equipBox8Price, equipBox8NameText.text, equipBox8IconImage.sprite, equipBox8IconRectTransform.anchoredPosition, equipBox8IconRectTransform.sizeDelta);
+			EquipBoxConfirmCanvas.instance.ShowCanvas(true, false, _equipBox8Price, equipBox8NameText.text, equipBox8AddText.text, equipBox8IconImage.sprite, equipBox8IconRectTransform.anchoredPosition, equipBox8IconRectTransform.sizeDelta);
 		});
 	}
 }

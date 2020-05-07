@@ -68,8 +68,7 @@ public class PlayFabApiManager : MonoBehaviour
 	{
 		Debug.LogError(error.GenerateErrorReport());
 
-		if (WaitingNetworkCanvas.IsShow())
-			WaitingNetworkCanvas.Show(false);
+		WaitingNetworkCanvas.Show(false);
 
 		switch (error.Error)
 		{

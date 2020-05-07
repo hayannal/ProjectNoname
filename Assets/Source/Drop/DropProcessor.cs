@@ -165,6 +165,7 @@ public class DropProcessor : MonoBehaviour
 					{
 						case "e": stringValue = DropManager.instance.GetStageDropEquipId(); break;
 						case "g": stringValue = DropManager.instance.GetGachaEquipId(); break;
+						case "o": stringValue = DropManager.instance.GetGachaLegendEquipId(); break;
 					}
 				}
 				else if (dropType == eDropType.Origin)

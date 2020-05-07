@@ -380,6 +380,60 @@ public class DropManager : MonoBehaviour
 		// 임시변수를 만들어서 계산하다가 서버에서 리턴받을때 적용해보자
 		return PlayerData.instance.notStreakCount + _droppedNotStreakItemCount;
 	}
+
+	// not streak에 영향주지 않는 전설 뽑기다.
+	List<RandomDropEquipInfo> _listRandomDropLegendEquipInfo = null;
+	public string GetGachaLegendEquipId()
+	{
+		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
+		if (lobby == false)
+			return "";
+
+		if (_listRandomDropLegendEquipInfo == null)
+		{
+			_listRandomDropLegendEquipInfo = new List<RandomDropEquipInfo>();
+			_listRandomDropLegendEquipInfo.Clear();
+
+			float sumWeight = 0.0f;
+			for (int i = 0; i < TableDataManager.instance.equipTable.dataArray.Length; ++i)
+			{
+				float weight = TableDataManager.instance.equipTable.dataArray[i].equipGachaWeight;
+				if (weight <= 0.0f)
+					continue;
+
+				// 전설뽑기니 나머지 제외
+				if (EquipData.IsUseLegendKey(TableDataManager.instance.equipTable.dataArray[i]) == false)
+					continue;
+
+				// equipGachaWeight 검증
+				if (weight > 1.0f)
+					CheatingListener.OnDetectCheatTable();
+
+				sumWeight += weight;
+				RandomDropEquipInfo newInfo = new RandomDropEquipInfo();
+				newInfo.equipTableData = TableDataManager.instance.equipTable.dataArray[i];
+				newInfo.sumWeight = sumWeight;
+				_listRandomDropLegendEquipInfo.Add(newInfo);
+			}
+		}
+
+		if (_listRandomDropLegendEquipInfo.Count == 0)
+			return "";
+
+		int index = -1;
+		float random = Random.Range(0.0f, _listRandomDropLegendEquipInfo[_listRandomDropLegendEquipInfo.Count - 1].sumWeight);
+		for (int i = 0; i < _listRandomDropLegendEquipInfo.Count; ++i)
+		{
+			if (random <= _listRandomDropLegendEquipInfo[i].sumWeight)
+			{
+				index = i;
+				break;
+			}
+		}
+		if (index == -1)
+			return "";
+		return _listRandomDropLegendEquipInfo[index].equipTableData.equipId;
+	}
 	#endregion
 
 

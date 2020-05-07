@@ -34,12 +34,14 @@ public class CurrencyData : MonoBehaviour
 
 	public ObscuredInt gold { get; set; }
 	public ObscuredInt energy { get; set; }
-	public ObscuredInt dia { get; set; }    // 서버 상점에서 모아서 처리하는 기능이 없어서 free와 구매 다 합쳐서 처리하기로 한다.
-	public ObscuredInt legendKey { get; set; }
-	public ObscuredInt equipBoxKey { get; set; }
-	public ObscuredInt dailyDiaRemainCount { get; set; }
-
 	public ObscuredInt energyMax { get; set; }
+	public ObscuredInt dia { get; set; }    // 서버 상점에서 모아서 처리하는 기능이 없어서 free와 구매 다 합쳐서 처리하기로 한다.
+	public ObscuredInt legendKey { get; set; }	// 스테이지에서 전설을 드랍할 수 있는 기회. 자동충전된다.
+
+	// 과금 요소. 클라이언트에 존재하면 무조건 굴려서 없애야하는거다. 인앱결제 결과를 받아놓는 저장소로 쓰인다.
+	public ObscuredInt equipBoxKey { get; set; }
+	public ObscuredInt legendEquipKey { get; set; }
+	public ObscuredInt dailyDiaRemainCount { get; set; }
 
 	public void OnRecvCurrencyData(Dictionary<string, int> userVirtualCurrency, Dictionary<string, VirtualCurrencyRechargeTime> userVirtualCurrencyRechargeTimes)
 	{
@@ -53,6 +55,8 @@ public class CurrencyData : MonoBehaviour
 			legendKey = userVirtualCurrency["LE"];
 		if (userVirtualCurrency.ContainsKey("EQ"))
 			equipBoxKey = userVirtualCurrency["EQ"];
+		if (userVirtualCurrency.ContainsKey("LQ"))
+			legendEquipKey = userVirtualCurrency["LQ"];
 		if (userVirtualCurrency.ContainsKey("DA"))
 			dailyDiaRemainCount = userVirtualCurrency["DA"];
 

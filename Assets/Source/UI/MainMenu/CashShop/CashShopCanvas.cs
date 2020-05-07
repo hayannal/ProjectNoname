@@ -22,7 +22,6 @@ public class CashShopCanvas : MonoBehaviour
 	public RectTransform equipBox1IconRectTransform;
 	public Text equipBox8NameText;
 	public Text equipBox8PriceText;
-	public RectTransform equipBox8PriceRectTransform;
 	public Image equipBox8IconImage;
 	public RectTransform equipBox8IconRectTransform;
 	public Text equipBox8AddText;
@@ -113,12 +112,14 @@ public class CashShopCanvas : MonoBehaviour
 			if (equipBox8TableData != null)
 			{
 				equipBox8NameText.SetLocalizedText(UIString.instance.GetString(equipBox8TableData.boxName));
+				equipBox8PriceText.text = equipBox8TableData.requiredDiamond.ToString("N0");
 				equipBox8AddText.text = UIString.instance.GetString(equipBox8TableData.addText);
+				_equipBox8Price = equipBox8TableData.requiredDiamond;
 
+				/*
+				 * 일일상점 FREE 구현할때 참고할 것.
 				if (CurrencyData.instance.equipBoxKey == 0)
 				{
-					_equipBox8Price = equipBox8TableData.requiredDiamond;
-					equipBox8PriceText.text = equipBox8TableData.requiredDiamond.ToString("N0");
 					equipBox8PriceText.color = Color.white;
 					equipBox8PriceRectTransform.anchoredPosition = new Vector2(10.0f, 0.0f);
 					equipBox8PriceRectTransform.GetChild(0).gameObject.SetActive(true);
@@ -131,6 +132,7 @@ public class CashShopCanvas : MonoBehaviour
 					equipBox8PriceRectTransform.anchoredPosition = Vector2.zero;
 					equipBox8PriceRectTransform.GetChild(0).gameObject.SetActive(false);
 				}
+				*/
 			}
 		}
 
@@ -195,7 +197,7 @@ public class CashShopCanvas : MonoBehaviour
 			return;
 		}
 
-		if (CurrencyData.instance.equipBoxKey == 0 && CurrencyData.instance.dia < _equipBox8Price)
+		if (CurrencyData.instance.dia < _equipBox8Price)
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughDiamond"), 2.0f);
 			return;

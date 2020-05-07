@@ -15,11 +15,7 @@ public class EquipBoxConfirmCanvas : MonoBehaviour
 	public Image equipBoxImage;
 	public RectTransform equipBoxImageRectTransform;
 	public Text priceText;
-	public RectTransform priceRectTransform;
 	public GameObject buttonObject;
-
-	public Text freeCountText;
-	public Text freeCountValueText;
 
 	void Awake()
 	{
@@ -38,7 +34,6 @@ public class EquipBoxConfirmCanvas : MonoBehaviour
 
 	bool _miniBox;
 	int _price;
-	bool _useEquipBoxKey;
 	public void ShowCanvas(bool show, bool miniBox, int price, string name, string addText, Sprite equipBoxSprite, Vector2 anchoredPosition, Vector2 sizeDelta)
 	{
 		gameObject.SetActive(show);
@@ -58,27 +53,7 @@ public class EquipBoxConfirmCanvas : MonoBehaviour
 		equipBoxImage.sprite = equipBoxSprite;
 		equipBoxImageRectTransform.anchoredPosition = anchoredPosition;
 		equipBoxImageRectTransform.sizeDelta = sizeDelta;
-
-		if (_miniBox == false && CurrencyData.instance.equipBoxKey > 0)
-		{
-			priceText.text = "FREE";
-			priceText.color = Color.green;
-			priceRectTransform.anchoredPosition = Vector2.zero;
-			priceRectTransform.GetChild(0).gameObject.SetActive(false);
-			freeCountText.gameObject.SetActive(true);
-			freeCountText.SetLocalizedText(UIString.instance.GetString("EquipUI_LeftCountOn"));
-			freeCountValueText.text = UIString.instance.GetString("EquipUI_LeftCountValueOn", CurrencyData.instance.equipBoxKey.ToString());
-			_useEquipBoxKey = true;
-		}
-		else
-		{
-			priceText.text = price.ToString("N0");
-			priceText.color = Color.white;
-			priceRectTransform.anchoredPosition = new Vector2(30.0f, 0.0f);
-			priceRectTransform.GetChild(0).gameObject.SetActive(true);
-			freeCountText.gameObject.SetActive(false);
-			_useEquipBoxKey = false;
-		}
+		priceText.text = price.ToString("N0");
 	}
 
 	Dictionary<int, float> _dicGradeWeight;
@@ -153,7 +128,7 @@ public class EquipBoxConfirmCanvas : MonoBehaviour
 		if (CheatingListener.detectedCheatTable)
 			return;
 
-		PlayFabApiManager.instance.RequestEquipBox(DropManager.instance.GetLobbyDropItemInfo(), _price, _useEquipBoxKey, OnRecvEquipBox);
+		PlayFabApiManager.instance.RequestEquipBox(DropManager.instance.GetLobbyDropItemInfo(), _price, false, OnRecvEquipBox);
 
 		// 패킷 보내고 먼저 버튼부터 하이드
 		buttonObject.SetActive(false);

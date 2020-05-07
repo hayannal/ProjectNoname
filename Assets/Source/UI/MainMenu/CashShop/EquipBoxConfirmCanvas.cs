@@ -128,7 +128,7 @@ public class EquipBoxConfirmCanvas : MonoBehaviour
 		if (CheatingListener.detectedCheatTable)
 			return;
 
-		PlayFabApiManager.instance.RequestEquipBox(DropManager.instance.GetLobbyDropItemInfo(), _price, false, OnRecvEquipBox);
+		PlayFabApiManager.instance.RequestEquipBox(DropManager.instance.GetLobbyDropItemInfo(), _price, 0, 0, "", OnRecvEquipBox);
 
 		// 패킷 보내고 먼저 버튼부터 하이드
 		buttonObject.SetActive(false);

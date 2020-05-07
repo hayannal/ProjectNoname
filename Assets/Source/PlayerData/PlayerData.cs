@@ -50,6 +50,9 @@ public class PlayerData : MonoBehaviour
 	public ObscuredInt originOpenCount { get; set; }
 	public ObscuredInt characterBoxOpenCount { get; set; }
 
+	// 인앱결제 상품 관련 변수
+	List<int> _listLevelPackage;	// 레벨패키지 구매했음을 알리는 용도인데 어차피 일반 플레이어 데이터에 저장하는거라 Obscured도 안쓰기로 한다.
+
 	// 이 카오스가 현재 카오스 상태로 스테이지가 셋팅되어있는지를 알려주는 값이다.
 	// 이전 챕터로 내려갈 경우 서버에 저장된 chaosMode는 1이더라도 스테이지 구성은 도전모드로 셋팅하게 되며
 	// 이땐 false를 리턴하게 될 것이다.
@@ -445,6 +448,11 @@ public class PlayerData : MonoBehaviour
 				characterBoxOpenCount = intValue;
 		}
 
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		_listLevelPackage = null;
+		if (userData.ContainsKey("lvPckLst"))
+			_listLevelPackage = serializer.DeserializeObject<List<int>>(userData["lvPckLst"].Value);
+
 		loginned = true;
 	}
 
@@ -633,6 +641,28 @@ public class PlayerData : MonoBehaviour
 				return true;
 		}
 		return false;
+	}
+	#endregion
+
+
+
+
+	#region Cash Shop
+	public bool IsPurchasedLevelPackage(int level)
+	{
+		if (_listLevelPackage == null)
+			return false;
+
+		return _listLevelPackage.Contains(level);
+	}
+
+	public List<int> AddLevelPackage(int level)
+	{
+		if (_listLevelPackage == null)
+			_listLevelPackage = new List<int>();
+		if (_listLevelPackage.Contains(level) == false)
+			_listLevelPackage.Add(level);
+		return _listLevelPackage;
 	}
 	#endregion
 }

@@ -321,6 +321,22 @@ public class PlayFabApiManager : MonoBehaviour
 		});
 	}
 
+	public void RequestNetwork(Action successCallback)
+	{
+		GetUserDataRequest request = new GetUserDataRequest() { Keys = new List<string> { "mainCharacterId" } };
+		Action action = () =>
+		{
+			PlayFabClientAPI.GetUserData(request, (success) =>
+			{
+				RetrySendManager.instance.OnSuccess();
+				if (successCallback != null) successCallback.Invoke();
+			}, (error) =>
+			{
+				RetrySendManager.instance.OnFailure();
+			});
+		};
+		RetrySendManager.instance.RequestAction(action, true);
+	}
 
 	#region Energy
 	public void RequestSyncEnergyRechargeTime()
@@ -1141,16 +1157,17 @@ public class PlayFabApiManager : MonoBehaviour
 		});
 	}
 
-	public void RequestEquipBox(List<ObscuredString> listDropItemId, int price, bool useEquipBoxKey, Action<bool, string> successCallback)
+	public void RequestEquipBox(List<ObscuredString> listDropItemId, int price, int equipBoxKeyCount, int legendEquipKeyCount, string jsonLevelPackageList, Action<bool, string> successCallback)
 	{
-		WaitingNetworkCanvas.Show(true);
+		if (equipBoxKeyCount == 0 && legendEquipKeyCount == 0)
+			WaitingNetworkCanvas.Show(true);
 
 		string checkSum = "";
 		List<TimeSpaceData.ItemGrantRequest> listItemGrantRequest = TimeSpaceData.instance.GenerateGrantRequestInfo(listDropItemId, ref checkSum);
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
-			FunctionName = "OpenEquipBox",
-			FunctionParameter = new { Lst = listItemGrantRequest, LstCs = checkSum },
+			FunctionName = (legendEquipKeyCount > 0) ? "OpenLEquipBox" : "OpenEquipBox",
+			FunctionParameter = new { Lst = listItemGrantRequest, LstCs = checkSum, LvPck = jsonLevelPackageList },
 			GeneratePlayStreamEvent = true,
 		}, (success) =>
 		{
@@ -1160,9 +1177,12 @@ public class PlayFabApiManager : MonoBehaviour
 			bool failure = ((retErr.ToString()) == "1");
 			if (!failure)
 			{
-				WaitingNetworkCanvas.Show(false);
+				if (equipBoxKeyCount == 0 && legendEquipKeyCount == 0)
+					WaitingNetworkCanvas.Show(false);
+
 				CurrencyData.instance.dia -= price;
-				if (useEquipBoxKey) CurrencyData.instance.equipBoxKey -= 1;
+				if (equipBoxKeyCount > 0) CurrencyData.instance.equipBoxKey -= equipBoxKeyCount;
+				if (legendEquipKeyCount > 0) CurrencyData.instance.legendEquipKey -= legendEquipKeyCount;
 				TimeSpaceData.instance.OnRecvItemGrantResult((string)itmRet, false);
 				// 캐릭터와 달리 장비는 드랍프로세서에서 정보를 뽑아쓰는게 아니라서 미리 클리어해도 상관없다.
 				DropManager.instance.ClearLobbyDropInfo();
@@ -1199,6 +1219,53 @@ public class PlayFabApiManager : MonoBehaviour
 		{
 			HandleCommonError(error);
 		});
+	}
+
+	public void RequestValidateLevelPackage(string serverItemId, ShopLevelPackageTableData shopLevelPackageTableData, Action successCallback)
+	//public void RequestValidateLevelPackage(string receiptJson, int price, int buyingGold, Action successCallback)
+	{
+		//PlayFabClientAPI.ValidateGooglePlayPurchase(new ValidateGooglePlayPurchaseRequest()
+		//{
+		//	ReceiptJson = receiptJson,
+		//}
+		PlayFabClientAPI.PurchaseItem(new PurchaseItemRequest()
+		{
+			ItemId = serverItemId,
+			Price = 1,
+			VirtualCurrency = CurrencyData.GoldCode()
+		}, (success) =>
+		{
+			// bundle 안에 있는건 날아오지 않는다. 그래서 success만 오면 알아서 올려줘야한다.
+			// 우선 골드1부터 차감해서 동기부터 맞춘다.(임시가격)
+			CurrencyData.instance.gold -= 1;
+
+			CurrencyData.instance.dia += shopLevelPackageTableData.buyingGems;
+			CurrencyData.instance.gold += shopLevelPackageTableData.buyingGold;
+			CurrencyData.instance.equipBoxKey += shopLevelPackageTableData.buyingEquipKey;
+			CurrencyData.instance.legendEquipKey += shopLevelPackageTableData.buyingLegendEquipKey;
+
+			if (successCallback != null) successCallback.Invoke();
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+
+	public void RequestUpdateLevelPackageList(string jsonLevelPackageList, Action successCallback)
+	{
+		UpdateUserDataRequest request = new UpdateUserDataRequest() { Data = new Dictionary<string, string>() { { "lvPckLst", jsonLevelPackageList } } };
+		Action action = () =>
+		{
+			PlayFabClientAPI.UpdateUserData(request, (success) =>
+			{
+				RetrySendManager.instance.OnSuccess();
+				if (successCallback != null) successCallback.Invoke();
+			}, (error) =>
+			{
+				RetrySendManager.instance.OnFailure();
+			});
+		};
+		RetrySendManager.instance.RequestAction(action, true);
 	}
 	#endregion
 

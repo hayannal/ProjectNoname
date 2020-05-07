@@ -9,6 +9,10 @@ public class EquipBoxResultCanvas : MonoBehaviour
 {
 	public static EquipBoxResultCanvas instance;
 
+	public GameObject goldDiaRectObject;
+	public Text goldValueText;
+	public Text diaValueText;
+
 	public GameObject contentItemPrefab;
 	public RectTransform contentRootRectTransform;
 	public GridLayoutGroup contentGridLayoutGroup;
@@ -57,8 +61,16 @@ public class EquipBoxResultCanvas : MonoBehaviour
 	}
 
 	List<EquipCanvasListItem> _listEquipCanvasListItem = new List<EquipCanvasListItem>();
-	public void RefreshInfo(List<ItemInstance> listGrantItem)
+	public void RefreshInfo(List<ItemInstance> listGrantItem, int addGold = 0, int addDia = 0)
 	{
+		bool goldDia = (addDia > 0) || (addDia > 0);
+		goldDiaRectObject.SetActive(goldDia);
+		if (goldDia)
+		{
+			goldValueText.text = addGold.ToString("N0");
+			diaValueText.text = addDia.ToString("N0");
+		}
+
 		for (int i = 0; i < _listEquipCanvasListItem.Count; ++i)
 			_listEquipCanvasListItem[i].gameObject.SetActive(false);
 		_listEquipCanvasListItem.Clear();

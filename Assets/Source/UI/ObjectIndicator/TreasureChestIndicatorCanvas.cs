@@ -126,7 +126,7 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 			return;
 		PlayFabApiManager.instance.RequestOpenDailyBox((serverFailure) =>
 		{
-			if (false)
+			if (serverFailure)
 			{
 				// 뭔가 잘못된건데 응답을 할 필요가 있을까.
 			}

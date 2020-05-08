@@ -156,6 +156,14 @@ public class PlayFabApiManager : MonoBehaviour
 
 		if (loginResult.NewlyCreated)
 		{
+			// 이때도 서버 utcTime을 받아와야하긴 하는데 서버응답 기다리는거 없이 백그라운드에서 진행하기로 한다.
+			_waitOnlyServerUtc = true;
+			_getServerUtcSendTime = Time.time;
+			PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+			{
+				FunctionName = "GetServerUtc",
+			}, OnGetServerUtc, OnRecvPlayerDataFailure);
+
 			// 처음 만든 계정이면 어차피 읽어올게 없다.
 			// 오히려 서버 rules에 넣어둔 OnCreatedPlayer cloud script가 돌고있을텐데
 			// 이게 비동기라서 로그인과 동시에 날아온 인벤 리스트에는 들어있지 않게 된다.
@@ -243,6 +251,7 @@ public class PlayFabApiManager : MonoBehaviour
 		CheckCompleteRecvPlayerData();
 	}
 
+	bool _waitOnlyServerUtc = false;
 	float _getServerUtcSendTime;
 	TimeSpan _timeSpanForServerUtc;
 	void OnGetServerUtc(ExecuteCloudScriptResult success)
@@ -255,6 +264,11 @@ public class PlayFabApiManager : MonoBehaviour
 			_timeSpanForServerUtc = universalTime - DateTime.UtcNow;
 			// for latency
 			_timeSpanForServerUtc += TimeSpan.FromSeconds((Time.time - _getServerUtcSendTime) * 0.5f);
+		}
+		if (_waitOnlyServerUtc)
+		{
+			_waitOnlyServerUtc = false;
+			return;
 		}
 
 		--_requestCountForGetPlayerData;

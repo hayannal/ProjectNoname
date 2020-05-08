@@ -176,7 +176,7 @@ public class DailyPackageInfo : MonoBehaviour
 				}
 				else
 				{
-					// 연출 및 보상 처리. 일일 다이아니 양이 그렇게 크지는 않을거다.
+					// 연출 및 보상 처리. 일일 다이아니 양이 그렇게 크지는 않을거다. 드랍 아이디도 다르고 그래서 별도로 구현.
 					UIInstanceManager.instance.ShowCanvasAsync("RandomBoxScreenCanvas", () =>
 					{
 						DropProcessor dropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, "DailyDiamond", "", true, true);

@@ -1266,6 +1266,68 @@ public class PlayFabApiManager : MonoBehaviour
 		};
 		RetrySendManager.instance.RequestAction(action, true);
 	}
+
+	public void RequestValidateDailyPackage(string serverItemId, int dayCount, int buyingDia, Action successCallback)
+	//public void RequestValidateDailyPackage(string receiptJson, int buyingDia, Action successCallback)
+	{
+		//PlayFabClientAPI.ValidateGooglePlayPurchase(new ValidateGooglePlayPurchaseRequest()
+		//{
+		//	ReceiptJson = receiptJson,
+		//}
+		PlayFabClientAPI.PurchaseItem(new PurchaseItemRequest()
+		{
+			ItemId = serverItemId,
+			Price = 1,
+			VirtualCurrency = CurrencyData.GoldCode()
+		}, (success) =>
+		{
+			// bundle 안에 있는건 날아오지 않는다. 그래서 success만 오면 알아서 올려줘야한다.
+			// 우선 골드1부터 차감해서 동기부터 맞춘다.(임시가격)
+			CurrencyData.instance.gold -= 1;
+
+			CurrencyData.instance.dailyDiaRemainCount += dayCount;
+			CurrencyData.instance.dia += buyingDia;
+
+			if (successCallback != null) successCallback.Invoke();
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+
+	public void RequestReceiveDailyPackage(int addDia, Action<bool> successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "ReceiveDailyPackage",
+			FunctionParameter = new { Di = addDia },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
+			jsonResult.TryGetValue("retErr", out object retErr);
+			bool failure = ((retErr.ToString()) == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+
+				CurrencyData.instance.dailyDiaRemainCount -= 1;
+				CurrencyData.instance.dia += addDia;
+
+				jsonResult.TryGetValue("date", out object date);
+
+				// 성공시에는 서버에서 방금 기록한 마지막 수령 시간이 날아온다.
+				PlayerData.instance.OnRecvDailyPackageInfo((string)date);
+
+				if (successCallback != null) successCallback.Invoke(failure);
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
 	#endregion
 
 

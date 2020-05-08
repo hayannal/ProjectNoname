@@ -51,7 +51,9 @@ public class PlayerData : MonoBehaviour
 	public ObscuredInt characterBoxOpenCount { get; set; }
 
 	// 인앱결제 상품 관련 변수
-	List<int> _listLevelPackage;	// 레벨패키지 구매했음을 알리는 용도인데 어차피 일반 플레이어 데이터에 저장하는거라 Obscured도 안쓰기로 한다.
+	List<int> _listLevelPackage;    // 레벨패키지 구매했음을 알리는 용도인데 어차피 일반 플레이어 데이터에 저장하는거라 Obscured도 안쓰기로 한다.
+	public ObscuredBool sharedDailyPackageOpened { get; set; }
+	public DateTime dailyPackageResetTime { get; private set; }
 
 	// 이 카오스가 현재 카오스 상태로 스테이지가 셋팅되어있는지를 알려주는 값이다.
 	// 이전 챕터로 내려갈 경우 서버에 저장된 chaosMode는 1이더라도 스테이지 구성은 도전모드로 셋팅하게 되며
@@ -253,6 +255,7 @@ public class PlayerData : MonoBehaviour
 	void Update()
 	{
 		UpdateDailyBoxResetTime();
+		UpdateDailyPackageResetTime();
 	}
 
 	public bool newPlayerAddKeep { get; set; }
@@ -267,6 +270,7 @@ public class PlayerData : MonoBehaviour
 		purifyCount = 0;
 		notStreakCount = 0;
 		notStreakCharCount = 0;
+		sharedDailyPackageOpened = false;
 
 		// 나중에 지울 코드이긴 한데 MainSceneBuilder에서 NEWPLAYER_LEVEL1 디파인 켜둔채로 생성하는 테스트용 루틴일땐
 		// 1챕터에서 시작하게 처리해둔다.
@@ -452,6 +456,13 @@ public class PlayerData : MonoBehaviour
 		_listLevelPackage = null;
 		if (userData.ContainsKey("lvPckLst"))
 			_listLevelPackage = serializer.DeserializeObject<List<int>>(userData["lvPckLst"].Value);
+
+		// 마지막 오픈 시간을 받는건 데일리패키지 역시 마찬가지다.
+		if (userReadOnlyData.ContainsKey("lasPckDat"))
+		{
+			if (string.IsNullOrEmpty(userReadOnlyData["lasPckDat"].Value) == false)
+				OnRecvDailyPackageInfo(userReadOnlyData["lasPckDat"].Value);
+		}
 
 		loginned = true;
 	}
@@ -663,6 +674,48 @@ public class PlayerData : MonoBehaviour
 		if (_listLevelPackage.Contains(level) == false)
 			_listLevelPackage.Add(level);
 		return _listLevelPackage;
+	}
+
+
+	void OnRecvDailyPackageInfo(DateTime lastDailyPackageOpenTime)
+	{
+		if (ServerTime.UtcNow < lastDailyPackageOpenTime)
+		{
+			// 어떻게 미래로 설정되어있을 수가 있나. 이건 무효.
+			sharedDailyPackageOpened = false;
+			return;
+		}
+
+		if (ServerTime.UtcNow.Year == lastDailyPackageOpenTime.Year && ServerTime.UtcNow.Month == lastDailyPackageOpenTime.Month && ServerTime.UtcNow.Day == lastDailyPackageOpenTime.Day)
+		{
+			sharedDailyPackageOpened = true;
+			dailyPackageResetTime = new DateTime(lastDailyPackageOpenTime.Year, lastDailyPackageOpenTime.Month, lastDailyPackageOpenTime.Day) + TimeSpan.FromDays(1);
+		}
+		else
+			sharedDailyPackageOpened = false;
+	}
+
+	public void OnRecvDailyPackageInfo(string lastDailyPackageOpenTimeString)
+	{
+		DateTime lastDailyPackageOpenTime = new DateTime();
+		if (DateTime.TryParse(lastDailyPackageOpenTimeString, out lastDailyPackageOpenTime))
+		{
+			DateTime universalTime = lastDailyPackageOpenTime.ToUniversalTime();
+			OnRecvDailyPackageInfo(universalTime);
+		}
+	}
+
+	void UpdateDailyPackageResetTime()
+	{
+		if (sharedDailyPackageOpened == false)
+			return;
+
+		if (DateTime.Compare(ServerTime.UtcNow, dailyPackageResetTime) < 0)
+			return;
+
+		// 일퀘와 달리 창을 열면 보이지도 않는거기도 하고 노출되는 횟수가 적을거 같아서 하루 갱신될때 서버에 알리지 않고 클라가 선처리 하기로 한다.
+		sharedDailyPackageOpened = false;
+		dailyPackageResetTime += TimeSpan.FromDays(1);
 	}
 	#endregion
 }

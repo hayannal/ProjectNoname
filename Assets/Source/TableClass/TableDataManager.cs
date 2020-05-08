@@ -46,6 +46,7 @@ public class TableDataManager : MonoBehaviour
 	public ShopDiamondTable shopDiamondTable;
 	public ShopBoxTable shopBoxTable;
 	public ShopLevelPackageTable shopLevelPackageTable;
+	public ShopDailyDiamondTable shopDailyDiamondTable;
 
 	void Awake()
 	{

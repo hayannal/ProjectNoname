@@ -11,6 +11,7 @@ public class CurrencyBoxResultCanvas : MonoBehaviour
 	public Text goldValueText;
 	public RectTransform diaGroupRectTransform;
 	public Text diaValueText;
+	public GameObject includeTodayRewardText;
 
 	void Awake()
 	{
@@ -25,7 +26,7 @@ public class CurrencyBoxResultCanvas : MonoBehaviour
 
 	int _addGold;
 	int _addDia;
-	public void RefreshInfo(int addGold, int addDia)
+	public void RefreshInfo(int addGold, int addDia, bool showIncludeFirstDayReward = false)
 	{
 		_addGold = addGold;
 		_addDia = addDia;
@@ -49,6 +50,8 @@ public class CurrencyBoxResultCanvas : MonoBehaviour
 			_currentDia = 0.0f;
 			_updateDiaText = true;
 		}
+
+		includeTodayRewardText.SetActive(showIncludeFirstDayReward);
 	}
 
 	const float diaChangeTime = 0.6f;

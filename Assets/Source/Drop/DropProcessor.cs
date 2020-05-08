@@ -102,6 +102,8 @@ public class DropProcessor : MonoBehaviour
 					case eDropType.Diamond:
 						if (dropTableData.dropId.Contains("Shop"))
 							dropProcessor.AdjustDropDelay(0.05f);
+						else if (dropTableData.dropId.Contains("Daily"))
+							dropProcessor.AdjustDropDelay(0.1f);
 						break;
 				}
 			}
@@ -341,7 +343,8 @@ public class DropProcessor : MonoBehaviour
 				break;
 			case eDropType.Diamond:
 				int splitCount = Random.Range(1, 3);
-				if (_adjustDropDelay > 0.0f) splitCount = Random.Range(12, 20);
+				if (_adjustDropDelay >= 0.1f) splitCount = Random.Range(5, 10);
+				else if (_adjustDropDelay > 0.0f) splitCount = Random.Range(12, 20);
 				int quotient = intValue / splitCount;
 				int remainder = intValue % splitCount;
 				for (int i = 0; i < splitCount; ++i)

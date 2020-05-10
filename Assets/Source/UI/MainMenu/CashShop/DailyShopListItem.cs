@@ -23,6 +23,8 @@ public class DailyShopListItem : MonoBehaviour
 	public GameObject[] onlyPriceTypeObjectList;
 	public GameObject addObject;
 	public Text addText;
+	public Slider ppSlider;
+	public Text ppText;
 	public GameObject blackObject;
 
 	DailyShopData.DailyShopSlotInfo _slotInfo;
@@ -43,7 +45,7 @@ public class DailyShopListItem : MonoBehaviour
 		switch (_slotInfo.type)
 		{
 			case "fe":  // fixed Equip
-				RefreshEquipIconImage();
+				RefreshEquipIconImage(_slotInfo.value);
 				break;
 			case "bn":  // normal Character Box
 				RefreshCharacterBoxIconImage("ShopUI_OnlyGradeNormal");
@@ -52,25 +54,28 @@ public class DailyShopListItem : MonoBehaviour
 				RefreshCharacterBoxIconImage("ShopUI_OnlyGradeHeroic");
 				break;
 			case "fc":  // fixed Character
-				RefreshCharacterIconImage();
+				RefreshCharacterIconImage(_slotInfo.value);
 				break;
 			case "fp":  // fixed Character PP
-				RefreshCharacterPpImage();
+				RefreshCharacterPpImage(_slotInfo.value);
 				break;
 			case "fl1": // fixed Character Limit1
-				RefreshCharacterIconImage();
+				RefreshCharacterIconImage(_slotInfo.value);
 				break;
 			case "fl2": // fixed Character Limit2
-				RefreshCharacterIconImage();
+				RefreshCharacterIconImage(_slotInfo.value);
 				break;
 			case "fl3": // fixed Character Limit3
-				RefreshCharacterIconImage();
+				RefreshCharacterIconImage(_slotInfo.value);
 				break;
-			case "uch":	// unfixed Heroic Character
+			case "uch": // unfixed Heroic Character
+				RefreshUnfixedHeroicCharacterIconImage(_slotInfo.value);
 				break;
-			case "upn":	// unfixed Normal Character PP
+			case "upn": // unfixed Normal Character PP
+				RefreshUnfixedCharacterPpImage(0, _slotInfo.value);
 				break;
-			case "uph":	// unfixed Heroic Character PP
+			case "uph": // unfixed Heroic Character PP
+				RefreshUnfixedCharacterPpImage(1, _slotInfo.value);
 				break;
 		}
 
@@ -157,13 +162,13 @@ public class DailyShopListItem : MonoBehaviour
 		return false;
 	}
 
-	void RefreshEquipIconImage()
+	void RefreshEquipIconImage(string value)
 	{
 		if (equipGroupObject) equipGroupObject.SetActive(true);
 		if (characterGroupObject) characterGroupObject.SetActive(false);
 		if (characterBoxGroupObject) characterBoxGroupObject.SetActive(false);
 
-		EquipTableData equipTableData = TableDataManager.instance.FindEquipTableData(_slotInfo.value);
+		EquipTableData equipTableData = TableDataManager.instance.FindEquipTableData(value);
 		if (equipTableData == null)
 			return;
 
@@ -177,15 +182,16 @@ public class DailyShopListItem : MonoBehaviour
 		nameText.SetLocalizedText(UIString.instance.GetString(equipTableData.nameId));
 		nameText.gameObject.SetActive(true);
 		addObject.SetActive(false);
+		ppSlider.gameObject.SetActive(false);
 	}
 
-	void RefreshCharacterIconImage()
+	void RefreshCharacterIconImage(string value)
 	{
 		if (equipGroupObject) equipGroupObject.SetActive(false);
 		if (characterGroupObject) characterGroupObject.SetActive(true);
 		if (characterBoxGroupObject) characterBoxGroupObject.SetActive(false);
 
-		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(_slotInfo.value);
+		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(value);
 		AddressableAssetLoadManager.GetAddressableSprite(actorTableData.portraitAddress, "Icon", (sprite) =>
 		{
 			characterImage.sprite = null;
@@ -196,11 +202,62 @@ public class DailyShopListItem : MonoBehaviour
 		nameText.SetLocalizedText(UIString.instance.GetString(actorTableData.nameId));
 		nameText.gameObject.SetActive(true);
 		addObject.SetActive(false);
+		ppSlider.gameObject.SetActive(false);
 	}
 
-	void RefreshCharacterPpImage()
+	void RefreshCharacterPpImage(string value)
 	{
-		
+		// pp 역시 캐릭터가 똑같이 보여지는데 그 위에 pp 정보를 출력하는 형태다.
+		if (equipGroupObject) equipGroupObject.SetActive(false);
+		if (characterGroupObject) characterGroupObject.SetActive(true);
+		if (characterBoxGroupObject) characterBoxGroupObject.SetActive(false);
+
+		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(value);
+		AddressableAssetLoadManager.GetAddressableSprite(actorTableData.portraitAddress, "Icon", (sprite) =>
+		{
+			characterImage.sprite = null;
+			characterImage.sprite = sprite;
+		});
+
+		countText.text = _slotInfo.count.ToString("N0");
+		countText.gameObject.SetActive(true);
+		nameText.gameObject.SetActive(false);
+		addObject.SetActive(false);
+
+		int powerLevel = 1;
+		int pp = 0;
+		bool dontHave = true;
+		CharacterData characterData = PlayerData.instance.GetCharacterData(value);
+		if (characterData != null)
+		{
+			powerLevel = characterData.powerLevel;
+			pp = characterData.pp;
+			dontHave = false;
+		}
+		if (powerLevel >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxPowerLevel"))
+		{
+			ppText.text = UIString.instance.GetString("GameUI_OverPp", pp - characterData.maxPp);
+			ppSlider.value = 1.0f;
+			ppSlider.gameObject.SetActive(true);
+		}
+		else
+		{
+			int current = 0;
+			int max = 0;
+			PowerLevelTableData powerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(powerLevel);
+			PowerLevelTableData nextPowerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(powerLevel + 1);
+			current = pp - powerLevelTableData.requiredAccumulatedPowerPoint;
+			max = nextPowerLevelTableData.requiredPowerPoint;
+
+			if (!dontHave)
+			{
+				ppText.text = UIString.instance.GetString("GameUI_StageFraction", current, max);
+				ppSlider.value = Mathf.Min(1.0f, (float)current / (float)max);
+				ppSlider.gameObject.SetActive(true);
+			}
+			else
+				ppSlider.gameObject.SetActive(false);
+		}
 	}
 
 	void RefreshCharacterBoxIconImage(string addTextStringId)
@@ -214,6 +271,27 @@ public class DailyShopListItem : MonoBehaviour
 		nameText.gameObject.SetActive(true);
 		addText.SetLocalizedText(UIString.instance.GetString(addTextStringId));
 		addObject.SetActive(true);
+		ppSlider.gameObject.SetActive(false);
+	}
+
+	void RefreshUnfixedHeroicCharacterIconImage(string value)
+	{
+		int seed = 0;
+		int.TryParse(_slotInfo.value, out seed);
+		Random.InitState(seed);
+		string newCharacterId = DropManager.instance.GetGachaCharacterId(true);
+		RefreshCharacterIconImage(newCharacterId);
+		DropManager.instance.ClearLobbyDropInfo();
+	}
+
+	void RefreshUnfixedCharacterPpImage(int grade, string value)
+	{
+		int seed = 0;
+		int.TryParse(value, out seed);
+		Random.InitState(seed);
+		string newCharacterId = DropManager.instance.GetGachaPowerPointId(grade);
+		RefreshCharacterPpImage(newCharacterId);
+		DropManager.instance.ClearLobbyDropInfo();
 	}
 
 	void RefreshCurrencyMode(int prevPrice, int price, string priceType)

@@ -445,7 +445,7 @@ public class DropManager : MonoBehaviour
 		public float sumWeight;
 	}
 	List<RandomGachaActorInfo> _listRandomGachaActorInfo = null;
-	public string GetGachaCharacterId()
+	public string GetGachaCharacterId(bool onlyHeroic = false)
 	{
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
 		if (lobby == false)
@@ -461,6 +461,12 @@ public class DropManager : MonoBehaviour
 			float weight = TableDataManager.instance.actorTable.dataArray[i].charGachaWeight;
 			if (weight <= 0.0f)
 				continue;
+
+			if (onlyHeroic)
+			{
+				if (TableDataManager.instance.actorTable.dataArray[i].grade != 1)
+					continue;
+			}
 
 			// 초기 필수캐릭 얻었는지 체크 후 얻었다면 원래대로 진행
 			if (IsCompleteFixedCharacterGroup())
@@ -598,7 +604,7 @@ public class DropManager : MonoBehaviour
 	#region Gacha PowerPoint
 	List<string> _listDroppedPowerPointId = new List<string>();
 	const float _maxPowerPointRate = 1.5f;
-	public string GetGachaPowerPointId()
+	public string GetGachaPowerPointId(int grade = -1)
 	{
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
 		if (lobby == false)
@@ -624,6 +630,13 @@ public class DropManager : MonoBehaviour
 			{
 				// 이번 드랍으로 결정된거면 두번 나오지는 않게 한다.
 				continue;
+			}
+
+			if (grade == 0 || grade == 1)
+			{
+				ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(actorId);
+				if (actorTableData.grade != grade)
+					continue;
 			}
 
 			float weight = baseWeight - PlayerData.instance.listCharacterData[i].pp;

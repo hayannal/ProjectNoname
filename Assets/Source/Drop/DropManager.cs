@@ -445,7 +445,7 @@ public class DropManager : MonoBehaviour
 		public float sumWeight;
 	}
 	List<RandomGachaActorInfo> _listRandomGachaActorInfo = null;
-	public string GetGachaCharacterId(bool onlyHeroic = false)
+	public string GetGachaCharacterId(bool onlyHeroicCharacter = false)
 	{
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
 		if (lobby == false)
@@ -462,14 +462,16 @@ public class DropManager : MonoBehaviour
 			if (weight <= 0.0f)
 				continue;
 
-			if (onlyHeroic)
+			if (onlyHeroicCharacter)
 			{
 				if (TableDataManager.instance.actorTable.dataArray[i].grade != 1)
+					continue;
+				if (PlayerData.instance.ContainsActor(TableDataManager.instance.actorTable.dataArray[i].actorId))
 					continue;
 			}
 
 			// 초기 필수캐릭 얻었는지 체크 후 얻었다면 원래대로 진행
-			if (IsCompleteFixedCharacterGroup())
+			if (IsCompleteFixedCharacterGroup() || onlyHeroicCharacter)
 			{
 				// 획득가능한지 물어봐야한다.
 				if (GetableOrigin(TableDataManager.instance.actorTable.dataArray[i].actorId) == false)

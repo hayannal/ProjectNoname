@@ -174,6 +174,8 @@ public class AuthManager : MonoBehaviour
 		parameters.GetUserReadOnlyData = true;
 		parameters.GetUserVirtualCurrency = true;
 		parameters.PlayerStatisticNames = playerStatisticNames;
+		// 일일 상점 및 무료 상품은 서버에 올려진 데이터를 받아서 처리해야한다.
+		parameters.GetTitleData = true;
 		return parameters;
 	}
 

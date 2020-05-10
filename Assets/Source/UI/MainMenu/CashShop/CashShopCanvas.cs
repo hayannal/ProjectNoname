@@ -11,6 +11,9 @@ public class CashShopCanvas : MonoBehaviour
 
 	public LevelPackageInfo levelPackageInfo;
 	public DailyPackageInfo dailyPackageInfo;
+	public DailyShopMainInfo dailyShopMainInfo;
+	public DailyShopMajorInfo dailyShopMajorInfo;
+	public DailyShopMinorInfo dailyShopMinorInfo;
 
 	public Text characterBoxNameText;
 	public Text characterBoxPriceText;
@@ -89,6 +92,9 @@ public class CashShopCanvas : MonoBehaviour
 	{
 		levelPackageInfo.RefreshInfo();
 		dailyPackageInfo.RefreshInfo();
+		dailyShopMainInfo.RefreshInfo();
+		dailyShopMajorInfo.RefreshInfo();
+		dailyShopMinorInfo.RefreshInfo();
 
 		ShopBoxTableData characterBoxTableData = TableDataManager.instance.FindShopBoxTableData("CharacterBox");
 		if (characterBoxTableData != null)

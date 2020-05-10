@@ -713,7 +713,7 @@ public class PlayerData : MonoBehaviour
 		if (DateTime.Compare(ServerTime.UtcNow, dailyPackageResetTime) < 0)
 			return;
 
-		// 일퀘와 달리 창을 열면 보이지도 않는거기도 하고 노출되는 횟수가 적을거 같아서 하루 갱신될때 서버에 알리지 않고 클라가 선처리 하기로 한다.
+		// 일퀘와 달리 창을 열어야만 보이기도 하고 노출되는 횟수가 적을거 같아서 하루 갱신될때 서버에 알리지 않고 클라가 선처리 하기로 한다.
 		sharedDailyPackageOpened = false;
 		dailyPackageResetTime += TimeSpan.FromDays(1);
 	}

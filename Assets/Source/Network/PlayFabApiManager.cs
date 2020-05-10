@@ -153,6 +153,7 @@ public class PlayFabApiManager : MonoBehaviour
 #endif
 
 		CurrencyData.instance.OnRecvCurrencyData(loginResult.InfoResultPayload.UserVirtualCurrency, loginResult.InfoResultPayload.UserVirtualCurrencyRechargeTimes);
+		DailyShopData.instance.OnRecvShopData(loginResult.InfoResultPayload.TitleData, loginResult.InfoResultPayload.UserReadOnlyData);
 
 		if (loginResult.NewlyCreated)
 		{
@@ -1337,6 +1338,56 @@ public class PlayFabApiManager : MonoBehaviour
 
 				if (successCallback != null) successCallback.Invoke(failure);
 			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+
+	public void RequestGetFreeItem(int addDia, int addGold, int addEnergy, Action<bool> successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "GetFreeItem",
+			FunctionParameter = new { Go = addGold },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
+			jsonResult.TryGetValue("retErr", out object retErr);
+			bool failure = ((retErr.ToString()) == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+
+				CurrencyData.instance.dia += addDia;
+				CurrencyData.instance.gold += addGold;
+				if (addEnergy > 0)
+					CurrencyData.instance.OnRecvRefillEnergy(addEnergy);
+
+				jsonResult.TryGetValue("date", out object date);
+
+				// 성공시에는 서버에서 방금 기록한 마지막 수령 시간이 날아온다.
+				DailyShopData.instance.OnRecvDailyFreeItemInfo((string)date);
+
+				if (successCallback != null) successCallback.Invoke(failure);
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+
+	public void RequestGetTitleData(List<string> keys, Action<Dictionary<string, string>> successCallback)
+	{
+		PlayFabClientAPI.GetTitleData(new GetTitleDataRequest()
+		{
+			Keys = keys
+		}, (success) =>
+		{
+			if (successCallback != null) successCallback.Invoke(success.Data);
 		}, (error) =>
 		{
 			HandleCommonError(error);

@@ -653,6 +653,17 @@ public class PlayerData : MonoBehaviour
 		}
 		return false;
 	}
+
+	public bool ContainsActorByGrade(int grade)
+	{
+		for (int i = 0; i < _listCharacterData.Count; ++i)
+		{
+			ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(_listCharacterData[i].actorId);
+			if (actorTableData.grade == grade)
+				return true;
+		}
+		return false;
+	}
 	#endregion
 
 

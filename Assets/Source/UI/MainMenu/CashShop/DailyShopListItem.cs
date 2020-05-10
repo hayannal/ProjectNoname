@@ -26,8 +26,16 @@ public class DailyShopListItem : MonoBehaviour
 	public GameObject blackObject;
 
 	DailyShopData.DailyShopSlotInfo _slotInfo;
-	public void RefreshInfo(DailyShopData.DailyShopSlotInfo dailyShopSlotInfo)
+	public bool RefreshInfo(DailyShopData.DailyShopSlotInfo dailyShopSlotInfo)
 	{
+		// 각각의 타입마다 보여져야할 조건이 다르다.
+		// 보여지면 안되는 상황이라면 숨겨야한다.
+		if (CheckVisible(dailyShopSlotInfo) == false)
+		{
+			gameObject.SetActive(false);
+			return false;
+		}
+
 		// 서버에서 날아온 데이터에는 어떤 상품을 얼마나 팔지가 적혀있다.
 		// 이걸 가지고 클라 테이블을 열어서 보여줘야한다.
 		_slotInfo = dailyShopSlotInfo;
@@ -70,6 +78,83 @@ public class DailyShopListItem : MonoBehaviour
 
 		bool purchased = DailyShopData.instance.IsPurchasedTodayShopData(dailyShopSlotInfo.slotId);
 		blackObject.SetActive(purchased);
+		gameObject.SetActive(true);
+		return true;
+	}
+
+	bool CheckVisible(DailyShopData.DailyShopSlotInfo dailyShopSlotInfo)
+	{
+		CharacterData characterData = null;
+		switch (dailyShopSlotInfo.type)
+		{
+			case "fe":  // fixed Equip
+				return true;
+			case "bn":  // normal Character Box
+				for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)
+				{
+					if (TableDataManager.instance.actorTable.dataArray[i].grade != 0)
+						continue;
+					if (PlayerData.instance.ContainsActor(TableDataManager.instance.actorTable.dataArray[i].actorId) == false)
+						return true;
+				}
+				break;
+			case "bh":  // heroic Character Box
+				for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)
+				{
+					if (TableDataManager.instance.actorTable.dataArray[i].grade != 1)
+						continue;
+					if (PlayerData.instance.ContainsActor(TableDataManager.instance.actorTable.dataArray[i].actorId) == false)
+						return true;
+				}
+				break;
+			case "fc":  // fixed Character
+				if (PlayerData.instance.ContainsActor(dailyShopSlotInfo.value) == false)
+					return true;
+				break;
+			case "fp":  // fixed Character PP
+				if (PlayerData.instance.ContainsActor(dailyShopSlotInfo.value))
+					return true;
+				break;
+			case "fl1": // fixed Character Limit1
+				characterData = PlayerData.instance.GetCharacterData(dailyShopSlotInfo.value);
+				if (characterData == null)
+					break;
+				if (characterData.needLimitBreak && characterData.limitBreakPoint <= characterData.limitBreakLevel && characterData.limitBreakLevel == 0)
+					return true;
+				break;
+			case "fl2": // fixed Character Limit2
+				characterData = PlayerData.instance.GetCharacterData(dailyShopSlotInfo.value);
+				if (characterData == null)
+					break;
+				if (characterData.needLimitBreak && characterData.limitBreakPoint <= characterData.limitBreakLevel && characterData.limitBreakLevel == 1)
+					return true;
+				break;
+			case "fl3": // fixed Character Limit3
+				characterData = PlayerData.instance.GetCharacterData(dailyShopSlotInfo.value);
+				if (characterData == null)
+					break;
+				if (characterData.needLimitBreak && characterData.limitBreakPoint <= characterData.limitBreakLevel && characterData.limitBreakLevel == 2)
+					return true;
+				break;
+			case "uch": // unfixed Heroic Character
+				for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)
+				{
+					if (TableDataManager.instance.actorTable.dataArray[i].grade != 1)
+						continue;
+					if (PlayerData.instance.ContainsActor(TableDataManager.instance.actorTable.dataArray[i].actorId) == false)
+						return true;
+				}
+				break;
+			case "upn": // unfixed Normal Character PP
+				if (PlayerData.instance.ContainsActorByGrade(0))
+					return true;
+				break;
+			case "uph": // unfixed Heroic Character PP
+				if (PlayerData.instance.ContainsActorByGrade(1))
+					return true;
+				break;
+		}
+		return false;
 	}
 
 	void RefreshEquipIconImage()

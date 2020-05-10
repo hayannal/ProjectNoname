@@ -23,14 +23,14 @@ public class DailyShopMainInfo : MonoBehaviour
 		if (dailyShopSlotInfo1 != null && DailyShopData.instance.IsPurchasedTodayShopData(dailyShopSlotInfo1.slotId) == false)
 		{
 			selectedSlotInfo = dailyShopSlotInfo1;
-			dailyShopListItem1.RefreshInfo(dailyShopSlotInfo1);
-			++showCount;
+			if (dailyShopListItem1.RefreshInfo(dailyShopSlotInfo1))
+				++showCount;
 		}
 		if (dailyShopSlotInfo2 != null && DailyShopData.instance.IsPurchasedTodayShopData(dailyShopSlotInfo2.slotId) == false)
 		{
 			selectedSlotInfo = dailyShopSlotInfo2;
-			dailyShopListItem2.RefreshInfo(dailyShopSlotInfo2);
-			++showCount;
+			if (dailyShopListItem2.RefreshInfo(dailyShopSlotInfo2))
+				++showCount;
 		}
 		if (showCount == 0)
 		{

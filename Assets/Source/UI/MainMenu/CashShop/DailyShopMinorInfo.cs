@@ -31,8 +31,7 @@ public class DailyShopMinorInfo : MonoBehaviour
 				continue;
 			}
 
-			dailyShopListItemList[i].RefreshInfo(dailyShopSlotInfo);
-			if (dailyShopListItemList[i].gameObject.activeSelf)
+			if (dailyShopListItemList[i].RefreshInfo(dailyShopSlotInfo))
 				++activeItemCount;
 		}
 

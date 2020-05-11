@@ -445,7 +445,7 @@ public class DropManager : MonoBehaviour
 		public float sumWeight;
 	}
 	List<RandomGachaActorInfo> _listRandomGachaActorInfo = null;
-	public string GetGachaCharacterId(bool onlyHeroicCharacter = false)
+	public string GetGachaCharacterId(int grade = -1)
 	{
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
 		if (lobby == false)
@@ -462,16 +462,21 @@ public class DropManager : MonoBehaviour
 			if (weight <= 0.0f)
 				continue;
 
-			if (onlyHeroicCharacter)
+			bool ignoreFixedCharacterGroup = false;
+			if (grade == 0 || grade == 1)
 			{
-				if (TableDataManager.instance.actorTable.dataArray[i].grade != 1)
+				if (TableDataManager.instance.actorTable.dataArray[i].grade != grade)
 					continue;
+				// grade 지정해서 뽑을땐 lbp가 나오면 안된다.
 				if (PlayerData.instance.ContainsActor(TableDataManager.instance.actorTable.dataArray[i].actorId))
 					continue;
+
+				// grade 지정해서 뽑을땐 FixedCharacter 그룹 체크를 건너뛰어야한다.
+				ignoreFixedCharacterGroup = true;
 			}
 
 			// 초기 필수캐릭 얻었는지 체크 후 얻었다면 원래대로 진행
-			if (IsCompleteFixedCharacterGroup() || onlyHeroicCharacter)
+			if (IsCompleteFixedCharacterGroup() || ignoreFixedCharacterGroup)
 			{
 				// 획득가능한지 물어봐야한다.
 				if (GetableOrigin(TableDataManager.instance.actorTable.dataArray[i].actorId) == false)

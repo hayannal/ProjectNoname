@@ -90,7 +90,7 @@ public class DropProcessor : MonoBehaviour
 				switch (dropType)
 				{
 					case eDropType.Origin:
-						if (dropTableData.subValue[i] != "s")
+						if (dropTableData.subValue[i] != "s" && dropTableData.subValue[i] != "l" && dropTableData.subValue[i] != "u")
 							break;
 						float weight = TableDataManager.instance.FindNotCharAdjustProb(DropManager.instance.GetCurrentNotSteakCharCount());
 						// NotCharTable Adjust Prob 검증
@@ -175,8 +175,8 @@ public class DropProcessor : MonoBehaviour
 					switch (dropTableData.subValue[i])
 					{
 						case "s": stringValue = DropManager.instance.GetGachaCharacterId(); break;
-						//case "l": stringValue = DropManager.instance.GetGachaCharacterId(0); break;
-						case "u": stringValue = DropManager.instance.GetGachaCharacterId(true); break;
+						case "l": stringValue = DropManager.instance.GetGachaCharacterId(0); break;
+						case "u": stringValue = DropManager.instance.GetGachaCharacterId(1); break;
 					}
 					// Origin이나 아래 PowerPoint는 특정 조건에 의해(중복 방지라던지 등등) 안나올 수 있다. 이땐 건너뛰어야한다.
 					if (stringValue == "")

@@ -279,7 +279,7 @@ public class DailyShopListItem : MonoBehaviour
 		int seed = 0;
 		int.TryParse(_slotInfo.value, out seed);
 		Random.InitState(seed);
-		string newCharacterId = DropManager.instance.GetGachaCharacterId(true);
+		string newCharacterId = DropManager.instance.GetGachaCharacterId(1);
 		RefreshCharacterIconImage(newCharacterId);
 		DropManager.instance.ClearLobbyDropInfo();
 	}

@@ -138,13 +138,17 @@ public class DailyShopData : MonoBehaviour
 
 	public DailyShopSlotInfo GetTodayShopData(int slotId)
 	{
+		return GetShopSlotData(ServerTime.UtcNow.Day, slotId);
+	}
+
+	public DailyShopSlotInfo GetShopSlotData(int day, int slotId)
+	{
 		if (_listDailyShopSlotInfo == null)
 			return null;
 
-		int serverDay = ServerTime.UtcNow.Day;
 		for (int i = 0; i < _listDailyShopSlotInfo.Count; ++i)
 		{
-			if (_listDailyShopSlotInfo[i].dy == serverDay && _listDailyShopSlotInfo[i].sl == slotId)
+			if (_listDailyShopSlotInfo[i].dy == day && _listDailyShopSlotInfo[i].sl == slotId)
 				return _listDailyShopSlotInfo[i];
 		}
 		return null;

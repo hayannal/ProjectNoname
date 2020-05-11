@@ -25,6 +25,7 @@ public class DailyShopListItem : MonoBehaviour
 	public GameObject onlyPriceObject;
 	public Text onlyPriceText;
 	public GameObject[] onlyPriceTypeObjectList;
+	public GameObject purchasedObject;
 	public GameObject addObject;
 	public Text addText;
 	public Slider ppSlider;
@@ -82,12 +83,7 @@ public class DailyShopListItem : MonoBehaviour
 				RefreshUnfixedCharacterPpImage(1, _slotInfo.value);
 				break;
 		}
-
-		RefreshBackground(_slotInfo.isLightenBackground);
-		RefreshCurrencyMode(_slotInfo.prevPrice, _slotInfo.price, _slotInfo.priceType);
-
-		bool purchased = DailyShopData.instance.IsPurchasedTodayShopData(dailyShopSlotInfo.slotId);
-		blackObject.SetActive(purchased);
+		RefreshPrice();
 		gameObject.SetActive(true);
 		return true;
 	}
@@ -177,6 +173,8 @@ public class DailyShopListItem : MonoBehaviour
 		if (equipTableData == null)
 			return;
 
+		RefreshBackground(equipTableData.grade == 4);
+
 		AddressableAssetLoadManager.GetAddressableSprite(equipTableData.shotAddress, "Icon", (sprite) =>
 		{
 			equipIconImage.sprite = null;
@@ -197,6 +195,8 @@ public class DailyShopListItem : MonoBehaviour
 		if (characterBoxGroupObject) characterBoxGroupObject.SetActive(false);
 
 		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(value);
+		RefreshBackground(actorTableData.grade == 2);
+
 		AddressableAssetLoadManager.GetAddressableSprite(actorTableData.portraitAddress, "Icon", (sprite) =>
 		{
 			characterImage.sprite = null;
@@ -218,6 +218,8 @@ public class DailyShopListItem : MonoBehaviour
 		if (characterBoxGroupObject) characterBoxGroupObject.SetActive(false);
 
 		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(value);
+		RefreshBackground(actorTableData.grade == 2);
+
 		AddressableAssetLoadManager.GetAddressableSprite(actorTableData.portraitAddress, "Icon", (sprite) =>
 		{
 			characterImage.sprite = null;
@@ -305,8 +307,22 @@ public class DailyShopListItem : MonoBehaviour
 		backgroundImge.sprite = backgroundSpriteList[isLightenBackground ? 0 : 1];
 	}
 	
-	void RefreshCurrencyMode(int prevPrice, int price, string priceType)
+	void RefreshPrice()
 	{
+		bool purchased = DailyShopData.instance.IsPurchasedTodayShopData(_slotInfo.slotId);
+		blackObject.SetActive(purchased);
+		purchasedObject.SetActive(purchased);
+		if (purchased)
+		{
+			priceText.gameObject.SetActive(false);
+			prevPriceText.gameObject.SetActive(false);
+			onlyPriceObject.SetActive(false);
+			return;
+		}
+
+		int prevPrice = _slotInfo.prevPrice;
+		int price = _slotInfo.price;
+		string priceType = _slotInfo.priceType;
 		if (prevPrice > 0)
 		{
 			onlyPriceObject.SetActive(false);

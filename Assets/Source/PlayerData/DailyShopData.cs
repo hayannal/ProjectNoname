@@ -34,7 +34,6 @@ public class DailyShopData : MonoBehaviour
 		public string pt;	// priceType
 		public int pp;		// prevPrice
 		public int pr;      // price
-		public int lt;		// lighten background
 
 		public int day { get { return dy; } }
 		public int slotId { get { return sl; } }
@@ -44,7 +43,6 @@ public class DailyShopData : MonoBehaviour
 		public string priceType { get { return pt; } }
 		public int prevPrice { get { return pp; } }
 		public int price { get { return pr; } }
-		public bool isLightenBackground { get { return lt == 1; } }
 	}
 	List<DailyShopSlotInfo> _listDailyShopSlotInfo;
 

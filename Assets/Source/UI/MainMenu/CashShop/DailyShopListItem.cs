@@ -5,6 +5,10 @@ using UnityEngine.UI;
 
 public class DailyShopListItem : MonoBehaviour
 {
+	public Image blurImage;
+	public Image backgroundImge;
+	public Sprite[] backgroundSpriteList;
+
 	public GameObject equipGroupObject;
 	public GameObject characterGroupObject;
 	public GameObject characterBoxGroupObject;
@@ -79,6 +83,7 @@ public class DailyShopListItem : MonoBehaviour
 				break;
 		}
 
+		RefreshBackground(_slotInfo.isLightenBackground);
 		RefreshCurrencyMode(_slotInfo.prevPrice, _slotInfo.price, _slotInfo.priceType);
 
 		bool purchased = DailyShopData.instance.IsPurchasedTodayShopData(dailyShopSlotInfo.slotId);
@@ -294,6 +299,12 @@ public class DailyShopListItem : MonoBehaviour
 		DropManager.instance.ClearLobbyDropInfo();
 	}
 
+	void RefreshBackground(bool isLightenBackground)
+	{
+		blurImage.color = isLightenBackground ? new Color(0.945f, 0.945f, 0.094f, 0.42f) : new Color(0.094f, 0.686f, 0.945f, 0.42f);
+		backgroundImge.sprite = backgroundSpriteList[isLightenBackground ? 0 : 1];
+	}
+	
 	void RefreshCurrencyMode(int prevPrice, int price, string priceType)
 	{
 		if (prevPrice > 0)

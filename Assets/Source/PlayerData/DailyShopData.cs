@@ -67,6 +67,7 @@ public class DailyShopData : MonoBehaviour
 	void Update()
 	{
 		UpdateDailyShopRefreshTime();
+		UpdateDailyShopSlotResetTime();
 		UpdateDailyFreeItemResetTime();
 	}
 

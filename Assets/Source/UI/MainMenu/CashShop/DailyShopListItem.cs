@@ -303,7 +303,8 @@ public class DailyShopListItem : MonoBehaviour
 
 	void RefreshBackground(bool isLightenBackground)
 	{
-		blurImage.color = isLightenBackground ? new Color(0.945f, 0.945f, 0.094f, 0.42f) : new Color(0.094f, 0.686f, 0.945f, 0.42f);
+		blurImage.color = isLightenBackground ? new Color(0.945f, 0.945f, 0.094f, 0.42f) : new Color(0.094f, 0.945f, 0.871f, 0.42f);
+		backgroundImge.color = isLightenBackground ? new Color(1.0f, 1.0f, 1.0f, 0.42f) : new Color(0.0f, 1.0f, 0.749f, 0.42f);
 		backgroundImge.sprite = backgroundSpriteList[isLightenBackground ? 0 : 1];
 	}
 	
@@ -383,6 +384,21 @@ public class DailyShopListItem : MonoBehaviour
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("ShopUI_AlreadyThatItem"), 2.0f);
 			return;
+		}
+
+		if (_slotInfo.type == "fe")
+		{
+			UIInstanceManager.instance.ShowCanvasAsync("DailyShopEquipConfirmCanvas", () =>
+			{
+				DailyShopEquipConfirmCanvas.instance.ShowCanvas(true, _slotInfo);
+			});
+		}
+		else
+		{
+			UIInstanceManager.instance.ShowCanvasAsync("DailyShopCharacterConfirmCanvas", () =>
+			{
+				DailyShopCharacterConfirmCanvas.instance.ShowCanvas(true, _slotInfo, gameObject.name.Contains("_Big"));
+			});
 		}
 	}
 

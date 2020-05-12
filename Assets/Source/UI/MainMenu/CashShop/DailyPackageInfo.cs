@@ -190,7 +190,7 @@ public class DailyPackageInfo : MonoBehaviour
 							// 결과로는 공용 재화 획득창을 띄워준다.
 							UIInstanceManager.instance.ShowCanvasAsync("CurrencyBoxResultCanvas", () =>
 							{
-								CurrencyBoxResultCanvas.instance.RefreshInfo(0, _shopDailyDiamondTableData.GemsDailyGems);
+								CurrencyBoxResultCanvas.instance.RefreshInfo(0, _shopDailyDiamondTableData.GemsDailyGems, false, true);
 							});
 						});
 					});

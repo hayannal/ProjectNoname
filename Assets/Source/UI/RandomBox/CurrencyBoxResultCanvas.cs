@@ -7,6 +7,7 @@ public class CurrencyBoxResultCanvas : MonoBehaviour
 {
 	public static CurrencyBoxResultCanvas instance;
 
+	public Text titleText;
 	public RectTransform goldGroupRectTransform;
 	public Text goldValueText;
 	public RectTransform diaGroupRectTransform;
@@ -26,8 +27,10 @@ public class CurrencyBoxResultCanvas : MonoBehaviour
 
 	int _addGold;
 	int _addDia;
-	public void RefreshInfo(int addGold, int addDia, bool showIncludeFirstDayReward = false)
+	public void RefreshInfo(int addGold, int addDia, bool showIncludeFirstDayReward = false, bool claim = false)
 	{
+		titleText.SetLocalizedText(UIString.instance.GetString(claim ? "ShopUI_ClaimComplete" : "ShopUI_PurchaseComplete"));
+
 		_addGold = addGold;
 		_addDia = addDia;
 		goldGroupRectTransform.gameObject.SetActive(addGold > 0);

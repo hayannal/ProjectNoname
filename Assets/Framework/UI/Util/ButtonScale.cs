@@ -65,6 +65,11 @@ public class ButtonScale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
 	public void OnPointerDown(PointerEventData eventData)
 	{
+		if (_button != null && _button.interactable == false)
+			return;
+		if (_toggle != null && _toggle.interactable == false)
+			return;
+
 		_applyLerp = true;
 		_targetScale = _defaultLocalScale * downScale;
 		_transform.DOComplete(false);

@@ -88,13 +88,18 @@ public class CashShopCanvas : MonoBehaviour
 		LobbyCanvas.Home();
 	}
 
+	public void RefreshDailyShopInfo()
+	{
+		dailyShopMainInfo.RefreshInfo();
+		dailyShopMajorInfo.RefreshInfo();
+		dailyShopMinorInfo.RefreshInfo();
+	}
+
 	void RefreshInfo()
 	{
 		levelPackageInfo.RefreshInfo();
 		dailyPackageInfo.RefreshInfo();
-		dailyShopMainInfo.RefreshInfo();
-		dailyShopMajorInfo.RefreshInfo();
-		dailyShopMinorInfo.RefreshInfo();
+		RefreshDailyShopInfo();
 
 		ShopBoxTableData characterBoxTableData = TableDataManager.instance.FindShopBoxTableData("CharacterBox");
 		if (characterBoxTableData != null)

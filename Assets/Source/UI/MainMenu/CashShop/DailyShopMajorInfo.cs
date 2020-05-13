@@ -39,6 +39,8 @@ public class DailyShopMajorInfo : MonoBehaviour
 		int showCount = 0;
 		DailyShopData.DailyShopSlotInfo dailyShopSlotInfo1 = DailyShopData.instance.GetTodayShopData(5);
 		DailyShopData.DailyShopSlotInfo dailyShopSlotInfo2 = DailyShopData.instance.GetTodayShopData(6);
+		dailyShopListItem1.gameObject.SetActive(dailyShopSlotInfo1 != null);
+		dailyShopListItem2.gameObject.SetActive(dailyShopSlotInfo2 != null);
 		if (dailyShopSlotInfo1 != null)
 		{
 			if (dailyShopListItem1.RefreshInfo(dailyShopSlotInfo1))

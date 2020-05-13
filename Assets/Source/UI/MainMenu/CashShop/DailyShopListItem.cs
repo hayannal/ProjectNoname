@@ -90,6 +90,12 @@ public class DailyShopListItem : MonoBehaviour
 
 	bool CheckVisible(DailyShopData.DailyShopSlotInfo dailyShopSlotInfo)
 	{
+		// 예외상황이 하나 있는데 영입하지 않은 노멀 캐릭터가 하나 남은 상태에서 bn 상품으로 마지막 노멀 캐릭터를 영입하면
+		// 구매완료 대신 아예 Visible에서 false가 되면서 항목 자체가 사라져버린다.
+		// 이걸 방지하기 위해 오늘 구매한거라면 강제로 visible true로 리턴하게 한다.
+		if (DailyShopData.instance.IsPurchasedTodayShopData(dailyShopSlotInfo.slotId))
+			return true;
+
 		CharacterData characterData = null;
 		switch (dailyShopSlotInfo.type)
 		{
@@ -273,6 +279,7 @@ public class DailyShopListItem : MonoBehaviour
 		if (characterGroupObject) characterGroupObject.SetActive(false);
 		if (characterBoxGroupObject) characterBoxGroupObject.SetActive(true);
 
+		RefreshBackground(false);
 		countText.gameObject.SetActive(false);
 		nameText.SetLocalizedText(UIString.instance.GetString("ShopUIName_CharacterBox"));
 		nameText.gameObject.SetActive(true);
@@ -286,8 +293,8 @@ public class DailyShopListItem : MonoBehaviour
 		int seed = 0;
 		int.TryParse(_slotInfo.value, out seed);
 		Random.InitState(seed);
-		string newCharacterId = DropManager.instance.GetGachaCharacterId(1);
-		RefreshCharacterIconImage(newCharacterId);
+		_selectedCharacterId = DropManager.instance.GetGachaCharacterId(1);
+		RefreshCharacterIconImage(_selectedCharacterId);
 		DropManager.instance.ClearLobbyDropInfo();
 	}
 
@@ -296,9 +303,28 @@ public class DailyShopListItem : MonoBehaviour
 		int seed = 0;
 		int.TryParse(value, out seed);
 		Random.InitState(seed);
-		string newCharacterId = DropManager.instance.GetGachaPowerPointId(grade);
-		RefreshCharacterPpImage(newCharacterId);
+		_selectedCharacterId = DropManager.instance.GetGachaPowerPointId(grade);
+		RefreshCharacterPpImage(_selectedCharacterId);
 		DropManager.instance.ClearLobbyDropInfo();
+	}
+
+	string _selectedCharacterId;
+	public string selectedCharacterId
+	{
+		get
+		{
+			switch (_slotInfo.type)
+			{
+				case "bn":
+				case "bh":
+					return "";
+				case "uch":
+				case "upn":
+				case "uph":
+					return _selectedCharacterId;
+			}
+			return _slotInfo.value;
+		}
 	}
 
 	void RefreshBackground(bool isLightenBackground)

@@ -1393,6 +1393,59 @@ public class PlayFabApiManager : MonoBehaviour
 			HandleCommonError(error);
 		});
 	}
+
+	public void RequestPurchaseDailyShopItem(int slotId, string type, string equipId, string actorId, int priceDia, int priceGold, Action<bool, string, string> successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		ExecuteCloudScriptRequest request = null;
+		if (equipId != "")
+		{
+			string checkSum = "";
+			List<TimeSpaceData.ItemGrantRequest> listItemGrantRequest = TimeSpaceData.instance.GenerateGrantRequestInfo(equipId, ref checkSum);
+			request = new ExecuteCloudScriptRequest()
+			{
+				FunctionName = "BuyDailyShop",
+				FunctionParameter = new { Sl = slotId, Tp = type, Lst = listItemGrantRequest, LstCs = checkSum },
+				GeneratePlayStreamEvent = true,
+			};
+		}
+		else
+		{
+			request = new ExecuteCloudScriptRequest()
+			{
+				FunctionName = "BuyDailyShop",
+				FunctionParameter = new { Sl = slotId, Tp = type, Id = actorId },
+				GeneratePlayStreamEvent = true,
+			};
+		}
+		
+		PlayFabClientAPI.ExecuteCloudScript(request, (success) =>
+		{
+			PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
+			jsonResult.TryGetValue("retErr", out object retErr);
+			bool failure = ((retErr.ToString()) == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+
+				CurrencyData.instance.dia -= priceDia;
+				CurrencyData.instance.gold -= priceGold;
+
+				jsonResult.TryGetValue("date", out object date);
+				jsonResult.TryGetValue("adChrId", out object adChrId);
+				jsonResult.TryGetValue("itmRet", out object itmRet);
+
+				// 성공시에는 서버에서 방금 기록한 마지막 수령 시간이 날아온다.
+				DailyShopData.instance.OnRecvDailyShopSlotInfo((string)date, slotId);
+
+				if (successCallback != null) successCallback.Invoke(failure, (string)adChrId, (string)itmRet);
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
 	#endregion
 
 

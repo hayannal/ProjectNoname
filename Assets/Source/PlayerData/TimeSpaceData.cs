@@ -350,7 +350,7 @@ public class TimeSpaceData
 		return GenerateGrantInfo(_listEquipId, ref checkSum);
 	}
 
-	public List<ItemGrantRequest> GenerateGrantInfo(string equipId, ref string checkSum)
+	public List<ItemGrantRequest> GenerateGrantRequestInfo(string equipId, ref string checkSum)
 	{
 		_listEquipId.Clear();
 		_listEquipId.Add(equipId);

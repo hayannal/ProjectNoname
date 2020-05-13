@@ -252,8 +252,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: OnClickInfoButton
+      - m_Target: {fileID: 677175049416952853}
+        m_MethodName: OnClickDetailButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1398,6 +1398,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: DailyShopListItem_Big
       objectReference: {fileID: 0}
+    - target: {fileID: 2407889689249720499, guid: 72c60fe63f89d0f42ac03d4614865f41,
+        type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1734164916093241915, guid: 72c60fe63f89d0f42ac03d4614865f41,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1528,7 +1533,7 @@ PrefabInstance:
     - target: {fileID: 2337928994470395203, guid: f18777abe7ffb4140b9651999a307657,
         type: 3}
       propertyPath: onCompleteAnimation.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2337928994470395203, guid: f18777abe7ffb4140b9651999a307657,
         type: 3}
@@ -1544,7 +1549,7 @@ PrefabInstance:
         type: 3}
       propertyPath: onCompleteAnimation.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 677175049416952853}
     - target: {fileID: 2337928994470395203, guid: f18777abe7ffb4140b9651999a307657,
         type: 3}
       propertyPath: onCompleteAnimation.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -1558,23 +1563,27 @@ PrefabInstance:
     - target: {fileID: 319353503750484554, guid: f18777abe7ffb4140b9651999a307657,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 319353503750484554, guid: f18777abe7ffb4140b9651999a307657,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 3268235519434362721, guid: 4e29d4eedf1ab504689189ab48bf1f52,
-        type: 3}
+      objectReference: {fileID: 677175049416952853}
     - target: {fileID: 319353503750484554, guid: f18777abe7ffb4140b9651999a307657,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnClickButton
+      value: OnClickOkButton
       objectReference: {fileID: 0}
     - target: {fileID: 319353503750484554, guid: f18777abe7ffb4140b9651999a307657,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 319353503750484554, guid: f18777abe7ffb4140b9651999a307657,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 497421740156534858, guid: f18777abe7ffb4140b9651999a307657,
         type: 3}
@@ -1756,11 +1765,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 1242098694854666850, guid: 9bdfe640b6bbb8f4e8b9c396f108013f,
-        type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 29.866667
-      objectReference: {fileID: 0}
     - target: {fileID: 5247573840314735890, guid: 9bdfe640b6bbb8f4e8b9c396f108013f,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1866,6 +1870,21 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 140
       objectReference: {fileID: 0}
+    - target: {fileID: 1098701046692816184, guid: 9bdfe640b6bbb8f4e8b9c396f108013f,
+        type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1242098694854666850, guid: 9bdfe640b6bbb8f4e8b9c396f108013f,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 29.866667
+      objectReference: {fileID: 0}
+    - target: {fileID: 8871991250379594675, guid: 9bdfe640b6bbb8f4e8b9c396f108013f,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 34.133335
+      objectReference: {fileID: 0}
     - target: {fileID: 2679884581524695739, guid: 9bdfe640b6bbb8f4e8b9c396f108013f,
         type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -1875,11 +1894,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: -36
-      objectReference: {fileID: 0}
-    - target: {fileID: 8871991250379594675, guid: 9bdfe640b6bbb8f4e8b9c396f108013f,
-        type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 34.133335
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9bdfe640b6bbb8f4e8b9c396f108013f, type: 3}

@@ -183,13 +183,17 @@ public class EquipInfoGround : MonoBehaviour
 	#region Diff Equip Item
 	// 별도의 공간으로 뺄까 하다가 어차피 그거나 이거나 작업량은 비슷할거 같아서 차라리 같은 공간에서 바꿔치기 하는 형태로 가기로 한다.
 	public bool diffMode { get; set; }
-	public void ChangeDiffMode(EquipData diffEquipData)
+	public void ChangeDiffMode(EquipData equipData)
+	{
+		ChangeDiffMode(equipData.cachedEquipTableData);
+	}
+	public void ChangeDiffMode(EquipTableData equipTableData)
 	{
 		if (diffMode)
 			return;
 
 		// 이미 로드는 되어있는 상태니 바로 콜백이 올거다.
-		AddressableAssetLoadManager.GetAddressableGameObject(diffEquipData.cachedEquipTableData.prefabAddress, "Equip", (prefab) =>
+		AddressableAssetLoadManager.GetAddressableGameObject(equipTableData.prefabAddress, "Equip", (prefab) =>
 		{
 			// 기존 오브젝트는 복구시 다시 만들테니 날린다.
 			if (_currentEquipObject != null)
@@ -199,7 +203,7 @@ public class EquipInfoGround : MonoBehaviour
 			}
 
 			// 오브젝트 셋팅을 하고
-			_currentEquipObject = RefreshInfo(prefab, diffEquipData.cachedEquipTableData.grade);
+			_currentEquipObject = RefreshInfo(prefab, equipTableData.grade);
 
 			// 회전할때는 괜찮았는데 초기화 각도로 멈춰있으니 안예쁘게 나와서 45도 돌려두기로 한다.
 			// 이게 하필 start 되기도 전에 생성과 동시에 셋팅해버리면

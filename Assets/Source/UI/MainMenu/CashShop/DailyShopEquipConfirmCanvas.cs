@@ -76,13 +76,17 @@ public class DailyShopEquipConfirmCanvas : MonoBehaviour
 
 	public void OnClickDetailButton()
 	{
+		EquipTableData equipTableData = TableDataManager.instance.FindEquipTableData(_slotInfo.value);
+		if (equipTableData == null)
+			return;
+
 		// 장비일때만 오는거라 장비가 보이면 된다.
 		// 여긴 장비를 만들어내기 전이기 때문에 equipId만 가지고 3d오브젝트를 보여줄 방법이 필요하다.
 		// 이 창은 연출과도 관련없으니 스스로 StackCanvas를 처리한다.
 		UIInstanceManager.instance.ShowCanvasAsync("DailyShopEquipDetailCanvas", () =>
 		{
 			gameObject.SetActive(false);
-			DailyShopEquipDetailCanvas.instance.ShowCanvas(true, _slotInfo.value, () =>
+			DailyShopEquipDetailCanvas.instance.ShowCanvas(true, equipTableData, () =>
 			{
 				// 확인 누르면 바로 캐시샵으로 돌아와서 이 Confirm창을 다시 띄워야한다.
 				gameObject.SetActive(true);

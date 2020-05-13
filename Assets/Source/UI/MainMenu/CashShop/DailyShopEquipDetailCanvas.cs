@@ -31,15 +31,13 @@ public class DailyShopEquipDetailCanvas : EquipShowCanvasBase
 	}
 
 	System.Action _okAction;
-	public void ShowCanvas(bool show, string equipId, System.Action okAction)
+	public void ShowCanvas(bool show, EquipTableData equipTableData, System.Action okAction)
 	{
 		_okAction = okAction;
 
 		SetInfoCameraMode(true);
 
-		EquipData equipData = new EquipData();
-		equipData.equipId = equipId;
-		EquipInfoGround.instance.ChangeDiffMode(equipData);
+		EquipInfoGround.instance.ChangeDiffMode(equipTableData);
 	}
 
 	public void OnClickDetailButton()

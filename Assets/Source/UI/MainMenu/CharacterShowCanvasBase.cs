@@ -70,7 +70,7 @@ public class CharacterShowCanvasBase : MonoBehaviour
 			_prevEnvironmentSettingObject = StageManager.instance.DisableCurrentEnvironmentSetting();
 			if (_groundTransform == null)
 			{
-				_groundTransform = Instantiate<GameObject>(StageManager.instance.characterInfoGroundPrefab, _rootOffsetPosition, Quaternion.identity).transform;
+				_groundTransform = BattleInstanceManager.instance.GetCachedObject(StageManager.instance.characterInfoGroundPrefab, _rootOffsetPosition, Quaternion.identity).transform;
 				_environmentSetting = _groundTransform.GetComponentInChildren<EnvironmentSetting>();
 				_defaultLightIntensity = _environmentSetting.defaultDirectionalLightIntensity;
 

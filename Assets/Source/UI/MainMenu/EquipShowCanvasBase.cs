@@ -57,7 +57,7 @@ public class EquipShowCanvasBase : MonoBehaviour
 			_prevEnvironmentSettingObject = StageManager.instance.DisableCurrentEnvironmentSetting();
 			if (_groundTransform == null)
 			{
-				_groundTransform = Instantiate<GameObject>(equipInfoGroundPrefab, _rootOffsetPosition, Quaternion.identity).transform;
+				_groundTransform = BattleInstanceManager.instance.GetCachedObject(equipInfoGroundPrefab, _rootOffsetPosition, Quaternion.identity).transform;
 				_environmentSetting = _groundTransform.GetComponentInChildren<EnvironmentSetting>();
 			}
 			else

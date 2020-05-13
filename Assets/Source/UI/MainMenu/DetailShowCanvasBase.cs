@@ -14,7 +14,8 @@ public class DetailShowCanvasBase : MonoBehaviour
 		_origPosition = CustomFollowCamera.instance.cachedTransform.position;
 		_origRotation = CustomFollowCamera.instance.cachedTransform.rotation;
 		Vector3 basePosition = Vector3.zero;
-		if (EquipListCanvas.instance != null && EquipListCanvas.instance.gameObject.activeSelf) basePosition = EquipListCanvas.instance.rootOffsetPosition;
+		if (DailyShopEquipDetailCanvas.instance != null && DailyShopEquipDetailCanvas.instance.gameObject.activeSelf) basePosition = DailyShopEquipDetailCanvas.instance.rootOffsetPosition;
+		else if (EquipListCanvas.instance != null && EquipListCanvas.instance.gameObject.activeSelf) basePosition = EquipListCanvas.instance.rootOffsetPosition;
 		else if (CharacterListCanvas.instance != null && StackCanvas.IsInStack(CharacterListCanvas.instance.gameObject)) basePosition = CharacterListCanvas.instance.rootOffsetPosition;
 		_targetPosition = infoCameraTransform.localPosition + basePosition;
 		_targetRotation = infoCameraTransform.localRotation;

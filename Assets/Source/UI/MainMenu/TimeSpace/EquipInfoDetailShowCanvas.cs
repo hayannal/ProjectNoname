@@ -34,10 +34,18 @@ public class EquipInfoDetailShowCanvas : DetailShowCanvasBase
 	{
 		EquipInfoGround.instance.EnableRotationTweenAnimation(true);
 
-		// 여기서 처리하면 뒤로 카메라가 빠지고나서 복구되는건데..
-		// 원래 장착된 거로 복구되고나서 카메라가 뒤로 빠지게 하려면 아래 Hide()호출하는 곳에서 복구하면 된다.
-		if (EquipInfoGround.instance.diffMode)
-			EquipInfoGround.instance.RestoreDiffMode();
+		// RestoreDiffMode는 평소에만 해야한다.
+		// DailyShopEquipDetailCanvas 에서 들어왔다면 DailyShopEquipDetailCanvas 나갈때 복구할테니 여기서는 패스해야한다.
+		bool ignoreRestore = false;
+		if (DailyShopEquipDetailCanvas.instance != null && StackCanvas.IsInStack(DailyShopEquipDetailCanvas.instance.gameObject))
+			ignoreRestore = true;
+		if (ignoreRestore == false)
+		{
+			// 여기서 처리하면 뒤로 카메라가 빠지고나서 복구되는건데..
+			// 원래 장착된 거로 복구되고나서 카메라가 뒤로 빠지게 하려면 아래 Hide()호출하는 곳에서 복구하면 된다.
+			if (EquipInfoGround.instance.diffMode)
+				EquipInfoGround.instance.RestoreDiffMode();
+		}
 
 		StackCanvas.Pop(gameObject);
 	}

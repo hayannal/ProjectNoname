@@ -32,11 +32,20 @@ public class EquipInfoGround : MonoBehaviour
 
 #if UNITY_EDITOR
 	Transform _diffEquipRootTransform;
+#endif
+	bool _started;
 	void Start()
 	{
+#if UNITY_EDITOR
 		_diffEquipRootTransform = rotateTweenAnimation.transform.Find("DiffEquipRootForEditor");
-	}
 #endif
+		_started = true;
+	}
+
+	void Update()
+	{
+		UpdateDiffModeRotation();
+	}
 
 	public void ResetEquipObject()
 	{
@@ -193,7 +202,14 @@ public class EquipInfoGround : MonoBehaviour
 			_currentEquipObject = RefreshInfo(prefab, diffEquipData.cachedEquipTableData.grade);
 
 			// 회전할때는 괜찮았는데 초기화 각도로 멈춰있으니 안예쁘게 나와서 45도 돌려두기로 한다.
-			rotateTweenAnimation.transform.localRotation = Quaternion.Euler(0.0f, 45.0f, 0.0f);
+			// 이게 하필 start 되기도 전에 생성과 동시에 셋팅해버리면
+			// tween 초기값에 엄한 값이 들어가게 되면서 360도 자동회전 트윈애니에 튀는 현상이 발생했다.
+			// 그래서 started 상태인지 확인 후 생성되는 프레임과 같은 프레임이면 한프레임 늦게 처리하도록 한다.
+			// (시공간의 방에 들어가지 않은채 DailyShop에서 장비를 미리보기를 누르면 EquipInfoGround를 생성하는 것과 동시에 ChangeDiffMode를 호출해서 발생하던 문제였다.)
+			if (_started)
+				rotateTweenAnimation.transform.localRotation = Quaternion.Euler(0.0f, 45.0f, 0.0f);
+			else
+				_reserveDiffModeRotation = true;
 			// 본체의 회전도 바꿔야 더 예쁘게 나와서 이것도 45도 추가로 돌려놓는다. 이게 강화창에서도 통할진 모르겠다.
 			_currentEquipObject.cachedTransform.localRotation = Quaternion.Euler(0.0f, 45.0f, 0.0f);
 
@@ -203,6 +219,16 @@ public class EquipInfoGround : MonoBehaviour
 		});
 
 		diffMode = true;
+	}
+
+	bool _reserveDiffModeRotation = false;
+	void UpdateDiffModeRotation()
+	{
+		if (_reserveDiffModeRotation)
+		{
+			rotateTweenAnimation.transform.localRotation = Quaternion.Euler(0.0f, 45.0f, 0.0f);
+			_reserveDiffModeRotation = false;
+		}
 	}
 
 	public void RestoreDiffMode()

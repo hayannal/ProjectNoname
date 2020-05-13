@@ -162,7 +162,7 @@ public class CharacterInfoCanvas : MonoBehaviour
 	}
 
 
-	#region DailyShop Character Detail
+	#region DailyShopCharacterConfirmCanvas
 	System.Action _okAction;
 	public void ReserveBackButton(System.Action okAction)
 	{

@@ -296,6 +296,7 @@ public class DailyShopListItem : MonoBehaviour
 		_selectedCharacterId = DropManager.instance.GetGachaCharacterId(1);
 		RefreshCharacterIconImage(_selectedCharacterId);
 		DropManager.instance.ClearLobbyDropInfo();
+		Random.InitState(Time.frameCount);
 	}
 
 	void RefreshUnfixedCharacterPpImage(int grade, string value)
@@ -306,6 +307,7 @@ public class DailyShopListItem : MonoBehaviour
 		_selectedCharacterId = DropManager.instance.GetGachaPowerPointId(grade);
 		RefreshCharacterPpImage(_selectedCharacterId);
 		DropManager.instance.ClearLobbyDropInfo();
+		Random.InitState(Time.frameCount);
 	}
 
 	string _selectedCharacterId;

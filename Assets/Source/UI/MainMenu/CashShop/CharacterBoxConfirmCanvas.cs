@@ -22,11 +22,6 @@ public class CharacterBoxConfirmCanvas : MonoBehaviour
 		instance = this;
 	}
 
-	void OnDisable()
-	{
-		TooltipCanvas.Hide();
-	}
-
 	int _priceOnce;
 	public void RefreshInfo(int defaultPrice, string name, string addText)
 	{

@@ -27,11 +27,6 @@ public class EquipBoxConfirmCanvas : MonoBehaviour
 		buttonObject.SetActive(true);
 	}
 
-	void OnDisable()
-	{
-		TooltipCanvas.Hide();
-	}
-
 	bool _miniBox;
 	int _price;
 	public void ShowCanvas(bool show, bool miniBox, int price, string name, string addText, Sprite equipBoxSprite, Vector2 anchoredPosition, Vector2 sizeDelta)

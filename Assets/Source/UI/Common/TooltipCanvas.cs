@@ -79,6 +79,11 @@ public class TooltipCanvas : MonoBehaviour
 		PlayStartAnimation();
 	}
 
+	void OnDisable()
+	{
+		gameObject.SetActive(false);
+	}
+
 	void RefreshSortingOrder()
 	{
 		// 카메라 공간쪽에 보여진채로 오버레이쪽에 보여지면 이상하게 안보인다. 아래 라인을 호출하면 보이길래 추가해둔다.

@@ -146,7 +146,6 @@ public class EquipInfoGrowthCanvas : MonoBehaviour
 				continue;
 			_listMenuTransform[i].gameObject.SetActive(index == i);
 		}
-		TooltipCanvas.Hide();
 
 		_lastIndex = index;
 

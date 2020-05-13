@@ -26,6 +26,8 @@ public class ToastCanvas : MonoBehaviour
 		toastText.SetLocalizedText(text);
 		_showRemainTime = remainTime;
 		_maxAlpha = maxAlpha;
+
+		gameObject.SetActive(false);
 		gameObject.SetActive(true);
 	}
 

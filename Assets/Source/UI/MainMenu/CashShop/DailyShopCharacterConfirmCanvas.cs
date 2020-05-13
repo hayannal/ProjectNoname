@@ -12,6 +12,9 @@ public class DailyShopCharacterConfirmCanvas : MonoBehaviour
 	public DailyShopListItem dailyListItem;
 	public DailyShopListItem bigDailyListItem;
 	public RectTransform detailButtonRectTransform;
+	public Transform characterBoxAddImageTransform;
+	public Transform bigCharacterBoxAddImageTransform;
+
 	public Text priceText;
 	public GameObject buttonObject;
 
@@ -26,6 +29,7 @@ public class DailyShopCharacterConfirmCanvas : MonoBehaviour
 	}
 
 	DailyShopData.DailyShopSlotInfo _slotInfo;
+	Transform _currentAddImageTransform;
 	public void ShowCanvas(bool show, DailyShopData.DailyShopSlotInfo dailyShopSlotInfo, bool big)
 	{
 		_slotInfo = dailyShopSlotInfo;
@@ -35,11 +39,13 @@ public class DailyShopCharacterConfirmCanvas : MonoBehaviour
 		{
 			bigDailyListItem.RefreshInfo(dailyShopSlotInfo);
 			detailButtonRectTransform.anchoredPosition = new Vector3(128.0f, detailButtonRectTransform.anchoredPosition.y);
+			_currentAddImageTransform = bigCharacterBoxAddImageTransform;
 		}
 		else
 		{
 			dailyListItem.RefreshInfo(dailyShopSlotInfo);
 			detailButtonRectTransform.anchoredPosition = new Vector3(90.0f, detailButtonRectTransform.anchoredPosition.y);
+			_currentAddImageTransform = characterBoxAddImageTransform;
 		}
 		dailyListItemGroupObject.SetActive(!big);
 		bigDailyListItemGroupObject.SetActive(big);
@@ -50,6 +56,16 @@ public class DailyShopCharacterConfirmCanvas : MonoBehaviour
 	public void OnClickDetailButton()
 	{
 		// 타입에 따라 달라져야 한다.
+		switch (_slotInfo.type)
+		{
+			// 상자는 툴팁만 표시하면 끝
+			case "bn":
+				TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, UIString.instance.GetString("ShopUIMore_OnlyNormal"), 300, _currentAddImageTransform, new Vector2(0.0f, -20.0f));
+				break;
+			case "bh":
+				TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, UIString.instance.GetString("ShopUIMore_OnlyHeroic"), 300, _currentAddImageTransform, new Vector2(0.0f, -20.0f));
+				break;
+		}
 	}
 
 	string _selectedCharacterId;

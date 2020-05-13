@@ -36,17 +36,20 @@ public class DailyShopCharacterConfirmCanvas : MonoBehaviour
 		_slotInfo = dailyShopSlotInfo;
 
 		// 골드나 다른 박스들과 달리 지우기엔 컴포넌트가 많아서 차라리 마스킹으로 가리도록 해본다.
+		string selectedCharacterId = "";
 		if (big)
 		{
 			bigDailyListItem.RefreshInfo(dailyShopSlotInfo);
 			detailButtonRectTransform.anchoredPosition = new Vector3(128.0f, detailButtonRectTransform.anchoredPosition.y);
 			_currentAddImageTransform = bigCharacterBoxAddImageTransform;
+			selectedCharacterId = bigDailyListItem.selectedCharacterId;
 		}
 		else
 		{
 			dailyListItem.RefreshInfo(dailyShopSlotInfo);
 			detailButtonRectTransform.anchoredPosition = new Vector3(90.0f, detailButtonRectTransform.anchoredPosition.y);
 			_currentAddImageTransform = characterBoxAddImageTransform;
+			selectedCharacterId = dailyListItem.selectedCharacterId;
 		}
 		dailyListItemGroupObject.SetActive(!big);
 		bigDailyListItemGroupObject.SetActive(big);
@@ -57,6 +60,18 @@ public class DailyShopCharacterConfirmCanvas : MonoBehaviour
 			currencyType = CurrencyData.eCurrencyType.Gold;
 		for (int i = 0; i < priceTypeObjectList.Length; ++i)
 			priceTypeObjectList[i].SetActive((int)currencyType == i);
+
+		// 신규캐릭터 획득 창이 뜰 항목들을 열때는 미리 로드를 걸어둔다.
+		switch (_slotInfo.type)
+		{
+			case "fc":
+			case "uch":
+			case "fl1":
+			case "fl2":
+			case "fl3":
+				AddressableAssetLoadManager.GetAddressableGameObject(CharacterData.GetAddressByActorId(selectedCharacterId), "Character");
+				break;
+		}
 	}
 
 	public void OnClickDetailButton()

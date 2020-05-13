@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using PlayFab.ClientModels;
 
 public class DailyShopEquipConfirmCanvas : MonoBehaviour
 {
@@ -35,8 +36,11 @@ public class DailyShopEquipConfirmCanvas : MonoBehaviour
 		materialSmallStatusInfo.gameObject.SetActive(false);
 	}
 
+	DailyShopData.DailyShopSlotInfo _slotInfo;
 	public void ShowCanvas(bool show, DailyShopData.DailyShopSlotInfo dailyShopSlotInfo)
 	{
+		_slotInfo = dailyShopSlotInfo;
+
 		// 골드나 다른 박스들과 달리 지우기엔 컴포넌트가 많아서 차라리 마스킹으로 가리도록 해본다.
 		dailyListItem.RefreshInfo(dailyShopSlotInfo);
 
@@ -65,15 +69,61 @@ public class DailyShopEquipConfirmCanvas : MonoBehaviour
 			currencyType = CurrencyData.eCurrencyType.Gold;
 		for (int i = 0; i < priceTypeObjectList.Length; ++i)
 			priceTypeObjectList[i].SetActive((int)currencyType == i);
+
+		// 구매하면 3d 오브젝트가 떠야하니 미리 로딩을 걸어둔다.
+		AddressableAssetLoadManager.GetAddressableGameObject(equipTableData.prefabAddress, "Equip", null);
 	}
 
 	public void OnClickDetailButton()
 	{
 		// 장비일때만 오는거라 장비가 보이면 된다.
+		// 여긴 장비를 만들어내기 전이기 때문에 equipId만 가지고 3d오브젝트를 보여줄 방법이 필요하다.
+		// 이 창은 연출과도 관련없으니 스스로 StackCanvas를 처리한다.
+		UIInstanceManager.instance.ShowCanvasAsync("DailyShopEquipDetailCanvas", () =>
+		{
+			gameObject.SetActive(false);
+			DailyShopEquipDetailCanvas.instance.ShowCanvas(true, _slotInfo.value, () =>
+			{
+				// 확인 누르면 바로 캐시샵으로 돌아와서 이 Confirm창을 다시 띄워야한다.
+				gameObject.SetActive(true);
+			});
+		});
 	}
 
 	public void OnClickOkButton()
 	{
-		// 장비는 직접 구매만 있으니 드랍은 연결할필요 없을거다.
+		int priceDia = (_slotInfo.priceType == CurrencyData.DiamondCode()) ? _slotInfo.price : 0;
+		int priceGold = (_slotInfo.priceType == CurrencyData.GoldCode()) ? _slotInfo.price : 0;
+		PlayFabApiManager.instance.RequestPurchaseDailyShopItem(_slotInfo.slotId, _slotInfo.type, _slotInfo.value, "", priceDia, priceGold, OnRecvPurchaseDailyShopItem);
+
+		buttonObject.SetActive(false);
+	}
+
+	void OnRecvPurchaseDailyShopItem(bool serverFailure, string newCharacterId, string itemGrantString)
+	{
+		if (serverFailure)
+			return;
+
+		CashShopCanvas.instance.currencySmallInfo.RefreshInfo();
+
+		// 직접 사는거라 뽑기 연출을 보여줄 순 없고 전용 획득창을 보여준다.
+		if (itemGrantString == "")
+			return;
+		EquipData grantEquipData = TimeSpaceData.instance.OnRecvGrantEquip(itemGrantString, 1);
+		if (grantEquipData == null)
+			return;
+
+		UIInstanceManager.instance.ShowCanvasAsync("DailyShopEquipShowCanvas", () =>
+		{
+			// CharacterBoxShowCanvas와 비슷한 구조로 가기 위해 여기서 StackCanvas 처리를 한다.
+			StackCanvas.Push(gameObject);
+
+			gameObject.SetActive(false);
+			DailyShopEquipShowCanvas.instance.ShowCanvas(grantEquipData, () =>
+			{
+				// 확인 누르면 바로 캐시샵으로 돌아오면 된다.
+				StackCanvas.Pop(gameObject);
+			});
+		});
 	}
 }

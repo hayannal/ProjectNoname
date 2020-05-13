@@ -1406,7 +1406,7 @@ public class PlayFabApiManager : MonoBehaviour
 			request = new ExecuteCloudScriptRequest()
 			{
 				FunctionName = "BuyDailyShop",
-				FunctionParameter = new { Sl = slotId, Tp = type, Lst = listItemGrantRequest, LstCs = checkSum },
+				FunctionParameter = new { Sl = slotId, Tp = type, EqpLst = listItemGrantRequest, EqpLstCs = checkSum },
 				GeneratePlayStreamEvent = true,
 			};
 		}

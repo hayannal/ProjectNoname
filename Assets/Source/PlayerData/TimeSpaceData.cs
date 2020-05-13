@@ -410,6 +410,30 @@ public class TimeSpaceData
 				PlayerData.instance.notStreakCount = 0;
 		}
 	}
+
+	// DailyShop에서 직접 구매가 추가되면서 notStreakCount도 수정하지 않고 legendKey에도 영향을 주지않는 기본적인 아이템 추가가 필요해졌다.
+	public EquipData OnRecvGrantEquip(string jsonItemGrantResults, int expectCount = 0)
+	{
+		List<ItemInstance> listItemInstance = DeserializeItemGrantResult(jsonItemGrantResults);
+		if (expectCount != 0 && listItemInstance.Count != expectCount)
+			return null;
+
+		// 1개일때를 가정하고 등록된 마지막거를 리턴하기로 한다.
+		EquipData newEquipData = null;
+		for (int i = 0; i < listItemInstance.Count; ++i)
+		{
+			EquipTableData equipTableData = TableDataManager.instance.FindEquipTableData(listItemInstance[i].ItemId);
+			if (equipTableData == null)
+				continue;
+
+			newEquipData = new EquipData();
+			newEquipData.uniqueId = listItemInstance[i].ItemInstanceId;
+			newEquipData.equipId = listItemInstance[i].ItemId;
+			newEquipData.Initialize(listItemInstance[i].CustomData);
+			_listEquipData[newEquipData.cachedEquipTableData.equipType].Add(newEquipData);
+		}
+		return newEquipData;
+	}
 	#endregion
 
 	#region Revoke

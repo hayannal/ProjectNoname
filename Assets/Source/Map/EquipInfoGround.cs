@@ -50,7 +50,8 @@ public class EquipInfoGround : MonoBehaviour
 		gradeParticleSystem.gameObject.SetActive(false);
 
 		// 오브젝트의 Show 상태와 동일해야하기 때문에 여기서 대신 관리한다.
-		EquipListCanvas.instance.detailButtonObject.gameObject.SetActive(false);
+		if (EquipListCanvas.instance != null && EquipListCanvas.instance.gameObject.activeSelf)
+			EquipListCanvas.instance.detailButtonObject.gameObject.SetActive(false);
 	}
 
 	EquipData _currentEquipData;
@@ -87,7 +88,8 @@ public class EquipInfoGround : MonoBehaviour
 		if (_playEquipAnimation)
 			PlayEquipAnimation();
 
-		EquipListCanvas.instance.detailButtonObject.gameObject.SetActive(true);
+		if (EquipListCanvas.instance != null && EquipListCanvas.instance.gameObject.activeSelf)
+			EquipListCanvas.instance.detailButtonObject.gameObject.SetActive(true);
 	}
 
 	EquipPrefabInfo RefreshInfo(GameObject prefab, int grade)

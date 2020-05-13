@@ -274,8 +274,13 @@ public class EquipListCanvas : EquipShowCanvasBase
 	public void OnCloseDiffStatusInfo()
 	{
 		OnClickListItem(null);
-		if (EquipInfoGround.instance.IsShowEquippedObject())
-			detailButtonObject.gameObject.SetActive(true);
+
+		EquipData equipData = TimeSpaceData.instance.GetEquippedDataByType(_currentEquipType);
+		if (equipData == null)
+			return;
+		if (EquipInfoGround.instance.IsShowEquippedObject() == false)
+			return;
+		detailButtonObject.gameObject.SetActive(true);
 	}
 
 	public void OnCloseEquippedStatusInfo()

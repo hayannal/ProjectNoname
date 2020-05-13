@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using MEC;
 
 public class DailyShopCharacterConfirmCanvas : MonoBehaviour
 {
@@ -86,7 +87,48 @@ public class DailyShopCharacterConfirmCanvas : MonoBehaviour
 			case "bh":
 				TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, UIString.instance.GetString("ShopUIMore_OnlyHeroic"), 300, _currentAddImageTransform, new Vector2(0.0f, -20.0f));
 				break;
+			case "fc":
+			case "uch":
+			case "fl1":
+			case "fl2":
+			case "fl3":
+				// 획득하지 않은 캐릭터나 보유중인 캐릭터 모두 CharacterInfoCanvas까지 들어가면 된다.
+				Timing.RunCoroutine(ChangeCanvasProcess());
+				break;
 		}
+	}
+
+	IEnumerator<float> ChangeCanvasProcess()
+	{
+		DelayedLoadingCanvas.Show(true);
+
+		FadeCanvas.instance.FadeOut(0.2f, 1, true);
+		yield return Timing.WaitForSeconds(0.2f);
+
+		string selectedCharacterId = "";
+		if (dailyListItemGroupObject.activeSelf)
+			selectedCharacterId = dailyListItem.selectedCharacterId;
+		else
+			selectedCharacterId = bigDailyListItem.selectedCharacterId;
+
+		UIInstanceManager.instance.ShowCanvasAsync("CharacterListCanvas", () =>
+		{
+			CharacterListCanvas.instance.OnClickListItem(selectedCharacterId);
+			CharacterListCanvas.instance.OnClickYesButton();
+		});
+
+		while ((CharacterInfoCanvas.instance != null && CharacterInfoCanvas.instance.gameObject.activeSelf) == false)
+			yield return Timing.WaitForOneFrame;
+
+		DelayedLoadingCanvas.Show(false);
+		FadeCanvas.instance.FadeIn(0.4f);
+		gameObject.SetActive(false);
+
+		CharacterInfoCanvas.instance.ReserveBackButton(() =>
+		{
+			CharacterListCanvas.instance.OnClickBackButton();
+			gameObject.SetActive(true);			
+		});
 	}
 
 	string _selectedCharacterId;

@@ -94,12 +94,17 @@ public class CharacterInfoCanvas : MonoBehaviour
 	{
 		gameObject.SetActive(false);
 		//StackCanvas.Back();
+
+		if (_okAction != null)
+			_okAction();
 	}
 
 	public void OnClickHomeButton()
 	{
 		// 현재 상태에 따라
 		LobbyCanvas.Home();
+
+		_okAction = null;
 	}
 
 
@@ -155,4 +160,13 @@ public class CharacterInfoCanvas : MonoBehaviour
 	{
 		UIInstanceManager.instance.ShowCanvasAsync("CharacterInfoDetailCanvas", null);
 	}
+
+
+	#region DailyShop Character Detail
+	System.Action _okAction;
+	public void ReserveBackButton(System.Action okAction)
+	{
+		_okAction = okAction;
+	}
+	#endregion
 }

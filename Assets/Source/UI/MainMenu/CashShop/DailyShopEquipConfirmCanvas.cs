@@ -86,6 +86,7 @@ public class DailyShopEquipConfirmCanvas : MonoBehaviour
 			{
 				// 확인 누르면 바로 캐시샵으로 돌아와서 이 Confirm창을 다시 띄워야한다.
 				gameObject.SetActive(true);
+				ShowCanvas(true, _slotInfo);
 			});
 		});
 	}

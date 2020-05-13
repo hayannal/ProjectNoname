@@ -412,6 +412,23 @@ public class DailyShopListItem : MonoBehaviour
 			return;
 		}
 
+		if (_slotInfo.priceType == CurrencyData.GoldCode())
+		{
+			if (CurrencyData.instance.gold < _slotInfo.price)
+			{
+				ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughGold"), 2.0f);
+				return;
+			}
+		}
+		else
+		{
+			if (CurrencyData.instance.dia < _slotInfo.price)
+			{
+				ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughDiamond"), 2.0f);
+				return;
+			}
+		}
+
 		if (_slotInfo.type == "fe")
 		{
 			UIInstanceManager.instance.ShowCanvasAsync("DailyShopEquipConfirmCanvas", () =>

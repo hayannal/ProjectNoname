@@ -15,6 +15,7 @@ public class DailyShopEquipConfirmCanvas : MonoBehaviour
 	public Text attackText;
 	public RectTransform detailButtonRectTransform;
 	public Text priceText;
+	public GameObject[] priceTypeObjectList;
 	public GameObject buttonObject;
 
 	public EquipListStatusInfo materialSmallStatusInfo;
@@ -59,6 +60,11 @@ public class DailyShopEquipConfirmCanvas : MonoBehaviour
 			materialSmallStatusInfo.gameObject.SetActive(false);
 
 		priceText.text = dailyShopSlotInfo.price.ToString("N0");
+		CurrencyData.eCurrencyType currencyType = CurrencyData.eCurrencyType.Diamond;
+		if (dailyShopSlotInfo.priceType == CurrencyData.GoldCode())
+			currencyType = CurrencyData.eCurrencyType.Gold;
+		for (int i = 0; i < priceTypeObjectList.Length; ++i)
+			priceTypeObjectList[i].SetActive((int)currencyType == i);
 	}
 
 	public void OnClickDetailButton()

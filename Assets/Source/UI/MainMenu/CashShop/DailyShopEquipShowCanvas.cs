@@ -9,6 +9,9 @@ public class DailyShopEquipShowCanvas : EquipShowCanvasBase
 	public static DailyShopEquipShowCanvas instance;
 
 	public EquipListStatusInfo equipStatusInfo;
+	public GameObject effectPrefab;
+
+	GameObject _effectObject;
 
 	void Awake()
 	{
@@ -24,8 +27,12 @@ public class DailyShopEquipShowCanvas : EquipShowCanvasBase
 
 	void OnDisable()
 	{
+		if (_effectObject != null)
+			_effectObject.SetActive(false);
+
 		//if (StackCanvas.Pop(gameObject))
 		//	return;
+
 		SetInfoCameraMode(false);
 	}
 
@@ -33,6 +40,9 @@ public class DailyShopEquipShowCanvas : EquipShowCanvasBase
 	System.Action _okAction;
 	public void ShowCanvas(EquipData equipData, System.Action okAction)
 	{
+		if (_effectObject != null)
+			_effectObject.SetActive(false);
+
 		_okAction = okAction;
 
 		SetInfoCameraMode(true);
@@ -42,6 +52,8 @@ public class DailyShopEquipShowCanvas : EquipShowCanvasBase
 			EquipInfoGround.instance.CreateEquipObject(equipData, false);
 			equipStatusInfo.RefreshInfo(equipData, false);
 		}
+
+		_effectObject = BattleInstanceManager.instance.GetCachedObject(effectPrefab, _rootOffsetPosition, Quaternion.identity, null);
 	}
 
 	public void OnClickConfirmButton()

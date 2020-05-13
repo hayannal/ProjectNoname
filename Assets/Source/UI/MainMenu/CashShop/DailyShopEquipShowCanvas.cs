@@ -33,6 +33,9 @@ public class DailyShopEquipShowCanvas : EquipShowCanvasBase
 		//if (StackCanvas.Pop(gameObject))
 		//	return;
 
+		if (EquipInfoGround.instance.diffMode)
+			EquipInfoGround.instance.RestoreDiffMode();
+
 		SetInfoCameraMode(false);
 	}
 
@@ -49,7 +52,7 @@ public class DailyShopEquipShowCanvas : EquipShowCanvasBase
 
 		if (equipData != null)
 		{
-			EquipInfoGround.instance.CreateEquipObject(equipData, false);
+			EquipInfoGround.instance.ChangeDiffMode(equipData);
 			equipStatusInfo.RefreshInfo(equipData, false);
 		}
 

@@ -102,10 +102,10 @@ public class DailyShopData : MonoBehaviour
 		if (_listShopSlotPurchased == null)
 			_listShopSlotPurchased = new List<ObscuredBool>();
 		_listShopSlotPurchased.Clear();
-		for (int i = 0; i < ShopSlotMax; ++i)
+		for (int i = 0; i <= ShopSlotMax; ++i)
 			_listShopSlotPurchased.Add(false);
 
-		for (int i = 0; i < ShopSlotMax; ++i)
+		for (int i = 0; i <= ShopSlotMax; ++i)
 		{
 			string key = string.Format("lasShpDat{0}", i);
 			if (userReadOnlyData.ContainsKey(key))

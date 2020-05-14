@@ -80,8 +80,14 @@ public class DailyShopCharacterConfirmCanvas : MonoBehaviour
 		// 타입에 따라 달라져야 한다.
 		switch (_slotInfo.type)
 		{
-			// 상자는 툴팁만 표시하면 끝
+			case "fp":
+			case "upn":
+			case "uph":
+				// pp는 pp 누적시킨 후 토스트만 보여주고 끝이다.
+				TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, UIString.instance.GetString("ShopUIMore_PowerPoints"), 300, _currentAddImageTransform, new Vector2(0.0f, -20.0f));
+				break;
 			case "bn":
+				// 상자도 툴팁만 표시하면 끝
 				TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, UIString.instance.GetString("ShopUIMore_OnlyNormal"), 300, _currentAddImageTransform, new Vector2(0.0f, -20.0f));
 				break;
 			case "bh":

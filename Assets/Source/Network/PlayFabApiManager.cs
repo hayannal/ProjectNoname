@@ -93,6 +93,18 @@ public class PlayFabApiManager : MonoBehaviour
 		}
 	}
 
+	// PlayFabError가 아닌 상황에서도 튕겨내기 위한 함수
+	void HandleCommonError()
+	{
+		WaitingNetworkCanvas.Show(false);
+
+		OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("SystemUI_DisconnectServer"), () =>
+		{
+			PlayerData.instance.ResetData();
+			SceneManager.LoadScene(0);
+		}, 100);
+	}
+
 	public void RequestIncCliSus(eClientSuspectCode clientSuspectCode, bool sendBattleInfo = false, int param2 = 0)
 	{
 		int param1 = 0;

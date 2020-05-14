@@ -433,6 +433,12 @@ public class DailyShopListItem : MonoBehaviour
 
 		if (_slotInfo.type == "fe")
 		{
+			if (TimeSpaceData.instance.IsInventoryVisualMax())
+			{
+				ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_ManageInventory"), 2.0f);
+				return;
+			}
+
 			UIInstanceManager.instance.ShowCanvasAsync("DailyShopEquipConfirmCanvas", () =>
 			{
 				DailyShopEquipConfirmCanvas.instance.ShowCanvas(true, _slotInfo);

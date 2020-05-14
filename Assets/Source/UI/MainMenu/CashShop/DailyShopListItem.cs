@@ -74,13 +74,13 @@ public class DailyShopListItem : MonoBehaviour
 				RefreshCharacterIconImage(_slotInfo.value);
 				break;
 			case "uch": // unfixed Heroic Character
-				RefreshUnfixedHeroicCharacterIconImage(_slotInfo.value);
+				RefreshUnfixedHeroicCharacterIconImage(_slotInfo.slotId);
 				break;
 			case "upn": // unfixed Normal Character PP
-				RefreshUnfixedCharacterPpImage(0, _slotInfo.value);
+				RefreshUnfixedCharacterPpImage(_slotInfo.slotId);
 				break;
 			case "uph": // unfixed Heroic Character PP
-				RefreshUnfixedCharacterPpImage(1, _slotInfo.value);
+				RefreshUnfixedCharacterPpImage(_slotInfo.slotId);
 				break;
 		}
 		RefreshPrice();
@@ -97,10 +97,13 @@ public class DailyShopListItem : MonoBehaviour
 			return true;
 
 		CharacterData characterData = null;
+		string cachedActorId = "";
 		switch (dailyShopSlotInfo.type)
 		{
 			case "fe":  // fixed Equip
-				return true;
+				if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapterStage.TimeSpace))
+					return true;
+				break;
 			case "bn":  // normal Character Box
 				for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)
 				{
@@ -149,6 +152,9 @@ public class DailyShopListItem : MonoBehaviour
 					return true;
 				break;
 			case "uch": // unfixed Heroic Character
+				cachedActorId = DailyShopData.instance.GetUnfixedResult(dailyShopSlotInfo.slotId);
+				if (cachedActorId == "")
+					break;
 				for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)
 				{
 					if (TableDataManager.instance.actorTable.dataArray[i].grade != 1)
@@ -158,10 +164,17 @@ public class DailyShopListItem : MonoBehaviour
 				}
 				break;
 			case "upn": // unfixed Normal Character PP
+				cachedActorId = DailyShopData.instance.GetUnfixedResult(dailyShopSlotInfo.slotId);
+				if (cachedActorId == "")
+					break;
+				// 캐싱한걸 검사하고 나서 진짜로 인벤에서 뽑을 수 있는지도 확인해야한다. 이래야 오리진에서 뽑아왔을때 못뽑는 것들을 숨길 수 있다.
 				if (PlayerData.instance.ContainsActorByGrade(0))
 					return true;
 				break;
 			case "uph": // unfixed Heroic Character PP
+				cachedActorId = DailyShopData.instance.GetUnfixedResult(dailyShopSlotInfo.slotId);
+				if (cachedActorId == "")
+					break;
 				if (PlayerData.instance.ContainsActorByGrade(1))
 					return true;
 				break;
@@ -288,26 +301,16 @@ public class DailyShopListItem : MonoBehaviour
 		ppSlider.gameObject.SetActive(false);
 	}
 
-	void RefreshUnfixedHeroicCharacterIconImage(string value)
+	void RefreshUnfixedHeroicCharacterIconImage(int slotId)
 	{
-		int seed = 0;
-		int.TryParse(_slotInfo.value, out seed);
-		Random.InitState(seed);
-		_selectedCharacterId = DropManager.instance.GetGachaCharacterId(1);
+		_selectedCharacterId = DailyShopData.instance.GetUnfixedResult(slotId);
 		RefreshCharacterIconImage(_selectedCharacterId);
-		DropManager.instance.ClearLobbyDropInfo();
-		Random.InitState(Time.frameCount);
 	}
 
-	void RefreshUnfixedCharacterPpImage(int grade, string value)
+	void RefreshUnfixedCharacterPpImage(int slotId)
 	{
-		int seed = 0;
-		int.TryParse(value, out seed);
-		Random.InitState(seed);
-		_selectedCharacterId = DropManager.instance.GetGachaPowerPointId(grade);
+		_selectedCharacterId = DailyShopData.instance.GetUnfixedResult(slotId);
 		RefreshCharacterPpImage(_selectedCharacterId);
-		DropManager.instance.ClearLobbyDropInfo();
-		Random.InitState(Time.frameCount);
 	}
 
 	string _selectedCharacterId;

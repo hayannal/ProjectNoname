@@ -89,6 +89,9 @@ public class DailyShopData : MonoBehaviour
 
 	public void OnRecvShopData(Dictionary<string, string> titleData, Dictionary<string, UserDataRecord> userReadOnlyData)
 	{
+		// PlayerData.ResetData 호출되면 다시 여기로 들어올테니 플래그들 초기화 시켜놓는다.
+		_checkedUnfixedItemInfo = false;
+
 		OnRecvShopData(titleData);
 
 		#region Unfixed Item Info

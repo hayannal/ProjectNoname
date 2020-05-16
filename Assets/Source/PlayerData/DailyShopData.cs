@@ -223,6 +223,8 @@ public class DailyShopData : MonoBehaviour
 	{
 		if (_checkedUnfixedItemInfo)
 			return;
+		if (ContentsManager.IsTutorialChapter())
+			return;
 
 		bool needRegister = false;
 		if (_lastUnfixedDateTimeString == "")

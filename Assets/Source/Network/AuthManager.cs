@@ -233,7 +233,7 @@ public class AuthManager : MonoBehaviour
 
 	// 여러 패킷이 동시에 실패하면 여러개의 RestartProcess가 만들어질 수도 있어서 플래그를 걸어서 체크하기로 한다.
 	bool _restartProcessed = false;
-	public IEnumerator RestartProcess(string stringId = "SystemUI_DisconnectServer")
+	public IEnumerator RestartProcess(string stringId = "SystemUI_DisconnectServer", params object[] arg)
 	{
 		if (_restartProcessed)
 			yield break;
@@ -250,7 +250,7 @@ public class AuthManager : MonoBehaviour
 		AsyncOperationHandle<GameObject> handleCommonCanvasGroup = Addressables.LoadAssetAsync<GameObject>("CommonCanvasGroup");
 		while (!handleCommonCanvasGroup.IsDone) yield return null;
 		Instantiate<GameObject>(handleCommonCanvasGroup.Result);
-		OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString(stringId), () =>
+		OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString(stringId, arg), () =>
 		{
 			_restartProcessed = false;
 			Addressables.Release<GameObject>(handleCommonCanvasGroup);

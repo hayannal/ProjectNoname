@@ -94,7 +94,7 @@ public class PlayFabApiManager : MonoBehaviour
 	}
 
 	// PlayFabError가 아닌 상황에서도 튕겨내기 위한 함수
-	void HandleCommonError()
+	public void HandleCommonError()
 	{
 		WaitingNetworkCanvas.Show(false);
 

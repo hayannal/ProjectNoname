@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using CodeStage.AntiCheat.ObscuredTypes;
 using PlayFab;
 using PlayFab.ClientModels;
@@ -439,11 +438,7 @@ public class MailData : MonoBehaviour
 				_reserveMaintenance = false;
 
 				// 예약된 점검 시간이 왔다.
-				OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("SystemUI_DisconnectServer"), () =>
-				{
-					PlayerData.instance.ResetData();
-					SceneManager.LoadScene(0);
-				}, 100);
+				PlayFabApiManager.instance.HandleCommonError();
 			}
 		}
 	}

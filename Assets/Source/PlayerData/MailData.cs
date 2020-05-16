@@ -338,7 +338,7 @@ public class MailData : MonoBehaviour
 			// 서버 점검 시간을 구한다. 이미 지난거라면 아무것도 하지 않는다.
 			DateTime endDateTime = new DateTime(info.ey, info.em, info.ed);
 			_serverMaintenanceTime = endDateTime.AddHours(info.cn);
-			if (ServerTime.UtcNow > endDateTime)
+			if (ServerTime.UtcNow > _serverMaintenanceTime)
 				continue;
 
 			// 서버점검이 예정되어있다. 적절한 타이밍을 구해야한다.

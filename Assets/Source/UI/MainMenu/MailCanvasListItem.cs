@@ -229,7 +229,7 @@ public class MailCanvasListItem : MonoBehaviour
 				TimeSpan remainTime = _validTime - ServerTime.UtcNow;
 				if (_lastRemainTimeSecond != (int)remainTime.TotalSeconds)
 				{
-					remainTimeText.text = string.Format("{0:00}:{1:00}:{2:00}", remainTime.Hours, remainTime.Minutes, remainTime.Seconds);
+					remainTimeText.text = string.Format("{0:00}:{1:00}:{2:00}", remainTime.Hours + remainTime.Days * 24, remainTime.Minutes, remainTime.Seconds);
 					_lastRemainTimeSecond = (int)remainTime.TotalSeconds;
 				}
 			}

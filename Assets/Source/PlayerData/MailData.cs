@@ -195,6 +195,17 @@ public class MailData : MonoBehaviour
 
 		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
 		_listMyMailTime = serializer.DeserializeObject<List<MyMailData>>(jsonMailDateList);
+
+		// 메일 창을 열고있을때 메일이 추가되면
+		if (added && MailCanvas.instance != null && MailCanvas.instance.gameObject.activeSelf)
+		{
+			// 뭔가 작업중이거나 기다리는게 아니라면
+			if (WaitingNetworkCanvas.IsShow() == false && DelayedLoadingCanvas.IsShow() == false)
+			{
+				MailCanvas.instance.gameObject.SetActive(false);
+				MailCanvas.instance.gameObject.SetActive(true);
+			}
+		}
 	}
 
 	public bool OnRecvGetMail(string id, int receiveDay, string tp)

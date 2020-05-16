@@ -387,6 +387,9 @@ public class DailyShopData : MonoBehaviour
 	List<string> _listTitleKey;
 	void UpdateDailyShopRefreshTime()
 	{
+		if (_listDailyShopSlotInfo == null)
+			return;
+
 		if (DateTime.Compare(ServerTime.UtcNow, dailyShopRefreshTime) < 0)
 			return;
 
@@ -412,6 +415,9 @@ public class DailyShopData : MonoBehaviour
 
 	void UpdateDailyShopSlotResetTime()
 	{
+		if (_listDailyShopSlotInfo == null)
+			return;
+
 		if (DateTime.Compare(ServerTime.UtcNow, dailyShopSlotPurchasedResetTime) < 0)
 			return;
 

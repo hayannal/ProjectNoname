@@ -83,7 +83,7 @@ public class MailData : MonoBehaviour
 		if (needRemove || needAdd)
 		{
 			// 변경해야할 항목이 있다면 서버에 리프레쉬를 알린다.
-			PlayFabApiManager.instance.RequestRefreshMailList(OnRecvRefreshMail);
+			PlayFabApiManager.instance.RequestRefreshMailList(_listMailCreateInfo.Count, OnRecvRefreshMail);
 		}
 		mailRefreshTime = ServerTime.UtcNow + TimeSpan.FromMinutes(5);
 	}
@@ -188,13 +188,16 @@ public class MailData : MonoBehaviour
 		return false;
 	}
 
-	void OnRecvRefreshMail(bool deleted, bool added, bool modified, string jsonMailDateList)
+	void OnRecvRefreshMail(bool deleted, bool added, bool modified, string jsonMailDateList, string jsonMailTable)
 	{
 		// 새로운 메일이 있다면 New표시를 해서 DotMainMenu 아이콘에 알려준다.
 		// 보이지 않는 공지가 추가될땐 modified가 true로 오니 added인지 modified인지 구분해서 처리하면 될거다.
 
 		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
 		_listMyMailTime = serializer.DeserializeObject<List<MyMailData>>(jsonMailDateList);
+
+		if (jsonMailTable != "")
+			_listMailCreateInfo = serializer.DeserializeObject<List<MailCreateInfo>>(jsonMailTable);
 
 		// 메일 창을 열고있을때 메일이 추가되면
 		if (added && MailCanvas.instance != null && MailCanvas.instance.gameObject.activeSelf)
@@ -206,6 +209,44 @@ public class MailData : MonoBehaviour
 				MailCanvas.instance.gameObject.SetActive(true);
 			}
 		}
+
+		// 여기서 받을 수 있는 메일의 수를 세서 빨간점 띄우는 작업을 해야한다.
+		if (GetReceivableMailPresentCount() > 0)
+		{
+
+		}
+	}
+
+	int GetReceivableMailPresentCount()
+	{
+		int count = 0;
+		for (int i = 0; i < _listMyMailTime.Count; ++i)
+		{
+			string id = _listMyMailTime[i].id;
+			if (id == "un")
+				continue;
+			if (_listMyMailTime[i].got != 0)
+				continue;
+
+			MailData.MailCreateInfo createInfo = MailData.instance.FindCreateMailInfo(id);
+			if (createInfo == null)
+				continue;
+			if (string.IsNullOrEmpty(createInfo.tp))
+				continue;
+
+			DateTime receiveTime = new DateTime();
+			if (DateTime.TryParse(_listMyMailTime[i].rcvDat, out receiveTime))
+			{
+				DateTime universalTime = receiveTime.ToUniversalTime();
+				DateTime validTime = universalTime;
+				validTime = validTime.AddDays(createInfo.ti);
+				if (ServerTime.UtcNow > validTime)
+					continue;
+			}
+
+			++count;
+		}
+		return count;
 	}
 
 	public bool OnRecvGetMail(string id, int receiveDay, string tp)
@@ -263,6 +304,6 @@ public class MailData : MonoBehaviour
 		mailRefreshTime += TimeSpan.FromMinutes(5);
 
 		// WaitNetwork 없이 패킷 보내서 응답이 오면 갱신해둔다.
-		PlayFabApiManager.instance.RequestRefreshMailList(OnRecvRefreshMail);
+		PlayFabApiManager.instance.RequestRefreshMailList(_listMailCreateInfo.Count, OnRecvRefreshMail);
 	}
 }

@@ -1482,12 +1482,12 @@ public class PlayFabApiManager : MonoBehaviour
 	#endregion
 
 	#region Mail
-	public void RequestRefreshMailList(Action<bool, bool, bool, string> successCallback)
+	public void RequestRefreshMailList(int mailTableDataCount, Action<bool, bool, bool, string, string> successCallback)
 	{
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
 			FunctionName = "RefreshMail",
-			FunctionParameter = new { Lst = 0 },
+			FunctionParameter = new { Mtc = mailTableDataCount },
 			GeneratePlayStreamEvent = true
 		}, (success) =>
 		{
@@ -1496,13 +1496,15 @@ public class PlayFabApiManager : MonoBehaviour
 			jsonResult.TryGetValue("add", out object add);
 			jsonResult.TryGetValue("mod", out object mod);
 			jsonResult.TryGetValue("dat", out object jsonDateTime);
+			jsonResult.TryGetValue("mtd", out object jsonMailTable);
 			bool deleted = ((del.ToString()) == "1");
 			bool added = ((add.ToString()) == "1");
 			bool modified = ((mod.ToString()) == "1");
-			if (successCallback != null) successCallback.Invoke(deleted, added, modified, (string)jsonDateTime);
+			if (successCallback != null) successCallback.Invoke(deleted, added, modified, (string)jsonDateTime, (string)jsonMailTable);
 		}, (error) =>
 		{
-			HandleCommonError(error);
+			// 5분마다 주기적으로 보내는거라 에러 핸들링 하면 안된다.
+			//HandleCommonError(error);
 		});
 	}
 

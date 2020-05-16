@@ -328,6 +328,8 @@ public class DotMainMenuCanvas : MonoBehaviour
 	{
 		if (_reservedHide)
 			return;
+
+		UIInstanceManager.instance.ShowCanvasAsync("MailCanvas", null);
 	}
 	#endregion
 

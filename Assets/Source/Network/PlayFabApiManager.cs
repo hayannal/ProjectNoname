@@ -166,6 +166,7 @@ public class PlayFabApiManager : MonoBehaviour
 
 		CurrencyData.instance.OnRecvCurrencyData(loginResult.InfoResultPayload.UserVirtualCurrency, loginResult.InfoResultPayload.UserVirtualCurrencyRechargeTimes);
 		DailyShopData.instance.OnRecvShopData(loginResult.InfoResultPayload.TitleData, loginResult.InfoResultPayload.UserReadOnlyData);
+		MailData.instance.OnRecvMailData(loginResult.InfoResultPayload.TitleData, loginResult.InfoResultPayload.UserReadOnlyData);
 
 		if (loginResult.NewlyCreated)
 		{
@@ -1473,6 +1474,87 @@ public class PlayFabApiManager : MonoBehaviour
 			bool failure = ((retErr.ToString()) == "1");
 			if (failure)
 				HandleCommonError();
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+	#endregion
+
+	#region Mail
+	public void RequestRefreshMailList(Action<bool, bool, bool, string> successCallback)
+	{
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "RefreshMail",
+			FunctionParameter = new { Lst = 0 },
+			GeneratePlayStreamEvent = true
+		}, (success) =>
+		{
+			PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
+			jsonResult.TryGetValue("del", out object del);
+			jsonResult.TryGetValue("add", out object add);
+			jsonResult.TryGetValue("mod", out object mod);
+			jsonResult.TryGetValue("dat", out object jsonDateTime);
+			bool deleted = ((del.ToString()) == "1");
+			bool added = ((add.ToString()) == "1");
+			bool modified = ((mod.ToString()) == "1");
+			if (successCallback != null) successCallback.Invoke(deleted, added, modified, (string)jsonDateTime);
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+
+	public void RequestReceiveMailPresent(string id, int receiveDay, string type, int addDia, int addGold, int addEnergy, string equipId, Action<bool, string> successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		ExecuteCloudScriptRequest request = null;
+		if (equipId != "")
+		{
+			string checkSum = "";
+			List<TimeSpaceData.ItemGrantRequest> listItemGrantRequest = TimeSpaceData.instance.GenerateGrantRequestInfo(equipId, ref checkSum);
+			request = new ExecuteCloudScriptRequest()
+			{
+				FunctionName = "GetMail",
+				FunctionParameter = new { Id = id, Dy = receiveDay, Tp = type, EqpLst = listItemGrantRequest, EqpLstCs = checkSum },
+				GeneratePlayStreamEvent = true,
+			};
+		}
+		else
+		{
+			request = new ExecuteCloudScriptRequest()
+			{
+				FunctionName = "GetMail",
+				FunctionParameter = new { Id = id, Dy = receiveDay, Tp = type },
+				GeneratePlayStreamEvent = true,
+			};
+		}
+
+		PlayFabClientAPI.ExecuteCloudScript(request, (success) =>
+		{
+			PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
+			jsonResult.TryGetValue("retErr", out object retErr);
+			bool failure = ((retErr.ToString()) == "1");
+			if (!failure)
+			{
+				bool result = MailData.instance.OnRecvGetMail(id, receiveDay, type);
+				if (result)
+				{
+					WaitingNetworkCanvas.Show(false);
+
+					CurrencyData.instance.dia += addDia;
+					CurrencyData.instance.gold += addGold;
+					if (addEnergy > 0)
+						CurrencyData.instance.OnRecvRefillEnergy(addEnergy);
+
+					jsonResult.TryGetValue("dat", out object dat);
+					jsonResult.TryGetValue("itmRet", out object itmRet);
+
+					if (successCallback != null) successCallback.Invoke(failure, (string)itmRet);
+				}
+			}
 		}, (error) =>
 		{
 			HandleCommonError(error);

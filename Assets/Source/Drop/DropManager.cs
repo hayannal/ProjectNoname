@@ -382,8 +382,9 @@ public class DropManager : MonoBehaviour
 	}
 
 	// not streak에 영향주지 않는 전설 뽑기다.
+	// 우편 보상에 단독 등급 뽑기가 추가되면서 인자로 grade를 전달하기로 한다. -1일땐 전설.
 	List<RandomDropEquipInfo> _listRandomDropLegendEquipInfo = null;
-	public string GetGachaLegendEquipId()
+	public string GetGachaEquipIdByGrade(int grade = -1)
 	{
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
 		if (lobby == false)
@@ -401,13 +402,26 @@ public class DropManager : MonoBehaviour
 				if (weight <= 0.0f)
 					continue;
 
-				// 전설뽑기니 나머지 제외
-				if (EquipData.IsUseLegendKey(TableDataManager.instance.equipTable.dataArray[i]) == false)
-					continue;
+				if (grade == -1)
+				{
+					// 전설뽑기니 나머지 제외
+					if (EquipData.IsUseLegendKey(TableDataManager.instance.equipTable.dataArray[i]) == false)
+						continue;
 
-				// equipGachaWeight 검증
-				if (weight > 1.0f)
-					CheatingListener.OnDetectCheatTable();
+					// equipGachaWeight 검증
+					if (weight > 1.0f)
+						CheatingListener.OnDetectCheatTable();
+				}
+				else
+				{
+					if (grade == 1 || grade == 2 || grade == 3)
+					{
+						if (TableDataManager.instance.equipTable.dataArray[i].grade != grade)
+							continue;
+					}
+					else
+						continue;
+				}
 
 				sumWeight += weight;
 				RandomDropEquipInfo newInfo = new RandomDropEquipInfo();

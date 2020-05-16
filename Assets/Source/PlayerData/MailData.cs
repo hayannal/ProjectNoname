@@ -60,6 +60,9 @@ public class MailData : MonoBehaviour
 		// 다른 데이터들과 달리 메일은 5분마다 서버에 보내서 리스트를 업데이트 한다.
 		// 받을 보상이 있다면 빨간색 알림 표시도 해준다.
 		UpdateRefreshTime();
+
+		// 서버 점검 알림
+		UpdateServerMaintenance();
 	}
 
 	public void OnRecvMailData(Dictionary<string, string> titleData, Dictionary<string, UserDataRecord> userReadOnlyData)
@@ -86,6 +89,8 @@ public class MailData : MonoBehaviour
 			PlayFabApiManager.instance.RequestRefreshMailList(_listMailCreateInfo.Count, OnRecvRefreshMail);
 		}
 		mailRefreshTime = ServerTime.UtcNow + TimeSpan.FromMinutes(5);
+
+		CheckServerMaintenance();
 	}
 
 	bool CheckRemove()
@@ -215,6 +220,9 @@ public class MailData : MonoBehaviour
 		{
 
 		}
+
+		// 서버 점검 있는지 한번씩 판단해야한다.
+		CheckServerMaintenance();
 	}
 
 	int GetReceivableMailPresentCount()
@@ -228,10 +236,10 @@ public class MailData : MonoBehaviour
 			if (_listMyMailTime[i].got != 0)
 				continue;
 
-			MailData.MailCreateInfo createInfo = MailData.instance.FindCreateMailInfo(id);
-			if (createInfo == null)
+			MailData.MailCreateInfo info = MailData.instance.FindCreateMailInfo(id);
+			if (info == null)
 				continue;
-			if (string.IsNullOrEmpty(createInfo.tp))
+			if (string.IsNullOrEmpty(info.tp))
 				continue;
 
 			DateTime receiveTime = new DateTime();
@@ -239,7 +247,7 @@ public class MailData : MonoBehaviour
 			{
 				DateTime universalTime = receiveTime.ToUniversalTime();
 				DateTime validTime = universalTime;
-				validTime = validTime.AddDays(createInfo.ti);
+				validTime = validTime.AddDays(info.ti);
 				if (ServerTime.UtcNow > validTime)
 					continue;
 			}
@@ -306,4 +314,112 @@ public class MailData : MonoBehaviour
 		// WaitNetwork 없이 패킷 보내서 응답이 오면 갱신해둔다.
 		PlayFabApiManager.instance.RequestRefreshMailList(_listMailCreateInfo.Count, OnRecvRefreshMail);
 	}
+
+
+
+	#region Server Maintenance
+	// 숨겨진 우편을 가지고 관리하는 서버 점검 알림 기능이다.
+	DateTime _serverMaintenanceTime;
+	int _serverMaintenanceRemainMinute;
+	void CheckServerMaintenance()
+	{
+		bool find = false;
+		bool reached = false;
+		for (int i = 0; i < _listMyMailTime.Count; ++i)
+		{
+			string id = _listMyMailTime[i].id;
+			if (id != "un")
+				continue;
+			MailCreateInfo info = FindCreateMailInfo(id);
+			if (info == null)
+				continue;
+
+			// 서버 점검 시간을 구한다. 이미 지난거라면 아무것도 하지 않는다.
+			DateTime endDateTime = new DateTime(info.ey, info.em, info.ed);
+			_serverMaintenanceTime = endDateTime.AddHours(info.cn);
+			if (ServerTime.UtcNow > endDateTime)
+				continue;
+
+			// 서버점검이 예정되어있다. 적절한 타이밍을 구해야한다.
+			// 1시간전, 30분전, 10분전, 5분전, 3분전 순서대로 체크해본다.
+			_reserveMaintenanceAlarmTime = _serverMaintenanceTime.AddHours(-1);
+			if (ServerTime.UtcNow < _reserveMaintenanceAlarmTime)
+			{
+				_serverMaintenanceRemainMinute = 60;
+				find = true;
+				break;
+			}
+			_reserveMaintenanceAlarmTime = _serverMaintenanceTime.AddMinutes(-30);
+			if (ServerTime.UtcNow < _reserveMaintenanceAlarmTime)
+			{
+				_serverMaintenanceRemainMinute = 30;
+				find = true;
+				break;
+			}
+			_reserveMaintenanceAlarmTime = _serverMaintenanceTime.AddMinutes(-10);
+			if (ServerTime.UtcNow < _reserveMaintenanceAlarmTime)
+			{
+				_serverMaintenanceRemainMinute = 10;
+				find = true;
+				break;
+			}
+			_reserveMaintenanceAlarmTime = _serverMaintenanceTime.AddMinutes(-5);
+			if (ServerTime.UtcNow < _reserveMaintenanceAlarmTime)
+			{
+				_serverMaintenanceRemainMinute = 5;
+				find = true;
+				break;
+			}
+			_reserveMaintenanceAlarmTime = _serverMaintenanceTime.AddMinutes(-3);
+			if (ServerTime.UtcNow < _reserveMaintenanceAlarmTime)
+			{
+				_serverMaintenanceRemainMinute = 3;
+				find = true;
+				break;
+			}
+			// 3분 이내면 이미 임박한거다.
+			find = true;
+			reached = true;
+			break;
+		}
+
+		if (find == false)
+		{
+			// 혹시 예약했다가 취소한걸수도 있으니 예약을 지워야한다.
+			_reserveMaintenanceAlarm = false;
+		}
+		else
+		{
+			if (reached)
+			{
+				// 곧 서버 점검임을 알리고 창을 띄워야한다.
+				_reserveMaintenanceAlarm = false;
+				MaintenanceCanvas.instance.ShowCanvas(UIString.instance.GetString("GameUI_MaintenanceReached"), 180.0f);
+			}
+			else
+			{
+				// 이미 Time은 위에서 계산하면서 셋팅해놨으니 여기선 플래그만 켜면 된다.
+				_reserveMaintenanceAlarm = true;
+			}
+		}
+	}
+
+	bool _reserveMaintenanceAlarm = false;
+	DateTime _reserveMaintenanceAlarmTime;
+	void UpdateServerMaintenance()
+	{
+		if (_reserveMaintenanceAlarm == false)
+			return;
+
+		if (ServerTime.UtcNow > _reserveMaintenanceAlarmTime)
+		{
+			// 예약된 시간을 지날때 메세지를 띄우고
+			MaintenanceCanvas.instance.ShowCanvas(UIString.instance.GetString("GameUI_Maintenance", _serverMaintenanceRemainMinute), 10.0f);
+
+			// 다음번 예약을 걸어야하니 체크함수를 다시 호출한다.
+			_reserveMaintenanceAlarm = false;
+			CheckServerMaintenance();
+		}
+	}
+	#endregion
 }

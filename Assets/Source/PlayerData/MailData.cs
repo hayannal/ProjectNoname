@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using CodeStage.AntiCheat.ObscuredTypes;
 using PlayFab;
 using PlayFab.ClientModels;
@@ -387,38 +388,63 @@ public class MailData : MonoBehaviour
 		{
 			// 혹시 예약했다가 취소한걸수도 있으니 예약을 지워야한다.
 			_reserveMaintenanceAlarm = false;
+			_reserveMaintenance = false;
+
+			// 보이던 도중에 점검 데이터가 수정되었다면 떠있는 창을 닫아줘야한다.
+			MaintenanceCanvas.Show(false, "", 0.0f);
 		}
 		else
 		{
 			if (reached)
 			{
 				// 곧 서버 점검임을 알리고 창을 띄워야한다.
+				_reserveMaintenance = true;
 				_reserveMaintenanceAlarm = false;
-				MaintenanceCanvas.instance.ShowCanvas(UIString.instance.GetString("GameUI_MaintenanceReached"), 180.0f);
+				MaintenanceCanvas.Show(true, UIString.instance.GetString("GameUI_MaintenanceReached"), 180.0f);
+
+				// 확 끊어지는걸 방지하기 위해
+				_serverMaintenanceTime += TimeSpan.FromSeconds(3.0f);
 			}
 			else
 			{
 				// 이미 Time은 위에서 계산하면서 셋팅해놨으니 여기선 플래그만 켜면 된다.
+				_reserveMaintenance = false;
 				_reserveMaintenanceAlarm = true;
 			}
 		}
 	}
 
+	bool _reserveMaintenance = false;
 	bool _reserveMaintenanceAlarm = false;
 	DateTime _reserveMaintenanceAlarmTime;
 	void UpdateServerMaintenance()
 	{
-		if (_reserveMaintenanceAlarm == false)
-			return;
-
-		if (ServerTime.UtcNow > _reserveMaintenanceAlarmTime)
+		if (_reserveMaintenanceAlarm)
 		{
-			// 예약된 시간을 지날때 메세지를 띄우고
-			MaintenanceCanvas.instance.ShowCanvas(UIString.instance.GetString("GameUI_Maintenance", _serverMaintenanceRemainMinute), 10.0f);
+			if (ServerTime.UtcNow > _reserveMaintenanceAlarmTime)
+			{
+				// 예약된 시간을 지날때 메세지를 띄우고
+				MaintenanceCanvas.Show(true, UIString.instance.GetString("GameUI_Maintenance", _serverMaintenanceRemainMinute), 10.0f);
 
-			// 다음번 예약을 걸어야하니 체크함수를 다시 호출한다.
-			_reserveMaintenanceAlarm = false;
-			CheckServerMaintenance();
+				// 다음번 예약을 걸어야하니 체크함수를 다시 호출한다.
+				_reserveMaintenanceAlarm = false;
+				CheckServerMaintenance();
+			}
+		}
+
+		if (_reserveMaintenance)
+		{
+			if (ServerTime.UtcNow > _serverMaintenanceTime)
+			{
+				_reserveMaintenance = false;
+
+				// 예약된 점검 시간이 왔다.
+				OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("SystemUI_DisconnectServer"), () =>
+				{
+					PlayerData.instance.ResetData();
+					SceneManager.LoadScene(0);
+				}, 100);
+			}
 		}
 	}
 	#endregion

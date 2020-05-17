@@ -64,6 +64,9 @@ public class MailCanvasListItem : MonoBehaviour
 			blurImage.color = new Color(1.0f, 0.392f, 0.392f, 0.274f);
 			gradient.color1 = Color.white;
 			gradient.color2 = new Color(1.0f, 0.0f, 0.392f, 0.427f);
+
+			remainTimeText.text = "";
+			_needUpdate = false;
 		}
 		else
 		{
@@ -75,6 +78,9 @@ public class MailCanvasListItem : MonoBehaviour
 			blurImage.color = new Color(0.896f, 0.896f, 0.452f, 0.274f);
 			gradient.color1 = Color.white;
 			gradient.color2 = new Color(0.896f, 0.827f, 0.0f, 0.475f);
+
+			_validTime = validTime;
+			_needUpdate = true;
 
 			if (createInfo.tp == "cu")
 			{
@@ -121,9 +127,6 @@ public class MailCanvasListItem : MonoBehaviour
 				addText.SetLocalizedText(UIString.instance.GetString(string.Format("GameUI_EquipGrade{0}", createInfo.vl)));
 			}
 		}
-
-		_validTime = validTime;
-		_needUpdate = true;
 
 		layoutElement.preferredHeight = _defaultLayoutPreferredHeightMin;
 		descRootTransform.localScale = new Vector3(1.0f, 0.0f, 1.0f);

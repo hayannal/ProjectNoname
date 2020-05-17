@@ -322,6 +322,8 @@ public class DotMainMenuCanvas : MonoBehaviour
 	{
 		if (_reservedHide)
 			return;
+
+		UIInstanceManager.instance.ShowCanvasAsync("ResearchCanvas", null);
 	}
 
 	public void OnClickMailButton()

@@ -9,7 +9,6 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 	{
 		Shop,
 		DailyBox,
-		AttendanceBox,
 	}
 	eButtonType _buttonType;
 
@@ -39,8 +38,6 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 
 		if (IsDailyBoxType())
 			_buttonType = eButtonType.DailyBox;
-		else if (IsAttendanceBoxType())
-			_buttonType = eButtonType.AttendanceBox;
 
 		string stringId = "";
 		switch (_buttonType)
@@ -54,9 +51,6 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 				//else
 					stringId = "GameUI_OneCharBox";
 				break;
-			case eButtonType.AttendanceBox:
-				stringId = "GameUI_AttendanceBox";
-				break;
 		}
 		for (int i = 0; i < buttonTextList.Length; ++i)
 			buttonTextList[i].SetLocalizedText(UIString.instance.GetString(stringId));
@@ -65,20 +59,6 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 	public static bool IsDailyBoxType()
 	{
 		if (PlayerData.instance.sharedDailyBoxOpened == false && PlayerData.instance.sealCount >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("SealMaxCount"))
-			return true;
-		return false;
-	}
-
-	public static bool IsAttendanceBoxType()
-	{
-		return false;
-	}
-
-	public static bool IsSpecialTreasureChest()
-	{
-		if (IsDailyBoxType())
-			return true;
-		if (IsAttendanceBoxType())
 			return true;
 		return false;
 	}
@@ -99,19 +79,20 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 		switch (_buttonType)
 		{
 			case eButtonType.Shop:
+				OnClickOpenShop();
 				break;
 			case eButtonType.DailyBox:
 				OnClickOpenDailyBox();
-				return;
-			case eButtonType.AttendanceBox:
-				OnClickOpenAttendanceBox();
-				return;
+				break;
 		}
-
-		Debug.Log("Open shop");
 	}
 
-	public void OnClickOpenDailyBox()
+	void OnClickOpenShop()
+	{
+		UIInstanceManager.instance.ShowCanvasAsync("CashShopCanvas", null);
+	}
+
+	void OnClickOpenDailyBox()
 	{
 		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null && TitleCanvas.instance.gameObject.activeSelf)
 			TitleCanvas.instance.FadeTitle();
@@ -146,10 +127,5 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 				});
 			}
 		});
-	}
-
-	public void OnClickOpenAttendanceBox()
-	{
-
 	}
 }

@@ -164,6 +164,9 @@ public class PlayFabApiManager : MonoBehaviour
 		_titlePlayerEntityKey = new PlayFab.DataModels.EntityKey { Id = loginResult.EntityToken.Entity.Id, Type = loginResult.EntityToken.Entity.Type };
 #endif
 
+		if (CheckServerMaintenance(loginResult.InfoResultPayload.TitleData))
+			return;
+
 		CurrencyData.instance.OnRecvCurrencyData(loginResult.InfoResultPayload.UserVirtualCurrency, loginResult.InfoResultPayload.UserVirtualCurrencyRechargeTimes);
 		DailyShopData.instance.OnRecvShopData(loginResult.InfoResultPayload.TitleData, loginResult.InfoResultPayload.UserReadOnlyData);
 		MailData.instance.OnRecvMailData(loginResult.InfoResultPayload.TitleData, loginResult.InfoResultPayload.UserReadOnlyData);
@@ -292,6 +295,30 @@ public class PlayFabApiManager : MonoBehaviour
 	public DateTime GetServerUtcTime()
 	{
 		return DateTime.UtcNow + _timeSpanForServerUtc;
+	}
+
+	bool CheckServerMaintenance(Dictionary<string, string> titleData)
+	{
+		if (titleData.ContainsKey("down") && string.IsNullOrEmpty(titleData["down"]) == false)
+		{
+			var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+			Dictionary<string, string> dicInfo = serializer.DeserializeObject<Dictionary<string, string>>(titleData["down"]);
+			if (dicInfo.ContainsKey("0") && dicInfo["0"] == "1" && dicInfo.Count >= 3)
+			{
+				DateTime startTime = new DateTime();
+				DateTime endTime = new DateTime();
+				if (DateTime.TryParse(dicInfo["1"], out startTime) && DateTime.TryParse(dicInfo["2"], out endTime))
+				{
+					DateTime localStartTime = startTime.ToLocalTime();
+					DateTime localEndTime = endTime.ToLocalTime();
+					string startArgment = string.Format("{0:00}:{1:00}", localStartTime.Hour, localStartTime.Minute);
+					string endArgment = string.Format("{0:00}:{1:00}", localEndTime.Hour, localEndTime.Minute);
+					StartCoroutine(AuthManager.instance.RestartProcess("SystemUI_ServerDown", startArgment, endArgment));
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	void OnRecvPlayerDataFailure(PlayFabError error)

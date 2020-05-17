@@ -22,6 +22,7 @@ public class DailyPackageInfo : MonoBehaviour
 	public GameObject plusButtonObject;
 
 	public Text receiveText;
+	public DOTweenAnimation receiveTextTweenAnimation;
 	public Text completeText;
 	public Text remainTimeText;
 
@@ -37,6 +38,7 @@ public class DailyPackageInfo : MonoBehaviour
 		if (_reserveAnimation)
 		{
 			dailyDiaTweenAnimation.DORestart();
+			receiveTextTweenAnimation.DORestart();
 			_reserveAnimation = false;
 		}
 
@@ -66,6 +68,7 @@ public class DailyPackageInfo : MonoBehaviour
 			if (PlayerData.instance.sharedDailyPackageOpened)
 			{
 				dailyDiaTweenAnimation.DOPause();
+				receiveTextTweenAnimation.DOPause();
 				receiveText.gameObject.SetActive(false);
 				completeText.gameObject.SetActive(true);
 				remainTimeText.gameObject.SetActive(true);
@@ -75,7 +78,10 @@ public class DailyPackageInfo : MonoBehaviour
 			else
 			{
 				if (_started)
+				{
 					dailyDiaTweenAnimation.DORestart();
+					receiveTextTweenAnimation.DORestart();
+				}
 				else
 					_reserveAnimation = true;
 				receiveText.gameObject.SetActive(true);
@@ -87,6 +93,7 @@ public class DailyPackageInfo : MonoBehaviour
 		else
 		{
 			dailyDiaTweenAnimation.DOPause();
+			receiveTextTweenAnimation.DOPause();
 			priceTextTransform.gameObject.SetActive(true);
 			bool kor = (OptionManager.instance.language == "KOR");
 			priceTextTransform.anchoredPosition = new Vector2(kor ? 10.0f : 0.0f, 0.0f);

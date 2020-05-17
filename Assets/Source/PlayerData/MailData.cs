@@ -325,62 +325,65 @@ public class MailData : MonoBehaviour
 	{
 		bool find = false;
 		bool reached = false;
-		for (int i = 0; i < _listMyMailTime.Count; ++i)
+		if (_listMyMailTime != null)
 		{
-			string id = _listMyMailTime[i].id;
-			if (id != "un")
-				continue;
-			MailCreateInfo info = FindCreateMailInfo(id);
-			if (info == null)
-				continue;
+			for (int i = 0; i < _listMyMailTime.Count; ++i)
+			{
+				string id = _listMyMailTime[i].id;
+				if (id != "un")
+					continue;
+				MailCreateInfo info = FindCreateMailInfo(id);
+				if (info == null)
+					continue;
 
-			// 서버 점검 시간을 구한다. 이미 지난거라면 아무것도 하지 않는다.
-			DateTime endDateTime = new DateTime(info.ey, info.em, info.ed);
-			_serverMaintenanceTime = endDateTime.AddHours(info.cn);
-			if (ServerTime.UtcNow > _serverMaintenanceTime)
-				continue;
+				// 서버 점검 시간을 구한다. 이미 지난거라면 아무것도 하지 않는다.
+				DateTime endDateTime = new DateTime(info.ey, info.em, info.ed);
+				_serverMaintenanceTime = endDateTime.AddHours(info.cn);
+				if (ServerTime.UtcNow > _serverMaintenanceTime)
+					continue;
 
-			// 서버점검이 예정되어있다. 적절한 타이밍을 구해야한다.
-			// 1시간전, 30분전, 10분전, 5분전, 3분전 순서대로 체크해본다.
-			_reserveMaintenanceAlarmTime = _serverMaintenanceTime.AddHours(-1);
-			if (ServerTime.UtcNow < _reserveMaintenanceAlarmTime)
-			{
-				_serverMaintenanceRemainMinute = 60;
+				// 서버점검이 예정되어있다. 적절한 타이밍을 구해야한다.
+				// 1시간전, 30분전, 10분전, 5분전, 3분전 순서대로 체크해본다.
+				_reserveMaintenanceAlarmTime = _serverMaintenanceTime.AddHours(-1);
+				if (ServerTime.UtcNow < _reserveMaintenanceAlarmTime)
+				{
+					_serverMaintenanceRemainMinute = 60;
+					find = true;
+					break;
+				}
+				_reserveMaintenanceAlarmTime = _serverMaintenanceTime.AddMinutes(-30);
+				if (ServerTime.UtcNow < _reserveMaintenanceAlarmTime)
+				{
+					_serverMaintenanceRemainMinute = 30;
+					find = true;
+					break;
+				}
+				_reserveMaintenanceAlarmTime = _serverMaintenanceTime.AddMinutes(-10);
+				if (ServerTime.UtcNow < _reserveMaintenanceAlarmTime)
+				{
+					_serverMaintenanceRemainMinute = 10;
+					find = true;
+					break;
+				}
+				_reserveMaintenanceAlarmTime = _serverMaintenanceTime.AddMinutes(-5);
+				if (ServerTime.UtcNow < _reserveMaintenanceAlarmTime)
+				{
+					_serverMaintenanceRemainMinute = 5;
+					find = true;
+					break;
+				}
+				_reserveMaintenanceAlarmTime = _serverMaintenanceTime.AddMinutes(-3);
+				if (ServerTime.UtcNow < _reserveMaintenanceAlarmTime)
+				{
+					_serverMaintenanceRemainMinute = 3;
+					find = true;
+					break;
+				}
+				// 3분 이내면 이미 임박한거다.
 				find = true;
+				reached = true;
 				break;
 			}
-			_reserveMaintenanceAlarmTime = _serverMaintenanceTime.AddMinutes(-30);
-			if (ServerTime.UtcNow < _reserveMaintenanceAlarmTime)
-			{
-				_serverMaintenanceRemainMinute = 30;
-				find = true;
-				break;
-			}
-			_reserveMaintenanceAlarmTime = _serverMaintenanceTime.AddMinutes(-10);
-			if (ServerTime.UtcNow < _reserveMaintenanceAlarmTime)
-			{
-				_serverMaintenanceRemainMinute = 10;
-				find = true;
-				break;
-			}
-			_reserveMaintenanceAlarmTime = _serverMaintenanceTime.AddMinutes(-5);
-			if (ServerTime.UtcNow < _reserveMaintenanceAlarmTime)
-			{
-				_serverMaintenanceRemainMinute = 5;
-				find = true;
-				break;
-			}
-			_reserveMaintenanceAlarmTime = _serverMaintenanceTime.AddMinutes(-3);
-			if (ServerTime.UtcNow < _reserveMaintenanceAlarmTime)
-			{
-				_serverMaintenanceRemainMinute = 3;
-				find = true;
-				break;
-			}
-			// 3분 이내면 이미 임박한거다.
-			find = true;
-			reached = true;
-			break;
 		}
 
 		if (find == false)

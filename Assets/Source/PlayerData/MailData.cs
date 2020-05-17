@@ -57,6 +57,10 @@ public class MailData : MonoBehaviour
 
 	void Update()
 	{
+		// 기본적인 캔버스 로드가 이뤄지고 나서 호출되는 초기화 함수.
+		// OnRecvMailData받고나서 1회 호출된다.
+		UpdateLateInitialize();
+
 		// 다른 데이터들과 달리 메일은 5분마다 서버에 보내서 리스트를 업데이트 한다.
 		// 받을 보상이 있다면 빨간색 알림 표시도 해준다.
 		UpdateRefreshTime();
@@ -90,7 +94,8 @@ public class MailData : MonoBehaviour
 		}
 		mailRefreshTime = ServerTime.UtcNow + TimeSpan.FromMinutes(5);
 
-		CheckServerMaintenance();
+		_lateInitialized = false;
+		_updateLateInitialize = true;
 	}
 
 	bool CheckRemove()
@@ -318,10 +323,26 @@ public class MailData : MonoBehaviour
 
 
 	#region Server Maintenance
-	// 숨겨진 우편을 가지고 관리하는 서버 점검 알림 기능이다.
+	bool _updateLateInitialize = false;
+	bool _lateInitialized = false;
+	void UpdateLateInitialize()
+	{
+		if (_updateLateInitialize == false)
+			return;
+		if (CommonCanvasGroup.instance == null)
+			return;
+
+		// UI가 로딩된 후 1회 강제로 체크한다. 이후엔 Refresh 타임때마다 필요한지 보고 체크한다.
+		// MaintenanceCanvas를 띄우려면 CommonCanvasGroup이 로딩되어있어야해서 이렇게 구조를 짜게 되었다.
+		_updateLateInitialize = false;
+		_lateInitialized = true;
+		CheckServerMaintenance();
+	}
+
+	// 숨겨진 우편 "un"으로 서버 점검 타임을 체크하는 기능이다.
 	DateTime _serverMaintenanceTime;
 	int _serverMaintenanceRemainMinute;
-	void CheckServerMaintenance()
+	public void CheckServerMaintenance()
 	{
 		bool find = false;
 		bool reached = false;
@@ -379,7 +400,14 @@ public class MailData : MonoBehaviour
 					find = true;
 					break;
 				}
-				// 3분 이내면 이미 임박한거다.
+				_reserveMaintenanceAlarmTime = _serverMaintenanceTime.AddMinutes(-2);
+				if (ServerTime.UtcNow < _reserveMaintenanceAlarmTime)
+				{
+					_serverMaintenanceRemainMinute = 2;
+					find = true;
+					break;
+				}
+				// 2분 이내면 이미 임박한거다.
 				find = true;
 				reached = true;
 				break;
@@ -402,7 +430,8 @@ public class MailData : MonoBehaviour
 				// 곧 서버 점검임을 알리고 창을 띄워야한다.
 				_reserveMaintenance = true;
 				_reserveMaintenanceAlarm = false;
-				MaintenanceCanvas.Show(true, UIString.instance.GetString("GameUI_MaintenanceReached"), 180.0f);
+				if (_lateInitialized)
+					MaintenanceCanvas.Show(true, UIString.instance.GetString("GameUI_MaintenanceReached"), 180.0f);
 
 				// 확 끊어지는걸 방지하기 위해
 				_serverMaintenanceTime += TimeSpan.FromSeconds(3.0f);
@@ -421,6 +450,9 @@ public class MailData : MonoBehaviour
 	DateTime _reserveMaintenanceAlarmTime;
 	void UpdateServerMaintenance()
 	{
+		if (_lateInitialized == false)
+			return;
+
 		if (_reserveMaintenanceAlarm)
 		{
 			if (ServerTime.UtcNow > _reserveMaintenanceAlarmTime)

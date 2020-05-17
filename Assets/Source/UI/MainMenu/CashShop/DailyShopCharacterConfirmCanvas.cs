@@ -220,6 +220,8 @@ public class DailyShopCharacterConfirmCanvas : MonoBehaviour
 					{
 						CharacterBoxConfirmCanvas.OnCompleteRandomBoxScreen(DropManager.instance.GetGrantCharacterInfo(), DropManager.instance.GetLimitBreakPointInfo(), () =>
 						{
+							DropManager.instance.ClearLobbyDropInfo();
+
 							// 새캐릭 획득 결과창에서 확인 누르면 바로 캐시샵으로 돌아오면 된다.
 							if (CharacterBoxShowCanvas.instance != null && CharacterBoxShowCanvas.instance.gameObject.activeSelf)
 								CharacterBoxShowCanvas.instance.gameObject.SetActive(false);

@@ -226,8 +226,9 @@ public class MailData : MonoBehaviour
 
 		}
 
-		// 서버 점검 있는지 한번씩 판단해야한다.
-		CheckServerMaintenance();
+		// 뭔가 변경이 감지될때 서버 점검 있는지 판단한다.
+		if (deleted || added || modified)
+			CheckServerMaintenance();
 	}
 
 	int GetReceivableMailPresentCount()

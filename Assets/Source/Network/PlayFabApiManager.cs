@@ -278,9 +278,16 @@ public class PlayFabApiManager : MonoBehaviour
 		if (DateTime.TryParse(serverUtcTimeString, out serverUtcTime))
 		{
 			DateTime universalTime = serverUtcTime.ToUniversalTime();
+			// 클라 시간을 변경했으면 DateTime.UtcNow도 달라지기 때문에 그냥 믿으면 안된다. 서버 타임이랑 비교해서 차이값을 기록해둔다.
+			// DateTime.UtcNow에다가 offset을 더해서 예측하는 방식이므로 universalTime에서 DateTime.UtcNow를 빼서 기록해둔다.
+			// 정확하게는 클라가 고친 시간 오프셋값에다가 서버에서 클라까지 오는 패킷 딜레이까지 포함된 시간이다.
 			_timeSpanForServerUtc = universalTime - DateTime.UtcNow;
+
 			// for latency
-			_timeSpanForServerUtc += TimeSpan.FromSeconds((Time.time - _getServerUtcSendTime) * 0.5f);
+			// 원래는 latency 보정용으로 하려고 했는데, 패킷의 가는 시간이 길고 오는 시간이 짧아지면
+			// 클라가 생각하는 서버가 실제 서버타임보다 빨라질 수 있다.
+			// 이 경우 요청하지 말아야하는데 요청하는 경우가 생기므로 sus를 믿을 수 없게 된다. 그러니 아예 보정처리는 하지 않기로 한다.
+			//_timeSpanForServerUtc += TimeSpan.FromSeconds((Time.time - _getServerUtcSendTime) * 0.5f);
 		}
 		if (_waitOnlyServerUtc)
 		{

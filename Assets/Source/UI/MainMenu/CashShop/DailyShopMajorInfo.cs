@@ -101,9 +101,21 @@ public class DailyShopMajorInfo : MonoBehaviour
 			// 여기서 사실 보통이라면 자기 혼자만 리프레쉬 하면 되는데
 			// 이러면 Minor아이템도 스스로 또 체크해서 리프레쉬를 해야만 한다.
 			// 굳이 양쪽에서 이렇게 따로 체크할 필요가 없기 때문에 Minor항목도 여기서 리프레쉬를 호출해주기로 한다.
-			// 메인항목은 스스로 갱신타이밍을 재고있을텐데 여기서 해야하나..?
+			// 메인항목은 스스로 갱신타이밍을 재고있을텐데 여기서 해야하나 싶었는데
+			// 메인항목이 아예 없다가 생기는 날엔 업데이트 돌고있을 컴포넌트가 없어서 이런 경우에만 여기서 몰아서 하기로 한다.
 			RefreshInfo();
 			CashShopCanvas.instance.dailyShopMinorInfo.RefreshShopItemInfo();
+			if (CashShopCanvas.instance.dailyShopMainInfo.gameObject.activeSelf == false)
+				CashShopCanvas.instance.dailyShopMainInfo.RefreshInfo();
+
+			// 창이 켜있을때 갱신된다면 Vertical Layout Group 컴포넌트가 변경된 사이즈대로 맞춰줄 줄 알았는데
+			// 자식 오브젝트들을 통째로 껐다켜지 않는 이상 sizeDelta만 바꾼건 반영되지 않은채 공간이 비워져서 나왔다.
+			// 그래서 안끄고 갱신할 방법이 없나 찾아보니
+			// Vertical Layout Group에 같이 붙어있는 Content Size Fitter를 껐다 켜는거긴 한데 굳이 이럴바엔
+			// 항상 켜있어야하는 MajorInfo를 온오프 하기로 한다.
+			gameObject.SetActive(false);
+			gameObject.SetActive(true);
+
 			_needRefresh = false;
 		}
 	}

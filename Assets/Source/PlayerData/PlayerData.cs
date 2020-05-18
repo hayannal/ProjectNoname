@@ -43,6 +43,7 @@ public class PlayerData : MonoBehaviour
 	public ObscuredInt sealCount { get; set; }
 	public ObscuredBool sharedDailyBoxOpened { get; set; }
 	public DateTime dailyBoxResetTime { get; private set; }
+	public ObscuredInt researchLevel { get; set; }
 
 	// 뽑기 관련 변수
 	public ObscuredInt notStreakCount { get; set; }

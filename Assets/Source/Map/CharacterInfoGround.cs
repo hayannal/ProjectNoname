@@ -7,6 +7,7 @@ public class CharacterInfoGround : MonoBehaviour
 	public static CharacterInfoGround instance;
 
 	public Collider planeCollider;
+	public GameObject stoneObject;
 
 	void Awake()
 	{

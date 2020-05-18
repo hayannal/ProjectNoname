@@ -7,6 +7,7 @@ public class ResearchCanvas : MonoBehaviour
 	public static ResearchCanvas instance;
 
 	public GameObject screenSpaceCanvasPrefab;
+	public GameObject researchGroundObjectPrefab;
 
 	void Awake()
 	{
@@ -14,15 +15,19 @@ public class ResearchCanvas : MonoBehaviour
 	}
 
 	GameObject _screenSpaceCanvasObject;
+	GameObject _researchGroundObject;
 	void Start()
 	{
 		_screenSpaceCanvasObject = Instantiate<GameObject>(screenSpaceCanvasPrefab);
+		_researchGroundObject = Instantiate<GameObject>(researchGroundObjectPrefab, _rootOffsetPosition, Quaternion.identity);
 	}
 
 	void OnEnable()
 	{
 		if (_screenSpaceCanvasObject != null)
 			_screenSpaceCanvasObject.SetActive(true);
+		if (_researchGroundObject != null)
+			_researchGroundObject.SetActive(true);
 
 		bool restore = StackCanvas.Push(gameObject, false, null, OnPopStack);
 		
@@ -35,6 +40,7 @@ public class ResearchCanvas : MonoBehaviour
 	void OnDisable()
 	{
 		_screenSpaceCanvasObject.SetActive(false);
+		_researchGroundObject.SetActive(false);
 
 		if (StackCanvas.Pop(gameObject))
 			return;
@@ -112,6 +118,7 @@ public class ResearchCanvas : MonoBehaviour
 				_groundTransform = BattleInstanceManager.instance.GetCachedObject(StageManager.instance.characterInfoGroundPrefab, _rootOffsetPosition, Quaternion.identity).transform;
 			else
 				_groundTransform.gameObject.SetActive(true);
+			CharacterInfoGround.instance.stoneObject.SetActive(false);
 
 			if (TimeSpaceGround.instance != null && TimeSpaceGround.instance.gameObject.activeSelf)
 				TimeSpaceGround.instance.EnableObjectDeformer(false);
@@ -135,6 +142,7 @@ public class ResearchCanvas : MonoBehaviour
 			if (BattleInstanceManager.instance.playerActor.gameObject == null)
 				return;
 
+			CharacterInfoGround.instance.stoneObject.SetActive(true);
 			_groundTransform.gameObject.SetActive(false);
 			_prevEnvironmentSettingObject.SetActive(true);
 

@@ -191,12 +191,12 @@ public class DailyShopData : MonoBehaviour
 
 	void OnRecvDailyShopSlotInfo(DateTime lastDailyShopSlotPurchasedTime, int index)
 	{
-		if (ServerTime.UtcNow < lastDailyShopSlotPurchasedTime)
-		{
-			// 어떻게 미래로 설정되어있을 수가 있나. 이건 무효.
-			_listShopSlotPurchased[index] = false;
-			return;
-		}
+		//if (ServerTime.UtcNow < lastDailyShopSlotPurchasedTime)
+		//{
+		//	// 어떻게 미래로 설정되어있을 수가 있나. 이건 무효.
+		//	_listShopSlotPurchased[index] = false;
+		//	return;
+		//}
 
 		if (ServerTime.UtcNow.Year == lastDailyShopSlotPurchasedTime.Year && ServerTime.UtcNow.Month == lastDailyShopSlotPurchasedTime.Month && ServerTime.UtcNow.Day == lastDailyShopSlotPurchasedTime.Day)
 			_listShopSlotPurchased[index] = true;
@@ -467,12 +467,12 @@ public class DailyShopData : MonoBehaviour
 
 	void OnRecvDailyFreeItemInfo(DateTime lastDailyFreeItemReceiveTime)
 	{
-		if (ServerTime.UtcNow < lastDailyFreeItemReceiveTime)
-		{
-			// 어떻게 미래로 설정되어있을 수가 있나. 이건 무효.
-			dailyFreeItemReceived = false;
-			return;
-		}
+		//if (ServerTime.UtcNow < lastDailyFreeItemReceiveTime)
+		//{
+		//	// 어떻게 미래로 설정되어있을 수가 있나. 이건 무효.
+		//	dailyFreeItemReceived = false;
+		//	return;
+		//}
 
 		if (ServerTime.UtcNow.Year == lastDailyFreeItemReceiveTime.Year && ServerTime.UtcNow.Month == lastDailyFreeItemReceiveTime.Month && ServerTime.UtcNow.Day == lastDailyFreeItemReceiveTime.Day)
 		{

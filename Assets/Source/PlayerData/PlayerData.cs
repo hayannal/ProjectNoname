@@ -690,12 +690,21 @@ public class PlayerData : MonoBehaviour
 
 	void OnRecvDailyPackageInfo(DateTime lastDailyPackageOpenTime)
 	{
-		if (ServerTime.UtcNow < lastDailyPackageOpenTime)
-		{
-			// 어떻게 미래로 설정되어있을 수가 있나. 이건 무효.
-			sharedDailyPackageOpened = false;
-			return;
-		}
+		// 이건 서버와의 패킷 주고받을땐 절대하면 안되는거다.
+		// ServerTime.UtcNow는 사실 예측값이기 때문에 패킷 딜레이에 따라 매번 오차가 생길 수 있다.
+		// 그러니 기록되어있는 데이터를 비교할때는 써도 되지만 실시간으로 주고받을때는 오차가 생길 수 있으므로 안하는게 맞다.
+		// 게다가 서버가 이미 시간비교해서 ok한건데 왜 클라가 또 검사하나.
+		// 그러니 처음 로그인해서 플레이어 데이터에 기록된걸 불러올때만 검사하면 될거다.
+		//
+		// 그런데.. 생각해보니 기록되어있는 데이터는 ReadOnly라 클라가 건드릴수도 없으니 클라우드 스크립트에서 적어줄때만 바뀌는데 절대 미래의 값이 들어있을리 없다.
+		// 손으로 직접 운영툴에서 적지 않는 이상 잘못된 값이 들어있을리 없으니
+		// 차라리 이 시간검사를 빼버리기로 한다.
+		//if (ServerTime.UtcNow < lastDailyPackageOpenTime)
+		//{
+		//	// 어떻게 미래로 설정되어있을 수가 있나. 이건 무효.
+		//	sharedDailyPackageOpened = false;
+		//	return;
+		//}
 
 		if (ServerTime.UtcNow.Year == lastDailyPackageOpenTime.Year && ServerTime.UtcNow.Month == lastDailyPackageOpenTime.Month && ServerTime.UtcNow.Day == lastDailyPackageOpenTime.Day)
 		{

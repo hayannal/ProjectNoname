@@ -92,7 +92,8 @@ public class MailData : MonoBehaviour
 			// 변경해야할 항목이 있다면 서버에 리프레쉬를 알린다.
 			PlayFabApiManager.instance.RequestRefreshMailList(_listMailCreateInfo.Count, OnRecvRefreshMail);
 		}
-		mailRefreshTime = ServerTime.UtcNow + TimeSpan.FromMinutes(5);
+		mailRefreshTime = ServerTime.UtcNow;
+		CalcNextRefreshTime();
 
 		_lateInitialized = false;
 		_updateLateInitialize = true;
@@ -314,11 +315,21 @@ public class MailData : MonoBehaviour
 		if (DateTime.Compare(ServerTime.UtcNow, mailRefreshTime) < 0)
 			return;
 
-		// 갱신 타이밍은 항상 동일
-		mailRefreshTime += TimeSpan.FromMinutes(5);
+		CalcNextRefreshTime();
 
 		// WaitNetwork 없이 패킷 보내서 응답이 오면 갱신해둔다.
 		PlayFabApiManager.instance.RequestRefreshMailList(_listMailCreateInfo.Count, OnRecvRefreshMail);
+	}
+
+	void CalcNextRefreshTime()
+	{
+		// 갱신 타이밍은 평소엔 항상 동일하나 날짜가 변경되는 타이밍엔 짧게 잡는다.
+		int currentDay = mailRefreshTime.Day;
+		mailRefreshTime += TimeSpan.FromMinutes(5);
+		if (currentDay == mailRefreshTime.Day)
+			return;
+
+		mailRefreshTime = new DateTime(mailRefreshTime.Year, mailRefreshTime.Month, mailRefreshTime.Day) + TimeSpan.FromSeconds(3);
 	}
 
 

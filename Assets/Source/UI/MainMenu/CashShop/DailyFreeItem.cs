@@ -88,7 +88,7 @@ public class DailyFreeItem : MonoBehaviour
 		if (received)
 		{
 			iconTweenAnimation.DOPause();
-			_nextResetDateTime = PlayerData.instance.dailyPackageResetTime;
+			_nextResetDateTime = DailyShopData.instance.dailyFreeItemResetTime;
 			_needUpdate = true;
 		}
 		else

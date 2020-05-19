@@ -1617,6 +1617,7 @@ public class PlayFabApiManager : MonoBehaviour
 				CurrencyData.instance.gold -= price;
 				CurrencyData.instance.dia += addDia;
 				PlayerData.instance.researchLevel += 1;
+				PlayerData.instance.ReinitializeActorStatus();
 				if (successCallback != null) successCallback.Invoke();
 			}
 		}, (error) =>

@@ -517,14 +517,6 @@ public class TimeSpaceData
 		// 장착되어있는 장비 중 하나가 변경된거다. 해당 장비는 장착 혹은 탈착 혹은 속성 변경으로 인한 데이터 갱신이 완료된 상태일테니
 		// 전체 장비 재계산 후
 		RefreshCachedStatus();
-
-		// 모든 캐릭터의 스탯을 재계산 하도록 알려야한다.
-		for (int i = 0; i < PlayerData.instance.listCharacterData.Count; ++i)
-		{
-			PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(PlayerData.instance.listCharacterData[i].actorId);
-			if (playerActor == null)
-				continue;
-			playerActor.actorStatus.InitializeActorStatus();
-		}
+		PlayerData.instance.ReinitializeActorStatus();
 	}
 }

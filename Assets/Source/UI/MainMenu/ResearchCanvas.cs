@@ -22,6 +22,15 @@ public class ResearchCanvas : MonoBehaviour
 	{
 		_screenSpaceCanvasObject = Instantiate<GameObject>(screenSpaceCanvasPrefab);
 		_researchGroundObject = Instantiate<GameObject>(researchGroundObjectPrefab, _rootOffsetPosition, Quaternion.identity);
+
+		if (EventManager.instance.reservedOpenResearchEvent)
+		{
+			UIInstanceManager.instance.ShowCanvasAsync("EventInfoCanvas", () =>
+			{
+				EventInfoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_ResearchName"), UIString.instance.GetString("GameUI_ResearchDesc"), UIString.instance.GetString("GameUI_ResearchMore"), null, 0.785f);
+			});
+			EventManager.instance.reservedOpenResearchEvent = false;
+		}
 	}
 
 	void OnEnable()

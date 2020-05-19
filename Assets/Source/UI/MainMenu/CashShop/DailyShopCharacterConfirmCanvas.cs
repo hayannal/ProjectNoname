@@ -209,7 +209,7 @@ public class DailyShopCharacterConfirmCanvas : MonoBehaviour
 			case "bn":
 			case "bh":
 				if (string.IsNullOrEmpty(newCharacterId) == false)
-					PlayerData.instance.AddNewCharacter(_selectedCharacterId, newCharacterId, 1);
+					PlayerData.instance.AddNewCharacter(_selectedCharacterId, newCharacterId, 1, true);
 
 				// 오리진 박스처럼 뽑기 연출이 필요한 케이스. CharacterBoxConfirmCanvas에 있는거 가져와서 처리한다.
 				// DropManager.instance.ClearLobbyDropInfo() 함수 호출은 아래 OnResult 전달하는 부분에서 알아서 호출할테니 신경쓸필요 없다.
@@ -240,7 +240,7 @@ public class DailyShopCharacterConfirmCanvas : MonoBehaviour
 			case "uch":
 				if (string.IsNullOrEmpty(newCharacterId))
 					break;
-				PlayerData.instance.AddNewCharacter(_selectedCharacterId, newCharacterId, 1);
+				PlayerData.instance.AddNewCharacter(_selectedCharacterId, newCharacterId, 1, true);
 				break;
 			case "fl1":
 			case "fl2":

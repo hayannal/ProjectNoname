@@ -312,7 +312,7 @@ public class PlayerData : MonoBehaviour
 		// 두번 받는거 뿐만 아니라 모든 변수를 다 덮어서 기록하는지도 확인하면 완벽하다.(건너뛰면 이전값이 남을테니 위험)
 	}
 
-	public void AddNewCharacter(string actorId, string serverCharacterId, int powerLevel)
+	public void AddNewCharacter(string actorId, string serverCharacterId, int powerLevel, bool reinitializeActorStatus = false)
 	{
 		CharacterData characterData = new CharacterData();
 		characterData.actorId = actorId;
@@ -320,6 +320,16 @@ public class PlayerData : MonoBehaviour
 		if (string.IsNullOrEmpty(serverCharacterId) == false)
 			characterData.entityKey = new PlayFab.DataModels.EntityKey() { Id = serverCharacterId, Type = "character" };
 		_listCharacterData.Add(characterData);
+
+		if (reinitializeActorStatus)
+		{
+			// 플레이 중간에 캐릭터 인벤에 추가하는 곳은 여기 하나뿐이다.
+			// 캐릭터를 획득하기 전에 체험이나 미리보기같은데서 먼저 보게되면 기본 스탯으로 생성되는데
+			// 인벤에 들어오는 시점에 스탯을 리프레시 해놔야 장비나 연구까지 다 적용된 상태로 들어오게 된다.
+			PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(actorId);
+			if (playerActor != null)
+				playerActor.actorStatus.InitializeActorStatus();
+		}
 	}
 
 	IEnumerator DelayedSyncCharacterEntity(float delay)
@@ -561,7 +571,7 @@ public class PlayerData : MonoBehaviour
 		{
 			string actorId = e.Current.Key;
 			string characterId = e.Current.Value;
-			AddNewCharacter(actorId, characterId, 1);
+			AddNewCharacter(actorId, characterId, 1, true);
 		}
 	}
 

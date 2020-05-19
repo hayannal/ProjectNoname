@@ -220,7 +220,7 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 
 	public void OnClickLevelResetButton()
 	{
-		bool left = (_selectedLevel < (PlayerData.instance.researchLevel + 1));
+		bool left = (_selectedLevel > (PlayerData.instance.researchLevel + 1));
 		SelectDefaultLevel();
 		RefreshLevelInfo();
 		MoveTween(left);
@@ -230,14 +230,14 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 	{
 		_selectedLevel -= 1;
 		RefreshLevelInfo();
-		MoveTween(false);
+		MoveTween(true);
 	}
 
 	public void OnClickRightButton()
 	{
 		_selectedLevel += 1;
 		RefreshLevelInfo();
-		MoveTween(true);
+		MoveTween(false);
 	}
 
 	public void OnEndDrag(BaseEventData baseEventData)
@@ -246,7 +246,7 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 		if (pointerEventData == null)
 			return;
 
-		bool left = (pointerEventData.delta.x < 0.0f);
+		bool left = (pointerEventData.delta.x > 0.0f);
 		if (left)
 		{
 			if (leftButton.gameObject.activeSelf)

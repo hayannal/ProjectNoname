@@ -191,7 +191,7 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 
 			if (!dontHave)
 			{
-				ppText.text = UIString.instance.GetString("GameUI_StageFraction", current, max);
+				ppText.text = UIString.instance.GetString("GameUI_SpacedFraction", current, max);
 				ppSlider.value = Mathf.Min(1.0f, (float)current / (float)max);
 			}
 			sliderRectObject.SetActive(!dontHave);

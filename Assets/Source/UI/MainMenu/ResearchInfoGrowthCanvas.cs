@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
 
 // 스크린 스페이스 캔버스라서 캐릭터에 썼던 이름과 비슷하게 지어둔다.
 public class ResearchInfoGrowthCanvas : MonoBehaviour
@@ -19,6 +21,7 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 	public Text levelText;
 	public Button levelResetButton;
 	public Image gaugeImage;
+	public DOTweenAnimation gaugeImageTweenAnimation;
 	public GameObject hpObject;
 	public GameObject attackObject;
 	public GameObject diaObject;
@@ -41,25 +44,41 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 	}
 
 	// Start is called before the first frame update
+	bool _started = false;
 	void Start()
     {
 		GetComponent<Canvas>().worldCamera = UIInstanceManager.instance.GetCachedCameraMain();
+		_started = true;
 	}
 
 	Vector2 _leftTweenPosition = new Vector2(-150.0f, 0.0f);
 	Vector2 _rightTweenPosition = new Vector2(150.0f, 0.0f);
+	TweenerCore<Vector2, Vector2, VectorOptions> _tweenReferenceForMove;
 	void MoveTween(bool left)
 	{
+		if (_tweenReferenceForMove != null)
+			_tweenReferenceForMove.Kill();
+
 		positionRectTransform.gameObject.SetActive(false);
 		positionRectTransform.gameObject.SetActive(true);
 		positionRectTransform.anchoredPosition = left ? _leftTweenPosition : _rightTweenPosition;
-		positionRectTransform.DOAnchorPos(Vector2.zero, 0.3f).SetEase(Ease.OutQuad);
+		_tweenReferenceForMove = positionRectTransform.DOAnchorPos(Vector2.zero, 0.3f).SetEase(Ease.OutQuad);
 	}
 
 	void OnEnable()
 	{
 		RefreshInfo();
 		MoveTween(true);
+	}
+
+	bool _reserveGaugeMoveTweenAnimation;
+	void Update()
+	{
+		if (_reserveGaugeMoveTweenAnimation)
+		{
+			gaugeImageTweenAnimation.DORestart();
+			_reserveGaugeMoveTweenAnimation = false;
+		}
 	}
 
 	int _selectedLevel;
@@ -80,7 +99,7 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 
 		gaugeImage.fillAmount = 0.56f;
 		hpObject.SetActive(false);
-		gaugeText.text = UIString.instance.GetString("GameUI_StageFraction", 1214, 242);
+		gaugeText.text = UIString.instance.GetString("GameUI_SpacedFraction", 1214, 242);
 
 		bool selectCurrentLevel = (_selectedLevel == (PlayerData.instance.researchLevel + 1));
 		levelResetButton.gameObject.SetActive(!selectCurrentLevel);
@@ -92,7 +111,14 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 			int requiredGold = 2000;
 			int current = 1214;
 			int max = 242;
-			gaugeText.text = UIString.instance.GetString("GameUI_StageFraction", current, max);
+			gaugeText.text = UIString.instance.GetString("GameUI_SpacedFraction", current, max);
+
+			gaugeImage.fillAmount = 0.0f;
+			DOTween.To(() => gaugeImage.fillAmount, x => gaugeImage.fillAmount = x, 0.5f, 0.3f).SetEase(Ease.Linear).SetDelay(0.3f);
+			if (_started)
+				gaugeImageTweenAnimation.DORestart();
+			else
+				_reserveGaugeMoveTweenAnimation = true;
 
 			bool disablePrice = (CurrencyData.instance.gold < requiredGold || current < max);
 			priceButtonImage.color = !disablePrice ? Color.white : ColorUtil.halfGray;
@@ -119,7 +145,7 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 				max = 500;
 				gaugeImage.fillAmount = 0.0f;
 			}
-			gaugeText.text = UIString.instance.GetString("GameUI_StageFraction", current, max);
+			gaugeText.text = UIString.instance.GetString("GameUI_SpacedFraction", current, max);
 			
 			priceButtonObject.SetActive(false);
 			disableButtonImage.color = ColorUtil.halfGray;
@@ -163,9 +189,15 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 
 		bool left = (pointerEventData.delta.x < 0.0f);
 		if (left)
-			OnClickLeftButton();
+		{
+			if (leftButton.gameObject.activeSelf)
+				OnClickLeftButton();
+		}
 		else
-			OnClickRightButton();
+		{
+			if (rightButton.gameObject.activeSelf)
+				OnClickRightButton();
+		}
 	}
 
 	public void OnClickButton()

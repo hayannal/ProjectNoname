@@ -6,8 +6,10 @@ public class ResearchCanvas : MonoBehaviour
 {
 	public static ResearchCanvas instance;
 
+	public CurrencySmallInfo currencySmallInfo;
 	public GameObject screenSpaceCanvasPrefab;
 	public GameObject researchGroundObjectPrefab;
+	public GameObject inputLockObject;
 
 	void Awake()
 	{

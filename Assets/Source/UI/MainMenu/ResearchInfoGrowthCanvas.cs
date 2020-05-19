@@ -6,6 +6,8 @@ using UnityEngine.EventSystems;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
+using CodeStage.AntiCheat.ObscuredTypes;
+using MEC;
 
 // 스크린 스페이스 캔버스라서 캐릭터에 썼던 이름과 비슷하게 지어둔다.
 public class ResearchInfoGrowthCanvas : MonoBehaviour
@@ -37,6 +39,8 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 	public GameObject disableButtonObject;
 	public Image disableButtonImage;
 	public Text disableButtonText;
+
+	public GameObject effectPrefab;
 
 	void Awake()
 	{
@@ -86,16 +90,23 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 	{
 		researchText.text = UIString.instance.GetString("ResearchUI_Research");
 
+		SelectDefaultLevel();
+		RefreshLevelInfo();
+	}
+
+	void SelectDefaultLevel()
+	{
 		// 처음 켜질땐 항상 현재 도달하려는 연구레벨로 켜지면 된다.
 		if (PlayerData.instance.researchLevel == BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxResearchLevel"))
 			_selectedLevel = PlayerData.instance.researchLevel;
 		else
 			_selectedLevel = PlayerData.instance.researchLevel + 1;
-		RefreshLevelInfo();
 	}
 
-	int _price;
+	ObscuredInt _price;
+	ObscuredInt _rewardDia;
 	bool _needSumLevel;
+	TweenerCore<float, float, FloatOptions> _tweenReferenceForGauge;
 	void RefreshLevelInfo()
 	{
 		levelText.text = UIString.instance.GetString("GameUI_Lv", _selectedLevel);
@@ -111,17 +122,25 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 		hpObject.SetActive(researchTableData.displayHp > 0);
 		diaObject.SetActive(researchTableData.rewardDiamond > 0);
 
+		bool maxReached = (_selectedLevel == BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxResearchLevel"));
 		bool selectCurrentTargetLevel = (_selectedLevel == (PlayerData.instance.researchLevel + 1));
-		levelResetButton.gameObject.SetActive(!selectCurrentTargetLevel);
+
+		bool hideResetButton = false;
+		if (selectCurrentTargetLevel) hideResetButton = true;
+		if (maxReached) hideResetButton = true;
+		levelResetButton.gameObject.SetActive(!hideResetButton);
+
 		leftButton.gameObject.SetActive(_selectedLevel != 1);
-		bool rightDisable = false;
-		if (_selectedLevel == BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxResearchLevel")) rightDisable = true;
-		if (_selectedLevel > (PlayerData.instance.researchLevel + 1)) rightDisable = true;
-		rightButton.gameObject.SetActive(!rightDisable);
+		bool hideRightButton = false;
+		if (maxReached) hideRightButton = true;
+		if (_selectedLevel > (PlayerData.instance.researchLevel + 1)) hideRightButton = true;
+		rightButton.gameObject.SetActive(!hideRightButton);
+
+		if (_tweenReferenceForGauge != null)
+			_tweenReferenceForGauge.Kill();
 
 		int current = 0;
 		int max = 0;
-
 		if (selectCurrentTargetLevel)
 		{
 			int requiredGold = researchTableData.requiredGold;
@@ -134,16 +153,18 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 			max = researchTableData.requiredAccumulatedPowerLevel - prevRequiredAccumulatedPowerLevel;
 			current = GetCurrentAccumulatedPowerLevel() - prevRequiredAccumulatedPowerLevel;
 			gaugeText.text = UIString.instance.GetString("GameUI_SpacedFraction", current, max);
+			_needSumLevel = (current < max);
 
 			float ratio = (float)current / (float)max;
 			ratio = Mathf.Min(1.0f, ratio);
 			gaugeImage.fillAmount = 0.0f;
-			DOTween.To(() => gaugeImage.fillAmount, x => gaugeImage.fillAmount = x, ratio, 0.5f).SetEase(Ease.OutQuad).SetDelay(0.3f);
+			_tweenReferenceForGauge = DOTween.To(() => gaugeImage.fillAmount, x => gaugeImage.fillAmount = x, ratio, 0.5f).SetEase(Ease.OutQuad).SetDelay(0.3f);
 			if (_started)
 				gaugeImageTweenAnimation.DORestart();
 			else
 				_reserveGaugeMoveTweenAnimation = true;
 
+			priceText.text = requiredGold.ToString("N0");
 			bool disablePrice = (CurrencyData.instance.gold < requiredGold || current < max);
 			priceButtonImage.color = !disablePrice ? Color.white : ColorUtil.halfGray;
 			priceText.color = !disablePrice ? Color.white : Color.gray;
@@ -151,6 +172,7 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 			priceButtonObject.SetActive(true);
 			disableButtonObject.SetActive(false);
 			_price = requiredGold;
+			_rewardDia = researchTableData.rewardDiamond;
 		}
 		else
 		{
@@ -179,10 +201,11 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 			disableButtonImage.color = ColorUtil.halfGray;
 			disableButtonText.color = ColorUtil.halfGray;
 			disableButtonObject.SetActive(true);
+			_price = _rewardDia = 0;
 		}
 	}
 
-	int GetCurrentAccumulatedPowerLevel()
+	public static int GetCurrentAccumulatedPowerLevel()
 	{
 		int result = 0;
 		for (int i = 0; i < PlayerData.instance.listCharacterData.Count; ++i)
@@ -198,7 +221,7 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 	public void OnClickLevelResetButton()
 	{
 		bool left = (_selectedLevel < (PlayerData.instance.researchLevel + 1));
-		_selectedLevel = PlayerData.instance.researchLevel + 1;
+		SelectDefaultLevel();
 		RefreshLevelInfo();
 		MoveTween(left);
 	}
@@ -236,21 +259,6 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 		}
 	}
 
-	public void OnClickButton()
-	{
-		if (_needSumLevel)
-		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("ResearchUI_NotEnoughLevel"), 2.0f);
-			return;
-		}
-
-		if (CurrencyData.instance.gold < _price)
-		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughGold"), 2.0f);
-			return;
-		}
-	}
-
 	public void OnClickDisableButton()
 	{
 		if (_selectedLevel < (PlayerData.instance.researchLevel + 1))
@@ -264,5 +272,64 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("ResearchUI_FormerFirst"), 2.0f);
 			return;
 		}
+	}
+
+	public void OnClickButton()
+	{
+		if (_needSumLevel)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("ResearchUI_NotEnoughLevel"), 2.0f);
+			return;
+		}
+
+		if (CurrencyData.instance.gold < _price)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughGold"), 2.0f);
+			return;
+		}
+
+		priceButtonObject.SetActive(false);
+		PlayFabApiManager.instance.RequestResearchLevelUp(_selectedLevel, _price, _rewardDia, () =>
+		{
+			ResearchCanvas.instance.currencySmallInfo.RefreshInfo();
+			Timing.RunCoroutine(ResearchLevelUpProcess());
+		});
+	}
+
+	IEnumerator<float> ResearchLevelUpProcess()
+	{
+		// 인풋 차단
+		ResearchCanvas.instance.inputLockObject.SetActive(true);
+
+		// 오브젝트 정지
+		ResearchObjects.instance.objectTweenAnimation.DOTogglePause();
+		yield return Timing.WaitForSeconds(0.3f);
+
+		// 이펙트
+		BattleInstanceManager.instance.GetCachedObject(effectPrefab, ResearchObjects.instance.effectRootTransform);
+		yield return Timing.WaitForSeconds(2.0f);
+
+		// Toast 알림
+		string stringId = diaObject.activeSelf ? "ResearchUI_RewardedCurrency" : "ResearchUI_RewardedStat";
+		ToastCanvas.instance.ShowToast(UIString.instance.GetString(stringId), 3.0f);
+		yield return Timing.WaitForSeconds(1.0f);
+
+		// nextInfo
+		priceButtonObject.SetActive(true);
+		if (rightButton.gameObject.activeSelf)
+		{
+			OnClickRightButton();
+			yield return Timing.WaitForSeconds(0.4f);
+		}
+		else
+		{
+			RefreshLevelInfo();
+		}
+
+		// 토글 복구
+		ResearchObjects.instance.objectTweenAnimation.DOTogglePause();
+
+		// 인풋 복구
+		ResearchCanvas.instance.inputLockObject.SetActive(false);
 	}
 }

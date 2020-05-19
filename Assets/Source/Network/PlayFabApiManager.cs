@@ -1596,6 +1596,34 @@ public class PlayFabApiManager : MonoBehaviour
 			HandleCommonError(error);
 		});
 	}
+
+	public void RequestResearchLevelUp(int targetLevel, int price, int addDia, Action successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+		string input = string.Format("{0}_{1}", targetLevel, "rthqzobj");
+		string checkSum = CheckSum(input);
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "Research",
+			FunctionParameter = new { Ta = targetLevel, Cs = checkSum },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+				CurrencyData.instance.gold -= price;
+				CurrencyData.instance.dia += addDia;
+				PlayerData.instance.researchLevel += 1;
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
 	#endregion
 
 

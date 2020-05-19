@@ -9,6 +9,7 @@ public class EventInfoCanvas : MonoBehaviour
 
 	public Text subTitleText;
 	public Text messageText;
+	public Image backgroundImage;
 
 	System.Action _okAction;
 
@@ -17,7 +18,7 @@ public class EventInfoCanvas : MonoBehaviour
 		instance = this;
 	}
 
-	public void ShowCanvas(bool show, string title, string message, string tooltip, System.Action okAction = null)
+	public void ShowCanvas(bool show, string title, string message, string tooltip, System.Action okAction = null, float backgroundImageAlpha = 0.585f)
 	{
 		gameObject.SetActive(show);
 		if (show == false)
@@ -25,6 +26,7 @@ public class EventInfoCanvas : MonoBehaviour
 
 		subTitleText.SetLocalizedText(title);
 		messageText.SetLocalizedText(message);
+		backgroundImage.color = new Color(backgroundImage.color.r, backgroundImage.color.g, backgroundImage.color.b, backgroundImageAlpha);
 		_tooltip = tooltip;
 		_okAction = okAction;
 	}

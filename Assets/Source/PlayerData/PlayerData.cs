@@ -699,9 +699,9 @@ public class PlayerData : MonoBehaviour
 	public void ReinitializeActorStatus()
 	{
 		// 모든 캐릭터의 스탯을 재계산 하도록 알려야한다.
-		for (int i = 0; i < PlayerData.instance.listCharacterData.Count; ++i)
+		for (int i = 0; i < _listCharacterData.Count; ++i)
 		{
-			PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(PlayerData.instance.listCharacterData[i].actorId);
+			PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(_listCharacterData[i].actorId);
 			if (playerActor == null)
 				continue;
 			playerActor.actorStatus.InitializeActorStatus();

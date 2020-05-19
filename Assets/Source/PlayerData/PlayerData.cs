@@ -271,7 +271,11 @@ public class PlayerData : MonoBehaviour
 		purifyCount = 0;
 		notStreakCount = 0;
 		notStreakCharCount = 0;
+		originOpenCount = 0;
+		characterBoxOpenCount = 0;
+		_listLevelPackage = null;
 		sharedDailyPackageOpened = false;
+		researchLevel = 0;
 
 		// 나중에 지울 코드이긴 한데 MainSceneBuilder에서 NEWPLAYER_LEVEL1 디파인 켜둔채로 생성하는 테스트용 루틴일땐
 		// 1챕터에서 시작하게 처리해둔다.

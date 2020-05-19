@@ -47,6 +47,7 @@ public class TableDataManager : MonoBehaviour
 	public ShopBoxTable shopBoxTable;
 	public ShopLevelPackageTable shopLevelPackageTable;
 	public ShopDailyDiamondTable shopDailyDiamondTable;
+	public ResearchTable researchTable;
 
 	void Awake()
 	{
@@ -404,6 +405,16 @@ public class TableDataManager : MonoBehaviour
 		{
 			if (shopLevelPackageTable.dataArray[i].level == level)
 				return shopLevelPackageTable.dataArray[i];
+		}
+		return null;
+	}
+
+	public ResearchTableData FindResearchTableData(int level)
+	{
+		for (int i = 0; i < researchTable.dataArray.Length; ++i)
+		{
+			if (researchTable.dataArray[i].level == level)
+				return researchTable.dataArray[i];
 		}
 		return null;
 	}

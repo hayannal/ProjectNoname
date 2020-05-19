@@ -465,6 +465,14 @@ public class PlayerData : MonoBehaviour
 				OnRecvDailyPackageInfo(userReadOnlyData["lasPckDat"].Value);
 		}
 
+		researchLevel = 0;
+		if (userReadOnlyData.ContainsKey("rsrLv"))
+		{
+			int intValue = 0;
+			if (int.TryParse(userReadOnlyData["rsrLv"].Value, out intValue))
+				researchLevel = intValue;
+		}
+
 		loginned = true;
 	}
 

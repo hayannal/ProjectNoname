@@ -87,7 +87,10 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 		researchText.text = UIString.instance.GetString("ResearchUI_Research");
 
 		// 처음 켜질땐 항상 현재 도달하려는 연구레벨로 켜지면 된다.
-		_selectedLevel = PlayerData.instance.researchLevel + 1;
+		if (PlayerData.instance.researchLevel == BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxResearchLevel"))
+			_selectedLevel = PlayerData.instance.researchLevel;
+		else
+			_selectedLevel = PlayerData.instance.researchLevel + 1;
 		RefreshLevelInfo();
 	}
 
@@ -97,24 +100,45 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 	{
 		levelText.text = UIString.instance.GetString("GameUI_Lv", _selectedLevel);
 
-		gaugeImage.fillAmount = 0.56f;
-		hpObject.SetActive(false);
-		gaugeText.text = UIString.instance.GetString("GameUI_SpacedFraction", 1214, 242);
+		ResearchTableData researchTableData = TableDataManager.instance.FindResearchTableData(_selectedLevel);
+		if (researchTableData == null)
+			return;
 
-		bool selectCurrentLevel = (_selectedLevel == (PlayerData.instance.researchLevel + 1));
-		levelResetButton.gameObject.SetActive(!selectCurrentLevel);
+		attackText.text = researchTableData.displayAtk.ToString("N0");
+		hpText.text = researchTableData.displayHp.ToString("N0");
+		diaText.text = researchTableData.rewardDiamond.ToString("N0");
+		attackObject.SetActive(researchTableData.displayAtk > 0);
+		hpObject.SetActive(researchTableData.displayHp > 0);
+		diaObject.SetActive(researchTableData.rewardDiamond > 0);
+
+		bool selectCurrentTargetLevel = (_selectedLevel == (PlayerData.instance.researchLevel + 1));
+		levelResetButton.gameObject.SetActive(!selectCurrentTargetLevel);
 		leftButton.gameObject.SetActive(_selectedLevel != 1);
-		rightButton.gameObject.SetActive(_selectedLevel != 10); // max
+		bool rightDisable = false;
+		if (_selectedLevel == BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxResearchLevel")) rightDisable = true;
+		if (_selectedLevel > (PlayerData.instance.researchLevel + 1)) rightDisable = true;
+		rightButton.gameObject.SetActive(!rightDisable);
 
-		if (selectCurrentLevel)
+		int current = 0;
+		int max = 0;
+
+		if (selectCurrentTargetLevel)
 		{
-			int requiredGold = 2000;
-			int current = 1214;
-			int max = 242;
+			int requiredGold = researchTableData.requiredGold;
+			int prevRequiredAccumulatedPowerLevel = 0;
+			if (_selectedLevel != 1)
+			{
+				ResearchTableData prevResearchTableData = TableDataManager.instance.FindResearchTableData(_selectedLevel - 1);
+				prevRequiredAccumulatedPowerLevel = prevResearchTableData.requiredAccumulatedPowerLevel;
+			}
+			max = researchTableData.requiredAccumulatedPowerLevel - prevRequiredAccumulatedPowerLevel;
+			current = GetCurrentAccumulatedPowerLevel() - prevRequiredAccumulatedPowerLevel;
 			gaugeText.text = UIString.instance.GetString("GameUI_SpacedFraction", current, max);
 
+			float ratio = (float)current / (float)max;
+			ratio = Mathf.Min(1.0f, ratio);
 			gaugeImage.fillAmount = 0.0f;
-			DOTween.To(() => gaugeImage.fillAmount, x => gaugeImage.fillAmount = x, 0.5f, 0.3f).SetEase(Ease.Linear).SetDelay(0.3f);
+			DOTween.To(() => gaugeImage.fillAmount, x => gaugeImage.fillAmount = x, ratio, 0.5f).SetEase(Ease.OutQuad).SetDelay(0.3f);
 			if (_started)
 				gaugeImageTweenAnimation.DORestart();
 			else
@@ -130,28 +154,40 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 		}
 		else
 		{
-			int current = 0;
-			int max = 0;
 			if (_selectedLevel < (PlayerData.instance.researchLevel + 1))
 			{
-				current = 50;
-				max = 50;
+				int prevRequiredAccumulatedPowerLevel = 0;
+				if (_selectedLevel != 1)
+				{
+					ResearchTableData prevResearchTableData = TableDataManager.instance.FindResearchTableData(_selectedLevel - 1);
+					prevRequiredAccumulatedPowerLevel = prevResearchTableData.requiredAccumulatedPowerLevel;
+				}
+				current = max = researchTableData.requiredAccumulatedPowerLevel - prevRequiredAccumulatedPowerLevel;
+				gaugeText.text = UIString.instance.GetString("GameUI_SpacedFraction", current, max);
 				gaugeImage.fillAmount = 1.0f;
+				disableButtonText.SetLocalizedText(UIString.instance.GetString("ResearchUI_DoneButton"));
 			}
 
 			if (_selectedLevel > (PlayerData.instance.researchLevel + 1))
 			{
-				current = 0;
-				max = 500;
+				gaugeText.text = "???";
 				gaugeImage.fillAmount = 0.0f;
+				disableButtonText.SetLocalizedText(UIString.instance.GetString("ResearchUI_FormerFirstButton"));
 			}
-			gaugeText.text = UIString.instance.GetString("GameUI_SpacedFraction", current, max);
 			
 			priceButtonObject.SetActive(false);
 			disableButtonImage.color = ColorUtil.halfGray;
 			disableButtonText.color = ColorUtil.halfGray;
 			disableButtonObject.SetActive(true);
 		}
+	}
+
+	int GetCurrentAccumulatedPowerLevel()
+	{
+		int result = 0;
+		for (int i = 0; i < PlayerData.instance.listCharacterData.Count; ++i)
+			result += PlayerData.instance.listCharacterData[i].powerLevel;
+		return result;
 	}
 
 	public void OnClickDetailButton()

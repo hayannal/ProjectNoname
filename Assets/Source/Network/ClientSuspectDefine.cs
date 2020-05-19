@@ -22,5 +22,6 @@ namespace ClientSuspect
 		InvalidLegendKey		= 100011,
 		CheatTable				= 100012,
 		InvalidTotalPp			= 100013,
+		InvalidResearchLevel	= 100014,
 	}
 }

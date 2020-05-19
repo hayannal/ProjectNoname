@@ -518,6 +518,14 @@ public class PlayerData : MonoBehaviour
 			totalPp += _listCharacterData[i].pp;
 		if (totalPp > (originOpenCount * PPMaxPerOriginBox + characterBoxOpenCount * PPMaxPerCharacterBox))
 			PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidTotalPp, false, totalPp);
+
+		// 연구레벨 체크
+		if (researchLevel > 0)
+		{
+			ResearchTableData researchTableData = TableDataManager.instance.FindResearchTableData(researchLevel);
+			if (researchTableData == null || ResearchInfoGrowthCanvas.GetCurrentAccumulatedPowerLevel() < researchTableData.requiredAccumulatedPowerLevel)
+				PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidResearchLevel, false, researchLevel);
+		}
 	}
 
 	public void OnRecvUpdateCharacterStatistics(List<DropManager.CharacterPpRequest> listPpInfo, List<DropManager.CharacterLbpRequest> listLbpInfo)

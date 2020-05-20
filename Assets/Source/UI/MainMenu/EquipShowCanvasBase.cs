@@ -9,7 +9,6 @@ public class EquipShowCanvasBase : MonoBehaviour
 {
 	public Transform infoCameraTransform;
 	public float infoCameraFov = 43.0f;
-	public float equipObjectY = 180.0f;
 	public GameObject equipInfoGroundPrefab;
 
 	protected Vector3 _rootOffsetPosition = new Vector3(-75.0f, 0.0f, 0.0f);
@@ -33,14 +32,6 @@ public class EquipShowCanvasBase : MonoBehaviour
 		{
 			if (MainSceneBuilder.instance.lobby)
 				LobbyCanvas.instance.OnEnterMainMenu(true);
-			else
-			{
-				// lobby가 아닐때란건 아마 전투결과창이란 얘기다. 불필요한 캔버스들을 다 가려둔다.
-				//LobbyCanvas.instance.gameObject.SetActive(false);
-				//SkillSlotCanvas.instance.gameObject.SetActive(false);
-				//if (BattleResultCanvas.instance != null)
-				//	BattleResultCanvas.instance.gameObject.SetActive(false);
-			}
 
 			// disable prev component
 			CameraFovController.instance.enabled = false;

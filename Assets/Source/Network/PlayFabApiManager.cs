@@ -1139,6 +1139,36 @@ public class PlayFabApiManager : MonoBehaviour
 			HandleCommonError(error);
 		});
 	}
+
+	public void RequestSellEquip(List<EquipData> listMaterialEquipData, int price, Action successCallback)
+	{
+		string checkSum = "";
+		List<TimeSpaceData.RevokeInventoryItemRequest> listRevokeRequest = TimeSpaceData.instance.GenerateRevokeInfo(listMaterialEquipData, price, "", ref checkSum);
+
+		// 선이펙트 없이 일반 패킷처럼 처리
+		WaitingNetworkCanvas.Show(true);
+
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "SellEquip",
+			FunctionParameter = new { Lst = listRevokeRequest, Pri = price, LstCs = checkSum },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+				CurrencyData.instance.gold += price;
+				TimeSpaceData.instance.OnRevokeInventory(listMaterialEquipData);
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
 	#endregion
 
 	#region Gacha

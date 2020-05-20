@@ -404,7 +404,7 @@ public class EquipInfoGrowthCanvas : MonoBehaviour
 			int expectEnhanceLevel = EquipTransferConfirmCanvas.GetTransferResult(_equipData, equipData);
 			if (_equipData.enhanceLevel == expectEnhanceLevel)
 			{
-				ToastCanvas.instance.ShowToast(UIString.instance.GetString("EquipUI_InsufficientMaterial"), 1.0f);
+				ToastCanvas.instance.ShowToast(UIString.instance.GetString("EquipUI_InsufficientMaterial"), 2.0f);
 				return;
 			}
 		}

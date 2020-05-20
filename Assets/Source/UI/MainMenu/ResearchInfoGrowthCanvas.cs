@@ -240,6 +240,7 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 		MoveTween(false);
 	}
 
+	// 드래그 빼기로 하는데 코드는 남겨놔도 되서 캔버스에서 이벤트만 빼두기로 한다.
 	public void OnEndDrag(BaseEventData baseEventData)
 	{
 		PointerEventData pointerEventData = baseEventData as PointerEventData;

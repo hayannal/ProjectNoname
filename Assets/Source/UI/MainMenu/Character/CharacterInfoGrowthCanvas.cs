@@ -311,11 +311,14 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 		string text = "";
 		if (_overMaxMode)
 		{
-			//CharacterData characterData = PlayerData.instance.GetCharacterData(_actorId);
-			//if (characterData != null)
-			//{
-			//}
-			text = UIString.instance.GetString("GameUI_OverMaxDesc", 0.0f);
+			float percent = 0.0f;			
+			if (PlayerData.instance.ContainsActor(_actorId))
+			{
+				PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(_actorId);
+				if (playerActor != null)
+					percent = playerActor.actorStatus.GetAttackAddRateByOverPP() * 100.0f;
+			}
+			text = UIString.instance.GetString("GameUI_OverMaxDesc", percent);
 		}
 		else if (_limitBreakMode)
 		{

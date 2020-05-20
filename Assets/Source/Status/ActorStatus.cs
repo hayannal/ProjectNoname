@@ -190,6 +190,7 @@ public class ActorStatus : MonoBehaviour
 			case eActorStatus.AttackAddRate:
 				value += AddAttackByHpAffector.GetValue(actor.affectorProcessor, actor.actorStatus.GetHPRatio());
 				value += PositionBuffAffector.GetAttackAddRate(actor.affectorProcessor);
+				value += GetAttackAddRateByOverPP();
 				break;
 		}
 		return value;
@@ -227,6 +228,23 @@ public class ActorStatus : MonoBehaviour
 		nextAttack = GetDisplayAttack();
 		nextMaxHp = GetDisplayMaxHp();
 		InitializeActorStatus();
+	}
+
+	static float LnOverConstant1 = 0.00822722242162062f;
+	static float LnOverConstant2 = 0.0001f;
+	public float GetAttackAddRateByOverPP()
+	{
+		int overMaxPp = 0;
+		CharacterData characterData = PlayerData.instance.GetCharacterData(actor.actorId);
+		if (characterData != null)
+		{
+			// 캐릭터의 파워레벨 대신 저장되어있는 powerLevel을 써도 된다.
+			if (powerLevel >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxPowerLevel"))
+				overMaxPp = characterData.pp - characterData.maxPp;
+		}
+		if (overMaxPp == 0)
+			return 0.0f;
+		return LnOverConstant1 * Mathf.Log(overMaxPp) + LnOverConstant2;
 	}
 
 	public bool IsDie()

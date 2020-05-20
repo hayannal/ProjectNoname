@@ -125,8 +125,19 @@ public class DailyPackageInfo : MonoBehaviour
 	bool _needUpdate = false;
 	void UpdateRemainTime()
 	{
-		if (PlayerData.instance.sharedDailyPackageOpened == false)
-			return;
+		// 오리진 박스 처리와 다른게 있는데..
+		// 오리진 박스는 패킷을 보내서 갱신 여부를 확인하고 갱신했었다.
+		// 그런데 일일 다이아 패키지나 일일 무료 아이템은 어차피 하루에 한번 받는게 확정이라 sharedDailyPackageOpened를 클라에서 스스로 해제했다.
+		// 이러다보니 하필 같은 타이밍에 데이터쪽에서 sharedDailyPackageOpened플래그를 false로 리셋하면
+		// UpdateRemainTime 호출이 안되서 _needUpdate플래그가 켜지질 않게 됐다.
+		// 하필 호출 순서가 데이터쪽에서의 Update 후에 캔버스 Update라서 데이터가 리셋해버리면 캔버스는 감지하지 못한채 끝나버리는거였다.
+		// (순서를 바꾸는 방법도 있으나 이건 문제가 생길 가능성을 남기는거니 안하기로 한다.)
+		//
+		// 그렇다고 PlayerData나 DailyShopData쪽에서 캔버스 열려있는지 확인하는건
+		// 구조상 데이터가 뷰를 참조하는 셈이라 별로인거 같아서
+		// 그냥 이렇게 UpdateRemainTime에선 플래그를 체크하지 않는 형태로 가기로 한다.
+		//if (PlayerData.instance.sharedDailyPackageOpened == false)
+		//	return;
 		if (_needUpdate == false)
 			return;
 

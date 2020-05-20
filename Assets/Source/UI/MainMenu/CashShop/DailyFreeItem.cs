@@ -105,8 +105,8 @@ public class DailyFreeItem : MonoBehaviour
 	bool _needUpdate = false;
 	void UpdateRemainTime()
 	{
-		if (DailyShopData.instance.dailyFreeItemReceived == false)
-			return;
+		//if (DailyShopData.instance.dailyFreeItemReceived == false)
+		//	return;
 		if (_needUpdate == false)
 			return;
 

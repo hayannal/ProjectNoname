@@ -50,6 +50,8 @@ public class PlayerData : MonoBehaviour
 	public ObscuredInt notStreakCharCount { get; set; }
 	public ObscuredInt originOpenCount { get; set; }
 	public ObscuredInt characterBoxOpenCount { get; set; }
+	// pp 총합산 검증을 위해 상점에서 구매한 pp 카운트를 저장해두는 변수
+	public ObscuredInt ppBuyCount { get; set; }
 
 	// 인앱결제 상품 관련 변수
 	List<int> _listLevelPackage;    // 레벨패키지 구매했음을 알리는 용도인데 어차피 일반 플레이어 데이터에 저장하는거라 Obscured도 안쓰기로 한다.
@@ -273,6 +275,7 @@ public class PlayerData : MonoBehaviour
 		notStreakCharCount = 0;
 		originOpenCount = 0;
 		characterBoxOpenCount = 0;
+		ppBuyCount = 0;
 		_listLevelPackage = null;
 		sharedDailyPackageOpened = false;
 		researchLevel = 0;
@@ -467,6 +470,14 @@ public class PlayerData : MonoBehaviour
 				characterBoxOpenCount = intValue;
 		}
 
+		ppBuyCount = 0;
+		if (userReadOnlyData.ContainsKey("ppBuyCnt"))
+		{
+			int intValue = 0;
+			if (int.TryParse(userReadOnlyData["ppBuyCnt"].Value, out intValue))
+				ppBuyCount = intValue;
+		}
+
 		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
 		_listLevelPackage = null;
 		if (userData.ContainsKey("lvPckLst"))
@@ -526,7 +537,7 @@ public class PlayerData : MonoBehaviour
 		int totalPp = 0;
 		for (int i = 0; i < _listCharacterData.Count; ++i)
 			totalPp += _listCharacterData[i].pp;
-		if (totalPp > (originOpenCount * PPMaxPerOriginBox + characterBoxOpenCount * PPMaxPerCharacterBox))
+		if (totalPp > (originOpenCount * PPMaxPerOriginBox + characterBoxOpenCount * PPMaxPerCharacterBox + ppBuyCount))
 			PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidTotalPp, false, totalPp);
 
 		// 연구레벨 체크

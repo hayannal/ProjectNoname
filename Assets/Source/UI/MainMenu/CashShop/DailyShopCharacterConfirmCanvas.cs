@@ -204,6 +204,7 @@ public class DailyShopCharacterConfirmCanvas : MonoBehaviour
 					characterData.pp += _slotInfo.cn;
 				CashShopCanvas.instance.RefreshDailyShopInfo();
 				ToastCanvas.instance.ShowToast(UIString.instance.GetString("ShopUI_PurchasedPowerPoint"), 2.0f);
+				PlayerData.instance.ppBuyCount += _slotInfo.cn;
 				gameObject.SetActive(false);
 				return;
 			case "bn":

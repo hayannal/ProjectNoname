@@ -233,6 +233,7 @@ public class MailCanvasListItem : MonoBehaviour
 				if (_lastRemainTimeSecond != (int)remainTime.TotalSeconds)
 				{
 					remainTimeText.text = string.Format("{0:00}:{1:00}:{2:00}", remainTime.Hours + remainTime.Days * 24, remainTime.Minutes, remainTime.Seconds);
+					remainTimeText.color = (remainTime.Days > 0) ? new Color(0.5f, 0.5f, 0.5f) : new Color(1.0f, 0.54f, 0.54f);
 					_lastRemainTimeSecond = (int)remainTime.TotalSeconds;
 				}
 			}

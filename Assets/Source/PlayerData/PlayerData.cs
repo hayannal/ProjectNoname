@@ -43,6 +43,8 @@ public class PlayerData : MonoBehaviour
 	public ObscuredInt sealCount { get; set; }
 	public ObscuredBool sharedDailyBoxOpened { get; set; }
 	public DateTime dailyBoxResetTime { get; private set; }
+	// 두번째 상자 게이지. sealCount와 달리 서버가 센다. 그래서 ReadOnlyUserData에 있다.
+	public ObscuredInt secondDailyBoxFillCount { get; set; }
 	public ObscuredInt researchLevel { get; set; }
 
 	// 뽑기 관련 변수
@@ -278,6 +280,7 @@ public class PlayerData : MonoBehaviour
 		ppBuyCount = 0;
 		_listLevelPackage = null;
 		sharedDailyPackageOpened = false;
+		secondDailyBoxFillCount = 0;
 		researchLevel = 0;
 
 		// 나중에 지울 코드이긴 한데 MainSceneBuilder에서 NEWPLAYER_LEVEL1 디파인 켜둔채로 생성하는 테스트용 루틴일땐
@@ -430,6 +433,14 @@ public class PlayerData : MonoBehaviour
 		{
 			if (string.IsNullOrEmpty(userReadOnlyData["lasBxDat"].Value) == false)
 				OnRecvDailyBoxInfo(userReadOnlyData["lasBxDat"].Value);
+		}
+
+		secondDailyBoxFillCount = 0;
+		if (userReadOnlyData.ContainsKey("scDyCnt"))
+		{
+			int intValue = 0;
+			if (int.TryParse(userReadOnlyData["scDyCnt"].Value, out intValue))
+				secondDailyBoxFillCount = intValue;
 		}
 
 		string eventState = "";
@@ -614,7 +625,15 @@ public class PlayerData : MonoBehaviour
 		}
 
 		if (openResult && sharedDailyBoxOpened)
+		{
 			sealCount = 0;
+			if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.SecondDailyBox))
+			{
+				secondDailyBoxFillCount += 1;
+				if (secondDailyBoxFillCount == BattleInstanceManager.instance.GetCachedGlobalConstantInt("SealBigCount"))
+					secondDailyBoxFillCount = 0;
+			}
+		}
 	}
 
 	bool _waitServerResponseForDailyBoxResetTime;

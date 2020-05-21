@@ -46,10 +46,8 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 				stringId = "GameUI_Shop";
 				break;
 			case eButtonType.DailyBox:
-				//if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByResearchLevel.SecondDailyBox) && IsClearSecondDaily)
-				//	stringId = "GameUI_ThreeCharBox";
-				//else
-					stringId = "GameUI_OneCharBox";
+				_alarmObject = UIInstanceManager.instance.GetCachedObject(CommonCanvasGroup.instance.alarmObjectPrefab, alarmRootTransform);
+				stringId = "GameUI_OneCharBox";
 				break;
 		}
 		for (int i = 0; i < buttonTextList.Length; ++i)
@@ -100,8 +98,10 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 		if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
 			DotMainMenuCanvas.instance.OnClickBackButton();
 
+		bool useSecond = ((PlayerData.instance.secondDailyBoxFillCount + 1) == BattleInstanceManager.instance.GetCachedGlobalConstantInt("SealBigCount"));
+
 		// 가장 핵심은 드랍부터 굴려서 보상정보를 얻어오는거다.
-		DropProcessor dropProcessor = DropProcessor.Drop(targetTransform, "Zoflr", "", true, true);
+		DropProcessor dropProcessor = DropProcessor.Drop(targetTransform, useSecond ? "Zozoflr" : "Zoflr", "", true, true);
 		dropProcessor.AdjustDropRange(3.7f);
 		if (CheatingListener.detectedCheatTable)
 			return;
@@ -120,7 +120,7 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 
 				UIInstanceManager.instance.ShowCanvasAsync("RandomBoxScreenCanvas", () =>
 				{
-					RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Origin, dropProcessor, 0, () =>
+					RandomBoxScreenCanvas.instance.SetInfo(useSecond ? RandomBoxScreenCanvas.eBoxType.Origin_Big : RandomBoxScreenCanvas.eBoxType.Origin, dropProcessor, 0, () =>
 					{
 						CharacterBoxConfirmCanvas.OnCompleteRandomBoxScreen(DropManager.instance.GetGrantCharacterInfo(), DropManager.instance.GetLimitBreakPointInfo(), CharacterBoxConfirmCanvas.OnResult);
 					});

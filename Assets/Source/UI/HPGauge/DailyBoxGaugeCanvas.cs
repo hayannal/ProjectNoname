@@ -22,9 +22,11 @@ public class DailyBoxGaugeCanvas : MonoBehaviour
 	public Color highlightColor;
 	public Color disableColor;
 
+	Vector2 _defaultRemainTimeAnchoredPosition;
 	void Awake()
 	{
 		instance = this;
+		_defaultRemainTimeAnchoredPosition = remainTimeTransform.anchoredPosition;
 	}
 
 	void Start()
@@ -63,9 +65,35 @@ public class DailyBoxGaugeCanvas : MonoBehaviour
 				gaugeList[i].color = highlightColor;
 		}
 
-		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByResearchLevel.SecondDailyBox) && false)
+		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.SecondDailyBox) && EventManager.instance.IsStandbyClientEvent(EventManager.eClientEvent.OpenSecondDailyBox) == false)
 		{
+			// 오리진 상자를 받을때 한칸을 채우느냐 혹은 인장을 8개 채울때 한칸을 채우느냐에서 후자를 선택하기로 했다.
+			// 대신 서버에서 +1을 하는 시점은 오리진 상자를 받을때 처리하는거라 표시할때는
+			// 현재 저장되어있는 secondDailyBoxFillCount를 받아와서 인장을 8개 채웠을때 +1 해서 보여주면 된다.
+			// 이러면 기본 줄이 노란색으로 보이는 순간 한칸이 차는 것처럼 보이게 될거고
+			// 3번째 채우는 순간 secondDailyBox 줄도 노란색으로 보이게 되면서 큰 상자가 나오면 된다.
+			current = PlayerData.instance.secondDailyBoxFillCount;
+			if (opened == false && PlayerData.instance.sealCount >= gaugeList.Length)
+				current += 1;
+			for (int i = 0; i < secondGaugeList.Length; ++i)
+			{
+				// 예외처리.
+				// 3번째 채우는 순간 secondDailyBoxFillCount를 0으로 초기화 해두기때문에 이런식으로 처리해야 3번째 상자를 오픈했는지 알 수 있다.
+				if ((opened && current == 0) || i < current)
+					secondGaugeList[i].sprite = fillSprite;
+				else
+					secondGaugeList[i].sprite = strokeSprite;
 
+				if (opened)
+					secondGaugeList[i].color = disableColor;
+				else if (current < secondGaugeList.Length || PlayerData.instance.sealCount < gaugeList.Length)
+					secondGaugeList[i].color = normalColor;
+				else
+					secondGaugeList[i].color = highlightColor;
+			}
+
+			secondGaugeRootObject.SetActive(true);
+			remainTimeTransform.anchoredPosition = _defaultRemainTimeAnchoredPosition;
 		}
 		else
 		{

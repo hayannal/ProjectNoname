@@ -101,7 +101,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 	IEnumerator<float> OpenDropProcess()
 	{
 		Vector3 targetPosition = Vector3.zero;
-		if (_boxType == eBoxType.Origin)
+		if (_boxType == eBoxType.Origin || _boxType == eBoxType.Origin_Big)
 			targetPosition = TreasureChest.instance.transform.position;
 		else if (TimeSpaceGround.instance != null && TimeSpaceGround.instance.gameObject.activeSelf)
 			targetPosition = TimeSpaceGround.instance.cachedTransform.position;
@@ -145,7 +145,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		// 이동하지 않아도 항상 쳐다보게는 하기
 		BattleInstanceManager.instance.playerActor.cachedTransform.rotation = Quaternion.LookRotation(targetPosition - BattleInstanceManager.instance.playerActor.cachedTransform.position);
 
-		if (_boxType == eBoxType.Origin)
+		if (_boxType == eBoxType.Origin || _boxType == eBoxType.Origin_Big)
 		{
 			// 오리진 박스일땐 TreasureChest부터 숨기고 떨어뜨려야한다.
 			TreasureChest.instance.ActivateEffect(false);
@@ -229,7 +229,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 	void ResetObject()
 	{
 		// 나머지 창들을 복구해야한다.
-		if (_boxType == eBoxType.Origin)
+		if (_boxType == eBoxType.Origin || _boxType == eBoxType.Origin_Big)
 		{
 			// 오리진 박스 숨긴거 복구
 			TreasureChest.instance.ActivateEffect(true);

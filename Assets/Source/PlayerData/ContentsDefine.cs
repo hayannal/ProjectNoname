@@ -12,6 +12,7 @@ public static class ContentsManager
 		Chaos = 4,
 		//Annihilation = 5,
 		EquipOption = 6,
+		SecondDailyBox = 8,
 	}
 
 	public enum eOpenContentsByChapterStage

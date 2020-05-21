@@ -336,6 +336,9 @@ public class EventManager : MonoBehaviour
 			{
 				_listCompleteServerEvent.Add(eServerEvent.chaos);
 				PlayFabApiManager.instance.RequestPushServerEvent(CreateServerEventJson());
+
+				// 카오스는 챕터 클리어 실패시 뜨는거라 이벤트 연속처리를 하지 않아도 된다.
+				//OnCompleteLobbyEvent();
 			});
 		});
 	}
@@ -372,7 +375,12 @@ public class EventManager : MonoBehaviour
 		UIInstanceManager.instance.ShowCanvasAsync("EventInfoCanvas", () =>
 		{
 			EventInputLockCanvas.instance.gameObject.SetActive(false);
-			EventInfoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_OpenTimeSpaceName"), UIString.instance.GetString("GameUI_OpenTimeSpaceDesc"), UIString.instance.GetString("GameUI_OpenTimeSpaceMore"));
+			EventInfoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_OpenTimeSpaceName"), UIString.instance.GetString("GameUI_OpenTimeSpaceDesc"), UIString.instance.GetString("GameUI_OpenTimeSpaceMore"), () =>
+			{
+				// 이게 있어야 이벤트후에 새 챕터 표시가 남아있을때 띄울 수 있다.
+				// 2챕터를 한번에 클리어하면 시공간과 뉴챕터 이벤트 둘다 떠야하니 처리해둬야한다.
+				OnCompleteLobbyEvent();
+			});
 		});
 	}
 	#endregion

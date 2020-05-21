@@ -25,6 +25,7 @@ public class EventManager : MonoBehaviour
 	public enum eServerEvent
 	{
 		chaos,
+		//anihil
 	}
 
 	// 클라 이벤트는 메모리에만 기억되는 거라서 종료하면 더이상 볼 수 없다. 그래서 중요하지 않은 것들 위주다.
@@ -34,8 +35,8 @@ public class EventManager : MonoBehaviour
 		GainNewCharacter,
 		NewChapter,
 		OpenTimeSpace,
-		//OpenAnnihilation,
 		ClearMaxChapter,
+		OpenSecondDailyBox,
 	}
 
 	struct ServerEventInfo
@@ -77,9 +78,22 @@ public class EventManager : MonoBehaviour
 		{
 			reservedOpenResearchEvent = true;
 		}
+		//else if (chapter == (int)ContentsManager.eOpenContentsByChapter.Annihilation)
+		//{
+		//	if (IsCompleteServerEvent(eServerEvent.annihil) == false)
+		//		PushServerEvent(eServerEvent.annihil);
+		//}
 		else if (chapter == (int)ContentsManager.eOpenContentsByChapter.EquipOption)
 		{
 			reservedOpenEquipOptionEvent = true;
+		}
+		else if (chapter == (int)ContentsManager.eOpenContentsByChapter.SecondDailyBox)
+		{
+			// 유저간 불평들을 해결하기 위해 7챕터 클리어 한 유저가 이미 일일 오리진 박스를 열어둔 상태라면 +1 해준다.
+			// 이래야 7챕터 깨고나서 오리진 박스를 여는 유저와 같은 카운트를 유지할 수 있다.
+			if (PlayerData.instance.sharedDailyBoxOpened)
+				++PlayerData.instance.secondDailyBoxFillCount;
+			PushClientEvent(eClientEvent.OpenSecondDailyBox);
 		}
 
 		int chapterLimit = BattleInstanceManager.instance.GetCachedGlobalConstantInt("ChaosChapterLimit");
@@ -297,6 +311,10 @@ public class EventManager : MonoBehaviour
 					OnCompleteLobbyEvent();
 				});
 				break;
+			case eClientEvent.OpenSecondDailyBox:
+				// 이것도 터치 받고 이펙트 보여주고 해야하니 코루틴으로 처리한다.
+				StartCoroutine(OpenSecondDailyBoxProcess());
+				break;
 		}
 	}
 
@@ -382,6 +400,15 @@ public class EventManager : MonoBehaviour
 				OnCompleteLobbyEvent();
 			});
 		});
+	}
+
+	IEnumerator OpenSecondDailyBoxProcess()
+	{
+		_waitTouch = true;
+		UIInstanceManager.instance.ShowCanvasAsync("EventInputLockCanvas", null);
+
+		while (_waitTouch)
+			yield return null;
 	}
 	#endregion
 }

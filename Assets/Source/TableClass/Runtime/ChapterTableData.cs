@@ -32,4 +32,8 @@ public class ChapterTableData
   string _descriptionId;
   public string descriptionId { get { return _descriptionId; } set { _descriptionId = value; } }
   
+  [SerializeField]
+  int _revertGold;
+  public int revertGold { get { return _revertGold; } set { _revertGold = value; } }
+  
 }

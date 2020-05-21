@@ -1,17 +1,33 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class FullChaosSelectCanvas : MonoBehaviour
 {
 	public static FullChaosSelectCanvas instance;
 
 	public Transform subTitleTextTransform;
+	public Text chapterText;
+	public Text revertRewardText;
 	public GameObject challengeGatePillarSpawnEffectPrefab;
 
 	void Awake()
 	{
 		instance = this;
+	}
+
+	int _price;
+	void OnEnable()
+	{
+		string romanNumberString = UIString.instance.GetString(string.Format("GameUI_RomanNumber{0}", PlayerData.instance.selectedChapter));
+		chapterText.text = UIString.instance.GetString("GameUI_MenuChapter", romanNumberString);
+
+		ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(PlayerData.instance.selectedChapter);
+		if (chapterTableData == null)
+			return;
+		_price = chapterTableData.revertGold;
+		revertRewardText.text = _price.ToString("N0");
 	}
 
 	public void OnClickMoreButton()
@@ -28,7 +44,7 @@ public class FullChaosSelectCanvas : MonoBehaviour
 			return;
 		}
 
-		PlayFabApiManager.instance.RequestSelectFullChaos(true, () =>
+		PlayFabApiManager.instance.RequestSelectFullChaos(true, 0, () =>
 		{
 			// 알아서 인디케이터도 삭제될테니 GatePillar만 교체
 			GatePillar.instance.gameObject.SetActive(false);
@@ -43,14 +59,14 @@ public class FullChaosSelectCanvas : MonoBehaviour
 
 	public void OnClickRevertButton()
 	{
-		PlayFabApiManager.instance.RequestSelectFullChaos(false, () =>
+		PlayFabApiManager.instance.RequestSelectFullChaos(false, _price, () =>
 		{
 			// 바로 공용 보상 팝업창 띄우면 된다.
 			// 이게 만약 고정보상이라면 서버에서도 이미 처리했을거고
 			// 랜덤보상이라면 아예 요청할때부터 보내서 서버 갱신하고 받는 처리 하면 될거다.
 			// 우선은 OkCanvas로 느낌만 내본다.
 			GatePillar.instance.RefreshPurify();
-			OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_ExitGame"));
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_RevertResult"), 2.0f);
 			gameObject.SetActive(false);
 		});
 	}

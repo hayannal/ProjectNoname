@@ -763,7 +763,7 @@ public class PlayFabApiManager : MonoBehaviour
 	#endregion
 
 	#region Chaos
-	public void RequestSelectFullChaos(bool challenge, Action successCallback)
+	public void RequestSelectFullChaos(bool challenge, int addGold, Action successCallback)
 	{
 		WaitingNetworkCanvas.Show(true);
 
@@ -781,6 +781,7 @@ public class PlayFabApiManager : MonoBehaviour
 				WaitingNetworkCanvas.Show(false);
 				if (challenge)
 					PlayerData.instance.chaosMode = false;
+				CurrencyData.instance.gold += addGold;
 				PlayerData.instance.purifyCount = 0;
 				if (successCallback != null) successCallback.Invoke();
 			}

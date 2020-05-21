@@ -72,7 +72,7 @@ public class CharacterBoxResultCanvas : MonoBehaviour
 	public void RefreshInfo(int addGold, int addDia, List<DropManager.CharacterPpRequest> listPpInfo, List<string> listGrantInfo, List<DropManager.CharacterLbpRequest> listLbpInfo)
 	{
 		// 골드나 다이아가 
-		bool goldDia = (addDia > 0) || (addDia > 0);
+		bool goldDia = (addGold > 0) || (addDia > 0);
 		goldDiaRootRectTransform.gameObject.SetActive(goldDia);
 		if (goldDia)
 		{

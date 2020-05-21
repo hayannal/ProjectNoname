@@ -599,12 +599,12 @@ public class PlayerData : MonoBehaviour
 
 	void OnRecvDailyBoxInfo(DateTime lastDailyBoxOpenTime)
 	{
-		if (ServerTime.UtcNow < lastDailyBoxOpenTime)
-		{
-			// 어떻게 미래로 설정되어있을 수가 있나. 이건 무효.
-			sharedDailyBoxOpened = false;
-			return;
-		}
+		//if (ServerTime.UtcNow < lastDailyBoxOpenTime)
+		//{
+		//	// 어떻게 미래로 설정되어있을 수가 있나. 이건 무효.
+		//	sharedDailyBoxOpened = false;
+		//	return;
+		//}
 
 		if (ServerTime.UtcNow.Year == lastDailyBoxOpenTime.Year && ServerTime.UtcNow.Month == lastDailyBoxOpenTime.Month && ServerTime.UtcNow.Day == lastDailyBoxOpenTime.Day)
 		{

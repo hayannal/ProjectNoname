@@ -35,6 +35,15 @@ public class EquipListCanvas : EquipShowCanvasBase
 	void Start()
 	{
 		contentItemPrefab.SetActive(false);
+
+		if (EventManager.instance.reservedOpenEquipOptionEvent)
+		{
+			UIInstanceManager.instance.ShowCanvasAsync("EventInfoCanvas", () =>
+			{
+				EventInfoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_OptionOpenName"), UIString.instance.GetString("GameUI_OptionOpenDesc"), UIString.instance.GetString("GameUI_OptionOpenMore"), null, 0.785f);
+			});
+			EventManager.instance.reservedOpenEquipOptionEvent = false;
+		}
 	}
 
 	void OnEnable()

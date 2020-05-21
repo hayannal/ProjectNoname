@@ -41,7 +41,7 @@ public class EquipInfoGrowthCanvas : MonoBehaviour
 
 	public void RefreshOpenMenuSlot()
 	{
-		menuRootObject.SetActive(ContentsManager.IsOpen(ContentsManager.eOpenContentsByResearchLevel.EquipOption));
+		menuRootObject.SetActive(ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.EquipOption));
 	}
 
 	void OnEnable()

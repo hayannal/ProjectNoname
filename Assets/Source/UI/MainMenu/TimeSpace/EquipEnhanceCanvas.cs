@@ -232,7 +232,7 @@ public class EquipEnhanceCanvas : MonoBehaviour
 		List<EquipData> listMaterialEquipData = EquipInfoGrowthCanvas.instance.listMultiSelectEquipData;
 
 		// 옵션 메뉴가 열려있을때만 옵션 관련 질문들을 한다.
-		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByResearchLevel.EquipOption))
+		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.EquipOption))
 		{
 			// 코드 재활용. 옵션변경꺼는 재료가 list가 아니라서 안된다.
 			string alertStirngId = EquipOptionCanvas.CheckAmplifyRandomAlert(_equipData);

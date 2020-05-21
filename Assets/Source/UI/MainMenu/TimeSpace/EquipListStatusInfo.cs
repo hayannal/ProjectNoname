@@ -53,7 +53,7 @@ public class EquipListStatusInfo : MonoBehaviour
 		if (equipButtonObject != null) equipButtonObject.gameObject.SetActive(!equipped);
 		if (unequipButtonObject != null) unequipButtonObject.gameObject.SetActive(equipped);
 
-		bool usableEquipOption = ContentsManager.IsOpen(ContentsManager.eOpenContentsByResearchLevel.EquipOption);
+		bool usableEquipOption = ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.EquipOption);
 		optionButtonImage.color = usableEquipOption ? Color.white : ColorUtil.halfGray;
 		optionButtonText.color = usableEquipOption ? Color.white : Color.gray;
 	}
@@ -236,9 +236,9 @@ public class EquipListStatusInfo : MonoBehaviour
 
 	public void OnClickOptionButton()
 	{
-		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByResearchLevel.EquipOption) == false)
+		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.EquipOption) == false)
 		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("EquipUI_RequiredResearch"), 2.0f);
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("EquipUI_OptionLocked"), 2.0f);
 			return;
 		}
 

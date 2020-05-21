@@ -4,18 +4,14 @@ using UnityEngine;
 
 public static class ContentsManager
 {
+	// 해당 챕터에 도착하면 열린다. Chaos만 제외.
 	public enum eOpenContentsByChapter
 	{
 		Chapter = 2,
 		Research = 3,
 		Chaos = 4,
 		//Annihilation = 5,
-	}
-
-	public enum eOpenContentsByResearchLevel
-	{
-		SecondDailyBox = 5,
-		EquipOption = 9,
+		EquipOption = 6,
 	}
 
 	public enum eOpenContentsByChapterStage
@@ -37,13 +33,6 @@ public static class ContentsManager
 		if (PlayerData.instance.highestPlayChapter >= (int)content)
 			return true;
 		return false;
-	}
-
-	public static bool IsOpen(eOpenContentsByResearchLevel content)
-	{
-		//if (PlayerData.instance.researchLevel >= (int)content)
-		//	return true;
-		return true;
 	}
 
 	public static bool IsOpen(eOpenContentsByChapterStage content)

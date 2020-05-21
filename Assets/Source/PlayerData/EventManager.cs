@@ -34,7 +34,6 @@ public class EventManager : MonoBehaviour
 		GainNewCharacter,
 		NewChapter,
 		OpenTimeSpace,
-		OpenResearch,
 		//OpenAnnihilation,
 		ClearMaxChapter,
 	}
@@ -56,6 +55,7 @@ public class EventManager : MonoBehaviour
 	Queue<ClientEventInfo> _queClientEventInfoForBattleResult = new Queue<ClientEventInfo>();
 
 	public bool reservedOpenResearchEvent { get; set; }
+	public bool reservedOpenEquipOptionEvent { get; set; }
 
 	#region OnEvent
 	public void OnEventClearHighestChapter(int chapter, string newCharacterId)
@@ -73,9 +73,13 @@ public class EventManager : MonoBehaviour
 			PlayerData.instance.mainCharacterId = "Actor2103";
 			PushClientEvent(eClientEvent.GainNewCharacter, "Actor2103");
 		}
-		else if (chapter == 3)
+		else if (chapter == (int)ContentsManager.eOpenContentsByChapter.Research)
 		{
 			reservedOpenResearchEvent = true;
+		}
+		else if (chapter == (int)ContentsManager.eOpenContentsByChapter.EquipOption)
+		{
+			reservedOpenEquipOptionEvent = true;
 		}
 
 		int chapterLimit = BattleInstanceManager.instance.GetCachedGlobalConstantInt("ChaosChapterLimit");

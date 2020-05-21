@@ -9,6 +9,8 @@ public class RandomBoxAnimator : MonoBehaviour
 	public DisableObject disableObjectComponent;
 	public DOTweenAnimation punchScaleTweenAnimation;
 	public Animator openAnimator;
+	public Animator internalOpenAnimator;
+	public float internalOpenDelay;
 	public Transform boxTransform;
 	public Transform topTransform;
 
@@ -22,6 +24,8 @@ public class RandomBoxAnimator : MonoBehaviour
 	{
 		disableObjectComponent.enabled = false;
 		openAnimator.enabled = false;
+		if (internalOpenAnimator != null)
+			internalOpenAnimator.enabled = false;
 		boxTransform.localScale = _defaultBoxScale;
 		topTransform.localRotation = Quaternion.identity;
 	}

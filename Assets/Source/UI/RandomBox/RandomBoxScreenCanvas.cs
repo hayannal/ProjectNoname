@@ -17,6 +17,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		Dia1_3,
 		Dia4_6,
 		Gold,
+		Origin_Big,
 	}
 
 	public GameObject[] boxPrefabList;
@@ -179,7 +180,16 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		_randomBoxAnimator.openAnimator.enabled = true;
 		_randomBoxAnimator.disableObjectComponent.enabled = true;
 		BattleInstanceManager.instance.GetCachedObject(boxOpenEffectPrefab, _randomBoxAnimator.cachedTransform.position, Quaternion.identity);
-		yield return Timing.WaitForSeconds(0.8f);
+
+		// 박스 애니가 둘로 나눠져있는 상자들 때문에 예외처리 한다.
+		if (_randomBoxAnimator.internalOpenAnimator != null)
+		{
+			yield return Timing.WaitForSeconds(_randomBoxAnimator.internalOpenDelay);
+			_randomBoxAnimator.internalOpenAnimator.enabled = true;
+			yield return Timing.WaitForSeconds(0.8f - _randomBoxAnimator.internalOpenDelay);
+		}
+		else
+			yield return Timing.WaitForSeconds(0.8f);
 
 		// 거의 그럴일은 없겠지만 DropObjectGroup이 로딩되어있지 않다면 기다린다.
 		while (MainSceneBuilder.instance.IsDoneLateInitialized(true) == false)
@@ -360,7 +370,16 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		_randomBoxAnimator.openAnimator.enabled = true;
 		_randomBoxAnimator.disableObjectComponent.enabled = true;
 		BattleInstanceManager.instance.GetCachedObject(boxOpenEffectPrefab, _randomBoxAnimator.cachedTransform.position, Quaternion.identity);
-		yield return Timing.WaitForSeconds(0.8f);
+
+		// 박스 애니가 둘로 나눠져있는 상자들 때문에 예외처리 한다.
+		if (_randomBoxAnimator.internalOpenAnimator != null)
+		{
+			yield return Timing.WaitForSeconds(_randomBoxAnimator.internalOpenDelay);
+			_randomBoxAnimator.internalOpenAnimator.enabled = true;
+			yield return Timing.WaitForSeconds(0.8f - _randomBoxAnimator.internalOpenDelay);
+		}
+		else
+			yield return Timing.WaitForSeconds(0.8f);
 
 		// 드랍프로세서를 작동
 		_dropProcessor.StartDrop();

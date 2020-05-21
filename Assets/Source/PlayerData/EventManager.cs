@@ -404,11 +404,49 @@ public class EventManager : MonoBehaviour
 
 	IEnumerator OpenSecondDailyBoxProcess()
 	{
+		// 게이트필라나 TimeSpacePortal 이벤트에선 매번 새 프리팹 만들어서 했었는데
+		// 이번 오리진 박스 표기는 이미 캔버스 자체가 보여주는 기능을 가지고 있어서 나눌 필요도 없었고,
+		// 이펙트만 추가로 담는 Open용 스크립트 만드는게 번거로워서 이펙트만 어드레서블로 로딩해서 쓰기로 한다.
+		//
+		// 만약 이펙트가 엄청 무거웠다면 여기서 오래 걸릴테니 미리 프리로딩을 걸어놔야하겠지만,
+		// 여기에서 쓰이는 이펙트는 매우 가벼운 이펙트라 이렇게 처리해도 괜찮을거 같아서 이대로 진행한다.
+		GameObject effectPrefab = null;
+		AddressableAssetLoadManager.GetAddressableGameObject("OpenSecondDailyBoxEffect", "Event", (prefab) =>
+		{
+			effectPrefab = prefab;
+		});
+
 		_waitTouch = true;
 		UIInstanceManager.instance.ShowCanvasAsync("EventInputLockCanvas", null);
 
+		while (effectPrefab == null)
+			yield return null;
+
 		while (_waitTouch)
 			yield return null;
+
+		BattleInstanceManager.instance.GetCachedObject(effectPrefab, new Vector3(-2.0f, 0.0f, 4.0f), Quaternion.identity);
+		yield return new WaitForSeconds(1.3f);
+
+		// 가장 밝아졌을때 캔버스 리프레쉬
+		DailyBoxGaugeCanvas.instance.RefreshGauge();
+
+		// 나머지 대기
+		yield return new WaitForSeconds(1.5f);
+
+		// 연출 이후
+		UIInstanceManager.instance.ShowCanvasAsync("EventInfoCanvas", () =>
+		{
+			string text = UIString.instance.GetString("GameUI_OriginBigDesc");
+			if (PlayerData.instance.sharedDailyBoxOpened)
+				text = string.Format("{0}\n\n{1}", text, UIString.instance.GetString("GameUI_OriginBigDescDone"));
+
+			EventInputLockCanvas.instance.gameObject.SetActive(false);
+			EventInfoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_OriginBigName"), text, UIString.instance.GetString("GameUI_OriginBigMore"), () =>
+			{
+				OnCompleteLobbyEvent();
+			});
+		});
 	}
 	#endregion
 }

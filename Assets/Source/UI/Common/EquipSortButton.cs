@@ -50,6 +50,8 @@ public class EquipSortButton : SortButton
 
 	public new Comparison<EquipData> comparisonGrade = delegate (EquipData x, EquipData y)
 	{
+		if (x.newEquip && y.newEquip == false) return -1;
+		else if (x.newEquip == false && y.newEquip) return 1;
 		if (x.cachedEquipTableData != null && y.cachedEquipTableData != null)
 		{
 			if (x.cachedEquipTableData.grade > y.cachedEquipTableData.grade) return -1;
@@ -64,6 +66,8 @@ public class EquipSortButton : SortButton
 
 	public Comparison<EquipData> comparisonAttack = delegate (EquipData x, EquipData y)
 	{
+		if (x.newEquip && y.newEquip == false) return -1;
+		else if (x.newEquip == false && y.newEquip) return 1;
 		if (x.cachedEquipTableData != null && y.cachedEquipTableData != null)
 		{
 			if (x.mainStatusValue > y.mainStatusValue) return -1;
@@ -78,6 +82,8 @@ public class EquipSortButton : SortButton
 
 	public Comparison<EquipData> comparisonEnhance = delegate (EquipData x, EquipData y)
 	{
+		if (x.newEquip && y.newEquip == false) return -1;
+		else if (x.newEquip == false && y.newEquip) return 1;
 		if (x.cachedEquipTableData != null && y.cachedEquipTableData != null)
 		{
 			if (x.enhanceLevel > y.enhanceLevel) return -1;

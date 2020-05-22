@@ -68,6 +68,10 @@ public class EquipSellCanvas : EquipShowCanvasBase
 			return;
 
 		SetInfoCameraMode(false);
+
+		for (int i = 0; i < _listEquipCanvasListItem.Count; ++i)
+			_listEquipCanvasListItem[i].ShowAlarm(false);
+		TimeSpaceData.instance.ResetNewEquip();
 	}
 
 	float _materialSmallStatusInfoShowRemainTime;
@@ -95,7 +99,10 @@ public class EquipSellCanvas : EquipShowCanvasBase
 		_listMultiSelectEquipData.Clear();
 
 		for (int i = 0; i < _listEquipCanvasListItem.Count; ++i)
+		{
+			_listEquipCanvasListItem[i].ShowAlarm(false);
 			_listEquipCanvasListItem[i].gameObject.SetActive(false);
+		}
 		_listEquipCanvasListItem.Clear();
 
 		_listCurrentEquipData.Clear();
@@ -118,6 +125,8 @@ public class EquipSellCanvas : EquipShowCanvasBase
 
 		_listCurrentEquipData.Sort(delegate (EquipData x, EquipData y)
 		{
+			if (x.newEquip && y.newEquip == false) return -1;
+			else if (x.newEquip == false && y.newEquip) return 1;
 			if (x.cachedEquipTableData != null && y.cachedEquipTableData != null)
 			{
 				if (x.cachedEquipTableData.grade < y.cachedEquipTableData.grade) return -1;
@@ -134,6 +143,7 @@ public class EquipSellCanvas : EquipShowCanvasBase
 		{
 			EquipCanvasListItem equipCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
 			equipCanvasListItem.Initialize(_listCurrentEquipData[i], OnClickListItem);
+			if (_listCurrentEquipData[i].newEquip) equipCanvasListItem.ShowAlarm(true);
 			_listEquipCanvasListItem.Add(equipCanvasListItem);
 		}
 	}

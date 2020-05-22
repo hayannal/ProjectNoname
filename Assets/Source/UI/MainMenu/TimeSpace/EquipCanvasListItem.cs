@@ -16,6 +16,7 @@ public class EquipCanvasListItem : MonoBehaviour
 	public Image lockImage;
 	public Text equippedText;
 	public GameObject selectObject;
+	public RectTransform alarmRootTransform;
 
 	public EquipData equipData { get; set; }
 	public void Initialize(EquipData equipData, Action<EquipData> clickCallback)
@@ -124,6 +125,21 @@ public class EquipCanvasListItem : MonoBehaviour
 			}
 		}
 	}
+
+
+	#region Alarm
+	public void ShowAlarm(bool show)
+	{
+		if (show)
+		{
+			AlarmObject.Show(alarmRootTransform, false, true);
+		}
+		else
+		{
+			AlarmObject.Hide(alarmRootTransform);
+		}
+	}
+	#endregion
 
 
 

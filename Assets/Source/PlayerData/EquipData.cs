@@ -22,6 +22,9 @@ public class EquipData
 	EquipStatusList _equipStatusList = new EquipStatusList();
 	public EquipStatusList equipStatusList { get { return _equipStatusList; } }
 
+	// for AlarmObject
+	public bool newEquip { get; set; }
+
 	public class RandomOptionInfo
 	{
 		public int innerGrade;

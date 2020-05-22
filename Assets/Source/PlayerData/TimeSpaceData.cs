@@ -384,6 +384,7 @@ public class TimeSpaceData
 			newEquipData.uniqueId = listItemInstance[i].ItemInstanceId;
 			newEquipData.equipId = listItemInstance[i].ItemId;
 			newEquipData.Initialize(listItemInstance[i].CustomData);
+			newEquipData.newEquip = true;
 			_listEquipData[newEquipData.cachedEquipTableData.equipType].Add(newEquipData);
 
 			if (EquipData.IsUseLegendKey(newEquipData.cachedEquipTableData))
@@ -409,6 +410,7 @@ public class TimeSpaceData
 			else
 				PlayerData.instance.notStreakCount = 0;
 		}
+		grantNewEquip = true;
 	}
 
 	// DailyShop에서 직접 구매가 추가되면서 notStreakCount도 수정하지 않고 legendKey에도 영향을 주지않는 기본적인 아이템 추가가 필요해졌다.
@@ -417,6 +419,8 @@ public class TimeSpaceData
 		List<ItemInstance> listItemInstance = DeserializeItemGrantResult(jsonItemGrantResults);
 		if (expectCount != 0 && listItemInstance.Count != expectCount)
 			return null;
+
+		grantNewEquip = true;
 
 		// 1개일때를 가정하고 등록된 마지막거를 리턴하기로 한다.
 		EquipData newEquipData = null;
@@ -430,10 +434,14 @@ public class TimeSpaceData
 			newEquipData.uniqueId = listItemInstance[i].ItemInstanceId;
 			newEquipData.equipId = listItemInstance[i].ItemId;
 			newEquipData.Initialize(listItemInstance[i].CustomData);
+			newEquipData.newEquip = true;
 			_listEquipData[newEquipData.cachedEquipTableData.equipType].Add(newEquipData);
 		}
 		return newEquipData;
 	}
+
+	// 로비 포탈 검사할땐 for loop돌면서 newEquip 있는지 확인하는 거보다 플래그 하나 검사하는게 훨씬 편하다.
+	public bool grantNewEquip { get; set; }
 	#endregion
 
 	#region Revoke
@@ -504,6 +512,29 @@ public class TimeSpaceData
 		// 장착된걸 지웠을땐 바로 스탯을 재계산한다.
 		if (unequip)
 			OnChangedEquippedData();
+	}
+	#endregion
+
+	#region AlarmObject
+	public void ResetNewEquip()
+	{
+		if (grantNewEquip == false)
+			return;
+
+		for (int i = 0; i < (int)eEquipSlotType.Amount; ++i)
+		{
+			List<EquipData> listEquipData = GetEquipListByType((eEquipSlotType)i);
+			if (listEquipData.Count == 0)
+				continue;
+
+			for (int j = 0; j < listEquipData.Count; ++j)
+				listEquipData[j].newEquip = false;
+		}
+		grantNewEquip = false;
+
+		// 시공간에서 마을로 돌아갈땐 항상 TimeSpacePortal이 파티클 재생때문에 꺼졌다 켜진다. 이때 알아서 알람 갱신이 되니 여기서 처리할 필요 없다.
+		//if (TimeSpacePortal.instance != null && TimeSpacePortal.instance.gameObject.activeSelf)
+		//	TimeSpacePortal.instance.RefreshAlarmObject();
 	}
 	#endregion
 

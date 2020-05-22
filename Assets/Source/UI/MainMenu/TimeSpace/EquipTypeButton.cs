@@ -9,6 +9,13 @@ public class EquipTypeButton : MonoBehaviour
 	public RectTransform contentRectTransform;
 	public Image backgroundImage;
 	public int positionIndex;
+	public RectTransform alarmRootTransform;
+
+	void OnEnable()
+	{
+		// 9탭이 보이는 상황에서 아이템이 갑자기 사라지는 일은 장착이나 해제니 그때만 예외처리 해주면 된다.
+		RefreshAlarmObject();
+	}
 
 	public bool selected { get; set; }
 	void Update()
@@ -67,4 +74,24 @@ public class EquipTypeButton : MonoBehaviour
 			}
 		}
 	}
+
+	#region AlarmObject
+	public void RefreshAlarmObject()
+	{
+		bool show = false;
+		List<EquipData> listEquipData = TimeSpaceData.instance.GetEquipListByType((TimeSpaceData.eEquipSlotType)positionIndex);
+		for (int i = 0; i < listEquipData.Count; ++i)
+		{
+			if (TimeSpaceData.instance.IsEquipped(listEquipData[i]))
+				continue;
+			show = listEquipData[i].newEquip;
+			if (show)
+				break;
+		}
+		if (show)
+			AlarmObject.Show(alarmRootTransform);
+		else
+			AlarmObject.Hide(alarmRootTransform);
+	}
+	#endregion
 }

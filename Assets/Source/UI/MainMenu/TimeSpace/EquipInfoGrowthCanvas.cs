@@ -79,6 +79,9 @@ public class EquipInfoGrowthCanvas : MonoBehaviour
 
 		if (EquipInfoGround.instance.diffMode)
 			EquipInfoGround.instance.RestoreDiffMode();
+
+		for (int i = 0; i < _listEquipCanvasListItem.Count; ++i)
+			_listEquipCanvasListItem[i].ShowAlarm(false);
 	}
 
 	float _materialSmallStatusInfoShowRemainTime;
@@ -182,7 +185,10 @@ public class EquipInfoGrowthCanvas : MonoBehaviour
 		_selectedEquipData = null;
 
 		for (int i = 0; i < _listEquipCanvasListItem.Count; ++i)
+		{
+			_listEquipCanvasListItem[i].ShowAlarm(false);
 			_listEquipCanvasListItem[i].gameObject.SetActive(false);
+		}
 		_listEquipCanvasListItem.Clear();
 
 		_listCurrentEquipData.Clear();
@@ -295,6 +301,8 @@ public class EquipInfoGrowthCanvas : MonoBehaviour
 			case eGrowthGridType.Amplify:
 				_listCurrentEquipData.Sort(delegate (EquipData x, EquipData y)
 				{
+					if (x.newEquip && y.newEquip == false) return -1;
+					else if (x.newEquip == false && y.newEquip) return 1;
 					if (x.cachedEquipTableData != null && y.cachedEquipTableData != null)
 					{
 						if (x.cachedEquipTableData.grade < y.cachedEquipTableData.grade) return -1;
@@ -310,6 +318,8 @@ public class EquipInfoGrowthCanvas : MonoBehaviour
 			case eGrowthGridType.Transfer:
 				_listCurrentEquipData.Sort(delegate (EquipData x, EquipData y)
 				{
+					if (x.newEquip && y.newEquip == false) return -1;
+					else if (x.newEquip == false && y.newEquip) return 1;
 					if (x.cachedEquipTableData != null && y.cachedEquipTableData != null)
 					{
 						if (x.cachedEquipTableData.grade > y.cachedEquipTableData.grade) return -1;
@@ -330,6 +340,7 @@ public class EquipInfoGrowthCanvas : MonoBehaviour
 			equipCanvasListItem.Initialize(_listCurrentEquipData[i], OnClickListItem);
 			if (gridType == eGrowthGridType.Transfer && TimeSpaceData.instance.IsEquipped(_listCurrentEquipData[i]))
 				equipCanvasListItem.equippedText.gameObject.SetActive(true);
+			if (_listCurrentEquipData[i].newEquip) equipCanvasListItem.ShowAlarm(true);
 			_listEquipCanvasListItem.Add(equipCanvasListItem);
 		}
 	}

@@ -93,6 +93,11 @@ public class EquipListCanvas : EquipShowCanvasBase
 			return;
 
 		SetInfoCameraMode(false);
+
+		// 장비의 new표시를 사라지게 하는 곳은 9탭 나갈때와 판매창 나갈때 두곳 뿐이다.
+		for (int i = 0; i < _listEquipCanvasListItem.Count; ++i)
+			_listEquipCanvasListItem[i].ShowAlarm(false);
+		TimeSpaceData.instance.ResetNewEquip();
 	}
 
 	public void RefreshInfo(int positionIndex)
@@ -171,7 +176,10 @@ public class EquipListCanvas : EquipShowCanvasBase
 		}
 
 		for (int i = 0; i < _listEquipCanvasListItem.Count; ++i)
+		{
+			_listEquipCanvasListItem[i].ShowAlarm(false);
 			_listEquipCanvasListItem[i].gameObject.SetActive(false);
+		}
 		_listEquipCanvasListItem.Clear();
 
 		if (refreshInventory)
@@ -231,6 +239,7 @@ public class EquipListCanvas : EquipShowCanvasBase
 		{
 			EquipCanvasListItem equipCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
 			equipCanvasListItem.Initialize(_listCurrentEquipData[i], OnClickListItem);
+			if (_listCurrentEquipData[i].newEquip) equipCanvasListItem.ShowAlarm(true);
 			_listEquipCanvasListItem.Add(equipCanvasListItem);
 		}
 

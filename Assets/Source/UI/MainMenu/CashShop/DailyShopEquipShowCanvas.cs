@@ -57,6 +57,9 @@ public class DailyShopEquipShowCanvas : EquipShowCanvasBase
 		}
 
 		_effectObject = BattleInstanceManager.instance.GetCachedObject(effectPrefab, _rootOffsetPosition, Quaternion.identity, null);
+
+		if (TimeSpacePortal.instance != null && TimeSpacePortal.instance.gameObject.activeSelf)
+			TimeSpacePortal.instance.RefreshAlarmObject();
 	}
 
 	public void OnClickConfirmButton()

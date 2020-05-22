@@ -175,7 +175,9 @@ public class UIInstanceManager : MonoBehaviour
 			if (!_listCachedAlarmObject[i].gameObject.activeSelf)
 			{
 				_listCachedAlarmObject[i].cachedRectTransform.SetParent(parentTransform);
+				_listCachedAlarmObject[i].cachedRectTransform.anchoredPosition3D = Vector3.zero;
 				_listCachedAlarmObject[i].cachedRectTransform.anchoredPosition = Vector2.zero;
+				_listCachedAlarmObject[i].cachedRectTransform.localRotation = Quaternion.identity;
 				_listCachedAlarmObject[i].cachedRectTransform.localScale = Vector3.one;
 				_listCachedAlarmObject[i].gameObject.SetActive(true);
 				return _listCachedAlarmObject[i];

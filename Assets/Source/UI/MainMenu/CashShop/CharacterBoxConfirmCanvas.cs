@@ -16,6 +16,8 @@ public class CharacterBoxConfirmCanvas : MonoBehaviour
 
 	public Text priceText;
 	public GameObject buttonObject;
+	public Image priceButtonImage;
+	public Coffee.UIExtensions.UIEffect priceGrayscaleEffect;
 
 	void Awake()
 	{
@@ -30,12 +32,17 @@ public class CharacterBoxConfirmCanvas : MonoBehaviour
 		characterBoxAddText.SetLocalizedText(addText);
 
 		int maxCount = CurrencyData.instance.dia / _priceOnce;
+		if (maxCount == 0) maxCount = 1;
 		repeatCountSlider.minValue = 1.0f;
 		repeatCountSlider.maxValue = Mathf.Min(maxCount, 5);
 		repeatCountSlider.value = 1.0f;
 		OnValueChangedRepeatCount(1.0f);
 
 		buttonObject.SetActive(true);
+		bool disablePrice = (CurrencyData.instance.dia < _priceOnce);
+		priceButtonImage.color = !disablePrice ? Color.white : ColorUtil.halfGray;
+		priceText.color = !disablePrice ? Color.white : Color.gray;
+		priceGrayscaleEffect.enabled = disablePrice;
 	}
 
 	public void OnValueChangedRepeatCount(float value)
@@ -106,6 +113,12 @@ public class CharacterBoxConfirmCanvas : MonoBehaviour
 	int _repeatRemainCount;
 	public void OnClickButton()
 	{
+		if (CurrencyData.instance.dia < _priceOnce)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughDiamond"), 2.0f);
+			return;
+		}
+
 		// 오리진 박스와 마찬가지로 먼저 드랍프로세서부터 만들어야한다.
 		_cachedDropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, "Zoflrflr", "", true, true);
 		_cachedDropProcessor.AdjustDropRange(3.7f);
@@ -133,8 +146,9 @@ public class CharacterBoxConfirmCanvas : MonoBehaviour
 			// 연출에 의해 캐시샵 가려질때 같이 하이드 시켜야한다.
 			gameObject.SetActive(false);
 
-			// repeatRemainCount를 0으로 보내면 오리진 박스처럼 한번 굴려진 결과가 바로 결과창에 보이게 된다.
-			// 하지만 이 값을 1 이상으로 보내면 내부적으로 n회 돌린 후 누적해서 보여주게 된다.
+			// 캐릭터 뽑기에는 오리진박스나 장비 뽑기와 달리 연속뽑기가 있다.
+			// repeatRemainCount를 0으로 보내면 오리진 박스처럼 한번 굴려진 결과가 바로 결과창에 보이게 되지만
+			// 이 값을 1 이상으로 보내면 내부적으로 n회 돌린 후 누적해서 보여주게 된다. 보낼때마다 패킷 주고받는다.
 			RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Character, _cachedDropProcessor, _repeatRemainCount, () =>
 			{
 				OnCompleteRandomBoxScreen(DropManager.instance.GetGrantCharacterInfo(), DropManager.instance.GetLimitBreakPointInfo(), OnResult);

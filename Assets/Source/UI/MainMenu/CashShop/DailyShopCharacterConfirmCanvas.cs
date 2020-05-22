@@ -19,6 +19,8 @@ public class DailyShopCharacterConfirmCanvas : MonoBehaviour
 	public Text priceText;
 	public GameObject[] priceTypeObjectList;
 	public GameObject buttonObject;
+	public Image priceButtonImage;
+	public Coffee.UIExtensions.UIEffect[] priceGrayscaleEffect;
 
 	void Awake()
 	{
@@ -56,11 +58,25 @@ public class DailyShopCharacterConfirmCanvas : MonoBehaviour
 		bigDailyListItemGroupObject.SetActive(big);
 
 		priceText.text = dailyShopSlotInfo.price.ToString("N0");
+		bool disablePrice = false;
 		CurrencyData.eCurrencyType currencyType = CurrencyData.eCurrencyType.Diamond;
 		if (dailyShopSlotInfo.priceType == CurrencyData.GoldCode())
+		{
 			currencyType = CurrencyData.eCurrencyType.Gold;
+			disablePrice = (CurrencyData.instance.gold < dailyShopSlotInfo.price);
+		}
+		else
+		{
+			disablePrice = (CurrencyData.instance.dia < dailyShopSlotInfo.price);
+		}
+		priceButtonImage.color = !disablePrice ? Color.white : ColorUtil.halfGray;
+		priceText.color = !disablePrice ? Color.white : Color.gray;
 		for (int i = 0; i < priceTypeObjectList.Length; ++i)
+		{
 			priceTypeObjectList[i].SetActive((int)currencyType == i);
+			if ((int)currencyType == i)
+				priceGrayscaleEffect[i].enabled = disablePrice;
+		}
 
 		// 신규캐릭터 획득 창이 뜰 항목들을 열때는 미리 로드를 걸어둔다.
 		switch (_slotInfo.type)
@@ -140,6 +156,23 @@ public class DailyShopCharacterConfirmCanvas : MonoBehaviour
 	string _selectedCharacterId;
 	public void OnClickOkButton()
 	{
+		if (_slotInfo.priceType == CurrencyData.GoldCode())
+		{
+			if (CurrencyData.instance.gold < _slotInfo.price)
+			{
+				ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughGold"), 2.0f);
+				return;
+			}
+		}
+		else
+		{
+			if (CurrencyData.instance.dia < _slotInfo.price)
+			{
+				ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughDiamond"), 2.0f);
+				return;
+			}
+		}
+
 		int priceDia = (_slotInfo.priceType == CurrencyData.DiamondCode()) ? _slotInfo.price : 0;
 		int priceGold = (_slotInfo.priceType == CurrencyData.GoldCode()) ? _slotInfo.price : 0;
 

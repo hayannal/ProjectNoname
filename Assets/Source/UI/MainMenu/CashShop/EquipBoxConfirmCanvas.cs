@@ -16,6 +16,8 @@ public class EquipBoxConfirmCanvas : MonoBehaviour
 	public RectTransform equipBoxImageRectTransform;
 	public Text priceText;
 	public GameObject buttonObject;
+	public Image priceButtonImage;
+	public Coffee.UIExtensions.UIEffect priceGrayscaleEffect;
 
 	void Awake()
 	{
@@ -48,7 +50,12 @@ public class EquipBoxConfirmCanvas : MonoBehaviour
 		equipBoxImage.sprite = equipBoxSprite;
 		equipBoxImageRectTransform.anchoredPosition = anchoredPosition;
 		equipBoxImageRectTransform.sizeDelta = sizeDelta;
+
 		priceText.text = price.ToString("N0");
+		bool disablePrice = (CurrencyData.instance.dia < _price);
+		priceButtonImage.color = !disablePrice ? Color.white : ColorUtil.halfGray;
+		priceText.color = !disablePrice ? Color.white : Color.gray;
+		priceGrayscaleEffect.enabled = disablePrice;
 	}
 
 	Dictionary<int, float> _dicGradeWeight;
@@ -116,6 +123,12 @@ public class EquipBoxConfirmCanvas : MonoBehaviour
 	DropProcessor _cachedDropProcessor;
 	public void OnClickOkButton()
 	{
+		if (CurrencyData.instance.dia < _price)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughDiamond"), 2.0f);
+			return;
+		}
+
 		// 오리진 박스와 마찬가지로 먼저 드랍프로세서부터 만들어야한다.
 		_cachedDropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, _miniBox ? "Wkdql" : "Wkdwkdql", "", true, true);
 		if (_miniBox == false)

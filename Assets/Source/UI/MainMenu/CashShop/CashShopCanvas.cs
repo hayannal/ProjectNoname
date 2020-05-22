@@ -128,24 +128,6 @@ public class CashShopCanvas : MonoBehaviour
 				equipBox8PriceText.text = equipBox8TableData.requiredDiamond.ToString("N0");
 				equipBox8AddText.text = UIString.instance.GetString(equipBox8TableData.addText);
 				_equipBox8Price = equipBox8TableData.requiredDiamond;
-
-				/*
-				 * 일일상점 FREE 구현할때 참고할 것.
-				if (CurrencyData.instance.equipBoxKey == 0)
-				{
-					equipBox8PriceText.color = Color.white;
-					equipBox8PriceRectTransform.anchoredPosition = new Vector2(10.0f, 0.0f);
-					equipBox8PriceRectTransform.GetChild(0).gameObject.SetActive(true);
-				}
-				else
-				{
-					_equipBox8Price = 0;
-					equipBox8PriceText.text = "FREE";
-					equipBox8PriceText.color = Color.green;
-					equipBox8PriceRectTransform.anchoredPosition = Vector2.zero;
-					equipBox8PriceRectTransform.GetChild(0).gameObject.SetActive(false);
-				}
-				*/
 			}
 		}
 
@@ -167,14 +149,6 @@ public class CashShopCanvas : MonoBehaviour
 	int _characterBoxPrice;
 	public void OnClickCharacterBox()
 	{
-		// 오리진이나 장비 뽑기와 달리 연속뽑기가 있다.
-		// 첫번째 연출에서는 뽑기상자를 터치해서 열지만 두번째부터는 자동으로 패킷 보내면서 굴려져야한다.
-		if (CurrencyData.instance.dia < _characterBoxPrice)
-		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughDiamond"), 2.0f);
-			return;
-		}
-
 		UIInstanceManager.instance.ShowCanvasAsync("CharacterBoxConfirmCanvas", () => {
 			CharacterBoxConfirmCanvas.instance.RefreshInfo(_characterBoxPrice, characterBoxNameText.text, characterBoxAddText.text);
 		});
@@ -190,12 +164,6 @@ public class CashShopCanvas : MonoBehaviour
 			return;
 		}
 
-		if (CurrencyData.instance.dia < _equipBox1Price)
-		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughDiamond"), 2.0f);
-			return;
-		}
-
 		UIInstanceManager.instance.ShowCanvasAsync("EquipBoxConfirmCanvas", () => {
 			EquipBoxConfirmCanvas.instance.ShowCanvas(true, true, _equipBox1Price, equipBox1NameText.text, "", equipBox1IconImage.sprite, equipBox1IconRectTransform.anchoredPosition, equipBox1IconRectTransform.sizeDelta);
 		});
@@ -207,12 +175,6 @@ public class CashShopCanvas : MonoBehaviour
 		if (TimeSpaceData.instance.IsInventoryVisualMax())
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_ManageInventory"), 2.0f);
-			return;
-		}
-
-		if (CurrencyData.instance.dia < _equipBox8Price)
-		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughDiamond"), 2.0f);
 			return;
 		}
 

@@ -26,6 +26,9 @@ public class DailyPackageInfo : MonoBehaviour
 	public Text completeText;
 	public Text remainTimeText;
 
+	public RectTransform alarmRootTransform;
+	AlarmObject _alarmObject;
+
 	bool _started = false;
 	void Start()
 	{
@@ -54,7 +57,9 @@ public class DailyPackageInfo : MonoBehaviour
 		dayCountText.text = _shopDailyDiamondTableData.dailyCount.ToString();
 		buyingDiaText.text = _shopDailyDiamondTableData.buyingGems.ToString("N0");
 		dailyDiaText.text = _shopDailyDiamondTableData.GemsDailyGems.ToString("N0");
-		
+
+		AlarmObject.Hide(_alarmObject);
+
 		// 서버에서 상태값을 받아와서 비교해야한다.
 		if (CurrencyData.instance.dailyDiaRemainCount > 0)
 		{
@@ -88,6 +93,7 @@ public class DailyPackageInfo : MonoBehaviour
 				completeText.gameObject.SetActive(false);
 				remainTimeText.gameObject.SetActive(false);
 				_needUpdate = false;
+				_alarmObject = AlarmObject.Show(alarmRootTransform);
 			}
 		}
 		else
@@ -204,6 +210,7 @@ public class DailyPackageInfo : MonoBehaviour
 							// 다음번 드랍에 영향을 주지 않게 하기위해 미리 클리어해둔다.
 							DropManager.instance.ClearLobbyDropInfo();
 							CashShopCanvas.instance.currencySmallInfo.RefreshInfo();
+							DotMainMenuCanvas.instance.RefreshCashShopAlarmObject();
 
 							// 결과로는 공용 재화 획득창을 띄워준다.
 							UIInstanceManager.instance.ShowCanvasAsync("CurrencyBoxResultCanvas", () =>
@@ -287,6 +294,7 @@ public class DailyPackageInfo : MonoBehaviour
 				// 다음번 드랍에 영향을 주지 않게 하기위해 미리 클리어해둔다.
 				DropManager.instance.ClearLobbyDropInfo();
 				CashShopCanvas.instance.currencySmallInfo.RefreshInfo();
+				DotMainMenuCanvas.instance.RefreshCashShopAlarmObject();
 
 				// 결과로는 공용 재화 획득창을 띄워준다.
 				UIInstanceManager.instance.ShowCanvasAsync("CurrencyBoxResultCanvas", () =>

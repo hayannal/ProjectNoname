@@ -166,6 +166,34 @@ public class UIInstanceManager : MonoBehaviour
 	}
 	#endregion
 
+	#region AlarmObject
+	List<AlarmObject> _listCachedAlarmObject = new List<AlarmObject>();
+	public AlarmObject GetCachedAlarmObject(Transform parentTransform)
+	{
+		for (int i = 0; i < _listCachedAlarmObject.Count; ++i)
+		{
+			if (!_listCachedAlarmObject[i].gameObject.activeSelf)
+			{
+				_listCachedAlarmObject[i].cachedRectTransform.SetParent(parentTransform);
+				_listCachedAlarmObject[i].cachedRectTransform.anchoredPosition = Vector2.zero;
+				_listCachedAlarmObject[i].cachedRectTransform.localScale = Vector3.one;
+				_listCachedAlarmObject[i].gameObject.SetActive(true);
+				return _listCachedAlarmObject[i];
+			}
+		}
+
+		GameObject newObject = Instantiate<GameObject>(CommonCanvasGroup.instance.alarmObjectPrefab, parentTransform);
+#if UNITY_EDITOR
+		AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+		if (settings.ActivePlayModeDataBuilderIndex == 2)
+			ObjectUtil.ReloadShader(newObject);
+#endif
+		AlarmObject alarmObject = newObject.GetComponent<AlarmObject>();
+		_listCachedAlarmObject.Add(alarmObject);
+		return alarmObject;
+	}
+	#endregion
+
 
 
 	#region Async Load

@@ -29,6 +29,8 @@ public class MailCanvasListItem : MonoBehaviour
 	public Text rewardNameText;
 	public GameObject addObject;
 	public Text addText;
+	public RectTransform alarmRootTransform;
+	AlarmObject _alarmObject;
 
 	float _defaultLayoutPreferredHeightMin;
 	float _defaultLayoutPreferredHeightMax;
@@ -126,6 +128,7 @@ public class MailCanvasListItem : MonoBehaviour
 				addObject.SetActive(true);
 				addText.SetLocalizedText(UIString.instance.GetString(string.Format("GameUI_EquipGrade{0}", createInfo.vl)));
 			}
+			_alarmObject = AlarmObject.Show(alarmRootTransform);
 		}
 
 		layoutElement.preferredHeight = _defaultLayoutPreferredHeightMin;
@@ -252,6 +255,7 @@ public class MailCanvasListItem : MonoBehaviour
 		{
 			PlayFabApiManager.instance.RequestReceiveMailPresent(id, receiveDay, _type, _addDia, _addGold, _addEnergy, "", (serverFailure, itemGrantString) =>
 			{
+				DotMainMenuCanvas.instance.RefreshMailAlarmObject();
 				ToastCanvas.instance.ShowToast(UIString.instance.GetString("MailUI_AfterClaim"), 2.0f);
 				gameObject.SetActive(false);
 			});
@@ -300,6 +304,7 @@ public class MailCanvasListItem : MonoBehaviour
 
 		// 캐릭터와 달리 장비는 드랍프로세서에서 정보를 뽑아쓰는게 아니라서 미리 클리어해도 상관없다.
 		DropManager.instance.ClearLobbyDropInfo();
+		DotMainMenuCanvas.instance.RefreshMailAlarmObject();
 		if (itemGrantString == "")
 			return;
 

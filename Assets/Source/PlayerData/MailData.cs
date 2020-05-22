@@ -221,18 +221,24 @@ public class MailData : MonoBehaviour
 			}
 		}
 
-		// 여기서 받을 수 있는 메일의 수를 세서 빨간점 띄우는 작업을 해야한다.
-		if (GetReceivableMailPresentCount() > 0)
-		{
-
-		}
-
 		// 뭔가 변경이 감지될때 서버 점검 있는지 판단한다.
 		if (deleted || added || modified)
+		{
 			CheckServerMaintenance();
+
+			bool lobby = false;
+			if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby) lobby = true;
+			if (lobby)
+			{
+				// 변경이 있다면 알람 처리를 하라고 캔버스에게 요청한다.
+				//LobbyCanvas.instance.RefreshAlarm
+				if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
+					DotMainMenuCanvas.instance.RefreshMailAlarmObject();
+			}
+		}
 	}
 
-	int GetReceivableMailPresentCount()
+	public int GetReceivableMailPresentCount()
 	{
 		int count = 0;
 		for (int i = 0; i < _listMyMailTime.Count; ++i)

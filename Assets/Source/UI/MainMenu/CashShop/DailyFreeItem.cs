@@ -15,6 +15,8 @@ public class DailyFreeItem : MonoBehaviour
 	public Text freeText;
 	public Text completeText;
 	public GameObject blackObject;
+	public RectTransform alarmRootTransform;
+	AlarmObject _alarmObject;
 
 	bool _started = false;
 	void Start()
@@ -90,6 +92,7 @@ public class DailyFreeItem : MonoBehaviour
 			iconTweenAnimation.DOPause();
 			_nextResetDateTime = DailyShopData.instance.dailyFreeItemResetTime;
 			_needUpdate = true;
+			AlarmObject.Hide(_alarmObject);
 		}
 		else
 		{
@@ -98,6 +101,7 @@ public class DailyFreeItem : MonoBehaviour
 			else
 				_reserveAnimation = true;
 			_needUpdate = false;
+			_alarmObject = AlarmObject.Show(alarmRootTransform);
 		}
 	}
 
@@ -149,6 +153,7 @@ public class DailyFreeItem : MonoBehaviour
 		{
 			RefreshInfo();
 			CashShopCanvas.instance.currencySmallInfo.RefreshInfo();
+			DotMainMenuCanvas.instance.RefreshCashShopAlarmObject();
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("ShopUI_GotFreeItem"), 2.0f);
 		});
 	}

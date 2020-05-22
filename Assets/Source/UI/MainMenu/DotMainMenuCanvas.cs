@@ -20,6 +20,8 @@ public class DotMainMenuCanvas : MonoBehaviour
 		Mail,
 	}
 	public Transform[] mainMenuButtonTransformList;
+	public RectTransform[] alarmRootTransformList;
+	List<AlarmObject> _listAlarmObject;
 
 	int[][] MenuIndexList =
 	{
@@ -51,6 +53,10 @@ public class DotMainMenuCanvas : MonoBehaviour
 	void Awake()
 	{
 		instance = this;
+
+		_listAlarmObject = new List<AlarmObject>();
+		for (int i = 0; i < alarmRootTransformList.Length; ++i)
+			_listAlarmObject.Add(null);
 	}
 
 	void Start()
@@ -121,6 +127,7 @@ public class DotMainMenuCanvas : MonoBehaviour
 		StackCanvas.Push(gameObject, true, OnPushStack, OnPopStack);
 		EnvironmentSetting.SetGlobalLightIntensityRatio(0.3f, 0.0f);
 		Initialize(targetTransform);
+		RefreshAlarmObjectList();
 	}
 
 	void OnDisable()
@@ -335,6 +342,78 @@ public class DotMainMenuCanvas : MonoBehaviour
 	}
 	#endregion
 
+
+	#region AlarmObject
+	void RefreshAlarmObjectList()
+	{
+		RefreshCashShopAlarmObject();
+
+		RefreshResearchAlarmObject();
+		RefreshMailAlarmObject();
+	}
+
+	public static bool IsAlarmCashShop()
+	{
+		bool result = false;
+		if (DailyShopData.instance.GetTodayFreeItemData() != null && DailyShopData.instance.dailyFreeItemReceived == false)
+			result = true;
+		if (CurrencyData.instance.dailyDiaRemainCount > 0 && PlayerData.instance.sharedDailyPackageOpened == false)
+			result = true;
+		return result;
+	}
+
+	public void RefreshCashShopAlarmObject()
+	{
+		RefreshAlarmObject(IsAlarmCashShop(), (int)eButtonType.Shop);
+	}
+
+	public static bool IsAlarmCharacter()
+	{
+		return false;
+	}
+
+	public static bool IsAlarmResearch()
+	{
+		ResearchTableData researchTableData = TableDataManager.instance.FindResearchTableData(PlayerData.instance.researchLevel + 1);
+		if (researchTableData == null)
+			return false;
+		if (ResearchInfoGrowthCanvas.GetCurrentAccumulatedPowerLevel() < researchTableData.requiredAccumulatedPowerLevel)
+			return false;
+		return true;
+	}
+
+	public void RefreshResearchAlarmObject()
+	{
+		RefreshAlarmObject(IsAlarmResearch(), (int)eButtonType.Research);
+	}
+
+	public static bool IsAlarmMail()
+	{
+		return MailData.instance.GetReceivableMailPresentCount() > 0;
+	}
+
+	public void RefreshMailAlarmObject()
+	{
+		RefreshAlarmObject(IsAlarmMail(), (int)eButtonType.Mail);
+	}
+
+	void RefreshAlarmObject(bool show, int buttonIndex)
+	{
+		if (show)
+		{
+			if (_listAlarmObject[buttonIndex] != null && _listAlarmObject[buttonIndex].gameObject.activeSelf)
+				return;
+			_listAlarmObject[buttonIndex] = AlarmObject.Show(alarmRootTransformList[buttonIndex]);
+		}
+		else
+		{
+			if (_listAlarmObject[buttonIndex] == null)
+				return;
+			AlarmObject.Hide(_listAlarmObject[buttonIndex]);
+			_listAlarmObject[buttonIndex] = null;
+		}
+	}
+	#endregion
 
 
 

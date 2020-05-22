@@ -14,6 +14,8 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 
 	public GameObject buttonRootObject;
 	public Text[] buttonTextList;
+	public RectTransform alarmRootTransform;
+	AlarmObject _alarmObject;
 
 	// Start is called before the first frame update
 	void Start()
@@ -30,6 +32,7 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 	void OnDisable()
 	{
 		buttonRootObject.SetActive(false);
+		alarmRootTransform.gameObject.SetActive(false);
 	}
 
 	void RefreshButtonText()
@@ -39,6 +42,8 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 		if (IsDailyBoxType())
 			_buttonType = eButtonType.DailyBox;
 
+		AlarmObject.Hide(_alarmObject);
+
 		string stringId = "";
 		switch (_buttonType)
 		{
@@ -46,7 +51,7 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 				stringId = "GameUI_Shop";
 				break;
 			case eButtonType.DailyBox:
-				_alarmObject = UIInstanceManager.instance.GetCachedObject(CommonCanvasGroup.instance.alarmObjectPrefab, alarmRootTransform);
+				_alarmObject = AlarmObject.Show(alarmRootTransform);
 				stringId = "GameUI_OneCharBox";
 				break;
 		}

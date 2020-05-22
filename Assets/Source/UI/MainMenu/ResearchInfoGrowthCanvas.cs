@@ -39,6 +39,8 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 	public GameObject disableButtonObject;
 	public Image disableButtonImage;
 	public Text disableButtonText;
+	public RectTransform alarmRootTransform;
+	AlarmObject _alarmObject;
 
 	public GameObject effectPrefab;
 
@@ -67,6 +69,12 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 		positionRectTransform.gameObject.SetActive(true);
 		positionRectTransform.anchoredPosition = left ? _leftTweenPosition : _rightTweenPosition;
 		_tweenReferenceForMove = positionRectTransform.DOAnchorPos(Vector2.zero, 0.3f).SetEase(Ease.OutQuad);
+
+		// RefreshInfo 호출하고 항상 트윈으로 나오기때문에 여기서 셋팅한다.
+		if (priceButtonObject.activeSelf && _needSumLevel == false)
+			_alarmObject = AlarmObject.Show(alarmRootTransform);
+		else
+			AlarmObject.Hide(_alarmObject);
 	}
 
 	void OnEnable()
@@ -293,6 +301,7 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 		PlayFabApiManager.instance.RequestResearchLevelUp(_selectedLevel, _price, _rewardDia, () =>
 		{
 			ResearchCanvas.instance.currencySmallInfo.RefreshInfo();
+			DotMainMenuCanvas.instance.RefreshResearchAlarmObject();
 			Timing.RunCoroutine(ResearchLevelUpProcess());
 		});
 	}

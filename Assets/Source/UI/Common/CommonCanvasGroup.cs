@@ -14,6 +14,7 @@ public class CommonCanvasGroup : MonoBehaviour
 	public GameObject waitingNetworkCanvasPrefab;
 	public GameObject tooltipCanvasPrefab;
 	public GameObject maintenanceCanvasPrefab;
+	public GameObject alarmObjectPrefab;
 	public Sprite[] powerSourceIconSpriteList;
 
 	void Awake()

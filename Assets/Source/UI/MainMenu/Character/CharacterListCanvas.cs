@@ -98,6 +98,10 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 			_playerActor.gameObject.SetActive(true);
 		}
 		SetInfoCameraMode(false, "");
+
+		// CharacterListCanvas의 Alarm은 수동으로 관리하니 여기서 꺼줘야한다.
+		for (int i = 0; i < _listSwapCanvasListItem.Count; ++i)
+			_listSwapCanvasListItem[i].ShowAlarm(false);
 	}
 
 	void OnChangedSortType(SortButton.eSortType sortType)
@@ -119,7 +123,10 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 	public void RefreshGrid(bool onEnable)
 	{
 		for (int i = 0; i < _listSwapCanvasListItem.Count; ++i)
+		{
+			_listSwapCanvasListItem[i].ShowAlarm(false);
 			_listSwapCanvasListItem[i].gameObject.SetActive(false);
+		}
 		_listSwapCanvasListItem.Clear();
 		for (int i = 0; i < _listFakeItem.Count; ++i)
 			_listFakeItem[i].gameObject.SetActive(false);
@@ -205,6 +212,8 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 			if (_listAllCharacterInfo[i].characterData != null)
 				powerLevel = _listAllCharacterInfo[i].characterData.powerLevel;
 			swapCanvasListItem.Initialize(_listAllCharacterInfo[i].actorTableData.actorId, powerLevel, chapterTableData.suggestedPowerLevel, null, OnClickListItem);
+			if (_listAllCharacterInfo[i].characterData != null && _listAllCharacterInfo[i].characterData.IsAlarmState())
+				swapCanvasListItem.ShowAlarm(true);
 			_listSwapCanvasListItem.Add(swapCanvasListItem);
 			// 빈슬롯과 함께 포함되어있는채로 재활용 해야하니 형제들 중 가장 마지막으로 밀어서 순서를 맞춘다.
 			swapCanvasListItem.cachedRectTransform.SetAsLastSibling();
@@ -242,6 +251,18 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 
 		// 선택을 누를때마다 조금이라도 로딩시간 줄이기 위해 어드레서블 로드를 걸어둔다.
 		AddressableAssetLoadManager.GetAddressableGameObject(CharacterData.GetAddressByActorId(actorId), "Character");
+	}
+
+	// 현재 GridItem들에 대한 알람 갱신 처리
+	public void RefreshAlarmList()
+	{
+		for (int i = 0; i < _listSwapCanvasListItem.Count; ++i)
+		{
+			if (_listAllCharacterInfo[i].characterData != null && _listAllCharacterInfo[i].characterData.IsAlarmState())
+				_listSwapCanvasListItem[i].ShowAlarm(true);
+			else
+				_listSwapCanvasListItem[i].ShowAlarm(false);
+		}
 	}
 
 

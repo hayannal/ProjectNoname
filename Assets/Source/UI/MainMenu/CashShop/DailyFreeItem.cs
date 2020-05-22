@@ -16,7 +16,6 @@ public class DailyFreeItem : MonoBehaviour
 	public Text completeText;
 	public GameObject blackObject;
 	public RectTransform alarmRootTransform;
-	AlarmObject _alarmObject;
 
 	bool _started = false;
 	void Start()
@@ -92,7 +91,7 @@ public class DailyFreeItem : MonoBehaviour
 			iconTweenAnimation.DOPause();
 			_nextResetDateTime = DailyShopData.instance.dailyFreeItemResetTime;
 			_needUpdate = true;
-			AlarmObject.Hide(_alarmObject);
+			AlarmObject.Hide(alarmRootTransform);
 		}
 		else
 		{
@@ -101,7 +100,7 @@ public class DailyFreeItem : MonoBehaviour
 			else
 				_reserveAnimation = true;
 			_needUpdate = false;
-			_alarmObject = AlarmObject.Show(alarmRootTransform);
+			AlarmObject.Show(alarmRootTransform);
 		}
 	}
 

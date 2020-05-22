@@ -27,7 +27,6 @@ public class DailyPackageInfo : MonoBehaviour
 	public Text remainTimeText;
 
 	public RectTransform alarmRootTransform;
-	AlarmObject _alarmObject;
 
 	bool _started = false;
 	void Start()
@@ -58,7 +57,7 @@ public class DailyPackageInfo : MonoBehaviour
 		buyingDiaText.text = _shopDailyDiamondTableData.buyingGems.ToString("N0");
 		dailyDiaText.text = _shopDailyDiamondTableData.GemsDailyGems.ToString("N0");
 
-		AlarmObject.Hide(_alarmObject);
+		AlarmObject.Hide(alarmRootTransform);
 
 		// 서버에서 상태값을 받아와서 비교해야한다.
 		if (CurrencyData.instance.dailyDiaRemainCount > 0)
@@ -93,7 +92,7 @@ public class DailyPackageInfo : MonoBehaviour
 				completeText.gameObject.SetActive(false);
 				remainTimeText.gameObject.SetActive(false);
 				_needUpdate = false;
-				_alarmObject = AlarmObject.Show(alarmRootTransform);
+				AlarmObject.Show(alarmRootTransform);
 			}
 		}
 		else

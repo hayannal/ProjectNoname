@@ -156,6 +156,11 @@ public class CharacterLimitBreakCanvas : DetailShowCanvasBase
 		backKeyButton.interactable = true;
 		processGraphicElement.raycastTarget = false;
 		_processed = true;
+
+		// RefreshGrid는 안했어도 알람표시는 갱신해야한다.
+		// PowerLevelUpCanvas쪽은 RefreshGrid를 호출하는 반면 여기선 저 함수를 호출하지 않기 때문에 Refresh Alarm 만 따로 호출해서 처리한다.
+		CharacterListCanvas.instance.RefreshAlarmList();
+		DotMainMenuCanvas.instance.RefreshCharacterAlarmObject();
 	}
 
 	bool _processed = false;

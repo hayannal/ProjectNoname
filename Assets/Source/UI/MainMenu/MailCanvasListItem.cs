@@ -30,7 +30,6 @@ public class MailCanvasListItem : MonoBehaviour
 	public GameObject addObject;
 	public Text addText;
 	public RectTransform alarmRootTransform;
-	AlarmObject _alarmObject;
 
 	float _defaultLayoutPreferredHeightMin;
 	float _defaultLayoutPreferredHeightMax;
@@ -128,7 +127,7 @@ public class MailCanvasListItem : MonoBehaviour
 				addObject.SetActive(true);
 				addText.SetLocalizedText(UIString.instance.GetString(string.Format("GameUI_EquipGrade{0}", createInfo.vl)));
 			}
-			_alarmObject = AlarmObject.Show(alarmRootTransform);
+			AlarmObject.Show(alarmRootTransform);
 		}
 
 		layoutElement.preferredHeight = _defaultLayoutPreferredHeightMin;

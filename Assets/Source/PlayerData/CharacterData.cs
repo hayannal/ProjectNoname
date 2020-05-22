@@ -73,6 +73,33 @@ public class CharacterData
 		}
 	}
 
+	#region Alarm
+	public bool IsAlarmState()
+	{
+		// CharacterInfoGrowthCanvas의 RefreshRequired 함수에서 핵심 코드들만 가져왔다.
+		if (powerLevel >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxPowerLevel"))
+			return false;
+
+		PowerLevelTableData powerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(powerLevel);
+		PowerLevelTableData nextPowerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(powerLevel + 1);
+		if (needLimitBreak)
+		{
+			int current = limitBreakPoint - powerLevelTableData.requiredLimitBreak;
+			if (current < 1)
+				return false;
+		}
+		else
+		{
+			int current = pp - powerLevelTableData.requiredAccumulatedPowerPoint;
+			if (current < nextPowerLevelTableData.requiredPowerPoint)
+				return false;
+		}
+
+		// 지금은 성장탭 priceButton에만 되어있는데 나중에 잠재 개발되면 포인트 찍는 버튼에도 추가해야한다.
+		return true;
+	}
+	#endregion
+
 	public static int FixedCharacterGroupCount = 4;
 
 	public static string GetAddressByActorId(string actorId)

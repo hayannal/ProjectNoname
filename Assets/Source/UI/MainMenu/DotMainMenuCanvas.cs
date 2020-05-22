@@ -21,7 +21,6 @@ public class DotMainMenuCanvas : MonoBehaviour
 	}
 	public Transform[] mainMenuButtonTransformList;
 	public RectTransform[] alarmRootTransformList;
-	List<AlarmObject> _listAlarmObject;
 
 	int[][] MenuIndexList =
 	{
@@ -53,10 +52,6 @@ public class DotMainMenuCanvas : MonoBehaviour
 	void Awake()
 	{
 		instance = this;
-
-		_listAlarmObject = new List<AlarmObject>();
-		for (int i = 0; i < alarmRootTransformList.Length; ++i)
-			_listAlarmObject.Add(null);
 	}
 
 	void Start()
@@ -347,7 +342,7 @@ public class DotMainMenuCanvas : MonoBehaviour
 	void RefreshAlarmObjectList()
 	{
 		RefreshCashShopAlarmObject();
-
+		RefreshCharacterAlarmObject();
 		RefreshResearchAlarmObject();
 		RefreshMailAlarmObject();
 	}
@@ -369,7 +364,18 @@ public class DotMainMenuCanvas : MonoBehaviour
 
 	public static bool IsAlarmCharacter()
 	{
+		List<CharacterData> listCharacterData = PlayerData.instance.listCharacterData;
+		for (int i = 0; i < listCharacterData.Count; ++i)
+		{
+			if (listCharacterData[i].IsAlarmState())
+				return true;
+		}
 		return false;
+	}
+
+	public void RefreshCharacterAlarmObject()
+	{
+		RefreshAlarmObject(IsAlarmCharacter(), (int)eButtonType.Character);
 	}
 
 	public static bool IsAlarmResearch()
@@ -401,16 +407,11 @@ public class DotMainMenuCanvas : MonoBehaviour
 	{
 		if (show)
 		{
-			if (_listAlarmObject[buttonIndex] != null && _listAlarmObject[buttonIndex].gameObject.activeSelf)
-				return;
-			_listAlarmObject[buttonIndex] = AlarmObject.Show(alarmRootTransformList[buttonIndex]);
+			AlarmObject.Show(alarmRootTransformList[buttonIndex]);
 		}
 		else
 		{
-			if (_listAlarmObject[buttonIndex] == null)
-				return;
-			AlarmObject.Hide(_listAlarmObject[buttonIndex]);
-			_listAlarmObject[buttonIndex] = null;
+			AlarmObject.Hide(alarmRootTransformList[buttonIndex]);
 		}
 	}
 	#endregion

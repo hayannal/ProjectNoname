@@ -37,6 +37,7 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 	public GameObject maxButtonObject;
 	public Image maxButtonImage;
 	public Text maxButtonText;
+	public RectTransform alarmRootTransform;
 
 	void Awake()
 	{
@@ -142,6 +143,8 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 	bool _needLimitBreakPoint;
 	void RefreshRequired()
 	{
+		AlarmObject.Hide(alarmRootTransform);
+
 		int powerLevel = 1;
 		int pp = 0;
 		bool dontHave = true;
@@ -207,6 +210,9 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 			priceButtonObject.SetActive(true);
 			maxButtonObject.SetActive(false);
 			_price = requiredGold;
+
+			if (current >= max)
+				AlarmObject.Show(alarmRootTransform);
 		}
 	}
 	#endregion

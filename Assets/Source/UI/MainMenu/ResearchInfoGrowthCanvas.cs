@@ -40,7 +40,6 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 	public Image disableButtonImage;
 	public Text disableButtonText;
 	public RectTransform alarmRootTransform;
-	AlarmObject _alarmObject;
 
 	public GameObject effectPrefab;
 
@@ -72,9 +71,9 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 
 		// RefreshInfo 호출하고 항상 트윈으로 나오기때문에 여기서 셋팅한다.
 		if (priceButtonObject.activeSelf && _needSumLevel == false)
-			_alarmObject = AlarmObject.Show(alarmRootTransform);
+			AlarmObject.Show(alarmRootTransform);
 		else
-			AlarmObject.Hide(_alarmObject);
+			AlarmObject.Hide(alarmRootTransform);
 	}
 
 	void OnEnable()

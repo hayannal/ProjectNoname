@@ -341,10 +341,10 @@ public class DotMainMenuCanvas : MonoBehaviour
 	#region AlarmObject
 	void RefreshAlarmObjectList()
 	{
-		RefreshCashShopAlarmObject();
-		RefreshCharacterAlarmObject();
-		RefreshResearchAlarmObject();
-		RefreshMailAlarmObject();
+		RefreshCashShopAlarmObject(false);
+		RefreshCharacterAlarmObject(false);
+		RefreshResearchAlarmObject(false);
+		RefreshMailAlarmObject(false);
 	}
 
 	public static bool IsAlarmCashShop()
@@ -357,9 +357,12 @@ public class DotMainMenuCanvas : MonoBehaviour
 		return result;
 	}
 
-	public void RefreshCashShopAlarmObject()
+	public void RefreshCashShopAlarmObject(bool refreshLobbyAlarm = true)
 	{
-		RefreshAlarmObject(IsAlarmCashShop(), (int)eButtonType.Shop);
+		bool show = IsAlarmCashShop();
+		RefreshAlarmObject(show, (int)eButtonType.Shop);
+		if (refreshLobbyAlarm)
+			LobbyCanvas.instance.RefreshAlarmObject(eButtonType.Shop, show);
 	}
 
 	public static bool IsAlarmCharacter()
@@ -373,9 +376,12 @@ public class DotMainMenuCanvas : MonoBehaviour
 		return false;
 	}
 
-	public void RefreshCharacterAlarmObject()
+	public void RefreshCharacterAlarmObject(bool refreshLobbyAlarm = true)
 	{
-		RefreshAlarmObject(IsAlarmCharacter(), (int)eButtonType.Character);
+		bool show = IsAlarmCharacter();
+		RefreshAlarmObject(show, (int)eButtonType.Character);
+		if (refreshLobbyAlarm)
+			LobbyCanvas.instance.RefreshAlarmObject(eButtonType.Character, show);
 	}
 
 	public static bool IsAlarmResearch()
@@ -388,9 +394,12 @@ public class DotMainMenuCanvas : MonoBehaviour
 		return true;
 	}
 
-	public void RefreshResearchAlarmObject()
+	public void RefreshResearchAlarmObject(bool refreshLobbyAlarm = true)
 	{
-		RefreshAlarmObject(IsAlarmResearch(), (int)eButtonType.Research);
+		bool show = IsAlarmResearch();
+		RefreshAlarmObject(show, (int)eButtonType.Research);
+		if (refreshLobbyAlarm)
+			LobbyCanvas.instance.RefreshAlarmObject(eButtonType.Research, show);
 	}
 
 	public static bool IsAlarmMail()
@@ -398,9 +407,12 @@ public class DotMainMenuCanvas : MonoBehaviour
 		return MailData.instance.GetReceivableMailPresentCount() > 0;
 	}
 
-	public void RefreshMailAlarmObject()
+	public void RefreshMailAlarmObject(bool refreshLobbyAlarm = true)
 	{
-		RefreshAlarmObject(IsAlarmMail(), (int)eButtonType.Mail);
+		bool show = IsAlarmMail();
+		RefreshAlarmObject(show, (int)eButtonType.Mail);
+		if (refreshLobbyAlarm)
+			LobbyCanvas.instance.RefreshAlarmObject(eButtonType.Mail, show);
 	}
 
 	void RefreshAlarmObject(bool show, int buttonIndex)

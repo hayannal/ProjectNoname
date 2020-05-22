@@ -447,7 +447,10 @@ public class MainSceneBuilder : MonoBehaviour
 	IEnumerator LateInitialize()
 	{
 		if (playAfterInstallation == false)
+		{
+			LobbyCanvas.instance.RefreshAlarmObject();
 			DailyShopData.instance.CheckUnfixedItemInfo();
+		}
 
 		for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)
 			AddressableAssetLoadManager.GetAddressableSprite(TableDataManager.instance.actorTable.dataArray[i].portraitAddress, "Icon", null);

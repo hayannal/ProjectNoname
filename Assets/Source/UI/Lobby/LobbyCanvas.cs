@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 using DG.Tweening;
 
 public class LobbyCanvas : MonoBehaviour
@@ -20,6 +19,7 @@ public class LobbyCanvas : MonoBehaviour
 	public Image expGaugeImage;
 	public DOTweenAnimation expGaugeColorTween;
 	public Image expGaugeEndPointImage;
+	public RectTransform alarmRootTransform;
 
 	void Awake()
 	{
@@ -250,6 +250,47 @@ public class LobbyCanvas : MonoBehaviour
 	}
 	#endregion
 
+
+
+	#region AlarmObject
+	bool _isAlarmCashShop = false;
+	bool _isAlarmCharacter = false;
+	bool _isAlarmResearch = false;
+	bool _isAlarmMail = false;
+	public void RefreshAlarmObject()
+	{
+		_isAlarmCashShop = DotMainMenuCanvas.IsAlarmCashShop();
+		_isAlarmCharacter = DotMainMenuCanvas.IsAlarmCharacter();
+		_isAlarmResearch = DotMainMenuCanvas.IsAlarmResearch();
+		_isAlarmMail = DotMainMenuCanvas.IsAlarmMail();
+
+		bool showAlarm = false;
+		if (_isAlarmCashShop || _isAlarmCharacter || _isAlarmResearch || _isAlarmMail) showAlarm = true;
+		if (showAlarm)
+			AlarmObject.Show(alarmRootTransform, true, true);
+		else
+			AlarmObject.Hide(alarmRootTransform);
+	}
+
+	public void RefreshAlarmObject(DotMainMenuCanvas.eButtonType changedType, bool changedValue)
+	{
+		// 위 함수의 경우 모든 조건을 다 검사해야하다보니 불필요한 연산을 할때가 많다.
+		// 처음 로비에 입장할때야 다 검사하는게 맞는데 그 이후부터는 변경되는 것만 반영하면 되기 때문.
+		switch (changedType)
+		{
+			case DotMainMenuCanvas.eButtonType.Shop: _isAlarmCashShop = changedValue; break;
+			case DotMainMenuCanvas.eButtonType.Character: _isAlarmCharacter = changedValue; break;
+			case DotMainMenuCanvas.eButtonType.Research: _isAlarmResearch = changedValue; break;
+			case DotMainMenuCanvas.eButtonType.Mail: _isAlarmMail = changedValue; break;
+		}
+		bool showAlarm = false;
+		if (_isAlarmCashShop || _isAlarmCharacter || _isAlarmResearch || _isAlarmMail) showAlarm = true;
+		if (showAlarm)
+			AlarmObject.Show(alarmRootTransform);
+		else
+			AlarmObject.Hide(alarmRootTransform);
+	}
+	#endregion
 
 
 

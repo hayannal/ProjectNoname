@@ -231,7 +231,6 @@ public class MailData : MonoBehaviour
 			if (lobby)
 			{
 				// 변경이 있다면 알람 처리를 하라고 캔버스에게 요청한다.
-				//LobbyCanvas.instance.RefreshAlarm
 				if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
 					DotMainMenuCanvas.instance.RefreshMailAlarmObject();
 			}

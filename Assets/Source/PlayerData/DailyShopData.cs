@@ -506,7 +506,6 @@ public class DailyShopData : MonoBehaviour
 		dailyFreeItemResetTime += TimeSpan.FromDays(1);
 
 		// 일일 다이아는 안가지고 있는 유저가 있겠지만 FreeItem은 모두에게 적용된다. 여기서 처리하기로 한다.
-		//LobbyCanvas.instance.RefreshAlarm
 		if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
 			DotMainMenuCanvas.instance.RefreshCashShopAlarmObject();
 	}

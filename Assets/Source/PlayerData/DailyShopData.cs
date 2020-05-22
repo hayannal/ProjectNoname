@@ -504,6 +504,11 @@ public class DailyShopData : MonoBehaviour
 		// 일퀘와 달리 창을 열어야만 보이기도 하고 노출되는 횟수가 적을거 같아서 하루 갱신될때 서버에 알리지 않고 클라가 선처리 하기로 한다.
 		dailyFreeItemReceived = false;
 		dailyFreeItemResetTime += TimeSpan.FromDays(1);
+
+		// 일일 다이아는 안가지고 있는 유저가 있겠지만 FreeItem은 모두에게 적용된다. 여기서 처리하기로 한다.
+		//LobbyCanvas.instance.RefreshAlarm
+		if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
+			DotMainMenuCanvas.instance.RefreshCashShopAlarmObject();
 	}
 	#endregion
 }

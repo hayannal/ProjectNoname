@@ -94,7 +94,7 @@ public class EquipListCanvas : EquipShowCanvasBase
 
 		SetInfoCameraMode(false);
 
-		// 장비의 new표시를 사라지게 하는 곳은 9탭 나갈때와 판매창 나갈때 두곳 뿐이다.
+		// 장비의 new표시를 전부 사라지게 하는 곳은 9탭 나갈때와 판매창 나갈때 두곳 뿐이다.
 		for (int i = 0; i < _listEquipCanvasListItem.Count; ++i)
 			_listEquipCanvasListItem[i].ShowAlarm(false);
 		TimeSpaceData.instance.ResetNewEquip();
@@ -243,11 +243,6 @@ public class EquipListCanvas : EquipShowCanvasBase
 			_listEquipCanvasListItem.Add(equipCanvasListItem);
 		}
 
-		// 인벤도 리프레쉬하지 않고 selected아이템도 해제하지 않는거면 정렬같이 Grid 순서만 바꾸는 상황일거다.
-		// 이땐 아예 갱신하지 않는다.
-		if (refreshInventory == false && resetSelected == false)
-			return;
-
 		if (resetSelected)
 			OnClickListItem(null);
 		else
@@ -338,6 +333,10 @@ public class EquipListCanvas : EquipShowCanvasBase
 		// 밖에 있는 시공간 제단을 업데이트 해줘야한다.
 		int positionIndex = equipData.cachedEquipTableData.equipType;
 		TimeSpaceGround.instance.timeSpaceAltarList[positionIndex].RefreshEquipObject();
+
+		// 신규 장비를 장착하면 탭에 있던 new표시도 리프레쉬
+		equipData.newEquip = false;
+		equipTypeButtonList[positionIndex].RefreshAlarmObject();
 	}
 
 	public void OnUnequip(EquipData equipData)

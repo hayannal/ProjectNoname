@@ -66,7 +66,13 @@ public class TimeSpaceGround : MonoBehaviour
 		objectScaleEffectorDeformer.enabled = enable;
 	}
 
-
+	#region AlarmObject
+	public void RefreshAlarmObjectList()
+	{
+		for (int i = 0; i < timeSpaceAltarList.Length; ++i)
+			timeSpaceAltarList[i].RefreshAlarmObject();
+	}
+	#endregion
 
 
 

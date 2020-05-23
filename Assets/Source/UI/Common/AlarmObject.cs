@@ -32,6 +32,11 @@ public class AlarmObject : MonoBehaviour
 		else
 			alarmObject.tweenAnimation.DOPause();
 		alarmObject.ignoreAutoDisable = ignoreAutoDisable;
+		// Hide 함수 보면 알겠지만 0번 자리에 있는걸 지운다. 동시에 하나의 자식만 활성화 된다는걸 전제로 하는건데
+		// 하필 이미 비활성화 된 자식이 존재하는데 새로운걸 가져온다면 인덱스가 1로 밀려나게 된다.
+		// 이때 Hide가 안되는 문제가 발생해서 이렇게 처리해둔다.
+		// 이런 과정들은 결국.. 오브젝트를 캐싱하지 않은채 Show/Hide를 처리하기 위함이다.
+		alarmObject.cachedRectTransform.SetAsFirstSibling();
 	}
 
 	public static void Hide(Transform parentTransform)

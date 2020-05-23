@@ -535,6 +535,9 @@ public class TimeSpaceData
 		// 시공간에서 마을로 돌아갈땐 항상 TimeSpacePortal이 파티클 재생때문에 꺼졌다 켜진다. 이때 알아서 알람 갱신이 되니 여기서 처리할 필요 없다.
 		//if (TimeSpacePortal.instance != null && TimeSpacePortal.instance.gameObject.activeSelf)
 		//	TimeSpacePortal.instance.RefreshAlarmObject();
+
+		// 하지만 리셋 타이밍에 제단에 붙어있는 New표시는 삭제해야하므로 호출해준다.
+		TimeSpaceGround.instance.RefreshAlarmObjectList();
 	}
 	#endregion
 

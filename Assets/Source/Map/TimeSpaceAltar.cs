@@ -13,6 +13,7 @@ public class TimeSpaceAltar : MonoBehaviour
 	public ParticleSystem gradeParticleSystem;
 	public Text enhanceText;
 	public GameObject[] optionObjectList;
+	public RectTransform alarmRootTransform;
 
 	void Start()
 	{
@@ -97,13 +98,14 @@ public class TimeSpaceAltar : MonoBehaviour
 		// 비쥬얼용 오브젝트들은 우선 끄고 처리
 		DisableEquipObject();
 
+		// 알람
+		RefreshAlarmObject();
+
 		EquipData equipData = TimeSpaceData.instance.GetEquippedDataByType((TimeSpaceData.eEquipSlotType)positionIndex);
 		if (equipData == null)
 		{
 			gradeParticleSystem.gameObject.SetActive(false);
 			emptyIconObject.SetActive(true);
-			// 두가지 조건이다. 제단이 비어있는데 장착할 수 있는 장비가 있거나 새로운 템을 얻었거나
-			//alarm3dObject.SetActive(TimeSpaceData.instance.IsExistEquipByType((TimeSpaceData.eEquipSlotType)positionIndex);
 			for (int i = 0; i < optionObjectList.Length; ++i)
 				optionObjectList[i].SetActive(false);
 			return;
@@ -214,4 +216,28 @@ public class TimeSpaceAltar : MonoBehaviour
 				quickOutline.enabled = false;
 		}
 	}
+
+	#region AlarmObject
+	public void RefreshAlarmObject()
+	{
+		AlarmObject.Hide(alarmRootTransform);
+
+		// 뭔가 장착중이면 월드캔버스가 사라지니 보여줄 수 없다.
+		EquipData equipData = TimeSpaceData.instance.GetEquippedDataByType((TimeSpaceData.eEquipSlotType)positionIndex);
+		if (equipData != null)
+			return;
+
+		// 알람은 두가지 조건이다. 제단이 비어있는데 장착할 수 있는 장비가 있거나 새로운 템을 얻었거나
+		bool show = false;
+		List<EquipData> listEquipData = TimeSpaceData.instance.GetEquipListByType((TimeSpaceData.eEquipSlotType)positionIndex);
+		for (int i = 0; i < listEquipData.Count; ++i)
+		{
+			show = listEquipData[i].newEquip;
+			if (show)
+				break;
+		}
+		if (show)
+			AlarmObject.Show(alarmRootTransform);
+	}
+	#endregion
 }

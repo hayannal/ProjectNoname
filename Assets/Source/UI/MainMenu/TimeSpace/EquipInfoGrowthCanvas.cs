@@ -103,6 +103,13 @@ public class EquipInfoGrowthCanvas : MonoBehaviour
 	{
 		_equipData = equipData;
 		OnValueChangedToggle(menuIndex);
+
+		// 성장시키려고 들어왔을때는 newEquip을 확인한거로 처리한다. 인벤토리 Grid 안에 있는 알람도 갱신해야하므로 Grid도 갱신한다.
+		if (equipData.newEquip)
+		{
+			equipData.newEquip = false;
+			EquipListCanvas.instance.RefreshGrid(false, false);
+		}
 	}
 
 	public void OnClickBackButton()

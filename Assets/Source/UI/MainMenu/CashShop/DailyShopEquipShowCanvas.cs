@@ -60,6 +60,8 @@ public class DailyShopEquipShowCanvas : EquipShowCanvasBase
 
 		if (TimeSpacePortal.instance != null && TimeSpacePortal.instance.gameObject.activeSelf)
 			TimeSpacePortal.instance.RefreshAlarmObject();
+		if (TimeSpaceGround.instance != null && TimeSpaceGround.instance.gameObject.activeSelf)
+			TimeSpaceGround.instance.RefreshAlarmObjectList();
 	}
 
 	public void OnClickConfirmButton()

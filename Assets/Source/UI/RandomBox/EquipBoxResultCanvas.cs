@@ -81,6 +81,8 @@ public class EquipBoxResultCanvas : MonoBehaviour
 		// 이 타이밍이 가장 갱신하기 좋은 타이밍이다.
 		if (TimeSpacePortal.instance != null && TimeSpacePortal.instance.gameObject.activeSelf)
 			TimeSpacePortal.instance.RefreshAlarmObject();
+		if (TimeSpaceGround.instance != null && TimeSpaceGround.instance.gameObject.activeSelf)
+			TimeSpaceGround.instance.RefreshAlarmObjectList();
 
 		contentGridLayoutGroup.childAlignment = (listGrantItem.Count == 1) ? TextAnchor.MiddleCenter : TextAnchor.UpperLeft;
 		Timing.RunCoroutine(ItemProcess(listGrantItem));

@@ -212,8 +212,6 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 			if (_listAllCharacterInfo[i].characterData != null)
 				powerLevel = _listAllCharacterInfo[i].characterData.powerLevel;
 			swapCanvasListItem.Initialize(_listAllCharacterInfo[i].actorTableData.actorId, powerLevel, chapterTableData.suggestedPowerLevel, null, OnClickListItem);
-			if (_listAllCharacterInfo[i].characterData != null && _listAllCharacterInfo[i].characterData.IsAlarmState())
-				swapCanvasListItem.ShowAlarm(true);
 			_listSwapCanvasListItem.Add(swapCanvasListItem);
 			// 빈슬롯과 함께 포함되어있는채로 재활용 해야하니 형제들 중 가장 마지막으로 밀어서 순서를 맞춘다.
 			swapCanvasListItem.cachedRectTransform.SetAsLastSibling();
@@ -236,6 +234,8 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 				}
 			}
 		}
+		RefreshAlarmList();
+
 		if (onEnable)
 			OnClickListItem(BattleInstanceManager.instance.playerActor.actorId);
 		else
@@ -253,15 +253,20 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 		AddressableAssetLoadManager.GetAddressableGameObject(CharacterData.GetAddressByActorId(actorId), "Character");
 	}
 
-	// 현재 GridItem들에 대한 알람 갱신 처리
+	// 현재 GridItem들에 대한 알람 갱신 처리. 알람 갱신 한곳으로 모은다.
 	public void RefreshAlarmList()
 	{
 		for (int i = 0; i < _listSwapCanvasListItem.Count; ++i)
 		{
-			if (_listAllCharacterInfo[i].characterData != null && _listAllCharacterInfo[i].characterData.IsAlarmState())
+			_listSwapCanvasListItem[i].ShowAlarm(false);
+			if (_listAllCharacterInfo[i].characterData == null)
+				continue;
+
+			// 알람 우선순위가 더 높다.
+			if (_listAllCharacterInfo[i].characterData.IsAlarmState())
 				_listSwapCanvasListItem[i].ShowAlarm(true);
-			else
-				_listSwapCanvasListItem[i].ShowAlarm(false);
+			else if (_listAllCharacterInfo[i].characterData.IsPlusAlarmState())
+				_listSwapCanvasListItem[i].ShowAlarm(true, true);
 		}
 	}
 

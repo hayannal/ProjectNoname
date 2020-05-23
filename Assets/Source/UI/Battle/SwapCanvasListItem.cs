@@ -119,12 +119,15 @@ public class SwapCanvasListItem : MonoBehaviour
 	#region Alarm
 	// 다른 Alarm 가진 오브젝트들과 달리 캐릭터창은 다른 창들과 GridItem을 공유하면서도 해당 캔버스에서만 보여야하기 때문에 LitItem 단에서 처리하지 않는다.
 	// 그래서 밖에서 컨트롤 할 수 있게 public 함수로만 만들어두고 사용한다.
-	public void ShowAlarm(bool show)
+	public void ShowAlarm(bool show, bool usePlusAlarm = false)
 	{
 		if (show)
 		{
-			// Grid에서는 애니를 사용하지 않는다.
-			AlarmObject.Show(alarmRootTransform, false, true);
+			// plusAlarm에서는 애니를 사용하지 않는다.
+			if (usePlusAlarm)
+				AlarmObject.Show(alarmRootTransform, false, true, true);
+			else
+				AlarmObject.Show(alarmRootTransform, true, true, false);
 		}
 		else
 		{

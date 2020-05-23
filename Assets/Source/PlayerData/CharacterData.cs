@@ -74,7 +74,7 @@ public class CharacterData
 	}
 
 	#region Alarm
-	public bool IsAlarmState()
+	public bool IsPlusAlarmState()
 	{
 		// CharacterInfoGrowthCanvas의 RefreshRequired 함수에서 핵심 코드들만 가져왔다.
 		if (powerLevel >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxPowerLevel"))
@@ -94,9 +94,13 @@ public class CharacterData
 			if (current < nextPowerLevelTableData.requiredPowerPoint)
 				return false;
 		}
-
-		// 지금은 성장탭 priceButton에만 되어있는데 나중에 잠재 개발되면 포인트 찍는 버튼에도 추가해야한다.
 		return true;
+	}
+
+	public bool IsAlarmState()
+	{
+		// 캐릭터에는 잠재로 인해 찍을 포인트가 늘어날때만 진짜 Alarm을 표시한다.
+		return false;
 	}
 	#endregion
 

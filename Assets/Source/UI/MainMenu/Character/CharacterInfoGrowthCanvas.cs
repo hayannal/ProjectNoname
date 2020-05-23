@@ -212,7 +212,7 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 			_price = requiredGold;
 
 			if (current >= max)
-				AlarmObject.Show(alarmRootTransform);
+				AlarmObject.Show(alarmRootTransform, false, false, true);
 		}
 	}
 	#endregion

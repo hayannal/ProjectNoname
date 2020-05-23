@@ -13,6 +13,10 @@ public class CharacterInfoCanvas : MonoBehaviour
 	public MenuButton[] menuButtonList;
 	public GameObject menuRootObject;
 
+	// 4개의 메뉴중에 2개만 알람을 쓰니 따로 관리하도록 한다.
+	public RectTransform growthAlarmRootTransform;
+	public RectTransform potentialAlarmRootTransform;
+
 	void Awake()
 	{
 		instance = this;
@@ -88,6 +92,24 @@ public class CharacterInfoCanvas : MonoBehaviour
 				continue;
 			_listMenuTransform[i].gameObject.SetActive(_lastIndex == i);
 		}
+
+		RefreshAlarmObjectList();
+	}
+
+	public void RefreshAlarmObjectList()
+	{
+		CharacterData characterData = PlayerData.instance.GetCharacterData(CharacterListCanvas.instance.selectedActorId);
+		if (characterData == null)
+		{
+			AlarmObject.Hide(growthAlarmRootTransform);
+			AlarmObject.Hide(potentialAlarmRootTransform);
+			return;
+		}
+
+		if (characterData.IsPlusAlarmState())
+			AlarmObject.Show(growthAlarmRootTransform, false, false, true);
+		if (characterData.IsAlarmState())
+			AlarmObject.Show(potentialAlarmRootTransform);
 	}
 
 	public void OnClickBackButton()

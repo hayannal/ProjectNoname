@@ -15,9 +15,11 @@ public class TimeSpaceAltar : MonoBehaviour
 	public GameObject[] optionObjectList;
 	public RectTransform alarmRootTransform;
 
+	bool _started = false;
 	void Start()
 	{
 		_position = transform.position;
+		_started = true;
 	}
 
 	void OnEnable()
@@ -40,6 +42,8 @@ public class TimeSpaceAltar : MonoBehaviour
 	Vector3 _position;
 	void Update()
 	{
+		UpdateRotateTweenAnimation();
+
 		if (_spawnedIndicator == false)
 			return;
 		if (_objectIndicatorCanvas == null)
@@ -53,6 +57,16 @@ public class TimeSpaceAltar : MonoBehaviour
 		{
 			_objectIndicatorCanvas.gameObject.SetActive(false);
 			_spawnedIndicator = false;
+		}
+	}
+
+	bool _reserveRotateTweenAnimation;
+	void UpdateRotateTweenAnimation()
+	{
+		if (_reserveRotateTweenAnimation)
+		{
+			rotateTweenAnimation.DORestart();
+			_reserveRotateTweenAnimation = false;
 		}
 	}
 
@@ -144,7 +158,7 @@ public class TimeSpaceAltar : MonoBehaviour
 			ShowOutline(false, _currentEquipObject.gameObject, -1);
 			_currentEquipObject.gameObject.SetActive(false);
 			_currentEquipObject = null;
-			rotateTweenAnimation.DOComplete();
+			rotateTweenAnimation.DORewind();
 		}
 	}
 
@@ -192,7 +206,10 @@ public class TimeSpaceAltar : MonoBehaviour
 		newEquipPrefabInfo.cachedTransform.Translate(0.0f, newEquipPrefabInfo.pivotOffset, 0.0f, Space.World);
 		ShowOutline(true, newEquipPrefabInfo.gameObject, equipData.cachedEquipTableData.grade);
 		_currentEquipObject = newEquipPrefabInfo;
-		rotateTweenAnimation.DORestart();
+		if (_started)
+			rotateTweenAnimation.DORestart();
+		else
+			_reserveRotateTweenAnimation = true;
 	}
 
 	void ShowOutline(bool show, GameObject newObject, int grade)

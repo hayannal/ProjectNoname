@@ -13,9 +13,11 @@ public class CharacterInfoCanvas : MonoBehaviour
 	public MenuButton[] menuButtonList;
 	public GameObject menuRootObject;
 
-	// 4개의 메뉴중에 2개만 알람을 쓰니 따로 관리하도록 한다.
+	// 4개의 메뉴중에 2개만 알람을 쓰니 따로 관리하도록 한다. 그런데 그림자가 있어야 예뻐져서 각각 그림자도 추가하기로 한다.
 	public RectTransform growthAlarmRootTransform;
+	public RectTransform growthShadowAlarmRootTransform;
 	public RectTransform potentialAlarmRootTransform;
+	public RectTransform potentialShadowAlarmRootTransform;
 
 	void Awake()
 	{
@@ -102,14 +104,22 @@ public class CharacterInfoCanvas : MonoBehaviour
 		if (characterData == null)
 		{
 			AlarmObject.Hide(growthAlarmRootTransform);
+			AlarmObject.Hide(growthShadowAlarmRootTransform);
 			AlarmObject.Hide(potentialAlarmRootTransform);
+			AlarmObject.Hide(potentialShadowAlarmRootTransform);
 			return;
 		}
 
 		if (characterData.IsPlusAlarmState())
+		{
 			AlarmObject.Show(growthAlarmRootTransform, false, false, true);
+			AlarmObject.Show(growthShadowAlarmRootTransform, false, false, true, true);
+		}
 		if (characterData.IsAlarmState())
+		{
 			AlarmObject.Show(potentialAlarmRootTransform);
+			AlarmObject.Show(potentialAlarmRootTransform, true, false, false, true);
+		}
 	}
 
 	public void OnClickBackButton()
@@ -118,7 +128,10 @@ public class CharacterInfoCanvas : MonoBehaviour
 		//StackCanvas.Back();
 
 		if (_okAction != null)
+		{
 			_okAction();
+			_okAction = null;
+		}
 	}
 
 	public void OnClickHomeButton()

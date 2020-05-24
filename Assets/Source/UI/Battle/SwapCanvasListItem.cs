@@ -125,9 +125,9 @@ public class SwapCanvasListItem : MonoBehaviour
 		{
 			// plusAlarm에서는 애니를 사용하지 않는다.
 			if (usePlusAlarm)
-				AlarmObject.Show(alarmRootTransform, false, true, true);
+				AlarmObject.Show(alarmRootTransform, false, true, true, false, lineColorImage.color);
 			else
-				AlarmObject.Show(alarmRootTransform, true, true, false);
+				AlarmObject.Show(alarmRootTransform, true, true, false, false, lineColorImage.color);
 		}
 		else
 		{

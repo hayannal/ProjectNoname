@@ -132,7 +132,7 @@ public class EquipCanvasListItem : MonoBehaviour
 	{
 		if (show)
 		{
-			AlarmObject.Show(alarmRootTransform, false, true);
+			AlarmObject.Show(alarmRootTransform, false, true, false, false, lineColorImage.color);
 		}
 		else
 		{

@@ -6,6 +6,7 @@ using DG.Tweening;
 
 public class AlarmObject : MonoBehaviour
 {
+	public Image backgroundImage;
 	public Image alarmImage;
 	public DOTweenAnimation tweenAnimation;
 
@@ -23,7 +24,7 @@ public class AlarmObject : MonoBehaviour
 		gameObject.SetActive(false);
 	}
 
-	public static void Show(Transform parentTransform, bool useTweenAnimation = true, bool ignoreAutoDisable = false, bool usePlusSprite = false)
+	public static void Show(Transform parentTransform, bool useTweenAnimation = true, bool ignoreAutoDisable = false, bool usePlusSprite = false, bool useBlackColor = false, Color? backgroundColor = null)
 	{
 		// 사실 이 방식이 안좋을 수 있는게
 		// 인자가 다른 알람이 켜있는 상태에서 또 다른 인자의 Show 호출이 오면 적용하지 못한채 return되버린다.
@@ -39,6 +40,15 @@ public class AlarmObject : MonoBehaviour
 			alarmObject.tweenAnimation.DOPause();
 		alarmObject.ignoreAutoDisable = ignoreAutoDisable;
 		alarmObject.alarmImage.sprite = usePlusSprite ? CommonCanvasGroup.instance.alarmObjectSpriteList[1] : CommonCanvasGroup.instance.alarmObjectSpriteList[0];
+		alarmObject.alarmImage.color = useBlackColor ? Color.black : Color.white;
+		if (backgroundColor == null)
+			alarmObject.backgroundImage.gameObject.SetActive(false);
+		else
+		{
+			if (backgroundColor.HasValue)
+				alarmObject.backgroundImage.color = backgroundColor.Value;
+			alarmObject.backgroundImage.gameObject.SetActive(true);
+		}
 
 		// Hide 함수 보면 알겠지만 0번 자리에 있는걸 지운다. 동시에 하나의 자식만 활성화 된다는걸 전제로 하는건데
 		// 하필 이미 비활성화 된 자식이 존재하는데 새로운걸 가져온다면 인덱스가 1로 밀려나게 된다.

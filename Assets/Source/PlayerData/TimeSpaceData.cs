@@ -5,6 +5,7 @@ using ActorStatusDefine;
 using PlayFab;
 using PlayFab.ClientModels;
 using CodeStage.AntiCheat.ObscuredTypes;
+using MEC;
 
 public class TimeSpaceData
 {
@@ -109,6 +110,35 @@ public class TimeSpaceData
 
 		// status
 		RefreshCachedStatus();
+	}
+
+	public void LateInitialize()
+	{
+		Timing.RunCoroutine(LoadProcess());
+	}
+
+	IEnumerator<float> LoadProcess()
+	{
+		// 아무래도 로비 진입 후 시공간 들어갈때 너무 렉이 심해서 장착중인 장비의 프리팹은 미리 로딩해두기로 한다.
+		// 한번에 하나씩만 로드하기 위해 플래그를 건다.
+		// 근데 이래도 오래 걸리는건 여전한데 아웃라인을 동적으로 생성하는데서 온다.
+		for (int i = 0; i < (int)eEquipSlotType.Amount; ++i)
+		{
+			EquipData equipData = TimeSpaceData.instance.GetEquippedDataByType((TimeSpaceData.eEquipSlotType)i);
+			if (equipData == null)
+				continue;
+
+			bool waitLoad = true;
+			AddressableAssetLoadManager.GetAddressableGameObject(equipData.cachedEquipTableData.prefabAddress, "Equip", (prefab) =>
+			{
+				waitLoad = false;
+			});
+			while (waitLoad == true)
+				yield return Timing.WaitForOneFrame;
+#if !UNITY_EDITOR
+			Debug.LogFormat("TimeSpaceData Load Finish. Index : {0} / FrameCount : {1}", i, Time.frameCount);
+#endif
+		}
 	}
 
 	void RefreshCachedStatus()

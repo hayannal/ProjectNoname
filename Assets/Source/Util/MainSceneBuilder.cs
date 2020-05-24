@@ -450,6 +450,7 @@ public class MainSceneBuilder : MonoBehaviour
 		{
 			LobbyCanvas.instance.RefreshAlarmObject();
 			DailyShopData.instance.CheckUnfixedItemInfo();
+			TimeSpaceData.instance.LateInitialize();
 		}
 
 		for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)

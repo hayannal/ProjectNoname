@@ -2,7 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+using NaughtyAttributes;
 
 [DisallowMultipleComponent]
 public class QuickOutline : MonoBehaviour
@@ -40,7 +45,7 @@ public class QuickOutline : MonoBehaviour
 	}
 
 	[Serializable]
-	private class ListVector3
+	public class ListVector3
 	{
 		public List<Vector3> data;
 	}
@@ -214,6 +219,9 @@ public class QuickOutline : MonoBehaviour
 
 	void LoadSmoothNormals()
 	{
+		if (LoadCachedSmoothNormals())
+			return;
+
 		// Retrieve or generate smooth normals
 		foreach (var meshFilter in GetComponentsInChildren<MeshFilter>())
 		{
@@ -313,4 +321,99 @@ public class QuickOutline : MonoBehaviour
 		blinkWidth -= value * _blinkWidthRange;
 		quickOutlineMaterial.SetFloat("_OutlineWidth", blinkWidth);
 	}
+
+	#region Bake Normal To File
+	[Button("Bake Normal")]
+	public void BakeNormal()
+	{
+		// Generate smooth normals for each mesh
+		var bakedMeshes = new HashSet<Mesh>();
+
+		foreach (var meshFilter in GetComponentsInChildren<MeshFilter>())
+		{
+			// Skip duplicates
+			if (!bakedMeshes.Add(meshFilter.sharedMesh))
+			{
+				continue;
+			}
+
+			// Serialize smooth normals
+			var smoothNormals = SmoothNormals(meshFilter.sharedMesh);
+
+			bakeValues.Add(new ListVector3() { data = smoothNormals });
+		}
+
+		QuickOutlineNormalData quickOutlineNormalData = ScriptableObject.CreateInstance<QuickOutlineNormalData>();
+		quickOutlineNormalData.bakeValues = bakeValues;
+#if UNITY_EDITOR
+		AssetDatabase.CreateAsset(quickOutlineNormalData, string.Format("{0}/{1}.asset", GetSelectedPathOrFallback(), gameObject.name));
+		AssetDatabase.SaveAssets();
+#endif
+	}
+
+#if UNITY_EDITOR
+	public static string GetSelectedPathOrFallback()
+	{
+		string path = "Assets";
+
+		foreach (UnityEngine.Object obj in Selection.GetFiltered(typeof(UnityEngine.Object), SelectionMode.Assets))
+		{
+			path = AssetDatabase.GetAssetPath(obj);
+			if (!string.IsNullOrEmpty(path) && File.Exists(path))
+			{
+				path = Path.GetDirectoryName(path);
+				break;
+			}
+		}
+		return path;
+	}
+#endif
+	
+	bool LoadCachedSmoothNormals()
+	{
+		EquipPrefabInfo equipPrefabInfo = GetComponent<EquipPrefabInfo>();
+		if (equipPrefabInfo == null)
+			return false;
+
+		if (equipPrefabInfo.quickOutlineNormalData == null)
+			return false;
+
+		// 미리 한번 foreach 돌려서 MeshFilter의 인덱스를 구성해둔다.
+		// 메시 내용물이 변하지 않는 이상 같은 인덱스 리스트를 리턴하게 될거다.
+		var bakedMeshes = new HashSet<Mesh>();
+		foreach (var meshFilter in GetComponentsInChildren<MeshFilter>())
+		{
+			// Skip duplicates
+			if (!bakedMeshes.Add(meshFilter.sharedMesh))
+			{
+				continue;
+			}
+			bakeKeys.Add(meshFilter.sharedMesh);
+		}
+
+		// Retrieve or generate smooth normals
+		foreach (var meshFilter in GetComponentsInChildren<MeshFilter>())
+		{
+			// Skip if smooth normals have already been adopted
+			if (!registeredMeshes.Add(meshFilter.sharedMesh))
+			{
+				continue;
+			}
+
+			// Retrieve or generate smooth normals
+			var index = bakeKeys.IndexOf(meshFilter.sharedMesh);
+			if (index >= 0 && index < equipPrefabInfo.quickOutlineNormalData.bakeValues.Count)
+			{
+				// Store smooth normals in UV3
+				meshFilter.sharedMesh.SetUVs(3, equipPrefabInfo.quickOutlineNormalData.bakeValues[index].data);
+			}
+			else
+			{
+				Debug.LogErrorFormat("Invalid Cached Normal Data! name = {0} / index = {1}", gameObject.name, index);
+			}
+		}
+
+		return true;
+	}
+	#endregion
 }

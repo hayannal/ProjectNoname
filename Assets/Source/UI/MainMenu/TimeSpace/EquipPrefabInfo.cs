@@ -6,7 +6,7 @@ public class EquipPrefabInfo : MonoBehaviour
 {
 	public float pivotOffset;
 	public float infoPivotAddOffset;
-
+	public QuickOutlineNormalData quickOutlineNormalData;
 
 
 

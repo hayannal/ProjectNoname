@@ -261,6 +261,12 @@ public class MailCanvasListItem : MonoBehaviour
 		}
 		else if (_type == "be")
 		{
+			if (TimeSpaceData.instance.IsInventoryVisualMax())
+			{
+				ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_ManageInventory"), 2.0f);
+				return;
+			}
+
 			// 장비박스 했을때처럼 드랍프로세서로부터 하나 뽑아와야한다.
 			string equipId = PrepareDropProcessor();
 			if (equipId == "")

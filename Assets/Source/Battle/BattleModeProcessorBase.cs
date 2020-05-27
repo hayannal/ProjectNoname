@@ -74,8 +74,14 @@ public class BattleModeProcessorBase
 			_powerSourceObject = BattleInstanceManager.instance.GetCachedObject(StageManager.instance.GetPreparedPowerSourcePrefab(), StageManager.instance.currentPowerSourceSpawnPosition, Quaternion.identity);
 		else
 		{
-			if (BattleInstanceManager.instance.playerActor != null)
-				CallAffectorValueAffector.OnEvent(BattleInstanceManager.instance.playerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnStartStage);
+			if (ClientSaveData.instance.IsLoadingInProgressGame() && ClientSaveData.instance.GetCachedMonsterAllKill())
+			{
+			}
+			else
+			{
+				if (BattleInstanceManager.instance.playerActor != null)
+					CallAffectorValueAffector.OnEvent(BattleInstanceManager.instance.playerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnStartStage);
+			}
 		}
 
 #if HUDDPS

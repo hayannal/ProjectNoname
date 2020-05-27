@@ -125,6 +125,9 @@ public class PlayerActor : Actor
 						affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Heal, healAffectorValue, affectorProcessor.actor, false);
 						BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.healEffectPrefab, cachedTransform.position, Quaternion.identity, cachedTransform);
 
+						ClientSaveData.instance.OnChangedHpRatio(affectorProcessor.actor.actorStatus.GetHPRatio());
+						ClientSaveData.instance.OnChangedSpRatio(affectorProcessor.actor.actorStatus.GetSPRatio());
+
 						Timing.RunCoroutine(ScreenHealEffectProcess());
 					}
 
@@ -241,11 +244,14 @@ public class PlayerActor : Actor
 	{
 		base.OnChangedHP();
 
+		// 사실은 여기서 전투중에 피 깎일때만 저장을 해야하는데 이전값을 기억하고 있지도 않고있어서
+		// 차라리 PlayerGaugeCanvas에게 위임해서 처리하기로 한다.
 		PlayerGaugeCanvas.instance.OnChangedHP(this);
 	}
 
 	public override void OnChangedSP()
 	{
+		// hpRatio와 마찬가지. 클라이언트 저장을 SkillSlotCanvas에게 위임한다.
 		SkillSlotCanvas.instance.OnChangedSP(this);
 		ShowUltimateIndicator(actorStatus.GetSPRatio() == 1.0f);
 	}

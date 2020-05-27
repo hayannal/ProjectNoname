@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PlayFab;
 
 public class StageDataManager : MonoBehaviour
 {
@@ -48,7 +49,8 @@ public class StageDataManager : MonoBehaviour
 	// 테이블 파싱에 캐싱찾기 기능을 넣으면서 미리 전부다 계산해도 크게 무리가 없을거 같아서 차라리 한번에 다 캐싱해두기로 한다.
 	// 차후 튕겼을때 복구해주는거 하게될때 이 딕셔너리만 복구시켜주면 될거다.
 	// 챕터 변경시 씬을 리로드하지 않는다면 클리어가 필요하다.
-	Dictionary<int, string> _dicCachedMap = new Dictionary<int, string>();
+	// 원래는 <int, string> 이었는데 클라이언트 세이브 파일 시리얼라이즈를 위해 <string, string> 으로 바꾸게 되었다.
+	Dictionary<string, string> _dicCachedMap = new Dictionary<string, string>();
 	string CalcNextMap(StageTableData stageTableData, int chapter, int nextStage, bool chaos, int highestPlayChapter, int highestClearStage)
 	{
 		if (_dicCachedMap.Count == 0)
@@ -62,19 +64,19 @@ public class StageDataManager : MonoBehaviour
 					mapId = CalcChaosNextMap(diffData, chapter, i);
 				else
 					mapId = CalcNormalNextMap(diffData, chapter, i, highestPlayChapter, highestClearStage);
-				_dicCachedMap.Add(i, mapId);
+				_dicCachedMap.Add(i.ToString(), mapId);
 			}
 		}
 
-		if (_dicCachedMap.ContainsKey(nextStage))
-			return _dicCachedMap[nextStage];
+		if (_dicCachedMap.ContainsKey(nextStage.ToString()))
+			return _dicCachedMap[nextStage.ToString()];
 		return "";
 	}
 
 	public string GetCachedMap(int stage)
 	{
-		if (_dicCachedMap.ContainsKey(stage))
-			return _dicCachedMap[stage];
+		if (_dicCachedMap.ContainsKey(stage.ToString()))
+			return _dicCachedMap[stage.ToString()];
 		return "";
 	}
 
@@ -332,4 +334,19 @@ public class StageDataManager : MonoBehaviour
 		}
 		return selectedMap;
 	}
+
+
+	#region InProgressGame
+	public string GetCachedMapData()
+	{
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		return serializer.SerializeObject(_dicCachedMap);
+	}
+
+	public void SetCachedMapData(string jsonCachedMapData)
+	{
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		_dicCachedMap = serializer.DeserializeObject<Dictionary<string, string>>(jsonCachedMapData);
+	}
+	#endregion
 }

@@ -250,6 +250,15 @@ public class LobbyCanvas : MonoBehaviour
 	}
 	#endregion
 
+	#region InProgressGame
+	public void SetLevelExpForInProgressGame(int level, float percent)
+	{
+		RefreshLevelText(level);
+		levelText.gameObject.SetActive(true);
+		expGaugeSlider.value = _targetPercent = percent;
+	}
+	#endregion
+
 
 
 	#region AlarmObject

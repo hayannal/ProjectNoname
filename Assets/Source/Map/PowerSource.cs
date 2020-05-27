@@ -34,6 +34,14 @@ public class PowerSource : MonoBehaviour
 	{
 		_spawnedGatePillar = false;
 		_guideMessageShowRemainTime = 5.0f;
+
+		if (ClientSaveData.instance.IsLoadingInProgressGame())
+		{
+			if (ClientSaveData.instance.GetCachedPowerSource())
+				_spawnedGatePillar = true;
+		}
+		else
+			ClientSaveData.instance.OnChangedPowerSource(false);
 	}
 
 	bool _spawnedGatePillar;
@@ -74,6 +82,10 @@ public class PowerSource : MonoBehaviour
 
 		BattleManager.instance.OnClearStage();
 		_spawnedGatePillar = true;
+
+		ClientSaveData.instance.OnChangedPowerSource(true);
+		ClientSaveData.instance.OnChangedHpRatio(affectorProcessor.actor.actorStatus.GetHPRatio());
+		ClientSaveData.instance.OnChangedSpRatio(affectorProcessor.actor.actorStatus.GetSPRatio());
 
 		Timing.RunCoroutine(ScreenHealEffectProcess());
 	}

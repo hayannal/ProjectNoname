@@ -407,6 +407,9 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 		}
 		else
 		{
+			if (spRatio < spGaugeValueImage.fillAmount && ClientSaveData.instance.IsLoadingInProgressGame() == false)
+				ClientSaveData.instance.OnChangedSpRatio(spRatio);
+
 			// 사용할때도 반짝 해주려나
 			if (!spGaugeObject.activeSelf)
 				ignoreBlink = true;

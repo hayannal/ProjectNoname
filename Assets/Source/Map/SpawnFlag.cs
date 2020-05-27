@@ -71,29 +71,40 @@ public class SpawnFlag : MonoBehaviour
 		}
 #endif
 
-		for (int i = 0; i < _listSpawnInfo.Count; ++i)
+		if (ClientSaveData.instance.GetCachedMonsterAllKill())
 		{
+		}
+		else
+		{
+			// 여기는 평소엔 절대 건너뛰면 안되는 곳이다.
+			for (int i = 0; i < _listSpawnInfo.Count; ++i)
+			{
 #if UNITY_EDITOR
-			GameObject newObject = null;
-			if (editorSpawn)
-				newObject = PrefabUtility.InstantiatePrefab((UnityEngine.Object)_listSpawnInfo[i].prefab, cachedTransform) as GameObject;
-			else
-				newObject = BattleInstanceManager.instance.GetCachedObject(_listSpawnInfo[i].prefab, cachedTransform);
+				GameObject newObject = null;
+				if (editorSpawn)
+					newObject = PrefabUtility.InstantiatePrefab((UnityEngine.Object)_listSpawnInfo[i].prefab, cachedTransform) as GameObject;
+				else
+					newObject = BattleInstanceManager.instance.GetCachedObject(_listSpawnInfo[i].prefab, cachedTransform);
 #else
-			GameObject newObject = BattleInstanceManager.instance.GetCachedObject(_listSpawnInfo[i].prefab, cachedTransform);
+				GameObject newObject = BattleInstanceManager.instance.GetCachedObject(_listSpawnInfo[i].prefab, cachedTransform);
 #endif
-			newObject.transform.localPosition = _listSpawnInfo[i].localPosition;
-			newObject.transform.localRotation = Quaternion.Euler(_listSpawnInfo[i].localRotation);
-			newObject.transform.localScale = _listSpawnInfo[i].localScale;
+				newObject.transform.localPosition = _listSpawnInfo[i].localPosition;
+				newObject.transform.localRotation = Quaternion.Euler(_listSpawnInfo[i].localRotation);
+				newObject.transform.localScale = _listSpawnInfo[i].localScale;
+			}
 		}
 
 		if (editorSpawn == false)
 		{
+			Transform spawnTransform = playerStartSpawnTransform;
+			if (ClientSaveData.instance.GetCachedMonsterAllKill())
+				spawnTransform = playerClearSpawnTransform;
+
 			if (MainSceneBuilder.instance == null || MainSceneBuilder.instance.mainSceneBuilding == false)
-				BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.playerSpawnEffectPrefab, playerStartSpawnTransform.position, Quaternion.identity);
+				BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.playerSpawnEffectPrefab, spawnTransform.position, Quaternion.identity);
 
 			if (BattleInstanceManager.instance.playerActor != null)
-				BattleInstanceManager.instance.playerActor.cachedTransform.position = playerStartSpawnTransform.position;
+				BattleInstanceManager.instance.playerActor.cachedTransform.position = spawnTransform.position;
 			CustomFollowCamera.instance.immediatelyUpdate = true;
 			StageManager.instance.currentGatePillarSpawnPosition = gatePillarSpawnTransform.position;
 			StageManager.instance.spawnPowerSourcePrefab = powerSourceSpawnTransform.gameObject.activeSelf;

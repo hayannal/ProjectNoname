@@ -6,6 +6,7 @@ using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
 #endif
 using DigitalRuby.ThunderAndLightning;
+using PlayFab;
 
 public class BattleInstanceManager : MonoBehaviour
 {
@@ -713,14 +714,24 @@ public class BattleInstanceManager : MonoBehaviour
 	List<string> _listBattlePlayerActorIdList = new List<string>();
 	public void AddBattlePlayer(string actorId)
 	{
+		ClientSaveData.instance.OnChangedBattleActor(actorId);
 		if (_listBattlePlayerActorIdList.Contains(actorId))
 			return;
 		_listBattlePlayerActorIdList.Add(actorId);
+
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		ClientSaveData.instance.OnChangedBattleActorData(serializer.SerializeObject(_listBattlePlayerActorIdList));
 	}
 
 	public bool IsInBattlePlayerList(string actorId)
 	{
 		return _listBattlePlayerActorIdList.Contains(actorId);
+	}
+
+	public void SetInProgressBattlePlayerData(string jsonBattleActorData)
+	{
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		_listBattlePlayerActorIdList = serializer.DeserializeObject<List<string>>(jsonBattleActorData);
 	}
 	#endregion
 

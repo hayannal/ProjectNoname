@@ -133,6 +133,10 @@ public class PlayerGaugeCanvas : MonoBehaviour
 		}
 		else
 		{
+			// 재진입 중엔 호출될일 없겠지만 혹시 모르니 조건검사 해둔다.
+			if (ClientSaveData.instance.IsLoadingInProgressGame() == false)
+				ClientSaveData.instance.OnChangedHpRatio(hpRatio);
+
 			if (mobaEnergyBar.IsDamageZero() && _lateFillDelayRemainTime == 0.0f)
 				_lateFillDelayRemainTime = LateFillDelay;
 		}

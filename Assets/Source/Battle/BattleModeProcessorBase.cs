@@ -46,6 +46,15 @@ public class BattleModeProcessorBase
 		_mapLoaded = true;
 		_monsterSpawned = false;
 		_monsterSpawnCount = 0;
+
+		// 사실 로비에서는 BattleManager가 만들어지기 전이라 호출되지 않는다.
+		if (ClientSaveData.instance.IsLoadingInProgressGame() == false)
+		{
+			// 다른 것도 저장할수는 있는데 제일 필수인거만 골라서 저장해둔다. 괜히 많아져봤자 느려질까봐 필수 3개만 고른거다.
+			ClientSaveData.instance.OnChangedStage(StageManager.instance.playStage);
+			ClientSaveData.instance.OnChangedMonsterAllKill(false);
+			ClientSaveData.instance.OnChangedGatePillar(false);
+		}
 	}
 
 	GameObject _powerSourceObject;
@@ -74,6 +83,64 @@ public class BattleModeProcessorBase
 		HUDDPS.instance.OnStartStage(StageManager.instance.playChapter, StageManager.instance.playStage, StageManager.instance.bossStage);
 #endif
 #endif
+
+		// OnSpawnFlag의 마지막 부분이 플레이어를 복구하기 가장 적절한 타이밍이다.
+		if (ClientSaveData.instance.IsLoadingInProgressGame() == false)
+			return;
+
+		int exp = ClientSaveData.instance.GetCachedExp();
+		StageManager.instance.SetLevelExpForInProgressGame(exp);
+
+		float hpRatio = ClientSaveData.instance.GetCachedHpRatio();
+		float spRatio = ClientSaveData.instance.GetCachedSpRatio();
+		BattleInstanceManager.instance.playerActor.actorStatus.SetHpRatio(hpRatio);
+		BattleInstanceManager.instance.playerActor.actorStatus.SetSpRatio(spRatio);
+		PlayerGaugeCanvas.instance.InitializeGauge(BattleInstanceManager.instance.playerActor);
+		SkillSlotCanvas.instance.OnChangedSP(BattleInstanceManager.instance.playerActor);
+
+		// 이미 획득해둔 레벨팩들을 복구.
+		// 근데 여기서 이미 발동되었거나 하는 것들 고려해서 복구해야한다.
+		// 캐릭터 고유 스킬과 달리 레벨팩은 추가로 저장할 요소가 없기 때문에 리스트만 가지고 복구하면 된다.
+		string jsonCachedLevelPackData = ClientSaveData.instance.GetCachedLevelPackData();
+		LevelPackDataManager.instance.SetInProgressLevelPackData(jsonCachedLevelPackData);
+
+		// 캐릭터 다 했으면 스테이지 상태도 복구
+		if (ClientSaveData.instance.GetCachedMonsterAllKill())
+		{
+			// 그 다음엔 레벨팩 획득창을 복구. 선택하지 않은채로 종료됐었다면 복구하는데 1회 선택했었다면 그건 제외하고 남은 카운트만큼만 복구해주면 된다.
+			int remainLevelUpCount = ClientSaveData.instance.GetCachedRemainLevelUpCount();
+			int remainLevelPackCount = ClientSaveData.instance.GetCachedRemainLevelPackCount();
+			int remainNoHitLevelPackCount = ClientSaveData.instance.GetCachedRemainNoHitLevelPackCount();
+			int targetLevelUpCount = remainLevelUpCount + remainLevelPackCount + remainNoHitLevelPackCount;
+			LevelUpIndicatorCanvas.SetTargetLevelUpCount(targetLevelUpCount);
+			if (targetLevelUpCount > 0)
+			{
+				if (remainLevelUpCount > 0)
+					LevelUpIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform, remainLevelUpCount, 0, 0);
+				if (remainLevelPackCount > 0)
+					LevelUpIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform, 0, remainLevelPackCount, 0);
+				if (remainNoHitLevelPackCount > 0)
+					LevelUpIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform, 0, 0, remainNoHitLevelPackCount);
+			}
+			else
+			{
+				if (ClientSaveData.instance.GetCachedGatePillar())
+					OnClearStage();
+			}
+		}
+		else
+		{
+			// 파워소스 나오는 층에선 MonsterAllKill이 꺼져있지만 게이트필라만 처리될 수 있다.
+			if (ClientSaveData.instance.GetCachedGatePillar())
+				OnClearStage();
+		}
+
+		// 파워소스는 파워소스쪽에서 캐싱된 정보 읽어서 처리한다.
+
+		// 남은건 획득 아이템 리스트다.
+
+		// 끝나면 ClientSaveData에 로드 완료를 알린다.
+		ClientSaveData.instance.OnFinishLoadGame();
 	}
 
 	public void OnSpawnMonster(MonsterActor monsterActor)
@@ -102,6 +169,13 @@ public class BattleModeProcessorBase
 		{
 			// all kill monster
 			DropManager.instance.GetStackedDropExp();
+
+			// 한 층이 끝날땐 관련 정보들을 저장해놔야한다. 레벨업을 했다면 hp회복 역시 반영되서 저장될 것이다.
+			ClientSaveData.instance.OnChangedExp(StageManager.instance.playerExp);
+			ClientSaveData.instance.OnChangedMonsterAllKill(true);
+			ClientSaveData.instance.OnChangedHpRatio(BattleInstanceManager.instance.playerActor.actorStatus.GetHPRatio());
+			ClientSaveData.instance.OnChangedSpRatio(BattleInstanceManager.instance.playerActor.actorStatus.GetSPRatio());
+
 			if (LevelUpIndicatorCanvas.IsShow() || DropManager.instance.reservedLevelPackCount > 0)
 			{
 				// 게이트 필라 생성하는 타이밍이 카운트를 지정하기에 가장 적당한 곳이다.
@@ -134,7 +208,17 @@ public class BattleModeProcessorBase
 
 		bool showPlayerIndicator = false;
 		if (StageManager.instance.currentStageTableData != null && StageManager.instance.currentStageTableData.swap && PlayerData.instance.swappable)
+		{
 			showPlayerIndicator = true;
+
+			if (ClientSaveData.instance.IsLoadingInProgressGame())
+			{
+				if (ClientSaveData.instance.GetCachedCloseSwap())
+					showPlayerIndicator = false;
+			}
+			else
+				ClientSaveData.instance.OnChangedCloseSwap(false);
+		}
 
 		if (showPlayerIndicator == false)
 		{
@@ -292,6 +376,7 @@ public class BattleModeProcessorBase
 	{
 		BattleInstanceManager.instance.GetCachedObject(string.IsNullOrEmpty(StageManager.instance.nextMapTableData.bossName) ? StageManager.instance.gatePillarPrefab : StageManager.instance.bossGatePillarPrefab,
 			StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
+		ClientSaveData.instance.OnChangedGatePillar(true);
 	}
 
 

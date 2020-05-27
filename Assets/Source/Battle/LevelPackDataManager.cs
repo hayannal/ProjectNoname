@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PlayFab;
 
 // 캐릭터별로 전용팩의 개수가 달라지면서 Transfer할때 전용팩들은 아예 이전을 할 필요가 없어졌다.(레벨에 따라 자동으로 획득하면 된다.)
 // 그래서 공용팩만 매니저에서 관리하기로 하고 전용팩은 캐릭터의 스킬 프로세서에서 관리하기로 한다.
@@ -134,6 +135,27 @@ public class LevelPackDataManager : MonoBehaviour
 				AddLevelPack(nextPlayerActor.actorId, levelPackId);
 				nextPlayerActor.skillProcessor.AddLevelPack(levelPackId, false, 0);
 			}
+		}
+	}
+	#endregion
+
+
+	#region InProgressGame
+	public string GetCachedLevelPackData()
+	{
+		List<string> listCachedLevelPack = _dicPlayerAcquiredLevelPack[BattleInstanceManager.instance.playerActor.actorId];
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		return serializer.SerializeObject(listCachedLevelPack);
+	}
+
+	public void SetInProgressLevelPackData(string jsonCachedLevelPackData)
+	{
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		List<string> listCachedLevelPack = serializer.DeserializeObject<List<string>>(jsonCachedLevelPackData);
+		for (int i = 0; i < listCachedLevelPack.Count; ++i)
+		{
+			AddLevelPack(BattleInstanceManager.instance.playerActor.actorId, listCachedLevelPack[i]);
+			BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack(listCachedLevelPack[i], false, 0);
 		}
 	}
 	#endregion

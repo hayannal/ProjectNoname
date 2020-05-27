@@ -211,6 +211,13 @@ public class DropProcessor : MonoBehaviour
 					if (BattleManager.instance.GetDamageCountOnStage() == 0)
 						floatValue = 1.0f;
 					dropProcessor.Add(dropType, floatValue, intValue, stringValue);
+					// 현재 레벨팩은 획득 가능인 상태로만 드랍되며 클리어 후 드랍되기 때문에
+					// 드랍 오브젝트 획득에서 증가시키지 않고 여기서 증가시켜둔다.
+					// 해당 층의 클리어 여부는 마지막 몹을 잡을때 바로 저장될테니 두번 잡을 순 없을거다.
+					if (floatValue == 0.0f)
+						ClientSaveData.instance.OnAddedRemainLevelPackCount(1);
+					else
+						ClientSaveData.instance.OnAddedRemainNoHitLevelPackCount(1);
 					break;
 				case eDropType.Heart:
 					dropProcessor.Add(dropType, floatValue, intValue, stringValue);

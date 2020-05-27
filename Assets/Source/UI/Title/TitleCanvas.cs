@@ -46,7 +46,7 @@ public class TitleCanvas : MonoBehaviour
 		// 이 타이밍이 타이틀 나올때 어두운 백그라운드가 사라지는 타이밍이다.
 		// TitleImage는 이 타이밍에 맞춰서 하얀색으로 바뀌어져있을거다.
 		// 이때 EventManager에게 Lobby화면이 시작됨을 알린다.
-		EventManager.instance.OnLobby();
+		OnLobby();
 	}
 
 	bool _fade = false;
@@ -66,12 +66,36 @@ public class TitleCanvas : MonoBehaviour
 		Timing.RunCoroutine(ShowLogoObject(1.0f));
 
 		// 타이틀 나올때 스킵하면 이쪽을 통해서 OnLobby 호출
-		EventManager.instance.OnLobby();
+		OnLobby();
 	}
 
 	IEnumerator<float> ShowLogoObject(float delayTime)
 	{
 		yield return Timing.WaitForSeconds(1.0f);
 		logoObject.SetActive(true);
+	}
+
+	void OnLobby()
+	{
+		// Event를 진행할게 있다면 튕겨서 재접한 상황은 아니라 정상적인 종료나 패배일거다. 처음 켤때만 호출되는 곳이니 서버 이벤트만 있는지 검사하면 된다.
+		if (EventManager.instance.IsStandbyServerEvent())
+			EventManager.instance.OnLobby();
+		else if (ClientSaveData.instance.IsCachedInProgressGame())
+		{
+			// 아무 이벤트도 실행할게 없는데 제대로 완료처리 되지 않은 게임이 있다면 복구를 물어본다.
+			YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_Reenter"), () =>
+			{
+				if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null && TitleCanvas.instance.gameObject.activeSelf)
+					TitleCanvas.instance.FadeTitle();
+
+				ClientSaveData.instance.MoveToInProgressGame();
+			}, () =>
+			{
+				if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null && TitleCanvas.instance.gameObject.activeSelf)
+					TitleCanvas.instance.FadeTitle();
+
+				ClientSaveData.instance.OnEndGame();
+			}, true);
+		}
 	}
 }

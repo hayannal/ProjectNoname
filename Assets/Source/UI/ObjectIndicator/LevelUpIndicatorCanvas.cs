@@ -7,6 +7,7 @@ using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
 #endif
 using MEC;
+using PlayFab;
 
 public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 {
@@ -173,7 +174,7 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 		}
 
 		// 셋중에 하나만 값이 0 초과로 들어온다.
-		// exclusiveLevelPack 일때는 3개의 레벨팩 중 마지막꺼가 무조건 exclusive에서 뽑혀진다.
+		// noHitLevelPack 일때는 3개의 레벨팩이 전부 상급으로 나올거다.
 		_levelUpType = 0;
 		if (levelUpCount > 0 && levelPackCount == 0 && noHitLevelPackCount == 0)
 		{
@@ -193,6 +194,7 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 		RefreshLevelPackList();
 	}
 
+	List<string> _listRandomLevelPackId = new List<string>();
 	void RefreshLevelPackList()
 	{
 		_exclusiveMode = false;
@@ -204,14 +206,40 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 			case 2: titleText.SetLocalizedText(UIString.instance.GetString("GameUI_NoHitClearReward")); break;
 		}
 
+		// 복구 모드일때는 저장된 값이 있는지 확인해야한다.
+		// 1회만 해야하는데 어차피 한번 셋팅하고 Loading플래그는 바로 풀릴거라 따로 호출할건 없이 여기서만 로드해두면 된다.
+		if (ClientSaveData.instance.IsLoadingInProgressGame())
+		{
+			string jsonRandomLevelPackData = ClientSaveData.instance.GetCachedRandomLevelPackData();
+			if (string.IsNullOrEmpty(jsonRandomLevelPackData) == false)
+			{
+				var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+				_listRandomLevelPackId = serializer.DeserializeObject<List<string>>(jsonRandomLevelPackData);
+				if (_listRandomLevelPackId != null && _listRandomLevelPackId.Count == buttonList.Length)
+				{
+					for (int i = 0; i < buttonList.Length; ++i)
+					{
+						string levelPackId = _listRandomLevelPackId[i];
+						LevelPackTableData levelPackTableData = TableDataManager.instance.FindLevelPackTableData(levelPackId);
+						buttonList[i].SetInfo(levelPackTableData, BattleInstanceManager.instance.playerActor.skillProcessor.GetLevelPackStackCount(levelPackId) + 1);
+					}
+					// 모든 조건이 맞아서 파싱 될때만 리턴하고 아니면 원래 로직대로 랜덤하게 뽑아온다.
+					return;
+				}
+			}
+		}
+
 		_listSelectedIndex.Clear();
+		_listRandomLevelPackId.Clear();
 		List<LevelPackDataManager.RandomLevelPackInfo> listRandomLevelPackInfo = LevelPackDataManager.instance.GetRandomLevelPackTableDataList(BattleInstanceManager.instance.playerActor, _levelUpType == (int)eLevelUpType.NoHitLevelPack);
 		for (int i = 0; i < buttonList.Length; ++i)
 		{
 			int index = SelectRandomIndex(listRandomLevelPackInfo);
 			buttonList[i].SetInfo(listRandomLevelPackInfo[index].levelPackTableData, BattleInstanceManager.instance.playerActor.skillProcessor.GetLevelPackStackCount(listRandomLevelPackInfo[index].levelPackTableData.levelPackId) + 1);
+			_listRandomLevelPackId.Add(listRandomLevelPackInfo[index].levelPackTableData.levelPackId);
 		}
 		listRandomLevelPackInfo.Clear();
+		ClientSaveData.instance.OnChangedRandomLevelPackData(GetCachedRandomLevelPackData());
 	}
 
 	List<int> _listSelectedIndex = new List<int>();
@@ -335,6 +363,16 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack(levelPackId, false, 0);
 		BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.levelPackGainEffectPrefab, BattleInstanceManager.instance.playerActor.cachedTransform.position, Quaternion.identity, BattleInstanceManager.instance.playerActor.cachedTransform);
 
+		// 레벨팩 데이터로부터 리스트를 저장해두고 굴려야할 횟수를 차감해둔다.
+		// Exclusive 선택땐 아무것도 안해도 되는게 어차피 이건 알아서 자동으로 획득처리 하니 저장할 필요가 없다.
+		ClientSaveData.instance.OnChangedLevelPackData(LevelPackDataManager.instance.GetCachedLevelPackData());
+		switch (_levelUpType)
+		{
+			case (int)eLevelUpType.LevelUp: ClientSaveData.instance.OnAddedRemainLevelUpCount(-1); break;
+			case (int)eLevelUpType.LevelPack: ClientSaveData.instance.OnAddedRemainLevelPackCount(-1); break;
+			case (int)eLevelUpType.NoHitLevelPack: ClientSaveData.instance.OnAddedRemainNoHitLevelPackCount(-1); break;
+		}
+
 		// 예약이 되어있다면 창을 닫지 않고 항목만 갱신
 		if (_listReservedLevelUpType.Count > 0)
 		{
@@ -347,6 +385,8 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 			OnCompleteLineAnimation();
 			return;
 		}
+
+		ClientSaveData.instance.OnChangedRandomLevelPackData("");
 
 		// 굴려야할 모든 레벨업 항목을 굴렸다면 BattleManager에게 Clear를 알린다.
 		if (_selectCount == _targetLevelUpCount)
@@ -416,4 +456,13 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 			gameObject.SetActive(false);
 		}
 	}
+
+
+	#region InProgressGame
+	public string GetCachedRandomLevelPackData()
+	{
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		return serializer.SerializeObject(_listRandomLevelPackId);
+	}
+	#endregion
 }

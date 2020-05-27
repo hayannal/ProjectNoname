@@ -288,6 +288,14 @@ public class GatePillar : MonoBehaviour
 		Timing.RunCoroutine(NextMapProcess());
 	}
 
+	#region InProgressGame
+	public void EnterInProgressGame()
+	{
+		// 이미 호출하는 부분에서 스테이지 셋팅은 해놨을거다. 여기선 평소에 하던대로 이동하면 된다.
+		Timing.RunCoroutine(NextMapProcess(true));
+	}
+	#endregion
+
 	bool CheckNextMap()
 	{
 		if (SwapCanvas.instance != null && SwapCanvas.instance.gameObject.activeSelf)
@@ -483,6 +491,34 @@ public class GatePillar : MonoBehaviour
 		});
 		_waitEnergyServerResponse = true;
 	}
+
+	void PrepareInProgressGame()
+	{
+		if (PlayerData.instance.clientOnly)
+			return;
+
+		string enterFlag = ClientSaveData.instance.GetCachedEnterFlag();
+		PlayFabApiManager.instance.RequestEnterGame(true, enterFlag, (serverFailure) =>
+		{
+			DelayedLoadingCanvas.Show(false);
+			if (_waitEnergyServerResponse)
+			{
+				// 에너지 부족
+				_enterGameServerFailure = serverFailure;
+				_waitEnergyServerResponse = false;
+			}
+		}, () =>
+		{
+			DelayedLoadingCanvas.Show(false);
+			if (_waitEnergyServerResponse)
+			{
+				// 그외 접속불가 네트워크 에러
+				_networkFailure = true;
+				_waitEnergyServerResponse = false;
+			}
+		});
+		_waitEnergyServerResponse = true;
+	}
 	#endregion
 
 	bool _checkedStageSwapSuggest = false;
@@ -520,7 +556,7 @@ public class GatePillar : MonoBehaviour
 
 	bool _processing = false;
 	public bool processing { get { return _processing; } }
-	IEnumerator<float> NextMapProcess()
+	IEnumerator<float> NextMapProcess(bool inProgressGame = false)
 	{
 		if (_processing)
 			yield break;
@@ -528,7 +564,12 @@ public class GatePillar : MonoBehaviour
 		_processing = true;
 
 		if (MainSceneBuilder.instance.lobby)
-			PrepareUseEnergy();
+		{
+			if (inProgressGame)
+				PrepareInProgressGame();
+			else
+				PrepareUseEnergy();
+		}
 
 		yield return Timing.WaitForSeconds(0.2f);
 		changeEffectParticleRootObject.SetActive(true);
@@ -560,6 +601,15 @@ public class GatePillar : MonoBehaviour
 				yield return Timing.WaitForSeconds(0.2f);
 				_processing = false;				
 				yield break;
+			}
+			if (ClientSaveData.instance.IsLoadingInProgressGame() && ClientSaveData.instance.standbySwapBattleActor)
+			{
+				while (ClientSaveData.instance.IsLoadedPlayerActor == false)
+					yield return Timing.WaitForOneFrame;
+				ClientSaveData.instance.ChangeBattleActor();
+				// 한번도 여기서 캐릭터를 바꾼적이 없어서 그동안은 필요없던 코드긴 한데
+				// 처음 캐릭을 생성하고나서 Start가 호출되고 나야 ActorStatus를 사용할 수 있다. 그러기 위해서 생성하고나서 한프레임 쉬고 가도록 한다.
+				yield return Timing.WaitForOneFrame;
 			}
 			if (PlayerData.instance.clientOnly == false)
 				Timing.RunCoroutine(CurrencyData.instance.DelayedSyncEnergyRechargeTime(5.0f));

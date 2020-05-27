@@ -87,6 +87,15 @@ public class StageManager : MonoBehaviour
 		_handleNextPlanePrefab = _handleNextGroundPrefab = _handleNextWallPrefab = _handleNextSpawnFlagPrefab = _handleNextPortalFlagPrefab = _handleEnvironmentSettingPrefab = null;
 		GetStageInfo(playChapter, playStage + 1);
 	}
+
+	// for in progress game
+	public void ReloadStage(int targetStage)
+	{
+		_handleNextPlanePrefab = _handleNextGroundPrefab = _handleNextWallPrefab = _handleNextSpawnFlagPrefab = _handleNextPortalFlagPrefab = _handleEnvironmentSettingPrefab = null;
+		//StageManager.instance.playChapter = playChapter;
+		StageManager.instance.playStage = targetStage - 1;
+		StageManager.instance.GetNextStageInfo();
+	}
 #else
 	void Start()
 	{
@@ -465,6 +474,7 @@ public class StageManager : MonoBehaviour
 		}
 		// 이후 레벨업 카운트만큼 처리
 		LevelUpIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform, needLevelUpCount, 0, 0);
+		ClientSaveData.instance.OnChangedRemainLevelUpCount(needLevelUpCount);
 
 		Timing.RunCoroutine(LevelUpScreenEffectProcess());
 	}
@@ -490,7 +500,49 @@ public class StageManager : MonoBehaviour
 	}
 	#endregion
 
-	
+	#region InProgressGame
+	public int playerExp { get { return _playerExp; } }
+	public void SetLevelExpForInProgressGame(int exp)
+	{
+		_playerExp = exp;
+
+		// level, bottom exp bar
+		int maxStageLevel = GetMaxStageLevel();
+		int level = 0;
+		float percent = 0.0f;
+		for (int i = _playerLevel; i < TableDataManager.instance.stageExpTable.dataArray.Length; ++i)
+		{
+			if (_playerExp < TableDataManager.instance.stageExpTable.dataArray[i].requiredAccumulatedExp)
+			{
+				int currentPeriodExp = _playerExp - TableDataManager.instance.stageExpTable.dataArray[i - 1].requiredAccumulatedExp;
+				percent = (float)currentPeriodExp / (float)TableDataManager.instance.stageExpTable.dataArray[i].requiredExp;
+				level = TableDataManager.instance.stageExpTable.dataArray[i].level - 1;
+				break;
+			}
+			if (TableDataManager.instance.stageExpTable.dataArray[i].level >= maxStageLevel)
+			{
+				level = maxStageLevel;
+				percent = 1.0f;
+				break;
+			}
+		}
+		if (level == 0)
+		{
+			// max
+			level = maxStageLevel;
+			percent = 1.0f;
+		}
+		int levelUpCount = level - _playerLevel;
+		LobbyCanvas.instance.SetLevelExpForInProgressGame(level, percent);
+		if (levelUpCount == 0)
+			return;
+		_playerLevel = level;
+
+		// 전용전투팩 얻는걸 체크. 스왑때 쓰려고 만든 함수를 대신 호출해서 처리한다.
+		BattleInstanceManager.instance.playerActor.skillProcessor.CheckAllExclusiveLevelPack();
+	}
+	#endregion
+
 
 
 	#region Battle Result

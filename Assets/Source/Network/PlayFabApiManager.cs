@@ -444,7 +444,7 @@ public class PlayFabApiManager : MonoBehaviour
 
 	#region InGame
 	// 입장시마다 랜덤으로 된 숫자키를 하나 받는다. 정산시 보내서 서버랑 비교하기 위함이다.
-	public ObscuredString _serverEnterKey;
+	ObscuredString _serverEnterKey;
 
 	// 게이트 필라 쳐서 들어가는 패킷. 에너지를 소모하지 않는 튜토때도 패킷은 보낸다.
 	// 클라우드 스크립트로 처리해서 정산을 할 기회를 1회 올린다.
@@ -460,6 +460,8 @@ public class PlayFabApiManager : MonoBehaviour
 			string resultString = (string)success.FunctionResult;
 			bool failure = (resultString == "1");
 			_serverEnterKey = failure ? "" : resultString;
+			if (string.IsNullOrEmpty(_serverEnterKey) == false)
+				ClientSaveData.instance.OnEnterGame(retryByCrash, _serverEnterKey);
 			if (successCallback != null) successCallback.Invoke(failure);
 		}, (error) =>
 		{
@@ -478,6 +480,8 @@ public class PlayFabApiManager : MonoBehaviour
 			FunctionName = "CancelGame",
 			GeneratePlayStreamEvent = true,
 		}, null, null);
+
+		ClientSaveData.instance.OnEndGame();
 	}
 
 	public void RequestEndGame(bool clear, bool currentChaos, int playChapter, int stage, int addGold, int addSeal, List<ObscuredString> listDropItemId, Action<bool, string, string> successCallback)    // List<Item>
@@ -540,6 +544,7 @@ public class PlayFabApiManager : MonoBehaviour
 				jsonResult.TryGetValue("itmRet", out object itmRet);
 				bool failure = ((retErr.ToString()) == "1");
 				_serverEnterKey = "";
+				ClientSaveData.instance.OnEndGame();
 				if (!failure)
 				{
 					// 서버에러가 떠도 정산창은 띄되 WaitingNetworkCanvas은 닫지 않기로 한다.

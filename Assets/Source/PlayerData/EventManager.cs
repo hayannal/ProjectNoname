@@ -199,6 +199,13 @@ public class EventManager : MonoBehaviour
 		ServerEventInfo serverEventInfo = _queServerEventInfo.Peek();
 		return (serverEventInfo.eventType == serverEvent);
 	}
+
+	public bool IsStandbyServerEvent()
+	{
+		if (_queServerEventInfo.Count == 0)
+			return false;
+		return true;
+	}
 	#endregion
 
 	void PushServerEvent(eServerEvent serverEvent, string sValue = "", int iValue = 0)

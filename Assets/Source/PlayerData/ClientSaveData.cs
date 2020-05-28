@@ -208,6 +208,7 @@ public class ClientSaveData : MonoBehaviour
 		string jsonDropItemData = GetCachedDropItemData();
 		float dropGold = GetCachedDropGold();
 		int dropSeal = GetCachedDropSeal();
+		string stagePenaltyId = GetCachedStagePenalty();
 
 		// 새 값으로 교체하고
 		ObscuredPrefs.SetString("enterFlag", newEnterFlag);
@@ -235,6 +236,7 @@ public class ClientSaveData : MonoBehaviour
 		OnChangedDropItemData(jsonDropItemData);
 		OnChangedDropGold(dropGold);
 		OnChangedDropSeal(dropSeal);
+		if (string.IsNullOrEmpty(stagePenaltyId) == false) OnChangedStagePenalty(stagePenaltyId);
 	}
 
 	public bool IsLoadingInProgressGame()
@@ -345,6 +347,10 @@ public class ClientSaveData : MonoBehaviour
 	public float GetCachedDropGold() { return GetCachedFloat("cachedDropGold"); }
 	public void OnChangedDropSeal(int dropSeal) { SetCachedInt("cachedDropSeal", dropSeal); }
 	public int GetCachedDropSeal() { return GetCachedInt("cachedDropSeal"); }
+
+	// 패널티 버프 디버프
+	public void OnChangedStagePenalty(string stagePenaltyId) { SetCachedString("cachedStagePenalty", stagePenaltyId); }
+	public string GetCachedStagePenalty() { return GetCachedString("cachedStagePenalty"); }
 
 
 	#region Helper

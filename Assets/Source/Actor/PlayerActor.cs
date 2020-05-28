@@ -237,6 +237,8 @@ public class PlayerActor : Actor
 
 		string[] penaltyMindParameterList = UIString.instance.ParseParameterString(stagePenaltyTableData.mindParameter);
 		BattleToastCanvas.instance.ShowToast(UIString.instance.GetString(stagePenaltyTableData.penaltyMindText, penaltyMindParameterList), 2.5f);
+
+		ClientSaveData.instance.OnChangedStagePenalty(stagePenaltyId);
 	}
 	#endregion
 

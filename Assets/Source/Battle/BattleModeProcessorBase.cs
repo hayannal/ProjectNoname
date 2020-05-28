@@ -65,11 +65,22 @@ public class BattleModeProcessorBase
 	{
 		_damageCountInStage = 0;
 
-		// environmentSetting처럼 있으면 랜덤하게 골라서 적용하고 없을땐 그냥 냅둬서 유지시킨다.
-		if (StageManager.instance.currentStageTableData != null && StageManager.instance.currentStageTableData.stagePenaltyId.Length > 0)
-		{
-			string stagePenaltyId = StageManager.instance.currentStageTableData.stagePenaltyId[UnityEngine.Random.Range(0, StageManager.instance.currentStageTableData.stagePenaltyId.Length)];
-			if (BattleInstanceManager.instance.playerActor != null)
+		if (BattleInstanceManager.instance.playerActor != null)
+		{	
+			string stagePenaltyId = "";
+
+			// 먼저 재진입중인지를 판단해서 저장된 값을 구해오고
+			if (ClientSaveData.instance.IsLoadingInProgressGame())
+				stagePenaltyId = ClientSaveData.instance.GetCachedStagePenalty();
+
+			// 저장된 값이 없거나 재진입중이 아니라면 기존 루틴대로 진행한다.
+			if (string.IsNullOrEmpty(stagePenaltyId))
+			{
+				if (StageManager.instance.currentStageTableData != null && StageManager.instance.currentStageTableData.stagePenaltyId.Length > 0)
+					stagePenaltyId = StageManager.instance.currentStageTableData.stagePenaltyId[UnityEngine.Random.Range(0, StageManager.instance.currentStageTableData.stagePenaltyId.Length)];
+			}
+
+			if (string.IsNullOrEmpty(stagePenaltyId) == false)
 				BattleInstanceManager.instance.playerActor.RefreshStagePenaltyAffector(stagePenaltyId, true);
 		}
 

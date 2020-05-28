@@ -89,12 +89,18 @@ public class StageManager : MonoBehaviour
 	}
 
 	// for in progress game
+	bool _reloadInProgressGame = false;
 	public void ReloadStage(int targetStage)
 	{
+		// ClientSaveData의 IsLoadingInProgressGame함수는 EnterGame 응답받고나서 사용할 수 있는 함수라..
+		// Reload임을 체크할 또 다른 변수하나가 필요해졌다.
+		// 그래서 플래그 하나 추가해둔다.
+		_reloadInProgressGame = true;
 		_handleNextPlanePrefab = _handleNextGroundPrefab = _handleNextWallPrefab = _handleNextSpawnFlagPrefab = _handleNextPortalFlagPrefab = _handleEnvironmentSettingPrefab = null;
 		//StageManager.instance.playChapter = playChapter;
 		StageManager.instance.playStage = targetStage - 1;
 		StageManager.instance.GetNextStageInfo();
+		_reloadInProgressGame = false;
 	}
 #else
 	void Start()
@@ -214,6 +220,7 @@ public class StageManager : MonoBehaviour
 	AsyncOperationGameObjectResult _handleNextSpawnFlagPrefab;
 	AsyncOperationGameObjectResult _handleNextPortalFlagPrefab;
 	AsyncOperationGameObjectResult _handleEnvironmentSettingPrefab;
+	string _environmentSettingAddress;
 	void PrepareNextMap(MapTableData mapTableData, string[] environmentSettingList)
 	{
 		_handleNextPlanePrefab = AddressableAssetLoadManager.GetAddressableGameObject(mapTableData.plane, "Map");
@@ -222,13 +229,30 @@ public class StageManager : MonoBehaviour
 		_handleNextSpawnFlagPrefab = AddressableAssetLoadManager.GetAddressableGameObject(mapTableData.spawnFlag, "Map");	// Spawn
 		_handleNextPortalFlagPrefab = AddressableAssetLoadManager.GetAddressableGameObject(mapTableData.portalFlag, "Map");
 
+		if (_reloadInProgressGame)
+		{
+			// 재진입 한다고 항상 여기 값이 적혀있는건 아니다.
+			// lobby에서만 셋팅이 되어있고 이후 1층부터 쭉 environmentSetting값이 비어져있으면 저장하는 타이밍이 없어서 lobby 셋팅대로 쭉 가게된다. 
+			// 그러니 읽을게 없으면 재진입때도 아무런 셋팅하지 않고 지나간다.
+			string cachedEnvironmentSetting = ClientSaveData.instance.GetCachedEnvironmentSetting();
+			if (string.IsNullOrEmpty(cachedEnvironmentSetting) == false)
+			{
+				_handleEnvironmentSettingPrefab = AddressableAssetLoadManager.GetAddressableGameObject(cachedEnvironmentSetting, "EnvironmentSetting");
+				return;
+			}
+		}
+
 		// 환경은 위의 맵 정보와 달리 들어오면 설정하고 아니면 패스하는 형태다. 그래서 없을땐 null로 한다.
 		if (environmentSettingList.Length == 0)
+		{
 			_handleEnvironmentSettingPrefab = null;
+			_environmentSettingAddress = "";
+		}
 		else
 		{
 			string environmentSetting = environmentSettingList[Random.Range(0, environmentSettingList.Length)];
 			_handleEnvironmentSettingPrefab = AddressableAssetLoadManager.GetAddressableGameObject(environmentSetting, "EnvironmentSetting");
+			_environmentSettingAddress = environmentSetting;
 		}
 	}
 
@@ -294,7 +318,7 @@ public class StageManager : MonoBehaviour
 			_currentPortalFlagObject.SetActive(false);
 		_currentPortalFlagObject = BattleInstanceManager.instance.GetCachedObject(_handleNextPortalFlagPrefab.Result, Vector3.zero, Quaternion.identity);
 
-		// 위의 맵 정보와 달리 테이블에 값이 있을때만 변경하는거라 이렇게 처리한다.
+		// 위의 맵 정보와 달리 테이블에 값이 있을때만 변경하는거라 이렇게 처리한다. 변경시에만 저장되는거라 변경을 안하면 저장된게 없을거다.
 		if (_handleEnvironmentSettingPrefab != null)
 		{
 			if (_currentEnvironmentSettingObject != null)
@@ -303,6 +327,10 @@ public class StageManager : MonoBehaviour
 				_currentEnvironmentSettingObject = null;
 			}
 			_currentEnvironmentSettingObject = BattleInstanceManager.instance.GetCachedObject(_handleEnvironmentSettingPrefab.Result, null);
+			bool lobby = false;
+			if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby) lobby = true;
+			if (lobby == false)
+				ClientSaveData.instance.OnChangedEnvironmentSetting(_environmentSettingAddress);
 		}
 #else
 		for (int i = 0; i < planePrefabList.Length; ++i)

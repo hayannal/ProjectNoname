@@ -190,6 +190,7 @@ public class ClientSaveData : MonoBehaviour
 	{
 		// enterFlag 바꾸기전에 값 얻어온 후
 		int stage = GetCachedStage();
+		string environmentSetting = GetCachedEnvironmentSetting();
 		bool monsterKill = GetCachedMonsterAllKill();
 		bool gatePillar = GetCachedGatePillar();
 		bool powerSource = GetCachedPowerSource();
@@ -216,6 +217,7 @@ public class ClientSaveData : MonoBehaviour
 		SetCachedString("mapData", StageDataManager.instance.GetCachedMapData());
 
 		OnChangedStage(stage);
+		if (string.IsNullOrEmpty(environmentSetting) == false) OnChangedEnvironmentSetting(environmentSetting);
 		OnChangedMonsterAllKill(monsterKill);
 		OnChangedGatePillar(gatePillar);
 		OnChangedPowerSource(powerSource);
@@ -259,6 +261,7 @@ public class ClientSaveData : MonoBehaviour
 
 		// 나머지 정보도 지워야할까.
 		ObscuredPrefs.DeleteKey("cachedStage");
+		ObscuredPrefs.DeleteKey("cachedEnvironment");
 		ClearDropItemList();
 	}
 
@@ -266,6 +269,8 @@ public class ClientSaveData : MonoBehaviour
 
 	public void OnChangedStage(int stage) { SetCachedInt("cachedStage", stage); }
 	public int GetCachedStage() { return GetCachedInt("cachedStage"); }
+	public void OnChangedEnvironmentSetting(string environmentSetting) { SetCachedString("cachedEnvironment", environmentSetting); }
+	public string GetCachedEnvironmentSetting() { return GetCachedString("cachedEnvironment"); }
 
 	// 개별 층의 정보를 저장할때 가장 중요한 두가지는 나오는 몬스터를 다 잡았느냐와
 	// 다 잡고나서 꼭 해야할 일들을 완료해 게이트필라가 나와있느냐

@@ -575,9 +575,13 @@ public class DropProcessor : MonoBehaviour
 			}
 		}
 
-		// 이미 확정인 상태니 세이브 역시 Equip0001 하나 들어있도록 똑같은 정보로 해주면 된다.
-		ClientSaveData.instance.ClearDropItemList();
-		ClientSaveData.instance.OnAddedDropItemId("Equip0001");
+		// 이미 확정인 상태니 세이브 역시 Equip0001 하나 들어있도록 똑같은 정보로 해주면 되는데
+		// 어차피 2-10 도달 전까진 템이 드랍되지 않기 때문에 Clear함수를 호출할 필요도 없다.
+		//ClientSaveData.instance.ClearDropItemList();
+
+		// 이 장비템은 DropObject로 만들어질때 onAfterBattle 켜진채로 만들어질거라 거기서 Add처리 될거다.
+		// 그러니 여기서는 따로 호출할 필요가 없다.
+		//ClientSaveData.instance.OnAddedDropItemId("Equip0001");
 	}
 	#endregion
 

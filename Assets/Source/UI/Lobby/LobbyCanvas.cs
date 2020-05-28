@@ -307,6 +307,12 @@ public class LobbyCanvas : MonoBehaviour
 
 	void OnApplicationPause(bool pauseStatus)
 	{
+		OnApplicationPauseCanvas(pauseStatus);
+		OnApplicationPauseNetwork(pauseStatus);
+	}
+
+	void OnApplicationPauseCanvas(bool pauseStatus)
+	{
 		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby)
 			return;
 		if (SwapCanvas.instance != null && SwapCanvas.instance.gameObject.activeSelf)
@@ -318,5 +324,40 @@ public class LobbyCanvas : MonoBehaviour
 
 		if (pauseStatus)
 			PauseCanvas.instance.gameObject.SetActive(true);
+	}
+
+	System.DateTime _pausedDateTime;
+	bool _paused;
+	void OnApplicationPauseNetwork(bool pauseStatus)
+	{
+		if (pauseStatus)
+		{
+			_paused = true;
+			_pausedDateTime = System.DateTime.Now;
+		}
+		else
+		{
+			if (_paused == false)
+				return;
+
+			System.TimeSpan timeSpan = System.DateTime.Now - _pausedDateTime;
+			//Debug.LogFormat("Delta Time : {0}", timeSpan.TotalSeconds);
+			if (timeSpan.TotalMinutes > 10.0)
+			{
+				// 패킷을 보내서 유효한지 확인한다.
+				PlayFabApiManager.instance.RequestNetworkOnce(() =>
+				{
+					// 성공시엔 아무것도 하지 않는다.
+				}, () =>
+				{
+					// 실패시에는 로비냐 아니냐에 따라 나눌까 하다가 
+					// 어차피 둘다 팝업 띄우고 재시작 해야해서 내부 ErrorHandler에서 처리하기로 한다.
+					//if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby)
+					//{
+					//}
+				}, false);
+			}
+			_paused = false;
+		}
 	}
 }

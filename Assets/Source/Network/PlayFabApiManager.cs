@@ -80,6 +80,14 @@ public class PlayFabApiManager : MonoBehaviour
 					GeneratePlayStreamEvent = true
 				}, null, null);
 				break;
+			case PlayFabErrorCode.NotAuthenticated:
+				OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_LoseSession"), () =>
+				{
+					// NotAuthenticated 뜨면 다시 로그인해야만 한다.
+					PlayerData.instance.ResetData();
+					SceneManager.LoadScene(0);
+				});
+				return;
 		}
 
 		if (error.Error == PlayFabErrorCode.ServiceUnavailable || error.HttpCode == 400)
@@ -397,6 +405,28 @@ public class PlayFabApiManager : MonoBehaviour
 			});
 		};
 		RetrySendManager.instance.RequestAction(action, true);
+	}
+
+	public void RequestNetworkOnce(Action successCallback, Action failureCallback, bool showWaitingNetworkCanvas)
+	{
+		if (showWaitingNetworkCanvas)
+			WaitingNetworkCanvas.Show(true);
+
+		GetUserDataRequest request = new GetUserDataRequest() { Keys = new List<string> { "mainCharacterId" } };
+		PlayFabClientAPI.GetUserData(request, (success) =>
+		{
+			if (showWaitingNetworkCanvas)
+				WaitingNetworkCanvas.Show(false);
+
+			if (successCallback != null) successCallback.Invoke();
+		}, (error) =>
+		{
+			if (showWaitingNetworkCanvas)
+				WaitingNetworkCanvas.Show(false);
+
+			HandleCommonError(error);
+			if (failureCallback != null) failureCallback.Invoke();
+		});
 	}
 
 	#region Energy

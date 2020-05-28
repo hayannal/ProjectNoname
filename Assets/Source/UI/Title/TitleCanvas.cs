@@ -82,6 +82,16 @@ public class TitleCanvas : MonoBehaviour
 			EventManager.instance.OnLobby();
 		else if (ClientSaveData.instance.IsCachedInProgressGame())
 		{
+			// 죽은 상태의 저장 데이터인지 확인한다.
+			if (ClientSaveData.instance.GetCachedHpRatio() == 0.0f)
+			{
+				OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_ReenterAfterDying"), () =>
+				{
+					ClientSaveData.instance.OnEndGame();
+				});
+				return;
+			}
+
 			// 아무 이벤트도 실행할게 없는데 제대로 완료처리 되지 않은 게임이 있다면 복구를 물어본다.
 			YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_Reenter"), () =>
 			{

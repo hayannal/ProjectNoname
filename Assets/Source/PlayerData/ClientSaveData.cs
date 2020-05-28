@@ -7,6 +7,7 @@ using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
 #endif
 using CodeStage.AntiCheat.ObscuredTypes;
+using PlayFab;
 
 public class ClientSaveData : MonoBehaviour
 {
@@ -72,6 +73,9 @@ public class ClientSaveData : MonoBehaviour
 	{
 		// 인풋부터 막고
 		DelayedLoadingCanvas.Show(true);
+
+		// 입장 패킷 보내기전에 필수로 해야하는 것들 위주로 셋팅한다.
+		// 나머진 패킷 받고 재진입 다 완료한 후에 셋팅하는거로 한다.
 
 		// 저장된 맵 구성 데이터를 로드하고
 		StageDataManager.instance.SetCachedMapData(GetCachedString("mapData"));
@@ -177,6 +181,9 @@ public class ClientSaveData : MonoBehaviour
 		OnChangedExp(0);
 		OnChangedHpRatio(1.0f);
 		OnChangedSpRatio(0.0f);
+		ClearDropItemList();
+		OnChangedDropGold(0.0f);
+		OnChangedDropSeal(0);
 	}
 
 	void ResaveEnterFlagValues(string newEnterFlag)
@@ -197,6 +204,9 @@ public class ClientSaveData : MonoBehaviour
 		string jsonRandomLevelPackData = GetCachedRandomLevelPackData();
 		string jsonBattleActorData = GetCachedBattleActorData();
 		string battleActorId = GetCachedBattleActor();
+		string jsonDropItemData = GetCachedDropItemData();
+		float dropGold = GetCachedDropGold();
+		int dropSeal = GetCachedDropSeal();
 
 		// 새 값으로 교체하고
 		ObscuredPrefs.SetString("enterFlag", newEnterFlag);
@@ -213,13 +223,16 @@ public class ClientSaveData : MonoBehaviour
 		OnChangedExp(exp);
 		OnChangedHpRatio(hpRatio);
 		OnChangedSpRatio(spRatio);
-		OnChangedRemainLevelUpCount(levelUpCount);
-		OnChangedRemainLevelPackCount(levelPackCount);
-		OnChangedRemainNoHitLevelPackCount(noHitlevelPackCount);
-		OnChangedLevelPackData(jsonLevelPackData);
-		OnChangedRandomLevelPackData(jsonRandomLevelPackData);
-		OnChangedBattleActorData(jsonBattleActorData);
+		if (levelUpCount > 0) OnChangedRemainLevelUpCount(levelUpCount);
+		if (levelPackCount > 0) OnChangedRemainLevelPackCount(levelPackCount);
+		if (noHitlevelPackCount > 0) OnChangedRemainNoHitLevelPackCount(noHitlevelPackCount);
+		if (string.IsNullOrEmpty(jsonLevelPackData) == false) OnChangedLevelPackData(jsonLevelPackData);
+		if (string.IsNullOrEmpty(jsonRandomLevelPackData) == false) OnChangedRandomLevelPackData(jsonRandomLevelPackData);
+		if (string.IsNullOrEmpty(jsonBattleActorData) == false) OnChangedBattleActorData(jsonBattleActorData);
 		OnChangedBattleActor(battleActorId);
+		OnChangedDropItemData(jsonDropItemData);
+		OnChangedDropGold(dropGold);
+		OnChangedDropSeal(dropSeal);
 	}
 
 	public bool IsLoadingInProgressGame()
@@ -246,6 +259,7 @@ public class ClientSaveData : MonoBehaviour
 
 		// 나머지 정보도 지워야할까.
 		ObscuredPrefs.DeleteKey("cachedStage");
+		ClearDropItemList();
 	}
 
 	public string GetCachedEnterFlag() { return ObscuredPrefs.GetString("enterFlag"); }
@@ -296,6 +310,37 @@ public class ClientSaveData : MonoBehaviour
 	// 마지막 캐릭터도 따로 저장해놔야한다. A->B->A 로 전환시 BattleActorList에는 A와 B만 들어있기 때문에 마지막 요소가 마지막 캐릭터와 다를 수 있기 때문이다.
 	public void OnChangedBattleActor(string battleActorId) { SetCachedString("cachedBattleActor", battleActorId); }
 	public string GetCachedBattleActor() { return GetCachedString("cachedBattleActor"); }
+
+	// 드랍아이템 리스트. DropProcessor와 획득 시점이 달라서 이렇게 별도로 관리하는거다. 잃어버리면 안되서 이렇게 시점이 다른거다.
+	void OnChangedDropItemData(string jsonDropItemData) { SetCachedString("cachedDropItemData", jsonDropItemData); }
+	string GetCachedDropItemData() { return GetCachedString("cachedDropItemData"); }
+	List<string> _listDropEquipId = new List<string>();
+	public void ClearDropItemList()
+	{
+		_listDropEquipId.Clear();
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		OnChangedDropItemData(serializer.SerializeObject(_listDropEquipId));
+	}
+	public void OnAddedDropItemId(string dropItemId)
+	{
+		_listDropEquipId.Add(dropItemId);
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		OnChangedDropItemData(serializer.SerializeObject(_listDropEquipId));
+	}
+	public List<string> GetCachedDropItemList()
+	{
+		string jsonDropItemData = GetCachedDropItemData();
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		_listDropEquipId = serializer.DeserializeObject<List<string>>(jsonDropItemData);
+		return _listDropEquipId;
+	}
+
+	// 골드와 인장
+	public void OnChangedDropGold(float dropGold) { SetCachedFloat("cachedDropGold", dropGold); }
+	public float GetCachedDropGold() { return GetCachedFloat("cachedDropGold"); }
+	public void OnChangedDropSeal(int dropSeal) { SetCachedInt("cachedDropSeal", dropSeal); }
+	public int GetCachedDropSeal() { return GetCachedInt("cachedDropSeal"); }
+
 
 	#region Helper
 	void SetCachedInt(string key, int value)

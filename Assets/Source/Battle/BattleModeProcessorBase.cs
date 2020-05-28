@@ -54,6 +54,9 @@ public class BattleModeProcessorBase
 			ClientSaveData.instance.OnChangedStage(StageManager.instance.playStage);
 			ClientSaveData.instance.OnChangedMonsterAllKill(false);
 			ClientSaveData.instance.OnChangedGatePillar(false);
+
+			// 골드는 DropObject 개별로 하는거보다 한번에 하는게 나아서 여기서 하기로 한다.
+			ClientSaveData.instance.OnChangedDropGold(DropManager.instance.GetStackedFloatDropGold());
 		}
 	}
 
@@ -90,6 +93,11 @@ public class BattleModeProcessorBase
 #endif
 #endif
 
+		InitializeInProgressGame();
+	}
+
+	void InitializeInProgressGame()
+	{
 		// OnSpawnFlag의 마지막 부분이 플레이어를 복구하기 가장 적절한 타이밍이다.
 		if (ClientSaveData.instance.IsLoadingInProgressGame() == false)
 			return;
@@ -144,6 +152,15 @@ public class BattleModeProcessorBase
 		// 파워소스는 파워소스쪽에서 캐싱된 정보 읽어서 처리한다.
 
 		// 남은건 획득 아이템 리스트다.
+		List<string> listDropItemId = ClientSaveData.instance.GetCachedDropItemList();
+		for (int i = 0; i < listDropItemId.Count; ++i)
+			DropManager.instance.AddDropItem(listDropItemId[i]);
+
+		// 골드와 인장은 마지막 축적된 값을 기억해놨다가 가져오면 된다. 위의 템과 달리 중요도가 낮아서 DropObject의 획득 시점에 기록하는거로 되어있다.
+		float dropGold = ClientSaveData.instance.GetCachedDropGold();
+		DropManager.instance.AddDropGold(dropGold);
+		int dropSeal = ClientSaveData.instance.GetCachedDropSeal();
+		DropManager.instance.AddDropSeal(dropSeal);
 
 		// 끝나면 ClientSaveData에 로드 완료를 알린다.
 		ClientSaveData.instance.OnFinishLoadGame();

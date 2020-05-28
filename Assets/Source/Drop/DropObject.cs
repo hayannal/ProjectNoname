@@ -117,6 +117,11 @@ public class DropObject : MonoBehaviour
 				}
 				_lootEffectIndex = equipTableData.grade;
 			}
+
+			// 해당 층의 마지막 몹을 잡고나면 이후 드랍될 DropObject들은 onAfterBattle이 true로 된채 드랍되게 된다.
+			// 이 시점에 저장하면 드랍되고나서 회수되지 않더라도 재진입시 템을 획득한거로 처리할 수 있다.
+			if (_onAfterBattle)
+				ClientSaveData.instance.OnAddedDropItemId(stringValue);
 		}
 		else if (dropType == DropProcessor.eDropType.Origin)
 		{
@@ -161,7 +166,16 @@ public class DropObject : MonoBehaviour
 	public void OnAfterBattle()
 	{
 		if (getAfterAllDropAnimationInStage)
-			_onAfterBattle = true;
+		{
+			// 해당 층의 마지막 몹을 잡는 순간 드랍되어있던 DropObject에다가 onAfterBattle을 알리게 되는데
+			// 이 시점에 저장하면 회수되지 않은채 종료되더라도 재진입시 템을 획득한거로 처리할 수 있다.
+			if (_onAfterBattle == false)
+			{
+				_onAfterBattle = true;
+				if (_dropType == DropProcessor.eDropType.Gacha)
+					ClientSaveData.instance.OnAddedDropItemId(_stringValue);
+			}
+		}
 	}
 
 	bool _onAfterDropAnimation;

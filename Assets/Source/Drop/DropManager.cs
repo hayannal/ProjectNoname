@@ -26,6 +26,12 @@ public class DropManager : MonoBehaviour
 	{
 		// 이미 DropAdjustAffector.eDropAdjustType.GoldDropAmount 적용된채로 누적되어있는 값이다. 정산시 더해주면 끝이다.
 		_dropGold += gold;
+
+		// 인장과 골드는 중요도가 낮아서 간단하게 처리하기로 해서 DropObject의 획득 시점때만 기록해두려고 했는데
+		// 골드의 경우 드랍오브젝트 개수가 너무 많이 분할되서 괜히 부하가 먹는거 같다.
+		// 그래서 여기서 안하고 층 하나 넘어가는 시점 당 한번씩 기록하기로 한다.
+		//if (ClientSaveData.instance.IsLoadingInProgressGame() == false)
+		//	ClientSaveData.instance.OnChangedDropGold(_dropGold);
 	}
 
 	public int GetStackedDropGold()
@@ -33,9 +39,18 @@ public class DropManager : MonoBehaviour
 		return (int)_dropGold;
 	}
 
+	public float GetStackedFloatDropGold()
+	{
+		return _dropGold;
+	}
+
 	public void AddDropSeal(int amount)
 	{
 		_dropSeal += amount;
+
+		// 인장과 골드는 중요도가 낮아서 간단하게 처리하기로 했다.
+		if (ClientSaveData.instance.IsLoadingInProgressGame() == false)
+			ClientSaveData.instance.OnChangedDropSeal(_dropSeal);
 	}
 
 	public int GetStackedDropSeal()

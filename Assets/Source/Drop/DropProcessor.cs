@@ -225,6 +225,26 @@ public class DropProcessor : MonoBehaviour
 				case eDropType.Gacha:
 					dropProcessor.Add(dropType, floatValue, intValue, stringValue);
 					if (lobby) DropManager.instance.AddLobbyDropItemId(stringValue);
+					else
+					{
+						// 사실 클라 세이브 기능 만들기전엔 템의 획득은 항상 DropObject에 가까이가서 먹을때만 처리했었는데
+						// 이러다보니 획득 전에 강종되면 복구할 방법이 없었다.
+						// 아이템은 가뜩이나 잘 나오지도 않는건데 나왔다가 사라져버리면 문의가 많이 올테니 세이브쪽만 예외처리하기로 한다.
+						//
+						// 마지막 몹을 잡는 시점에 클라 세이브가 이뤄지는데.. 이 타이밍에 해당 층에서 떨어진 템 혹은 떨어질 템에 획득 가능 표시가 적히게 된다.(onAfterBattle로 표시)
+						// 이 템들을 리스트에 담아두기로 한다.
+						//if (dropProcessor.onAfterBattle)
+						//	ClientSaveData.instance.OnAddedDropItemId(stringValue);
+						// 위의 코드다.
+						// 그런데 여기서는 딱히 문제가 없었는데 BattleInstanceManager.OnDropLastMonsterInStage 함수에서 처리하기 애매한 문제가 발생했다.
+						// 이미 드랍중인 프로세서의 경우 드랍되지 않은 요소들에만 적용해야하는데 이게 까다로웠던 것.
+						//
+						// 그래서 차라리 방향을 바꿔서..
+						// 떨어져있는 드랍오브젝트를 클리어시점에 Add해둔다 정책과
+						// 이후엔 onAfterBattle이 true인채로 생성되는 드랍오브젝트를 Add해둔다. 두 정책으로 가기로 한다.
+						// 적어도 유저 눈에 드랍이 보이는 순간부터는 저장되니 목적은 충분히 달성됐다고 본다.
+						// 이 구조의 최대 단점은 막타 때리자마자 끄면 드랍되어있는거 말곤 템을 못얻게 되는데 결국 이런 유저들의 대부분이 어뷰징일거라 이대로 가기로 한다.
+					}
 					break;
 				case eDropType.Ultimate:
 					DropSp(floatValue);
@@ -554,6 +574,10 @@ public class DropProcessor : MonoBehaviour
 				}
 			}
 		}
+
+		// 이미 확정인 상태니 세이브 역시 Equip0001 하나 들어있도록 똑같은 정보로 해주면 된다.
+		ClientSaveData.instance.ClearDropItemList();
+		ClientSaveData.instance.OnAddedDropItemId("Equip0001");
 	}
 	#endregion
 

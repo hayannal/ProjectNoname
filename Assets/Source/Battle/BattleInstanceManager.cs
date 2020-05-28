@@ -812,6 +812,19 @@ public class BattleInstanceManager : MonoBehaviour
 		{
 			if (!_listCachedDropProcessor[i].gameObject.activeSelf)
 				continue;
+			if (_listCachedDropProcessor[i].onAfterBattle)
+				continue;
+
+			// 사실은 여기서 클라이언트 세이브 작업을 해야 정상인데 해당 드랍 프로세서가 가지고 있는 리스트 전부 기록해두면 안된다.
+			// 아마 드랍을 하고있는 중일텐데 일부는 이미 DropObject로 만들어져있을테니
+			// DropManager.instance.OnDropLastMonsterInStage 함수 호출될때 클라이언트 세이브 목록에 추가됐을거다.
+			// 그러니 이미 만들어진건 빼고 드랍 순서상 뒤쪽에 있어서 아직 드랍을 못한 것들만 추가해야 정확한건데
+			// 이럴라면 DropProcessor의 DropProcess() 코루틴 함수 안에서 돌고있는 인덱스의 값을 얻어와서 그 이후의 항목들만 등록해야한다.
+			// 너무 할게 많아진다.
+			// 루프 돌면서 저 인덱스 뒤의 항목에 대해서만 ClientSaveData.instance.OnAddedDropItemId(stringValue); 호출해야한다.
+			//
+			// 그러다가 차라리 onAfterBattle이 true인채로 생성되는 DropObject들을 등록하는게 더 나을거 같아서
+			// 여기서 처리하지 않기로 한다.
 			_listCachedDropProcessor[i].onAfterBattle = true;
 		}
 	}

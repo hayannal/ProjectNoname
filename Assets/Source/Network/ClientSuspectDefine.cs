@@ -23,5 +23,6 @@ namespace ClientSuspect
 		CheatTable				= 100012,
 		InvalidTotalPp			= 100013,
 		InvalidResearchLevel	= 100014,
+		InvalidStatPoint		= 100015,
 	}
 }

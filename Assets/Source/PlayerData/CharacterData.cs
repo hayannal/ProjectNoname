@@ -18,6 +18,9 @@ public class CharacterData
 	public int limitBreakLevel { get { return _limitBreakLevel; } }
 	public int limitBreakPoint { get { return _limitBreakPoint; } set { _limitBreakPoint = value; } }
 
+	List<ObscuredInt> _listStatPoint = new List<ObscuredInt>();
+	public List<ObscuredInt> listStatPoint { get { return _listStatPoint; } }
+
 	public bool needLimitBreak
 	{
 		get
@@ -70,6 +73,46 @@ public class CharacterData
 			if (powerLevelTableData == null)
 				return 0;
 			return powerLevelTableData.requiredAccumulatedPowerPoint;
+		}
+	}
+
+	public int maxPowerLeveWithoutLimitBreak
+	{
+		get
+		{
+			int max = 0;
+			int maxPowerLevel = BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxPowerLevel");
+			for (int i = 1; i <= maxPowerLevel; ++i)
+			{
+				PowerLevelTableData powerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(i);
+				if (powerLevelTableData == null)
+					continue;
+				if (powerLevelTableData.requiredLimitBreak != 0)
+					break;
+				max = i;
+			}
+			return max;
+		}
+	}
+
+	public int maxStatPoint
+	{
+		get
+		{
+			int delta = powerLevel - maxPowerLeveWithoutLimitBreak;
+			if (delta < 0) delta = 0;
+			return delta;
+		}
+	}
+
+	public int remainStatPoint
+	{
+		get
+		{
+			int sumStatPoint = 0;
+			for (int i = 0; i < _listStatPoint.Count; ++i)
+				sumStatPoint += _listStatPoint[i];
+			return maxStatPoint - sumStatPoint;
 		}
 	}
 
@@ -210,6 +253,37 @@ public class CharacterData
 		_pp = pp;
 		_limitBreakLevel = lb;
 		_limitBreakPoint = lbp;
+
+		// _powerLevel이 저장되고 나서야 파싱할 수 있다.
+		_listStatPoint.Clear();
+		if (maxStatPoint > 0)
+		{
+			if (_listStatPoint.Count == 0)
+			{
+				for (int i = 0; i < (int)CharacterInfoStatsCanvas.eStatsType.Amount; ++i)
+					_listStatPoint.Add(0);
+			}
+			if (characterStatistics.ContainsKey("str"))
+				_listStatPoint[0] = characterStatistics["str"];
+			if (characterStatistics.ContainsKey("dex"))
+				_listStatPoint[1] = characterStatistics["dex"];
+			if (characterStatistics.ContainsKey("int"))
+				_listStatPoint[2] = characterStatistics["int"];
+			if (characterStatistics.ContainsKey("vit"))
+				_listStatPoint[3] = characterStatistics["vit"];
+
+			if (invalid == false)
+			{
+				int sumStatPoint = 0;
+				for (int i = 0; i < _listStatPoint.Count; ++i)
+					sumStatPoint += _listStatPoint[i];
+				if (sumStatPoint > maxStatPoint)
+				{
+					PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidStatPoint, false, lb);
+					invalid = true;
+				}
+			}
+		}
 	}
 
 	public void OnPowerLevelUp()

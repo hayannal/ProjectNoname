@@ -84,4 +84,20 @@ public class ActorTableData
   float _charGachaWeight;
   public float charGachaWeight { get { return _charGachaWeight; } set { _charGachaWeight = value; } }
   
+  [SerializeField]
+  int _baseStr;
+  public int baseStr { get { return _baseStr; } set { _baseStr = value; } }
+  
+  [SerializeField]
+  int _baseDex;
+  public int baseDex { get { return _baseDex; } set { _baseDex = value; } }
+  
+  [SerializeField]
+  int _baseInt;
+  public int baseInt { get { return _baseInt; } set { _baseInt = value; } }
+  
+  [SerializeField]
+  int _baseVit;
+  public int baseVit { get { return _baseVit; } set { _baseVit = value; } }
+  
 }

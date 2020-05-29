@@ -435,7 +435,7 @@ public class GatePillar : MonoBehaviour
 			int energyToPlay = BattleInstanceManager.instance.GetCachedGlobalConstantInt("RequiredEnergyToPlay");
 			string message = UIString.instance.GetString("GameUI_RefillEnergy", energyToPlay, energyToPlay);
 			int price = BattleInstanceManager.instance.GetCachedGlobalConstantInt("RefillEnergyDiamond");
-			ConfirmSpendCanvas.instance.ShowCanvas(true, title, message, CurrencyData.eCurrencyType.Diamond, price, () =>
+			ConfirmSpendCanvas.instance.ShowCanvas(true, title, message, CurrencyData.eCurrencyType.Diamond, price, true, () =>
 			{
 				if (CurrencyData.instance.dia < price)
 				{

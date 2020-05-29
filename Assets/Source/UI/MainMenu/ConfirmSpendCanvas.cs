@@ -19,17 +19,14 @@ public class ConfirmSpendCanvas : MonoBehaviour
 		instance = this;
 	}
 
-	void OnEnable()
-	{
-		CurrencySmallInfoCanvas.Show(true);
-	}
-
+	bool _showCurrencySmallInfoCanvas;
 	void OnDisable()
 	{
-		CurrencySmallInfoCanvas.Show(false);
+		if (_showCurrencySmallInfoCanvas)
+			CurrencySmallInfoCanvas.Show(false);
 	}
 
-	public void ShowCanvas(bool show, string title, string message, CurrencyData.eCurrencyType currencyType, int spendCount, System.Action okAction = null)
+	public void ShowCanvas(bool show, string title, string message, CurrencyData.eCurrencyType currencyType, int spendCount, bool showCurrencySmallInfoCanvas, System.Action okAction = null)
 	{
 		gameObject.SetActive(show);
 		if (show == false)
@@ -40,6 +37,11 @@ public class ConfirmSpendCanvas : MonoBehaviour
 		for (int i = 0; i < currencyTypeObjectList.Length; ++i)
 			currencyTypeObjectList[i].SetActive((int)currencyType == i);
 		spendCountText.text = spendCount.ToString("N0");
+
+		_showCurrencySmallInfoCanvas = showCurrencySmallInfoCanvas;
+		if (showCurrencySmallInfoCanvas)
+			CurrencySmallInfoCanvas.Show(true);
+
 		_okAction = okAction;
 	}
 

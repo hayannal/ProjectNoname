@@ -20,6 +20,8 @@ public class CharacterData
 
 	List<ObscuredInt> _listStatPoint = new List<ObscuredInt>();
 	public List<ObscuredInt> listStatPoint { get { return _listStatPoint; } }
+	ObscuredInt _trainingValue;
+	public int trainingValue { get { return _trainingValue; } }
 
 	public bool needLimitBreak
 	{
@@ -286,6 +288,17 @@ public class CharacterData
 				}
 			}
 		}
+
+		if (_limitBreakLevel >= 2)
+		{
+			if (characterStatistics.ContainsKey("train"))
+				_trainingValue = characterStatistics["train"];
+			if (invalid == false && _trainingValue > CharacterInfoTrainingCanvas.TrainingMax)
+			{
+				PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidTraining, false, lb);
+				invalid = true;
+			}
+		}
 	}
 
 	public void OnPowerLevelUp()
@@ -327,6 +340,16 @@ public class CharacterData
 
 		for (int i = 0; i < _listStatPoint.Count; ++i)
 			_listStatPoint[i] = 0;
+
+		// powerLevel과 마찬가지고 변경되면 이걸 사용하는 PlayerActor의 ActorStatus도 새로 스탯을 계산해야한다.
+		PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(actorId);
+		if (playerActor != null)
+			playerActor.actorStatus.InitializeActorStatus();
+	}
+
+	public void OnTraining(int addTrainingPoint)
+	{
+		_trainingValue += addTrainingPoint;
 
 		// powerLevel과 마찬가지고 변경되면 이걸 사용하는 PlayerActor의 ActorStatus도 새로 스탯을 계산해야한다.
 		PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(actorId);

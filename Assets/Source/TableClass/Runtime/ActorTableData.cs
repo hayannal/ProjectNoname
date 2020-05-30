@@ -100,4 +100,20 @@ public class ActorTableData
   int _baseVit;
   public int baseVit { get { return _baseVit; } set { _baseVit = value; } }
   
+  [SerializeField]
+  float _trainingHp;
+  public float trainingHp { get { return _trainingHp; } set { _trainingHp = value; } }
+  
+  [SerializeField]
+  float _trainingAtk;
+  public float trainingAtk { get { return _trainingAtk; } set { _trainingAtk = value; } }
+  
+  [SerializeField]
+  int _trainingMin;
+  public int trainingMin { get { return _trainingMin; } set { _trainingMin = value; } }
+  
+  [SerializeField]
+  int _trainingMax;
+  public int trainingMax { get { return _trainingMax; } set { _trainingMax = value; } }
+  
 }

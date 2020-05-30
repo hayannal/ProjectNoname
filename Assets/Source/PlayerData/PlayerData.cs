@@ -60,6 +60,12 @@ public class PlayerData : MonoBehaviour
 	public ObscuredBool sharedDailyPackageOpened { get; set; }
 	public DateTime dailyPackageResetTime { get; private set; }
 
+	// Training 관련 변수
+	public ObscuredBool dailyTrainingGoldCompleted { get; set; }
+	public DateTime dailyTrainingGoldResetTime { get; private set; }
+	public ObscuredBool dailyTrainingDiaCompleted { get; set; }
+	public DateTime dailyTrainingDiaResetTime { get; private set; }
+
 	// 이 카오스가 현재 카오스 상태로 스테이지가 셋팅되어있는지를 알려주는 값이다.
 	// 이전 챕터로 내려갈 경우 서버에 저장된 chaosMode는 1이더라도 스테이지 구성은 도전모드로 셋팅하게 되며
 	// 이땐 false를 리턴하게 될 것이다.
@@ -261,6 +267,8 @@ public class PlayerData : MonoBehaviour
 	{
 		UpdateDailyBoxResetTime();
 		UpdateDailyPackageResetTime();
+		UpdateDailyTrainingGoldResetTime();
+		UpdateDailyTrainingDiaResetTime();
 	}
 
 	public bool newPlayerAddKeep { get; set; }
@@ -282,6 +290,8 @@ public class PlayerData : MonoBehaviour
 		sharedDailyPackageOpened = false;
 		secondDailyBoxFillCount = 0;
 		researchLevel = 0;
+		dailyTrainingGoldCompleted = false;
+		dailyTrainingDiaCompleted = false;
 
 		// 나중에 지울 코드이긴 한데 MainSceneBuilder에서 NEWPLAYER_LEVEL1 디파인 켜둔채로 생성하는 테스트용 루틴일땐
 		// 1챕터에서 시작하게 처리해둔다.
@@ -429,6 +439,7 @@ public class PlayerData : MonoBehaviour
 		// 계정 생성과 마찬가지로 로그인 이후에 rules사용해서 서버에서 클라우드 스크립트를 돌려도
 		// 이미 로그인은 실행되고 있어서 그 안에 있는 UserData에는 실어줄 수가 없다.
 		// 그래서 마지막 오픈 시간을 받아서 직접 계산하기로 한다.
+		sharedDailyBoxOpened = false;
 		if (userReadOnlyData.ContainsKey("lasBxDat"))
 		{
 			if (string.IsNullOrEmpty(userReadOnlyData["lasBxDat"].Value) == false)
@@ -495,6 +506,7 @@ public class PlayerData : MonoBehaviour
 			_listLevelPackage = serializer.DeserializeObject<List<int>>(userData["lvPckLst"].Value);
 
 		// 마지막 오픈 시간을 받는건 데일리패키지 역시 마찬가지다.
+		sharedDailyPackageOpened = false;
 		if (userReadOnlyData.ContainsKey("lasPckDat"))
 		{
 			if (string.IsNullOrEmpty(userReadOnlyData["lasPckDat"].Value) == false)
@@ -507,6 +519,20 @@ public class PlayerData : MonoBehaviour
 			int intValue = 0;
 			if (int.TryParse(userReadOnlyData["rsrLv"].Value, out intValue))
 				researchLevel = intValue;
+		}
+
+		dailyTrainingGoldCompleted = false;
+		if (userReadOnlyData.ContainsKey("lasTrGoDat"))
+		{
+			if (string.IsNullOrEmpty(userReadOnlyData["lasTrGoDat"].Value) == false)
+				OnRecvDailyTrainingGoldInfo(userReadOnlyData["lasTrGoDat"].Value);
+		}
+
+		dailyTrainingDiaCompleted = false;
+		if (userReadOnlyData.ContainsKey("lasTrDiDat"))
+		{
+			if (string.IsNullOrEmpty(userReadOnlyData["lasTrDiDat"].Value) == false)
+				OnRecvDailyTrainingDiaInfo(userReadOnlyData["lasTrDiDat"].Value);
 		}
 
 		loginned = true;
@@ -809,6 +835,76 @@ public class PlayerData : MonoBehaviour
 		// 일퀘와 달리 창을 열어야만 보이기도 하고 노출되는 횟수가 적을거 같아서 하루 갱신될때 서버에 알리지 않고 클라가 선처리 하기로 한다.
 		sharedDailyPackageOpened = false;
 		dailyPackageResetTime += TimeSpan.FromDays(1);
+	}
+	#endregion
+
+	#region Training
+	void OnRecvDailyTrainingGoldInfo(DateTime lastDailyTrainingGoldTime)
+	{
+		if (ServerTime.UtcNow.Year == lastDailyTrainingGoldTime.Year && ServerTime.UtcNow.Month == lastDailyTrainingGoldTime.Month && ServerTime.UtcNow.Day == lastDailyTrainingGoldTime.Day)
+		{
+			dailyTrainingGoldCompleted = true;
+			dailyTrainingGoldResetTime = new DateTime(lastDailyTrainingGoldTime.Year, lastDailyTrainingGoldTime.Month, lastDailyTrainingGoldTime.Day) + TimeSpan.FromDays(1);
+		}
+		else
+			dailyTrainingGoldCompleted = false;
+	}
+
+	public void OnRecvDailyTrainingGoldInfo(string lastDailyTrainingGoldTimeString)
+	{
+		DateTime lastDailyTrainingGoldTime = new DateTime();
+		if (DateTime.TryParse(lastDailyTrainingGoldTimeString, out lastDailyTrainingGoldTime))
+		{
+			DateTime universalTime = lastDailyTrainingGoldTime.ToUniversalTime();
+			OnRecvDailyTrainingGoldInfo(universalTime);
+		}
+	}
+
+	void UpdateDailyTrainingGoldResetTime()
+	{
+		if (dailyTrainingGoldCompleted == false)
+			return;
+
+		if (DateTime.Compare(ServerTime.UtcNow, dailyTrainingGoldResetTime) < 0)
+			return;
+
+		// 클라 선처리로 갱신
+		dailyTrainingGoldCompleted = false;
+		dailyTrainingGoldResetTime += TimeSpan.FromDays(1);
+	}
+
+	void OnRecvDailyTrainingDiaInfo(DateTime lastDailyTrainingDiaTime)
+	{
+		if (ServerTime.UtcNow.Year == lastDailyTrainingDiaTime.Year && ServerTime.UtcNow.Month == lastDailyTrainingDiaTime.Month && ServerTime.UtcNow.Day == lastDailyTrainingDiaTime.Day)
+		{
+			dailyTrainingDiaCompleted = true;
+			dailyTrainingDiaResetTime = new DateTime(lastDailyTrainingDiaTime.Year, lastDailyTrainingDiaTime.Month, lastDailyTrainingDiaTime.Day) + TimeSpan.FromDays(1);
+		}
+		else
+			dailyTrainingDiaCompleted = false;
+	}
+
+	public void OnRecvDailyTrainingDiaInfo(string lastDailyTrainingDiaTimeString)
+	{
+		DateTime lastDailyTrainingDiaTime = new DateTime();
+		if (DateTime.TryParse(lastDailyTrainingDiaTimeString, out lastDailyTrainingDiaTime))
+		{
+			DateTime universalTime = lastDailyTrainingDiaTime.ToUniversalTime();
+			OnRecvDailyTrainingDiaInfo(universalTime);
+		}
+	}
+
+	void UpdateDailyTrainingDiaResetTime()
+	{
+		if (dailyTrainingDiaCompleted == false)
+			return;
+
+		if (DateTime.Compare(ServerTime.UtcNow, dailyTrainingDiaResetTime) < 0)
+			return;
+
+		// 클라 선처리로 갱신
+		dailyTrainingDiaCompleted = false;
+		dailyTrainingDiaResetTime += TimeSpan.FromDays(1);
 	}
 	#endregion
 }

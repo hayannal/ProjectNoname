@@ -24,5 +24,6 @@ namespace ClientSuspect
 		InvalidTotalPp			= 100013,
 		InvalidResearchLevel	= 100014,
 		InvalidStatPoint		= 100015,
+		InvalidTraining			= 100016,
 	}
 }

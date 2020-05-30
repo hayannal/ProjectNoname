@@ -933,6 +933,43 @@ public class PlayFabApiManager : MonoBehaviour
 		});
 	}
 
+	public void RequestCharacterTraining(CharacterData characterData, int addTrainingPoint, int priceGold, int priceDia, Action successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "Training",
+			FunctionParameter = new { ChrId = characterData.entityKey.Id, Add = addTrainingPoint },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
+			jsonResult.TryGetValue("retErr", out object retErr);
+			bool failure = ((retErr.ToString()) == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+				CurrencyData.instance.gold -= priceGold;
+				CurrencyData.instance.dia -= priceDia;
+				characterData.OnTraining(addTrainingPoint);
+
+				jsonResult.TryGetValue("date", out object date);
+
+				// 성공시에는 서버에서 방금 기록한 마지막 훈련 시간이 날아온다.
+				if (priceGold > 0)
+					PlayerData.instance.OnRecvDailyTrainingGoldInfo((string)date);
+				else if (priceDia > 0)
+					PlayerData.instance.OnRecvDailyTrainingDiaInfo((string)date);
+
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+
 	// 이것도 서버에 저장되는 Entity Object
 	public class CharacterDataEntity1
 	{

@@ -890,10 +890,8 @@ MonoBehaviour:
   contentGroupObject: {fileID: 5806542172220747051}
   trainingTextTransform: {fileID: 848091784116564154}
   trainingPercentValueText: {fileID: 4439411755703309726}
-  attackText: {fileID: 4302695410643281923}
-  attackValueText: {fileID: 7979961722385707477}
-  hpText: {fileID: 8518373029178018314}
-  hpValueText: {fileID: 8032152917838970459}
+  hpValueText: {fileID: 7979961722385707477}
+  attackValueText: {fileID: 8032152917838970459}
   priceButtonObject: {fileID: 8700111769290530260}
   priceTypeObjectList:
   - {fileID: 5347695698895110016}
@@ -1157,7 +1155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f12479a3eb790ef4abc68cb914116b15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiStringKey: Tr_AttackAddRate
+  uiStringKey: Tr_MaxHpAddRate
 --- !u!1 &6280956865674018286
 GameObject:
   m_ObjectHideFlags: 0
@@ -1818,7 +1816,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: -0, y: -245}
-  m_SizeDelta: {x: 80, y: 50}
+  m_SizeDelta: {x: 160, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &600276564942864553
 CanvasRenderer:
@@ -1861,7 +1859,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 5%
+  m_Text: 6%
 --- !u!114 &839617585154087860
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2003,7 +2001,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f12479a3eb790ef4abc68cb914116b15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiStringKey: Op_AttackAddRate
+  uiStringKey: Tr_AttackAddRate
 --- !u!1 &9211305144386002127
 GameObject:
   m_ObjectHideFlags: 0
@@ -2094,15 +2092,20 @@ PrefabInstance:
       propertyPath: m_Text
       value: 1,000
       objectReference: {fileID: 0}
-    - target: {fileID: 4269207921788044089, guid: ca2695684b42a5a40afa93370765502c,
+    - target: {fileID: 4158925572650601857, guid: ca2695684b42a5a40afa93370765502c,
         type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 30
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 8531913304575610768}
+    - target: {fileID: 4158925572650601857, guid: ca2695684b42a5a40afa93370765502c,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnClickTrainingButton
       objectReference: {fileID: 0}
-    - target: {fileID: 4269207921788044089, guid: ca2695684b42a5a40afa93370765502c,
+    - target: {fileID: 4158925572650601857, guid: ca2695684b42a5a40afa93370765502c,
         type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 0
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4269088072637104001, guid: ca2695684b42a5a40afa93370765502c,
         type: 3}
@@ -2129,20 +2132,15 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 300
       objectReference: {fileID: 0}
-    - target: {fileID: 4158925572650601857, guid: ca2695684b42a5a40afa93370765502c,
+    - target: {fileID: 4269207921788044089, guid: ca2695684b42a5a40afa93370765502c,
         type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 8531913304575610768}
-    - target: {fileID: 4158925572650601857, guid: ca2695684b42a5a40afa93370765502c,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnClickTrainingButton
+      propertyPath: m_AnchoredPosition.x
+      value: 30
       objectReference: {fileID: 0}
-    - target: {fileID: 4158925572650601857, guid: ca2695684b42a5a40afa93370765502c,
+    - target: {fileID: 4269207921788044089, guid: ca2695684b42a5a40afa93370765502c,
         type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
+      propertyPath: m_SizeDelta.x
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ca2695684b42a5a40afa93370765502c, type: 3}
@@ -2347,6 +2345,21 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4158925572650601857, guid: ca2695684b42a5a40afa93370765502c,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 8531913304575610768}
+    - target: {fileID: 4158925572650601857, guid: ca2695684b42a5a40afa93370765502c,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnClickTrainingButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 4158925572650601857, guid: ca2695684b42a5a40afa93370765502c,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4269088072637104001, guid: ca2695684b42a5a40afa93370765502c,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2396,21 +2409,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.x
       value: 300
-      objectReference: {fileID: 0}
-    - target: {fileID: 4158925572650601857, guid: ca2695684b42a5a40afa93370765502c,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 8531913304575610768}
-    - target: {fileID: 4158925572650601857, guid: ca2695684b42a5a40afa93370765502c,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnClickTrainingButton
-      objectReference: {fileID: 0}
-    - target: {fileID: 4158925572650601857, guid: ca2695684b42a5a40afa93370765502c,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ca2695684b42a5a40afa93370765502c, type: 3}

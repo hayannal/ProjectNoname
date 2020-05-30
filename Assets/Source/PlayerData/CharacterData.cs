@@ -143,6 +143,8 @@ public class CharacterData
 	public bool IsAlarmState()
 	{
 		// 캐릭터에는 잠재로 인해 찍을 포인트가 늘어날때만 진짜 Alarm을 표시한다.
+		if (remainStatPoint > 0)
+			return true;
 		return false;
 	}
 	#endregion

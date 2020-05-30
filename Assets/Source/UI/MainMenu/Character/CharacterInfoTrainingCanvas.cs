@@ -18,10 +18,14 @@ public class CharacterInfoTrainingCanvas : MonoBehaviour
 	public Text hpText;
 	public Text hpValueText;
 
+	public GameObject priceButtonObject;
 	public GameObject[] priceTypeObjectList;
 	public Image priceButtonImage;
 	public Text priceText;
 	public Coffee.UIExtensions.UIEffect[] priceGrayscaleEffect;
+	public GameObject maxButtonObject;
+	public Image maxButtonImage;
+	public Text maxButtonText;
 
 	public Text remainTimeText;
 
@@ -42,6 +46,7 @@ public class CharacterInfoTrainingCanvas : MonoBehaviour
 
 	#region Info
 	string _actorId;
+	float _percent;
 	public void RefreshInfo()
 	{
 		string actorId = CharacterListCanvas.instance.selectedActorId;
@@ -75,12 +80,17 @@ public class CharacterInfoTrainingCanvas : MonoBehaviour
 		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, text, 250, trainingTextTransform, new Vector2(10.0f, -35.0f));
 	}
 
-	public void OnClickApplyButton()
+	public void OnClickTrainingButton()
 	{
+		if (_percent >= 1.0f)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_MaxTrainingToast"), 2.0f);
+			return;
+		}
 	}
 
-	void OnRecvApplyStatPoint()
+	void OnRecvTraining()
 	{
-		ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_StatComplete"), 2.0f);
+		ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_TrainingDone"), 2.0f);
 	}
 }

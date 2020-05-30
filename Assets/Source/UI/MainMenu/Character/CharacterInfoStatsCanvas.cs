@@ -23,6 +23,7 @@ public class CharacterInfoStatsCanvas : MonoBehaviour
 	public Text applyButtonText;
 
 	List<ObscuredInt> _listShowStatPoint = new List<ObscuredInt>();
+	List<ObscuredInt> _listAddStatPoint = new List<ObscuredInt>();
 
 	public enum eStatsType
 	{
@@ -39,7 +40,10 @@ public class CharacterInfoStatsCanvas : MonoBehaviour
 		instance = this;
 
 		for (int i = 0; i < statsTextTransformList.Length; ++i)
+		{
 			_listShowStatPoint.Add(0);
+			_listAddStatPoint.Add(0);
+		}
 	}
 
 	void Start()
@@ -56,6 +60,7 @@ public class CharacterInfoStatsCanvas : MonoBehaviour
 	string _actorId;
 	int _maxStatPoint;
 	int _remainStatPoint;
+	CharacterData _characterData;
 	public void RefreshInfo()
 	{
 		string actorId = CharacterListCanvas.instance.selectedActorId;
@@ -66,6 +71,7 @@ public class CharacterInfoStatsCanvas : MonoBehaviour
 		if (characterData == null)
 			return;
 
+		_characterData = characterData;
 		_maxStatPoint = characterData.maxStatPoint;
 		_remainStatPoint = characterData.remainStatPoint;
 		_sumUsePoint = 0;
@@ -103,6 +109,7 @@ public class CharacterInfoStatsCanvas : MonoBehaviour
 			if (i < listStatPoint.Count)
 				baseValue += listStatPoint[i];
 			_listShowStatPoint[i] = baseValue;
+			_listAddStatPoint[i] = 0;
 			statsValueTextList[i].text = baseValue.ToString();
 			statsValueTextList[i].color = Color.white;
 			plusButtonImageList[i].color = existRemainPoint ? Color.white : Color.gray;
@@ -135,10 +142,11 @@ public class CharacterInfoStatsCanvas : MonoBehaviour
 					ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughDiamond"), 2.0f);
 					return;
 				}
-				//PlayFabApiManager.instance.RequestRefillEnergy(price, energyToPlay, () =>
-				//{
-				//	ConfirmSpendCanvas.instance.gameObject.SetActive(false);
-				//});
+				PlayFabApiManager.instance.RequestResetCharacterStats(_characterData, price, () =>
+				{
+					ConfirmSpendCanvas.instance.gameObject.SetActive(false);
+					OnRecvApplyStatPoint(true);
+				});
 			});
 		});
 	}
@@ -196,6 +204,9 @@ public class CharacterInfoStatsCanvas : MonoBehaviour
 		statsValueTextList[index].text = _listShowStatPoint[index].ToString();
 		statsValueTextList[index].color = textGreenColor;
 
+		// 패킷으로 보내는 스탯용
+		_listAddStatPoint[index] += 1;
+
 		_remainStatPoint -= 1;
 		remainPointValueText.text = _remainStatPoint.ToString();
 		if (_remainStatPoint == 0)
@@ -216,6 +227,19 @@ public class CharacterInfoStatsCanvas : MonoBehaviour
 		if (_changed)
 		{
 			// 여기선 별도의 확인창이 없다. 바로 패킷 보내서 적용하면 된다.
+			// 재화 소모가 없는거라 Set으로 보내면 위험하다. Add로 보내야한다.
+			int strAddPoint = 0;
+			int dexAddPoint = 0;
+			int intAddPoint = 0;
+			int vitAddPoint = 0;
+			if (0 < _listAddStatPoint.Count) strAddPoint = _listAddStatPoint[0];
+			if (1 < _listAddStatPoint.Count) dexAddPoint = _listAddStatPoint[1];
+			if (2 < _listAddStatPoint.Count) intAddPoint = _listAddStatPoint[2];
+			if (3 < _listAddStatPoint.Count) vitAddPoint = _listAddStatPoint[3];
+			PlayFabApiManager.instance.RequestApplyCharacterStats(_characterData, strAddPoint, dexAddPoint, intAddPoint, vitAddPoint, () =>
+			{
+				OnRecvApplyStatPoint(false);
+			});
 			return;
 		}
 
@@ -232,8 +256,17 @@ public class CharacterInfoStatsCanvas : MonoBehaviour
 		}
 	}
 
-	void OnRecvApplyStatPoint()
+	void OnRecvApplyStatPoint(bool reset)
 	{
+		// 먼저 Refresh
+		RefreshInfo();
+		CharacterInfoCanvas.instance.currencySmallInfo.RefreshInfo();
 
+		// 알람 Refresh
+		CharacterInfoCanvas.instance.RefreshAlarmObjectList();
+		CharacterListCanvas.instance.RefreshAlarmList();
+		DotMainMenuCanvas.instance.RefreshCharacterAlarmObject();
+
+		ToastCanvas.instance.ShowToast(UIString.instance.GetString(reset ? "GameUI_ResetComplete" : "GameUI_StatComplete"), 2.0f);
 	}
 }

@@ -882,6 +882,57 @@ public class PlayFabApiManager : MonoBehaviour
 		});
 	}
 
+	public void RequestApplyCharacterStats(CharacterData characterData, int strAddPoint, int dexAddPoint, int intAddPoint, int vitAddPoint, Action successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "ApplyStats",
+			FunctionParameter = new { ChrId = characterData.entityKey.Id, Str = strAddPoint, Dex = dexAddPoint, Int = intAddPoint, Vit = vitAddPoint },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+				characterData.OnApplyStats(strAddPoint, dexAddPoint, intAddPoint, vitAddPoint);
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+
+	public void RequestResetCharacterStats(CharacterData characterData, int price, Action successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "ResetStats",
+			FunctionParameter = new { ChrId = characterData.entityKey.Id },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+				CurrencyData.instance.dia -= price;
+				characterData.OnResetStats();
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+
 	// 이것도 서버에 저장되는 Entity Object
 	public class CharacterDataEntity1
 	{

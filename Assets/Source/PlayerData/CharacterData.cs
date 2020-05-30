@@ -303,4 +303,34 @@ public class CharacterData
 		// 한계돌파는 레벨업을 스탯 변화 없이 레벨업을 할 수 있어지는거라서 재계산 안한다.
 		_limitBreakLevel += 1;
 	}
+
+	public void OnApplyStats(int strAddPoint, int dexAddPoint, int intAddPoint, int vitAddPoint)
+	{
+		if (_listStatPoint.Count == 0)
+			return;
+
+		_listStatPoint[0] += strAddPoint;
+		_listStatPoint[1] += dexAddPoint;
+		_listStatPoint[2] += intAddPoint;
+		_listStatPoint[3] += vitAddPoint;
+
+		// powerLevel과 마찬가지고 변경되면 이걸 사용하는 PlayerActor의 ActorStatus도 새로 스탯을 계산해야한다.
+		PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(actorId);
+		if (playerActor != null)
+			playerActor.actorStatus.InitializeActorStatus();
+	}
+
+	public void OnResetStats()
+	{
+		if (_listStatPoint.Count == 0)
+			return;
+
+		for (int i = 0; i < _listStatPoint.Count; ++i)
+			_listStatPoint[i] = 0;
+
+		// powerLevel과 마찬가지고 변경되면 이걸 사용하는 PlayerActor의 ActorStatus도 새로 스탯을 계산해야한다.
+		PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(actorId);
+		if (playerActor != null)
+			playerActor.actorStatus.InitializeActorStatus();
+	}
 }

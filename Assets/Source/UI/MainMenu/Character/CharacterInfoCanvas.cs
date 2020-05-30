@@ -101,24 +101,26 @@ public class CharacterInfoCanvas : MonoBehaviour
 	public void RefreshAlarmObjectList()
 	{
 		CharacterData characterData = PlayerData.instance.GetCharacterData(CharacterListCanvas.instance.selectedActorId);
-		if (characterData == null)
-		{
-			AlarmObject.Hide(growthAlarmRootTransform);
-			AlarmObject.Hide(growthShadowAlarmRootTransform);
-			AlarmObject.Hide(potentialAlarmRootTransform);
-			AlarmObject.Hide(potentialShadowAlarmRootTransform);
-			return;
-		}
-
-		if (characterData.IsPlusAlarmState())
+		if (characterData != null && characterData.IsPlusAlarmState())
 		{
 			AlarmObject.Show(growthAlarmRootTransform, false, false, true);
 			AlarmObject.Show(growthShadowAlarmRootTransform, false, false, true, true);
 		}
-		if (characterData.IsAlarmState())
+		else
+		{
+			AlarmObject.Hide(growthAlarmRootTransform);
+			AlarmObject.Hide(growthShadowAlarmRootTransform);
+		}
+
+		if (characterData != null && characterData.IsAlarmState())
 		{
 			AlarmObject.Show(potentialAlarmRootTransform);
-			AlarmObject.Show(potentialAlarmRootTransform, true, false, false, true);
+			AlarmObject.Show(potentialShadowAlarmRootTransform, true, false, false, true);
+		}
+		else
+		{
+			AlarmObject.Hide(potentialAlarmRootTransform);
+			AlarmObject.Hide(potentialShadowAlarmRootTransform);
 		}
 	}
 

@@ -19,6 +19,9 @@ public class CharacterInfoCanvas : MonoBehaviour
 	public RectTransform potentialAlarmRootTransform;
 	public RectTransform potentialShadowAlarmRootTransform;
 
+	// TrainingCanvas에서 창을 열어둔채 연출하는게 필요해져서 추가하는 inputLockObject다.
+	public GameObject inputLockObject;
+
 	void Awake()
 	{
 		instance = this;

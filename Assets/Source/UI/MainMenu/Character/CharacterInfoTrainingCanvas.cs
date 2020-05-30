@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
+using MEC;
 
 public class CharacterInfoTrainingCanvas : MonoBehaviour
 {
@@ -15,8 +17,12 @@ public class CharacterInfoTrainingCanvas : MonoBehaviour
 
 	public Transform trainingTextTransform;
 	public Text trainingPercentValueText;
+	public DOTweenAnimation percentValueTweenAnimation;
+	public Text addPercentValueText;
 	public Text hpValueText;
+	public DOTweenAnimation hpValueTweenAnimation;
 	public Text attackValueText;
+	public DOTweenAnimation attackValueTweenAnimation;
 
 	public GameObject priceButtonObject;
 	public GameObject[] priceTypeObjectList;
@@ -48,6 +54,8 @@ public class CharacterInfoTrainingCanvas : MonoBehaviour
 	{
 		UpdateRemainTime();
 		UpdateRefresh();
+		UpdateValueText();
+		UpdateResultGauge();
 	}
 
 	static Color _percentColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
@@ -81,10 +89,7 @@ public class CharacterInfoTrainingCanvas : MonoBehaviour
 		_trainingRatio = (float)characterData.trainingValue / TrainingMax;
 		trainingPercentValueText.text = string.Format("{0:0.##}%", _trainingRatio * 100.0f);
 		trainingPercentValueText.color = (_trainingRatio < 1.0f) ? _percentColor : _fullPercentColor;
-		float currentHpRate = actorTableData.trainingHp * _trainingRatio;
-		float currentAtkRate = actorTableData.trainingAtk * _trainingRatio;
-		hpValueText.text = string.Format("{0:0.##}%", currentHpRate * 100.0f);
-		attackValueText.text = string.Format("{0:0.##}%", currentAtkRate * 100.0f);
+		RefreshStatus(_trainingRatio);
 
 		if (_trainingRatio >= 1.0f)
 		{
@@ -141,6 +146,18 @@ public class CharacterInfoTrainingCanvas : MonoBehaviour
 		}
 		priceButtonObject.SetActive(true);
 		maxButtonObject.SetActive(false);
+	}
+
+	void RefreshStatus(float trainingRatio)
+	{
+		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(_actorId);
+		if (actorTableData == null)
+			return;
+
+		float currentHpRate = actorTableData.trainingHp * trainingRatio;
+		float currentAtkRate = actorTableData.trainingAtk * trainingRatio;
+		hpValueText.text = string.Format("+{0:0.##}%", currentHpRate * 100.0f);
+		attackValueText.text = string.Format("+{0:0.##}%", currentAtkRate * 100.0f);
 	}
 	#endregion
 
@@ -247,17 +264,101 @@ public class CharacterInfoTrainingCanvas : MonoBehaviour
 				PlayFabApiManager.instance.RequestCharacterTraining(_characterData, addTrainingPoint, priceGold, priceDia, () =>
 				{
 					ConfirmSpendCanvas.instance.gameObject.SetActive(false);
-					OnRecvTraining();
+					OnRecvTraining(addTrainingPoint);
 				});
 			});
 		});
 	}
 
-	void OnRecvTraining()
+	void OnRecvTraining(int addTrainingPoint)
 	{
-		RefreshInfo();
 		CharacterInfoCanvas.instance.currencySmallInfo.RefreshInfo();
+		Timing.RunCoroutine(TrainingProcess(addTrainingPoint));
+	}
 
+	float _addValue = 0.0f;
+	IEnumerator<float> TrainingProcess(int addTrainingPoint)
+	{
+		// 인풋 차단
+		CharacterInfoCanvas.instance.inputLockObject.SetActive(true);
+
+		float tweenDelay = 0.5f;
+
+		// 올라가는 퍼센트 텍스트
+		float targetTrainingRatio = (float)_characterData.trainingValue / TrainingMax;
+		_addValue = targetTrainingRatio - _trainingRatio;
+		addPercentValueText.text = string.Format("+{0:0.##}%", _addValue * 100.0f);
+		addPercentValueText.gameObject.SetActive(true);
+		yield return Timing.WaitForSeconds(0.7f);
+
+		// 게이지 애니메이션
+		float diff = _trainingRatio - targetTrainingRatio;
+		_fillSpeed = diff / valueChangeTime;
+		_fillRemainTime = valueChangeTime;
+
+		_valueChangeSpeed = -_addValue / valueChangeTime;
+		_floatCurrentValue = _addValue;
+		_updateValueText = true;
+		yield return Timing.WaitForSeconds(valueChangeTime);
+		percentValueTweenAnimation.DORestart();
+		yield return Timing.WaitForSeconds(tweenDelay);
+
+		// status tween
+		RefreshStatus(targetTrainingRatio);
+		hpValueTweenAnimation.DORestart();
+		attackValueTweenAnimation.DORestart();
+		yield return Timing.WaitForSeconds(0.8f);
+
+		// Refresh
+		RefreshInfo();
 		ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_TrainingDone"), 2.0f);
+		yield return Timing.WaitForSeconds(1.0f);
+
+		// 인풋 복구
+		CharacterInfoCanvas.instance.inputLockObject.SetActive(false);
+	}
+
+
+	const float valueChangeTime = 0.6f;
+	float _valueChangeSpeed;
+	float _floatCurrentValue;
+	bool _updateValueText;
+	void UpdateValueText()
+	{
+		if (_updateValueText == false)
+			return;
+
+		_floatCurrentValue += _valueChangeSpeed * Time.deltaTime;
+
+		if (_floatCurrentValue <= 0.0f)
+		{
+			_floatCurrentValue = 0.0f;
+			_updateValueText = false;
+		}
+		trainingPercentValueText.text = string.Format("{0:0.##}%", (_trainingRatio + (_addValue - _floatCurrentValue)) * 100.0f);
+		if (_updateValueText)
+			addPercentValueText.text = string.Format("+{0:0.##}%", _floatCurrentValue * 100.0f);
+		else
+			addPercentValueText.gameObject.SetActive(false);
+	}
+
+	float _fillRemainTime;
+	float _fillSpeed;
+	void UpdateResultGauge()
+	{
+		if (_fillRemainTime <= 0.0f)
+			return;
+
+		_fillRemainTime -= Time.deltaTime;
+		//resultGaugeSlider.value += _fillSpeed * Time.deltaTime;
+
+		if (_fillRemainTime <= 0.0f)
+		{
+			_fillRemainTime = 0.0f;
+
+			//resultGaugeColorTween.DOPause();
+			//resultGaugeImage.color = EquipListStatusInfo.GetGaugeColor(_equipData.GetOption(_optionIndex).GetRandomStatusRatio() == 1.0f);
+			//resultGaugeEndPointImage.DOFade(0.0f, 0.25f).SetEase(Ease.OutQuad).onComplete = () => { resultGaugeEndPointImage.gameObject.SetActive(false); };
+		}
 	}
 }

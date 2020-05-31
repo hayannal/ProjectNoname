@@ -116,7 +116,7 @@ public class ClientSaveData : MonoBehaviour
 		if (settings.ActivePlayModeDataBuilderIndex == 2)
 			ObjectUtil.ReloadShader(newObject);
 #else
-		GameObject newObject = Instantiate<GameObject>(prefab);
+		GameObject newObject = Instantiate<GameObject>(_playerActorPrefab);
 #endif
 
 		PlayerActor playerActor = newObject.GetComponent<PlayerActor>();

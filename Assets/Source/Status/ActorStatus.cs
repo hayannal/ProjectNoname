@@ -35,10 +35,10 @@ public class ActorStatus : MonoBehaviour
 		else
 			_statusBase.ClearValue();
 
+		CharacterData characterData = PlayerData.instance.GetCharacterData(actor.actorId);
 		if (overridePowerLevel == -1)
 		{
 			powerLevel = 1;
-			CharacterData characterData = PlayerData.instance.GetCharacterData(actor.actorId);
 			if (characterData != null) powerLevel = characterData.powerLevel;
 		}
 		else
@@ -75,16 +75,38 @@ public class ActorStatus : MonoBehaviour
 				}
 			}
 
-			// equip rate + potential stat rate
-			_statusBase.valueList[(int)eActorStatus.MaxHp] *= (1.0f + TimeSpaceData.instance.cachedEquipStatusList.valueList[(int)eActorStatus.MaxHpAddRate]);
-			_statusBase.valueList[(int)eActorStatus.Attack] *= (1.0f + TimeSpaceData.instance.cachedEquipStatusList.valueList[(int)eActorStatus.AttackAddRate]);
+			// equip rate + potential stat rate + training stat rate
+			float maxHpAddRate = 1.0f;
+			float attackAddRate = 1.0f;
+			maxHpAddRate += TimeSpaceData.instance.cachedEquipStatusList.valueList[(int)eActorStatus.MaxHpAddRate];
+			attackAddRate += TimeSpaceData.instance.cachedEquipStatusList.valueList[(int)eActorStatus.AttackAddRate];
+			if (characterData.listStatPoint.Count == (int)CharacterInfoStatsCanvas.eStatsType.Amount)
+			{
+				maxHpAddRate += GetValueByCharacterStats(characterData, CharacterInfoStatsCanvas.eStatsType.Vit, false);
+				attackAddRate += GetValueByCharacterStats(characterData, CharacterInfoStatsCanvas.eStatsType.Str, false);
+
+				// potential MoveSpeedAddRate, SpGainAddRate
+				_statusBase.valueList[(int)eActorStatus.MaxSp] *= (1.0f + GetValueByCharacterStats(characterData, CharacterInfoStatsCanvas.eStatsType.Int, false));
+				_statusBase.valueList[(int)eActorStatus.MoveSpeed] += GetValueByCharacterStats(characterData, CharacterInfoStatsCanvas.eStatsType.Dex, false);
+				_statusBase.valueList[(int)eActorStatus.AttackSpeedAddRate] += GetValueByCharacterStats(characterData, CharacterInfoStatsCanvas.eStatsType.Dex, true);
+			}
+			if (characterData.trainingValue > 0)
+			{
+				float trainingRatio = (float)characterData.trainingValue / CharacterInfoTrainingCanvas.TrainingMax;
+				maxHpAddRate += actorTableData.trainingHp * trainingRatio;
+				attackAddRate += actorTableData.trainingAtk * trainingRatio;
+			}
+
+			// over max pp
+			attackAddRate += GetAttackAddRateByOverPP();
+
+			_statusBase.valueList[(int)eActorStatus.MaxHp] *= maxHpAddRate;
+			_statusBase.valueList[(int)eActorStatus.Attack] *= attackAddRate;
 		}
 
 		// actor multi
 		_statusBase.valueList[(int)eActorStatus.MaxHp] *= actorTableData.multiHp;
 		_statusBase.valueList[(int)eActorStatus.Attack] *= actorTableData.multiAtk;
-
-		// potential MoveSpeedAddRate, SpGainAddRate
 
 		//if (isServer)
 		_statusBase._hp = _lastMaxHp = GetValue(eActorStatus.MaxHp);
@@ -190,11 +212,28 @@ public class ActorStatus : MonoBehaviour
 			case eActorStatus.AttackAddRate:
 				value += AddAttackByHpAffector.GetValue(actor.affectorProcessor, actor.actorStatus.GetHPRatio());
 				value += PositionBuffAffector.GetAttackAddRate(actor.affectorProcessor);
-				value += GetAttackAddRateByOverPP();
 				break;
 		}
 		return value;
 	}
+
+	#region Stats Point
+	float GetValueByCharacterStats(CharacterData characterData, CharacterInfoStatsCanvas.eStatsType statsType, bool value2)
+	{
+		// 호출하는 부분에서 검사하고 호출한다.
+		//if (characterData == null)
+		//	return 0.0f;
+		//if (characterData.listStatPoint.Count != (int)CharacterInfoStatsCanvas.eStatsType.Amount)
+		//	return 0.0f;
+		int point = characterData.listStatPoint[(int)statsType];
+		if (point == 0)
+			return 0.0f;
+		ExtraStatTableData extraStatTableData = TableDataManager.instance.FindExtraStatsTableData(statsType, point);
+		if (extraStatTableData == null)
+			return 0.0f;
+		return value2 ? extraStatTableData.value2 : extraStatTableData.value1;
+	}
+	#endregion
 
 	static float LnAtkConstant1 = 123.315173118822f;
 	static float LnAtkConstant2 = -282.943679363379f;

@@ -419,4 +419,14 @@ public class TableDataManager : MonoBehaviour
 		}
 		return null;
 	}
+
+	public ExtraStatTableData FindExtraStatsTableData(CharacterInfoStatsCanvas.eStatsType statsType, int point)
+	{
+		for (int i = 0; i < extraStatTable.dataArray.Length; ++i)
+		{
+			if (extraStatTable.dataArray[i].extraStatId == (int)statsType && extraStatTable.dataArray[i].level == point)
+				return extraStatTable.dataArray[i];
+		}
+		return null;
+	}
 }

@@ -17,13 +17,8 @@ Shader "FrameworkPV/Wing"
 		[Toggle(_SHOWDUST)] _UseShowDust("========== Show Dust ==========", Float) = 0
 
 		_ColorIntensity("Color Intensity", Range(0, 1)) = 0.5
-		_TimeSpeed("Time Speed", Range(0.01, 1)) = 0.5
+		_TimeSpeed("Time Speed", Range(0.1, 2)) = 0.5
 		[Enum(UnityEngine.Rendering.CullMode)] _Cull("Cull Mode", Float) = 0
-
-		// Without this, uv is not delivered properly. I think it's the law of the surface shader ...
-		// If there are no uv properties in the Input structure among the properties, there is a problem that uvs are all passed to 0.
-		// So I don't use it, but I will add it as it is hidden.
-		[HideInInspector] _MainTex("Base (RGB)", 2D) = "white" {}
     }
     SubShader
     {
@@ -42,13 +37,12 @@ Shader "FrameworkPV/Wing"
 
 		CGPROGRAM
 		#pragma surface surf Lambert exclude_path:prepass nolightmap noforwardadd keepalpha
-		//#pragma vertex vert
+		#pragma vertex vert
 		#pragma shader_feature_local _SHOWDUST
 
         // Use shader model 3.0 target, to get nicer looking lighting
         #pragma target 3.0
 
-		uniform float4 _TimeEditor;
 		uniform sampler2D _wing; uniform float4 _wing_ST;
 		uniform sampler2D _mask; uniform float4 _mask_ST;
 		uniform float _wing_intensity;
@@ -64,22 +58,25 @@ Shader "FrameworkPV/Wing"
 		half _TimeSpeed;
 
 		struct Input {
-			float2 uv_MainTex : TEXCOORD0;
+			// Values starting with "uv" are automatically handled internally, so if you need a custom value, never start with "uv".
+			//float2 uv_MainTex : TEXCOORD0;
+			float2 wingUV : TEXCOORD0;
 		};
 		
-		//void vert(inout appdata_base v, out Input o)
-		//{
-		//	UNITY_INITIALIZE_OUTPUT(Input, o);
-		//}
+		void vert(inout appdata_base v, out Input o)
+		{
+			UNITY_INITIALIZE_OUTPUT(Input, o);
+			o.wingUV = v.texcoord;
+		}
 
 		void surf(Input i, inout SurfaceOutput o)
 		{
-			float4 node_5205 = _Time.y * _TimeSpeed;
-			float2 node_8473 = ((i.uv_MainTex*_wing_uv) + (node_5205.g*_wing_speed)*float2(-1, 0));
+			float node_5205 = _Time.y * _TimeSpeed;
+			float2 node_8473 = ((i.wingUV*_wing_uv) + (node_5205*_wing_speed)*float2(-1, 0));
 			float4 _wing_var = tex2D(_wing, TRANSFORM_TEX(node_8473, _wing));
 			float3 node_3177 = (_wing_var.rgb*_wing_var.a*_wing_color.rgb);
-			float4 _mask_var = tex2D(_mask, TRANSFORM_TEX(i.uv_MainTex, _mask));
-			float2 node_9924 = ((i.uv_MainTex*_dust_UV) + (node_5205.g*_dust_speed)*float2(-1, 0));
+			float4 _mask_var = tex2D(_mask, TRANSFORM_TEX(i.wingUV, _mask));
+			float2 node_9924 = ((i.wingUV*_dust_UV) + (node_5205*_dust_speed)*float2(-1, 0));
 			float4 _dust_var = tex2D(_dust, TRANSFORM_TEX(node_9924, _dust));
 			#if _SHOWDUST
 				float3 emissive = (((node_3177*_wing_intensity) + (_dust_var.rgb*_dust_intensity*_mask_var.rgb*_dust_color.rgb))*_mask_var.rgb);				

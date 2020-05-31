@@ -72,7 +72,6 @@ public class MailCanvas : MonoBehaviour
 			return;
 		}
 
-		emptyMailObject.SetActive(false);
 		for (int i = 0; i < listMyMailData.Count; ++i)
 		{
 			string id = listMyMailData[i].id;
@@ -109,6 +108,7 @@ public class MailCanvas : MonoBehaviour
 			mailCanvasListItem.Initialize(createInfo, listMyMailData[i], receiveDay, validTime);
 			_listMailCanvasListItem.Add(mailCanvasListItem);
 		}
+		emptyMailObject.SetActive(_listMailCanvasListItem.Count == 0);
 
 		_selectedId = "";
 		_selectedReceiveDay = 0;

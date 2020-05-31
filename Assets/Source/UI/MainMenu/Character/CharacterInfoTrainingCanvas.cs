@@ -16,6 +16,7 @@ public class CharacterInfoTrainingCanvas : MonoBehaviour
 	public GameObject contentGroupObject;
 
 	public Transform trainingTextTransform;
+	public OrbFill percentOrbFill;
 	public Text trainingPercentValueText;
 	public DOTweenAnimation percentValueTweenAnimation;
 	public Text addPercentValueText;
@@ -47,7 +48,7 @@ public class CharacterInfoTrainingCanvas : MonoBehaviour
 
 	void OnEnable()
 	{
-		RefreshInfo();
+		RefreshInfo(false);
 	}
 
 	void Update()
@@ -55,7 +56,6 @@ public class CharacterInfoTrainingCanvas : MonoBehaviour
 		UpdateRemainTime();
 		UpdateRefresh();
 		UpdateValueText();
-		UpdateResultGauge();
 	}
 
 	static Color _percentColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
@@ -65,7 +65,7 @@ public class CharacterInfoTrainingCanvas : MonoBehaviour
 	string _actorId;
 	float _trainingRatio;
 	CharacterData _characterData;
-	public void RefreshInfo()
+	public void RefreshInfo(bool ignoreResetFillGauge)
 	{
 		string actorId = CharacterListCanvas.instance.selectedActorId;
 		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(actorId);
@@ -90,6 +90,10 @@ public class CharacterInfoTrainingCanvas : MonoBehaviour
 		trainingPercentValueText.text = string.Format("{0:0.##}%", _trainingRatio * 100.0f);
 		trainingPercentValueText.color = (_trainingRatio < 1.0f) ? _percentColor : _fullPercentColor;
 		RefreshStatus(_trainingRatio);
+
+		if (ignoreResetFillGauge == false)
+			percentOrbFill.ResetFill();
+		percentOrbFill.Fill = _trainingRatio;
 
 		if (_trainingRatio >= 1.0f)
 		{
@@ -196,7 +200,7 @@ public class CharacterInfoTrainingCanvas : MonoBehaviour
 
 		if (PlayerData.instance.dailyTrainingGoldCompleted == false && PlayerData.instance.dailyTrainingDiaCompleted == false)
 		{
-			RefreshInfo();
+			RefreshInfo(true);
 			_needRefresh = false;
 		}
 	}
@@ -282,6 +286,10 @@ public class CharacterInfoTrainingCanvas : MonoBehaviour
 		// 인풋 차단
 		CharacterInfoCanvas.instance.inputLockObject.SetActive(true);
 
+		// priceButton도 하이드
+		priceButtonObject.SetActive(false);
+		remainTimeText.gameObject.SetActive(false);
+
 		float tweenDelay = 0.5f;
 
 		// 올라가는 퍼센트 텍스트
@@ -292,10 +300,6 @@ public class CharacterInfoTrainingCanvas : MonoBehaviour
 		yield return Timing.WaitForSeconds(0.7f);
 
 		// 게이지 애니메이션
-		float diff = _trainingRatio - targetTrainingRatio;
-		_fillSpeed = diff / valueChangeTime;
-		_fillRemainTime = valueChangeTime;
-
 		_valueChangeSpeed = -_addValue / valueChangeTime;
 		_floatCurrentValue = _addValue;
 		_updateValueText = true;
@@ -310,7 +314,7 @@ public class CharacterInfoTrainingCanvas : MonoBehaviour
 		yield return Timing.WaitForSeconds(0.8f);
 
 		// Refresh
-		RefreshInfo();
+		RefreshInfo(true);
 		ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_TrainingDone"), 2.0f);
 		yield return Timing.WaitForSeconds(1.0f);
 
@@ -335,30 +339,12 @@ public class CharacterInfoTrainingCanvas : MonoBehaviour
 			_floatCurrentValue = 0.0f;
 			_updateValueText = false;
 		}
-		trainingPercentValueText.text = string.Format("{0:0.##}%", (_trainingRatio + (_addValue - _floatCurrentValue)) * 100.0f);
+		float newValue = _trainingRatio + (_addValue - _floatCurrentValue);
+		percentOrbFill.Fill = newValue;
+		trainingPercentValueText.text = string.Format("{0:0.##}%", newValue * 100.0f);
 		if (_updateValueText)
 			addPercentValueText.text = string.Format("+{0:0.##}%", _floatCurrentValue * 100.0f);
 		else
 			addPercentValueText.gameObject.SetActive(false);
-	}
-
-	float _fillRemainTime;
-	float _fillSpeed;
-	void UpdateResultGauge()
-	{
-		if (_fillRemainTime <= 0.0f)
-			return;
-
-		_fillRemainTime -= Time.deltaTime;
-		//resultGaugeSlider.value += _fillSpeed * Time.deltaTime;
-
-		if (_fillRemainTime <= 0.0f)
-		{
-			_fillRemainTime = 0.0f;
-
-			//resultGaugeColorTween.DOPause();
-			//resultGaugeImage.color = EquipListStatusInfo.GetGaugeColor(_equipData.GetOption(_optionIndex).GetRandomStatusRatio() == 1.0f);
-			//resultGaugeEndPointImage.DOFade(0.0f, 0.25f).SetEase(Ease.OutQuad).onComplete = () => { resultGaugeEndPointImage.gameObject.SetActive(false); };
-		}
 	}
 }

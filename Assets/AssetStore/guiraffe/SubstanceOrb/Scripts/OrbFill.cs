@@ -25,4 +25,12 @@ public class OrbFill : OrbBehaviour
         float rate = Time.deltaTime * AnimationSpeed;
         Material.SetFloat(OrbVariable.FILL, Mathf.Lerp(Material.GetFloat(OrbVariable.FILL), Fill, rate));
     }
+
+	#region Custom
+	public void ResetFill()
+	{
+		Fill = 0.0f;
+		Material.SetFloat(OrbVariable.FILL, Fill);
+	}
+	#endregion
 }

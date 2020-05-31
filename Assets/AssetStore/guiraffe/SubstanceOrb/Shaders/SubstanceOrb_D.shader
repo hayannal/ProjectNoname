@@ -1,4 +1,4 @@
-﻿Shader "guiraffe/SubstanceOrb"
+﻿Shader "guiraffe/SubstanceOrb_D"
 {
 	Properties
 	{

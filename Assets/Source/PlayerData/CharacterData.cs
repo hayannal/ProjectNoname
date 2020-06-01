@@ -23,6 +23,13 @@ public class CharacterData
 	ObscuredInt _trainingValue;
 	public int trainingValue { get { return _trainingValue; } }
 
+	ObscuredInt _wingLookId;
+	public int wingLookId { get { return _wingLookId; } }
+	List<ObscuredInt> _listWingGradeId = new List<ObscuredInt>();
+	public List<ObscuredInt> listWingGradeId { get { return _listWingGradeId; } }
+	ObscuredInt _wingHide;
+	public bool wingHide { get { return _wingHide == 1; } }
+
 	public bool needLimitBreak
 	{
 		get
@@ -299,6 +306,27 @@ public class CharacterData
 				invalid = true;
 			}
 		}
+
+		_listWingGradeId.Clear();
+		if (_limitBreakLevel >= 3)
+		{
+			if (_listWingGradeId.Count == 0)
+			{
+				for (int i = 0; i < (int)CharacterInfoWingCanvas.eStatsType.Amount; ++i)
+					_listWingGradeId.Add(0);
+			}
+
+			if (characterStatistics.ContainsKey("wgLk"))
+				_wingLookId = characterStatistics["wgLk"];
+			if (characterStatistics.ContainsKey("wgGr0"))
+				_listWingGradeId[0] = characterStatistics["wgGr0"];
+			if (characterStatistics.ContainsKey("wgGr1"))
+				_listWingGradeId[1] = characterStatistics["wgGr1"];
+			if (characterStatistics.ContainsKey("wgGr2"))
+				_listWingGradeId[2] = characterStatistics["wgGr2"];
+			if (characterStatistics.ContainsKey("wgHd"))
+				_wingHide = characterStatistics["wgHd"];
+		}
 	}
 
 	public void OnPowerLevelUp()
@@ -355,5 +383,47 @@ public class CharacterData
 		PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(actorId);
 		if (playerActor != null)
 			playerActor.actorStatus.InitializeActorStatus();
+	}
+
+	public bool HasWing()
+	{
+		bool findGrade = false;
+		for (int i = 0; i < _listWingGradeId.Count; ++i)
+		{
+			if (_listWingGradeId[i] > 0)
+			{
+				findGrade = true;
+				break;
+			}
+		}
+		if (findGrade == false)
+			return false;
+
+		if (_wingLookId == 0)
+			return false;
+
+		return true;
+	}
+
+	public void OnChangeWing(int changeType, int wingLookId, int gradeIndex0, int gradeIndex1, int gradeIndex2)
+	{
+		if (changeType == 0 || changeType == 1)
+			_wingLookId = wingLookId;
+		if (changeType == 0 || changeType == 2)
+		{
+			if (_listWingGradeId.Count == 0)
+			{
+				for (int i = 0; i < (int)CharacterInfoWingCanvas.eStatsType.Amount; ++i)
+					_listWingGradeId.Add(0);
+			}
+			_listWingGradeId[0] = gradeIndex0;
+			_listWingGradeId[1] = gradeIndex1;
+			_listWingGradeId[2] = gradeIndex2;
+		}
+	}
+
+	public void HideWing(bool hideState)
+	{
+		_wingHide = hideState ? 1 : 0;
 	}
 }

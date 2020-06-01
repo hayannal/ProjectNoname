@@ -970,6 +970,59 @@ public class PlayFabApiManager : MonoBehaviour
 		});
 	}
 
+	public void RequestChangeWing(CharacterData characterData, int changeType, int wingLookId, int gradeIndex0, int gradeIndex1, int gradeIndex2, int price, Action successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		string checkSum = "";
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		checkSum = CheckSum(string.Format("{0}_{1}_{2}_{3}_{4}_{5}", characterData.entityKey.Id, changeType, wingLookId, gradeIndex0, gradeIndex1, gradeIndex2));
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "ChangeWing",
+			FunctionParameter = new { ChrId = characterData.entityKey.Id, ChTp = changeType, Look = wingLookId, Gr0 = gradeIndex0, Gr1 = gradeIndex1, Gr2 = gradeIndex2, InCs = checkSum },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+				CurrencyData.instance.dia -= price;
+				characterData.OnChangeWing(changeType, wingLookId, gradeIndex0, gradeIndex1, gradeIndex2);
+
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+
+	public void RequestHideWing(CharacterData characterData, bool hideState, Action successCallback)
+	{
+		ExecuteCloudScriptRequest request = new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "HideWing",
+			FunctionParameter = new { ChrId = characterData.entityKey.Id, Hid = hideState ? 1 : 0 },
+			GeneratePlayStreamEvent = true,
+		};
+		Action action = () =>
+		{
+			PlayFabClientAPI.ExecuteCloudScript(request, (success) =>
+			{
+				RetrySendManager.instance.OnSuccess();
+				characterData.HideWing(hideState);
+				if (successCallback != null) successCallback.Invoke();
+			}, (error) =>
+			{
+				RetrySendManager.instance.OnFailure();
+			});
+		};
+		RetrySendManager.instance.RequestAction(action, true);
+	}
+
 	// 이것도 서버에 저장되는 Entity Object
 	public class CharacterDataEntity1
 	{

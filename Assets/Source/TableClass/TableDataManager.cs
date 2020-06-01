@@ -49,6 +49,8 @@ public class TableDataManager : MonoBehaviour
 	public ShopDailyDiamondTable shopDailyDiamondTable;
 	public ResearchTable researchTable;
 	public ExtraStatTable extraStatTable;
+	public WingLookTable wingLookTable;
+	public WingPowerTable wingPowerTable;
 
 	void Awake()
 	{
@@ -426,6 +428,16 @@ public class TableDataManager : MonoBehaviour
 		{
 			if (extraStatTable.dataArray[i].extraStatId == (int)statsType && extraStatTable.dataArray[i].level == point)
 				return extraStatTable.dataArray[i];
+		}
+		return null;
+	}
+
+	public WingPowerTableData FindWingPowerTableData(int wingType, int grade)
+	{
+		for (int i = 0; i < wingPowerTable.dataArray.Length; ++i)
+		{
+			if (wingPowerTable.dataArray[i].wingType == wingType && wingPowerTable.dataArray[i].grade == grade)
+				return wingPowerTable.dataArray[i];
 		}
 		return null;
 	}

@@ -351,7 +351,7 @@ public class CharacterInfoWingCanvas : MonoBehaviour
 
 		UIInstanceManager.instance.ShowCanvasAsync("ConfirmSpendCanvas", () =>
 		{
-			ConfirmSpendCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_ChangeWingsLookConfirm"), CurrencyData.eCurrencyType.Diamond, _changeWingPrice, false, () =>
+			ConfirmSpendCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_ChangeWingsLookConfirm"), CurrencyData.eCurrencyType.Diamond, _changeWingLookPrice, false, () =>
 			{
 				RequestChangeWing(1, _changeWingLookPrice);
 			});
@@ -375,7 +375,7 @@ public class CharacterInfoWingCanvas : MonoBehaviour
 
 		UIInstanceManager.instance.ShowCanvasAsync("ConfirmSpendCanvas", () =>
 		{
-			ConfirmSpendCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_ChangeWingsOptionsConfirm"), CurrencyData.eCurrencyType.Diamond, _changeWingPrice, false, () =>
+			ConfirmSpendCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_ChangeWingsOptionsConfirm"), CurrencyData.eCurrencyType.Diamond, _changeWingOptionPrice, false, () =>
 			{
 				RequestChangeWing(2, _changeWingOptionPrice);
 			});

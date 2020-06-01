@@ -266,6 +266,11 @@ public class CharacterInfoWingCanvas : MonoBehaviour
 
 		PlayFabApiManager.instance.RequestHideWing(_characterData, true, () =>
 		{
+			// 메뉴 안에서는 항상 보이기 때문에 호출할 필요 없다.
+			//PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(_characterData.actorId);
+			//if (playerActor != null)
+			//	playerActor.RefreshWingHide();
+
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_HideWingsOn"), 2.0f);
 		});
 	}

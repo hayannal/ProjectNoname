@@ -432,6 +432,16 @@ public class TableDataManager : MonoBehaviour
 		return null;
 	}
 
+	public WingLookTableData FindWingLookTableData(int lookId)
+	{
+		for (int i = 0; i < wingLookTable.dataArray.Length; ++i)
+		{
+			if (wingLookTable.dataArray[i].wingLookId == lookId)
+				return wingLookTable.dataArray[i];
+		}
+		return null;
+	}
+
 	public WingPowerTableData FindWingPowerTableData(int wingType, int grade)
 	{
 		for (int i = 0; i < wingPowerTable.dataArray.Length; ++i)

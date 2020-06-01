@@ -11,6 +11,7 @@ public class PlayerActor : Actor
 	public override bool IsPlayerActor() { return true; }
 
 	public GameObject[] cachingObjectList;
+	public Transform wingRootTransform;
 
 	public SkillProcessor skillProcessor { get; private set; }
 	public PlayerAI playerAI { get; private set; }
@@ -35,7 +36,11 @@ public class PlayerActor : Actor
 	void OnEnable()
 	{
 		if (_started)
+		{
+			// 이미 생성당시에 날개 생성은 모두 완료했을거다. 여기서는 전투중에 꺼놨던 캐릭을 켰을때를 대비해서 Hide옵션 체크만 해도 충분하다.
+			RefreshWingHide();
 			RegisterBattleInstance();
+		}
 	}
 	#endregion
 
@@ -74,6 +79,8 @@ public class PlayerActor : Actor
 		targetingProcessor.sphereCastRadiusForCheckWall = actorTableData.targetingSphereRadius;
 		flying = actorTableData.flying;
 
+		// 처음 캐릭을 만들땐 생성까진 해두고 Hide여부는 SetActive로 제어하기로 한다.
+		RefreshWing();
 		RegisterBattleInstance();
 	}
 
@@ -311,6 +318,68 @@ public class PlayerActor : Actor
 		if (_cachedUltimateIndicatorTransform.gameObject.activeSelf == false)
 			return;
 		_cachedUltimateIndicatorTransform.position = cachedTransform.position;
+	}
+	#endregion
+
+	#region Wing
+	GameObject _wingObject;
+	void DisableWing()
+	{
+		if (_wingObject != null)
+		{
+			if (_wingObject.activeSelf)
+				_wingObject.SetActive(false);
+			_wingObject = null;
+		}
+	}
+
+	public void RefreshWing()
+	{
+		CharacterData characterData = PlayerData.instance.GetCharacterData(actorId);
+		if (characterData == null || characterData.HasWing() == false || wingRootTransform == null)
+		{
+			DisableWing();
+			return;
+		}
+
+		WingLookTableData wingLookTableData = TableDataManager.instance.FindWingLookTableData(characterData.wingLookId);
+		if (wingLookTableData == null)
+		{
+			DisableWing();
+			return;
+		}
+
+		AddressableAssetLoadManager.GetAddressableGameObject(wingLookTableData.prefabAddress, "Wing", (prefab) =>
+		{
+			// 장착중인 날개는 새로운거로 교체되는 시점에 하이드 시켜준다.
+			DisableWing();
+
+			_wingObject = BattleInstanceManager.instance.GetCachedObject(prefab, wingRootTransform);
+
+			// 로드하고 나서는 항상 Hide 체크를 한다.
+			RefreshWingHide();
+		});
+	}
+
+	public void RefreshWingHide()
+	{
+		if (_wingObject == null)
+			return;
+		CharacterData characterData = PlayerData.instance.GetCharacterData(actorId);
+		if (characterData == null || characterData.HasWing() == false)
+			return;
+
+		if (characterData.wingHide == false)
+		{
+			_wingObject.SetActive(true);
+			return;
+		}
+
+		// hide상태일때는 현재 위치에 따라 나눠서 처리해야한다.
+		bool hide = true;
+		if (CharacterListCanvas.instance != null && StackCanvas.IsInStack(CharacterListCanvas.instance.gameObject, false))
+			hide = false;
+		_wingObject.SetActive(!hide);
 	}
 	#endregion
 }

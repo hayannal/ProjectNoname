@@ -65,6 +65,7 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 
 		_playerActor = BattleInstanceManager.instance.playerActor;
 		SetInfoCameraMode(true, _playerActor.actorId);
+		_playerActor.RefreshWingHide();
 		RefreshGrid(true);
 	}
 
@@ -98,6 +99,7 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 			_playerActor.gameObject.SetActive(true);
 		}
 		SetInfoCameraMode(false, "");
+		_playerActor.RefreshWingHide();
 
 		// CharacterListCanvas의 Alarm은 수동으로 관리하니 여기서 꺼줘야한다.
 		for (int i = 0; i < _listSwapCanvasListItem.Count; ++i)

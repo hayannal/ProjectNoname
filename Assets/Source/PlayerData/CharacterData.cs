@@ -348,7 +348,10 @@ public class CharacterData
 	public void OnApplyStats(int strAddPoint, int dexAddPoint, int intAddPoint, int vitAddPoint)
 	{
 		if (_listStatPoint.Count == 0)
-			return;
+		{
+			for (int i = 0; i < (int)CharacterInfoStatsCanvas.eStatsType.Amount; ++i)
+				_listStatPoint.Add(0);
+		}
 
 		_listStatPoint[0] += strAddPoint;
 		_listStatPoint[1] += dexAddPoint;

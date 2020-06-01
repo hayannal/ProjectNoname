@@ -251,20 +251,21 @@ public class CharacterInfoTrainingCanvas : MonoBehaviour
 			return;
 		}
 
-		int addTrainingPoint = 0;
 		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(_actorId);
 		if (actorTableData == null)
 			return;
-		addTrainingPoint = UnityEngine.Random.Range(actorTableData.trainingMin, actorTableData.trainingMax + 1);
-		if (_characterData.trainingValue + addTrainingPoint > TrainingMax)
-			addTrainingPoint = TrainingMax - _characterData.trainingValue;
-		if (priceDia > 0)
-			addTrainingPoint *= BattleInstanceManager.instance.GetCachedGlobalConstantInt("TrainingMulti");
 
 		UIInstanceManager.instance.ShowCanvasAsync("ConfirmSpendCanvas", () =>
 		{
 			ConfirmSpendCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString(stringId), currencyType, price, false, () =>
 			{
+				int addTrainingPoint = 0;
+				addTrainingPoint = UnityEngine.Random.Range(actorTableData.trainingMin, actorTableData.trainingMax + 1);
+				if (_characterData.trainingValue + addTrainingPoint > TrainingMax)
+					addTrainingPoint = TrainingMax - _characterData.trainingValue;
+				if (priceDia > 0)
+					addTrainingPoint *= BattleInstanceManager.instance.GetCachedGlobalConstantInt("TrainingMulti");
+
 				PlayFabApiManager.instance.RequestCharacterTraining(_characterData, addTrainingPoint, priceGold, priceDia, () =>
 				{
 					ConfirmSpendCanvas.instance.gameObject.SetActive(false);

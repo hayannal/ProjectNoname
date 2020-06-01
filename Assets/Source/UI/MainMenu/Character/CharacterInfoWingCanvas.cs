@@ -67,6 +67,7 @@ public class CharacterInfoWingCanvas : MonoBehaviour
 	void Start()
 	{
 		GetComponent<Canvas>().worldCamera = UIInstanceManager.instance.GetCachedCameraMain();
+		_ignoreStartEvent = true;
 	}
 
 	void OnEnable()
@@ -146,7 +147,12 @@ public class CharacterInfoWingCanvas : MonoBehaviour
 				}
 			}
 
-			hideSwitch.isOn = characterData.wingHide;
+			if (hideSwitch.isOn != characterData.wingHide)
+			{
+				_notUserSetting = true;
+				hideSwitch.AnimateSwitch();
+				_notUserSetting = false;
+			}
 		}
 
 		changeWingText.SetLocalizedText(UIString.instance.GetString(hasWing ? "GameUI_ChangeWings" : "GameUI_CreateWings"));
@@ -241,6 +247,9 @@ public class CharacterInfoWingCanvas : MonoBehaviour
 		return _stringBuilderGrade.ToString();
 	}
 
+	// SwitchAnim 특성상 처음 Start호출될때 한번 이벤트를 강제로 발생시킨다. 이때 패킷 보내면 안되므로 플래그 하나를 만들어둔다.
+	bool _ignoreStartEvent = false;
+	// 옵션이 다른 캐릭터를 번갈아가면서 볼때 캐릭터에게 셋팅한대로 값을 로드해서 적용해야한다. 이때는 패킷을 보내면 안되므로 플래그를 하나 더 만들어서 관리한다.
 	bool _notUserSetting = false;
 	public void OnSwitchOnHide()
 	{
@@ -249,6 +258,11 @@ public class CharacterInfoWingCanvas : MonoBehaviour
 
 		if (_notUserSetting)
 			return;
+		if (_ignoreStartEvent)
+		{
+			_ignoreStartEvent = false;
+			return;
+		}
 
 		PlayFabApiManager.instance.RequestHideWing(_characterData, true, () =>
 		{
@@ -263,6 +277,11 @@ public class CharacterInfoWingCanvas : MonoBehaviour
 
 		if (_notUserSetting)
 			return;
+		if (_ignoreStartEvent)
+		{
+			_ignoreStartEvent = false;
+			return;
+		}
 
 		PlayFabApiManager.instance.RequestHideWing(_characterData, false, () =>
 		{

@@ -127,7 +127,8 @@ public class BattleModeProcessorBase
 		// 근데 여기서 이미 발동되었거나 하는 것들 고려해서 복구해야한다.
 		// 캐릭터 고유 스킬과 달리 레벨팩은 추가로 저장할 요소가 없기 때문에 리스트만 가지고 복구하면 된다.
 		string jsonCachedLevelPackData = ClientSaveData.instance.GetCachedLevelPackData();
-		LevelPackDataManager.instance.SetInProgressLevelPackData(jsonCachedLevelPackData);
+		if (string.IsNullOrEmpty(jsonCachedLevelPackData) == false)
+			LevelPackDataManager.instance.SetInProgressLevelPackData(jsonCachedLevelPackData);
 
 		// 캐릭터 다 했으면 스테이지 상태도 복구
 		if (ClientSaveData.instance.GetCachedMonsterAllKill())

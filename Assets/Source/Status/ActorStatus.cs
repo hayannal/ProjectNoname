@@ -96,6 +96,12 @@ public class ActorStatus : MonoBehaviour
 				maxHpAddRate += actorTableData.trainingHp * trainingRatio;
 				attackAddRate += actorTableData.trainingAtk * trainingRatio;
 			}
+			if (characterData.listWingGradeId.Count == (int)CharacterInfoWingCanvas.eStatsType.Amount)
+			{
+				_statusBase.valueList[(int)eActorStatus.AttackSpeedAddRate] += GetValueByCharacterWing(characterData, CharacterInfoWingCanvas.eStatsType.AttackSpeed);
+				_statusBase.valueList[(int)eActorStatus.CriticalRate] += GetValueByCharacterWing(characterData, CharacterInfoWingCanvas.eStatsType.CriticalRate);
+				_statusBase.valueList[(int)eActorStatus.CriticalDamageAddRate] += GetValueByCharacterWing(characterData, CharacterInfoWingCanvas.eStatsType.CriticalDamage);
+			}
 
 			// over max pp
 			attackAddRate += GetAttackAddRateByOverPP();
@@ -232,6 +238,23 @@ public class ActorStatus : MonoBehaviour
 		if (extraStatTableData == null)
 			return 0.0f;
 		return value2 ? extraStatTableData.value2 : extraStatTableData.value1;
+	}
+	#endregion
+
+	#region Wing
+	float GetValueByCharacterWing(CharacterData characterData, CharacterInfoWingCanvas.eStatsType statsType)
+	{
+		//if (characterData == null)
+		//	return 0.0f;
+		//if (characterData.listWingGradeId.Count != (int)CharacterInfoWingCanvas.eStatsType.Amount)
+		//	return 0.0f;
+		int grade = characterData.listWingGradeId[(int)statsType];
+		if (grade == 0)
+			return 0.0f;
+		WingPowerTableData wingPowerTableData = TableDataManager.instance.FindWingPowerTableData((int)statsType, grade);
+		if (wingPowerTableData == null)
+			return 0.0f;
+		return wingPowerTableData.value1;
 	}
 	#endregion
 

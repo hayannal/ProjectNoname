@@ -422,6 +422,11 @@ public class CharacterData
 			_listWingGradeId[0] = gradeIndex0;
 			_listWingGradeId[1] = gradeIndex1;
 			_listWingGradeId[2] = gradeIndex2;
+
+			// powerLevel과 마찬가지고 변경되면 이걸 사용하는 PlayerActor의 ActorStatus도 새로 스탯을 계산해야한다.
+			PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(actorId);
+			if (playerActor != null)
+				playerActor.actorStatus.InitializeActorStatus();
 		}
 	}
 

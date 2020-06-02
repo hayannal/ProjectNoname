@@ -200,6 +200,8 @@ public class CharacterPowerLevelUpCanvas : DetailShowCanvasBase
 		_processed = true;
 
 		CharacterListCanvas.instance.RefreshGrid(false);
+		// 어차피 연출에 의해 창닫히고 다시 열릴떄 알아서 InfoCanvas의 RefreshAlarm은 갱신되게 되어있다. 별도로 호출하지 않아도 된다.
+		//CharacterInfoCanvas.instance.RefreshAlarmObjectList();
 		DotMainMenuCanvas.instance.RefreshCharacterAlarmObject();
 		DotMainMenuCanvas.instance.RefreshResearchAlarmObject();
 

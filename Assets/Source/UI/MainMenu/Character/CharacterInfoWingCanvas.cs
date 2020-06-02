@@ -50,6 +50,8 @@ public class CharacterInfoWingCanvas : MonoBehaviour
 	public Text optionPriceText;
 	public Coffee.UIExtensions.UIEffect optionPriceGrayscaleEffect;
 
+	public GameObject effectPrefab;
+
 	public enum eStatsType
 	{
 		AttackSpeed,
@@ -79,6 +81,7 @@ public class CharacterInfoWingCanvas : MonoBehaviour
 	string _actorId;
 	CharacterData _characterData;
 	bool _hasWing;
+	int _prevWingLookId;
 	public void RefreshInfo()
 	{
 		string actorId = CharacterListCanvas.instance.selectedActorId;
@@ -179,6 +182,7 @@ public class CharacterInfoWingCanvas : MonoBehaviour
 		optionPriceGrayscaleEffect.enabled = disablePrice;
 
 		_hasWing = hasWing;
+		_prevWingLookId = characterData.wingLookId;
 	}
 	#endregion
 
@@ -390,7 +394,20 @@ public class CharacterInfoWingCanvas : MonoBehaviour
 		int gradeIndex2 = 0;
 
 		if (changeType == 0 || changeType == 1)
+		{
 			wingLookId = GetWingLookId();
+
+			// 패킷 받고 교체할테니 미리 프리로딩을 걸어둔다.
+			_nextWingPrefab = null;
+			WingLookTableData wingLookTableData = TableDataManager.instance.FindWingLookTableData(wingLookId);
+			if (wingLookTableData != null)
+			{
+				AddressableAssetLoadManager.GetAddressableGameObject(wingLookTableData.prefabAddress, "Wing", (prefab) =>
+				{
+					_nextWingPrefab = prefab;
+				});
+			}
+		}
 		if (changeType == 0 || changeType == 2)
 			GetWingPowerId(ref gradeIndex0, ref gradeIndex1, ref gradeIndex2);
 
@@ -400,31 +417,56 @@ public class CharacterInfoWingCanvas : MonoBehaviour
 		PlayFabApiManager.instance.RequestChangeWing(_characterData, changeType, wingLookId, gradeIndex0, gradeIndex1, gradeIndex2, price, () =>
 		{
 			ConfirmSpendCanvas.instance.gameObject.SetActive(false);
-			OnRecvChangeWing();
+			CharacterInfoCanvas.instance.currencySmallInfo.RefreshInfo();
+			Timing.RunCoroutine(ChangeWingProcess(changeType, wingLookId));
 		});
 	}
 
-	void OnRecvChangeWing()
-	{
-		CharacterInfoCanvas.instance.currencySmallInfo.RefreshInfo();
-		Timing.RunCoroutine(ChangeWingProcess());
-	}
-
-	IEnumerator<float> ChangeWingProcess()
+	GameObject _nextWingPrefab;
+	IEnumerator<float> ChangeWingProcess(int changeType, int wingLookId)
 	{
 		// 인풋 차단
 		CharacterInfoCanvas.instance.inputLockObject.SetActive(true);
 
-		// Refresh
+		// 날개 교체는 이펙트 끝날때 바로 해야하니 이펙트가 로딩되었는지를 확인한다.
+		if (changeType == 0 || changeType == 1)
+		{
+			while (_nextWingPrefab == null)
+				yield return Timing.WaitForOneFrame;
+		}
+
+		// priceButton은 3개나 있기도 하고 골드가 다이아로 바뀌는거 같은 아이콘 변경은 없으니 그냥 둔다.
+		//priceButtonObject.SetActive(false);
+
+		// 인풋 막은 상태에서 이펙트
+		BattleInstanceManager.instance.GetCachedObject(effectPrefab, CharacterListCanvas.instance.rootOffsetPosition, Quaternion.identity, null);
+		yield return Timing.WaitForSeconds(1.5f);
+
+		// 사전 이펙트 끝나갈때쯤 화이트 페이드
+		FadeCanvas.instance.FadeOut(0.3f, 0.85f);
+		yield return Timing.WaitForSeconds(0.3f);
+
+		// 화이트 페이드의 끝나는 시점에 날개 교체하면서 캔버스 갱신하고 툴팁 표시
+		if (changeType == 0 || changeType == 1)
+		{
+			PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(_characterData.actorId);
+			if (playerActor != null)
+				playerActor.RefreshWing();
+
+			// 들고있을 필요는 없으니 null
+			_nextWingPrefab = null;
+		}
+
 		RefreshInfo();
 		ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_WingsChangeDone"), 2.0f);
+		FadeCanvas.instance.FadeIn(1.5f);
+
+		// 페이드 복구중 1초 지나면
 		yield return Timing.WaitForSeconds(1.0f);
 
 		// 인풋 복구
 		CharacterInfoCanvas.instance.inputLockObject.SetActive(false);
 	}
-
-
 
 
 	#region Drop
@@ -445,6 +487,9 @@ public class CharacterInfoWingCanvas : MonoBehaviour
 		{
 			float weight = TableDataManager.instance.wingLookTable.dataArray[i].weight;
 			if (weight <= 0.0f)
+				continue;
+
+			if (_hasWing && _prevWingLookId == TableDataManager.instance.wingLookTable.dataArray[i].wingLookId)
 				continue;
 
 			sumWeight += weight;

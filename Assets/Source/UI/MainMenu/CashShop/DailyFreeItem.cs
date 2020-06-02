@@ -49,6 +49,10 @@ public class DailyFreeItem : MonoBehaviour
 	int _addDia, _addGold, _addEnergy;
 	public void RefreshInfo()
 	{
+		// 기간제 상품과 마찬가지로 수령하지 않아도 일일 무료데이터를 갱신해야하는거라 
+		_dailyResetTime = DailyShopData.instance.dailyFreeItemResetTime;
+		_needUpdate = true;
+
 		_addDia = _addGold = _addEnergy = 0;
 		DailyShopData.DailyFreeItemInfo info = DailyShopData.instance.GetTodayFreeItemData();
 		if (info == null)
@@ -89,8 +93,6 @@ public class DailyFreeItem : MonoBehaviour
 		if (received)
 		{
 			iconTweenAnimation.DOPause();
-			_nextResetDateTime = DailyShopData.instance.dailyFreeItemResetTime;
-			_needUpdate = true;
 			AlarmObject.Hide(alarmRootTransform);
 		}
 		else
@@ -104,7 +106,7 @@ public class DailyFreeItem : MonoBehaviour
 		}
 	}
 
-	DateTime _nextResetDateTime;
+	DateTime _dailyResetTime;
 	bool _needUpdate = false;
 	void UpdateRemainTime()
 	{
@@ -113,7 +115,7 @@ public class DailyFreeItem : MonoBehaviour
 		if (_needUpdate == false)
 			return;
 
-		if (ServerTime.UtcNow < _nextResetDateTime)
+		if (ServerTime.UtcNow < _dailyResetTime)
 		{
 		}
 		else

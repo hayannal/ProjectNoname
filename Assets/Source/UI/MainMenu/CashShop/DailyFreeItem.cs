@@ -49,8 +49,10 @@ public class DailyFreeItem : MonoBehaviour
 	int _addDia, _addGold, _addEnergy;
 	public void RefreshInfo()
 	{
-		// 기간제 상품과 마찬가지로 수령하지 않아도 일일 무료데이터를 갱신해야하는거라 
-		_dailyResetTime = DailyShopData.instance.dailyFreeItemResetTime;
+		// 일일 무료 아이템을 수령하지 않아도 갱신은 하루 단위로 해야하는거라 DailyShopData의 갱신 시간을 따르지 않고 강제로 1일을 넣어둔다.
+		// 데이터 갱신과 캔버스 갱신이 다른 유일한 예.
+		//_dailyResetTime = DailyShopData.instance.dailyFreeItemResetTime;
+		_dailyResetTime = new DateTime(ServerTime.UtcNow.Year, ServerTime.UtcNow.Month, ServerTime.UtcNow.Day) + TimeSpan.FromDays(1);
 		_needUpdate = true;
 
 		_addDia = _addGold = _addEnergy = 0;

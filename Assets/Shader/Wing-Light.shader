@@ -20,6 +20,9 @@ Shader "FrameworkPV/Wing"
 		_LightIntensity("Light Intensity", Range(0, 1)) = 0.3
 		_AmbientIntensity("Ambient Intensity", Range(0, 1)) = 0.2
 		_TimeSpeed("Time Speed", Range(0.1, 2)) = 0.5
+
+		[Enum(UnityEngine.Rendering.BlendMode)] _SrcBlend("SrcBlend Mode", Float) = 1
+		[Enum(UnityEngine.Rendering.BlendMode)] _DstBlend("DstBlend Mode", Float) = 1
 		[Enum(UnityEngine.Rendering.CullMode)] _Cull("Cull Mode", Float) = 0
     }
     SubShader
@@ -32,7 +35,7 @@ Shader "FrameworkPV/Wing"
 		}
         LOD 200
 
-		Blend One One
+		Blend [_SrcBlend] [_DstBlend]
 		Cull [_Cull]
 		ZWrite Off
 		Fog {Mode Off}
@@ -104,7 +107,7 @@ Shader "FrameworkPV/Wing"
 			float node_5205 = _Time.y * _TimeSpeed;
 			float2 node_8473 = ((i.wingUV*_wing_uv) + (node_5205*_wing_speed)*float2(-1, 0));
 			float4 _wing_var = tex2D(_wing, TRANSFORM_TEX(node_8473, _wing));
-			float3 node_3177 = (_wing_var.rgb*_wing_var.a*_wing_color.rgb);
+			float3 node_3177 = (_wing_var.rgb*_wing_color.rgb);
 			float4 _mask_var = tex2D(_mask, TRANSFORM_TEX(i.wingUV, _mask));
 			float2 node_9924 = ((i.wingUV*_dust_UV) + (node_5205*_dust_speed)*float2(-1, 0));
 			float4 _dust_var = tex2D(_dust, TRANSFORM_TEX(node_9924, _dust));
@@ -114,7 +117,7 @@ Shader "FrameworkPV/Wing"
 				float3 emissive = ((node_3177*_mask_var.rgb*_wing_intensity) + ((node_3177*_dust_var.rgb*_mask_var.rgb*_dust_intensity)*_dust_color.rgb));
 			#endif
 			o.Albedo = emissive * _ColorIntensity;
-			o.Alpha = 1.0f;
+			o.Alpha = _wing_var.a * _mask_var.r;
 		}
         ENDCG
     }

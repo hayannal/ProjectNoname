@@ -16,7 +16,9 @@ Shader "FrameworkPV/Wing"
 
 		[Toggle(_SHOWDUST)] _UseShowDust("========== Show Dust ==========", Float) = 0
 
-		_ColorIntensity("Color Intensity", Range(0, 1)) = 0.5
+		_ColorIntensity("Color Intensity", Range(0, 1)) = 0.8
+		_LightIntensity("Light Intensity", Range(0, 1)) = 0.3
+		_AmbientIntensity("Ambient Intensity", Range(0, 1)) = 0.2
 		_TimeSpeed("Time Speed", Range(0.1, 2)) = 0.5
 		[Enum(UnityEngine.Rendering.CullMode)] _Cull("Cull Mode", Float) = 0
     }
@@ -36,7 +38,7 @@ Shader "FrameworkPV/Wing"
 		Fog {Mode Off}
 
 		CGPROGRAM
-		#pragma surface surf Lambert exclude_path:prepass nolightmap noforwardadd keepalpha
+		#pragma surface surf Custom exclude_path:prepass nolightmap noforwardadd keepalpha
 		#pragma vertex vert
 		#pragma shader_feature_local _SHOWDUST
 
@@ -55,7 +57,35 @@ Shader "FrameworkPV/Wing"
 		uniform float4 _wing_color;
 		uniform float _wing_uv;
 		half _ColorIntensity;
+		half _LightIntensity;
+		half _AmbientIntensity;
 		half _TimeSpeed;
+
+		inline fixed4 CustomLight(SurfaceOutput s, UnityLight light)
+		{
+			// ignore s.Normal
+			fixed diff = 0.5f;
+			fixed4 c;
+			c.rgb = s.Albedo * light.color * diff * _LightIntensity;
+			c.a = s.Alpha;
+			return c;
+		}
+
+		inline fixed4 LightingCustom(SurfaceOutput s, UnityGI gi)
+		{
+			fixed4 c;
+			c = CustomLight(s, gi.light);
+#ifdef UNITY_LIGHT_FUNCTION_APPLY_INDIRECT
+			c.rgb += s.Albedo * gi.indirect.diffuse * _AmbientIntensity;
+#endif
+			return c;
+		}
+
+		inline void LightingCustom_GI(SurfaceOutput o, UnityGIInput data, inout UnityGI gi)
+		{
+			LightingLambert_GI(o, data, gi);
+		}
+
 
 		struct Input {
 			// Values starting with "uv" are automatically handled internally, so if you need a custom value, never start with "uv".

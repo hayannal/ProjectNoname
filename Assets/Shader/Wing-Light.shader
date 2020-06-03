@@ -16,7 +16,8 @@ Shader "FrameworkPV/Wing"
 
 		[Toggle(_SHOWDUST)] _UseShowDust("========== Show Dust ==========", Float) = 0
 
-		_ColorIntensity("Color Intensity", Range(0, 1)) = 0.8
+		_ColorIntensity("Color Intensity", Range(0, 5)) = 1.8
+		_MenuColorIntensity("Menu Color Intensity", Range(0, 5)) = 1.7
 		_LightIntensity("Light Intensity", Range(0, 1)) = 0.3
 		_AmbientIntensity("Ambient Intensity", Range(0, 1)) = 0.2
 		_TimeSpeed("Time Speed", Range(0.1, 2)) = 0.5
@@ -60,6 +61,7 @@ Shader "FrameworkPV/Wing"
 		uniform float4 _wing_color;
 		uniform float _wing_uv;
 		half _ColorIntensity;
+		half _MenuColorIntensity;
 		half _LightIntensity;
 		half _AmbientIntensity;
 		half _TimeSpeed;
@@ -94,12 +96,20 @@ Shader "FrameworkPV/Wing"
 			// Values starting with "uv" are automatically handled internally, so if you need a custom value, never start with "uv".
 			//float2 uv_MainTex : TEXCOORD0;
 			float2 wingUV : TEXCOORD0;
+
+			// for Menu
+			float2 distanceRate : TEXCOORD1;
 		};
 		
 		void vert(inout appdata_base v, out Input o)
 		{
 			UNITY_INITIALIZE_OUTPUT(Input, o);
 			o.wingUV = v.texcoord;
+
+			// for Menu
+			float3 viewPosition = UnityObjectToViewPos(v.vertex);
+			o.distanceRate.x = lerp(_ColorIntensity, _MenuColorIntensity, step(-25.0f, viewPosition.z));
+			o.distanceRate.y = 0.0f;
 		}
 
 		void surf(Input i, inout SurfaceOutput o)
@@ -116,7 +126,7 @@ Shader "FrameworkPV/Wing"
 			#else
 				float3 emissive = ((node_3177*_mask_var.rgb*_wing_intensity) + ((node_3177*_dust_var.rgb*_mask_var.rgb*_dust_intensity)*_dust_color.rgb));
 			#endif
-			o.Albedo = emissive * _ColorIntensity;
+			o.Albedo = emissive * i.distanceRate.x;
 			o.Alpha = _wing_var.a * _mask_var.r;
 		}
         ENDCG

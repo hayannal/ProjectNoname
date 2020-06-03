@@ -113,7 +113,7 @@ public class MailData : MonoBehaviour
 				return true;
 
 			// 정보가 있더라도 기간 확인 후 삭제가 필요하면 리턴 true
-			DateTime startDateTime = new DateTime(info.sy, info.sm, info.sd);
+			//DateTime startDateTime = new DateTime(info.sy, info.sm, info.sd);
 			DateTime endDateTime = new DateTime(info.ey, info.em, info.ed);
 
 			DateTime receiveTime = new DateTime();
@@ -123,14 +123,17 @@ public class MailData : MonoBehaviour
 				DateTime validTime = receiveTime;
 				validTime = validTime.AddDays(info.ti);
 
-				// ev는 예외처리 해야한다. ev는 받은 날짜가 스스로의 start, end가 되야한다.
+				// ev는 예외처리 해야한다. ev는 endDateTime 검사 없이 validTime만 하면 된다.
 				if (_listMyMailTime[i].id == "ev")
 				{
-					startDateTime = new DateTime(universalTime.Year, universalTime.Month, universalTime.Day);
-					endDateTime = startDateTime.AddDays(1);
+					if (ServerTime.UtcNow > validTime)
+						return true;
 				}
-				if (universalTime > startDateTime && universalTime > endDateTime && ServerTime.UtcNow > validTime)
-					return true;
+				else
+				{
+					if (ServerTime.UtcNow > endDateTime && ServerTime.UtcNow > validTime)
+						return true;
+				}
 			}
 			else
 				return true;

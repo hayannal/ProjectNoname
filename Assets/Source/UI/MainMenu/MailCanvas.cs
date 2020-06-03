@@ -72,41 +72,57 @@ public class MailCanvas : MonoBehaviour
 			return;
 		}
 
-		for (int i = 0; i < listMyMailData.Count; ++i)
+		// j == 0 은 공지 타입. j == 1은 나머지 타입
+		for (int j = 0; j < 2; ++j)
 		{
-			string id = listMyMailData[i].id;
-			if (id == "un")
+			for (int i = 0; i < listMyMailData.Count; ++i)
 			{
-				// 클라이언트에서 숨기는 시스템 메일이다. "un"을 약자로 쓴다.
-				continue;
-			}
-
-			// 메일을 보여주면 안되는 상황들이 있다.
-			// 만료기한이 넘었거나
-			// 혹은 아이템을 이미 수령했거나 등등
-			if (listMyMailData[i].got != 0)
-				continue;
-
-			MailData.MailCreateInfo createInfo = MailData.instance.FindCreateMailInfo(id);
-			if (createInfo == null)
-				continue;
-
-			int receiveDay = 0;
-			DateTime receiveTime = new DateTime();
-			DateTime validTime = new DateTime();
-			if (DateTime.TryParse(listMyMailData[i].rcvDat, out receiveTime))
-			{
-				DateTime universalTime = receiveTime.ToUniversalTime();
-				validTime = universalTime;
-				validTime = validTime.AddDays(createInfo.ti);
-				if (ServerTime.UtcNow > validTime)
+				string id = listMyMailData[i].id;
+				if (id == "un")
+				{
+					// 클라이언트에서 숨기는 시스템 메일이다. "un"을 약자로 쓴다.
 					continue;
-				receiveDay = universalTime.Day;
-			}
+				}
 
-			MailCanvasListItem mailCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
-			mailCanvasListItem.Initialize(createInfo, listMyMailData[i], receiveDay, validTime);
-			_listMailCanvasListItem.Add(mailCanvasListItem);
+				// 메일을 보여주면 안되는 상황들이 있다.
+				// 만료기한이 넘었거나
+				// 혹은 아이템을 이미 수령했거나 등등
+				if (listMyMailData[i].got != 0)
+					continue;
+
+				MailData.MailCreateInfo createInfo = MailData.instance.FindCreateMailInfo(id);
+				if (createInfo == null)
+					continue;
+
+				bool noAttachMail = string.IsNullOrEmpty(createInfo.tp);
+				if (j == 0)
+				{
+					if (noAttachMail == false)
+						continue;
+				}
+				if (j == 1)
+				{
+					if (noAttachMail)
+						continue;
+				}
+
+				int receiveDay = 0;
+				DateTime receiveTime = new DateTime();
+				DateTime validTime = new DateTime();
+				if (DateTime.TryParse(listMyMailData[i].rcvDat, out receiveTime))
+				{
+					DateTime universalTime = receiveTime.ToUniversalTime();
+					validTime = universalTime;
+					validTime = validTime.AddDays(createInfo.ti);
+					if (ServerTime.UtcNow > validTime)
+						continue;
+					receiveDay = universalTime.Day;
+				}
+
+				MailCanvasListItem mailCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
+				mailCanvasListItem.Initialize(createInfo, listMyMailData[i], receiveDay, validTime);
+				_listMailCanvasListItem.Add(mailCanvasListItem);
+			}
 		}
 		emptyMailObject.SetActive(_listMailCanvasListItem.Count == 0);
 

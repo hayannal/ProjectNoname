@@ -24,16 +24,31 @@ public class NodeWarPortal : MonoBehaviour
 		worldCanvas.worldCamera = UIInstanceManager.instance.GetCachedCameraMain();
 	}
 
+	void Update()
+	{
+		if (_enteredPortal && _openRemainTime > 0.0f)
+		{
+			_openRemainTime -= Time.deltaTime;
+			if (_openRemainTime <= 0.0f)
+			{
+				_openRemainTime = 0.0f;
+				Timing.RunCoroutine(MoveProcess());
+			}
+		}
+	}
+
 	void ResetFlagForServerFailure()
 	{
 		//changeEffectParticleRootObject.SetActive(false);
 	}
 
-
+	bool _enteredPortal = false;
+	const float PortalOpenTime = 3.0f;
+	float _openRemainTime;
 	void OnTriggerEnter(Collider other)
 	{
 		if (_processing)
-			return;
+			return; 
 
 		AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(other);
 		if (affectorProcessor == null)
@@ -51,7 +66,30 @@ public class NodeWarPortal : MonoBehaviour
 		if (RandomBoxScreenCanvas.instance != null && RandomBoxScreenCanvas.instance.gameObject.activeSelf)
 			return;
 
-		Timing.RunCoroutine(MoveProcess());
+		if (PlayerData.instance.nodeWarCleared)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarDone"), 2.0f);
+			return;
+		}
+
+		_enteredPortal = true;
+		_openRemainTime = PortalOpenTime;
+	}
+
+	void OnTriggerExit(Collider other)
+	{
+		if (_processing)
+			return;
+
+		AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(other);
+		if (affectorProcessor == null)
+			return;
+		if (affectorProcessor.actor == null)
+			return;
+		if (affectorProcessor.actor.team.teamId == (int)Team.eTeamID.DefaultMonster)
+			return;
+
+		_enteredPortal = false;
 	}
 
 

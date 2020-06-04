@@ -15,8 +15,10 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	{
 		base.OnStartBattle();
 
+		BattleInstanceManager.instance.playerActor.cachedTransform.rotation = Quaternion.identity;
+		BattleInstanceManager.instance.playerActor.cachedTransform.position = Vector3.zero;
 		CustomFollowCamera.instance.checkPlaneLeftRightQuad = false;
-		CustomFollowCamera.instance.distanceToTarget += 4.0f;
+		CustomFollowCamera.instance.distanceToTarget += 8.0f;
 		CustomFollowCamera.instance.followSpeed = 5.0f;
 		CustomFollowCamera.instance.immediatelyUpdate = true;
 	}

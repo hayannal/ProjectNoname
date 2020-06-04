@@ -383,6 +383,41 @@ public class StageManager : MonoBehaviour
 			BattleManager.instance.OnLoadedMap();
 	}
 
+	public void DeactiveCurrentMap()
+	{
+		if (_currentPlaneObject != null)
+			_currentPlaneObject.SetActive(false);
+
+		if (_currentGroundObject != null)
+			_currentGroundObject.SetActive(false);
+
+		if (_currentWallObject != null)
+			_currentWallObject.SetActive(false);
+
+		if (_currentSpawnFlagObject != null)
+			_currentSpawnFlagObject.SetActive(false);
+
+		if (_currentPortalFlagObject != null)
+			_currentPortalFlagObject.SetActive(false);
+
+		// 환경은 NodeWarLevelTable 나오면 숨기기로 한다.
+		/*
+		if (_handleEnvironmentSettingPrefab != null)
+		{
+			if (_currentEnvironmentSettingObject != null)
+			{
+				_currentEnvironmentSettingObject.SetActive(false);
+				_currentEnvironmentSettingObject = null;
+			}
+			_currentEnvironmentSettingObject = BattleInstanceManager.instance.GetCachedObject(_handleEnvironmentSettingPrefab.Result, null);
+			bool lobby = false;
+			if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby) lobby = true;
+			if (lobby == false)
+				ClientSaveData.instance.OnChangedEnvironmentSetting(_environmentSettingAddress);
+		}
+		*/
+	}
+
 	public string GetCurrentSpawnFlagName()
 	{
 		if (_currentSpawnFlagObject != null)

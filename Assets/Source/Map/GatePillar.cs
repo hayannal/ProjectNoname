@@ -310,6 +310,8 @@ public class GatePillar : MonoBehaviour
 			return false;
 		if (TimeSpacePortal.instance != null && TimeSpacePortal.instance.processing)
 			return false;
+		if (NodeWarPortal.instance != null && NodeWarPortal.instance.processing)
+			return false;
 		if (RandomBoxScreenCanvas.instance != null && RandomBoxScreenCanvas.instance.gameObject.activeSelf)
 			return false;
 
@@ -617,6 +619,8 @@ public class GatePillar : MonoBehaviour
 				yield return Timing.WaitForOneFrame;
 			if (TitleCanvas.instance != null)
 				TitleCanvas.instance.gameObject.SetActive(false);
+			if (NodeWarPortal.instance != null && NodeWarPortal.instance.gameObject.activeSelf)
+				NodeWarPortal.instance.gameObject.SetActive(false);
 			MainSceneBuilder.instance.OnExitLobby();
 			BattleManager.instance.OnStartBattle();
 			BattleInstanceManager.instance.AddBattlePlayer(BattleInstanceManager.instance.playerActor.actorId);

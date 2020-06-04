@@ -62,6 +62,8 @@ public class TimeSpacePortal : MonoBehaviour
 			return;
 		if (GatePillar.instance.processing)
 			return;
+		if (NodeWarPortal.instance != null && NodeWarPortal.instance.processing)
+			return;
 		if (RandomBoxScreenCanvas.instance != null && RandomBoxScreenCanvas.instance.gameObject.activeSelf)
 			return;
 

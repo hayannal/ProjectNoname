@@ -10,7 +10,7 @@ public static class ContentsManager
 		Chapter = 2,
 		Research = 3,
 		Chaos = 4,
-		//Annihilation = 5,
+		NodeWar = 5,
 		EquipOption = 6,
 		SecondDailyBox = 8,
 	}

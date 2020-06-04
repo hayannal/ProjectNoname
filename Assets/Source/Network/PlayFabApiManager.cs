@@ -591,6 +591,39 @@ public class PlayFabApiManager : MonoBehaviour
 	}
 	#endregion
 
+	#region NodeWar
+	// NodeWar역시 입장시마다 랜덤으로 된 숫자키를 하나 받는다.
+	ObscuredString _serverEnterKeyForNodeWar;
+	public void RequestEnterNodeWar(Action<bool> successCallback, Action failureCallback)
+	{
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "EnterNodeWar",
+			FunctionParameter = new { Enter = 1 },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			_serverEnterKey = failure ? "" : resultString;
+			if (successCallback != null) successCallback.Invoke(failure);
+		}, (error) =>
+		{
+			HandleCommonError(error);
+			if (failureCallback != null) failureCallback.Invoke();
+		});
+	}
+
+	public void RequestCancelNodeWar()
+	{
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "CancelNodeWar",
+			GeneratePlayStreamEvent = true,
+		}, null, null);
+	}
+	#endregion
+
 
 	#region Daily
 	public void RequestOpenDailyBox(Action<bool> successCallback)

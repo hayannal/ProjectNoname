@@ -661,6 +661,12 @@ public class HitObject : MonoBehaviour
 				wallNormal = s_raycastHitList[i].normal;
 			}
 
+			if (NodeWarGround.instance != null && NodeWarGround.instance.CheckPlaneCollider(col))
+			{
+				planeCollided = true;
+				wallNormal = s_raycastHitList[i].normal;
+			}
+
 			if (BattleInstanceManager.instance.currentGround != null && BattleInstanceManager.instance.currentGround.CheckQuadCollider(col))
 			{
 				groundQuadCollided = true;
@@ -1285,6 +1291,12 @@ public class HitObject : MonoBehaviour
 			}
 
 			if (BattleInstanceManager.instance.planeCollider != null && BattleInstanceManager.instance.planeCollider == col)
+			{
+				planeCollided = true;
+				wallNormal = contact.normal;
+			}
+
+			if (NodeWarGround.instance != null && NodeWarGround.instance.CheckPlaneCollider(col))
 			{
 				planeCollided = true;
 				wallNormal = contact.normal;

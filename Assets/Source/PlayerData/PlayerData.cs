@@ -66,6 +66,10 @@ public class PlayerData : MonoBehaviour
 	public ObscuredBool dailyTrainingDiaCompleted { get; set; }
 	public DateTime dailyTrainingDiaResetTime { get; private set; }
 
+	// NodeWar 관련 변수
+	public ObscuredBool nodeWarCleared { get; set; }
+	public DateTime nodeWarResetTime { get; private set; }
+
 	// 이 카오스가 현재 카오스 상태로 스테이지가 셋팅되어있는지를 알려주는 값이다.
 	// 이전 챕터로 내려갈 경우 서버에 저장된 chaosMode는 1이더라도 스테이지 구성은 도전모드로 셋팅하게 되며
 	// 이땐 false를 리턴하게 될 것이다.
@@ -269,6 +273,7 @@ public class PlayerData : MonoBehaviour
 		UpdateDailyPackageResetTime();
 		UpdateDailyTrainingGoldResetTime();
 		UpdateDailyTrainingDiaResetTime();
+		UpdateNodeWarResetTime();
 	}
 
 	public bool newPlayerAddKeep { get; set; }
@@ -533,6 +538,13 @@ public class PlayerData : MonoBehaviour
 		{
 			if (string.IsNullOrEmpty(userReadOnlyData["lasTrDiDat"].Value) == false)
 				OnRecvDailyTrainingDiaInfo(userReadOnlyData["lasTrDiDat"].Value);
+		}
+
+		nodeWarCleared = false;
+		if (userReadOnlyData.ContainsKey("lasNodDat"))
+		{
+			if (string.IsNullOrEmpty(userReadOnlyData["lasNodDat"].Value) == false)
+				OnRecvNodeWarInfo(userReadOnlyData["lasNodDat"].Value);
 		}
 
 		loginned = true;
@@ -905,6 +917,42 @@ public class PlayerData : MonoBehaviour
 		// 클라 선처리로 갱신
 		dailyTrainingDiaCompleted = false;
 		dailyTrainingDiaResetTime += TimeSpan.FromDays(1);
+	}
+	#endregion
+
+	#region NodeWar
+	void OnRecvNodeWarInfo(DateTime lastNodeWarTime)
+	{
+		if (ServerTime.UtcNow.Year == lastNodeWarTime.Year && ServerTime.UtcNow.Month == lastNodeWarTime.Month && ServerTime.UtcNow.Day == lastNodeWarTime.Day)
+		{
+			nodeWarCleared = true;
+			nodeWarResetTime = new DateTime(lastNodeWarTime.Year, lastNodeWarTime.Month, lastNodeWarTime.Day) + TimeSpan.FromDays(1);
+		}
+		else
+			nodeWarCleared = false;
+	}
+
+	public void OnRecvNodeWarInfo(string lastNodeWarTimeString)
+	{
+		DateTime lastNodeWarTime = new DateTime();
+		if (DateTime.TryParse(lastNodeWarTimeString, out lastNodeWarTime))
+		{
+			DateTime universalTime = lastNodeWarTime.ToUniversalTime();
+			OnRecvNodeWarInfo(universalTime);
+		}
+	}
+
+	void UpdateNodeWarResetTime()
+	{
+		if (nodeWarCleared == false)
+			return;
+
+		if (DateTime.Compare(ServerTime.UtcNow, nodeWarResetTime) < 0)
+			return;
+
+		// 클라 선처리로 갱신
+		nodeWarCleared = false;
+		nodeWarResetTime += TimeSpan.FromDays(1);
 	}
 	#endregion
 }

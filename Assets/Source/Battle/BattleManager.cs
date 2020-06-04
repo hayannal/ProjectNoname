@@ -52,6 +52,7 @@ public class BattleManager : MonoBehaviour
 	public enum eBattleMode
 	{
 		DefaultMode,
+		NodeWar,
 	}
 
 	BattleModeProcessorBase _currentBattleMode = null;
@@ -63,7 +64,18 @@ public class BattleManager : MonoBehaviour
 			case eBattleMode.DefaultMode:
 				_currentBattleMode = new BattleModeProcessorBase();
 				break;
+			case eBattleMode.NodeWar:
+				_currentBattleMode = new NodeWarProcessor();
+				break;
 		}
+	}
+
+	public bool IsNodeWar()
+	{
+		NodeWarProcessor nodeWarProcessor = _currentBattleMode as NodeWarProcessor;
+		if (nodeWarProcessor != null)
+			return true;
+		return false;
 	}
 
 	void Update()

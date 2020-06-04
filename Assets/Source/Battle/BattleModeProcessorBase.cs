@@ -13,13 +13,13 @@ public class BattleModeProcessorBase
 	int _monsterSpawnCount = 0;
 	int _damageCountInStage = 0;
 
-	public void Update()
+	public virtual void Update()
 	{
 		UpdateEndProcess();
 	}
 
 	DateTime _startDateTime;
-	public void OnStartBattle()
+	public virtual void OnStartBattle()
 	{
 		_startDateTime = DateTime.Now;
 	}
@@ -41,7 +41,7 @@ public class BattleModeProcessorBase
 		BattleInstanceManager.instance.FinalizeAllSummonObject();
 	}
 
-	public void OnLoadedMap()
+	public virtual void OnLoadedMap()
 	{
 		_mapLoaded = true;
 		_monsterSpawned = false;

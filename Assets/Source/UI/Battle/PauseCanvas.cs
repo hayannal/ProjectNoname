@@ -147,8 +147,13 @@ public class PauseCanvas : MonoBehaviour
 
 	public void OnClickHomeButton()
 	{
-		YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_BackToLobby"), UIString.instance.GetString("GameUI_BackToLobbyDescription"), () => {
-			PlayFabApiManager.instance.RequestCancelGame();
+		bool isNodeWar = BattleManager.instance.IsNodeWar();
+
+		YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_BackToLobby"), UIString.instance.GetString(isNodeWar ? "GameUI_CancelNodeWarDescription" : "GameUI_BackToLobbyDescription"), () => {
+			if (isNodeWar)
+				PlayFabApiManager.instance.RequestCancelNodeWar();
+			else
+				PlayFabApiManager.instance.RequestCancelGame();
 			SaveOption();
 			SceneManager.LoadScene(0);
 		});

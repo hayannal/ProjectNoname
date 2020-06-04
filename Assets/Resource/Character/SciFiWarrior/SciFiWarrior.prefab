@@ -29,6 +29,67 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8220ce0fa80a49849a394145ade07766, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &772132248885534369
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 249222032028596168}
+  m_Layer: 0
+  m_Name: WingBone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &249222032028596168
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 772132248885534369}
+  m_LocalRotation: {x: -0.38234484, y: 0.59482133, z: 0.38234487, w: 0.5948214}
+  m_LocalPosition: {x: -0.14, y: -0.177, z: -0}
+  m_LocalScale: {x: 1.3333335, y: 1.2500002, z: 1.3333338}
+  m_Children:
+  - {fileID: 6121109346042633317}
+  m_Father: {fileID: 569069539750668372}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1303439674965965967
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6121109346042633317}
+  m_Layer: 0
+  m_Name: WingScale
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6121109346042633317
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1303439674965965967}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 249222032028596168}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7578747847475222437
 GameObject:
   m_ObjectHideFlags: 0
@@ -189,6 +250,7 @@ MonoBehaviour:
   cachingObjectList:
   - {fileID: 913101303298452110, guid: d37d1943642ed344c9e56a9a97548bbc, type: 3}
   - {fileID: 4225582290400697939, guid: 26996fb04a3ef8f45adcd177a0b2bb0b, type: 3}
+  wingRootTransform: {fileID: 6121109346042633317}
 --- !u!1 &7578747847601941156
 GameObject:
   m_ObjectHideFlags: 0
@@ -322,6 +384,12 @@ Transform:
 --- !u!1 &569069539750507520 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100032, guid: 4d1a7012e497b5645b59962f4f76af8f,
+    type: 3}
+  m_PrefabInstance: {fileID: 569069539750539968}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &569069539750668372 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 400020, guid: 4d1a7012e497b5645b59962f4f76af8f,
     type: 3}
   m_PrefabInstance: {fileID: 569069539750539968}
   m_PrefabAsset: {fileID: 0}

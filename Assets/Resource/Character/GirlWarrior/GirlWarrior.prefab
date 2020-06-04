@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &693456334045061972
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1639962943218700765}
+  m_Layer: 0
+  m_Name: WingBone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1639962943218700765
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 693456334045061972}
+  m_LocalRotation: {x: 0.42429763, y: -0.56565964, z: -0.42429784, w: -0.5656607}
+  m_LocalPosition: {x: -0.174, y: -0.102, z: -0.021}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 5209652776827454324}
+  m_Father: {fileID: 1692698027974867068}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &394270191567350211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -397,6 +428,37 @@ MonoBehaviour:
   cachingObjectList:
   - {fileID: 913101303298452110, guid: d37d1943642ed344c9e56a9a97548bbc, type: 3}
   - {fileID: 4225582290400697939, guid: 26996fb04a3ef8f45adcd177a0b2bb0b, type: 3}
+  wingRootTransform: {fileID: 5209652776827454324}
+--- !u!1 &6271027378035013915
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5209652776827454324}
+  m_Layer: 0
+  m_Name: WingScale
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5209652776827454324
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6271027378035013915}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1639962943218700765}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1692698027974992552
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -519,6 +581,12 @@ GameObject:
 --- !u!4 &1692698027974866990 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400006, guid: ceaec48c451e8654d86b54c0aa367af2,
+    type: 3}
+  m_PrefabInstance: {fileID: 1692698027974992552}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1692698027974867068 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 400084, guid: ceaec48c451e8654d86b54c0aa367af2,
     type: 3}
   m_PrefabInstance: {fileID: 1692698027974992552}
   m_PrefabAsset: {fileID: 0}

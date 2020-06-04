@@ -205,6 +205,7 @@ MonoBehaviour:
   cachingObjectList:
   - {fileID: 913101303298452110, guid: d37d1943642ed344c9e56a9a97548bbc, type: 3}
   - {fileID: 4225582290400697939, guid: 26996fb04a3ef8f45adcd177a0b2bb0b, type: 3}
+  wingRootTransform: {fileID: 9082298024166571511}
 --- !u!1 &4522980798540907137
 GameObject:
   m_ObjectHideFlags: 0
@@ -2141,6 +2142,7 @@ Transform:
   m_LocalScale: {x: 1.0000006, y: 1.000001, z: 1.0000006}
   m_Children:
   - {fileID: 4522980798541209339}
+  - {fileID: 8637236348886294463}
   m_Father: {fileID: 4522980798541209319}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2304,3 +2306,64 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8220ce0fa80a49849a394145ade07766, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &7999067776027104626
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8637236348886294463}
+  m_Layer: 0
+  m_Name: WingBone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8637236348886294463
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7999067776027104626}
+  m_LocalRotation: {x: 0.5145283, y: -0.48503917, z: 0.51452655, w: 0.4850361}
+  m_LocalPosition: {x: -0.492, y: 0.267, z: -0}
+  m_LocalScale: {x: 3.2258053, y: 3.2258034, z: 3.2258036}
+  m_Children:
+  - {fileID: 9082298024166571511}
+  m_Father: {fileID: 4522980798541209305}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8945791559937833461
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9082298024166571511}
+  m_Layer: 0
+  m_Name: WingScale
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9082298024166571511
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8945791559937833461}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
+  m_Children: []
+  m_Father: {fileID: 8637236348886294463}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

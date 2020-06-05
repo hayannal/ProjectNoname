@@ -400,22 +400,11 @@ public class StageManager : MonoBehaviour
 		if (_currentPortalFlagObject != null)
 			_currentPortalFlagObject.SetActive(false);
 
-		// 환경은 NodeWarLevelTable 나오면 숨기기로 한다.
-		/*
-		if (_handleEnvironmentSettingPrefab != null)
+		if (_currentEnvironmentSettingObject != null)
 		{
-			if (_currentEnvironmentSettingObject != null)
-			{
-				_currentEnvironmentSettingObject.SetActive(false);
-				_currentEnvironmentSettingObject = null;
-			}
-			_currentEnvironmentSettingObject = BattleInstanceManager.instance.GetCachedObject(_handleEnvironmentSettingPrefab.Result, null);
-			bool lobby = false;
-			if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby) lobby = true;
-			if (lobby == false)
-				ClientSaveData.instance.OnChangedEnvironmentSetting(_environmentSettingAddress);
+			_currentEnvironmentSettingObject.SetActive(false);
+			_currentEnvironmentSettingObject = null;
 		}
-		*/
 	}
 
 	public string GetCurrentSpawnFlagName()

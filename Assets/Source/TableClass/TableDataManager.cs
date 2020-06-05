@@ -51,6 +51,7 @@ public class TableDataManager : MonoBehaviour
 	public ExtraStatTable extraStatTable;
 	public WingLookTable wingLookTable;
 	public WingPowerTable wingPowerTable;
+	public NodeWarTable nodeWarTable;
 
 	void Awake()
 	{
@@ -448,6 +449,16 @@ public class TableDataManager : MonoBehaviour
 		{
 			if (wingPowerTable.dataArray[i].wingType == wingType && wingPowerTable.dataArray[i].grade == grade)
 				return wingPowerTable.dataArray[i];
+		}
+		return null;
+	}
+
+	public NodeWarTableData FindNodeWarTableData(int level)
+	{
+		for (int i = 0; i < nodeWarTable.dataArray.Length; ++i)
+		{
+			if (nodeWarTable.dataArray[i].level == level)
+				return nodeWarTable.dataArray[i];
 		}
 		return null;
 	}

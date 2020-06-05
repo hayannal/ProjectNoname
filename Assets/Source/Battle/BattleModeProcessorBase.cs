@@ -430,4 +430,10 @@ public class BattleModeProcessorBase
 	{
 		return _damageCountInStage;
 	}
+
+
+
+	public virtual void OnSelectedNodeWarLevel(int level)
+	{
+	}
 }

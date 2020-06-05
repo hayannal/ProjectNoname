@@ -1,17 +1,23 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using MEC;
 #if UNITY_EDITOR
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
 #endif
+using DG.Tweening;
 
 public class NodeWarPortal : MonoBehaviour
 {
 	public static NodeWarPortal instance;
 
 	public Canvas worldCanvas;
+	public CanvasGroup canvasGroup;
+	public DOTweenAnimation fadeTweenAnimation;
+	public Text remainTimeText;
 
 	void Awake()
 	{
@@ -22,8 +28,25 @@ public class NodeWarPortal : MonoBehaviour
 	void Start()
 	{
 		worldCanvas.worldCamera = UIInstanceManager.instance.GetCachedCameraMain();
+		canvasGroup.alpha = 0.0f;
+		RefreshRemainTime();
 	}
 
+	void RefreshRemainTime()
+	{
+		if (PlayerData.instance.nodeWarCleared)
+		{
+			_nextResetDateTime = PlayerData.instance.nodeWarResetTime;
+			_needUpdate = true;
+			remainTimeText.gameObject.SetActive(true);
+		}
+		else
+		{
+			remainTimeText.gameObject.SetActive(false);
+		}
+	}
+
+	float _canvasRemainTime = 0.0f;
 	void Update()
 	{
 		if (_enteredPortal && _openRemainTime > 0.0f)
@@ -34,6 +57,59 @@ public class NodeWarPortal : MonoBehaviour
 				_openRemainTime = 0.0f;
 				Timing.RunCoroutine(MoveProcess());
 			}
+		}
+
+		if (_canvasRemainTime > 0.0f)
+		{
+			_canvasRemainTime -= Time.deltaTime;
+			if (_canvasRemainTime <= 0.0f)
+			{
+				_canvasRemainTime = 0.0f;
+				fadeTweenAnimation.DORestart();
+			}
+		}
+
+		UpdateRemainTime();
+		UpdateRefresh();
+	}
+
+	DateTime _nextResetDateTime;
+	int _lastRemainTimeSecond = -1;
+	bool _needUpdate = false;
+	void UpdateRemainTime()
+	{
+		if (_needUpdate == false)
+			return;
+		if (canvasGroup.alpha == 0.0f)
+			return;
+
+		if (ServerTime.UtcNow < _nextResetDateTime)
+		{
+			TimeSpan remainTime = _nextResetDateTime - ServerTime.UtcNow;
+			if (_lastRemainTimeSecond != (int)remainTime.TotalSeconds)
+			{
+				remainTimeText.text = string.Format("{0:00}:{1:00}:{2:00}", remainTime.Hours, remainTime.Minutes, remainTime.Seconds);
+				_lastRemainTimeSecond = (int)remainTime.TotalSeconds;
+			}
+		}
+		else
+		{
+			_needUpdate = false;
+			remainTimeText.text = "00:00:00";
+			_needRefresh = true;
+		}
+	}
+
+	bool _needRefresh = false;
+	void UpdateRefresh()
+	{
+		if (_needRefresh == false)
+			return;
+
+		if (PlayerData.instance.nodeWarCleared == false)
+		{
+			RefreshRemainTime();
+			_needRefresh = false;
 		}
 	}
 
@@ -68,6 +144,8 @@ public class NodeWarPortal : MonoBehaviour
 
 		if (PlayerData.instance.nodeWarCleared)
 		{
+			canvasGroup.alpha = 1.0f;
+			_canvasRemainTime = 5.0f;
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarDone"), 2.0f);
 			return;
 		}
@@ -127,6 +205,7 @@ public class NodeWarPortal : MonoBehaviour
 
 	GameObject _nodeWarGroundPrefab = null;
 	GameObject _randomNodeWarPlanePrefab = null;
+	GameObject _randomNodeWarEnvPrefab = null;
 	bool _processing = false;
 	public bool processing { get { return _processing; } }
 	IEnumerator<float> MoveProcess(bool inProgressGame = false)
@@ -149,10 +228,19 @@ public class NodeWarPortal : MonoBehaviour
 
 		if (_randomNodeWarPlanePrefab == null)
 		{
-			// 테이블에서 랜덤하게 뽑아서 로드하면 될거다. 우선은 하나로 고정.
-			AddressableAssetLoadManager.GetAddressableGameObject("Plane_40_40_1", "Map", (prefab) =>
+			// 테이블에서 누적 후 랜덤하게 뽑아서 로드
+			AddressableAssetLoadManager.GetAddressableGameObject(NodeWarGround.GetRandomPlaneAddress(), "Map", (prefab) =>
 			{
 				_randomNodeWarPlanePrefab = prefab;
+			});
+		}
+
+		if (_randomNodeWarEnvPrefab == null)
+		{
+			// 환경까지 로드해서 넘겨야 NodeWarGround띄우는 타이밍에 딱 맞춰서 교체할 수 있다.
+			AddressableAssetLoadManager.GetAddressableGameObject(NodeWarGround.GetRandomEnvAddress(), "Map", (prefab) =>
+			{
+				_randomNodeWarEnvPrefab = prefab;
 			});
 		}
 
@@ -198,12 +286,12 @@ public class NodeWarPortal : MonoBehaviour
 		BattleManager.instance.Initialize(BattleManager.eBattleMode.NodeWar);
 		BattleManager.instance.OnStartBattle();
 
-		while (_nodeWarGroundPrefab == null || _randomNodeWarPlanePrefab == null)
+		while (_nodeWarGroundPrefab == null || _randomNodeWarPlanePrefab == null || _randomNodeWarEnvPrefab == null)
 			yield return Timing.WaitForOneFrame;
 		CustomRenderer.instance.bloom.ResetDirtIntensity();
 		StageManager.instance.DeactiveCurrentMap();
 		Instantiate<GameObject>(_nodeWarGroundPrefab, Vector3.zero, Quaternion.identity);
-		NodeWarGround.instance.InitializeGround(_randomNodeWarPlanePrefab);
+		NodeWarGround.instance.InitializeGround(_randomNodeWarPlanePrefab, _randomNodeWarEnvPrefab);
 		gameObject.SetActive(false);
 
 		FadeCanvas.instance.FadeIn(0.4f);

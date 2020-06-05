@@ -27,4 +27,9 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	{
 		_mapLoaded = true;
 	}
+
+	public override void OnSelectedNodeWarLevel(int level)
+	{
+		Debug.LogFormat("Select Level = {0}", level);
+	}
 }

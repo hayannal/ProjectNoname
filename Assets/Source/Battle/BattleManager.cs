@@ -142,4 +142,11 @@ public class BattleManager : MonoBehaviour
 	{
 		return _currentBattleMode.GetDamageCountOnStage();
 	}
+
+	#region NodeWar
+	public void OnSelectedNodeWarLevel(int level)
+	{
+		_currentBattleMode.OnSelectedNodeWarLevel(level);
+	}
+	#endregion
 }

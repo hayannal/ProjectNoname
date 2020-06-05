@@ -294,7 +294,8 @@ public class NodeWarPortal : MonoBehaviour
 		NodeWarGround.instance.InitializeGround(_randomNodeWarPlanePrefab, _randomNodeWarEnvPrefab);
 		gameObject.SetActive(false);
 
-		FadeCanvas.instance.FadeIn(0.4f);
+		// 레벨업 이펙트 나올테니 평소보다 조금 더 길게 보여준다.
+		FadeCanvas.instance.FadeIn(1.8f);
 
 		_processing = false;
 	}

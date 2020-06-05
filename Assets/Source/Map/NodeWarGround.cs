@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using MEC;
 
 public class NodeWarGround : MonoBehaviour
 {
@@ -12,6 +11,9 @@ public class NodeWarGround : MonoBehaviour
 	public int planeSize = 40;
 	public LineRenderer safeAreaLineRenderer;
 	public GameObject splitLineRendererObject;
+	public Text safeAreaInfoText;
+
+	public CanvasGroup levelTextCanvasGroup;
 
 	public Text centerLevelText;
 	public GameObject centerFirstRewardObject;
@@ -117,6 +119,21 @@ public class NodeWarGround : MonoBehaviour
 		centerLevelText.gameObject.SetActive(_centerLevel);
 		leftLevelText.gameObject.SetActive(!_centerLevel);
 		rightLevelText.gameObject.SetActive(!_centerLevel);
+
+		_defaultSafeAreaMaterialAlpha = safeAreaLineRenderer.material.GetColor("_TintColor").a;
+		_listSafeAreaLineMaterial.Add(safeAreaLineRenderer.material);
+		Renderer[] splitLineRenderers = splitLineRendererObject.GetComponentsInChildren<Renderer>(true);
+		for (int i = 0; i < splitLineRenderers.Length; ++i)
+			_listSafeAreaLineMaterial.Add(splitLineRenderers[i].material);
+
+		// 시작하자마자 보상정보는 보이지 않는다.
+		levelTextCanvasGroup.alpha = 0.0f;
+
+		// 0.1초만 기다렸다가 바로 레벨업 이펙트부터 보여준다.
+		_levelUpEffectDelayTime = 0.1f;
+
+		// 난이도 단계 설명은 레벨업 연출이 끝나고 조금 후에 보여주도록 한다.
+		_levelTextDelayTime = 1.5f;
 	}
 
 	void Update()
@@ -124,7 +141,10 @@ public class NodeWarGround : MonoBehaviour
 		UpdateLateInitialize();
 		UpdateSeamlessGround();
 
+		UpdateLevelUp();
+		UpdateLevelText();
 		UpdateSafeLineArea();
+		UpdateInfoAlpha();
 	}
 
 	void SetSafeLineRadius(float radius, int segments)
@@ -289,18 +309,65 @@ public class NodeWarGround : MonoBehaviour
 		}
 	}
 
-	bool _outOfRange;
+	float _levelUpEffectDelayTime;
+	void UpdateLevelUp()
+	{
+		if (_levelUpEffectDelayTime > 0.0f)
+		{
+			_levelUpEffectDelayTime -= Time.deltaTime;
+			if (_levelUpEffectDelayTime <= 0.0f)
+			{
+				_levelUpEffectDelayTime = 0.0f;
+				BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.playerLevelUpEffectPrefab, BattleInstanceManager.instance.playerActor.cachedTransform.position, Quaternion.identity, BattleInstanceManager.instance.playerActor.cachedTransform);
+				// 15번 하면 너무 많아서 잘 안보이니 적당히 많게 8번으로 해둔다.
+				LobbyCanvas.instance.RefreshExpPercent(1.0f, 8);
+				LobbyCanvas.instance.RefreshLevelText(StageManager.instance.GetMaxStageLevel());
+				BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("PowerSourceUI_Heal"), 2.5f);
+			}
+		}
+	}
+
+	float _levelTextDelayTime;
+	float _targetLevelTextCanvasGroupAlpha;
+	void UpdateLevelText()
+	{
+		if (_levelTextDelayTime > 0.0f)
+		{
+			_levelTextDelayTime -= Time.deltaTime;
+			if (_levelTextDelayTime <= 0.0f)
+			{
+				_levelTextDelayTime = 0.0f;
+				_targetLevelTextCanvasGroupAlpha = 1.0f;
+			}
+		}
+
+		if (levelTextCanvasGroup.alpha == _targetLevelTextCanvasGroupAlpha)
+			return;
+
+		float diff = _targetLevelTextCanvasGroupAlpha - levelTextCanvasGroup.alpha;
+		if (Mathf.Abs(diff) < 0.01f)
+		{
+			levelTextCanvasGroup.alpha = _targetLevelTextCanvasGroupAlpha;
+			return;
+		}
+		levelTextCanvasGroup.alpha = Mathf.Lerp(levelTextCanvasGroup.alpha, _targetLevelTextCanvasGroupAlpha, Time.deltaTime * 3.0f);
+	}
+
+	bool _outOfSafeArea;
 	void UpdateSafeLineArea()
 	{
-		if (_outOfRange)
+		if (_outOfSafeArea)
 			return;
 
 		Vector3 diff = BattleInstanceManager.instance.playerActor.cachedTransform.position;
 		if (diff.sqrMagnitude < 3.0f * 3.0f)
 			return;
 
-		Timing.RunCoroutine(ScreenStartEffectProcess());
-		_outOfRange = true;
+		BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("PowerSourceUI_Heal"), 2.5f);
+		_outOfSafeArea = true;
+		_levelTextDelayTime = 0.0f;
+		_targetLevelTextCanvasGroupAlpha = 0.0f;
+		_targetInfoAlpha = 0.0f;
 
 		int selectedLevel = 0;
 		if (_centerLevel)
@@ -315,20 +382,37 @@ public class NodeWarGround : MonoBehaviour
 		BattleManager.instance.OnSelectedNodeWarLevel(selectedLevel);
 	}
 
-	IEnumerator<float> ScreenStartEffectProcess()
+	float _targetInfoAlpha = 1.0f;
+	void UpdateInfoAlpha()
 	{
-		FadeCanvas.instance.FadeOut(0.2f, 0.8f);
-		yield return Timing.WaitForSeconds(0.2f);
+		// SafeArea Line 및 그 설명 텍스트에 적용하면 된다.
+		if (safeAreaInfoText.color.a == _targetInfoAlpha)
+			return;
 
-		if (this == null)
-			yield break;
+		float diff = _targetInfoAlpha - safeAreaInfoText.color.a;
+		if (Mathf.Abs(diff) < 0.01f)
+		{
+			safeAreaInfoText.color = new Color(1.0f, 1.0f, 1.0f, _targetInfoAlpha);
+			SetLineRendererAlpha(_targetInfoAlpha);
 
-		worldCanvas.gameObject.SetActive(false);
-		safeAreaLineRenderer.gameObject.SetActive(false);
-		splitLineRendererObject.SetActive(false);
+			// 사실 여기서 사라질테니 아예 없애둔다.
+			worldCanvas.gameObject.SetActive(false);
+			safeAreaLineRenderer.gameObject.SetActive(false);
+			splitLineRendererObject.SetActive(false);
+			return;
+		}
+		safeAreaInfoText.color = Color.Lerp(safeAreaInfoText.color, new Color(1.0f, 1.0f, 1.0f, _targetInfoAlpha), Time.deltaTime * 3.0f);
+		SetLineRendererAlpha(safeAreaInfoText.color.a);
+	}
 
-		BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("PowerSourceUI_Heal"), 2.5f);
-		FadeCanvas.instance.FadeIn(0.8f);
+	List<Material> _listSafeAreaLineMaterial = new List<Material>();
+	float _defaultSafeAreaMaterialAlpha;
+	void SetLineRendererAlpha(float alphaRatio)
+	{
+		for (int i = 0; i < _listSafeAreaLineMaterial.Count; ++i)
+		{
+			_listSafeAreaLineMaterial[i].SetColor("_TintColor", new Color(1.0f, 1.0f, 1.0f, _defaultSafeAreaMaterialAlpha * alphaRatio));
+		}
 	}
 
 

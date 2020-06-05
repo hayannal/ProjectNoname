@@ -103,7 +103,6 @@ public class DailyFreeItem : MonoBehaviour
 				iconTweenAnimation.DORestart();
 			else
 				_reserveAnimation = true;
-			_needUpdate = false;
 			AlarmObject.Show(alarmRootTransform);
 		}
 	}

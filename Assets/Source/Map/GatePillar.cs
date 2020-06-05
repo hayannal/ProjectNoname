@@ -412,9 +412,6 @@ public class GatePillar : MonoBehaviour
 		if (ContentsManager.IsTutorialChapter())
 			return true;
 
-		// 강종으로 인해 재접속 하는 경우에도 소모하지 않는다.
-		//if (IsRetryByCrash)
-
 		if (CurrencyData.instance.energy < BattleInstanceManager.instance.GetCachedGlobalConstantInt("RequiredEnergyToPlay"))
 		{
 			// 선 클라 처리. 오히려 이건 쉽다.
@@ -463,7 +460,7 @@ public class GatePillar : MonoBehaviour
 			return;
 
 		int useAmount = BattleInstanceManager.instance.GetCachedGlobalConstantInt("RequiredEnergyToPlay");
-		if (ContentsManager.IsTutorialChapter()) // || IsRetryByCrash) 강종에 의한 재도전도 포함해야한다.
+		if (ContentsManager.IsTutorialChapter())
 			useAmount = 0;
 
 		// 클라이언트에서 먼저 삭제한 다음

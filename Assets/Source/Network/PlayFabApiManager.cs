@@ -574,7 +574,6 @@ public class PlayFabApiManager : MonoBehaviour
 				jsonResult.TryGetValue("itmRet", out object itmRet);
 				bool failure = ((retErr.ToString()) == "1");
 				_serverEnterKey = "";
-				ClientSaveData.instance.OnEndGame();
 				if (!failure)
 				{
 					// 서버에러가 떠도 정산창은 띄되 WaitingNetworkCanvas은 닫지 않기로 한다.
@@ -582,6 +581,7 @@ public class PlayFabApiManager : MonoBehaviour
 					RetrySendManager.instance.OnSuccess();
 				}
 				if (successCallback != null) successCallback.Invoke(clear, (string)adChrId, (string)itmRet);
+				ClientSaveData.instance.OnEndGame();
 			}, (error) =>
 			{
 				RetrySendManager.instance.OnFailure();

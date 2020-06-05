@@ -247,15 +247,25 @@ public class ClientSaveData : MonoBehaviour
 	}
 
 	bool _loadingInProgressGame;
+	bool _inProgressGame;
 	public void OnFinishLoadGame()
 	{
 		// 복구 완료 타이밍에 따로 저장할건 없지 않나..
 		_loadingInProgressGame = false;
+
+		// InProgressGame으로 들어왔을때는 총 플레이 시간을 체크하기가 까다로와서 빠른 클리어 체크를 하지 않기로 했는데
+		// 복구하고 나면 복구된 게임과 그냥 진입했을때의 상태를 구분할 방법이 없어서
+		// 플래그 하나를 추가해두기로 한다.
+		// 이건 나가거나 클리어 했을때 초기화 하면 된다.
+		_inProgressGame = true;
 	}
+
+	public bool inProgressGame { get { return _inProgressGame; } }
 
 	public void OnEndGame()
 	{
 		_cachedEnterFlag = "";
+		_inProgressGame = false;
 
 		ObscuredPrefs.DeleteKey("inProgress");
 		ObscuredPrefs.DeleteKey("enterFlag");

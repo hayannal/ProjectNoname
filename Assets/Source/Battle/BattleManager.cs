@@ -57,6 +57,7 @@ public class BattleManager : MonoBehaviour
 
 	BattleModeProcessorBase _currentBattleMode = null;
 
+	eBattleMode _battleMode;
 	public void Initialize(eBattleMode battleMode = eBattleMode.DefaultMode)
 	{
 		switch (battleMode)
@@ -68,14 +69,12 @@ public class BattleManager : MonoBehaviour
 				_currentBattleMode = new NodeWarProcessor();
 				break;
 		}
+		_battleMode = battleMode;
 	}
 
 	public bool IsNodeWar()
 	{
-		NodeWarProcessor nodeWarProcessor = _currentBattleMode as NodeWarProcessor;
-		if (nodeWarProcessor != null)
-			return true;
-		return false;
+		return (_battleMode == eBattleMode.NodeWar);
 	}
 
 	void Update()

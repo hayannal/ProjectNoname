@@ -322,7 +322,7 @@ public class NodeWarGround : MonoBehaviour
 				// 15번 하면 너무 많아서 잘 안보이니 적당히 많게 8번으로 해둔다.
 				LobbyCanvas.instance.RefreshExpPercent(1.0f, 8);
 				LobbyCanvas.instance.RefreshLevelText(StageManager.instance.GetMaxStageLevel());
-				BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("PowerSourceUI_Heal"), 2.5f);
+				BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarInitialMind"), 2.5f);
 			}
 		}
 	}
@@ -363,7 +363,7 @@ public class NodeWarGround : MonoBehaviour
 		if (diff.sqrMagnitude < 3.0f * 3.0f)
 			return;
 
-		BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("PowerSourceUI_Heal"), 2.5f);
+		BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarRule1Mind"), 3.5f);
 		_outOfSafeArea = true;
 		_levelTextDelayTime = 0.0f;
 		_targetLevelTextCanvasGroupAlpha = 0.0f;

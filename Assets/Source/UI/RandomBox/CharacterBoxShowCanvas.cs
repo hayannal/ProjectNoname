@@ -48,7 +48,11 @@ public class CharacterBoxShowCanvas : CharacterShowCanvasBase
 		// 액터가 혹시나 미리 만들어져있다면 등록되어있을거다.
 		PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(actorId);
 		if (playerActor != null)
+		{
 			_playerActor = playerActor;
+			_playerActor.gameObject.SetActive(true);
+			OnAfterLoaded();
+		}
 		else
 		{
 			// 없다면 로딩 걸어두고 SetInfoCameraMode를 호출해둔다.
@@ -82,7 +86,11 @@ public class CharacterBoxShowCanvas : CharacterShowCanvasBase
 
 		_playerActor = playerActor;
 		base.OnLoadedPlayerActor();
+		OnAfterLoaded();
+	}
 
+	void OnAfterLoaded()
+	{
 		_effectObject = BattleInstanceManager.instance.GetCachedObject(effectPrefab, _rootOffsetPosition, Quaternion.identity, null);
 	}
 

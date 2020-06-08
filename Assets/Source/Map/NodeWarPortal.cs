@@ -14,6 +14,8 @@ public class NodeWarPortal : MonoBehaviour
 {
 	public static NodeWarPortal instance;
 
+	public GameObject standbyEffectObject;
+	public GameObject openingEffectObject;
 	public Canvas worldCanvas;
 	public CanvasGroup canvasGroup;
 	public DOTweenAnimation fadeTweenAnimation;
@@ -39,10 +41,12 @@ public class NodeWarPortal : MonoBehaviour
 			_nextResetDateTime = PlayerData.instance.nodeWarResetTime;
 			_needUpdate = true;
 			remainTimeText.gameObject.SetActive(true);
+			standbyEffectObject.SetActive(false);
 		}
 		else
 		{
 			remainTimeText.gameObject.SetActive(false);
+			standbyEffectObject.SetActive(true);
 		}
 	}
 
@@ -118,8 +122,9 @@ public class NodeWarPortal : MonoBehaviour
 		//changeEffectParticleRootObject.SetActive(false);
 	}
 
+	public bool enteredPortal { get { return _enteredPortal; } }
 	bool _enteredPortal = false;
-	const float PortalOpenTime = 3.0f;
+	const float PortalOpenTime = 4.5f;
 	float _openRemainTime;
 	void OnTriggerEnter(Collider other)
 	{
@@ -150,8 +155,13 @@ public class NodeWarPortal : MonoBehaviour
 			return;
 		}
 
+		if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
+			DotMainMenuCanvas.instance.OnClickBackButton();
+
 		_enteredPortal = true;
 		_openRemainTime = PortalOpenTime;
+		openingEffectObject.SetActive(false);
+		openingEffectObject.SetActive(true);
 	}
 
 	void OnTriggerExit(Collider other)
@@ -168,6 +178,8 @@ public class NodeWarPortal : MonoBehaviour
 			return;
 
 		_enteredPortal = false;
+		//openingEffectObject.SetActive(false);
+		DisableParticleEmission.DisableEmission(openingEffectObject.transform);
 	}
 
 

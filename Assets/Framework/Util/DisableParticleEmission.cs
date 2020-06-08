@@ -17,6 +17,17 @@ public class DisableParticleEmission : MonoBehaviour
 	List<ParticleSystem> _listChangedParticleSystem;
 	List<ParticleSystem> _listChangedLoopParticleSystem;
 
+	void OnEnable()
+	{
+		if (_listChangedParticleSystem == null || _listChangedLoopParticleSystem == null)
+		{ }
+		else
+		{
+			Reset(true);
+			_checkAlive = false;
+		}
+	}
+
 	public void DisableEmission(bool disableOnlyLoopParticle)
 	{
 		_disableOnlyLoopParticle = disableOnlyLoopParticle;			
@@ -39,6 +50,8 @@ public class DisableParticleEmission : MonoBehaviour
 		}
 
 		Reset(false);
+		_waitActive = true;
+		_checkAlive = false;
 	}
 
 	void Reset(bool enabled)
@@ -59,6 +72,8 @@ public class DisableParticleEmission : MonoBehaviour
 		}
 	}
 
+	bool _waitActive = false;
+	bool _checkAlive = false;
 	void Update()
 	{
 		if (_listChangedLoopParticleSystem == null || _listChangedParticleSystem == null)
@@ -85,9 +100,18 @@ public class DisableParticleEmission : MonoBehaviour
 			}
 		}
 		if (alive)
+		{
+			if (_waitActive)
+			{
+				_waitActive = false;
+				_checkAlive = true;
+			}
+			return;
+		}
+		if (_checkAlive == false)
 			return;
 
-		Reset(true);
 		gameObject.SetActive(false);
+		_checkAlive = false;
 	}
 }

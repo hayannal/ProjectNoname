@@ -1130,7 +1130,7 @@ public class HitObject : MonoBehaviour
 			return;
 		float maxDistance = _signal.maxDistance;
 		if (maxDistance == 0.0f && BattleManager.instance != null && BattleManager.instance.IsNodeWar())
-			maxDistance = 16.0f;
+			maxDistance = NodeWarProcessor.SpawnDistance;
 		else
 		{
 			if (maxDistance == 0.0f)

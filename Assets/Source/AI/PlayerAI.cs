@@ -182,7 +182,7 @@ public class PlayerAI : MonoBehaviour
 	{
 		float maxDistance = _actorTableAttackRange;
 		if (maxDistance == 0.0f && BattleManager.instance != null && BattleManager.instance.IsNodeWar())
-			maxDistance = 16.0f;
+			maxDistance = NodeWarProcessor.SpawnDistance;
 		else
 		{
 			if (maxDistance == 0.0f)

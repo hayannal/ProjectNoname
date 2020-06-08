@@ -257,6 +257,7 @@ public class DailyShopData : MonoBehaviour
 		if (_dicUnfixedData == null)
 			_dicUnfixedData = new Dictionary<string, string>();
 		_dicUnfixedData.Clear();
+		DropManager.instance.ClearLobbyDropInfo();
 
 		int seed = 0;
 		string actorId = "";
@@ -290,14 +291,13 @@ public class DailyShopData : MonoBehaviour
 			}
 			if (unfixed)
 			{
-				DropManager.instance.ClearLobbyDropInfo();
-				UnityEngine.Random.InitState(Time.frameCount);
 				if (actorId != "" && CheckDuplicate(i, info.type, actorId))
 					actorId = "";
 				_dicUnfixedData.Add(i.ToString(), actorId);
 			}
 		}
 
+		DropManager.instance.ClearLobbyDropInfo();
 		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
 		string jsonUnfixedItemData = serializer.SerializeObject(_dicUnfixedData);
 		PlayFabApiManager.instance.RequestRegisterDailyShopUnfixedInfo(jsonUnfixedItemData);

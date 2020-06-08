@@ -147,5 +147,10 @@ public class BattleManager : MonoBehaviour
 	{
 		_currentBattleMode.OnSelectedNodeWarLevel(level);
 	}
+
+	public NodeWarTableData GetSelectedNodeWarTableData()
+	{
+		return _currentBattleMode.GetSelectedNodeWarTableData();
+	}
 	#endregion
 }

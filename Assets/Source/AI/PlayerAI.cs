@@ -180,10 +180,16 @@ public class PlayerAI : MonoBehaviour
 
 	bool IsInAttackRange(Vector3 diff)
 	{
-		if (_actorTableAttackRange == 0.0f)
-			return true;
+		float maxDistance = _actorTableAttackRange;
+		if (maxDistance == 0.0f && BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+			maxDistance = 16.0f;
+		else
+		{
+			if (maxDistance == 0.0f)
+				return true;
+		}
 
-		if (diff.sqrMagnitude - (_targetColliderRadius * _targetColliderRadius) > _actorTableAttackRange * _actorTableAttackRange)
+		if (diff.sqrMagnitude - (_targetColliderRadius * _targetColliderRadius) > maxDistance * maxDistance)
 			return false;
 
 		return true;
@@ -213,6 +219,8 @@ public class PlayerAI : MonoBehaviour
 		if (ExperienceCanvas.instance != null && ExperienceCanvas.instance.gameObject.activeSelf)
 			return true;
 		if (actor.targetingProcessor.sphereCastRadiusForCheckWall == 0.0f)
+			return true;
+		if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
 			return true;
 
 		if (_navMeshPath == null)

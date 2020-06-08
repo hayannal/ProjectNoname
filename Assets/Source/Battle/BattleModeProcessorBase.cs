@@ -436,4 +436,9 @@ public class BattleModeProcessorBase
 	public virtual void OnSelectedNodeWarLevel(int level)
 	{
 	}
+
+	public virtual NodeWarTableData GetSelectedNodeWarTableData()
+	{
+		return null;
+	}
 }

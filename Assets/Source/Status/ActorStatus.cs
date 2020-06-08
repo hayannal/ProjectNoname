@@ -129,8 +129,15 @@ public class ActorStatus : MonoBehaviour
 			_statusBase.ClearValue();
 
 		MonsterTableData monsterTableData = TableDataManager.instance.FindMonsterTableData(actor.actorId);
-		_statusBase.valueList[(int)eActorStatus.MaxHp] = StageManager.instance.currentMonstrStandardHp * monsterTableData.multiHp;
-		_statusBase.valueList[(int)eActorStatus.Attack] = StageManager.instance.currentMonstrStandardAtk * monsterTableData.multiAtk;
+		float standardHp = StageManager.instance.currentMonstrStandardHp;
+		float standardAtk = StageManager.instance.currentMonstrStandardAtk;
+		if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+		{
+			standardHp = BattleManager.instance.GetSelectedNodeWarTableData().standardHp;
+			standardAtk = BattleManager.instance.GetSelectedNodeWarTableData().standardAtk;
+		}
+		_statusBase.valueList[(int)eActorStatus.MaxHp] = standardHp * monsterTableData.multiHp;
+		_statusBase.valueList[(int)eActorStatus.Attack] = standardAtk * monsterTableData.multiAtk;
 		_statusBase.valueList[(int)eActorStatus.AttackDelay] = monsterTableData.attackDelay;
 		_statusBase.valueList[(int)eActorStatus.EvadeRate] = monsterTableData.evadeRate;
 		_statusBase.valueList[(int)eActorStatus.MoveSpeed] = monsterTableData.moveSpeed;

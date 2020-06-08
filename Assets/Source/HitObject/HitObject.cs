@@ -1128,12 +1128,18 @@ public class HitObject : MonoBehaviour
 	{
 		if (_signal.movable == false)
 			return;
-		if (_signal.maxDistance == 0.0f)
-			return;
+		float maxDistance = _signal.maxDistance;
+		if (maxDistance == 0.0f && BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+			maxDistance = 16.0f;
+		else
+		{
+			if (maxDistance == 0.0f)
+				return;
+		}
 
 		Vector3 diff = cachedTransform.position - _createPosition;
 		diff.y = 0.0f;
-		if (diff.sqrMagnitude > _signal.maxDistance * _signal.maxDistance)
+		if (diff.sqrMagnitude > maxDistance * maxDistance)
 			OnFinalizeByDistance();
 	}
 

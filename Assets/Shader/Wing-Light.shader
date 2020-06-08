@@ -117,17 +117,25 @@ Shader "FrameworkPV/Wing"
 			float node_5205 = _Time.y * _TimeSpeed;
 			float2 node_8473 = ((i.wingUV*_wing_uv) + (node_5205*_wing_speed)*float2(-1, 0));
 			float4 _wing_var = tex2D(_wing, TRANSFORM_TEX(node_8473, _wing));
-			float3 node_3177 = (_wing_var.rgb*_wing_color.rgb);
+			#if _SHOWDUST
+				float3 node_3177 = (_wing_var.rgb*_wing_var.a*_wing_color.rgb);
+			#else
+				float3 node_3177 = (_wing_var.rgb*_wing_color.rgb);
+			#endif
 			float4 _mask_var = tex2D(_mask, TRANSFORM_TEX(i.wingUV, _mask));
 			float2 node_9924 = ((i.wingUV*_dust_UV) + (node_5205*_dust_speed)*float2(-1, 0));
 			float4 _dust_var = tex2D(_dust, TRANSFORM_TEX(node_9924, _dust));
 			#if _SHOWDUST
-				float3 emissive = (((node_3177*_wing_intensity) + (_dust_var.rgb*_dust_intensity*_mask_var.rgb*_dust_color.rgb))*_mask_var.rgb);				
+				float3 emissive = (((node_3177*_wing_intensity) + (_dust_var.rgb*_dust_intensity*_mask_var.rgb*_dust_color.rgb))*_mask_var.rgb);
 			#else
 				float3 emissive = ((node_3177*_mask_var.rgb*_wing_intensity) + ((node_3177*_dust_var.rgb*_mask_var.rgb*_dust_intensity)*_dust_color.rgb));
 			#endif
 			o.Albedo = emissive * i.distanceRate.x;
-			o.Alpha = _wing_var.a * _mask_var.r;
+			#if _SHOWDUST
+				o.Alpha = _mask_var.r;
+			#else
+				o.Alpha = _wing_var.a * _mask_var.r;
+			#endif
 		}
         ENDCG
     }

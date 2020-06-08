@@ -60,6 +60,9 @@ public class LobbyCanvas : MonoBehaviour
 			return;
 		}
 
+		if (NodeWarPortal.instance != null && NodeWarPortal.instance.enteredPortal)
+			return;
+
 		UIInstanceManager.instance.ShowCanvasAsync("DotMainMenuCanvas", () => {
 
 			if (this == null) return;

@@ -244,8 +244,7 @@ public class MonsterAI : MonoBehaviour
 			_moveRefreshRemainTime -= Time.deltaTime;
 			if (_moveRemainTime <= 0.0f)
 			{
-				if (pathFinderController.agent.hasPath)
-					pathFinderController.agent.ResetPath();
+				ResetPath();
 				ResetRandomMoveStateInfo();
 				NextStep();
 				return;
@@ -287,6 +286,11 @@ public class MonsterAI : MonoBehaviour
 			NavMeshQueryFilter navMeshQueryFilter = new NavMeshQueryFilter();
 			navMeshQueryFilter.areaMask = NavMesh.AllAreas;
 			navMeshQueryFilter.agentTypeID = pathFinderController.agent.agentTypeID;
+			if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+			{
+				result = randomPosition;
+				break;
+			}
 			if (NavMesh.SamplePosition(randomPosition, out hit, maxDistance, navMeshQueryFilter))
 			{
 				result = hit.position;
@@ -428,6 +432,11 @@ public class MonsterAI : MonoBehaviour
 			NavMeshQueryFilter navMeshQueryFilter = new NavMeshQueryFilter();
 			navMeshQueryFilter.areaMask = NavMesh.AllAreas;
 			navMeshQueryFilter.agentTypeID = pathFinderController.agent.agentTypeID;
+			if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+			{
+				_straightMoveDirection = randomDirection.normalized;
+				return;
+			}
 			if (NavMesh.SamplePosition(desirePosition, out hit, 1.0f, navMeshQueryFilter))
 			{
 				// 바로앞에 Wall있는데 가는건 좀 이상하다. 이때는 패스다.
@@ -517,8 +526,7 @@ public class MonsterAI : MonoBehaviour
 	{
 		if (targetActor == null)
 		{
-			if (pathFinderController.agent.hasPath)
-				pathFinderController.agent.ResetPath();
+			ResetPath();
 			return;
 		}
 
@@ -533,6 +541,7 @@ public class MonsterAI : MonoBehaviour
 
 		if (_initChaseCancelTime && _chaseCancelTime > 0.0f && Time.time > _chaseCancelTime)
 		{
+			ResetPath();
 			ResetChaseStateInfo();
 			_currentState = eStateType.AttackDelay;
 			NextStep();
@@ -544,8 +553,7 @@ public class MonsterAI : MonoBehaviour
 		float sqrRadius = (targetRadius + actorRadius) * (targetRadius + actorRadius) + (_chaseDistance > 0.0f ? 0.01f : 0.0f) + (_chaseDistance * _chaseDistance);
 		if (sqrDiff <= sqrRadius)
 		{
-			if (pathFinderController.agent.hasPath)
-				pathFinderController.agent.ResetPath();
+			ResetPath();
 			ResetChaseStateInfo();
 			NextStep();
 			return;
@@ -553,7 +561,15 @@ public class MonsterAI : MonoBehaviour
 
 		if (_lastGoalPosition != targetActor.cachedTransform.position)
 		{
-			pathFinderController.agent.destination = targetActor.cachedTransform.position;
+			if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+			{
+				nodeWarDestinationState = true;
+				nodeWarDestinationPosition = targetActor.cachedTransform.position;
+			}
+			else
+			{
+				pathFinderController.agent.destination = targetActor.cachedTransform.position;
+			}
 			_lastGoalPosition = targetActor.cachedTransform.position;
 		}
 	}
@@ -564,6 +580,25 @@ public class MonsterAI : MonoBehaviour
 		_initChaseCancelTime = false;
 		_lastGoalPosition = Vector3.up;
 	}
+
+	public void ResetPath()
+	{
+		if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+		{
+			nodeWarDestinationState = false;
+			nodeWarDestinationPosition = Vector3.zero;
+		}
+		else
+		{
+			if (pathFinderController.agent.hasPath)
+				pathFinderController.agent.ResetPath();
+		}
+	}
+	#endregion
+
+	#region NodeWar
+	public bool nodeWarDestinationState { get; private set; }
+	public Vector3 nodeWarDestinationPosition { get; private set; }
 	#endregion
 
 	#region AttackAction

@@ -131,6 +131,12 @@ public class TeleportTargetPositionAffector : AffectorBase
 			NavMeshQueryFilter navMeshQueryFilter = new NavMeshQueryFilter();
 			navMeshQueryFilter.areaMask = NavMesh.AllAreas;
 			navMeshQueryFilter.agentTypeID = _agentTypeID;
+			// 다른 곳은 몰라도 여긴 아예 안들어올거다.
+			//if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+			//{
+			//	result = randomPosition;
+			//	break;
+			//}
 			if (NavMesh.SamplePosition(desirePosition, out hit, 0.1f, navMeshQueryFilter))
 				return desirePosition;
 

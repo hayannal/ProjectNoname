@@ -217,8 +217,7 @@ public class MonsterActor : Actor
 			}
 		}
 
-		if (pathFinderController.agent.hasPath)
-			pathFinderController.agent.ResetPath();
+		monsterAI.ResetPath();
 		//BehaviorDesigner.Runtime.BehaviorTree bt = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
 		//if (bt != null) bt.enabled = false;
 
@@ -261,7 +260,7 @@ public class MonsterActor : Actor
 	public override void EnableAI(bool enable)
 	{
 		if (!enable)
-			pathFinderController.agent.ResetPath();
+			monsterAI.ResetPath();
 
 		// pause기능을 별도로 만들까 하다가 어차피 변수들만 잘 관리할 수 있다면 pause는 괜히 업뎃 돌게하는거니 직접 enabled를 컨트롤 하기로 한다.
 		monsterAI.enabled = enable;

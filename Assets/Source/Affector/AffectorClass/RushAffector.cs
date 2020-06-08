@@ -129,6 +129,11 @@ public class RushAffector : AffectorBase
 			NavMeshQueryFilter navMeshQueryFilter = new NavMeshQueryFilter();
 			navMeshQueryFilter.areaMask = NavMesh.AllAreas;
 			navMeshQueryFilter.agentTypeID = _agentTypeID;
+			if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+			{
+				result = randomPosition;
+				break;
+			}
 			if (NavMesh.SamplePosition(randomPosition, out hit, maxDistance, navMeshQueryFilter))
 			{
 				result = hit.position;

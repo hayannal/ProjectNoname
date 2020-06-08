@@ -144,6 +144,11 @@ public class MeSummon : MecanimEventBase
 			NavMeshQueryFilter navMeshQueryFilter = new NavMeshQueryFilter();
 			navMeshQueryFilter.areaMask = NavMesh.AllAreas;
 			navMeshQueryFilter.agentTypeID = _agentTypeID;
+			if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+			{
+				result = desirePosition;
+				break;
+			}
 			if (NavMesh.SamplePosition(desirePosition, out hit, maxDistance, navMeshQueryFilter))
 			{
 				result = hit.position;

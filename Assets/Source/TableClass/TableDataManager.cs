@@ -52,6 +52,7 @@ public class TableDataManager : MonoBehaviour
 	public WingLookTable wingLookTable;
 	public WingPowerTable wingPowerTable;
 	public NodeWarTable nodeWarTable;
+	public NodeWarSpawnTable nodeWarSpawnTable;
 
 	void Awake()
 	{
@@ -459,6 +460,16 @@ public class TableDataManager : MonoBehaviour
 		{
 			if (nodeWarTable.dataArray[i].level == level)
 				return nodeWarTable.dataArray[i];
+		}
+		return null;
+	}
+
+	public NodeWarSpawnTableData FindNodeWarSpawnTableData(string monsterId)
+	{
+		for (int i = 0; i < nodeWarSpawnTable.dataArray.Length; ++i)
+		{
+			if (nodeWarSpawnTable.dataArray[i].monsterId == monsterId)
+				return nodeWarSpawnTable.dataArray[i];
 		}
 		return null;
 	}

@@ -365,7 +365,6 @@ public class NodeWarGround : MonoBehaviour
 		if (diff.sqrMagnitude < 3.0f * 3.0f)
 			return;
 
-		BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarRule1Mind"), 3.5f);
 		_outOfSafeArea = true;
 		_levelTextDelayTime = 0.0f;
 		_targetLevelTextCanvasGroupAlpha = 0.0f;
@@ -415,6 +414,16 @@ public class NodeWarGround : MonoBehaviour
 		{
 			_listSafeAreaLineMaterial[i].SetColor("_TintColor", new Color(1.0f, 1.0f, 1.0f, _defaultSafeAreaMaterialAlpha * alphaRatio));
 		}
+	}
+
+	public GameObject GetMonsterPrefab(string monsterId)
+	{
+		for (int i = 0; i < monsterPrefabList.Length; ++i)
+		{
+			if (monsterPrefabList[i].name == monsterId)
+				return monsterPrefabList[i];
+		}
+		return null;
 	}
 
 

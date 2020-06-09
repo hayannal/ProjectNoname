@@ -178,13 +178,13 @@ public class BattleModeProcessorBase
 		ClientSaveData.instance.OnFinishLoadGame();
 	}
 
-	public void OnSpawnMonster(MonsterActor monsterActor)
+	public virtual void OnSpawnMonster(MonsterActor monsterActor)
 	{
 		_monsterSpawned = true;
 		++_monsterSpawnCount;
 	}
 
-	public void OnDiePlayer(PlayerActor playerActor)
+	public virtual void OnDiePlayer(PlayerActor playerActor)
 	{
 		// 여기서 인풋은 막되
 		LobbyCanvas.instance.battlePauseButton.interactable = false;
@@ -197,7 +197,7 @@ public class BattleModeProcessorBase
 		_endProcessWaitRemainTime = 2.0f;
 	}
 
-	public void OnDieMonster(MonsterActor monsterActor)
+	public virtual void OnDieMonster(MonsterActor monsterActor)
 	{
 		--_monsterSpawnCount;
 		if (_mapLoaded && _monsterSpawned && _monsterSpawnCount == 0 && BattleInstanceManager.instance.CheckFinishSequentialMonster())

@@ -1,0 +1,43 @@
+using UnityEngine;
+using System.Collections;
+
+///
+/// !!! Machine generated code !!!
+/// !!! DO NOT CHANGE Tabs to Spaces !!!
+/// 
+[System.Serializable]
+public class NodeWarSpawnTableData
+{
+  [SerializeField]
+  string _monsterId;
+  public string monsterId { get { return _monsterId; } set { _monsterId = value; } }
+  
+  [SerializeField]
+  int _minLevel;
+  public int minLevel { get { return _minLevel; } set { _minLevel = value; } }
+  
+  [SerializeField]
+  int _minStep;
+  public int minStep { get { return _minStep; } set { _minStep = value; } }
+  
+  [SerializeField]
+  float _firstWaiting;
+  public float firstWaiting { get { return _firstWaiting; } set { _firstWaiting = value; } }
+  
+  [SerializeField]
+  float _spawnChance;
+  public float spawnChance { get { return _spawnChance; } set { _spawnChance = value; } }
+  
+  [SerializeField]
+  float _spawnPeriod;
+  public float spawnPeriod { get { return _spawnPeriod; } set { _spawnPeriod = value; } }
+  
+  [SerializeField]
+  int _maxCount;
+  public int maxCount { get { return _maxCount; } set { _maxCount = value; } }
+  
+  [SerializeField]
+  bool _totalMax;
+  public bool totalMax { get { return _totalMax; } set { _totalMax = value; } }
+  
+}

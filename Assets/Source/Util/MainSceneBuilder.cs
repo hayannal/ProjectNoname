@@ -48,6 +48,8 @@ public class MainSceneBuilder : MonoBehaviour
 		// TimeSpace역시 초반에 로드하지 않을때가 많으니 IsValid체크 해야한다.
 		if (_handleTimeSpacePortal.IsValid())
 			Addressables.Release<GameObject>(_handleTimeSpacePortal);
+		if (_handleNodeWarPortal.IsValid())
+			Addressables.Release<GameObject>(_handleNodeWarPortal);
 
 		// 로딩속도를 위해 배틀매니저는 천천히 로딩한다. 그래서 다른 로딩 오브젝트와 달리 Valid 검사를 해야한다.
 		if (_handleBattleManager.IsValid())
@@ -71,6 +73,7 @@ public class MainSceneBuilder : MonoBehaviour
 	AsyncOperationHandle<GameObject> _handleTreasureChest;
 	AsyncOperationHandle<GameObject> _handleEventGatePillar;
 	AsyncOperationHandle<GameObject> _handleTimeSpacePortal;
+	AsyncOperationHandle<GameObject> _handleNodeWarPortal;
 	IEnumerator Start()
     {
 		// 씬 빌더는 항상 이 씬이 시작될때 1회만 동작하며 로딩씬을 띄워놓고 현재 상황에 맞춰서 스텝을 진행한다.
@@ -286,6 +289,15 @@ public class MainSceneBuilder : MonoBehaviour
 #if !UNITY_EDITOR
 		Debug.LogWarning("BBBBBBBBB-1");
 #endif
+		bool useNodeWar = false;
+		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.NodeWar))
+		{
+			_handleNodeWarPortal = Addressables.LoadAssetAsync<GameObject>("NodeWarPortal");
+			useNodeWar = true;
+		}
+#if !UNITY_EDITOR
+		Debug.LogWarning("BBBBBBBBB-2");
+#endif
 		StageManager.instance.InitializeStage(PlayerData.instance.selectedChapter, 0);
 #if !UNITY_EDITOR
 		Debug.LogWarning("CCCCCCCCC");
@@ -345,6 +357,25 @@ public class MainSceneBuilder : MonoBehaviour
 #endif
 #if !UNITY_EDITOR
 			Debug.LogWarning("HHHHHHHHH-1");
+#endif
+		}
+
+		if (useNodeWar)
+		{
+			yield return _handleNodeWarPortal;
+#if UNITY_EDITOR
+			newObject = Instantiate<GameObject>(_handleNodeWarPortal.Result);
+			if (settings.ActivePlayModeDataBuilderIndex == 2)
+				ObjectUtil.ReloadShader(newObject);
+#else
+			Instantiate<GameObject>(_handleNodeWarPortal.Result);
+#endif
+
+			// 이벤트를 보여주려는 상태라면 만들어놓고 숨겨둔다.
+			if (EventManager.instance.IsStandbyServerEvent(EventManager.eServerEvent.node))
+				NodeWarPortal.instance.gameObject.SetActive(false);
+#if !UNITY_EDITOR
+			Debug.LogWarning("HHHHHHHHH-2");
 #endif
 		}
 

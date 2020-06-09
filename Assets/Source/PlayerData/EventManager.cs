@@ -25,7 +25,7 @@ public class EventManager : MonoBehaviour
 	public enum eServerEvent
 	{
 		chaos,
-		//anihil
+		node,
 	}
 
 	// 클라 이벤트는 메모리에만 기억되는 거라서 종료하면 더이상 볼 수 없다. 그래서 중요하지 않은 것들 위주다.
@@ -78,11 +78,12 @@ public class EventManager : MonoBehaviour
 		{
 			reservedOpenResearchEvent = true;
 		}
-		//else if (chapter == (int)ContentsManager.eOpenContentsByChapter.Annihilation)
-		//{
-		//	if (IsCompleteServerEvent(eServerEvent.annihil) == false)
-		//		PushServerEvent(eServerEvent.annihil);
-		//}
+		else if (chapter == (int)ContentsManager.eOpenContentsByChapter.NodeWar)
+		{
+			// 어차피 클리어시 1회만 들어올거라 검사 안해도 된다.
+			//if (IsCompleteServerEvent(eServerEvent.node) == false)
+			PushServerEvent(eServerEvent.node);
+		}
 		else if (chapter == (int)ContentsManager.eOpenContentsByChapter.EquipOption)
 		{
 			reservedOpenEquipOptionEvent = true;
@@ -289,6 +290,9 @@ public class EventManager : MonoBehaviour
 			case eServerEvent.chaos:
 				StartCoroutine(ChaosProcess());
 				break;
+			case eServerEvent.node:
+				StartCoroutine(NodeWarProcess());
+				break;
 		}
 	}
 
@@ -451,6 +455,51 @@ public class EventManager : MonoBehaviour
 			EventInputLockCanvas.instance.gameObject.SetActive(false);
 			EventInfoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_OriginBigName"), text, UIString.instance.GetString("GameUI_OriginBigMore"), () =>
 			{
+				OnCompleteLobbyEvent();
+			});
+		});
+	}
+
+	IEnumerator NodeWarProcess()
+	{
+		// SecondDailyBox와 마찬가지로 기존 프리팹은 기존 프리팹대로 나오면 되고
+		// 그전에 사전 이펙트만 추가로 로딩하면 되는 구조라
+		// 별도의 Open용 스크립트를 따로 추가하지 않기로 한다. 그래서 이펙트만 어드레서블로 로딩해서 쓰기로 한다.
+		GameObject effectPrefab = null;
+		AddressableAssetLoadManager.GetAddressableGameObject("OpenNodeWarPortalEffect", "Event", (prefab) =>
+		{
+			effectPrefab = prefab;
+		});
+
+		_waitTouch = true;
+		UIInstanceManager.instance.ShowCanvasAsync("EventInputLockCanvas", null);
+
+		while (effectPrefab == null)
+			yield return null;
+
+		while (_waitTouch)
+			yield return null;
+
+		BattleInstanceManager.instance.GetCachedObject(effectPrefab, NodeWarPortal.instance.cachedTransform.position, Quaternion.identity);
+		yield return new WaitForSeconds(6.0f);
+
+		// 가장 밝아졌을때 숨겨놓았던 포탈 다시 보여준다.
+		NodeWarPortal.instance.gameObject.SetActive(true);
+
+		// 나머지 대기
+		yield return new WaitForSeconds(0.5f);
+
+		// 연출 이후
+		UIInstanceManager.instance.ShowCanvasAsync("EventInfoCanvas", () =>
+		{
+			EventInputLockCanvas.instance.gameObject.SetActive(false);
+			
+			EventInfoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_OpenNodeWarName"), UIString.instance.GetString("GameUI_OpenNodeWarDesc"), UIString.instance.GetString("GameUI_OpenNodeWarMore"), () =>
+			{
+				_listCompleteServerEvent.Add(eServerEvent.node);
+				PlayFabApiManager.instance.RequestPushServerEvent(CreateServerEventJson());
+
+				// 카오스와 달리 스테이지 클리어 후 나오는거라 New Chapter 표시 이벤트도 연달아서 처리해야한다.
 				OnCompleteLobbyEvent();
 			});
 		});

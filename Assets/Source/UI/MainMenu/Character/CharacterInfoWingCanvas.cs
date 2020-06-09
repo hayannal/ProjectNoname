@@ -94,7 +94,7 @@ public class CharacterInfoWingCanvas : MonoBehaviour
 
 		_actorId = actorId;
 		_characterData = characterData;
-		if (characterData.limitBreakLevel <= 2)
+		if (characterData.limitBreakLevel <= 0) /////ch 2
 		{
 			needGroupObject.SetActive(true);
 			contentGroupObject.SetActive(false);

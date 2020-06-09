@@ -296,7 +296,7 @@ public class CharacterData
 			}
 		}
 
-		if (_limitBreakLevel >= 2)
+		if (_limitBreakLevel >= 1)	/////ch 2
 		{
 			if (characterStatistics.ContainsKey("train"))
 				_trainingValue = characterStatistics["train"];
@@ -308,7 +308,7 @@ public class CharacterData
 		}
 
 		_listWingGradeId.Clear();
-		if (_limitBreakLevel >= 3)
+		if (_limitBreakLevel >= 1)	/////ch 3
 		{
 			if (_listWingGradeId.Count == 0)
 			{

@@ -77,7 +77,7 @@ public class CharacterInfoTrainingCanvas : MonoBehaviour
 
 		_actorId = actorId;
 		_characterData = characterData;
-		if (characterData.limitBreakLevel <= 1)
+		if (characterData.limitBreakLevel <= 0)	/////ch 1
 		{
 			needGroupObject.SetActive(true);
 			contentGroupObject.SetActive(false);

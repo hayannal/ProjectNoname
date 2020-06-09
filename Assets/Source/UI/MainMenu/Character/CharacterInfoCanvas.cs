@@ -51,7 +51,7 @@ public class CharacterInfoCanvas : MonoBehaviour
 		switch (_highestLimitBreakLevel)
 		{
 			case 0: openMenuIndex = -1; break;
-			case 1: openMenuIndex = 1; break;
+			case 1: openMenuIndex = 3; break;	/////ch 1
 			case 2: openMenuIndex = 2; break;
 			case 3: openMenuIndex = 3; break;
 		}

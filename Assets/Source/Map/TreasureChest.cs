@@ -33,7 +33,7 @@ public class TreasureChest : MonoBehaviour
 		// 차후 알람이 들어가게되면 자동으로 보여주게 처리해야한다.
 		if (TreasureChestIndicatorCanvas.IsDailyBoxType())
 		{
-			ShowIndicator();
+			_autoShowIndicatorRemainTime = 1.0f;
 		}
 
 		if (ContentsManager.IsTutorialChapter() == false && DownloadManager.instance.IsDownloaded())
@@ -60,6 +60,30 @@ public class TreasureChest : MonoBehaviour
 		}
 
 		UpdateActivate();
+		UpdateAutoShowIndicator();
+	}
+
+	float _autoShowIndicatorRemainTime;
+	void UpdateAutoShowIndicator()
+	{
+		if (_autoShowIndicatorRemainTime > 0.0f)
+		{
+			_autoShowIndicatorRemainTime -= Time.deltaTime;
+			if (_autoShowIndicatorRemainTime <= 0.0f)
+			{
+				// 하필 CommonCanvasGroup.instance가 생성되지 않았다면 대기 시간을 늘려둔다.
+				if (CommonCanvasGroup.instance == null)
+				{
+					_autoShowIndicatorRemainTime += 0.1f;
+					return;
+				}
+			}
+			if (_autoShowIndicatorRemainTime <= 0.0f)
+			{
+				_autoShowIndicatorRemainTime = 0.0f;
+				ShowIndicator();
+			}
+		}
 	}
 
 	void ShowIndicator()

@@ -142,7 +142,8 @@ public class NodeWarProcessor : BattleModeProcessorBase
 
 	public override void OnSpawnMonster(MonsterActor monsterActor)
 	{
-		// 위 함수에서 다 처리해서 여기서 할게 없긴 한다.
+		// 위 함수에서 다 처리해서 여기서 할게 없긴 한데 NavMesh가 없는 곳이라 Warning뜨지 않게 처리 하나 해둔다.
+		monsterActor.pathFinderController.agent.enabled = false;
 	}
 
 	public override void OnDiePlayer(PlayerActor playerActor)

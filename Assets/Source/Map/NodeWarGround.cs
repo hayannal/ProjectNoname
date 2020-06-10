@@ -31,6 +31,7 @@ public class NodeWarGround : MonoBehaviour
 	public Text rightRewardValueText;
 
 	public GameObject[] monsterPrefabList;
+	public GameObject soulPrefab;
 
 	GameObject _planePrefab;
 	bool _centerLevel;

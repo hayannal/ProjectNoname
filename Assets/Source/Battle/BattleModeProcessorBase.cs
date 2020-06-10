@@ -441,4 +441,8 @@ public class BattleModeProcessorBase
 	{
 		return null;
 	}
+
+	public virtual void OnGetSoul(Vector3 getPosition)
+	{
+	}
 }

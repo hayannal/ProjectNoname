@@ -152,5 +152,10 @@ public class BattleManager : MonoBehaviour
 	{
 		return _currentBattleMode.GetSelectedNodeWarTableData();
 	}
+
+	public void OnGetSoul(Vector3 getPosition)
+	{
+		_currentBattleMode.OnGetSoul(getPosition);
+	}
 	#endregion
 }

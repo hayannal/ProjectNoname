@@ -229,6 +229,25 @@ public class MonsterActor : Actor
 		BattleInstanceManager.instance.OnFinalizePathFinderAgent(pathFinderController.agent.agentTypeID);
 	}
 
+	public void DisableForNodeWar()
+	{
+		// 실제 OnDie 처리를 호출하지 않은채 몬스터를 비활성화하는데에 필요한 코드들만 남긴다. Drop도 호출하지 않아야한다.
+		monsterAI.ResetPath();
+
+		if (bossMonster == false || groupMonster)
+		{
+			if (_monsterHPGauge != null)
+			{
+				_monsterHPGauge.gameObject.SetActive(false);
+				_monsterHPGauge = null;
+			}
+		}
+
+		BattleManager.instance.OnDieMonster(this);
+		BattleInstanceManager.instance.OnDieMonster(this);
+		BattleInstanceManager.instance.OnFinalizePathFinderAgent(pathFinderController.agent.agentTypeID);
+	}
+
 	IEnumerator<float> DieProcess()
 	{
 		if (BurrowAffector.CheckDie(affectorProcessor))

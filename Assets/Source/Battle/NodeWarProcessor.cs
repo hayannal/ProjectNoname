@@ -1,17 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MecanimStateDefine;
 
 public class NodeWarProcessor : BattleModeProcessorBase
 {
 	public static float SpawnDistance = 16.0f;
 	public static int DefaultMonsterMaxCount = 50;
 
+	// 몹이나 아이템 둘다 이 거리를 넘어서면 강제로 삭제한다.
+	public static float ValidDistance = 30.0f;
+
 	enum ePhase
 	{
-		FindKey = 1,
-		Node,
-		Exit,
+		FindSoul = 1,
+		FindPortal = 2,
+		WaitActivePortal = 3,
+		Exit = 4,
 	}
 
 	NodeWarTableData _selectedNodeWarTableData;
@@ -25,6 +30,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 
 		UpdateSpawnMonster();
 		UpdateMonsterDistance();
+		UpdateSpawnSoul();
 	}
 
 	public override void OnStartBattle()
@@ -55,11 +61,10 @@ public class NodeWarProcessor : BattleModeProcessorBase
 				_listSpawnRemainTime.Add(0.0f);
 			_totalAliveMonsterCount = 0;
 		}
-		_phase = ePhase.FindKey;
+		_phase = ePhase.FindSoul;
 		_phaseStartTime = Time.time;
+		_soulSpawnRemainTime = SoulSpawnDelay;
 		BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarRule1Mind"), 3.5f);
-
-		// 페이즈1 몬스터를 만들어야한다. 인디케이터도 만들어야한다.
 	}
 
 	public override NodeWarTableData GetSelectedNodeWarTableData()
@@ -131,12 +136,29 @@ public class NodeWarProcessor : BattleModeProcessorBase
 
 	void UpdateMonsterDistance()
 	{
+		Vector3 playerPosition = BattleInstanceManager.instance.playerActor.cachedTransform.position;
+
 		// 엄청나게 멀어질 경우 삭제하지 않으면 몬스터 총량 제한때문에 생성이 안되어버린다.
 		// 그러니 이땐 강제로 죽는처리를 해줘야한다.
+		MonsterActor findMonsterActor = null;
 		List<MonsterActor> listMonsterActor = BattleInstanceManager.instance.GetLiveMonsterList();
 		for (int i = 0; i < listMonsterActor.Count; ++i)
 		{
-
+			Vector3 position = listMonsterActor[i].cachedTransform.position;
+			Vector2 diff;
+			diff.x = playerPosition.x - position.x;
+			diff.y = playerPosition.z - position.z;
+			if (diff.x * diff.x + diff.y * diff.y > ValidDistance * ValidDistance)
+			{
+				findMonsterActor = listMonsterActor[i];
+				break;
+			}
+		}
+		if (findMonsterActor != null)
+		{
+			findMonsterActor.actorStatus.SetHpRatio(0.0f);
+			findMonsterActor.DisableForNodeWar();
+			findMonsterActor.gameObject.SetActive(false);
 		}
 	}
 
@@ -144,6 +166,84 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	{
 		// 위 함수에서 다 처리해서 여기서 할게 없긴 한데 NavMesh가 없는 곳이라 Warning뜨지 않게 처리 하나 해둔다.
 		monsterActor.pathFinderController.agent.enabled = false;
+	}
+
+	int _soulCount;
+	float _soulSpawnRemainTime;
+	// 2분동안 10개를 모아야하니 개당 대략 12초인데 뒤에 생성되서 못얻을때도 있을거 대비해서 조금 줄여둔다.
+	const float SoulSpawnDelay = 10.0f;
+	void UpdateSpawnSoul()
+	{
+		if (_phase != ePhase.FindSoul)
+			return;
+
+		// 페이즈1에서는 수집품목 아이템을 찾아야하므로 몬스터와 비슷하게 주변위치에 계속 생성해야하는데
+		// 몬스터와 달리 이동중에만 생성해야한다.
+		if (BattleInstanceManager.instance.playerActor.actionController.mecanimState.IsState((int)eMecanimState.Move) == false)
+			return;
+
+		_soulSpawnRemainTime -= Time.deltaTime;
+		if (_soulSpawnRemainTime < 0.0f)
+		{
+			Vector3 resultPosition = Vector3.zero;
+			if (GetSoulSpawnPosition(ref resultPosition))
+			{
+				BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.soulPrefab, resultPosition, Quaternion.identity);
+				_soulSpawnRemainTime += SoulSpawnDelay;
+			}
+			else
+			{
+				// 이 자리에서 만들 수 없다고 판단되면 잠시 딜레이를 줘서 조금 후에 다시 체크하도록 한다.
+				_soulSpawnRemainTime += 1.0f;
+			}
+		}
+	}
+
+	const float SoulNoDropRange = 24.0f;
+	List<Vector3> _listSoulGetPosition = new List<Vector3>();
+	bool GetSoulSpawnPosition(ref Vector3 resultPosition)
+	{
+		// 10회 돌려보고 안되면 못구하는거로 판정. 다음에 다시 시도하도록 한다.
+		for (int i = 0; i < 10; ++i)
+		{
+			Vector2 normalizedOffset = Random.insideUnitCircle.normalized;
+			Vector2 randomOffset = normalizedOffset * Random.Range(1.0f, 1.1f) * SpawnDistance;
+			Vector3 desirePosition = BattleInstanceManager.instance.playerActor.cachedTransform.position + new Vector3(randomOffset.x, 0.0f, randomOffset.y);
+
+			// 한번 획득한 자리 근처에서는 더이상 드랍되지 않게 해서 이동하면서 찾게 해야한다.
+			bool inNoDropRange = false;
+			for (int j = 0; j < _listSoulGetPosition.Count; ++j)
+			{
+				Vector2 diff;
+				diff.x = _listSoulGetPosition[j].x - desirePosition.x;
+				diff.y = _listSoulGetPosition[j].z - desirePosition.z;
+				if (diff.x * diff.x + diff.y * diff.y < SoulNoDropRange * SoulNoDropRange)
+				{
+					inNoDropRange = true;
+					break;
+				}
+			}
+			if (inNoDropRange)
+				continue;
+			resultPosition = desirePosition;
+			return true;
+		}
+		return false;
+	}
+
+	public override void OnGetSoul(Vector3 getPosition)
+	{
+		_listSoulGetPosition.Add(getPosition);
+
+		if (_listSoulGetPosition.Count == 10)
+		{
+			// 임의의 위치에 포탈을 생성하고 - 대략 20초 거리
+			// 인디케이터의 표시를 시작해야한다.
+			// 
+			_phase = ePhase.FindPortal;
+			_phaseStartTime = Time.time;
+			BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarRule2Mind"), 3.5f);
+		}
 	}
 
 	public override void OnDiePlayer(PlayerActor playerActor)

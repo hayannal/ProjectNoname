@@ -69,6 +69,8 @@ public class MonsterHPGauge : MonoBehaviour
 	void UpdateGaugeRotation()
 	{
 		float rotateY = cachedTransform.position.x * 2.0f;
+		if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+			rotateY = 0.0f;
 		cachedTransform.rotation = Quaternion.Euler(0.0f, rotateY, 0.0f);
 	}
 

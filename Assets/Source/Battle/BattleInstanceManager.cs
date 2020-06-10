@@ -528,7 +528,7 @@ public class BattleInstanceManager : MonoBehaviour
 		if (_listLiveMonsterActor.Contains(monsterActor))
 		{
 #if UNITY_EDITOR
-			Debug.LogError("Invalid Data : LiveMonsterActorList already contains the monster");
+			Debug.LogErrorFormat("Invalid Data : LiveMonsterActorList already contains the monster : {0}", monsterActor.actorId);
 #endif
 			return;
 		}

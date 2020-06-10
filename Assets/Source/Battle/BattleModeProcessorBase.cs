@@ -386,7 +386,7 @@ public class BattleModeProcessorBase
 	}
 	#endregion
 
-	public bool IsAutoPlay()
+	public virtual bool IsAutoPlay()
 	{
 		if (_monsterSpawned)
 		{

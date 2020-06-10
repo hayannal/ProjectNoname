@@ -68,7 +68,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	}
 
 	List<float> _listSpawnRemainTime = new List<float>();
-	Dictionary<string, int> _listAliveMonsterCount = new Dictionary<string, int>();
+	Dictionary<string, int> _dicAliveMonsterCount = new Dictionary<string, int>();
 	int _totalAliveMonsterCount;
 	void UpdateSpawnMonster()
 	{
@@ -106,14 +106,14 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			else
 			{
 				string key = TableDataManager.instance.nodeWarSpawnTable.dataArray[i].monsterId;
-				if (_listAliveMonsterCount.ContainsKey(key) && _listAliveMonsterCount[key] >= TableDataManager.instance.nodeWarSpawnTable.dataArray[i].maxCount)
+				if (_dicAliveMonsterCount.ContainsKey(key) && _dicAliveMonsterCount[key] >= TableDataManager.instance.nodeWarSpawnTable.dataArray[i].maxCount)
 					continue;
 
 				// totalMax를 안쓰는 몬스터는 각자 개별로 체크한다.
-				if (_listAliveMonsterCount.ContainsKey(key))
-					_listAliveMonsterCount[key] += 1;
+				if (_dicAliveMonsterCount.ContainsKey(key))
+					_dicAliveMonsterCount[key] += 1;
 				else
-					_listAliveMonsterCount.Add(key, 1);
+					_dicAliveMonsterCount.Add(key, 1);
 			}
 
 			SpawnMonster(TableDataManager.instance.nodeWarSpawnTable.dataArray[i].monsterId);
@@ -168,8 +168,21 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		else
 		{
 			// totalMax를 안쓰는 몬스터는 각자 개별로 체크한다.
-			if (_listAliveMonsterCount.ContainsKey(monsterActor.actorId))
-				_listAliveMonsterCount[monsterActor.actorId] -= 1;
+			if (_dicAliveMonsterCount.ContainsKey(monsterActor.actorId))
+				_dicAliveMonsterCount[monsterActor.actorId] -= 1;
 		}
+	}
+
+	public override bool IsAutoPlay()
+	{
+		if (_totalAliveMonsterCount > 0)
+			return true;
+		Dictionary<string, int>.Enumerator e = _dicAliveMonsterCount.GetEnumerator();
+		while (e.MoveNext())
+		{
+			if (e.Current.Value > 0)
+				return true;
+		}
+		return false;
 	}
 }

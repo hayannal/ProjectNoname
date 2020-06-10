@@ -318,7 +318,15 @@ public class MonsterAI : MonoBehaviour
 			}
 		}
 
-		pathFinderController.agent.destination = result;
+		if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+		{
+			nodeWarDestinationState = true;
+			nodeWarDestinationPosition = result;
+		}
+		else
+		{
+			pathFinderController.agent.destination = result;
+		}
 	}
 
 	void ResetRandomMoveStateInfo()

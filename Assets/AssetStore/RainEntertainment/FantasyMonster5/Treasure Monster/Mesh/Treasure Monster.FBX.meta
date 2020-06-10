@@ -1,56 +1,148 @@
 fileFormatVersion: 2
 guid: d50d61d4b8d75b544826d0aeda4446ab
-timeCreated: 1559824882
-licenseType: Store
 ModelImporter:
-  serializedVersion: 19
-  fileIDToRecycleName:
-    100000: Bip-001
-    100002: Bone001
-    100004: Bone003
-    100006: Bone003(mirrored)
-    100008: Bone004
-    100010: Bone005
-    100012: Bone006
-    100014: Dummy_root
-    100016: FXDummy_Head
-    100018: Mimic_SKEL
-    100020: //RootNode
-    400000: Bip-001
-    400002: Bone001
-    400004: Bone003
-    400006: Bone003(mirrored)
-    400008: Bone004
-    400010: Bone005
-    400012: Bone006
-    400014: Dummy_root
-    400016: FXDummy_Head
-    400018: Mimic_SKEL
-    400020: //RootNode
-    4300000: Mimic_SKEL
-    7400000: Take 001
-    7400002: ActiveSkill01
-    7400004: ActiveSkill01_Casting
-    7400006: Airborne
-    7400008: Attach
-    7400010: Chase
-    7400012: Damage
-    7400014: Die
-    7400016: Down
-    7400018: Down_GetUp
-    7400020: Down_Loop
-    7400022: Guard
-    7400024: Idle
-    7400026: NormalSkill
-    7400028: Retreat
-    7400030: Struggle
-    7400032: Stun
-    9500000: //RootNode
-    13700000: Mimic_SKEL
+  serializedVersion: 25
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: Bip-001
+  - first:
+      1: 100002
+    second: Bone001
+  - first:
+      1: 100004
+    second: Bone003
+  - first:
+      1: 100006
+    second: Bone003(mirrored)
+  - first:
+      1: 100008
+    second: Bone004
+  - first:
+      1: 100010
+    second: Bone005
+  - first:
+      1: 100012
+    second: Bone006
+  - first:
+      1: 100014
+    second: Dummy_root
+  - first:
+      1: 100016
+    second: FXDummy_Head
+  - first:
+      1: 100018
+    second: Mimic_SKEL
+  - first:
+      1: 100020
+    second: //RootNode
+  - first:
+      4: 400000
+    second: Bip-001
+  - first:
+      4: 400002
+    second: Bone001
+  - first:
+      4: 400004
+    second: Bone003
+  - first:
+      4: 400006
+    second: Bone003(mirrored)
+  - first:
+      4: 400008
+    second: Bone004
+  - first:
+      4: 400010
+    second: Bone005
+  - first:
+      4: 400012
+    second: Bone006
+  - first:
+      4: 400014
+    second: Dummy_root
+  - first:
+      4: 400016
+    second: FXDummy_Head
+  - first:
+      4: 400018
+    second: Mimic_SKEL
+  - first:
+      4: 400020
+    second: //RootNode
+  - first:
+      43: 4300000
+    second: Mimic_SKEL
+  - first:
+      74: 7400000
+    second: Take 001
+  - first:
+      74: 7400002
+    second: ActiveSkill01
+  - first:
+      74: 7400004
+    second: ActiveSkill01_Casting
+  - first:
+      74: 7400006
+    second: Airborne
+  - first:
+      74: 7400008
+    second: Attach
+  - first:
+      74: 7400010
+    second: Chase
+  - first:
+      74: 7400012
+    second: Damage
+  - first:
+      74: 7400014
+    second: Die
+  - first:
+      74: 7400016
+    second: Down
+  - first:
+      74: 7400018
+    second: Down_GetUp
+  - first:
+      74: 7400020
+    second: Down_Loop
+  - first:
+      74: 7400022
+    second: Guard
+  - first:
+      74: 7400024
+    second: Idle
+  - first:
+      74: 7400026
+    second: NormalSkill
+  - first:
+      74: 7400028
+    second: Retreat
+  - first:
+      74: 7400030
+    second: Struggle
+  - first:
+      74: 7400032
+    second: Stun
+  - first:
+      95: 9500000
+    second: //RootNode
+  - first:
+      137: 13700000
+    second: Mimic_SKEL
+  - first:
+      74: -5966168762594453805
+    second: Chase_Loop
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Mimic_MI
+    second: {fileID: 2100000, guid: 11777a2683fd3e649abb52393158d1c1, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
     materialSearch: 1
+    materialLocation: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
@@ -63,16 +155,20 @@ ModelImporter:
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
       name: Take 001
       takeName: Take 001
+      internalID: 7400000
       firstFrame: 0
       lastFrame: 528
       wrapMode: 0
@@ -101,6 +197,7 @@ ModelImporter:
     - serializedVersion: 16
       name: ActiveSkill01
       takeName: ActiveSkill01
+      internalID: 7400002
       firstFrame: 0
       lastFrame: 58
       wrapMode: 0
@@ -129,6 +226,7 @@ ModelImporter:
     - serializedVersion: 16
       name: ActiveSkill01_Casting
       takeName: ActiveSkill01_Casting
+      internalID: 7400004
       firstFrame: 59
       lastFrame: 86
       wrapMode: 0
@@ -157,6 +255,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Airborne
       takeName: Airborne
+      internalID: 7400006
       firstFrame: 87
       lastFrame: 109
       wrapMode: 0
@@ -185,6 +284,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Attach
       takeName: Attach
+      internalID: 7400008
       firstFrame: 110
       lastFrame: 111
       wrapMode: 0
@@ -213,6 +313,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Chase
       takeName: Chase
+      internalID: 7400010
       firstFrame: 112
       lastFrame: 139
       wrapMode: 0
@@ -241,6 +342,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Damage
       takeName: Damage
+      internalID: 7400012
       firstFrame: 140
       lastFrame: 170
       wrapMode: 0
@@ -269,6 +371,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Die
       takeName: Die
+      internalID: 7400014
       firstFrame: 171
       lastFrame: 246
       wrapMode: 0
@@ -297,6 +400,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Down
       takeName: Down
+      internalID: 7400016
       firstFrame: 247
       lastFrame: 267
       wrapMode: 0
@@ -325,6 +429,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Down_GetUp
       takeName: Down_GetUp
+      internalID: 7400018
       firstFrame: 268
       lastFrame: 293
       wrapMode: 0
@@ -353,6 +458,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Down_Loop
       takeName: Down_Loop
+      internalID: 7400020
       firstFrame: 294
       lastFrame: 324
       wrapMode: 0
@@ -381,6 +487,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Guard
       takeName: Guard
+      internalID: 7400022
       firstFrame: 325
       lastFrame: 365
       wrapMode: 0
@@ -409,6 +516,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Idle
       takeName: Idle
+      internalID: 7400024
       firstFrame: 366
       lastFrame: 396
       wrapMode: 0
@@ -437,6 +545,7 @@ ModelImporter:
     - serializedVersion: 16
       name: NormalSkill
       takeName: NormalSkill
+      internalID: 7400026
       firstFrame: 397
       lastFrame: 440
       wrapMode: 0
@@ -465,6 +574,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Retreat
       takeName: Retreat
+      internalID: 7400028
       firstFrame: 441
       lastFrame: 470
       wrapMode: 0
@@ -493,6 +603,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Struggle
       takeName: Struggle
+      internalID: 7400030
       firstFrame: 471
       lastFrame: 499
       wrapMode: 0
@@ -521,6 +632,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Stun
       takeName: Stun
+      internalID: 7400032
       firstFrame: 500
       lastFrame: 528
       wrapMode: 0
@@ -546,19 +658,57 @@ ModelImporter:
       maskType: 3
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Chase_Loop
+      takeName: Chase
+      internalID: -5966168762594453805
+      firstFrame: 112
+      lastFrame: 130
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     isReadable: 1
   meshes:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 0
     importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    meshOptimizationFlags: -1
+    indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
@@ -568,10 +718,15 @@ ModelImporter:
     normalSmoothAngle: 60
     normalImportMode: 1
     tangentImportMode: 3
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
-    serializedVersion: 2
+    serializedVersion: 3
     human: []
     skeleton: []
     armTwist: 0.5
@@ -581,8 +736,8 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 1
     rootMotionBoneName: 
-    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1

@@ -7,6 +7,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 {
 	public static float SpawnDistance = 16.0f;
 	public static int DefaultMonsterMaxCount = 50;
+	public static int SoulCountMax = 10;
 
 	// 몹이나 아이템 둘다 이 거리를 넘어서면 강제로 삭제한다.
 	public static float ValidDistance = 30.0f;
@@ -17,6 +18,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		FindPortal = 2,
 		WaitActivePortal = 3,
 		Exit = 4,
+		Success = 5,
 	}
 
 	NodeWarTableData _selectedNodeWarTableData;
@@ -31,6 +33,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		UpdateSpawnMonster();
 		UpdateMonsterDistance();
 		UpdateSpawnSoul();
+		UpdateExit();
 	}
 
 	public override void OnStartBattle()
@@ -235,15 +238,67 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	{
 		_listSoulGetPosition.Add(getPosition);
 
-		if (_listSoulGetPosition.Count == 10)
+		if (_listSoulGetPosition.Count < SoulCountMax)
 		{
-			// 임의의 위치에 포탈을 생성하고 - 대략 20초 거리
+			BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarCollectingSoul", _listSoulGetPosition.Count), 3.5f);
+		}
+		else if (_listSoulGetPosition.Count == SoulCountMax)
+		{
+			// 임의의 위치에 포탈을 생성하고
+			float distance = BattleInstanceManager.instance.playerActor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MoveSpeed) * 20.0f;
+			distance = Random.Range(distance * 0.8f, distance * 1.2f);
+			Vector2 normalizedOffset = Random.insideUnitCircle.normalized;
+			Vector2 randomOffset = normalizedOffset * Random.Range(1.0f, 1.1f) * distance;
+			Vector3 desirePosition = BattleInstanceManager.instance.playerActor.cachedTransform.position + new Vector3(randomOffset.x, 0.0f, randomOffset.y);
+			BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.nodeWarExitPortalPrefab, desirePosition, Quaternion.identity);
+
 			// 인디케이터의 표시를 시작해야한다.
-			// 
+
+
 			_phase = ePhase.FindPortal;
 			_phaseStartTime = Time.time;
-			BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarRule2Mind"), 3.5f);
+			BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarActivateMovePannel"), 3.5f);
 		}
+		else
+		{
+			// 초과해서 얻는거에 한해서는 무시
+		}
+	}
+
+	public override void OnTryActiveExitPortal()
+	{
+		if (_phase == ePhase.FindPortal)
+		{
+			_phase = ePhase.WaitActivePortal;
+			_phaseStartTime = Time.time;
+			BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarStartActivating"), 3.5f);
+		}
+	}
+
+	public override void OnActiveExitPortal()
+	{
+		if (_phase == ePhase.WaitActivePortal)
+		{
+			_phase = ePhase.Exit;
+			_phaseStartTime = Time.time;
+			BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarPortalOpen"), 3.5f);
+		}
+	}
+
+	public override void OnSuccessExitPortal()
+	{
+		if (_phase == ePhase.Exit)
+		{
+			_phase = ePhase.Success;
+			_phaseStartTime = Time.time;
+		}
+	}
+
+	void UpdateExit()
+	{
+		if (_phase != ePhase.Exit)
+			return;
+
 	}
 
 	public override void OnDiePlayer(PlayerActor playerActor)

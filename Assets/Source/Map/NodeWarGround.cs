@@ -32,6 +32,7 @@ public class NodeWarGround : MonoBehaviour
 
 	public GameObject[] monsterPrefabList;
 	public GameObject soulPrefab;
+	public GameObject nodeWarExitPortalPrefab;
 
 	GameObject _planePrefab;
 	bool _centerLevel;

@@ -433,6 +433,7 @@ public class BattleModeProcessorBase
 
 
 
+
 	public virtual void OnSelectedNodeWarLevel(int level)
 	{
 	}
@@ -443,6 +444,18 @@ public class BattleModeProcessorBase
 	}
 
 	public virtual void OnGetSoul(Vector3 getPosition)
+	{
+	}
+
+	public virtual void OnTryActiveExitPortal()
+	{
+	}
+
+	public virtual void OnActiveExitPortal()
+	{
+	}
+
+	public virtual void OnSuccessExitPortal()
 	{
 	}
 }

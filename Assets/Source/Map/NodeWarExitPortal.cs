@@ -1,0 +1,212 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using MEC;
+#if UNITY_EDITOR
+using UnityEditor.AddressableAssets;
+using UnityEditor.AddressableAssets.Settings;
+#endif
+using DG.Tweening;
+
+// NodeWar 인게임에서 쓰는 포탈이다. 탈출할때 사용되는 포탈이라서 Exit를 붙여둔다. 생긴건 똑같이 생겼지만 처리 로직이 완전히 인게임 전용이다.
+public class NodeWarExitPortal : MonoBehaviour
+{
+	public static NodeWarExitPortal instance;
+
+	// 포탈 활성화까지는 30초
+	public static float WaitActivePortalTime = 30.0f;
+
+	public GameObject standbyEffectObject;
+	public GameObject openingEffectObject;
+	public Canvas worldCanvas;
+	public CanvasGroup canvasGroup;
+	public DOTweenAnimation fadeTweenAnimation;
+	public Text remainTimeText;
+
+	public GameObject arrowIndicatorPrefab;
+
+	void Awake()
+	{
+		instance = this;
+	}
+
+	// Start is called before the first frame update
+	void Start()
+	{
+		worldCanvas.worldCamera = UIInstanceManager.instance.GetCachedCameraMain();
+		canvasGroup.alpha = 0.0f;
+
+		// 처음 발견할땐 standbyEffect조차 꺼있는채로 발견되면 된다.
+		//RefreshRemainTime();
+		standbyEffectObject.SetActive(false);
+
+		// 화살표는 ExitPortal이 관리한다.
+		_arrowIndicatorTransform = Instantiate<GameObject>(arrowIndicatorPrefab, BattleInstanceManager.instance.playerActor.cachedTransform.position, Quaternion.identity).transform;
+	}
+
+	void Update()
+	{
+		if (_enteredPortal && _openRemainTime > 0.0f)
+		{
+			_openRemainTime -= Time.deltaTime;
+			if (_openRemainTime <= 0.0f)
+			{
+				_openRemainTime = 0.0f;
+				Timing.RunCoroutine(MoveProcess());
+			}
+		}
+
+		UpdateRemainTime();
+		UpdateArrowIndicator();
+	}
+
+	float _remainTime;
+	int _lastRemainTimeSecond = -1;
+	bool _needUpdate = false;
+	void UpdateRemainTime()
+	{
+		if (_needUpdate == false)
+			return;
+		if (canvasGroup.alpha == 0.0f)
+			return;
+
+		_remainTime -= Time.deltaTime;
+		if (_remainTime > 0.0f)
+		{
+			if (_lastRemainTimeSecond != (int)_remainTime)
+			{
+				remainTimeText.text = string.Format("00:00:{0:00}", (int)_remainTime + 1);
+				_lastRemainTimeSecond = (int)_remainTime;
+			}
+		}
+		else
+		{
+			BattleManager.instance.OnActiveExitPortal();
+			standbyEffectObject.SetActive(true);
+			_needUpdate = false;
+			remainTimeText.text = "00:00:00";
+			fadeTweenAnimation.DORestart();
+		}
+	}
+
+	Transform _arrowIndicatorTransform;
+	void UpdateArrowIndicator()
+	{
+		_arrowIndicatorTransform.position = BattleInstanceManager.instance.playerActor.cachedTransform.position;
+
+		Quaternion lookRotation = Quaternion.LookRotation(cachedTransform.position - _arrowIndicatorTransform.position);
+		_arrowIndicatorTransform.rotation = Quaternion.Slerp(_arrowIndicatorTransform.rotation, lookRotation, 4.0f * Time.deltaTime);
+	}
+	
+	public bool enteredPortal { get { return _enteredPortal; } }
+	bool _enteredPortal = false;
+	const float PortalOpenTime = 4.5f;
+	float _openRemainTime;
+	void OnTriggerEnter(Collider other)
+	{
+		if (_processing)
+			return;
+
+		AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(other);
+		if (affectorProcessor == null)
+			return;
+		if (affectorProcessor.actor == null)
+			return;
+		if (affectorProcessor.actor.team.teamId == (int)Team.eTeamID.DefaultMonster)
+			return;
+		if (DelayedLoadingCanvas.IsShow())
+			return;
+
+		// ExitPortal을 찾고있는 중이었다면 standbyEffect와 canvasGroup 모두 보이지 않는 상태였을거다.
+		if (standbyEffectObject.activeSelf == false && canvasGroup.alpha == 0.0f)
+		{
+			BattleManager.instance.OnTryRepairExitPortal();
+			canvasGroup.alpha = 1.0f;
+			_remainTime = WaitActivePortalTime;
+			_needUpdate = true;
+			remainTimeText.gameObject.SetActive(true);
+			return;
+		}
+
+		if (standbyEffectObject.activeSelf && canvasGroup.alpha == 0.0f)
+		{
+			_enteredPortal = true;
+			_openRemainTime = PortalOpenTime;
+			openingEffectObject.SetActive(false);
+			openingEffectObject.SetActive(true);
+		}
+	}
+
+	void OnTriggerExit(Collider other)
+	{
+		if (_processing)
+			return;
+
+		AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(other);
+		if (affectorProcessor == null)
+			return;
+		if (affectorProcessor.actor == null)
+			return;
+		if (affectorProcessor.actor.team.teamId == (int)Team.eTeamID.DefaultMonster)
+			return;
+
+		if (standbyEffectObject.activeSelf && canvasGroup.alpha == 0.0f && _enteredPortal)
+		{
+			_enteredPortal = false;
+			//openingEffectObject.SetActive(false);
+			DisableParticleEmission.DisableEmission(openingEffectObject.transform);
+		}
+	}
+
+	bool _processing = false;
+	public bool processing { get { return _processing; } }
+	IEnumerator<float> MoveProcess(bool inProgressGame = false)
+	{
+		if (_processing)
+			yield break;
+
+		_processing = true;
+
+		//yield return Timing.WaitForSeconds(0.2f);
+		//changeEffectParticleRootObject.SetActive(true);
+#if UNITY_EDITOR
+		AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+		if (settings.ActivePlayModeDataBuilderIndex == 2)
+			ObjectUtil.ReloadShader(gameObject);
+#endif
+		CustomRenderer.instance.bloom.AdjustDirtIntensity(1.5f);
+
+		yield return Timing.WaitForSeconds(0.5f);
+
+		FadeCanvas.instance.FadeOut(0.2f);
+		yield return Timing.WaitForSeconds(0.2f);
+		
+		CustomRenderer.instance.bloom.ResetDirtIntensity();
+
+		// position 이동. 안전지대쪽으로 보내야한다.
+		//
+		BattleManager.instance.OnTryRepairExitPortal();
+
+		gameObject.SetActive(false);
+
+		// 도착하자마자 잠시 후에 성공 결과창을 띄울테니 너무 오래 보여주진 않는다.
+		FadeCanvas.instance.FadeIn(1.0f);
+
+		_processing = false;
+	}
+
+
+
+	Transform _transform;
+	public Transform cachedTransform
+	{
+		get
+		{
+			if (_transform == null)
+				_transform = GetComponent<Transform>();
+			return _transform;
+		}
+	}
+}

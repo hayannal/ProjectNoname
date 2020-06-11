@@ -157,5 +157,20 @@ public class BattleManager : MonoBehaviour
 	{
 		_currentBattleMode.OnGetSoul(getPosition);
 	}
+
+	public void OnTryRepairExitPortal()
+	{
+		_currentBattleMode.OnTryActiveExitPortal();
+	}
+
+	public void OnActiveExitPortal()
+	{
+		_currentBattleMode.OnActiveExitPortal();
+	}
+
+	public void OnSuccessExitPortal()
+	{
+		_currentBattleMode.OnSuccessExitPortal();
+	}
 	#endregion
 }

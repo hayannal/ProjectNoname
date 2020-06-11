@@ -51,7 +51,7 @@ public class NodeWarExitPortal : MonoBehaviour
 
 	void Update()
 	{
-		if (_enteredPortal && _openRemainTime > 0.0f)
+		if (_enteredPortal && _openRemainTime > 0.0f && BattleInstanceManager.instance.playerActor.actorStatus.IsDie() == false)
 		{
 			_openRemainTime -= Time.deltaTime;
 			if (_openRemainTime <= 0.0f)
@@ -237,8 +237,18 @@ public class NodeWarExitPortal : MonoBehaviour
 
 		FadeCanvas.instance.FadeOut(0.2f);
 		yield return Timing.WaitForSeconds(0.2f);
-		
+
 		CustomRenderer.instance.bloom.ResetDirtIntensity();
+
+		// 유일하게 전투중에 타는 포탈이라서 Die검사를 해야한다.
+		if (BattleInstanceManager.instance.playerActor.actorStatus.IsDie())
+		{
+			FadeCanvas.instance.FadeIn(0.4f);
+			// 알파가 어느정도 빠지면 _processing을 풀어준다.
+			yield return Timing.WaitForSeconds(0.2f);
+			_processing = false;
+			yield break;
+		}
 
 		// position 이동. 안전지대쪽으로 보내야한다.
 		BattleManager.instance.OnSuccessExitPortal();

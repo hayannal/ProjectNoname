@@ -114,9 +114,12 @@ public class MailCanvas : MonoBehaviour
 					DateTime universalTime = receiveTime.ToUniversalTime();
 					validTime = universalTime;
 					validTime = validTime.AddDays(createInfo.ti);
-					if (ServerTime.UtcNow > validTime)
-						continue;
 					receiveDay = universalTime.Day;
+					if (j == 1)
+					{
+						if (ServerTime.UtcNow > validTime)
+							continue;
+					}
 				}
 
 				MailCanvasListItem mailCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);

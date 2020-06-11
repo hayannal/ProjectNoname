@@ -60,6 +60,12 @@ public class NodeWarExitPortal : MonoBehaviour
 				Timing.RunCoroutine(MoveProcess());
 			}
 		}
+		if (_enteredPortal && _openRemainTime > 0.0f && BattleInstanceManager.instance.playerActor.actorStatus.IsDie())
+		{
+			// openRemainTime이 0보다 큰 상황에서 IsDie라면 포탈을 타려다가 죽은 경우일거다.
+			_enteredPortal = false;
+			DisableParticleEmission.DisableEmission(openingEffectObject.transform);
+		}
 
 		UpdateArrowIndicator();
 		UpdateRemainTime();
@@ -110,6 +116,7 @@ public class NodeWarExitPortal : MonoBehaviour
 		}
 	}
 
+	// 포탈은 한번 열리고나면 30초 동안의 기회를 준다. 이게 지나면 도로 닫히면서 실패로 처리된다.
 	float _activeRemainTime;
 	void UpdateActiveTime()
 	{

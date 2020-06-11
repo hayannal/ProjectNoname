@@ -52,10 +52,15 @@ public class NodeWarProcessor : BattleModeProcessorBase
 
 		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkBetter", false, 0);
 		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkBetter", false, 0);
+		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkBest", false, 0);
 		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkSpeedBetter", false, 0);
 		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkSpeedBetter", false, 0);
+		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkSpeedBest", false, 0);
 		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("CritBetter", false, 0);
 		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("CritBetter", false, 0);
+		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("CritBest", false, 0);
+		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("MoveSpeedUpOnKill", false, 0);
+		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("MoveSpeedUpOnAttacked", false, 0);
 	}
 
 	public override void OnLoadedMap()
@@ -187,7 +192,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	int _soulCount;
 	float _soulSpawnRemainTime;
 	// 2분동안 10개를 모아야하니 개당 대략 12초인데 뒤에 생성되서 못얻을때도 있을거 대비해서 조금 줄여둔다.
-	const float SoulSpawnDelay = 10.0f;
+	const float SoulSpawnDelay = 4.0f;
 	void UpdateSpawnSoul()
 	{
 		if (_phase != ePhase.FindSoul)

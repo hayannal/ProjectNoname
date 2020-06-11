@@ -12,6 +12,9 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	// 몹이나 아이템 둘다 이 거리를 넘어서면 강제로 삭제한다.
 	public static float ValidDistance = 30.0f;
 
+	// 안전지대 위치는 10, 0, 10이다.
+	public static Vector3 EndSafeAreaPosition = new Vector3(10.0f, 0.0f, 10.0f);
+
 	enum ePhase
 	{
 		FindSoul = 1,
@@ -80,6 +83,9 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	int _totalAliveMonsterCount;
 	void UpdateSpawnMonster()
 	{
+		if (_phase == ePhase.Success)
+			return;
+
 		float diffTime = Time.time - _phaseStartTime;
 		for (int i = 0; i < TableDataManager.instance.nodeWarSpawnTable.dataArray.Length; ++i)
 		{
@@ -237,6 +243,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	public override void OnGetSoul(Vector3 getPosition)
 	{
 		_listSoulGetPosition.Add(getPosition);
+		BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.soulGetEffectPrefab, getPosition, Quaternion.identity);
 
 		if (_listSoulGetPosition.Count < SoulCountMax)
 		{
@@ -244,17 +251,14 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		}
 		else if (_listSoulGetPosition.Count == SoulCountMax)
 		{
-			// 임의의 위치에 포탈을 생성하고
-			float distance = BattleInstanceManager.instance.playerActor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MoveSpeed) * 20.0f;
+			// 임의의 위치에 포탈을 생성
+			float distance = BattleInstanceManager.instance.playerActor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MoveSpeed) * 15.0f;
 			distance = Random.Range(distance * 0.8f, distance * 1.2f);
 			Vector2 normalizedOffset = Random.insideUnitCircle.normalized;
 			Vector2 randomOffset = normalizedOffset * Random.Range(1.0f, 1.1f) * distance;
 			Vector3 desirePosition = BattleInstanceManager.instance.playerActor.cachedTransform.position + new Vector3(randomOffset.x, 0.0f, randomOffset.y);
 			BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.nodeWarExitPortalPrefab, desirePosition, Quaternion.identity);
-
-			// 인디케이터의 표시를 시작해야한다.
-
-
+			
 			_phase = ePhase.FindPortal;
 			_phaseStartTime = Time.time;
 			BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarActivateMovePannel"), 3.5f);
@@ -281,6 +285,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		{
 			_phase = ePhase.Exit;
 			_phaseStartTime = Time.time;
+			_activeExitPortalRemainTime = NodeWarExitPortal.ActivePortalTime;
 			BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarPortalOpen"), 3.5f);
 		}
 	}
@@ -291,14 +296,56 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		{
 			_phase = ePhase.Success;
 			_phaseStartTime = Time.time;
+
+			// 모든 몬스터를 삭제해야한다. 뒤에서부터 루프 돈다.
+			List<MonsterActor> listMonsterActor = BattleInstanceManager.instance.GetLiveMonsterList();
+			for (int i = listMonsterActor.Count - 1; i >= 0; --i)
+			{
+				MonsterActor monsterActor = listMonsterActor[i];
+				monsterActor.actorStatus.SetHpRatio(0.0f);
+				monsterActor.DisableForNodeWar();
+				monsterActor.gameObject.SetActive(false);
+			}
+
+			// 도착지점 프리팹도 만들어낸다.
+			BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.nodeWarEndSafeAreaPrefab, EndSafeAreaPosition, Quaternion.identity);
 		}
 	}
 
+	float _activeExitPortalRemainTime;
+	const float ExitFirstWarningTime = 15.0f;
+	bool _exitFirstWarning;
+	float[] ExitLastWarningTimeList = { 6.0f, 4.0f, 2.0f };
+	bool[] _exitLastWarningList = { false, false, false };
 	void UpdateExit()
 	{
 		if (_phase != ePhase.Exit)
 			return;
 
+		if (_activeExitPortalRemainTime > 0.0f)
+		{
+			_activeExitPortalRemainTime -= Time.deltaTime;
+			if (_exitFirstWarning == false && _activeExitPortalRemainTime <= ExitFirstWarningTime)
+			{
+				BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarPortalLosingPower"), 3.5f);
+				_exitFirstWarning = true;
+			}
+
+			for (int i = 0; i < _exitLastWarningList.Length; ++i)
+			{
+				if(_exitLastWarningList[i] == false && _activeExitPortalRemainTime <= ExitLastWarningTimeList[i])
+				{
+					BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarPortalLosingAlmost"), 1.5f);
+					_exitLastWarningList[i] = true;
+				}
+			}
+
+			if (_activeExitPortalRemainTime <= 0.0f)
+			{
+				_activeExitPortalRemainTime = 0.0f;
+				BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarFailedToEscape"), 3.5f);
+			}
+		}
 	}
 
 	public override void OnDiePlayer(PlayerActor playerActor)

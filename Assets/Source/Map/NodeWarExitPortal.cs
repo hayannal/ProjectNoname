@@ -18,6 +18,9 @@ public class NodeWarExitPortal : MonoBehaviour
 	// 포탈 활성화까지는 30초
 	public static float WaitActivePortalTime = 30.0f;
 
+	// 포탈 활성화 되고나서부터 다시 종료될때까지 걸리는 시간
+	public static float ActivePortalTime = 30.0f;
+
 	public GameObject standbyEffectObject;
 	public GameObject openingEffectObject;
 	public Canvas worldCanvas;
@@ -58,8 +61,18 @@ public class NodeWarExitPortal : MonoBehaviour
 			}
 		}
 
-		UpdateRemainTime();
 		UpdateArrowIndicator();
+		UpdateRemainTime();
+		UpdateActiveTime();
+	}
+
+	Transform _arrowIndicatorTransform;
+	void UpdateArrowIndicator()
+	{
+		_arrowIndicatorTransform.position = BattleInstanceManager.instance.playerActor.cachedTransform.position;
+
+		Quaternion lookRotation = Quaternion.LookRotation(cachedTransform.position - _arrowIndicatorTransform.position);
+		_arrowIndicatorTransform.rotation = Quaternion.Slerp(_arrowIndicatorTransform.rotation, lookRotation, 4.0f * Time.deltaTime);
 	}
 
 	float _remainTime;
@@ -88,16 +101,29 @@ public class NodeWarExitPortal : MonoBehaviour
 			_needUpdate = false;
 			remainTimeText.text = "00:00:00";
 			fadeTweenAnimation.DORestart();
+			_activeRemainTime = ActivePortalTime;
 		}
 	}
 
-	Transform _arrowIndicatorTransform;
-	void UpdateArrowIndicator()
+	float _activeRemainTime;
+	void UpdateActiveTime()
 	{
-		_arrowIndicatorTransform.position = BattleInstanceManager.instance.playerActor.cachedTransform.position;
+		if (_activeRemainTime > 0.0f)
+		{
+			_activeRemainTime -= Time.deltaTime;
+			if (_activeRemainTime <= 0.0f)
+			{
+				standbyEffectObject.SetActive(false);
+				if (_enteredPortal)
+				{
+					_enteredPortal = false;
+					DisableParticleEmission.DisableEmission(openingEffectObject.transform);
+				}
 
-		Quaternion lookRotation = Quaternion.LookRotation(cachedTransform.position - _arrowIndicatorTransform.position);
-		_arrowIndicatorTransform.rotation = Quaternion.Slerp(_arrowIndicatorTransform.rotation, lookRotation, 4.0f * Time.deltaTime);
+				// 아예 processing 상태로 바꿔버려서 진행이 안되도록 막아둔다.
+				_processing = true;
+			}
+		}
 	}
 	
 	public bool enteredPortal { get { return _enteredPortal; } }
@@ -186,8 +212,10 @@ public class NodeWarExitPortal : MonoBehaviour
 		CustomRenderer.instance.bloom.ResetDirtIntensity();
 
 		// position 이동. 안전지대쪽으로 보내야한다.
-		//
-		BattleManager.instance.OnTryRepairExitPortal();
+		BattleManager.instance.OnSuccessExitPortal();
+		BattleInstanceManager.instance.playerActor.cachedTransform.position = NodeWarProcessor.EndSafeAreaPosition;
+		TailAnimatorUpdater.UpdateAnimator(BattleInstanceManager.instance.playerActor.cachedTransform, 15);
+		CustomFollowCamera.instance.immediatelyUpdate = true;
 
 		gameObject.SetActive(false);
 

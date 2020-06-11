@@ -71,8 +71,13 @@ public class NodeWarExitPortal : MonoBehaviour
 	{
 		_arrowIndicatorTransform.position = BattleInstanceManager.instance.playerActor.cachedTransform.position;
 
-		Quaternion lookRotation = Quaternion.LookRotation(cachedTransform.position - _arrowIndicatorTransform.position);
+		Vector3 diff = cachedTransform.position - _arrowIndicatorTransform.position;
+		diff.y = 0.0f;
+		Quaternion lookRotation = Quaternion.LookRotation(diff);
 		_arrowIndicatorTransform.rotation = Quaternion.Slerp(_arrowIndicatorTransform.rotation, lookRotation, 4.0f * Time.deltaTime);
+
+		bool close = (diff.sqrMagnitude < 1.7f * 1.7f);
+		_arrowIndicatorTransform.GetChild(0).gameObject.SetActive(!close);
 	}
 
 	float _remainTime;

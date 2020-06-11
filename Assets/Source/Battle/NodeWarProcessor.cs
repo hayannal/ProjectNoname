@@ -259,7 +259,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 
 		if (_listSoulGetPosition.Count < SoulCountMax)
 		{
-			BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarCollectingSoul", _listSoulGetPosition.Count), 3.5f);
+			BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarCollectingSoul", _listSoulGetPosition.Count, SoulCountMax), 3.5f);
 		}
 		else if (_listSoulGetPosition.Count == SoulCountMax)
 		{

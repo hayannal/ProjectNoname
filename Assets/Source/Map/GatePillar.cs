@@ -591,6 +591,7 @@ public class GatePillar : MonoBehaviour
 			if (_enterGameServerFailure || _networkFailure)
 			{
 				ResetFlagForServerFailure();
+				CustomRenderer.instance.bloom.ResetDirtIntensity();
 				FadeCanvas.instance.FadeIn(0.4f);
 				if (_enterGameServerFailure)
 					ShowRefillEnergyCanvas();

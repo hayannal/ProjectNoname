@@ -158,6 +158,40 @@ public class NodeWarPortal : MonoBehaviour
 		if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
 			DotMainMenuCanvas.instance.OnClickBackButton();
 
+		StartOpen();
+	}
+
+	void OnTriggerStay(Collider other)
+	{
+		if (_processing)
+			return;
+		if (_enteredPortal)
+			return;
+
+		AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(other);
+		if (affectorProcessor == null)
+			return;
+		if (affectorProcessor.actor == null)
+			return;
+		if (affectorProcessor.actor.team.teamId == (int)Team.eTeamID.DefaultMonster)
+			return;
+		if (DelayedLoadingCanvas.IsShow())
+			return;
+		if (GatePillar.instance.processing)
+			return;
+		if (TimeSpacePortal.instance != null && TimeSpacePortal.instance.processing)
+			return;
+		if (RandomBoxScreenCanvas.instance != null && RandomBoxScreenCanvas.instance.gameObject.activeSelf)
+			return;
+
+		if (PlayerData.instance.nodeWarCleared)
+			return;
+
+		StartOpen();
+	}
+
+	void StartOpen()
+	{
 		_enteredPortal = true;
 		_openRemainTime = PortalOpenTime;
 		openingEffectObject.SetActive(false);

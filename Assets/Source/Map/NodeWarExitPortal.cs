@@ -162,12 +162,36 @@ public class NodeWarExitPortal : MonoBehaviour
 		}
 
 		if (standbyEffectObject.activeSelf && canvasGroup.alpha == 0.0f)
-		{
-			_enteredPortal = true;
-			_openRemainTime = PortalOpenTime;
-			openingEffectObject.SetActive(false);
-			openingEffectObject.SetActive(true);
-		}
+			StartOpen();
+	}
+
+	void OnTriggerStay(Collider other)
+	{
+		if (_processing)
+			return;
+		if (_enteredPortal)
+			return;
+
+		AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(other);
+		if (affectorProcessor == null)
+			return;
+		if (affectorProcessor.actor == null)
+			return;
+		if (affectorProcessor.actor.team.teamId == (int)Team.eTeamID.DefaultMonster)
+			return;
+		if (DelayedLoadingCanvas.IsShow())
+			return;
+
+		if (standbyEffectObject.activeSelf && canvasGroup.alpha == 0.0f)
+			StartOpen();
+	}
+
+	void StartOpen()
+	{
+		_enteredPortal = true;
+		_openRemainTime = PortalOpenTime;
+		openingEffectObject.SetActive(false);
+		openingEffectObject.SetActive(true);
 	}
 
 	void OnTriggerExit(Collider other)

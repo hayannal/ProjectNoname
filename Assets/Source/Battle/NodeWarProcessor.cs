@@ -325,9 +325,9 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	}
 
 	float _activeExitPortalRemainTime;
-	const float ExitFirstWarningTime = 15.0f;
+	const float ExitFirstWarningTime = 20.0f;
 	bool _exitFirstWarning;
-	float[] ExitLastWarningTimeList = { 6.0f, 4.0f, 2.0f };
+	float[] ExitLastWarningTimeList = { 12.0f, 10.0f, 8.0f };
 	bool[] _exitLastWarningList = { false, false, false };
 	void UpdateExit()
 	{

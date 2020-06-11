@@ -552,6 +552,8 @@ public class MonsterAI : MonoBehaviour
 			ResetPath();
 			ResetChaseStateInfo();
 			_currentState = eStateType.AttackDelay;
+			if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+				_currentState = eStateType.AttackAction;
 			NextStep();
 			return;
 		}

@@ -49,6 +49,13 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		CustomFollowCamera.instance.distanceToTarget += 8.0f;
 		CustomFollowCamera.instance.followSpeed = 5.0f;
 		CustomFollowCamera.instance.immediatelyUpdate = true;
+
+		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkBetter", false, 0);
+		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkBetter", false, 0);
+		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkSpeedBetter", false, 0);
+		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkSpeedBetter", false, 0);
+		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("CritBetter", false, 0);
+		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("CritBetter", false, 0);
 	}
 
 	public override void OnLoadedMap()

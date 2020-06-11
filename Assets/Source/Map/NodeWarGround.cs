@@ -325,6 +325,7 @@ public class NodeWarGround : MonoBehaviour
 			{
 				_levelUpEffectDelayTime = 0.0f;
 				BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.playerLevelUpEffectPrefab, BattleInstanceManager.instance.playerActor.cachedTransform.position, Quaternion.identity, BattleInstanceManager.instance.playerActor.cachedTransform);
+				// 이미 레벨팩은 OnStartBattle에서 다 넣어둔 상태고 연출만 여기서 처리해준다.
 				// 15번 하면 너무 많아서 잘 안보이니 적당히 많게 8번으로 해둔다.
 				LobbyCanvas.instance.RefreshExpPercent(1.0f, 8);
 				LobbyCanvas.instance.RefreshLevelText(StageManager.instance.GetMaxStageLevel());

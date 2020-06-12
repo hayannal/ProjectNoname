@@ -7,6 +7,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 {
 	public static float SpawnDistance = 16.0f;
 	public static int DefaultMonsterMaxCount = 50;
+	public static int LastMonsterMaxCount = 70;
 	public static int SoulCountMax = 10;
 
 	// 몹이나 아이템 둘다 이 거리를 넘어서면 강제로 삭제한다.
@@ -305,6 +306,9 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		{
 			_phase = ePhase.WaitActivePortal;
 			_phaseStartTime = Time.time;
+
+			// 포탈을 발동시키고 나서부터는 몬스터가 더 많이 생성된다.
+			DefaultMonsterMaxCount = LastMonsterMaxCount;
 			BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarStartActivating"), 3.5f);
 		}
 	}

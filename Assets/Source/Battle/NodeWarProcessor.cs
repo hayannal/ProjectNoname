@@ -56,13 +56,13 @@ public class NodeWarProcessor : BattleModeProcessorBase
 
 		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkBetter", false, 0);
 		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkBetter", false, 0);
-		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkBest", false, 0);
+		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkBetter", false, 0);
 		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkSpeedBetter", false, 0);
 		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkSpeedBetter", false, 0);
-		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkSpeedBest", false, 0);
+		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkSpeedBetter", false, 0);
 		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("CritBetter", false, 0);
 		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("CritBetter", false, 0);
-		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("CritBest", false, 0);
+		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("CritBetter", false, 0);
 		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("MoveSpeedUpOnKill", false, 0);
 		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("MoveSpeedUpOnKill", false, 0);
 		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("MoveSpeedUpOnKill", false, 0);

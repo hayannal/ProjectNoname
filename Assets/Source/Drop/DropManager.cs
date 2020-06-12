@@ -474,10 +474,10 @@ public class DropManager : MonoBehaviour
 		public float sumWeight;
 	}
 	List<RandomGachaActorInfo> _listRandomGachaActorInfo = null;
-	public string GetGachaCharacterId(int grade = -1)
+	public string GetGachaCharacterId(int grade = -1, bool ignoreCheckLobby = false)
 	{
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
-		if (lobby == false)
+		if (lobby == false && ignoreCheckLobby == false)
 			return "";
 
 		if (_listRandomGachaActorInfo == null)
@@ -640,10 +640,10 @@ public class DropManager : MonoBehaviour
 	#region Gacha PowerPoint
 	List<string> _listDroppedPowerPointId = new List<string>();
 	const float _maxPowerPointRate = 1.5f;
-	public string GetGachaPowerPointId(int grade = -1)
+	public string GetGachaPowerPointId(int grade = -1, bool ignoreCheckLobby = false)
 	{
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
-		if (lobby == false)
+		if (lobby == false && ignoreCheckLobby == false)
 			return "";
 
 		if (_listRandomGachaActorInfo == null)

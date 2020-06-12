@@ -273,19 +273,19 @@ public class DailyShopData : MonoBehaviour
 				case "uch":
 					int.TryParse(info.value, out seed);
 					UnityEngine.Random.InitState(seed);
-					actorId = DropManager.instance.GetGachaCharacterId(1);
+					actorId = DropManager.instance.GetGachaCharacterId(1, true);
 					unfixed = true;
 					break;
 				case "upn":
 					int.TryParse(info.value, out seed);
 					UnityEngine.Random.InitState(seed);
-					actorId = DropManager.instance.GetGachaPowerPointId(0);
+					actorId = DropManager.instance.GetGachaPowerPointId(0, true);
 					unfixed = true;
 					break;
 				case "uph":
 					int.TryParse(info.value, out seed);
 					UnityEngine.Random.InitState(seed);
-					actorId = DropManager.instance.GetGachaPowerPointId(1);
+					actorId = DropManager.instance.GetGachaPowerPointId(1, true);
 					unfixed = true;
 					break;
 			}

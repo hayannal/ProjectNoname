@@ -338,11 +338,15 @@ public class MailData : MonoBehaviour
 	void CalcNextRefreshTime()
 	{
 		// 갱신 타이밍은 평소엔 항상 동일하나 날짜가 변경되는 타이밍엔 짧게 잡는다.
-		int currentDay = mailRefreshTime.Day;
-		mailRefreshTime += TimeSpan.FromMinutes(5);
+		// 그런데 한참 홈키 눌러서 내려놨다가 왔을땐 위 로직대로라면 여러번 리프레쉬를 하게 된다. 이걸 대비해서
+		// 기존값에다가 5분 더하던거에서 현재 시간에서 5분 더한 값을 저장하기로 한다.
+		int currentDay = ServerTime.UtcNow.Day;
+		//mailRefreshTime += TimeSpan.FromMinutes(5);
+		mailRefreshTime = ServerTime.UtcNow + TimeSpan.FromMinutes(5);
 		if (currentDay == mailRefreshTime.Day)
 			return;
 
+		// 하필 이렇게 구한 결과가 날짜 변경되는 타임이라면 날짜 지나고 바로 메일을 받을 수 있도록 예외처리.
 		mailRefreshTime = new DateTime(mailRefreshTime.Year, mailRefreshTime.Month, mailRefreshTime.Day) + TimeSpan.FromSeconds(3);
 	}
 

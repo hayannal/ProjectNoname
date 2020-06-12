@@ -269,6 +269,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			Vector2 normalizedOffset = Random.insideUnitCircle.normalized;
 			Vector2 randomOffset = normalizedOffset * Random.Range(1.0f, 1.1f) * distance;
 			Vector3 desirePosition = BattleInstanceManager.instance.playerActor.cachedTransform.position + new Vector3(randomOffset.x, 0.0f, randomOffset.y);
+			desirePosition.y = 0.0f;
 			BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.nodeWarExitPortalPrefab, desirePosition, Quaternion.identity);
 			
 			_phase = ePhase.FindPortal;

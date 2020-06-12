@@ -101,6 +101,7 @@ public class MailData : MonoBehaviour
 
 	bool CheckRemove()
 	{
+		// 처음 만든 계정은 null일 수 있다.
 		if (_listMyMailTime == null)
 			return false;
 
@@ -204,8 +205,10 @@ public class MailData : MonoBehaviour
 
 	void OnRecvRefreshMail(bool deleted, bool added, bool modified, string jsonMailDateList, string jsonMailTable)
 	{
-		// 새로운 메일이 있다면 New표시를 해서 DotMainMenu 아이콘에 알려준다.
-		// 보이지 않는 공지가 추가될땐 modified가 true로 오니 added인지 modified인지 구분해서 처리하면 될거다.
+		// 처음 접속한 계정에서 새로운 메일이 생성되지 않는다면 jsonMailDataList가 비어있는채로 날아올 수 있다.
+		// 이때를 대비해서 예외처리 해둔다.
+		if (jsonMailDateList == "")
+			jsonMailDateList = "[]";
 
 		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
 		_listMyMailTime = serializer.DeserializeObject<List<MyMailData>>(jsonMailDateList);
@@ -224,7 +227,7 @@ public class MailData : MonoBehaviour
 			}
 		}
 
-		// 뭔가 변경이 감지될때 서버 점검 있는지 판단한다.
+		// 보이지 않는 서버 점검 공지일때는 modified가 true로 온다. 이때를 포함해서 체크해둔다.
 		if (deleted || added || modified)
 		{
 			CheckServerMaintenance();
@@ -233,7 +236,7 @@ public class MailData : MonoBehaviour
 			if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby) lobby = true;
 			if (lobby)
 			{
-				// 변경이 있다면 알람 처리를 하라고 캔버스에게 요청한다.
+				// 새로운 메일이 있다면 New표시를 해서 DotMainMenu 아이콘에 알려준다.
 				if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
 					DotMainMenuCanvas.instance.RefreshMailAlarmObject();
 			}
@@ -242,6 +245,9 @@ public class MailData : MonoBehaviour
 
 	public int GetReceivableMailPresentCount()
 	{
+		if (_listMyMailTime == null)
+			return 0;
+
 		int count = 0;
 		for (int i = 0; i < _listMyMailTime.Count; ++i)
 		{

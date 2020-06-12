@@ -18,6 +18,8 @@ public class CollisionDamageAffector : AffectorBase
 			return;
 
 		float damage = StageManager.instance.currentStageTableData.standardAtk;
+		if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+			damage = BattleManager.instance.GetSelectedNodeWarTableData().standardAtk;
 		if (affectorValueLevelTableData.iValue2 == 1)
 		{
 			if (hitParameter.statusBase != null)

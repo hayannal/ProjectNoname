@@ -462,7 +462,7 @@ public class StageManager : MonoBehaviour
 
 	#region PlayerLevel
 	ObscuredInt _playerLevel = 1;
-	public int playerLevel { get { return _playerLevel; } }
+	public int playerLevel { get { return _playerLevel; } set { _playerLevel = value; } }
 	ObscuredInt _playerExp = 0;
 	public int needLevelUpCount { get; set; }
 	public void AddExp(int exp)

@@ -50,6 +50,10 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		CustomFollowCamera.instance.followSpeed = 5.0f;
 		CustomFollowCamera.instance.immediatelyUpdate = true;
 
+		// 이렇게 강제로 셋팅하는 부분은 여기 하나뿐이다.
+		StageManager.instance.playerLevel = StageManager.instance.GetMaxStageLevel();
+		BattleInstanceManager.instance.playerActor.skillProcessor.CheckAllExclusiveLevelPack();
+
 		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkBetter", false, 0);
 		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkBetter", false, 0);
 		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkBest", false, 0);

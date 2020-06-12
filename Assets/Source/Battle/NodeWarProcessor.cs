@@ -69,6 +69,13 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("MoveSpeedUpOnAttacked", false, 0);
 		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("MoveSpeedUpOnAttacked", false, 0);
 		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("MoveSpeedUpOnAttacked", false, 0);
+		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkUpOnLowerHpBetter", false, 0);
+		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkUpOnLowerHpBetter", false, 0);
+		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkUpOnLowerHpBetter", false, 0);
+		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("HealOnKillBetter", false, 0);
+		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("HealOnKillBetter", false, 0);
+		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("VampireOnAttackBetter", false, 0);
+		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("HealSpOnAttackBetter", false, 0);
 	}
 
 	public override void OnLoadedMap()

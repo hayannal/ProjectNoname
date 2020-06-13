@@ -192,6 +192,8 @@ public class MonsterAI : MonoBehaviour
 		}
 		if (targetActor != null)
 			return;
+		if (BattleManager.instance != null && BattleManager.instance.IsNodeWar() && BattleInstanceManager.instance.playerActor.actorStatus.IsDie())
+			return;
 
 		_currentFindDelay -= Time.deltaTime;
 		if (_currentFindDelay <= 0.0f)

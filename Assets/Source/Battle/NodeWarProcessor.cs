@@ -73,9 +73,6 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkUpOnLowerHpBetter", false, 0);
 		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkUpOnLowerHpBetter", false, 0);
 		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkUpOnLowerHpBetter", false, 0);
-		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("HealOnKillBetter", false, 0);
-		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("HealOnKillBetter", false, 0);
-		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("HealOnKillBetter", false, 0);
 		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("HealSpOnAttackBetter", false, 0);
 		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("HealSpOnAttackBetter", false, 0);
 		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("HealSpOnAttackBetter", false, 0);

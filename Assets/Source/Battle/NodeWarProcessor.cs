@@ -8,7 +8,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	public static float SpawnDistance = 16.0f;
 	public static int DefaultMonsterMaxCount = 50;
 	public static int LastMonsterMaxCount = 70;
-	public static int SoulCountMax = 10;
+	public static int SoulCountMax = 7;
 
 	// 몹이나 아이템 둘다 이 거리를 넘어서면 강제로 삭제한다.
 	public static float ValidDistance = 30.0f;

@@ -135,7 +135,10 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			}
 			else
 			{
-				_listSpawnRemainTime[i] += TableDataManager.instance.nodeWarSpawnTable.dataArray[i].spawnPeriod;
+				float spawnPeriod = TableDataManager.instance.nodeWarSpawnTable.dataArray[i].spawnPeriod;
+				if (_phase == ePhase.WaitActivePortal || _phase == ePhase.Exit)
+					spawnPeriod *= 0.25f;
+				_listSpawnRemainTime[i] += spawnPeriod;
 			}
 			if (Random.value > TableDataManager.instance.nodeWarSpawnTable.dataArray[i].spawnChance)
 				continue;

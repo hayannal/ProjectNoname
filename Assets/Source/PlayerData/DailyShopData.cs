@@ -85,6 +85,21 @@ public class DailyShopData : MonoBehaviour
 		// 일일 무료 아이템
 		if (titleData.ContainsKey("daFre"))
 			_listDailyFreeItemInfo = serializer.DeserializeObject<List<DailyFreeItemInfo>>(titleData["daFre"]);
+
+		// 오늘의 일일상점 장비 데이터 아이콘은 미리 로딩해둔다. 장비가 나오는 공간은 5개까지이므로 5개까지만 체크해둔다.
+		for (int i = 0; i < 5; ++i)
+		{
+			DailyShopData.DailyShopSlotInfo dailyShopSlotInfo = DailyShopData.instance.GetTodayShopData(i);
+			if (dailyShopSlotInfo == null)
+				continue;
+			if (dailyShopSlotInfo.type != "fe")
+				continue;
+			EquipTableData equipTableData = TableDataManager.instance.FindEquipTableData(dailyShopSlotInfo.value);
+			if (equipTableData == null)
+				continue;
+
+			AddressableAssetLoadManager.GetAddressableSprite(equipTableData.shotAddress, "Icon", null);
+		}
 	}
 
 	public void OnRecvShopData(Dictionary<string, string> titleData, Dictionary<string, UserDataRecord> userReadOnlyData)

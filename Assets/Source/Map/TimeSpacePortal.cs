@@ -27,7 +27,39 @@ public class TimeSpacePortal : MonoBehaviour
 
 	void OnEnable()
 	{
-		RefreshAlarmObject();
+		// 로비에 있는 포탈에만 표시하기 위해 검사
+		if (instance != this)
+			return;
+
+		_autoRefreshAlarmRemainTime = 1.0f;
+	}
+
+	void Update()
+	{
+		UpdateRefreshAlarm();
+	}
+
+	float _autoRefreshAlarmRemainTime;
+	void UpdateRefreshAlarm()
+	{
+		if (_autoRefreshAlarmRemainTime > 0.0f)
+		{
+			_autoRefreshAlarmRemainTime -= Time.deltaTime;
+			if (_autoRefreshAlarmRemainTime <= 0.0f)
+			{
+				// 하필 CommonCanvasGroup.instance가 생성되지 않았다면 대기 시간을 늘려둔다.
+				if (CommonCanvasGroup.instance == null)
+				{
+					_autoRefreshAlarmRemainTime += 0.1f;
+					return;
+				}
+			}
+			if (_autoRefreshAlarmRemainTime <= 0.0f)
+			{
+				_autoRefreshAlarmRemainTime = 0.0f;
+				RefreshAlarmObject();
+			}
+		}
 	}
 
 	public void RefreshAlarmObject()

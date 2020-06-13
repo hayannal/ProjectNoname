@@ -33,6 +33,8 @@ public class NodeWarGround : MonoBehaviour
 	public GameObject[] monsterPrefabList;
 	public GameObject soulPrefab;
 	public GameObject soulGetEffectPrefab;
+	public GameObject healOrbPrefab;
+	public GameObject healOrbGetEffectPrefab;
 	public GameObject nodeWarExitPortalPrefab;
 	public GameObject nodeWarEndSafeAreaPrefab;
 

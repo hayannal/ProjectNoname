@@ -37,6 +37,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		UpdateSpawnMonster();
 		UpdateMonsterDistance();
 		UpdateSpawnSoul();
+		UpdateSpawnHealOrb();
 		UpdateExit();
 	}
 
@@ -97,6 +98,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		_phase = ePhase.FindSoul;
 		_phaseStartTime = Time.time;
 		_soulSpawnRemainTime = SoulSpawnDelay;
+		_healOrbSpawnRemainTime = HealOrbSpawnDelay;
 		BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarRule1Mind"), 3.5f);
 	}
 
@@ -105,6 +107,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		return _selectedNodeWarTableData;
 	}
 
+	#region Monster
 	List<float> _listSpawnRemainTime = new List<float>();
 	Dictionary<string, int> _dicAliveMonsterCount = new Dictionary<string, int>();
 	int _totalAliveMonsterCount;
@@ -203,7 +206,9 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		// 위 함수에서 다 처리해서 여기서 할게 없긴 한데 NavMesh가 없는 곳이라 Warning뜨지 않게 처리 하나 해둔다.
 		monsterActor.pathFinderController.agent.enabled = false;
 	}
+	#endregion
 
+	#region Soul
 	int _soulCount;
 	float _soulSpawnRemainTime;
 	// 2분동안 10개를 모아야하니 개당 대략 12초인데 뒤에 생성되서 못얻을때도 있을거 대비해서 조금 줄여둔다.
@@ -296,6 +301,39 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			// 초과해서 얻는거에 한해서는 무시
 		}
 	}
+	#endregion
+
+	#region Heal Orb
+	float _healOrbSpawnRemainTime;
+	// 마나에 비해선 천처히 나와야한다.
+	const float HealOrbSpawnDelay = 5.0f;
+	void UpdateSpawnHealOrb()
+	{
+		if (_phase == ePhase.Success)
+			return;
+
+		if (BattleInstanceManager.instance.playerActor.actionController.mecanimState.IsState((int)eMecanimState.Move) == false)
+			return;
+
+		_healOrbSpawnRemainTime -= Time.deltaTime;
+		if (_healOrbSpawnRemainTime < 0.0f)
+		{
+			Vector2 normalizedOffset = Random.insideUnitCircle.normalized;
+			Vector2 randomOffset = normalizedOffset * Random.Range(1.0f, 1.1f) * SpawnDistance;
+			Vector3 desirePosition = BattleInstanceManager.instance.playerActor.cachedTransform.position + new Vector3(randomOffset.x, 0.0f, randomOffset.y);
+			BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.healOrbPrefab, desirePosition, Quaternion.identity);
+			_healOrbSpawnRemainTime += HealOrbSpawnDelay;
+		}
+	}
+
+	public override void OnGetHealOrb(Vector3 getPosition)
+	{
+		AffectorValueLevelTableData healAffectorValue = new AffectorValueLevelTableData();
+		healAffectorValue.fValue3 = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("NodeWarHeal");
+		BattleInstanceManager.instance.playerActor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Heal, healAffectorValue, BattleInstanceManager.instance.playerActor, false);
+		BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.healOrbGetEffectPrefab, getPosition, Quaternion.identity);
+	}
+	#endregion
 
 	public override void OnTryActiveExitPortal()
 	{

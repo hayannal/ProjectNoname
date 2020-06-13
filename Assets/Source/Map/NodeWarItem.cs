@@ -7,6 +7,7 @@ public class NodeWarItem : MonoBehaviour
 	public enum eItemType
 	{
 		Soul,
+		HealOrb,
 		SpecialPack,
 	}
 
@@ -40,6 +41,9 @@ public class NodeWarItem : MonoBehaviour
 		{
 			case eItemType.Soul:
 				BattleManager.instance.OnGetSoul(cachedTransform.position);
+				break;
+			case eItemType.HealOrb:
+				BattleManager.instance.OnGetHealOrb(cachedTransform.position);
 				break;
 			case eItemType.SpecialPack:
 

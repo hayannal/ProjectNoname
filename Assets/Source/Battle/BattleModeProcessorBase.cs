@@ -447,6 +447,10 @@ public class BattleModeProcessorBase
 	{
 	}
 
+	public virtual void OnGetHealOrb(Vector3 getPosition)
+	{
+	}
+
 	public virtual void OnTryActiveExitPortal()
 	{
 	}

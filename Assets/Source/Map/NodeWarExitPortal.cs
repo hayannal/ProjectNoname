@@ -27,6 +27,7 @@ public class NodeWarExitPortal : MonoBehaviour
 	public CanvasGroup canvasGroup;
 	public DOTweenAnimation fadeTweenAnimation;
 	public Text remainTimeText;
+	public Transform healAreaEffectTransform;
 
 	public GameObject arrowIndicatorPrefab;
 
@@ -68,6 +69,7 @@ public class NodeWarExitPortal : MonoBehaviour
 		}
 
 		UpdateArrowIndicator();
+		UpdateHealArea();
 		UpdateRemainTime();
 		UpdateActiveTime();
 	}
@@ -84,6 +86,57 @@ public class NodeWarExitPortal : MonoBehaviour
 
 		bool close = (diff.sqrMagnitude < 1.7f * 1.7f);
 		_arrowIndicatorTransform.GetChild(0).gameObject.SetActive(!close);
+	}
+
+	// 힐영역 시작범위는 9m
+	const float BaseHealAreaRange = 9.0f;
+	// 힐영역 시작 스케일값은 4.0
+	const float BaseHealAreaScaleX = 4.0f;
+	// 힐영역 시간 및 Tick
+	const float HealAreaTime = 50.0f;
+	const float HealAreaTick = 0.3333f;
+	float _healAreaRemainTime;
+	float _healAreaTickRemainTime;
+	AffectorValueLevelTableData _healAreaAffectorValue;
+	void UpdateHealArea()
+	{
+		if (_healAreaAffectorValue == null)
+		{
+			_healAreaAffectorValue = new AffectorValueLevelTableData();
+			_healAreaAffectorValue.fValue3 = 0.15f;
+		}
+
+		// 시간체크
+		if (_healAreaRemainTime <= 0.0f)
+			return;
+
+		_healAreaRemainTime -= Time.deltaTime;
+		if (_healAreaRemainTime <= 0.0f)
+		{
+			healAreaEffectTransform.gameObject.SetActive(false);
+			_healAreaRemainTime = 0.0f;
+			return;
+		}
+
+		// Heal Tick 체크
+		if (_healAreaTickRemainTime > 0.0f)
+		{
+			_healAreaTickRemainTime -= Time.deltaTime;
+			if (_healAreaTickRemainTime <= 0.0f)
+				_healAreaTickRemainTime = 0.0f;
+			return;
+		}
+		_healAreaTickRemainTime += HealAreaTick;
+
+		// 거리체크
+		// 거리를 재는건 오브젝트의 스케일을 받아다가 사용하기로 한다.
+		float scale = healAreaEffectTransform.localScale.x;
+		// 오브젝트의 스케일을 바탕으로 월드좌표계의 스케일을 구한다.
+		float worldRange = scale / BaseHealAreaScaleX * BaseHealAreaRange;
+		Vector3 diff = cachedTransform.position - BattleInstanceManager.instance.playerActor.cachedTransform.position;
+		diff.y = 0.0f;
+		if (diff.sqrMagnitude < worldRange * worldRange)
+			BattleInstanceManager.instance.playerActor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Heal, _healAreaAffectorValue, BattleInstanceManager.instance.playerActor, false);
 	}
 
 	float _remainTime;
@@ -165,11 +218,20 @@ public class NodeWarExitPortal : MonoBehaviour
 			_remainTime = WaitActivePortalTime;
 			_needUpdate = true;
 			remainTimeText.gameObject.SetActive(true);
+			_healAreaRemainTime = HealAreaTime;
+			healAreaEffectTransform.gameObject.SetActive(true);
+			Timing.RunCoroutine(DelayedHealAreaInfoText());
 			return;
 		}
 
 		if (standbyEffectObject.activeSelf && canvasGroup.alpha == 0.0f)
 			StartOpen();
+	}
+
+	IEnumerator<float> DelayedHealAreaInfoText()
+	{
+		yield return Timing.WaitForSeconds(15.0f);
+		BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarPortalHealWeak"), 2.5f);
 	}
 
 	void OnTriggerStay(Collider other)

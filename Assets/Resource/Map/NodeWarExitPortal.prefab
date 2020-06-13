@@ -18,6 +18,7 @@ MonoBehaviour:
   canvasGroup: {fileID: 4203916276874752342}
   fadeTweenAnimation: {fileID: 494348822949678501}
   remainTimeText: {fileID: 2513046410841569364}
+  healAreaEffectTransform: {fileID: 8571159611212535388}
   arrowIndicatorPrefab: {fileID: 2073506674507246373, guid: fc9d915010e3fd646a50e5d56d11c382,
     type: 3}
 --- !u!114 &1028632700112903215
@@ -127,7 +128,7 @@ MonoBehaviour:
   loopType: 0
   loops: 1
   id: 
-  isRelative: 0
+  isRelative: 1
   isFrom: 0
   isIndependentUpdate: 0
   autoKill: 0
@@ -164,11 +165,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 7747153055539012530, guid: 22861133f0d001540a69bb3ecaf398fa,
-        type: 3}
-      propertyPath: m_Name
-      value: NodeWarExitPortal
-      objectReference: {fileID: 0}
     - target: {fileID: 7747153055539012541, guid: 22861133f0d001540a69bb3ecaf398fa,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -223,6 +219,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7747153055539012530, guid: 22861133f0d001540a69bb3ecaf398fa,
+        type: 3}
+      propertyPath: m_Name
+      value: NodeWarExitPortal
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7747153055539012531, guid: 22861133f0d001540a69bb3ecaf398fa, type: 3}

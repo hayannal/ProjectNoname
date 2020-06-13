@@ -20,6 +20,143 @@ MonoBehaviour:
   remainTimeText: {fileID: 2513046410841569364}
   arrowIndicatorPrefab: {fileID: 2073506674507246373, guid: fc9d915010e3fd646a50e5d56d11c382,
     type: 3}
+--- !u!114 &1028632700112903215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8567808470505030754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d0390bd8b8ffd640b34fe25065ff1df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  updateType: 0
+  isSpeedBased: 0
+  hasOnStart: 0
+  hasOnPlay: 0
+  hasOnUpdate: 0
+  hasOnStepComplete: 0
+  hasOnComplete: 0
+  hasOnTweenCreated: 0
+  hasOnRewind: 0
+  onStart:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  onPlay:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  onUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  onStepComplete:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  onComplete:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  onTweenCreated:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  onRewind:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  targetIsSelf: 1
+  targetGO: {fileID: 0}
+  tweenTargetIsTargetGO: 1
+  delay: 0
+  duration: 50
+  easeType: 37
+  easeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 8.219044
+      outSlope: 5
+      tangentMode: 69
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.06256696
+    - serializedVersion: 3
+      time: 0.6
+      value: 3
+      inSlope: 5
+      outSlope: 0
+      tangentMode: 69
+      weightedMode: 0
+      inWeight: 1
+      outWeight: 0.04559087
+    - serializedVersion: 3
+      time: 30
+      value: 3
+      inSlope: -0
+      outSlope: -0.15
+      tangentMode: 69
+      weightedMode: 0
+      inWeight: 0.10113961
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 50
+      value: 0
+      inSlope: -0.15
+      outSlope: 0
+      tangentMode: 69
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  loopType: 0
+  loops: 1
+  id: 
+  isRelative: 0
+  isFrom: 0
+  isIndependentUpdate: 0
+  autoKill: 0
+  isActive: 1
+  isValid: 1
+  target: {fileID: 8571159611212535388}
+  animationType: 5
+  targetType: 11
+  forcedTargetType: 0
+  autoPlay: 1
+  useTargetAsV3: 0
+  endValueFloat: 1
+  endValueV3: {x: 0, y: 0, z: 0}
+  endValueV2: {x: 0, y: 0}
+  endValueColor: {r: 1, g: 1, b: 1, a: 1}
+  endValueString: 
+  endValueRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  endValueTransform: {fileID: 0}
+  optionalBool0: 1
+  optionalFloat0: 0
+  optionalInt0: 0
+  optionalRotationMode: 0
+  optionalScrambleMode: 0
+  optionalString: 
 --- !u!1001 &8345516012451610844
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -96,6 +233,12 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 8345516012451610844}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &1752551374949671777 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7747153055539012541, guid: 22861133f0d001540a69bb3ecaf398fa,
+    type: 3}
+  m_PrefabInstance: {fileID: 8345516012451610844}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &7854591633836829526 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2220318465545874314, guid: 22861133f0d001540a69bb3ecaf398fa,
@@ -144,3 +287,48 @@ MonoBehaviour:
   m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1001 &8566785145518581264
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1752551374949671777}
+    m_Modifications:
+    - target: {fileID: 1598533638775410, guid: b4890538642463f499af19e3e60c8df9, type: 3}
+      propertyPath: m_Name
+      value: Magic shield 4_D
+      objectReference: {fileID: 0}
+    - target: {fileID: 1598533638775410, guid: b4890538642463f499af19e3e60c8df9, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4985127113715788, guid: b4890538642463f499af19e3e60c8df9, type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4985127113715788, guid: b4890538642463f499af19e3e60c8df9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4985127113715788, guid: b4890538642463f499af19e3e60c8df9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4985127113715788, guid: b4890538642463f499af19e3e60c8df9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b4890538642463f499af19e3e60c8df9, type: 3}
+--- !u!1 &8567808470505030754 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1598533638775410, guid: b4890538642463f499af19e3e60c8df9,
+    type: 3}
+  m_PrefabInstance: {fileID: 8566785145518581264}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8571159611212535388 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4985127113715788, guid: b4890538642463f499af19e3e60c8df9,
+    type: 3}
+  m_PrefabInstance: {fileID: 8566785145518581264}
+  m_PrefabAsset: {fileID: 0}

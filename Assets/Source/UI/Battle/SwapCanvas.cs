@@ -63,6 +63,8 @@ public class SwapCanvas : MonoBehaviour
 
 		if (MainSceneBuilder.instance.lobby)
 			RefreshChapterInfo();
+		else if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+			RefreshNodeWarInfo();
 		else if (PlayerData.instance.currentChaosMode && string.IsNullOrEmpty(StageManager.instance.nextMapTableData.bossName))
 			RefreshChapterInfo();
 		else
@@ -138,6 +140,29 @@ public class SwapCanvas : MonoBehaviour
 			}
 		}
 		return penaltyString;
+	}
+
+	void RefreshNodeWarInfo()
+	{
+		chapterBackgroundObject.SetActive(true);
+		swapBackgroundObject.SetActive(false);
+		chapterRootObject.SetActive(true);
+		swapRootObject.SetActive(false);
+
+		int currentLevel = PlayerData.instance.nodeWarClearLevel;
+		if (currentLevel == 0)
+			currentLevel = 1;
+		else if (currentLevel == BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxNodeWarLevel"))
+		{
+		}
+		else
+			currentLevel = currentLevel + 1;
+		chapterRomanNumberText.text = string.Format("LEVEL {0}", currentLevel);
+		chapterNameText.SetLocalizedText(UIString.instance.GetString("GameUI_NodeWarMode"));
+
+		stagePenaltyText.gameObject.SetActive(false);
+		selectResultText.text = "";
+		suggestPowerLevelText.text = "";
 	}
 
 	void RefreshChapterInfo()
@@ -225,7 +250,8 @@ public class SwapCanvas : MonoBehaviour
 			return;
 
 		string[] suggestedActorIdList = null;
-		if (MainSceneBuilder.instance.lobby == false)
+		if (BattleManager.instance != null && BattleManager.instance.IsNodeWar()) { }
+		else if (MainSceneBuilder.instance.lobby == false)
 		{
 			MapTableData nextMapTableData = StageManager.instance.nextMapTableData;
 			if (nextMapTableData != null && string.IsNullOrEmpty(nextMapTableData.bossName) == false)
@@ -297,7 +323,8 @@ public class SwapCanvas : MonoBehaviour
 
 		string secondText = "";
 		ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
-		if (chapterTableData != null)
+		if (BattleManager.instance != null && BattleManager.instance.IsNodeWar()) { }
+		else if (chapterTableData != null)
 		{
 			CharacterData characterData = PlayerData.instance.GetCharacterData(actorId);
 			if (characterData.powerLevel > chapterTableData.suggestedMaxPowerLevel)
@@ -318,7 +345,9 @@ public class SwapCanvas : MonoBehaviour
 	public void OnClickChapterInfoButton()
 	{
 		string descriptionId = "";
-		if (PlayerData.instance.currentChaosMode)
+		if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+			descriptionId = "GameUI_NodeWarModeDesc";
+		else if (PlayerData.instance.currentChaosMode)
 			descriptionId = "GameUI_ChaosModeDesc";
 		else
 		{

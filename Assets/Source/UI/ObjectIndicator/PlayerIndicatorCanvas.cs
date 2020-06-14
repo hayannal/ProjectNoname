@@ -54,6 +54,9 @@ public class PlayerIndicatorCanvas : ObjectIndicatorCanvas
 	void OnEnable()
 	{
 		InitializeTarget(targetTransform);
+
+		if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+			useLeftRightSwapByAxisX = false;
 	}
 
 	void OnDisable()

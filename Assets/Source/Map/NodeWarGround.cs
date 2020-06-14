@@ -142,6 +142,9 @@ public class NodeWarGround : MonoBehaviour
 
 		// 난이도 단계 설명은 레벨업 연출이 끝나고 조금 후에 보여주도록 한다.
 		_levelTextDelayTime = 1.5f;
+
+		// 교체가능은 항상 띄운다.
+		PlayerIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform);
 	}
 
 	void Update()
@@ -387,6 +390,7 @@ public class NodeWarGround : MonoBehaviour
 			if (diff.x > 0.0f) selectedLevel = _rightLevel;
 			else selectedLevel = _leftLevel;
 		}
+		PlayerIndicatorCanvas.Show(false, null);
 		BattleManager.instance.OnSelectedNodeWarLevel(selectedLevel);
 	}
 

@@ -85,21 +85,6 @@ public class DailyShopData : MonoBehaviour
 		// 일일 무료 아이템
 		if (titleData.ContainsKey("daFre"))
 			_listDailyFreeItemInfo = serializer.DeserializeObject<List<DailyFreeItemInfo>>(titleData["daFre"]);
-
-		// 오늘의 일일상점 장비 데이터 아이콘은 미리 로딩해둔다. 장비가 나오는 공간은 5개까지이므로 5개까지만 체크해둔다.
-		for (int i = 0; i < 5; ++i)
-		{
-			DailyShopData.DailyShopSlotInfo dailyShopSlotInfo = DailyShopData.instance.GetTodayShopData(i);
-			if (dailyShopSlotInfo == null)
-				continue;
-			if (dailyShopSlotInfo.type != "fe")
-				continue;
-			EquipTableData equipTableData = TableDataManager.instance.FindEquipTableData(dailyShopSlotInfo.value);
-			if (equipTableData == null)
-				continue;
-
-			AddressableAssetLoadManager.GetAddressableSprite(equipTableData.shotAddress, "Icon", null);
-		}
 	}
 
 	public void OnRecvShopData(Dictionary<string, string> titleData, Dictionary<string, UserDataRecord> userReadOnlyData)
@@ -173,6 +158,31 @@ public class DailyShopData : MonoBehaviour
 			dailyShopRefreshTime += TimeSpan.FromDays(1);
 	}
 
+	void LoadDailyEquipIcon()
+	{
+		// 오늘의 일일상점 장비 데이터 아이콘은 미리 로딩해둔다. 장비가 나오는 공간은 5개까지이므로 5개까지만 체크해둔다.
+		// LateInitialize에서 해야 씬 이동하고나서도 다시 로드된다.
+		for (int i = 0; i < 5; ++i)
+		{
+			DailyShopData.DailyShopSlotInfo dailyShopSlotInfo = DailyShopData.instance.GetTodayShopData(i);
+			if (dailyShopSlotInfo == null)
+				continue;
+			if (dailyShopSlotInfo.type != "fe")
+				continue;
+			EquipTableData equipTableData = TableDataManager.instance.FindEquipTableData(dailyShopSlotInfo.value);
+			if (equipTableData == null)
+				continue;
+
+			AddressableAssetLoadManager.GetAddressableSprite(equipTableData.shotAddress, "Icon", null);
+		}
+	}
+
+	public void LateInitialize()
+	{
+		CheckUnfixedItemInfo();
+		LoadDailyEquipIcon();
+	}
+
 	public DailyShopSlotInfo GetTodayShopData(int slotId)
 	{
 		return GetShopSlotData(ServerTime.UtcNow.Day, slotId);
@@ -234,7 +244,7 @@ public class DailyShopData : MonoBehaviour
 	string _unfixedDataString = "";
 	// 클라 구동 후 상점 열기 전에 1회만 체크하면 된다.
 	bool _checkedUnfixedItemInfo = false;
-	public void CheckUnfixedItemInfo()
+	void CheckUnfixedItemInfo()
 	{
 		if (_checkedUnfixedItemInfo)
 			return;
@@ -448,6 +458,9 @@ public class DailyShopData : MonoBehaviour
 
 		// 이 타이밍에 unfixed 갱신처리도 해줘야한다. 이땐 날짜 비교안해도 되니 바로 갱신하면 된다.
 		RegisterUnfixedInfo();
+
+		// 오늘 판매될 Equip의 아이콘도 미리 로드
+		LoadDailyEquipIcon();
 	}
 
 	// 전부다 리셋된 상태인지 확인한다. UI 갱신 확인용 함수다.

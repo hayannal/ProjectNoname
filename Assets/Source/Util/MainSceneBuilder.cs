@@ -480,7 +480,7 @@ public class MainSceneBuilder : MonoBehaviour
 		if (playAfterInstallation == false)
 		{
 			LobbyCanvas.instance.RefreshAlarmObject();
-			DailyShopData.instance.CheckUnfixedItemInfo();
+			DailyShopData.instance.LateInitialize();
 			TimeSpaceData.instance.LateInitialize();
 		}
 

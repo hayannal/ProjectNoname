@@ -215,7 +215,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	int _soulCount;
 	float _soulSpawnRemainTime;
 	// 2분동안 10개를 모아야하니 개당 대략 12초인데 뒤에 생성되서 못얻을때도 있을거 대비해서 조금 줄여둔다.
-	const float SoulSpawnDelay = 4.0f;
+	const float SoulSpawnDelay = 5.5f;
 	void UpdateSpawnSoul()
 	{
 		if (_phase != ePhase.FindSoul)
@@ -309,7 +309,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	#region Heal Orb
 	float _healOrbSpawnRemainTime;
 	// 마나에 비해선 천처히 나와야한다.
-	const float HealOrbSpawnDelay = 5.0f;
+	const float HealOrbSpawnDelay = 6.0f;
 	void UpdateSpawnHealOrb()
 	{
 		if (_phase == ePhase.Success)

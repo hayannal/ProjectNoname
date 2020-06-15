@@ -59,7 +59,7 @@ public class MailCanvas : MonoBehaviour
 
 
 	List<MailCanvasListItem> _listMailCanvasListItem = new List<MailCanvasListItem>();
-	void RefreshGrid()
+	public void RefreshGrid()
 	{
 		for (int i = 0; i < _listMailCanvasListItem.Count; ++i)
 			_listMailCanvasListItem[i].gameObject.SetActive(false);

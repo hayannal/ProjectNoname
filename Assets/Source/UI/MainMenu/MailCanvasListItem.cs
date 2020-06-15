@@ -256,7 +256,7 @@ public class MailCanvasListItem : MonoBehaviour
 			{
 				DotMainMenuCanvas.instance.RefreshMailAlarmObject();
 				ToastCanvas.instance.ShowToast(UIString.instance.GetString("MailUI_AfterClaim"), 2.0f);
-				gameObject.SetActive(false);
+				MailCanvas.instance.RefreshGrid();
 			});
 		}
 		else if (_type == "be")

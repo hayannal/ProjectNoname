@@ -451,6 +451,10 @@ public class BattleModeProcessorBase
 	{
 	}
 
+	public virtual void OnGetBoostOrb(Vector3 getPosition)
+	{
+	}
+
 	public virtual void OnTryActiveExitPortal()
 	{
 	}

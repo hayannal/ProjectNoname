@@ -38,6 +38,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		UpdateMonsterDistance();
 		UpdateSpawnSoul();
 		UpdateSpawnHealOrb();
+		UpdateSpawnBoostOrb();
 		UpdateExit();
 	}
 
@@ -215,7 +216,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	int _soulCount;
 	float _soulSpawnRemainTime;
 	// 2분동안 10개를 모아야하니 개당 대략 12초인데 뒤에 생성되서 못얻을때도 있을거 대비해서 조금 줄여둔다.
-	const float SoulSpawnDelay = 3.5f;
+	const float SoulSpawnDelay = 4.0f;
 	void UpdateSpawnSoul()
 	{
 		if (_phase != ePhase.FindSoul)
@@ -309,7 +310,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	#region Heal Orb
 	float _healOrbSpawnRemainTime;
 	// 마나에 비해선 천처히 나와야한다.
-	const float HealOrbSpawnDelay = 6.0f;
+	const float HealOrbSpawnDelay = 7.0f;
 	void UpdateSpawnHealOrb()
 	{
 		if (_phase == ePhase.Success)
@@ -335,6 +336,42 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		healAffectorValue.fValue3 = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("NodeWarHeal");
 		BattleInstanceManager.instance.playerActor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Heal, healAffectorValue, BattleInstanceManager.instance.playerActor, false);
 		BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.healOrbGetEffectPrefab, getPosition, Quaternion.identity);
+	}
+	#endregion
+
+	#region Boost Orb
+	float _boostOrbSpawnRemainTime;
+	const float BoostOrbSpawnDelay = 5.0f;
+	void UpdateSpawnBoostOrb()
+	{
+		if (_phase == ePhase.WaitActivePortal || _phase == ePhase.Exit || _phase == ePhase.Success)
+			return;
+
+		if (BattleInstanceManager.instance.playerActor.actionController.mecanimState.IsState((int)eMecanimState.Move) == false)
+			return;
+
+		_boostOrbSpawnRemainTime -= Time.deltaTime;
+		if (_boostOrbSpawnRemainTime < 0.0f)
+		{
+			Vector2 normalizedOffset = Random.insideUnitCircle.normalized;
+			Vector2 randomOffset = normalizedOffset * Random.Range(1.0f, 1.1f) * SpawnDistance;
+			Vector3 desirePosition = BattleInstanceManager.instance.playerActor.cachedTransform.position + new Vector3(randomOffset.x, 0.0f, randomOffset.y);
+			BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.boostOrbPrefab, desirePosition, Quaternion.identity);
+			_boostOrbSpawnRemainTime += BoostOrbSpawnDelay;
+		}
+	}
+
+	static string s_generatedBoostId = "_generatedId_NodeWarBoostItem";
+	public override void OnGetBoostOrb(Vector3 getPosition)
+	{
+		AffectorValueLevelTableData boostAffectorValue = new AffectorValueLevelTableData();
+		// OverrideAffector가 제대로 호출되기 위해서 임시 아이디를 지정해줘야한다.
+		boostAffectorValue.affectorValueId = s_generatedBoostId;
+		boostAffectorValue.fValue1 = 5.0f; // duration
+		boostAffectorValue.fValue2 = 3.0f;
+		boostAffectorValue.iValue1 = (int)ActorStatusDefine.eActorStatus.MoveSpeed;
+		BattleInstanceManager.instance.playerActor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.ChangeActorStatus, boostAffectorValue, BattleInstanceManager.instance.playerActor, false);
+		BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.boostOrbGetEffectPrefab, getPosition, Quaternion.identity);
 	}
 	#endregion
 

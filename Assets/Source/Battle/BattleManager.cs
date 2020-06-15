@@ -163,6 +163,11 @@ public class BattleManager : MonoBehaviour
 		_currentBattleMode.OnGetHealOrb(getPosition);
 	}
 
+	public void OnGetBoostOrb(Vector3 getPosition)
+	{
+		_currentBattleMode.OnGetBoostOrb(getPosition);
+	}
+
 	public void OnTryRepairExitPortal()
 	{
 		_currentBattleMode.OnTryActiveExitPortal();

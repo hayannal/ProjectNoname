@@ -9,6 +9,7 @@ public class NodeWarItem : MonoBehaviour
 	{
 		Soul,
 		HealOrb,
+		BoostOrb,
 		SpecialPack,
 	}
 
@@ -66,6 +67,10 @@ public class NodeWarItem : MonoBehaviour
 				break;
 			case eItemType.HealOrb:
 				BattleManager.instance.OnGetHealOrb(cachedTransform.position);
+				_waitEndAnimation = true;
+				break;
+			case eItemType.BoostOrb:
+				BattleManager.instance.OnGetBoostOrb(cachedTransform.position);
 				_waitEndAnimation = true;
 				break;
 			case eItemType.SpecialPack:

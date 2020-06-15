@@ -73,7 +73,7 @@ public class FloatingDamageTextRootCanvas : MonoBehaviour
 		return floatingDamageText;
 	}
 
-	const float ContinuousDelay = 0.8f;
+	const float ContinuousDelay = 1.5f;
 	Dictionary<Actor, float> _dicLastTime = new Dictionary<Actor, float>();
 	Dictionary<Actor, int> _dicLastIndex = new Dictionary<Actor, int>();
 	int GetPositionAnimationIndex(Actor actor)

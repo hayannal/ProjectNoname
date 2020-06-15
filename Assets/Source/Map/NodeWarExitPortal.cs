@@ -142,6 +142,8 @@ public class NodeWarExitPortal : MonoBehaviour
 	float _remainTime;
 	int _lastRemainTimeSecond = -1;
 	bool _needUpdate = false;
+	float[] AlarmTimeList = { 5.0f, 4.0f, 3.0f, 2.0f, 1.0f };
+	bool[] _alarmShowList = { false, false, false, false, false };
 	void UpdateRemainTime()
 	{
 		if (_needUpdate == false)
@@ -156,6 +158,15 @@ public class NodeWarExitPortal : MonoBehaviour
 			{
 				remainTimeText.text = string.Format("00:00:{0:00}", (int)_remainTime + 1);
 				_lastRemainTimeSecond = (int)_remainTime;
+			}
+
+			for (int i = 0; i < _alarmShowList.Length; ++i)
+			{
+				if (_alarmShowList[i] == false && _remainTime <= AlarmTimeList[i])
+				{
+					BattleToastCanvas.instance.ShowToast(string.Format("00:{0:00}", (int)_remainTime + 1), 1.2f);
+					_alarmShowList[i] = true;
+				}
 			}
 		}
 		else

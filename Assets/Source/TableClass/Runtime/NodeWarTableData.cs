@@ -21,6 +21,10 @@ public class NodeWarTableData
   public int firstRewardGold { get { return _firstRewardGold; } set { _firstRewardGold = value; } }
   
   [SerializeField]
+  int _repeatRewardGold;
+  public int repeatRewardGold { get { return _repeatRewardGold; } set { _repeatRewardGold = value; } }
+  
+  [SerializeField]
   float _standardHp;
   public float standardHp { get { return _standardHp; } set { _standardHp = value; } }
   

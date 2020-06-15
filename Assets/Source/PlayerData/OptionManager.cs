@@ -216,7 +216,4 @@ public class OptionManager : MonoBehaviour
 			_lockIcon = value;
 		}
 	}
-
-	// 클라 켜지는 동안 유지해야해서 이쪽에 둔다.
-	public int suggestedChapter { get; set; }
 }

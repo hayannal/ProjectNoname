@@ -296,6 +296,12 @@ public class GatePillar : MonoBehaviour
 	}
 	#endregion
 
+	// 전엔 OptionManager에 두고 클라가 한번 켜진 상태에선 기억해두려고 했는데
+	// 이랬더니 임시교체가 아니라 진짜 교체를 해야했다.
+	// 근데 교체메뉴가 따로 있는데 Swap창에서 메인캐릭터가 교체되는게 이상해서 안하려다보니
+	// 씬 이동해서 되돌아올때 다시 물어보는 절차가 필요해졌다.
+	// 그래서 이렇게 GatePillar가 마지막 suggest한 챕터를 멤버로 가지고 있기로 한다.
+	int _suggestedChapter;
 	bool CheckNextMap()
 	{
 		if (SwapCanvas.instance != null && SwapCanvas.instance.gameObject.activeSelf)
@@ -342,7 +348,7 @@ public class GatePillar : MonoBehaviour
 
 			// check lobby suggest
 			ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
-			if (OptionManager.instance.suggestedChapter != StageManager.instance.playChapter && PlayerData.instance.swappable && chapterTableData != null)
+			if (_suggestedChapter != StageManager.instance.playChapter && PlayerData.instance.swappable && chapterTableData != null)
 			{
 				CharacterData mainCharacterData = PlayerData.instance.GetCharacterData(PlayerData.instance.mainCharacterId);
 				bool showSwapCanvas = false;
@@ -361,11 +367,11 @@ public class GatePillar : MonoBehaviour
 				{
 					raycastCount = 0;
 					FullscreenYesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_EnterInfo"), UIString.instance.GetString(descStringId), () => {
-						OptionManager.instance.suggestedChapter = StageManager.instance.playChapter;
+						_suggestedChapter = StageManager.instance.playChapter;
 						FullscreenYesNoCanvas.instance.ShowCanvas(false, "", "", null);
 						UIInstanceManager.instance.ShowCanvasAsync("SwapCanvas", null);
 					}, () => {
-						OptionManager.instance.suggestedChapter = StageManager.instance.playChapter;
+						_suggestedChapter = StageManager.instance.playChapter;
 					});
 					return false;
 				}

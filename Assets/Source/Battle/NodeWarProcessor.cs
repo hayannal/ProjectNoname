@@ -104,6 +104,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		_phaseStartTime = Time.time;
 		_soulSpawnRemainTime = SoulSpawnDelay;
 		_healOrbSpawnRemainTime = HealOrbSpawnDelay;
+		_boostOrbSpawnRemainTime = BoostOrbSpawnDelay;
 		BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarRule1Mind"), 3.5f);
 	}
 
@@ -323,6 +324,9 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		if (BattleInstanceManager.instance.playerActor.actionController.mecanimState.IsState((int)eMecanimState.Move) == false)
 			return;
 
+		if (_listSoulGetPosition.Count == 0)
+			return;
+
 		_healOrbSpawnRemainTime -= Time.deltaTime;
 		if (_healOrbSpawnRemainTime < 0.0f)
 		{
@@ -352,6 +356,9 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			return;
 
 		if (BattleInstanceManager.instance.playerActor.actionController.mecanimState.IsState((int)eMecanimState.Move) == false)
+			return;
+
+		if (_listSoulGetPosition.Count == 0)
 			return;
 
 		_boostOrbSpawnRemainTime -= Time.deltaTime;

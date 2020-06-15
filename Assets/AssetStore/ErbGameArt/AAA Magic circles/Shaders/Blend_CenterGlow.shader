@@ -4,6 +4,7 @@ Shader "ERB/Particles/Blend_CenterGlow"
 	{
 		_MainTex("MainTex", 2D) = "white" {}
 		_Noise("Noise", 2D) = "white" {}
+		_Flow("Flow", 2D) = "white" {}
 		_SpeedMainTexUVNoiseZW("Speed MainTex U/V + Noise Z/W", Vector) = (0,0,0,0)
 		_DistortionSpeedXYPowerZ("Distortion Speed XY Power Z", Vector) = (0,0,0,0)
 		_Emission("Emission", Float) = 2
@@ -59,7 +60,9 @@ Shader "ERB/Particles/Blend_CenterGlow"
 				uniform float4 _MainTex_ST;
 				uniform float _Usecenterglow;
 				uniform float4 _SpeedMainTexUVNoiseZW;
+				uniform sampler2D _Flow;
 				uniform float4 _DistortionSpeedXYPowerZ;
+				uniform float4 _Flow_ST;
 				uniform sampler2D _Noise;
 				uniform float4 _Noise_ST;
 				uniform float4 _Color;
@@ -90,9 +93,10 @@ Shader "ERB/Particles/Blend_CenterGlow"
 					float2 panner107 = ( 1.0 * _Time.y * appendResult21 + uv0_MainTex);
 					float2 appendResult100 = (float2(_DistortionSpeedXYPowerZ.x , _DistortionSpeedXYPowerZ.y));
 					float3 uv0_Flow = i.texcoord.xyz;
+					uv0_Flow.xy = i.texcoord.xy * _Flow_ST.xy + _Flow_ST.zw;
 					float2 panner110 = ( 1.0 * _Time.y * appendResult100 + (uv0_Flow).xy);
 					float Flowpower102 = _DistortionSpeedXYPowerZ.z;
-					float4 tex2DNode13 = tex2D( _MainTex, ( panner107 - ( Flowpower102 ) ) );
+					float4 tex2DNode13 = tex2D( _MainTex, ( panner107 - ( ( tex2D( _Flow, panner110 ) ).rg * Flowpower102 ) ) );
 					float2 appendResult22 = (float2(_SpeedMainTexUVNoiseZW.z , _SpeedMainTexUVNoiseZW.w));
 					float2 uv0_Noise = i.texcoord.xy * _Noise_ST.xy + _Noise_ST.zw;
 					float2 panner108 = ( 1.0 * _Time.y * appendResult22 + uv0_Noise);

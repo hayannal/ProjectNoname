@@ -15,11 +15,11 @@ public class NodeWarExitPortal : MonoBehaviour
 {
 	public static NodeWarExitPortal instance;
 
-	// 포탈 활성화까지는 30초
-	public static float WaitActivePortalTime = 30.0f;
+	// 포탈 활성화까지는 35초
+	public static float WaitActivePortalTime = 35.0f;
 
 	// 포탈 활성화 되고나서부터 다시 종료될때까지 걸리는 시간
-	public static float ActivePortalTime = 30.0f;
+	public static float ActivePortalTime = 25.0f;
 
 	public GameObject standbyEffectObject;
 	public GameObject openingEffectObject;
@@ -98,6 +98,7 @@ public class NodeWarExitPortal : MonoBehaviour
 	float _healAreaRemainTime;
 	float _healAreaTickRemainTime;
 	AffectorValueLevelTableData _healAreaAffectorValue;
+	bool inAreaForEffect = false;
 	void UpdateHealArea()
 	{
 		if (_healAreaAffectorValue == null)
@@ -136,14 +137,35 @@ public class NodeWarExitPortal : MonoBehaviour
 		Vector3 diff = cachedTransform.position - BattleInstanceManager.instance.playerActor.cachedTransform.position;
 		diff.y = 0.0f;
 		if (diff.sqrMagnitude < worldRange * worldRange)
+		{
 			BattleInstanceManager.instance.playerActor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Heal, _healAreaAffectorValue, BattleInstanceManager.instance.playerActor, false);
+
+			// 처음 area안으로 들어올때 스크린 이펙트를 보여준다. 나갔다오는거라면 이때도 보여준다.
+			if (inAreaForEffect == false)
+			{
+				inAreaForEffect = true;
+				BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.healEffectPrefab, BattleInstanceManager.instance.playerActor.cachedTransform.position, Quaternion.identity, BattleInstanceManager.instance.playerActor.cachedTransform);
+				Timing.RunCoroutine(ScreenHealEffectProcess());
+			}
+		}
+	}
+
+	IEnumerator<float> ScreenHealEffectProcess()
+	{
+		FadeCanvas.instance.FadeOut(0.2f, 0.6f);
+		yield return Timing.WaitForSeconds(0.2f);
+
+		if (this == null)
+			yield break;
+
+		FadeCanvas.instance.FadeIn(1.0f);
 	}
 
 	float _remainTime;
 	int _lastRemainTimeSecond = -1;
 	bool _needUpdate = false;
-	float[] AlarmTimeList = { 5.0f, 4.0f, 3.0f, 2.0f, 1.0f };
-	bool[] _alarmShowList = { false, false, false, false, false };
+	float[] AlarmTimeList = { 30.0f, 20.0f, 10.0f, 6.0f };
+	bool[] _alarmShowList = { false, false, false, false };
 	void UpdateRemainTime()
 	{
 		if (_needUpdate == false)
@@ -164,7 +186,11 @@ public class NodeWarExitPortal : MonoBehaviour
 			{
 				if (_alarmShowList[i] == false && _remainTime <= AlarmTimeList[i])
 				{
-					BattleToastCanvas.instance.ShowToast(string.Format("00:{0:00}", (int)_remainTime + 1), 1.2f);
+					// 마지막 알람의 경우에는 표시하지 않은채 몬스터 스폰 증폭되는 트리거로 사용된다.
+					if (i == (_alarmShowList.Length - 1))
+						BattleManager.instance.On5SecondAgoActiveExitPortal();
+					else
+						BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarActivatingTime", (int)_remainTime + 1), 1.7f);
 					_alarmShowList[i] = true;
 				}
 			}
@@ -180,7 +206,7 @@ public class NodeWarExitPortal : MonoBehaviour
 		}
 	}
 
-	// 포탈은 한번 열리고나면 30초 동안의 기회를 준다. 이게 지나면 도로 닫히면서 실패로 처리된다.
+	// 포탈은 한번 열리고나면 25초 동안의 기회를 준다. 이게 지나면 도로 닫히면서 실패로 처리된다.
 	float _activeRemainTime;
 	void UpdateActiveTime()
 	{
@@ -241,7 +267,8 @@ public class NodeWarExitPortal : MonoBehaviour
 
 	IEnumerator<float> DelayedHealAreaInfoText()
 	{
-		yield return Timing.WaitForSeconds(15.0f);
+		// 회복마법진은 35초전에 시작되서 20초 후인 15초 남겨놓고나서부터 크기가 줄어든다.
+		yield return Timing.WaitForSeconds(20.0f);
 		BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarPortalHealWeak"), 2.5f);
 	}
 

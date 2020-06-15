@@ -6,12 +6,15 @@ using MecanimStateDefine;
 public class NodeWarProcessor : BattleModeProcessorBase
 {
 	public static float SpawnDistance = 16.0f;
-	public static int DefaultMonsterMaxCount = 50;
-	public static int LastMonsterMaxCount = 70;
-	public static int SoulCountMax = 10;
+	public static int DefaultMonsterMaxCount = 47;
+	public static int LastMonsterMaxCount = 55;
+	public static int SoulCountMax = 3;
 
-	// 몹이나 아이템 둘다 이 거리를 넘어서면 강제로 삭제한다.
-	public static float ValidDistance = 30.0f;
+	// 유효 거리
+	public static float ItemValidDistance = 30.0f;
+	// 몬스터의 경우 항상 나에게 다가오고있기 때문에 스폰위치에서 어느정도 멀어지기만 해도 탈락했다고 보는게 낫다.
+	// 이래야 뛰는 방향에서 새로운 몹들이 다시 스폰될 수 있다.
+	public static float MonsterValidDistance = 22.0f;
 
 	// 안전지대 위치는 10, 0, 10이다.
 	public static Vector3 EndSafeAreaPosition = new Vector3(10.0f, 0.0f, 10.0f);
@@ -96,8 +99,25 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		if (_selectedNodeWarTableData == null)
 		{
 			_selectedNodeWarTableData = TableDataManager.instance.FindNodeWarTableData(level);
+
+			// SpawnTable은 그냥 쓰면 안되고 여기서 현재 레벨에 필요한 몬스터들만 추려서 따로 가지고 있어야한다.
+			// 먼저 루프 한번 돌면서 fixedLevel이 같은 것들을 먼저 리스트에 담고
 			for (int i = 0; i < TableDataManager.instance.nodeWarSpawnTable.dataArray.Length; ++i)
-				_listSpawnRemainTime.Add(0.0f);
+			{
+				_listCurrentNodeWarSpawnTableData.Add(TableDataManager.instance.nodeWarSpawnTable.dataArray[i]);
+			}
+			// 만약 fixedLevel로 설정된게 하나도 없다면 일의 자리로 판단해서 가져오기로 한다.
+			if (_listCurrentNodeWarSpawnTableData.Count == 0)
+			{
+				int oneLevel = level % 10;
+				for (int i = 0; i < TableDataManager.instance.nodeWarSpawnTable.dataArray.Length; ++i)
+				{
+
+				}
+			}
+			// 사용할 리스트가 정해지면 이 리스트에 맞춰서 RemainTime리스트도 만들어낸다.
+			for (int i = 0; i < _listCurrentNodeWarSpawnTableData.Count; ++i)
+				_listCurrentSpawnRemainTime.Add(0.0f);
 			_totalAliveMonsterCount = 0;
 		}
 		_phase = ePhase.FindSoul;
@@ -114,52 +134,54 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	}
 
 	#region Monster
-	List<float> _listSpawnRemainTime = new List<float>();
+	List<NodeWarSpawnTableData> _listCurrentNodeWarSpawnTableData = new List<NodeWarSpawnTableData>();
+	List<float> _listCurrentSpawnRemainTime = new List<float>();
 	Dictionary<string, int> _dicAliveMonsterCount = new Dictionary<string, int>();
 	int _totalAliveMonsterCount;
+	bool _monsterSpawnBoosted = false;
 	void UpdateSpawnMonster()
 	{
 		if (_phase == ePhase.Success)
 			return;
 
 		float diffTime = Time.time - _phaseStartTime;
-		for (int i = 0; i < TableDataManager.instance.nodeWarSpawnTable.dataArray.Length; ++i)
+		for (int i = 0; i < _listCurrentNodeWarSpawnTableData.Count; ++i)
 		{
-			if (_selectedNodeWarTableData.level < TableDataManager.instance.nodeWarSpawnTable.dataArray[i].minLevel)
+			if (_selectedNodeWarTableData.level < _listCurrentNodeWarSpawnTableData[i].minLevel)
 				continue;
-			if ((int)_phase < TableDataManager.instance.nodeWarSpawnTable.dataArray[i].minStep)
+			if ((int)_phase < _listCurrentNodeWarSpawnTableData[i].minStep)
 				continue;
-			if (diffTime < TableDataManager.instance.nodeWarSpawnTable.dataArray[i].firstWaiting)
+			if (diffTime < _listCurrentNodeWarSpawnTableData[i].firstWaiting)
 				continue;
 
-			if (_listSpawnRemainTime[i] > 0.0f)
+			if (_listCurrentSpawnRemainTime[i] > 0.0f)
 			{
-				_listSpawnRemainTime[i] -= Time.deltaTime;
-				if (_listSpawnRemainTime[i] <= 0.0f)
-					_listSpawnRemainTime[i] = 0.0f;
+				_listCurrentSpawnRemainTime[i] -= Time.deltaTime;
+				if (_listCurrentSpawnRemainTime[i] <= 0.0f)
+					_listCurrentSpawnRemainTime[i] = 0.0f;
 				continue;
 			}
 			else
 			{
-				float spawnPeriod = TableDataManager.instance.nodeWarSpawnTable.dataArray[i].spawnPeriod;
-				if (_phase == ePhase.WaitActivePortal || _phase == ePhase.Exit)
+				float spawnPeriod = _listCurrentNodeWarSpawnTableData[i].spawnPeriod;
+				if (_monsterSpawnBoosted)
 					spawnPeriod *= 0.25f;
-				_listSpawnRemainTime[i] += spawnPeriod;
+				_listCurrentSpawnRemainTime[i] += spawnPeriod;
 			}
-			if (Random.value > TableDataManager.instance.nodeWarSpawnTable.dataArray[i].spawnChance)
+			if (Random.value > _listCurrentNodeWarSpawnTableData[i].spawnChance)
 				continue;
 
-			if (TableDataManager.instance.nodeWarSpawnTable.dataArray[i].totalMax)
+			if (_listCurrentNodeWarSpawnTableData[i].totalMax)
 			{
-				if (_totalAliveMonsterCount >= DefaultMonsterMaxCount)
+				if (_totalAliveMonsterCount >= (_monsterSpawnBoosted ? LastMonsterMaxCount : DefaultMonsterMaxCount))
 					continue;
 
 				++_totalAliveMonsterCount;
 			}
 			else
 			{
-				string key = TableDataManager.instance.nodeWarSpawnTable.dataArray[i].monsterId;
-				if (_dicAliveMonsterCount.ContainsKey(key) && _dicAliveMonsterCount[key] >= TableDataManager.instance.nodeWarSpawnTable.dataArray[i].maxCount)
+				string key = _listCurrentNodeWarSpawnTableData[i].monsterId;
+				if (_dicAliveMonsterCount.ContainsKey(key) && _dicAliveMonsterCount[key] >= _listCurrentNodeWarSpawnTableData[i].maxCount)
 					continue;
 
 				// totalMax를 안쓰는 몬스터는 각자 개별로 체크한다.
@@ -169,7 +191,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 					_dicAliveMonsterCount.Add(key, 1);
 			}
 
-			SpawnMonster(TableDataManager.instance.nodeWarSpawnTable.dataArray[i].monsterId);
+			SpawnMonster(_listCurrentNodeWarSpawnTableData[i].monsterId);
 		}
 	}
 
@@ -196,7 +218,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			Vector2 diff;
 			diff.x = playerPosition.x - position.x;
 			diff.y = playerPosition.z - position.z;
-			if (diff.x * diff.x + diff.y * diff.y > ValidDistance * ValidDistance)
+			if (diff.x * diff.x + diff.y * diff.y > MonsterValidDistance * MonsterValidDistance)
 			{
 				findMonsterActor = listMonsterActor[i];
 				break;
@@ -220,7 +242,6 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	#region Soul
 	int _soulCount;
 	float _soulSpawnRemainTime;
-	// 2분동안 10개를 모아야하니 개당 대략 12초인데 뒤에 생성되서 못얻을때도 있을거 대비해서 조금 줄여둔다.
 	const float SoulSpawnDelay = 4.0f;
 	void UpdateSpawnSoul()
 	{
@@ -392,11 +413,14 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		{
 			_phase = ePhase.WaitActivePortal;
 			_phaseStartTime = Time.time;
-
-			// 포탈을 발동시키고 나서부터는 몬스터가 더 많이 생성된다.
-			DefaultMonsterMaxCount = LastMonsterMaxCount;
-			BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarStartActivating"), 3.5f);
+			BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarHealSpread"), 3.5f);
 		}
+	}
+
+	public override void On5SecondAgoActiveExitPortal()
+	{
+		// 포탈을 활성화 하기 5초전부터 몬스터 스폰 부스트가 시작된다.
+		_monsterSpawnBoosted = true;
 	}
 
 	public override void OnActiveExitPortal()
@@ -433,10 +457,10 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	}
 
 	float _activeExitPortalRemainTime;
-	const float ExitFirstWarningTime = 20.0f;
+	const float ExitFirstWarningTime = 15.0f;
 	bool _exitFirstWarning;
-	float[] ExitLastWarningTimeList = { 12.0f, 10.0f, 8.0f };
-	bool[] _exitLastWarningList = { false, false, false };
+	float[] ExitLastWarningTimeList = { 7.0f, 5.0f };
+	bool[] _exitLastWarningList = { false, false };
 	void UpdateExit()
 	{
 		if (_phase != ePhase.Exit)

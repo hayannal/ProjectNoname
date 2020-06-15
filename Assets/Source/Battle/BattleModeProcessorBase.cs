@@ -459,6 +459,10 @@ public class BattleModeProcessorBase
 	{
 	}
 
+	public virtual void On5SecondAgoActiveExitPortal()
+	{
+	}
+
 	public virtual void OnActiveExitPortal()
 	{
 	}

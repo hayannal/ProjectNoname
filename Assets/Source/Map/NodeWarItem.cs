@@ -68,7 +68,7 @@ public class NodeWarItem : MonoBehaviour
 		float sqrMagnitude = diff.x * diff.x + diff.y * diff.y;
 		if (sqrMagnitude < (getRange + playerRadius) * (getRange + playerRadius))
 			GetDropObject();
-		else if (sqrMagnitude > NodeWarProcessor.ValidDistance * NodeWarProcessor.ValidDistance)
+		else if (sqrMagnitude > NodeWarProcessor.ItemValidDistance * NodeWarProcessor.ItemValidDistance)
 			gameObject.SetActive(false);
 	}
 

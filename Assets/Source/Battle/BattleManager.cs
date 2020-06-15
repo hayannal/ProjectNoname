@@ -173,6 +173,11 @@ public class BattleManager : MonoBehaviour
 		_currentBattleMode.OnTryActiveExitPortal();
 	}
 
+	public void On5SecondAgoActiveExitPortal()
+	{
+		_currentBattleMode.On5SecondAgoActiveExitPortal();
+	}
+
 	public void OnActiveExitPortal()
 	{
 		_currentBattleMode.OnActiveExitPortal();

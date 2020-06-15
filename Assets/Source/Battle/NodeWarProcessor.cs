@@ -8,7 +8,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	public static float SpawnDistance = 16.0f;
 	public static int DefaultMonsterMaxCount = 50;
 	public static int LastMonsterMaxCount = 70;
-	public static int SoulCountMax = 7;
+	public static int SoulCountMax = 10;
 
 	// 몹이나 아이템 둘다 이 거리를 넘어서면 강제로 삭제한다.
 	public static float ValidDistance = 30.0f;
@@ -215,7 +215,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	int _soulCount;
 	float _soulSpawnRemainTime;
 	// 2분동안 10개를 모아야하니 개당 대략 12초인데 뒤에 생성되서 못얻을때도 있을거 대비해서 조금 줄여둔다.
-	const float SoulSpawnDelay = 5.5f;
+	const float SoulSpawnDelay = 3.5f;
 	void UpdateSpawnSoul()
 	{
 		if (_phase != ePhase.FindSoul)

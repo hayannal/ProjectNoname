@@ -84,7 +84,7 @@ public class NodeWarExitPortal : MonoBehaviour
 		Quaternion lookRotation = Quaternion.LookRotation(diff);
 		_arrowIndicatorTransform.rotation = Quaternion.Slerp(_arrowIndicatorTransform.rotation, lookRotation, 4.0f * Time.deltaTime);
 
-		bool close = (diff.sqrMagnitude < 1.7f * 1.7f);
+		bool close = (diff.sqrMagnitude < 2.0f * 2.0f);
 		_arrowIndicatorTransform.GetChild(0).gameObject.SetActive(!close);
 	}
 

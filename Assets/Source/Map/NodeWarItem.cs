@@ -18,6 +18,10 @@ public class NodeWarItem : MonoBehaviour
 
 	public GameObject mainObject;
 	public Transform areaEffectTransform;
+	public ParticleSystemRenderer particleSystemRenderer;
+
+	static int s_particleColorPropertyID;
+	Color _particleDefaultColor;
 
 	void OnEnable()
 	{
@@ -25,6 +29,8 @@ public class NodeWarItem : MonoBehaviour
 			mainObject.SetActive(true);
 		if (areaEffectTransform != null)
 			areaEffectTransform.localScale = Vector3.one;
+		if (particleSystemRenderer != null && _started)
+			particleSystemRenderer.material.SetColor(s_particleColorPropertyID, _particleDefaultColor);
 	}
 
 	void OnDisable()
@@ -32,9 +38,19 @@ public class NodeWarItem : MonoBehaviour
 		_waitEndAnimation = false;
 	}
 
+	bool _started = false;
+	void Start()
+	{
+		if (s_particleColorPropertyID == 0) s_particleColorPropertyID = Shader.PropertyToID("_TintColor");
+		if (particleSystemRenderer != null)
+			_particleDefaultColor = particleSystemRenderer.material.GetColor(s_particleColorPropertyID);
+		_started = true;
+	}
+
 	void Update()
 	{
 		UpdateDistance();
+		UpdateAlpha();
 	}
 
 	const float ValidDistance = 30.0f;
@@ -54,6 +70,22 @@ public class NodeWarItem : MonoBehaviour
 			GetDropObject();
 		else if (sqrMagnitude > NodeWarProcessor.ValidDistance * NodeWarProcessor.ValidDistance)
 			gameObject.SetActive(false);
+	}
+
+	const float AlphaTime = 0.25f;
+	float _alphaRemainTime;
+	void UpdateAlpha()
+	{
+		if (_waitEndAnimation == false)
+			return;
+		if (_alphaRemainTime > 0.0f)
+		{
+			_alphaRemainTime -= Time.deltaTime;
+			if (_alphaRemainTime <= 0.0f)
+				_alphaRemainTime = 0.0f;
+			float ratio = _alphaRemainTime / AlphaTime;
+			particleSystemRenderer.material.SetColor(s_particleColorPropertyID, new Color(_particleDefaultColor.r, _particleDefaultColor.g, _particleDefaultColor.b, _particleDefaultColor.a * ratio));
+		}
 	}
 
 	bool _waitEndAnimation;
@@ -84,7 +116,9 @@ public class NodeWarItem : MonoBehaviour
 			if (mainObject != null)
 				mainObject.SetActive(false);
 			if (areaEffectTransform != null)
-				areaEffectTransform.DOScale(0.0f, 0.25f).SetEase(Ease.OutQuad).OnComplete(OnCompleteAnimation);
+				areaEffectTransform.DOScale(0.8f, AlphaTime).SetEase(Ease.OutQuad).OnComplete(OnCompleteAnimation);
+			if (particleSystemRenderer != null)
+				_alphaRemainTime = AlphaTime;
 		}
 	}
 

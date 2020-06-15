@@ -105,42 +105,50 @@ public class PlayerActor : Actor
 			{
 				if (lobby == false)
 				{
-					// 한번이라도 썼던 캐릭터인지 확인
-					bool firstEnter = !BattleInstanceManager.instance.IsInBattlePlayerList(actorId);
+					if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+					{
+						// 바꾼 캐릭터에도 NodeWar용 레벨팩 적용
+						NodeWarProcessor.ApplyNodeWarLevelPack(this);
+					}
+					else
+					{
+						// 한번이라도 썼던 캐릭터인지 확인
+						bool firstEnter = !BattleInstanceManager.instance.IsInBattlePlayerList(actorId);
 
-					// 레벨팩 이전
-					LevelPackDataManager.instance.TransferLevelPackList(BattleInstanceManager.instance.playerActor, this);
+						// 레벨팩 이전
+						LevelPackDataManager.instance.TransferLevelPackList(BattleInstanceManager.instance.playerActor, this);
 
-					// Hp비율 Sp비율 이전
-					float hpRatio = BattleInstanceManager.instance.playerActor.actorStatus.GetHPRatio();
-					actorStatus.SetHpRatio(hpRatio);
-					float spRatio = BattleInstanceManager.instance.playerActor.actorStatus.GetSPRatio();
-					actorStatus.SetSpRatio(spRatio);
+						// Hp비율 Sp비율 이전
+						float hpRatio = BattleInstanceManager.instance.playerActor.actorStatus.GetHPRatio();
+						actorStatus.SetHpRatio(hpRatio);
+						float spRatio = BattleInstanceManager.instance.playerActor.actorStatus.GetSPRatio();
+						actorStatus.SetSpRatio(spRatio);
 #if CHEAT_RESURRECT
-					bool cheatDontDie = BattleInstanceManager.instance.playerActor.actorStatus.cheatDontDie;
-					actorStatus.cheatDontDie = cheatDontDie;
+						bool cheatDontDie = BattleInstanceManager.instance.playerActor.actorStatus.cheatDontDie;
+						actorStatus.cheatDontDie = cheatDontDie;
 #endif
 
-					// 처음 스왑이라면 힐과 sp회복 적용
-					if (firstEnter)
-					{
-						actorStatus.SetSpRatio(1.0f);
+						// 처음 스왑이라면 힐과 sp회복 적용
+						if (firstEnter)
+						{
+							actorStatus.SetSpRatio(1.0f);
 
-						AffectorValueLevelTableData healAffectorValue = new AffectorValueLevelTableData();
-						healAffectorValue.fValue3 = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("SwapHeal");
-						healAffectorValue.fValue3 += affectorProcessor.actor.actorStatus.GetValue(eActorStatus.SwapHealAddRate);
-						affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Heal, healAffectorValue, affectorProcessor.actor, false);
-						BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.healEffectPrefab, cachedTransform.position, Quaternion.identity, cachedTransform);
+							AffectorValueLevelTableData healAffectorValue = new AffectorValueLevelTableData();
+							healAffectorValue.fValue3 = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("SwapHeal");
+							healAffectorValue.fValue3 += affectorProcessor.actor.actorStatus.GetValue(eActorStatus.SwapHealAddRate);
+							affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Heal, healAffectorValue, affectorProcessor.actor, false);
+							BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.healEffectPrefab, cachedTransform.position, Quaternion.identity, cachedTransform);
 
-						ClientSaveData.instance.OnChangedHpRatio(affectorProcessor.actor.actorStatus.GetHPRatio());
-						ClientSaveData.instance.OnChangedSpRatio(affectorProcessor.actor.actorStatus.GetSPRatio());
+							ClientSaveData.instance.OnChangedHpRatio(affectorProcessor.actor.actorStatus.GetHPRatio());
+							ClientSaveData.instance.OnChangedSpRatio(affectorProcessor.actor.actorStatus.GetSPRatio());
 
-						Timing.RunCoroutine(ScreenHealEffectProcess());
+							Timing.RunCoroutine(ScreenHealEffectProcess());
+						}
+
+						// 스테이지 디버프
+						if (BattleInstanceManager.instance.playerActor.currentStagePenaltyTableData != null)
+							RefreshStagePenaltyAffector(BattleInstanceManager.instance.playerActor.currentStagePenaltyTableData.stagePenaltyId, false);
 					}
-
-					// 스테이지 디버프
-					if (BattleInstanceManager.instance.playerActor.currentStagePenaltyTableData != null)
-						RefreshStagePenaltyAffector(BattleInstanceManager.instance.playerActor.currentStagePenaltyTableData.stagePenaltyId, false);
 				}
 
 				BattleInstanceManager.instance.playerActor.gameObject.SetActive(false);

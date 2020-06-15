@@ -55,29 +55,33 @@ public class NodeWarProcessor : BattleModeProcessorBase
 
 		// 이렇게 강제로 셋팅하는 부분은 여기 하나뿐이다.
 		StageManager.instance.playerLevel = StageManager.instance.GetMaxStageLevel();
-		BattleInstanceManager.instance.playerActor.skillProcessor.CheckAllExclusiveLevelPack();
+		ApplyNodeWarLevelPack(BattleInstanceManager.instance.playerActor);
+	}
 
-		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkBetter", false, 0);
-		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkBetter", false, 0);
-		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkBetter", false, 0);
-		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkSpeedBetter", false, 0);
-		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkSpeedBetter", false, 0);
-		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkSpeedBetter", false, 0);
-		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("CritBetter", false, 0);
-		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("CritBetter", false, 0);
-		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("CritBetter", false, 0);
-		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("MoveSpeedUpOnKill", false, 0);
-		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("MoveSpeedUpOnKill", false, 0);
-		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("MoveSpeedUpOnKill", false, 0);
-		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("MoveSpeedUpOnAttacked", false, 0);
-		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("MoveSpeedUpOnAttacked", false, 0);
-		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("MoveSpeedUpOnAttacked", false, 0);
-		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkUpOnLowerHpBetter", false, 0);
-		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkUpOnLowerHpBetter", false, 0);
-		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("AtkUpOnLowerHpBetter", false, 0);
-		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("HealSpOnAttackBetter", false, 0);
-		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("HealSpOnAttackBetter", false, 0);
-		BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack("HealSpOnAttackBetter", false, 0);
+	public static void ApplyNodeWarLevelPack(PlayerActor playerActor)
+	{
+		playerActor.skillProcessor.CheckAllExclusiveLevelPack();
+		playerActor.skillProcessor.AddLevelPack("AtkBetter", false, 0);
+		playerActor.skillProcessor.AddLevelPack("AtkBetter", false, 0);
+		playerActor.skillProcessor.AddLevelPack("AtkBetter", false, 0);
+		playerActor.skillProcessor.AddLevelPack("AtkSpeedBetter", false, 0);
+		playerActor.skillProcessor.AddLevelPack("AtkSpeedBetter", false, 0);
+		playerActor.skillProcessor.AddLevelPack("AtkSpeedBetter", false, 0);
+		playerActor.skillProcessor.AddLevelPack("CritBetter", false, 0);
+		playerActor.skillProcessor.AddLevelPack("CritBetter", false, 0);
+		playerActor.skillProcessor.AddLevelPack("CritBetter", false, 0);
+		playerActor.skillProcessor.AddLevelPack("MoveSpeedUpOnKill", false, 0);
+		playerActor.skillProcessor.AddLevelPack("MoveSpeedUpOnKill", false, 0);
+		playerActor.skillProcessor.AddLevelPack("MoveSpeedUpOnKill", false, 0);
+		playerActor.skillProcessor.AddLevelPack("MoveSpeedUpOnAttacked", false, 0);
+		playerActor.skillProcessor.AddLevelPack("MoveSpeedUpOnAttacked", false, 0);
+		playerActor.skillProcessor.AddLevelPack("MoveSpeedUpOnAttacked", false, 0);
+		playerActor.skillProcessor.AddLevelPack("AtkUpOnLowerHpBetter", false, 0);
+		playerActor.skillProcessor.AddLevelPack("AtkUpOnLowerHpBetter", false, 0);
+		playerActor.skillProcessor.AddLevelPack("AtkUpOnLowerHpBetter", false, 0);
+		playerActor.skillProcessor.AddLevelPack("HealSpOnAttackBetter", false, 0);
+		playerActor.skillProcessor.AddLevelPack("HealSpOnAttackBetter", false, 0);
+		playerActor.skillProcessor.AddLevelPack("HealSpOnAttackBetter", false, 0);
 	}
 
 	public override void OnLoadedMap()

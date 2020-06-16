@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 400008}
+  - component: {fileID: -5441038855558143795}
   m_Layer: 0
   m_Name: BlackHoleNodeWar_D
   m_TagString: Untagged
@@ -32,6 +33,34 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-5441038855558143795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccc1db87478e94a42875321f75d0c7d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EffectType: 2
+  ColliderRadius: 0.2
+  EffectRadius: 0
+  UseMoveVector: 0
+  Target: {fileID: 0}
+  MoveVector: {x: 0, y: 0, z: 1}
+  MoveSpeed: 1
+  IsHomingMove: 0
+  MoveDistance: 20
+  IsVisible: 1
+  InstanceBehaviour: 3
+  DeactivateTimeDelay: 4
+  DestroyTimeDelay: 10
+  LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &100058
 GameObject:
   m_ObjectHideFlags: 0
@@ -191,7 +220,6 @@ GameObject:
   - component: {fileID: 3300004}
   - component: {fileID: 2300002}
   - component: {fileID: 11400054}
-  - component: {fileID: 11400002}
   m_Layer: 0
   m_Name: Distortion
   m_TagString: Untagged
@@ -208,7 +236,7 @@ Transform:
   m_GameObject: {fileID: 100064}
   m_LocalRotation: {x: 1, y: 0, z: 0, w: -0.00000004371139}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 1}
+  m_LocalScale: {x: 6, y: 6, z: 1}
   m_Children: []
   m_Father: {fileID: 400066}
   m_RootOrder: 0
@@ -265,7 +293,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100064}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e2194caa8a026284d975848a1238e90e, type: 3}
   m_Name: 
@@ -278,19 +306,6 @@ MonoBehaviour:
   UseSharedMaterial: 0
   FadeOutAfterCollision: 0
   UseHideStatus: 1
---- !u!114 &11400002
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 100064}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e4950d09c254db94981a726faa8a3383, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  AddQueue: 15
 --- !u!1 &100066
 GameObject:
   m_ObjectHideFlags: 0
@@ -335,7 +350,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fae9ac72d8d025d44bf0d4511cbb2046, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 100
+  Speed: 80
   LifeTime: 0
   TimeDelay: 0
   SpeedFadeInTime: 0

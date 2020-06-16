@@ -13,8 +13,12 @@ public class NodeWarSpawnTableData
   public string monsterId { get { return _monsterId; } set { _monsterId = value; } }
   
   [SerializeField]
-  int _minLevel;
-  public int minLevel { get { return _minLevel; } set { _minLevel = value; } }
+  int _fixedLevel;
+  public int fixedLevel { get { return _fixedLevel; } set { _fixedLevel = value; } }
+  
+  [SerializeField]
+  int _oneLevel;
+  public int oneLevel { get { return _oneLevel; } set { _oneLevel = value; } }
   
   [SerializeField]
   int _minStep;
@@ -33,8 +37,16 @@ public class NodeWarSpawnTableData
   public float spawnPeriod { get { return _spawnPeriod; } set { _spawnPeriod = value; } }
   
   [SerializeField]
+  float _lastSpawnPeriod;
+  public float lastSpawnPeriod { get { return _lastSpawnPeriod; } set { _lastSpawnPeriod = value; } }
+  
+  [SerializeField]
   int _maxCount;
   public int maxCount { get { return _maxCount; } set { _maxCount = value; } }
+  
+  [SerializeField]
+  int _lastMaxCount;
+  public int lastMaxCount { get { return _lastMaxCount; } set { _lastMaxCount = value; } }
   
   [SerializeField]
   bool _totalMax;

@@ -104,6 +104,8 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			// 먼저 루프 한번 돌면서 fixedLevel이 같은 것들을 먼저 리스트에 담고
 			for (int i = 0; i < TableDataManager.instance.nodeWarSpawnTable.dataArray.Length; ++i)
 			{
+				if (TableDataManager.instance.nodeWarSpawnTable.dataArray[i].fixedLevel != level)
+					continue;
 				_listCurrentNodeWarSpawnTableData.Add(TableDataManager.instance.nodeWarSpawnTable.dataArray[i]);
 			}
 			// 만약 fixedLevel로 설정된게 하나도 없다면 일의 자리로 판단해서 가져오기로 한다.
@@ -112,7 +114,11 @@ public class NodeWarProcessor : BattleModeProcessorBase
 				int oneLevel = level % 10;
 				for (int i = 0; i < TableDataManager.instance.nodeWarSpawnTable.dataArray.Length; ++i)
 				{
-
+					if (TableDataManager.instance.nodeWarSpawnTable.dataArray[i].fixedLevel != 0)
+						continue;
+					if (TableDataManager.instance.nodeWarSpawnTable.dataArray[i].oneLevel != oneLevel)
+						continue;
+					_listCurrentNodeWarSpawnTableData.Add(TableDataManager.instance.nodeWarSpawnTable.dataArray[i]);
 				}
 			}
 			// 사용할 리스트가 정해지면 이 리스트에 맞춰서 RemainTime리스트도 만들어낸다.
@@ -147,8 +153,6 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		float diffTime = Time.time - _phaseStartTime;
 		for (int i = 0; i < _listCurrentNodeWarSpawnTableData.Count; ++i)
 		{
-			if (_selectedNodeWarTableData.level < _listCurrentNodeWarSpawnTableData[i].minLevel)
-				continue;
 			if ((int)_phase < _listCurrentNodeWarSpawnTableData[i].minStep)
 				continue;
 			if (diffTime < _listCurrentNodeWarSpawnTableData[i].firstWaiting)
@@ -163,10 +167,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			}
 			else
 			{
-				float spawnPeriod = _listCurrentNodeWarSpawnTableData[i].spawnPeriod;
-				if (_monsterSpawnBoosted)
-					spawnPeriod *= 0.25f;
-				_listCurrentSpawnRemainTime[i] += spawnPeriod;
+				_listCurrentSpawnRemainTime[i] += (_monsterSpawnBoosted ? _listCurrentNodeWarSpawnTableData[i].lastSpawnPeriod : _listCurrentNodeWarSpawnTableData[i].spawnPeriod);
 			}
 			if (Random.value > _listCurrentNodeWarSpawnTableData[i].spawnChance)
 				continue;
@@ -181,7 +182,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			else
 			{
 				string key = _listCurrentNodeWarSpawnTableData[i].monsterId;
-				if (_dicAliveMonsterCount.ContainsKey(key) && _dicAliveMonsterCount[key] >= _listCurrentNodeWarSpawnTableData[i].maxCount)
+				if (_dicAliveMonsterCount.ContainsKey(key) && _dicAliveMonsterCount[key] >= (_monsterSpawnBoosted ? _listCurrentNodeWarSpawnTableData[i].lastMaxCount : _listCurrentNodeWarSpawnTableData[i].maxCount))
 					continue;
 
 				// totalMax를 안쓰는 몬스터는 각자 개별로 체크한다.

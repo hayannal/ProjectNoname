@@ -8,7 +8,6 @@ Properties {
         _BumpMap ("Normalmap", 2D) = "bump" {}
 		_ColorStrength ("Color Strength", Float) = 1
 		_BumpAmt ("Distortion", Float) = 10
-		_InvFade ("Soft Particles Factor", Float) = 1.0
 }
 
 Category {
@@ -47,9 +46,6 @@ struct v2f {
 	float2 uvmain : TEXCOORD2;
 	float2 uvcutout : TEXCOORD3;
 	fixed4 color : COLOR;
-	#ifdef SOFTPARTICLES_ON
-		float4 projPos : TEXCOORD4;
-	#endif
 };
 
 sampler2D _MainTex;
@@ -70,10 +66,6 @@ v2f vert (appdata_t v)
 {
 	v2f o;
 	o.vertex = UnityObjectToClipPos(v.vertex);
-	#ifdef SOFTPARTICLES_ON
-		o.projPos = ComputeScreenPos (o.vertex);
-		COMPUTE_EYEDEPTH(o.projPos.z);
-	#endif
 	o.color = v.color;
 	#if UNITY_UV_STARTS_AT_TOP
 	float scale = -1.0;
@@ -92,20 +84,8 @@ v2f vert (appdata_t v)
 	return o;
 }
 
-sampler2D _CameraDepthTexture;
-float _InvFade;
-
 half4 frag( v2f i ) : COLOR
 {
-	#ifdef SOFTPARTICLES_ON
-		if(_InvFade > 0.0001)	{
-		float sceneZ = LinearEyeDepth (UNITY_SAMPLE_DEPTH(tex2Dproj(_CameraDepthTexture, UNITY_PROJ_COORD(i.projPos))));
-		float partZ = i.projPos.z;
-		float fade = saturate (_InvFade * (sceneZ-partZ));
-		i.color.a *= fade*fade;
-	}
-	#endif
-
 	half2 bump = UnpackNormal(tex2D( _BumpMap, i.uvbump )).rg;
 	float2 offset = bump * _BumpAmt * _GrabTexture_TexelSize.xy * i.color.a;
 	i.uvgrab.xy = offset * i.uvgrab.z + i.uvgrab.xy;

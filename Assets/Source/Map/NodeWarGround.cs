@@ -145,6 +145,13 @@ public class NodeWarGround : MonoBehaviour
 		// 난이도 단계 설명은 레벨업 연출이 끝나고 조금 후에 보여주도록 한다.
 		_levelTextDelayTime = 1.5f;
 
+		// 첫번째 몬스터 한마리를 미리 만들어놓고 하이드 시킨다. 첫 스폰 캐싱을 위함
+		if (monsterPrefabList.Length > 0)
+		{
+			GameObject firstMonsterObject = BattleInstanceManager.instance.GetCachedObject(monsterPrefabList[0], new Vector3(100.0f, 0.0f, 100.0f), Quaternion.identity);
+			firstMonsterObject.SetActive(false);
+		}
+
 		// 교체가능은 항상 띄운다.
 		PlayerIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform);
 	}

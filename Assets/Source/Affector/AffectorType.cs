@@ -67,5 +67,6 @@ public enum eAffectorType
 	Rush,
 	TeleportTargetPosition,
 	Rotate,
+	Suicide,
 }
 #endregion

@@ -253,13 +253,25 @@ public class MonsterActor : Actor
 		if (BurrowAffector.CheckDie(affectorProcessor))
 			yield break;
 
-		yield return Timing.WaitForSeconds(bossMonster ? 1.7f : 1.2f);
+		bool needRestoreSuicide = false;
+		float suicideLifeTime = -1.0f;
+		bool suicide = SuicideAffector.CheckSuicide(affectorProcessor, ref suicideLifeTime, ref needRestoreSuicide);
+
+		float waitTime = bossMonster ? 1.7f : 1.2f;
+		if (suicide && suicideLifeTime != -1.0f)
+			waitTime = suicideLifeTime;
+		yield return Timing.WaitForSeconds(waitTime);
 
 		// avoid gc
 		if (this == null)
 			yield break;
 
-		if (cachedMonsterTableData.flakeMultiplier > 0.0f)
+		if (needRestoreSuicide)
+		{
+			SuicideAffector.RestoreRenderer(affectorProcessor);
+			gameObject.SetActive(false);
+		}
+		else if (cachedMonsterTableData.flakeMultiplier > 0.0f)
 		{
 			DieDissolve.ShowDieDissolve(cachedTransform, bossMonster);
 			DieAshParticle.ShowParticle(cachedTransform, bossMonster, cachedMonsterTableData.flakeMultiplier);

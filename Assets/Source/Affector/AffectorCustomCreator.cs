@@ -64,6 +64,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.Rush: affectorBase = new RushAffector(); break;
 			case eAffectorType.TeleportTargetPosition: affectorBase = new TeleportTargetPositionAffector(); break;
 			case eAffectorType.Rotate: affectorBase = new RotateAffector(); break;
+			case eAffectorType.Suicide: affectorBase = new SuicideAffector(); break;
 			#endregion
 		}
 		return affectorBase;
@@ -122,6 +123,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.Rush:
 			case eAffectorType.TeleportTargetPosition:
 			case eAffectorType.Rotate:
+			case eAffectorType.Suicide:
 				return true;
 			#endregion
 		}

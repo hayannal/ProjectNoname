@@ -536,6 +536,9 @@ public class NodeWarProcessor : BattleModeProcessorBase
 				monsterActor.gameObject.SetActive(false);
 			}
 
+			// 모든 트랩도 삭제해야한다.
+			NodeWarTrap.DisableAllTrap();
+
 			// 도착지점 프리팹도 만들어낸다.
 			BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.nodeWarEndSafeAreaPrefab, EndSafeAreaPosition, Quaternion.identity);
 		}

@@ -154,6 +154,15 @@ public class NodeWarTrap : MonoBehaviour
 		return false;
 	}
 
+	public static void DisableAllTrap()
+	{
+		if (s_listInitializedNodeWarTrap == null)
+			return;
+
+		for (int i = 0; i < s_listInitializedNodeWarTrap.Count; ++i)
+			s_listInitializedNodeWarTrap[i].gameObject.SetActive(false);
+		s_listInitializedNodeWarTrap.Clear();
+	}
 
 
 

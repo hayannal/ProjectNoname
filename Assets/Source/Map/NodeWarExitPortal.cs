@@ -99,6 +99,16 @@ public class NodeWarExitPortal : MonoBehaviour
 	float _healAreaTickRemainTime;
 	AffectorValueLevelTableData _healAreaAffectorValue;
 	bool inAreaForEffect = false;
+	float _lastHealAreaWorldRange;
+	public float lastHealAreaRange
+	{
+		get
+		{
+			if (_healAreaRemainTime > 0.0f)
+				return _lastHealAreaWorldRange;
+			return 0.0f;
+		}
+	}
 	void UpdateHealArea()
 	{
 		if (_healAreaAffectorValue == null)
@@ -148,6 +158,7 @@ public class NodeWarExitPortal : MonoBehaviour
 				Timing.RunCoroutine(ScreenHealEffectProcess());
 			}
 		}
+		_lastHealAreaWorldRange = worldRange;
 	}
 
 	IEnumerator<float> ScreenHealEffectProcess()

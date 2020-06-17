@@ -8,7 +8,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	public static float SpawnDistance = 16.0f;
 	public static int DefaultMonsterMaxCount = 47;
 	public static int LastMonsterMaxCount = 55;
-	public static int SoulCountMax = 3;
+	public static int SoulCountMax = 10;
 
 	// 유효 거리
 	public static float ItemValidDistance = 30.0f;
@@ -39,6 +39,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 
 		UpdateSpawnMonster();
 		UpdateMonsterDistance();
+		UpdateTrap();
 		UpdateSpawnSoul();
 		UpdateSpawnHealOrb();
 		UpdateSpawnBoostOrb();
@@ -128,6 +129,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		}
 		_phase = ePhase.FindSoul;
 		_phaseStartTime = Time.time;
+		_trapSpawnRemainTime = Random.Range(TrapSpawnDelayMin, TrapSpawnDelayMax);
 		_soulSpawnRemainTime = SoulSpawnDelay;
 		_healOrbSpawnRemainTime = HealOrbSpawnDelay;
 		_boostOrbSpawnRemainTime = BoostOrbSpawnDelay;
@@ -199,6 +201,8 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	void SpawnMonster(string monsterId)
 	{
 		GameObject monsterPrefab = NodeWarGround.instance.GetMonsterPrefab(monsterId);
+		if (monsterPrefab == null)
+			return;
 		Vector2 normalizedOffset = Random.insideUnitCircle.normalized;
 		Vector2 randomOffset = normalizedOffset * Random.Range(1.0f, 1.1f) * SpawnDistance;
 		Vector3 desirePosition = BattleInstanceManager.instance.playerActor.cachedTransform.position + new Vector3(randomOffset.x, 0.0f, randomOffset.y);
@@ -237,6 +241,86 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	{
 		// 위 함수에서 다 처리해서 여기서 할게 없긴 한데 NavMesh가 없는 곳이라 Warning뜨지 않게 처리 하나 해둔다.
 		monsterActor.pathFinderController.agent.enabled = false;
+	}
+	#endregion
+
+	#region Trap
+	float _trapSpawnRemainTime;
+	const float TrapSpawnDelayMin = 3.0f;
+	const float TrapSpawnDelayMax = 7.0f;
+	void UpdateTrap()
+	{
+		if (_phase == ePhase.Success)
+			return;
+
+		_trapSpawnRemainTime -= Time.deltaTime;
+		if (_trapSpawnRemainTime < 0.0f)
+		{
+			Vector3 resultPosition = Vector3.zero;
+			if (GetTrapSpawnPosition(ref resultPosition))
+			{
+				BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.trapPrefab, resultPosition, Quaternion.identity);
+				_trapSpawnRemainTime += Random.Range(TrapSpawnDelayMin, TrapSpawnDelayMax);
+			}
+			else
+			{
+				// 이 자리에서 만들 수 없다고 판단되면 잠시 딜레이를 줘서 조금 후에 다시 체크하도록 한다.
+				_trapSpawnRemainTime += 1.0f;
+			}
+		}
+	}
+
+	public float TrapSpawnDistance = 24.0f;
+	const float TrapNoSpawnRange = 12.0f;
+	bool GetTrapSpawnPosition(ref Vector3 resultPosition)
+	{
+		Vector3 playerPosition = BattleInstanceManager.instance.playerActor.cachedTransform.position;
+		playerPosition.y = 0.0f;
+		for (int i = 0; i < 5; ++i)
+		{
+			// 먼저 플레이어 앞쪽에 랜덤으로 구해본다. 직선상에서만 구하면 너무 티나니 구해놓고 랜덤 오프셋을 한번 더 준다.
+			Vector3 desirePosition = playerPosition + BattleInstanceManager.instance.playerActor.cachedTransform.forward * Random.Range(0.5f, 10.0f);
+			Vector2 offset = Random.insideUnitCircle;
+			desirePosition.x += offset.x * 2.0f;
+			desirePosition.y = 0.0f;
+			desirePosition.z += offset.y * 2.0f;
+
+			// 랜덤으로 나온 포지션 근처에 이미 트랩이 존재한다면 다시 시도.
+			if (NodeWarTrap.IsExistInRange(desirePosition, TrapNoSpawnRange))
+				continue;
+			if (_phase != ePhase.FindSoul && NodeWarExitPortal.instance != null)
+			{
+				Vector3 diff = desirePosition - NodeWarExitPortal.instance.cachedTransform.position;
+				diff.y = 0.0f;
+				if (diff.sqrMagnitude < (NodeWarExitPortal.instance.lastHealAreaRange + TrapNoSpawnRange * 0.5f) * (NodeWarExitPortal.instance.lastHealAreaRange + TrapNoSpawnRange * 0.5f))
+					continue;
+			}
+			resultPosition = desirePosition;
+			return true;
+		}
+
+		for (int i = 0; i < 20; ++i)
+		{
+			// 찾을 수 없다면 플레이어 주변으로 구해본다.
+			Vector3 desirePosition = playerPosition;
+			Vector2 offset = Random.insideUnitCircle;
+			desirePosition.x += offset.x * TrapSpawnDistance;
+			desirePosition.y = 0.0f;
+			desirePosition.z += offset.y * TrapSpawnDistance;
+
+			if (NodeWarTrap.IsExistInRange(desirePosition, TrapNoSpawnRange))
+				continue;
+			if (_phase != ePhase.FindSoul && NodeWarExitPortal.instance != null)
+			{
+				Vector3 diff = desirePosition - NodeWarExitPortal.instance.cachedTransform.position;
+				diff.y = 0.0f;
+				if (diff.sqrMagnitude < (NodeWarExitPortal.instance.lastHealAreaRange + TrapNoSpawnRange * 0.5f) * (NodeWarExitPortal.instance.lastHealAreaRange + TrapNoSpawnRange * 0.5f))
+					continue;
+			}
+			resultPosition = desirePosition;
+			return true;
+		}
+		return false;
 	}
 	#endregion
 

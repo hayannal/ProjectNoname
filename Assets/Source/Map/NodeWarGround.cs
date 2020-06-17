@@ -31,6 +31,7 @@ public class NodeWarGround : MonoBehaviour
 	public Text rightRewardValueText;
 
 	public GameObject[] monsterPrefabList;
+	public GameObject trapPrefab;
 	public GameObject soulPrefab;
 	public GameObject soulGetEffectPrefab;
 	public GameObject healOrbPrefab;
@@ -443,6 +444,7 @@ public class NodeWarGround : MonoBehaviour
 			if (monsterPrefabList[i].name == monsterId)
 				return monsterPrefabList[i];
 		}
+		Debug.LogErrorFormat("Not found NodeWar Monster Prefab. monsterId = {0}", monsterId);
 		return null;
 	}
 

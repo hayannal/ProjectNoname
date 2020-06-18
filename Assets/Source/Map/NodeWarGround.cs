@@ -16,19 +16,13 @@ public class NodeWarGround : MonoBehaviour
 	public CanvasGroup levelTextCanvasGroup;
 
 	public Text centerLevelText;
-	public GameObject centerFirstRewardObject;
-	public GameObject[] centerPriceTypeObjectList;
-	public Text centerRewardValueText;
-
+	public Text centerChallengeText;
 	public Text leftLevelText;
-	public GameObject leftFirstRewardObject;
-	public GameObject[] leftPriceTypeObjectList;
-	public Text leftRewardValueText;
-
+	public Text leftChallengeText;
 	public Text rightLevelText;
-	public GameObject rightFirstRewardObject;
-	public GameObject[] rightPriceTypeObjectList;
-	public Text rightRewardValueText;
+	public Text rightChallengeText;
+
+	public GameObject boostSignObject;
 
 	public GameObject[] monsterPrefabList;
 	public GameObject trapPrefab;
@@ -45,6 +39,7 @@ public class NodeWarGround : MonoBehaviour
 	bool _centerLevel;
 	int _leftLevel;
 	int _rightLevel;
+	ObjectIndicatorCanvas _objectIndicatorCanvas;
 
 	void Awake()
 	{
@@ -62,13 +57,13 @@ public class NodeWarGround : MonoBehaviour
 		{
 			_centerLevel = true;
 			currentLevel = 1;
-			centerFirstRewardObject.SetActive(true);
+			centerChallengeText.SetLocalizedText(UIString.instance.GetString("GameUI_NodeWarChallenge"));
 			_leftLevel = _rightLevel = currentLevel;
 		}
 		else if (currentLevel == BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxNodeWarLevel"))
 		{
 			_centerLevel = true;
-			centerFirstRewardObject.SetActive(false);
+			centerChallengeText.SetLocalizedText(UIString.instance.GetString("GameUI_NodeWarRepeat"));
 			_leftLevel = _rightLevel = currentLevel;
 		}
 		else
@@ -81,49 +76,16 @@ public class NodeWarGround : MonoBehaviour
 		if (_centerLevel)
 		{
 			centerLevelText.text = string.Format("LEVEL {0}", currentLevel);
-			if (centerFirstRewardObject.activeSelf)
-			{
-				NodeWarTableData nodeWarTableData = TableDataManager.instance.FindNodeWarTableData(currentLevel);
-				if (nodeWarTableData != null)
-				{
-					// 재화는 둘중에 하나다.
-					CurrencyData.eCurrencyType currencyType = CurrencyData.eCurrencyType.Diamond;
-					int rewardAmount = nodeWarTableData.firstRewardDiamond;
-					if (nodeWarTableData.firstRewardGold > 0)
-					{
-						currencyType = CurrencyData.eCurrencyType.Gold;
-						rewardAmount = nodeWarTableData.firstRewardGold;
-					}
-					for (int i = 0; i < centerPriceTypeObjectList.Length; ++i)
-						centerPriceTypeObjectList[i].SetActive((int)currencyType == i);
-					centerRewardValueText.text = rewardAmount.ToString("N0");
-				}
-			}
 		}
 		else
 		{
 			// 왼쪽은 깬거니 이름만 적으면 될거다.
 			leftLevelText.text = string.Format("LEVEL {0}", _leftLevel);
-			leftFirstRewardObject.SetActive(false);
+			leftChallengeText.SetLocalizedText(UIString.instance.GetString("GameUI_NodeWarRepeat"));
 
 			// 우측은 도전하는 레벨
 			rightLevelText.text = string.Format("LEVEL {0}", _rightLevel);
-			rightFirstRewardObject.SetActive(true);
-			NodeWarTableData nodeWarTableData = TableDataManager.instance.FindNodeWarTableData(currentLevel);
-			if (nodeWarTableData != null)
-			{
-				// 재화는 둘중에 하나다.
-				CurrencyData.eCurrencyType currencyType = CurrencyData.eCurrencyType.Diamond;
-				int rewardAmount = nodeWarTableData.firstRewardDiamond;
-				if (nodeWarTableData.firstRewardGold > 0)
-				{
-					currencyType = CurrencyData.eCurrencyType.Gold;
-					rewardAmount = nodeWarTableData.firstRewardGold;
-				}
-				for (int i = 0; i < rightPriceTypeObjectList.Length; ++i)
-					rightPriceTypeObjectList[i].SetActive((int)currencyType == i);
-				rightRewardValueText.text = rewardAmount.ToString("N0");
-			}
+			rightChallengeText.SetLocalizedText(UIString.instance.GetString("GameUI_NodeWarChallenge"));
 		}
 
 		splitLineRendererObject.SetActive(!_centerLevel);
@@ -155,6 +117,18 @@ public class NodeWarGround : MonoBehaviour
 
 		// 교체가능은 항상 띄운다.
 		PlayerIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform);
+
+		// 부스트 알림 인디케이터 역시 항상 띄워야한다.
+		AddressableAssetLoadManager.GetAddressableGameObject("NodeWarBoostIndicator", "Canvas", (prefab) =>
+		{
+			if (this == null) return;
+			if (gameObject == null) return;
+			if (gameObject.activeInHierarchy == false) return;
+			if (_outOfSafeArea) return;
+
+			_objectIndicatorCanvas = UIInstanceManager.instance.GetCachedObjectIndicatorCanvas(prefab);
+			_objectIndicatorCanvas.targetTransform = boostSignObject.transform;
+		});
 	}
 
 	void Update()
@@ -401,6 +375,12 @@ public class NodeWarGround : MonoBehaviour
 			else selectedLevel = _leftLevel;
 		}
 		PlayerIndicatorCanvas.Show(false, null);
+		if (_objectIndicatorCanvas != null)
+		{
+			_objectIndicatorCanvas.gameObject.SetActive(false);
+			_objectIndicatorCanvas = null;
+		}
+		boostSignObject.SetActive(false);
 		BattleManager.instance.OnSelectedNodeWarLevel(selectedLevel);
 	}
 

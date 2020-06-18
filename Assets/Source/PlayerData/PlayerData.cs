@@ -70,6 +70,7 @@ public class PlayerData : MonoBehaviour
 	public ObscuredBool nodeWarCleared { get; set; }
 	public DateTime nodeWarResetTime { get; private set; }
 	public ObscuredInt nodeWarClearLevel { get; set; }
+	public ObscuredInt nodeWarBoostRemainCount { get; set; }
 
 	// 이 카오스가 현재 카오스 상태로 스테이지가 셋팅되어있는지를 알려주는 값이다.
 	// 이전 챕터로 내려갈 경우 서버에 저장된 chaosMode는 1이더라도 스테이지 구성은 도전모드로 셋팅하게 되며
@@ -554,6 +555,14 @@ public class PlayerData : MonoBehaviour
 			int intValue = 0;
 			if (int.TryParse(userReadOnlyData["nodLv"].Value, out intValue))
 				nodeWarClearLevel = intValue;
+		}
+
+		nodeWarBoostRemainCount = 0;
+		if (userReadOnlyData.ContainsKey("nodBst"))
+		{
+			int intValue = 0;
+			if (int.TryParse(userReadOnlyData["nodBst"].Value, out intValue))
+				nodeWarBoostRemainCount = intValue;
 		}
 
 		loginned = true;

@@ -8,6 +8,7 @@ public class EquipSellCanvas : EquipShowCanvasBase
 	public static EquipSellCanvas instance;
 
 	public CurrencySmallInfo currencySmallInfo;
+	public GameObject selectTextObject;
 	public Text selectCountText;
 	public Text emptyText;
 	public GameObject contentItemPrefab;
@@ -122,6 +123,7 @@ public class EquipSellCanvas : EquipShowCanvasBase
 		}
 		RefreshCountText();
 		emptyText.gameObject.SetActive(_listCurrentEquipData.Count == 0);
+		selectTextObject.SetActive(false);
 
 		_listCurrentEquipData.Sort(delegate (EquipData x, EquipData y)
 		{
@@ -150,7 +152,11 @@ public class EquipSellCanvas : EquipShowCanvasBase
 
 	void RefreshCountText()
 	{
-		selectCountText.text = string.Format("{0} / {1}", _listMultiSelectEquipData.Count, _multiSelectMax);
+		selectTextObject.SetActive(_listMultiSelectEquipData.Count > 0);
+		if (_listMultiSelectEquipData.Count == 0)
+			selectCountText.text = string.Format(TimeSpaceData.instance.IsInventoryVisualMax() ? "<color=#FF2200>{0}</color> / {1}" : "{0} / {1}", TimeSpaceData.instance.inventoryItemCount, TimeSpaceData.InventoryVisualMax);
+		else
+			selectCountText.text = string.Format("{0} / {1}", _listMultiSelectEquipData.Count, _multiSelectMax);
 	}
 
 	public void OnClickListItem(EquipData equipData)

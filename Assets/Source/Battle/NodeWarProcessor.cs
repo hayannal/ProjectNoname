@@ -105,6 +105,8 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			// 먼저 루프 한번 돌면서 fixedLevel이 같은 것들을 먼저 리스트에 담고
 			for (int i = 0; i < TableDataManager.instance.nodeWarSpawnTable.dataArray.Length; ++i)
 			{
+				if (TableDataManager.instance.nodeWarSpawnTable.dataArray[i].trap)
+					continue;
 				if (TableDataManager.instance.nodeWarSpawnTable.dataArray[i].fixedLevel != level)
 					continue;
 				_listCurrentNodeWarSpawnTableData.Add(TableDataManager.instance.nodeWarSpawnTable.dataArray[i]);
@@ -115,6 +117,8 @@ public class NodeWarProcessor : BattleModeProcessorBase
 				int oneLevel = level % 10;
 				for (int i = 0; i < TableDataManager.instance.nodeWarSpawnTable.dataArray.Length; ++i)
 				{
+					if (TableDataManager.instance.nodeWarSpawnTable.dataArray[i].trap)
+						continue;
 					if (TableDataManager.instance.nodeWarSpawnTable.dataArray[i].fixedLevel != 0)
 						continue;
 					if (TableDataManager.instance.nodeWarSpawnTable.dataArray[i].oneLevel != oneLevel)
@@ -126,10 +130,42 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			for (int i = 0; i < _listCurrentNodeWarSpawnTableData.Count; ++i)
 				_listCurrentSpawnRemainTime.Add(0.0f);
 			_totalAliveMonsterCount = 0;
+
+			// Trap 정보도 SpawnTable에서 가져와서 써야한다.
+			bool findTrapInfo = false;
+			for (int i = 0; i < TableDataManager.instance.nodeWarSpawnTable.dataArray.Length; ++i)
+			{
+				if (TableDataManager.instance.nodeWarSpawnTable.dataArray[i].trap == false)
+					continue;
+				if (TableDataManager.instance.nodeWarSpawnTable.dataArray[i].fixedLevel != level)
+					continue;
+				findTrapInfo = true;
+				_trapFirstWaitingRemainTime = TableDataManager.instance.nodeWarSpawnTable.dataArray[i].firstWaiting;
+				_trapSpawnDelayMin = TableDataManager.instance.nodeWarSpawnTable.dataArray[i].minPeriod;
+				_trapSpawnDelayMax = TableDataManager.instance.nodeWarSpawnTable.dataArray[i].maxPeriod;
+			}
+			if (findTrapInfo == false)
+			{
+				int oneLevel = level % 10;
+				for (int i = 0; i < TableDataManager.instance.nodeWarSpawnTable.dataArray.Length; ++i)
+				{
+					if (TableDataManager.instance.nodeWarSpawnTable.dataArray[i].trap == false)
+						continue;
+					if (TableDataManager.instance.nodeWarSpawnTable.dataArray[i].fixedLevel != 0)
+						continue;
+					if (TableDataManager.instance.nodeWarSpawnTable.dataArray[i].oneLevel != oneLevel)
+						continue;
+					findTrapInfo = true;
+					_trapFirstWaitingRemainTime = TableDataManager.instance.nodeWarSpawnTable.dataArray[i].firstWaiting;
+					_trapSpawnDelayMin = TableDataManager.instance.nodeWarSpawnTable.dataArray[i].minPeriod;
+					_trapSpawnDelayMax = TableDataManager.instance.nodeWarSpawnTable.dataArray[i].maxPeriod;
+				}
+			}
+			_disableTrap = !findTrapInfo;
 		}
 		_phase = ePhase.FindSoul;
 		_phaseStartTime = Time.time;
-		_trapSpawnRemainTime = Random.Range(TrapSpawnDelayMin, TrapSpawnDelayMax);
+		_trapSpawnRemainTime = Random.Range(_trapSpawnDelayMin, _trapSpawnDelayMax);
 		_soulSpawnRemainTime = SoulSpawnDelay;
 		_healOrbSpawnRemainTime = HealOrbSpawnDelay;
 		_boostOrbSpawnRemainTime = BoostOrbSpawnDelay;
@@ -245,13 +281,25 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	#endregion
 
 	#region Trap
+	bool _disableTrap = false;
 	float _trapSpawnRemainTime;
-	const float TrapSpawnDelayMin = 3.0f;
-	const float TrapSpawnDelayMax = 7.0f;
+	float _trapSpawnDelayMin = 3.0f;
+	float _trapSpawnDelayMax = 7.0f;
+	float _trapFirstWaitingRemainTime;
 	void UpdateTrap()
 	{
 		if (_phase == ePhase.Success)
 			return;
+		if (_disableTrap)
+			return;
+
+		if (_trapFirstWaitingRemainTime > 0.0f)
+		{
+			_trapFirstWaitingRemainTime -= Time.deltaTime;
+			if (_trapFirstWaitingRemainTime <= 0.0f)
+				_trapFirstWaitingRemainTime = 0.0f;
+			return;
+		}
 
 		_trapSpawnRemainTime -= Time.deltaTime;
 		if (_trapSpawnRemainTime < 0.0f)
@@ -260,7 +308,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			if (GetTrapSpawnPosition(ref resultPosition))
 			{
 				BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.trapPrefab, resultPosition, Quaternion.identity);
-				_trapSpawnRemainTime += Random.Range(TrapSpawnDelayMin, TrapSpawnDelayMax);
+				_trapSpawnRemainTime += Random.Range(_trapSpawnDelayMin, _trapSpawnDelayMax);
 			}
 			else
 			{

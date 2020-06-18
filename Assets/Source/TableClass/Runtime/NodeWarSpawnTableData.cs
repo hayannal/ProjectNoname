@@ -13,6 +13,10 @@ public class NodeWarSpawnTableData
   public string monsterId { get { return _monsterId; } set { _monsterId = value; } }
   
   [SerializeField]
+  bool _trap;
+  public bool trap { get { return _trap; } set { _trap = value; } }
+  
+  [SerializeField]
   int _fixedLevel;
   public int fixedLevel { get { return _fixedLevel; } set { _fixedLevel = value; } }
   
@@ -27,6 +31,14 @@ public class NodeWarSpawnTableData
   [SerializeField]
   float _firstWaiting;
   public float firstWaiting { get { return _firstWaiting; } set { _firstWaiting = value; } }
+  
+  [SerializeField]
+  float _minPeriod;
+  public float minPeriod { get { return _minPeriod; } set { _minPeriod = value; } }
+  
+  [SerializeField]
+  float _maxPeriod;
+  public float maxPeriod { get { return _maxPeriod; } set { _maxPeriod = value; } }
   
   [SerializeField]
   float _spawnChance;

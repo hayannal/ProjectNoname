@@ -326,6 +326,10 @@ public class DropManager : MonoBehaviour
 	public string GetGachaEquipId()
 	{
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
+
+		// NodeWar 드랍은 lobby드랍처럼 처리해줘야한다.
+		if (lobby == false && BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+			lobby = true;
 		if (lobby == false)
 			return "";
 		bool needRefresh = false;

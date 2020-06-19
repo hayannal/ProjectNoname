@@ -280,6 +280,13 @@ public class NodeWarExitPortal : MonoBehaviour
 	{
 		// 회복마법진은 35초전에 시작되서 20초 후인 15초 남겨놓고나서부터 크기가 줄어든다.
 		yield return Timing.WaitForSeconds(20.0f);
+
+		// avoid gc
+		if (this == null)
+			yield break;
+		if (gameObject.activeSelf == false)
+			yield break;
+
 		BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarPortalHealWeak"), 2.5f);
 	}
 

@@ -160,6 +160,7 @@ public class AuthManager : MonoBehaviour
 		List<string> playerStatisticNames = new List<string>();
 		playerStatisticNames.Add("highestPlayChapter");
 		playerStatisticNames.Add("highestClearStage");
+		playerStatisticNames.Add("nodClLv");
 		GetPlayerCombinedInfoRequestParams parameters = new GetPlayerCombinedInfoRequestParams();
 		parameters.GetCharacterList = true;
 		parameters.GetPlayerStatistics = true;

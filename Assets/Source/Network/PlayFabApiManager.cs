@@ -605,7 +605,7 @@ public class PlayFabApiManager : MonoBehaviour
 		{
 			string resultString = (string)success.FunctionResult;
 			bool failure = (resultString == "1");
-			_serverEnterKey = failure ? "" : resultString;
+			_serverEnterKeyForNodeWar = failure ? "" : resultString;
 			if (successCallback != null) successCallback.Invoke(failure);
 		}, (error) =>
 		{
@@ -621,6 +621,92 @@ public class PlayFabApiManager : MonoBehaviour
 			FunctionName = "CancelNodeWar",
 			GeneratePlayStreamEvent = true,
 		}, null, null);
+	}
+
+	public void RequestEndNodeWar(bool clear, int playLevel, List<ObscuredString> listDropItemId, Action<bool, string> successCallback)
+	{
+		string checkSum = "";
+		List<TimeSpaceData.ItemGrantRequest> listItemGrantRequest = TimeSpaceData.instance.GenerateGrantRequestInfo(listDropItemId, ref checkSum);
+		ExecuteCloudScriptRequest request = new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "EndNodeWar",
+			FunctionParameter = new { Flg = (string)_serverEnterKeyForNodeWar, Cl = (clear ? 1 : 0), PlLv = playLevel, Lst = listItemGrantRequest, LstCs = checkSum },
+			GeneratePlayStreamEvent = true,
+		};
+		Action action = () =>
+		{
+			PlayFabClientAPI.ExecuteCloudScript(request, (success) =>
+			{
+				PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
+				jsonResult.TryGetValue("retErr", out object retErr);
+				jsonResult.TryGetValue("itmRet", out object itmRet);
+				bool failure = ((retErr.ToString()) == "1");
+				_serverEnterKeyForNodeWar = "";
+				if (!failure)
+				{
+					RetrySendManager.instance.OnSuccess();
+
+					// 성공시에만 date파싱을 한다.
+					jsonResult.TryGetValue("date", out object date);
+					PlayerData.instance.OnRecvNodeWarInfo((string)date);
+				}
+				if (successCallback != null) successCallback.Invoke(clear, (string)itmRet);
+			}, (error) =>
+			{
+				RetrySendManager.instance.OnFailure();
+			});
+		};
+		RetrySendManager.instance.RequestAction(action, true);
+	}
+
+	public void RequestDownNodeWarLevel(Action successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "DownNodeWar",
+			FunctionParameter = new { Down = 1 },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+
+	public void RequestPurchaseNodeWarBoost(int price, Action successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "BuyNodeBoost",
+			FunctionParameter = new { Buy = 1 },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+				CurrencyData.instance.dia -= price;
+				PlayerData.instance.nodeWarBoostRemainCount += BattleInstanceManager.instance.GetCachedGlobalConstantInt("RefillBoostCount");
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
 	}
 	#endregion
 

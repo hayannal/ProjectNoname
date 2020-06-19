@@ -70,6 +70,7 @@ public class PlayerData : MonoBehaviour
 	public ObscuredBool nodeWarCleared { get; set; }
 	public DateTime nodeWarResetTime { get; private set; }
 	public ObscuredInt nodeWarClearLevel { get; set; }
+	public ObscuredInt nodeWarCurrentLevel { get; set; }
 	public ObscuredInt nodeWarBoostRemainCount { get; set; }
 
 	// 이 카오스가 현재 카오스 상태로 스테이지가 셋팅되어있는지를 알려주는 값이다.
@@ -375,12 +376,15 @@ public class PlayerData : MonoBehaviour
 
 	public void OnRecvPlayerData(List<StatisticValue> playerStatistics, Dictionary<string, UserDataRecord> userData, Dictionary<string, UserDataRecord> userReadOnlyData, List<CharacterResult> characterList)
 	{
+		// nodeWarClearLevel은 디비에 없을 수 있으므로 초기화가 필요.
+		nodeWarClearLevel = 0;
 		for (int i = 0; i < playerStatistics.Count; ++i)
 		{
 			switch (playerStatistics[i].StatisticName)
 			{
 				case "highestPlayChapter": highestPlayChapter = playerStatistics[i].Value; break;
 				case "highestClearStage": highestClearStage = playerStatistics[i].Value; break;
+				case "nodClLv": nodeWarClearLevel = playerStatistics[i].Value; break;
 			}
 		}
 
@@ -549,12 +553,12 @@ public class PlayerData : MonoBehaviour
 				OnRecvNodeWarInfo(userReadOnlyData["lasNodDat"].Value);
 		}
 
-		nodeWarClearLevel = 0;
-		if (userReadOnlyData.ContainsKey("nodLv"))
+		nodeWarCurrentLevel = 0;
+		if (userReadOnlyData.ContainsKey("nodCuLv"))
 		{
 			int intValue = 0;
-			if (int.TryParse(userReadOnlyData["nodLv"].Value, out intValue))
-				nodeWarClearLevel = intValue;
+			if (int.TryParse(userReadOnlyData["nodCuLv"].Value, out intValue))
+				nodeWarCurrentLevel = intValue;
 		}
 
 		nodeWarBoostRemainCount = 0;

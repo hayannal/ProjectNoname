@@ -25,5 +25,6 @@ namespace ClientSuspect
 		InvalidResearchLevel	= 100014,
 		InvalidStatPoint		= 100015,
 		InvalidTraining			= 100016,
+		FastNodeWar				= 100017,
 	}
 }

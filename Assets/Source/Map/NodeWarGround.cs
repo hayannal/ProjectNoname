@@ -23,6 +23,7 @@ public class NodeWarGround : MonoBehaviour
 	public Text rightChallengeText;
 
 	public GameObject boostSignObject;
+	public GameObject boostAppliedObject;
 
 	public GameObject[] monsterPrefabList;
 	public GameObject trapPrefab;
@@ -52,9 +53,11 @@ public class NodeWarGround : MonoBehaviour
 		worldCanvas.worldCamera = UIInstanceManager.instance.GetCachedCameraMain();
 		SetSafeLineRadius(3.0f, 80);
 
-		int currentLevel = PlayerData.instance.nodeWarClearLevel;
+		int clearLevel = PlayerData.instance.nodeWarClearLevel;
+		int currentLevel = PlayerData.instance.nodeWarCurrentLevel;
 		if (currentLevel == 0)
 		{
+			// 현재가 0이면 처음 NodeWar 진행하는 유저일거다.
 			_centerLevel = true;
 			currentLevel = 1;
 			centerChallengeText.SetLocalizedText(UIString.instance.GetString("GameUI_NodeWarChallenge"));
@@ -83,9 +86,9 @@ public class NodeWarGround : MonoBehaviour
 			leftLevelText.text = string.Format("LEVEL {0}", _leftLevel);
 			leftChallengeText.SetLocalizedText(UIString.instance.GetString("GameUI_NodeWarRepeat"));
 
-			// 우측은 도전하는 레벨
+			// 우측은 도전하는 레벨. ClearLevel과 비교해서 처리하면 된다.
 			rightLevelText.text = string.Format("LEVEL {0}", _rightLevel);
-			rightChallengeText.SetLocalizedText(UIString.instance.GetString("GameUI_NodeWarChallenge"));
+			rightChallengeText.SetLocalizedText(UIString.instance.GetString(_rightLevel > clearLevel ? "GameUI_NodeWarChallenge" : "GameUI_NodeWarRepeat"));
 		}
 
 		splitLineRendererObject.SetActive(!_centerLevel);
@@ -129,6 +132,13 @@ public class NodeWarGround : MonoBehaviour
 			_objectIndicatorCanvas = UIInstanceManager.instance.GetCachedObjectIndicatorCanvas(prefab);
 			_objectIndicatorCanvas.targetTransform = boostSignObject.transform;
 		});
+
+		RefreshNodeWarBoostApplyState();
+	}
+
+	public void RefreshNodeWarBoostApplyState()
+	{
+		boostAppliedObject.SetActive(PlayerData.instance.nodeWarBoostRemainCount > 0);
 	}
 
 	void Update()

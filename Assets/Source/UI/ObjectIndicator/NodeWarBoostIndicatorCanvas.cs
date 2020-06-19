@@ -4,8 +4,15 @@ using UnityEngine;
 
 public class NodeWarBoostIndicatorCanvas : ObjectIndicatorCanvas
 {
+	public static NodeWarBoostIndicatorCanvas instance;
+
 	public GameObject buttonRootObject;
 	public RectTransform alarmRootTransform;
+
+	void Awake()
+	{
+		instance = this;
+	}
 
 	// Start is called before the first frame update
 	void Start()
@@ -16,11 +23,20 @@ public class NodeWarBoostIndicatorCanvas : ObjectIndicatorCanvas
 	void OnEnable()
 	{
 		InitializeTarget(targetTransform);
+		RefreshAlarmObject();
 	}
 
 	void OnDisable()
 	{
 		buttonRootObject.SetActive(false);
+		alarmRootTransform.gameObject.SetActive(false);
+	}
+
+	public void RefreshAlarmObject()
+	{
+		AlarmObject.Hide(alarmRootTransform);
+		if (PlayerData.instance.nodeWarBoostRemainCount > 0 && PlayerData.instance.nodeWarBoostRemainCount <= 3)
+			AlarmObject.Show(alarmRootTransform);
 	}
 
 	public void OnClickBoostButton()

@@ -24,6 +24,7 @@ public class NodeWarBoostInfoCanvas : MonoBehaviour
 	{
 		CurrencySmallInfoCanvas.Show(true);
 		RefreshInfo();
+		buttonObject.SetActive(true);
 	}
 
 	void OnDisable()
@@ -61,7 +62,7 @@ public class NodeWarBoostInfoCanvas : MonoBehaviour
 
 	public void OnClickMoreButton()
 	{
-		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, UIString.instance.GetString("GameUI_NodeWarBoostMore"), 300, subTitleTransform, new Vector2(0.0f, -35.0f));
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, UIString.instance.GetString("GameUI_NodeWarBoostMore"), 300, subTitleTransform, new Vector2(0.0f, -35.0f));	// NodeWarRepeatBoost
 	}
 
 	int _price;
@@ -82,8 +83,19 @@ public class NodeWarBoostInfoCanvas : MonoBehaviour
 			return;
 		}
 
-		//PlayFabApiManager.instance.RequestCharacterBox(_priceOnce, OnRecvCharacterBox);
+		PlayFabApiManager.instance.RequestPurchaseNodeWarBoost(_price, OnRecvPurchase);
 
 		buttonObject.SetActive(false);
+	}
+
+	void OnRecvPurchase()
+	{
+		CurrencySmallInfoCanvas.RefreshInfo();
+
+		gameObject.SetActive(false);
+
+		ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_"), 2.0f);
+		NodeWarGround.instance.RefreshNodeWarBoostApplyState();
+		NodeWarBoostIndicatorCanvas.instance.RefreshAlarmObject();
 	}
 }

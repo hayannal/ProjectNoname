@@ -61,6 +61,9 @@ public class DropProcessor : MonoBehaviour
 		}
 
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
+		// NodeWar 드랍은 lobby드랍처럼 처리해줘야한다.
+		if (lobby == false && BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+			lobby = true;
 		if (lobby == false)
 		{
 			// drop event
@@ -77,6 +80,10 @@ public class DropProcessor : MonoBehaviour
 	static void Drop(DropProcessor dropProcessor, DropTableData dropTableData)
 	{
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
+
+		// NodeWar 드랍은 lobby드랍처럼 처리해줘야한다.
+		if (lobby == false && BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+			lobby = true;
 
 		for (int i = 0; i < dropTableData.dropEnum.Length; ++i)
 		{

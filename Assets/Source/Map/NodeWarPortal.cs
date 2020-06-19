@@ -155,6 +155,12 @@ public class NodeWarPortal : MonoBehaviour
 			return;
 		}
 
+		if (TimeSpaceData.instance.IsInventoryVisualMax())
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_ManageInventory"), 2.0f);
+			return;
+		}
+
 		if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
 			DotMainMenuCanvas.instance.OnClickBackButton();
 
@@ -185,6 +191,8 @@ public class NodeWarPortal : MonoBehaviour
 			return;
 
 		if (PlayerData.instance.nodeWarCleared)
+			return;
+		if (TimeSpaceData.instance.IsInventoryVisualMax())
 			return;
 
 		StartOpen();

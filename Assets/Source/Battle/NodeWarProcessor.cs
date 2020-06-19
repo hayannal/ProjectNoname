@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using MecanimStateDefine;
+using CodeStage.AntiCheat.ObscuredTypes;
 
 public class NodeWarProcessor : BattleModeProcessorBase
 {
@@ -29,6 +30,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	}
 
 	NodeWarTableData _selectedNodeWarTableData;
+	bool _challengeMode;
 	ePhase _phase;
 	float _phaseStartTime;
 
@@ -44,6 +46,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		UpdateSpawnHealOrb();
 		UpdateSpawnBoostOrb();
 		UpdateExit();
+		UpdateEndProcess();
 	}
 
 	public override void OnStartBattle()
@@ -93,13 +96,17 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		//base.OnLoadedMap();
 	}
 
+	System.DateTime _startDateTime;
 	public override void OnSelectedNodeWarLevel(int level)
 	{
+		_startDateTime = System.DateTime.Now;
+
 		Debug.LogFormat("Select Level = {0}", level);
 		
 		if (_selectedNodeWarTableData == null)
 		{
 			_selectedNodeWarTableData = TableDataManager.instance.FindNodeWarTableData(level);
+			_challengeMode = (level > PlayerData.instance.nodeWarClearLevel);
 
 			// SpawnTable은 그냥 쓰면 안되고 여기서 현재 레벨에 필요한 몬스터들만 추려서 따로 가지고 있어야한다.
 			// 먼저 루프 한번 돌면서 fixedLevel이 같은 것들을 먼저 리스트에 담고
@@ -589,6 +596,49 @@ public class NodeWarProcessor : BattleModeProcessorBase
 
 			// 도착지점 프리팹도 만들어낸다.
 			BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.nodeWarEndSafeAreaPrefab, EndSafeAreaPosition, Quaternion.identity);
+
+			// 챕터 클리어 했을때와 비슷하게 처리.
+			LobbyCanvas.instance.battlePauseButton.interactable = false;
+			_endProcess = true;
+			_endProcessWaitRemainTime = 0.5f;
+
+			// 결과처리에 장비드랍이 항상 포함된다.
+			PrepareDropProcessor();
+		}
+	}
+
+	DropProcessor _cachedDropProcessor;
+	void PrepareDropProcessor()
+	{
+		// 드랍 아이디 뜯기는걸 방지하기 위해 레벨로부터 아이디를 뽑아내기로 한다.
+		int dropIndex = (_selectedNodeWarTableData.level - 1) / 50;
+
+		// 부스트 중이라면 한단계 업
+		if (PlayerData.instance.nodeWarBoostRemainCount > 0)
+			dropIndex += 1;
+
+		// 오리진 박스와 마찬가지로 먼저 드랍프로세서부터 만들어야한다.
+		string dropId = "";
+		switch (dropIndex)
+		{
+			case 0: dropId = "Shemwkdt"; break;
+			case 1: dropId = "Shemwkdu"; break;
+			case 2: dropId = "Shemwkdv"; break;
+			default: dropId = "Shemwkdw"; break;
+		}
+		_cachedDropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, dropId, "", true, true);
+		if (CheatingListener.detectedCheatTable)
+			return;
+
+		// 연출 끝나고 나올 결과창에서 아이콘이 느리게 보이는걸 방지하기 위해 아이콘의 프리로드를 진행한다.
+		List<ObscuredString> listDropItemId = DropManager.instance.GetLobbyDropItemInfo();
+		for (int i = 0; i < listDropItemId.Count; ++i)
+		{
+			EquipTableData equipTableData = TableDataManager.instance.FindEquipTableData(listDropItemId[i]);
+			if (equipTableData == null)
+				continue;
+
+			AddressableAssetLoadManager.GetAddressableSprite(equipTableData.shotAddress, "Icon", null);
 		}
 	}
 
@@ -633,9 +683,9 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		// 여기서 인풋은 막되
 		LobbyCanvas.instance.battlePauseButton.interactable = false;
 
-		// 드랍템이 없기 때문에 바로 endProcess를 진행하면 된다.
-		//_endProcess = true;
-		//_endProcessWaitRemainTime = 2.0f;
+		// 챕터에서 했을때와 비슷하게 처리. 패킷 전달시간이 없다보니 1초 더 늘려둔다.
+		_endProcess = true;
+		_endProcessWaitRemainTime = 3.0f;
 	}
 
 	public override void OnDieMonster(MonsterActor monsterActor)
@@ -655,6 +705,110 @@ public class NodeWarProcessor : BattleModeProcessorBase
 				_dicAliveMonsterCount[monsterActor.actorId] -= 1;
 		}
 	}
+
+	#region EndGame
+	bool _endProcess = false;
+	float _endProcessWaitRemainTime = 0.0f;
+	void UpdateEndProcess()
+	{
+		if (_endProcess == false)
+			return;
+
+		if (_endProcessWaitRemainTime > 0.0f)
+		{
+			_endProcessWaitRemainTime -= Time.deltaTime;
+			if (_endProcessWaitRemainTime <= 0.0f)
+				_endProcessWaitRemainTime = 0.0f;
+			return;
+		}
+
+		if (CheatingListener.detectedCheatTable)
+		{
+			_endProcess = false;
+			return;
+		}
+
+		bool clear = false;
+		if (BattleInstanceManager.instance.playerActor.actorStatus.IsDie() == false)
+		{
+			HitObject.EnableRigidbodyAndCollider(false, null, BattleInstanceManager.instance.playerActor.GetCollider());
+			if (_phase == ePhase.Success)
+				clear = true;
+		}
+
+		if (clear)
+		{
+			PlayFabApiManager.instance.RequestEndNodeWar(clear, _selectedNodeWarTableData.level, DropManager.instance.GetLobbyDropItemInfo(), (result, itemGrantString) =>
+			{
+				// 성공시에는 바로 결과창을 띄우는게 아니라 연출처리 하고 결과창을 띄워야한다.
+				UIInstanceManager.instance.ShowCanvasAsync("RandomBoxScreenCanvas", () =>
+				{
+					RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.NodeWar, _cachedDropProcessor, 0, () =>
+					{
+						// 연출이 끝나면 원래 띄워야할 NodeWarResultCanvas를 보여주면 된다.
+						UIInstanceManager.instance.ShowCanvasAsync("NodeWarResultCanvas", () =>
+						{
+							NodeWarResultCanvas.instance.RefreshInfo(true, _selectedNodeWarTableData, _challengeMode, itemGrantString);
+							OnRecvEndNodeWar(result, itemGrantString);
+						});
+					});
+				});
+			});
+		}
+		else
+		{
+			PlayFabApiManager.instance.RequestCancelNodeWar();
+			UIInstanceManager.instance.ShowCanvasAsync("NodeWarResultCanvas", () =>
+			{
+				NodeWarResultCanvas.instance.RefreshInfo(false, _selectedNodeWarTableData, _challengeMode, "");
+			});
+		}
+
+		_endProcess = false;
+	}
+
+	void OnRecvEndNodeWar(bool clear, string itemGrantString)
+	{
+		// 반복클리어냐 아니냐에 따라 결과를 나누면 된다.
+		int addDia = 0;
+		int addGold = 0;
+		if (clear)
+		{
+			if (_challengeMode)
+			{
+				PlayerData.instance.nodeWarClearLevel = _selectedNodeWarTableData.level;
+				addDia += _selectedNodeWarTableData.firstRewardDiamond;
+				addGold += _selectedNodeWarTableData.firstRewardGold;
+			}
+
+			PlayerData.instance.nodeWarCurrentLevel = _selectedNodeWarTableData.level;
+			int rate = 1;
+			if (PlayerData.instance.nodeWarBoostRemainCount > 0)
+			{
+				PlayerData.instance.nodeWarBoostRemainCount -= 1;
+				rate = 3;
+			}
+			addGold += (_selectedNodeWarTableData.repeatRewardGold * rate);
+		}
+
+		CurrencyData.instance.gold += addGold;
+		CurrencyData.instance.dia += addDia;
+
+		if (itemGrantString != "")
+			TimeSpaceData.instance.OnRecvItemGrantResult(itemGrantString, false);
+
+		// 클리어 했다면 시간 체크 한번 해본다. 아무리 빨라도 30초 안에 한거면 뭔가 이상한거다.
+		if (clear)
+		{
+			System.TimeSpan timeSpan = System.DateTime.Now - _startDateTime;
+			bool sus = false;
+			if (timeSpan < System.TimeSpan.FromSeconds(30))
+				sus = true;
+			if (sus)
+				PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.FastNodeWar, true, (int)timeSpan.TotalSeconds);
+		}
+	}
+	#endregion
 
 	public override bool IsAutoPlay()
 	{

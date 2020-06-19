@@ -37,7 +37,7 @@ public class ToastCanvas : MonoBehaviour
 	{
 		if (_showRemainTime > 0.0f)
 		{
-			_showRemainTime -= Time.deltaTime;
+			_showRemainTime -= Time.unscaledDeltaTime;
 			canvasGroup.alpha = Mathf.Min(_maxAlpha, _showRemainTime * 2.0f);
 			if (_showRemainTime <= 0.0f)
 			{

@@ -31,6 +31,8 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 	void OnDisable()
 	{
 		buttonRootObject.SetActive(false);
+
+		// 6각버튼 애니메이션 끝나고나서 알람 느낌표가 보여야 자연스러워서 애니하고나서 Tween Complete 이벤트로 켜게 되어있다. 그래서 OnDisable때마다 다시 꺼놔야한다.
 		alarmRootTransform.gameObject.SetActive(false);
 	}
 

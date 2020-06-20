@@ -142,7 +142,7 @@ public class NodeWarResultCanvas : MonoBehaviour
 					PlayFabApiManager.instance.RequestDownNodeWarLevel(() =>
 					{
 						PlayerData.instance.nodeWarCurrentLevel -= 1;
-						ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_"), 2.0f);
+						ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarLevelDownToast"), 2.0f);
 					});
 				});
 			}
@@ -229,7 +229,7 @@ public class NodeWarResultCanvas : MonoBehaviour
 		if (_boostApplied)
 		{
 			yield return new WaitForSecondsRealtime(0.3f);
-			goldBoostText.text = UIString.instance.GetString("GameUI_NodeWarBoostTimes");   // NodeWarRepeatBoost
+			goldBoostText.text = UIString.instance.GetString("GameUI_NodeWarBoostTimes", BattleInstanceManager.instance.GetCachedGlobalConstantInt("NodeWarRepeatBoost"));
 			goldBoostText.gameObject.SetActive(true);
 		}
 		

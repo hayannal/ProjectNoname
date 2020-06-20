@@ -37,7 +37,7 @@ public class NodeWarBoostInfoCanvas : MonoBehaviour
 		bool enablePurchase = false;
 
 		string text1 = UIString.instance.GetString("GameUI_NodeWarBoostDesc1");
-		string text3 = UIString.instance.GetString("GameUI_NodeWarBoostDesc3"); // RefillBoostCount
+		string text3 = UIString.instance.GetString("GameUI_NodeWarBoostDesc3", BattleInstanceManager.instance.GetCachedGlobalConstantInt("RefillBoostCount"));
 		if (PlayerData.instance.nodeWarBoostRemainCount > 0)
 		{
 			string text2 = string.Format("{0} {1}", UIString.instance.GetString("EquipUI_LeftCountOn"), PlayerData.instance.nodeWarBoostRemainCount);
@@ -62,7 +62,8 @@ public class NodeWarBoostInfoCanvas : MonoBehaviour
 
 	public void OnClickMoreButton()
 	{
-		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, UIString.instance.GetString("GameUI_NodeWarBoostMore"), 300, subTitleTransform, new Vector2(0.0f, -35.0f));	// NodeWarRepeatBoost
+		int boost = BattleInstanceManager.instance.GetCachedGlobalConstantInt("NodeWarRepeatBoost");
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, UIString.instance.GetString("GameUI_NodeWarBoostMore", boost), 300, subTitleTransform, new Vector2(0.0f, -35.0f));
 	}
 
 	int _price;
@@ -79,7 +80,7 @@ public class NodeWarBoostInfoCanvas : MonoBehaviour
 		}
 		else
 		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_"), 2.0f);
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarBoostNotAvailable"), 2.0f);
 			return;
 		}
 
@@ -94,7 +95,7 @@ public class NodeWarBoostInfoCanvas : MonoBehaviour
 
 		gameObject.SetActive(false);
 
-		ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_"), 2.0f);
+		ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarBoostPurchased"), 2.0f);
 		NodeWarGround.instance.RefreshNodeWarBoostApplyState();
 		NodeWarBoostIndicatorCanvas.instance.RefreshAlarmObject();
 	}

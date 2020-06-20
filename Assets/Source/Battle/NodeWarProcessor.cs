@@ -30,7 +30,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	}
 
 	NodeWarTableData _selectedNodeWarTableData;
-	bool _challengeMode;
+	bool _firstClear;
 	ePhase _phase;
 	float _phaseStartTime;
 
@@ -106,7 +106,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		if (_selectedNodeWarTableData == null)
 		{
 			_selectedNodeWarTableData = TableDataManager.instance.FindNodeWarTableData(level);
-			_challengeMode = (level > PlayerData.instance.nodeWarClearLevel);
+			_firstClear = (level > PlayerData.instance.nodeWarClearLevel);
 
 			// SpawnTable은 그냥 쓰면 안되고 여기서 현재 레벨에 필요한 몬스터들만 추려서 따로 가지고 있어야한다.
 			// 먼저 루프 한번 돌면서 fixedLevel이 같은 것들을 먼저 리스트에 담고
@@ -750,7 +750,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 						// 연출이 끝나면 원래 띄워야할 NodeWarResultCanvas를 보여주면 된다.
 						UIInstanceManager.instance.ShowCanvasAsync("NodeWarResultCanvas", () =>
 						{
-							NodeWarResultCanvas.instance.RefreshInfo(true, _selectedNodeWarTableData, _challengeMode, itemGrantString);
+							NodeWarResultCanvas.instance.RefreshInfo(true, _selectedNodeWarTableData, _firstClear, itemGrantString);
 							OnRecvEndNodeWar(result, itemGrantString);
 						});
 					});
@@ -762,7 +762,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			PlayFabApiManager.instance.RequestCancelNodeWar();
 			UIInstanceManager.instance.ShowCanvasAsync("NodeWarResultCanvas", () =>
 			{
-				NodeWarResultCanvas.instance.RefreshInfo(false, _selectedNodeWarTableData, _challengeMode, "");
+				NodeWarResultCanvas.instance.RefreshInfo(false, _selectedNodeWarTableData, _firstClear, "");
 			});
 		}
 
@@ -776,7 +776,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		int addGold = 0;
 		if (clear)
 		{
-			if (_challengeMode)
+			if (_firstClear)
 			{
 				PlayerData.instance.nodeWarClearLevel = _selectedNodeWarTableData.level;
 				addDia += _selectedNodeWarTableData.firstRewardDiamond;

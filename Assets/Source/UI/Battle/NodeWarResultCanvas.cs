@@ -80,14 +80,14 @@ public class NodeWarResultCanvas : MonoBehaviour
 
 	bool _clear = false;
 	NodeWarTableData _currentNodeWarTableData;
-	bool _challengeMode;
+	bool _firstClear;
 	bool _boostApplied;
 	List<ItemInstance> _listGrantItem;
-	public void RefreshInfo(bool clear, NodeWarTableData currentNodeWarTableData, bool challengeMode, string jsonItemGrantResults)
+	public void RefreshInfo(bool clear, NodeWarTableData currentNodeWarTableData, bool firstClear, string jsonItemGrantResults)
 	{
 		_clear = clear;
 		_currentNodeWarTableData = currentNodeWarTableData;
-		_challengeMode = challengeMode;
+		_firstClear = firstClear;
 		_boostApplied = (PlayerData.instance.nodeWarBoostRemainCount > 0);
 
 		levelNumberText.text = string.Format("LEVEL {0}", currentNodeWarTableData.level);
@@ -110,7 +110,7 @@ public class NodeWarResultCanvas : MonoBehaviour
 	{
 		if (_clear)
 		{
-			if (_challengeMode)
+			if (_firstClear)
 			{
 				CurrencyData.eCurrencyType currencyType = CurrencyData.eCurrencyType.Diamond;
 				int amount = _currentNodeWarTableData.firstRewardDiamond;
@@ -143,8 +143,9 @@ public class NodeWarResultCanvas : MonoBehaviour
 	#region NoReward
 	public void OnEventNoReward()
 	{
-		// 보상없음 켜지면 조건에 따라 단계 하락 보여주면서
-		if (_challengeMode == false && _currentNodeWarTableData.level > 1)
+		// 보상없음 켜지면 조건에 따라 단계 하락 보여주면 된다.
+		// 단계 하락은 반복이라고 적힌 레벨을 클리어 할때만 나와야하므로 currentLevel과 비교하면 된다.
+		if (_currentNodeWarTableData.level > 1 && _currentNodeWarTableData.level == PlayerData.instance.nodeWarCurrentLevel)
 		{
 			YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_NodeWarLevelDown"), () =>
 			{

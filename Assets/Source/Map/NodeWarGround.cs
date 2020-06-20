@@ -21,6 +21,7 @@ public class NodeWarGround : MonoBehaviour
 	public Text leftChallengeText;
 	public Text rightLevelText;
 	public Text rightChallengeText;
+	public GameObject alreadyClearedTextObject;
 
 	public GameObject boostSignObject;
 	public GameObject boostAppliedObject;
@@ -88,7 +89,8 @@ public class NodeWarGround : MonoBehaviour
 
 			// 우측은 도전하는 레벨. ClearLevel과 비교해서 처리하면 된다.
 			rightLevelText.text = string.Format("LEVEL {0}", _rightLevel);
-			rightChallengeText.SetLocalizedText(UIString.instance.GetString(_rightLevel > clearLevel ? "GameUI_NodeWarChallenge" : "GameUI_NodeWarRepeat"));
+			rightChallengeText.SetLocalizedText(UIString.instance.GetString("GameUI_NodeWarChallenge"));
+			alreadyClearedTextObject.SetActive(_rightLevel <= clearLevel);
 		}
 
 		splitLineRendererObject.SetActive(!_centerLevel);

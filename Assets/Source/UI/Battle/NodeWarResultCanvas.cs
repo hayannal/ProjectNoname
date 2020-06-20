@@ -217,8 +217,6 @@ public class NodeWarResultCanvas : MonoBehaviour
 	void SetRepeatRewardInfo()
 	{
 		_repeatRewardAmount = _currentNodeWarTableData.repeatRewardGold;
-		if (_boostApplied)
-			_repeatRewardAmount *= BattleInstanceManager.instance.GetCachedGlobalConstantInt("NodeWarRepeatBoost");
 	}
 
 	public void OnEventIncreaseGold()
@@ -242,8 +240,19 @@ public class NodeWarResultCanvas : MonoBehaviour
 			yield return new WaitForSecondsRealtime(0.3f);
 			goldBoostText.text = UIString.instance.GetString("GameUI_NodeWarBoostTimes", BattleInstanceManager.instance.GetCachedGlobalConstantInt("NodeWarRepeatBoost"));
 			goldBoostText.gameObject.SetActive(true);
+
+			yield return new WaitForSecondsRealtime(0.6f);
+			_repeatRewardAmount *= BattleInstanceManager.instance.GetCachedGlobalConstantInt("NodeWarRepeatBoost");
+
+			// 부스트 표시 후 배수만큼 더 올라가게 연출. 3배로 뛰는데 같은 시간이 걸리니 어색해서 조금만 늘려둔다. 느낌나도록.
+			_goldChangeRemainTime = (goldChangeTime + 0.2f);
+			_goldChangeSpeed = (_repeatRewardAmount - _currentGold) / _goldChangeRemainTime;
+			_updateGoldText = true;
+			goldImageTweenAnimation.DORestart();
+			yield return new WaitForSecondsRealtime(goldChangeTime + 0.2f);
 		}
-		
+
+		yield return new WaitForSecondsRealtime(0.2f);
 		itemGroupObject.SetActive(true);
 		StartCoroutine(ItemProcess());
 	}
@@ -296,6 +305,10 @@ public class NodeWarResultCanvas : MonoBehaviour
 
 		itemScrollViewObject.SetActive(true);
 
+		int boostSplitIndex = -1;
+		if (_boostApplied)
+			boostSplitIndex = _listGrantItem.Count - 2;
+
 		for (int i = 0; i < _listGrantItem.Count; ++i)
 		{
 			EquipData newEquipData = new EquipData();
@@ -305,13 +318,14 @@ public class NodeWarResultCanvas : MonoBehaviour
 			EquipCanvasListItem equipCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
 			equipCanvasListItem.Initialize(newEquipData, OnClickListItem);
 			yield return new WaitForSecondsRealtime(0.2f);
-		}
 
-		if (_boostApplied)
-		{
-			itemBoostText.text = UIString.instance.GetString("GameUI_NodeWarBoostPlus");
-			itemBoostText.gameObject.SetActive(true);
-			yield return new WaitForSecondsRealtime(0.3f);
+			if (i == boostSplitIndex)
+			{
+				yield return new WaitForSecondsRealtime(0.1f);
+				itemBoostText.text = UIString.instance.GetString("GameUI_NodeWarBoostPlus");
+				itemBoostText.gameObject.SetActive(true);
+				yield return new WaitForSecondsRealtime(0.6f);
+			}
 		}
 
 		exitGroupObject.SetActive(true);

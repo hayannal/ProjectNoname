@@ -600,7 +600,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			// 챕터 클리어 했을때와 비슷하게 처리.
 			LobbyCanvas.instance.battlePauseButton.interactable = false;
 			_endProcess = true;
-			_endProcessWaitRemainTime = 0.5f;
+			_endProcessWaitRemainTime = 0.2f;
 
 			// 결과처리에 장비드랍이 항상 포함된다.
 			PrepareDropProcessor();
@@ -627,6 +627,8 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			default: dropId = "Shemwkdw"; break;
 		}
 		_cachedDropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, dropId, "", true, true);
+		if (dropIndex != 0)
+			_cachedDropProcessor.AdjustDropRange(3.2f);
 		if (CheatingListener.detectedCheatTable)
 			return;
 

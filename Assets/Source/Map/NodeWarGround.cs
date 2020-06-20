@@ -138,7 +138,9 @@ public class NodeWarGround : MonoBehaviour
 
 	public void RefreshNodeWarBoostApplyState()
 	{
-		boostAppliedObject.SetActive(PlayerData.instance.nodeWarBoostRemainCount > 0);
+		//boostAppliedObject.SetActive(PlayerData.instance.nodeWarBoostRemainCount > 0);
+		// 보여지는 정보량이 많아서 숨기기로 한다.
+		boostAppliedObject.SetActive(false);
 	}
 
 	void Update()

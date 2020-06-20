@@ -40,7 +40,7 @@ public class NodeWarBoostInfoCanvas : MonoBehaviour
 		string text3 = UIString.instance.GetString("GameUI_NodeWarBoostDesc3", BattleInstanceManager.instance.GetCachedGlobalConstantInt("RefillBoostCount"));
 		if (PlayerData.instance.nodeWarBoostRemainCount > 0)
 		{
-			string text2 = string.Format("{0} {1}", UIString.instance.GetString("EquipUI_LeftCountOn"), PlayerData.instance.nodeWarBoostRemainCount);
+			string text2 = string.Format("{0} <color=#30BEE3>{1}</color>", UIString.instance.GetString("EquipUI_LeftCountOn"), PlayerData.instance.nodeWarBoostRemainCount);
 			messageText.SetLocalizedText(string.Format("{0}\n\n{1}\n{2}", text1, text2, text3));
 			enablePurchase = (PlayerData.instance.nodeWarBoostRemainCount <= 3);
 		}

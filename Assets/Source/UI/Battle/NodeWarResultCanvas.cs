@@ -13,6 +13,8 @@ public class NodeWarResultCanvas : MonoBehaviour
 	public Text levelNumberText;
 	public Text resultText;
 
+	public GameObject noRewardGroupObject;
+
 	public GameObject firstRewardGroupObject;
 	public Text firstRewardTypeText;
 	public GameObject[] firstRewardTypeObjectList;
@@ -132,21 +134,30 @@ public class NodeWarResultCanvas : MonoBehaviour
 		}
 		else
 		{
-			// 실패했다면 바로 ExitGroup쪽으로 넘어가야한다.
-			exitGroupObject.SetActive(true);
-
-			if (_challengeMode == false && _currentNodeWarTableData.level > 1)
-			{
-				YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_NodeWarLevelDown"), () =>
-				{
-					PlayFabApiManager.instance.RequestDownNodeWarLevel(() =>
-					{
-						PlayerData.instance.nodeWarCurrentLevel -= 1;
-						ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarLevelDownToast"), 2.0f);
-					});
-				});
-			}
+			// 실패했다면 보상 없음 표시를 켜고
+			noRewardGroupObject.SetActive(true);
 		}
+	}
+	#endregion
+
+	#region NoReward
+	public void OnEventNoReward()
+	{
+		// 보상없음 켜지면 조건에 따라 단계 하락 보여주면서
+		if (_challengeMode == false && _currentNodeWarTableData.level > 1)
+		{
+			YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_NodeWarLevelDown"), () =>
+			{
+				PlayFabApiManager.instance.RequestDownNodeWarLevel(() =>
+				{
+					PlayerData.instance.nodeWarCurrentLevel -= 1;
+					ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarLevelDownToast"), 2.0f);
+				});
+			});
+		}
+
+		// 나가기 버튼 보여준다.
+		exitGroupObject.SetActive(true);
 	}
 	#endregion
 

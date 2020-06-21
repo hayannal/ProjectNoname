@@ -53,6 +53,7 @@ public class TableDataManager : MonoBehaviour
 	public WingPowerTable wingPowerTable;
 	public NodeWarTable nodeWarTable;
 	public NodeWarSpawnTable nodeWarSpawnTable;
+	public NodeWarTrapTable nodeWarTrapTable;
 
 	void Awake()
 	{

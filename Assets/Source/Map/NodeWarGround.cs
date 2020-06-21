@@ -27,7 +27,7 @@ public class NodeWarGround : MonoBehaviour
 	public GameObject boostAppliedObject;
 
 	public GameObject[] monsterPrefabList;
-	public GameObject trapPrefab;
+	public GameObject[] trapPrefabList;
 	public GameObject soulPrefab;
 	public GameObject soulGetEffectPrefab;
 	public GameObject healOrbPrefab;
@@ -439,6 +439,17 @@ public class NodeWarGround : MonoBehaviour
 				return monsterPrefabList[i];
 		}
 		Debug.LogErrorFormat("Not found NodeWar Monster Prefab. monsterId = {0}", monsterId);
+		return null;
+	}
+
+	public GameObject GetTrapPrefab(string trapName)
+	{
+		for (int i = 0; i < trapPrefabList.Length; ++i)
+		{
+			if (trapPrefabList[i].name == trapName)
+				return trapPrefabList[i];
+		}
+		Debug.LogErrorFormat("Not found NodeWar Trap Prefab. trapName = {0}", trapName);
 		return null;
 	}
 

@@ -112,8 +112,6 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			// 먼저 루프 한번 돌면서 fixedLevel이 같은 것들을 먼저 리스트에 담고
 			for (int i = 0; i < TableDataManager.instance.nodeWarSpawnTable.dataArray.Length; ++i)
 			{
-				if (TableDataManager.instance.nodeWarSpawnTable.dataArray[i].trap)
-					continue;
 				if (TableDataManager.instance.nodeWarSpawnTable.dataArray[i].fixedLevel != level)
 					continue;
 				_listCurrentNodeWarSpawnTableData.Add(TableDataManager.instance.nodeWarSpawnTable.dataArray[i]);
@@ -124,8 +122,6 @@ public class NodeWarProcessor : BattleModeProcessorBase
 				int oneLevel = level % 10;
 				for (int i = 0; i < TableDataManager.instance.nodeWarSpawnTable.dataArray.Length; ++i)
 				{
-					if (TableDataManager.instance.nodeWarSpawnTable.dataArray[i].trap)
-						continue;
 					if (TableDataManager.instance.nodeWarSpawnTable.dataArray[i].fixedLevel != 0)
 						continue;
 					if (TableDataManager.instance.nodeWarSpawnTable.dataArray[i].oneLevel != oneLevel)
@@ -138,34 +134,40 @@ public class NodeWarProcessor : BattleModeProcessorBase
 				_listCurrentSpawnRemainTime.Add(0.0f);
 			_totalAliveMonsterCount = 0;
 
-			// Trap 정보도 SpawnTable에서 가져와서 써야한다.
+			// Trap 정보도 가져온다.
 			bool findTrapInfo = false;
-			for (int i = 0; i < TableDataManager.instance.nodeWarSpawnTable.dataArray.Length; ++i)
+			for (int i = 0; i < TableDataManager.instance.nodeWarTrapTable.dataArray.Length; ++i)
 			{
-				if (TableDataManager.instance.nodeWarSpawnTable.dataArray[i].trap == false)
+				if (TableDataManager.instance.nodeWarTrapTable.dataArray[i].fixedLevel != level)
 					continue;
-				if (TableDataManager.instance.nodeWarSpawnTable.dataArray[i].fixedLevel != level)
+				GameObject trapPrefab = NodeWarGround.instance.GetTrapPrefab(TableDataManager.instance.nodeWarTrapTable.dataArray[i].trapId);
+				if (trapPrefab == null)
 					continue;
 				findTrapInfo = true;
-				_trapFirstWaitingRemainTime = TableDataManager.instance.nodeWarSpawnTable.dataArray[i].firstWaiting;
-				_trapSpawnDelayMin = TableDataManager.instance.nodeWarSpawnTable.dataArray[i].minPeriod;
-				_trapSpawnDelayMax = TableDataManager.instance.nodeWarSpawnTable.dataArray[i].maxPeriod;
+				_trapFirstWaitingRemainTime = TableDataManager.instance.nodeWarTrapTable.dataArray[i].firstWaiting;
+				_trapSpawnDelayMin = TableDataManager.instance.nodeWarTrapTable.dataArray[i].minPeriodStepOne;
+				_trapSpawnDelayMax = TableDataManager.instance.nodeWarTrapTable.dataArray[i].maxPeriodStepOne;
+				_trapSpawnDelayStep2Min = TableDataManager.instance.nodeWarTrapTable.dataArray[i].minPeriodStepTwo;
+				_trapSpawnDelayStep2Max = TableDataManager.instance.nodeWarTrapTable.dataArray[i].maxPeriodStepTwo;
 			}
 			if (findTrapInfo == false)
 			{
 				int oneLevel = level % 10;
-				for (int i = 0; i < TableDataManager.instance.nodeWarSpawnTable.dataArray.Length; ++i)
+				for (int i = 0; i < TableDataManager.instance.nodeWarTrapTable.dataArray.Length; ++i)
 				{
-					if (TableDataManager.instance.nodeWarSpawnTable.dataArray[i].trap == false)
+					if (TableDataManager.instance.nodeWarTrapTable.dataArray[i].fixedLevel != 0)
 						continue;
-					if (TableDataManager.instance.nodeWarSpawnTable.dataArray[i].fixedLevel != 0)
+					if (TableDataManager.instance.nodeWarTrapTable.dataArray[i].oneLevel != oneLevel)
 						continue;
-					if (TableDataManager.instance.nodeWarSpawnTable.dataArray[i].oneLevel != oneLevel)
+					GameObject trapPrefab = NodeWarGround.instance.GetTrapPrefab(TableDataManager.instance.nodeWarTrapTable.dataArray[i].trapId);
+					if (trapPrefab == null)
 						continue;
 					findTrapInfo = true;
-					_trapFirstWaitingRemainTime = TableDataManager.instance.nodeWarSpawnTable.dataArray[i].firstWaiting;
-					_trapSpawnDelayMin = TableDataManager.instance.nodeWarSpawnTable.dataArray[i].minPeriod;
-					_trapSpawnDelayMax = TableDataManager.instance.nodeWarSpawnTable.dataArray[i].maxPeriod;
+					_trapFirstWaitingRemainTime = TableDataManager.instance.nodeWarTrapTable.dataArray[i].firstWaiting;
+					_trapSpawnDelayMin = TableDataManager.instance.nodeWarTrapTable.dataArray[i].minPeriodStepOne;
+					_trapSpawnDelayMax = TableDataManager.instance.nodeWarTrapTable.dataArray[i].maxPeriodStepOne;
+					_trapSpawnDelayStep2Min = TableDataManager.instance.nodeWarTrapTable.dataArray[i].minPeriodStepTwo;
+					_trapSpawnDelayStep2Max = TableDataManager.instance.nodeWarTrapTable.dataArray[i].maxPeriodStepTwo;
 				}
 			}
 			_disableTrap = !findTrapInfo;
@@ -289,9 +291,12 @@ public class NodeWarProcessor : BattleModeProcessorBase
 
 	#region Trap
 	bool _disableTrap = false;
+	GameObject _trapPrefab;
 	float _trapSpawnRemainTime;
 	float _trapSpawnDelayMin = 3.0f;
 	float _trapSpawnDelayMax = 7.0f;
+	float _trapSpawnDelayStep2Min = 3.0f;
+	float _trapSpawnDelayStep2Max = 7.0f;
 	float _trapFirstWaitingRemainTime;
 	void UpdateTrap()
 	{
@@ -314,8 +319,11 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			Vector3 resultPosition = Vector3.zero;
 			if (GetTrapSpawnPosition(ref resultPosition))
 			{
-				BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.trapPrefab, resultPosition, Quaternion.identity);
-				_trapSpawnRemainTime += Random.Range(_trapSpawnDelayMin, _trapSpawnDelayMax);
+				BattleInstanceManager.instance.GetCachedObject(_trapPrefab, resultPosition, Quaternion.identity);
+				if (_phase == ePhase.FindSoul)
+					_trapSpawnRemainTime += Random.Range(_trapSpawnDelayMin, _trapSpawnDelayMax);
+				else
+					_trapSpawnRemainTime += Random.Range(_trapSpawnDelayStep2Min, _trapSpawnDelayStep2Max);
 			}
 			else
 			{
@@ -465,6 +473,9 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			_phase = ePhase.FindPortal;
 			_phaseStartTime = Time.time;
 			BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarActivateMovePannel"), 3.5f);
+
+			// 두번째 Step으로 넘어갈때 Trap 생성 딜레이를 재갱신 해둔다.
+			_trapSpawnRemainTime = Random.Range(_trapSpawnDelayStep2Min, _trapSpawnDelayStep2Max);
 		}
 		else
 		{

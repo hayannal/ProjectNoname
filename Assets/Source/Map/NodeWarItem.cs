@@ -19,6 +19,7 @@ public class NodeWarItem : MonoBehaviour
 	public GameObject mainObject;
 	public Transform areaEffectTransform;
 	public ParticleSystemRenderer particleSystemRenderer;
+	public Transform autoGetEffectTranform;
 
 	// 몬스터를 잡아서 얻어야하므로 DropObject에서 점프 코드만 가져와서 쓴다.
 	[Space(10)]
@@ -63,6 +64,7 @@ public class NodeWarItem : MonoBehaviour
 	void Update()
 	{
 		UpdateJump();
+		UpdateAutoGet();
 		UpdateDistance();
 		UpdateAlpha();
 	}
@@ -70,7 +72,7 @@ public class NodeWarItem : MonoBehaviour
 	const float ValidDistance = 30.0f;
 	void UpdateDistance()
 	{
-		if (_jumpRemainTime > 0.0f)
+		if (useJumpAnimation)
 			return;
 		if (_waitEndAnimation)
 			return;
@@ -92,6 +94,8 @@ public class NodeWarItem : MonoBehaviour
 	float _alphaRemainTime;
 	void UpdateAlpha()
 	{
+		if (particleSystemRenderer == null)
+			return;
 		if (_waitEndAnimation == false)
 			return;
 		if (_alphaRemainTime > 0.0f)
@@ -130,6 +134,7 @@ public class NodeWarItem : MonoBehaviour
 			if (_lastJump)
 			{
 				_jumpRemainTime = 0.0f;
+				_autoGetRemainTime = 0.5f;
 			}
 			else
 			{
@@ -140,14 +145,30 @@ public class NodeWarItem : MonoBehaviour
 		}
 	}
 
+	float _autoGetRemainTime = 0.0f;
+	void UpdateAutoGet()
+	{
+		if (_autoGetRemainTime > 0.0f)
+		{
+			_autoGetRemainTime -= Time.deltaTime;
+			if (_autoGetRemainTime <= 0.0f)
+			{
+				_autoGetRemainTime = 0.0f;
+				BattleManager.instance.OnGetSoul(cachedTransform.position);
+				gameObject.SetActive(false);
+			}
+		}
+	}
+
 	bool _waitEndAnimation;
 	void GetDropObject()
 	{
 		switch (itemType)
 		{
 			case eItemType.Soul:
-				BattleManager.instance.OnGetSoul(cachedTransform.position);
-				_waitEndAnimation = true;
+				// 마나는 자동습득 될테니 처리하지 않아도 된다.
+				//BattleManager.instance.OnGetSoul(cachedTransform.position);
+				//_waitEndAnimation = true;
 				break;
 			case eItemType.HealOrb:
 				BattleManager.instance.OnGetHealOrb(cachedTransform.position);

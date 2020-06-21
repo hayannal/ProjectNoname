@@ -313,6 +313,18 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			return;
 		}
 
+		// 0.0f일때 나오지 않게 하는 처리.
+		if (_phase == ePhase.FindSoul)
+		{
+			if (_trapSpawnDelayMin == 0.0f && _trapSpawnDelayMax == 0.0f)
+				return;
+		}
+		else
+		{
+			if (_trapSpawnDelayStep2Min == 0.0f && _trapSpawnDelayStep2Max == 0.0f)
+				return;
+		}
+
 		_trapSpawnRemainTime -= Time.deltaTime;
 		if (_trapSpawnRemainTime < 0.0f)
 		{

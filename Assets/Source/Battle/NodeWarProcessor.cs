@@ -42,7 +42,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		UpdateSpawnMonster();
 		UpdateMonsterDistance();
 		UpdateTrap();
-		UpdateSpawnSoul();
+		//UpdateSpawnSoul();
 		UpdateSpawnHealOrb();
 		UpdateSpawnBoostOrb();
 		UpdateExit();
@@ -485,8 +485,8 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		if (BattleInstanceManager.instance.playerActor.actionController.mecanimState.IsState((int)eMecanimState.Move) == false)
 			return;
 
-		if (_listSoulGetPosition.Count == 0)
-			return;
+		//if (_listSoulGetPosition.Count == 0)
+		//	return;
 
 		_healOrbSpawnRemainTime -= Time.deltaTime;
 		if (_healOrbSpawnRemainTime < 0.0f)
@@ -519,8 +519,8 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		if (BattleInstanceManager.instance.playerActor.actionController.mecanimState.IsState((int)eMecanimState.Move) == false)
 			return;
 
-		if (_listSoulGetPosition.Count == 0)
-			return;
+		//if (_listSoulGetPosition.Count == 0)
+		//	return;
 
 		_boostOrbSpawnRemainTime -= Time.deltaTime;
 		if (_boostOrbSpawnRemainTime < 0.0f)
@@ -692,6 +692,15 @@ public class NodeWarProcessor : BattleModeProcessorBase
 
 	public override void OnDieMonster(MonsterActor monsterActor)
 	{
+		// 몬스터가 마나 파편을 드랍해야하는데 원래라면 DropProcessor를 사용해야 정상일테지만, 이걸 쓰려면 DropId도 만들어야한다.
+		// 어차피 골드를 줄줄이 드랍하는 것도 아니고 마나파편 오브젝트 하나만 드랍하는거니 NodeWarProcessor에서 처리하는게 나을거 같아서 여기서 직접 처리한다.
+		if (Random.value <= BattleInstanceManager.instance.GetCachedGlobalConstantFloat("NodeWarManaDrop"))
+		{
+			Vector3 dropPosition = monsterActor.cachedTransform.position;
+			dropPosition.y = 0.0f;
+			BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.soulPrefab, dropPosition, Quaternion.identity);
+		}
+
 		NodeWarSpawnTableData nodeWarSpawnTableData = TableDataManager.instance.FindNodeWarSpawnTableData(monsterActor.actorId);
 		if (nodeWarSpawnTableData == null)
 			return;

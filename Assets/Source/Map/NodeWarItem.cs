@@ -20,6 +20,17 @@ public class NodeWarItem : MonoBehaviour
 	public Transform areaEffectTransform;
 	public ParticleSystemRenderer particleSystemRenderer;
 
+	// 몬스터를 잡아서 얻어야하므로 DropObject에서 점프 코드만 가져와서 쓴다.
+	[Space(10)]
+	public bool useJumpAnimation;
+	public Transform jumpTransform;
+	public float jumpPower = 1.0f;
+	public float jumpStartY = 0.5f;
+	public float jumpEndY = 0.0f;
+	public float jumpDuration = 1.0f;
+	public float secondJumpPower = 0.5f;
+	public float secondJumpDuration = 0.5f;
+
 	static int s_particleColorPropertyID;
 	Color _particleDefaultColor;
 
@@ -31,6 +42,8 @@ public class NodeWarItem : MonoBehaviour
 			areaEffectTransform.localScale = Vector3.one;
 		if (particleSystemRenderer != null && _started)
 			particleSystemRenderer.material.SetColor(s_particleColorPropertyID, _particleDefaultColor);
+
+		InitializeJump();
 	}
 
 	void OnDisable()
@@ -49,6 +62,7 @@ public class NodeWarItem : MonoBehaviour
 
 	void Update()
 	{
+		UpdateJump();
 		UpdateDistance();
 		UpdateAlpha();
 	}
@@ -56,6 +70,8 @@ public class NodeWarItem : MonoBehaviour
 	const float ValidDistance = 30.0f;
 	void UpdateDistance()
 	{
+		if (_jumpRemainTime > 0.0f)
+			return;
 		if (_waitEndAnimation)
 			return;
 
@@ -85,6 +101,42 @@ public class NodeWarItem : MonoBehaviour
 				_alphaRemainTime = 0.0f;
 			float ratio = _alphaRemainTime / AlphaTime;
 			particleSystemRenderer.material.SetColor(s_particleColorPropertyID, new Color(_particleDefaultColor.r, _particleDefaultColor.g, _particleDefaultColor.b, _particleDefaultColor.a * ratio));
+		}
+	}
+
+	void InitializeJump()
+	{
+		if (useJumpAnimation == false)
+			return;
+
+		jumpTransform.localPosition = new Vector3(0.0f, jumpStartY, 0.0f);
+		jumpTransform.DOLocalJump(new Vector3(0.0f, jumpEndY, 0.0f), jumpPower, 1, jumpDuration).SetEase(Ease.Linear);
+		_lastJump = (secondJumpPower == 0.0f || secondJumpDuration == 0.0f) ? true : false;
+		_jumpRemainTime = jumpDuration;
+	}
+
+	float _jumpRemainTime = 0.0f;
+	Vector3 _rotateEuler;
+	bool _lastJump = false;
+	void UpdateJump()
+	{
+		if (_jumpRemainTime <= 0.0f)
+			return;
+
+		_jumpRemainTime -= Time.deltaTime;
+
+		if (_jumpRemainTime <= 0.0f)
+		{
+			if (_lastJump)
+			{
+				_jumpRemainTime = 0.0f;
+			}
+			else
+			{
+				jumpTransform.DOLocalJump(new Vector3(0.0f, jumpEndY, 0.0f), secondJumpPower, 1, secondJumpDuration).SetEase(Ease.Linear);
+				_jumpRemainTime = secondJumpDuration;
+				_lastJump = true;
+			}
 		}
 	}
 

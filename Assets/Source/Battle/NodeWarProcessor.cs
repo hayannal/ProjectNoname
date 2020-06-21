@@ -276,7 +276,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		}
 		if (findMonsterActor != null)
 		{
-			findMonsterActor.actorStatus.SetHpRatio(0.0f);
+			//findMonsterActor.actorStatus.SetHpRatio(0.0f);
 			findMonsterActor.DisableForNodeWar();
 			findMonsterActor.gameObject.SetActive(false);
 		}
@@ -720,14 +720,22 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		// 거리가 멀땐 드랍확률을 조금 줄여준다.
 		if (_phase == ePhase.FindSoul)
 		{
-			float rate = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("NodeWarManaDrop");
-			Vector3 dropPosition = monsterActor.cachedTransform.position;
-			dropPosition.y = 0.0f;
-			Vector3 diff = BattleInstanceManager.instance.playerActor.cachedTransform.position - dropPosition;
-			if (diff.sqrMagnitude > (SpawnDistance * 0.5f))
-				rate *= 0.5f;
-			if (Random.value <= rate)
-				BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.soulPrefab, dropPosition, Quaternion.identity);
+			if (monsterActor.actorStatus.GetHP() > 0.0f)
+			{
+				// 거리에 의해 죽은거라면 hp가 0보다 클 것이다.
+				monsterActor.actorStatus.SetHpRatio(0.0f);
+			}
+			else
+			{
+				float rate = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("NodeWarManaDrop");
+				Vector3 dropPosition = monsterActor.cachedTransform.position;
+				dropPosition.y = 0.0f;
+				Vector3 diff = BattleInstanceManager.instance.playerActor.cachedTransform.position - dropPosition;
+				if (diff.sqrMagnitude > (SpawnDistance * 0.5f))
+					rate *= 0.5f;
+				if (Random.value <= rate)
+					BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.soulPrefab, dropPosition, Quaternion.identity);
+			}
 		}
 
 		NodeWarSpawnTableData nodeWarSpawnTableData = TableDataManager.instance.FindNodeWarSpawnTableData(monsterActor.actorId);

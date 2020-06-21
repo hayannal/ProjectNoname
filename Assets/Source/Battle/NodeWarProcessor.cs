@@ -71,9 +71,9 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		playerActor.skillProcessor.AddLevelPack("AtkBetter", false, 0);
 		playerActor.skillProcessor.AddLevelPack("AtkBetter", false, 0);
 		playerActor.skillProcessor.AddLevelPack("AtkBetter", false, 0);
-		playerActor.skillProcessor.AddLevelPack("AtkSpeedBetter", false, 0);
-		playerActor.skillProcessor.AddLevelPack("AtkSpeedBetter", false, 0);
-		playerActor.skillProcessor.AddLevelPack("AtkSpeedBetter", false, 0);
+		playerActor.skillProcessor.AddLevelPack("AtkSpeedBest", false, 0);
+		playerActor.skillProcessor.AddLevelPack("AtkSpeedBest", false, 0);
+		playerActor.skillProcessor.AddLevelPack("AtkSpeedBest", false, 0);
 		playerActor.skillProcessor.AddLevelPack("CritBetter", false, 0);
 		playerActor.skillProcessor.AddLevelPack("CritBetter", false, 0);
 		playerActor.skillProcessor.AddLevelPack("CritBetter", false, 0);
@@ -476,7 +476,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	#region Heal Orb
 	float _healOrbSpawnRemainTime;
 	// 마나에 비해선 천처히 나와야한다.
-	const float HealOrbSpawnDelay = 7.0f;
+	const float HealOrbSpawnDelay = 5.5f;
 	void UpdateSpawnHealOrb()
 	{
 		if (_phase == ePhase.Success)
@@ -510,7 +510,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 
 	#region Boost Orb
 	float _boostOrbSpawnRemainTime;
-	const float BoostOrbSpawnDelay = 5.0f;
+	const float BoostOrbSpawnDelay = 4.0f;
 	void UpdateSpawnBoostOrb()
 	{
 		if (_phase == ePhase.WaitActivePortal || _phase == ePhase.Exit || _phase == ePhase.Success)

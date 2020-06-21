@@ -727,7 +727,8 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			}
 			else
 			{
-				float rate = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("NodeWarManaDrop");
+				// NodeWarManaDrop
+				float rate = 0.05f;
 				Vector3 dropPosition = monsterActor.cachedTransform.position;
 				dropPosition.y = 0.0f;
 				Vector3 diff = BattleInstanceManager.instance.playerActor.cachedTransform.position - dropPosition;

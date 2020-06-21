@@ -140,8 +140,8 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			{
 				if (TableDataManager.instance.nodeWarTrapTable.dataArray[i].fixedLevel != level)
 					continue;
-				GameObject trapPrefab = NodeWarGround.instance.GetTrapPrefab(TableDataManager.instance.nodeWarTrapTable.dataArray[i].trapId);
-				if (trapPrefab == null)
+				_trapPrefab = NodeWarGround.instance.GetTrapPrefab(TableDataManager.instance.nodeWarTrapTable.dataArray[i].trapId);
+				if (_trapPrefab == null)
 					continue;
 				findTrapInfo = true;
 				_trapFirstWaitingRemainTime = TableDataManager.instance.nodeWarTrapTable.dataArray[i].firstWaiting;
@@ -159,8 +159,8 @@ public class NodeWarProcessor : BattleModeProcessorBase
 						continue;
 					if (TableDataManager.instance.nodeWarTrapTable.dataArray[i].oneLevel != oneLevel)
 						continue;
-					GameObject trapPrefab = NodeWarGround.instance.GetTrapPrefab(TableDataManager.instance.nodeWarTrapTable.dataArray[i].trapId);
-					if (trapPrefab == null)
+					_trapPrefab = NodeWarGround.instance.GetTrapPrefab(TableDataManager.instance.nodeWarTrapTable.dataArray[i].trapId);
+					if (_trapPrefab == null)
 						continue;
 					findTrapInfo = true;
 					_trapFirstWaitingRemainTime = TableDataManager.instance.nodeWarTrapTable.dataArray[i].firstWaiting;

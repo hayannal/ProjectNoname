@@ -37,6 +37,8 @@ public class NodeWarItem : MonoBehaviour
 
 	void OnEnable()
 	{
+		OnInitialized(this);
+
 		if (mainObject != null)
 			mainObject.SetActive(true);
 		if (areaEffectTransform != null)
@@ -50,6 +52,8 @@ public class NodeWarItem : MonoBehaviour
 	void OnDisable()
 	{
 		_waitEndAnimation = false;
+
+		OnFinalized(this);
 	}
 
 	bool _started = false;
@@ -198,6 +202,36 @@ public class NodeWarItem : MonoBehaviour
 	void OnCompleteAnimation()
 	{
 		gameObject.SetActive(false);
+	}
+
+
+
+	static List<NodeWarItem> s_listInitializedNodeWarItem;
+	static void OnInitialized(NodeWarItem nodeWarItem)
+	{
+		if (s_listInitializedNodeWarItem == null)
+			s_listInitializedNodeWarItem = new List<NodeWarItem>();
+
+		if (s_listInitializedNodeWarItem.Contains(nodeWarItem) == false)
+			s_listInitializedNodeWarItem.Add(nodeWarItem);
+	}
+
+	static void OnFinalized(NodeWarItem nodeWarItem)
+	{
+		if (s_listInitializedNodeWarItem == null)
+			return;
+
+		s_listInitializedNodeWarItem.Remove(nodeWarItem);
+	}
+
+	public static void DisableAllItem()
+	{
+		if (s_listInitializedNodeWarItem == null)
+			return;
+
+		for (int i = 0; i < s_listInitializedNodeWarItem.Count; ++i)
+			s_listInitializedNodeWarItem[i].gameObject.SetActive(false);
+		s_listInitializedNodeWarItem.Clear();
 	}
 
 

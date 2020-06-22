@@ -248,6 +248,23 @@ public class MonsterActor : Actor
 		BattleInstanceManager.instance.OnFinalizePathFinderAgent(pathFinderController.agent.agentTypeID);
 	}
 
+	public void DieForNodeWar()
+	{
+		// 마법진 발동에 의해 죽는 연출을 해야하는거다.
+		actionController.animator.speed = 0.0f;
+		HitObject.EnableRigidbodyAndCollider(false, _rigidbody, _collider, null, false);
+		DisableForNodeWar();
+
+		Timing.RunCoroutine(DieProcessForNodeWar());
+	}
+
+	IEnumerator<float> DieProcessForNodeWar()
+	{
+		// 모두가 한번에 DieProcess되는걸 방지하기 위해 랜덤하게 기다린다.
+		yield return Timing.WaitForSeconds(Random.Range(0.0f, 1.5f));
+		Timing.RunCoroutine(DieProcess());
+	}
+
 	IEnumerator<float> DieProcess()
 	{
 		if (BurrowAffector.CheckDie(affectorProcessor))

@@ -168,24 +168,20 @@ public class BattleManager : MonoBehaviour
 		_currentBattleMode.OnGetBoostOrb(getPosition);
 	}
 
-	public void OnTryRepairExitPortal()
+
+	public void OnTryActiveExitArea()
 	{
-		_currentBattleMode.OnTryActiveExitPortal();
+		_currentBattleMode.OnTryActiveExitArea();
 	}
 
-	public void On5SecondAgoActiveExitPortal()
+	public void On10SecondAgoActiveExitArea()
 	{
-		_currentBattleMode.On5SecondAgoActiveExitPortal();
+		_currentBattleMode.On10SecondAgoActiveExitArea();
 	}
 
-	public void OnActiveExitPortal()
+	public void OnSuccessExitArea()
 	{
-		_currentBattleMode.OnActiveExitPortal();
-	}
-
-	public void OnSuccessExitPortal()
-	{
-		_currentBattleMode.OnSuccessExitPortal();
+		_currentBattleMode.OnSuccessExitArea();
 	}
 	#endregion
 }

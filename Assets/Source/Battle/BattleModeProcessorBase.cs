@@ -455,19 +455,16 @@ public class BattleModeProcessorBase
 	{
 	}
 
-	public virtual void OnTryActiveExitPortal()
+
+	public virtual void OnTryActiveExitArea()
 	{
 	}
 
-	public virtual void On5SecondAgoActiveExitPortal()
+	public virtual void On10SecondAgoActiveExitArea()
 	{
 	}
 
-	public virtual void OnActiveExitPortal()
-	{
-	}
-
-	public virtual void OnSuccessExitPortal()
+	public virtual void OnSuccessExitArea()
 	{
 	}
 }

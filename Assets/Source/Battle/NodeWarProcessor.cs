@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using MecanimStateDefine;
 using CodeStage.AntiCheat.ObscuredTypes;
+using MEC;
 
 public class NodeWarProcessor : BattleModeProcessorBase
 {
@@ -17,16 +18,12 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	// 이래야 뛰는 방향에서 새로운 몹들이 다시 스폰될 수 있다.
 	public static float MonsterValidDistance = 22.0f;
 
-	// 안전지대 위치는 10, 0, 10이다.
-	public static Vector3 EndSafeAreaPosition = new Vector3(10.0f, 0.0f, 10.0f);
-
 	enum ePhase
 	{
 		FindSoul = 1,
 		FindPortal = 2,
-		WaitActivePortal = 3,
-		Exit = 4,
-		Success = 5,
+		Sacrifice = 3,
+		Success = 4,
 	}
 
 	NodeWarTableData _selectedNodeWarTableData;
@@ -45,7 +42,6 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		//UpdateSpawnSoul();
 		UpdateSpawnHealOrb();
 		UpdateSpawnBoostOrb();
-		UpdateExit();
 		UpdateEndProcess();
 	}
 
@@ -276,6 +272,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		}
 		if (findMonsterActor != null)
 		{
+			// OnDie때 hp가 남아있느냐 아니냐로 일반 Die인지 거리에 의한 Die인지 구분하기 때문에 Hp는 냅둬야한다.
 			//findMonsterActor.actorStatus.SetHpRatio(0.0f);
 			findMonsterActor.DisableForNodeWar();
 			findMonsterActor.gameObject.SetActive(false);
@@ -363,11 +360,11 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			// 랜덤으로 나온 포지션 근처에 이미 트랩이 존재한다면 다시 시도.
 			if (NodeWarTrap.IsExistInRange(desirePosition, TrapNoSpawnRange))
 				continue;
-			if (_phase != ePhase.FindSoul && NodeWarExitPortal.instance != null)
+			if (_phase != ePhase.FindSoul && NodeWarExitArea.instance != null)
 			{
-				Vector3 diff = desirePosition - NodeWarExitPortal.instance.cachedTransform.position;
+				Vector3 diff = desirePosition - NodeWarExitArea.instance.cachedTransform.position;
 				diff.y = 0.0f;
-				if (diff.sqrMagnitude < (NodeWarExitPortal.instance.lastHealAreaRange + TrapNoSpawnRange * 0.5f) * (NodeWarExitPortal.instance.lastHealAreaRange + TrapNoSpawnRange * 0.5f))
+				if (diff.sqrMagnitude < (NodeWarExitArea.instance.lastHealAreaRange + TrapNoSpawnRange * 0.5f) * (NodeWarExitArea.instance.lastHealAreaRange + TrapNoSpawnRange * 0.5f))
 					continue;
 			}
 			resultPosition = desirePosition;
@@ -385,11 +382,11 @@ public class NodeWarProcessor : BattleModeProcessorBase
 
 			if (NodeWarTrap.IsExistInRange(desirePosition, TrapNoSpawnRange))
 				continue;
-			if (_phase != ePhase.FindSoul && NodeWarExitPortal.instance != null)
+			if (_phase != ePhase.FindSoul && NodeWarExitArea.instance != null)
 			{
-				Vector3 diff = desirePosition - NodeWarExitPortal.instance.cachedTransform.position;
+				Vector3 diff = desirePosition - NodeWarExitArea.instance.cachedTransform.position;
 				diff.y = 0.0f;
-				if (diff.sqrMagnitude < (NodeWarExitPortal.instance.lastHealAreaRange + TrapNoSpawnRange * 0.5f) * (NodeWarExitPortal.instance.lastHealAreaRange + TrapNoSpawnRange * 0.5f))
+				if (diff.sqrMagnitude < (NodeWarExitArea.instance.lastHealAreaRange + TrapNoSpawnRange * 0.5f) * (NodeWarExitArea.instance.lastHealAreaRange + TrapNoSpawnRange * 0.5f))
 					continue;
 			}
 			resultPosition = desirePosition;
@@ -405,6 +402,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	const float SoulSpawnDelay = 4.0f;
 	void UpdateSpawnSoul()
 	{
+		// 몬스터를 잡아서 얻는 구조로 바꾸면서 안쓰는 함수. 혹시 몰라 참고용으로 남겨둔다.
 		if (_phase != ePhase.FindSoul)
 			return;
 
@@ -536,7 +534,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	const float BoostOrbSpawnDelay = 4.0f;
 	void UpdateSpawnBoostOrb()
 	{
-		if (_phase == ePhase.WaitActivePortal || _phase == ePhase.Exit || _phase == ePhase.Success)
+		if (_phase == ePhase.Sacrifice || _phase == ePhase.Success)
 			return;
 
 		if (BattleInstanceManager.instance.playerActor.actionController.mecanimState.IsState((int)eMecanimState.Move) == false)
@@ -570,63 +568,76 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	}
 	#endregion
 
-	public override void OnTryActiveExitPortal()
+	public override void OnTryActiveExitArea()
 	{
 		if (_phase == ePhase.FindPortal)
 		{
-			_phase = ePhase.WaitActivePortal;
+			_phase = ePhase.Sacrifice;
 			_phaseStartTime = Time.time;
-			BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarHealSpread"), 3.5f);
+			Timing.RunCoroutine(DelayedShowExitAreaInfo());
 		}
 	}
 
-	public override void On5SecondAgoActiveExitPortal()
+	IEnumerator<float> DelayedShowExitAreaInfo()
 	{
-		// 포탈을 활성화 하기 5초전부터 몬스터 스폰 부스트가 시작된다.
+		BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarHealSpread"), 3.0f);
+
+		// 3초 뒤에 제물 정보를 알린다.
+		yield return Timing.WaitForSeconds(3.0f);
+
+		// avoid gc
+		if (this == null)
+			yield break;
+
+		BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarMakeSacrifice"), 3.0f);
+	}
+
+	public override void On10SecondAgoActiveExitArea()
+	{
+		// 포탈을 밟고나서 10초후에 침공이 시작된다. 대략 10초 정도 더 지났을때 열릴거라 예상
 		_monsterSpawnBoosted = true;
 	}
 
-	public override void OnActiveExitPortal()
+	public override void OnSuccessExitArea()
 	{
-		if (_phase == ePhase.WaitActivePortal)
-		{
-			_phase = ePhase.Exit;
-			_phaseStartTime = Time.time;
-			_activeExitPortalRemainTime = NodeWarExitPortal.ActivePortalTime;
-			BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarPortalOpen"), 3.5f);
-		}
-	}
-
-	public override void OnSuccessExitPortal()
-	{
-		if (_phase == ePhase.Exit)
+		if (_phase == ePhase.Sacrifice)
 		{
 			_phase = ePhase.Success;
 			_phaseStartTime = Time.time;
 
-			// 모든 몬스터를 삭제해야한다. 뒤에서부터 루프 돈다.
+			// 모든 몬스터를 삭제해야한다. 뒤에서부터 루프 돈다. 애니 멈춘채 다이연출이 돌아야한다.
 			List<MonsterActor> listMonsterActor = BattleInstanceManager.instance.GetLiveMonsterList();
 			for (int i = listMonsterActor.Count - 1; i >= 0; --i)
 			{
 				MonsterActor monsterActor = listMonsterActor[i];
 				monsterActor.actorStatus.SetHpRatio(0.0f);
-				monsterActor.DisableForNodeWar();
-				monsterActor.gameObject.SetActive(false);
+				monsterActor.DieForNodeWar();
 			}
+
+			// 플레이어가 이동을 안하기 때문에 히트오브젝트를 지워야한다.
+			BattleInstanceManager.instance.FinalizeAllHitObject();
 
 			// 모든 트랩도 삭제해야한다.
 			NodeWarTrap.DisableAllTrap();
 
-			// 도착지점 프리팹도 만들어낸다.
-			BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.nodeWarEndSafeAreaPrefab, EndSafeAreaPosition, Quaternion.identity);
+			// 도착지점 프리팹도 만들어낸다. 이건 이제 필요없을듯?
+			//BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.nodeWarEndSafeAreaPrefab, EndSafeAreaPosition, Quaternion.identity);
 
 			// 챕터 클리어 했을때와 비슷하게 처리.
 			LobbyCanvas.instance.battlePauseButton.interactable = false;
 			_endProcess = true;
-			_endProcessWaitRemainTime = 0.2f;
+
+			// 몹이 대략 사라질 타이밍인 3초정도는 연출 대기
+			_endProcessWaitRemainTime = 3.0f;
 
 			// 결과처리에 장비드랍이 항상 포함된다.
 			PrepareDropProcessor();
+
+			// 여기서 연출을 더 추가하기로 한다.
+			// 몹이 사라지고나면 플레이어 바로 우측에 포탈이 열리면서 포탈을 타면
+			// 플레이어 포지션에서 우측으로 20미터 쯤에 이동시키면서 안전지대를 만들고
+			// 뽑기 연출을 시작하면 된다.
+			// 이 긴 연출을 하기 전에 미리 패킷을 보내서 결과를 받아두는게 좋을거 같다.
 		}
 	}
 
@@ -667,42 +678,6 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		}
 	}
 
-	float _activeExitPortalRemainTime;
-	const float ExitFirstWarningTime = 15.0f;
-	bool _exitFirstWarning;
-	float[] ExitLastWarningTimeList = { 7.0f, 5.0f };
-	bool[] _exitLastWarningList = { false, false };
-	void UpdateExit()
-	{
-		if (_phase != ePhase.Exit)
-			return;
-
-		if (_activeExitPortalRemainTime > 0.0f)
-		{
-			_activeExitPortalRemainTime -= Time.deltaTime;
-			if (_exitFirstWarning == false && _activeExitPortalRemainTime <= ExitFirstWarningTime)
-			{
-				BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarPortalLosingPower"), 3.5f);
-				_exitFirstWarning = true;
-			}
-
-			for (int i = 0; i < _exitLastWarningList.Length; ++i)
-			{
-				if(_exitLastWarningList[i] == false && _activeExitPortalRemainTime <= ExitLastWarningTimeList[i])
-				{
-					BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarPortalLosingAlmost"), 1.5f);
-					_exitLastWarningList[i] = true;
-				}
-			}
-
-			if (_activeExitPortalRemainTime <= 0.0f)
-			{
-				_activeExitPortalRemainTime = 0.0f;
-				BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarFailedToEscape"), 3.5f);
-			}
-		}
-	}
-
 	public override void OnDiePlayer(PlayerActor playerActor)
 	{
 		// 여기서 인풋은 막되
@@ -732,10 +707,28 @@ public class NodeWarProcessor : BattleModeProcessorBase
 				Vector3 dropPosition = monsterActor.cachedTransform.position;
 				dropPosition.y = 0.0f;
 				Vector3 diff = BattleInstanceManager.instance.playerActor.cachedTransform.position - dropPosition;
-				if (diff.sqrMagnitude > (SpawnDistance * 0.5f))
+				if (diff.sqrMagnitude > ((SpawnDistance * 0.5f) * (SpawnDistance * 0.5f)))
 					rate *= 0.5f;
 				if (Random.value <= rate)
 					BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.soulPrefab, dropPosition, Quaternion.identity);
+			}
+		}
+		else if (_phase == ePhase.Sacrifice)
+		{
+			if (monsterActor.actorStatus.GetHP() > 0.0f)
+				monsterActor.actorStatus.SetHpRatio(0.0f);
+			else
+			{
+				// 이번엔 거리체크도 해야한다.
+				if (NodeWarExitArea.instance != null)
+				{
+					Vector3 diff = NodeWarExitArea.instance.cachedTransform.position - BattleInstanceManager.instance.playerActor.cachedTransform.position;
+					diff.y = 0.0f;
+					if (diff.sqrMagnitude < NodeWarExitArea.instance.lastHealAreaRange * NodeWarExitArea.instance.lastHealAreaRange)
+					{
+						NodeWarExitArea.instance.OnSacrifice(monsterActor);
+					}
+				}
 			}
 		}
 

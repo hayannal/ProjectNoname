@@ -4,6 +4,7 @@ using UnityEngine;
 using MecanimStateDefine;
 using CodeStage.AntiCheat.ObscuredTypes;
 using MEC;
+using DG.Tweening;
 
 public class NodeWarProcessor : BattleModeProcessorBase
 {
@@ -620,14 +621,11 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			// 모든 트랩도 삭제해야한다.
 			NodeWarTrap.DisableAllTrap();
 
-			// 도착지점 프리팹도 만들어낸다. 이건 이제 필요없을듯?
-			//BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.nodeWarEndSafeAreaPrefab, EndSafeAreaPosition, Quaternion.identity);
-
 			// 챕터 클리어 했을때와 비슷하게 처리.
 			LobbyCanvas.instance.battlePauseButton.interactable = false;
 			_endProcess = true;
 
-			// 몹이 대략 사라질 타이밍인 3초정도는 연출 대기
+			// 몹이 대략 사라질 타이밍인 3초정도는 대기. 원래는 더 기다려야 DieProcess가 제대로 끝나는데 이러면 너무 오래 기다리게 할까봐 못하겠다.
 			_endProcessWaitRemainTime = 3.0f;
 
 			// 결과처리에 장비드랍이 항상 포함된다.
@@ -783,18 +781,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			PlayFabApiManager.instance.RequestEndNodeWar(clear, _selectedNodeWarTableData.level, DropManager.instance.GetLobbyDropItemInfo(), (result, itemGrantString) =>
 			{
 				// 성공시에는 바로 결과창을 띄우는게 아니라 연출처리 하고 결과창을 띄워야한다.
-				UIInstanceManager.instance.ShowCanvasAsync("RandomBoxScreenCanvas", () =>
-				{
-					RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.NodeWar, _cachedDropProcessor, 0, () =>
-					{
-						// 연출이 끝나면 원래 띄워야할 NodeWarResultCanvas를 보여주면 된다.
-						UIInstanceManager.instance.ShowCanvasAsync("NodeWarResultCanvas", () =>
-						{
-							NodeWarResultCanvas.instance.RefreshInfo(true, _selectedNodeWarTableData, _firstClear, itemGrantString);
-							OnRecvEndNodeWar(result, itemGrantString);
-						});
-					});
-				});
+				Timing.RunCoroutine(ClearProcess(result, itemGrantString));
 			});
 		}
 		else
@@ -807,6 +794,65 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		}
 
 		_endProcess = false;
+	}
+
+	IEnumerator<float> ClearProcess(bool result, string itemGrantString)
+	{
+		// ClearProcess동안에는 인풋을 받으면 안된다. 챕터쪽 결과창에서는 바로 TimeScale을 0으로 해서 입력을 안받게 하는 처리가 필요없었는데 여기서는 필요하다.
+		// 이렇게 그냥 꺼버리면 Rigidbody에 값이 있는채로 꺼지게 되서 안된다.
+		//BattleInstanceManager.instance.playerActor.baseCharacterController.enabled = false;
+		// 먼저 dontMove를 체크해서 이동량을 제로로 만든 후
+		LocalPlayerController localPlayerController = BattleInstanceManager.instance.playerActor.baseCharacterController as LocalPlayerController;
+		if (localPlayerController != null)
+			localPlayerController.dontMove = true;
+
+		// 플레이어 포지션 좌상단에 포탈을 생성하고
+		Vector3 portalPosition = BattleInstanceManager.instance.playerActor.cachedTransform.position + new Vector3(-1.0f, 0.0f, 1.0f);
+		BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.nodeWarEndPortalEffectPrefab, portalPosition, Quaternion.identity);
+
+		// 포탈 생성을 잠시 기다리고
+		yield return Timing.WaitForSeconds(1.0f);
+
+		// 검사할 필요 없긴 하다. 앱을 끄지 않는 이상 여기서 나갈 방법이 없기 때문.
+		// avoid gc
+		if (this == null)
+			yield break;
+
+		// 포탈 방향으로 뛰어서 이동시킨다. 여기서 localPlayerController를 꺼두면 입력중인 인풋도 다 차단할 수 있다.
+		localPlayerController.enabled = false;
+		BattleInstanceManager.instance.playerActor.cachedTransform.rotation = Quaternion.LookRotation(portalPosition - BattleInstanceManager.instance.playerActor.cachedTransform.position);
+		float moveDistance = Vector3.Distance(BattleInstanceManager.instance.playerActor.cachedTransform.position, portalPosition);
+		float time = moveDistance / BattleInstanceManager.instance.playerActor.baseCharacterController.speed;
+		BattleInstanceManager.instance.playerActor.cachedTransform.DOMove(portalPosition, time).SetEase(Ease.Linear);
+		BattleInstanceManager.instance.playerActor.actionController.PlayActionByActionName("Move");
+		yield return Timing.WaitForSeconds(time);
+		BattleInstanceManager.instance.playerActor.actionController.PlayActionByActionName("Idle");
+
+		// 도달과 동시에 우측 20미터 쪽으로 보낸다.
+		Vector3 endTargetPosition = BattleInstanceManager.instance.playerActor.cachedTransform.position + new Vector3(20.0f, 0.0f, 0.0f);
+		BattleInstanceManager.instance.playerActor.cachedTransform.position = endTargetPosition;
+		TailAnimatorUpdater.UpdateAnimator(BattleInstanceManager.instance.playerActor.cachedTransform, 15);
+		CustomFollowCamera.instance.immediatelyUpdate = true;
+
+		// 이때 마저 못지운 NodeWarItem도 삭제해야한다.
+		NodeWarItem.DisableAllItem();
+
+		// 도착지점 프리팹도 만들어낸다.
+		BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.nodeWarEndSafeAreaPrefab, endTargetPosition, Quaternion.identity);
+
+		// 이후 뽑기 연출 진행
+		UIInstanceManager.instance.ShowCanvasAsync("RandomBoxScreenCanvas", () =>
+		{
+			RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.NodeWar, _cachedDropProcessor, 0, () =>
+			{
+				// 연출이 끝나면 원래 띄워야할 NodeWarResultCanvas를 보여주면 된다.
+				UIInstanceManager.instance.ShowCanvasAsync("NodeWarResultCanvas", () =>
+				{
+					NodeWarResultCanvas.instance.RefreshInfo(true, _selectedNodeWarTableData, _firstClear, itemGrantString);
+					OnRecvEndNodeWar(result, itemGrantString);
+				});
+			});
+		});
 	}
 
 	void OnRecvEndNodeWar(bool clear, string itemGrantString)

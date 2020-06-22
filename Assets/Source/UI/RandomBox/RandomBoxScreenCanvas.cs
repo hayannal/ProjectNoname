@@ -107,7 +107,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		else if (TimeSpaceGround.instance != null && TimeSpaceGround.instance.gameObject.activeSelf)
 			targetPosition = TimeSpaceGround.instance.cachedTransform.position;
 		else if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
-			targetPosition = NodeWarExitArea.instance.cachedTransform.position + new Vector3(0.0f, 0.0f, 5.0f);
+			targetPosition = BattleInstanceManager.instance.playerActor.cachedTransform.position + new Vector3(0.0f, 0.0f, 2.0f);
 
 		// 플레이어가 상자 떨어질 자리에 너무 가까이에 있다면 아래로 내려준다
 		bool needMove = false;

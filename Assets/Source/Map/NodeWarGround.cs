@@ -35,6 +35,7 @@ public class NodeWarGround : MonoBehaviour
 	public GameObject boostOrbPrefab;
 	public GameObject boostOrbGetEffectPrefab;
 	public GameObject nodeWarExitPortalPrefab;
+	public GameObject nodeWarEndPortalEffectPrefab;
 	public GameObject nodeWarEndSafeAreaPrefab;
 
 	GameObject _planePrefab;

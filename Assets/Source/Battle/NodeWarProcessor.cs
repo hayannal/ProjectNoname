@@ -65,9 +65,9 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	public static void ApplyNodeWarLevelPack(PlayerActor playerActor)
 	{
 		playerActor.skillProcessor.CheckAllExclusiveLevelPack();
-		playerActor.skillProcessor.AddLevelPack("AtkBetter", false, 0);
-		playerActor.skillProcessor.AddLevelPack("AtkBetter", false, 0);
-		playerActor.skillProcessor.AddLevelPack("AtkBetter", false, 0);
+		playerActor.skillProcessor.AddLevelPack("AtkBest", false, 0);
+		playerActor.skillProcessor.AddLevelPack("AtkBest", false, 0);
+		playerActor.skillProcessor.AddLevelPack("AtkBest", false, 0);
 		playerActor.skillProcessor.AddLevelPack("AtkSpeedBest", false, 0);
 		playerActor.skillProcessor.AddLevelPack("AtkSpeedBest", false, 0);
 		playerActor.skillProcessor.AddLevelPack("AtkSpeedBest", false, 0);

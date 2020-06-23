@@ -117,8 +117,10 @@ public class NodeWarGround : MonoBehaviour
 		// 첫번째 몬스터 한마리를 미리 만들어놓고 하이드 시킨다. 첫 스폰 캐싱을 위함
 		if (monsterPrefabList.Length > 0)
 		{
-			GameObject firstMonsterObject = BattleInstanceManager.instance.GetCachedObject(monsterPrefabList[0], new Vector3(100.0f, 0.0f, 100.0f), Quaternion.identity);
-			firstMonsterObject.SetActive(false);
+			GameObject firstMonsterCachingObject = BattleInstanceManager.instance.GetCachedObject(monsterPrefabList[0], new Vector3(100.0f, 0.0f, 100.0f), Quaternion.identity);
+			_firstCachingMonsterActor = firstMonsterCachingObject.GetComponent<MonsterActor>();
+			_firstCachingMonsterActor.monsterAI.enabled = false;
+			_waitUpdateRemainCount = 2;
 		}
 
 		// 교체가능은 항상 띄운다.
@@ -150,6 +152,7 @@ public class NodeWarGround : MonoBehaviour
 	{
 		UpdateLateInitialize();
 		UpdateSeamlessGround();
+		UpdateMonsterCaching();
 
 		UpdateLevelUp();
 		UpdateLevelText();
@@ -315,6 +318,26 @@ public class NodeWarGround : MonoBehaviour
 				float planePositionX = (_lastChunkX + i - 1) * planeSize;
 				float planePositionZ = (_lastChunkZ + j - 1) * planeSize;
 				_listCurrentPlaneCollider[index].transform.position = new Vector3(planePositionX, 0.0f, planePositionZ);
+			}
+		}
+	}
+
+	// MainSceneBuilder에서 하던 캐싱 오브젝트 처리를 몬스터에게 적용한다.
+	MonsterActor _firstCachingMonsterActor;
+	int _waitUpdateRemainCount;
+	void UpdateMonsterCaching()
+	{
+		if (_waitUpdateRemainCount > 0)
+		{
+			_waitUpdateRemainCount -= 1;
+			if (_waitUpdateRemainCount == 0)
+			{
+				if (_firstCachingMonsterActor != null)
+				{
+					_firstCachingMonsterActor.monsterAI.enabled = true;
+					_firstCachingMonsterActor.gameObject.SetActive(false);
+					_firstCachingMonsterActor = null;
+				}
 			}
 		}
 	}

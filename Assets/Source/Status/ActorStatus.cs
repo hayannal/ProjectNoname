@@ -133,8 +133,12 @@ public class ActorStatus : MonoBehaviour
 		float standardAtk = StageManager.instance.currentMonstrStandardAtk;
 		if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
 		{
-			standardHp = BattleManager.instance.GetSelectedNodeWarTableData().standardHp;
-			standardAtk = BattleManager.instance.GetSelectedNodeWarTableData().standardAtk;
+			NodeWarTableData nodeWarTableData = BattleManager.instance.GetSelectedNodeWarTableData();
+			if (nodeWarTableData != null)
+			{
+				standardHp = nodeWarTableData.standardHp;
+				standardAtk = nodeWarTableData.standardAtk;
+			}
 		}
 		_statusBase.valueList[(int)eActorStatus.MaxHp] = standardHp * monsterTableData.multiHp;
 		_statusBase.valueList[(int)eActorStatus.Attack] = standardAtk * monsterTableData.multiAtk;

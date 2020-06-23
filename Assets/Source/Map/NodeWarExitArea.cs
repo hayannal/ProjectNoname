@@ -4,10 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using MEC;
-#if UNITY_EDITOR
-using UnityEditor.AddressableAssets;
-using UnityEditor.AddressableAssets.Settings;
-#endif
 using DG.Tweening;
 
 // NodeWar 인게임에서 쓰는 탈출용 마법진.
@@ -22,7 +18,7 @@ public class NodeWarExitArea : MonoBehaviour
 	public Transform areaOverTransform;
 	public GameObject sacrificeEffectPrefab;
 	public GameObject outAreaAttackEffectPrefab;
-	public GameObject areaActiveEffectObject;
+	public GameObject areaActiveEffectPrefab;
 	public Canvas worldCanvas;
 	public CanvasGroup canvasGroup;
 	public DOTweenAnimation fadeTweenAnimation;
@@ -325,21 +321,14 @@ public class NodeWarExitArea : MonoBehaviour
 
 		_processing = true;
 
-		//activeEffectObject.SetActive(true);
-		yield return Timing.WaitForSeconds(0.2f);
+		Instantiate<GameObject>(areaActiveEffectPrefab, cachedTransform.position, Quaternion.identity);
+		yield return Timing.WaitForSeconds(0.8f);
 
 		// avoid gc
 		if (this == null)
 			yield break;
 
-#if UNITY_EDITOR
-		AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
-		if (settings.ActivePlayModeDataBuilderIndex == 2)
-			ObjectUtil.ReloadShader(gameObject);
-#endif
 		CustomRenderer.instance.bloom.AdjustDirtIntensity(1.5f);
-
-		yield return Timing.WaitForSeconds(0.5f);
 
 		// avoid gc
 		if (this == null)

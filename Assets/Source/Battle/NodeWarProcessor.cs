@@ -76,14 +76,10 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		playerActor.skillProcessor.AddLevelPack("CritBetter", false, 0);
 		playerActor.skillProcessor.AddLevelPack("MoveSpeedUpOnKill", false, 0);
 		playerActor.skillProcessor.AddLevelPack("MoveSpeedUpOnKill", false, 0);
-		playerActor.skillProcessor.AddLevelPack("MoveSpeedUpOnKill", false, 0);
-		playerActor.skillProcessor.AddLevelPack("MoveSpeedUpOnAttacked", false, 0);
 		playerActor.skillProcessor.AddLevelPack("MoveSpeedUpOnAttacked", false, 0);
 		playerActor.skillProcessor.AddLevelPack("MoveSpeedUpOnAttacked", false, 0);
 		playerActor.skillProcessor.AddLevelPack("AtkUpOnLowerHpBetter", false, 0);
 		playerActor.skillProcessor.AddLevelPack("AtkUpOnLowerHpBetter", false, 0);
-		playerActor.skillProcessor.AddLevelPack("AtkUpOnLowerHpBetter", false, 0);
-		playerActor.skillProcessor.AddLevelPack("HealSpOnAttackBetter", false, 0);
 		playerActor.skillProcessor.AddLevelPack("HealSpOnAttackBetter", false, 0);
 		playerActor.skillProcessor.AddLevelPack("HealSpOnAttackBetter", false, 0);
 	}

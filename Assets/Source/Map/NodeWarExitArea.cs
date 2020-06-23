@@ -328,6 +328,10 @@ public class NodeWarExitArea : MonoBehaviour
 		//activeEffectObject.SetActive(true);
 		yield return Timing.WaitForSeconds(0.2f);
 
+		// avoid gc
+		if (this == null)
+			yield break;
+
 #if UNITY_EDITOR
 		AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
 		if (settings.ActivePlayModeDataBuilderIndex == 2)
@@ -337,8 +341,16 @@ public class NodeWarExitArea : MonoBehaviour
 
 		yield return Timing.WaitForSeconds(0.5f);
 
+		// avoid gc
+		if (this == null)
+			yield break;
+
 		FadeCanvas.instance.FadeOut(0.2f);
 		yield return Timing.WaitForSeconds(0.2f);
+
+		// avoid gc
+		if (this == null)
+			yield break;
 
 		CustomRenderer.instance.bloom.ResetDirtIntensity();
 

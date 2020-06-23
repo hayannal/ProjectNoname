@@ -49,6 +49,10 @@ public class HealSpOnHitAffector : AffectorBase
 		if (DefaultContainerAffector.ContainsValue(affectorProcessor, eAffectorType.HealSpOnHit.ToString()))
 			return;
 
+		// 이미 최대상태면 패스
+		if (affectorProcessor.actor.actorStatus.GetSPRatio() >= 1.0f)
+			return;
+
 		float cooltimeValue = 0.0f;
 		float rateValue = 0.0f;
 		for (int i = 0; i < listHealSpOnHitAffector.Count; ++i)

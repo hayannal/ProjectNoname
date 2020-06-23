@@ -229,7 +229,7 @@ public class NodeWarItem : MonoBehaviour
 		if (s_listInitializedNodeWarItem == null)
 			return;
 
-		for (int i = 0; i < s_listInitializedNodeWarItem.Count; ++i)
+		for (int i = s_listInitializedNodeWarItem.Count - 1; i >= 0; --i)
 			s_listInitializedNodeWarItem[i].gameObject.SetActive(false);
 		s_listInitializedNodeWarItem.Clear();
 	}

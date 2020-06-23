@@ -159,7 +159,7 @@ public class NodeWarTrap : MonoBehaviour
 		if (s_listInitializedNodeWarTrap == null)
 			return;
 
-		for (int i = 0; i < s_listInitializedNodeWarTrap.Count; ++i)
+		for (int i = s_listInitializedNodeWarTrap.Count - 1; i >= 0; --i)
 			s_listInitializedNodeWarTrap[i].gameObject.SetActive(false);
 		s_listInitializedNodeWarTrap.Clear();
 	}

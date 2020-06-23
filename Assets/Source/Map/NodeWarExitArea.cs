@@ -78,8 +78,8 @@ public class NodeWarExitArea : MonoBehaviour
 
 	// 영역 안에 들어있는지는 항상 검사한다.
 	// 장판이 켜지고나서 영역 밖으로 나가면 일정 주기마다 데미지를 강제로 입힌다.
-	const float OutAreaDamageTimeMin = 2.0f;
-	const float OutAreaDamageTimeMax = 5.0f;
+	const float OutAreaDamageTimeMin = 3.0f;
+	const float OutAreaDamageTimeMax = 8.0f;
 	const float OutAreaMultiAtk = 1.1f;
 	bool _outAreaForText;
 	float _outAreaRemainTime;

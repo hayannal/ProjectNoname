@@ -829,19 +829,31 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		BattleInstanceManager.instance.playerActor.cachedTransform.DOMove(portalPosition, time).SetEase(Ease.Linear);
 		BattleInstanceManager.instance.playerActor.actionController.PlayActionByActionName("Move");
 		yield return Timing.WaitForSeconds(time);
-		BattleInstanceManager.instance.playerActor.actionController.PlayActionByActionName("Idle");
+		//BattleInstanceManager.instance.playerActor.actionController.PlayActionByActionName("Idle");
 
 		// 도달과 동시에 우측 20미터 쪽으로 보낸다.
-		Vector3 endTargetPosition = BattleInstanceManager.instance.playerActor.cachedTransform.position + new Vector3(20.0f, 0.0f, 0.0f);
-		BattleInstanceManager.instance.playerActor.cachedTransform.position = endTargetPosition;
+		Vector3 teleportPosition = BattleInstanceManager.instance.playerActor.cachedTransform.position + new Vector3(20.0f, 0.0f, 0.0f);
+		BattleInstanceManager.instance.playerActor.cachedTransform.position = teleportPosition;
 		TailAnimatorUpdater.UpdateAnimator(BattleInstanceManager.instance.playerActor.cachedTransform, 15);
 		CustomFollowCamera.instance.immediatelyUpdate = true;
+
+		// 텔레포트 이펙트 재활용
+		BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.portalMoveEffectPrefab, BattleInstanceManager.instance.playerActor.cachedTransform.position, Quaternion.identity);
 
 		// 이때 마저 못지운 NodeWarItem도 삭제해야한다.
 		NodeWarItem.DisableAllItem();
 
 		// 도착지점 프리팹도 만들어낸다.
+		Vector3 endTargetPosition = teleportPosition + new Vector3(-1.0f, 0.0f, 1.0f);
 		BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.nodeWarEndSafeAreaPrefab, endTargetPosition, Quaternion.identity);
+
+		// 조금만 더 걸어가자
+		BattleInstanceManager.instance.playerActor.cachedTransform.rotation = Quaternion.LookRotation(endTargetPosition - BattleInstanceManager.instance.playerActor.cachedTransform.position);
+		moveDistance = Vector3.Distance(BattleInstanceManager.instance.playerActor.cachedTransform.position, endTargetPosition);
+		time = moveDistance / BattleInstanceManager.instance.playerActor.baseCharacterController.speed;
+		BattleInstanceManager.instance.playerActor.cachedTransform.DOMove(endTargetPosition, time).SetEase(Ease.Linear);
+		yield return Timing.WaitForSeconds(time);
+		BattleInstanceManager.instance.playerActor.actionController.PlayActionByActionName("Idle");
 
 		// 이후 뽑기 연출 진행
 		UIInstanceManager.instance.ShowCanvasAsync("RandomBoxScreenCanvas", () =>

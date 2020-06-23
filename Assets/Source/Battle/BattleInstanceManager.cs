@@ -557,6 +557,9 @@ public class BattleInstanceManager : MonoBehaviour
 	Dictionary<int, int> _dicPathFinderAgentRefCount = new Dictionary<int, int>();
 	public void OnInitializePathFinderAgent(int agentTypeID)
 	{
+		if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+			return;
+
 		if (_dicPathFinderAgentRefCount.ContainsKey(agentTypeID) == false)
 		{
 			_dicPathFinderAgentRefCount.Add(agentTypeID, 1);
@@ -572,6 +575,9 @@ public class BattleInstanceManager : MonoBehaviour
 	// 어차피 NavMeshSurface는 컴포넌트라서 맵 지워질때 날아갈텐데 바닥판 안바뀔걸 대비해서 지워두는게 나으려나
 	public void OnFinalizePathFinderAgent(int agentTypeID)
 	{
+		if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+			return;
+
 		if (_dicPathFinderAgentRefCount.ContainsKey(agentTypeID) == false)
 			return;
 

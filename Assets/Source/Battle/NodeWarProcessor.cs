@@ -188,7 +188,16 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	List<float> _listCurrentSpawnRemainTime = new List<float>();
 	Dictionary<string, int> _dicAliveMonsterCount = new Dictionary<string, int>();
 	int _totalAliveMonsterCount;
-	bool _monsterSpawnBoosted = false;
+	bool monsterSpawnBoosted
+	{
+		get
+		{
+			// 이젠 몬스터 부스트는 두가지 조건이 동시에 성립되어야만 발동된다.
+			if (NodeWarExitArea.instance != null && NodeWarExitArea.instance.AvailableLastCount() && NodeWarExitArea.instance.IsInHealAreaRange())
+				return true;
+			return false;
+		}
+	}
 	void UpdateSpawnMonster()
 	{
 		if (_phase == ePhase.Success)
@@ -211,14 +220,14 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			}
 			else
 			{
-				_listCurrentSpawnRemainTime[i] += (_monsterSpawnBoosted ? _listCurrentNodeWarSpawnTableData[i].lastSpawnPeriod : _listCurrentNodeWarSpawnTableData[i].spawnPeriod);
+				_listCurrentSpawnRemainTime[i] += (monsterSpawnBoosted ? _listCurrentNodeWarSpawnTableData[i].lastSpawnPeriod : _listCurrentNodeWarSpawnTableData[i].spawnPeriod);
 			}
 			if (Random.value > _listCurrentNodeWarSpawnTableData[i].spawnChance)
 				continue;
 
 			if (_listCurrentNodeWarSpawnTableData[i].totalMax)
 			{
-				if (_totalAliveMonsterCount >= (_monsterSpawnBoosted ? LastMonsterMaxCount : DefaultMonsterMaxCount))
+				if (_totalAliveMonsterCount >= (monsterSpawnBoosted ? LastMonsterMaxCount : DefaultMonsterMaxCount))
 					continue;
 
 				++_totalAliveMonsterCount;
@@ -226,7 +235,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			else
 			{
 				string key = _listCurrentNodeWarSpawnTableData[i].monsterId;
-				if (_dicAliveMonsterCount.ContainsKey(key) && _dicAliveMonsterCount[key] >= (_monsterSpawnBoosted ? _listCurrentNodeWarSpawnTableData[i].lastMaxCount : _listCurrentNodeWarSpawnTableData[i].maxCount))
+				if (_dicAliveMonsterCount.ContainsKey(key) && _dicAliveMonsterCount[key] >= (monsterSpawnBoosted ? _listCurrentNodeWarSpawnTableData[i].lastMaxCount : _listCurrentNodeWarSpawnTableData[i].maxCount))
 					continue;
 
 				// totalMax를 안쓰는 몬스터는 각자 개별로 체크한다.
@@ -595,8 +604,9 @@ public class NodeWarProcessor : BattleModeProcessorBase
 
 	public override void On10SecondAgoActiveExitArea()
 	{
-		// 포탈을 밟고나서 10초후에 침공이 시작된다. 대략 10초 정도 더 지났을때 열릴거라 예상
-		_monsterSpawnBoosted = true;
+		// 예전엔 포탈을 밟고나서 10초후에 침공이 시작됐었는데 이젠 시간에 의해 컨트롤 하는게 없어지면서 삭제.
+		// 우선 구조는 주석처리해서 남겨두기로 한다.
+		//_monsterSpawnBoosted = true;
 	}
 
 	public override void OnSuccessExitArea()
@@ -718,15 +728,8 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			else
 			{
 				// 이번엔 거리체크도 해야한다.
-				if (NodeWarExitArea.instance != null)
-				{
-					Vector3 diff = NodeWarExitArea.instance.cachedTransform.position - BattleInstanceManager.instance.playerActor.cachedTransform.position;
-					diff.y = 0.0f;
-					if (diff.sqrMagnitude < NodeWarExitArea.instance.lastHealAreaRange * NodeWarExitArea.instance.lastHealAreaRange)
-					{
-						NodeWarExitArea.instance.OnSacrifice(monsterActor);
-					}
-				}
+				if (NodeWarExitArea.instance != null && NodeWarExitArea.instance.IsInHealAreaRange())
+					NodeWarExitArea.instance.OnSacrifice(monsterActor);
 			}
 		}
 

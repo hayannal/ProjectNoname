@@ -44,6 +44,12 @@ public class NodeWarExitArea : MonoBehaviour
 
 		// 화살표는 ExitArea가 관리한다.
 		_arrowIndicatorTransform = Instantiate<GameObject>(arrowIndicatorPrefab, BattleInstanceManager.instance.playerActor.cachedTransform.position, Quaternion.identity).transform;
+
+		// 생성되는 타이밍에 플레이 중인 캐릭터의 MonsterBoost 타이밍을 얻어온다.
+		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(BattleInstanceManager.instance.playerActor.actorId);
+		_currentLastCountBase = actorTableData.nodeWarLastCount;
+		if (_currentLastCountBase >= SacrificeMax)
+			CheatingListener.OnDetectCheatTable();
 	}
 
 	void Update()
@@ -100,12 +106,9 @@ public class NodeWarExitArea : MonoBehaviour
 		float scale = healAreaEffectTransform.localScale.x;
 		// 오브젝트의 스케일을 바탕으로 월드좌표계의 스케일을 구한다.
 		float worldRange = scale / BaseHealAreaScaleX * BaseHealAreaRange;
-		Vector3 diff = cachedTransform.position - BattleInstanceManager.instance.playerActor.cachedTransform.position;
-		diff.y = 0.0f;
-		float sqrMagnitude = diff.sqrMagnitude;
-		bool inRange = (sqrMagnitude < worldRange * worldRange);
 		_lastHealAreaWorldRange = worldRange;
 
+		bool inRange = IsInHealAreaRange();
 		if (inRange)
 		{
 		}
@@ -170,6 +173,13 @@ public class NodeWarExitArea : MonoBehaviour
 		}
 	}
 
+	public bool IsInHealAreaRange()
+	{
+		Vector3 diff = cachedTransform.position - BattleInstanceManager.instance.playerActor.cachedTransform.position;
+		diff.y = 0.0f;
+		return (diff.sqrMagnitude < _lastHealAreaWorldRange * _lastHealAreaWorldRange);
+	}
+
 	IEnumerator<float> ScreenHealEffectProcess()
 	{
 		FadeCanvas.instance.FadeOut(0.2f, 0.6f);
@@ -197,6 +207,14 @@ public class NodeWarExitArea : MonoBehaviour
 			// 여기서 마법진 활성화 시키는 코드 호출
 			Timing.RunCoroutine(KillProcess());
 		}
+	}
+
+	int _currentLastCountBase = 0;
+	public bool AvailableLastCount()
+	{
+		if (_sacrificeCount < _currentLastCountBase)
+			return false;
+		return true;
 	}
 
 	float _remainTime;
@@ -281,7 +299,8 @@ public class NodeWarExitArea : MonoBehaviour
 		if (_killProcessed)
 			yield break;
 
-		BattleManager.instance.On10SecondAgoActiveExitArea();
+		// 더이상 침공은 시간에 의해 결정되지 않는다. 우선 삭제하진 않고 구조 변경중.
+		//BattleManager.instance.On10SecondAgoActiveExitArea();
 
 		// 회복마법진은 15초 후부터 줄어든다.
 		yield return Timing.WaitForSeconds(5.0f);

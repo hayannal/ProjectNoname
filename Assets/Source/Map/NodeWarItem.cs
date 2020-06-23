@@ -32,6 +32,13 @@ public class NodeWarItem : MonoBehaviour
 	public float secondJumpPower = 0.5f;
 	public float secondJumpDuration = 0.5f;
 
+	// 아무래도 수집인데 pull 없이 자동획득되니 이상하다. pull 넣어본다.
+	[Space(10)]
+	public float pullStartDelay = 0.5f;
+	public float pullStartSpeed = 3.0f;
+	public float pullAcceleration = 2.0f;
+	public Transform trailTransform;
+
 	static int s_particleColorPropertyID;
 	Color _particleDefaultColor;
 
@@ -45,6 +52,8 @@ public class NodeWarItem : MonoBehaviour
 			areaEffectTransform.localScale = Vector3.one;
 		if (particleSystemRenderer != null && _started)
 			particleSystemRenderer.material.SetColor(s_particleColorPropertyID, _particleDefaultColor);
+		if (trailTransform != null)
+			trailTransform.gameObject.SetActive(false);
 
 		InitializeJump();
 	}
@@ -68,7 +77,8 @@ public class NodeWarItem : MonoBehaviour
 	void Update()
 	{
 		UpdateJump();
-		UpdateAutoGet();
+		//UpdateAutoGet();
+		UpdatePull();
 		UpdateDistance();
 		UpdateAlpha();
 	}
@@ -76,7 +86,7 @@ public class NodeWarItem : MonoBehaviour
 	const float ValidDistance = 30.0f;
 	void UpdateDistance()
 	{
-		if (useJumpAnimation)
+		if (_jumpRemainTime > 0)
 			return;
 		if (_waitEndAnimation)
 			return;
@@ -138,7 +148,11 @@ public class NodeWarItem : MonoBehaviour
 			if (_lastJump)
 			{
 				_jumpRemainTime = 0.0f;
-				_autoGetRemainTime = 0.5f;
+
+				_pullStarted = true;
+				_pullDelay = pullStartDelay;
+				_pullSpeed = pullStartSpeed;
+				if (trailTransform != null) trailTransform.gameObject.SetActive(true);
 			}
 			else
 			{
@@ -164,14 +178,37 @@ public class NodeWarItem : MonoBehaviour
 		}
 	}
 
+	bool _pullStarted = false;
+	float _pullSpeed = 0.0f;
+	float _pullDelay = 0.0f;
+	void UpdatePull()
+	{
+		if (_jumpRemainTime > 0.0f)
+			return;
+		if (_pullStarted == false)
+			return;
+
+		_pullSpeed += pullAcceleration * Time.deltaTime;
+
+		Vector3 playerPosition = BattleInstanceManager.instance.playerActor.cachedTransform.position;
+		Vector3 position = cachedTransform.position;
+		Vector2 diff;
+		diff.x = playerPosition.x - position.x;
+		diff.y = playerPosition.z - position.z;
+		if (diff.magnitude < _pullSpeed * Time.deltaTime)
+			cachedTransform.Translate(new Vector3(diff.x, 0.0f, diff.y));
+		else
+			cachedTransform.Translate(new Vector3(diff.normalized.x, 0.0f, diff.normalized.y) * _pullSpeed * Time.deltaTime);
+	}
+
 	bool _waitEndAnimation;
 	void GetDropObject()
 	{
 		switch (itemType)
 		{
 			case eItemType.Soul:
-				// 마나는 자동습득 될테니 처리하지 않아도 된다.
-				//BattleManager.instance.OnGetSoul(cachedTransform.position);
+				BattleManager.instance.OnGetSoul(cachedTransform.position);
+				gameObject.SetActive(false);
 				//_waitEndAnimation = true;
 				break;
 			case eItemType.HealOrb:

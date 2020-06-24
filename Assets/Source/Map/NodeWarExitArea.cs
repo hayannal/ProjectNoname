@@ -321,14 +321,10 @@ public class NodeWarExitArea : MonoBehaviour
 
 		_processing = true;
 
-		Instantiate<GameObject>(areaActiveEffectPrefab, cachedTransform.position, Quaternion.identity);
-		yield return Timing.WaitForSeconds(0.8f);
-
-		// avoid gc
-		if (this == null)
-			yield break;
-
 		CustomRenderer.instance.bloom.AdjustDirtIntensity(1.5f);
+		EnvironmentSetting.SetGlobalLightIntensityRatio(0.3f, 0.0f, 5);
+		Instantiate<GameObject>(areaActiveEffectPrefab, cachedTransform.position, Quaternion.identity);
+		yield return Timing.WaitForSeconds(2.8f);
 
 		// avoid gc
 		if (this == null)
@@ -341,6 +337,7 @@ public class NodeWarExitArea : MonoBehaviour
 		if (this == null)
 			yield break;
 
+		EnvironmentSetting.ResetGlobalLightIntensityRatio();
 		CustomRenderer.instance.bloom.ResetDirtIntensity();
 
 		// 전투중이라서 Die검사를 해야한다. 여기서 죽으면 발동 안하고 취소되는거다.

@@ -111,7 +111,7 @@ public class NodeWarExitArea : MonoBehaviour
 		else
 		{
 			// 범위 밖으로 나갔을때 최초 1회에는 경고메세지를 보여준다.
-			if (_outAreaForText == false)
+			if (_outAreaForText == false && _sacrificeCount < SacrificeMax)
 			{
 				_outAreaForText = true;
 				BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarWarningOutside"), 2.5f);

@@ -805,12 +805,18 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		if (localPlayerController != null)
 			localPlayerController.dontMove = true;
 
+		// 포탈 타는 연출하면서 생성하니 렉 걸리길래 미리 캐싱해두기로 한다.
+		BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.portalMoveEffectPrefab, BattleInstanceManager.instance.playerActor.cachedTransform.position + new Vector3(100.0f, 0.0f, 0.0f), Quaternion.identity);
+		GameObject endSafeAreaObject = BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.nodeWarEndSafeAreaPrefab, BattleInstanceManager.instance.playerActor.cachedTransform.position + new Vector3(100.0f, 0.0f, 0.0f), Quaternion.identity);
+		yield return Timing.WaitForOneFrame;
+
 		// 플레이어 포지션 좌상단에 포탈을 생성하고
 		Vector3 portalPosition = BattleInstanceManager.instance.playerActor.cachedTransform.position + new Vector3(-1.0f, 0.0f, 1.0f);
 		BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.nodeWarEndPortalEffectPrefab, portalPosition, Quaternion.identity);
 
 		// 포탈 생성을 잠시 기다리고
 		yield return Timing.WaitForSeconds(1.0f);
+		endSafeAreaObject.SetActive(false);
 
 		// 검사할 필요 없긴 하다. 앱을 끄지 않는 이상 여기서 나갈 방법이 없기 때문.
 		// avoid gc

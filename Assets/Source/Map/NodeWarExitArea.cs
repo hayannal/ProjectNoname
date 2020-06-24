@@ -330,7 +330,7 @@ public class NodeWarExitArea : MonoBehaviour
 		if (this == null)
 			yield break;
 
-		FadeCanvas.instance.FadeOut(0.2f);
+		FadeCanvas.instance.FadeOut(0.2f, 0.6f);
 		yield return Timing.WaitForSeconds(0.2f);
 
 		// avoid gc
@@ -360,7 +360,7 @@ public class NodeWarExitArea : MonoBehaviour
 		canvasGroup.gameObject.SetActive(false);
 
 		// 몬스터 삭제 연출 보여줘야할테니 너무 오래 끌지는 않는다.
-		FadeCanvas.instance.FadeIn(0.8f);
+		FadeCanvas.instance.FadeIn(0.6f);
 
 		_processing = false;
 	}

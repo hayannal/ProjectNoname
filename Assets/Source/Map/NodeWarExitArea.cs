@@ -322,7 +322,7 @@ public class NodeWarExitArea : MonoBehaviour
 		_processing = true;
 
 		CustomRenderer.instance.bloom.AdjustDirtIntensity(1.5f);
-		EnvironmentSetting.SetGlobalLightIntensityRatio(0.3f, 0.0f, 5);
+		EnvironmentSetting.SetGlobalLightIntensityRatio(0.4f, 0.0f, 5);
 		Instantiate<GameObject>(areaActiveEffectPrefab, cachedTransform.position, Quaternion.identity);
 		yield return Timing.WaitForSeconds(2.8f);
 
@@ -330,7 +330,7 @@ public class NodeWarExitArea : MonoBehaviour
 		if (this == null)
 			yield break;
 
-		FadeCanvas.instance.FadeOut(0.2f, 0.6f);
+		FadeCanvas.instance.FadeOut(0.2f, 0.7f);
 		yield return Timing.WaitForSeconds(0.2f);
 
 		// avoid gc

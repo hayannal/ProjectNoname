@@ -1154,6 +1154,7 @@ GameObject:
   - component: {fileID: 5435232866527562545}
   - component: {fileID: 7840248257273679655}
   - component: {fileID: 71950731003032354}
+  - component: {fileID: 2851669396841507079}
   m_Layer: 5
   m_Name: SealTextButton
   m_TagString: Untagged
@@ -1329,6 +1330,19 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   lockCanvasInputInAnimation: 0
+--- !u!114 &2851669396841507079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2109671420207437542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09dd55011df63ab44a8b95418f4225f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SFXName: Click
 --- !u!1 &2112359397459799611
 GameObject:
   m_ObjectHideFlags: 0
@@ -2204,6 +2218,7 @@ GameObject:
   - component: {fileID: 5637416666437117391}
   - component: {fileID: 1480573555686924010}
   - component: {fileID: 2725849208712452182}
+  - component: {fileID: 3994624539017843148}
   m_Layer: 5
   m_Name: ExitText
   m_TagString: Untagged
@@ -2483,6 +2498,19 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   lockCanvasInputInAnimation: 0
+--- !u!114 &3994624539017843148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3705294127135384668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09dd55011df63ab44a8b95418f4225f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SFXName: Close
 --- !u!1 &3758678855067262899
 GameObject:
   m_ObjectHideFlags: 0
@@ -3839,6 +3867,7 @@ GameObject:
   - component: {fileID: 4275809191381134569}
   - component: {fileID: 2556999565473621426}
   - component: {fileID: 2951089664097565114}
+  - component: {fileID: 4190186407270138062}
   - component: {fileID: 6830891358692940900}
   - component: {fileID: 4089883537305317612}
   - component: {fileID: 815082572697264663}
@@ -4004,6 +4033,19 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   lockCanvasInputInAnimation: 0
+--- !u!114 &4190186407270138062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4930381445684228853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09dd55011df63ab44a8b95418f4225f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SFXName: Click
 --- !u!114 &6830891358692940900
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5233,7 +5275,7 @@ MonoBehaviour:
   autoKill: 0
   isActive: 1
   isValid: 1
-  target: {fileID: 5735217086325928219}
+  target: {fileID: 6398723469903975304}
   animationType: 5
   targetType: 11
   forcedTargetType: 0
@@ -7901,6 +7943,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Header
       objectReference: {fileID: 0}
+    - target: {fileID: 3644586361383523421, guid: 085bc674e269ae346bcb5eaf4d3cdd6e,
+        type: 3}
+      propertyPath: m_Text
+      value: Battle Result
+      objectReference: {fileID: 0}
     - target: {fileID: 4125559267737882663, guid: 085bc674e269ae346bcb5eaf4d3cdd6e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -8006,11 +8053,6 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 3644586361383523421, guid: 085bc674e269ae346bcb5eaf4d3cdd6e,
-        type: 3}
-      propertyPath: m_Text
-      value: Battle Result
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 085bc674e269ae346bcb5eaf4d3cdd6e, type: 3}
 --- !u!1 &7569367416397808111 stripped
@@ -8084,15 +8126,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7a8841907f32f2a49854f4f39c4fc8a9, type: 3}
---- !u!1 &680660645154126421 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1280085236418359063, guid: 7a8841907f32f2a49854f4f39c4fc8a9,
-    type: 3}
-  m_PrefabInstance: {fileID: 1779475996338017602}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &6963192746987630535 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8652484797891476101, guid: 7a8841907f32f2a49854f4f39c4fc8a9,
+    type: 3}
+  m_PrefabInstance: {fileID: 1779475996338017602}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &680660645154126421 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1280085236418359063, guid: 7a8841907f32f2a49854f4f39c4fc8a9,
     type: 3}
   m_PrefabInstance: {fileID: 1779475996338017602}
   m_PrefabAsset: {fileID: 0}
@@ -8324,22 +8366,17 @@ PrefabInstance:
       propertyPath: m_LocalScale.y
       value: 0.9
       objectReference: {fileID: 0}
+    - target: {fileID: 8660797667376797574, guid: 24f8dab218f9b0e44ac13591fc539e8f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6355288760854044068, guid: 24f8dab218f9b0e44ac13591fc539e8f,
         type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5050165671202247968, guid: 24f8dab218f9b0e44ac13591fc539e8f,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8660797667376797574, guid: 24f8dab218f9b0e44ac13591fc539e8f,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1757678698696980621, guid: 24f8dab218f9b0e44ac13591fc539e8f,
         type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -8354,17 +8391,16 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1757678698696980621, guid: 24f8dab218f9b0e44ac13591fc539e8f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 24f8dab218f9b0e44ac13591fc539e8f, type: 3}
 --- !u!1 &6989374078054835290 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1320923482014564549, guid: 24f8dab218f9b0e44ac13591fc539e8f,
-    type: 3}
-  m_PrefabInstance: {fileID: 8262946816916153503}
-  m_PrefabAsset: {fileID: 0}
---- !u!224 &3184094578626462637 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 6817270609324304178, guid: 24f8dab218f9b0e44ac13591fc539e8f,
     type: 3}
   m_PrefabInstance: {fileID: 8262946816916153503}
   m_PrefabAsset: {fileID: 0}
@@ -8380,3 +8416,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a6e00c2ec828224c9b3cc85f5496579, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &3184094578626462637 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 6817270609324304178, guid: 24f8dab218f9b0e44ac13591fc539e8f,
+    type: 3}
+  m_PrefabInstance: {fileID: 8262946816916153503}
+  m_PrefabAsset: {fileID: 0}

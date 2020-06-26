@@ -1183,6 +1183,7 @@ GameObject:
   - component: {fileID: 3551603032313859355}
   - component: {fileID: 4876320377698749664}
   - component: {fileID: 3906436196674718074}
+  - component: {fileID: 4003860002696754465}
   m_Layer: 5
   m_Name: RewardItem
   m_TagString: Untagged
@@ -1319,6 +1320,19 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   lockCanvasInputInAnimation: 0
+--- !u!114 &4003860002696754465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2533190797298710216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09dd55011df63ab44a8b95418f4225f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SFXName: Click
 --- !u!1 &2538295255068582605
 GameObject:
   m_ObjectHideFlags: 0
@@ -2165,10 +2179,10 @@ RectTransform:
   m_Father: {fileID: 8661482015812355834}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 230, y: -201}
-  m_SizeDelta: {x: 420, y: 394}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 420, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4496144918174345885
 MonoBehaviour:
@@ -3136,6 +3150,7 @@ GameObject:
   - component: {fileID: 1790080254440660060}
   - component: {fileID: 3383605232655147593}
   - component: {fileID: 8169536582697843750}
+  - component: {fileID: 3298636391027931261}
   m_Layer: 5
   m_Name: HomeButton
   m_TagString: Untagged
@@ -3278,6 +3293,19 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   lockCanvasInputInAnimation: 0
+--- !u!114 &3298636391027931261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7705279916128474040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09dd55011df63ab44a8b95418f4225f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SFXName: Close
 --- !u!1 &7990029181770643993
 GameObject:
   m_ObjectHideFlags: 0
@@ -3577,6 +3605,7 @@ GameObject:
   - component: {fileID: 4032188928337722024}
   - component: {fileID: 8234912490849428791}
   - component: {fileID: 1850491284104163952}
+  - component: {fileID: 5772544335737079915}
   - component: {fileID: 4447353481555991241}
   m_Layer: 5
   m_Name: BackButton
@@ -3720,6 +3749,19 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   lockCanvasInputInAnimation: 0
+--- !u!114 &5772544335737079915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8479521627325427226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09dd55011df63ab44a8b95418f4225f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SFXName: Close
 --- !u!114 &4447353481555991241
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4126,15 +4168,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 729e97cfdef74f346aba5ccc428d2df5, type: 3}
---- !u!1 &679373776906072485 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2807120178928134954, guid: 729e97cfdef74f346aba5ccc428d2df5,
-    type: 3}
-  m_PrefabInstance: {fileID: 3429906971365743247}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &4472127852555135491 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1263623228912955532, guid: 729e97cfdef74f346aba5ccc428d2df5,
+    type: 3}
+  m_PrefabInstance: {fileID: 3429906971365743247}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &679373776906072485 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2807120178928134954, guid: 729e97cfdef74f346aba5ccc428d2df5,
     type: 3}
   m_PrefabInstance: {fileID: 3429906971365743247}
   m_PrefabAsset: {fileID: 0}

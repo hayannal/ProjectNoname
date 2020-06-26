@@ -715,8 +715,8 @@ GameObject:
   - component: {fileID: 4052284666947506178}
   - component: {fileID: 4200965961686976724}
   - component: {fileID: 4137512530992952565}
-  - component: {fileID: 4105816927353755554}
   - component: {fileID: 3365350126066164844}
+  - component: {fileID: 8303193423568844359}
   m_Layer: 5
   m_Name: LevelUpButton
   m_TagString: Untagged
@@ -858,24 +858,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pressedStateName: Pressed
   pressed2NormalStateName: Pressed to Normal
---- !u!114 &4105816927353755554
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4137512530992952564}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 638902179d638ae4e9aa7a614d2c5d03, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hoverSound: {fileID: 8300000, guid: efcf35620bd53fe498ea133cdc81edab, type: 3}
-  clickSound: {fileID: 8300000, guid: 21c7b853ae2296844b9dc446685fd867, type: 3}
-  notificationSound: {fileID: 8300000, guid: d02c375a5fbc7864798044b75a93318e, type: 3}
-  enableHoverSound: 1
-  enableClickSound: 1
-  isNotification: 0
 --- !u!114 &3365350126066164844
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -894,6 +876,19 @@ MonoBehaviour:
   levelText: {fileID: 7552590530782896214}
   titleImage: {fileID: 8364709714459592470}
   exclusiveText: {fileID: 8582716509020199550}
+--- !u!114 &8303193423568844359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4137512530992952564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09dd55011df63ab44a8b95418f4225f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SFXName: Click
 --- !u!1 &4137546967559258366
 GameObject:
   m_ObjectHideFlags: 0

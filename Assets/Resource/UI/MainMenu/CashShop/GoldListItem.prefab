@@ -222,6 +222,7 @@ GameObject:
   - component: {fileID: 2516371133605187467}
   - component: {fileID: 630598275756523532}
   - component: {fileID: 847762313391514602}
+  - component: {fileID: 7410511032874605888}
   m_Layer: 5
   m_Name: GoldListItem
   m_TagString: Untagged
@@ -377,6 +378,19 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   lockCanvasInputInAnimation: 0
+--- !u!114 &7410511032874605888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2941210090934699021}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09dd55011df63ab44a8b95418f4225f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SFXName: Click
 --- !u!1 &3254310239424345668
 GameObject:
   m_ObjectHideFlags: 0
@@ -1241,6 +1255,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5842822049714007567}
     m_Modifications:
+    - target: {fileID: 2807120178928134954, guid: 729e97cfdef74f346aba5ccc428d2df5,
+        type: 3}
+      propertyPath: m_Name
+      value: DiamondImage
+      objectReference: {fileID: 0}
     - target: {fileID: 1263623228912955532, guid: 729e97cfdef74f346aba5ccc428d2df5,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1345,11 +1364,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2807120178928134954, guid: 729e97cfdef74f346aba5ccc428d2df5,
-        type: 3}
-      propertyPath: m_Name
-      value: DiamondImage
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 729e97cfdef74f346aba5ccc428d2df5, type: 3}

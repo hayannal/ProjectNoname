@@ -188,8 +188,8 @@ GameObject:
   - component: {fileID: 497421740156534858}
   - component: {fileID: 495855430764194796}
   - component: {fileID: 319353503750484554}
-  - component: {fileID: 319311958146201354}
   - component: {fileID: 2337928994470395203}
+  - component: {fileID: 421306847908533118}
   m_Layer: 5
   m_Name: DefaultSimpleButton
   m_TagString: Untagged
@@ -284,24 +284,6 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!114 &319311958146201354
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 432279099104138332}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 638902179d638ae4e9aa7a614d2c5d03, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hoverSound: {fileID: 8300000, guid: efcf35620bd53fe498ea133cdc81edab, type: 3}
-  clickSound: {fileID: 8300000, guid: 21c7b853ae2296844b9dc446685fd867, type: 3}
-  notificationSound: {fileID: 8300000, guid: d02c375a5fbc7864798044b75a93318e, type: 3}
-  enableHoverSound: 1
-  enableClickSound: 1
-  isNotification: 0
 --- !u!114 &2337928994470395203
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -324,6 +306,19 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   lockCanvasInputInAnimation: 0
+--- !u!114 &421306847908533118
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 432279099104138332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09dd55011df63ab44a8b95418f4225f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SFXName: Click
 --- !u!1 &905447787806688583
 GameObject:
   m_ObjectHideFlags: 0

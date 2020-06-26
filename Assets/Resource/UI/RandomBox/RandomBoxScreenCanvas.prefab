@@ -289,6 +289,7 @@ GameObject:
   - component: {fileID: 8220705665927672940}
   - component: {fileID: 5268354865732608004}
   - component: {fileID: 5831826617017113518}
+  - component: {fileID: 2723250749198019013}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -394,6 +395,19 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &2723250749198019013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1774161638856178311}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09dd55011df63ab44a8b95418f4225f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SFXName: BoxTouch
 --- !u!1 &3269909565307232668
 GameObject:
   m_ObjectHideFlags: 0
@@ -756,6 +770,7 @@ GameObject:
   - component: {fileID: 8895109230865959250}
   - component: {fileID: 2300789335212475376}
   - component: {fileID: 2407705832589980692}
+  - component: {fileID: 6737790824315633090}
   m_Layer: 5
   m_Name: CancelButton
   m_TagString: Untagged
@@ -900,3 +915,16 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   lockCanvasInputInAnimation: 0
+--- !u!114 &6737790824315633090
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8633257322735606543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09dd55011df63ab44a8b95418f4225f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SFXName: Click

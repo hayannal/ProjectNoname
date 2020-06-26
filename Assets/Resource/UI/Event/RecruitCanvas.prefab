@@ -342,6 +342,7 @@ GameObject:
   - component: {fileID: 7098055317585139662}
   - component: {fileID: 8047259019039482821}
   - component: {fileID: 7303859101693832229}
+  - component: {fileID: 6793986447771100801}
   m_Layer: 5
   m_Name: CharactterNameTextButton
   m_TagString: Untagged
@@ -504,6 +505,19 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   lockCanvasInputInAnimation: 0
+--- !u!114 &6793986447771100801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3016162999601062585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09dd55011df63ab44a8b95418f4225f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SFXName: Click
 --- !u!1 &3585073107054144660
 GameObject:
   m_ObjectHideFlags: 0
@@ -810,6 +824,7 @@ GameObject:
   - component: {fileID: 8609941297442588743}
   - component: {fileID: 5638329945210013376}
   - component: {fileID: 6080381488207018564}
+  - component: {fileID: 6607090442879416459}
   m_Layer: 5
   m_Name: DetailTextButton
   m_TagString: Untagged
@@ -985,6 +1000,19 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   lockCanvasInputInAnimation: 0
+--- !u!114 &6607090442879416459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5447401900007511281}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09dd55011df63ab44a8b95418f4225f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SFXName: Click
 --- !u!1 &5621496159047116023
 GameObject:
   m_ObjectHideFlags: 0
@@ -1395,10 +1423,20 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 75
       objectReference: {fileID: 0}
-    - target: {fileID: 4555725146600251439, guid: 1b87655fb80af0545b468419b074d01b,
+    - target: {fileID: 319353503750484554, guid: 1b87655fb80af0545b468419b074d01b,
         type: 3}
-      propertyPath: m_IsActive
-      value: 0
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 5135283640151201640}
+    - target: {fileID: 319353503750484554, guid: 1b87655fb80af0545b468419b074d01b,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnClickRecruitButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 319353503750484554, guid: 1b87655fb80af0545b468419b074d01b,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 497277672154971378, guid: 1b87655fb80af0545b468419b074d01b,
         type: 3}
@@ -1415,40 +1453,25 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 319353503750484554, guid: 1b87655fb80af0545b468419b074d01b,
+    - target: {fileID: 4555725146600251439, guid: 1b87655fb80af0545b468419b074d01b,
         type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 5135283640151201640}
-    - target: {fileID: 319353503750484554, guid: 1b87655fb80af0545b468419b074d01b,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnClickRecruitButton
-      objectReference: {fileID: 0}
-    - target: {fileID: 319353503750484554, guid: 1b87655fb80af0545b468419b074d01b,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 319688406843804706, guid: 1b87655fb80af0545b468419b074d01b,
-        type: 3}
-      propertyPath: m_Type
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 319688406843804706, guid: 1b87655fb80af0545b468419b074d01b,
+    - target: {fileID: 494006717760476962, guid: 1b87655fb80af0545b468419b074d01b,
         type: 3}
-      propertyPath: m_FillAmount
+      propertyPath: m_Alpha
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 319729521445876676, guid: 1b87655fb80af0545b468419b074d01b,
-        type: 3}
-      propertyPath: m_Type
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 319729521445876676, guid: 1b87655fb80af0545b468419b074d01b,
+    - target: {fileID: 315745149496558698, guid: 1b87655fb80af0545b468419b074d01b,
         type: 3}
       propertyPath: m_FillAmount
-      value: 1
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 315682951540029302, guid: 1b87655fb80af0545b468419b074d01b,
+        type: 3}
+      propertyPath: m_FillAmount
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 318670000784874658, guid: 1b87655fb80af0545b468419b074d01b,
         type: 3}
@@ -1475,19 +1498,24 @@ PrefabInstance:
       propertyPath: m_Text
       value: Accept
       objectReference: {fileID: 0}
-    - target: {fileID: 315682951540029302, guid: 1b87655fb80af0545b468419b074d01b,
+    - target: {fileID: 319688406843804706, guid: 1b87655fb80af0545b468419b074d01b,
+        type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 319688406843804706, guid: 1b87655fb80af0545b468419b074d01b,
         type: 3}
       propertyPath: m_FillAmount
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 315745149496558698, guid: 1b87655fb80af0545b468419b074d01b,
+    - target: {fileID: 319729521445876676, guid: 1b87655fb80af0545b468419b074d01b,
+        type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 319729521445876676, guid: 1b87655fb80af0545b468419b074d01b,
         type: 3}
       propertyPath: m_FillAmount
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 494006717760476962, guid: 1b87655fb80af0545b468419b074d01b,
-        type: 3}
-      propertyPath: m_Alpha
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:

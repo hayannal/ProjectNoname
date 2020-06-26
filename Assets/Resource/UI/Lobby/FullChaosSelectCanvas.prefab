@@ -452,6 +452,7 @@ GameObject:
   - component: {fileID: 2983804749465535207}
   - component: {fileID: 3886741539294218492}
   - component: {fileID: 2500280604060854845}
+  - component: {fileID: 4609062003264570055}
   m_Layer: 5
   m_Name: SubTitleTextButton
   m_TagString: Untagged
@@ -627,6 +628,19 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   lockCanvasInputInAnimation: 0
+--- !u!114 &4609062003264570055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2426253515652820758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09dd55011df63ab44a8b95418f4225f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SFXName: Click
 --- !u!114 &4441105509183176169
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -727,6 +741,7 @@ GameObject:
   - component: {fileID: 2613926368570232388}
   - component: {fileID: 7315115674094134634}
   - component: {fileID: 1119067974288999424}
+  - component: {fileID: 4303002075398791479}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -858,6 +873,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99f27832db332944d94c102c4d4d0868, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4303002075398791479
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3311653184301777987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09dd55011df63ab44a8b95418f4225f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SFXName: Close
 --- !u!114 &1848267089098691459
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1639,15 +1667,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f18777abe7ffb4140b9651999a307657, type: 3}
---- !u!1 &3438373833884230946 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 432102841880879190, guid: f18777abe7ffb4140b9651999a307657,
-    type: 3}
-  m_PrefabInstance: {fileID: 3046876420276340084}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &3219967742308484414 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 497421740156534858, guid: f18777abe7ffb4140b9651999a307657,
+    type: 3}
+  m_PrefabInstance: {fileID: 3046876420276340084}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3438373833884230946 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 432102841880879190, guid: f18777abe7ffb4140b9651999a307657,
     type: 3}
   m_PrefabInstance: {fileID: 3046876420276340084}
   m_PrefabAsset: {fileID: 0}

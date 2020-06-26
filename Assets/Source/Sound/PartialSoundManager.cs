@@ -59,5 +59,7 @@ public partial class SoundManager : MonoBehaviour
 				return;
 			}
 		}
+
+		Debug.LogErrorFormat("Not found SFX. name = {0}", name);
 	}
 }

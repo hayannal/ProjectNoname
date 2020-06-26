@@ -251,6 +251,7 @@ public class DotMainMenuCanvas : MonoBehaviour
 		if (!gameObject.activeSelf)
 		{
 			gameObject.SetActive(true);
+			SoundManager.instance.PlaySFX("7DotOpen");
 			return;
 		}
 
@@ -263,6 +264,7 @@ public class DotMainMenuCanvas : MonoBehaviour
 			scaleAniRootTransform.DORotate(new Vector3(0.0f, RotateAnimationValue * (1.0f - scaleAniRootTransform.localScale.x), 0.0f), showRemainTime, RotateMode.LocalAxisAdd).SetEase(startEaseType);
 			canvasGroup.DOFade(1.0f, showRemainTime).SetEase(Ease.InQuad);
 			_reservedHide = false;
+			SoundManager.instance.PlaySFX("7DotOpen");
 			return;
 		}
 
@@ -273,6 +275,7 @@ public class DotMainMenuCanvas : MonoBehaviour
 		scaleAniRootTransform.DORotate(new Vector3(0.0f, -RotateAnimationValue * scaleAniRootTransform.localScale.x, 0.0f), remainTime, RotateMode.LocalAxisAdd).SetEase(Ease.OutQuad);
 		canvasGroup.DOFade(0.0f, remainTime).SetEase(Ease.InQuad);
 		_reservedHide = true;
+		SoundManager.instance.PlaySFX("7DotClose");
 	}
 
 	void OnCompleteScaleZero()

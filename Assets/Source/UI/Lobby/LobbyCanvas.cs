@@ -70,6 +70,7 @@ public class LobbyCanvas : MonoBehaviour
 			if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby == false) return;
 
 			DotMainMenuCanvas.instance.targetTransform = BattleInstanceManager.instance.playerActor.cachedTransform;
+			SoundManager.instance.PlaySFX("7DotOpen");
 		});
 	}
 

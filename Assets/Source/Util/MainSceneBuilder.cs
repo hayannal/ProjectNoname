@@ -412,6 +412,9 @@ public class MainSceneBuilder : MonoBehaviour
 #if !UNITY_EDITOR
 		Debug.LogWarning("MMMMMMMMM");
 #endif
+
+		// 캐싱 오브젝트를 만들어내기 전에 사운드부터 줄여놔야 안들린다.
+		SoundManager.instance.SetUiVolume(0.0f);
 		if (BattleInstanceManager.instance.playerActor.cachingObjectList != null && BattleInstanceManager.instance.playerActor.cachingObjectList.Length > 0)
 		{
 			_listCachingObject = new List<GameObject>();
@@ -459,6 +462,9 @@ public class MainSceneBuilder : MonoBehaviour
 						_listCachingObject[i].SetActive(false);
 					_listCachingObject.Clear();
 				}
+				// 캐싱 오브젝트 끌때 바로 복구
+				SoundManager.instance.SetUiVolume(OptionManager.instance.systemVolume);
+
 				// step 12. fade out
 				if (playAfterInstallation)
 				{

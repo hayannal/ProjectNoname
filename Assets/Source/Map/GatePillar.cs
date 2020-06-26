@@ -578,6 +578,7 @@ public class GatePillar : MonoBehaviour
 
 		yield return Timing.WaitForSeconds(0.2f);
 		changeEffectParticleRootObject.SetActive(true);
+		SoundManager.instance.PlaySFX("GatePillar");
 
 		// avoid gc
 		if (this == null)

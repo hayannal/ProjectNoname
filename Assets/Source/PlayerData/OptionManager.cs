@@ -115,7 +115,7 @@ public class OptionManager : MonoBehaviour
 		set
 		{
 			_bgmVolume = value;
-			//SoundManager.instance.volumeGlobalBgm = _bgmVolume;
+			SoundManager.instance.SetBgmVolume(_bgmVolume);
 		}
 	}
 
@@ -128,7 +128,7 @@ public class OptionManager : MonoBehaviour
 		set
 		{
 			_systemVolume = value;
-			//SoundManager.instance.volumeGlobalSystem = _systemVolume;
+			SoundManager.instance.SetUiVolume(_systemVolume);
 		}
 	}
 

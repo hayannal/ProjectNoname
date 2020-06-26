@@ -139,6 +139,7 @@ public class MailCanvasListItem : MonoBehaviour
 	public void OnClickButton()
 	{
 		MailCanvas.instance.OnClickListItem(id, receiveDay);
+		SoundManager.instance.PlaySFX(selectObject.activeSelf ? "GridOff" : "GridOn");
 	}
 	
 	public void ShowSelectObject(bool show)

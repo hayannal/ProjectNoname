@@ -78,6 +78,7 @@ public class SwapCanvasListItem : MonoBehaviour
 	{
 		if (_clickAction != null)
 			_clickAction.Invoke(actorId);
+		SoundManager.instance.PlaySFX("GridOn");
 	}
 
 	public void ShowSelectObject(bool show)

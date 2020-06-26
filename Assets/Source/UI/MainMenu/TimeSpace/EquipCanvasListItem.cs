@@ -89,6 +89,7 @@ public class EquipCanvasListItem : MonoBehaviour
 	{
 		if (_clickAction != null)
 			_clickAction.Invoke(equipData);
+		SoundManager.instance.PlaySFX(selectObject.activeSelf ? "GridOff" : "GridOn");
 	}
 
 	public void ShowSelectObject(bool show)

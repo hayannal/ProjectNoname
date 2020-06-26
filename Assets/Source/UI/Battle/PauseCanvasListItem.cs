@@ -36,6 +36,7 @@ public class PauseCanvasListItem : MonoBehaviour
 	{
 		PauseCanvas.instance.OnClickListItem(levelPackInfo);
 		selectObject.SetActive(true);
+		SoundManager.instance.PlaySFX("GridOn");
 	}
 
 	public void ShowSelectObject(bool show)

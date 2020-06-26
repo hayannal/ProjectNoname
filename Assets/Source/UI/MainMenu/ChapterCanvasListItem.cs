@@ -71,6 +71,7 @@ public class ChapterCanvasListItem : MonoBehaviour
 	public void OnClickButton()
 	{
 		ChapterCanvas.instance.OnClickListItem(chapter);
+		SoundManager.instance.PlaySFX("GridOn");
 	}
 
 	public void OnClickStoryButton()

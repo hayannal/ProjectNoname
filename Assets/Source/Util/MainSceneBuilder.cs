@@ -317,6 +317,8 @@ public class MainSceneBuilder : MonoBehaviour
 #if !UNITY_EDITOR
 		Debug.LogWarning("FFFFFFFFF");
 #endif
+		SoundManager.instance.PlayBgm("BGM_Lobby", 1.0f);
+
 		if (EventManager.instance.IsStandbyServerEvent(EventManager.eServerEvent.chaos))
 		{
 			_handleEventGatePillar = Addressables.LoadAssetAsync<GameObject>("OpenChaosGatePillar");
@@ -483,6 +485,9 @@ public class MainSceneBuilder : MonoBehaviour
 			DailyShopData.instance.LateInitialize();
 			TimeSpaceData.instance.LateInitialize();
 		}
+
+		// 워낙 크기가 작으니 LateInitialize에서 해도 문제없을거다.
+		SoundManager.instance.LoadInApkSFXContainer();
 
 		for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)
 			AddressableAssetLoadManager.GetAddressableSprite(TableDataManager.instance.actorTable.dataArray[i].portraitAddress, "Icon", null);

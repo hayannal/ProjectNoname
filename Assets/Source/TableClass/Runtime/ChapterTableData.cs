@@ -36,4 +36,8 @@ public class ChapterTableData
   int _revertGold;
   public int revertGold { get { return _revertGold; } set { _revertGold = value; } }
   
+  [SerializeField]
+  string _chapterMusic;
+  public string chapterMusic { get { return _chapterMusic; } set { _chapterMusic = value; } }
+  
 }

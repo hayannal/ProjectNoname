@@ -642,7 +642,7 @@ public class GatePillar : MonoBehaviour
 			MainSceneBuilder.instance.OnExitLobby();
 			BattleManager.instance.OnStartBattle();
 			BattleInstanceManager.instance.AddBattlePlayer(BattleInstanceManager.instance.playerActor.actorId);
-			SoundManager.instance.PlayBgm("BGM_ChapterBattle", 1.0f);
+			SoundManager.instance.PlayBattleBgm(BattleInstanceManager.instance.playerActor.actorId);
 		}
 		while (StageManager.instance.IsDoneLoadAsyncNextStage() == false)
 			yield return Timing.WaitForOneFrame;

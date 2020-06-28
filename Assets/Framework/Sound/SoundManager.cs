@@ -69,18 +69,19 @@ public partial class SoundManager : MonoBehaviour {
 	#region BGM
 	AudioSource _audioSourceForBGM;
 	Coroutine _fadeCoroutine;
-	public void PlayBgm(AudioClip clip, float fadeTime)
+	public void PlayBgm(AudioClip clip, float volume, float fadeTime)
 	{
 		if (_audioSourceForBGM.isPlaying)
 		{
 			if (_fadeCoroutine != null)
 				StopCoroutine(_fadeCoroutine);
 			
-			_fadeCoroutine = StartCoroutine(CoroutineFadeOutBGM(clip, fadeTime));
+			_fadeCoroutine = StartCoroutine(CoroutineFadeOutBGM(clip, volume, fadeTime));
 		}
 		else
 		{
 			_audioSourceForBGM.clip = clip;
+			_audioSourceForBGM.volume = volume;
 			_audioSourceForBGM.Play();
 			FadeInBGM(fadeTime);
 		}
@@ -94,10 +95,10 @@ public partial class SoundManager : MonoBehaviour {
 		if (_fadeCoroutine != null)
 			StopCoroutine(_fadeCoroutine);
 
-		_fadeCoroutine = StartCoroutine(CoroutineFadeOutBGM(null, fadeTime));
+		_fadeCoroutine = StartCoroutine(CoroutineFadeOutBGM(null, 0.0f, fadeTime));
 	}
 
-	IEnumerator CoroutineFadeOutBGM(AudioClip clip, float fadeTime)
+	IEnumerator CoroutineFadeOutBGM(AudioClip clip, float volume, float fadeTime)
 	{
 		float fadeOutTime = (clip == null) ? fadeTime : fadeTime * 0.75f;
 		FadeOutBGM(fadeOutTime);
@@ -109,6 +110,7 @@ public partial class SoundManager : MonoBehaviour {
 			yield break;
 		
 		_audioSourceForBGM.clip = clip;
+		_audioSourceForBGM.volume = volume;
 		_audioSourceForBGM.Play();
 		FadeInBGM(fadeTime * 0.25f);
 		yield break;

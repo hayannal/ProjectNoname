@@ -76,6 +76,8 @@ public class ExperienceCanvas : MonoBehaviour
 		CharacterListCanvas.instance.ChangeExperience();
 		if (ExperienceGround.instance != null)
 			ExperienceGround.instance.gameObject.SetActive(true);
+
+		SoundManager.instance.PlayBattleBgm(CharacterListCanvas.instance.selectedPlayerActor.actorId);
 	}
 
 	void ResetExperienceMode()
@@ -89,6 +91,8 @@ public class ExperienceCanvas : MonoBehaviour
 		if (ExperienceGround.instance != null)
 			ExperienceGround.instance.gameObject.SetActive(false);
 		SkillSlotCanvas.instance.HideSkillSlot();
+
+		SoundManager.instance.PlayLobbyBgm();
 	}
 
 

@@ -117,6 +117,10 @@ public class ActorTableData
   public int trainingMax { get { return _trainingMax; } set { _trainingMax = value; } }
   
   [SerializeField]
+  string _battltMusicOverriding;
+  public string battltMusicOverriding { get { return _battltMusicOverriding; } set { _battltMusicOverriding = value; } }
+  
+  [SerializeField]
   int _nodeWarLastCount;
   public int nodeWarLastCount { get { return _nodeWarLastCount; } set { _nodeWarLastCount = value; } }
   

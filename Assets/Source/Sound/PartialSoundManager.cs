@@ -24,7 +24,7 @@ public partial class SoundManager : MonoBehaviour
 		if (bgmInfo.addressForVerify != _reservedBGMAddress)
 			return;
 
-		PlayBgm(bgmInfo.audioClip, _fadeTime);
+		PlayBgm(bgmInfo.audioClip, bgmInfo.volume, _fadeTime);
 	}
 
 	SFXContainer _inApkSFXContainer;
@@ -62,4 +62,36 @@ public partial class SoundManager : MonoBehaviour
 
 		Debug.LogErrorFormat("Not found SFX. name = {0}", name);
 	}
+
+
+	#region Bgm Helper
+	public void PlayLobbyBgm(float fadeTime = 1.0f)
+	{
+		ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(PlayerData.instance.selectedChapter);
+		if (chapterTableData == null)
+			return;
+		PlayBgm(chapterTableData.chapterMusic, fadeTime);
+	}
+
+	public void PlayBattleBgm(string actorId, float fadeTime = 1.0f)
+	{
+		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(actorId);
+		if (actorTableData != null && string.IsNullOrEmpty(actorTableData.battltMusicOverriding) == false)
+		{
+			PlayBgm(actorTableData.battltMusicOverriding, fadeTime);
+			return;
+		}
+		PlayBgm("BGM_ChapterBattle", fadeTime);
+	}
+
+	public void PlayBossBgm(float fadeTime = 1.0f)
+	{
+		//PlayBgm()
+	}
+
+	public void PlayNodeWarBgm(float fadeTime = 1.0f)
+	{
+
+	}
+	#endregion
 }

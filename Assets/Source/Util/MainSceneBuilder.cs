@@ -317,7 +317,7 @@ public class MainSceneBuilder : MonoBehaviour
 #if !UNITY_EDITOR
 		Debug.LogWarning("FFFFFFFFF");
 #endif
-		SoundManager.instance.PlayBgm("BGM_Lobby", 1.0f);
+		SoundManager.instance.PlayLobbyBgm();
 
 		if (EventManager.instance.IsStandbyServerEvent(EventManager.eServerEvent.chaos))
 		{
@@ -592,6 +592,7 @@ public class MainSceneBuilder : MonoBehaviour
 
 		// step 8. gate pillar & TreasureChest
 		yield return new WaitUntil(() => waitSpawnFlag);
+		SoundManager.instance.PlayBattleBgm(PlayerData.instance.mainCharacterId);
 
 		StageManager.instance.GetNextStageInfo();
 		while (UIString.instance.IsDoneLoadAsyncStringData() == false)

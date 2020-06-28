@@ -55,7 +55,7 @@ public partial class SoundManager : MonoBehaviour
 		{
 			if (_inApkSFXContainer.sfxData[i].name == name)
 			{
-				PlaySFX(_inApkSFXContainer.sfxData[i].audioClip, _inApkSFXContainer.sfxData[i].volume);
+				PlaySFX(_inApkSFXContainer.sfxData[i].audioClip, _inApkSFXContainer.sfxData[i].volume, _inApkSFXContainer.sfxData[i].pitch);
 				return;
 			}
 		}

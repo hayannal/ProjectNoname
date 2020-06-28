@@ -209,12 +209,12 @@ public partial class SoundManager : MonoBehaviour {
 
 	List<AudioSource> _cachedAudioSourceFor2D = new List<AudioSource>();
 
-	public AudioSource PlaySFX(AudioClip clip, float volume, bool loop = false)
+	public AudioSource PlaySFX(AudioClip clip, float volume, float pitch, bool loop = false)
 	{
 		AudioSource cachedAudioSource = GetCachedAudioSourceFor2D();
 		cachedAudioSource.gameObject.SetActive(true);
 		cachedAudioSource.clip = clip;
-		cachedAudioSource.pitch = 1.0f;
+		cachedAudioSource.pitch = pitch;
 		cachedAudioSource.volume = volume;
 		cachedAudioSource.loop = loop;
 		cachedAudioSource.Play();

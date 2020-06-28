@@ -366,6 +366,7 @@ public class EquipListCanvas : EquipShowCanvasBase
 
 		reopenEquippedStatusInfoTextObject.gameObject.SetActive(false);
 		RefreshEquippedStatusInfo(equipData);
+		SoundManager.instance.PlaySFX("GridOn");
 
 		// 장비 오브젝트를 탭해서 켜면 플래그를 초기화시킨다.
 		_closeEquippedStatusInfoByUser = false;

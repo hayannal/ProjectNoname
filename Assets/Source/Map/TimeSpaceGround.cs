@@ -35,6 +35,7 @@ public class TimeSpaceGround : MonoBehaviour
 		BattleInstanceManager.instance.playerActor.cachedTransform.position = cachedTransform.position + teleportPosition;
 		TailAnimatorUpdater.UpdateAnimator(BattleInstanceManager.instance.playerActor.cachedTransform, 15);
 		CustomFollowCamera.instance.immediatelyUpdate = true;
+		SoundManager.instance.PlaySFX("TimeSpaceEnter");
 	}
 
 	void OnDisable()
@@ -58,6 +59,7 @@ public class TimeSpaceGround : MonoBehaviour
 		BattleInstanceManager.instance.playerActor.cachedTransform.position = returnPosition;
 		TailAnimatorUpdater.UpdateAnimator(BattleInstanceManager.instance.playerActor.cachedTransform, 15);
 		CustomFollowCamera.instance.immediatelyUpdate = true;
+		SoundManager.instance.PlaySFX("TimeSpaceEnter");
 	}
 
 	public void EnableObjectDeformer(bool enable)

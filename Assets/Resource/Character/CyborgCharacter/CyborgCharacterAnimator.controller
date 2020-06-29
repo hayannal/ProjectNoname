@@ -145,14 +145,15 @@ AnimatorState:
   - {fileID: 1934512432174511729}
   - {fileID: -2412566443936429071}
   m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
+  m_IKOnFeet: 1
   m_WriteDefaultValues: 1
   m_Mirror: 0
   m_SpeedParameterActive: 1
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 374fdf19f3b77d344a052245b1155192, type: 3}
+  m_Motion: {fileID: -7211361936299571564, guid: 8787cc3da435ba04e8954530e0c91454,
+    type: 3}
   m_Tag: 
   m_SpeedParameter: AttackAniSpeedRatio
   m_MirrorParameter: 
@@ -205,6 +206,7 @@ MonoBehaviour:
     type: 3}
   lifeTime: 3
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
   maxDistance: 7.35
   defaultSphereCastDistance: 0
@@ -221,6 +223,8 @@ MonoBehaviour:
   areaHeightMin: 0
   areaHeightMax: 0
   areaAngle: 0
+  checkRaycastWallInArea: 0
+  applyCollisionDamageInterval: 0
   repeatCount: 0
   repeatInterval: 1
   movementType: 0
@@ -234,8 +238,12 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
   speed: 12
+  useSpeedChange: 0
+  targetSpeed: 0
+  speedChangeTime: 0
+  speedChangeEase: 6
   curve: 0
   curveAdd: 0
   curveLockY: 0
@@ -265,6 +273,7 @@ MonoBehaviour:
   hitStayIgnoreDuplicate: 0
   hitStayIdForIgnoreDuplicate: 0
   hitStayLineRendererTrigger: 0
+  onlyUsedAsTrigger: 0
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:

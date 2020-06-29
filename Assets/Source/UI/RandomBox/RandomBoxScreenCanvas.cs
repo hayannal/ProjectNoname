@@ -57,6 +57,11 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 			DotMainMenuCanvas.instance.HideCanvas(true);
 			StackCanvas.Push(gameObject);
 		}
+		else if (CashShopCanvas.instance != null && CashShopCanvas.instance.gameObject.activeSelf)
+		{
+			// 로비에서 TreasureChest Indicator 통해서 상점을 열었을때는 DotMainMenuCanvas 변경없이 StackCanvas 처리를 한다.
+			StackCanvas.Push(gameObject);
+		}
 	}
 
 	void OnDisable()
@@ -73,6 +78,10 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf && StackCanvas.IsInStack(DotMainMenuCanvas.instance.gameObject))
 		{
 			DotMainMenuCanvas.instance.HideCanvas(false);
+			StackCanvas.Pop(gameObject);
+		}
+		else if (CashShopCanvas.instance != null && CashShopCanvas.instance.gameObject.activeSelf == false && StackCanvas.IsInStack(CashShopCanvas.instance.gameObject))
+		{
 			StackCanvas.Pop(gameObject);
 		}
 	}

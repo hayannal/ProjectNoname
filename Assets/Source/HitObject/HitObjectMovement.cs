@@ -29,6 +29,7 @@ public class HitObjectMovement : MonoBehaviour {
 		FixedSpeed,
 	}
 
+	HitObject _hitObject;
 	MeHitObject _signal;
 	float _createTime;
 	Vector3 _createPosition;
@@ -45,8 +46,9 @@ public class HitObjectMovement : MonoBehaviour {
 	#endregion
 
 	TweenerCore<float, float, FloatOptions> _tweenReferenceForSpeedChange;
-	public void InitializeSignal(MeHitObject meHit, Actor parentActor, Rigidbody rigidbody, int hitSignalIndexInAction)
+	public void InitializeSignal(HitObject hitObject, MeHitObject meHit, Actor parentActor, Rigidbody rigidbody, int hitSignalIndexInAction)
 	{
+		_hitObject = hitObject;
 		_signal = meHit;
 		_createTime = Time.time;
 		_createPosition = cachedTransform.position;
@@ -191,6 +193,8 @@ public class HitObjectMovement : MonoBehaviour {
 
 	void Update()
 	{
+		UpdateLifeTimeWhenDieTarget();
+
 		if (_rigidbody.detectCollisions == false)
 			return;
 
@@ -205,12 +209,28 @@ public class HitObjectMovement : MonoBehaviour {
 					break;
 				if (_followTargetActor != null && _followTargetActor.actorStatus.IsDie())
 				{
+					_remainOverrideLifeTime = _signal.overrideLifeTimeWhenDieTarget;
+
 					// 중간에 타겟을 바꿀일은 없나?
 					_ignoreFollow = true;
 					break;
 				}
 				_currentCurve += Time.deltaTime * _signal.curveAdd;
 				break;
+		}
+	}
+
+	float _remainOverrideLifeTime;
+	void UpdateLifeTimeWhenDieTarget()
+	{
+		if (_remainOverrideLifeTime > 0.0f)
+		{
+			_remainOverrideLifeTime -= Time.deltaTime;
+			if (_remainOverrideLifeTime <= 0.0f)
+			{
+				_remainOverrideLifeTime = 0.0f;
+				_hitObject.OnFinalizeByLifeTime();
+			}
 		}
 	}
 

@@ -935,7 +935,7 @@ public class HitObject : MonoBehaviour
 					_hitObjectMovement = GetComponent<HitObjectMovement>();
 					if (_hitObjectMovement == null) _hitObjectMovement = gameObject.AddComponent<HitObjectMovement>();
 				}
-				_hitObjectMovement.InitializeSignal(meHit, parentActor, _rigidbody, hitSignalIndexInAction);
+				_hitObjectMovement.InitializeSignal(this, meHit, parentActor, _rigidbody, hitSignalIndexInAction);
 			}
 			if (meHit.useLineRenderer)
 			{

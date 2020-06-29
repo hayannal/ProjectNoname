@@ -65,6 +65,7 @@ public class MeHitObject : MecanimEventBase {
 	public float curveStartDelayTime;
 	public float curveLifeTime;
 	public bool endFollowOverTargetDistance;
+	public float overrideLifeTimeWhenDieTarget;
 	public float accelTurn;
 	public float gravity = -9.81f;
 

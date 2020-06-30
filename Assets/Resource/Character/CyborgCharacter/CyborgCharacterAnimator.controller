@@ -72,6 +72,25 @@ MonoBehaviour:
   StartTime: 0
   EndTime: 0.35
   state: 3
+--- !u!114 &-2341928289281861863
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.25
+  EndTime: 1
+  effectData: {fileID: 1192148152262008, guid: b41706e69ab3bd64ab85fb11f32427e7, type: 3}
+  offset: {x: 0.2, y: 1, z: 0.8}
+  fixedWorldPositionY: 0
+  direction: {x: 0, y: 0, z: 1}
+  parentName: 
 --- !u!1107 &-1805817263514781681
 AnimatorStateMachine:
   serializedVersion: 5
@@ -142,8 +161,9 @@ AnimatorState:
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours:
-  - {fileID: 1934512432174511729}
   - {fileID: -2412566443936429071}
+  - {fileID: 1934512432174511729}
+  - {fileID: -2341928289281861863}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 1
   m_WriteDefaultValues: 1
@@ -199,22 +219,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.7
+  StartTime: 0.25
   EndTime: 1
   targetDetectType: 2
-  hitObjectPrefab: {fileID: 1661707786246352, guid: 879a483a06188cf4ab3a50c0b64945d3,
+  hitObjectPrefab: {fileID: 1887302512045466, guid: 2b3510c175b04744e98960cbe1f61edc,
     type: 3}
   lifeTime: 3
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
-  maxDistance: 7.35
+  maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
   createPositionType: 0
   boneName: 
-  offset: {x: 0, y: 1, z: 0.5}
+  offset: {x: 0.2, y: 1, z: 0.45}
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
@@ -226,9 +246,9 @@ MonoBehaviour:
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
   repeatCount: 0
-  repeatInterval: 1
+  repeatInterval: 0
   movementType: 0
-  startDirectionType: 1
+  startDirectionType: 2
   startDirection: {x: 0, y: 0, z: 1}
   howitzerType: 0
   useWorldSpaceDirection: 0
@@ -239,7 +259,7 @@ MonoBehaviour:
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
   howitzerRandomPositionRadiusRange: {x: 0, y: 0}
-  speed: 12
+  speed: 8
   useSpeedChange: 0
   targetSpeed: 0
   speedChangeTime: 0
@@ -250,24 +270,25 @@ MonoBehaviour:
   curveStartDelayTime: 0
   curveLifeTime: 0
   endFollowOverTargetDistance: 0
+  overrideLifeTimeWhenDieTarget: 0
   accelTurn: 0
   gravity: -9.81
   parallelCount: 0
   parallelDistance: 0
   ignoreMainHitObjectByParallel: 0
-  circularSectorCount: 5
-  circularSectorBetweenAngle: 6
+  circularSectorCount: 0
+  circularSectorBetweenAngle: 0
   circularSectorUseWorldSpace: 0
   circularSectorWorldSpaceCenterAngleY: 0
-  ignoreMainHitObjectByCircularSector: 1
+  ignoreMainHitObjectByCircularSector: 0
   continuousHitObjectGeneratorBaseList: []
   contactAll: 0
   monsterThroughCount: 0
   wallThrough: 0
   quadThrough: 0
   bounceWallQuadCount: 0
-  ricochetCount: 0
-  ricochetOneHitPerTarget: 0
+  ricochetCount: 1
+  ricochetOneHitPerTarget: 1
   useHitStay: 0
   hitStayInterval: 0
   hitStayIgnoreDuplicate: 0
@@ -279,7 +300,7 @@ MonoBehaviour:
   affectorValueIdList:
   - NormalAttackBigBatSuccubus
   showHitEffect: 1
-  hitEffectObject: {fileID: 1862546671279240, guid: be4cc1475994ad84fb65be525d00b0ef,
+  hitEffectObject: {fileID: 1780996139795400, guid: 2daac4f0693158643811108096944193,
     type: 3}
   hitEffectLookAtNormal: 1
   useWeaponHitEffect: 0

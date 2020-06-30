@@ -209,7 +209,11 @@ public class HitObjectMovement : MonoBehaviour {
 					break;
 				if (_followTargetActor != null && _followTargetActor.actorStatus.IsDie())
 				{
-					_remainOverrideLifeTime = _signal.overrideLifeTimeWhenDieTarget;
+					if (_signal.overrideLifeTimeWhenDieTarget)
+					{
+						Vector3 diff = _followTargetActor.cachedTransform.position - cachedTransform.position;
+						_remainOverrideLifeTime = (diff.magnitude + Random.Range(1.0f, 2.0f)) / _speed;
+					}
 
 					// 중간에 타겟을 바꿀일은 없나?
 					_ignoreFollow = true;

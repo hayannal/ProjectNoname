@@ -172,9 +172,9 @@ public class OptionManager : MonoBehaviour
 		int targetFrameRate = 60;
 		switch (frame)
 		{
-			case 0: targetFrameRate = 30; break;
-			case 1: targetFrameRate = 48; break;
-			case 2: targetFrameRate = 54; break;
+			case 0: targetFrameRate = 35; break;
+			case 1: targetFrameRate = 44; break;
+			case 2: targetFrameRate = 52; break;
 			case 3: targetFrameRate = 60; break;
 		}
 		return targetFrameRate;

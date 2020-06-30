@@ -14,7 +14,7 @@ public static class MecanimEventCustomCreator
 #region USER_CODE
 		case eMecanimEventType.State: eventBase = targetState.AddStateMachineBehaviour<MeState>(); break;
 		case eMecanimEventType.Effect: eventBase = targetState.AddStateMachineBehaviour<MeEffect>(); break;
-		//case eMecanimEventType.Sound: eventBase = targetState.AddStateMachineBehaviour<MeSound>(); break;
+		case eMecanimEventType.Sound: eventBase = targetState.AddStateMachineBehaviour<MeSound>(); break;
 		//case eMecanimEventType.TimeScale: eventBase = targetState.AddStateMachineBehaviour<MeTimeScale>(); break;
 		case eMecanimEventType.Destroy: eventBase = targetState.AddStateMachineBehaviour<MeDestroy>(); break;
 		case eMecanimEventType.ApplyAffector: eventBase = targetState.AddStateMachineBehaviour<MeApplyAffector>(); break;
@@ -42,7 +42,7 @@ public static class MecanimEventCustomCreator
 #region USER_CODE
 		if (eventBase is MeState) return eMecanimEventType.State;
 		if (eventBase is MeEffect) return eMecanimEventType.Effect;
-		//if (eventBase is MeSound) return eMecanimEventType.Sound;
+		if (eventBase is MeSound) return eMecanimEventType.Sound;
 		//if (eventBase is MeTimeScale) return eMecanimEventType.TimeScale;
 		if (eventBase is MeDestroy) return eMecanimEventType.Destroy;
 		if (eventBase is MeApplyAffector) return eMecanimEventType.ApplyAffector;

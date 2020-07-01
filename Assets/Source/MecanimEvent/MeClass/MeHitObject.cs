@@ -207,6 +207,7 @@ public class MeHitObject : MecanimEventBase {
 					curveStartDelayTime = EditorGUILayout.FloatField("Curve Start Delay :", curveStartDelayTime);
 					curveLifeTime = EditorGUILayout.FloatField("Curve LifeTime :", curveLifeTime);
 					endFollowOverTargetDistance = EditorGUILayout.Toggle("End Curve Over Target :", endFollowOverTargetDistance);
+					overrideLifeTimeWhenDieTarget = EditorGUILayout.Toggle("Override LifeTime Die Target :", overrideLifeTimeWhenDieTarget);
 					break;
 				case HitObjectMovement.eMovementType.Turn:
 					accelTurn = EditorGUILayout.FloatField("Turn Power :", accelTurn);
@@ -299,10 +300,17 @@ public class MeHitObject : MecanimEventBase {
 			monsterThroughCount = EditorGUILayout.IntField("Monster Through Count :", monsterThroughCount);
 			wallThrough = EditorGUILayout.Toggle("Wall Through :", wallThrough);
 			quadThrough = EditorGUILayout.Toggle("Quad Through :", quadThrough);
+			if (monsterThroughCount > 0 || wallThrough || quadThrough)
+			{
+				overrideResetIgnoreSqrMagnitude = EditorGUILayout.FloatField("Override Reset Ignore Sqr :", overrideResetIgnoreSqrMagnitude);
+			}
 			bounceWallQuadCount = EditorGUILayout.IntField("Bounce Wall Quad Count :", bounceWallQuadCount);
 			ricochetCount = EditorGUILayout.IntField("Ricochet Count :", ricochetCount);
 			if (ricochetCount > 0)
+			{
 				ricochetOneHitPerTarget = EditorGUILayout.Toggle("Ricochet One Hit Per Target :", ricochetOneHitPerTarget);
+				overrideRicochetSpeed = EditorGUILayout.FloatField("Override Ricochet Speed :", overrideRicochetSpeed);
+			}
 
 			if (oneHitPerTarget == false)
 				useHitStay = EditorGUILayout.Toggle("Use Hit Stay :", useHitStay);

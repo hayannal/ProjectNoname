@@ -91,6 +91,7 @@ public class MeHitObject : MecanimEventBase {
 	public int bounceWallQuadCount;
 	public int ricochetCount;
 	public bool ricochetOneHitPerTarget;
+	public float overrideRicochetSpeed;
 	public bool useHitStay;
 	public float hitStayInterval;
 	public bool hitStayIgnoreDuplicate;

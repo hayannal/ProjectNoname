@@ -312,7 +312,11 @@ public class HitObjectMovement : MonoBehaviour {
 			_listRicochet = new List<Collider>();
 
 		if (initialize)
+		{
 			_listRicochet.Clear();
+			if (_signal.overrideRicochetSpeed > 0.0f)
+				_speed = _signal.overrideRicochetSpeed;
+		}
 
 		_listRicochet.Add(collider);
 	}

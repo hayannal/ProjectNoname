@@ -87,6 +87,7 @@ public class MeHitObject : MecanimEventBase {
 	public int monsterThroughCount;
 	public bool wallThrough;
 	public bool quadThrough;
+	public float overrideResetIgnoreSqrMagnitude;
 	public int bounceWallQuadCount;
 	public int ricochetCount;
 	public bool ricochetOneHitPerTarget;

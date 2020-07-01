@@ -1312,6 +1312,9 @@ public class HitObject : MonoBehaviour
 			{
 				groundQuadCollided = true;
 				wallNormal = contact.normal;
+
+				if (_signal.quadThrough)
+					AddIgnoreList(col, false);
 			}
 
 			bool ignoreAffectorProcessor = false;
@@ -1656,6 +1659,7 @@ public class HitObject : MonoBehaviour
 	}
 
 	#region Ignore List
+	const float DefaultResetIgnoreSqrMagnitude = 0.01f;
 	List<Collider> _listIgnoreCollider;
 	Dictionary<Collider, bool> _dicIgnoreColliderAddFrame;
 	Dictionary<Collider, Vector3> _dicIgnoreColliderAddPosition;
@@ -1708,7 +1712,7 @@ public class HitObject : MonoBehaviour
 	{
 		if (_listIgnoreCollider == null)
 			return;
-		for (int i = 0; i < _listIgnoreCollider.Count; ++i)
+		for (int i = _listIgnoreCollider.Count - 1; i >= 0; --i)
 			RemoveIgnoreList(_listIgnoreCollider[i]);
 		_listIgnoreCollider.Clear();
 	}
@@ -1724,7 +1728,10 @@ public class HitObject : MonoBehaviour
 		// 그래서 어차피 AddIgnoreList 를 호출하는 프레임엔 검사를 할필요 없으니 건너뛰기로 해본다.
 		if (_listIgnoreCollider == null)
 			return;
-		for (int i = 0; i < _listIgnoreCollider.Count; ++i)
+		float resetSqrMagnitude = DefaultResetIgnoreSqrMagnitude;
+		if (_signal.overrideResetIgnoreSqrMagnitude > 0.0f)
+			resetSqrMagnitude = _signal.overrideResetIgnoreSqrMagnitude;
+		for (int i = _listIgnoreCollider.Count - 1; i >= 0; --i)
 		{
 			if (_dicIgnoreColliderAddFrame.ContainsKey(_listIgnoreCollider[i]) && _dicIgnoreColliderAddFrame[_listIgnoreCollider[i]])
 			{
@@ -1735,7 +1742,7 @@ public class HitObject : MonoBehaviour
 			if (_dicIgnoreColliderAddPosition.ContainsKey(_listIgnoreCollider[i]) && _dicIgnoreColliderAddPosition[_listIgnoreCollider[i]] != Vector3.down)
 			{
 				Vector3 diff = _dicIgnoreColliderAddPosition[_listIgnoreCollider[i]] - cachedTransform.position;
-				if (diff.sqrMagnitude < 0.01f)
+				if (diff.sqrMagnitude < resetSqrMagnitude)
 					continue;
 			}
 

@@ -128,6 +128,7 @@ public class ActorStatus : MonoBehaviour
 		else
 			_statusBase.ClearValue();
 
+		bool nodeWarCachingMonster = false;
 		MonsterTableData monsterTableData = TableDataManager.instance.FindMonsterTableData(actor.actorId);
 		float standardHp = StageManager.instance.currentMonstrStandardHp;
 		float standardAtk = StageManager.instance.currentMonstrStandardAtk;
@@ -139,6 +140,10 @@ public class ActorStatus : MonoBehaviour
 				standardHp = nodeWarTableData.standardHp;
 				standardAtk = nodeWarTableData.standardAtk;
 			}
+			else
+			{
+				nodeWarCachingMonster = true;
+			}
 		}
 		_statusBase.valueList[(int)eActorStatus.MaxHp] = standardHp * monsterTableData.multiHp;
 		_statusBase.valueList[(int)eActorStatus.Attack] = standardAtk * monsterTableData.multiAtk;
@@ -148,6 +153,8 @@ public class ActorStatus : MonoBehaviour
 
 		//if (isServer)
 		_statusBase._hp = _lastMaxHp = GetValue(eActorStatus.MaxHp);
+		if (nodeWarCachingMonster)
+			_statusBase._hp = 0.0f;
 
 		OnChangedStatus();
 	}

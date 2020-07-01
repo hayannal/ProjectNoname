@@ -120,7 +120,6 @@ public class NodeWarGround : MonoBehaviour
 			GameObject firstMonsterCachingObject = BattleInstanceManager.instance.GetCachedObject(monsterPrefabList[0], new Vector3(100.0f, 0.0f, 100.0f), Quaternion.identity);
 			_firstCachingMonsterActor = firstMonsterCachingObject.GetComponent<MonsterActor>();
 			_firstCachingMonsterActor.monsterAI.enabled = false;
-			_firstCachingMonsterActor.actorStatus.SetHpRatio(0.0f);
 			_waitUpdateRemainCount = 2;
 		}
 

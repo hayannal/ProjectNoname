@@ -12,6 +12,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8220ce0fa80a49849a394145ade07766, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1972016019313398079
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7994918617178965875}
+  m_Layer: 0
+  m_Name: EyeBone_Right
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7994918617178965875
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1972016019313398079}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.03, y: -0.1, z: 0.05}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1911549254547751608}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6969335048640112101
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -255,8 +285,10 @@ MonoBehaviour:
   selfPassivePreloadObjectList: []
   gaugeOffsetY: 0
   cachingObjectList:
-  - {fileID: 913101303298452110, guid: d37d1943642ed344c9e56a9a97548bbc, type: 3}
-  - {fileID: 4225582290400697939, guid: 26996fb04a3ef8f45adcd177a0b2bb0b, type: 3}
+  - {fileID: 1262846755526404, guid: d1ecd0e9592bda441abb1ff5ca62b610, type: 3}
+  - {fileID: 1322770261676608, guid: 9b415bdec02e3994ea4dfa760acd82e1, type: 3}
+  - {fileID: 1073392105364942, guid: 932776f81211584418e70772808ccc57, type: 3}
+  wingRootTransform: {fileID: 0}
 --- !u!1 &8340962357277609578
 GameObject:
   m_ObjectHideFlags: 0
@@ -302,6 +334,36 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!1 &8919330291692762557
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1390338446063529501}
+  m_Layer: 0
+  m_Name: EyeBone_Left
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1390338446063529501
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8919330291692762557}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.03, y: -0.1, z: 0.05}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1911549254547751608}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1911549254547888190
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -402,6 +464,12 @@ Transform:
 --- !u!4 &1911549254547751738 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400132, guid: 0cc01bf69fa85ad469e448f39ee7ae32,
+    type: 3}
+  m_PrefabInstance: {fileID: 1911549254547888190}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1911549254547751608 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 400006, guid: 0cc01bf69fa85ad469e448f39ee7ae32,
     type: 3}
   m_PrefabInstance: {fileID: 1911549254547888190}
   m_PrefabAsset: {fileID: 0}

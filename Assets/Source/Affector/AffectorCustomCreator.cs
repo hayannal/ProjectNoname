@@ -65,6 +65,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.TeleportTargetPosition: affectorBase = new TeleportTargetPositionAffector(); break;
 			case eAffectorType.Rotate: affectorBase = new RotateAffector(); break;
 			case eAffectorType.Suicide: affectorBase = new SuicideAffector(); break;
+			case eAffectorType.DelayedBaseDamage: affectorBase = new DelayedBaseDamageAffector(); break;
 			#endregion
 		}
 		return affectorBase;
@@ -124,6 +125,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.TeleportTargetPosition:
 			case eAffectorType.Rotate:
 			case eAffectorType.Suicide:
+			case eAffectorType.DelayedBaseDamage:
 				return true;
 			#endregion
 		}

@@ -68,5 +68,6 @@ public enum eAffectorType
 	TeleportTargetPosition,
 	Rotate,
 	Suicide,
+	DelayedBaseDamage,
 }
 #endregion

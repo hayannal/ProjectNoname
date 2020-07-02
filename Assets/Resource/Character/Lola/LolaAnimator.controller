@@ -71,7 +71,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartTime: 0
-  EndTime: 0.35
+  EndTime: 0.85
   state: 3
 --- !u!1107 &-1805817263514781681
 AnimatorStateMachine:
@@ -147,7 +147,6 @@ AnimatorState:
   m_StateMachineBehaviours:
   - {fileID: 1934512432174511729}
   - {fileID: -2412566443936429071}
-  - {fileID: 4225913892842907322}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 1
   m_WriteDefaultValues: 1
@@ -202,15 +201,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.29
+  StartTime: 0.38
   EndTime: 1
   targetDetectType: 2
-  hitObjectPrefab: {fileID: 1661707786246352, guid: 879a483a06188cf4ab3a50c0b64945d3,
+  hitObjectPrefab: {fileID: 1762457832057232, guid: 8488fd25f3673724bae79cba8563fccb,
     type: 3}
-  lifeTime: 3
+  lifeTime: 5
   areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
-  maxDistance: 7.35
+  maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -225,10 +225,12 @@ MonoBehaviour:
   areaHeightMin: 0
   areaHeightMax: 0
   areaAngle: 0
+  checkRaycastWallInArea: 0
+  applyCollisionDamageInterval: 0
   repeatCount: 0
   repeatInterval: 1
   movementType: 0
-  startDirectionType: 1
+  startDirectionType: 2
   startDirection: {x: 0, y: 0, z: 1}
   howitzerType: 0
   useWorldSpaceDirection: 0
@@ -238,45 +240,54 @@ MonoBehaviour:
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
-  howitzerRandomPositionRadius: 0
-  speed: 12
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
+  speed: 10
+  useSpeedChange: 0
+  targetSpeed: 0
+  speedChangeTime: 0
+  speedChangeEase: 6
   curve: 0
   curveAdd: 0
   curveLockY: 0
   curveStartDelayTime: 0
   curveLifeTime: 0
   endFollowOverTargetDistance: 0
+  overrideLifeTimeWhenDieTarget: 0
   accelTurn: 0
   gravity: -9.81
   parallelCount: 0
   parallelDistance: 0
   ignoreMainHitObjectByParallel: 0
-  circularSectorCount: 5
-  circularSectorBetweenAngle: 6
+  circularSectorCount: 0
+  circularSectorBetweenAngle: 0
   circularSectorUseWorldSpace: 0
   circularSectorWorldSpaceCenterAngleY: 0
-  ignoreMainHitObjectByCircularSector: 1
-  continuousHitObjectGeneratorBaseList: []
+  ignoreMainHitObjectByCircularSector: 0
+  continuousHitObjectGeneratorBaseList:
+  - {fileID: 8632962272249483628, guid: c1d82fb3e757fc8408bf71eb852e4d4d, type: 3}
   contactAll: 0
   monsterThroughCount: 0
   wallThrough: 0
   quadThrough: 0
-  bounceWallQuadCount: 0
+  overrideResetIgnoreSqrMagnitude: 0
+  bounceWallQuadCount: 1
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
+  overrideRicochetSpeed: 0
   useHitStay: 0
   hitStayInterval: 0
   hitStayIgnoreDuplicate: 0
   hitStayIdForIgnoreDuplicate: 0
   hitStayLineRendererTrigger: 0
+  onlyUsedAsTrigger: 0
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
   - NormalAttackBigBatSuccubus
   showHitEffect: 1
-  hitEffectObject: {fileID: 1862546671279240, guid: be4cc1475994ad84fb65be525d00b0ef,
+  hitEffectObject: {fileID: 1479929942879240, guid: b2d0dd3a589810646adb494d900ef58b,
     type: 3}
-  hitEffectLookAtNormal: 1
+  hitEffectLookAtNormal: 0
   useWeaponHitEffect: 0
   weaponDummyName: 
   hitEffectLineRendererType: 0
@@ -310,25 +321,6 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!114 &4225913892842907322
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTime: 0.27933884
-  EndTime: 1
-  effectData: {fileID: 1997343281232380, guid: 73a2a44954e1512489c8536652486cf9, type: 3}
-  offset: {x: 0, y: 1, z: 0.11}
-  fixedWorldPositionY: 0
-  direction: {x: 0, y: 0, z: 1}
-  parentName: 
 --- !u!1102 &8503796429965771016
 AnimatorState:
   serializedVersion: 5

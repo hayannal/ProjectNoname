@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 421204}
   - component: {fileID: 19896956}
   - component: {fileID: 19929224}
-  - component: {fileID: 8220742}
   - component: {fileID: -7003688065741832501}
   - component: {fileID: -1487684886590501497}
+  - component: {fileID: 8220742}
+  - component: {fileID: 6003879335581555424}
   m_Layer: 0
   m_Name: ExplosionNovaSmallFire_D
   m_TagString: Untagged
@@ -4745,6 +4746,42 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!114 &-7003688065741832501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 103350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b5be0b5558824a419d78086f00871cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  delayTime: 1
+--- !u!114 &-1487684886590501497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 103350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da6612240c354cb4abb66363c62ab797, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startDelay: 0
+  numberOfShakes: 3
+  shakeAmountMin: {x: 0, y: 0, z: 0}
+  shakeAmountMax: {x: 0.2, y: 0.2, z: 0.2}
+  rotationAmountMin: {x: 0, y: 0, z: 0.01}
+  rotationAmountMax: {x: 0, y: 0, z: 0.08}
+  distanceMin: 0.01
+  distanceMax: 0.12
+  speedMin: 15
+  speedMax: 20
+  decay: 0.75
 --- !u!82 &8220742
 AudioSource:
   m_ObjectHideFlags: 0
@@ -4841,7 +4878,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
---- !u!114 &-7003688065741832501
+--- !u!114 &6003879335581555424
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4850,33 +4887,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 103350}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b5be0b5558824a419d78086f00871cb, type: 3}
+  m_Script: {fileID: 11500000, guid: cd90d5ee163b5004faa50b9f67e503b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  delayTime: 1
---- !u!114 &-1487684886590501497
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 103350}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da6612240c354cb4abb66363c62ab797, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  multipleComponent: 0
+  checkDuplicate: 0
+  pitchRandomMultiplier: 1
   startDelay: 0
-  numberOfShakes: 3
-  shakeAmountMin: {x: 0, y: 0, z: 0}
-  shakeAmountMax: {x: 0.2, y: 0.2, z: 0.2}
-  rotationAmountMin: {x: 0, y: 0, z: 0.01}
-  rotationAmountMax: {x: 0, y: 0, z: 0.08}
-  distanceMin: 0.01
-  distanceMax: 0.12
-  speedMin: 15
-  speedMax: 20
-  decay: 0.75
 --- !u!1 &103612
 GameObject:
   m_ObjectHideFlags: 0

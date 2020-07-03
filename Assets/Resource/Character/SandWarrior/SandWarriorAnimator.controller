@@ -58,21 +58,6 @@ MonoBehaviour:
   StartTime: 0
   EndTime: 1
   state: 2
---- !u!114 &-2412566443936429071
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ebaa29644feeec143b4ef6156771ef54, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTime: 0
-  EndTime: 0.7
-  state: 3
 --- !u!1107 &-1805817263514781681
 AnimatorStateMachine:
   serializedVersion: 5
@@ -143,8 +128,9 @@ AnimatorState:
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours:
+  - {fileID: 3413307960762349683}
   - {fileID: 1934512432174511729}
-  - {fileID: -2412566443936429071}
+  - {fileID: -1010171531454241321}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -159,6 +145,25 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!114 &-1010171531454241321
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.4
+  EndTime: 1
+  effectData: {fileID: 1344824185198126, guid: d45e7dbb4f7496b45972ec3dc99450a0, type: 3}
+  offset: {x: 0, y: 1, z: 0.5}
+  fixedWorldPositionY: 0
+  direction: {x: 0, y: 0, z: 1}
+  parentName: 
 --- !u!114 &-582037310535030771
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -217,7 +222,8 @@ MonoBehaviour:
   StartTime: 0.44
   EndTime: 1
   targetDetectType: 2
-  hitObjectPrefab: {fileID: 150356, guid: f638f707b8ae0944e88ea1b1bcba4f92, type: 3}
+  hitObjectPrefab: {fileID: 1224549118569052, guid: 841bb81eedeab4046a99d18bb35678da,
+    type: 3}
   lifeTime: 15
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
@@ -296,7 +302,8 @@ MonoBehaviour:
   affectorValueIdList:
   - NormalAttackBigBatSuccubus
   showHitEffect: 1
-  hitEffectObject: {fileID: 133642, guid: de8082adf4b69af469dbb7fe6dfd458e, type: 3}
+  hitEffectObject: {fileID: 1498152551406518, guid: 4363635002ba671429bf6d01b9eb7e2e,
+    type: 3}
   hitEffectLookAtNormal: 0
   useWeaponHitEffect: 0
   weaponDummyName: 
@@ -304,6 +311,21 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 1
+--- !u!114 &3413307960762349683
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebaa29644feeec143b4ef6156771ef54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0
+  EndTime: 0.7
+  state: 3
 --- !u!1102 &8503796429965771016
 AnimatorState:
   serializedVersion: 5

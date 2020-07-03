@@ -8,8 +8,8 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Mat1
-  m_Shader: {fileID: 200, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: 
+  m_Shader: {fileID: 4800000, guid: 6e8c06e35f153a24581f9043374ad123, type: 3}
+  m_ShaderKeywords: _FLOW_NONE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -23,12 +23,28 @@ Material:
         m_Texture: {fileID: 2800000, guid: 8c2db736935a6e443879ddd228dd78d2, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Floats:
     - _CoreStrength: 1
+    - _Cull: 0
     - _CutOutLightCore: 0
+    - _Cutoff: 0.5
+    - _DstBlend: 1
+    - _Flow: 0
     - _InvFade: 3
+    - _SrcBlend: 5
     - _TintStrength: 2.95
+    - _UseCutoff: 0
+    - _UseMask: 0
+    - _UseRotateUV: 0
+    - _UseSecondUV: 0
+    - _ZTest: 4
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _CoreColor: {r: 0, g: 0.42068934, b: 1, a: 0.5019608}
+    - _FlowSpeed: {r: 0, g: 0, b: 0, a: 0}
+    - _RotateUVParameter: {r: 0, g: 0, b: 0, a: 0}
     - _TintColor: {r: 1, g: 1, b: 1, a: 0.39215687}

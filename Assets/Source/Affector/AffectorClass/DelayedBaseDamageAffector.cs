@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using MEC;
 
 public class DelayedBaseDamageAffector : AffectorBase
 {
@@ -62,7 +63,7 @@ public class DelayedBaseDamageAffector : AffectorBase
 			{
 				if (Time.time > _listStackedDamageTime[i])
 				{
-					CallBaseDamageAffector();
+					Timing.RunCoroutine(CallProcess());
 					_stackedDamageTimeProcessedIndex = i;
 				}
 				else
@@ -71,9 +72,15 @@ public class DelayedBaseDamageAffector : AffectorBase
 		}
 	}
 
+	IEnumerator<float> CallProcess()
+	{
+		yield return Timing.WaitForOneFrame;
+		CallBaseDamageAffector();
+	}
+
 	public override void FinalizeAffector()
 	{
-		CallBaseDamageAffector();
+		Timing.RunCoroutine(CallProcess());
 	}
 
 	GameObject _damageEffectPrefab;

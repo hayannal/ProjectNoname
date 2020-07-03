@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1900362841978048547
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7006769234200981881}
+  m_Layer: 0
+  m_Name: WingBone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7006769234200981881
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1900362841978048547}
+  m_LocalRotation: {x: 0.10747484, y: -0, z: -0, w: 0.9942078}
+  m_LocalPosition: {x: 0, y: 0.158, z: -0.104}
+  m_LocalScale: {x: 0.8695652, y: 0.95238096, z: 0.8695652}
+  m_Children:
+  - {fileID: 6883997063142201578}
+  m_Father: {fileID: 1911549254547751738}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1911549255022246469
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -127,6 +158,36 @@ MonoBehaviour:
   WorldXDontGoUnder: -70
   PushTime: 0.25
   PushPower: 10
+--- !u!1 &6529867522926659986
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6883997063142201578}
+  m_Layer: 0
+  m_Name: WingScale
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6883997063142201578
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6529867522926659986}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 7006769234200981881}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8340962357169255275
 GameObject:
   m_ObjectHideFlags: 0
@@ -288,7 +349,7 @@ MonoBehaviour:
   - {fileID: 1262846755526404, guid: d1ecd0e9592bda441abb1ff5ca62b610, type: 3}
   - {fileID: 1322770261676608, guid: 9b415bdec02e3994ea4dfa760acd82e1, type: 3}
   - {fileID: 1073392105364942, guid: 932776f81211584418e70772808ccc57, type: 3}
-  wingRootTransform: {fileID: 0}
+  wingRootTransform: {fileID: 6883997063142201578}
 --- !u!1 &8340962357277609578
 GameObject:
   m_ObjectHideFlags: 0

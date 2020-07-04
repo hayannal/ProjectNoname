@@ -112,7 +112,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartTime: 0
-  EndTime: 0.35
+  EndTime: 0.58
   state: 3
 --- !u!1107 &-1805817263514781681
 AnimatorStateMachine:
@@ -186,8 +186,8 @@ AnimatorState:
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours:
-  - {fileID: 1934512432174511729}
   - {fileID: -2412566443936429071}
+  - {fileID: 1934512432174511729}
   - {fileID: 4225913892842907322}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -243,16 +243,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.29
+  StartTime: 0.27
   EndTime: 1
   targetDetectType: 2
-  hitObjectPrefab: {fileID: 1661707786246352, guid: 879a483a06188cf4ab3a50c0b64945d3,
+  hitObjectPrefab: {fileID: 1607489160101874, guid: ffe61663d7ed5d547b2cb343c59420fc,
     type: 3}
-  lifeTime: 3
+  lifeTime: 0.75
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
-  maxDistance: 7.35
+  maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -270,9 +270,9 @@ MonoBehaviour:
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
   repeatCount: 0
-  repeatInterval: 1
+  repeatInterval: 0
   movementType: 0
-  startDirectionType: 1
+  startDirectionType: 2
   startDirection: {x: 0, y: 0, z: 1}
   howitzerType: 0
   useWorldSpaceDirection: 0
@@ -283,7 +283,7 @@ MonoBehaviour:
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
   howitzerRandomPositionRadiusRange: {x: 0, y: 0}
-  speed: 12
+  speed: 5
   useSpeedChange: 0
   targetSpeed: 0
   speedChangeTime: 0
@@ -294,24 +294,27 @@ MonoBehaviour:
   curveStartDelayTime: 0
   curveLifeTime: 0
   endFollowOverTargetDistance: 0
+  overrideLifeTimeWhenDieTarget: 0
   accelTurn: 0
   gravity: -9.81
   parallelCount: 0
   parallelDistance: 0
   ignoreMainHitObjectByParallel: 0
-  circularSectorCount: 5
-  circularSectorBetweenAngle: 6
+  circularSectorCount: 0
+  circularSectorBetweenAngle: 0
   circularSectorUseWorldSpace: 0
   circularSectorWorldSpaceCenterAngleY: 0
-  ignoreMainHitObjectByCircularSector: 1
+  ignoreMainHitObjectByCircularSector: 0
   continuousHitObjectGeneratorBaseList: []
   contactAll: 0
   monsterThroughCount: 0
   wallThrough: 0
   quadThrough: 0
+  overrideResetIgnoreSqrMagnitude: 0
   bounceWallQuadCount: 0
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
+  overrideRicochetSpeed: 0
   useHitStay: 0
   hitStayInterval: 0
   hitStayIgnoreDuplicate: 0
@@ -321,11 +324,11 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttackBigBatSuccubus
+  - NormalAttackGanfaul
   showHitEffect: 1
-  hitEffectObject: {fileID: 1862546671279240, guid: be4cc1475994ad84fb65be525d00b0ef,
+  hitEffectObject: {fileID: 1188432315835894, guid: 8ecef275e407fd24d8e110b38363d281,
     type: 3}
-  hitEffectLookAtNormal: 1
+  hitEffectLookAtNormal: 0
   useWeaponHitEffect: 0
   weaponDummyName: 
   hitEffectLineRendererType: 0
@@ -344,10 +347,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.27933884
+  StartTime: 0.26
   EndTime: 1
-  effectData: {fileID: 1997343281232380, guid: 73a2a44954e1512489c8536652486cf9, type: 3}
-  offset: {x: 0, y: 1, z: 0.11}
+  effectData: {fileID: 1026876357692210, guid: 85caf2792839e5e48ba8f5fa751f78a8, type: 3}
+  offset: {x: 0, y: 1, z: 0.4}
   fixedWorldPositionY: 0
   direction: {x: 0, y: 0, z: 1}
   parentName: 

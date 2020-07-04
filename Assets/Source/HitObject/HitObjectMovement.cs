@@ -185,7 +185,11 @@ public class HitObjectMovement : MonoBehaviour {
 
 	public void Bounce(Vector3 wallNormal)
 	{
+		float prevMagnitude = _velocity.magnitude;
 		_velocity = Vector3.Reflect(_velocity, wallNormal);
+		if (_velocity.magnitude < prevMagnitude * 0.9f)
+			_velocity = _velocity.normalized * prevMagnitude;
+
 		_rigidbody.velocity = _velocity;
 		_rigidbody.angularVelocity = Vector3.zero;
 		_forward = cachedTransform.forward = _rigidbody.velocity.normalized;

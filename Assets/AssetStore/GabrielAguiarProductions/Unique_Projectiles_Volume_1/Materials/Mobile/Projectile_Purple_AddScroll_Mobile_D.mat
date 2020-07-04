@@ -7,9 +7,9 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: UniqueProjectiles_MobAdd_8x8_D4
+  m_Name: Projectile_Purple_AddScroll_Mobile_D
   m_Shader: {fileID: 4800000, guid: 6e8c06e35f153a24581f9043374ad123, type: 3}
-  m_ShaderKeywords: _FLOW_NONE
+  m_ShaderKeywords: _DISTORTMAINTEXTURE_ON _FLOW_NONE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -24,7 +24,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ColorRamp:
-        m_Texture: {fileID: 2800000, guid: d886c0cb73a19514a8be80f38031dd73, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -40,7 +40,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Distortion:
-        m_Texture: {fileID: 2800000, guid: 82f4b06147155c54da475b309b9e24fa, type: 3}
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DistortionMask:
+        m_Texture: {fileID: 2800000, guid: 03e4ee8d0b5f45045bb12e2930ed4058, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
@@ -48,19 +52,19 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Gradient:
-        m_Texture: {fileID: 2800000, guid: 28c7aad1372ff114b90d330f8a2dd938, type: 3}
+        m_Texture: {fileID: 2800000, guid: 4d52019d3b924e443bfe52519b9867b1, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: d243f45980c1ce745a5bd35cf5eb1e6b, type: 3}
+        m_Texture: {fileID: 2800000, guid: 1f7a35510a8f5a04ab6dbe1cc528236f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTexutre:
-        m_Texture: {fileID: 2800000, guid: d8eae515899ccb146b07ff12b1ba76df, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Mask:
-        m_Texture: {fileID: 2800000, guid: 03e4ee8d0b5f45045bb12e2930ed4058, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskTex:
@@ -81,33 +85,34 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _BumpScale: 1
-    - _ColorMultiplier: 1.5
+    - _ColorMultiplier: 1.7
     - _Cull: 0
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
-    - _DistortMainTexture: 0
-    - _DistortionUSpeed: 0
+    - _DistortMainTexture: 1
+    - _DistortionUSpeed: -1
     - _DistortionVSpeed: 0
     - _DoubleSided: 1
     - _DstBlend: 10
     - _EdgeSoftness: 0
-    - _FaceSignClamp: 1
+    - _FaceSignClamp: 0.2
     - _Flow: 0
+    - _Frame: 1
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _GradientPower: 0
-    - _GradientUSpeed: 0
-    - _GradientVSpeed: 0
+    - _GradientPower: 1.1
+    - _GradientUSpeed: -0.5
+    - _GradientUSpeed_copy: -0.2
+    - _GradientVSpeed: 0.1
+    - _GradientVSpeed_copy: 0
     - _MainTextureUSpeed: 0
     - _MainTextureVSpeed: 0
     - _Metallic: 0
     - _Mode: 0
-    - _NoiseAmount: 0
+    - _NoiseAmount: 0.1
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _ShadowCutoff: 0
-    - _Shadow_Channel: 0
     - _SmoothnessTextureChannel: 0
     - _Softness: 0
     - _SpecularHighlights: 1
@@ -117,10 +122,13 @@ Material:
     - _UseMask: 0
     - _UseRotateUV: 0
     - _UseSecondUV: 0
+    - _X: 1
+    - _Y: 1
     - _ZTest: 4
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _EmisColor: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FlowSpeed: {r: 0, g: 0, b: 0, a: 0}
     - _RotateUVParameter: {r: 0, g: 0, b: 0, a: 0}

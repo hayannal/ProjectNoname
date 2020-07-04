@@ -747,6 +747,9 @@ public class BattleInstanceManager : MonoBehaviour
 		if (playerActor.GetInstanceID() == instanceId)
 			return playerActor;
 
+		if (ExperienceCanvas.instance != null && ExperienceCanvas.instance.gameObject.activeSelf && CharacterListCanvas.instance.selectedPlayerActor.GetInstanceID() == instanceId)
+			return CharacterListCanvas.instance.selectedPlayerActor;
+
 		for (int i = 0; i < _listLiveMonsterActor.Count; ++i)
 		{
 			if (_listLiveMonsterActor[i].GetInstanceID() == instanceId)

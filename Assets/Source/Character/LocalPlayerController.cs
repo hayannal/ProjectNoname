@@ -98,6 +98,9 @@ public sealed class LocalPlayerController : BaseCharacterController
 	bool _waitAttackState = false;
 	bool _standbyClearCustomTarget = false;
 	RaycastHit[] _raycastHitList = null;
+#if UNITY_EDITOR
+	int _debugBreakRemainFrameCount;
+#endif
 	protected override void Animate()
 	{
 		// If no animator, return
@@ -106,6 +109,15 @@ public sealed class LocalPlayerController : BaseCharacterController
 			return;
 		if (actor.actorStatus.IsDie())
 			return;
+
+#if UNITY_EDITOR
+		if (_debugBreakRemainFrameCount > 0)
+		{
+			--_debugBreakRemainFrameCount;
+			if (_debugBreakRemainFrameCount == 0)
+				Debug.Break();
+		}
+#endif
 
 		// Compute move vector in local space - not needed
 
@@ -252,6 +264,10 @@ public sealed class LocalPlayerController : BaseCharacterController
 			{
 				_waitAttackState = false;
 				_standbyClearCustomTarget = true;
+#if UNITY_EDITOR
+				if (Input.GetKey(KeyCode.LeftControl))
+					_debugBreakRemainFrameCount = 3;
+#endif
 				return;
 			}
 			if (actor.actionController.mecanimState.IsState((int)eMecanimState.Move))

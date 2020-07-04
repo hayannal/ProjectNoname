@@ -124,7 +124,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Attack1
-  m_Speed: 1.1
+  m_Speed: 1.3
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours:
@@ -224,7 +224,7 @@ MonoBehaviour:
   targetDetectType: 2
   hitObjectPrefab: {fileID: 1224549118569052, guid: 841bb81eedeab4046a99d18bb35678da,
     type: 3}
-  lifeTime: 15
+  lifeTime: 30
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
@@ -253,13 +253,13 @@ MonoBehaviour:
   howitzerType: 0
   useWorldSpaceDirection: 0
   bothRandomAngle: 1
-  leftRightRandomAngle: 0
+  leftRightRandomAngle: 45
   leftRandomAngle: 0
   rightRandomAngle: 0
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
   howitzerRandomPositionRadiusRange: {x: 0, y: 0}
-  speed: 7
+  speed: 4
   useSpeedChange: 0
   targetSpeed: 0
   speedChangeTime: 0
@@ -273,9 +273,9 @@ MonoBehaviour:
   overrideLifeTimeWhenDieTarget: 0
   accelTurn: 0
   gravity: -9.81
-  parallelCount: 0
-  parallelDistance: 0
-  ignoreMainHitObjectByParallel: 0
+  parallelCount: 2
+  parallelDistance: 0.5
+  ignoreMainHitObjectByParallel: 1
   circularSectorCount: 0
   circularSectorBetweenAngle: 0
   circularSectorUseWorldSpace: 0
@@ -287,7 +287,7 @@ MonoBehaviour:
   wallThrough: 0
   quadThrough: 0
   overrideResetIgnoreSqrMagnitude: 0
-  bounceWallQuadCount: 4
+  bounceWallQuadCount: 7
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
   overrideRicochetSpeed: 0
@@ -300,9 +300,9 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttackBigBatSuccubus
+  - NormalAttackSandWarrior
   showHitEffect: 1
-  hitEffectObject: {fileID: 1498152551406518, guid: 4363635002ba671429bf6d01b9eb7e2e,
+  hitEffectObject: {fileID: 1498152551406518, guid: 31eff8d44b769354a93f61b41cd4f5ac,
     type: 3}
   hitEffectLookAtNormal: 0
   useWeaponHitEffect: 0

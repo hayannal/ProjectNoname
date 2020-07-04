@@ -175,7 +175,12 @@ public class PlayerAI : MonoBehaviour
 
 		baseCharacterController.movement.rotation = Quaternion.LookRotation(diff);
 		if (actor.actionController.PlayActionByActionName(NormalAttackName))
+		{
 			_normalAttackCooltime = actor.cooltimeProcessor.GetCooltime(NormalAttackName);
+#if UNITY_EDITOR
+			//Debug.LogFormat("PlayerAI Attack frameCount = {0}", Time.frameCount);
+#endif
+		}
 	}
 
 	bool IsInAttackRange(Vector3 diff)

@@ -10,15 +10,25 @@ public class MeAnimatorSpeed : MecanimEventBase {
 	override public bool RangeSignal { get { return true; } }
 	public float speed = 1.0f;
 
-	#if UNITY_EDITOR
+#if UNITY_EDITOR
 	override public void OnGUI_PropertyWindow()
 	{
 		speed = EditorGUILayout.FloatField("Speed :", speed);
 	}
-	#endif
+#endif
+
+	void OnDisable()
+	{
+		if (_waitEnd == true && _animator != null)
+		{
+			_animator.speed = _prevSpeed;
+			_waitEnd = false;
+		}
+	}
 
 	float _prevSpeed = 0.0f;
 	bool _waitEnd = false;
+	Animator _animator;
 	override public void OnRangeSignalStart(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 #if UNITY_EDITOR
@@ -29,6 +39,7 @@ public class MeAnimatorSpeed : MecanimEventBase {
 		if (_prevSpeed == 0.0f)
 			_prevSpeed = animator.speed;
 		animator.speed = speed;
+		_animator = animator;
 		_waitEnd = true;
 	}
 

@@ -178,10 +178,15 @@ public class PlayerAI : MonoBehaviour
 		{
 			_normalAttackCooltime = actor.cooltimeProcessor.GetCooltime(NormalAttackName);
 #if UNITY_EDITOR
-			//Debug.LogFormat("PlayerAI Attack frameCount = {0}", Time.frameCount);
+			float deltaTime = Time.time - _prevAttackTime;
+			//Debug.LogFormat("PlayerAI Attack by AI frameCount = {0} / Time = {1} / Delta = {2}", Time.frameCount, Time.time, deltaTime);
+			_prevAttackTime = Time.time;
 #endif
 		}
 	}
+#if UNITY_EDITOR
+	float _prevAttackTime;
+#endif
 
 	bool IsInAttackRange(Vector3 diff)
 	{

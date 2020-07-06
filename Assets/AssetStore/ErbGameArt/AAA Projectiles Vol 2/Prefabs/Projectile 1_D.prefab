@@ -13,8 +13,9 @@ GameObject:
   - component: {fileID: 199286290415937754}
   - component: {fileID: 54785160050736224}
   - component: {fileID: 135257664758760022}
+  - component: {fileID: 6363857131468771216}
   m_Layer: 0
-  m_Name: Projectile 1
+  m_Name: Projectile 1_D
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -48,7 +49,7 @@ ParticleSystem:
   cullingMode: 3
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
-  looping: 0
+  looping: 1
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -286,7 +287,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.4
+      scalar: 0.45
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -339,7 +340,7 @@ ParticleSystem:
     startSizeY:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.4
+      scalar: 0.45
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -1031,7 +1032,7 @@ ParticleSystem:
       repeatInterval: 0.01
       probability: 1
   SizeModule:
-    enabled: 1
+    enabled: 0
     curve:
       serializedVersion: 2
       minMaxState: 1
@@ -3943,7 +3944,7 @@ ParticleSystem:
     lifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.06
+      scalar: 0.05
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -4769,7 +4770,7 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 0}
-  - {fileID: 2100000, guid: 0e476671b6453164e9446e3f9f0a7fa0, type: 2}
+  - {fileID: 2100000, guid: 159dfcda6bb793b428fb0390209ac7d5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4839,5 +4840,21 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.05
+  m_Radius: 0.1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6363857131468771216
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1698648575761504}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f87e8af460bb22a4b8106f6d06347cc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  disableHitObjectAfterCollision: 0
+  DeactivateObjectsAfterCollision: []
+  DisableParticlesAfterCollision:
+  - {fileID: 198463773618890346}

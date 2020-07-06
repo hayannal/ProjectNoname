@@ -156,7 +156,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Die
-  m_Speed: 1
+  m_Speed: 2
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours: []
@@ -248,7 +248,7 @@ MonoBehaviour:
   targetDetectType: 2
   hitObjectPrefab: {fileID: 1607489160101874, guid: ffe61663d7ed5d547b2cb343c59420fc,
     type: 3}
-  lifeTime: 0.75
+  lifeTime: 0.78
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
@@ -324,7 +324,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttackGanfaul
+  - NormalAttackChaosElemental
   showHitEffect: 1
   hitEffectObject: {fileID: 1188432315835894, guid: 8ecef275e407fd24d8e110b38363d281,
     type: 3}
@@ -347,13 +347,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.26
+  StartTime: 0.15
   EndTime: 1
   effectData: {fileID: 1026876357692210, guid: 85caf2792839e5e48ba8f5fa751f78a8, type: 3}
-  offset: {x: 0, y: 1, z: 0.4}
+  offset: {x: 0, y: 0, z: 0}
   fixedWorldPositionY: 0
   direction: {x: 0, y: 0, z: 1}
-  parentName: 
+  parentName: ce_bone_index_lower_r
 --- !u!1102 &8503796429965771016
 AnimatorState:
   serializedVersion: 5

@@ -37,15 +37,35 @@ public class MeState : MecanimEventBase {
 		if (mecanimState == null)
 			mecanimState = animator.GetComponent<MecanimState>();
 		if (mecanimState != null)
+		{
 			mecanimState.StartState(state, stateInfo.fullPathHash);
+#if UNITY_EDITOR
+			if (state == (int)MecanimStateDefine.eMecanimState.Attack && BattleInstanceManager.instance.playerActor.actionController.animator == animator)
+			{
+				//Debug.LogFormat("Attack State Start frameCount = {0} / Time = {1}", Time.frameCount, Time.time);
+				_prevStartTime = Time.time;
+			}
+#endif
+		}
 	}
 
+#if UNITY_EDITOR
+	float _prevStartTime;
+#endif
 	override public void OnRangeSignalEnd(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		if (mecanimState == null)
 			mecanimState = animator.GetComponent<MecanimState>();
 		if (mecanimState != null)
+		{
 			mecanimState.EndState(state, stateInfo.fullPathHash);
+#if UNITY_EDITOR
+			if (state == (int)MecanimStateDefine.eMecanimState.Attack && BattleInstanceManager.instance.playerActor.actionController.animator == animator)
+			{
+				//Debug.LogFormat("Attack State End frameCount = {0} / Time = {1} / Delta = {2}", Time.frameCount, Time.time, Time.time - _prevStartTime);
+			}
+#endif
+		}
 	}
 
 	/*

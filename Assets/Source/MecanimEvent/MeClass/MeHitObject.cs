@@ -528,8 +528,13 @@ public class MeHitObject : MecanimEventBase {
 		if (actor.IsPlayerActor())
 		{
 			PlayerActor playerActor = actor as PlayerActor;
-			if (playerActor != null)
+			if (playerActor != null && playerActor.actionController.waitAttackSignal)
+			{
 				playerActor.actionController.waitAttackSignal = false;
+#if UNITY_EDITOR
+				//Debug.LogFormat("wait FirstAttackSignal frameCount = {0} / Time = {1}", Time.frameCount, Time.time);
+#endif
+			}
 		}
 
 		Transform spawnTransform = null;

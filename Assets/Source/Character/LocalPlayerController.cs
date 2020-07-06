@@ -250,6 +250,9 @@ public sealed class LocalPlayerController : BaseCharacterController
 				actor.targetingProcessor.SetCustomTargetPosition(targetPosition);
 				if (GatePillar.instance != null && GatePillar.instance.gameObject.activeSelf)
 					++GatePillar.instance.raycastCount;
+#if UNITY_EDITOR
+				//Debug.LogFormat("PlayerAI Attack by Input frameCount = {0} / Time = {1}", Time.frameCount, Time.time);
+#endif
 			}
 		}
 

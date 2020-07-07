@@ -13,8 +13,6 @@ Shader "ERB/Particles/AddTrail"
 		[Toggle]_Usedark("Use dark", Float) = 1
 		[Toggle]_Mask("Mask", Float) = 0
 		_Maskpower("Mask power", Float) = 10
-		[MaterialToggle] _Usedepth ("Use depth?", Float ) = 0
-		_Depthpower("Depth power", Float) = 1
 		[Enum(Cull Off,0, Cull Front,1, Cull Back,2)] _CullMode("Culling", Float) = 2
 	}
 
@@ -55,23 +53,10 @@ Shader "ERB/Particles/AddTrail"
 					float4 vertex : SV_POSITION;
 					fixed4 color : COLOR;
 					float4 texcoord : TEXCOORD0;
-					UNITY_FOG_COORDS(1)
-					#ifdef SOFTPARTICLES_ON
-					float4 projPos : TEXCOORD2;
-					#endif
 					UNITY_VERTEX_INPUT_INSTANCE_ID
 					UNITY_VERTEX_OUTPUT_STEREO
 					
-				};	
-				
-				#if UNITY_VERSION >= 560
-				UNITY_DECLARE_DEPTH_TEXTURE( _CameraDepthTexture );
-				#else
-				uniform sampler2D_float _CameraDepthTexture;
-				#endif
-
-				//Don't delete this comment
-				// uniform sampler2D_float _CameraDepthTexture;
+				};
 
 				uniform float4 _StartColor;
 				uniform float4 _EndColor;
@@ -86,8 +71,6 @@ Shader "ERB/Particles/AddTrail"
 				uniform float4 _Noise_ST;
 				uniform float _Mask;
 				uniform float _Maskpower;
-				uniform fixed _Usedepth;
-				uniform float _Depthpower;
 
 				v2f vert ( appdata_t v  )
 				{
@@ -95,31 +78,17 @@ Shader "ERB/Particles/AddTrail"
 					UNITY_SETUP_INSTANCE_ID(v);
 					UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 					UNITY_TRANSFER_INSTANCE_ID(v, o);
-					
 
-					v.vertex.xyz +=  float3( 0, 0, 0 ) ;
+					v.vertex.xyz += float3( 0, 0, 0 );
 					o.vertex = UnityObjectToClipPos(v.vertex);
-					#ifdef SOFTPARTICLES_ON
-						o.projPos = ComputeScreenPos (o.vertex);
-						COMPUTE_EYEDEPTH(o.projPos.z);
-					#endif
 					o.color = v.color;
 					o.texcoord = v.texcoord;
-					UNITY_TRANSFER_FOG(o,o.vertex);
 					return o;
 				}
 
 				fixed4 frag ( v2f i  ) : SV_Target
 				{
 					float lp = 1;
-					#ifdef SOFTPARTICLES_ON
-						float sceneZ = LinearEyeDepth (SAMPLE_DEPTH_TEXTURE_PROJ(_CameraDepthTexture, UNITY_PROJ_COORD(i.projPos)));
-						float partZ = i.projPos.z;
-						float fade = saturate ((sceneZ-partZ) / _Depthpower);
-						lp *= lerp(1, fade, _Usedepth);
-						i.color.a *= lp;
-					#endif
-
 					float2 uv01 = i.texcoord.xy * float2( 1,1 ) + float2( 0,0 );
 					float U6 = uv01.x;
 					float4 lerpResult3 = lerp( _StartColor , _EndColor , saturate( pow( ( U6 * _Colorrange ) , _Colorpower ) ));
@@ -138,7 +107,6 @@ Shader "ERB/Particles/AddTrail"
 					float4 appendResult92 = (float4((( ( lerpResult3 * i.color * _Emission ) * lerp(temp_cast_0,temp_output_51_0,_Usedark) )).rgb , temp_output_51_0.r));
 					
 					fixed4 col = appendResult92;
-					UNITY_APPLY_FOG(i.fogCoord, col);
 					return col;
 				}
 				ENDCG 

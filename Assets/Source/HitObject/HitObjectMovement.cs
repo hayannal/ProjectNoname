@@ -145,6 +145,9 @@ public class HitObjectMovement : MonoBehaviour {
 				ComputeHowitzer();
 				break;
 		}
+
+		if (_listRicochet != null)
+			_listRicochet.Clear();
 	}
 
 	public void ComputeHowitzer()

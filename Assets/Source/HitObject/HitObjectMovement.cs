@@ -148,6 +148,7 @@ public class HitObjectMovement : MonoBehaviour {
 
 		if (_listRicochet != null)
 			_listRicochet.Clear();
+		_parentActorSphereCastRadiusForCheckWall = parentActor.targetingProcessor.sphereCastRadiusForCheckWall;
 	}
 
 	public void ComputeHowitzer()
@@ -313,6 +314,7 @@ public class HitObjectMovement : MonoBehaviour {
 	#region Ricochet
 	const float RicochetRange = 4.0f;
 	List<Collider> _listRicochet = null;
+	float _parentActorSphereCastRadiusForCheckWall;
 	public void AddRicochet(Collider collider, bool initialize)
 	{
 		if (_listRicochet == null)
@@ -368,6 +370,19 @@ public class HitObjectMovement : MonoBehaviour {
 			// object radius
 			float colliderRadius = ColliderUtil.GetRadius(result[i]);
 			if (colliderRadius == -1.0f) continue;
+
+			// wall check
+			if (_parentActorSphereCastRadiusForCheckWall > 0.0f && _listRicochet.Count > 0)
+			{
+				Transform lastRicochetTransform = BattleInstanceManager.instance.GetTransformFromCollider(_listRicochet[_listRicochet.Count - 1]);
+				Vector3 newPosition = cachedTransform.position;
+				newPosition.x = lastRicochetTransform.position.x;
+				newPosition.z = lastRicochetTransform.position.z;
+				Vector3 targetPosition = BattleInstanceManager.instance.GetTransformFromCollider(result[i]).position;
+				targetPosition.y = newPosition.y;
+				if (TargetingProcessor.CheckWall(newPosition, targetPosition, _parentActorSphereCastRadiusForCheckWall))
+					continue;
+			}
 
 			// 등록되어있는 개체라면 다르게 처리해야한다.
 			bool contains = _listRicochet.Contains(result[i]);

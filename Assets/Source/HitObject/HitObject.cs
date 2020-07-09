@@ -1746,7 +1746,11 @@ public class HitObject : MonoBehaviour
 					continue;
 			}
 
-			if (_collider.bounds.Intersects(_listIgnoreCollider[i].bounds) == false)
+			// Bound대로 했더니 IgnoreList에서 빼는순간 곧바로 OnCollisionEnter가 들어오는 경우가 생겼다.
+			// 그래서 발사체 Bound의 크기에 0.1씩 더해서 계산하는거로 바꾸기로 한다.
+			// 우선 이렇게 바꾸고나서도 펑기나 래빗한테 잘 들어가서 이렇게 하기로 한다.
+			Bounds newBounds = new Bounds(_collider.bounds.center, _collider.bounds.size + new Vector3(0.1f, 0.1f, 0.1f));
+			if (newBounds.Intersects(_listIgnoreCollider[i].bounds) == false)
 			{
 				RemoveIgnoreList(_listIgnoreCollider[i]);
 				break;

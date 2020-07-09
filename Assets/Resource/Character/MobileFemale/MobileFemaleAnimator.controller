@@ -107,13 +107,14 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Attack1
-  m_Speed: 0.9
+  m_Speed: 1.3
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours:
   - {fileID: -1049766806834685529}
   - {fileID: -8241733205721431210}
   - {fileID: -523805612688839370}
+  - {fileID: 4958907778406669715}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -122,7 +123,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 2040cfd2189d39747a919e4ce65baa12, type: 2}
+  m_Motion: {fileID: 7400000, guid: 19d4a4f0383c47e4ca8297efab2f0fdb, type: 2}
   m_Tag: 
   m_SpeedParameter: AttackAniSpeedRatio
   m_MirrorParameter: 
@@ -140,12 +141,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.7
+  StartTime: 0.48
   EndTime: 1
   targetDetectType: 2
   hitObjectPrefab: {fileID: 1533846767962012, guid: 009d9d5c2c8ad9442bc0b0483ec0d8a5,
     type: 3}
-  lifeTime: 3
+  lifeTime: 20
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
@@ -244,10 +245,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.69
+  StartTime: 0.47
   EndTime: 1
   effectData: {fileID: 1546629397207042, guid: 74a3c0e99fc59504191cd29c09e2c15a, type: 3}
-  offset: {x: 0, y: 1, z: 0.5}
+  offset: {x: 0, y: 0.8, z: 0.35}
   fixedWorldPositionY: 0
   direction: {x: 0, y: 0, z: 1}
   parentName: 
@@ -294,6 +295,21 @@ MonoBehaviour:
   StartTime: 0
   EndTime: 1
   state: 2
+--- !u!114 &4958907778406669715
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2e6805f699075e4eae576dc1aabd338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.01
+  EndTime: 0.5
+  speed: 1.1
 --- !u!114 &6649347608798660281
 MonoBehaviour:
   m_ObjectHideFlags: 1

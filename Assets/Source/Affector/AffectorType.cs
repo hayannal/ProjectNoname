@@ -44,6 +44,7 @@ public enum eAffectorType
 
 	TeleportingHitObject,
 	AddGeneratorCreateCount,
+	ArcFormHitObject,
 
 	DropItem = 51,
 	Invincible,

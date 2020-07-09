@@ -1341,7 +1341,7 @@ public class HitObject : MonoBehaviour
 					if (_signal.oneHitPerTarget)
 						_listOneHitPerTarget.Add(affectorProcessor);
 					if (_remainRicochetCount > 0 && _hitObjectMovement != null)
-						_hitObjectMovement.AddRicochet(col, _remainRicochetCount == _signal.ricochetCount);
+						_hitObjectMovement.AddRicochet(col, _remainRicochetCount == (_signal.ricochetCount + statusStructForHitObject.ricochetAddCountByLevelPack));
 					monsterCollided = true;
 
 					if (_remainMonsterThroughCount > 0 || _remainMonsterThroughCount == -1)

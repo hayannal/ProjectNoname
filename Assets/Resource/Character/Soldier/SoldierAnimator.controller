@@ -14,9 +14,9 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.25
-  m_TransitionOffset: 0.020365795
-  m_ExitTime: 0.6875
+  m_TransitionDuration: 0.25000006
+  m_TransitionOffset: 0
+  m_ExitTime: 0.58003736
   m_HasExitTime: 1
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
@@ -30,7 +30,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Attack1-1
-  m_Speed: 1
+  m_Speed: 1.2
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours:
@@ -107,13 +107,13 @@ MonoBehaviour:
   StartTime: 0.39
   EndTime: 1
   targetDetectType: 2
-  hitObjectPrefab: {fileID: 9082311513966844096, guid: c472e91a67931314b925d44c7631fd23,
+  hitObjectPrefab: {fileID: 1519322442116508, guid: a24a0607006faa044bab646cc02152a4,
     type: 3}
-  lifeTime: 1.1
+  lifeTime: 1
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
-  maxDistance: 0
+  maxDistance: 2.5
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -144,7 +144,7 @@ MonoBehaviour:
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
   howitzerRandomPositionRadiusRange: {x: 0, y: 0}
-  speed: 1
+  speed: 20
   useSpeedChange: 0
   targetSpeed: 0
   speedChangeTime: 0
@@ -185,9 +185,10 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttackGanfaul
-  showHitEffect: 0
-  hitEffectObject: {fileID: 0}
+  - NormalAttackSoldier
+  showHitEffect: 1
+  hitEffectObject: {fileID: 1570423950586096, guid: d0427fbc023a6004fb78dc9035db9de5,
+    type: 3}
   hitEffectLookAtNormal: 0
   useWeaponHitEffect: 0
   weaponDummyName: 
@@ -240,7 +241,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Die
-  m_Speed: 1
+  m_Speed: 1.1
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours: []
@@ -267,7 +268,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Attack1
-  m_Speed: 1
+  m_Speed: 1.2
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: -9054121778159292229}
@@ -303,13 +304,13 @@ MonoBehaviour:
   StartTime: 0.35
   EndTime: 1
   targetDetectType: 2
-  hitObjectPrefab: {fileID: 6216692311818900129, guid: 83d56ad5a4fe58a47948845138503dcc,
+  hitObjectPrefab: {fileID: 1519322442116508, guid: a24a0607006faa044bab646cc02152a4,
     type: 3}
-  lifeTime: 1.1
+  lifeTime: 1
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
-  maxDistance: 0
+  maxDistance: 2.5
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -340,7 +341,7 @@ MonoBehaviour:
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
   howitzerRandomPositionRadiusRange: {x: 0, y: 0}
-  speed: 1
+  speed: 20
   useSpeedChange: 0
   targetSpeed: 0
   speedChangeTime: 0
@@ -381,9 +382,10 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttackGanfaul
-  showHitEffect: 0
-  hitEffectObject: {fileID: 0}
+  - NormalAttackSoldier
+  showHitEffect: 1
+  hitEffectObject: {fileID: 1570423950586096, guid: d0427fbc023a6004fb78dc9035db9de5,
+    type: 3}
   hitEffectLookAtNormal: 0
   useWeaponHitEffect: 0
   weaponDummyName: 

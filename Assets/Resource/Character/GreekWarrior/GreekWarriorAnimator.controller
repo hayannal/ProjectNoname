@@ -54,7 +54,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.4
+  StartTime: 0.38
   EndTime: 1
   targetDetectType: 1
   hitObjectPrefab: {fileID: 0}
@@ -68,15 +68,15 @@ MonoBehaviour:
   teamCheckType: 0
   createPositionType: 0
   boneName: 
-  offset: {x: 0, y: 1, z: 0}
+  offset: {x: 0, y: 1, z: -3.5}
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
-  areaDistanceMin: 0
-  areaDistanceMax: 4.59
+  areaDistanceMin: 3
+  areaDistanceMax: 11
   areaHeightMin: -5
   areaHeightMax: 2
-  areaAngle: 60
+  areaAngle: 10
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
   repeatCount: 0
@@ -105,7 +105,9 @@ MonoBehaviour:
   curveLifeTime: 0
   endFollowOverTargetDistance: 0
   overrideLifeTimeWhenDieTarget: 0
+  useRandomTurn: 0
   accelTurn: 0
+  randomTurnRotateYawRange: {x: 0, y: 0}
   gravity: -9.81
   parallelCount: 0
   parallelDistance: 0
@@ -134,7 +136,8 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttackGanfaul
+  - NormalAttackGreekWarrior
+  - AddForceCommon
   showHitEffect: 0
   hitEffectObject: {fileID: 0}
   hitEffectLookAtNormal: 0
@@ -156,7 +159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.38196722
+  StartTime: 0.3119672
   EndTime: 1
   effectData: {fileID: 1481932562201786, guid: 1edba4950126747448b771bf0e24f9b3, type: 3}
   offset: {x: 0, y: 0, z: 0}
@@ -231,7 +234,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Attack1
-  m_Speed: 1.2
+  m_Speed: 1.1
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours:

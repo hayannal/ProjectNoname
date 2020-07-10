@@ -1128,8 +1128,6 @@ public class HitObject : MonoBehaviour
 	{
 		if (_signal.movable == false)
 			return;
-		if (_hitObjectMovement != null && _hitObjectMovement.IsAppliedRicochet())
-			return;
 		float maxDistance = _signal.maxDistance;
 		if (maxDistance == 0.0f && BattleManager.instance != null && BattleManager.instance.IsNodeWar())
 			maxDistance = NodeWarProcessor.SpawnDistance;
@@ -1138,6 +1136,8 @@ public class HitObject : MonoBehaviour
 			if (maxDistance == 0.0f)
 				return;
 		}
+		if (_hitObjectMovement != null && _hitObjectMovement.IsAppliedRicochet())
+			return;
 
 		Vector3 diff = cachedTransform.position - _createPosition;
 		diff.y = 0.0f;

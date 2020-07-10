@@ -5,6 +5,7 @@ Shader "FrameworkNG/Particle/AlphaBlend"
 	Properties
 	{
 		_TintColor ("Tint Color", Color) = (0.5,0.5,0.5,0.5)
+		_ColorIntensity("Color Intensity", Range(0, 20)) = 1.0
 		_MainTex ("Particle Texture", 2D) = "white" {}
 
 		[Enum(UnityEngine.Rendering.BlendMode)] _SrcBlend ("SrcBlend Mode", Float) = 1
@@ -53,6 +54,7 @@ Shader "FrameworkNG/Particle/AlphaBlend"
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
 			fixed4 _TintColor;
+			half _ColorIntensity;
 			#if _CUTOFF
 				fixed _Cutoff;
 			#endif
@@ -138,6 +140,7 @@ Shader "FrameworkNG/Particle/AlphaBlend"
 			fixed4 frag (v2f i) : SV_Target
 			{
 				fixed4 col = 2.0f * i.color * _TintColor * tex2D(_MainTex, i.texcoord);
+				col.rgb *= _ColorIntensity;
 				#if _MASK
 					col.a *= tex2D(_MaskTex, i.maskUV).r;
 				#endif

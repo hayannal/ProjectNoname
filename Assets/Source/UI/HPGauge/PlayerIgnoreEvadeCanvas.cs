@@ -62,7 +62,7 @@ public class PlayerIgnoreEvadeCanvas : MonoBehaviour
 
 	public void SetPercent(float rate)
 	{
-		percentText.text = string.Format("{0:0.#}%", rate * 100.0f);
+		percentText.text = string.Format("{0:N0}%", (int)(rate * 100.0f));
 	}
 
 	// Update is called once per frame

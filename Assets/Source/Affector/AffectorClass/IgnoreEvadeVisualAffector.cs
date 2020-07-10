@@ -106,6 +106,7 @@ public class IgnoreEvadeVisualAffector : AffectorBase
 				{
 					_attackStateStarted = true;
 					_addSpeed = _initEvade / _affectorValueLevelTableData.fValue3;
+					_addSpeed *= _actor.actionController.attackAniSpeedRatio;
 				}
 			}
 			else

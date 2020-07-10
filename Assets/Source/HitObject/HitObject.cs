@@ -1298,6 +1298,11 @@ public class HitObject : MonoBehaviour
 				continue;
 			}
 
+			// 벽 구석에 쐈을때 동시에 두 벽에 맞는 경우가 생겼다. 볼이 클수록 더 발생확률이 높은데
+			// 그렇다고 일일이 등록하긴 뭐해서 이런식으로 처리해보기로 한다.
+			if (_signal.contactAll == false && contact.thisCollider.enabled == false)
+				continue;
+
 			if (BattleInstanceManager.instance.planeCollider != null && BattleInstanceManager.instance.planeCollider == col)
 			{
 				planeCollided = true;

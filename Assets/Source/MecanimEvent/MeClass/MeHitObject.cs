@@ -542,6 +542,7 @@ public class MeHitObject : MecanimEventBase {
 			if (playerActor != null && playerActor.actionController.waitAttackSignal)
 			{
 				playerActor.actionController.waitAttackSignal = false;
+				ChangeAttackStateAffector.OnEventNormalAttack(playerActor.affectorProcessor);
 #if UNITY_EDITOR
 				//Debug.LogFormat("wait FirstAttackSignal frameCount = {0} / Time = {1}", Time.frameCount, Time.time);
 #endif

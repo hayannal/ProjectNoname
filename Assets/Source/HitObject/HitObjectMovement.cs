@@ -35,6 +35,7 @@ public class HitObjectMovement : MonoBehaviour {
 	Vector3 _createPosition;
 	Rigidbody _rigidbody;
 	float _speed;
+	float _turnPower;
 
 	Actor _followTargetActor;
 	Vector3 _followTargetPosition;
@@ -105,6 +106,26 @@ public class HitObjectMovement : MonoBehaviour {
 				//_rigidbody.velocity = HitObject.GetStartDirection(cachedTransform.position, meHit, parentActor.cachedTransform, targetPosition) * _speed;
 				_velocity = _rigidbody.velocity = cachedTransform.forward * _speed;
 				_forward = cachedTransform.forward;
+
+				if (_signal.movementType == eMovementType.Turn)
+				{
+					if (_signal.useRandomTurn)
+					{
+						_turnPower = Random.Range(-meHit.accelTurn, meHit.accelTurn);
+						float turnRatio = Mathf.Abs(_turnPower) / meHit.accelTurn;
+						float angleY = Mathf.Lerp(_signal.randomTurnRotateYawRange.x, _signal.randomTurnRotateYawRange.y, turnRatio);
+						angleY *= Random.Range(0.9f, 1.1f);
+						if (_turnPower > 0.0f) angleY *= -1.0f;
+
+						// 랜덤으로 나온 Turn의 양을 바탕으로 angleY를 구한 후 초기화 시점에 반영시킨다.
+						_rigidbody.MoveRotation(_rigidbody.rotation * Quaternion.Euler(0.0f, angleY, 0.0f));
+						cachedTransform.rotation = _rigidbody.rotation;
+						_velocity = _rigidbody.velocity = cachedTransform.forward * _speed;
+						_forward = cachedTransform.forward;
+					}
+					else
+						_turnPower = _signal.accelTurn;
+				}
 				break;
 			case eMovementType.Howitzer:
 				howitzerTargetPosition = HitObject.GetTargetPosition(_signal, parentActor, hitSignalIndexInAction);
@@ -295,7 +316,7 @@ public class HitObjectMovement : MonoBehaviour {
 				_forward = cachedTransform.forward;
 				break;
 			case eMovementType.Turn:
-				_rigidbody.MoveRotation(_rigidbody.rotation * Quaternion.Euler(0.0f, _signal.accelTurn * Time.fixedDeltaTime, 0.0f));
+				_rigidbody.MoveRotation(_rigidbody.rotation * Quaternion.Euler(0.0f, _turnPower * Time.fixedDeltaTime, 0.0f));
 				cachedTransform.rotation = _rigidbody.rotation;
 				//cachedTransform.Rotate(0.0f, _signal.accelTurn * Time.deltaTime, 0.0f, Space.Self);
 				_velocity = _rigidbody.velocity = cachedTransform.forward * _speed;

@@ -66,7 +66,9 @@ public class MeHitObject : MecanimEventBase {
 	public float curveLifeTime;
 	public bool endFollowOverTargetDistance;
 	public bool overrideLifeTimeWhenDieTarget;
+	public bool useRandomTurn;
 	public float accelTurn;
+	public Vector2 randomTurnRotateYawRange;
 	public float gravity = -9.81f;
 
 	public int parallelCount;
@@ -210,7 +212,16 @@ public class MeHitObject : MecanimEventBase {
 					overrideLifeTimeWhenDieTarget = EditorGUILayout.Toggle("Override LifeTime Die Target :", overrideLifeTimeWhenDieTarget);
 					break;
 				case HitObjectMovement.eMovementType.Turn:
-					accelTurn = EditorGUILayout.FloatField("Turn Power :", accelTurn);
+					useRandomTurn = EditorGUILayout.Toggle("Use Random Turn :", useRandomTurn);
+					if (useRandomTurn == false)
+					{
+						accelTurn = EditorGUILayout.FloatField("Turn Power :", accelTurn);
+					}
+					else
+					{
+						accelTurn = EditorGUILayout.FloatField("Turn Power Max Range :", accelTurn);
+						randomTurnRotateYawRange = EditorGUILayout.Vector2Field("Random Turn Yaw Range :", randomTurnRotateYawRange);
+					}
 					break;
 				case HitObjectMovement.eMovementType.Howitzer:
 					howitzerType = (HitObjectMovement.eHowitzerType)EditorGUILayout.EnumPopup("Howitzer Type :", howitzerType);

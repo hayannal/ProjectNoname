@@ -477,6 +477,11 @@ public class HitObjectMovement : MonoBehaviour {
 		_forward = cachedTransform.forward = normalizedDiff;
 		return true;
 	}
+
+	public bool IsAppliedRicochet()
+	{
+		return (_listRicochet != null && _listRicochet.Count > 0);
+	}
 	#endregion
 
 

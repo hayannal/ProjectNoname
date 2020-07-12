@@ -64,9 +64,9 @@ MonoBehaviour:
   EndTime: 1
   targetDetectType: 1
   hitObjectPrefab: {fileID: 0}
-  lifeTime: 0
+  lifeTime: 1
   areaHitLifeTimeEarlyOffset: 0
-  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
+  ignoreAreaHitLifeTimeRange: {x: 0.6, y: 0.9}
   movable: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -114,6 +114,7 @@ MonoBehaviour:
   useRandomTurn: 0
   accelTurn: 0
   randomTurnRotateYawRange: {x: 0, y: 0}
+  returnOverHalfLife: 0
   gravity: -9.81
   parallelCount: 0
   parallelDistance: 0
@@ -139,10 +140,11 @@ MonoBehaviour:
   hitStayIdForIgnoreDuplicate: 0
   hitStayLineRendererTrigger: 0
   onlyUsedAsTrigger: 0
-  oneHitPerTarget: 0
+  oneHitPerTarget: 1
   useLineRenderer: 0
   affectorValueIdList:
   - NormalAttackPostSciFiWarrior
+  - AddForceCommon
   showHitEffect: 0
   hitEffectObject: {fileID: 0}
   hitEffectLookAtNormal: 0

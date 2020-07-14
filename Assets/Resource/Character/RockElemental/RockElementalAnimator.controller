@@ -15,7 +15,8 @@ MonoBehaviour:
   StartTime: 0.49
   EndTime: 1
   targetDetectType: 1
-  hitObjectPrefab: {fileID: 100010, guid: 530a9b9f061d8a242bcedf60eca50dce, type: 3}
+  hitObjectPrefab: {fileID: 6875913602559690196, guid: 775b54c43607a454d9c0ee7bd855d637,
+    type: 3}
   lifeTime: 1.5
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0.12, y: 0.35}
@@ -63,6 +64,7 @@ MonoBehaviour:
   curveLifeTime: 0
   endFollowOverTargetDistance: 0
   overrideLifeTimeWhenDieTarget: 0
+  followMeOnHitTarget: 0
   useRandomTurn: 0
   accelTurn: 0
   randomTurnRotateYawRange: {x: 0, y: 0}
@@ -120,7 +122,8 @@ MonoBehaviour:
   StartTime: 0.52
   EndTime: 1
   targetDetectType: 1
-  hitObjectPrefab: {fileID: 100010, guid: 530a9b9f061d8a242bcedf60eca50dce, type: 3}
+  hitObjectPrefab: {fileID: 6875913602559690196, guid: 775b54c43607a454d9c0ee7bd855d637,
+    type: 3}
   lifeTime: 1.5
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0.12, y: 0.35}
@@ -136,7 +139,7 @@ MonoBehaviour:
   fixedWorldPositionY: 0
   areaRotationY: 0
   areaDistanceMin: 0
-  areaDistanceMax: 0.15
+  areaDistanceMax: 0.28
   areaHeightMin: -5
   areaHeightMax: 2
   areaAngle: 360
@@ -168,6 +171,7 @@ MonoBehaviour:
   curveLifeTime: 0
   endFollowOverTargetDistance: 0
   overrideLifeTimeWhenDieTarget: 0
+  followMeOnHitTarget: 0
   useRandomTurn: 0
   accelTurn: 0
   randomTurnRotateYawRange: {x: 0, y: 0}
@@ -225,6 +229,26 @@ MonoBehaviour:
   StartTime: 0
   EndTime: 0.8
   state: 3
+--- !u!114 &-5605097294317210621
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.49
+  EndTime: 1
+  effectData: {fileID: 3136301650636350254, guid: a1039423339b1324fbab50260f8f5464,
+    type: 3}
+  offset: {x: 0, y: 0, z: 0}
+  fixedWorldPositionY: 0
+  direction: {x: 0, y: 0, z: 1}
+  parentName: 
 --- !u!1102 &-5115558990500643923
 AnimatorState:
   serializedVersion: 5
@@ -233,13 +257,14 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Attack1
-  m_Speed: 1
+  m_Speed: 1.2
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours:
   - {fileID: -6887377132650347108}
   - {fileID: -7964030533374266911}
   - {fileID: -7331226270898177992}
+  - {fileID: -5605097294317210621}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1

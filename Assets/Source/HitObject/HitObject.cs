@@ -1355,6 +1355,9 @@ public class HitObject : MonoBehaviour
 						AddIgnoreList(col, true);
 					// 리코세는 가능여부 판단하고 해야해서 OnPostCollided함수 안에서 한다.
 
+					if (_signal.movementType == HitObjectMovement.eMovementType.FollowTarget && _signal.followMeOnHitTarget && _hitObjectMovement != null && _hitObjectMovement.IsTargetActor(affectorProcessor.actor))
+						_hitObjectMovement.ChangeFollowTargetActor(BattleInstanceManager.instance.FindActorByInstanceId(statusStructForHitObject.actorInstanceId));
+
 					s_listAppliedAffectorProcessor.Add(affectorProcessor);
 				}
 			}

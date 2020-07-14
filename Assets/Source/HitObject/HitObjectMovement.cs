@@ -332,6 +332,20 @@ public class HitObjectMovement : MonoBehaviour {
 		}
 	}
 
+	public bool IsTargetActor(Actor targetActor)
+	{
+		if (_followTargetActor == null)
+			return false;
+		if (_followTargetActor == targetActor)
+			return true;
+		return false;
+	}
+
+	public void ChangeFollowTargetActor(Actor targetActor)
+	{
+		_followTargetActor = targetActor;
+	}
+
 	#region Ricochet
 	const float RicochetRange = 4.0f;
 	List<Collider> _listRicochet = null;

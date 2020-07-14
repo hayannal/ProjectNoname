@@ -66,6 +66,7 @@ public class MeHitObject : MecanimEventBase {
 	public float curveLifeTime;
 	public bool endFollowOverTargetDistance;
 	public bool overrideLifeTimeWhenDieTarget;
+	public bool followMeOnHitTarget;
 	public bool useRandomTurn;
 	public float accelTurn;
 	public Vector2 randomTurnRotateYawRange;
@@ -210,6 +211,7 @@ public class MeHitObject : MecanimEventBase {
 					curveLifeTime = EditorGUILayout.FloatField("Curve LifeTime :", curveLifeTime);
 					endFollowOverTargetDistance = EditorGUILayout.Toggle("End Curve Over Target :", endFollowOverTargetDistance);
 					overrideLifeTimeWhenDieTarget = EditorGUILayout.Toggle("Override LifeTime Die Target :", overrideLifeTimeWhenDieTarget);
+					followMeOnHitTarget = EditorGUILayout.Toggle("Follow Me On Hit Target :", followMeOnHitTarget);
 					break;
 				case HitObjectMovement.eMovementType.Turn:
 					useRandomTurn = EditorGUILayout.Toggle("Use Random Turn :", useRandomTurn);

@@ -119,6 +119,7 @@ public class PlayerAI : MonoBehaviour
 	}
 
 	float _actorTableAttackRange;
+	public float actorTableAttackRange { get { return _actorTableAttackRange; } }
 	string NormalAttackName = "Attack";
 	Cooltime _normalAttackCooltime;
 	void UpdateAttack()

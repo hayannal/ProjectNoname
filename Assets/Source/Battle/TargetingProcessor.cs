@@ -213,7 +213,7 @@ public class TargetingProcessor : MonoBehaviour {
 	}
 
 	ActorTableData _cachedActorTableData;
-	ActorTableData cachedActorTableData
+	public ActorTableData cachedActorTableData
 	{
 		get
 		{

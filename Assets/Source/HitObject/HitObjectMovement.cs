@@ -139,9 +139,9 @@ public class HitObjectMovement : MonoBehaviour {
 					float attackRange = 0.0f;
 					if (parentActor.IsPlayerActor())
 					{
-						ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(parentActor.actorId);
-						if (actorTableData != null)
-							attackRange = actorTableData.attackRange;
+						PlayerActor playerActor = parentActor as PlayerActor;
+						if (playerActor != null)
+							attackRange = playerActor.playerAI.actorTableAttackRange;
 					}
 					Vector3 startPosition = cachedTransform.position;
 					startPosition.y = 0.0f;

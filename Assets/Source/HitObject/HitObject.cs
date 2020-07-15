@@ -70,7 +70,7 @@ public class HitObject : MonoBehaviour
 						break;
 				}
 
-				bool onlyPresetEffect = false;
+				bool checkPresetHitEffect = false;
 				Vector3 presetEffectPosition = Vector3.zero;
 				if (useTargetIndex && targetingProcessor.GetTarget(targetIndex) != null)
 				{
@@ -89,7 +89,7 @@ public class HitObject : MonoBehaviour
 				}
 				else if (targetingProcessor.IsRegisteredCustomTargetPosition())
 				{
-					onlyPresetEffect = true;
+					checkPresetHitEffect = true;
 					presetEffectPosition = targetingProcessor.GetCustomTargetPosition(0);
 					presetEffectPosition.y = 1.0f;
 
@@ -99,17 +99,44 @@ public class HitObject : MonoBehaviour
 				}
 				else
 				{
-					onlyPresetEffect = true;
+					checkPresetHitEffect = true;
 					presetEffectPosition = GetFallbackTargetPosition(parentActor.cachedTransform);
 					presetEffectPosition.y = 1.0f;
 				}
 
-				if (onlyPresetEffect)
+				if (checkPresetHitEffect)
 				{
-					if (meHit.showHitEffect)
-						HitEffect.ShowHitEffect(meHit, presetEffectPosition, (parentTransform.position - presetEffectPosition).normalized, 0);
-					if (meHit.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
-						HitEffect.ShowHitEffectLineRenderer(meHit, GetSpawnPosition(spawnTransform, meHit, parentTransform, parentActor, hitSignalIndexInAction), presetEffectPosition);
+					if (meHit.ignorePresetHitEffectOnCustomTargetPosition == false)
+					{
+						if (meHit.showHitEffect)
+							HitEffect.ShowHitEffect(meHit, presetEffectPosition, (parentTransform.position - presetEffectPosition).normalized, 0);
+						if (meHit.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
+							HitEffect.ShowHitEffectLineRenderer(meHit, GetSpawnPosition(spawnTransform, meHit, parentTransform, parentActor, hitSignalIndexInAction), presetEffectPosition);
+					}
+
+					// check wall
+					if (meHit.checkRaycastWallInArea)
+					{
+						Vector3 attackerPosition = spawnTransform.position;
+						Vector3 attackerForward = spawnTransform.forward;
+						float length = 1.0f;
+						if (parentActor.IsPlayerActor())
+						{
+							PlayerActor playerActor = parentActor as PlayerActor;
+							if (playerActor != null)
+								length = playerActor.playerAI.actorTableAttackRange;
+						}
+						Vector3 contactPoint = Vector3.zero;
+						Vector3 contactNormal = Vector3.zero;
+						attackerPosition.y = 1.0f;
+						if (CheckRaycastWall(attackerPosition, attackerForward, length, ref contactPoint, ref contactNormal))
+						{
+							if (meHit.showHitEffect)
+								HitEffect.ShowHitEffect(meHit, contactPoint, contactNormal, 0);
+							if (meHit.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
+								HitEffect.ShowHitEffectLineRenderer(meHit, GetSpawnPosition(spawnTransform, meHit, parentTransform, parentActor, hitSignalIndexInAction), contactPoint);
+						}
+					}
 				}
 			}
 			return null;
@@ -276,6 +303,30 @@ public class HitObject : MonoBehaviour
 		float colliderRadius = ColliderUtil.GetRadius(targetCollider);
 		if (colliderRadius == -1.0f)
 			return;
+		// Preset타입은 Burrow를 공격할 수 없다.
+		if (affectorProcessor.IsContinuousAffectorType(eAffectorType.Burrow))
+			return;
+		// check wall
+		if (meHit.checkRaycastWallInArea)
+		{
+			Vector3 attackerPosition = spawnTransform.position;
+			Vector3 attackerForward = spawnTransform.forward;
+			// 위 Preset에서는 attackRange만큼 검사했지만 여기서는 타겟과의 사이 거리만 체크해야한다.
+			Vector3 diff = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider).position - attackerPosition;
+			diff.y = 0.0f;
+			float length = diff.magnitude;
+			Vector3 contactPoint = Vector3.zero;
+			Vector3 contactNormal = Vector3.zero;
+			attackerPosition.y = 1.0f;
+			if (CheckRaycastWall(attackerPosition, attackerForward, length, ref contactPoint, ref contactNormal))
+			{
+				if (meHit.showHitEffect)
+					HitEffect.ShowHitEffect(meHit, contactPoint, contactNormal, 0);
+				if (meHit.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
+					HitEffect.ShowHitEffectLineRenderer(meHit, GetSpawnPosition(spawnTransform, meHit, parentTransform, parentActor, hitSignalIndexInAction), contactPoint);
+				return;
+			}
+		}
 
 		HitParameter hitParameter = new HitParameter();
 		Transform targetColliderTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
@@ -604,7 +655,9 @@ public class HitObject : MonoBehaviour
 					attackerPositionDiff.y = 0.0f;
 					length = attackerPositionDiff.magnitude;
 				}
-				if (CheckRaycastWall(attackerPosition, attackerForward, length))
+				Vector3 contactPoint = Vector3.zero;
+				Vector3 contactNormal = Vector3.zero;
+				if (CheckRaycastWall(attackerPosition, attackerForward, length, ref contactPoint, ref contactNormal))
 					continue;
 			}
 
@@ -665,7 +718,7 @@ public class HitObject : MonoBehaviour
 		}
 	}
 
-	static bool CheckRaycastWall(Vector3 areaPosition, Vector3 areaForward, float maxDistance)
+	static bool CheckRaycastWall(Vector3 areaPosition, Vector3 areaForward, float maxDistance, ref Vector3 contactPoint, ref Vector3 contactNormal)
 	{
 		if (s_raycastHitList == null)
 			s_raycastHitList = new RaycastHit[100];
@@ -687,6 +740,8 @@ public class HitObject : MonoBehaviour
 			if (affectorProcessor != null)
 				continue;
 
+			contactPoint = s_raycastHitList[i].point;
+			contactNormal = s_raycastHitList[i].normal;
 			return true;
 		}
 

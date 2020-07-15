@@ -59,7 +59,7 @@ public class HitEffect : MonoBehaviour {
 				break;
 			case eLineRendererType.RayDesigner:
 				RayDesigner rayDesigner = BattleInstanceManager.instance.GetCachedRayDesigner(meHit.hitEffectLineRendererObject, startPoint, Quaternion.identity);
-				rayDesigner.IsDynamic = false;
+				rayDesigner.IsDynamic = rayDesigner.Simulate = false;
 				rayDesigner.UpdateStartPosition(startPoint, startPoint + Vector3.up);
 				rayDesigner.UpdateTargetPosition(contactPoint, contactPoint + Vector3.up);
 				rayDesigner.UpdateMeshImmediate();

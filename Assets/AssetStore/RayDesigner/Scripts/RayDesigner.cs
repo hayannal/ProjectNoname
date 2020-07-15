@@ -33,6 +33,7 @@ public class RayDesigner : MonoBehaviour
     private float FadeIn = 1f;
     private float FadeTarget = 1f;
     public float FadeSpeed = 1f;
+	public float LifeTime = 0.6f;
 
     public ParticleSystem StartEffect;
     public ParticleSystem HitEffect;
@@ -57,6 +58,7 @@ public class RayDesigner : MonoBehaviour
 
     public bool ActiveOnStart = true;
 
+	private float RemainLifeTime;
     void OnEnable()
     {
         MeshBuffer = new Mesh();
@@ -69,6 +71,12 @@ public class RayDesigner : MonoBehaviour
             FadeIn = 1f;
             Show();
         }
+		else
+		{
+			FadeIn = 0.0f;
+			FadeTarget = 1.0f;
+			RemainLifeTime = LifeTime;
+		}
 
         Keyframe k3 = new Keyframe();
         k3.time = 0f;
@@ -115,7 +123,9 @@ public class RayDesigner : MonoBehaviour
 #endif
         CheckPoints();
 
-		FadeIn = Mathf.Lerp(FadeIn, FadeTarget, FadeSpeed * Time.deltaTime);
+		float fadeSpeed = FadeSpeed;
+		if (RemainLifeTime > 0.0f) fadeSpeed = 3.0f;
+		FadeIn = Mathf.Lerp(FadeIn, FadeTarget, fadeSpeed * Time.deltaTime);
 
 		if (BezierPoints != null && BezierPoints.Length > 3)
 		{
@@ -172,8 +182,7 @@ public class RayDesigner : MonoBehaviour
                 
         }
         
-        if(Simulate)
-            UpdateMaterials();
+        UpdateMaterials();
 
         if (FadeIn <= 0.004f)
         {
@@ -196,6 +205,16 @@ public class RayDesigner : MonoBehaviour
                 if (!EndLight.enabled)
                     EndLight.enabled = true;
         }
+
+		if (RemainLifeTime > 0.0f)
+		{
+			RemainLifeTime -= Time.deltaTime;
+			if (RemainLifeTime <= 0.0f)
+			{
+				FadeTarget = 0.0f;
+				RemainLifeTime = 0.0f;
+			}
+		}
     }
 
     void CheckPoints()

@@ -18,7 +18,8 @@ public class RayDesignerEditor : Editor
     SerializedProperty Simulate;
     SerializedProperty ActiveOnStart;
     SerializedProperty ActivationSpeed;
-    SerializedProperty StartEffect;
+	SerializedProperty LifeTime;
+	SerializedProperty StartEffect;
     SerializedProperty HitEffect;
     SerializedProperty StartLight;
     SerializedProperty EndLight;
@@ -48,7 +49,8 @@ public class RayDesignerEditor : Editor
         Simulate = serializedObject.FindProperty("Simulate");
         ActiveOnStart = serializedObject.FindProperty("ActiveOnStart");
         ActivationSpeed = serializedObject.FindProperty("FadeSpeed");
-        StartEffect = serializedObject.FindProperty("StartEffect");
+		LifeTime = serializedObject.FindProperty("LifeTime");
+		StartEffect = serializedObject.FindProperty("StartEffect");
         HitEffect = serializedObject.FindProperty("HitEffect");
         StartLight = serializedObject.FindProperty("StartLight");
         EndLight = serializedObject.FindProperty("EndLight");
@@ -155,7 +157,14 @@ public class RayDesignerEditor : Editor
                 }
                 EditorGUILayout.EndHorizontal();
 
-                GUILayout.Space(5f);
+				EditorGUILayout.BeginHorizontal();
+				{
+					EditorGUILayout.LabelField("LifeTime");
+					LifeTime.floatValue = EditorGUILayout.FloatField(LifeTime.floatValue);
+				}
+				EditorGUILayout.EndHorizontal();
+
+				GUILayout.Space(5f);
 
                 EditorGUILayout.BeginHorizontal();
                 {

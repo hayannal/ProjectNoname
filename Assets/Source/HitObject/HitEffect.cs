@@ -59,9 +59,10 @@ public class HitEffect : MonoBehaviour {
 				break;
 			case eLineRendererType.RayDesigner:
 				RayDesigner rayDesigner = BattleInstanceManager.instance.GetCachedRayDesigner(meHit.hitEffectLineRendererObject, startPoint, Quaternion.identity);
+				// 이거 풀면 안된다. 폰에서 프레임 30 이하로 떨어뜨리는 주범.
 				rayDesigner.IsDynamic = rayDesigner.Simulate = false;
-				rayDesigner.UpdateStartPosition(startPoint, startPoint + Vector3.up);
-				rayDesigner.UpdateTargetPosition(contactPoint, contactPoint + Vector3.up);
+				rayDesigner.UpdateStartPosition(startPoint, startPoint + Vector3.up * 1.5f);
+				rayDesigner.UpdateTargetPosition(contactPoint, contactPoint + Vector3.up * 1.5f);
 				rayDesigner.UpdateMeshImmediate();
 				break;
 			case eLineRendererType.ProceduralLightning:

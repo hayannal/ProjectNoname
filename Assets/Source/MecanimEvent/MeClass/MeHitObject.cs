@@ -15,6 +15,8 @@ public class MeHitObject : MecanimEventBase {
 	override public bool RangeSignal { get { return false; } }
 
 	public HitObject.eTargetDetectType targetDetectType;
+	public HitObject.ePresetType presetType;
+	public int multiPresetCount;
 	public GameObject hitObjectPrefab;
 	public float lifeTime;
 	public float areaHitLifeTimeEarlyOffset;
@@ -136,6 +138,9 @@ public class MeHitObject : MecanimEventBase {
 		if (targetDetectType == HitObject.eTargetDetectType.Preset)
 		{
 			// Preset Count
+			presetType = (HitObject.ePresetType)EditorGUILayout.EnumPopup("Preset Type :", presetType);
+			if (presetType == HitObject.ePresetType.Multi)
+				multiPresetCount = EditorGUILayout.IntField("Multi Preset Count :", multiPresetCount);
 		}
 		else if (targetDetectType == HitObject.eTargetDetectType.SphereCast)
 		{

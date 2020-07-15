@@ -14,6 +14,13 @@ public class HitObject : MonoBehaviour
 		SphereCast,
 	}
 
+	public enum ePresetType
+	{
+		Single,
+		Multi,				// 비중복 프리셋. 하나의 시작위치에서 여러개로 퍼지는 구조이기때문에 시그널은 하나만 설정하고 루프돌면서 여러개를 생성하는 구조다.
+		DuplicatedMulti,	// 중복 프리셋. 시작위치가 달라야 구분되기때문에 멀티타겟의 개수만큼 시그널을 설정해야한다.
+	}
+
 	public enum eCreatePositionType
 	{
 		Offset,
@@ -35,42 +42,74 @@ public class HitObject : MonoBehaviour
 		if (meHit.targetDetectType == eTargetDetectType.Preset)
 		{
 			// Preset은 hitObject객체를 만들지 않는다.
-			TargetingProcessor targetSystem = parentActor.targetingProcessor;
-			if (targetSystem != null)
+			TargetingProcessor targetingProcessor = parentActor.targetingProcessor;
+			if (targetingProcessor != null)
 			{
-				for (int i = 0; i < targetSystem.GetTargetCount(); ++i)
+				int targetIndex = -1;
+				bool useTargetIndex = false;
+				bool useTargetList = false;
+				switch (meHit.presetType)
 				{
-					Collider targetCollider = targetSystem.GetTargetList()[i];
-					if (targetCollider == null)
-						continue;
-					AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(targetCollider);
-					if (affectorProcessor == null)
-						continue;
-					if (!Team.CheckTeamFilter(parentActor.team.teamId, targetCollider, meHit.teamCheckType))
-						continue;
-					float colliderRadius = ColliderUtil.GetRadius(targetCollider);
-					if (colliderRadius == -1.0f)
-						continue;
+					case ePresetType.Single:
+						targetIndex = 0;
+						useTargetIndex = (targetingProcessor.GetTargetCount() > 0);
+						break;
+					case ePresetType.Multi:
+						targetingProcessor.FindPresetMultiTargetMonsterList();
+						useTargetList = (targetingProcessor.GetTargetCount() > 0);
+						break;
+					case ePresetType.DuplicatedMulti:
+						targetingProcessor.FindPresetMultiTargetMonsterList();
+						useTargetIndex = (targetingProcessor.GetTargetCount() > 0);
+						if (useTargetIndex)
+						{
+							targetIndex = hitSignalIndexInAction;
+							if (targetIndex >= targetingProcessor.GetTargetCount())
+								targetIndex = targetIndex % targetingProcessor.GetTargetCount();
+						}
+						break;
+				}
 
-					HitParameter hitParameter = new HitParameter();
-					Transform targetColliderTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
-					hitParameter.hitNormal = parentTransform.forward;
-					hitParameter.contactNormal = (parentTransform.position - targetColliderTransform.position).normalized;
-					hitParameter.contactPoint = targetColliderTransform.position + (hitParameter.contactNormal * colliderRadius * 0.7f);
-					hitParameter.contactPoint.y += targetCollider.bounds.size.y * 0.5f;
-					hitParameter.statusBase = statusBase;
-					CopyEtcStatusForHitObject(ref hitParameter.statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
+				bool onlyPresetEffect = false;
+				Vector3 presetEffectPosition = Vector3.zero;
+				if (useTargetIndex && targetingProcessor.GetTarget(targetIndex) != null)
+				{
+					ApplyPreset(spawnTransform, meHit, parentActor, parentTransform, statusBase, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, targetingProcessor.GetTarget(targetIndex));
+				}
+				else if (useTargetList)
+				{
+					// 비중복의 경우엔 설정되어있는 개수만큼 돌아야하는데 타겟의 개수가 부족하면 그 개수까지만 도는 형태다.
+					for (int i = 0; i < meHit.multiPresetCount; ++i)
+					{
+						Collider targetCollider = targetingProcessor.GetTarget(i);
+						if (targetCollider == null)
+							break;
+						ApplyPreset(spawnTransform, meHit, parentActor, parentTransform, statusBase, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, targetCollider);
+					}
+				}
+				else if (targetingProcessor.IsRegisteredCustomTargetPosition())
+				{
+					onlyPresetEffect = true;
+					presetEffectPosition = targetingProcessor.GetCustomTargetPosition(0);
+					presetEffectPosition.y = 1.0f;
 
-					ApplyAffectorValue(affectorProcessor, meHit.affectorValueIdList, hitParameter);
+					// 원래 여기에다가 Preset일때 게이트필라 클릭 이동 작업을 추가하려고 했는데
+					// 없는 시스템 자꾸 넣는거보다 차라리 기존 시스템을 쓰는게 낫다고 판단해서 투명 HitArea를 만드는 것으로 처리하기로 했다.
+					// 높이는 2.1에서 2.2로 만들어야하는데, 안그러면 몬스터한테 데미지도 안들어가는데 RimBlink가 먹이게 되버려서 이상하게 보여진다.
+				}
+				else
+				{
+					onlyPresetEffect = true;
+					presetEffectPosition = GetFallbackTargetPosition(parentActor.cachedTransform);
+					presetEffectPosition.y = 1.0f;
+				}
 
+				if (onlyPresetEffect)
+				{
 					if (meHit.showHitEffect)
-						HitEffect.ShowHitEffect(meHit, hitParameter.contactPoint, hitParameter.contactNormal, hitParameter.statusStructForHitObject.weaponIDAtCreation);
+						HitEffect.ShowHitEffect(meHit, presetEffectPosition, (parentTransform.position - presetEffectPosition).normalized, 0);
 					if (meHit.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
-						HitEffect.ShowHitEffectLineRenderer(meHit, GetSpawnPosition(spawnTransform, meHit, parentTransform, parentActor, hitSignalIndexInAction), hitParameter.contactPoint);
-					if (meHit.showHitBlink && (meHit.affectorValueIdList == null || meHit.affectorValueIdList.Count == 0))
-						HitBlink.ShowHitBlink(affectorProcessor.cachedTransform);
-					if (meHit.showHitRimBlink && (meHit.affectorValueIdList == null || meHit.affectorValueIdList.Count == 0))
-						HitRimBlink.ShowHitRimBlink(affectorProcessor.cachedTransform, hitParameter.contactNormal);
+						HitEffect.ShowHitEffectLineRenderer(meHit, GetSpawnPosition(spawnTransform, meHit, parentTransform, parentActor, hitSignalIndexInAction), presetEffectPosition);
 				}
 			}
 			return null;
@@ -223,6 +262,40 @@ public class HitObject : MonoBehaviour
 			return hitObject;
 		}
 		return null;
+	}
+
+	static void ApplyPreset(Transform spawnTransform, MeHitObject meHit, Actor parentActor, Transform parentTransform, StatusBase statusBase, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack, Collider targetCollider)
+	{
+		if (targetCollider == null)
+			return;
+		AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(targetCollider);
+		if (affectorProcessor == null)
+			return;
+		if (!Team.CheckTeamFilter(parentActor.team.teamId, targetCollider, meHit.teamCheckType))
+			return;
+		float colliderRadius = ColliderUtil.GetRadius(targetCollider);
+		if (colliderRadius == -1.0f)
+			return;
+
+		HitParameter hitParameter = new HitParameter();
+		Transform targetColliderTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
+		hitParameter.hitNormal = parentTransform.forward;
+		hitParameter.contactNormal = (parentTransform.position - targetColliderTransform.position).normalized;
+		hitParameter.contactPoint = targetColliderTransform.position + (hitParameter.contactNormal * colliderRadius * 0.7f);
+		hitParameter.contactPoint.y += targetCollider.bounds.size.y * 0.5f;
+		hitParameter.statusBase = statusBase;
+		CopyEtcStatusForHitObject(ref hitParameter.statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
+
+		ApplyAffectorValue(affectorProcessor, meHit.affectorValueIdList, hitParameter);
+
+		if (meHit.showHitEffect)
+			HitEffect.ShowHitEffect(meHit, hitParameter.contactPoint, hitParameter.contactNormal, hitParameter.statusStructForHitObject.weaponIDAtCreation);
+		if (meHit.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
+			HitEffect.ShowHitEffectLineRenderer(meHit, GetSpawnPosition(spawnTransform, meHit, parentTransform, parentActor, hitSignalIndexInAction), hitParameter.contactPoint);
+		if (meHit.showHitBlink && (meHit.affectorValueIdList == null || meHit.affectorValueIdList.Count == 0))
+			HitBlink.ShowHitBlink(affectorProcessor.cachedTransform);
+		if (meHit.showHitRimBlink && (meHit.affectorValueIdList == null || meHit.affectorValueIdList.Count == 0))
+			HitRimBlink.ShowHitRimBlink(affectorProcessor.cachedTransform, hitParameter.contactNormal);
 	}
 
 	public static HitObject GetCachedHitObject(MeHitObject meHit, Vector3 position, Quaternion rotation)

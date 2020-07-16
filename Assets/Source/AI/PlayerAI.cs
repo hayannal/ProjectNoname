@@ -200,7 +200,9 @@ public class PlayerAI : MonoBehaviour
 				return true;
 		}
 
-		if (diff.sqrMagnitude - (_targetColliderRadius * _targetColliderRadius) > maxDistance * maxDistance)
+		// 최적화 하겠다고 sqr인 상태에서 빼니 거리계산이 틀어진다. 그냥 magnitude로 계산하기로 한다.
+		//if (diff.sqrMagnitude - (_targetColliderRadius * _targetColliderRadius) > maxDistance * maxDistance)
+		if (diff.magnitude - _targetColliderRadius > maxDistance)
 			return false;
 
 		return true;

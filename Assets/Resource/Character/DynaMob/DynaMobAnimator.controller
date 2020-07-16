@@ -32,6 +32,7 @@ MonoBehaviour:
   targetDetectType: 0
   presetType: 2
   multiPresetCount: 0
+  ignorePresetHitEffectOnCustomTargetPosition: 0
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
@@ -113,8 +114,9 @@ MonoBehaviour:
   useLineRenderer: 0
   affectorValueIdList:
   - NormalAttackBigBatSuccubus
-  showHitEffect: 0
-  hitEffectObject: {fileID: 0}
+  showHitEffect: 1
+  hitEffectObject: {fileID: 1426864532553638, guid: 3931b040b60cc6141b3effb8a35a51f7,
+    type: 3}
   hitEffectLookAtNormal: 0
   useWeaponHitEffect: 0
   weaponDummyName: 
@@ -123,6 +125,25 @@ MonoBehaviour:
     type: 3}
   showHitBlink: 0
   showHitRimBlink: 1
+--- !u!114 &-6704610016890986744
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.57
+  EndTime: 1
+  effectData: {fileID: 1469211736650368, guid: 6b738ef31ecba0b468c716b278442a72, type: 3}
+  offset: {x: 0.25, y: 1.9, z: -0.1}
+  fixedWorldPositionY: 0
+  direction: {x: 0, y: 0, z: 1}
+  parentName: 
 --- !u!1102 &-4713780209319880699
 AnimatorState:
   serializedVersion: 5
@@ -150,6 +171,25 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!114 &-4559781066583888627
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.57
+  EndTime: 1
+  effectData: {fileID: 1469211736650368, guid: 6b738ef31ecba0b468c716b278442a72, type: 3}
+  offset: {x: -0.25, y: 1.9, z: -0.1}
+  fixedWorldPositionY: 0
+  direction: {x: 0, y: 0, z: 1}
+  parentName: 
 --- !u!1102 &-4201279976904388784
 AnimatorState:
   serializedVersion: 5
@@ -194,6 +234,8 @@ AnimatorState:
   - {fileID: -6748248311848529732}
   - {fileID: 4383473261815551607}
   - {fileID: 6330330919260334077}
+  - {fileID: -4559781066583888627}
+  - {fileID: -6704610016890986744}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -372,6 +414,7 @@ MonoBehaviour:
   targetDetectType: 0
   presetType: 2
   multiPresetCount: 0
+  ignorePresetHitEffectOnCustomTargetPosition: 0
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
@@ -453,8 +496,9 @@ MonoBehaviour:
   useLineRenderer: 0
   affectorValueIdList:
   - NormalAttackBigBatSuccubus
-  showHitEffect: 0
-  hitEffectObject: {fileID: 0}
+  showHitEffect: 1
+  hitEffectObject: {fileID: 1426864532553638, guid: 3931b040b60cc6141b3effb8a35a51f7,
+    type: 3}
   hitEffectLookAtNormal: 0
   useWeaponHitEffect: 0
   weaponDummyName: 
@@ -495,6 +539,7 @@ MonoBehaviour:
   targetDetectType: 1
   presetType: 0
   multiPresetCount: 0
+  ignorePresetHitEffectOnCustomTargetPosition: 0
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0

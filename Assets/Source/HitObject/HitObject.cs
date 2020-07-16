@@ -1550,7 +1550,7 @@ public class HitObject : MonoBehaviour
 		if (monsterCollided)
 		{
 			bool ricochetApplied = false;
-			if (_remainRicochetCount > 0 && _hitObjectMovement != null && _hitObjectMovement.IsEnableRicochet(_statusStructForHitObject.teamId))
+			if (_remainRicochetCount > 0 && _hitObjectMovement != null && _hitObjectMovement.IsEnableRicochet(_statusStructForHitObject.teamId, _signal.teamCheckType))
 			{
 				// 리코세를 하기 위해선 각도에 따라 몹을 관통하기도 관통 안하기도 한다.
 				// 그렇다고 이걸 일일이 각도 체크하면서 하기엔 위험부담이 있어서

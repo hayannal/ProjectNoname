@@ -375,7 +375,7 @@ public class HitObjectMovement : MonoBehaviour {
 		return _listRicochet[_listRicochet.Count - 1];
 	}
 	
-	public bool IsEnableRicochet(int teamId)
+	public bool IsEnableRicochet(int teamId, Team.eTeamCheckFilter filter)
 	{
 		Vector3 position = cachedTransform.position;
 		Collider[] result = Physics.OverlapSphere(position, RicochetRange); // range * _transform.localScale.x
@@ -391,7 +391,7 @@ public class HitObjectMovement : MonoBehaviour {
 				continue;
 
 			// team check
-			if (!Team.CheckTeamFilter(teamId, result[i], Team.eTeamCheckFilter.Enemy, false))
+			if (!Team.CheckTeamFilter(teamId, result[i], filter, false))
 				continue;
 
 			// hp

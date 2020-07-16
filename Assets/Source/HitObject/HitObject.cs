@@ -1539,7 +1539,7 @@ public class HitObject : MonoBehaviour
 		OnPostCollided(collided, planeCollided, groundQuadCollided, wallCollided, monsterCollided, wallNormal, forceBarrierThrough);
 	}
 
-	void OnPostCollided(bool collided, bool planeCollided, bool groundQuadCollided, bool wallCollided, bool monsterCollided, Vector3 wallNormal, bool forceBarrierThrough)
+	public void OnPostCollided(bool collided, bool planeCollided, bool groundQuadCollided, bool wallCollided, bool monsterCollided, Vector3 wallNormal, bool forceBarrierThrough)
 	{
 		if (collided == false)
 			return;

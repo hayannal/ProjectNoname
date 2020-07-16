@@ -8,7 +8,8 @@ public class CreateHitObjectAffector : AffectorBase
 	{
 		if (_actor == null)
 			return;
-		if (_actor.actorStatus.IsDie())
+
+		if (affectorValueLevelTableData.iValue1 == 0 && _actor.actorStatus.IsDie())
 			return;
 
 		GameObject meHitObjectInfoPrefab = FindPreloadObject(affectorValueLevelTableData.sValue1);
@@ -38,6 +39,16 @@ public class CreateHitObjectAffector : AffectorBase
 			// 우선은 이런 형태의 공격을 레벨팩 같은데서 사용할게 아니기 때문에
 			// 인지만 하고 넘어가기로 한다.
 			hitObject.OverrideSkillLevel(affectorValueLevelTableData.level);
+
+			// 리코세를 시작부터 적용하는 옵션이다. 지금은 RpgKnight가 쓴다.
+			// 이게 체크되어있지 않다면 날아가는 거부터 시작하는 일반적인 HitObject겠지만 이게 체크되어있다면 리코세 할게 있는지 판단 후 생성해야한다.
+			// 하나 특이한 점은 맞는 몬스터가 생성한다는 점에서 TeamCheckFilter가 Ally로 되어있다는거다.
+			if (affectorValueLevelTableData.iValue2 == 1 && info.meHit.ricochetCount > 0 && hitObject.hitObjectMovement != null)
+			{
+				Collider col = _actor.GetCollider();
+				hitObject.hitObjectMovement.AddRicochet(col, true);
+				hitObject.OnPostCollided(true, false, false, false, true, Vector3.forward, false);
+			}
 		}
 	}
 }

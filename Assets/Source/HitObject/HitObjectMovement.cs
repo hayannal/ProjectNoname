@@ -407,7 +407,7 @@ public class HitObjectMovement : MonoBehaviour {
 			if (colliderRadius == -1.0f) continue;
 
 			// wall check
-			if (_parentActorSphereCastRadiusForCheckWall > 0.0f && _listRicochet.Count > 0)
+			if (_signal.wallThrough == false && _parentActorSphereCastRadiusForCheckWall > 0.0f && _listRicochet.Count > 0)
 			{
 				Transform lastRicochetTransform = BattleInstanceManager.instance.GetTransformFromCollider(_listRicochet[_listRicochet.Count - 1]);
 				Vector3 newPosition = cachedTransform.position;

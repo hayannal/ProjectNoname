@@ -30,7 +30,19 @@ public class CreateHitObjectAffector : AffectorBase
 				spawnTransform = attachTransform;
 		}
 
-		HitObject hitObject = HitObject.InitializeHit(spawnTransform, info.meHit, _actor, parentTransform, null, 0.0f, 0, 0, 0);
+		Actor parentActor = _actor;
+		// 특정 조건에서는 parentActor로 공격한 액터를 넘겨줘야한다.
+		bool useAttackerParentActor = false;
+		if (affectorValueLevelTableData.iValue2 == 1)
+			useAttackerParentActor = true;
+		if (useAttackerParentActor)
+		{
+			Actor findActor = BattleInstanceManager.instance.FindActorByInstanceId(hitParameter.statusStructForHitObject.actorInstanceId);
+			if (findActor != null)
+				parentActor = findActor;
+		}
+
+		HitObject hitObject = HitObject.InitializeHit(spawnTransform, info.meHit, parentActor, parentTransform, null, 0.0f, 0, 0, 0);
 		if (hitObject != null)
 		{
 			// 이 OverrideSkillLevel 구조가 Collider 타입으로 히트오브젝트가 생성될땐 통하는데

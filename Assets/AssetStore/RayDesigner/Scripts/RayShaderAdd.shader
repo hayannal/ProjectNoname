@@ -8,7 +8,8 @@ Shader "UltimateRayDesigner/Ray_Add"
 		_Mask ("Mask (RGB)", 2D) = "black" {}
 		_Distortion ("Distortion (RGB)", 2D) = "white" {}
 		_TintColor ("TintColor", Color) = (1,1,1,1)
-		_AMP ("Amplify", Range(0,15)) = 0.0
+		_ColorIntensity ("Color Intensity", Range(0,10)) = 1.0
+		_AMP ("Amplify", Range(0,2)) = 0.0
 		_XFREQ ("X Frequency", Range(0.0,5.0)) = 0.5
 		_YFREQ ("Y Frequency", Range(0.0,5.0)) = 0.5
 	}
@@ -45,6 +46,7 @@ Shader "UltimateRayDesigner/Ray_Add"
 			half4 _Distortion_ST;
 			half4 _MainTex_ST;
 			fixed4 _TintColor;
+			half _ColorIntensity;
 			float _AMP;
 			float _XFREQ;
 			float _YFREQ;
@@ -87,6 +89,7 @@ Shader "UltimateRayDesigner/Ray_Add"
 				fixed4 base = tex2D(_MainTex, IN.texcoord);
 				fixed4 mask = tex2D(_Mask, IN.texcoord1);
 				base *= mask * (_TintColor * 2);
+				base.rgb *= _ColorIntensity;
 				base.rgb *= _TintColor.a;
 				return base;
 			}

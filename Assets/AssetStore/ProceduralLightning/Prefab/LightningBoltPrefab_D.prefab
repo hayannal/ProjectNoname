@@ -57,7 +57,7 @@ MonoBehaviour:
   HideGizmos: 0
   SortLayerName: 
   SortOrderInLayer: 0
-  SoftParticlesFactor: 3
+  SoftParticlesFactor: 100
   RenderQueue: -1
   LightningMaterialMesh: {fileID: 2100000, guid: c6b8576004384974191b466f0bdef64b,
     type: 2}
@@ -68,11 +68,11 @@ MonoBehaviour:
     type: 3}
   LightningOriginParticleSystem: {fileID: 0}
   LightningDestinationParticleSystem: {fileID: 0}
-  LightningTintColor: {r: 1, g: 1, b: 1, a: 1}
-  GlowTintColor: {r: 0, g: 0.111111164, b: 1, a: 1}
+  LightningTintColor: {r: 0.9137255, g: 0.79607844, b: 0.7294118, a: 1}
+  GlowTintColor: {r: 0.90588236, g: 0.49411765, b: 0.15686275, a: 1}
   SourceBlendMode: 5
   DestinationBlendMode: 1
-  JitterMultiplier: 0.1
+  JitterMultiplier: 2
   Turbulence: 0.05
   TurbulenceVelocity: {x: 0, y: 0, z: 0}
   IntensityFlicker: {x: 1, y: 1, z: 1, w: 0}
@@ -91,21 +91,21 @@ MonoBehaviour:
     Minimum: 0.4
     Maximum: 0.8
   TrunkWidthRange:
-    Minimum: 0.075
+    Minimum: 0.1
     Maximum: 0.15
   LifeTime: 0
-  Generations: 6
-  ChaosFactor: 0.15
-  ChaosFactorForks: 0.095
-  Intensity: 1
-  GlowIntensity: 0.226
+  Generations: 5
+  ChaosFactor: 0.075
+  ChaosFactorForks: 0
+  Intensity: 1.3
+  GlowIntensity: 0.22
   GlowWidthMultiplier: 5.5
-  FadePercent: 0.3
+  FadePercent: 0.15
   FadeInMultiplier: 1
   FadeFullyLitMultiplier: 1
   FadeOutMultiplier: 1
   GrowthMultiplier: 0
-  EndWidthMultiplier: 0.8
+  EndWidthMultiplier: 1
   Forkedness: 0
   ForkLengthMultiplier: 0.6
   ForkLengthVariance: 0.2

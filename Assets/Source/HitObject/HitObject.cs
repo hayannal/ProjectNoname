@@ -1257,15 +1257,18 @@ public class HitObject : MonoBehaviour
 		if (_signal.movable == false)
 			return;
 		float maxDistance = _signal.maxDistance;
-		if (maxDistance == 0.0f && BattleManager.instance != null && BattleManager.instance.IsNodeWar())
-			maxDistance = NodeWarProcessor.SpawnDistance;
+		if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+		{
+			if (maxDistance == 0.0f || (_hitObjectMovement != null && _hitObjectMovement.IsAppliedRicochet()))
+				maxDistance = NodeWarProcessor.SpawnDistance;
+		}
 		else
 		{
+			if (_hitObjectMovement != null && _hitObjectMovement.IsAppliedRicochet())
+				return;
 			if (maxDistance == 0.0f)
 				return;
 		}
-		if (_hitObjectMovement != null && _hitObjectMovement.IsAppliedRicochet())
-			return;
 
 		Vector3 diff = cachedTransform.position - _createPosition;
 		diff.y = 0.0f;

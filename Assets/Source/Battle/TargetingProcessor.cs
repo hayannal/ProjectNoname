@@ -271,7 +271,7 @@ public class TargetingProcessor : MonoBehaviour {
 			}
 		}
 
-		if (changeThreshold == 0.0f || _targetList.Count == 0 || _targetList[0] == null || nearestCollider == null)
+		if (changeThreshold == 0.0f || _targetList.Count == 0 || _targetList[0] == null || nearestCollider == null || (cachedActorTableData.attackRange > 0.0f && nearestDistance > cachedActorTableData.attackRange))
 		{
 			_targetList.Clear();
 			if (nearestDistance != float.MaxValue && nearestCollider != null)

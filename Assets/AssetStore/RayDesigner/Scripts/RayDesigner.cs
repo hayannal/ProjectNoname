@@ -73,7 +73,7 @@ public class RayDesigner : MonoBehaviour
         }
 		else
 		{
-			FadeIn = 0.0f;
+			FadeIn = 0.5f;
 			FadeTarget = 1.0f;
 			RemainLifeTime = LifeTime;
 		}

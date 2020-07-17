@@ -4,7 +4,6 @@
 	{
 		_MainTex ("Main Texture (RGBA)", 2D) = "white" {}
 		_TintColor ("Tint Color (RGB)", Color) = (1, 1, 1, 1)
-		_InvFade ("Soft Particles Factor", Range(0.01, 100.0)) = 1.0
 		_JitterMultiplier ("Jitter Multiplier (Float)", Float) = 0.0
 		_Turbulence ("Turbulence (Float)", Float) = 0.0
 		_TurbulenceVelocity ("Turbulence Velocity (Vector)", Vector) = (0, 0, 0, 0)
@@ -35,13 +34,6 @@
 		#pragma multi_compile __ ORTHOGRAPHIC_XY
 		#pragma multi_compile __ ORTHOGRAPHIC_XZ
 		#pragma multi_compile __ INTENSITY_FLICKER
-
-#if defined(SOFTPARTICLES_ON)
-
-		float _InvFade;
-		sampler2D _CameraDepthTexture;
-
-#endif
 
 		float4 _LightningTime;
 		float _JitterMultiplier;
@@ -83,13 +75,6 @@
             float2 texcoord : TEXCOORD0;
             fixed4 color : COLOR0;
             float4 pos : SV_POSITION;
-
-#if defined(SOFTPARTICLES_ON)
-            
-			float4 projPos : TEXCOORD1;
-            
-#endif
-
         };
 
 		inline float rand3(float3 pos) { return frac(sin(dot(_LightningTime.xyz * pos, float3(12.9898, 78.233, 45.5432))) * 43758.5453); }
@@ -144,16 +129,6 @@
 
 		inline fixed4 fragMethod(sampler2D tex, v2f i)
 		{
-
-#if defined(SOFTPARTICLES_ON)
-
-			//float sceneZ = LinearEyeDepth(UNITY_SAMPLE_DEPTH(tex2Dproj(_CameraDepthTexture, UNITY_PROJ_COORD(i.projPos))));
-			float sceneZ = LinearEyeDepth(UNITY_SAMPLE_DEPTH(SAMPLE_DEPTH_TEXTURE_PROJ(_CameraDepthTexture, UNITY_PROJ_COORD(i.projPos))));
-			float partZ = i.projPos.z;
-			i.color.a *= saturate(_InvFade * (sceneZ - partZ));
-
-#endif
-
 			fixed4 c = tex2D(tex, i.texcoord);
 			return (c * i.color);
 		}
@@ -243,13 +218,6 @@
 
 				o.color = (lerpColor(v.fadeLifetime) * _TintColor * fixed4(v.color.rgb, 1));
                 
-#endif
-
-#if defined(SOFTPARTICLES_ON)
-
-                o.projPos = ComputeScreenPos(o.pos);
-                COMPUTE_EYEDEPTH(o.projPos.z);
-
 #endif
 
 				// intensity is divided by 10 when passed in

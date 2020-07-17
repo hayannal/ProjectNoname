@@ -178,9 +178,12 @@ public class TargetingProcessor : MonoBehaviour {
 			// distance
 			Vector3 diff = listMonsterActor[i].cachedTransform.position - position;
 			diff.y = 0.0f;
-			float distance = diff.magnitude - colliderRadius;
-			if (distance > cachedActorTableData.attackRange)
-				continue;
+			if (cachedActorTableData.attackRange > 0.0f)
+			{
+				float distance = diff.magnitude - colliderRadius;
+				if (distance > cachedActorTableData.attackRange)
+					continue;
+			}
 
 			// angle
 			float angle = Vector3.Angle(actor.cachedTransform.forward, diff.normalized);

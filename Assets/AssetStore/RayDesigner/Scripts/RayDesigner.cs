@@ -282,9 +282,18 @@ public class RayDesigner : MonoBehaviour
         {
             if (Rays[r].Mat != null)
             {
-                ColorBuffer = Rays[r].Mat.GetColor("_TintColor");
-                ColorBuffer.a = FadeIn;
-                Rays[r].Mat.SetColor("_TintColor", ColorBuffer);
+				if (Application.isPlaying)
+				{
+					ColorBuffer = Rays[r].meshRenderer.material.GetColor("_TintColor");
+					ColorBuffer.a = FadeIn;
+					Rays[r].meshRenderer.material.SetColor("_TintColor", ColorBuffer);
+				}
+				else
+				{
+					ColorBuffer = Rays[r].Mat.GetColor("_TintColor");
+					ColorBuffer.a = FadeIn;
+					Rays[r].Mat.SetColor("_TintColor", ColorBuffer);
+				}
 
                 Offset1 = Rays[r].Mat.GetTextureOffset("_Mask");
                 Offset2 = Rays[r].Mat.GetTextureOffset("_Distortion");

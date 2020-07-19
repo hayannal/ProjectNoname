@@ -10,6 +10,8 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 	float _radius;
 	bool _applyFollow;
 	Vector3 _startPosition;
+	Vector3 _startForward;
+	float _areaAngle;
 
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
@@ -25,6 +27,8 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 		_radius = affectorValueLevelTableData.fValue2;
 		_applyFollow = (affectorValueLevelTableData.iValue3 == 1);
 		_startPosition = _actor.cachedTransform.position;
+		_startForward = _actor.cachedTransform.forward;
+		_areaAngle = affectorValueLevelTableData.fValue3;
 
 		if (!string.IsNullOrEmpty(affectorValueLevelTableData.sValue4))
 			_onStartEffectPrefab = FindPreloadObject(affectorValueLevelTableData.sValue4);
@@ -78,6 +82,23 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 			// team check
 			if (!Team.CheckTeamFilter(_actor.team.teamId, hitObject.statusStructForHitObject.teamId, Team.eTeamCheckFilter.Enemy))
 				continue;
+
+			// angle
+			if (_areaAngle > 0.0f)
+			{
+				Vector3 diff = BattleInstanceManager.instance.GetTransformFromCollider(result[i]).position - areaPosition;
+				diff.y = 0.0f;
+				float colliderRadius = ColliderUtil.GetRadius(result[i]);
+				if (colliderRadius == -1.0f)
+					continue;
+
+				Vector3 areaForward = _applyFollow ? _actor.cachedTransform.forward : _startForward;
+				float angle = Vector3.Angle(areaForward, diff.normalized);
+				float hypotenuse = Mathf.Sqrt(diff.sqrMagnitude + colliderRadius * colliderRadius);
+				float adjustAngle = Mathf.Rad2Deg * Mathf.Acos(diff.magnitude / hypotenuse);
+				if (_areaAngle * 0.5f < angle - adjustAngle)
+					continue;
+			}
 
 			hitObject.OnFinalizeByRemove();
 		}

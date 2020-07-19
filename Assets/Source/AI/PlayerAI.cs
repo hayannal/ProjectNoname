@@ -18,6 +18,10 @@ public class PlayerAI : MonoBehaviour
 	TargetingProcessor targetingProcessor { get; set; }
 	BaseCharacterController baseCharacterController { get; set; }
 
+	#region Remove HitObject
+	public float attackHitObjectRange { get; private set; }
+	#endregion
+
 	void OnDisable()
 	{
 		if (_cachedTargetingObjectTransform != null)
@@ -158,21 +162,54 @@ public class PlayerAI : MonoBehaviour
 			}
 		}
 
-		// no target
-		if (targetCollider == null)
-			autoAttackable = false;
+		#region Remove HitObject
+		Vector3 diff = Vector3.zero;
+		if (attackHitObjectRange > 0.0f)
+		{
+			// 히트오브젝트를 향해서도 공격을 해야한다면 이쪽 루트를 탄다.
+			if (!autoAttackable)
+				return;
 
-		if (!autoAttackable)
-			return;
+			// 타겟 몬스터가 없더라도 적이 마지막 순간에 날린 히트오브젝트는 남아있을 수 있으니 공격할 수 있게 처리해야한다.
+			bool attackable = false;
+			if (targetCollider != null)
+			{
+				Transform targetTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
+				diff = targetTransform.position - actor.cachedTransform.position;
+				diff.y = 0.0f;
+				if (IsInAttackRange(diff) && CheckNavMeshReachable(actor.cachedTransform.position, targetTransform.position))
+					attackable = true;
+			}
 
-		Transform targetTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
-		Vector3 diff = targetTransform.position - actor.cachedTransform.position;
-		diff.y = 0.0f;
-		if (IsInAttackRange(diff) == false)
-			return;
+			// 타겟 몬스터를 공격할 수 없는 상태라면 주변에 공격할 HitObject가 있는지 확인한다.
+			if (attackable == false && CheckAttackableHitObject(ref diff))
+				attackable = true;
 
-		if (CheckNavMeshReachable(actor.cachedTransform.position, targetTransform.position) == false)
-			return;
+			// 그래도 공격할게 없다면 리턴.
+			if (attackable == false)
+				return;
+		}
+		else
+		{
+			// 일반적인 경우라면 아래처럼 처리한다. 조건에 하나라도 맞지 않으면 바로 리턴한다.
+
+			// no target
+			if (targetCollider == null)
+				autoAttackable = false;
+
+			if (!autoAttackable)
+				return;
+
+			Transform targetTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
+			diff = targetTransform.position - actor.cachedTransform.position;
+			diff.y = 0.0f;
+			if (IsInAttackRange(diff) == false)
+				return;
+
+			if (CheckNavMeshReachable(actor.cachedTransform.position, targetTransform.position) == false)
+				return;
+		}
+		#endregion
 
 		baseCharacterController.movement.rotation = Quaternion.LookRotation(diff);
 		if (actor.actionController.PlayActionByActionName(NormalAttackName))
@@ -206,6 +243,41 @@ public class PlayerAI : MonoBehaviour
 			return false;
 
 		return true;
+	}
+
+	Collider[] _colliderList = null;
+	bool CheckAttackableHitObject(ref Vector3 diff)
+	{
+		if (_colliderList == null)
+			_colliderList = new Collider[50];
+
+		// step 1. Physics.OverlapSphere
+		int resultCount = Physics.OverlapSphereNonAlloc(actor.cachedTransform.position, attackHitObjectRange, _colliderList); // meHit.areaDistanceMax * parentTransform.localScale.x
+
+		// step 2. Check object count
+		for (int i = 0; i < resultCount; ++i)
+		{
+			if (i >= _colliderList.Length)
+				break;
+
+			Collider col = _colliderList[i];
+
+			// affector processor
+			HitObject hitObject = BattleInstanceManager.instance.GetHitObjectFromCollider(col);
+			if (hitObject == null)
+				continue;
+
+			// team check
+			if (!Team.CheckTeamFilter(actor.team.teamId, hitObject.statusStructForHitObject.teamId, Team.eTeamCheckFilter.Enemy))
+				continue;
+
+			// 매프레임 정렬해서 가장 가까운걸 찾기엔 부하가 더 클거 같아서 아무거나 감지되면 쳐다보기로 해본다.
+			// 히트오브젝트가 순간이동하지 않는 이상 결국 바깥 경계부터 하나씩 들어올테니 이렇게 해본다.
+			diff = hitObject.cachedTransform.position - actor.cachedTransform.position;
+			diff.y = 0.0f;
+			return true;
+		}
+		return false;
 	}
 
 	void UpdateAttackRange()

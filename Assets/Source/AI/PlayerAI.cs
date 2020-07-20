@@ -18,10 +18,6 @@ public class PlayerAI : MonoBehaviour
 	TargetingProcessor targetingProcessor { get; set; }
 	BaseCharacterController baseCharacterController { get; set; }
 
-	#region Remove HitObject
-	public float attackHitObjectRange { get; private set; }
-	#endregion
-
 	void OnDisable()
 	{
 		if (_cachedTargetingObjectTransform != null)
@@ -37,7 +33,12 @@ public class PlayerAI : MonoBehaviour
 
 		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(actor.actorId);
 		if (actorTableData != null)
+		{
 			_actorTableAttackRange = actorTableData.attackRange;
+			#region Remove HitObject
+			_actorTableAttackHitObjectRange = actorTableData.attackHitObjectRange;
+			#endregion
+		}
 	}
 
     // Update is called once per frame
@@ -122,6 +123,9 @@ public class PlayerAI : MonoBehaviour
 			_cachedTargetingObjectTransform.position = targetTransform.position;
 	}
 
+	#region Remove HitObject
+	float _actorTableAttackHitObjectRange;
+	#endregion
 	float _actorTableAttackRange;
 	public float actorTableAttackRange { get { return _actorTableAttackRange; } }
 	string NormalAttackName = "Attack";
@@ -164,7 +168,7 @@ public class PlayerAI : MonoBehaviour
 
 		#region Remove HitObject
 		Vector3 diff = Vector3.zero;
-		if (attackHitObjectRange > 0.0f)
+		if (_actorTableAttackHitObjectRange > 0.0f)
 		{
 			// 히트오브젝트를 향해서도 공격을 해야한다면 이쪽 루트를 탄다.
 			if (!autoAttackable)
@@ -252,7 +256,7 @@ public class PlayerAI : MonoBehaviour
 			_colliderList = new Collider[50];
 
 		// step 1. Physics.OverlapSphere
-		int resultCount = Physics.OverlapSphereNonAlloc(actor.cachedTransform.position, attackHitObjectRange, _colliderList); // meHit.areaDistanceMax * parentTransform.localScale.x
+		int resultCount = Physics.OverlapSphereNonAlloc(actor.cachedTransform.position, _actorTableAttackHitObjectRange, _colliderList); // meHit.areaDistanceMax * parentTransform.localScale.x
 
 		// step 2. Check object count
 		for (int i = 0; i < resultCount; ++i)

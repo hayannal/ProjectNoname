@@ -65,6 +65,10 @@ public class ActorTableData
   public float multiTargetAngle { get { return _multiTargetAngle; } set { _multiTargetAngle = value; } }
   
   [SerializeField]
+  float _attackHitObjectRange;
+  public float attackHitObjectRange { get { return _attackHitObjectRange; } set { _attackHitObjectRange = value; } }
+  
+  [SerializeField]
   string _prefabAddress;
   public string prefabAddress { get { return _prefabAddress; } set { _prefabAddress = value; } }
   

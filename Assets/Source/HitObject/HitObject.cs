@@ -1491,6 +1491,18 @@ public class HitObject : MonoBehaviour
 
 					s_listAppliedAffectorProcessor.Add(affectorProcessor);
 				}
+				else
+				{
+					// 관통형일때를 대비해서 monsterCollided는 체크해야 제대로 처리된다.
+					// 리코세와 hitStay를 같이 켤일은 없을테니 이건 고려하지 않기로 한다.
+					if (_remainMonsterThroughCount > 0 || _remainMonsterThroughCount == -1)
+					{
+						monsterCollided = true;
+
+						// 어차피 OnTriggerStay쪽에서 처리하기 때문에 이거 해도 큰 이득은 없다. 그래서 아예 호출하지 않기로 한다.
+						//AddIgnoreList(col, true);
+					}
+				}
 			}
 			else if (planeCollided == false && groundQuadCollided == false)
 			{
@@ -1557,6 +1569,12 @@ public class HitObject : MonoBehaviour
 		bool useBounce = false;
 		if (monsterCollided)
 		{
+			// 다단히트가 아닌 일반 관통샷에서도 속도 저하를 하려면 이 코드를 활성화 하면 되는데
+			// 이런식으로 쓸일이 있을까 싶다.
+			// 우선은 주석처리만 해둔다.
+			//if (_signal.overrideSpeedOnCollision > 0.0f && _signal.overrideSpeedTimeOnCollision > 0.0f && hitObjectMovement != null)
+			//	hitObjectMovement.ChangeOverrideSpeed(_signal.overrideSpeedOnCollision, _signal.overrideSpeedTimeOnCollision);
+
 			bool ricochetApplied = false;
 			if (_remainRicochetCount > 0 && _hitObjectMovement != null && _hitObjectMovement.IsEnableRicochet(_statusStructForHitObject.teamId, _signal.teamCheckType))
 			{
@@ -1742,6 +1760,9 @@ public class HitObject : MonoBehaviour
 				}
 
 				OnCollisionEnterAffectorProcessor(affectorProcessor, contactPoint, contactNormal);
+
+				if (_signal.overrideSpeedOnCollision > 0.0f && _signal.overrideSpeedTimeOnCollision > 0.0f && hitObjectMovement != null)
+					hitObjectMovement.ChangeOverrideSpeed(_signal.overrideSpeedOnCollision, _signal.overrideSpeedTimeOnCollision);
 
 				if (_signal.showHitEffect)
 					HitEffect.ShowHitEffect(_signal, contactPoint, contactNormal, _statusStructForHitObject.weaponIDAtCreation);

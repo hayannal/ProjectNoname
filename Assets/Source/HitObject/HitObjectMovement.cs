@@ -67,6 +67,9 @@ public class HitObjectMovement : MonoBehaviour {
 
 		if (_signal.useSpeedChange)
 		{
+			if (_signal.overrideSpeedOnCollision > 0.0f)
+				Debug.LogErrorFormat("");
+
 			float targetSpeed = _signal.targetSpeed;
 			if (slowRate != 0.0f)
 				targetSpeed *= (1.0f - slowRate);
@@ -170,6 +173,9 @@ public class HitObjectMovement : MonoBehaviour {
 		if (_listRicochet != null)
 			_listRicochet.Clear();
 		_parentActorSphereCastRadiusForCheckWall = parentActor.targetingProcessor.sphereCastRadiusForCheckWall;
+
+		_origSpeed = _overrideSpeedRemainTime = 0.0f;
+		_needApplySpeed = false;
 	}
 
 	public void ComputeHowitzer()
@@ -227,6 +233,8 @@ public class HitObjectMovement : MonoBehaviour {
 		if (_rigidbody.detectCollisions == false)
 			return;
 
+		UpdateOverrideSpeed();
+
 		switch (_signal.movementType)
 		{
 			case eMovementType.FollowTarget:
@@ -275,8 +283,11 @@ public class HitObjectMovement : MonoBehaviour {
 		switch(_signal.movementType)
 		{
 			case eMovementType.Direct:
-				if (_signal.useSpeedChange)
+				if (_signal.useSpeedChange || _needApplySpeed)
+				{
 					_velocity = _rigidbody.velocity = cachedTransform.forward * _speed;
+					_needApplySpeed = false;
+				}
 				break;
 			case eMovementType.FollowTarget:
 				if (_ignoreFollow)
@@ -344,6 +355,33 @@ public class HitObjectMovement : MonoBehaviour {
 	public void ChangeFollowTargetActor(Actor targetActor)
 	{
 		_followTargetActor = targetActor;
+	}
+
+	float _origSpeed;
+	float _overrideSpeedRemainTime;
+	bool _needApplySpeed;
+	public void ChangeOverrideSpeed(float speed, float remainTime)
+	{
+		if (_origSpeed == 0.0f)
+			_origSpeed = _speed;
+
+		_speed = speed;
+		_overrideSpeedRemainTime = remainTime;
+		_needApplySpeed = true;
+	}
+
+	void UpdateOverrideSpeed()
+	{
+		if (_overrideSpeedRemainTime > 0.0f)
+		{
+			_overrideSpeedRemainTime -= Time.deltaTime;
+			if (_overrideSpeedRemainTime <= 0.0f)
+			{
+				_overrideSpeedRemainTime = 0.0f;
+				_speed = _origSpeed;
+				_needApplySpeed = true;
+			}
+		}
 	}
 
 	#region Ricochet

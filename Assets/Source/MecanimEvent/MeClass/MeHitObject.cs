@@ -62,6 +62,8 @@ public class MeHitObject : MecanimEventBase {
 	public float targetSpeed;
 	public float speedChangeTime;
 	public DG.Tweening.Ease speedChangeEase = DG.Tweening.Ease.OutQuad;
+	public float overrideSpeedOnCollision;
+	public float overrideSpeedTimeOnCollision;
 	public float curve;
 	public float curveAdd;
 	public bool curveLockY = true;
@@ -342,6 +344,9 @@ public class MeHitObject : MecanimEventBase {
 				if (hitStayIgnoreDuplicate)
 					hitStayIdForIgnoreDuplicate = EditorGUILayout.IntField("Hit Stay Id in Actor :", hitStayIdForIgnoreDuplicate);
 				onlyUsedAsTrigger = EditorGUILayout.Toggle("Only Used As Trigger :", onlyUsedAsTrigger);
+				overrideSpeedOnCollision = EditorGUILayout.FloatField("Override Speed On Collision Monster :", overrideSpeedOnCollision);
+				if (overrideSpeedOnCollision > 0.0f)
+					overrideSpeedTimeOnCollision = EditorGUILayout.FloatField("Override Speed Time :", overrideSpeedTimeOnCollision);
 			}
 			if (useHitStay == false)
 			{

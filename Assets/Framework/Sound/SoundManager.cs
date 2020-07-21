@@ -48,7 +48,8 @@ public partial class SoundManager : MonoBehaviour {
 
 	public void SetSeVolume(float normalizedValue)
 	{
-		float dB = Mathf.Log10(normalizedValue) * 20.0f;
+		// 원래는 20.0f가 맞는데 이대로 하면 잘 안줄어드는 느낌을 받아서 값을 올려둔다.
+		float dB = Mathf.Log10(normalizedValue) * 40.0f;
 		if (float.IsInfinity(dB))
 			dB = -80.0f;
 		audioMixer.SetFloat("_seVolume", dB);
@@ -57,7 +58,8 @@ public partial class SoundManager : MonoBehaviour {
 
 	public void SetUiVolume(float normalizedValue)
 	{
-		float dB = Mathf.Log10(normalizedValue) * 20.0f;
+		// 원래는 20.0f가 맞는데 이대로 하면 잘 안줄어드는 느낌을 받아서 값을 올려둔다.
+		float dB = Mathf.Log10(normalizedValue) * 40.0f;
 		if (float.IsInfinity(dB))
 			dB = -80.0f;
 		audioMixer.SetFloat("_uiVolume", dB);

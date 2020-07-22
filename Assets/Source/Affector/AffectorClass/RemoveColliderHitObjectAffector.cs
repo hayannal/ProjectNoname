@@ -8,6 +8,7 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 	GameObject _onStartEffectPrefab;
 	Transform _onStartEffectTransform;
 	float _radius;
+	bool _disableCollider;
 	bool _applyFollow;
 	Vector3 _startPosition;
 	Vector3 _startForward;
@@ -25,6 +26,7 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
 
 		_radius = affectorValueLevelTableData.fValue2;
+		_disableCollider = (affectorValueLevelTableData.iValue2 == 1);
 		_applyFollow = (affectorValueLevelTableData.iValue3 == 1);
 		_startPosition = _actor.cachedTransform.position;
 		_startForward = _actor.cachedTransform.forward;
@@ -102,5 +104,29 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 
 			hitObject.OnFinalizeByRemove();
 		}
+	}
+
+	bool IsIgnoreColliderHitObject()
+	{
+		return _disableCollider;
+	}
+
+	public static bool IsIgnoreColliderHitObject(AffectorProcessor affectorProcessor)
+	{
+		List<AffectorBase> listRemoveColliderHitObjectAffector = affectorProcessor.GetContinuousAffectorList(eAffectorType.RemoveColliderHitObject);
+		if (listRemoveColliderHitObjectAffector == null)
+			return false;
+
+		for (int i = 0; i < listRemoveColliderHitObjectAffector.Count; ++i)
+		{
+			if (listRemoveColliderHitObjectAffector[i].finalized)
+				continue;
+			RemoveColliderHitObjectAffector removeColliderHitObjectAffector = listRemoveColliderHitObjectAffector[i] as RemoveColliderHitObjectAffector;
+			if (removeColliderHitObjectAffector == null)
+				continue;
+			if (removeColliderHitObjectAffector.IsIgnoreColliderHitObject())
+				return true;
+		}
+		return false;
 	}
 }

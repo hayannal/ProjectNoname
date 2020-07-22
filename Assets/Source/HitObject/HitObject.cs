@@ -1473,6 +1473,9 @@ public class HitObject : MonoBehaviour
 						ignoreAffectorProcessor = true;
 				}
 
+				if (ignoreAffectorProcessor == false && RemoveColliderHitObjectAffector.IsIgnoreColliderHitObject(affectorProcessor))
+					ignoreAffectorProcessor = true;
+
 				if (ignoreAffectorProcessor == false && _signal.useHitStay == false)
 				{
 					OnCollisionEnterAffectorProcessor(affectorProcessor, contact.point, contact.normal);
@@ -1728,7 +1731,7 @@ public class HitObject : MonoBehaviour
 				_dicHitStayTime = new Dictionary<AffectorProcessor, float>();
 
 			AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(col);
-			if (affectorProcessor != null && CheckHitStayInterval(affectorProcessor, _dicHitStayTime, _signal, _statusStructForHitObject.actorInstanceId))
+			if (affectorProcessor != null && CheckHitStayInterval(affectorProcessor, _dicHitStayTime, _signal, _statusStructForHitObject.actorInstanceId) && RemoveColliderHitObjectAffector.IsIgnoreColliderHitObject(affectorProcessor) == false)
 			{
 				Vector3 contactPoint = Vector3.zero;
 				Vector3 contactNormal = Vector3.forward;

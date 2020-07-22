@@ -9297,6 +9297,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4061679075564172}
   - component: {fileID: 82107599448106626}
+  - component: {fileID: 5384298115756794631}
   m_Layer: 0
   m_Name: Fire
   m_TagString: Untagged
@@ -9414,6 +9415,22 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
+--- !u!114 &5384298115756794631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1545005150730640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd90d5ee163b5004faa50b9f67e503b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  multipleComponent: 0
+  checkDuplicate: 0
+  pitchRandomMultiplier: 1
+  startDelay: 0
 --- !u!1 &1571214927043348
 GameObject:
   m_ObjectHideFlags: 0
@@ -9491,6 +9508,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4301289936818360}
+  - component: {fileID: -7640133419528984520}
+  - component: {fileID: -6530657465202395783}
+  - component: {fileID: 5543900342756973248}
   m_Layer: 0
   m_Name: ShotEffect_D
   m_TagString: Untagged
@@ -9513,6 +9533,51 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &-7640133419528984520
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1607237663569260}
+  serializedVersion: 2
+  m_Mass: 0.5
+  m_Drag: 0.1
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 2
+--- !u!135 &-6530657465202395783
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1607237663569260}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5543900342756973248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1607237663569260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f87e8af460bb22a4b8106f6d06347cc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  disableHitObjectAfterCollision: 0
+  DeactivateObjectsAfterCollision:
+  - {fileID: 1295985277094886}
+  DisableParticlesAfterCollision: []
 --- !u!1 &1691007506406708
 GameObject:
   m_ObjectHideFlags: 0
@@ -9629,7 +9694,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1925159359791362}
-  m_Mesh: {fileID: 4300000, guid: a319cc505da9d274aa19e34bc5311de7, type: 3}
+  m_Mesh: {fileID: 4300000, guid: f2d359f4a4c02174a943030c9d305ff5, type: 3}
 --- !u!23 &23020758227408320
 MeshRenderer:
   m_ObjectHideFlags: 0

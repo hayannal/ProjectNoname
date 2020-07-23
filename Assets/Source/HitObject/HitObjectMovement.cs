@@ -46,6 +46,7 @@ public class HitObjectMovement : MonoBehaviour {
 	public Vector3 howitzerTargetPosition { get; set; }
 	#endregion
 
+	Transform _cachedParentActorTransform;
 	TweenerCore<float, float, FloatOptions> _tweenReferenceForSpeedChange;
 	public void InitializeSignal(HitObject hitObject, MeHitObject meHit, Actor parentActor, Rigidbody rigidbody, int hitSignalIndexInAction)
 	{
@@ -68,7 +69,7 @@ public class HitObjectMovement : MonoBehaviour {
 		if (_signal.useSpeedChange)
 		{
 			if (_signal.overrideSpeedOnCollision > 0.0f)
-				Debug.LogErrorFormat("");
+				Debug.LogError("Invalid Setting. overrideSpeedOnCollision and useSpeedChange Both values ​​cannot be used at the same time.");
 
 			float targetSpeed = _signal.targetSpeed;
 			if (slowRate != 0.0f)
@@ -76,6 +77,15 @@ public class HitObjectMovement : MonoBehaviour {
 			if (_tweenReferenceForSpeedChange != null)
 				_tweenReferenceForSpeedChange.Kill();
 			_tweenReferenceForSpeedChange = DOTween.To(() => _speed, x => _speed = x, targetSpeed, _signal.speedChangeTime).SetEase(_signal.speedChangeEase);
+		}
+
+		if (_signal.useCurveChange)
+		{
+			_remainCurveStartDelayTime = 0.0f;
+			if (_signal.curveStartDelayTime == 0.0f)
+				ApplyCurveChangeTween();
+			else
+				_remainCurveStartDelayTime = _signal.curveStartDelayTime;
 		}
 
 		switch(_signal.movementType)
@@ -96,7 +106,9 @@ public class HitObjectMovement : MonoBehaviour {
 						_followTargetActor = null;
 					}
 				}
-				
+
+				if (_signal.followMinRange > 0.0f)
+					_cachedParentActorTransform = parentActor.cachedTransform;
 				// FollowTarget역시 최초에 한번 설정해두는게 좋다. 타겟 없을때 앞으로 나가게 하려면 이게 제일 나은듯.
 				_rigidbody.velocity = cachedTransform.forward * _speed;
 				_forward = cachedTransform.forward;
@@ -226,10 +238,17 @@ public class HitObjectMovement : MonoBehaviour {
 		_forward = cachedTransform.forward = _rigidbody.velocity.normalized;
 	}
 
+	float _remainCurveStartDelayTime = 0.0f;
+	TweenerCore<float, float, FloatOptions> _tweenReferenceForCurveChange;
+	void ApplyCurveChangeTween()
+	{
+		if (_tweenReferenceForCurveChange != null)
+			_tweenReferenceForCurveChange.Kill();
+		_tweenReferenceForCurveChange = DOTween.To(() => _currentCurve, x => _currentCurve = x, _signal.targetCurve, _signal.curveChangeTime).SetEase(_signal.curveChangeEase);
+	}
+
 	void Update()
 	{
-		UpdateLifeTimeWhenDieTarget();
-
 		if (_rigidbody.detectCollisions == false)
 			return;
 
@@ -240,38 +259,48 @@ public class HitObjectMovement : MonoBehaviour {
 			case eMovementType.FollowTarget:
 				if (_ignoreFollow)
 					break;
-				if (_signal.curveStartDelayTime > 0.0f && (Time.time - _createTime) < _signal.curveStartDelayTime)
-					break;
-				if (_signal.curveLifeTime > 0.0f && (Time.time - _createTime - _signal.curveStartDelayTime) > _signal.curveLifeTime)
-					break;
+				if (_signal.curveStartDelayTime > 0.0f)
+				{
+					if (_remainCurveStartDelayTime > 0.0f)
+					{
+						_remainCurveStartDelayTime -= Time.deltaTime;
+						if (_remainCurveStartDelayTime <= 0.0f)
+						{
+							_remainCurveStartDelayTime = 0.0f;
+							ApplyCurveChangeTween();
+						}
+					}
+				}
 				if (_followTargetActor != null && _followTargetActor.actorStatus.IsDie())
 				{
-					if (_signal.overrideLifeTimeWhenDieTarget)
+					if (_signal.followLastPositionWhenDieTarget)
 					{
-						Vector3 diff = _followTargetActor.cachedTransform.position - cachedTransform.position;
-						_remainOverrideLifeTime = (diff.magnitude + Random.Range(1.0f, 2.0f)) / _speed;
+						_followTargetPosition = _followTargetActor.cachedTransform.position;
+						_followTargetActor = null;
 					}
-
-					// 중간에 타겟을 바꿀일은 없나?
-					_ignoreFollow = true;
+					else
+						// 중간에 타겟을 바꿀일은 없나?
+						_ignoreFollow = true;
 					break;
 				}
-				_currentCurve += Time.deltaTime * _signal.curveAdd;
+				// 아무래도 결함이 있는 코드기도 하고 이걸 써서 엄청나게 괜찮은 결과물을 만들어내지 못하는거 같기도 해서 제거하기로 한다.
+				// 혹시 모르니 우선은 주석처리.
+				//if (_signal.endFollowOverTargetDistance)
+				//{
+				//	Vector3 diffDir = Vector3.forward;
+				//	if (_followTargetActor != null)
+				//		diffDir = _followTargetActor.cachedTransform.position - cachedTransform.position;
+				//	else
+				//		diffDir = _followTargetPosition - cachedTransform.position;
+					// 이렇게 계산하니 추적중 반이하로 남았을때 ignoreFollow가 켜지게 된다. 잘못 만든듯..
+				//	Vector3 hitObjectDiff = cachedTransform.position - _createPosition;
+				//	if (hitObjectDiff.sqrMagnitude > diffDir.sqrMagnitude)
+				//	{
+				//		_ignoreFollow = true;
+				//		break;
+				//	}
+				//}
 				break;
-		}
-	}
-
-	float _remainOverrideLifeTime;
-	void UpdateLifeTimeWhenDieTarget()
-	{
-		if (_remainOverrideLifeTime > 0.0f)
-		{
-			_remainOverrideLifeTime -= Time.deltaTime;
-			if (_remainOverrideLifeTime <= 0.0f)
-			{
-				_remainOverrideLifeTime = 0.0f;
-				_hitObject.OnFinalizeByLifeTime();
-			}
 		}
 	}
 
@@ -292,27 +321,24 @@ public class HitObjectMovement : MonoBehaviour {
 			case eMovementType.FollowTarget:
 				if (_ignoreFollow)
 					break;
-				if (_signal.curveStartDelayTime > 0.0f && (Time.time - _createTime) < _signal.curveStartDelayTime)
-					break;
-				if (_signal.curveLifeTime > 0.0f && (Time.time - _createTime - _signal.curveStartDelayTime) > _signal.curveLifeTime)
+				if (_signal.curveStartDelayTime > 0.0f && _remainCurveStartDelayTime > 0.0f)
 					break;
 
-				Vector3 diffDir = Vector3.forward;
+				Vector3 targetPosition = Vector3.zero;
 				if (_followTargetActor != null)
-					diffDir = _followTargetActor.cachedTransform.position - cachedTransform.position;
+					targetPosition = _followTargetActor.cachedTransform.position;
 				else
-					diffDir = _followTargetPosition - cachedTransform.position;
-
-				if (_signal.endFollowOverTargetDistance)
+					targetPosition = _followTargetPosition;
+				if (_signal.followMinRange > 0.0f)
 				{
-					Vector3 hitObjectDiff = cachedTransform.position - _createPosition;
-					if (hitObjectDiff.sqrMagnitude > diffDir.sqrMagnitude)
+					Vector3 createDiff = targetPosition - _createPosition;
+					if (createDiff.sqrMagnitude < _signal.followMinRange * _signal.followMinRange && _cachedParentActorTransform != null && _cachedParentActorTransform.gameObject.activeSelf)
 					{
-						_ignoreFollow = true;
-						break;
+						Vector3 newDiff = targetPosition - _cachedParentActorTransform.position;
+						targetPosition = _cachedParentActorTransform.position + newDiff.normalized * _signal.followMinRange;
 					}
 				}
-
+				Vector3 diffDir = targetPosition - cachedTransform.position;
 				if (_signal.curveLockY)
 				{
 					diffDir.y = 0.0f;

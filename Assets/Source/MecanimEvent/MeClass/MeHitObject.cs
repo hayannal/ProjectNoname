@@ -65,13 +65,16 @@ public class MeHitObject : MecanimEventBase {
 	public float overrideSpeedOnCollision;
 	public float overrideSpeedTimeOnCollision;
 	public float curve;
-	public float curveAdd;
+	public bool useCurveChange;
+	public float targetCurve;
+	public float curveChangeTime;
+	public DG.Tweening.Ease curveChangeEase = DG.Tweening.Ease.OutQuad;
 	public bool curveLockY = true;
 	public float curveStartDelayTime;
-	public float curveLifeTime;
-	public bool endFollowOverTargetDistance;
-	public bool overrideLifeTimeWhenDieTarget;
+	//public bool endFollowOverTargetDistance;
+	public bool followLastPositionWhenDieTarget;
 	public bool followMeOnHitTarget;
+	public float followMinRange;
 	public bool useRandomTurn;
 	public float accelTurn;
 	public Vector2 randomTurnRotateYawRange;
@@ -215,13 +218,19 @@ public class MeHitObject : MecanimEventBase {
 			{
 				case HitObjectMovement.eMovementType.FollowTarget:
 					curve = EditorGUILayout.FloatField("Curve Power :", curve);
-					curveAdd = EditorGUILayout.FloatField("Curve Power Add :", curveAdd);
+					useCurveChange = EditorGUILayout.Toggle("Use Curve Change :", useCurveChange);
+					if (useCurveChange)
+					{
+						targetCurve = EditorGUILayout.FloatField("Target Curve :", targetCurve);
+						curveChangeTime = EditorGUILayout.FloatField("Curve Change Time :", curveChangeTime);
+						curveChangeEase = (DG.Tweening.Ease)EditorGUILayout.EnumPopup("Easy Type :", curveChangeEase);
+					}
 					curveLockY = EditorGUILayout.Toggle("Curve Lock Y :", curveLockY);
 					curveStartDelayTime = EditorGUILayout.FloatField("Curve Start Delay :", curveStartDelayTime);
-					curveLifeTime = EditorGUILayout.FloatField("Curve LifeTime :", curveLifeTime);
-					endFollowOverTargetDistance = EditorGUILayout.Toggle("End Curve Over Target :", endFollowOverTargetDistance);
-					overrideLifeTimeWhenDieTarget = EditorGUILayout.Toggle("Override LifeTime Die Target :", overrideLifeTimeWhenDieTarget);
+					//endFollowOverTargetDistance = EditorGUILayout.Toggle("End Curve Over Target :", endFollowOverTargetDistance);
+					followLastPositionWhenDieTarget = EditorGUILayout.Toggle("Follow Last Position When die target :", followLastPositionWhenDieTarget);
 					followMeOnHitTarget = EditorGUILayout.Toggle("Follow Me On Hit Target :", followMeOnHitTarget);
+					followMinRange = EditorGUILayout.FloatField("Follow Min Range :", followMinRange);
 					break;
 				case HitObjectMovement.eMovementType.Turn:
 					useRandomTurn = EditorGUILayout.Toggle("Use Random Turn :", useRandomTurn);

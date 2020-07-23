@@ -59,7 +59,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 20b383522bb753442ac41f562d74cb29, type: 3}
+  m_Motion: {fileID: 7400000, guid: 399137f2e026fcd45a47da25b3ebf77f, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -116,7 +116,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 138e405357f557640824f22cfb0b7aa6, type: 3}
+  m_Motion: {fileID: 7400000, guid: 31b0d8057fd284b469b697dae2e30d98, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -196,14 +196,18 @@ MonoBehaviour:
   targetSpeed: 0
   speedChangeTime: 0
   speedChangeEase: 6
+  overrideSpeedOnCollision: 0
+  overrideSpeedTimeOnCollision: 0
   curve: 0
-  curveAdd: 0
+  useCurveChange: 0
+  targetCurve: 0
+  curveChangeTime: 0
+  curveChangeEase: 6
   curveLockY: 1
   curveStartDelayTime: 0
-  curveLifeTime: 0
-  endFollowOverTargetDistance: 0
-  overrideLifeTimeWhenDieTarget: 0
+  followLastPositionWhenDieTarget: 0
   followMeOnHitTarget: 0
+  followMinRange: 0
   useRandomTurn: 0
   accelTurn: 0
   randomTurnRotateYawRange: {x: 0, y: 0}
@@ -281,7 +285,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions: []
   m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: -4201279976904388784}
+  m_DstState: {fileID: 0}
   m_Solo: 0
   m_Mute: 0
   m_IsExit: 0
@@ -317,7 +321,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 34bdda2154681644da44267c3d8f96cb, type: 3}
+  m_Motion: {fileID: 7400000, guid: 3ebf588e5df8d39458b97e5e6a9d9b72, type: 2}
   m_Tag: 
   m_SpeedParameter: AttackAniSpeedRatio
   m_MirrorParameter: 
@@ -332,7 +336,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions: []
   m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: -4201279976904388784}
+  m_DstState: {fileID: 0}
   m_Solo: 0
   m_Mute: 0
   m_IsExit: 0
@@ -404,14 +408,18 @@ MonoBehaviour:
   targetSpeed: 0
   speedChangeTime: 0
   speedChangeEase: 6
+  overrideSpeedOnCollision: 0
+  overrideSpeedTimeOnCollision: 0
   curve: 0
-  curveAdd: 0
+  useCurveChange: 0
+  targetCurve: 0
+  curveChangeTime: 0
+  curveChangeEase: 6
   curveLockY: 1
   curveStartDelayTime: 0
-  curveLifeTime: 0
-  endFollowOverTargetDistance: 0
-  overrideLifeTimeWhenDieTarget: 0
+  followLastPositionWhenDieTarget: 0
   followMeOnHitTarget: 0
+  followMinRange: 0
   useRandomTurn: 0
   accelTurn: 0
   randomTurnRotateYawRange: {x: 0, y: 0}
@@ -490,7 +498,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: b6c5ef664bc14e445b2c97696213d40c, type: 3}
+  m_Motion: {fileID: 7400000, guid: 2632b77352ceff9409ed5bacc93b231e, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 

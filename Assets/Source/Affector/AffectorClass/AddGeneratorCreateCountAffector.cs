@@ -26,10 +26,20 @@ public class AddGeneratorCreateCountAffector : AffectorBase
 
 	public static int GetAddCount(AffectorProcessor affectorProcessor)
 	{
-		AddGeneratorCreateCountAffector addGeneratorCreateCountAffector = (AddGeneratorCreateCountAffector)affectorProcessor.GetFirstContinuousAffector(eAffectorType.AddGeneratorCreateCount);
-		if (addGeneratorCreateCountAffector == null)
+		List<AffectorBase> listAddGeneratorCreateCountAffector = affectorProcessor.GetContinuousAffectorList(eAffectorType.AddGeneratorCreateCount);
+		if (listAddGeneratorCreateCountAffector == null)
 			return 0;
 
-		return addGeneratorCreateCountAffector.addCreateCount;
+		int result = 0;
+		for (int i = 0; i < listAddGeneratorCreateCountAffector.Count; ++i)
+		{
+			if (listAddGeneratorCreateCountAffector[i].finalized)
+				continue;
+			AddGeneratorCreateCountAffector addGeneratorCreateCountAffector = listAddGeneratorCreateCountAffector[i] as AddGeneratorCreateCountAffector;
+			if (addGeneratorCreateCountAffector == null)
+				continue;
+			result += addGeneratorCreateCountAffector.addCreateCount;
+		}
+		return result;
 	}
 }

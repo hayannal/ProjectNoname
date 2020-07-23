@@ -84,7 +84,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartTime: 0
-  EndTime: 0.81
+  EndTime: 0.65
   state: 3
 --- !u!114 &-1886024847357263894
 MonoBehaviour:
@@ -148,14 +148,16 @@ MonoBehaviour:
   speedChangeEase: 6
   overrideSpeedOnCollision: 0
   overrideSpeedTimeOnCollision: 0
-  curve: 360
-  curveAdd: -30
+  curve: 720
+  useCurveChange: 1
+  targetCurve: 20
+  curveChangeTime: 0.85
+  curveChangeEase: 6
   curveLockY: 1
   curveStartDelayTime: 0.02
-  curveLifeTime: 0
-  endFollowOverTargetDistance: 1
-  overrideLifeTimeWhenDieTarget: 0
+  followLastPositionWhenDieTarget: 1
   followMeOnHitTarget: 0
+  followMinRange: 8
   useRandomTurn: 0
   accelTurn: 0
   randomTurnRotateYawRange: {x: 0, y: 0}
@@ -332,7 +334,7 @@ MonoBehaviour:
   applyCollisionDamageInterval: 0
   repeatCount: 0
   repeatInterval: 0
-  movementType: 0
+  movementType: 1
   startDirectionType: 2
   startDirection: {x: 0, y: 0, z: 1}
   howitzerType: 0
@@ -351,14 +353,16 @@ MonoBehaviour:
   speedChangeEase: 6
   overrideSpeedOnCollision: 0
   overrideSpeedTimeOnCollision: 0
-  curve: 0
-  curveAdd: 0
-  curveLockY: 0
-  curveStartDelayTime: 0
-  curveLifeTime: 0
-  endFollowOverTargetDistance: 0
-  overrideLifeTimeWhenDieTarget: 0
+  curve: 20
+  useCurveChange: 0
+  targetCurve: 0
+  curveChangeTime: 0
+  curveChangeEase: 6
+  curveLockY: 1
+  curveStartDelayTime: 0.02
+  followLastPositionWhenDieTarget: 1
   followMeOnHitTarget: 0
+  followMinRange: 0
   useRandomTurn: 0
   accelTurn: 0
   randomTurnRotateYawRange: {x: 0, y: 0}

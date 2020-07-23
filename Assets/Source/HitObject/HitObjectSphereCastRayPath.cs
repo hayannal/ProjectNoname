@@ -66,11 +66,10 @@ public class HitObjectSphereCastRayPath : MonoBehaviour
 	{
 		if (_parentActor.actionController.detectedPlayAction)
 			return true;
-		if (_parentActor.actionController.animator.IsInTransition(0))
-			return true;
-
 		if (_parentActor.actionController.animator == null)
 			return false;
+		if (_parentActor.actionController.animator.IsInTransition(0))
+			return true;
 		if (_parentActor.actionController.animator.GetCurrentAnimatorStateInfo(0).fullPathHash == _fullPathHash)
 			return false;
 

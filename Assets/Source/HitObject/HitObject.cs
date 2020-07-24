@@ -1162,6 +1162,7 @@ public class HitObject : MonoBehaviour
 	void Update()
 	{
 		UpdateIgnoreList();
+		UpdateDisableTrigger();
 
 		if (_waitHitObjectAnimatorUpdateCount > 0)
 		{
@@ -1295,6 +1296,9 @@ public class HitObject : MonoBehaviour
 			_waitHitObjectAnimatorUpdateCount = HitObjectAnimatorUpdateWaitCount;
 			return;
 		}
+
+		if (_listStayedCollider != null)
+			_listStayedCollider.Clear();
 
 		BattleInstanceManager.instance.OnFinalizeHitObject(this, _collider);
 		//Destroy(gameObject);
@@ -1688,13 +1692,54 @@ public class HitObject : MonoBehaviour
 		OnFinalizeByCollision();
 	}
 
-	void OnTriggerExit(Collider collider)
+	List<Collider> _listStayedCollider;
+	void UpdateDisableTrigger()
 	{
-		// 중첩되어있는 오브젝트들을 위해서라도 refCount 형태로 관리해야하려나.
+		// 한번이라도 OnTriggerStay로 처리한 collider들을 리스트에 모아두고
+		// OnTiggerExit가 오거나 죽어서 collider.enabled가 꺼지는걸 판단해서
+		// 전부 다 해제될 경우에만 trigger 상태를 풀어야 제대로 처리할 수 있다.
+		if (_listStayedCollider == null || _listStayedCollider.Count == 0)
+			return;
+
 		if (_tempTriggerOnCollision && _collider.isTrigger)
 		{
-			_collider.isTrigger = false;
-			_tempTriggerOnCollision = false;
+			// exit되지 않은 컬리더 중에 죽음 등에 의해 꺼진게 있다면
+			for (int i = _listStayedCollider.Count - 1; i >= 0; --i)
+			{
+				if (_listStayedCollider[i].enabled == false)
+					_listStayedCollider.RemoveAt(i);
+			}
+
+			if (_listStayedCollider.Count == 0)
+			{
+				_collider.isTrigger = false;
+				_tempTriggerOnCollision = false;
+			}
+		}
+	}
+
+	void OnTriggerExit(Collider collider)
+	{
+		if (_tempTriggerOnCollision && _collider.isTrigger)
+		{
+			// 이렇게 바로 꺼버리면 동시에 여러개의 오브젝트를 투과중인 히트오브젝트가 컬리더로 변하면서 위치가 틀어지게 된다.
+			//_collider.isTrigger = false;
+			//_tempTriggerOnCollision = false;
+
+			if (_listStayedCollider.Contains(collider))
+			{
+				if (_listStayedCollider.Count == 1)
+				{
+					// 하나만 있는 상태에서만 리스트 클리어하고 바로 컬리젼 상태를 끄면 된다.
+					_listStayedCollider.Clear();
+					_collider.isTrigger = false;
+					_tempTriggerOnCollision = false;
+				}
+				else
+				{
+					_listStayedCollider.Remove(collider);
+				}
+			}
 		}
 	}
 
@@ -1771,6 +1816,12 @@ public class HitObject : MonoBehaviour
 					HitEffect.ShowHitEffect(_signal, contactPoint, contactNormal, _statusStructForHitObject.weaponIDAtCreation);
 				if (_signal.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
 					HitEffect.ShowHitEffectLineRenderer(_signal, GetHitEffectLineRendererStartPosition(contactPoint), contactPoint);
+
+				// 해제를 위해 별도의 리스트에 넣어둔다.
+				if (_listStayedCollider == null)
+					_listStayedCollider = new List<Collider>();
+				if (_listStayedCollider.Contains(col) == false)
+					_listStayedCollider.Add(col);
 			}
 		}
 	}

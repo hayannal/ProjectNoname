@@ -1,5 +1,20 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-6867614355602681970
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2e6805f699075e4eae576dc1aabd338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.01
+  EndTime: 0.2
+  speed: 0.5
 --- !u!114 &-4719363929114567285
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -70,7 +85,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartTime: 0
-  EndTime: 0.35
+  EndTime: 0.99
   state: 3
 --- !u!1107 &-1805817263514781681
 AnimatorStateMachine:
@@ -143,13 +158,13 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Attack1
-  m_Speed: 1
+  m_Speed: 0.8
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours:
   - {fileID: 1934512432174511729}
   - {fileID: -2412566443936429071}
-  - {fileID: 4225913892842907322}
+  - {fileID: -6867614355602681970}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 1
   m_WriteDefaultValues: 1
@@ -258,7 +273,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.47
+  StartTime: 0.37
   EndTime: 1
   targetDetectType: 2
   presetType: 0
@@ -270,7 +285,7 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
-  maxDistance: 0
+  maxDistance: 20
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -301,9 +316,9 @@ MonoBehaviour:
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
   howitzerRandomPositionRadiusRange: {x: 0, y: 0}
-  speed: 6
+  speed: 2
   useSpeedChange: 1
-  targetSpeed: 15
+  targetSpeed: 30
   speedChangeTime: 1.6
   speedChangeEase: 6
   overrideSpeedOnCollision: 0
@@ -323,7 +338,7 @@ MonoBehaviour:
   randomTurnRotateYawRange: {x: 0, y: 0}
   gravity: -9.81
   parallelCount: 1
-  parallelDistance: 0.5
+  parallelDistance: 0.6
   ignoreMainHitObjectByParallel: 1
   circularSectorCount: 0
   circularSectorBetweenAngle: 0
@@ -349,7 +364,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttackBigBatSuccubus
+  - NormalAttackLinhi
   showHitEffect: 1
   hitEffectObject: {fileID: 1563293619315548, guid: d45c4f7c841b28c4b8f75c575ee445b9,
     type: 3}
@@ -360,25 +375,6 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 1
---- !u!114 &4225913892842907322
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTime: 0.85
-  EndTime: 1
-  effectData: {fileID: 1997343281232380, guid: 73a2a44954e1512489c8536652486cf9, type: 3}
-  offset: {x: 0, y: 1, z: 0.11}
-  fixedWorldPositionY: 0
-  direction: {x: 0, y: 0, z: 1}
-  parentName: 
 --- !u!1101 &4270325903947159373
 AnimatorStateTransition:
   m_ObjectHideFlags: 1

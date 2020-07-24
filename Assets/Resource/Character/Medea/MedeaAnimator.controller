@@ -329,7 +329,7 @@ MonoBehaviour:
   ignorePresetHitEffectOnCustomTargetPosition: 0
   hitObjectPrefab: {fileID: 1066843573042574, guid: 796487a4097d28d4ea47ab7a5d0d9052,
     type: 3}
-  lifeTime: 5
+  lifeTime: 15
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
@@ -372,13 +372,15 @@ MonoBehaviour:
   overrideSpeedOnCollision: 1.5
   overrideSpeedTimeOnCollision: 0.3
   curve: 0
-  curveAdd: 0
+  useCurveChange: 0
+  targetCurve: 0
+  curveChangeTime: 0
+  curveChangeEase: 6
   curveLockY: 0
   curveStartDelayTime: 0
-  curveLifeTime: 0
-  endFollowOverTargetDistance: 0
-  overrideLifeTimeWhenDieTarget: 0
+  followLastPositionWhenDieTarget: 0
   followMeOnHitTarget: 0
+  followMinRange: 0
   useRandomTurn: 0
   accelTurn: 0
   randomTurnRotateYawRange: {x: 0, y: 0}
@@ -410,7 +412,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttackBigBatSuccubus
+  - NormalAttackMedea
   showHitEffect: 1
   hitEffectObject: {fileID: 1767841913861676, guid: 6a8ba6ffba9a8d24aa729eb59a789cd4,
     type: 3}
@@ -436,7 +438,7 @@ MonoBehaviour:
   StartTime: 0.27
   EndTime: 1
   effectData: {fileID: 1840367976591474, guid: 0b346f18e437e1a49aab836177ecf3d4, type: 3}
-  offset: {x: 0, y: 1, z: 0.5}
+  offset: {x: -0.1, y: 1.23, z: 0.8}
   fixedWorldPositionY: 0
   direction: {x: 0, y: 0, z: 1}
   parentName: 

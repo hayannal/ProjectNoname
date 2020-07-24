@@ -1713,6 +1713,12 @@ public class HitObject : MonoBehaviour
 
 					// 정 안되면 여기서 거리 검사라도 해서 제외해야하지 않을까.
 					// 추가하게 된다면 IgnoreList에서 Intersect호출하는 형태로 검사하면 될거다.
+					Bounds newBounds = new Bounds(_collider.bounds.center, _collider.bounds.size + new Vector3(0.1f, 0.1f, 0.1f));
+					if (newBounds.Intersects(_listStayedCollider[i].bounds) == false)
+					{
+						_listStayedCollider.RemoveAt(i);
+						continue;
+					}
 				}
 			}
 
@@ -1729,7 +1735,7 @@ public class HitObject : MonoBehaviour
 
 	void OnTriggerExit(Collider collider)
 	{
-		if (_listStayedCollider.Contains(collider) == false)
+		if (_listStayedCollider == null || _listStayedCollider.Contains(collider) == false)
 			return;
 
 		if (_listStayedCollider.Count == 1)

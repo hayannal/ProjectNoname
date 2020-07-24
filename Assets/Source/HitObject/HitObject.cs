@@ -1506,8 +1506,8 @@ public class HitObject : MonoBehaviour
 					{
 						monsterCollided = true;
 
-						// 어차피 OnTriggerStay쪽에서 처리하기 때문에 이거 해도 큰 이득은 없다. 그래서 아예 호출하지 않기로 한다.
-						//AddIgnoreList(col, true);
+						// 어차피 OnTriggerStay쪽에서 처리하기 때문에 기본 컬리더는 Ignore해도 된다.
+						AddIgnoreList(col, true);
 					}
 				}
 			}
@@ -1696,21 +1696,30 @@ public class HitObject : MonoBehaviour
 	void UpdateDisableTrigger()
 	{
 		// 한번이라도 OnTriggerStay로 처리한 collider들을 리스트에 모아두고
-		// OnTiggerExit가 오거나 죽어서 collider.enabled가 꺼지는걸 판단해서
-		// 전부 다 해제될 경우에만 trigger 상태를 풀어야 제대로 처리할 수 있다.
-		if (_listStayedCollider == null || _listStayedCollider.Count == 0)
-			return;
-
+		// OnTiggerExit가 오거나 죽어서 collider.enabled가 꺼지는걸 판단해서 전부 다 해제될 경우에만 trigger 상태를 풀어야한다.
+		// 안그러면 두번째 오브젝트랑 겹쳐있는 상태에서 trigger가 풀리게 된다.
 		if (_tempTriggerOnCollision && _collider.isTrigger)
 		{
-			// exit되지 않은 컬리더 중에 죽음 등에 의해 꺼진게 있다면
-			for (int i = _listStayedCollider.Count - 1; i >= 0; --i)
+			if (_listStayedCollider != null)
 			{
-				if (_listStayedCollider[i].enabled == false)
-					_listStayedCollider.RemoveAt(i);
+				// exit되지 않은 컬리더 중에 죽음 등에 의해 꺼진게 있다면
+				for (int i = _listStayedCollider.Count - 1; i >= 0; --i)
+				{
+					if (_listStayedCollider[i].enabled == false)
+					{
+						_listStayedCollider.RemoveAt(i);
+						continue;
+					}
+
+					// 정 안되면 여기서 거리 검사라도 해서 제외해야하지 않을까.
+					// 추가하게 된다면 IgnoreList에서 Intersect호출하는 형태로 검사하면 될거다.
+				}
 			}
 
-			if (_listStayedCollider.Count == 0)
+			// 정말 가끔 벽을 투과하는 현상이 나와서 처음엔 OnTriggerExit가 오지 않는건줄 알았는데 아니었다.
+			// OnCollisionEnter에서 _tempTriggerOnCollision true로 셋팅하고 나서 OnTriggerStay가 호출되지 않아 해제될 방법이 없었던거다.
+			// 그래서 차라리 _listStayedCollider가 0일때 자동 해제되는 형태로 코드를 짜보기로 한다.
+			if (_listStayedCollider == null || _listStayedCollider.Count == 0)
 			{
 				_collider.isTrigger = false;
 				_tempTriggerOnCollision = false;
@@ -1720,27 +1729,23 @@ public class HitObject : MonoBehaviour
 
 	void OnTriggerExit(Collider collider)
 	{
-		if (_tempTriggerOnCollision && _collider.isTrigger)
-		{
-			// 이렇게 바로 꺼버리면 동시에 여러개의 오브젝트를 투과중인 히트오브젝트가 컬리더로 변하면서 위치가 틀어지게 된다.
-			//_collider.isTrigger = false;
-			//_tempTriggerOnCollision = false;
+		if (_listStayedCollider.Contains(collider) == false)
+			return;
 
-			if (_listStayedCollider.Contains(collider))
+		if (_listStayedCollider.Count == 1)
+		{
+			_listStayedCollider.Clear();
+
+			// 하나만 있는 상태에서만 리스트 클리어하고 바로 컬리젼 상태를 끄면 된다.
+			// 조건 검사 안하고 꺼버리면 동시에 여러개의 오브젝트를 투과중인 히트오브젝트가 컬리더로 변하면서 위치가 틀어지게 되니 이렇게 조건검사 해야한다.
+			if (_tempTriggerOnCollision && _collider.isTrigger)
 			{
-				if (_listStayedCollider.Count == 1)
-				{
-					// 하나만 있는 상태에서만 리스트 클리어하고 바로 컬리젼 상태를 끄면 된다.
-					_listStayedCollider.Clear();
-					_collider.isTrigger = false;
-					_tempTriggerOnCollision = false;
-				}
-				else
-				{
-					_listStayedCollider.Remove(collider);
-				}
+				_collider.isTrigger = false;
+				_tempTriggerOnCollision = false;
 			}
 		}
+		else
+			_listStayedCollider.Remove(collider);
 	}
 
 	// 컬리젼도 Stay가 가능하다. 부착된 채로 떨어지기전까지 계속 호출되는 구조다.
@@ -1818,6 +1823,9 @@ public class HitObject : MonoBehaviour
 					HitEffect.ShowHitEffectLineRenderer(_signal, GetHitEffectLineRendererStartPosition(contactPoint), contactPoint);
 
 				// 해제를 위해 별도의 리스트에 넣어둔다.
+				// OnCollisionEnter할때 넣는 것도 답은 아닌게 몬스터가 연속으로 서있을 경우 첫번째 몬스터에겐 OnCollisionEnter가 호출되겠지만
+				// trigger로 변환한 후 닿는 두번째 몬스터는 OnCollisionEnter가 호출되지 않는다.
+				// 그러니 여기서 처리하는 형태로 구현해보기로 한다.
 				if (_listStayedCollider == null)
 					_listStayedCollider = new List<Collider>();
 				if (_listStayedCollider.Contains(col) == false)

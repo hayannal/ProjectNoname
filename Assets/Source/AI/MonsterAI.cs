@@ -180,6 +180,13 @@ public class MonsterAI : MonoBehaviour
 		if (targetingProcessor == null)
 			return;
 
+		if (actor.team.teamId == (int)Team.eTeamID.DefaultAlly)
+		{
+			UpdateAllyMonsterTargeting();
+			//UpdateAllyMonsterAttackRange();
+			return;
+		}
+
 		if (targetActor != null)
 		{
 			if (targetActor.actorStatus.IsDie() || targetActor.gameObject.activeSelf == false)
@@ -223,6 +230,49 @@ public class MonsterAI : MonoBehaviour
 				targetRadius = ColliderUtil.GetRadius(BattleInstanceManager.instance.targetColliderOfMonster);
 			}
 		}
+	}
+
+	void UpdateAllyMonsterTargeting()
+	{
+		// 아군 지원 몬스터의 경우 기존함수를 쓸 수 없다. 최적화를 위해 타겟을 공유하는 형태기때문에 플레이어를 타겟으로 잡기 때문.
+		// PlayerAI에서 하던거 가져와서 몹에 맞게 변형해서 사용한다.
+		if (actor.actionController.mecanimState.IsState((int)eMecanimState.Attack))
+		{
+			if (_currentFindDelay > 0.0f)
+				_currentFindDelay -= Time.deltaTime;
+			return;
+		}
+
+		_currentFindDelay -= Time.deltaTime;
+		if (_currentFindDelay <= 0.0f)
+		{
+			_currentFindDelay += TargetFindDelay;
+			if (targetingProcessor.FindNearestTarget(Team.eTeamCheckFilter.Enemy, PlayerAI.FindTargetRange))
+			{
+				Collider targetCollider = targetingProcessor.GetTarget();
+				targetRadius = ColliderUtil.GetRadius(targetCollider);
+				AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(targetCollider);
+				targetActor = affectorProcessor.actor;
+			}
+			else
+				targetActor = null;
+		}
+
+		if (targetActor != null)
+		{
+			if (targetActor.actorStatus.IsDie() || targetActor.gameObject.activeSelf == false || TargetingProcessor.IsOutOfRange(targetActor.affectorProcessor))
+			{
+				_currentFindDelay = 0.0f;
+				targetActor = null;
+				targetingProcessor.ClearTarget();
+			}
+		}
+	}
+
+	void UpdateAllyMonsterAttackRange()
+	{
+		//아군 몬스터에게 사거리가 생긴다면 이거 역시 추가되야할거다.
+		//지금은 이 기능을 필요로 하는 소환체가 없어서 차후에 쓸때 만들기로 한다.
 	}
 
 	#region RandomMove

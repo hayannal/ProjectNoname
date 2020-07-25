@@ -84,7 +84,7 @@ public class PlayerAI : MonoBehaviour
 			AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(targetCollider);
 			if (affectorProcessor != null && affectorProcessor.actor != null)
 			{
-				if (affectorProcessor.actor.actorStatus.IsDie() || TargetingProcessor.IsOutOfRange(affectorProcessor))
+				if (affectorProcessor.actor.actorStatus.IsDie() || TargetingProcessor.IsOutOfRange(affectorProcessor) || (BattleManager.instance != null && BattleManager.instance.IsAutoPlay() == false))
 				{
 					_currentFindDelay = 0.0f;
 					targetCollider = null;

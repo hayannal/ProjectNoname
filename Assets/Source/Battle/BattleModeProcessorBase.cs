@@ -180,6 +180,9 @@ public class BattleModeProcessorBase
 
 	public virtual void OnSpawnMonster(MonsterActor monsterActor)
 	{
+		if (monsterActor.team.teamId != (int)Team.eTeamID.DefaultMonster || monsterActor.excludeMonsterCount)
+			return;
+
 		_monsterSpawned = true;
 		++_monsterSpawnCount;
 	}
@@ -199,6 +202,9 @@ public class BattleModeProcessorBase
 
 	public virtual void OnDieMonster(MonsterActor monsterActor)
 	{
+		if (monsterActor.team.teamId != (int)Team.eTeamID.DefaultMonster || monsterActor.excludeMonsterCount)
+			return;
+
 		--_monsterSpawnCount;
 		if (_mapLoaded && _monsterSpawned && _monsterSpawnCount == 0 && BattleInstanceManager.instance.CheckFinishSequentialMonster())
 		{

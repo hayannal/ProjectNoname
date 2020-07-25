@@ -16,6 +16,11 @@ public class MonsterActor : Actor
 	public bool groupMonster { get { return group != null; } }
 	public SequentialMonster sequentialMonster { get; set; }
 	public bool summonMonster { get; set; }
+	public bool excludeMonsterCount { get; set; }
+
+	// 다른 옵션들과 달리 team설정은 초기화때 한번만 하기 때문에 팀을 바꿔가면서 재활용할 순 없다.
+	// 게임 도중에 팀을 섞어쓸일이 없을거 같아서 우선 이대로 간다.
+	public bool reservedAllyTeam { get; set; }
 
 	void Awake()
 	{
@@ -64,7 +69,10 @@ public class MonsterActor : Actor
 	{
 		base.InitializeActor();
 
-		team.SetTeamId((int)Team.eTeamID.DefaultMonster, true, gameObject, Team.eTeamLayer.TEAM1_ACTOR_LAYER);
+		if (reservedAllyTeam)
+			team.SetTeamId((int)Team.eTeamID.DefaultAlly, true, gameObject, Team.eTeamLayer.TEAM0_ACTOR_LAYER);
+		else
+			team.SetTeamId((int)Team.eTeamID.DefaultMonster, true, gameObject, Team.eTeamLayer.TEAM1_ACTOR_LAYER);
 		bossMonster = cachedMonsterTableData.boss;
 		if (cachedTransform.parent != null)
 			group = cachedTransform.parent.GetComponent<GroupMonster>();
@@ -319,6 +327,9 @@ public class MonsterActor : Actor
 	// 원래 PlayerActor에서 처리하던건데 이랬더니 둘러쌓여도 Tick당 한번밖에 데미지를 입지 않아서 몬스터쪽으로 옮긴다.
 	void OnCollisionStay(Collision collision)
 	{
+		if (team.teamId != (int)Team.eTeamID.DefaultMonster || excludeMonsterCount)
+			return;
+
 		foreach (ContactPoint contact in collision.contacts)
 		{
 			Collider col = contact.otherCollider;

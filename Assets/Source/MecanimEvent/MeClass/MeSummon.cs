@@ -19,6 +19,8 @@ public class MeSummon : MecanimEventBase
 	override public bool RangeSignal { get { return true; } }
 	public GameObject summonPrefab;
 	public bool summonMonster = true;
+	public bool applyParentTeamId;
+	public bool excludeMonsterCount;
 	public eCreatePositionType createPositionType;
 	public Vector3 offset;
 	public Vector3 direction = Vector3.forward;
@@ -33,6 +35,11 @@ public class MeSummon : MecanimEventBase
 	{
 		summonPrefab = (GameObject)EditorGUILayout.ObjectField("Object :", summonPrefab, typeof(GameObject), false);
 		summonMonster = EditorGUILayout.Toggle("Summon Monster :", summonMonster);
+		if (summonMonster)
+		{
+			applyParentTeamId = EditorGUILayout.Toggle("Apply Parent TeamId :", applyParentTeamId);
+			excludeMonsterCount = EditorGUILayout.Toggle("Exclude Monster Count :", excludeMonsterCount);
+		}
 
 		createPositionType = (eCreatePositionType)EditorGUILayout.EnumPopup("Create Position Type :", createPositionType);
 		if (createPositionType == eCreatePositionType.WorldPosition)
@@ -100,6 +107,17 @@ public class MeSummon : MecanimEventBase
 						if (checkNavPosition) _createPosition = GetNavPosition(_createPosition);
 						_createRotation = Quaternion.LookRotation(targetTransform.TransformDirection(direction));
 					}
+				}
+				else
+				{
+					_createPosition = HitObject.GetFallbackTargetPosition(_actor.cachedTransform);
+					if (checkNavPosition) _createPosition = GetNavPosition(_createPosition);
+					else
+					{
+						if (BattleInstanceManager.instance.currentGround != null)
+							_createPosition = BattleInstanceManager.instance.currentGround.SamplePositionInQuadBound(_createPosition);
+					}
+					_createRotation = Quaternion.LookRotation(_actor.cachedTransform.TransformDirection(direction));
 				}
 				break;
 			case eCreatePositionType.TargetDistanceRatio:
@@ -200,6 +218,9 @@ public class MeSummon : MecanimEventBase
 				{
 					groupMonster.listMonsterActor[i].summonMonster = true;
 					groupMonster.listMonsterActor[i].checkOverlapPositionFrameCount = 100;
+					groupMonster.listMonsterActor[i].excludeMonsterCount = excludeMonsterCount;
+					if (applyParentTeamId)
+						groupMonster.listMonsterActor[i].reservedAllyTeam = (_actor.team.teamId == (int)Team.eTeamID.DefaultAlly);
 				}
 			}
 
@@ -211,6 +232,9 @@ public class MeSummon : MecanimEventBase
 				{
 					monsterActor.summonMonster = true;
 					monsterActor.checkOverlapPositionFrameCount = 100;
+					monsterActor.excludeMonsterCount = excludeMonsterCount;
+					if (applyParentTeamId)
+						monsterActor.reservedAllyTeam = (_actor.team.teamId == (int)Team.eTeamID.DefaultAlly);
 				}
 			}
 		}

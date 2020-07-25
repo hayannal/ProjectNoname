@@ -18,6 +18,16 @@ public class BaseDamageAffector : AffectorBase {
 		if (_actor.actorStatus.IsDie())
 			return;
 
+		// 몬스터 수량에서 빼야한다면 일반적인 피를 가진 오브젝트가 아닐것이다.
+		MonsterActor monsterActor = null;
+		if (_actor.IsMonsterActor())
+			monsterActor = _actor as MonsterActor;
+		if (monsterActor != null && monsterActor.excludeMonsterCount)
+		{
+			ShowHitBlink(hitParameter);
+			return;
+		}
+
 		// 실명은 공격자꺼라 가장 먼저.
 		// 하단의 빗맞음과 같이 처리하지 않고 최상위에서 먼저 돌린다.
 		// 결과는 동일하게 Miss로 표현한다.
@@ -100,7 +110,6 @@ public class BaseDamageAffector : AffectorBase {
 
 		if (_actor.IsMonsterActor() && (int)eActorStatus.NormalMonsterDamageIncreaseAddRate < hitParameter.statusBase.valueList.Length)
 		{
-			MonsterActor monsterActor = _actor as MonsterActor;
 			if (monsterActor != null)
 			{
 				float damageIncreaseAddRate = hitParameter.statusBase.valueList[monsterActor.bossMonster ? (int)eActorStatus.BossMonsterDamageIncreaseAddRate : (int)eActorStatus.NormalMonsterDamageIncreaseAddRate];
@@ -242,7 +251,6 @@ public class BaseDamageAffector : AffectorBase {
 			bool ignoreOnKill = false;
 			if (_actor.IsMonsterActor())
 			{
-				MonsterActor monsterActor = _actor as MonsterActor;
 				if (monsterActor != null && monsterActor.groupMonster && monsterActor.group.IsLastAliveMonster(monsterActor) == false)
 					ignoreOnKill = true;
 				// 한방에 보스 몹 처리..

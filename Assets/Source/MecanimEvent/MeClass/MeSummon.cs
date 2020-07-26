@@ -5,6 +5,7 @@ using UnityEngine.AI;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
+using MEC;
 
 public class MeSummon : MecanimEventBase
 {
@@ -23,12 +24,21 @@ public class MeSummon : MecanimEventBase
 	public bool excludeMonsterCount;
 	public eCreatePositionType createPositionType;
 	public Vector3 offset;
+	public Vector2 randomPositionRadiusRange;
 	public Vector3 direction = Vector3.forward;
 	public bool checkNavPosition = true;
 	public bool calcCreatePositionInEndSignal;
 	public bool disableOnMapChanged;
 	public GameObject castingLoopEffectPrefab;
 	public GameObject summonEffectPrefab;
+
+	// 동시 소환 개수. 0이면 관리하지 않는다.
+	public int activeMaxCount;
+	public GameObject prevObjectDisableEffectPrefab;
+
+	// 시그널 발동 후 이동을 해도 진행되는 형태의 소환이 필요해졌다.
+	// 데몬 헌트리스와 스팀펑크 로봇의 소환에서 사용된다.
+	public float spawnDelay;
 
 #if UNITY_EDITOR
 	override public void OnGUI_PropertyWindow()
@@ -48,12 +58,18 @@ public class MeSummon : MecanimEventBase
 			offset.x = EditorGUILayout.FloatField("Distance Ratio :", offset.x);
 		else
 			offset = EditorGUILayout.Vector3Field("Offset :", offset);
+		randomPositionRadiusRange = EditorGUILayout.Vector2Field("Random Position Radius Range :", randomPositionRadiusRange);
 		direction = EditorGUILayout.Vector3Field("Direction :", direction);
 		checkNavPosition = EditorGUILayout.Toggle("Check Nav Position :", checkNavPosition);
 		calcCreatePositionInEndSignal = EditorGUILayout.Toggle("Calc End Signal :", calcCreatePositionInEndSignal);
 
 		castingLoopEffectPrefab = (GameObject)EditorGUILayout.ObjectField("Casting Effect Object :", castingLoopEffectPrefab, typeof(GameObject), false);
 		summonEffectPrefab = (GameObject)EditorGUILayout.ObjectField("Summon Effect Object :", summonEffectPrefab, typeof(GameObject), false);
+
+		activeMaxCount = EditorGUILayout.IntField("Max Count :", activeMaxCount);
+		if (activeMaxCount > 0)
+			prevObjectDisableEffectPrefab = (GameObject)EditorGUILayout.ObjectField("Prev Object Disable Effect :", prevObjectDisableEffectPrefab, typeof(GameObject), false);
+		spawnDelay = EditorGUILayout.FloatField("Spawn Delay :", spawnDelay);
 	}
 #endif
 
@@ -77,6 +93,26 @@ public class MeSummon : MecanimEventBase
 
 		if (castingLoopEffectPrefab != null)
 			_castingLoopEffectTransform = BattleInstanceManager.instance.GetCachedObject(castingLoopEffectPrefab, _createPosition, Quaternion.identity).transform;
+
+		if (activeMaxCount > 0 && _listActiveObject != null && _listActiveObject.Count > 0)
+		{
+			// 우선 맵이동 등으로 꺼져있는지를 판단해 리스트에서 정리해 둔 후
+			for (int i = _listActiveObject.Count - 1; i >= 0; --i)
+			{
+				if (_listActiveObject[i] == null || _listActiveObject[i].activeSelf == false)
+					_listActiveObject.RemoveAt(i);
+			}
+
+			// 개수 제한 걸린만큼 기존 오브젝트를 비활성화 시켜야한다.
+			if (_listActiveObject.Count >= activeMaxCount)
+			{
+				GameObject firstObject = _listActiveObject[0];
+				_listActiveObject.RemoveAt(0);
+				firstObject.SetActive(false);
+				if (prevObjectDisableEffectPrefab != null)
+					BattleInstanceManager.instance.GetCachedObject(prevObjectDisableEffectPrefab, firstObject.transform.position, Quaternion.identity);
+			}
+		}
 	}
 
 	void CalcCreatePosition()
@@ -145,6 +181,8 @@ public class MeSummon : MecanimEventBase
 				}
 				break;
 		}
+		Vector2 randomRadius = Random.insideUnitCircle * randomPositionRadiusRange;
+		_createPosition += new Vector3(randomRadius.x, 0.0f, randomRadius.y);
 	}
 
 	int _agentTypeID = -1;
@@ -185,6 +223,7 @@ public class MeSummon : MecanimEventBase
 		return result;
 	}
 
+	List<GameObject> _listActiveObject;
 	override public void OnRangeSignalEnd(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		if (_actor == null)
@@ -195,6 +234,31 @@ public class MeSummon : MecanimEventBase
 				_actor = animator.GetComponent<Actor>();
 		}
 
+		if (spawnDelay == 0.0f)
+			Summon();
+		else
+			Timing.RunCoroutine(DelayedSummon(spawnDelay));
+	}
+
+	IEnumerator<float> DelayedSummon(float delayTime)
+	{
+		yield return Timing.WaitForSeconds(delayTime);
+
+		// avoid gc
+		if (this == null)
+			yield break;
+		if (_actor == null)
+			yield break;
+		if (_actor.gameObject == null)
+			yield break;
+		if (_actor.gameObject.activeSelf == false)
+			yield break;
+
+		Summon();
+	}
+
+	void Summon()
+	{
 		if (_castingLoopEffectTransform != null)
 		{
 			_castingLoopEffectTransform.gameObject.SetActive(false);
@@ -241,6 +305,12 @@ public class MeSummon : MecanimEventBase
 		if (disableOnMapChanged)
 		{
 			BattleInstanceManager.instance.OnInitializeSummonObject(newObject);
+		}
+		if (activeMaxCount > 0)
+		{
+			if (_listActiveObject == null)
+				_listActiveObject = new List<GameObject>();
+			_listActiveObject.Add(newObject);
 		}
 	}
 

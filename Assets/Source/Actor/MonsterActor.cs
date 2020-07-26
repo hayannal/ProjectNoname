@@ -43,6 +43,16 @@ public class MonsterActor : Actor
 
 	void OnDisable()
 	{
+		if (team.teamId != (int)Team.eTeamID.DefaultMonster || excludeMonsterCount)
+		{
+			// 해당 몹들은 안잡고 넘어갈 수 있기 때문에 이렇게 예외처리를 해준다.
+			// Summon시그널로 생성되기 때문에 해제할때 별도로 처리하기가 어려워서 여기서 처리하는거다.
+			if (actorStatus.GetHP() > 0.0f)
+			{
+				actorStatus.SetHpRatio(0.0f);
+				DisableForNodeWar();
+			}
+		}
 		if (groupMonster)
 			group.CheckAllDisable();
 		sequentialMonster = null;

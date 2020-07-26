@@ -32,6 +32,7 @@ public class TimeSpaceGround : MonoBehaviour
 		environmentSetting.gameObject.SetActive(true);
 
 		// teleport
+		BattleInstanceManager.instance.playerActor.actionController.PlayActionByActionName("Idle");
 		BattleInstanceManager.instance.playerActor.cachedTransform.position = cachedTransform.position + teleportPosition;
 		TailAnimatorUpdater.UpdateAnimator(BattleInstanceManager.instance.playerActor.cachedTransform, 15);
 		CustomFollowCamera.instance.immediatelyUpdate = true;

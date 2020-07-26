@@ -69,7 +69,8 @@ public class MecanimEventBase : StateMachineBehaviour {
 				currentNormalizedTime = nextAnimatorStateInfo.normalizedTime;
 		}
 
-		if (RangeSignal)
+		// RangeSignal인데도 StartTime과 EndTime을 같은 값으로 설정할때가 있다. 대표적으로 SummonSignal. 이땐 동시에 Start, End를 호출해준다.
+		if (RangeSignal && StartTime < EndTime)
 		{
 			if (lastNormalizedTime <= currentNormalizedTime)
 			{
@@ -96,21 +97,45 @@ public class MecanimEventBase : StateMachineBehaviour {
 			{
 				if (lastNormalizedTime <= StartTime && StartTime < currentNormalizedTime)
 				{
-					OnSignal(animator, stateInfo, layerIndex);
-					//Debug.LogFormat("lastNormalized = {0} / currentNormalized = {1}", lastNormalizedTime, currentNormalizedTime);
+					if (RangeSignal)
+					{
+						OnRangeSignalStart(animator, stateInfo, layerIndex);
+						OnRangeSignalEnd(animator, stateInfo, layerIndex);
+					}
+					else
+					{
+						OnSignal(animator, stateInfo, layerIndex);
+						//Debug.LogFormat("lastNormalized = {0} / currentNormalized = {1}", lastNormalizedTime, currentNormalizedTime);
+					}
 				}
 			}
 			else
 			{
 				if (lastNormalizedTime <= StartTime && StartTime <= 1.0f)
 				{
-					OnSignal(animator, stateInfo, layerIndex);
-					//Debug.LogFormat("22222 : lastTime = {0} / startTime = {1}", lastNormalizedTime, StartTime);
+					if (RangeSignal)
+					{
+						OnRangeSignalStart(animator, stateInfo, layerIndex);
+						OnRangeSignalEnd(animator, stateInfo, layerIndex);
+					}
+					else
+					{
+						OnSignal(animator, stateInfo, layerIndex);
+						//Debug.LogFormat("22222 : lastTime = {0} / startTime = {1}", lastNormalizedTime, StartTime);
+					}
 				}
 				else if (0.0f <= StartTime && StartTime < currentNormalizedTime)
 				{
-					OnSignal(animator, stateInfo, layerIndex);
-					//Debug.Log("111111111111");
+					if (RangeSignal)
+					{
+						OnRangeSignalStart(animator, stateInfo, layerIndex);
+						OnRangeSignalEnd(animator, stateInfo, layerIndex);
+					}
+					else
+					{
+						OnSignal(animator, stateInfo, layerIndex);
+						//Debug.Log("111111111111");
+					}
 				}
 			}
 		}

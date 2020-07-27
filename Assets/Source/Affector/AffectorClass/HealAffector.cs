@@ -12,11 +12,23 @@ public class HealAffector : AffectorBase
 			return;
 
 		float heal = 0.0f;
-		if (affectorValueLevelTableData.fValue3 > 0.0f)
-			heal += (_actor.actorStatus.GetValue(eActorStatus.MaxHp) * affectorValueLevelTableData.fValue3);
-		if (affectorValueLevelTableData.fValue4 > 0.0f)
-			heal += (hitParameter.statusStructForHitObject.damage * affectorValueLevelTableData.fValue4);
+		if (affectorValueLevelTableData.iValue1 == 0)
+		{
+			if (affectorValueLevelTableData.fValue3 > 0.0f)
+				heal += (_actor.actorStatus.GetValue(eActorStatus.MaxHp) * affectorValueLevelTableData.fValue3);
+			if (affectorValueLevelTableData.fValue4 > 0.0f)
+				heal += (hitParameter.statusStructForHitObject.damage * affectorValueLevelTableData.fValue4);
 
-		_actor.actorStatus.AddHP(heal);
+			_actor.actorStatus.AddHP(heal);
+		}
+		else if (affectorValueLevelTableData.iValue1 == 1)
+		{
+			if (affectorValueLevelTableData.fValue3 > 0.0f)
+				heal += (_actor.actorStatus.GetValue(eActorStatus.MaxSp) * affectorValueLevelTableData.fValue3);
+			if (affectorValueLevelTableData.fValue4 > 0.0f)
+				heal += (hitParameter.statusStructForHitObject.damage * affectorValueLevelTableData.fValue4);
+
+			_actor.actorStatus.AddSP(heal);
+		}
 	}
 }

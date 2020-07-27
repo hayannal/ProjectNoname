@@ -94,23 +94,44 @@ public class MeSummon : MecanimEventBase
 		if (castingLoopEffectPrefab != null)
 			_castingLoopEffectTransform = BattleInstanceManager.instance.GetCachedObject(castingLoopEffectPrefab, _createPosition, Quaternion.identity).transform;
 
-		if (activeMaxCount > 0 && _listActiveObject != null && _listActiveObject.Count > 0)
+		if (activeMaxCount > 0)
 		{
 			// 우선 맵이동 등으로 꺼져있는지를 판단해 리스트에서 정리해 둔 후
-			for (int i = _listActiveObject.Count - 1; i >= 0; --i)
+			if (_listActiveObject != null && _listActiveObject.Count > 0)
 			{
-				if (_listActiveObject[i] == null || _listActiveObject[i].activeSelf == false)
-					_listActiveObject.RemoveAt(i);
+				for (int i = _listActiveObject.Count - 1; i >= 0; --i)
+				{
+					if (_listActiveObject[i] == null || _listActiveObject[i].activeSelf == false)
+						_listActiveObject.RemoveAt(i);
+				}
 			}
 
+			int currentCount = 0;
+			if (_listActiveObject != null) currentCount += _listActiveObject.Count;
+			if (_reservedSummonFrameCount != 0) currentCount += 1;
+
 			// 개수 제한 걸린만큼 기존 오브젝트를 비활성화 시켜야한다.
-			if (_listActiveObject.Count >= activeMaxCount)
+			if (currentCount >= activeMaxCount)
 			{
-				GameObject firstObject = _listActiveObject[0];
-				_listActiveObject.RemoveAt(0);
-				firstObject.SetActive(false);
-				if (prevObjectDisableEffectPrefab != null)
-					BattleInstanceManager.instance.GetCachedObject(prevObjectDisableEffectPrefab, firstObject.transform.position, Quaternion.identity);
+				if (_reservedSummonFrameCount != 0)
+				{
+					// 만드려고 하는 Summon을 취소해야한다. 여기선 이펙트를 만들지 않고 패스한다.
+					_reservedSummonFrameCount = 0;
+
+					if (_castingLoopEffectTransform != null)
+					{
+						_castingLoopEffectTransform.gameObject.SetActive(false);
+						_castingLoopEffectTransform = null;
+					}
+				}
+				else if (_listActiveObject.Count > 0)
+				{
+					GameObject firstObject = _listActiveObject[0];
+					_listActiveObject.RemoveAt(0);
+					firstObject.SetActive(false);
+					if (prevObjectDisableEffectPrefab != null)
+						BattleInstanceManager.instance.GetCachedObject(prevObjectDisableEffectPrefab, firstObject.transform.position, Quaternion.identity);
+				}
 			}
 		}
 	}
@@ -129,6 +150,11 @@ public class MeSummon : MecanimEventBase
 				{
 					_createPosition = _actor.cachedTransform.TransformPoint(offset);
 					if (checkNavPosition) _createPosition = GetNavPosition(_createPosition);
+					else
+					{
+						if (BattleInstanceManager.instance.currentGround != null)
+							_createPosition = BattleInstanceManager.instance.currentGround.SamplePositionInQuadBound(_createPosition);
+					}
 					_createRotation = Quaternion.LookRotation(_actor.cachedTransform.TransformDirection(direction));
 				}
 				break;
@@ -223,6 +249,10 @@ public class MeSummon : MecanimEventBase
 		return result;
 	}
 
+	// 위임 객체가 없기 때문에 리스트로 관리할 순 없고 예약은 1개만 가능하다.
+	// 그러니 소환중에 또 소환하면 소환하려던걸 취소하고 다시 소환이 시작되는 구조다.
+	//List<int> _listReservedSummonFrameCount;
+	int _reservedSummonFrameCount;
 	List<GameObject> _listActiveObject;
 	override public void OnRangeSignalEnd(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
@@ -237,11 +267,17 @@ public class MeSummon : MecanimEventBase
 		if (spawnDelay == 0.0f)
 			Summon();
 		else
-			Timing.RunCoroutine(DelayedSummon(spawnDelay));
+			Timing.RunCoroutine(DelayedSummon(spawnDelay, Time.frameCount));
 	}
 
-	IEnumerator<float> DelayedSummon(float delayTime)
+	IEnumerator<float> DelayedSummon(float delayTime, int frameCount)
 	{
+		if (activeMaxCount > 0)
+			_reservedSummonFrameCount = frameCount;
+
+		// 여기서 stage를 기록해두고
+		int playStage = StageManager.instance.playStage;
+
 		yield return Timing.WaitForSeconds(delayTime);
 
 		// avoid gc
@@ -254,6 +290,27 @@ public class MeSummon : MecanimEventBase
 		if (_actor.gameObject.activeSelf == false)
 			yield break;
 
+		// 맵이동하면 yield break.
+		// 스테이지 이동 이벤트를 받기가 애매해서 이렇게 stage 비교로 처리해본다.
+		if (playStage != StageManager.instance.playStage)
+		{
+			if (_castingLoopEffectTransform != null)
+			{
+				_castingLoopEffectTransform.gameObject.SetActive(false);
+				_castingLoopEffectTransform = null;
+			}
+			yield break;
+		}
+
+		if (activeMaxCount > 0)
+		{
+			if (_reservedSummonFrameCount != frameCount)
+			{
+				// 연속된 소환 시그널로 이전 소환은 취소해야한다.
+				yield break;
+			}
+			_reservedSummonFrameCount = 0;
+		}
 		Summon();
 	}
 

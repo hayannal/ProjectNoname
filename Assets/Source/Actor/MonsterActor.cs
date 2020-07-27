@@ -359,6 +359,10 @@ public class MonsterActor : Actor
 			if (affectorProcessor.actor.team.teamId == (int)Team.eTeamID.DefaultMonster)
 				continue;
 
+			// 일반 몬스터에 아군 몬스터가 닿으면 여기로 들어온다. 이때도 continue
+			if (affectorProcessor.actor.IsMonsterActor())
+				continue;
+
 			if (CheckCollisionStayInterval())
 				ApplyCollisionDamage(affectorProcessor);
 		}

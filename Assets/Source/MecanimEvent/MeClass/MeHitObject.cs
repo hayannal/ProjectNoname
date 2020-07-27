@@ -102,6 +102,7 @@ public class MeHitObject : MecanimEventBase {
 	public int bounceWallQuadCount;
 	public int ricochetCount;
 	public bool ricochetOneHitPerTarget;
+	public float overrideRicochetDistance;
 	public float overrideRicochetSpeed;
 	public bool useHitStay;
 	public float hitStayInterval;
@@ -341,6 +342,7 @@ public class MeHitObject : MecanimEventBase {
 			if (ricochetCount > 0)
 			{
 				ricochetOneHitPerTarget = EditorGUILayout.Toggle("Ricochet One Hit Per Target :", ricochetOneHitPerTarget);
+				overrideRicochetDistance = EditorGUILayout.FloatField("Override Ricochet Distance :", overrideRicochetDistance);
 				overrideRicochetSpeed = EditorGUILayout.FloatField("Override Ricochet Speed :", overrideRicochetSpeed);
 			}
 

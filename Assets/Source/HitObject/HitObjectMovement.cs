@@ -411,7 +411,7 @@ public class HitObjectMovement : MonoBehaviour {
 	}
 
 	#region Ricochet
-	const float RicochetRange = 4.0f;
+	const float DefaultRicochetRange = 4.0f;
 	List<Collider> _listRicochet = null;
 	float _parentActorSphereCastRadiusForCheckWall;
 	public void AddRicochet(Collider collider, bool initialize)
@@ -442,7 +442,7 @@ public class HitObjectMovement : MonoBehaviour {
 	public bool IsEnableRicochet(int teamId, Team.eTeamCheckFilter filter)
 	{
 		Vector3 position = cachedTransform.position;
-		Collider[] result = Physics.OverlapSphere(position, RicochetRange); // range * _transform.localScale.x
+		Collider[] result = Physics.OverlapSphere(position, (_signal.overrideRicochetDistance > 0.0f) ? _signal.overrideRicochetDistance : DefaultRicochetRange); // range * _transform.localScale.x
 		float nearestDistance = float.MaxValue;
 		Collider nearestCollider = null;
 		float containsNearestDistance = float.MaxValue;

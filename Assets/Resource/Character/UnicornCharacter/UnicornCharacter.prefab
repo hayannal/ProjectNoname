@@ -220,6 +220,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8220ce0fa80a49849a394145ade07766, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7840815277012957650
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2343979782530645050}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3417eb07376fcb64d87afa71334df49a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  emissiveColor: {r: 0.14117648, g: 0.9137255, b: 0.7058824, a: 1}
+  emissiveSpeed: 1.5
+  emissiveBase: 0
+  emissiveRange: -0.5
+  useSharedMaterials: 0
 --- !u!114 &7631042312379699724
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -594,7 +611,7 @@ PrefabInstance:
     - target: {fileID: 2300002, guid: 4fb1c5063d72f47439e09852f2a4ee00, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: e826ef8653b0a3747a7209f7bfba6cac, type: 2}
+      objectReference: {fileID: 2100000, guid: 71253e8c597c84e44bde5a296a7a5f98, type: 2}
     - target: {fileID: 3300002, guid: 4fb1c5063d72f47439e09852f2a4ee00, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -603,6 +620,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 13700000, guid: 4fb1c5063d72f47439e09852f2a4ee00, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 9918d68362d296d4a8c3863b1fd4ac1e, type: 2}
     - target: {fileID: 3300000, guid: 4fb1c5063d72f47439e09852f2a4ee00, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -722,6 +743,12 @@ GameObject:
 --- !u!4 &2343979782530146714 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400116, guid: 4fb1c5063d72f47439e09852f2a4ee00,
+    type: 3}
+  m_PrefabInstance: {fileID: 2343979782530546542}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2343979782530645050 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100180, guid: 4fb1c5063d72f47439e09852f2a4ee00,
     type: 3}
   m_PrefabInstance: {fileID: 2343979782530546542}
   m_PrefabAsset: {fileID: 0}

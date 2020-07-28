@@ -84,18 +84,18 @@ public class BattleModeProcessorBase
 				BattleInstanceManager.instance.playerActor.RefreshStagePenaltyAffector(stagePenaltyId, true);
 		}
 
+		// 호출 순서상 CallAffectorValueAffector.eEventType.OnStartStage 보다는 앞에 호출되어야해서 위로 올려둔다.
+		bool callOnStartStage = true;
+		if (ClientSaveData.instance.IsLoadingInProgressGame() && ClientSaveData.instance.GetCachedMonsterAllKill())
+			callOnStartStage = false;
+		InitializeInProgressGame();
+
 		if (StageManager.instance.spawnPowerSourcePrefab)
 			_powerSourceObject = BattleInstanceManager.instance.GetCachedObject(StageManager.instance.GetPreparedPowerSourcePrefab(), StageManager.instance.currentPowerSourceSpawnPosition, Quaternion.identity);
 		else
 		{
-			if (ClientSaveData.instance.IsLoadingInProgressGame() && ClientSaveData.instance.GetCachedMonsterAllKill())
-			{
-			}
-			else
-			{
-				if (BattleInstanceManager.instance.playerActor != null)
-					CallAffectorValueAffector.OnEvent(BattleInstanceManager.instance.playerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnStartStage);
-			}
+			if (callOnStartStage && BattleInstanceManager.instance.playerActor != null)
+				CallAffectorValueAffector.OnEvent(BattleInstanceManager.instance.playerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnStartStage);
 		}
 
 #if HUDDPS
@@ -103,8 +103,6 @@ public class BattleModeProcessorBase
 		HUDDPS.instance.OnStartStage(StageManager.instance.playChapter, StageManager.instance.playStage, StageManager.instance.bossStage);
 #endif
 #endif
-
-		InitializeInProgressGame();
 	}
 
 	void InitializeInProgressGame()

@@ -132,7 +132,16 @@ public class ActorStatus : MonoBehaviour
 		MonsterTableData monsterTableData = TableDataManager.instance.FindMonsterTableData(actor.actorId);
 		float standardHp = StageManager.instance.currentMonstrStandardHp;
 		float standardAtk = StageManager.instance.currentMonstrStandardAtk;
-		if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+		if (actor.team.teamId == (int)Team.eTeamID.DefaultAlly)
+		{
+			// 아군 몹이라면 플레이어 액터 스탯을 기반으로 계산해야한다.
+			if (BattleInstanceManager.instance.playerActor != null)
+			{
+				standardHp = BattleInstanceManager.instance.playerActor.actorStatus.GetValue(eActorStatus.MaxHp);
+				standardAtk = BattleInstanceManager.instance.playerActor.actorStatus.GetValue(eActorStatus.Attack);
+			}
+		}
+		else if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
 		{
 			NodeWarTableData nodeWarTableData = BattleManager.instance.GetSelectedNodeWarTableData();
 			if (nodeWarTableData != null)

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.48
+  StartTime: 0.2
   EndTime: 1
   targetDetectType: 2
   presetType: 0
@@ -126,7 +126,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartTime: 0
-  EndTime: 1
+  EndTime: 0.3
   state: 3
 --- !u!1102 &-7870688956108488034
 AnimatorState:
@@ -198,13 +198,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.48
+  StartTime: 0.2
   EndTime: 1
   effectData: {fileID: 147450, guid: 68e897db45ac1c84181d48f0a19a7b1c, type: 3}
   offset: {x: 0, y: 1, z: 0.35}
   fixedWorldPositionY: 0
   direction: {x: 0, y: 0, z: 1}
   parentName: 
+--- !u!114 &-4438738750687054227
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebaa29644feeec143b4ef6156771ef54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.3
+  EndTime: 1
+  state: 1
 --- !u!1102 &-2473529730778767166
 AnimatorState:
   serializedVersion: 5
@@ -218,6 +233,7 @@ AnimatorState:
   m_Transitions: []
   m_StateMachineBehaviours:
   - {fileID: -7934483339405519081}
+  - {fileID: -4438738750687054227}
   - {fileID: -8072175094259478716}
   - {fileID: -5005174287279015124}
   m_Position: {x: 50, y: 50, z: 0}

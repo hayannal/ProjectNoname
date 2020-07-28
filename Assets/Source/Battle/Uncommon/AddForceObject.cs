@@ -56,9 +56,9 @@ public class AddForceObject : MonoBehaviour
 			Rigidbody rigidbody = newObject.GetComponent<Rigidbody>();
 			Vector3 dropCenter = cachedTransform.position + Vector3.up;
 			dropCenter.x += Random.Range(-0.2f, 0.2f);
-			dropCenter.y += 1.0f;
+			dropCenter.y += 0.5f;
 			dropCenter.z += Random.Range(-0.2f, 0.2f);
-			rigidbody.AddExplosionForce(dropForce, dropCenter, explosionRadius, explosionUpwardsModifier, ForceMode.Impulse);
+			rigidbody.AddExplosionForce(dropForce, dropCenter, explosionRadius, 0.5f, ForceMode.Impulse);
 			BattleInstanceManager.instance.OnInitializeSummonObject(newObject);
 		}
 	}

@@ -641,6 +641,9 @@ public class MeHitObject : MecanimEventBase {
 			if (this == null)
 				yield break;
 
+			if (meHit.targetDetectType == HitObject.eTargetDetectType.Preset && parentActor.targetingProcessor.GetTargetCount() == 0)
+				continue;
+
 			HitObject.InitializeHit(duplicatedSpawnTransform, meHit, parentActor, duplicatedParentTransform, statusBase, parentHitObjectCreateTime, hitSignalIndexInAction, i, _totalRepeatCount - meHit.repeatCount);
 		}
 		duplicatedSpawnTransform.gameObject.SetActive(false);

@@ -71,5 +71,6 @@ public enum eAffectorType
 	Rotate,
 	Suicide,
 	DelayedBaseDamage,
+	AttackOnMoving,
 }
 #endregion

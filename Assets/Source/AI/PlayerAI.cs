@@ -128,7 +128,7 @@ public class PlayerAI : MonoBehaviour
 	#endregion
 	float _actorTableAttackRange;
 	public float actorTableAttackRange { get { return _actorTableAttackRange; } }
-	string NormalAttackName = "Attack";
+	public const string NormalAttackName = "Attack";
 	Cooltime _normalAttackCooltime;
 	void UpdateAttack()
 	{
@@ -176,15 +176,9 @@ public class PlayerAI : MonoBehaviour
 
 			// 타겟 몬스터가 없더라도 적이 마지막 순간에 날린 히트오브젝트는 남아있을 수 있으니 공격할 수 있게 처리해야한다.
 			bool attackable = false;
-			if (targetCollider != null)
-			{
-				Transform targetTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
-				diff = targetTransform.position - actor.cachedTransform.position;
-				diff.y = 0.0f;
-				if (IsInAttackRange(diff) && CheckNavMeshReachable(actor.cachedTransform.position, targetTransform.position))
-					attackable = true;
-			}
-
+			if (IsTargetColliderInAttackRange(ref diff))
+				attackable = true;
+			
 			// 타겟 몬스터를 공격할 수 없는 상태라면 주변에 공격할 HitObject가 있는지 확인한다.
 			if (attackable == false && CheckAttackableHitObject(ref diff))
 				attackable = true;
@@ -204,13 +198,7 @@ public class PlayerAI : MonoBehaviour
 			if (!autoAttackable)
 				return;
 
-			Transform targetTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
-			diff = targetTransform.position - actor.cachedTransform.position;
-			diff.y = 0.0f;
-			if (IsInAttackRange(diff) == false)
-				return;
-
-			if (CheckNavMeshReachable(actor.cachedTransform.position, targetTransform.position) == false)
+			if (IsTargetColliderInAttackRange(ref diff) == false)
 				return;
 		}
 		#endregion
@@ -282,6 +270,23 @@ public class PlayerAI : MonoBehaviour
 			return true;
 		}
 		return false;
+	}
+
+	public bool IsTargetColliderInAttackRange(ref Vector3 diff)
+	{
+		if (targetCollider == null)
+			return false;
+
+		Transform targetTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
+		diff = targetTransform.position - actor.cachedTransform.position;
+		diff.y = 0.0f;
+		if (IsInAttackRange(diff) == false)
+			return false;
+
+		if (CheckNavMeshReachable(actor.cachedTransform.position, targetTransform.position) == false)
+			return false;
+
+		return true;
 	}
 
 	void UpdateAttackRange()

@@ -68,6 +68,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.Rotate: affectorBase = new RotateAffector(); break;
 			case eAffectorType.Suicide: affectorBase = new SuicideAffector(); break;
 			case eAffectorType.DelayedBaseDamage: affectorBase = new DelayedBaseDamageAffector(); break;
+			case eAffectorType.AttackOnMoving: affectorBase = new AttackOnMovingAffector(); break;
 			#endregion
 		}
 		return affectorBase;
@@ -130,6 +131,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.Rotate:
 			case eAffectorType.Suicide:
 			case eAffectorType.DelayedBaseDamage:
+			case eAffectorType.AttackOnMoving:
 				return true;
 			#endregion
 		}

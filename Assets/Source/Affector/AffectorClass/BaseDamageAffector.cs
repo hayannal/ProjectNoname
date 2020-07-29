@@ -92,6 +92,8 @@ public class BaseDamageAffector : AffectorBase {
 			{
 				float minimumCriticalRate = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("MinimumCriticalRate");
 				criticalRate = Mathf.Max(criticalRate, minimumCriticalRate);
+				if (monsterActor != null && monsterActor.bossMonster)
+					criticalRate += affectorValueLevelTableData.fValue3;
 			}
 			if (criticalRate > 0.0f && Random.value <= criticalRate)
 			{

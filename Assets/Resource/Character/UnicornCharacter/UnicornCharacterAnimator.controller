@@ -229,6 +229,7 @@ MonoBehaviour:
   bounceWallQuadCount: 0
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
+  overrideRicochetDistance: 0
   overrideRicochetSpeed: 0
   useHitStay: 0
   hitStayInterval: 0
@@ -298,6 +299,26 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!114 &2382736218241079072
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.38
+  EndTime: 1
+  effectData: {fileID: 3136301650636350254, guid: 7c24e05772296b14682f978d9c216936,
+    type: 3}
+  offset: {x: 0, y: 0, z: 0}
+  fixedWorldPositionY: 0
+  direction: {x: 0, y: 0, z: 1}
+  parentName: 
 --- !u!1102 &2947370827281862577
 AnimatorState:
   serializedVersion: 5
@@ -313,6 +334,7 @@ AnimatorState:
   - {fileID: -6139481887654107569}
   - {fileID: 6288629910045657683}
   - {fileID: -843223403273496250}
+  - {fileID: 2382736218241079072}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -441,6 +463,7 @@ MonoBehaviour:
   bounceWallQuadCount: 0
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
+  overrideRicochetDistance: 0
   overrideRicochetSpeed: 0
   useHitStay: 0
   hitStayInterval: 0
@@ -451,10 +474,9 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttackDynaMob
+  - NormalAttackUnicornCharacter
   showHitEffect: 1
-  hitEffectObject: {fileID: 1426864532553638, guid: 3931b040b60cc6141b3effb8a35a51f7,
-    type: 3}
+  hitEffectObject: {fileID: 100184, guid: de7dffbd96d49314ab3f9db01a1fbe13, type: 3}
   hitEffectLookAtNormal: 0
   useWeaponHitEffect: 0
   weaponDummyName: 

@@ -152,7 +152,7 @@ public class MeSummon : MecanimEventBase
 					if (checkNavPosition) _createPosition = GetNavPosition(_createPosition);
 					else
 					{
-						if (BattleInstanceManager.instance.currentGround != null)
+						if (BattleManager.instance != null && BattleManager.instance.IsNodeWar() == false && BattleInstanceManager.instance.currentGround != null)
 							_createPosition = BattleInstanceManager.instance.currentGround.SamplePositionInQuadBound(_createPosition);
 					}
 					_createRotation = Quaternion.LookRotation(_actor.cachedTransform.TransformDirection(direction));
@@ -176,7 +176,7 @@ public class MeSummon : MecanimEventBase
 					if (checkNavPosition) _createPosition = GetNavPosition(_createPosition);
 					else
 					{
-						if (BattleInstanceManager.instance.currentGround != null)
+						if (BattleManager.instance != null && BattleManager.instance.IsNodeWar() == false && BattleInstanceManager.instance.currentGround != null)
 							_createPosition = BattleInstanceManager.instance.currentGround.SamplePositionInQuadBound(_createPosition);
 					}
 					_createRotation = Quaternion.LookRotation(_actor.cachedTransform.TransformDirection(direction));
@@ -200,7 +200,7 @@ public class MeSummon : MecanimEventBase
 					if (checkNavPosition) _createPosition = GetNavPosition(_createPosition);
 					else
 					{
-						if (BattleInstanceManager.instance.currentGround != null)
+						if (BattleManager.instance != null && BattleManager.instance.IsNodeWar() == false && BattleInstanceManager.instance.currentGround != null)
 							_createPosition = BattleInstanceManager.instance.currentGround.SamplePositionInQuadBound(_createPosition);
 					}
 					_createRotation = Quaternion.LookRotation(_actor.cachedTransform.TransformDirection(direction));

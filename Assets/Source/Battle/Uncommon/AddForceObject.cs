@@ -60,7 +60,9 @@ public class AddForceObject : MonoBehaviour
 			sideCenter = sideCenter.normalized * 0.2f;
 			dropCenter.x += sideCenter.x;
 			dropCenter.z += sideCenter.z;
-			rigidbody.AddExplosionForce(dropForce, dropCenter, explosionRadius, 0.0f, ForceMode.Impulse);
+			float force = dropForce;
+			if (BattleManager.instance != null && BattleManager.instance.IsNodeWar()) force = NodeWarProcessor.SpawnDistance * 1.5f;
+			rigidbody.AddExplosionForce(force, dropCenter, explosionRadius, 0.0f, ForceMode.Impulse);
 			BattleInstanceManager.instance.OnInitializeSummonObject(newObject);
 		}
 	}

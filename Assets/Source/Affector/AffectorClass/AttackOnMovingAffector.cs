@@ -213,7 +213,7 @@ public class AttackOnMovingAffector : AffectorBase
 		Transform parentTransform = _actor.cachedTransform;
 
 		if (_muzzlePrefab != null)
-			BattleInstanceManager.instance.GetCachedObject(_muzzlePrefab, _actor.cachedTransform.position, _actor.cachedTransform.rotation);
+			BattleInstanceManager.instance.GetCachedObject(_muzzlePrefab, _actor.cachedTransform);
 
 		if (_meHit.createPositionType == HitObject.eCreatePositionType.Bone && !string.IsNullOrEmpty(_meHit.boneName))
 		{

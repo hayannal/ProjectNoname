@@ -13,7 +13,7 @@ public class AddForceObject : MonoBehaviour
 	public GameObject uncommonDropPrefab;
 	public float dropForce = 20;
 
-	public static int TEAM0_WALL_COLLIDER_LAYER;
+	public static int ONLY_DEFAULT_LAYER;
 
 	List<Transform> _listTransform = new List<Transform>();
 	List<Rigidbody> _listRigidbody = new List<Rigidbody>();
@@ -21,7 +21,7 @@ public class AddForceObject : MonoBehaviour
 	List<Quaternion> _listRotation = new List<Quaternion>();
 	void Awake()
 	{
-		if (TEAM0_WALL_COLLIDER_LAYER == 0) TEAM0_WALL_COLLIDER_LAYER = LayerMask.NameToLayer("Team0WallCollider");
+		if (ONLY_DEFAULT_LAYER == 0) ONLY_DEFAULT_LAYER = LayerMask.NameToLayer("OnlyDefault");
 
 		Transform[] transformList = GetComponentsInChildren<Transform>();
 		for (int i = 0; i < transformList.Length; ++i)
@@ -35,7 +35,7 @@ public class AddForceObject : MonoBehaviour
 			_listRigidbody.Add(childRigidbody);
 			_listPosition.Add(transformList[i].localPosition);
 			_listRotation.Add(transformList[i].localRotation);
-			transformList[i].gameObject.layer = TEAM0_WALL_COLLIDER_LAYER;
+			transformList[i].gameObject.layer = ONLY_DEFAULT_LAYER;
 		}
 	}
 
@@ -52,13 +52,15 @@ public class AddForceObject : MonoBehaviour
 		if (dropUncommonObject)
 		{
 			GameObject newObject = BattleInstanceManager.instance.GetCachedObject(uncommonDropPrefab, cachedTransform.position + Vector3.up, Quaternion.identity);
-			newObject.layer = TEAM0_WALL_COLLIDER_LAYER;
+			newObject.layer = ONLY_DEFAULT_LAYER;
 			Rigidbody rigidbody = newObject.GetComponent<Rigidbody>();
 			Vector3 dropCenter = cachedTransform.position + Vector3.up;
-			dropCenter.x += Random.Range(-0.2f, 0.2f);
-			dropCenter.y += 0.5f;
-			dropCenter.z += Random.Range(-0.2f, 0.2f);
-			rigidbody.AddExplosionForce(dropForce, dropCenter, explosionRadius, 0.5f, ForceMode.Impulse);
+			Vector3 sideCenter = Random.onUnitSphere;
+			sideCenter.y = 0.0f;
+			sideCenter = sideCenter.normalized * 0.2f;
+			dropCenter.x += sideCenter.x;
+			dropCenter.z += sideCenter.z;
+			rigidbody.AddExplosionForce(dropForce, dropCenter, explosionRadius, 0.0f, ForceMode.Impulse);
 			BattleInstanceManager.instance.OnInitializeSummonObject(newObject);
 		}
 	}

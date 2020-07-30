@@ -1,12 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using MecanimStateDefine;
 using ActorStatusDefine;
+using DG.Tweening;
 
 public class AttackOnMovingAffector : AffectorBase
 {
 	float _endTime;
-
+	Transform _loopEffectTransform;
+	List<Transform> _listLoopEffectTransform;
 	PlayerAI _playerAI;
 	AffectorValueLevelTableData _affectorValueLevelTableData;
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
@@ -29,6 +32,30 @@ public class AttackOnMovingAffector : AffectorBase
 
 		// lifeTime
 		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
+
+		// loop effect
+		GameObject loopEffectPrefab = FindPreloadObject(affectorValueLevelTableData.sValue3);
+		if (loopEffectPrefab != null)
+		{
+			if (string.IsNullOrEmpty(affectorValueLevelTableData.sValue4))
+			{
+				_loopEffectTransform = BattleInstanceManager.instance.GetCachedObject(loopEffectPrefab, _actor.cachedTransform.position, _actor.cachedTransform.rotation).transform;
+				_loopEffectTransform.localScale = Vector3.zero;
+			}
+			else
+			{
+				if (_listLoopEffectTransform == null)
+					_listLoopEffectTransform = new List<Transform>();
+				string[] boneNameList = BattleInstanceManager.instance.GetCachedString2StringList(affectorValueLevelTableData.sValue4);
+				for (int i = 0; i < boneNameList.Length; ++i)
+				{
+					Transform attachTransform = _actor.actionController.dummyFinder.FindTransform(boneNameList[i]);
+					Transform loopEffectTransform = BattleInstanceManager.instance.GetCachedObject(loopEffectPrefab, attachTransform).transform;
+					loopEffectTransform.localScale = Vector3.zero;
+					_listLoopEffectTransform.Add(loopEffectTransform);
+				}
+			}
+		}
 	}
 
 	public override void UpdateAffector()
@@ -38,6 +65,7 @@ public class AttackOnMovingAffector : AffectorBase
 
 		UpdateAttackOnMoving();
 		UpdateSignalDelay();
+		UpdateLoopEffect();
 	}
 
 	Cooltime _normalAttackCooltime;
@@ -114,6 +142,57 @@ public class AttackOnMovingAffector : AffectorBase
 			}
 		}
 	}
+
+	void UpdateLoopEffect()
+	{
+		float targetScale = _actor.actionController.mecanimState.IsState((int)eMecanimState.Move) ? 1.0f : 0.0f;
+		if (targetScale == 1.0f && _playerAI.targetCollider == null) targetScale = 0.0f;
+		if (_loopEffectTransform != null)
+		{
+			if (_loopEffectTransform.localScale.x != targetScale)
+			{
+				_loopEffectTransform.localScale = Vector3.Lerp(_loopEffectTransform.localScale, new Vector3(targetScale, targetScale, targetScale), Time.deltaTime * 5.0f);
+				if (Mathf.Abs(_loopEffectTransform.localScale.x - targetScale) < 0.01f)
+					_loopEffectTransform.localScale = new Vector3(targetScale, targetScale, targetScale);
+			}
+		}
+		if (_listLoopEffectTransform != null)
+		{
+			for (int i = 0; i < _listLoopEffectTransform.Count; ++i)
+			{
+				Transform loopEffectTransform = _listLoopEffectTransform[i];
+				if (loopEffectTransform.localScale.x != targetScale)
+				{
+					loopEffectTransform.localScale = Vector3.Lerp(loopEffectTransform.localScale, new Vector3(targetScale, targetScale, targetScale), Time.deltaTime * 5.0f);
+					if (Mathf.Abs(loopEffectTransform.localScale.x - targetScale) < 0.01f)
+						loopEffectTransform.localScale = new Vector3(targetScale, targetScale, targetScale);
+				}
+			}
+		}
+	}
+
+	public override void FinalizeAffector()
+	{
+		if (_loopEffectTransform != null)
+		{
+			_loopEffectTransform.gameObject.SetActive(false);
+			_loopEffectTransform = null;
+		}
+		if (_listLoopEffectTransform != null)
+		{
+			for (int i = 0; i < _listLoopEffectTransform.Count; ++i)
+				_listLoopEffectTransform[i].gameObject.SetActive(false);
+			_listLoopEffectTransform.Clear();
+		}
+	}
+
+	// 교체시엔 어차피 이동중이 아닐 가능성이 높으니 굳이 끌 필요도 없을거 같다.
+	//public override void DisableAffector()
+	//{
+	//	// 플레이어가 죽지도 않았는데 Disable시킬 일은 없을거 같지만
+	//	// 플레이어한테 걸릴걸 대비해서 미리 해둔다.
+	//	FinalizeAffector();
+	//}
 
 
 

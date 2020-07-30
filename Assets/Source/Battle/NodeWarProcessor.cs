@@ -172,6 +172,9 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		_healOrbSpawnRemainTime = HealOrbSpawnDelay;
 		_boostOrbSpawnRemainTime = BoostOrbSpawnDelay;
 		BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarRule1Mind"), 3.5f);
+
+		// 패시브 스킬로 OnStartStage 이벤트 쓰는 캐릭들이 있어서 추가해둔다. 대표적으로 스팀펑크 로봇.
+		CallAffectorValueAffector.OnEvent(BattleInstanceManager.instance.playerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnStartStage);
 	}
 
 	public override NodeWarTableData GetSelectedNodeWarTableData()

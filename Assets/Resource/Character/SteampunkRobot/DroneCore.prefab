@@ -1,5 +1,22 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &8732222284116137746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3675014739130465517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3417eb07376fcb64d87afa71334df49a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  emissiveColor: {r: 0.9254902, g: 0.5411765, b: 0.19607843, a: 1}
+  emissiveSpeed: 0.45
+  emissiveBase: 0
+  emissiveRange: -0.8
+  useSharedMaterials: 0
 --- !u!1 &4098493924576853213
 GameObject:
   m_ObjectHideFlags: 0
@@ -520,10 +537,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2355830172568755949}
     m_Modifications:
-    - target: {fileID: 155752, guid: 0b9d80e118f2c8341b7c4594b3553d65, type: 3}
-      propertyPath: m_Name
-      value: Artifact04_3
-      objectReference: {fileID: 0}
     - target: {fileID: 421242, guid: 0b9d80e118f2c8341b7c4594b3553d65, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -580,8 +593,18 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 155752, guid: 0b9d80e118f2c8341b7c4594b3553d65, type: 3}
+      propertyPath: m_Name
+      value: Artifact04_3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0b9d80e118f2c8341b7c4594b3553d65, type: 3}
+--- !u!1 &3675014739130465517 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 155752, guid: 0b9d80e118f2c8341b7c4594b3553d65,
+    type: 3}
+  m_PrefabInstance: {fileID: 3675014739130342533}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3675014739130724863 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 421242, guid: 0b9d80e118f2c8341b7c4594b3553d65,

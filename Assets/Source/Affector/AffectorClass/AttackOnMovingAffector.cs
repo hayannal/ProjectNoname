@@ -10,6 +10,7 @@ public class AttackOnMovingAffector : AffectorBase
 	float _endTime;
 	Transform _loopEffectTransform;
 	List<Transform> _listLoopEffectTransform;
+	GameObject _muzzlePrefab;
 	PlayerAI _playerAI;
 	AffectorValueLevelTableData _affectorValueLevelTableData;
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
@@ -32,6 +33,10 @@ public class AttackOnMovingAffector : AffectorBase
 
 		// lifeTime
 		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
+
+		// muzzle effect
+		if (string.IsNullOrEmpty(affectorValueLevelTableData.sValue2) == false)
+			_muzzlePrefab = FindPreloadObject(affectorValueLevelTableData.sValue2);
 
 		// loop effect
 		GameObject loopEffectPrefab = FindPreloadObject(affectorValueLevelTableData.sValue3);
@@ -206,6 +211,9 @@ public class AttackOnMovingAffector : AffectorBase
 
 		Transform spawnTransform = _actor.cachedTransform;
 		Transform parentTransform = _actor.cachedTransform;
+
+		if (_muzzlePrefab != null)
+			BattleInstanceManager.instance.GetCachedObject(_muzzlePrefab, _actor.cachedTransform.position, _actor.cachedTransform.rotation);
 
 		if (_meHit.createPositionType == HitObject.eCreatePositionType.Bone && !string.IsNullOrEmpty(_meHit.boneName))
 		{

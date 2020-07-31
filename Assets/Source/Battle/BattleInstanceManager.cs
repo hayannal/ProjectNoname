@@ -540,7 +540,7 @@ public class BattleInstanceManager : MonoBehaviour
 		if (_listLiveMonsterActor.Contains(monsterActor) == false)
 		{
 #if UNITY_EDITOR
-			Debug.LogError("Invalid Data : LiveMonsterActorList does not contain the monster");
+			Debug.LogErrorFormat("Invalid Data : LiveMonsterActorList does not contain the monster : {0}", monsterActor.actorId);
 #endif
 			return;
 		}

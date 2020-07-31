@@ -211,7 +211,7 @@ public class MonsterAI : MonoBehaviour
 				BattleInstanceManager.instance.targetOfMonster = null;
 			if (BattleInstanceManager.instance.targetOfMonster == null)
 			{
-				if (targetingProcessor.FindNearestTarget(Team.eTeamCheckFilter.Enemy, PlayerAI.FindTargetRange))
+				if (targetingProcessor.FindNearestTarget(Team.eTeamCheckFilter.Enemy, PlayerAI.FindTargetRange, true))
 				{
 					Collider targetCollider = targetingProcessor.GetTarget();
 					targetRadius = ColliderUtil.GetRadius(targetCollider);

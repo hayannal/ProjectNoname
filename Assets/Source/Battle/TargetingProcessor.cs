@@ -58,9 +58,17 @@ public class TargetingProcessor : MonoBehaviour {
 
 	List<Collider> _targetList = new List<Collider>();
 
+	// 이 함수가 사실 공용으로 쓰는 함수긴 한데 플레이어가 하단의 FindNearestMonster 함수를 쓰는거로 바꾸면서 몬스터만 사용하는 함수였다.
+	// 그런데 소환용 아군 몬스터가 추가됨에 따라 적군 몬스터가 플레이어 뿐만 아니라 소환된 아군 몬스터를 타겟으로 삼을 수 있게 되면서
+	// 타겟이 갱신되지 않는한 플레이어를 따라오지 않는 문제가 있었다.
+	// 이걸 막기위해 onlyPlayerActor 파라미터를 추가하기로 한다.
+	//
+	// 사실 소환용 아군 몬스터가 적군 몬스터보다 먼저 나오지만 않는다면
+	// 항상 플레이어 캐릭터가 먼저 타겟으로 검출된 후 죽을때까지 변하지 않기때문에 위와 같은 상황이 발생할 일이 없긴 한데
+	// 혹시나 적군 몬스터들이 나오기 전에 소환이 가능해질까봐 안전하게 이렇게 처리하기로 한다.
 	Transform _transform = null;
 	Team _teamComponent = null;
-	public bool FindNearestTarget(Team.eTeamCheckFilter teamFilter, float range)
+	public bool FindNearestTarget(Team.eTeamCheckFilter teamFilter, float range, bool onlyPlayerActor = false)
 	{
 		if (_transform == null)
 			_transform = GetComponent<Transform>();
@@ -92,6 +100,9 @@ public class TargetingProcessor : MonoBehaviour {
 				if (actor.actorStatus.IsDie())
 					continue;
 			}
+
+			if (onlyPlayerActor && actor.IsPlayerActor() == false)
+				continue;
 
 			// object radius
 			float colliderRadius = ColliderUtil.GetRadius(result[i]);

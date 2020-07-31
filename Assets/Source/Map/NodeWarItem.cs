@@ -271,6 +271,21 @@ public class NodeWarItem : MonoBehaviour
 		s_listInitializedNodeWarItem.Clear();
 	}
 
+	public static int GetActiveItemCount(Vector3 centerPosition, float radius)
+	{
+		if (s_listInitializedNodeWarItem == null)
+			return 0;
+
+		int count = 0;
+		for (int i = 0; i < s_listInitializedNodeWarItem.Count; ++i)
+		{
+			Vector3 diff = centerPosition - s_listInitializedNodeWarItem[i].cachedTransform.position;
+			if ((diff.x * diff.x + diff.z * diff.z) < radius * radius)
+				++count;
+		}
+		return count;
+	}
+
 
 
 	Transform _transform;

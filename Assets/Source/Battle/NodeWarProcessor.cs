@@ -529,6 +529,12 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		_healOrbSpawnRemainTime -= Time.deltaTime;
 		if (_healOrbSpawnRemainTime < 0.0f)
 		{
+			if (NodeWarItem.GetActiveItemCount(BattleInstanceManager.instance.playerActor.cachedTransform.position, SpawnDistance) >= 2)
+			{
+				_healOrbSpawnRemainTime += 1.0f;
+				return;
+			}
+
 			Vector2 normalizedOffset = Random.insideUnitCircle.normalized;
 			Vector2 randomOffset = normalizedOffset * Random.Range(1.0f, 1.1f) * SpawnDistance;
 			Vector3 desirePosition = BattleInstanceManager.instance.playerActor.cachedTransform.position + new Vector3(randomOffset.x, 0.0f, randomOffset.y);
@@ -563,6 +569,12 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		_boostOrbSpawnRemainTime -= Time.deltaTime;
 		if (_boostOrbSpawnRemainTime < 0.0f)
 		{
+			if (NodeWarItem.GetActiveItemCount(BattleInstanceManager.instance.playerActor.cachedTransform.position, SpawnDistance) >= 2)
+			{
+				_boostOrbSpawnRemainTime += 1.0f;
+				return;
+			}
+
 			Vector2 normalizedOffset = Random.insideUnitCircle.normalized;
 			Vector2 randomOffset = normalizedOffset * Random.Range(1.0f, 1.1f) * SpawnDistance;
 			Vector3 desirePosition = BattleInstanceManager.instance.playerActor.cachedTransform.position + new Vector3(randomOffset.x, 0.0f, randomOffset.y);

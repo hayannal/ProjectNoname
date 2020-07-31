@@ -335,6 +335,7 @@ public class NodeWarGround : MonoBehaviour
 				if (_firstCachingMonsterActor != null)
 				{
 					_firstCachingMonsterActor.monsterAI.enabled = true;
+					_firstCachingMonsterActor.DisableForNodeWar();
 					_firstCachingMonsterActor.gameObject.SetActive(false);
 					_firstCachingMonsterActor = null;
 				}

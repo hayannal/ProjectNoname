@@ -269,6 +269,10 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		List<MonsterActor> listMonsterActor = BattleInstanceManager.instance.GetLiveMonsterList();
 		for (int i = 0; i < listMonsterActor.Count; ++i)
 		{
+			// 아군 몬스터나 excludeMonsterCount 켜있는 소환체는 거리에 따라 삭제하지 않기로 한다.
+			if (listMonsterActor[i].team.teamId != (int)Team.eTeamID.DefaultMonster || listMonsterActor[i].excludeMonsterCount)
+				continue;
+
 			Vector3 position = listMonsterActor[i].cachedTransform.position;
 			Vector2 diff;
 			diff.x = playerPosition.x - position.x;
@@ -290,6 +294,10 @@ public class NodeWarProcessor : BattleModeProcessorBase
 
 	public override void OnSpawnMonster(MonsterActor monsterActor)
 	{
+		// 네비가 안구워져있는 관계로 아군 몬스터 역시 NavAgent를 꺼두기로 한다.
+		//if (monsterActor.team.teamId != (int)Team.eTeamID.DefaultMonster || monsterActor.excludeMonsterCount)
+		//	return;
+
 		// 위 함수에서 다 처리해서 여기서 할게 없긴 한데 NavMesh가 없는 곳이라 Warning뜨지 않게 처리 하나 해둔다.
 		monsterActor.pathFinderController.agent.enabled = false;
 	}
@@ -697,6 +705,9 @@ public class NodeWarProcessor : BattleModeProcessorBase
 
 	public override void OnDieMonster(MonsterActor monsterActor)
 	{
+		if (monsterActor.team.teamId != (int)Team.eTeamID.DefaultMonster || monsterActor.excludeMonsterCount)
+			return;
+
 		// 몬스터가 마나 파편을 드랍해야하는데 원래라면 DropProcessor를 사용해야 정상일테지만, 이걸 쓰려면 DropId도 만들어야한다.
 		// 어차피 골드를 줄줄이 드랍하는 것도 아니고 마나파편 오브젝트 하나만 드랍하는거니 NodeWarProcessor에서 처리하는게 나을거 같아서 여기서 직접 처리한다.
 		// 거리가 멀땐 드랍확률을 조금 줄여준다.

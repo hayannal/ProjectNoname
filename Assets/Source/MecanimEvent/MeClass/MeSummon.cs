@@ -91,9 +91,6 @@ public class MeSummon : MecanimEventBase
 		if (calcCreatePositionInEndSignal == false)
 			CalcCreatePosition();
 
-		if (castingLoopEffectPrefab != null)
-			_castingLoopEffectTransform = BattleInstanceManager.instance.GetCachedObject(castingLoopEffectPrefab, _createPosition, Quaternion.identity).transform;
-
 		if (activeMaxCount > 0)
 		{
 			// 우선 맵이동 등으로 꺼져있는지를 판단해 리스트에서 정리해 둔 후
@@ -106,25 +103,24 @@ public class MeSummon : MecanimEventBase
 				}
 			}
 
-			int currentCount = 0;
-			if (_listActiveObject != null) currentCount += _listActiveObject.Count;
-			if (_reservedSummonFrameCount != 0) currentCount += 1;
-
-			// 개수 제한 걸린만큼 기존 오브젝트를 비활성화 시켜야한다.
-			if (currentCount >= activeMaxCount)
+			if (_reservedSummonFrameCount != 0)
 			{
-				if (_reservedSummonFrameCount != 0)
-				{
-					// 만드려고 하는 Summon을 취소해야한다. 여기선 이펙트를 만들지 않고 패스한다.
-					_reservedSummonFrameCount = 0;
+				// 만드려고 하는 Summon을 취소해야한다. 여기선 이펙트를 만들지 않고 패스한다.
+				_reservedSummonFrameCount = 0;
 
-					if (_castingLoopEffectTransform != null)
-					{
-						_castingLoopEffectTransform.gameObject.SetActive(false);
-						_castingLoopEffectTransform = null;
-					}
+				if (_castingLoopEffectTransform != null)
+				{
+					_castingLoopEffectTransform.gameObject.SetActive(false);
+					_castingLoopEffectTransform = null;
 				}
-				else if (_listActiveObject.Count > 0)
+			}
+			else
+			{
+				int currentCount = 0;
+				if (_listActiveObject != null) currentCount += _listActiveObject.Count;
+
+				// 개수 제한 걸린만큼 기존 오브젝트를 비활성화 시켜야한다.
+				if (currentCount >= activeMaxCount)
 				{
 					GameObject firstObject = _listActiveObject[0];
 					_listActiveObject.RemoveAt(0);
@@ -134,6 +130,9 @@ public class MeSummon : MecanimEventBase
 				}
 			}
 		}
+
+		if (castingLoopEffectPrefab != null)
+			_castingLoopEffectTransform = BattleInstanceManager.instance.GetCachedObject(castingLoopEffectPrefab, _createPosition, Quaternion.identity).transform;
 	}
 
 	void CalcCreatePosition()

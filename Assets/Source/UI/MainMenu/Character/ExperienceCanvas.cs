@@ -87,6 +87,7 @@ public class ExperienceCanvas : MonoBehaviour
 		if (playerActor != null)
 			playerActor.actorStatus.AddSP(-playerActor.actorStatus.GetSP());
 
+		BattleInstanceManager.instance.FinalizeAllSummonObject();
 		CharacterListCanvas.instance.ResetExperience();
 		if (ExperienceGround.instance != null)
 			ExperienceGround.instance.gameObject.SetActive(false);

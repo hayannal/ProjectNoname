@@ -30,6 +30,7 @@ public class MeSummon : MecanimEventBase
 	public bool calcCreatePositionInEndSignal;
 	public bool disableOnMapChanged;
 	public GameObject castingLoopEffectPrefab;
+	public bool noLoop;
 	public GameObject summonEffectPrefab;
 
 	// 동시 소환 개수. 0이면 관리하지 않는다.
@@ -63,7 +64,8 @@ public class MeSummon : MecanimEventBase
 		checkNavPosition = EditorGUILayout.Toggle("Check Nav Position :", checkNavPosition);
 		calcCreatePositionInEndSignal = EditorGUILayout.Toggle("Calc End Signal :", calcCreatePositionInEndSignal);
 
-		castingLoopEffectPrefab = (GameObject)EditorGUILayout.ObjectField("Casting Effect Object :", castingLoopEffectPrefab, typeof(GameObject), false);
+		castingLoopEffectPrefab = (GameObject)EditorGUILayout.ObjectField("Casting Loop Effect Object :", castingLoopEffectPrefab, typeof(GameObject), false);
+		noLoop = EditorGUILayout.Toggle("No Loop! :", noLoop);
 		summonEffectPrefab = (GameObject)EditorGUILayout.ObjectField("Summon Effect Object :", summonEffectPrefab, typeof(GameObject), false);
 
 		activeMaxCount = EditorGUILayout.IntField("Max Count :", activeMaxCount);
@@ -315,14 +317,14 @@ public class MeSummon : MecanimEventBase
 
 	void Summon()
 	{
-		if (_castingLoopEffectTransform != null)
+		if (calcCreatePositionInEndSignal)
+			CalcCreatePosition();
+
+		if (_castingLoopEffectTransform != null && noLoop == false)
 		{
 			_castingLoopEffectTransform.gameObject.SetActive(false);
 			_castingLoopEffectTransform = null;
 		}
-
-		if (calcCreatePositionInEndSignal)
-			CalcCreatePosition();
 
 		if (summonEffectPrefab != null)
 			BattleInstanceManager.instance.GetCachedObject(summonEffectPrefab, _createPosition, Quaternion.identity);
@@ -372,7 +374,7 @@ public class MeSummon : MecanimEventBase
 
 	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
-		if (_castingLoopEffectTransform != null && spawnDelay == 0.0f)
+		if (_castingLoopEffectTransform != null && spawnDelay == 0.0f && noLoop == false)
 		{
 			_castingLoopEffectTransform.gameObject.SetActive(false);
 			_castingLoopEffectTransform = null;

@@ -11,6 +11,8 @@ public class Cooltime
 	public Action cooltimeStartAction;
 	public Action cooltimeEndAction;
 
+	public bool useUnscaledTime;
+
 	public float cooltimeRatio
 	{
 		get
@@ -45,11 +47,11 @@ public class Cooltime
 		return (cooltime > 0.0f);
 	}
 
-	public void UpdateCooltime(float deltaTime)
+	public void UpdateCooltime()
 	{
 		if (CheckCooltime())
 		{
-			cooltime -= deltaTime;
+			cooltime -= useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
 			if (cooltime < 0.0f)
 			{
 				cooltime = 0.0f;

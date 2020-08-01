@@ -47,6 +47,6 @@ public class CooltimeProcessor : MonoBehaviour {
 	{
 		Dictionary<string, Cooltime>.Enumerator e = _dicCooltimeInfo.GetEnumerator();
 		while(e.MoveNext())
-			e.Current.Value.UpdateCooltime(Time.deltaTime);
+			e.Current.Value.UpdateCooltime();
 	}
 }

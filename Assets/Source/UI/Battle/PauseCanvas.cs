@@ -49,11 +49,16 @@ public class PauseCanvas : MonoBehaviour
 		contentItemPrefab.SetActive(false);
 	}
 
+	bool _prevPlayerActorAnimatorUnscaledTime;
+	float _prevTimeScale;
 	void OnEnable()
 	{
 		if (LobbyCanvas.instance != null)
 			LobbyCanvas.instance.battlePauseButton.gameObject.SetActive(false);
 
+		_prevPlayerActorAnimatorUnscaledTime = (BattleInstanceManager.instance.playerActor.actionController.animator.updateMode == AnimatorUpdateMode.UnscaledTime);
+		if (_prevPlayerActorAnimatorUnscaledTime) BattleInstanceManager.instance.playerActor.actionController.animator.updateMode = AnimatorUpdateMode.Normal;
+		_prevTimeScale = Time.timeScale;
 		Time.timeScale = 0.0f;
 
 		LoadOption();
@@ -68,7 +73,9 @@ public class PauseCanvas : MonoBehaviour
 		if (LobbyCanvas.instance != null)
 			LobbyCanvas.instance.battlePauseButton.gameObject.SetActive(true);
 
-		Time.timeScale = 1.0f;
+		if (_prevPlayerActorAnimatorUnscaledTime)
+			BattleInstanceManager.instance.playerActor.actionController.animator.updateMode = AnimatorUpdateMode.UnscaledTime;
+		Time.timeScale = _prevTimeScale;
 
 		if (DragThresholdController.instance != null)
 			DragThresholdController.instance.ResetUIDragThreshold();

@@ -31,6 +31,7 @@ public enum eAffectorType
 	EnlargeDamage,
 	RemoveColliderHitObject,
 	ChangeAttackState,
+	TimeSlow,
 
 	MonsterThroughHitObject = 31,
 	RicochetHitObject,

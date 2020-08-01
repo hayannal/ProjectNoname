@@ -58,15 +58,17 @@ public class PlayerAI : MonoBehaviour
 		if (targetingProcessor == null)
 			return;
 
+		float deltaTime = (actor.actionController.animator.updateMode == AnimatorUpdateMode.UnscaledTime) ? Time.unscaledDeltaTime : Time.deltaTime;
+
 		// 공격중일땐 findDelay만 0에 가깝게 줄여놓고 대기타다가 Idle로 진입하면 바로 find한다.
 		if (actor.actionController.mecanimState.IsState((int)eMecanimState.Attack) || actor.actionController.mecanimState.IsState((int)eMecanimState.Ultimate))
 		{
 			if (_currentFindDelay > 0.0f)
-				_currentFindDelay -= Time.deltaTime;
+				_currentFindDelay -= deltaTime;
 			return;
 		}
 
-		_currentFindDelay -= Time.deltaTime;
+		_currentFindDelay -= deltaTime;
 		if (_currentFindDelay <= 0.0f)
 		{
 			_currentFindDelay += TargetFindDelay;

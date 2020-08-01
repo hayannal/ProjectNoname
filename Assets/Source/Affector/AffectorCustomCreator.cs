@@ -33,6 +33,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.EnlargeDamage: affectorBase = new EnlargeDamageAffector(); break;
 			case eAffectorType.RemoveColliderHitObject: affectorBase = new RemoveColliderHitObjectAffector(); break;
 			case eAffectorType.ChangeAttackState: affectorBase = new ChangeAttackStateAffector(); break;
+			case eAffectorType.TimeSlow: affectorBase = new TimeSlowAffector(); break;
 			case eAffectorType.MonsterThroughHitObject: affectorBase = new MonsterThroughHitObjectAffector(); break;
 			case eAffectorType.RicochetHitObject: affectorBase = new RicochetHitObjectAffector(); break;
 			case eAffectorType.BounceWallQuadHitObject: affectorBase = new BounceWallQuadHitObjectAffector(); break;
@@ -97,6 +98,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.EnlargeDamage:
 			case eAffectorType.RemoveColliderHitObject:
 			case eAffectorType.ChangeAttackState:
+			case eAffectorType.TimeSlow:
 			case eAffectorType.MonsterThroughHitObject:
 			case eAffectorType.RicochetHitObject:
 			case eAffectorType.BounceWallQuadHitObject:

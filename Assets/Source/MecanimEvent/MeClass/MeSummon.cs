@@ -373,7 +373,7 @@ public class MeSummon : MecanimEventBase
 
 	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
-		if (_castingLoopEffectTransform != null)
+		if (_castingLoopEffectTransform != null && spawnDelay == 0.0f)
 		{
 			_castingLoopEffectTransform.gameObject.SetActive(false);
 			_castingLoopEffectTransform = null;

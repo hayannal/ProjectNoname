@@ -29,6 +29,7 @@ public class MeEffect : MecanimEventBase {
 	DummyFinder _dummyFinder = null;
 	override public void OnSignal(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
+		GameObject effectObject = null;
 		if (string.IsNullOrEmpty(parentName))
 		{
 			if (_spawnTransform == null)
@@ -49,10 +50,10 @@ public class MeEffect : MecanimEventBase {
 					convertOffset.z = offset.z;
 					Vector3 spawnPosition = _spawnTransform.TransformPoint(convertOffset);
 					spawnPosition.y = offset.y;
-					BattleInstanceManager.instance.GetCachedObject(effectData, spawnPosition, Quaternion.LookRotation(rotation));
+					effectObject = BattleInstanceManager.instance.GetCachedObject(effectData, spawnPosition, Quaternion.LookRotation(rotation));
 				}
 				else
-					BattleInstanceManager.instance.GetCachedObject(effectData, _spawnTransform.TransformPoint(offset), Quaternion.LookRotation(rotation));
+					effectObject = BattleInstanceManager.instance.GetCachedObject(effectData, _spawnTransform.TransformPoint(offset), Quaternion.LookRotation(rotation));
 			}
 		}
 		else
@@ -62,7 +63,12 @@ public class MeEffect : MecanimEventBase {
 
 			Transform attachTransform = _dummyFinder.FindTransform(parentName);
 			if (attachTransform != null)
-				BattleInstanceManager.instance.GetCachedObject(effectData, attachTransform.position, attachTransform.rotation, attachTransform);
+				effectObject = BattleInstanceManager.instance.GetCachedObject(effectData, attachTransform.position, attachTransform.rotation, attachTransform);
+		}
+		if (effectObject != null)
+		{
+			if (animator.updateMode == AnimatorUpdateMode.UnscaledTime)
+				UnscaledTimeEffect.Unscaled(effectObject.transform);
 		}
 	}
 }

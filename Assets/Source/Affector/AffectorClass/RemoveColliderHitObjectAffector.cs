@@ -74,6 +74,7 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 		Collider[] result = Physics.OverlapSphere(areaPosition, maxDistance); // meHit.areaDistanceMax * parentTransform.localScale.x
 
 		// step 2. Check each object.
+		float hitEffectShowRate = 1.0f;
 		for (int i = 0; i < result.Length; ++i)
 		{
 			// affector processor
@@ -102,7 +103,9 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 					continue;
 			}
 
-			hitObject.OnFinalizeByRemove();
+			// 동시에 너무 많은 히트이펙트가 나오다보니 같은 프레임에 여러개가 나올땐 제한을 걸어본다.
+			hitObject.OnFinalizeByRemove(hitEffectShowRate);
+			hitEffectShowRate *= 0.5f;
 		}
 	}
 

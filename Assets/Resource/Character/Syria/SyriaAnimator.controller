@@ -89,12 +89,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0.25
   EndTime: 1
-  effectData: {fileID: 6519955477757456939, guid: 6c6d1838cbf08b34da405e9d1d697a9b,
-    type: 3}
+  effectData: {fileID: 1577962161804176, guid: 0ef13165b6a1c6547abdc6b184e67451, type: 3}
   offset: {x: 0, y: 0, z: 0}
   fixedWorldPositionY: 0
   direction: {x: 0, y: 0, z: 1}
   parentName: 
+  followPosition: 1
 --- !u!114 &-2567610659293185601
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -187,6 +187,7 @@ MonoBehaviour:
   bounceWallQuadCount: 0
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
+  overrideRicochetDistance: 0
   overrideRicochetSpeed: 0
   useHitStay: 0
   hitStayInterval: 0
@@ -367,6 +368,7 @@ MonoBehaviour:
   fixedWorldPositionY: 0
   direction: {x: 0, y: 0, z: 1}
   parentName: 
+  followPosition: 0
 --- !u!114 &1713618744503645604
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -474,6 +476,7 @@ MonoBehaviour:
   bounceWallQuadCount: 0
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
+  overrideRicochetDistance: 0
   overrideRicochetSpeed: 0
   useHitStay: 0
   hitStayInterval: 0
@@ -577,8 +580,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebaa29644feeec143b4ef6156771ef54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.62
-  EndTime: 1
+  StartTime: 0
+  EndTime: 0.3
   state: 5
 --- !u!114 &8322605241627790303
 MonoBehaviour:
@@ -600,6 +603,7 @@ MonoBehaviour:
   fixedWorldPositionY: 0
   direction: {x: 0, y: 0, z: 1}
   parentName: 
+  followPosition: 0
 --- !u!1102 &8503796429965771016
 AnimatorState:
   serializedVersion: 5

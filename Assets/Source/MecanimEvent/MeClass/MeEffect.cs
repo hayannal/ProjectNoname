@@ -13,6 +13,7 @@ public class MeEffect : MecanimEventBase {
 	public bool fixedWorldPositionY;
 	public Vector3 direction = Vector3.forward;
 	public string parentName;
+	public bool followPosition;
 
 #if UNITY_EDITOR
 	override public void OnGUI_PropertyWindow()
@@ -22,13 +23,19 @@ public class MeEffect : MecanimEventBase {
 		fixedWorldPositionY = EditorGUILayout.Toggle("Fixed World Position Y :", fixedWorldPositionY);
 		direction = EditorGUILayout.Vector3Field("Direction :", direction);
 		parentName = EditorGUILayout.TextField("Parent Transform Name :", parentName);
+		followPosition = EditorGUILayout.Toggle("Follow Position :", followPosition);
 	}
 #endif
 
 	Transform _spawnTransform;
 	DummyFinder _dummyFinder = null;
+	Transform _followEffectTransform;
 	override public void OnSignal(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
+		// follow할때는 동시에 하나만 존재해야 겹치지 않는다.
+		if (followPosition && _followEffectTransform != null && _followEffectTransform.gameObject.activeSelf)
+			DisableParticleEmission.DisableEmission(_followEffectTransform);
+
 		GameObject effectObject = null;
 		if (string.IsNullOrEmpty(parentName))
 		{
@@ -69,6 +76,11 @@ public class MeEffect : MecanimEventBase {
 		{
 			if (animator.updateMode == AnimatorUpdateMode.UnscaledTime)
 				UnscaledTimeEffect.Unscaled(effectObject.transform);
+			if (followPosition)
+			{
+				_followEffectTransform = effectObject.transform;
+				FollowTransform.Follow(_followEffectTransform, _spawnTransform, offset);
+			}
 		}
 	}
 }

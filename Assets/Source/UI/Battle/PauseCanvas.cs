@@ -49,6 +49,8 @@ public class PauseCanvas : MonoBehaviour
 		contentItemPrefab.SetActive(false);
 	}
 
+	// 씬 종료때는 BattleInstanceManager에 접근하기 애매해서 임시변수 만들어두고 쓴다.
+	PlayerActor _prevPlayerActor;
 	bool _prevPlayerActorAnimatorUnscaledTime;
 	float _prevTimeScale;
 	void OnEnable()
@@ -57,7 +59,11 @@ public class PauseCanvas : MonoBehaviour
 			LobbyCanvas.instance.battlePauseButton.gameObject.SetActive(false);
 
 		_prevPlayerActorAnimatorUnscaledTime = (BattleInstanceManager.instance.playerActor.actionController.animator.updateMode == AnimatorUpdateMode.UnscaledTime);
-		if (_prevPlayerActorAnimatorUnscaledTime) BattleInstanceManager.instance.playerActor.actionController.animator.updateMode = AnimatorUpdateMode.Normal;
+		if (_prevPlayerActorAnimatorUnscaledTime)
+		{
+			_prevPlayerActor = BattleInstanceManager.instance.playerActor;
+			_prevPlayerActor.actionController.animator.updateMode = AnimatorUpdateMode.Normal;
+		}
 		_prevTimeScale = Time.timeScale;
 		Time.timeScale = 0.0f;
 
@@ -73,12 +79,18 @@ public class PauseCanvas : MonoBehaviour
 		if (LobbyCanvas.instance != null)
 			LobbyCanvas.instance.battlePauseButton.gameObject.SetActive(true);
 
-		if (_prevPlayerActorAnimatorUnscaledTime)
-			BattleInstanceManager.instance.playerActor.actionController.animator.updateMode = AnimatorUpdateMode.UnscaledTime;
+		if (_prevPlayerActorAnimatorUnscaledTime && _prevPlayerActor != null)
+			_prevPlayerActor.actionController.animator.updateMode = AnimatorUpdateMode.UnscaledTime;
 		Time.timeScale = _prevTimeScale;
 
 		if (DragThresholdController.instance != null)
 			DragThresholdController.instance.ResetUIDragThreshold();
+	}
+
+	void OnDestroy()
+	{
+		if (Time.timeScale != 1.0f)
+			Time.timeScale = 1.0f;
 	}
 
 	List<PauseCanvasListItem> _listPauseCanvasListItem = new List<PauseCanvasListItem>();

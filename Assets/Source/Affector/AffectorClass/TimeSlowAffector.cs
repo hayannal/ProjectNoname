@@ -52,7 +52,8 @@ public class TimeSlowAffector : AffectorBase
 		if (_attackCooltime == null)
 		{
 			_attackCooltime = _actor.cooltimeProcessor.GetCooltime("Attack");
-			_attackCooltime.useUnscaledTime = true;
+			if (_attackCooltime != null)
+				_attackCooltime.useUnscaledTime = true;
 		}
 	}
 

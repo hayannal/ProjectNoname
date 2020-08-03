@@ -8,6 +8,8 @@ public class TimeSlowAffector : AffectorBase
 	float _remainTime;
 	Cooltime _attackCooltime;
 
+	const float DefaultAngularSpeed = 3600.0f;
+
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
 		if (_actor == null)
@@ -19,6 +21,7 @@ public class TimeSlowAffector : AffectorBase
 		}
 		Time.timeScale = affectorValueLevelTableData.fValue2;
 		_actor.actionController.animator.updateMode = AnimatorUpdateMode.UnscaledTime;
+		_actor.baseCharacterController.angularSpeed = DefaultAngularSpeed * 2.0f;
 
 		// 다른 어펙터들과 달리 PauseCanvas를 열때 빼곤 UnscaledTime으로 처리해야해서 remainTime 형태로 구현한다.
 		// 이 어펙터 말고 나머지 어펙터들은 scaledTime 으로 처리된다. 
@@ -32,7 +35,7 @@ public class TimeSlowAffector : AffectorBase
 
 	public override void UpdateAffector()
 	{
-		// timeScale이 0이 되었다면 PauseCanvas를 켠 상태일거다. 이땐 흐르지 않게 한다.
+		// timeScale이 0이 되었다면 PauseCanvas를 켜거나 결과창이 뜬 상태일거다. 이땐 흐르지 않게 한다.
 		if (Time.timeScale > 0.0f)
 		{
 			_remainTime -= Time.unscaledDeltaTime;
@@ -61,6 +64,7 @@ public class TimeSlowAffector : AffectorBase
 	{
 		Time.timeScale = 1.0f;
 		_actor.actionController.animator.updateMode = AnimatorUpdateMode.Normal;
+		_actor.baseCharacterController.angularSpeed = DefaultAngularSpeed;
 
 		if (_attackCooltime != null)
 			_attackCooltime.useUnscaledTime = false;

@@ -49,7 +49,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.12
+  StartTime: 0.2
   EndTime: 1
   effectData: {fileID: 3136301650636350254, guid: e436733f2917eb044b5b9bd745e14d66,
     type: 3}
@@ -302,7 +302,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttackSyria
+  - NormalAttackPreSyria
   - AddForceCommon
   showHitEffect: 0
   hitEffectObject: {fileID: 0}
@@ -325,7 +325,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.12
+  StartTime: 0.2
   EndTime: 1
   targetDetectType: 2
   presetType: 0
@@ -333,7 +333,7 @@ MonoBehaviour:
   ignorePresetHitEffectOnCustomTargetPosition: 0
   hitObjectPrefab: {fileID: 2709968725944432531, guid: 01e2b3932a905754ca427bdac0c72ea0,
     type: 3}
-  lifeTime: 0.7
+  lifeTime: 0.3
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
@@ -343,7 +343,7 @@ MonoBehaviour:
   teamCheckType: 0
   createPositionType: 0
   boneName: 
-  offset: {x: 0, y: 1, z: 1.5}
+  offset: {x: 0, y: 1, z: 2.3}
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
@@ -358,7 +358,7 @@ MonoBehaviour:
   repeatInterval: 0
   movementType: 2
   startDirectionType: 1
-  startDirection: {x: -1, y: 0, z: 0}
+  startDirection: {x: -1, y: 0, z: 0.25}
   howitzerType: 0
   useWorldSpaceDirection: 0
   bothRandomAngle: 1
@@ -368,7 +368,7 @@ MonoBehaviour:
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
   howitzerRandomPositionRadiusRange: {x: 0, y: 0}
-  speed: 30
+  speed: 60
   useSpeedChange: 0
   targetSpeed: 0
   speedChangeTime: 0
@@ -386,7 +386,7 @@ MonoBehaviour:
   followMeOnHitTarget: 0
   followMinRange: 0
   useRandomTurn: 0
-  accelTurn: -800
+  accelTurn: -1400
   randomTurnRotateYawRange: {x: 0, y: 0}
   gravity: -9.81
   parallelCount: 0
@@ -710,7 +710,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttackSyria
+  - NormalAttackPreSyria
   - AddForceCommon
   showHitEffect: 0
   hitEffectObject: {fileID: 0}

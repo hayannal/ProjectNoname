@@ -14,6 +14,8 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 	Vector3 _startForward;
 	float _areaAngle;
 
+	public static int AnimatorParameterHash;
+
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
 		if (_actor.actorStatus.IsDie())
@@ -31,6 +33,9 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 		_startPosition = _actor.cachedTransform.position;
 		_startForward = _actor.cachedTransform.forward;
 		_areaAngle = affectorValueLevelTableData.fValue3;
+
+		if (AnimatorParameterHash == 0 && !string.IsNullOrEmpty(affectorValueLevelTableData.sValue1))
+			AnimatorParameterHash = BattleInstanceManager.instance.GetActionNameHash(affectorValueLevelTableData.sValue1);
 
 		if (!string.IsNullOrEmpty(affectorValueLevelTableData.sValue4))
 			_onStartEffectPrefab = FindPreloadObject(affectorValueLevelTableData.sValue4);
@@ -75,6 +80,7 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 
 		// step 2. Check each object.
 		float hitEffectShowRate = 1.0f;
+		bool removed = false;
 		for (int i = 0; i < result.Length; ++i)
 		{
 			// affector processor
@@ -106,7 +112,11 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 			// 동시에 너무 많은 히트이펙트가 나오다보니 같은 프레임에 여러개가 나올땐 제한을 걸어본다.
 			hitObject.OnFinalizeByRemove(hitEffectShowRate);
 			hitEffectShowRate *= 0.5f;
+			removed = true;
 		}
+
+		if (removed && AnimatorParameterHash != 0)
+			_actor.actionController.animator.SetBool(AnimatorParameterHash, true);
 	}
 
 	bool IsIgnoreColliderHitObject()

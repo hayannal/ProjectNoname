@@ -1,26 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-8614890196182176232
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTime: 0.19
-  EndTime: 1
-  effectData: {fileID: 6216692311818900129, guid: 83d56ad5a4fe58a47948845138503dcc,
-    type: 3}
-  offset: {x: 0, y: 0.8, z: 0}
-  fixedWorldPositionY: 0
-  direction: {x: 0, y: 0, z: 1}
-  parentName: 
-  followPosition: 0
 --- !u!114 &-8383656439774334542
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -44,7 +23,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
   m_Name: 
@@ -162,9 +141,8 @@ AnimatorState:
   - {fileID: -3829405319516384111}
   - {fileID: -2364381667508954666}
   - {fileID: -7888373157977455734}
-  - {fileID: -8614890196182176232}
-  - {fileID: -2995782089159248033}
   - {fileID: -6792190852366882244}
+  - {fileID: 6084457509411104580}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -199,22 +177,6 @@ MonoBehaviour:
   direction: {x: 0, y: 0, z: 1}
   parentName: 
   followPosition: 1
---- !u!114 &-2995782089159248033
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 607bb5ed821de264982a3a1a0b6a018b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTime: 0.19
-  EndTime: 1
-  affectorValueId: NormalAttackRemoveSyria
-  affectorValueLevel: 0
 --- !u!114 &-2567610659293185601
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -532,6 +494,7 @@ AnimatorState:
   - {fileID: 971483519127045321}
   - {fileID: -5175379612970840980}
   - {fileID: -8383656439774334542}
+  - {fileID: 7113206148773271481}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -558,6 +521,12 @@ AnimatorController:
   - m_Name: AttackAniSpeedRatio
     m_Type: 1
     m_DefaultFloat: 1
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
+  - m_Name: Attack2On
+    m_Type: 4
+    m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
@@ -789,7 +758,10 @@ AnimatorStateTransition:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 
-  m_Conditions: []
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: Attack2On
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -3230429901246052743}
   m_Solo: 0
@@ -804,6 +776,46 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!114 &6084457509411104580
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8516055b55eb644780db6f97bb409f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.01
+  EndTime: 0.35
+  lookAtTarget: 1
+  leftRightRandomAngle: 0
+  lootAtTargetOffsetAngle: 0
+  lookAtRandom: 0
+  desireDistance: 5
+  lerpPower: 5
+--- !u!114 &7113206148773271481
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43666968fe3160a41b86ba247c398832, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.01
+  EndTime: 1
+  parameterName: Attack2On
+  parameterType: 4
+  fValue: 0
+  iValue: 0
+  bValue: 0
+  triggerValue: 0
 --- !u!1102 &7414550577343486471
 AnimatorState:
   serializedVersion: 5

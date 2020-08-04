@@ -536,6 +536,23 @@ public class HitObject : MonoBehaviour
 		return Time.time;
 	}
 
+	static float GetAreaRotationY(MeHitObject meHit, float lifeTimeRatio)
+	{
+		// 현재는 RangeHitObject를 지원하지 않는다. 계산하는 과정에서 Start와 End사이의 시간이 필요한데 얻어오려면 애니메이션까지 얻어와서 해야한다. 그러니 우선 패스
+		if (meHit.RangeSignal)
+			return meHit.areaRotationY;
+
+		// lifeTimeRatio를 얻어올 수 없는 상태라면 시작값을 리턴한다.
+		if (lifeTimeRatio == 0.0f)
+			return meHit.areaRotationY;
+
+		// 시그널에서 AreaRotationYChange를 사용하지 않는다고 되어있다면 역시 시작값을 리턴한다.
+		if (meHit.useAreaRotationYChange == false)
+			return meHit.areaRotationY;
+
+		return Mathf.Lerp(meHit.areaRotationY, meHit.targetAreaRotationY, lifeTimeRatio);
+	}
+
 	static void CopyEtcStatusForHitObject(ref StatusStructForHitObject statusStructForHitObject, Actor actor, MeHitObject meHit, int hitSignalIndexInAction, int repeatIndex, int repeatAddCountByLevelPack)
 	{
 		statusStructForHitObject.actorInstanceId = actor.GetInstanceID();
@@ -579,7 +596,7 @@ public class HitObject : MonoBehaviour
 	static Collider[] s_colliderList = null;
 	static List<AffectorProcessor> s_listAppliedAffectorProcessor;
 	static void CheckHitArea(Vector3 areaPosition, Vector3 areaForward, MeHitObject meHit, StatusBase statusBase, StatusStructForHitObject statusForHitObject, float gatePillarCompareTime,
-		List<AffectorProcessor> listOneHitPerTarget = null, Dictionary<AffectorProcessor, float> dicHitStayTime = null)
+		List<AffectorProcessor> listOneHitPerTarget = null, Dictionary<AffectorProcessor, float> dicHitStayTime = null, float lifeTimeRatio = 0.0f)
 	{
 		if (s_colliderList == null)
 			s_colliderList = new Collider[100];
@@ -593,7 +610,7 @@ public class HitObject : MonoBehaviour
 		// step 2. Check each object.
 		float distanceMin = meHit.areaDistanceMin; // * parentTransform.localScale.x;
 		float distanceMax = meHit.areaDistanceMax; // * parentTransform.localScale.x;
-		Vector3 forward = Quaternion.Euler(0.0f, meHit.areaRotationY, 0.0f) * areaForward;
+		Vector3 forward = Quaternion.Euler(0.0f, GetAreaRotationY(meHit, lifeTimeRatio), 0.0f) * areaForward;
 
 		if (s_listAppliedAffectorProcessor == null)
 			s_listAppliedAffectorProcessor = new List<AffectorProcessor>();
@@ -1188,6 +1205,7 @@ public class HitObject : MonoBehaviour
 
 	public void UpdateAreaOrSphereCast()
 	{
+		float lifeTimeRatio = 0.0f;
 		if (_signal.targetDetectType == eTargetDetectType.Area && _signal.RangeSignal == false)
 		{
 			if (_signal.areaHitLifeTimeEarlyOffset > 0.0f && Time.time < _createTime + _signal.areaHitLifeTimeEarlyOffset)
@@ -1199,6 +1217,7 @@ public class HitObject : MonoBehaviour
 				return;
 			if (_signal.ignoreAreaHitLifeTimeRange.y > 0.0f && Time.time > _createTime + _signal.ignoreAreaHitLifeTimeRange.y)
 				return;
+			lifeTimeRatio = (Time.time - _createTime) / _signal.lifeTime;
 		}
 
 		switch (_signal.targetDetectType)
@@ -1222,7 +1241,7 @@ public class HitObject : MonoBehaviour
 		switch (_signal.targetDetectType)
 		{
 			case eTargetDetectType.Area:
-				CheckHitArea(cachedTransform.position, cachedTransform.forward, _signal, _statusBase, _statusStructForHitObject, GetGatePillarCompareTime(), _listOneHitPerTarget, _dicHitStayTime);
+				CheckHitArea(cachedTransform.position, cachedTransform.forward, _signal, _statusBase, _statusStructForHitObject, GetGatePillarCompareTime(), _listOneHitPerTarget, _dicHitStayTime, lifeTimeRatio);
 				break;
 			case eTargetDetectType.SphereCast:
 				Vector3 endPosition = CheckSphereCast(cachedTransform.position, cachedTransform.forward, _signal, _statusBase, _statusStructForHitObject, GetGatePillarCompareTime(), _listOneHitPerTarget, _dicHitStayTime);

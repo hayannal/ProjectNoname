@@ -34,6 +34,8 @@ public class MeHitObject : MecanimEventBase {
 	public bool useBoneRotation;
 	public bool fixedWorldPositionY;
 	public float areaRotationY;
+	public bool useAreaRotationYChange;
+	public float targetAreaRotationY;
 	public float areaDistanceMin;
 	public float areaDistanceMax;
 	public float areaHeightMin;
@@ -196,6 +198,9 @@ public class MeHitObject : MecanimEventBase {
 		if (targetDetectType == HitObject.eTargetDetectType.Area)
 		{
 			areaRotationY = EditorGUILayout.FloatField("Area RotationY :", areaRotationY);
+			useAreaRotationYChange = EditorGUILayout.Toggle("Use Area Rotation Y Change :", useAreaRotationYChange);
+			if (useAreaRotationYChange)
+				targetAreaRotationY = EditorGUILayout.FloatField("Target Area RotationY :", targetAreaRotationY);
 			areaDistanceMin = EditorGUILayout.FloatField("Area DistanceMin :", areaDistanceMin);
 			areaDistanceMax = EditorGUILayout.FloatField("Area DistanceMax :", areaDistanceMax);
 			areaHeightMin = EditorGUILayout.FloatField("Area HeightMin :", areaHeightMin);

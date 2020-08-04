@@ -303,6 +303,10 @@ public class MeSummon : MecanimEventBase
 			yield break;
 		}
 
+		// 체험모드 중에 소환을 걸어둔채로 체험모드를 나갔다면 소환을 취소
+		if (ExperienceCanvas.instance != null && ExperienceCanvas.instance.gameObject.activeSelf == false && MainSceneBuilder.instance.lobby)
+			yield break;
+
 		if (activeMaxCount > 0)
 		{
 			if (_reservedSummonFrameCount != frameCount)

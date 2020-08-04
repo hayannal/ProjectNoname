@@ -60,17 +60,28 @@ public class ExperienceGround : MonoBehaviour
 	void UpdateSpawnMonster()
 	{
 		List<MonsterActor> listLiveMonster = BattleInstanceManager.instance.GetLiveMonsterList();
-		if (listLiveMonster.Count > 0)
+		int liveMonsterCount = 0;
+		for (int i = 0; i < listLiveMonster.Count; ++i)
+		{
+			if (listLiveMonster[i].team.teamId != (int)Team.eTeamID.DefaultMonster || listLiveMonster[i].excludeMonsterCount)
+				continue;
+			++liveMonsterCount;
+		}
+		if (liveMonsterCount > 0)
 		{
 			if (_createFrame)
 			{
 				for (int i = 0; i < listLiveMonster.Count; ++i)
+				{
+					if (listLiveMonster[i].team.teamId != (int)Team.eTeamID.DefaultMonster || listLiveMonster[i].excludeMonsterCount)
+						continue;
 					listLiveMonster[i].actorStatus.ChangeExperienceMode(CharacterListCanvas.instance.selectedPlayerActor);
+				}
 				_createFrame = false;
 			}
 		}
 
-		if (ExperienceCanvas.instance.backButton.interactable == false && _createFrame == false && listLiveMonster.Count == 0)
+		if (ExperienceCanvas.instance.backButton.interactable == false && _createFrame == false && liveMonsterCount == 0)
 			ExperienceCanvas.instance.backButton.interactable = true;
 
 		if (_spawnRemainTime > 0.0f)
@@ -81,7 +92,7 @@ public class ExperienceGround : MonoBehaviour
 			return;
 		}
 
-		if (listLiveMonster.Count > 0)
+		if (liveMonsterCount > 0)
 			return;
 
 		if (CustomFollowCamera.instance.targetTransform.position.z > monsterSpawnLineZ)

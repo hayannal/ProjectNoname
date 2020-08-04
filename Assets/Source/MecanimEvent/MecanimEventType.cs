@@ -11,6 +11,7 @@ public enum eMecanimEventType
 	Destroy,
 	ApplyAffector,
 	AnimatorSpeed,
+	AnimatorParameter,
 	HitObject,
 	RangeHitObject,
 	GlobalLight,

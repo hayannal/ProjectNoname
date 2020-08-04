@@ -19,6 +19,7 @@ public static class MecanimEventCustomCreator
 		case eMecanimEventType.Destroy: eventBase = targetState.AddStateMachineBehaviour<MeDestroy>(); break;
 		case eMecanimEventType.ApplyAffector: eventBase = targetState.AddStateMachineBehaviour<MeApplyAffector>(); break;
 		case eMecanimEventType.AnimatorSpeed: eventBase = targetState.AddStateMachineBehaviour<MeAnimatorSpeed>(); break;
+		case eMecanimEventType.AnimatorParameter: eventBase = targetState.AddStateMachineBehaviour<MeAnimatorParameter>(); break;
 		case eMecanimEventType.HitObject: eventBase = targetState.AddStateMachineBehaviour<MeHitObject>(); break;
 		case eMecanimEventType.RangeHitObject: eventBase = targetState.AddStateMachineBehaviour<MeRangeHitObject>(); break;
 		case eMecanimEventType.GlobalLight: eventBase = targetState.AddStateMachineBehaviour<MeGlobalLight>(); break;
@@ -47,6 +48,7 @@ public static class MecanimEventCustomCreator
 		if (eventBase is MeDestroy) return eMecanimEventType.Destroy;
 		if (eventBase is MeApplyAffector) return eMecanimEventType.ApplyAffector;
 		if (eventBase is MeAnimatorSpeed) return eMecanimEventType.AnimatorSpeed;
+		if (eventBase is MeAnimatorParameter) return eMecanimEventType.AnimatorParameter;
 		if (eventBase is MeRangeHitObject) return eMecanimEventType.RangeHitObject;
 		if (eventBase is MeHitObject) return eMecanimEventType.HitObject;
 		if (eventBase is MeGlobalLight) return eMecanimEventType.GlobalLight;

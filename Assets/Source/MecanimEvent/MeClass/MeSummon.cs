@@ -168,7 +168,7 @@ public class MeSummon : MecanimEventBase
 					{
 						_createPosition = targetTransform.TransformPoint(offset);
 						if (checkNavPosition) _createPosition = GetNavPosition(_createPosition);
-						_createRotation = Quaternion.LookRotation(targetTransform.TransformDirection(direction));
+						_createRotation = Quaternion.LookRotation(_actor.cachedTransform.TransformDirection(direction));
 					}
 				}
 				else

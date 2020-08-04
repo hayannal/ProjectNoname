@@ -9648,6 +9648,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4090726360400730}
   - component: {fileID: -39205221239393007}
+  - component: {fileID: 7956685246683681764}
   m_Layer: 0
   m_Name: Hit 4_D
   m_TagString: Untagged
@@ -9687,6 +9688,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   delayTime: 2
+--- !u!114 &7956685246683681764
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1339124478685776}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da6612240c354cb4abb66363c62ab797, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startDelay: 0
+  numberOfShakes: 3
+  shakeAmountMin: {x: 0.1, y: 0.1, z: 0.1}
+  shakeAmountMax: {x: 0.4, y: 0.4, z: 0.4}
+  rotationAmountMin: {x: 0, y: 0, z: 0.02}
+  rotationAmountMax: {x: 0, y: 0, z: 0.06}
+  distanceMin: 0.04
+  distanceMax: 0.06
+  speedMin: 15
+  speedMax: 20
+  decay: 0.75
 --- !u!1 &1398484883785726
 GameObject:
   m_ObjectHideFlags: 0

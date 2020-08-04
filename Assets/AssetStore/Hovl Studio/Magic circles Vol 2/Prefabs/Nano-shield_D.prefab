@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1116481499366955085}
   - component: {fileID: -760645907870766483}
+  - component: {fileID: 9056142780642622240}
   m_Layer: 0
   m_Name: Nano-shield_D
   m_TagString: Untagged
@@ -45,6 +46,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   delayTime: 5
+--- !u!114 &9056142780642622240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1865428965629695615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da6612240c354cb4abb66363c62ab797, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startDelay: 3.2
+  numberOfShakes: 3
+  shakeAmountMin: {x: 0.2, y: 0.2, z: 0.2}
+  shakeAmountMax: {x: 0.4, y: 0.4, z: 0.4}
+  rotationAmountMin: {x: 0, y: 0, z: 0.04}
+  rotationAmountMax: {x: 0, y: 0, z: 0.08}
+  distanceMin: 0.06
+  distanceMax: 0.12
+  speedMin: 15
+  speedMax: 20
+  decay: 0.75
 --- !u!1 &4219913669279687514
 GameObject:
   m_ObjectHideFlags: 0

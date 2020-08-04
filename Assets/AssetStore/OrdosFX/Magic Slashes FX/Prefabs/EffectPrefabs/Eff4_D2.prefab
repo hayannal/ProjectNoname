@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7495243563842584717}
   - component: {fileID: -5257090212386278333}
+  - component: {fileID: 2766044841395775335}
   m_Layer: 0
   m_Name: Eff4_D2
   m_TagString: Untagged
@@ -45,6 +46,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   delayTime: 1
+--- !u!114 &2766044841395775335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9082311513966844096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da6612240c354cb4abb66363c62ab797, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startDelay: 0
+  numberOfShakes: 3
+  shakeAmountMin: {x: 0.1, y: 0.1, z: 0.1}
+  shakeAmountMax: {x: 0.3, y: 0.3, z: 0.3}
+  rotationAmountMin: {x: 0, y: 0, z: 0.02}
+  rotationAmountMax: {x: 0, y: 0, z: 0.04}
+  distanceMin: 0.04
+  distanceMax: 0.08
+  speedMin: 15
+  speedMax: 20
+  decay: 0.75
 --- !u!1001 &9121267057069536326
 PrefabInstance:
   m_ObjectHideFlags: 0

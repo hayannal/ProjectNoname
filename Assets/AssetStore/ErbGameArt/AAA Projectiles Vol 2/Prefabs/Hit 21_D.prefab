@@ -9632,6 +9632,7 @@ GameObject:
   - component: {fileID: 198813193088697888}
   - component: {fileID: 199026521598108060}
   - component: {fileID: 1405468184649951503}
+  - component: {fileID: 8552578585292478956}
   m_Layer: 0
   m_Name: Hit 21_D
   m_TagString: Untagged
@@ -14451,6 +14452,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   delayTime: 2
+--- !u!114 &8552578585292478956
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1159183624466508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da6612240c354cb4abb66363c62ab797, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startDelay: 0
+  numberOfShakes: 3
+  shakeAmountMin: {x: 0, y: 0, z: 0}
+  shakeAmountMax: {x: 0.4, y: 0.4, z: 0.4}
+  rotationAmountMin: {x: 0, y: 0, z: 0.02}
+  rotationAmountMax: {x: 0, y: 0, z: 0.04}
+  distanceMin: 0.04
+  distanceMax: 0.08
+  speedMin: 15
+  speedMax: 20
+  decay: 0.75
 --- !u!1 &1163951590474050
 GameObject:
   m_ObjectHideFlags: 0

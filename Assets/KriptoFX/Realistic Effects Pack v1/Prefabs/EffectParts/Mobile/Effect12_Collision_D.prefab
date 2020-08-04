@@ -4898,6 +4898,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4840106065745484}
   - component: {fileID: 9073407174266509275}
+  - component: {fileID: 1482327039960963640}
   m_Layer: 0
   m_Name: Effect12_Collision_D
   m_TagString: Untagged
@@ -4937,6 +4938,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   delayTime: 3
+--- !u!114 &1482327039960963640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1606542427775616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da6612240c354cb4abb66363c62ab797, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startDelay: 0
+  numberOfShakes: 3
+  shakeAmountMin: {x: 0.2, y: 0.2, z: 0.2}
+  shakeAmountMax: {x: 0.4, y: 0.4, z: 0.4}
+  rotationAmountMin: {x: 0, y: 0, z: 0.04}
+  rotationAmountMax: {x: 0, y: 0, z: 0.06}
+  distanceMin: 0.06
+  distanceMax: 0.08
+  speedMin: 15
+  speedMax: 20
+  decay: 0.75
 --- !u!1 &1798086281863952
 GameObject:
   m_ObjectHideFlags: 0

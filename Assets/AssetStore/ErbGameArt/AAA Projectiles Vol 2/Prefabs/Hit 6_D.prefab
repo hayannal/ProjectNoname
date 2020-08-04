@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4183363048394232}
   - component: {fileID: 6836386140152154806}
+  - component: {fileID: 2286585375046851143}
   m_Layer: 0
   m_Name: Hit 6_D
   m_TagString: Untagged
@@ -47,6 +48,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   delayTime: 1
+--- !u!114 &2286585375046851143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1021820888038418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da6612240c354cb4abb66363c62ab797, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startDelay: 0
+  numberOfShakes: 3
+  shakeAmountMin: {x: 0, y: 0, z: 0}
+  shakeAmountMax: {x: 0.3, y: 0.3, z: 0.3}
+  rotationAmountMin: {x: 0, y: 0, z: 0.03}
+  rotationAmountMax: {x: 0, y: 0, z: 0.06}
+  distanceMin: 0.03
+  distanceMax: 0.06
+  speedMin: 15
+  speedMax: 20
+  decay: 0.75
 --- !u!1 &605174035518574976
 GameObject:
   m_ObjectHideFlags: 0

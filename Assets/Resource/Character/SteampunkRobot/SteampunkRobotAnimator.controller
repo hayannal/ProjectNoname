@@ -146,6 +146,7 @@ AnimatorState:
   m_StateMachineBehaviours:
   - {fileID: 1934512432174511729}
   - {fileID: -2412566443936429071}
+  - {fileID: 5078285307012911239}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -286,6 +287,8 @@ MonoBehaviour:
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
+  useAreaRotationYChange: 0
+  targetAreaRotationY: 0
   areaDistanceMin: 0
   areaDistanceMax: 0
   areaHeightMin: 0
@@ -367,6 +370,27 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 1
+--- !u!114 &5078285307012911239
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.22
+  EndTime: 1
+  effectData: {fileID: 2193104193347263468, guid: c215603873e244348896ef93e0c08d13,
+    type: 3}
+  offset: {x: 0.02, y: 0.79, z: 0.6}
+  fixedWorldPositionY: 0
+  direction: {x: 0.1, y: 0, z: 1}
+  parentName: 
+  followPosition: 0
 --- !u!1102 &8503796429965771016
 AnimatorState:
   serializedVersion: 5

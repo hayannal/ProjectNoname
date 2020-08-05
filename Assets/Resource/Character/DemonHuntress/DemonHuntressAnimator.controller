@@ -58,7 +58,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartTime: 0
-  EndTime: 0.29
+  EndTime: 0.1
   lookAtTarget: 1
   leftRightRandomAngle: 0
   lootAtTargetOffsetAngle: 0
@@ -134,7 +134,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Die
-  m_Speed: 1
+  m_Speed: 0.7
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours: []
@@ -230,6 +230,8 @@ MonoBehaviour:
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
+  useAreaRotationYChange: 0
+  targetAreaRotationY: 0
   areaDistanceMin: 0
   areaDistanceMax: 0
   areaHeightMin: 0
@@ -330,6 +332,7 @@ MonoBehaviour:
   fixedWorldPositionY: 0
   direction: {x: 0, y: 0, z: 1}
   parentName: 
+  followPosition: 0
 --- !u!91 &9100000
 AnimatorController:
   m_ObjectHideFlags: 0
@@ -385,8 +388,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6dd69c027857c1a40a0f86487312847f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.3
-  EndTime: 0.3
+  StartTime: 0.1
+  EndTime: 0.1
   summonPrefab: {fileID: 4859227286225668700, guid: 24707d1a04139bc428550ae257b1d82e,
     type: 3}
   summonMonster: 1
@@ -400,10 +403,11 @@ MonoBehaviour:
   calcCreatePositionInEndSignal: 0
   disableOnMapChanged: 1
   castingLoopEffectPrefab: {fileID: 0}
+  noLoop: 0
   summonEffectPrefab: {fileID: 0}
   activeMaxCount: 1
   prevObjectDisableEffectPrefab: {fileID: 0}
-  spawnDelay: 0.64
+  spawnDelay: 0.55
 --- !u!114 &6649347608798660281
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -431,7 +435,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.3
+  StartTime: 0.1
   EndTime: 1
   targetDetectType: 1
   presetType: 0
@@ -439,9 +443,9 @@ MonoBehaviour:
   ignorePresetHitEffectOnCustomTargetPosition: 0
   hitObjectPrefab: {fileID: 1593574840045950, guid: 3df800b0508b5ff4abcfa2777f3f3858,
     type: 3}
-  lifeTime: 3
+  lifeTime: 5
   areaHitLifeTimeEarlyOffset: 0
-  ignoreAreaHitLifeTimeRange: {x: 0.64, y: 1}
+  ignoreAreaHitLifeTimeRange: {x: 0.55, y: 1}
   movable: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -453,6 +457,8 @@ MonoBehaviour:
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
+  useAreaRotationYChange: 0
+  targetAreaRotationY: 0
   areaDistanceMin: 0
   areaDistanceMax: 1.1
   areaHeightMin: 0

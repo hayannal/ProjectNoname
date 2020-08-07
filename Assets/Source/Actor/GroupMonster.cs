@@ -7,6 +7,9 @@ public class GroupMonster : MonoBehaviour
 	List<MonsterActor> _listMonsterActor = new List<MonsterActor>();
 	public List<MonsterActor> listMonsterActor { get { return _listMonsterActor; } }
 
+	public bool shareCurrentHp;
+	public float shareCurrentHpInterval;
+
 	void Awake()
 	{
 		GetComponentsInChildren<MonsterActor>(_listMonsterActor);
@@ -33,7 +36,10 @@ public class GroupMonster : MonoBehaviour
 		{
 			gameObject.SetActive(false);
 			_reservedDisable = false;
+			return;
 		}
+
+		UpdateShareCurrentHp();
 	}
 
 	List<Vector3> _listPosition = new List<Vector3>();
@@ -45,6 +51,7 @@ public class GroupMonster : MonoBehaviour
 			_listPosition.Add(_listMonsterActor[i].cachedTransform.localPosition);
 			_listRotation.Add(_listMonsterActor[i].cachedTransform.localRotation);
 		}
+		InitializeCommon();
 	}
 
 	#region ObjectPool
@@ -56,6 +63,12 @@ public class GroupMonster : MonoBehaviour
 			_listMonsterActor[i].cachedTransform.localRotation = _listRotation[i];
 			_listMonsterActor[i].gameObject.SetActive(true);
 		}
+		InitializeCommon();
+	}
+
+	void InitializeCommon()
+	{
+		_shareCurrentHpRemainTime = shareCurrentHpInterval;
 	}
 
 	bool _reservedDisable = false;
@@ -97,5 +110,33 @@ public class GroupMonster : MonoBehaviour
 			}
 		}
 		return allDie;
+	}
+
+	float _shareCurrentHpRemainTime;
+	void UpdateShareCurrentHp()
+	{
+		if (_shareCurrentHpRemainTime > 0.0f)
+		{
+			_shareCurrentHpRemainTime -= Time.deltaTime;
+			if (_shareCurrentHpRemainTime <= 0.0f)
+			{
+				_shareCurrentHpRemainTime += shareCurrentHpInterval;
+
+				float sumCurrentHp = 0.0f;
+				for (int i = 0; i < _listMonsterActor.Count; ++i)
+				{
+					if (listMonsterActor[i].actorStatus.IsDie())
+						continue;
+					sumCurrentHp += listMonsterActor[i].actorStatus.GetHP();
+				}
+				float avgCurrentHp = sumCurrentHp / _listMonsterActor.Count;
+				for (int i = 0; i < _listMonsterActor.Count; ++i)
+				{
+					if (listMonsterActor[i].actorStatus.IsDie())
+						continue;
+					listMonsterActor[i].actorStatus.AddHP(avgCurrentHp - listMonsterActor[i].actorStatus.GetHP());
+				}
+			}
+		}
 	}
 }

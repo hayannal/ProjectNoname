@@ -199,7 +199,7 @@ public class MonsterActor : Actor
 			BossMonsterGaugeCanvas.instance.OnChangedHP(this);
 		}
 		
-		if (bossMonster == false || groupMonster)
+		if (bossMonster == false || (groupMonster && group.shareCurrentHp == false))
 		{
 			if (_monsterHPGauge == null)
 			{
@@ -226,7 +226,7 @@ public class MonsterActor : Actor
 			BossMonsterGaugeCanvas.instance.OnDie(this);
 		}
 		
-		if (bossMonster == false || groupMonster)
+		if (bossMonster == false || (groupMonster && group.shareCurrentHp == false))
 		{
 			if (_monsterHPGauge != null)
 			{
@@ -252,7 +252,7 @@ public class MonsterActor : Actor
 		// 실제 OnDie 처리를 호출하지 않은채 몬스터를 비활성화하는데에 필요한 코드들만 남긴다. Drop도 호출하지 않아야한다.
 		monsterAI.ResetPath();
 
-		if (bossMonster == false || groupMonster)
+		if (bossMonster == false || (groupMonster && group.shareCurrentHp == false))
 		{
 			if (_monsterHPGauge != null)
 			{

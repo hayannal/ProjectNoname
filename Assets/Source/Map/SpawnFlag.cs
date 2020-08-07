@@ -71,7 +71,7 @@ public class SpawnFlag : MonoBehaviour
 		}
 #endif
 
-		if (ClientSaveData.instance.GetCachedMonsterAllKill())
+		if (editorSpawn == false && ClientSaveData.instance.GetCachedMonsterAllKill())
 		{
 		}
 		else

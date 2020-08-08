@@ -1324,7 +1324,7 @@ public class HitObject : MonoBehaviour
 		gameObject.SetActive(false);
 	}
 
-	void OnFinalizeByCollision(bool plane = false)
+	void OnFinalizeByCollision(bool plane = false, bool actor = false)
 	{
 		EnableRigidbodyAndCollider(false);
 
@@ -1337,8 +1337,16 @@ public class HitObject : MonoBehaviour
 			_hitObjectLineRenderer.DisableLineRenderer(false);
 		if (_hitObjectAnimator != null)
 		{
-			if (plane == false && _hitObjectAnimator.OnFinalizeByCollision())
-				_hitObjectAnimatorStarted = true;
+			if (plane == false)
+			{
+				if (_hitObjectAnimator.OnFinalizeByCollision())
+					_hitObjectAnimatorStarted = true;
+				// ChaDragon 이 캐릭터를 맞출때는 파생되지 않으나 벽을 맞출때는 파생하는 프로젝타일을 날리면서 이런 예외처리가 들어가게 되었다.
+				// 나중에 더 세분화해야하면 인자 전달 방식을 바꿔야할거 같다.
+				// 애니메이터에는 OnCollision이나 OnCollisionExceptActor 둘중에 하나만 써야한다. 동시에 쓸순 없다.
+				if (actor == false && _hitObjectAnimator.OnFinalizeByCollisionExceptActor())
+					_hitObjectAnimatorStarted = true;
+			}
 			if (plane == true && _hitObjectAnimator.OnFinalizeByCollisionPlane())
 				_hitObjectAnimatorStarted = true;
 		}
@@ -1645,7 +1653,7 @@ public class HitObject : MonoBehaviour
 			}
 			else
 			{
-				OnFinalizeByCollision();
+				OnFinalizeByCollision(false, true);
 				return;
 			}
 		}

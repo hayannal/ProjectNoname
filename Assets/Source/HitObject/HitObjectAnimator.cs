@@ -14,10 +14,12 @@ public class HitObjectAnimator : MonoBehaviour
 	const string ByDistanceStateName = "ByDistance";
 	const string OnCollisionStateName = "OnCollision";
 	const string OnCollisionPlaneStateName = "OnCollisionPlane";
+	const string OnCollisionExceptActorStateName = "OnCollisionExceptActor";
 	bool _hasByLifeTimeState = false;
 	bool _hasByDistanceState = false;
 	bool _hasOnCollisionState = false;
 	bool _hasOnCollisionPlaneState = false;
+	bool _hasOnCollisionExceptActorState = false;
 	void Start()
 	{
 		if (_animator == null)
@@ -34,6 +36,9 @@ public class HitObjectAnimator : MonoBehaviour
 
 		stateHash = BattleInstanceManager.instance.GetActionNameHash(OnCollisionPlaneStateName);
 		_hasOnCollisionPlaneState = _animator.HasState(0, stateHash);
+
+		stateHash = BattleInstanceManager.instance.GetActionNameHash(OnCollisionExceptActorStateName);
+		_hasOnCollisionExceptActorState = _animator.HasState(0, stateHash);
 	}
 
 	bool _played = false;
@@ -91,6 +96,18 @@ public class HitObjectAnimator : MonoBehaviour
 			return false;
 
 		_animator.Play(BattleInstanceManager.instance.GetActionNameHash(OnCollisionPlaneStateName), 0, 0.0f);
+		_played = true;
+		return true;
+	}
+
+	public bool OnFinalizeByCollisionExceptActor()
+	{
+		if (!_hasOnCollisionExceptActorState)
+			return false;
+		if (_played)
+			return false;
+
+		_animator.Play(BattleInstanceManager.instance.GetActionNameHash(OnCollisionExceptActorStateName), 0, 0.0f);
 		_played = true;
 		return true;
 	}

@@ -180,7 +180,7 @@ public class HitObject : MonoBehaviour
 				return null;
 
 			// HitObject 프리팹이 있거나 lifeTime이 있다면 생성하고 아니면 패스.
-			Quaternion rotation = Quaternion.LookRotation(areaDirection);
+			Quaternion rotation = Quaternion.LookRotation(Quaternion.Euler(0.0f, meHit.areaRotationY, 0.0f) * areaDirection);
 			HitObject hitObject = GetCachedHitObject(meHit, areaPosition, rotation);
 			if (hitObject != null)
 			{

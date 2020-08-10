@@ -186,6 +186,7 @@ AnimatorState:
   m_StateMachineBehaviours:
   - {fileID: -7321433354596629840}
   - {fileID: 4777921386856389594}
+  - {fileID: 8447282076703994299}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -234,14 +235,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.4
+  StartTime: 0.85
   EndTime: 1
   targetDetectType: 1
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
-  hitObjectPrefab: {fileID: 1178844608527456, guid: 450759dd72f6205428b554e0f61bc1d9,
-    type: 3}
+  hitObjectPrefab: {fileID: 0}
   lifeTime: 2
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0.1, y: 0.3}
@@ -448,3 +448,23 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!114 &8447282076703994299
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.85
+  EndTime: 1
+  effectData: {fileID: 1178844608527456, guid: a7a0305822f6c0448abc518e79e67b72, type: 3}
+  offset: {x: 0, y: 0.6, z: 0.2}
+  fixedWorldPositionY: 0
+  direction: {x: 0, y: 0, z: 1}
+  parentName: 
+  followPosition: 0

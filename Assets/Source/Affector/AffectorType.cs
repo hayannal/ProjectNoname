@@ -73,5 +73,6 @@ public enum eAffectorType
 	Suicide,
 	DelayedBaseDamage,
 	AttackOnMoving,
+	MonsterSleeping,
 }
 #endregion

@@ -163,7 +163,7 @@ public sealed class LocalPlayerController : BaseCharacterController
 			#endregion
 		}
 
-		if (ScreenJoystick.instance.CheckInput(Control.eInputType.Tab) && IsAutoPlay() == false)
+		if (ScreenJoystick.instance.CheckInput(Control.eInputType.Tab) && IsAutoPlay(true) == false)
 		{
 			if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null && TitleCanvas.instance.gameObject.activeSelf)
 				TitleCanvas.instance.FadeTitle();
@@ -256,7 +256,7 @@ public sealed class LocalPlayerController : BaseCharacterController
 			}
 		}
 
-		if (OptionManager.instance.useDoubleTab == 1 && ScreenJoystick.instance.CheckInput(Control.eInputType.DoubleTab) && IsAutoPlay() && actor.actorStatus.GetSPRatio() == 1.0f)
+		if (OptionManager.instance.useDoubleTab == 1 && ScreenJoystick.instance.CheckInput(Control.eInputType.DoubleTab) && IsAutoPlay(false) && actor.actorStatus.GetSPRatio() == 1.0f)
 		{
 			actionController.PlayActionByControl(Control.eControllerType.UltimateSkillSlot, Control.eInputType.Tab);
 		}
@@ -307,12 +307,15 @@ public sealed class LocalPlayerController : BaseCharacterController
 		return targetPosition;
 	}
 
-	bool IsAutoPlay()
+	bool IsAutoPlay(bool checkSleepingTarget)
 	{
 #if UNITY_EDITOR
 		if (BattleInstanceManager.instance.playerActor != null && BattleInstanceManager.instance.playerActor.playerAI.enabled == false)
 			return false;
 #endif
+		if (checkSleepingTarget && BattleInstanceManager.instance.playerActor != null && BattleInstanceManager.instance.playerActor.playerAI.IsSleepingTarget())
+			return false;
+
 		if (BattleManager.instance != null && BattleManager.instance.IsAutoPlay())
 			return true;
 		return false;

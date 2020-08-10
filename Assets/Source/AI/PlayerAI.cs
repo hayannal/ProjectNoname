@@ -96,6 +96,7 @@ public class PlayerAI : MonoBehaviour
 		}
 	}
 
+	bool _lastUseSleepObject = false;
 	void UpdateTargetingObject()
 	{
 		if (targetCollider == null)
@@ -105,16 +106,27 @@ public class PlayerAI : MonoBehaviour
 			return;
 		}
 
-		Transform targetTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
-		if (_cachedTargetingObjectTransform == null)
+		bool useSleepObject = false;
+		AffectorProcessor targetAffectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(targetCollider);
+		if (targetAffectorProcessor.IsContinuousAffectorType(eAffectorType.MonsterSleeping))
+			useSleepObject = true;
+
+		if (_cachedTargetingObjectTransform == null || useSleepObject != _lastUseSleepObject)
 		{
-			GameObject newObject = BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.targetCircleObject, null);
+			if (_cachedTargetingObjectTransform != null)
+			{
+				_cachedTargetingObjectTransform.gameObject.SetActive(false);
+				_cachedTargetingObjectTransform = null;
+			}
+			GameObject newObject = BattleInstanceManager.instance.GetCachedObject(useSleepObject ? BattleManager.instance.targetCircleSleepObject : BattleManager.instance.targetCircleObject, null);
 			_cachedTargetingObjectTransform = newObject.transform;
+			_lastUseSleepObject = useSleepObject;
 		}
 		if (_cachedTargetingObjectTransform == null)
 			return;
 
 		_cachedTargetingObjectTransform.gameObject.SetActive(true);
+		Transform targetTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
 		if (targetTransform.position.y < 0.0f)
 		{
 			Vector3 newPos = targetTransform.position;
@@ -123,6 +135,13 @@ public class PlayerAI : MonoBehaviour
 		}
 		else
 			_cachedTargetingObjectTransform.position = targetTransform.position;
+	}
+
+	public bool IsSleepingTarget()
+	{
+		if (_cachedTargetingObjectTransform != null && _cachedTargetingObjectTransform.gameObject.activeSelf && _lastUseSleepObject)
+			return true;
+		return false;
 	}
 
 	#region Remove HitObject
@@ -277,6 +296,13 @@ public class PlayerAI : MonoBehaviour
 	public bool IsTargetColliderInAttackRange(ref Vector3 diff)
 	{
 		if (targetCollider == null)
+			return false;
+
+		AffectorProcessor targetAffectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(targetCollider);
+		if (targetAffectorProcessor == null)
+			return false;
+
+		if (targetAffectorProcessor.IsContinuousAffectorType(eAffectorType.MonsterSleeping))
 			return false;
 
 		Transform targetTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);

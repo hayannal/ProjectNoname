@@ -7,6 +7,7 @@ public class BattleManager : MonoBehaviour
 	public static BattleManager instance;
 
 	public GameObject targetCircleObject;
+	public GameObject targetCircleSleepObject;
 	public GameObject monsterDieAshParticlePrefab;
 	public AnimationCurveAsset monsterDieDissolveCurve;
 	public AnimationCurveAsset bossMonsterDieDissolveCurve;

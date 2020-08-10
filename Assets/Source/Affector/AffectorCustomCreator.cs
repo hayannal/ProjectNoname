@@ -70,6 +70,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.Suicide: affectorBase = new SuicideAffector(); break;
 			case eAffectorType.DelayedBaseDamage: affectorBase = new DelayedBaseDamageAffector(); break;
 			case eAffectorType.AttackOnMoving: affectorBase = new AttackOnMovingAffector(); break;
+			case eAffectorType.MonsterSleeping: affectorBase = new MonsterSleepingAffector(); break;
 			#endregion
 		}
 		return affectorBase;
@@ -134,6 +135,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.Suicide:
 			case eAffectorType.DelayedBaseDamage:
 			case eAffectorType.AttackOnMoving:
+			case eAffectorType.MonsterSleeping:
 				return true;
 			#endregion
 		}

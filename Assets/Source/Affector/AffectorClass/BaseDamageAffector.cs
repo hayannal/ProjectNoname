@@ -110,14 +110,18 @@ public class BaseDamageAffector : AffectorBase {
 			}
 		}
 
-		if (_actor.IsMonsterActor() && (int)eActorStatus.NormalMonsterDamageIncreaseAddRate < hitParameter.statusBase.valueList.Length)
+		if (_actor.IsMonsterActor() && monsterActor != null)
 		{
-			if (monsterActor != null)
+			if ((int)eActorStatus.NormalMonsterDamageIncreaseAddRate < hitParameter.statusBase.valueList.Length)
 			{
 				float damageIncreaseAddRate = hitParameter.statusBase.valueList[monsterActor.bossMonster ? (int)eActorStatus.BossMonsterDamageIncreaseAddRate : (int)eActorStatus.NormalMonsterDamageIncreaseAddRate];
 				if (damageIncreaseAddRate != 0.0f)
 					damage *= (1.0f + damageIncreaseAddRate);
 			}
+
+			float sleepingDamageAddRate = MonsterSleepingAffector.GetDamageValue(_affectorProcessor);
+			if (sleepingDamageAddRate != 0.0f)
+				damage *= (1.0f + sleepingDamageAddRate);
 		}
 
 		if (_actor.IsPlayerActor())
@@ -231,6 +235,7 @@ public class BaseDamageAffector : AffectorBase {
 		ChangeActorStatusAffector.OnDamage(_affectorProcessor);
 		CallAffectorValueAffector.OnEvent(_affectorProcessor, CallAffectorValueAffector.eEventType.OnDamage, damage);
 		ReduceContinuousDamageAffector.OnDamage(_affectorProcessor);
+		MonsterSleepingAffector.OnDamage(_affectorProcessor);
 		if (attackerActor == null) attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(hitParameter.statusStructForHitObject.actorInstanceId);
 		if (attackerActor != null)
 		{

@@ -84,19 +84,25 @@ public class BattleModeProcessorBase
 				BattleInstanceManager.instance.playerActor.RefreshStagePenaltyAffector(stagePenaltyId, true);
 		}
 
-		// 호출 순서상 CallAffectorValueAffector.eEventType.OnStartStage 보다는 앞에 호출되어야해서 위로 올려둔다.
+		// 호출 순서상 InitializeInProgressGame 되기전에 PowerSource는 스폰해야한다.
 		bool callOnStartStage = true;
-		if (ClientSaveData.instance.IsLoadingInProgressGame() && ClientSaveData.instance.GetCachedMonsterAllKill())
-			callOnStartStage = false;
-		InitializeInProgressGame();
-
 		if (StageManager.instance.spawnPowerSourcePrefab)
+		{
 			_powerSourceObject = BattleInstanceManager.instance.GetCachedObject(StageManager.instance.GetPreparedPowerSourcePrefab(), StageManager.instance.currentPowerSourceSpawnPosition, Quaternion.identity);
+
+			// PowerSource 나오는 스테이지에서는 onStartStage가 호출되지 않는다.
+			callOnStartStage = false;
+		}
 		else
 		{
-			if (callOnStartStage && BattleInstanceManager.instance.playerActor != null)
-				CallAffectorValueAffector.OnEvent(BattleInstanceManager.instance.playerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnStartStage);
+			if (ClientSaveData.instance.IsLoadingInProgressGame() && ClientSaveData.instance.GetCachedMonsterAllKill())
+				callOnStartStage = false;
 		}
+
+		// 호출 순서상 CallAffectorValueAffector.eEventType.OnStartStage 보다는 앞에 호출되어야해서 위로 올려둔다.
+		InitializeInProgressGame();
+		if (callOnStartStage && BattleInstanceManager.instance.playerActor != null)
+			CallAffectorValueAffector.OnEvent(BattleInstanceManager.instance.playerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnStartStage);
 
 #if HUDDPS
 #if UNITY_EDITOR

@@ -33,15 +33,19 @@ public class PowerSource : MonoBehaviour
 	void OnEnable()
 	{
 		_spawnedGatePillar = false;
-		_guideMessageShowRemainTime = 5.0f;
 
 		if (ClientSaveData.instance.IsLoadingInProgressGame())
 		{
 			if (ClientSaveData.instance.GetCachedPowerSource())
 				_spawnedGatePillar = true;
+			else
+				_guideMessageShowRemainTime = 5.0f;
 		}
 		else
+		{
 			ClientSaveData.instance.OnChangedPowerSource(false);
+			_guideMessageShowRemainTime = 5.0f;
+		}
 	}
 
 	bool _spawnedGatePillar;

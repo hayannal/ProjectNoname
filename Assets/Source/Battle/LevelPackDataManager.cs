@@ -158,5 +158,31 @@ public class LevelPackDataManager : MonoBehaviour
 			BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack(listCachedLevelPack[i], false, 0);
 		}
 	}
+
+	// 진행중인 게임을 복구하는 시점이 하필 OnStartStage 호출 시점이라서 이때 발동되는 레벨팩의 이펙트를 로딩할 수 없게 되었다.
+	// 그래서 이런 함수를 만들어서 레벨팩이 사용하는 이펙트들을 미리 로드해두기로 한다.
+	public void PreloadInProgressLevelPackData(string jsonCachedLevelPackData)
+	{
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		List<string> listCachedLevelPack = serializer.DeserializeObject<List<string>>(jsonCachedLevelPackData);
+		for (int i = 0; i < listCachedLevelPack.Count; ++i)
+		{
+			// 이건 하면 안된다.
+			//AddLevelPack(BattleInstanceManager.instance.playerActor.actorId, listCachedLevelPack[i]);
+			//BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack(listCachedLevelPack[i], false, 0);
+
+			LevelPackTableData levelPackTableData = TableDataManager.instance.FindLevelPackTableData(listCachedLevelPack[i]);
+			if (levelPackTableData == null)
+				continue;
+
+			for (int j = 0; j < levelPackTableData.effectAddress.Length; ++j)
+			{
+				AddressableAssetLoadManager.GetAddressableGameObject(levelPackTableData.effectAddress[j], "CommonEffect", (prefab) =>
+				{
+					BattleInstanceManager.instance.AddCommonPoolPreloadObjectList(prefab);
+				});
+			}
+		}
+	}
 	#endregion
 }

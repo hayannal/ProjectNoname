@@ -106,6 +106,12 @@ public class TitleCanvas : MonoBehaviour
 
 				ClientSaveData.instance.OnEndGame();
 			}, true);
+
+			// 여기서 복구할때 필요한 레벨팩 이펙트들을 미리 로딩해놓는다.
+			// 다른 이펙트는 사실상 복구 직후에 필요하지 않아서 그때 해도 충분한데 레벨팩만 문제라 미리 해두는거다.
+			string jsonCachedLevelPackData = ClientSaveData.instance.GetCachedLevelPackData();
+			if (string.IsNullOrEmpty(jsonCachedLevelPackData) == false)
+				LevelPackDataManager.instance.PreloadInProgressLevelPackData(jsonCachedLevelPackData);
 		}
 	}
 }

@@ -448,8 +448,12 @@ public class HitObject : MonoBehaviour
 			else if (meHit.startDirectionType == HitObjectMovement.eStartDirectionType.ToMultiTarget)
 				targetIndex = hitSignalIndexInAction;
 
+			bool sleepingTarget = false;
+			if (parentActor.IsPlayerActor() && BattleInstanceManager.instance.playerActor == parentActor)
+				sleepingTarget = BattleInstanceManager.instance.playerActor.playerAI.IsSleepingTarget();
+
 			TargetingProcessor targetingProcessor = parentActor.targetingProcessor;
-			if (targetingProcessor.GetTarget(targetIndex) != null)
+			if (targetingProcessor.GetTarget(targetIndex) != null && sleepingTarget == false)
 				targetPosition = targetingProcessor.GetTargetPosition(targetIndex);
 			else if (targetingProcessor.IsRegisteredCustomTargetPosition())
 				targetPosition = targetingProcessor.GetCustomTargetPosition(targetIndex);

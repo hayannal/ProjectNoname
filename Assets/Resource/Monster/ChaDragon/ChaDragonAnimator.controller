@@ -57,7 +57,7 @@ MonoBehaviour:
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
   howitzerRandomPositionRadiusRange: {x: 0, y: 0}
-  speed: 5.5
+  speed: 6
   useSpeedChange: 0
   targetSpeed: 0
   speedChangeTime: 0
@@ -106,7 +106,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttack01
+  - NormalAttack1.5
   showHitEffect: 1
   hitEffectObject: {fileID: 1124335935880280, guid: b6d68723f7e26204d8f14d607141cc13,
     type: 3}
@@ -458,6 +458,7 @@ AnimatorState:
   - {fileID: 83588701225923045}
   - {fileID: 7219037655650624637}
   - {fileID: -1716341732420973447}
+  - {fileID: 671228497620431669}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -536,6 +537,26 @@ MonoBehaviour:
   StartTime: 0
   EndTime: 1
   state: 3
+--- !u!114 &671228497620431669
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8516055b55eb644780db6f97bb409f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0
+  EndTime: 0.39
+  lookAtTarget: 1
+  leftRightRandomAngle: 0
+  lootAtTargetOffsetAngle: 0
+  lookAtRandom: 0
+  desireDistance: 5
+  lerpPower: 5
 --- !u!1102 &711902931308108612
 AnimatorState:
   serializedVersion: 5
@@ -627,7 +648,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   randomStateWithConditionInfoList:
   - stateName: Base Layer.AttackGroup.Summon1
-    weight: 1
+    weight: 0.3
     useDistance1: 0
     distanceCompareType1: 0
     distanceParameter1: 0
@@ -644,7 +665,7 @@ MonoBehaviour:
     actorStateId: 
     useMonsterCount: 1
     monsterCountCompareType: 3
-    monsterCountParameter: 8
+    monsterCountParameter: 16
     useCheckWall: 0
     existWallParameter: 0
     actionCountLimit: 0
@@ -666,7 +687,7 @@ MonoBehaviour:
     actorStateId: 
     useMonsterCount: 1
     monsterCountCompareType: 3
-    monsterCountParameter: 8
+    monsterCountParameter: 16
     useCheckWall: 0
     existWallParameter: 0
     actionCountLimit: 0
@@ -985,7 +1006,7 @@ MonoBehaviour:
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
   howitzerRandomPositionRadiusRange: {x: 0, y: 0}
-  speed: 5.5
+  speed: 4.5
   useSpeedChange: 0
   targetSpeed: 0
   speedChangeTime: 0
@@ -1035,7 +1056,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttack01
+  - NormalAttack0.8
   showHitEffect: 1
   hitEffectObject: {fileID: 1124335935880280, guid: b6d68723f7e26204d8f14d607141cc13,
     type: 3}
@@ -1090,7 +1111,7 @@ AnimatorStateMachine:
     m_Position: {x: 260, y: 40, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -6121394189030717541}
-    m_Position: {x: 260, y: 300, z: 0}
+    m_Position: {x: 420, y: 450, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 5832255390800465783}
     m_Position: {x: 260, y: 220, z: 0}

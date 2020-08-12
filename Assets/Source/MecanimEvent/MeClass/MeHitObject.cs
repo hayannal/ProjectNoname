@@ -34,6 +34,7 @@ public class MeHitObject : MecanimEventBase {
 	public bool useBoneRotation;
 	public bool fixedWorldPositionY;
 	public float areaRotationY;
+	public bool applyRootTransformRotation;
 	public bool useAreaRotationYChange;
 	public float targetAreaRotationY;
 	public float areaDistanceMin;
@@ -198,6 +199,8 @@ public class MeHitObject : MecanimEventBase {
 		if (targetDetectType == HitObject.eTargetDetectType.Area)
 		{
 			areaRotationY = EditorGUILayout.FloatField("Area RotationY :", areaRotationY);
+			if (areaRotationY != 0.0f)
+				applyRootTransformRotation = EditorGUILayout.Toggle("Rotate Root Transform :", applyRootTransformRotation);
 			useAreaRotationYChange = EditorGUILayout.Toggle("Use Area Rotation Y Change :", useAreaRotationYChange);
 			if (useAreaRotationYChange)
 				targetAreaRotationY = EditorGUILayout.FloatField("Target Area RotationY :", targetAreaRotationY);

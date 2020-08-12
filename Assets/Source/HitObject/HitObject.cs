@@ -180,7 +180,14 @@ public class HitObject : MonoBehaviour
 				return null;
 
 			// HitObject 프리팹이 있거나 lifeTime이 있다면 생성하고 아니면 패스.
-			Quaternion rotation = Quaternion.LookRotation(Quaternion.Euler(0.0f, meHit.areaRotationY, 0.0f) * areaDirection);
+			// 디폴트는 areaRotationY를 반영하지 않은채 areaDirection대로 만드는거다. 이게 기존 area공격에서 해왔던거고
+			// applyRootTransformRotation 값이 켜져있을땐 HitObject Transform자체를 회전시키면 된다.
+			// 이건 LowPolyMagmadar의 방사형 포에서 쓰는건데 이펙트를 히트오브젝트로 직접 써서 회전시켜야 하는 상황에 사용된다.
+			Quaternion rotation = Quaternion.identity;
+			if (meHit.applyRootTransformRotation)
+				rotation = Quaternion.LookRotation(Quaternion.Euler(0.0f, meHit.areaRotationY, 0.0f) * areaDirection);
+			else
+				rotation = Quaternion.LookRotation(areaDirection);
 			HitObject hitObject = GetCachedHitObject(meHit, areaPosition, rotation);
 			if (hitObject != null)
 			{
@@ -614,7 +621,13 @@ public class HitObject : MonoBehaviour
 		// step 2. Check each object.
 		float distanceMin = meHit.areaDistanceMin; // * parentTransform.localScale.x;
 		float distanceMax = meHit.areaDistanceMax; // * parentTransform.localScale.x;
-		Vector3 forward = Quaternion.Euler(0.0f, GetAreaRotationY(meHit, lifeTimeRatio), 0.0f) * areaForward;
+
+		// 루트 히트오브젝트를 직접 회전하는 경우엔 forward대로만 체크하면 된다.
+		Vector3 forward = Vector3.forward;
+		if (meHit.applyRootTransformRotation)
+			forward = areaForward;
+		else
+			forward = Quaternion.Euler(0.0f, GetAreaRotationY(meHit, lifeTimeRatio), 0.0f) * areaForward;
 
 		if (s_listAppliedAffectorProcessor == null)
 			s_listAppliedAffectorProcessor = new List<AffectorProcessor>();
@@ -976,6 +989,7 @@ public class HitObject : MonoBehaviour
 	MeHitObject _signal;
 	float _createTime;
 	Vector3 _createPosition;
+	Vector3 _createForward;
 	float _parentHitObjectCreateTime;
 	StatusBase _statusBase;
 	StatusStructForHitObject _statusStructForHitObject;
@@ -1017,6 +1031,7 @@ public class HitObject : MonoBehaviour
 		_createTime = Time.time;
 		_parentHitObjectCreateTime = parentHitObjectCreateTime;
 		_createPosition = cachedTransform.position;
+		_createForward = cachedTransform.forward;
 		_statusBase = statusBase;
 		CopyEtcStatusForHitObject(ref _statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
 
@@ -1212,6 +1227,19 @@ public class HitObject : MonoBehaviour
 		float lifeTimeRatio = 0.0f;
 		if (_signal.targetDetectType == eTargetDetectType.Area && _signal.RangeSignal == false)
 		{
+			// areaRotationY값을 트랜스폼에 적용하는 히트오브젝트인데 useAreaRotationYChange까지 켜있다면 시간에 따라 트랜스폼을 회전시켜야한다.
+			// 회전은 ignoreAreaHitLifeTimeRange범위 밖에서도 적용되는게 맞아서 위에서 하기로 한다.
+			if (_signal.applyRootTransformRotation && _signal.useAreaRotationYChange)
+			{
+				lifeTimeRatio = (Time.time - _createTime) / _signal.lifeTime;
+
+				// 그런데 이미 부모의 forward값을 비롯해 areaRotationY값이 트랜스폼에 다 적용된 상태라 델타로 계산하기엔 오차가 생길 수 있다.
+				// 그래서 최초값을 기억시켜놨다가 곱해서 쓰기로 한다.
+				float targetAreaRotationY = GetAreaRotationY(_signal, lifeTimeRatio);
+				float diffAreaRotationY = targetAreaRotationY - _signal.areaRotationY;
+				cachedTransform.forward = Quaternion.Euler(0.0f, diffAreaRotationY, 0.0f) * _createForward;
+			}
+
 			if (_signal.areaHitLifeTimeEarlyOffset > 0.0f && Time.time < _createTime + _signal.areaHitLifeTimeEarlyOffset)
 			{
 				Debug.LogError("Using areaHitLifeTimeEarlyOffset!!");
@@ -1221,7 +1249,10 @@ public class HitObject : MonoBehaviour
 				return;
 			if (_signal.ignoreAreaHitLifeTimeRange.y > 0.0f && Time.time > _createTime + _signal.ignoreAreaHitLifeTimeRange.y)
 				return;
-			lifeTimeRatio = (Time.time - _createTime) / _signal.lifeTime;
+
+			// 나눗셈 연산이 있어서 위에서 하지 않았을때만 처리.
+			if (lifeTimeRatio == 0.0f)
+				lifeTimeRatio = (Time.time - _createTime) / _signal.lifeTime;
 		}
 
 		switch (_signal.targetDetectType)

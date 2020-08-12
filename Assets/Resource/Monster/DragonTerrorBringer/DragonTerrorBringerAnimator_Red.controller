@@ -106,7 +106,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttack01
+  - NormalAttack1.5
   showHitEffect: 1
   hitEffectObject: {fileID: 1124335935880280, guid: b6d68723f7e26204d8f14d607141cc13,
     type: 3}
@@ -338,7 +338,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttack01
+  - NormalAttack1.5
   showHitEffect: 1
   hitEffectObject: {fileID: 1124335935880280, guid: b6d68723f7e26204d8f14d607141cc13,
     type: 3}
@@ -1368,7 +1368,7 @@ MonoBehaviour:
   useAreaRotationYChange: 0
   targetAreaRotationY: 0
   areaDistanceMin: 0.5
-  areaDistanceMax: 3.3
+  areaDistanceMax: 3.5
   areaHeightMin: 0
   areaHeightMax: 2
   areaAngle: 25
@@ -1667,10 +1667,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   randomStateWithConditionInfoList:
   - stateName: Base Layer.AttackGroup.MeleeAttack1
-    weight: 2
+    weight: 1.5
     useDistance1: 1
     distanceCompareType1: 3
-    distanceParameter1: 5
+    distanceParameter1: 4
     useDistance2: 0
     distanceCompareType2: 0
     distanceParameter2: 0
@@ -1711,28 +1711,6 @@ MonoBehaviour:
     existWallParameter: 0
     actionCountLimit: 0
   - stateName: Base Layer.AttackGroup.CastAttack2
-    weight: 1
-    useDistance1: 0
-    distanceCompareType1: 0
-    distanceParameter1: 0
-    useDistance2: 0
-    distanceCompareType2: 0
-    distanceParameter2: 0
-    useHpRatio1: 0
-    hpRatioCompareType1: 0
-    hpRatioParameter1: 0
-    useHpRatio2: 0
-    hpRatioCompareType2: 0
-    hpRatioParameter2: 0
-    useTargetActorState: 0
-    actorStateId: 
-    useMonsterCount: 0
-    monsterCountCompareType: 0
-    monsterCountParameter: 0
-    useCheckWall: 0
-    existWallParameter: 0
-    actionCountLimit: 0
-  - stateName: Base Layer.AttackGroup.CastAttack3
     weight: 0.8
     useDistance1: 0
     distanceCompareType1: 0
@@ -1754,8 +1732,30 @@ MonoBehaviour:
     useCheckWall: 0
     existWallParameter: 0
     actionCountLimit: 0
+  - stateName: Base Layer.AttackGroup.CastAttack3
+    weight: 1.2
+    useDistance1: 0
+    distanceCompareType1: 0
+    distanceParameter1: 0
+    useDistance2: 0
+    distanceCompareType2: 0
+    distanceParameter2: 0
+    useHpRatio1: 0
+    hpRatioCompareType1: 0
+    hpRatioParameter1: 0
+    useHpRatio2: 0
+    hpRatioCompareType2: 0
+    hpRatioParameter2: 0
+    useTargetActorState: 0
+    actorStateId: 
+    useMonsterCount: 0
+    monsterCountCompareType: 0
+    monsterCountParameter: 0
+    useCheckWall: 0
+    existWallParameter: 0
+    actionCountLimit: 0
   - stateName: Base Layer.AttackGroup.WindAttack1
-    weight: 1
+    weight: 1.2
     useDistance1: 0
     distanceCompareType1: 0
     distanceParameter1: 0
@@ -2813,7 +2813,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: ac9b8cd5f91eeef44a25fce0f31885c1, type: 3}
+  m_Motion: {fileID: 7400000, guid: 94249cad6ba93bf48b62a4bdc8b628ed, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -2972,7 +2972,7 @@ MonoBehaviour:
   useAreaRotationYChange: 0
   targetAreaRotationY: 0
   areaDistanceMin: 0.5
-  areaDistanceMax: 3.3
+  areaDistanceMax: 3.5
   areaHeightMin: 0
   areaHeightMax: 2
   areaAngle: 25
@@ -3466,7 +3466,7 @@ MonoBehaviour:
   areaAngle: 0
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
-  repeatCount: 6
+  repeatCount: 4
   repeatInterval: 0.05
   movementType: 0
   startDirectionType: 2
@@ -3474,7 +3474,7 @@ MonoBehaviour:
   howitzerType: 0
   useWorldSpaceDirection: 0
   bothRandomAngle: 1
-  leftRightRandomAngle: 40
+  leftRightRandomAngle: 60
   leftRandomAngle: 0
   rightRandomAngle: 0
   upDownRandomAngle: 0
@@ -3646,7 +3646,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttack01
+  - NormalAttack1.5
   showHitEffect: 1
   hitEffectObject: {fileID: 1124335935880280, guid: b6d68723f7e26204d8f14d607141cc13,
     type: 3}

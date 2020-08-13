@@ -226,16 +226,109 @@ public class HitObjectMovement : MonoBehaviour {
 		cachedTransform.forward = _forward;
 	}
 
+	int _lastBounceFrameCount;
 	public void Bounce(Vector3 wallNormal)
 	{
-		float prevMagnitude = _velocity.magnitude;
-		_velocity = Vector3.Reflect(_velocity, wallNormal);
-		if (_velocity.magnitude < prevMagnitude * 0.9f)
-			_velocity = _velocity.normalized * prevMagnitude;
+		//_velocity = Vector3.Reflect(_velocity, wallNormal);
 
+		// 디버깅해보니 아래 코드가 있어도 여전히 rigidbody의 속도가 줄어드는 경우가 생겼다.
+		//if (_velocity.magnitude < _speed * 0.9f)
+		//	_velocity = _velocity.normalized * _speed;
+		// 가장 의심되는 부분은 컬리더 두개가 닿아있는 곳에 충돌하는건데 그렇다고 이 ㄱ ㄴ 형태의 컬리더를 만들어낼 방법은 없으므로
+		// 이 프레임에만 검사하지 않고 튕기고 나서 몇프레임동안 체크하는 식으로 바꾸는 식으로 해봤는데..
+		//_bounceCheckRemainFrameCount = 150;
+		//_bounceCheckRemainFixedFrameCount = 150;
+		// 이렇게 해도 여전히 이상현상이 발생했다.
+		// 결국 방향을 제대로 잡지 못하면 angularVelocity부터 다 틀어지는거라
+		//
+		//if (_lastBounceFrameCount == Time.frameCount)
+		//	return;
+
+		//_lastBounceFrameCount = Time.frameCount;
+		//_velocity = Vector3.Reflect(_velocity, wallNormal);
+
+		// 정석대로 가기로 한다.
+		// 반사벡터를 구해서 
+		Vector3 reflectVelocity = Vector3.Reflect(_velocity, wallNormal);
+
+		// 반사방향으로 직선을 그어서 충돌하는게 있는지 확인한다. CheckWall
+		// 이랬더니 ㄴ 사이에 들어가서 모서리에서 튕기지 않는 버그가 발생했다. 근접했다고 그냥 리턴하면 안되는거였다.
+		// 그래서 체크로직을 조금만 수정해보기로 한다.
+		if (_lastBounceFrameCount == Time.frameCount)
+		{
+			Vector3 endPosition = cachedTransform.position + reflectVelocity.normalized * 0.333f;
+			if (CheckWallAndGroundQuad(cachedTransform.position, endPosition))
+				return;
+		}
+		_lastBounceFrameCount = Time.frameCount;
+
+		// 정리하자면,
+		// ㄴ ㄱ 의 컬리더가 겹쳐있는 부분에서 반사가 이뤄질때 벽을 투과하는 방향으로 반사가 결정되었는데 하필 막혀서 벽을 따라 이동하는 현상이 발생한거고
+		// 이걸 수정하기 위해 벽이나 쿼드 검사를 하기로 했는데
+		// 정상적으로 1회만 바운스 되는 경우엔 이런 검사를 할 필요가 없으니 Bounce FrameCount를 기억해놨다가
+		// 같은 프레임에 두번 일어나는 경우에만 체크해보고 정상적이지 않다면 리턴. 정상적이라면 덮어쓰는 형태로 가는거다.
+
+		_velocity = reflectVelocity;
 		_rigidbody.velocity = _velocity;
 		_rigidbody.angularVelocity = Vector3.zero;
 		_forward = cachedTransform.forward = _rigidbody.velocity.normalized;
+	}
+
+	// 반사방향을 적용하기 전에 유효하지 않은지 테스트하기 위해 추가한 함수.
+	static RaycastHit[] s_raycastHitList = null;
+	public static bool CheckWallAndGroundQuad(Vector3 position, Vector3 targetPosition)
+	{
+		// temp - check wall
+		if (s_raycastHitList == null)
+			s_raycastHitList = new RaycastHit[100];
+
+		// step 1. Physics.RaycastNonAlloc
+		Vector3 diff = targetPosition - position;
+		float length = diff.magnitude;
+		Vector3 rayPosition = position;
+		rayPosition.y = 1.0f;
+		int resultCount = Physics.RaycastNonAlloc(rayPosition, diff.normalized, s_raycastHitList, length, 1);
+
+		// step 2. Ray Test
+		float reservedNearestDistance = length;
+		Vector3 endPosition = Vector3.zero;
+		for (int i = 0; i < resultCount; ++i)
+		{
+			if (i >= s_raycastHitList.Length)
+				break;
+
+			bool planeCollided = false;
+			bool groundQuadCollided = false;
+			Vector3 wallNormal = Vector3.forward;
+			Collider col = s_raycastHitList[i].collider;
+			if (col.isTrigger)
+				continue;
+
+			if (BattleInstanceManager.instance.planeCollider != null && BattleInstanceManager.instance.planeCollider == col)
+			{
+				planeCollided = true;
+				wallNormal = s_raycastHitList[i].normal;
+			}
+
+			if (BattleInstanceManager.instance.currentGround != null && BattleInstanceManager.instance.currentGround.CheckQuadCollider(col))
+			{
+				groundQuadCollided = true;
+				wallNormal = s_raycastHitList[i].normal;
+				return true;
+			}
+
+			AffectorProcessor targetAffectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(col);
+			if (targetAffectorProcessor != null)
+			{
+				//if (Team.CheckTeamFilter(statusForHitObject.teamId, col, meHit.teamCheckType))
+				//	monsterCollided = true;
+			}
+			else if (planeCollided == false && groundQuadCollided == false)
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	float _remainCurveStartDelayTime = 0.0f;
@@ -251,6 +344,15 @@ public class HitObjectMovement : MonoBehaviour {
 	{
 		if (_rigidbody.detectCollisions == false)
 			return;
+
+		//if (_bounceCheckRemainFrameCount > 0)
+		//{
+		//	_bounceCheckRemainFrameCount -= 1;
+		//	_rigidbody.angularVelocity = Vector3.zero;
+		//
+		//	if (_rigidbody.velocity.magnitude < _speed * 0.9f)
+		//		_rigidbody.velocity = _velocity.normalized * _speed;
+		//}
 
 		UpdateOverrideSpeed();
 

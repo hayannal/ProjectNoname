@@ -55,7 +55,7 @@ public class RetrySendManager : MonoBehaviour {
 		_showWaitingNetworkCanvas = false;
 	}
 
-	public void OnFailure()
+	public void OnFailure(Action reloadSceneCallback = null)
 	{
 		if (_showWaitingNetworkCanvas)
 			WaitingNetworkCanvas.Show(false);
@@ -69,7 +69,11 @@ public class RetrySendManager : MonoBehaviour {
 				_cachedAction.Invoke();
 		}, () =>
 		{
-			// To Main Scene?
+			// 씬 재로드 하기전에 뭔가 체크해둘게 필요하면 여기서 처리한다.
+			if (reloadSceneCallback != null) reloadSceneCallback.Invoke();
+
+			// 모든 정보를 다시 받아야하기 때문에 로그인부터 하는게 맞다.
+			PlayerData.instance.ResetData();
 			SceneManager.LoadScene(0);
 		});
 	}
@@ -128,7 +132,8 @@ public class RetrySendManager : MonoBehaviour {
 			_listFailureIndex.Add(index);
 			YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("SystemUI_Reconnect"), OnClickRetryForList, () =>
 			{
-				// To Main Scene?
+				// 모든 정보를 다시 받아야하기 때문에 로그인부터 하는게 맞다.
+				PlayerData.instance.ResetData();
 				SceneManager.LoadScene(0);
 			});
 		}

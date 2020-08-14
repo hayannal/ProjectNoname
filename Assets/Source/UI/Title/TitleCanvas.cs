@@ -46,7 +46,7 @@ public class TitleCanvas : MonoBehaviour
 		// 이 타이밍이 타이틀 나올때 어두운 백그라운드가 사라지는 타이밍이다.
 		// TitleImage는 이 타이밍에 맞춰서 하얀색으로 바뀌어져있을거다.
 		// 이때 EventManager에게 Lobby화면이 시작됨을 알린다.
-		OnLobby();
+		OnFadeOut();
 	}
 
 	bool _fade = false;
@@ -65,8 +65,8 @@ public class TitleCanvas : MonoBehaviour
 		titleImge.color = Color.white;
 		Timing.RunCoroutine(ShowLogoObject(1.0f));
 
-		// 타이틀 나올때 스킵하면 이쪽을 통해서 OnLobby 호출
-		OnLobby();
+		// 타이틀 나올때 스킵하면 이쪽을 통해서 OnFadeOut 호출
+		OnFadeOut();
 	}
 
 	IEnumerator<float> ShowLogoObject(float delayTime)
@@ -75,43 +75,13 @@ public class TitleCanvas : MonoBehaviour
 		logoObject.SetActive(true);
 	}
 
-	void OnLobby()
+	void OnFadeOut()
 	{
+		// SaveData 처리를 여기서 직접 하려다보니 타이틀이 없을때 처리하기가 애매해서 LobbyCanvas쪽으로 빼기로 한다.
 		// Event를 진행할게 있다면 튕겨서 재접한 상황은 아니라 정상적인 종료나 패배일거다. 처음 켤때만 호출되는 곳이니 서버 이벤트만 있는지 검사하면 된다.
 		if (EventManager.instance.IsStandbyServerEvent())
 			EventManager.instance.OnLobby();
-		else if (ClientSaveData.instance.IsCachedInProgressGame())
-		{
-			// 죽은 상태의 저장 데이터인지 확인한다.
-			if (ClientSaveData.instance.GetCachedHpRatio() == 0.0f)
-			{
-				OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_ReenterAfterDying"), () =>
-				{
-					ClientSaveData.instance.OnEndGame();
-				});
-				return;
-			}
-
-			// 아무 이벤트도 실행할게 없는데 제대로 완료처리 되지 않은 게임이 있다면 복구를 물어본다.
-			YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_Reenter"), () =>
-			{
-				if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null && TitleCanvas.instance.gameObject.activeSelf)
-					TitleCanvas.instance.FadeTitle();
-
-				ClientSaveData.instance.MoveToInProgressGame();
-			}, () =>
-			{
-				if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null && TitleCanvas.instance.gameObject.activeSelf)
-					TitleCanvas.instance.FadeTitle();
-
-				ClientSaveData.instance.OnEndGame();
-			}, true);
-
-			// 여기서 복구할때 필요한 레벨팩 이펙트들을 미리 로딩해놓는다.
-			// 다른 이펙트는 사실상 복구 직후에 필요하지 않아서 그때 해도 충분한데 레벨팩만 문제라 미리 해두는거다.
-			string jsonCachedLevelPackData = ClientSaveData.instance.GetCachedLevelPackData();
-			if (string.IsNullOrEmpty(jsonCachedLevelPackData) == false)
-				LevelPackDataManager.instance.PreloadInProgressLevelPackData(jsonCachedLevelPackData);
-		}
+		else
+			LobbyCanvas.instance.CheckClientSaveData();
 	}
 }

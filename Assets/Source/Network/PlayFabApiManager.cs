@@ -517,6 +517,52 @@ public class PlayFabApiManager : MonoBehaviour
 		ClientSaveData.instance.OnEndGame();
 	}
 
+	public void RequestCancelChallenge(Action successCallback, bool checkClientSaveDataOnEnterLobby)
+	{
+		if (PlayerData.instance.clientOnly)
+		{
+			if (PlayerData.instance.currentChallengeMode && ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Chaos))
+			{
+				PlayerData.instance.chaosMode = true;
+				PlayerData.instance.purifyCount = 0;
+			}
+			if (successCallback != null) successCallback.Invoke();
+			return;
+		}
+
+		ExecuteCloudScriptRequest request = new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "CancelChallenge",
+			GeneratePlayStreamEvent = true,
+		};
+		Action action = () =>
+		{
+			PlayFabClientAPI.ExecuteCloudScript(request, (success) =>
+			{
+				RetrySendManager.instance.OnSuccess();
+				if (PlayerData.instance.currentChallengeMode && ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Chaos))
+				{
+					PlayerData.instance.chaosMode = true;
+					PlayerData.instance.purifyCount = 0;
+				}
+				// 도전모드 취소할땐 서버 처리가 다 끝나야지만 재진입 저장 데이터를 초기화 시켜야한다. 이래야 네트워크 상황 안좋아서 재시도할때도 제대로 처리할 수 있게 된다.
+				ClientSaveData.instance.OnEndGame();
+				if (successCallback != null) successCallback.Invoke();
+			}, (error) =>
+			{
+				// 네트워크 오류로 인해 처리되지 않아 재시작 할 경우를 대비해서 
+				RetrySendManager.instance.OnFailure(() =>
+				{
+					// 필요하다면 플래그를 켜둔다.
+					// 지금은 도전모드 CancelChallenge 패킷 못 보냈을때에만 사용된다.
+					if (checkClientSaveDataOnEnterLobby)
+						ClientSaveData.instance.checkClientSaveDataOnEnterLobby = true;
+				});
+			});
+		};
+		RetrySendManager.instance.RequestAction(action, true);
+	}
+	
 	public void RequestEndGame(bool clear, bool currentChaos, int playChapter, int stage, int addGold, int addSeal, List<ObscuredString> listDropItemId, Action<bool, string, string> successCallback)    // List<Item>
 	{
 		// 인게임 플레이 하고 정산할때 호출되는 함수인데

@@ -40,6 +40,75 @@ public class LobbyCanvas : MonoBehaviour
 		expGaugeEndPointImage.gameObject.SetActive(false);
 		_defaultExpGaugeHeight = expGaugeRectTransform.sizeDelta.y;
 		_defaultExpGaugeColor = expGaugeImage.color;
+
+		// 이게 켜있으면 TitleCanvas보이지 않는 씬 재로드일때에도 재진입 로직을 체크한다.
+		if (ClientSaveData.instance.checkClientSaveDataOnEnterLobby)
+			CheckClientSaveData();
+	}
+
+	// 원래 이 함수는 앱 실행 후 1회만 TitleCanvas 없어지는 시점에 호출되지만 네트워크 오류로 인한 재시작시 호출될때도 있다.
+	// 그래서 원래 TitleCanvas에 있던 코드인데 이쪽으로 옮겨둔거다.
+	public void CheckClientSaveData()
+	{
+		if (ClientSaveData.instance.IsCachedInProgressGame() == false)
+			return;
+
+		// 죽은 상태의 저장 데이터인지 확인한다.
+		if (ClientSaveData.instance.GetCachedHpRatio() == 0.0f)
+		{
+			// 도전모드면 클리어 패킷을 보내버림. 로그인 하자마자 보내는거라 막을 방법이 없을거다.
+			if (PlayerData.instance.currentChallengeMode)
+				PlayFabApiManager.instance.RequestCancelChallenge(null, false);
+			OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_ReenterAfterDying"), () =>
+			{
+				ClientSaveData.instance.OnEndGame();
+			});
+			return;
+		}
+
+		// 도전모드를 취소할때는 조금 다르게 처리해야한다.
+		string message = UIString.instance.GetString("GameUI_Reenter");
+		if (PlayerData.instance.currentChallengeMode)
+			message = string.Format("{0}\n{1}", message, UIString.instance.GetString("GameUI_ReenterChallenge"));
+
+		// 아무 이벤트도 실행할게 없는데 제대로 완료처리 되지 않은 게임이 있다면 복구를 물어본다.
+		YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), message, () =>
+		{
+			if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null && TitleCanvas.instance.gameObject.activeSelf)
+				TitleCanvas.instance.FadeTitle();
+
+			ClientSaveData.instance.MoveToInProgressGame();
+		}, () =>
+		{
+			if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null && TitleCanvas.instance.gameObject.activeSelf)
+				TitleCanvas.instance.FadeTitle();
+
+			if (PlayerData.instance.currentChallengeMode)
+			{
+				// 도전모드의 재진입을 취소하는거라면 여러가지 할일이 있다.
+				// 먼저 서버 동기화
+				PlayFabApiManager.instance.RequestCancelChallenge(() =>
+				{
+					ClientSaveData.instance.OnEndGame();
+
+					// 이제 게이트 필라를 카오스 모드꺼로 바꿔주고
+					GatePillar.instance.gameObject.SetActive(false);
+					BattleInstanceManager.instance.GetCachedObject(StageManager.instance.gatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
+					//BattleInstanceManager.instance.GetCachedObject(challengeGatePillarSpawnEffectPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
+
+					// 가장 중요한 맵 재구축. 씬 이동 없이 해야한다. 이름은 ChangeChallengeMode지만 전환용으로 쓸수도 있다.
+					StageManager.instance.ChangeChallengeMode();
+				}, true);
+			}
+			else
+				ClientSaveData.instance.OnEndGame();
+		}, true);
+
+		// 여기서 복구할때 필요한 레벨팩 이펙트들을 미리 로딩해놓는다.
+		// 다른 이펙트는 사실상 복구 직후에 필요하지 않아서 그때 해도 충분한데 레벨팩만 문제라 미리 해두는거다.
+		string jsonCachedLevelPackData = ClientSaveData.instance.GetCachedLevelPackData();
+		if (string.IsNullOrEmpty(jsonCachedLevelPackData) == false)
+			LevelPackDataManager.instance.PreloadInProgressLevelPackData(jsonCachedLevelPackData);
 	}
 
 	public void OnClickDotButton()

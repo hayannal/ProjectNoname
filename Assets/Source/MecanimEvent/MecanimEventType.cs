@@ -25,5 +25,6 @@ public enum eMecanimEventType
 	Summon,
 	BattleToast,
 	ChangeMecanimState,
+	SubAnimator,
 }
 #endregion

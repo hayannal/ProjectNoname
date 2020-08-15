@@ -16,6 +16,7 @@ public class MeLookAt : MecanimEventBase
 	public bool lookAtRandom;
 	public float desireDistance = 5.0f;
 	public float lerpPower = 60.0f;
+	public string boneName;
 
 #if UNITY_EDITOR
 	override public void OnGUI_PropertyWindow()
@@ -36,6 +37,7 @@ public class MeLookAt : MecanimEventBase
 			desireDistance = EditorGUILayout.FloatField("Desire Distance :", desireDistance);
 		}
 		lerpPower = EditorGUILayout.FloatField("Lerp Power :", lerpPower);
+		boneName = EditorGUILayout.TextField("Bone Name :", boneName);
 	}
 #endif
 
@@ -43,6 +45,8 @@ public class MeLookAt : MecanimEventBase
 	bool _initializedRandom = false;
 	float _randomAngle;
 	Vector3 _randomPosition;
+	DummyFinder _dummyFinder = null;
+	Transform _boneTransform;
 	override public void OnRangeSignalStart(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		if (_actor == null)
@@ -51,6 +55,13 @@ public class MeLookAt : MecanimEventBase
 				_actor = animator.transform.parent.GetComponent<Actor>();
 			if (_actor == null)
 				_actor = animator.GetComponent<Actor>();
+		}
+
+		if (string.IsNullOrEmpty(boneName) == false)
+		{
+			if (_dummyFinder == null) _dummyFinder = animator.GetComponent<DummyFinder>();
+			if (_dummyFinder == null) _dummyFinder = animator.gameObject.AddComponent<DummyFinder>();
+			if (_boneTransform == null) _boneTransform = _dummyFinder.FindTransform(boneName);
 		}
 
 #if UNITY_EDITOR
@@ -95,7 +106,9 @@ public class MeLookAt : MecanimEventBase
 		if (lookAtRandom && _initializedRandom)
 			targetPosition = _randomPosition;
 
-		Quaternion lookRotation = Quaternion.LookRotation(targetPosition - _actor.cachedTransform.position);
+		Vector3 basePosition = _actor.cachedTransform.position;
+		if (_boneTransform != null) basePosition = _boneTransform.position;
+		Quaternion lookRotation = Quaternion.LookRotation(targetPosition - basePosition);
 		if (lookAtTarget && leftRightRandomAngle > 0.0f && _initializedRandom)
 		{
 			Quaternion rotation = Quaternion.AngleAxis(_randomAngle, Vector3.up);
@@ -105,6 +118,16 @@ public class MeLookAt : MecanimEventBase
 		{
 			Quaternion rotation = Quaternion.AngleAxis(lootAtTargetOffsetAngle, Vector3.up);
 			lookRotation *= rotation;
+		}
+
+		// bone이 설정되어있다면 bone에다가 적용한다.
+		if (_boneTransform != null)
+		{
+			if (lerpPower >= 60.0f)
+				_boneTransform.rotation = lookRotation;
+			else
+				_boneTransform.rotation = Quaternion.Slerp(_boneTransform.rotation, lookRotation, lerpPower * Time.deltaTime);
+			return;
 		}
 
 		if (lerpPower >= 60.0f)

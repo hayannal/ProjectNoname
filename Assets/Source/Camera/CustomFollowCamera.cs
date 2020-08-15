@@ -96,7 +96,9 @@ public class CustomFollowCamera : MonoBehaviour
 			return;
 		}
 
-		cachedTransform.position = Vector3.Lerp(cachedTransform.position, cameraRelativePosition, followSpeed * Time.deltaTime);
+		// 카메라에는 Time.deltaTime 대신 Time.smoothDeltaTime쓰는게 좋다.
+		// 이동량의 정확도보다 부드러운게 더 중요하기 때문. 캐릭이랑 다르다.
+		cachedTransform.position = Vector3.Lerp(cachedTransform.position, cameraRelativePosition, followSpeed * Time.smoothDeltaTime);
 	}
 
 	#endregion

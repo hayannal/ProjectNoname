@@ -182,8 +182,8 @@ MonoBehaviour:
   actorId: BlackWoodSciFi
   commonPoolPreloadObjectList: []
   selfPassivePreloadObjectList: []
-  gaugeOffsetY: 0.3
-  monsterHpGaugeWidth: 1
+  gaugeOffsetY: 0.4
+  monsterHpGaugeWidth: 1.3
 --- !u!114 &3671749498019688727
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -196,10 +196,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16c7fbc98e43a374b85a6a2909d657eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startDelayRange: {x: 0.2, y: 0.2}
+  startDelayRange: {x: 0.1, y: 0.2}
   startState: 3
   useStateList: 010000010100
-  moveTimeRange: {x: 0.5, y: 1.5}
+  moveTimeRange: {x: 2, y: 4.5}
   refreshTickTimeRange: {x: 1.5, y: 1.5}
   desireDistance: 5
   straightMoveTimeRange: {x: 0, y: 0}
@@ -215,7 +215,7 @@ MonoBehaviour:
   attackActionName: Attack
   attackActionFadeDuration: 0.44
   lookAtTargetBeforeAttack: 1
-  attackDelayTimeRange: {x: 4, y: 4}
+  attackDelayTimeRange: {x: 0.1, y: 1.5}
   useAnimatorParameterForAI: 0
   listAnimatorParameterForAI: 
 --- !u!1001 &7870534371199355684
@@ -274,11 +274,11 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: e512f48116746384e87bab1c093d44c1, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.65
+      propertyPath: m_LocalScale.y
+      value: 0.57
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: e512f48116746384e87bab1c093d44c1, type: 3}
-      propertyPath: m_LocalScale.y
+      propertyPath: m_LocalScale.x
       value: 0.65
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: e512f48116746384e87bab1c093d44c1, type: 3}

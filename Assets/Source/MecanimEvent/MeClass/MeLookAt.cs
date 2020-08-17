@@ -108,7 +108,9 @@ public class MeLookAt : MecanimEventBase
 
 		Vector3 basePosition = _actor.cachedTransform.position;
 		if (_boneTransform != null) basePosition = _boneTransform.position;
-		Quaternion lookRotation = Quaternion.LookRotation(targetPosition - basePosition);
+		Vector3 diff = targetPosition - basePosition;
+		diff.y = 0.0f;
+		Quaternion lookRotation = Quaternion.LookRotation(diff);
 		if (lookAtTarget && leftRightRandomAngle > 0.0f && _initializedRandom)
 		{
 			Quaternion rotation = Quaternion.AngleAxis(_randomAngle, Vector3.up);

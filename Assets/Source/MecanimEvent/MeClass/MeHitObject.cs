@@ -512,7 +512,7 @@ public class MeHitObject : MecanimEventBase {
 		}
 
 		Vector3 offsetPosition = HitObject.GetSpawnPosition(spawnTransform, this, t, actor, 0);
-		Vector3 direction = HitObject.GetSpawnDirection(offsetPosition, this, t, HitObject.GetFallbackTargetPosition(t)) * 1.5f;
+		Vector3 direction = HitObject.GetSpawnDirection(offsetPosition, spawnTransform, this, t, HitObject.GetFallbackTargetPosition(t)) * 1.5f;
 
 		Color defaultColor = Gizmos.color;
 		Gizmos.color = new Color(1.0f, 0.1f, 0.0f, 0.9f);

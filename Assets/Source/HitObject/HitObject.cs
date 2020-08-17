@@ -160,7 +160,7 @@ public class HitObject : MonoBehaviour
 				}
 				else if (meHit.targetDetectType == eTargetDetectType.SphereCast)
 				{
-					areaDirection = GetSpawnDirection(areaPosition, meHit, parentTransform, GetTargetPosition(meHit, parentActor, hitSignalIndexInAction), parentActor.targetingProcessor);
+					areaDirection = GetSpawnDirection(areaPosition, spawnTransform, meHit, parentTransform, GetTargetPosition(meHit, parentActor, hitSignalIndexInAction), parentActor.targetingProcessor);
 					endPosition = CheckSphereCast(areaPosition, areaDirection, meHit, statusBase, statusStructForHitObject, GetGatePillarCompareTime(0.0f, parentHitObjectCreateTime));
 				}
 			}
@@ -205,7 +205,7 @@ public class HitObject : MonoBehaviour
 		// step2. Collider타입은 상황에 맞게 1개 혹은 여러개 만들어야한다.
 		Vector3 targetPosition = GetTargetPosition(meHit, parentActor, hitSignalIndexInAction);
 		Vector3 defaultPosition = GetSpawnPosition(spawnTransform, meHit, parentTransform, parentActor, hitSignalIndexInAction);
-		Quaternion defaultRotation = Quaternion.LookRotation(GetSpawnDirection(defaultPosition, meHit, parentTransform, targetPosition, parentActor.targetingProcessor));
+		Quaternion defaultRotation = Quaternion.LookRotation(GetSpawnDirection(defaultPosition, spawnTransform, meHit, parentTransform, targetPosition, parentActor.targetingProcessor));
 		bool normalAttack = parentActor.actionController.mecanimState.IsState((int)eMecanimState.Attack);
 		int parallelAddCountByLevelPack = normalAttack ? ParallelHitObjectAffector.GetAddCount(parentActor.affectorProcessor) : 0;
 		int parallelCount = meHit.parallelCount + parallelAddCountByLevelPack;
@@ -216,7 +216,7 @@ public class HitObject : MonoBehaviour
 			for (int i = 0; i < parallelCount; ++i)
 			{
 				Vector3 position = GetParallelSpawnPosition(spawnTransform, meHit, parentTransform, parallelCount, i, parallelDistance, parentActor, hitSignalIndexInAction);
-				Quaternion rotation = Quaternion.LookRotation(GetSpawnDirection(defaultPosition, meHit, parentTransform, targetPosition, parentActor.targetingProcessor));
+				Quaternion rotation = Quaternion.LookRotation(GetSpawnDirection(defaultPosition, spawnTransform, meHit, parentTransform, targetPosition, parentActor.targetingProcessor));
 				HitObject parallelHitObject = GetCachedHitObject(meHit, position, rotation);
 				if (parallelHitObject == null)
 					continue;
@@ -425,11 +425,15 @@ public class HitObject : MonoBehaviour
 	{
 		Vector3 baseSpawnPosition = GetSpawnPosition(spawnTransform, meHit, parentActorTransform, parentActor, hitSignalIndexInAction);
 
-		Vector3 parentActorPosition = parentActorTransform.position;
+		Transform baseTransform = parentActorTransform;
+		if (meHit.createPositionType == eCreatePositionType.Bone && meHit.useBoneRotation)
+			baseTransform = spawnTransform;
+
+		Vector3 basePosition = baseTransform.position;
 		Vector3 parallelOffset = Vector3.zero;
 		parallelOffset.x = ((parallelCount - 1) * 0.5f * parallelDistance) * -1.0f + parallelDistance * parallelIndex;
-		Vector3 offsetPosition = parentActorTransform.TransformPoint(parallelOffset);
-		offsetPosition -= parentActorPosition;
+		Vector3 offsetPosition = baseTransform.TransformPoint(parallelOffset);
+		offsetPosition -= basePosition;
 		return baseSpawnPosition + offsetPosition;
 	}
 
@@ -476,7 +480,7 @@ public class HitObject : MonoBehaviour
 		return t.TransformPoint(fallbackPosition);
 	}
 
-	public static Vector3 GetSpawnDirection(Vector3 spawnPosition, MeHitObject meHit, Transform parentActorTransform, Vector3 targetPosition, TargetingProcessor targetingProcessor = null)
+	public static Vector3 GetSpawnDirection(Vector3 spawnPosition, Transform spawnTransform, MeHitObject meHit, Transform parentActorTransform, Vector3 targetPosition, TargetingProcessor targetingProcessor = null)
 	{
 		Vector3 result = Vector3.zero;
 		switch (meHit.startDirectionType)
@@ -533,6 +537,8 @@ public class HitObject : MonoBehaviour
 		}
 		if (meHit.startDirectionType == HitObjectMovement.eStartDirectionType.Direction && meHit.useWorldSpaceDirection)
 			return result;
+		if (meHit.createPositionType == eCreatePositionType.Bone && meHit.useBoneRotation)
+			return spawnTransform.TransformDirection(result);
 		return parentActorTransform.TransformDirection(result);
 	}
 

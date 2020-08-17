@@ -54,7 +54,7 @@ public class ContinuousHitObjectGeneratorBase : MonoBehaviour
 		// AttachChild해놨으면 알아서 밀려나갈때 발생기도 밀려날거고 그렇지 않다면 생성된 자리에서 만들어낼거다.
 		Vector3 targetPosition = HitObject.GetTargetPosition(_signal, _parentActor, _hitSignalIndexInAction);
 		Vector3 position = cachedTransform.position;
-		Vector3 spawnDirection = HitObject.GetSpawnDirection(position, _signal, cachedTransform, targetPosition, _parentActor.targetingProcessor);
+		Vector3 spawnDirection = HitObject.GetSpawnDirection(position, cachedTransform, _signal, cachedTransform, targetPosition, _parentActor.targetingProcessor);
 		if (attachChild && _signal.createPositionType == HitObject.eCreatePositionType.Bone)
 		{
 			// attachChild 켜고 Bone 켜면 특정 본 포지션에다 넣어두고 쭉 생성하는건데 이땐 몇몇 예외처리들이 있어야 제대로 동작이 된다.

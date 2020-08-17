@@ -196,10 +196,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16c7fbc98e43a374b85a6a2909d657eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startDelayRange: {x: 0.25, y: 0.25}
+  startDelayRange: {x: 0, y: 0}
   startState: 2
-  useStateList: 000001010100
-  moveTimeRange: {x: 1, y: 1}
+  useStateList: 010001010100
+  moveTimeRange: {x: 1, y: 2}
   refreshTickTimeRange: {x: 1, y: 1}
   desireDistance: 5
   straightMoveTimeRange: {x: 0, y: 0}
@@ -209,13 +209,13 @@ MonoBehaviour:
   customActionPlayType: 1
   customActionName: 
   customActionFadeDuration: 0.05
-  chaseDistanceRange: {x: 7, y: 7}
+  chaseDistanceRange: {x: 4.5, y: 7}
   chaseCancelTimeRange: {x: 4, y: 10}
-  attackActionPlayType: 2
-  attackActionName: AttackGroup
+  attackActionPlayType: 0
+  attackActionName: Attack
   attackActionFadeDuration: 0.44
   lookAtTargetBeforeAttack: 1
-  attackDelayTimeRange: {x: 1.5, y: 1.5}
+  attackDelayTimeRange: {x: 0.5, y: 1.5}
   useAnimatorParameterForAI: 0
   listAnimatorParameterForAI: 
 --- !u!1001 &6934550116843411994
@@ -228,42 +228,6 @@ PrefabInstance:
     - target: {fileID: 100052, guid: 35a2848266d1ff244a2d940af484a62b, type: 3}
       propertyPath: m_Name
       value: Melee_droid
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 35a2848266d1ff244a2d940af484a62b, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 35a2848266d1ff244a2d940af484a62b, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.030793784
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 35a2848266d1ff244a2d940af484a62b, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: -81.2649
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 35a2848266d1ff244a2d940af484a62b, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 61.31848
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 35a2848266d1ff244a2d940af484a62b, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 35.61478
-      objectReference: {fileID: 0}
-    - target: {fileID: 400032, guid: 35a2848266d1ff244a2d940af484a62b, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.6036462
-      objectReference: {fileID: 0}
-    - target: {fileID: 400032, guid: 35a2848266d1ff244a2d940af484a62b, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.119914085
-      objectReference: {fileID: 0}
-    - target: {fileID: 400032, guid: 35a2848266d1ff244a2d940af484a62b, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0.7827967
-      objectReference: {fileID: 0}
-    - target: {fileID: 400032, guid: 35a2848266d1ff244a2d940af484a62b, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.09198525
       objectReference: {fileID: 0}
     - target: {fileID: 400052, guid: 35a2848266d1ff244a2d940af484a62b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -321,14 +285,26 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1.2
       objectReference: {fileID: 0}
-    - target: {fileID: 2300000, guid: 35a2848266d1ff244a2d940af484a62b, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 5d3db4b6f13785145ada27b1602e8be5, type: 2}
-    - target: {fileID: 2300002, guid: 35a2848266d1ff244a2d940af484a62b, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 5d3db4b6f13785145ada27b1602e8be5, type: 2}
+    - target: {fileID: 400000, guid: 35a2848266d1ff244a2d940af484a62b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 35a2848266d1ff244a2d940af484a62b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.030793784
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 35a2848266d1ff244a2d940af484a62b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -81.2649
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 35a2848266d1ff244a2d940af484a62b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 61.31848
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 35a2848266d1ff244a2d940af484a62b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 35.61478
+      objectReference: {fileID: 0}
     - target: {fileID: 9500000, guid: 35a2848266d1ff244a2d940af484a62b, type: 3}
       propertyPath: m_ApplyRootMotion
       value: 0
@@ -349,6 +325,30 @@ PrefabInstance:
         animation clip 'skill3'"
       objectReference: {fileID: 0}
     - target: {fileID: 13700000, guid: 35a2848266d1ff244a2d940af484a62b, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 5d3db4b6f13785145ada27b1602e8be5, type: 2}
+    - target: {fileID: 400032, guid: 35a2848266d1ff244a2d940af484a62b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.6036462
+      objectReference: {fileID: 0}
+    - target: {fileID: 400032, guid: 35a2848266d1ff244a2d940af484a62b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.119914085
+      objectReference: {fileID: 0}
+    - target: {fileID: 400032, guid: 35a2848266d1ff244a2d940af484a62b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.7827967
+      objectReference: {fileID: 0}
+    - target: {fileID: 400032, guid: 35a2848266d1ff244a2d940af484a62b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.09198525
+      objectReference: {fileID: 0}
+    - target: {fileID: 2300000, guid: 35a2848266d1ff244a2d940af484a62b, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 5d3db4b6f13785145ada27b1602e8be5, type: 2}
+    - target: {fileID: 2300002, guid: 35a2848266d1ff244a2d940af484a62b, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 5d3db4b6f13785145ada27b1602e8be5, type: 2}

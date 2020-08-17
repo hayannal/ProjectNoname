@@ -72,6 +72,8 @@ public class TeleportingHitObjectAffector : AffectorBase
 
 		if (_affectorValueLevelTableData.iValue2 == 1 && BurrowAffector.CheckBurrow(defenderAffectorProcessor))
 			return;
+		if (_affectorValueLevelTableData.iValue2 == 1 && BurrowOnStartAffector.CheckBurrow(defenderAffectorProcessor))
+			return;
 		if (_affectorValueLevelTableData.iValue2 == 1 && defenderAffectorProcessor.actor.actionController.mecanimState.IsState((int)eMecanimState.DontDie))
 			return;
 

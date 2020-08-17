@@ -288,6 +288,9 @@ public class MonsterActor : Actor
 		if (BurrowAffector.CheckDie(affectorProcessor))
 			yield break;
 
+		// 위 Burrow와 달리 추가작업만 하면 되는거라 yield break는 하지 않는다.
+		BurrowOnStartAffector.CheckDie(affectorProcessor);
+
 		bool needRestoreSuicide = false;
 		float suicideLifeTime = -1.0f;
 		bool suicide = SuicideAffector.CheckSuicide(affectorProcessor, ref suicideLifeTime, ref needRestoreSuicide);

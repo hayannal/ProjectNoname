@@ -378,6 +378,8 @@ public class HitObject : MonoBehaviour
 		{
 			if (BurrowAffector.CheckBurrow(parentActor.affectorProcessor))
 				offset.y -= BurrowAffector.s_BurrowPositionY;
+
+			// BurrowOnStart는 올라와있는 상태에서 쏠테니 처리하지 않는다.
 		}
 
 		Transform t = spawnTransform;

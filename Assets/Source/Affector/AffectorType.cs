@@ -69,10 +69,12 @@ public enum eAffectorType
 	Vampire,
 	Rush,
 	TeleportTargetPosition,
+
 	Rotate,
 	Suicide,
 	DelayedBaseDamage,
 	AttackOnMoving,
 	MonsterSleeping,
+	BurrowOnStart,
 }
 #endregion

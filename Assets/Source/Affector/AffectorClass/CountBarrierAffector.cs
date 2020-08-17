@@ -73,6 +73,10 @@ public class CountBarrierAffector : AffectorBase
 			// 안전처리는 빼기로 한다.
 			//_handleOnBarrierEffectObjectPrefab = AddressableAssetLoadManager.GetAddressableAsset(affectorValueLevelTableData.sValue3);
 		}
+
+#if UNITY_EDITOR
+		_affectorProcessor.dontClearOnDisable = true;
+#endif
 	}
 
 	public override void UpdateAffector()
@@ -139,9 +143,23 @@ public class CountBarrierAffector : AffectorBase
 		if (_loopEffectTransform != null)
 		{
 			_loopEffectTransform.gameObject.SetActive(false);
+#if UNITY_EDITOR
+			_loopEffectTransform.parent = null;
+#endif
 			_loopEffectTransform = null;
 		}
 	}
+
+#if UNITY_EDITOR
+	public override void DisableAffector()
+	{
+		// 배틀씬에서 스폰 플래그를 꺼내서 테스트할때 문제가 발생했다.
+		// 툴에서 테스트할때는 꺼내져있는 오브젝트들을 지우고 새로 생성하는 구조다보니 어태치 해둔 보호막 이펙트가 같이 지워져서 다음번 풀에서 꺼내올때 에러가 나게된다.
+		// 이걸 방지하기 위해 에디터 상에서는 Disable될때 FinalizeAffector를 호출하기로 한다.
+		// 일반적인 보통의 플레이에서는 일어나지 않을테니 UNITY_EDITOR디파인으로 걸어두겠다.
+		FinalizeAffector();
+	}
+#endif
 
 	void OnBarrier(HitParameter hitParameter)
 	{

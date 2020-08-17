@@ -196,11 +196,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16c7fbc98e43a374b85a6a2909d657eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startDelayRange: {x: 0.25, y: 0.25}
+  startDelayRange: {x: 0.1, y: 0.25}
   startState: 0
   useStateList: 010000010100
-  moveTimeRange: {x: 5, y: 5}
-  refreshTickTimeRange: {x: 1, y: 1}
+  moveTimeRange: {x: 4, y: 4.5}
+  refreshTickTimeRange: {x: 2.5, y: 2.5}
   desireDistance: 5
   straightMoveTimeRange: {x: 0, y: 0}
   straightRefreshTickTimeRange: {x: 0, y: 0}
@@ -215,7 +215,7 @@ MonoBehaviour:
   attackActionName: Attack
   attackActionFadeDuration: 0.44
   lookAtTargetBeforeAttack: 1
-  attackDelayTimeRange: {x: 2, y: 2.5}
+  attackDelayTimeRange: {x: 1, y: 2.5}
   useAnimatorParameterForAI: 0
   listAnimatorParameterForAI: 
 --- !u!1001 &7476788394082267773
@@ -273,10 +273,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2300000, guid: d0196a0e0d1ba7147adff8c5bb4e1e14, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 1f5183d435d43264ba4b270fe7942b3e, type: 2}
+    - target: {fileID: 400088, guid: d0196a0e0d1ba7147adff8c5bb4e1e14, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.8
+      objectReference: {fileID: 0}
     - target: {fileID: 9500000, guid: d0196a0e0d1ba7147adff8c5bb4e1e14, type: 3}
       propertyPath: m_Controller
       value: 
@@ -285,6 +285,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: f6ffa1fe2dbf57644915c0adee624a4f, type: 2}
+    - target: {fileID: 2300000, guid: d0196a0e0d1ba7147adff8c5bb4e1e14, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 1f5183d435d43264ba4b270fe7942b3e, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d0196a0e0d1ba7147adff8c5bb4e1e14, type: 3}
 --- !u!4 &7476788394082658469 stripped

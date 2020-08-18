@@ -21,4 +21,10 @@ public class TransformUtil : MonoBehaviour {
 	{
 		t.SetAsLastSibling();
 	}
+
+	static public Vector3 TransformPointUnscaled(Transform t, Vector3 position)
+	{
+		Matrix4x4 localToWorldMatrix = Matrix4x4.TRS(t.position, t.rotation, Vector3.one);
+		return localToWorldMatrix.MultiplyPoint3x4(position);
+	}
 }

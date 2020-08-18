@@ -403,7 +403,11 @@ public class HitObject : MonoBehaviour
 					spawnPosition = t.position + offsetPosition;
 				}
 				else
-					spawnPosition = t.TransformPoint(offset);   // meHit.offset * parentTransform.localScale
+				{
+					//spawnPosition = t.TransformPoint(offset);   // meHit.offset * parentTransform.localScale
+					// 본에서 하는거라 스케일에 영향받으면 원하는 offset만큼 적용되지 않을때가 있다.
+					spawnPosition = TransformUtil.TransformPointUnscaled(t, offset);
+				}
 			}
 		}
 		else

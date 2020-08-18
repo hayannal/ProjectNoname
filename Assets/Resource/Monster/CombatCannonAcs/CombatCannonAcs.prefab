@@ -78,7 +78,7 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5809159075421838389}
   m_Enabled: 1
-  m_AgentTypeID: -1923039037
+  m_AgentTypeID: 1479372276
   m_Radius: 0.5
   m_Speed: 2
   m_Acceleration: 8
@@ -118,7 +118,7 @@ CapsuleCollider:
   m_Material: {fileID: 13400000, guid: 176724f165ed631408775764c436d474, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.5
+  m_Radius: 0.35
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
@@ -138,7 +138,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   _groundLimit: 60
-  _stepOffset: 0.5
+  _stepOffset: 0.35
   _ledgeOffset: 0
   _castDistance: 0.5
   _triggerInteraction: 1
@@ -227,11 +227,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16c7fbc98e43a374b85a6a2909d657eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startDelayRange: {x: 0.5, y: 1.5}
+  startDelayRange: {x: 0.5, y: 1}
   startState: 0
   useStateList: 010000010100
-  moveTimeRange: {x: 2, y: 2}
-  refreshTickTimeRange: {x: 2, y: 2}
+  moveTimeRange: {x: 2, y: 3}
+  refreshTickTimeRange: {x: 1.5, y: 1.5}
   desireDistance: 5
   straightMoveTimeRange: {x: 0, y: 0}
   straightRefreshTickTimeRange: {x: 0, y: 0}
@@ -246,7 +246,7 @@ MonoBehaviour:
   attackActionName: Attack
   attackActionFadeDuration: 0.05
   lookAtTargetBeforeAttack: 1
-  attackDelayTimeRange: {x: 2.5, y: 3.5}
+  attackDelayTimeRange: {x: 0.5, y: 2.5}
   useAnimatorParameterForAI: 0
   listAnimatorParameterForAI: 
 --- !u!1001 &4989549101189307726
@@ -453,15 +453,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 15709cebb418d2644a15629a42a7f412, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.2
+      value: 0.15
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 15709cebb418d2644a15629a42a7f412, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.2
+      value: 0.17
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 15709cebb418d2644a15629a42a7f412, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.2
+      value: 0.15
       objectReference: {fileID: 0}
     - target: {fileID: 9500000, guid: 15709cebb418d2644a15629a42a7f412, type: 3}
       propertyPath: m_Controller

@@ -219,11 +219,15 @@ public class HitObjectMovement : MonoBehaviour {
 
 	Vector3 _velocity;
 	Vector3 _forward;
+	Vector3 _lastPosition;
 	public void ReinitializeForThrough()
 	{
 		_rigidbody.velocity = _velocity;
 		_rigidbody.angularVelocity = Vector3.zero;
 		cachedTransform.forward = _forward;
+
+		// 관통 후에 포지션이 밀리는 현상이 발생해서 rotation말고 포지션도 해본다.
+		_rigidbody.position = cachedTransform.position = _lastPosition;
 	}
 
 	int _lastBounceFrameCount;
@@ -404,6 +408,9 @@ public class HitObjectMovement : MonoBehaviour {
 				//}
 				break;
 		}
+
+		if (_signal.monsterThroughCount == -1 || _signal.monsterThroughCount > 0 || _signal.wallThrough || _signal.quadThrough)
+			_lastPosition = cachedTransform.position;
 	}
 
 	void FixedUpdate()

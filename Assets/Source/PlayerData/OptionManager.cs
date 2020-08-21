@@ -161,7 +161,7 @@ public class OptionManager : MonoBehaviour
 		set
 		{
 			_frame = value;
-			_frame = Mathf.Clamp(_frame, 0, 3);
+			_frame = Mathf.Clamp(_frame, 0, 6);
 
 			// QualitySettings.vSyncCount 1이나 2 둘다 테스트 해봤는데 30프레임에서 프레임 튀는 문제를 해결하진 못한다. 그래서 그냥 0으로 간다.
 			QualitySettings.vSyncCount = 0;
@@ -177,9 +177,12 @@ public class OptionManager : MonoBehaviour
 			// 카메라 포지션 lerp에 Time.smoothDeltaTime를 사용하는게 가장 효과적이라서 굳이 50프레임일때 52프레임으로 늘릴 이유는 없어보인다.
 			// 숫자 적힌대로 설정하기로 한다.
 			case 0: targetFrameRate = 30; break;
-			case 1: targetFrameRate = 40; break;
-			case 2: targetFrameRate = 50; break;
-			case 3: targetFrameRate = 60; break;
+			case 1: targetFrameRate = 35; break;
+			case 2: targetFrameRate = 40; break;
+			case 3: targetFrameRate = 45; break;
+			case 4: targetFrameRate = 50; break;
+			case 5: targetFrameRate = 55; break;
+			case 6: targetFrameRate = 60; break;
 		}
 		return targetFrameRate;
 	}
@@ -190,9 +193,12 @@ public class OptionManager : MonoBehaviour
 		switch (frame)
 		{
 			case 0: targetFrameRate = 30; break;
-			case 1: targetFrameRate = 40; break;
-			case 2: targetFrameRate = 50; break;
-			case 3: targetFrameRate = 60; break;
+			case 1: targetFrameRate = 35; break;
+			case 2: targetFrameRate = 40; break;
+			case 3: targetFrameRate = 45; break;
+			case 4: targetFrameRate = 50; break;
+			case 5: targetFrameRate = 55; break;
+			case 6: targetFrameRate = 60; break;
 		}
 		return targetFrameRate;
 	}

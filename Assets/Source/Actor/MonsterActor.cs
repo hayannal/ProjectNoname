@@ -296,6 +296,7 @@ public class MonsterActor : Actor
 		bool suicide = SuicideAffector.CheckSuicide(affectorProcessor, ref suicideLifeTime, ref needRestoreSuicide);
 
 		float waitTime = bossMonster ? 1.7f : 1.2f;
+		if (cachedMonsterTableData.burnTime > 0.0f) waitTime = cachedMonsterTableData.burnTime;
 		if (suicide && suicideLifeTime != -1.0f)
 			waitTime = suicideLifeTime;
 		yield return Timing.WaitForSeconds(waitTime);

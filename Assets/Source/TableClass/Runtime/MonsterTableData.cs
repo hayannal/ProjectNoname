@@ -60,4 +60,8 @@ public class MonsterTableData
   float _flakeMultiplier;
   public float flakeMultiplier { get { return _flakeMultiplier; } set { _flakeMultiplier = value; } }
   
+  [SerializeField]
+  float _burnTime;
+  public float burnTime { get { return _burnTime; } set { _burnTime = value; } }
+  
 }

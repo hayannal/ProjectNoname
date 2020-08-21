@@ -252,10 +252,10 @@ public class HitObjectMovement : MonoBehaviour {
 		Vector3 reflectVelocity = Vector3.Reflect(_velocity, wallNormal);
 
 		// 반사된 벡터가 벽의 노말과 수직에 가깝다면 뭔가 잘못된거 아닐까. 그렇다고 안튕기게 할순 없으니
-		if (Vector3.Dot(reflectVelocity.normalized, wallNormal.normalized) < 0.05f)
+		if (Vector3.Dot(reflectVelocity.normalized, wallNormal.normalized) < 0.01f)
 		{
-			Debug.LogError("Invalid reflect vector!!");
-			reflectVelocity = Quaternion.Euler(0.0f, Random.Range(30.0f, 60.0f), 0.0f) * reflectVelocity;
+			//Debug.LogError("Invalid reflect vector!!");
+			reflectVelocity = Quaternion.Euler(0.0f, Random.Range(-45.0f, 45.0f), 0.0f) * wallNormal.normalized * reflectVelocity.magnitude;
 		}
 
 		// 반사방향으로 직선을 그어서 충돌하는게 있는지 확인한다. CheckWall

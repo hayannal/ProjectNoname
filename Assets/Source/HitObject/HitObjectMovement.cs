@@ -254,7 +254,7 @@ public class HitObjectMovement : MonoBehaviour {
 		// 반사방향으로 직선을 그어서 충돌하는게 있는지 확인한다. CheckWall
 		// 이랬더니 ㄴ 사이에 들어가서 모서리에서 튕기지 않는 버그가 발생했다. 근접했다고 그냥 리턴하면 안되는거였다.
 		// 그래서 체크로직을 조금만 수정해보기로 한다.
-		if (_lastBounceFrameCount == Time.frameCount)
+		if (_lastBounceFrameCount == Time.frameCount || (_lastBounceFrameCount + 1) == Time.frameCount || (_lastBounceFrameCount + 2) == Time.frameCount)
 		{
 			Vector3 endPosition = cachedTransform.position + reflectVelocity.normalized * 0.333f;
 			if (CheckWallAndGroundQuad(cachedTransform.position, endPosition))

@@ -82,14 +82,16 @@ public class SpawnFlag : MonoBehaviour
 #if UNITY_EDITOR
 				GameObject newObject = null;
 				if (editorSpawn)
+				{
 					newObject = PrefabUtility.InstantiatePrefab((UnityEngine.Object)_listSpawnInfo[i].prefab, cachedTransform) as GameObject;
+					newObject.transform.localPosition = _listSpawnInfo[i].localPosition;
+					newObject.transform.localRotation = Quaternion.Euler(_listSpawnInfo[i].localRotation);
+				}
 				else
-					newObject = BattleInstanceManager.instance.GetCachedObject(_listSpawnInfo[i].prefab, cachedTransform);
+					newObject = BattleInstanceManager.instance.GetCachedObject(_listSpawnInfo[i].prefab, _listSpawnInfo[i].localPosition, Quaternion.Euler(_listSpawnInfo[i].localRotation), cachedTransform);
 #else
-				GameObject newObject = BattleInstanceManager.instance.GetCachedObject(_listSpawnInfo[i].prefab, cachedTransform);
+				GameObject newObject = BattleInstanceManager.instance.GetCachedObject(_listSpawnInfo[i].prefab, _listSpawnInfo[i].localPosition, Quaternion.Euler(_listSpawnInfo[i].localRotation), cachedTransform);
 #endif
-				newObject.transform.localPosition = _listSpawnInfo[i].localPosition;
-				newObject.transform.localRotation = Quaternion.Euler(_listSpawnInfo[i].localRotation);
 				newObject.transform.localScale = _listSpawnInfo[i].localScale;
 			}
 		}

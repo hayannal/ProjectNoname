@@ -386,6 +386,8 @@ public class TargetingProcessor : MonoBehaviour {
 			return true;
 		if (affectorProcessor.IsContinuousAffectorType(eAffectorType.Burrow))
 			return true;
+		if (BurrowOnStartAffector.CheckBurrow(affectorProcessor))	// 패시브라서 타입으로 체크하면 항상 true가 되서 이 함수로 처리해야한다.
+			return true;
 		return false;
 	}
 	
@@ -399,6 +401,8 @@ public class TargetingProcessor : MonoBehaviour {
 		if (sphereCastRadiusForCheckWall > 0.0f && CheckWall(position, targetPosition, sphereCastRadiusForCheckWall))
 			applyFarthest = true;
 		if (affectorProcessor.IsContinuousAffectorType(eAffectorType.Burrow))
+			applyFarthest = true;
+		if (BurrowOnStartAffector.CheckBurrow(affectorProcessor))
 			applyFarthest = true;
 
 		if (applyFarthest)

@@ -313,6 +313,8 @@ public class HitObject : MonoBehaviour
 		// Preset타입은 Burrow를 공격할 수 없다.
 		if (affectorProcessor.IsContinuousAffectorType(eAffectorType.Burrow))
 			return;
+		if (BurrowOnStartAffector.CheckBurrow(affectorProcessor))
+			return;
 		// check wall
 		if (meHit.checkRaycastWallInArea)
 		{

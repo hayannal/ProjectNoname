@@ -998,6 +998,7 @@ public class HitObject : MonoBehaviour
 
 	public StatusStructForHitObject statusStructForHitObject { get { return _statusStructForHitObject; } }
 	public float createTime { get { return _createTime; } }
+	public Vector3 createPosition { get { return _createPosition; } }
 	public HitObjectMovement hitObjectMovement { get { return _hitObjectMovement; } }
 
 	MeHitObject _signal;

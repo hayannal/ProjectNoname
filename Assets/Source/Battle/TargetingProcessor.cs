@@ -244,7 +244,7 @@ public class TargetingProcessor : MonoBehaviour {
 	// 간혹가다 몬스터의 Collider를 꺼야할때가 있어서 Physic으로 검사하면 타겟팅이 잠시 풀리게 되버렸다. (땅 투과시)
 	// 그래서 차라리 몬스터 리스트를 히트오브젝트처럼 등록해놨다가 받아오는 형태로 가기로 한다.
 	// Die시 빠지기 때문에 Die검사를 추가로 할 필요도 없다.
-	public bool FindNearestMonster(float range, float changeThreshold = 0.0f)
+	public bool FindNearestMonster(float findRange, float attackRange, float changeThreshold = 0.0f)
 	{
 		if (_transform == null)
 			_transform = GetComponent<Transform>();
@@ -274,7 +274,7 @@ public class TargetingProcessor : MonoBehaviour {
 			Vector3 diff = listMonsterActor[i].cachedTransform.position - position;
 			diff.y = 0.0f;
 			float distance = diff.magnitude - colliderRadius;
-			AdjustRange(listMonsterActor[i].affectorProcessor, listMonsterActor[i].cachedTransform.position, position, sphereCastRadiusForCheckWall, range, ref distance);
+			AdjustRange(listMonsterActor[i].affectorProcessor, listMonsterActor[i].cachedTransform.position, position, sphereCastRadiusForCheckWall, findRange, attackRange, ref distance);
 			if (distance < nearestDistance)
 			{
 				nearestDistance = distance;
@@ -298,14 +298,14 @@ public class TargetingProcessor : MonoBehaviour {
 			prevTargetDiff.y = 0.0f;
 			float prevDistance = prevTargetDiff.magnitude - ColliderUtil.GetRadius(_targetList[0]);
 			AffectorProcessor prevAffectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(_targetList[0]);
-			AdjustRange(prevAffectorProcessor, prevTargetPosition, position, sphereCastRadiusForCheckWall, range, ref prevDistance);
+			AdjustRange(prevAffectorProcessor, prevTargetPosition, position, sphereCastRadiusForCheckWall, findRange, attackRange, ref prevDistance);
 
 			Vector3 currentTargetPosition = BattleInstanceManager.instance.GetTransformFromCollider(nearestCollider).position;
 			Vector3 currentTargetDiff = currentTargetPosition - position;
 			currentTargetDiff.y = 0.0f;
 			float currentDistance = currentTargetDiff.magnitude - ColliderUtil.GetRadius(nearestCollider);
 			AffectorProcessor currentAffectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(nearestCollider);
-			AdjustRange(currentAffectorProcessor, currentTargetPosition, position, sphereCastRadiusForCheckWall, range, ref currentDistance);
+			AdjustRange(currentAffectorProcessor, currentTargetPosition, position, sphereCastRadiusForCheckWall, findRange, attackRange, ref currentDistance);
 
 			if (currentDistance <= prevDistance - changeThreshold)
 			{
@@ -391,7 +391,7 @@ public class TargetingProcessor : MonoBehaviour {
 		return false;
 	}
 	
-	public static void AdjustRange(AffectorProcessor affectorProcessor, Vector3 targetPosition, Vector3 position, float sphereCastRadiusForCheckWall, float findRange, ref float distance)
+	public static void AdjustRange(AffectorProcessor affectorProcessor, Vector3 targetPosition, Vector3 position, float sphereCastRadiusForCheckWall, float findRange, float attackRange, ref float distance)
 	{
 		bool applyOutOfRange = false;
 		bool applyFarthest = false;
@@ -406,7 +406,12 @@ public class TargetingProcessor : MonoBehaviour {
 			applyFarthest = true;
 
 		if (applyFarthest)
-			distance += findRange;
+		{
+			// 사거리가 있을때는 사거리 근처 쯤으로 보정하고 사거리가 없을때는 findRange 근처로 보정한다.
+			float adjustBaseRange = findRange;
+			if (attackRange > 0.0f) adjustBaseRange = attackRange;
+			distance = adjustBaseRange + distance * 0.001f;
+		}
 		if (applyOutOfRange)
 			distance += findRange * 2.0f;
 	}

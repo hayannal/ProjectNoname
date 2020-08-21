@@ -72,7 +72,7 @@ public class PlayerAI : MonoBehaviour
 		if (_currentFindDelay <= 0.0f)
 		{
 			_currentFindDelay += TargetFindDelay;
-			if (targetingProcessor.FindNearestMonster(FindTargetRange, actor.actionController.mecanimState.IsState((int)eMecanimState.Move) ? 0.0f : TargetChangeThreshold))
+			if (targetingProcessor.FindNearestMonster(FindTargetRange, _actorTableAttackRange, actor.actionController.mecanimState.IsState((int)eMecanimState.Move) ? 0.0f : TargetChangeThreshold))
 			{
 				targetCollider = targetingProcessor.GetTarget();
 				_targetColliderRadius = ColliderUtil.GetRadius(targetCollider);

@@ -15,6 +15,7 @@ public class TailAnimatorUpdater : MonoBehaviour
 
 
 	FIMSpace.FTail.FTail_Animator[] _tailAnimatorList;
+	//DynamicBone[] _dynamicBoneList;
 	public void UpdateAnimator(int updateCount)
 	{
 		if (_tailAnimatorList == null)
@@ -28,5 +29,21 @@ public class TailAnimatorUpdater : MonoBehaviour
 					_tailAnimatorList[i].CalculateOffsets();
 			}
 		}
+
+		// 아무래도 잘못 본건지 다이나믹본은 별 문제가 안보인다. 추가하려다가 패스.
+		//if (_dynamicBoneList == null)
+		//	_dynamicBoneList = GetComponentsInChildren<DynamicBone>();
+		//
+		//if (_dynamicBoneList != null)
+		//{
+		//	for (int i = 0; i < _dynamicBoneList.Length; ++i)
+		//	{
+		//		for (int j = 0; j < updateCount * 2; ++j)
+		//		{
+		//			_dynamicBoneList[i].PreUpdate();
+		//			_dynamicBoneList[i].UpdateDynamicBones(Time.deltaTime);
+		//		}
+		//	}
+		//}
 	}
 }

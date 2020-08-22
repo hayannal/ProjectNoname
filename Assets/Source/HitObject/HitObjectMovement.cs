@@ -227,15 +227,18 @@ public class HitObjectMovement : MonoBehaviour {
 
 		if (_signal.movementType == eMovementType.Direct)
 		{
-			// 직선형 히트오브젝트의 경우 OnCollisionEnter 타이밍때 물리엔진의 결과에 의해 틀어질때가 있는데
-			// 이걸 물리 설정만으로는 막을 방법이 없어서 - 물리 마테리얼도 바꿔봤는데 아무런 영향이 없다.
-			// 직선인 발사체에서 대해서는 연산을 통해 위치를 보정하기로 한다.
-			Vector3 startPosition = _hitObject.createPosition;
-			Vector3 dirWithStart = cachedTransform.position - startPosition;
-			if (Vector3.Angle(_velocity, dirWithStart) > 1.0f)
+			if (_signal.monsterThroughCount == -1 || _signal.monsterThroughCount > 0 || _signal.wallThrough || _signal.quadThrough)
 			{
-				//Debug.Log("Adjust Through Direction!");
-				_rigidbody.position = cachedTransform.position = startPosition + _velocity.normalized * dirWithStart.magnitude;
+				// 직선형 히트오브젝트의 경우 OnCollisionEnter 타이밍때 물리엔진의 결과에 의해 틀어질때가 있는데
+				// 이걸 물리 설정만으로는 막을 방법이 없어서 - 물리 마테리얼도 바꿔봤는데 아무런 영향이 없다.
+				// 직선인 발사체에서 대해서는 연산을 통해 위치를 보정하기로 한다.
+				Vector3 startPosition = _hitObject.createPosition;
+				Vector3 dirWithStart = cachedTransform.position - startPosition;
+				if (Vector3.Angle(_velocity, dirWithStart) > 1.0f)
+				{
+					//Debug.Log("Adjust Through Direction!");
+					_rigidbody.position = cachedTransform.position = startPosition + _velocity.normalized * dirWithStart.magnitude;
+				}
 			}
 		}
 	}

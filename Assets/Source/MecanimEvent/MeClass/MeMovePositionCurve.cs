@@ -21,7 +21,7 @@ public class MeMovePositionCurve : MecanimEventBase {
 	{
 		useLocalPositionX = EditorGUILayout.Toggle("Use Local X :", useLocalPositionX);
 		if (useLocalPositionX) curveX = EditorGUILayout.CurveField("Curve X :", curveX);
-		useLocalPositionY = EditorGUILayout.Toggle("Use Local Y :", useLocalPositionY);
+		useLocalPositionY = EditorGUILayout.Toggle("Use Animation Root Y :", useLocalPositionY);
 		if (useLocalPositionY) curveY = EditorGUILayout.CurveField("Curve Y :", curveY);
 		useLocalPositionZ = EditorGUILayout.Toggle("Use Local Z :", useLocalPositionZ);
 		if (useLocalPositionZ) curveZ = EditorGUILayout.CurveField("Curve Z :", curveZ);
@@ -52,13 +52,13 @@ public class MeMovePositionCurve : MecanimEventBase {
 			}
 		}
 
-		
-		Vector3 localTranslation = Vector3.zero;
-		if (useLocalPositionY)
-		{
-			float targetY = curveY.Evaluate((stateInfo.normalizedTime - StartTime) / (EndTime - StartTime));
-			localTranslation.y = targetY - _actor.cachedTransform.position.y;
-		}
+		// y값도 애니메이터 루트의 포지션을 직접 옮기는 거로 처리함에 따라 필요없어져서 주석처리.
+		//Vector3 localTranslation = Vector3.zero;
+		//if (useLocalPositionY)
+		//{
+		//	float targetY = curveY.Evaluate((stateInfo.normalizedTime - StartTime) / (EndTime - StartTime));
+		//	localTranslation.y = targetY - _actor.cachedTransform.position.y;
+		//}
 
 		// 예전에 포지션을 직접 옮길때 쓰던 코드인데 이제 필요없어서 주석처리.
 		//if (useLocalPositionX)
@@ -114,10 +114,10 @@ public class MeMovePositionCurve : MecanimEventBase {
 				_actor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Velocity, velocityAffectorValue, _actor, false);
 			}
 
-			if (localTranslation.y != 0.0f)
+			if (useLocalPositionY)
 			{
-				// y는 어차피 투과할 일 없으니 예전함수로 해서 높이를 커브만큼 맞춰준다.
-				_actor.GetRigidbody().MovePosition(_actor.GetRigidbody().position + new Vector3(0.0f, localTranslation.y, 0.0f));
+				float targetY = curveY.Evaluate((stateInfo.normalizedTime - StartTime) / (EndTime - StartTime));
+				_actor.actionController.cachedAnimatorTransform.localPosition = new Vector3(_actor.actionController.cachedAnimatorTransform.localPosition.x, _basePositionY + targetY, _actor.actionController.cachedAnimatorTransform.localPosition.z);
 			}
 		}
 		//else if (_transform != null)
@@ -141,7 +141,7 @@ public class MeMovePositionCurve : MecanimEventBase {
 		{
 			float firstValue = curveY.keys[0].value;
 			float lastValue = curveY.keys[curveY.length - 1].value;
-			_actor.GetRigidbody().position = new Vector3(_actor.GetRigidbody().position.x, _basePositionY + (lastValue - firstValue), _actor.GetRigidbody().position.z);
+			_actor.actionController.cachedAnimatorTransform.localPosition = new Vector3(_actor.actionController.cachedAnimatorTransform.localPosition.x, _basePositionY + (lastValue - firstValue), _actor.actionController.cachedAnimatorTransform.localPosition.z);
 		}
 		if (useLocalPositionX || useLocalPositionZ)
 		{
@@ -159,6 +159,6 @@ public class MeMovePositionCurve : MecanimEventBase {
 		base.OnStateEnter(animator, stateInfo, layerIndex);
 
 		//_prevX = _prevZ = 0.0f;
-		_basePositionY = animator.transform.position.y;
+		_basePositionY = animator.transform.localPosition.y;
 	}
 }

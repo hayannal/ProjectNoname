@@ -375,6 +375,7 @@ public class MonsterActor : Actor
 	void ApplyCollisionDamage(AffectorProcessor defenderAffectorProcessor)
 	{
 		RushAffector rushAffector = (RushAffector)affectorProcessor.GetFirstContinuousAffector(eAffectorType.Rush);
+		//JumpAffector jumpAffector = (JumpAffector)affectorProcessor.GetFirstContinuousAffector(eAffectorType.Jump);
 		if (rushAffector != null)
 		{
 			eAffectorType affectorType = eAffectorType.BaseDamage;
@@ -383,6 +384,10 @@ public class MonsterActor : Actor
 			baseDamageAffectorValue.fValue4 = 1.0f;
 			defenderAffectorProcessor.ExecuteAffectorValueWithoutTable(affectorType, baseDamageAffectorValue, this, false);
 		}
+		//else if (jumpAffector != null)
+		//{
+		//	// 어차피 컬리더를 끄기 때문에 충돌뎀 OnCollisionStay 가 발생하지도 않는다. 패스
+		//}
 		else
 		{
 			eAffectorType affectorType = eAffectorType.CollisionDamage;

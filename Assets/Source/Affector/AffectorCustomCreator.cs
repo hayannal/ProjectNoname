@@ -72,6 +72,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.AttackOnMoving: affectorBase = new AttackOnMovingAffector(); break;
 			case eAffectorType.MonsterSleeping: affectorBase = new MonsterSleepingAffector(); break;
 			case eAffectorType.BurrowOnStart: affectorBase = new BurrowOnStartAffector(); break;
+			case eAffectorType.Jump: affectorBase = new JumpAffector(); break;
 			#endregion
 		}
 		return affectorBase;
@@ -138,6 +139,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.AttackOnMoving:
 			case eAffectorType.MonsterSleeping:
 			case eAffectorType.BurrowOnStart:
+			case eAffectorType.Jump:
 				return true;
 			#endregion
 		}

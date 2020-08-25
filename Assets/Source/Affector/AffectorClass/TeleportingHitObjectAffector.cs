@@ -70,13 +70,8 @@ public class TeleportingHitObjectAffector : AffectorBase
 		if (defenderAffectorProcessor.actor.actorStatus.GetHPRatio() < limitHp)
 			return;
 
-		if (_affectorValueLevelTableData.iValue2 == 1 && BurrowAffector.CheckBurrow(defenderAffectorProcessor))
+		if (_affectorValueLevelTableData.iValue2 == 1 && CheckIgnore(defenderAffectorProcessor))
 			return;
-		if (_affectorValueLevelTableData.iValue2 == 1 && BurrowOnStartAffector.CheckBurrow(defenderAffectorProcessor))
-			return;
-		if (_affectorValueLevelTableData.iValue2 == 1 && defenderAffectorProcessor.actor.actionController.mecanimState.IsState((int)eMecanimState.DontDie))
-			return;
-
 
 		// 모든게 통과되면 확률검사를 한다.
 		if (_affectorValueLevelTableData.fValue2 > 0.0f && Random.value <= _affectorValueLevelTableData.fValue2)
@@ -89,6 +84,21 @@ public class TeleportingHitObjectAffector : AffectorBase
 
 			defenderAffectorProcessor.ApplyAffectorValue(_affectorValueLevelTableData.sValue2, hitParameter, false);
 		}
+	}
+
+	public static bool CheckIgnore(AffectorProcessor defenderAffectorProcessor)
+	{
+		// 텔레포트 홀드 행동불가 안걸리는 상태들을 나열한다. 걸리면 뭔가 어색해지는 상황들에서는 이렇게 예외처리 하기로 한다.
+		// IsContinuousAffectorType(eAffectorType.Burrow) 로 검색해서 나오는 부분과는 조금 차이가 있다.
+		if (defenderAffectorProcessor.actor.actionController.mecanimState.IsState((int)eMecanimState.DontDie))
+			return true;
+		if (BurrowAffector.CheckBurrow(defenderAffectorProcessor))
+			return true;
+		if (BurrowOnStartAffector.CheckBurrow(defenderAffectorProcessor))
+			return true;
+		if (defenderAffectorProcessor.IsContinuousAffectorType(eAffectorType.Jump))
+			return true;
+		return false;
 	}
 
 	public static void OnEvent(AffectorProcessor affectorProcessor, AffectorProcessor defenderAffectorProcessor)

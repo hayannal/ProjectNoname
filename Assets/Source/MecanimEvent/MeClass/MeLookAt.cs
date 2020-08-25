@@ -15,6 +15,7 @@ public class MeLookAt : MecanimEventBase
 	public float lootAtTargetOffsetAngle;
 	public bool lookAtRandom;
 	public float desireDistance = 5.0f;
+	public float minimumDistance = 0.0f;
 	public float lerpPower = 60.0f;
 	public string boneName;
 
@@ -35,6 +36,7 @@ public class MeLookAt : MecanimEventBase
 		{
 			lookAtTarget = false;
 			desireDistance = EditorGUILayout.FloatField("Desire Distance :", desireDistance);
+			minimumDistance = EditorGUILayout.FloatField("Minimum Distance :", minimumDistance);
 		}
 		lerpPower = EditorGUILayout.FloatField("Lerp Power :", lerpPower);
 		boneName = EditorGUILayout.TextField("Bone Name :", boneName);
@@ -169,8 +171,20 @@ public class MeLookAt : MecanimEventBase
 			}
 			if (NavMesh.SamplePosition(randomPosition, out hit, maxDistance, navMeshQueryFilter))
 			{
-				result = hit.position;
-				break;
+				if (minimumDistance == 0.0f)
+				{
+					result = hit.position;
+					break;
+				}
+				else
+				{
+					Vector3 diff = _actor.cachedTransform.position - hit.position;
+					if (diff.x * diff.x + diff.z * diff.z >= minimumDistance * minimumDistance)
+					{
+						result = hit.position;
+						break;
+					}
+				}
 			}
 
 			// exception handling

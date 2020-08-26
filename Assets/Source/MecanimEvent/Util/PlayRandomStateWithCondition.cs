@@ -47,9 +47,16 @@ public class PlayRandomStateWithCondition : ControlStateBase
 		public Condition.eCompareType hpRatioCompareType2;
 		[ConditionalHide("useHpRatio2", true)]
 		public float hpRatioParameter2;
+		public bool useActorState;
+		[ConditionalHide("useActorState", true)]
+		public string actorStateId;
+		[ConditionalHide("useActorState", true)]
+		public bool existActorStateParameter;
 		public bool useTargetActorState;
 		[ConditionalHide("useTargetActorState", true)]
-		public string actorStateId;
+		public string targetActorStateId;
+		[ConditionalHide("useTargetActorState", true)]
+		public bool existTargetActorStateParameter;
 		public bool useMonsterCount;
 		[ConditionalHide("useMonsterCount", true)]
 		public Condition.eCompareType monsterCountCompareType;
@@ -133,6 +140,12 @@ public class PlayRandomStateWithCondition : ControlStateBase
 					continue;
 			}
 
+			if (randomStateWithConditionInfoList[i].useActorState)
+			{
+				if (_actor.affectorProcessor.IsActorState(randomStateWithConditionInfoList[i].actorStateId) != randomStateWithConditionInfoList[i].existActorStateParameter)
+					continue;
+			}
+
 			if (randomStateWithConditionInfoList[i].useTargetActorState)
 			{
 				if (_actor.targetingProcessor.GetTargetCount() > 0)
@@ -141,7 +154,7 @@ public class PlayRandomStateWithCondition : ControlStateBase
 					AffectorProcessor targetAffectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(targetCollider);
 					if (targetAffectorProcessor == null)
 						continue;
-					if (targetAffectorProcessor.IsActorState(randomStateWithConditionInfoList[i].actorStateId) == false)
+					if (targetAffectorProcessor.IsActorState(randomStateWithConditionInfoList[i].targetActorStateId) != randomStateWithConditionInfoList[i].existTargetActorStateParameter)
 						continue;
 				}
 				else

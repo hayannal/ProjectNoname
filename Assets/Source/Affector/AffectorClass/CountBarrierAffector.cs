@@ -30,6 +30,10 @@ public class CountBarrierAffector : AffectorBase
 		// lifeTime
 		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
 
+		// sValue1 actor state
+		if (string.IsNullOrEmpty(affectorValueLevelTableData.sValue1) == false)
+			_actor.affectorProcessor.AddActorState(affectorValueLevelTableData.sValue1, hitParameter);
+
 		// attach bone
 		bool useLoopEffect = !string.IsNullOrEmpty(affectorValueLevelTableData.sValue3);
 		bool useOnBarrierEffect = !string.IsNullOrEmpty(affectorValueLevelTableData.sValue4);
@@ -77,6 +81,25 @@ public class CountBarrierAffector : AffectorBase
 #if UNITY_EDITOR
 		_affectorProcessor.dontClearOnDisable = true;
 #endif
+	}
+
+	public override void OverrideAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
+	{
+		_remainCount = affectorValueLevelTableData.iValue2;
+		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
+
+		// sValue1 actor state
+		if (string.IsNullOrEmpty(affectorValueLevelTableData.sValue1) == false)
+			_actor.affectorProcessor.AddActorState(affectorValueLevelTableData.sValue1, hitParameter);
+
+		if (_loopEffectMaterial != null)
+		{
+			_loopEffectMaterial.SetColor(BattleInstanceManager.instance.GetShaderPropertyId("_TintColor"), _defaultBarrierColor);
+			_currentLoopEffectColor = _targetLoopEffectColor = _defaultBarrierColor;
+		}
+
+		_lastBarrierPingpongState = false;
+		_lastBarrierPingpongRemainTime = 0.0f;
 	}
 
 	public override void UpdateAffector()

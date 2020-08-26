@@ -154,7 +154,7 @@ public class MonsterActor : Actor
 
 		for (int i = 0; i < cachedMonsterTableData.passiveAffectorValueId.Length; ++i)
 		{
-			AffectorBase passiveAffector = affectorProcessor.ApplyAffectorValue(cachedMonsterTableData.passiveAffectorValueId[i], hitParameter, true);
+			AffectorBase passiveAffector = affectorProcessor.ApplyAffectorValue(cachedMonsterTableData.passiveAffectorValueId[i], hitParameter, false);
 			if (passiveAffector == null)
 				continue;
 

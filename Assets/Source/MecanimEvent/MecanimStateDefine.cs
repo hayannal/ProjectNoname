@@ -11,6 +11,7 @@ namespace MecanimStateDefine {
 		Attacked = 4,
 		Ultimate = 5,
 		DontDie = 6,
+		Jump = 7,
 	}
 }
 

@@ -154,4 +154,17 @@ public class JumpAffector : AffectorBase
 			return;
 		_actor.actionController.animator.CrossFade(_affectorValueLevelTableData.sValue1, 0.05f);
 	}
+
+	public static bool CheckJump(AffectorProcessor affectorProcessor)
+	{
+		if (affectorProcessor.IsContinuousAffectorType(eAffectorType.Jump))
+			return true;
+
+		// 액션에다가 MecanimState로 걸어놨을수도 있으니 체크.
+		// 이러면 JumpAffector없이 MovePositionCurve로 제어하면서 State시그널로 처리하는 경우에도 체크할 수 있다.
+		if (affectorProcessor.actor.actionController.mecanimState.IsState((int)MecanimStateDefine.eMecanimState.Jump))
+			return true;
+
+		return false;
+	}
 }

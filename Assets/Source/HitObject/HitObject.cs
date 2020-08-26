@@ -55,11 +55,11 @@ public class HitObject : MonoBehaviour
 						useTargetIndex = (targetingProcessor.GetTargetCount() > 0);
 						break;
 					case ePresetType.Multi:
-						targetingProcessor.FindPresetMultiTargetMonsterList();
+						targetingProcessor.FindPresetMultiTargetMonsterList(meHit);
 						useTargetList = (targetingProcessor.GetTargetCount() > 0);
 						break;
 					case ePresetType.DuplicatedMulti:
-						targetingProcessor.FindPresetMultiTargetMonsterList();
+						targetingProcessor.FindPresetMultiTargetMonsterList(meHit);
 						useTargetIndex = (targetingProcessor.GetTargetCount() > 0);
 						if (useTargetIndex)
 						{
@@ -310,11 +310,7 @@ public class HitObject : MonoBehaviour
 		float colliderRadius = ColliderUtil.GetRadius(targetCollider);
 		if (colliderRadius == -1.0f)
 			return;
-		// Preset타입은 Burrow를 공격할 수 없다.
-		if (affectorProcessor.IsContinuousAffectorType(eAffectorType.Burrow))
-			return;
-		if (BurrowOnStartAffector.CheckBurrow(affectorProcessor))
-			return;
+
 		// check wall
 		if (meHit.checkRaycastWallInArea)
 		{
@@ -337,21 +333,53 @@ public class HitObject : MonoBehaviour
 			}
 		}
 
-		HitParameter hitParameter = new HitParameter();
+		// 플래그 초기화
 		Transform targetColliderTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
+		Vector3 contactPointBase = targetColliderTransform.position;
+		bool ignoreApplyAffectorValue = false;
+		bool ignoreShowHitEffect = false;
+
+		// Preset타입은 Burrow를 공격할 수 없다.
+		if (affectorProcessor.IsContinuousAffectorType(eAffectorType.Burrow) || BurrowOnStartAffector.CheckBurrow(affectorProcessor))
+		{
+			ignoreApplyAffectorValue = true;
+			contactPointBase.y = 0.0f;
+		}
+
+		// 점프 중인 상대는 presetAnimatorRoot가 켜있는 UnicornCharacter만 공격가능하다.
+		if (JumpAffector.CheckJump(affectorProcessor))
+		{
+			if (meHit.presetAnimatorRoot)
+				contactPointBase.y = affectorProcessor.actor.actionController.cachedAnimatorTransform.position.y;
+			else
+				ignoreApplyAffectorValue = true;
+		}
+
+		HitParameter hitParameter = new HitParameter();
 		hitParameter.hitNormal = parentTransform.forward;
 		hitParameter.contactNormal = (parentTransform.position - targetColliderTransform.position).normalized;
-		hitParameter.contactPoint = targetColliderTransform.position + (hitParameter.contactNormal * colliderRadius * 0.7f);
-		hitParameter.contactPoint.y += targetCollider.bounds.size.y * 0.5f;
+		hitParameter.contactPoint = contactPointBase + (hitParameter.contactNormal * colliderRadius * 0.7f);
+		hitParameter.contactPoint.y += (targetCollider.bounds.size.y == 0.0f) ? 1.0f : targetCollider.bounds.size.y * 0.5f;
 		hitParameter.statusBase = statusBase;
-		CopyEtcStatusForHitObject(ref hitParameter.statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
 
-		ApplyAffectorValue(affectorProcessor, meHit.affectorValueIdList, hitParameter);
-
-		if (meHit.showHitEffect)
-			HitEffect.ShowHitEffect(meHit, hitParameter.contactPoint, hitParameter.contactNormal, hitParameter.statusStructForHitObject.weaponIDAtCreation);
+		// hitEffectLineRenderer는 보여야 DynaMob 공격이 버로우나 점프중인 대상을 타겟으로 하더라도 제대로 보이게 된다.
 		if (meHit.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
 			HitEffect.ShowHitEffectLineRenderer(meHit, GetSpawnPosition(spawnTransform, meHit, parentTransform, parentActor, hitSignalIndexInAction), hitParameter.contactPoint);
+
+		// 데미지를 가할 수 없는 Preset이라면 조건에 따라 hitEffect를 보여줄지 결정해야한다.
+		// RpgKnight같은 경우엔 버로우된 몹을 때리려고 할땐 hitEffect를 보여주면 안되나 DynaMob처럼 히트가 안들어가도 보여줘야 하는 경우 둘 다를 처리하기 위함이다.
+		if (meHit.ignorePresetHitEffectOnCustomTargetPosition && ignoreApplyAffectorValue)
+			ignoreShowHitEffect = true;
+
+		if (meHit.showHitEffect && ignoreShowHitEffect == false)
+			HitEffect.ShowHitEffect(meHit, hitParameter.contactPoint, hitParameter.contactNormal, hitParameter.statusStructForHitObject.weaponIDAtCreation);
+
+		if (ignoreApplyAffectorValue)
+			return;
+
+		CopyEtcStatusForHitObject(ref hitParameter.statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
+		ApplyAffectorValue(affectorProcessor, meHit.affectorValueIdList, hitParameter);
+
 		if (meHit.showHitBlink && (meHit.affectorValueIdList == null || meHit.affectorValueIdList.Count == 0))
 			HitBlink.ShowHitBlink(affectorProcessor.cachedTransform);
 		if (meHit.showHitRimBlink && (meHit.affectorValueIdList == null || meHit.affectorValueIdList.Count == 0))
@@ -667,6 +695,10 @@ public class HitObject : MonoBehaviour
 			float colliderRadius = ColliderUtil.GetRadius(col);
 			if (colliderRadius == -1.0f) continue;
 
+			// object height
+			float colliderHeight = ColliderUtil.GetHeight(col);
+			if (colliderHeight == -1.0f) continue;
+
 			// check sub parts
 			// 이론대로라면 파츠를 가진 타겟을 처리할때
 			// 해당 타겟의 파츠 중 어느 하나를 처리했다면 다른 파츠들은 continue시켜서 두번 처리되지 않게 하는건데
@@ -677,7 +709,8 @@ public class HitObject : MonoBehaviour
 				continue;
 
 			// distance
-			Vector3 diff = BattleInstanceManager.instance.GetTransformFromCollider(col).position - areaPosition;
+			Vector3 targetPosition = BattleInstanceManager.instance.GetTransformFromCollider(col).position;
+			Vector3 diff = targetPosition - areaPosition;
 			diff.y = 0.0f;
 			if (diff.magnitude + colliderRadius < distanceMin) continue;
 			if (diff.magnitude - colliderRadius > distanceMax) continue;
@@ -687,6 +720,10 @@ public class HitObject : MonoBehaviour
 			float hypotenuse = Mathf.Sqrt(diff.sqrMagnitude + colliderRadius * colliderRadius);
 			float adjustAngle = Mathf.Rad2Deg * Mathf.Acos(diff.magnitude / hypotenuse);
 			if (meHit.areaAngle * 0.5f < angle - adjustAngle) continue;
+
+			// height
+			if (targetPosition.y > areaPosition.y + meHit.areaHeightMax || targetPosition.y + colliderHeight < areaPosition.y + meHit.areaHeightMin)
+				continue;
 
 			// check wall
 			if (meHit.checkRaycastWallInArea)

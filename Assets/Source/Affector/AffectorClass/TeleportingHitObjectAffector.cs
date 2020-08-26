@@ -96,7 +96,7 @@ public class TeleportingHitObjectAffector : AffectorBase
 			return true;
 		if (BurrowOnStartAffector.CheckBurrow(defenderAffectorProcessor))
 			return true;
-		if (defenderAffectorProcessor.IsContinuousAffectorType(eAffectorType.Jump))
+		if (JumpAffector.CheckJump(defenderAffectorProcessor))
 			return true;
 		return false;
 	}

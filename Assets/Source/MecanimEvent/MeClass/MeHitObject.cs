@@ -18,6 +18,7 @@ public class MeHitObject : MecanimEventBase {
 	public HitObject.ePresetType presetType;
 	public int multiPresetCount;
 	public bool ignorePresetHitEffectOnCustomTargetPosition;
+	public bool presetAnimatorRoot;
 	public GameObject hitObjectPrefab;
 	public float lifeTime;
 	public float areaHitLifeTimeEarlyOffset;
@@ -153,6 +154,7 @@ public class MeHitObject : MecanimEventBase {
 				multiPresetCount = EditorGUILayout.IntField("Multi Preset Count :", multiPresetCount);
 			checkRaycastWallInArea = EditorGUILayout.Toggle("Check Wall :", checkRaycastWallInArea);
 			ignorePresetHitEffectOnCustomTargetPosition = EditorGUILayout.Toggle("Ignore Ground Click Hit Effect :", ignorePresetHitEffectOnCustomTargetPosition);
+			presetAnimatorRoot = EditorGUILayout.Toggle("Preset Animator Root :", presetAnimatorRoot);
 		}
 		else if (targetDetectType == HitObject.eTargetDetectType.SphereCast)
 		{

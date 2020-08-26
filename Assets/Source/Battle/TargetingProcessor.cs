@@ -132,7 +132,7 @@ public class TargetingProcessor : MonoBehaviour {
 	int _lastRefreshMultiTargetFrameCount;
 	List<Collider> _listMultiTargetTemporary;
 	List<MonsterActor> _listMultiTargetMonsterTemporary;
-	public void FindPresetMultiTargetMonsterList()
+	public void FindPresetMultiTargetMonsterList(MeHitObject meHit)
 	{
 		// 거리 기반이 아니라 거리 내 랜덤이다보니 매 프레임 호출할때마다 타겟이 변경되게 된다. 그러니 여러번 호출되어도 같은 결과를 보장하기 위해 프레임당 1회로 갱신을 제한해둔다.
 		if (_lastRefreshMultiTargetFrameCount == Time.frameCount)
@@ -183,7 +183,7 @@ public class TargetingProcessor : MonoBehaviour {
 			float colliderRadius = ColliderUtil.GetRadius(monsterCollider);
 			if (colliderRadius == -1.0f) continue;
 
-			if (IsOutOfRangePresetMultiTarget(listMonsterActor[i].affectorProcessor))
+			if (IsOutOfRangePresetMultiTarget(meHit, listMonsterActor[i].affectorProcessor))
 				continue;
 
 			// distance
@@ -380,13 +380,15 @@ public class TargetingProcessor : MonoBehaviour {
 		return false;
 	}
 
-	static bool IsOutOfRangePresetMultiTarget(AffectorProcessor affectorProcessor)
+	static bool IsOutOfRangePresetMultiTarget(MeHitObject meHit, AffectorProcessor affectorProcessor)
 	{
 		if (IsOutOfRange(affectorProcessor))
 			return true;
 		if (affectorProcessor.IsContinuousAffectorType(eAffectorType.Burrow))
 			return true;
 		if (BurrowOnStartAffector.CheckBurrow(affectorProcessor))	// 패시브라서 타입으로 체크하면 항상 true가 되서 이 함수로 처리해야한다.
+			return true;
+		if (meHit.presetAnimatorRoot == false && JumpAffector.CheckJump(affectorProcessor))	// 몸에다가 직격을 날리는 프리셋만이 점프 중인 몹을 공격할 수 있다.
 			return true;
 		return false;
 	}

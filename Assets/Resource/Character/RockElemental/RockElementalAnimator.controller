@@ -15,6 +15,10 @@ MonoBehaviour:
   StartTime: 0.49
   EndTime: 1
   targetDetectType: 1
+  presetType: 0
+  multiPresetCount: 0
+  ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 6875913602559690196, guid: 775b54c43607a454d9c0ee7bd855d637,
     type: 3}
   lifeTime: 1.5
@@ -29,8 +33,11 @@ MonoBehaviour:
   boneName: 
   offset: {x: 0, y: 0, z: 0}
   useBoneRotation: 0
-  fixedWorldPositionY: 0
+  fixedWorldPositionY: 1
   areaRotationY: 0
+  applyRootTransformRotation: 0
+  useAreaRotationYChange: 0
+  targetAreaRotationY: 0
   areaDistanceMin: 0
   areaDistanceMax: 0.15
   areaHeightMin: -5
@@ -57,14 +64,18 @@ MonoBehaviour:
   targetSpeed: 0
   speedChangeTime: 0
   speedChangeEase: 6
+  overrideSpeedOnCollision: 0
+  overrideSpeedTimeOnCollision: 0
   curve: 0
-  curveAdd: 0
+  useCurveChange: 0
+  targetCurve: 0
+  curveChangeTime: 0
+  curveChangeEase: 6
   curveLockY: 0
   curveStartDelayTime: 0
-  curveLifeTime: 0
-  endFollowOverTargetDistance: 0
-  overrideLifeTimeWhenDieTarget: 0
+  followLastPositionWhenDieTarget: 0
   followMeOnHitTarget: 0
+  followMinRange: 0
   useRandomTurn: 0
   accelTurn: 0
   randomTurnRotateYawRange: {x: 0, y: 0}
@@ -87,6 +98,7 @@ MonoBehaviour:
   bounceWallQuadCount: 0
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
+  overrideRicochetDistance: 0
   overrideRicochetSpeed: 0
   useHitStay: 0
   hitStayInterval: 0
@@ -122,6 +134,10 @@ MonoBehaviour:
   StartTime: 0.52
   EndTime: 1
   targetDetectType: 1
+  presetType: 0
+  multiPresetCount: 0
+  ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 6875913602559690196, guid: 775b54c43607a454d9c0ee7bd855d637,
     type: 3}
   lifeTime: 1.5
@@ -138,6 +154,9 @@ MonoBehaviour:
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
+  applyRootTransformRotation: 0
+  useAreaRotationYChange: 0
+  targetAreaRotationY: 0
   areaDistanceMin: 0
   areaDistanceMax: 0.28
   areaHeightMin: -5
@@ -164,14 +183,18 @@ MonoBehaviour:
   targetSpeed: 0
   speedChangeTime: 0
   speedChangeEase: 6
+  overrideSpeedOnCollision: 0
+  overrideSpeedTimeOnCollision: 0
   curve: 0
-  curveAdd: 0
+  useCurveChange: 0
+  targetCurve: 0
+  curveChangeTime: 0
+  curveChangeEase: 6
   curveLockY: 0
   curveStartDelayTime: 0
-  curveLifeTime: 0
-  endFollowOverTargetDistance: 0
-  overrideLifeTimeWhenDieTarget: 0
+  followLastPositionWhenDieTarget: 0
   followMeOnHitTarget: 0
+  followMinRange: 0
   useRandomTurn: 0
   accelTurn: 0
   randomTurnRotateYawRange: {x: 0, y: 0}
@@ -194,6 +217,7 @@ MonoBehaviour:
   bounceWallQuadCount: 0
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
+  overrideRicochetDistance: 0
   overrideRicochetSpeed: 0
   useHitStay: 0
   hitStayInterval: 0
@@ -249,6 +273,7 @@ MonoBehaviour:
   fixedWorldPositionY: 0
   direction: {x: 0, y: 0, z: 1}
   parentName: 
+  followPosition: 0
 --- !u!1102 &-5115558990500643923
 AnimatorState:
   serializedVersion: 5
@@ -444,6 +469,7 @@ MonoBehaviour:
   fixedWorldPositionY: 0
   direction: {x: 0, y: 0, z: 1}
   parentName: 
+  followPosition: 0
 --- !u!114 &1156247449791528192
 MonoBehaviour:
   m_ObjectHideFlags: 1

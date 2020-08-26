@@ -30,9 +30,10 @@ public class CountBarrierAffector : AffectorBase
 		// lifeTime
 		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
 
+		// ActorState AI에서 검사해서 처리하려고 했다가 필요없어지면서 삭제하기로 한다. 우선 주석으로는 남겨둔다.
 		// sValue1 actor state
-		if (string.IsNullOrEmpty(affectorValueLevelTableData.sValue1) == false)
-			_actor.affectorProcessor.AddActorState(affectorValueLevelTableData.sValue1, hitParameter);
+		//if (string.IsNullOrEmpty(affectorValueLevelTableData.sValue1) == false)
+		//	_actor.affectorProcessor.AddActorState(affectorValueLevelTableData.sValue1, hitParameter);
 
 		// attach bone
 		bool useLoopEffect = !string.IsNullOrEmpty(affectorValueLevelTableData.sValue3);

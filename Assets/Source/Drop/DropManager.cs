@@ -582,7 +582,10 @@ public class DropManager : MonoBehaviour
 		}
 
 		CharacterData characterData = PlayerData.instance.GetCharacterData(actorId);
-		if (characterData == null && actorId != "Actor2103")
+		if (characterData == null && actorId == "Actor2103")
+			return false;
+
+		if (characterData == null)
 			return true;
 
 		if (characterData.needLimitBreak && characterData.limitBreakPoint <= characterData.limitBreakLevel)

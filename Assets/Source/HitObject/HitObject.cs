@@ -171,7 +171,10 @@ public class HitObject : MonoBehaviour
 			{
 				for (int i = 0; i < meHit.continuousHitObjectGeneratorBaseList.Count; ++i)
 				{
-					ContinuousHitObjectGeneratorBase continuousHitObjectGenerator = BattleInstanceManager.instance.GetContinuousHitObjectGenerator(meHit.continuousHitObjectGeneratorBaseList[i].gameObject, areaPosition, Quaternion.LookRotation(areaDirection));
+					// Area는 항상 forward로만 만들었었는데 Area Generator로 사용될때만 방향값을 예외처리 하기로 한다.
+					// Quaternion.LookRotation(areaDirection) 대신 아래 areaGeneratorRotation를 사용하기로 한다.
+					Quaternion areaGeneratorRotation = Quaternion.LookRotation(GetSpawnDirection(areaPosition, spawnTransform, meHit, parentTransform, GetTargetPosition(meHit, parentActor, hitSignalIndexInAction), parentActor.targetingProcessor));
+					ContinuousHitObjectGeneratorBase continuousHitObjectGenerator = BattleInstanceManager.instance.GetContinuousHitObjectGenerator(meHit.continuousHitObjectGeneratorBaseList[i].gameObject, areaPosition, areaGeneratorRotation);
 					ignoreAreaMainHitObjectByGenerator |= continuousHitObjectGenerator.ignoreMainHitObject;
 					continuousHitObjectGenerator.InitializeGenerator(meHit, parentActor, statusBase, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, spawnTransform);
 				}

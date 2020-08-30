@@ -34,6 +34,8 @@ public class CharacterData
 	{
 		get
 		{
+			if (powerLevel >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxPowerLevel"))
+				return false;
 			PowerLevelTableData nextPowerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(powerLevel + 1);
 			if (nextPowerLevelTableData == null)
 				return false;

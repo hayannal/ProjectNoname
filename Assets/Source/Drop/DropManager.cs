@@ -509,10 +509,11 @@ public class DropManager : MonoBehaviour
 			}
 
 			// 초기 필수캐릭 얻었는지 체크 후 얻었다면 원래대로 진행
+			bool useAdjustWeight = false;
 			if (IsCompleteFixedCharacterGroup() || ignoreFixedCharacterGroup)
 			{
 				// 획득가능한지 물어봐야한다.
-				if (GetableOrigin(TableDataManager.instance.actorTable.dataArray[i].actorId) == false)
+				if (GetableOrigin(TableDataManager.instance.actorTable.dataArray[i].actorId, ref useAdjustWeight) == false)
 					continue;
 			}
 			else
@@ -525,7 +526,7 @@ public class DropManager : MonoBehaviour
 				if (getable && TableDataManager.instance.actorTable.dataArray[i].grade > 0)
 					CheatingListener.OnDetectCheatTable();
 				// 필수캐릭이 아니더라도 이미 인벤에 들어있는 캐릭터라면(ganfaul, keepseries) 초월재료를 얻을 수 있게 해줘야한다.
-				if (getable == false && PlayerData.instance.ContainsActor(TableDataManager.instance.actorTable.dataArray[i].actorId) && GetableOrigin(TableDataManager.instance.actorTable.dataArray[i].actorId))
+				if (getable == false && PlayerData.instance.ContainsActor(TableDataManager.instance.actorTable.dataArray[i].actorId) && GetableOrigin(TableDataManager.instance.actorTable.dataArray[i].actorId, ref useAdjustWeight))
 					getable = true;
 				if (getable == false)
 					continue;
@@ -535,7 +536,7 @@ public class DropManager : MonoBehaviour
 			if (CharacterData.IsUseLegendWeight(TableDataManager.instance.actorTable.dataArray[i]) && weight > 1.0f)
 				CheatingListener.OnDetectCheatTable();
 
-			sumWeight += weight;
+			sumWeight += (useAdjustWeight ? (weight * TableDataManager.instance.actorTable.dataArray[i].noHaveTimes) : weight);
 			RandomGachaActorInfo newInfo = new RandomGachaActorInfo();
 			newInfo.actorId = TableDataManager.instance.actorTable.dataArray[i].actorId;
 			newInfo.sumWeight = sumWeight;
@@ -570,7 +571,7 @@ public class DropManager : MonoBehaviour
 	}
 
 	List<string> _listDroppedActorId = new List<string>();
-	public bool GetableOrigin(string actorId)
+	public bool GetableOrigin(string actorId, ref bool useAdjustWeight)
 	{
 		//if (actorId != "Actor0201")
 		//	return false;
@@ -586,7 +587,10 @@ public class DropManager : MonoBehaviour
 			return false;
 
 		if (characterData == null)
+		{
+			useAdjustWeight = true;
 			return true;
+		}
 
 		if (characterData.needLimitBreak && characterData.limitBreakPoint <= characterData.limitBreakLevel)
 			return true;

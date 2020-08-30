@@ -99,6 +99,9 @@ public class DropProcessor : MonoBehaviour
 					case eDropType.Origin:
 						if (dropTableData.subValue[i] != "s" && dropTableData.subValue[i] != "l" && dropTableData.subValue[i] != "u")
 							break;
+
+						// Origin의 경우 probability를 적혀있는대로 쓰면 안되고 현재 상황에 맞춰서 가공해야한다.
+						probability = AdjustOriginDropProbability(probability);
 						float weight = TableDataManager.instance.FindNotCharAdjustProb(DropManager.instance.GetCurrentNotSteakCharCount());
 						// NotCharTable Adjust Prob 검증
 						if (weight > 1.7f)
@@ -300,6 +303,36 @@ public class DropProcessor : MonoBehaviour
 		//Debug.Log("dropExp : " + dropExpValue);
 
 		DropManager.instance.StackDropExp(dropExpValue);
+	}
+
+	static float AdjustOriginDropProbability(float tableProbability)
+	{
+		// Origin은 현재 캐릭터의 보유 여부에 따라 보정처리를 해서 드랍 확률이 결정된다.
+		// 기본값은 0.046인데 그걸 공식 하나 적용해서 보정하는 형태. 공식은 다음과 같다.
+		// 새 드랍확률 = 테이블 드랍확률 * 조정후가중치합 / 조정전가중치합
+		//
+		// 이건 FixedChar 를 다 뽑기 전이든 아니든 동일하기 때문에 로직이 나눠지지 않는다.
+		float prevSumWeight = 0.0f;
+		float adjustSumWeight = 0.0f;
+		for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)
+		{
+			prevSumWeight += TableDataManager.instance.actorTable.dataArray[i].charGachaWeight;
+
+			float adjustWeight = 0.0f;
+			CharacterData characterData = PlayerData.instance.GetCharacterData(TableDataManager.instance.actorTable.dataArray[i].actorId);
+			if (characterData == null)
+				adjustWeight = TableDataManager.instance.actorTable.dataArray[i].charGachaWeight * TableDataManager.instance.actorTable.dataArray[i].noHaveTimes;
+			else
+			{
+				if (characterData.needLimitBreak && characterData.limitBreakPoint <= characterData.limitBreakLevel)
+					adjustWeight = TableDataManager.instance.actorTable.dataArray[i].charGachaWeight;
+			}
+			adjustSumWeight += adjustWeight;
+		}
+		if (prevSumWeight == 0.0f)
+			return 0.0f;
+
+		return tableProbability * adjustSumWeight / prevSumWeight;
 	}
 
 	public static float GetOriginProbability(string dropId)

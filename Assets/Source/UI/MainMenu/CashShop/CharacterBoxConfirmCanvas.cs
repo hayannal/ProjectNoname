@@ -71,16 +71,19 @@ public class CharacterBoxConfirmCanvas : MonoBehaviour
 			if (weight <= 0.0f)
 				continue;
 
+			sumWeight += TableDataManager.instance.actorTable.dataArray[i].charGachaWeight;
+
 			// 초기 필수캐릭 습득 여부랑 상관없이 획득가능한지만 체크한다. 못얻을땐 0%로 해놔야 표시하기 편하다.
-			if (DropManager.instance.GetableOrigin(TableDataManager.instance.actorTable.dataArray[i].actorId) == false)
+			bool useAdjustWeight = false;
+			if (DropManager.instance.GetableOrigin(TableDataManager.instance.actorTable.dataArray[i].actorId, ref useAdjustWeight) == false)
 				weight = 0.0f;
 
-			sumWeight += weight;
+			float adjustWeight = (useAdjustWeight ? (weight * TableDataManager.instance.actorTable.dataArray[i].noHaveTimes) : weight);
 
 			if (_dicGradeWeight.ContainsKey(TableDataManager.instance.actorTable.dataArray[i].grade))
-				_dicGradeWeight[TableDataManager.instance.actorTable.dataArray[i].grade] += weight;
+				_dicGradeWeight[TableDataManager.instance.actorTable.dataArray[i].grade] += adjustWeight;
 			else
-				_dicGradeWeight.Add(TableDataManager.instance.actorTable.dataArray[i].grade, weight);
+				_dicGradeWeight.Add(TableDataManager.instance.actorTable.dataArray[i].grade, adjustWeight);
 		}
 		string rateText = "";
 

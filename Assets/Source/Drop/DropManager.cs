@@ -488,6 +488,8 @@ public class DropManager : MonoBehaviour
 			_listRandomGachaActorInfo = new List<RandomGachaActorInfo>();
 		_listRandomGachaActorInfo.Clear();
 
+		int fixedCharacterGroupIndex = -1;
+		bool isCompleteFixedCharacterGroup = IsCompleteFixedCharacterGroup(ref fixedCharacterGroupIndex);
 		float sumWeight = 0.0f;
 		for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)
 		{
@@ -510,7 +512,7 @@ public class DropManager : MonoBehaviour
 
 			// 초기 필수캐릭 얻었는지 체크 후 얻었다면 원래대로 진행
 			bool useAdjustWeight = false;
-			if (IsCompleteFixedCharacterGroup() || ignoreFixedCharacterGroup)
+			if (isCompleteFixedCharacterGroup || ignoreFixedCharacterGroup)
 			{
 				// 획득가능한지 물어봐야한다.
 				if (GetableOrigin(TableDataManager.instance.actorTable.dataArray[i].actorId, ref useAdjustWeight) == false)
@@ -520,7 +522,7 @@ public class DropManager : MonoBehaviour
 			{
 				// 얻지 못했다면 필수 캐릭터 리스트인지 확인해서 이 캐릭들만 후보 리스트에 넣어야한다.
 				bool getable = false;
-				if (IsFixedCharacterIncompleteGroup(TableDataManager.instance.actorTable.dataArray[i].actorId))
+				if (IsFixedCharacterIncompleteGroup(fixedCharacterGroupIndex, TableDataManager.instance.actorTable.dataArray[i].actorId))
 					getable = true;
 				// FixedCharTable 검증
 				if (getable && TableDataManager.instance.actorTable.dataArray[i].grade > 0)
@@ -599,7 +601,7 @@ public class DropManager : MonoBehaviour
 	}
 
 	#region Sub-Region Fixed Character Group
-	bool IsCompleteFixedCharacterGroup()
+	bool IsCompleteFixedCharacterGroup(ref int index)
 	{
 		for (int i = 0; i < TableDataManager.instance.fixedCharTable.dataArray.Length; ++i)
 		{
@@ -608,39 +610,38 @@ public class DropManager : MonoBehaviour
 			{
 				if (PlayerData.instance.ContainsActor(TableDataManager.instance.fixedCharTable.dataArray[i].actorId[j]))
 				{
+					contains = true;
+					break;
+				}
+				if (_listDroppedActorId != null && _listDroppedActorId.Contains(TableDataManager.instance.fixedCharTable.dataArray[i].actorId[j]))
+				{
+					// 이번 드랍으로 결정된거면 얻었다고 판단해야한다.
 					contains = true;
 					break;
 				}
 			}
 
 			if (contains == false)
+			{
+				index = i;
 				return false;
+			}
 		}
 		return true;
 	}
 
-	bool IsFixedCharacterIncompleteGroup(string actorId)
+	bool IsFixedCharacterIncompleteGroup(int fixedCharacterGroupIndex, string actorId)
 	{
-		for (int i = 0; i < TableDataManager.instance.fixedCharTable.dataArray.Length; ++i)
+		if (fixedCharacterGroupIndex == -1)
+			return false;
+		if (fixedCharacterGroupIndex >= TableDataManager.instance.fixedCharTable.dataArray.Length)
+			return false;
+
+		string[] actorIdList = TableDataManager.instance.fixedCharTable.dataArray[fixedCharacterGroupIndex].actorId;
+		for (int i = 0; i < actorIdList.Length; ++i)
 		{
-			bool contains = false;
-			for (int j = 0; j < TableDataManager.instance.fixedCharTable.dataArray[i].actorId.Length; ++j)
-			{
-				if (PlayerData.instance.ContainsActor(TableDataManager.instance.fixedCharTable.dataArray[i].actorId[j]))
-				{
-					contains = true;
-					break;
-				}
-			}
-
-			if (contains)
-				continue;
-
-			for (int j = 0; j < TableDataManager.instance.fixedCharTable.dataArray[i].actorId.Length; ++j)
-			{
-				if (TableDataManager.instance.fixedCharTable.dataArray[i].actorId[j] == actorId)
-					return true;
-			}
+			if (actorIdList[i] == actorId)
+				return true;
 		}
 		return false;
 	}

@@ -37,6 +37,7 @@ public class OpenTimeSpacePortal : MonoBehaviour
 	IEnumerator DelayedOnComplete(float delay)
 	{
 		yield return new WaitForSeconds(delay);
+		TimeSpacePortal.instance.SetAutoRefreshAlarmRemainTime();
 		EventManager.instance.OnCompleteAnimation();
 	}
 }

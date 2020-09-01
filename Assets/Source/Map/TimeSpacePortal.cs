@@ -20,9 +20,16 @@ public class TimeSpacePortal : MonoBehaviour
 			instance = this;
 	}
 
+	bool _started = false;
 	void Start()
 	{
 		worldCanvas.worldCamera = UIInstanceManager.instance.GetCachedCameraMain();
+
+		// 여기서 체크없이 하니까 OpenTimeSpacePortal때도 이펙트 나오기 전인데 느낌표부터 보이게 된다.
+		if (OpenTimeSpacePortal.instance == null)
+			SetAutoRefreshAlarmRemainTime();
+
+		_started = true;
 	}
 
 	void OnEnable()
@@ -31,12 +38,18 @@ public class TimeSpacePortal : MonoBehaviour
 		if (instance != this)
 			return;
 
-		_autoRefreshAlarmRemainTime = 1.0f;
+		if (_started)
+			SetAutoRefreshAlarmRemainTime();
 	}
 
 	void Update()
 	{
 		UpdateRefreshAlarm();
+	}
+
+	public void SetAutoRefreshAlarmRemainTime(float remainTime = 1.0f)
+	{
+		_autoRefreshAlarmRemainTime = remainTime;
 	}
 
 	float _autoRefreshAlarmRemainTime;

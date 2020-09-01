@@ -48,7 +48,8 @@ public class NodeWarProcessor : BattleModeProcessorBase
 
 	public override void OnStartBattle()
 	{
-		base.OnStartBattle();
+		// base꺼 호출할 필요 없다. startDateTime도 안쓰고 빅뱃 예외처리도 필요없다.
+		//base.OnStartBattle();
 
 		BattleInstanceManager.instance.playerActor.cachedTransform.rotation = Quaternion.identity;
 		BattleInstanceManager.instance.playerActor.cachedTransform.position = Vector3.zero;

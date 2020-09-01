@@ -234,13 +234,43 @@ public class TimeSpaceData
 	#region Packet
 	public void OnEquip(EquipData equipData)
 	{
+		// 장비가 없는 곳에다가 장비를 장착할땐 EquipResultCanvas를 띄우기로 한다. 튜토를 겸해서 하는거고 한번 보여줬다고 더이상 안보여주거나 그러지 않는다.
 		int equipType = equipData.cachedEquipTableData.equipType;
+		bool emptySlot = GetEquippedDataByType((eEquipSlotType)equipType) == null;
+		if (emptySlot)
+		{
+			_sumPrevValue = 0.0f;
+			for (int i = 0; i < (int)eEquipSlotType.Amount; ++i)
+			{
+				EquipData equippedData = GetEquippedDataByType((eEquipSlotType)i);
+				if (equippedData != null)
+					_sumPrevValue = equippedData.mainStatusValue;
+			}
+		}
+		
 		if (_dicEquippedData.ContainsKey(equipType))
 			_dicEquippedData[equipType] = equipData;
 		else
 			_dicEquippedData.Add(equipType, equipData);
 
 		OnChangedEquippedData();
+
+		if (emptySlot)
+		{
+			_sumNextValue = 0.0f;
+			for (int i = 0; i < (int)eEquipSlotType.Amount; ++i)
+			{
+				EquipData equippedData = GetEquippedDataByType((eEquipSlotType)i);
+				if (equippedData != null)
+					_sumNextValue = equippedData.mainStatusValue;
+			}
+
+			// 변환된 값을 표시
+			UIInstanceManager.instance.ShowCanvasAsync("AutoEquipResultCanvas", () =>
+			{
+				AutoEquipResultCanvas.instance.ShowInfo(_sumPrevValue, _sumNextValue);
+			});
+		}
 	}
 
 	public void OnUnequip(EquipData equipData)

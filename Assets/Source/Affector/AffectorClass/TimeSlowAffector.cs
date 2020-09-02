@@ -72,4 +72,10 @@ public class TimeSlowAffector : AffectorBase
 		if (_actor.actorStatus.IsDie())
 			return;
 	}
+
+	public override void DisableAffector()
+	{
+		// 체험모드 끝나고나서 되돌려야해서 호출
+		FinalizeAffector();
+	}
 }

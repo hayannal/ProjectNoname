@@ -96,6 +96,9 @@ public class ExperienceCanvas : MonoBehaviour
 		SkillSlotCanvas.instance.HideSkillSlot();
 
 		SoundManager.instance.PlayLobbyBgm();
+
+		// 메릴 체험모드 끝나고 즉시 복구시키기 위해 호출
+		Time.timeScale = 1.0f;
 	}
 
 

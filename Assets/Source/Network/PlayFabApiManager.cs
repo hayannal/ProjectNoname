@@ -1241,7 +1241,7 @@ public class PlayFabApiManager : MonoBehaviour
 			PlayFabClientAPI.UpdateUserData(request, (success) =>
 			{
 				RetrySendManager.instance.OnSuccess();
-				TimeSpaceData.instance.OnEquip(equipData);
+				TimeSpaceData.instance.OnEquip(equipData, true);
 				if (successCallback != null) successCallback.Invoke();
 			}, (error) =>
 			{
@@ -1286,7 +1286,7 @@ public class PlayFabApiManager : MonoBehaviour
 			{
 				RetrySendManager.instance.OnSuccess();
 				for (int i = 0; i < listEquipData.Count; ++i)
-					TimeSpaceData.instance.OnEquip(listEquipData[i]);
+					TimeSpaceData.instance.OnEquip(listEquipData[i], false);
 				if (successCallback != null) successCallback.Invoke();
 			}, (error) =>
 			{
@@ -1380,7 +1380,7 @@ public class PlayFabApiManager : MonoBehaviour
 				if (equipData.enhanceLevel != targetEnhanceLevel)
 					equipData.OnEnhance(targetEnhanceLevel);
 				if (needEquip)
-					TimeSpaceData.instance.OnEquip(equipData);
+					TimeSpaceData.instance.OnEquip(equipData, false);
 				if (successCallback != null) successCallback.Invoke();
 			}
 		}, (error) =>

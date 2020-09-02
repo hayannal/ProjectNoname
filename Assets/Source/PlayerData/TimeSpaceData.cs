@@ -232,22 +232,14 @@ public class TimeSpaceData
 	}
 
 	#region Packet
-	public void OnEquip(EquipData equipData)
+	public void OnEquip(EquipData equipData, bool showEquipEmptySlotTypeCanvas)
 	{
-		// 장비가 없는 곳에다가 장비를 장착할땐 EquipResultCanvas를 띄우기로 한다. 튜토를 겸해서 하는거고 한번 보여줬다고 더이상 안보여주거나 그러지 않는다.
+		// 장비가 없는 곳에다가 장비를 장착할땐 팀원 전체의 공격력이 오른다는 메세지를 띄우기로 한다. 튜토를 겸해서 하는거고 한번 보여줬다고 더이상 안보여주거나 그러지 않는다.
 		int equipType = equipData.cachedEquipTableData.equipType;
-		bool emptySlot = GetEquippedDataByType((eEquipSlotType)equipType) == null;
-		if (emptySlot)
-		{
-			_sumPrevValue = 0.0f;
-			for (int i = 0; i < (int)eEquipSlotType.Amount; ++i)
-			{
-				EquipData equippedData = GetEquippedDataByType((eEquipSlotType)i);
-				if (equippedData != null)
-					_sumPrevValue = equippedData.mainStatusValue;
-			}
-		}
-		
+		bool emptySlot = false;
+		if (showEquipEmptySlotTypeCanvas)
+			emptySlot = GetEquippedDataByType((eEquipSlotType)equipType) == null;
+
 		if (_dicEquippedData.ContainsKey(equipType))
 			_dicEquippedData[equipType] = equipData;
 		else
@@ -255,20 +247,11 @@ public class TimeSpaceData
 
 		OnChangedEquippedData();
 
-		if (emptySlot)
+		if (showEquipEmptySlotTypeCanvas && emptySlot)
 		{
-			_sumNextValue = 0.0f;
-			for (int i = 0; i < (int)eEquipSlotType.Amount; ++i)
+			UIInstanceManager.instance.ShowCanvasAsync("EquipEmptySlotTypeCanvas", () =>
 			{
-				EquipData equippedData = GetEquippedDataByType((eEquipSlotType)i);
-				if (equippedData != null)
-					_sumNextValue = equippedData.mainStatusValue;
-			}
-
-			// 변환된 값을 표시
-			UIInstanceManager.instance.ShowCanvasAsync("AutoEquipResultCanvas", () =>
-			{
-				AutoEquipResultCanvas.instance.ShowInfo(_sumPrevValue, _sumNextValue);
+				EquipEmptySlotTypeCanvas.instance.ShowInfo();
 			});
 		}
 	}
@@ -283,14 +266,12 @@ public class TimeSpaceData
 	}
 
 	List<EquipData> _listAutoEquipData = new List<EquipData>();
-	float _sumPrevValue = 0.0f;
-	float _sumNextValue = 0.0f;
 	public void AutoEquip()
 	{
 		// 현재 장착된 장비보다 공격력이 높다면 auto리스트에 넣는다.
 		_listAutoEquipData.Clear();
-		_sumPrevValue = 0.0f;
-		_sumNextValue = 0.0f;
+		float sumPrevValue = 0.0f;
+		float sumNextValue = 0.0f;
 		for (int i = 0; i < (int)eEquipSlotType.Amount; ++i)
 		{
 			List<EquipData> listEquipData = GetEquipListByType((eEquipSlotType)i);
@@ -302,7 +283,7 @@ public class TimeSpaceData
 			EquipData equippedData = GetEquippedDataByType((eEquipSlotType)i);
 			if (equippedData != null)
 				maxValue = equippedData.mainStatusValue;
-			_sumPrevValue += maxValue;
+			sumPrevValue += maxValue;
 
 			for (int j = 0; j < listEquipData.Count; ++j)
 			{
@@ -316,7 +297,7 @@ public class TimeSpaceData
 			if (selectedEquipData != null)
 				_listAutoEquipData.Add(selectedEquipData);
 
-			_sumNextValue += maxValue;
+			sumNextValue += maxValue;
 		}
 
 		// auto리스트가 하나도 없다면 변경할게 없는거니 안내 토스트를 출력한다.
@@ -332,7 +313,7 @@ public class TimeSpaceData
 			// 변경 완료를 알리고
 			UIInstanceManager.instance.ShowCanvasAsync("AutoEquipResultCanvas", () =>
 			{
-				AutoEquipResultCanvas.instance.ShowInfo(_sumPrevValue, _sumNextValue);
+				AutoEquipResultCanvas.instance.ShowInfo(sumPrevValue, sumNextValue);
 			});
 
 			// 제단을 갱신한다.

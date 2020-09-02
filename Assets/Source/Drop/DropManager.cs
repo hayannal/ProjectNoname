@@ -326,10 +326,6 @@ public class DropManager : MonoBehaviour
 	public string GetGachaEquipId()
 	{
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
-
-		// NodeWar 드랍은 lobby드랍처럼 처리해줘야한다.
-		if (lobby == false && BattleManager.instance != null && BattleManager.instance.IsNodeWar())
-			lobby = true;
 		if (lobby == false)
 			return "";
 		bool needRefresh = false;
@@ -463,6 +459,56 @@ public class DropManager : MonoBehaviour
 		if (index == -1)
 			return "";
 		return _listRandomDropLegendEquipInfo[index].equipTableData.equipId;
+	}
+
+	List<RandomDropEquipInfo> _listRandomDropEquipInfoByType = null;
+	public string GetGachaEquipIdByType(int exceptType)
+	{
+		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
+
+		// NodeWar 드랍은 lobby드랍처럼 처리해줘야한다.
+		if (lobby == false && BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+			lobby = true;
+		if (lobby == false)
+			return "";
+
+		if (_listRandomDropEquipInfoByType == null)
+			_listRandomDropEquipInfoByType = new List<RandomDropEquipInfo>();
+		_listRandomDropEquipInfoByType.Clear();
+
+		float sumWeight = 0.0f;
+		for (int i = 0; i < TableDataManager.instance.equipTable.dataArray.Length; ++i)
+		{
+			float weight = TableDataManager.instance.equipTable.dataArray[i].equipGachaWeight;
+			if (weight <= 0.0f)
+				continue;
+
+			// 인자로 들어오는 값은 제외될 타입이다.
+			if (TableDataManager.instance.equipTable.dataArray[i].equipType == exceptType)
+				continue;
+
+			sumWeight += weight;
+			RandomDropEquipInfo newInfo = new RandomDropEquipInfo();
+			newInfo.equipTableData = TableDataManager.instance.equipTable.dataArray[i];
+			newInfo.sumWeight = sumWeight;
+			_listRandomDropEquipInfoByType.Add(newInfo);
+		}
+		if (_listRandomDropEquipInfoByType.Count == 0)
+			return "";
+
+		int index = -1;
+		float random = Random.Range(0.0f, _listRandomDropEquipInfoByType[_listRandomDropEquipInfoByType.Count - 1].sumWeight);
+		for (int i = 0; i < _listRandomDropEquipInfoByType.Count; ++i)
+		{
+			if (random <= _listRandomDropEquipInfoByType[i].sumWeight)
+			{
+				index = i;
+				break;
+			}
+		}
+		if (index == -1)
+			return "";
+		return _listRandomDropEquipInfoByType[index].equipTableData.equipId;
 	}
 	#endregion
 

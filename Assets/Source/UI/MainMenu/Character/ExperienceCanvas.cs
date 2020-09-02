@@ -77,7 +77,7 @@ public class ExperienceCanvas : MonoBehaviour
 		if (ExperienceGround.instance != null)
 			ExperienceGround.instance.gameObject.SetActive(true);
 
-		CallAffectorValueAffector.OnEvent(BattleInstanceManager.instance.playerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnStartStage);
+		CallAffectorValueAffector.OnEvent(CharacterListCanvas.instance.selectedPlayerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnStartStage);
 
 		SoundManager.instance.PlayBattleBgm(CharacterListCanvas.instance.selectedPlayerActor.actorId);
 	}

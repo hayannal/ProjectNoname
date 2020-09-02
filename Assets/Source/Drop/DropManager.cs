@@ -410,46 +410,43 @@ public class DropManager : MonoBehaviour
 			return "";
 
 		if (_listRandomDropLegendEquipInfo == null)
-		{
 			_listRandomDropLegendEquipInfo = new List<RandomDropEquipInfo>();
-			_listRandomDropLegendEquipInfo.Clear();
+		_listRandomDropLegendEquipInfo.Clear();
 
-			float sumWeight = 0.0f;
-			for (int i = 0; i < TableDataManager.instance.equipTable.dataArray.Length; ++i)
+		float sumWeight = 0.0f;
+		for (int i = 0; i < TableDataManager.instance.equipTable.dataArray.Length; ++i)
+		{
+			float weight = TableDataManager.instance.equipTable.dataArray[i].equipGachaWeight;
+			if (weight <= 0.0f)
+				continue;
+
+			if (grade == -1)
 			{
-				float weight = TableDataManager.instance.equipTable.dataArray[i].equipGachaWeight;
-				if (weight <= 0.0f)
+				// 전설뽑기니 나머지 제외
+				if (EquipData.IsUseLegendKey(TableDataManager.instance.equipTable.dataArray[i]) == false)
 					continue;
 
-				if (grade == -1)
+				// equipGachaWeight 검증
+				if (weight > 1.0f)
+					CheatingListener.OnDetectCheatTable();
+			}
+			else
+			{
+				if (grade == 1 || grade == 2 || grade == 3)
 				{
-					// 전설뽑기니 나머지 제외
-					if (EquipData.IsUseLegendKey(TableDataManager.instance.equipTable.dataArray[i]) == false)
+					if (TableDataManager.instance.equipTable.dataArray[i].grade != grade)
 						continue;
-
-					// equipGachaWeight 검증
-					if (weight > 1.0f)
-						CheatingListener.OnDetectCheatTable();
 				}
 				else
-				{
-					if (grade == 1 || grade == 2 || grade == 3)
-					{
-						if (TableDataManager.instance.equipTable.dataArray[i].grade != grade)
-							continue;
-					}
-					else
-						continue;
-				}
-
-				sumWeight += weight;
-				RandomDropEquipInfo newInfo = new RandomDropEquipInfo();
-				newInfo.equipTableData = TableDataManager.instance.equipTable.dataArray[i];
-				newInfo.sumWeight = sumWeight;
-				_listRandomDropLegendEquipInfo.Add(newInfo);
+					continue;
 			}
-		}
 
+			sumWeight += weight;
+			RandomDropEquipInfo newInfo = new RandomDropEquipInfo();
+			newInfo.equipTableData = TableDataManager.instance.equipTable.dataArray[i];
+			newInfo.sumWeight = sumWeight;
+			_listRandomDropLegendEquipInfo.Add(newInfo);
+		}
 		if (_listRandomDropLegendEquipInfo.Count == 0)
 			return "";
 

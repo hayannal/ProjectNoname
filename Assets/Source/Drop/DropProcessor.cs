@@ -145,7 +145,7 @@ public class DropProcessor : MonoBehaviour
 							probability *= (1.0f + itemDropAdjust);
 						// 초반 플레이 예외처리.
 						if (PlayerData.instance.highestPlayChapter <= 3 && PlayerData.instance.highestPlayChapter == PlayerData.instance.selectedChapter && DropManager.instance.droppedStageItemCount == 0)
-							probability *= 4.0f;
+							probability *= 2.3f;
 						break;
 					case eDropType.Heart:
 						probability *= StageManager.instance.currentStageTableData.DropHeartAdjustment;

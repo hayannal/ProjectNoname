@@ -30,7 +30,7 @@ public class BattleModeProcessorBase
 			// 독립적으로 유지되어야한다. managed On
 			AffectorValueLevelTableData changeStatusAffectorValue = new AffectorValueLevelTableData();
 			changeStatusAffectorValue.fValue1 = -1.0f; // duration
-			changeStatusAffectorValue.fValue2 = 0.3f;
+			changeStatusAffectorValue.fValue2 = 0.2f;
 			changeStatusAffectorValue.iValue1 = (int)ActorStatusDefine.eActorStatus.AttackAddRate;
 			BattleInstanceManager.instance.playerActor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.ChangeActorStatus, changeStatusAffectorValue, BattleInstanceManager.instance.playerActor, true);
 		}

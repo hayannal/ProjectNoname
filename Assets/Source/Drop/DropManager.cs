@@ -731,6 +731,13 @@ public class DropManager : MonoBehaviour
 			}
 
 			float weight = baseWeight - PlayerData.instance.listCharacterData[i].pp;
+			// 초반 플레이 예외처리.
+			if (grade == -1 && (PlayerData.instance.characterBoxOpenCount + PlayerData.instance.originOpenCount) <= 2)
+			{
+				if (actorId == "Actor0201" || actorId == "Actor1002" || actorId == "Actor2103") { }
+				else
+					weight *= 0.1f;
+			}
 			sumWeight += weight;
 			RandomGachaActorInfo newInfo = new RandomGachaActorInfo();
 			newInfo.actorId = PlayerData.instance.listCharacterData[i].actorId;

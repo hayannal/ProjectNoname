@@ -34,6 +34,15 @@ public class BattleModeProcessorBase
 			changeStatusAffectorValue.iValue1 = (int)ActorStatusDefine.eActorStatus.AttackAddRate;
 			BattleInstanceManager.instance.playerActor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.ChangeActorStatus, changeStatusAffectorValue, BattleInstanceManager.instance.playerActor, true);
 		}
+		if (PlayerData.instance.selectedChapter == (int)ContentsManager.eOpenContentsByChapter.Chaos && BattleInstanceManager.instance.playerActor.actorStatus.powerLevel <= 2 && BattleInstanceManager.instance.playerActor.actorId == "Actor1005")
+		{
+			// 독립적으로 유지되어야한다. managed On
+			AffectorValueLevelTableData changeStatusAffectorValue = new AffectorValueLevelTableData();
+			changeStatusAffectorValue.fValue1 = -1.0f; // duration
+			changeStatusAffectorValue.fValue2 = 0.2f;
+			changeStatusAffectorValue.iValue1 = (int)ActorStatusDefine.eActorStatus.AttackAddRate;
+			BattleInstanceManager.instance.playerActor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.ChangeActorStatus, changeStatusAffectorValue, BattleInstanceManager.instance.playerActor, true);
+		}
 	}
 
 	public void OnPreInstantiateMap()

@@ -201,7 +201,11 @@ public class DropProcessor : MonoBehaviour
 				}
 				else if (dropType == eDropType.PowerPoint)
 				{
-					stringValue = DropManager.instance.GetGachaPowerPointId();
+					switch (dropTableData.subValue[i])
+					{
+						case "f": stringValue = DropManager.instance.GetGachaPowerPointId(true); break;
+						default: stringValue = DropManager.instance.GetGachaPowerPointId(false); break;
+					}
 					if (stringValue == "")
 						continue;
 				}

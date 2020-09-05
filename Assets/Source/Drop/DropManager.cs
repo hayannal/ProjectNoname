@@ -695,7 +695,7 @@ public class DropManager : MonoBehaviour
 	#region Gacha PowerPoint
 	List<string> _listDroppedPowerPointId = new List<string>();
 	const float _maxPowerPointRate = 1.5f;
-	public string GetGachaPowerPointId(int grade = -1, bool ignoreCheckLobby = false)
+	public string GetGachaPowerPointId(bool adjustOriginPowerPoint, int grade = -1, bool ignoreCheckLobby = false)
 	{
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
 		if (lobby == false && ignoreCheckLobby == false)
@@ -732,7 +732,7 @@ public class DropManager : MonoBehaviour
 
 			float weight = baseWeight - PlayerData.instance.listCharacterData[i].pp;
 			// 초반 플레이 예외처리.
-			if (grade == -1 && (PlayerData.instance.characterBoxOpenCount + PlayerData.instance.originOpenCount) <= 2)
+			if (grade == -1 && adjustOriginPowerPoint && PlayerData.instance.originOpenCount <= 2)
 			{
 				if (actorId == "Actor1002" || actorId == "Actor2103") { }
 				else

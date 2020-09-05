@@ -709,6 +709,9 @@ public class DropManager : MonoBehaviour
 		for (int i = 0; i < PlayerData.instance.listCharacterData.Count; ++i)
 			maxPp = Mathf.Max(maxPp, PlayerData.instance.listCharacterData[i].pp);
 
+		// 최초에는 pp가 없기때문에 예외처리 해줘야한다.
+		if (maxPp == 0.0f) maxPp = 10.0f;
+
 		float baseWeight = maxPp * _maxPowerPointRate;
 		float sumWeight = 0.0f;
 		for (int i = 0; i < PlayerData.instance.listCharacterData.Count; ++i)
@@ -736,7 +739,7 @@ public class DropManager : MonoBehaviour
 			{
 				if (actorId == "Actor1002" || actorId == "Actor2103") { }
 				else
-					weight *= 0.1f;
+					weight *= 0.001f;
 			}
 			sumWeight += weight;
 			RandomGachaActorInfo newInfo = new RandomGachaActorInfo();

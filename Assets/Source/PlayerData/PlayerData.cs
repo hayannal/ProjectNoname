@@ -691,7 +691,10 @@ public class PlayerData : MonoBehaviour
 			{
 				secondDailyBoxFillCount += 1;
 				if (secondDailyBoxFillCount == BattleInstanceManager.instance.GetCachedGlobalConstantInt("SealBigCount"))
+				{
 					secondDailyBoxFillCount = 0;
+					originOpenCount += 1;
+				}
 			}
 		}
 	}

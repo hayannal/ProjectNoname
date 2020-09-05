@@ -52,18 +52,9 @@ public class TimeSpaceData
 
 	public void OnRecvEquipInventory(List<ItemInstance> userInventory, Dictionary<string, UserDataRecord> userData)
 	{
+		ClearInventory();
+
 		// list
-		if (_listEquipData.Count == 0)
-		{
-			for (int i = 0; i < (int)eEquipSlotType.Amount; ++i)
-			{
-				List<EquipData> listEquipData = new List<EquipData>();
-				_listEquipData.Add(listEquipData);
-			}
-		}
-		for (int i = 0; i < _listEquipData.Count; ++i)
-			_listEquipData[i].Clear();
-		
 		for (int i = 0; i < userInventory.Count; ++i)
 		{
 			EquipTableData equipTableData = TableDataManager.instance.FindEquipTableData(userInventory[i].ItemId);
@@ -107,6 +98,24 @@ public class TimeSpaceData
 		{
 			PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidEquipType, false, invalidEquipSlotIndex);
 		}
+
+		// status
+		RefreshCachedStatus();
+	}
+
+	public void ClearInventory()
+	{
+		if (_listEquipData.Count == 0)
+		{
+			for (int i = 0; i < (int)eEquipSlotType.Amount; ++i)
+			{
+				List<EquipData> listEquipData = new List<EquipData>();
+				_listEquipData.Add(listEquipData);
+			}
+		}
+		for (int i = 0; i < _listEquipData.Count; ++i)
+			_listEquipData[i].Clear();
+		_dicEquippedData.Clear();
 
 		// status
 		RefreshCachedStatus();

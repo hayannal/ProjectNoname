@@ -300,6 +300,10 @@ public class PlayerData : MonoBehaviour
 		researchLevel = 0;
 		dailyTrainingGoldCompleted = false;
 		dailyTrainingDiaCompleted = false;
+		nodeWarClearLevel = 0;
+		nodeWarCleared = false;
+		nodeWarCurrentLevel = 0;
+		nodeWarBoostRemainCount = 0;
 
 		// 나중에 지울 코드이긴 한데 MainSceneBuilder에서 NEWPLAYER_LEVEL1 디파인 켜둔채로 생성하는 테스트용 루틴일땐
 		// 1챕터에서 시작하게 처리해둔다.
@@ -309,7 +313,9 @@ public class PlayerData : MonoBehaviour
 			highestPlayChapter = 1;
 			selectedChapter = 1;
 		}
+		EventManager.instance.OnRecvServerEvent("");
 
+		TimeSpaceData.instance.ClearInventory();
 		_listCharacterData.Clear();
 		AddNewCharacter("Actor0201", "", 1);
 

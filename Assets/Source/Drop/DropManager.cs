@@ -734,7 +734,7 @@ public class DropManager : MonoBehaviour
 			// 초반 플레이 예외처리.
 			if (grade == -1 && (PlayerData.instance.characterBoxOpenCount + PlayerData.instance.originOpenCount) <= 2)
 			{
-				if (actorId == "Actor0201" || actorId == "Actor1002" || actorId == "Actor2103") { }
+				if (actorId == "Actor1002" || actorId == "Actor2103") { }
 				else
 					weight *= 0.1f;
 			}

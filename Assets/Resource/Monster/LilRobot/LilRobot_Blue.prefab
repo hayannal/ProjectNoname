@@ -204,6 +204,7 @@ MonoBehaviour:
   desireDistance: 2
   straightMoveTimeRange: {x: 0, y: 0}
   straightRefreshTickTimeRange: {x: 0, y: 0}
+  straightRefreshTickWaitTime: 0
   straightMoveType: 0
   customActionPlayType: 1
   customActionName: 
@@ -217,29 +218,6 @@ MonoBehaviour:
   attackDelayTimeRange: {x: 0, y: 0}
   useAnimatorParameterForAI: 0
   listAnimatorParameterForAI: 
---- !u!111 &6972648547271602347
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5670324381609849718}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: a35fd094dea0d6e48b683e46ab5de632, type: 2}
-  m_Animations:
-  - {fileID: 7400000, guid: b3a7ce87b1be0c945a1f08f3371fc4dc, type: 2}
-  - {fileID: 7400000, guid: 03ad4054578521345a5a19e5449e7e70, type: 2}
-  - {fileID: 7400000, guid: 7bc87f3a77eb9df46b887e579452f428, type: 2}
-  - {fileID: 7400000, guid: cad137f70140c184d8e9499ea4e37b14, type: 2}
-  - {fileID: 7400000, guid: a35fd094dea0d6e48b683e46ab5de632, type: 2}
-  - {fileID: 7400000, guid: 70cbded1ccaf19b4eab719b2384b8a83, type: 2}
-  - {fileID: 7400000, guid: 214913e07638aa74ba10317450924ddc, type: 2}
-  - {fileID: 7400000, guid: a25d76fffc5a2f7429ae1d501f00a334, type: 2}
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_CullingType: 0
 --- !u!1001 &5670324381609817544
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -307,27 +285,27 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0.9
       objectReference: {fileID: 0}
-    - target: {fileID: 400014, guid: d314a97dbb26b834a882d42db92820bd, type: 3}
+    - target: {fileID: 400008, guid: d314a97dbb26b834a882d42db92820bd, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 400014, guid: d314a97dbb26b834a882d42db92820bd, type: 3}
+    - target: {fileID: 400008, guid: d314a97dbb26b834a882d42db92820bd, type: 3}
       propertyPath: m_LocalScale.y
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 400014, guid: d314a97dbb26b834a882d42db92820bd, type: 3}
+    - target: {fileID: 400008, guid: d314a97dbb26b834a882d42db92820bd, type: 3}
       propertyPath: m_LocalScale.z
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 400008, guid: d314a97dbb26b834a882d42db92820bd, type: 3}
+    - target: {fileID: 400014, guid: d314a97dbb26b834a882d42db92820bd, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 400008, guid: d314a97dbb26b834a882d42db92820bd, type: 3}
+    - target: {fileID: 400014, guid: d314a97dbb26b834a882d42db92820bd, type: 3}
       propertyPath: m_LocalScale.y
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 400008, guid: d314a97dbb26b834a882d42db92820bd, type: 3}
+    - target: {fileID: 400014, guid: d314a97dbb26b834a882d42db92820bd, type: 3}
       propertyPath: m_LocalScale.z
       value: 1
       objectReference: {fileID: 0}
@@ -365,12 +343,6 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 29d87707d281373418383c419ce1550e, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d314a97dbb26b834a882d42db92820bd, type: 3}
---- !u!1 &5670324381609849718 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 100030, guid: d314a97dbb26b834a882d42db92820bd,
-    type: 3}
-  m_PrefabInstance: {fileID: 5670324381609817544}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5670324381609422696 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400032, guid: d314a97dbb26b834a882d42db92820bd,

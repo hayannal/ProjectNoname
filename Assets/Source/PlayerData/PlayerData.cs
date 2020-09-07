@@ -319,6 +319,9 @@ public class PlayerData : MonoBehaviour
 		_listCharacterData.Clear();
 		AddNewCharacter("Actor0201", "", 1);
 
+		// 임의로 전투맵부터 시작하는거라 EnterFlag조차 안받은 상태다. EnterFlag가 없으면 튜토리얼 EndGame패킷도 처리할 수 없기 때문에 발급받아야한다.
+		StartCoroutine(DelayedEnterGame(4.0f));
+
 		// 임의로 생성한거라 EntityKey를 만들어둘수가 없다.
 		// 그렇다고 loginned 를 풀어서 통째로 받으면 괜히 커져서 EntityKey 리프레쉬 함수 하나 만들어서 호출하기로 한다.
 		StartCoroutine(DelayedSyncCharacterEntity(5.0f));
@@ -367,6 +370,16 @@ public class PlayerData : MonoBehaviour
 		yield return new WaitForSeconds(delay);
 
 		PlayFabApiManager.instance.RequestSyncCharacterEntity();
+	}
+
+	IEnumerator DelayedEnterGame(float delay)
+	{
+		yield return new WaitForSeconds(delay);
+
+		// 튜토리얼에서 사용하는거라 에너지를 검사할 일은 없다.
+		// 게다가 계정이 제대로 생성되었다면 네트워크에 문제가 없단 얘기일테니
+		// 몰래하는거라 생각하고 별다른 처리는 하지 않는다.
+		PlayFabApiManager.instance.RequestEnterGame(false, "", null, null);
 	}
 
 	public void OnRecvSyncCharacterEntity(List<CharacterResult> characterList)

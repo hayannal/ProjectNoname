@@ -30,6 +30,14 @@ public class ClearStageTrigger : MonoBehaviour
 		if (affectorProcessor.actor.team.teamId == (int)Team.eTeamID.DefaultMonster)
 			return;
 
+		// MultipleLineIndicatorCanvas에 적혀있는 문구를 바꿔준다.
+		if (MultipleLineIndicatorCanvas.instance != null && MultipleLineIndicatorCanvas.instance.gameObject.activeSelf)
+		{
+			MultipleLineIndicatorCanvas.instance.gameObject.SetActive(false);
+			MultipleLineIndicatorCanvas.instance.contextText.SetLocalizedText(UIString.instance.GetString("GameUI_TouchToMove"));
+			MultipleLineIndicatorCanvas.instance.gameObject.SetActive(true);
+		}
+
 		BattleManager.instance.OnClearStage();
 		_spawnedGatePillar = true;
 	}

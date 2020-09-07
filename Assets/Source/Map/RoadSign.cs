@@ -10,7 +10,7 @@ public class RoadSign : MonoBehaviour
 
 	void OnEnable()
 	{
-		_indicatorShowRemainTime = 1.0f;
+		_indicatorShowRemainTime = 0.4f;
 	}
 
 	void OnDisable()

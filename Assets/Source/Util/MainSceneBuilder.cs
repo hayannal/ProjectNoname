@@ -1,6 +1,6 @@
 #define PLAYFAB				// 싱글버전으로 돌아가는 디파인이다. 테스트용을 위해 남겨둔다.
-#define NEWPLAYER_LEVEL1	// 실제 튜토리얼 들어갈때 무조건 없애야하는 디파인이다. 1레벨 임시 캐릭 생성용 버전.
-#define NEWPLAYER_ADD_KEEP	// 사실 킵이 있는게 1챕터의 시작이라 위 LEVEL1가지고는 정상적인 흐름대로 진행하기가 어렵다. 위와 마찬가지로 지워야한다. 지울때 꼭!! 서버의 rules에서 OnCreatePlayer4 빼야함
+//#define NEWPLAYER_LEVEL1	// 실제 튜토리얼 들어갈때 무조건 없애야하는 디파인이다. 1레벨 임시 캐릭 생성용 버전.
+//#define NEWPLAYER_ADD_KEEP	// 사실 킵이 있는게 1챕터의 시작이라 위 LEVEL1가지고는 정상적인 흐름대로 진행하기가 어렵다. 위와 마찬가지로 지워야한다. 지울때 꼭!! 서버의 rules에서 OnCreatePlayer4 빼야함
 
 using System.Collections;
 using System.Collections.Generic;

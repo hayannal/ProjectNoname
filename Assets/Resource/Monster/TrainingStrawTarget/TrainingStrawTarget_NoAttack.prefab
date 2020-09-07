@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 3117968838973501837}
   - component: {fileID: 5964651602584999124}
   m_Layer: 0
-  m_Name: TrainingStrawTarget
+  m_Name: TrainingStrawTarget_NoAttack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -179,7 +179,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be6d548a09164c64eb8e5ab315bdae7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actorId: TrainingStrawTarget
+  actorId: TrainingStrawTarget_NoAttack
   commonPoolPreloadObjectList: []
   selfPassivePreloadObjectList: []
   gaugeOffsetY: 0
@@ -197,8 +197,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startDelayRange: {x: 0.5, y: 0.5}
-  startState: 3
-  useStateList: 000000010100
+  startState: 4
+  useStateList: 000000000100
   moveTimeRange: {x: 4, y: 4}
   refreshTickTimeRange: {x: 2, y: 2}
   desireDistance: 5
@@ -215,7 +215,7 @@ MonoBehaviour:
   attackActionName: Attack
   attackActionFadeDuration: 0.05
   lookAtTargetBeforeAttack: 1
-  attackDelayTimeRange: {x: 4, y: 4}
+  attackDelayTimeRange: {x: 2, y: 2}
   useAnimatorParameterForAI: 0
   listAnimatorParameterForAI: 
 --- !u!1 &5924943673800545073

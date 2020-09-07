@@ -510,6 +510,7 @@ public class MainSceneBuilder : MonoBehaviour
 		{
 			BattleManager.instance.OnSpawnFlag();
 			LoadingCanvas.instance.FadeOutObject();
+			BattleInstanceManager.instance.playerActor.InitializeCanvas();
 		}
 	}
 

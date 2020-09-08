@@ -348,6 +348,7 @@ public class LobbyCanvas : MonoBehaviour
 
 		bool showAlarm = false;
 		if (_isAlarmCashShop || _isAlarmCharacter || _isAlarmResearch || _isAlarmMail) showAlarm = true;
+		if (ContentsManager.IsTutorialChapter()) showAlarm = false;
 		if (showAlarm)
 			AlarmObject.Show(alarmRootTransform, true, true);
 		else
@@ -367,6 +368,7 @@ public class LobbyCanvas : MonoBehaviour
 		}
 		bool showAlarm = false;
 		if (_isAlarmCashShop || _isAlarmCharacter || _isAlarmResearch || _isAlarmMail) showAlarm = true;
+		if (ContentsManager.IsTutorialChapter()) showAlarm = false;
 		if (showAlarm)
 			AlarmObject.Show(alarmRootTransform);
 		else

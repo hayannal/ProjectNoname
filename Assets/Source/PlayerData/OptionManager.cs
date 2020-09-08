@@ -28,7 +28,7 @@ public class OptionManager : MonoBehaviour
 	float _bgmVolume = 1.0f;
 	float _systemVolume = 1.0f;
 	string _language = "KOR";
-	int _frame = 2;
+	int _frame = 5;
 	int _useDoubleTab = 1;
 	int _lockIcon = 0;
 

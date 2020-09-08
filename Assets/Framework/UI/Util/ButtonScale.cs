@@ -29,6 +29,14 @@ public class ButtonScale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 	bool _exitWhenPressed = false;
 	Vector3 _cachedAdjustRectScale;
 
+	void OnDisable()
+	{
+		// Scale 복구
+		// TweenAnimation 플레이중에 게임오브젝트가 꺼질때를 대비해서 처리해둔다.
+		if (_cachedAdjustRectScale != Vector3.zero && adjustRectTransform != null)
+			adjustRectTransform.localScale = _cachedAdjustRectScale;
+	}
+
 	void Start()
 	{
 		_transform = GetComponent<Transform>();

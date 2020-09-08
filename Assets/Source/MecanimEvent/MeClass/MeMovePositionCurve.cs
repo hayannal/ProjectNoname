@@ -34,6 +34,8 @@ public class MeMovePositionCurve : MecanimEventBase {
 	//float _prevX;
 	//float _prevZ;
 	Actor _actor;
+	bool _cachedBastPositionY;
+	float _basePositionY;
 	override public void OnRangeSignal(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 #if UNITY_EDITOR
@@ -116,6 +118,12 @@ public class MeMovePositionCurve : MecanimEventBase {
 
 			if (useLocalPositionY)
 			{
+				if (_cachedBastPositionY == false)
+				{
+					_basePositionY = animator.transform.localPosition.y;
+					_cachedBastPositionY = true;
+				}
+
 				float targetY = curveY.Evaluate((stateInfo.normalizedTime - StartTime) / (EndTime - StartTime));
 				_actor.actionController.cachedAnimatorTransform.localPosition = new Vector3(_actor.actionController.cachedAnimatorTransform.localPosition.x, _basePositionY + targetY, _actor.actionController.cachedAnimatorTransform.localPosition.z);
 			}
@@ -151,14 +159,5 @@ public class MeMovePositionCurve : MecanimEventBase {
 			//	_prevZ = 0.0f;
 			_actor.GetRigidbody().velocity = Vector3.zero;
 		}
-	}
-
-	float _basePositionY;
-	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-	{
-		base.OnStateEnter(animator, stateInfo, layerIndex);
-
-		//_prevX = _prevZ = 0.0f;
-		_basePositionY = animator.transform.localPosition.y;
 	}
 }

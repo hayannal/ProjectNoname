@@ -533,6 +533,7 @@ public class MonsterAI : MonoBehaviour
 	public string customActionName;
 	public float customActionFadeDuration = 0.05f;
 	bool _customActionPlayed = false;
+	int _waitCustomActionFrameCount;
 	void UpdateCustomAction()
 	{
 		if (targetActor == null)
@@ -549,6 +550,19 @@ public class MonsterAI : MonoBehaviour
 			return;
 		}
 
+		// 자꾸 커스텀 액션이 끝까지 나가지 않는 경우가 생긴다. Attack과 달리 eMecanimState 로 판단하기도 애매해서 프레임으로 체크하기로 한다.
+		// 아무리 짧아도 10프레임 안에 끝나는 액션은 아닐테니 예외처리.
+		if (_waitCustomActionFrameCount > 0)
+		{
+			_waitCustomActionFrameCount -= 1;
+			if (_waitCustomActionFrameCount <= 0)
+			{
+				_waitCustomActionFrameCount = 0;
+				_customActionPlayed = true;
+			}
+			return;
+		}
+
 		if (_customActionPlayed == false)
 		{
 			switch (customActionPlayType)
@@ -560,10 +574,12 @@ public class MonsterAI : MonoBehaviour
 				case eActionPlayType.State:
 					actor.actionController.animator.CrossFade(BattleInstanceManager.instance.GetActionNameHash(customActionName), customActionFadeDuration);
 					_customActionPlayed = true;
+					_waitCustomActionFrameCount = 10;
 					break;
 				case eActionPlayType.Trigger:
 					actor.actionController.animator.SetTrigger(BattleInstanceManager.instance.GetActionNameHash(customActionName));
 					_customActionPlayed = true;
+					_waitCustomActionFrameCount = 10;
 					break;
 			}
 		}
@@ -572,6 +588,7 @@ public class MonsterAI : MonoBehaviour
 	void ResetCustomActionStateInfo()
 	{
 		_customActionPlayed = false;
+		_waitCustomActionFrameCount = 0;
 	}
 	#endregion
 

@@ -160,4 +160,13 @@ public class MeMovePositionCurve : MecanimEventBase {
 			_actor.GetRigidbody().velocity = Vector3.zero;
 		}
 	}
+
+	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+	{
+		if (_actor == null)
+			return;
+
+		if (useLocalPositionY && _cachedBastPositionY)
+			_actor.actionController.cachedAnimatorTransform.localPosition = new Vector3(_actor.actionController.cachedAnimatorTransform.localPosition.x, _basePositionY, _actor.actionController.cachedAnimatorTransform.localPosition.z);
+	}
 }

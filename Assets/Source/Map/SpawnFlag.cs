@@ -99,7 +99,7 @@ public class SpawnFlag : MonoBehaviour
 		if (editorSpawn == false)
 		{
 			Transform spawnTransform = playerStartSpawnTransform;
-			if (ClientSaveData.instance.GetCachedMonsterAllKill())
+			if (ClientSaveData.instance.GetCachedMonsterAllKill() || ClientSaveData.instance.GetCachedGatePillar())
 				spawnTransform = playerClearSpawnTransform;
 
 			if (MainSceneBuilder.instance == null || MainSceneBuilder.instance.mainSceneBuilding == false)

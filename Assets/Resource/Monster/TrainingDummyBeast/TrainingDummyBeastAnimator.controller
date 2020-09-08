@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-9034589189202171221
+--- !u!114 &-9009784674144678206
 MonoBehaviour:
   m_ObjectHideFlags: 3
   m_CorrespondingSourceObject: {fileID: 0}
@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc636291b831fe248b3ce095d84517d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.32066116
-  EndTime: 0.6726973
+  StartTime: 0.11
+  EndTime: 0.6
   useLocalPositionX: 0
   curveX:
     serializedVersion: 2
@@ -46,11 +46,11 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 0
-      inSlope: -1.573382
-      outSlope: -1.573382
+      inSlope: -1.8470145
+      outSlope: -1.8470145
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.06472739
+      inWeight: 0.055138122
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -80,7 +80,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &-9009784674144678206
+--- !u!114 &-8934592728329568243
 MonoBehaviour:
   m_ObjectHideFlags: 3
   m_CorrespondingSourceObject: {fileID: 0}
@@ -92,8 +92,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc636291b831fe248b3ce095d84517d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.32066116
-  EndTime: 0.6726973
+  StartTime: 0.11
+  EndTime: 0.6
   useLocalPositionX: 0
   curveX:
     serializedVersion: 2
@@ -174,8 +174,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   randomStateInfoList:
   - stateName: Base Layer.JumpGroup.Jump1
-    weight: 0.6
-  - stateName: Base Layer.JumpGroup.Jump6
+    weight: 0.8
+  - stateName: Base Layer.JumpGroup.Jump2
+    weight: 1
+  - stateName: Base Layer.JumpGroup.Jump3
     weight: 1
 --- !u!114 &-8677319451172157845
 MonoBehaviour:
@@ -297,28 +299,137 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 0
---- !u!1101 &-7873134168333318675
-AnimatorStateTransition:
+--- !u!114 &-8314560819689818160
+MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 103a63d9ada304948adbac0e5356a9c9, type: 3}
   m_Name: 
-  m_Conditions: []
-  m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: 6963621982334702372}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 0
-  serializedVersion: 3
-  m_TransitionDuration: 0.3
-  m_TransitionOffset: 0
-  m_ExitTime: 0.7
-  m_HasExitTime: 1
-  m_HasFixedDuration: 0
-  m_InterruptionSource: 0
-  m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
+  m_EditorClassIdentifier: 
+  StartTime: 0.1
+  EndTime: 1
+  enable: 1
+--- !u!114 &-8256549689524079767
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 103a63d9ada304948adbac0e5356a9c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.1
+  EndTime: 1
+  enable: 0
+--- !u!114 &-8216608316541648113
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.6
+  EndTime: 1
+  effectData: {fileID: 3136301650636350254, guid: 08771d10838c6cc4fb6149ac3d013480,
+    type: 3}
+  offset: {x: 0, y: 0, z: 0}
+  fixedWorldPositionY: 0
+  direction: {x: 0, y: 0, z: 1}
+  parentName: 
+  followPosition: 0
+--- !u!114 &-8207091033873433976
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc636291b831fe248b3ce095d84517d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.11
+  EndTime: 0.6
+  useLocalPositionX: 0
+  curveX:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  useLocalPositionY: 1
+  curveY:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.5010357
+      value: 0.5010357
+      inSlope: -0.0020756721
+      outSlope: -0.0020756721
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -1.7801707
+      outSlope: -1.7801707
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.050343487
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  useLocalPositionZ: 1
+  curveZ:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 2
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1102 &-7870688956108488034
 AnimatorState:
   serializedVersion: 5
@@ -346,6 +457,116 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1102 &-7809798692316769213
+AnimatorState:
+  serializedVersion: 5
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Jump2-2
+  m_Speed: 1.5
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours:
+  - {fileID: -8934592728329568243}
+  - {fileID: -1525967923833940385}
+  - {fileID: -8314560819689818160}
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: -2038853162833260775, guid: 0df886d99e3d84abbb2d012a564d6737,
+    type: 3}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
+--- !u!114 &-7382731485526123884
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc636291b831fe248b3ce095d84517d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.11
+  EndTime: 0.6
+  useLocalPositionX: 0
+  curveX:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  useLocalPositionY: 1
+  curveY:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.5010357
+      value: 0.5010357
+      inSlope: -0.0020756721
+      outSlope: -0.0020756721
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -1.573382
+      outSlope: -1.573382
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.06472739
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  useLocalPositionZ: 1
+  curveZ:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 2
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!114 &-7092521502412247626
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -465,6 +686,21 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 0
+--- !u!114 &-7050493599192198664
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 103a63d9ada304948adbac0e5356a9c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.1
+  EndTime: 1
+  enable: 1
 --- !u!1102 &-6891773606295284152
 AnimatorState:
   serializedVersion: 5
@@ -472,13 +708,14 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Jump3
-  m_Speed: 1.7
+  m_Name: Jump1-2
+  m_Speed: 1.6
   m_CycleOffset: 0
   m_Transitions:
-  - {fileID: 65421801785359629}
+  - {fileID: -5354080378362189515}
   m_StateMachineBehaviours:
   - {fileID: -9009784674144678206}
+  - {fileID: -8216608316541648113}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -487,12 +724,71 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 0df886d99e3d84abbb2d012a564d6737, type: 3}
+  m_Motion: {fileID: -2038853162833260775, guid: 0df886d99e3d84abbb2d012a564d6737,
+    type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!114 &-6850642299410080912
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 103a63d9ada304948adbac0e5356a9c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.1
+  EndTime: 1
+  enable: 1
+--- !u!114 &-6722878321571229182
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8516055b55eb644780db6f97bb409f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.01
+  EndTime: 0.2
+  lookAtTarget: 1
+  leftRightRandomAngle: 0
+  lootAtTargetOffsetAngle: 0
+  lookAtRandom: 0
+  desireDistance: 5
+  minimumDistance: 0
+  lerpPower: 30
+  boneName: 
+--- !u!114 &-6704784450806121354
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.6
+  EndTime: 1
+  effectData: {fileID: 3136301650636350254, guid: 08771d10838c6cc4fb6149ac3d013480,
+    type: 3}
+  offset: {x: 0, y: 0, z: 0}
+  fixedWorldPositionY: 0
+  direction: {x: 0, y: 0, z: 1}
+  parentName: 
+  followPosition: 0
 --- !u!1107 &-6540346028188328965
 AnimatorStateMachine:
   serializedVersion: 5
@@ -538,6 +834,36 @@ AnimatorStateMachine:
   m_ExitPosition: {x: 460, y: 100, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
   m_DefaultState: {fileID: -7870688956108488034}
+--- !u!1102 &-6208490916812545046
+AnimatorState:
+  serializedVersion: 5
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Jump2-1
+  m_Speed: 1.5
+  m_CycleOffset: 0
+  m_Transitions:
+  - {fileID: 6555394393207113704}
+  m_StateMachineBehaviours:
+  - {fileID: -3247850183616472880}
+  - {fileID: 5510906146903532836}
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: -2038853162833260775, guid: 0df886d99e3d84abbb2d012a564d6737,
+    type: 3}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!114 &-6199803437924534339
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -550,15 +876,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8516055b55eb644780db6f97bb409f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.2
-  EndTime: 0.31
+  StartTime: 0.01
+  EndTime: 0.2
   lookAtTarget: 1
   leftRightRandomAngle: 0
   lootAtTargetOffsetAngle: 0
   lookAtRandom: 0
   desireDistance: 5
   minimumDistance: 0
-  lerpPower: 60
+  lerpPower: 30
   boneName: 
 --- !u!1102 &-6177173790336952021
 AnimatorState:
@@ -596,13 +922,15 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Jump1
-  m_Speed: 1.7
+  m_Speed: 1.6
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: -1048644903444844660}
   m_StateMachineBehaviours:
   - {fileID: 8190094446093317880}
   - {fileID: -6199803437924534339}
+  - {fileID: 8983978074215318512}
+  - {fileID: -4539764220520873179}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -611,92 +939,13 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 0df886d99e3d84abbb2d012a564d6737, type: 3}
+  m_Motion: {fileID: -2038853162833260775, guid: 0df886d99e3d84abbb2d012a564d6737,
+    type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!114 &-6116522136880530762
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc636291b831fe248b3ce095d84517d9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTime: 0.32066116
-  EndTime: 0.6726973
-  useLocalPositionX: 0
-  curveX:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  useLocalPositionY: 1
-  curveY:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.5010357
-      value: 0.5010357
-      inSlope: -0.0020756721
-      outSlope: -0.0020756721
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: -1.522246
-      outSlope: -1.522246
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.0575355
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  useLocalPositionZ: 1
-  curveZ:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 2
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!114 &-5910200650082887470
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -709,8 +958,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc636291b831fe248b3ce095d84517d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.32066116
-  EndTime: 0.6726973
+  StartTime: 0.11
+  EndTime: 0.6
   useLocalPositionX: 0
   curveX:
     serializedVersion: 2
@@ -777,7 +1026,29 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &-5543195264705942626
+--- !u!1101 &-5354080378362189515
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions: []
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 979691031350828538}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0.3
+  m_TransitionOffset: 0
+  m_ExitTime: 0.7
+  m_HasExitTime: 1
+  m_HasFixedDuration: 0
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
+--- !u!114 &-4722287614074901754
 MonoBehaviour:
   m_ObjectHideFlags: 3
   m_CorrespondingSourceObject: {fileID: 0}
@@ -786,157 +1057,33 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc636291b831fe248b3ce095d84517d9, type: 3}
+  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.32066116
-  EndTime: 0.6726973
-  useLocalPositionX: 0
-  curveX:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  useLocalPositionY: 1
-  curveY:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.5010357
-      value: 0.5010357
-      inSlope: -0.0020756721
-      outSlope: -0.0020756721
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: -1.7801707
-      outSlope: -1.7801707
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.050343487
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  useLocalPositionZ: 1
-  curveZ:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 2
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
---- !u!114 &-4905204894493721364
+  StartTime: 0.6
+  EndTime: 1
+  effectData: {fileID: 3136301650636350254, guid: 08771d10838c6cc4fb6149ac3d013480,
+    type: 3}
+  offset: {x: 0, y: 0, z: 0}
+  fixedWorldPositionY: 0
+  direction: {x: 0, y: 0, z: 1}
+  parentName: 
+  followPosition: 0
+--- !u!114 &-4539764220520873179
 MonoBehaviour:
-  m_ObjectHideFlags: 3
+  m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc636291b831fe248b3ce095d84517d9, type: 3}
+  m_Script: {fileID: 11500000, guid: 103a63d9ada304948adbac0e5356a9c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.32066116
-  EndTime: 0.6726973
-  useLocalPositionX: 0
-  curveX:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  useLocalPositionY: 1
-  curveY:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.5010357
-      value: 0.5010357
-      inSlope: -0.0020756721
-      outSlope: -0.0020756721
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: -1.8470145
-      outSlope: -1.8470145
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.055138122
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  useLocalPositionZ: 1
-  curveZ:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 2
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
+  StartTime: 0.1
+  EndTime: 1
+  enable: 0
 --- !u!114 &-3630041935047611175
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -952,6 +1099,86 @@ MonoBehaviour:
   StartTime: 0
   EndTime: 1
   state: 3
+--- !u!114 &-3247850183616472880
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc636291b831fe248b3ce095d84517d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.11
+  EndTime: 0.6
+  useLocalPositionX: 0
+  curveX:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  useLocalPositionY: 1
+  curveY:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.5010357
+      value: 0.5010357
+      inSlope: -0.0020756721
+      outSlope: -0.0020756721
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -1.573382
+      outSlope: -1.573382
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.06472739
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  useLocalPositionZ: 1
+  curveZ:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 2
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1102 &-2473529730778767166
 AnimatorState:
   serializedVersion: 5
@@ -1007,7 +1234,7 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!1101 &-1434090708133399978
+--- !u!1101 &-2130497338586051735
 AnimatorStateTransition:
   m_ObjectHideFlags: 3
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1016,7 +1243,93 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions: []
   m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: 3803674406337757791}
+  m_DstState: {fileID: 506863166708174978}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0.3
+  m_TransitionOffset: 0
+  m_ExitTime: 0.7
+  m_HasExitTime: 1
+  m_HasFixedDuration: 0
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
+--- !u!114 &-1929733814407182457
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.6
+  EndTime: 1
+  effectData: {fileID: 3136301650636350254, guid: 08771d10838c6cc4fb6149ac3d013480,
+    type: 3}
+  offset: {x: 0, y: 0, z: 0}
+  fixedWorldPositionY: 0
+  direction: {x: 0, y: 0, z: 1}
+  parentName: 
+  followPosition: 0
+--- !u!114 &-1525967923833940385
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.6
+  EndTime: 1
+  effectData: {fileID: 3136301650636350254, guid: 08771d10838c6cc4fb6149ac3d013480,
+    type: 3}
+  offset: {x: 0, y: 0, z: 0}
+  fixedWorldPositionY: 0
+  direction: {x: 0, y: 0, z: 1}
+  parentName: 
+  followPosition: 0
+--- !u!114 &-1429570533001746802
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8516055b55eb644780db6f97bb409f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.01
+  EndTime: 0.2
+  lookAtTarget: 1
+  leftRightRandomAngle: 0
+  lootAtTargetOffsetAngle: 0
+  lookAtRandom: 0
+  desireDistance: 5
+  minimumDistance: 0
+  lerpPower: 30
+  boneName: 
+--- !u!1101 &-1357601450658141528
+AnimatorStateTransition:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions: []
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: -6208490916812545046}
   m_Solo: 0
   m_Mute: 0
   m_IsExit: 0
@@ -1048,34 +1361,6 @@ MonoBehaviour:
     weight: 1
   - stateName: Base Layer.AttackGroup.JumpAttack1
     weight: 1
---- !u!1102 &-1266799533371369794
-AnimatorState:
-  serializedVersion: 5
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Jump4
-  m_Speed: 1.7
-  m_CycleOffset: 0
-  m_Transitions:
-  - {fileID: -7873134168333318675}
-  m_StateMachineBehaviours:
-  - {fileID: -6116522136880530762}
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 1
-  m_Mirror: 0
-  m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 0df886d99e3d84abbb2d012a564d6737, type: 3}
-  m_Tag: 
-  m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: 
 --- !u!1102 &-1215575675028676736
 AnimatorState:
   serializedVersion: 5
@@ -1124,21 +1409,23 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
---- !u!1102 &-223333796351897362
+--- !u!1102 &-675627990919055547
 AnimatorState:
   serializedVersion: 5
   m_ObjectHideFlags: 3
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Jump6
-  m_Speed: 1.7
+  m_Name: Jump2
+  m_Speed: 1.5
   m_CycleOffset: 0
   m_Transitions:
-  - {fileID: 6803697812511521255}
+  - {fileID: -1357601450658141528}
   m_StateMachineBehaviours:
-  - {fileID: -5543195264705942626}
-  - {fileID: 1008953027602413800}
+  - {fileID: 6322852055073067400}
+  - {fileID: -1429570533001746802}
+  - {fileID: -4722287614074901754}
+  - {fileID: -8256549689524079767}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -1147,7 +1434,8 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 0df886d99e3d84abbb2d012a564d6737, type: 3}
+  m_Motion: {fileID: -2038853162833260775, guid: 0df886d99e3d84abbb2d012a564d6737,
+    type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -1193,28 +1481,6 @@ AnimatorController:
     m_IKPass: 0
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
---- !u!1101 &65421801785359629
-AnimatorStateTransition:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_Conditions: []
-  m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: -1266799533371369794}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 0
-  serializedVersion: 3
-  m_TransitionDuration: 0.3
-  m_TransitionOffset: 0
-  m_ExitTime: 0.7
-  m_HasExitTime: 1
-  m_HasFixedDuration: 0
-  m_InterruptionSource: 0
-  m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
 --- !u!1102 &334046205108006029
 AnimatorState:
   serializedVersion: 5
@@ -1231,6 +1497,7 @@ AnimatorState:
   - {fileID: 1993297378732422822}
   - {fileID: 3647319988809596276}
   - {fileID: 5568041920766527430}
+  - {fileID: 793158477176451040}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -1246,20 +1513,21 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!1102 &419362986978150401
+--- !u!1102 &506863166708174978
 AnimatorState:
   serializedVersion: 5
   m_ObjectHideFlags: 3
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Jump7
-  m_Speed: 1.7
+  m_Name: Jump2-1 0
+  m_Speed: 1.4
   m_CycleOffset: 0
-  m_Transitions:
-  - {fileID: -1434090708133399978}
+  m_Transitions: []
   m_StateMachineBehaviours:
-  - {fileID: -9034589189202171221}
+  - {fileID: -7382731485526123884}
+  - {fileID: -6704784450806121354}
+  - {fileID: -7050493599192198664}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -1268,7 +1536,8 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 0df886d99e3d84abbb2d012a564d6737, type: 3}
+  m_Motion: {fileID: -2038853162833260775, guid: 0df886d99e3d84abbb2d012a564d6737,
+    type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -1303,28 +1572,57 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: AttackAniSpeedRatio
---- !u!114 &1008953027602413800
+--- !u!114 &793158477176451040
 MonoBehaviour:
-  m_ObjectHideFlags: 3
+  m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c8516055b55eb644780db6f97bb409f2, type: 3}
+  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.2
-  EndTime: 0.31
-  lookAtTarget: 1
-  leftRightRandomAngle: 0
-  lootAtTargetOffsetAngle: 0
-  lookAtRandom: 0
-  desireDistance: 5
-  minimumDistance: 0
-  lerpPower: 60
-  boneName: 
+  StartTime: 0.6
+  EndTime: 1
+  effectData: {fileID: 3136301650636350254, guid: da70998aa72a97446b091c86a33f9bbb,
+    type: 3}
+  offset: {x: 0, y: 0, z: 0}
+  fixedWorldPositionY: 0
+  direction: {x: 0, y: 0, z: 1}
+  parentName: 
+  followPosition: 0
+--- !u!1102 &979691031350828538
+AnimatorState:
+  serializedVersion: 5
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Jump1-3
+  m_Speed: 1.6
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours:
+  - {fileID: 8230829652139992954}
+  - {fileID: -1929733814407182457}
+  - {fileID: -6850642299410080912}
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: -2038853162833260775, guid: 0df886d99e3d84abbb2d012a564d6737,
+    type: 3}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!1107 &1273456313846936852
 AnimatorStateMachine:
   serializedVersion: 5
@@ -1339,25 +1637,28 @@ AnimatorStateMachine:
     m_Position: {x: 340, y: -100, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 8151957916315960969}
-    m_Position: {x: 340, y: 20, z: 0}
+    m_Position: {x: 340, y: -10, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -6891773606295284152}
-    m_Position: {x: 340, y: 130, z: 0}
+    m_Position: {x: 340, y: 80, z: 0}
   - serializedVersion: 1
-    m_State: {fileID: -1266799533371369794}
-    m_Position: {x: 340, y: 230, z: 0}
+    m_State: {fileID: 979691031350828538}
+    m_Position: {x: 340, y: 170, z: 0}
   - serializedVersion: 1
-    m_State: {fileID: 6963621982334702372}
-    m_Position: {x: 340, y: 330, z: 0}
+    m_State: {fileID: -675627990919055547}
+    m_Position: {x: 340, y: 300, z: 0}
   - serializedVersion: 1
-    m_State: {fileID: -223333796351897362}
-    m_Position: {x: 340, y: 490, z: 0}
+    m_State: {fileID: -6208490916812545046}
+    m_Position: {x: 340, y: 390, z: 0}
   - serializedVersion: 1
-    m_State: {fileID: 419362986978150401}
-    m_Position: {x: 340, y: 610, z: 0}
+    m_State: {fileID: -7809798692316769213}
+    m_Position: {x: 340, y: 480, z: 0}
   - serializedVersion: 1
-    m_State: {fileID: 3803674406337757791}
-    m_Position: {x: 340, y: 720, z: 0}
+    m_State: {fileID: 506863166708174978}
+    m_Position: {x: 340, y: 690, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: 8927107093402129381}
+    m_Position: {x: 340, y: 600, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -1423,6 +1724,27 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!114 &1738683359735929019
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.6
+  EndTime: 1
+  effectData: {fileID: 3136301650636350254, guid: 08771d10838c6cc4fb6149ac3d013480,
+    type: 3}
+  offset: {x: 0, y: 0, z: 0}
+  fixedWorldPositionY: 0
+  direction: {x: 0, y: 0, z: 1}
+  parentName: 
+  followPosition: 0
 --- !u!114 &1993297378732422822
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1537,33 +1859,27 @@ MonoBehaviour:
   minimumDistance: 0
   lerpPower: 5
   boneName: 
---- !u!1102 &3803674406337757791
-AnimatorState:
-  serializedVersion: 5
-  m_ObjectHideFlags: 3
+--- !u!114 &3783089170307956370
+MonoBehaviour:
+  m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Jump8
-  m_Speed: 1.7
-  m_CycleOffset: 0
-  m_Transitions: []
-  m_StateMachineBehaviours:
-  - {fileID: -4905204894493721364}
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 1
-  m_Mirror: 0
-  m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 0df886d99e3d84abbb2d012a564d6737, type: 3}
-  m_Tag: 
-  m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: 
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.6
+  EndTime: 1
+  effectData: {fileID: 3136301650636350254, guid: 08771d10838c6cc4fb6149ac3d013480,
+    type: 3}
+  offset: {x: 0, y: 0, z: 0}
+  fixedWorldPositionY: 0
+  direction: {x: 0, y: 0, z: 1}
+  parentName: 
+  followPosition: 0
 --- !u!1101 &3981268095770871977
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -1766,6 +2082,27 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 0
+--- !u!114 &5510906146903532836
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.6
+  EndTime: 1
+  effectData: {fileID: 3136301650636350254, guid: 08771d10838c6cc4fb6149ac3d013480,
+    type: 3}
+  offset: {x: 0, y: 0, z: 0}
+  fixedWorldPositionY: 0
+  direction: {x: 0, y: 0, z: 1}
+  parentName: 
+  followPosition: 0
 --- !u!114 &5568041920766527430
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1885,7 +2222,7 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 0
---- !u!114 &6112884081219227757
+--- !u!114 &6322852055073067400
 MonoBehaviour:
   m_ObjectHideFlags: 3
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1897,8 +2234,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc636291b831fe248b3ce095d84517d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.32066116
-  EndTime: 0.6726973
+  StartTime: 0.11
+  EndTime: 0.6
   useLocalPositionX: 0
   curveX:
     serializedVersion: 2
@@ -1931,11 +2268,11 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 0
-      inSlope: -1.9116586
-      outSlope: -1.9116586
+      inSlope: -1.7801707
+      outSlope: -1.7801707
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.04794623
+      inWeight: 0.050343487
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -1965,7 +2302,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!1101 &6803697812511521255
+--- !u!1101 &6555394393207113704
 AnimatorStateTransition:
   m_ObjectHideFlags: 3
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1974,7 +2311,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions: []
   m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: 419362986978150401}
+  m_DstState: {fileID: -7809798692316769213}
   m_Solo: 0
   m_Mute: 0
   m_IsExit: 0
@@ -1987,33 +2324,6 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
---- !u!1102 &6963621982334702372
-AnimatorState:
-  serializedVersion: 5
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Jump5
-  m_Speed: 1.7
-  m_CycleOffset: 0
-  m_Transitions: []
-  m_StateMachineBehaviours:
-  - {fileID: 6112884081219227757}
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 1
-  m_Mirror: 0
-  m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 0df886d99e3d84abbb2d012a564d6737, type: 3}
-  m_Tag: 
-  m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: 
 --- !u!1101 &7010980887937807944
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -2036,6 +2346,21 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!114 &7226490265396328255
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 103a63d9ada304948adbac0e5356a9c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.1
+  EndTime: 1
+  enable: 0
 --- !u!1101 &7495518670510647294
 AnimatorStateTransition:
   m_ObjectHideFlags: 3
@@ -2105,13 +2430,14 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Jump2
-  m_Speed: 1.7
+  m_Name: Jump1-1
+  m_Speed: 1.6
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 7010980887937807944}
   m_StateMachineBehaviours:
   - {fileID: -5910200650082887470}
+  - {fileID: 3783089170307956370}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -2120,7 +2446,8 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 0df886d99e3d84abbb2d012a564d6737, type: 3}
+  m_Motion: {fileID: -2038853162833260775, guid: 0df886d99e3d84abbb2d012a564d6737,
+    type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -2138,8 +2465,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc636291b831fe248b3ce095d84517d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.32066116
-  EndTime: 0.6726973
+  StartTime: 0.11
+  EndTime: 0.6
   useLocalPositionX: 0
   curveX:
     serializedVersion: 2
@@ -2206,3 +2533,136 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &8230829652139992954
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc636291b831fe248b3ce095d84517d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.11
+  EndTime: 0.6
+  useLocalPositionX: 0
+  curveX:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  useLocalPositionY: 1
+  curveY:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.5010357
+      value: 0.5010357
+      inSlope: -0.0020756721
+      outSlope: -0.0020756721
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -1.8470145
+      outSlope: -1.8470145
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.055138122
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  useLocalPositionZ: 1
+  curveZ:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 2
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!1102 &8927107093402129381
+AnimatorState:
+  serializedVersion: 5
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Jump3
+  m_Speed: 1.4
+  m_CycleOffset: 0
+  m_Transitions:
+  - {fileID: -2130497338586051735}
+  m_StateMachineBehaviours:
+  - {fileID: -8207091033873433976}
+  - {fileID: -6722878321571229182}
+  - {fileID: 1738683359735929019}
+  - {fileID: 7226490265396328255}
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: -2038853162833260775, guid: 0df886d99e3d84abbb2d012a564d6737,
+    type: 3}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
+--- !u!114 &8983978074215318512
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.6
+  EndTime: 1
+  effectData: {fileID: 3136301650636350254, guid: 08771d10838c6cc4fb6149ac3d013480,
+    type: 3}
+  offset: {x: 0, y: 0, z: 0}
+  fixedWorldPositionY: 0
+  direction: {x: 0, y: 0, z: 1}
+  parentName: 
+  followPosition: 0

@@ -24,6 +24,7 @@ public class PlayerData : MonoBehaviour
 	static PlayerData _instance = null;
 
 	public bool loginned { get; private set; }
+	public bool newlyCreated { get; private set; }
 	public bool clientOnly { get; private set; }
 
 	// 변수 이름이 헷갈릴 수 있는데 로직상 이게 가장 필요한 정보라 그렇다.
@@ -109,6 +110,7 @@ public class PlayerData : MonoBehaviour
 
 		// temp
 		loginned = true;
+		newlyCreated = false;
 		clientOnly = true;
 	}
 
@@ -305,19 +307,22 @@ public class PlayerData : MonoBehaviour
 		nodeWarCurrentLevel = 0;
 		nodeWarBoostRemainCount = 0;
 
-		// 나중에 지울 코드이긴 한데 MainSceneBuilder에서 NEWPLAYER_LEVEL1 디파인 켜둔채로 생성하는 테스트용 루틴일땐
-		// 1챕터에서 시작하게 처리해둔다.
+		// 나중에 지울 코드이긴 한데 MainSceneBuilder에서 NEWPLAYER_LEVEL1 디파인 켜둔채로 생성하는 테스트용 루틴일땐 1챕터에서 시작하게 처리해둔다.
 		// NEWPLAYER_LEVEL1 디파인 지울때 같이 지우면 된다.
-		if (MainSceneBuilder.instance.playAfterInstallation == false)
-		{
-			highestPlayChapter = 1;
-			selectedChapter = 1;
-		}
-		EventManager.instance.OnRecvServerEvent("");
+		//highestPlayChapter = 1;
+		//selectedChapter = 1;
 
+		EventManager.instance.OnRecvServerEvent("");
 		TimeSpaceData.instance.ClearInventory();
 		_listCharacterData.Clear();
 		AddNewCharacter("Actor0201", "", 1);
+		_mainCharacterId = "Actor0201";
+
+		if (newPlayerAddKeep)
+		{
+			AddNewCharacter("Actor1002", "", 1);
+			_mainCharacterId = "Actor1002";
+		}
 
 		// 임의로 전투맵부터 시작하는거라 EnterFlag조차 안받은 상태다. EnterFlag가 없으면 튜토리얼 EndGame패킷도 처리할 수 없기 때문에 발급받아야한다.
 		StartCoroutine(DelayedEnterGame(4.0f));
@@ -326,20 +331,16 @@ public class PlayerData : MonoBehaviour
 		// 그렇다고 loginned 를 풀어서 통째로 받으면 괜히 커져서 EntityKey 리프레쉬 함수 하나 만들어서 호출하기로 한다.
 		StartCoroutine(DelayedSyncCharacterEntity(5.0f));
 
-		_mainCharacterId = "Actor0201";
+		// newlyCreated는 새로 생성된 계정에서만 true일거고 재접하거나 로그아웃 할때 false로 돌아와서 유지될거다.
+		newlyCreated = true;
 		loginned = true;
-
-		if (newPlayerAddKeep)
-		{
-			AddNewCharacter("Actor1002", "", 1);
-			_mainCharacterId = "Actor1002";
-		}
 	}
 
 	public void ResetData()
 	{
 		// 이게 가장 중요. 다른 것들은 받을때 알아서 다 비우고 다시 셋팅한다.
 		loginned = false;
+		newlyCreated = false;
 
 		// OnRecvPlayerData 함수들 두번 받아도 아무 문제없게 짜두면 여기서 딱히 할일은 없을거다.
 		// 두번 받는거 뿐만 아니라 모든 변수를 다 덮어서 기록하는지도 확인하면 완벽하다.(건너뛰면 이전값이 남을테니 위험)
@@ -588,6 +589,7 @@ public class PlayerData : MonoBehaviour
 				nodeWarBoostRemainCount = intValue;
 		}
 
+		newlyCreated = false;
 		loginned = true;
 	}
 

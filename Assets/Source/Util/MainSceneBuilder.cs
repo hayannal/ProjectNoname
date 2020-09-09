@@ -26,7 +26,7 @@ public class MainSceneBuilder : MonoBehaviour
 	public bool mainSceneBuilding { get; private set; }
 	public bool waitSpawnFlag { get; set; }
 	public bool lobby { get; private set; }
-	public bool playAfterInstallation { get; private set; }
+	public bool buildTutorialScene { get; private set; }
 
 	void OnDestroy()
 	{
@@ -145,24 +145,32 @@ public class MainSceneBuilder : MonoBehaviour
 
 		// step 3. login
 #if PLAYFAB
+		// 예전과 달리 deviceUniqueIdentifier로 게스트 로그인을 하기때문에 재설치했다고 무조건 새로운 계정을 생성하면 안된다.
+		// createAccount true로 해서 서버에 로그인 패킷 보낸 후
+		// 응답으로 진짜 새계정이라 하면 튜토리얼쪽으로 보내는거고 아니면 기존계정 정보 불러와서 로딩해야한다.
 		if (AuthManager.instance.IsCachedLastLoginInfo() == false)
 		{
-#if NEWPLAYER_LEVEL1
 #if NEWPLAYER_ADD_KEEP
 			PlayerData.instance.newPlayerAddKeep = true;
 #endif
-			// 원래라면 아래 PlayAfterInstallationCoroutine호출하는게 맞다.
-			// 그러나 튜토를 나중에 만들거고 설령 지금 만든다해도 매번 튜토챕터로 시작하는게 불편해서
-			// 개발용으로 쓸 신캐 생성버전을 이 디파인에 묶어서 쓰도록 한다.
-			// 처음 캐릭터를 만들면 게스트로그인으로 생성되며 챕터는 1이 선택되어있고 0스테이지 로비에서 시작된다.
 			float createAccountStartTime = Time.time;
 			AuthManager.instance.RequestCreateGuestAccount();
 			while (PlayerData.instance.loginned == false) yield return null;
 			Debug.LogFormat("Create Account Time : {0:0.###}", Time.time - createAccountStartTime);
+
+#if NEWPLAYER_LEVEL1
+			// 원래라면 아래 BuildTutorialSceneCoroutine호출하는게 맞다.
+			// 그러나 튜토를 나중에 만들거고 설령 지금 만든다해도 매번 튜토챕터로 시작하는게 불편해서
+			// 개발용으로 쓸 신캐 생성버전을 이 디파인에 묶어서 쓰도록 한다.
+			// 처음 캐릭터를 만들면 게스트로그인으로 생성되며 챕터는 1이 선택되어있고 0스테이지 로비에서 시작된다.
 #else
-			// 사이사이에 플래그 쓰면서 할까 하다가 너무 코드가 지저분해져서 그냥 따로 빼기로 한다.
-			yield return PlayAfterInstallationCoroutine();
-			yield break;
+			// 서버가 새 계정이라고 알려줄때만 BuildTutorialSceneCoroutine을 진행하고 아니라면 기본 로직을 따라 씬을 구축한다.
+			if (PlayerData.instance.newlyCreated)
+			{
+				// 사이사이에 플래그 쓰면서 할까 하다가 너무 코드가 지저분해져서 그냥 따로 빼기로 한다.
+				yield return BuildTutorialSceneCoroutine();
+				yield break;
+			}
 #endif
 		}
 
@@ -466,7 +474,7 @@ public class MainSceneBuilder : MonoBehaviour
 				SoundManager.instance.SetUiVolume(OptionManager.instance.systemVolume);
 
 				// step 12. fade out
-				if (playAfterInstallation)
+				if (buildTutorialScene)
 				{
 					// 0챕터 1스테이지에서 시작하는거라 강제로 전투모드로 바꿔준다.
 					StartCoroutine(LateInitialize());
@@ -485,7 +493,7 @@ public class MainSceneBuilder : MonoBehaviour
 
 	IEnumerator LateInitialize()
 	{
-		if (playAfterInstallation == false)
+		if (buildTutorialScene == false)
 		{
 			LobbyCanvas.instance.RefreshAlarmObject();
 			DailyShopData.instance.LateInitialize();
@@ -506,7 +514,7 @@ public class MainSceneBuilder : MonoBehaviour
 		yield return _handleBattleManager;
 		Instantiate<GameObject>(_handleBattleManager.Result);
 
-		if (playAfterInstallation)
+		if (buildTutorialScene)
 		{
 			BattleManager.instance.OnSpawnFlag();
 			LoadingCanvas.instance.FadeOutObject();
@@ -551,15 +559,9 @@ public class MainSceneBuilder : MonoBehaviour
 #if PLAYFAB
 #region Play After Installation
 	// 설치 직후 플레이 혹은 데이터 리셋 후 플레이
-	IEnumerator PlayAfterInstallationCoroutine()
+	IEnumerator BuildTutorialSceneCoroutine()
 	{
-		playAfterInstallation = true;
-
-		// 캐릭터 만드는 패킷
-		float createAccountStartTime = Time.time;
-		AuthManager.instance.RequestCreateGuestAccount();
-		while (PlayerData.instance.loginned == false) yield return null;
-		Debug.LogFormat("Create Account Time : {0:0.###}", Time.time - createAccountStartTime);
+		buildTutorialScene = true;
 
 		// step 4. set lobby
 		_handleLobbyCanvas = Addressables.LoadAssetAsync<GameObject>("LobbyCanvas");

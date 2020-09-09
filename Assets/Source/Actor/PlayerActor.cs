@@ -198,7 +198,7 @@ public class PlayerActor : Actor
 		// 첫 플레이 튜토에서는 시작하자마자 전투씬이기 때문에 InitializeCanvas를 호출해야하나 BattleManager는 천천히 생성되므로 이 타이밍에 로드할 수 없다.
 		// MainSceneBuilder의 LateInitialize에서 처리될테니 여기서는 패스하면 된다.
 		bool showPlayerCanvas = true;
-		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.playAfterInstallation)
+		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.buildTutorialScene)
 			showPlayerCanvas = false;
 		if (lobby == false && showPlayerCanvas)
 			InitializeCanvas();

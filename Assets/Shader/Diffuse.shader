@@ -150,6 +150,24 @@ Shader "FrameworkNG/Diffuse"
 					return c;
 				}
 
+				half _HalfLambertMulti;
+				half _HalfLambertPlus;
+				inline half4 LightingHalfLambert(SurfaceOutput s, half3 lightDir, fixed atten)
+				{
+					fixed diff = max(0, dot(s.Normal, lightDir) * _HalfLambertMulti + _HalfLambertPlus);
+
+					// change direction
+					//float3 worldDir = mul((float3x3)unity_ObjectToWorld, lightDir);
+					//worldDir.z *= -1.0f;
+					//lightDir = mul((float3x3)unity_WorldToObject, worldDir);
+					//fixed diff = max(0, dot(s.Normal, lightDir));
+
+					fixed4 c;
+					c.rgb = s.Albedo * _LightColor0.rgb * diff * atten;
+					c.a = s.Alpha;
+					return c;
+				}
+
 				sampler2D _MainTex;
 				half _ColorIntensity;
 				#if _CUTOFF || _MATCAP_SINGLE || _MATCAP_DUAL || _EMISSIVE || _FLOW_CHANNEL_R || _FLOW_CHANNEL_G || _FLOW_CHANNEL_B

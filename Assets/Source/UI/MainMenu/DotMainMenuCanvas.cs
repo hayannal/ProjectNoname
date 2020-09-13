@@ -129,6 +129,7 @@ public class DotMainMenuCanvas : MonoBehaviour
 	{
 		EnvironmentSetting.ResetGlobalLightIntensityRatio();
 		_reservedHide = false;
+		_reserveCharacterPlusAlarm = false;
 		StackCanvas.Pop(gameObject);
 	}
 

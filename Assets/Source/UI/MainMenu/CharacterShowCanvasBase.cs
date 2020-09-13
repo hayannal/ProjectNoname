@@ -100,7 +100,7 @@ public class CharacterShowCanvasBase : MonoBehaviour
 			CustomRenderer.instance.RenderTextureResolutionFactor = (CustomRenderer.instance.RenderTextureResolutionFactor + 1.0f) * 0.5f;
 			CustomRenderer.instance.bloom.RenderTextureResolutoinFactor = 0.8f;
 			UIInstanceManager.instance.GetCachedCameraMain().fieldOfView = infoCameraFov;
-			UIInstanceManager.instance.GetCachedCameraMain().backgroundColor = new Color(0.1174f, 0.1255f, 0.1412f);
+			UIInstanceManager.instance.GetCachedCameraMain().backgroundColor = new Color(0.183f, 0.19f, 0.208f);
 			CustomFollowCamera.instance.cachedTransform.position = infoCameraTransform.localPosition + _rootOffsetPosition;
 			CustomFollowCamera.instance.cachedTransform.rotation = infoCameraTransform.localRotation;
 		}

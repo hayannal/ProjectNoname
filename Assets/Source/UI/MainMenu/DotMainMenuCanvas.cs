@@ -379,12 +379,31 @@ public class DotMainMenuCanvas : MonoBehaviour
 		return false;
 	}
 
+	static bool IsPlusAlarmCharacter()
+	{
+		List<CharacterData> listCharacterData = PlayerData.instance.listCharacterData;
+		for (int i = 0; i < listCharacterData.Count; ++i)
+		{
+			if (listCharacterData[i].IsPlusAlarmState())
+				return true;
+		}
+		return false;
+	}
+
 	public void RefreshCharacterAlarmObject(bool refreshLobbyAlarm = true)
 	{
+		RefreshAlarmObject(false, (int)eButtonType.Character);
+
 		bool show = IsAlarmCharacter();
-		RefreshAlarmObject(show, (int)eButtonType.Character);
+		if (show)
+			RefreshAlarmObject(true, (int)eButtonType.Character);
 		if (refreshLobbyAlarm)
 			LobbyCanvas.instance.RefreshAlarmObject(eButtonType.Character, show);
+
+		// 다른 DotMainMenu와 달리 Character버튼에서는 기본적인 느낌표 알람이 안뜨는 때에도 Plus알람을 체크해야한다.
+		// CharacterListCanvas에서 했던거처럼 tweenAnimation은 안쓰지만 ignoreAutoDisable은 굳이 할 필요 없어서 false로 해둔다.
+		if (show == false && IsPlusAlarmCharacter())
+			AlarmObject.Show(alarmRootTransformList[(int)eButtonType.Character], false, false, true);
 	}
 
 	public static bool IsAlarmResearch()

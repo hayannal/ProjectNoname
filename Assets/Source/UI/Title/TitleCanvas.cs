@@ -57,6 +57,23 @@ public class TitleCanvas : MonoBehaviour
 
 		titleTweenAnimation.DOPlayById("2");
 		_fade = true;
+
+		// 게임 설치 후 새 계정에서 튜토시작해서 죽지 않고 클리어 후 로비에 오면 타이틀이 뜨는데
+		// 이 타이틀이 뜨고나서 클릭이든 이동에 의해 사라질때 1챕터 진입 클라 이벤트가 떠야하므로 예외처리 해둔다.
+		// 1.5초동안 사라지게 되어있었으니 0.7초 쉬고 처리하면 될거같다.
+		if (EventManager.instance.IsStandbyClientEvent(EventManager.eClientEvent.NewChapter))
+			Timing.RunCoroutine(ShowNewChapterEventAfterTitle(0.7f));
+	}
+
+	IEnumerator<float> ShowNewChapterEventAfterTitle(float delayTime)
+	{
+		yield return Timing.WaitForSeconds(delayTime);
+
+		// avoid gc
+		if (this == null)
+			yield break;
+
+		EventManager.instance.OnCompleteLobbyEvent();
 	}
 
 	public void OnClickMaskButton()

@@ -296,7 +296,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 				if (_listSumPpInfo[j].actorId == listPpInfo[i].actorId)
 				{
 					find = true;
-					_listSumPpInfo[j].pp += listPpInfo[i].pp;
+					_listSumPpInfo[j].pp = listPpInfo[i].pp;
 					_listSumPpInfo[j].add += listPpInfo[i].add;
 					break;
 				}

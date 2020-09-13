@@ -128,7 +128,7 @@ public class CharacterData
 	}
 
 	#region Alarm
-	public bool IsPlusAlarmState()
+	public bool IsPlusAlarmState(bool onlyCheckPp = false)
 	{
 		// CharacterInfoGrowthCanvas의 RefreshRequired 함수에서 핵심 코드들만 가져왔다.
 		if (powerLevel >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxPowerLevel"))
@@ -138,6 +138,9 @@ public class CharacterData
 		PowerLevelTableData nextPowerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(powerLevel + 1);
 		if (needLimitBreak)
 		{
+			if (onlyCheckPp)
+				return false;
+
 			int current = limitBreakPoint - powerLevelTableData.requiredLimitBreak;
 			if (current < 1)
 				return false;

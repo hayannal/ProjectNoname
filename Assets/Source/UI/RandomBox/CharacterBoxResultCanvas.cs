@@ -23,6 +23,8 @@ public class CharacterBoxResultCanvas : MonoBehaviour
 	public GameObject contentItemPrefab;
 	public RectTransform contentRootRectTransform;
 
+	public GameObject levelUpPossibleTextObject;
+
 	public class CustomItemSubContainer : CachedItemHave<CharacterBoxResultListItem>
 	{
 	}
@@ -133,20 +135,28 @@ public class CharacterBoxResultCanvas : MonoBehaviour
 		originContentRootRectTransform.gameObject.SetActive(needOriginGroup);
 		ppLineObject.SetActive(needOriginGroup);
 
+		bool levelUpPossible = false;
 		for (int i = 0; i < listPpInfo.Count; ++i)
 		{
 			CharacterBoxResultListItem resultListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
 			int powerLevel = 0;
 			CharacterData characterData = PlayerData.instance.GetCharacterData(listPpInfo[i].actorId);
 			if (characterData != null)
+			{
 				powerLevel = characterData.powerLevel;
+				levelUpPossible = characterData.IsPlusAlarmState(true);
+			}
 			resultListItem.characterListItem.Initialize(listPpInfo[i].actorId, powerLevel, 0, null, null);
+			resultListItem.characterListItem.ShowAlarm(false);
+			if (levelUpPossible)
+				resultListItem.characterListItem.ShowAlarm(true, true);
 			resultListItem.Initialize("", listPpInfo[i].add);
 			_listResultListItem.Add(resultListItem);
 
 			// 빈슬롯과 함께 포함되어있는채로 재활용 해야하니 형제들 중 가장 마지막으로 밀어서 순서를 맞춘다.
 			resultListItem.cachedRectTransform.SetAsLastSibling();
 		}
+		levelUpPossibleTextObject.SetActive(levelUpPossible);
 
 		// 모든 표시가 끝나면 DropManager에 있는 정보를 강제로 초기화 시켜줘야한다.
 		DropManager.instance.ClearLobbyDropInfo();

@@ -107,10 +107,7 @@ public class ChapterCanvas : MonoBehaviour
 	void RefreshChapterInfo()
 	{
 		stagePenaltyText.gameObject.SetActive(false);
-		bool chaosMode = PlayerData.instance.chaosMode;
-		if (_selectedChapter < PlayerData.instance.highestPlayChapter)
-			chaosMode = false;
-		StageTableData stageTableData = BattleInstanceManager.instance.GetCachedStageTableData(_selectedChapter, 1, chaosMode);
+		StageTableData stageTableData = BattleInstanceManager.instance.GetCachedStageTableData(_selectedChapter, 1, false); // PlayerData.instance.currentChaosMode
 		string penaltyString = SwapCanvas.GetPenaltyString(stageTableData);
 		if (string.IsNullOrEmpty(penaltyString) == false)
 		{

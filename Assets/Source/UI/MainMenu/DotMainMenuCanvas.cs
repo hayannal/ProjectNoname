@@ -168,6 +168,7 @@ public class DotMainMenuCanvas : MonoBehaviour
 		UpdateRootPosition();
 		UpdateElementRotation();
 		UpdateElementPosition();
+		UpdateCharacterPlusAlarm();
 	}
 
 	// 메인캐릭터 교체할땐 DotMainMenu가 열려있는채로 해야해서 Prev까지 덮어야했다. 이렇게 해야 열리는 애니가 나오지 않으면서 새 캐릭터에 적용된다.
@@ -401,9 +402,20 @@ public class DotMainMenuCanvas : MonoBehaviour
 			LobbyCanvas.instance.RefreshAlarmObject(eButtonType.Character, show);
 
 		// 다른 DotMainMenu와 달리 Character버튼에서는 기본적인 느낌표 알람이 안뜨는 때에도 Plus알람을 체크해야한다.
-		// CharacterListCanvas에서 했던거처럼 tweenAnimation은 안쓰지만 ignoreAutoDisable은 굳이 할 필요 없어서 false로 해둔다.
 		if (show == false && IsPlusAlarmCharacter())
+			_reserveCharacterPlusAlarm = true;
+	}
+
+	bool _reserveCharacterPlusAlarm = false;
+	void UpdateCharacterPlusAlarm()
+	{
+		// DotMainMenuCanvas 생성될때 같은 프레임에 호출하면 tweenAnimation이 발동된채로 보여서 Update문에서 처리하게 해둔다.
+		if (_reserveCharacterPlusAlarm)
+		{
+			// CharacterListCanvas에서 했던거처럼 tweenAnimation은 안쓰지만 ignoreAutoDisable은 굳이 할 필요 없어서 false로 해둔다.
 			AlarmObject.Show(alarmRootTransformList[(int)eButtonType.Character], false, false, true);
+			_reserveCharacterPlusAlarm = false;
+		}
 	}
 
 	public static bool IsAlarmResearch()

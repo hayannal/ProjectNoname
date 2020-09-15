@@ -10,6 +10,8 @@ public class DropObjectGroup : MonoBehaviour
 	public GameObject[] lootEffectPrefabList;
 	public GameObject[] lootEndEffectPrefabList;
 
+	public GameObject dropSealGainPrefab;
+
 	void Awake()
 	{
 		instance = this;

@@ -90,5 +90,9 @@ public class LoadingCanvas : MonoBehaviour
 
 		// 타이틀 안나올때의 로비 진입 이벤트
 		EventManager.instance.OnLobby();
+
+		// 이벤트 진행 여부와 상관없이 동시에 인장 획득 연출을 진행해야한다.
+		if (DailyBoxGaugeCanvas.instance != null && DailyBoxGaugeCanvas.instance.gameObject.activeSelf)
+			DailyBoxGaugeCanvas.instance.StartGainEffect();
 	}
 }

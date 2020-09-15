@@ -401,6 +401,7 @@ public class BattleModeProcessorBase
 		}
 		CurrencyData.instance.gold += DropManager.instance.GetStackedDropGold();
 		PlayerData.instance.sealCount += DropManager.instance.GetStackedDropSeal();
+		PlayerData.instance.sealGainCount = DropManager.instance.GetStackedDropSeal();
 
 		if (itemGrantString != "")
 			TimeSpaceData.instance.OnRecvItemGrantResult(itemGrantString, true);

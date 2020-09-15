@@ -74,6 +74,10 @@ public class PlayerData : MonoBehaviour
 	public ObscuredInt nodeWarCurrentLevel { get; set; }
 	public ObscuredInt nodeWarBoostRemainCount { get; set; }
 
+	// sealCount 획득 연출용 변수. 클라에만 저장해두고 로비 돌아갈때 보여준다.
+	// 이벤트 처리가 아니라서 PlayerData에 넣어두기로 한다.
+	public ObscuredInt sealGainCount { get; set; }
+
 	// 이 카오스가 현재 카오스 상태로 스테이지가 셋팅되어있는지를 알려주는 값이다.
 	// 이전 챕터로 내려갈 경우 서버에 저장된 chaosMode는 1이더라도 스테이지 구성은 도전모드로 셋팅하게 되며
 	// 이땐 false를 리턴하게 될 것이다.

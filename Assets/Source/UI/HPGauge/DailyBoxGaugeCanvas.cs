@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using MEC;
 
 public class DailyBoxGaugeCanvas : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class DailyBoxGaugeCanvas : MonoBehaviour
 	public Text remainTimeText;
 	public RectTransform remainTimeTransform;
 	public RectTransform remainTimeSubTransform;
+	public Transform sealImageTransform;
+	public GameObject sealImageGainEffectObject;
 
 	public Sprite fillSprite;
 	public Sprite strokeSprite;
@@ -33,7 +36,7 @@ public class DailyBoxGaugeCanvas : MonoBehaviour
 	{
 		GetComponent<Canvas>().worldCamera = UIInstanceManager.instance.GetCachedCameraMain();
 		cachedTransform.position = TreasureChest.instance.transform.position;
-		RefreshGauge();
+		RefreshGauge(true);
 	}
 
 	void Update()
@@ -45,10 +48,28 @@ public class DailyBoxGaugeCanvas : MonoBehaviour
 		UpdateRefresh();
 	}
 
-	public void RefreshGauge()
+	public void RefreshGauge(bool applyGainProcess = false)
 	{
 		int current = PlayerData.instance.sealCount;
 		bool opened = PlayerData.instance.sharedDailyBoxOpened;
+
+		// opened가 아니면서 sealGainCount가 0보다 클때는 획득 연출이 발생하는 타이밍일거다.
+		if (applyGainProcess && PlayerData.instance.sealGainCount > 0 && PlayerData.instance.sealGainCount <= current && opened == false)
+		{
+			_reservedGainCount = PlayerData.instance.sealGainCount;
+			PlayerData.instance.sealGainCount = 0;
+
+			// 일부 조건에서는 획득 연출만 해주고 게이지는 그대로 간다.
+			// 연출을 기다렸다가 꽉차면 받게 하는 식은 스텝을 기다려야해서 불편할테니 예외처리 하는거다.
+			_onlyDropEffect = false;
+			if (current >= gaugeList.Length || EventManager.instance.IsStandbyClientEvent(EventManager.eClientEvent.OpenSecondDailyBox))
+				_onlyDropEffect = true;
+			else
+			{
+				current -= _reservedGainCount;
+				_gainStartIndex = current - 1;
+			}
+		}
 
 		for (int i = 0; i < gaugeList.Length; ++i)
 		{
@@ -155,6 +176,62 @@ public class DailyBoxGaugeCanvas : MonoBehaviour
 			_needRefresh = false;
 		}
 	}
+
+
+
+
+	#region Gain Effect
+	int _reservedGainCount = 0;
+	int _gainStartIndex = 0;
+	bool _onlyDropEffect = false;
+	public void StartGainEffect()
+	{
+		if (_reservedGainCount == 0)
+			return;
+
+		// 그럴리는 없겠지만 게이트 필라가 없다면 진행하면 안될거 같다.
+		if (GatePillar.instance == null)
+			return;
+		if (GatePillar.instance.gameObject.activeSelf == false)
+			return;
+
+		// 게이트 필라 근처에서 인장을 생성해야한다.
+		Timing.RunCoroutine(DropProcess());
+	}
+
+	IEnumerator<float> DropProcess()
+	{
+		float delay = 0.2f;
+		for (int i = 0; i < _reservedGainCount; ++i)
+		{
+			Vector2 normalizedOffset = UnityEngine.Random.insideUnitCircle.normalized;
+			Vector2 randomOffset = normalizedOffset * UnityEngine.Random.Range(0.7f, 1.4f);
+			Vector3 desirePosition = GatePillar.instance.cachedTransform.position + new Vector3(randomOffset.x, 0.0f, randomOffset.y);
+			BattleInstanceManager.instance.GetCachedObject(DropObjectGroup.instance.dropSealGainPrefab, desirePosition, Quaternion.identity);
+
+			if (i < _reservedGainCount - 1)
+				yield return Timing.WaitForSeconds(delay);
+
+			if (this == null)
+				yield break;
+		}
+	}
+
+	public void FillGauge()
+	{
+		sealImageGainEffectObject.SetActive(false);
+		sealImageGainEffectObject.SetActive(true);
+
+		// 드랍 연출만 보여주는 상태라면 게이지 변경하지 않는다.
+		if (_onlyDropEffect)
+			return;
+
+		// 호출될때마다 증가시킨 후 색상 변경
+		++_gainStartIndex;
+		if (_gainStartIndex < gaugeList.Length)
+			gaugeList[_gainStartIndex].sprite = fillSprite;
+	}
+	#endregion
 
 
 	Transform _transform;

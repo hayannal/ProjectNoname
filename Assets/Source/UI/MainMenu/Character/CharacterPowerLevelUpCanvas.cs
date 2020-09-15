@@ -204,6 +204,7 @@ public class CharacterPowerLevelUpCanvas : DetailShowCanvasBase
 		//CharacterInfoCanvas.instance.RefreshAlarmObjectList();
 		DotMainMenuCanvas.instance.RefreshCharacterAlarmObject();
 		DotMainMenuCanvas.instance.RefreshResearchAlarmObject();
+		LobbyCanvas.instance.RefreshTutorialPlusAlarmObject();
 
 		// StackCanvas로 Push Pop하면서 어차피 자동으로 갱신될거다.
 		//CharacterInfoGrowthCanvas.instance.RefreshStatus();

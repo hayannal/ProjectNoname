@@ -57,6 +57,16 @@ public class AlarmObject : MonoBehaviour
 		alarmObject.cachedRectTransform.SetAsFirstSibling();
 	}
 
+	public static void ShowTutorialPlusAlarm(Transform parentTransform)
+	{
+		if (parentTransform.childCount > 0 && parentTransform.GetChild(0).gameObject.activeSelf)
+			return;
+
+		AlarmObject alarmObject = UIInstanceManager.instance.GetCachedTutorialPlusAlarmObject(parentTransform);
+		alarmObject.ignoreAutoDisable = true;
+		alarmObject.cachedRectTransform.SetAsFirstSibling();
+	}
+
 	public static void Hide(Transform parentTransform)
 	{
 		if (parentTransform.childCount == 0)

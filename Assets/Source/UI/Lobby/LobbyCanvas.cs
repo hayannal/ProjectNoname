@@ -335,12 +335,14 @@ public class LobbyCanvas : MonoBehaviour
 
 
 	#region AlarmObject
+	bool _isTutorialPlusAlarmCharacter = false;
 	bool _isAlarmCashShop = false;
 	bool _isAlarmCharacter = false;
 	bool _isAlarmResearch = false;
 	bool _isAlarmMail = false;
 	public void RefreshAlarmObject()
 	{
+		_isTutorialPlusAlarmCharacter = DotMainMenuCanvas.IsTutorialPlusAlarmCharacter();
 		_isAlarmCashShop = DotMainMenuCanvas.IsAlarmCashShop();
 		_isAlarmCharacter = DotMainMenuCanvas.IsAlarmCharacter();
 		_isAlarmResearch = DotMainMenuCanvas.IsAlarmResearch();
@@ -349,10 +351,12 @@ public class LobbyCanvas : MonoBehaviour
 		bool showAlarm = false;
 		if (_isAlarmCashShop || _isAlarmCharacter || _isAlarmResearch || _isAlarmMail) showAlarm = true;
 		if (ContentsManager.IsTutorialChapter()) showAlarm = false;
-		if (showAlarm)
+
+		AlarmObject.Hide(alarmRootTransform);
+		if (_isTutorialPlusAlarmCharacter)
+			AlarmObject.ShowTutorialPlusAlarm(alarmRootTransform);
+		else if (showAlarm)
 			AlarmObject.Show(alarmRootTransform, true, true);
-		else
-			AlarmObject.Hide(alarmRootTransform);
 	}
 
 	public void RefreshAlarmObject(DotMainMenuCanvas.eButtonType changedType, bool changedValue)
@@ -369,10 +373,27 @@ public class LobbyCanvas : MonoBehaviour
 		bool showAlarm = false;
 		if (_isAlarmCashShop || _isAlarmCharacter || _isAlarmResearch || _isAlarmMail) showAlarm = true;
 		if (ContentsManager.IsTutorialChapter()) showAlarm = false;
-		if (showAlarm)
-			AlarmObject.Show(alarmRootTransform);
-		else
-			AlarmObject.Hide(alarmRootTransform);
+
+		AlarmObject.Hide(alarmRootTransform);
+		if (_isTutorialPlusAlarmCharacter)
+			AlarmObject.ShowTutorialPlusAlarm(alarmRootTransform);
+		else if (showAlarm)
+			AlarmObject.Show(alarmRootTransform, true, true);
+	}
+
+	public void RefreshTutorialPlusAlarmObject()
+	{
+		_isTutorialPlusAlarmCharacter = DotMainMenuCanvas.IsTutorialPlusAlarmCharacter();
+
+		bool showAlarm = false;
+		if (_isAlarmCashShop || _isAlarmCharacter || _isAlarmResearch || _isAlarmMail) showAlarm = true;
+		if (ContentsManager.IsTutorialChapter()) showAlarm = false;
+
+		AlarmObject.Hide(alarmRootTransform);
+		if (_isTutorialPlusAlarmCharacter)
+			AlarmObject.ShowTutorialPlusAlarm(alarmRootTransform);
+		else if (showAlarm)
+			AlarmObject.Show(alarmRootTransform, true, true);
 	}
 	#endregion
 

@@ -194,6 +194,34 @@ public class UIInstanceManager : MonoBehaviour
 		_listCachedAlarmObject.Add(alarmObject);
 		return alarmObject;
 	}
+
+	List<AlarmObject> _listCachedTutorialPlusAlarmObject = new List<AlarmObject>();
+	public AlarmObject GetCachedTutorialPlusAlarmObject(Transform parentTransform)
+	{
+		for (int i = 0; i < _listCachedTutorialPlusAlarmObject.Count; ++i)
+		{
+			if (!_listCachedTutorialPlusAlarmObject[i].gameObject.activeSelf)
+			{
+				_listCachedTutorialPlusAlarmObject[i].cachedRectTransform.SetParent(parentTransform);
+				_listCachedTutorialPlusAlarmObject[i].cachedRectTransform.anchoredPosition3D = Vector3.zero;
+				_listCachedTutorialPlusAlarmObject[i].cachedRectTransform.anchoredPosition = Vector2.zero;
+				_listCachedTutorialPlusAlarmObject[i].cachedRectTransform.localRotation = Quaternion.identity;
+				_listCachedTutorialPlusAlarmObject[i].cachedRectTransform.localScale = Vector3.one;
+				_listCachedTutorialPlusAlarmObject[i].gameObject.SetActive(true);
+				return _listCachedTutorialPlusAlarmObject[i];
+			}
+		}
+
+		GameObject newObject = Instantiate<GameObject>(CommonCanvasGroup.instance.tutorialPlusAlarmObjectPrefab, parentTransform);
+#if UNITY_EDITOR
+		AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+		if (settings.ActivePlayModeDataBuilderIndex == 2)
+			ObjectUtil.ReloadShader(newObject);
+#endif
+		AlarmObject alarmObject = newObject.GetComponent<AlarmObject>();
+		_listCachedTutorialPlusAlarmObject.Add(alarmObject);
+		return alarmObject;
+	}
 	#endregion
 
 

@@ -392,18 +392,41 @@ public class DotMainMenuCanvas : MonoBehaviour
 		return false;
 	}
 
+	public static bool IsTutorialPlusAlarmCharacter()
+	{
+		// 가지고 있는 캐릭터들의 레벨이 전부 1이면서 PlusAlarmState가 켜진 상태라면 초보자 전용 알람이라 생각하고 다른걸 띄워준다.
+		bool levelOne = true;
+		List<CharacterData> listCharacterData = PlayerData.instance.listCharacterData;
+		for (int i = 0; i < listCharacterData.Count; ++i)
+		{
+			if (listCharacterData[i].powerLevel > 1)
+			{
+				levelOne = false;
+				break;
+			}
+		}
+		if (levelOne && IsPlusAlarmCharacter())
+			return true;
+		return false;
+	}
+
 	public void RefreshCharacterAlarmObject(bool refreshLobbyAlarm = true)
 	{
 		RefreshAlarmObject(false, (int)eButtonType.Character);
 
-		bool show = IsAlarmCharacter();
+		bool showTutorialPlusAlarm = IsTutorialPlusAlarmCharacter();
+		if (showTutorialPlusAlarm)
+			AlarmObject.ShowTutorialPlusAlarm(alarmRootTransformList[(int)eButtonType.Character]);
+
+		bool show = (showTutorialPlusAlarm == false && IsAlarmCharacter());
 		if (show)
 			RefreshAlarmObject(true, (int)eButtonType.Character);
 		if (refreshLobbyAlarm)
 			LobbyCanvas.instance.RefreshAlarmObject(eButtonType.Character, show);
 
 		// 다른 DotMainMenu와 달리 Character버튼에서는 기본적인 느낌표 알람이 안뜨는 때에도 Plus알람을 체크해야한다.
-		if (show == false && IsPlusAlarmCharacter())
+		_reserveCharacterPlusAlarm = false;
+		if (show == false && showTutorialPlusAlarm == false && IsPlusAlarmCharacter())
 			_reserveCharacterPlusAlarm = true;
 	}
 

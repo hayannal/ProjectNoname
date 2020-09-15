@@ -238,6 +238,10 @@ public class DailyShopCharacterConfirmCanvas : MonoBehaviour
 				CashShopCanvas.instance.RefreshDailyShopInfo();
 				ToastCanvas.instance.ShowToast(UIString.instance.GetString("ShopUI_PurchasedPowerPoint"), 2.0f);
 				PlayerData.instance.ppBuyCount += _slotInfo.cn;
+				// pp 획득하는 곳이라 호출
+				if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
+					DotMainMenuCanvas.instance.RefreshCharacterAlarmObject(false);
+				LobbyCanvas.instance.RefreshTutorialPlusAlarmObject();
 				gameObject.SetActive(false);
 				return;
 			case "bn":

@@ -15,6 +15,7 @@ public class CommonCanvasGroup : MonoBehaviour
 	public GameObject tooltipCanvasPrefab;
 	public GameObject maintenanceCanvasPrefab;
 	public GameObject alarmObjectPrefab;
+	public GameObject tutorialPlusAlarmObjectPrefab;
 	public Sprite[] powerSourceIconSpriteList;
 	public Sprite[] alarmObjectSpriteList;
 

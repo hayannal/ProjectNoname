@@ -158,6 +158,11 @@ public class CharacterBoxResultCanvas : MonoBehaviour
 		}
 		levelUpPossibleTextObject.SetActive(levelUpPossible);
 
+		// pp 획득가능한 곳이라 호출
+		if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
+			DotMainMenuCanvas.instance.RefreshCharacterAlarmObject(false);
+		LobbyCanvas.instance.RefreshTutorialPlusAlarmObject();
+
 		// 모든 표시가 끝나면 DropManager에 있는 정보를 강제로 초기화 시켜줘야한다.
 		DropManager.instance.ClearLobbyDropInfo();
 	}

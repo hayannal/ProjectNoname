@@ -115,6 +115,7 @@ public class CharacterShowCanvasBase : MonoBehaviour
 			if (BattleInstanceManager.instance.playerActor.gameObject == null)
 				return;
 
+			_environmentSetting.SetDefaultLightIntensity(_defaultLightIntensity);
 			_groundTransform.gameObject.SetActive(false);
 			_prevEnvironmentSettingObject.SetActive(true);
 

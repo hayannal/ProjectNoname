@@ -140,16 +140,20 @@ public class CharacterBoxResultCanvas : MonoBehaviour
 		{
 			CharacterBoxResultListItem resultListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
 			int powerLevel = 0;
+			bool showPlusAlarm = false;
 			CharacterData characterData = PlayerData.instance.GetCharacterData(listPpInfo[i].actorId);
 			if (characterData != null)
 			{
 				powerLevel = characterData.powerLevel;
-				levelUpPossible = characterData.IsPlusAlarmState(true);
+				showPlusAlarm = characterData.IsPlusAlarmState(true);
 			}
 			resultListItem.characterListItem.Initialize(listPpInfo[i].actorId, powerLevel, 0, null, null);
 			resultListItem.characterListItem.ShowAlarm(false);
-			if (levelUpPossible)
+			if (showPlusAlarm)
+			{
 				resultListItem.characterListItem.ShowAlarm(true, true);
+				levelUpPossible = true;
+			}
 			resultListItem.Initialize("", listPpInfo[i].add);
 			_listResultListItem.Add(resultListItem);
 

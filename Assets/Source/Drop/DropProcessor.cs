@@ -97,11 +97,11 @@ public class DropProcessor : MonoBehaviour
 				switch (dropType)
 				{
 					case eDropType.Origin:
-						if (dropTableData.subValue[i] != "s" && dropTableData.subValue[i] != "l" && dropTableData.subValue[i] != "u")
+						if (dropTableData.subValue[i] != "s" && dropTableData.subValue[i] != "x")
 							break;
 
 						// Origin의 경우 probability를 적혀있는대로 쓰면 안되고 현재 상황에 맞춰서 가공해야한다.
-						probability = AdjustOriginDropProbability(probability);
+						probability = AdjustOriginDropProbability(probability, dropTableData.subValue[i] == "s", dropTableData.subValue[i] == "x");
 						float weight = TableDataManager.instance.FindNotCharAdjustProb(DropManager.instance.GetCurrentNotSteakCharCount());
 						// NotCharTable Adjust Prob 검증
 						if (weight > 1.7f)
@@ -157,8 +157,11 @@ public class DropProcessor : MonoBehaviour
 			}
 			if (Random.value > probability)
 			{
-				if (dropType == eDropType.Origin && dropTableData.subValue[i] == "s")
-					++DropManager.instance.droppedNotStreakCharCount;
+				if (dropType == eDropType.Origin)
+				{
+					if (dropTableData.subValue[i] == "s" || dropTableData.subValue[i] == "x")
+						++DropManager.instance.droppedNotStreakCharCount;
+				}
 				continue;
 			}
 
@@ -192,6 +195,7 @@ public class DropProcessor : MonoBehaviour
 					switch (dropTableData.subValue[i])
 					{
 						case "s": stringValue = DropManager.instance.GetGachaCharacterId(); break;
+						case "x": stringValue = DropManager.instance.GetGachaCharacterId(); break;
 						case "l": stringValue = DropManager.instance.GetGachaCharacterId(0); break;
 						case "u": stringValue = DropManager.instance.GetGachaCharacterId(1); break;
 					}
@@ -313,7 +317,7 @@ public class DropProcessor : MonoBehaviour
 		DropManager.instance.StackDropExp(dropExpValue);
 	}
 
-	static float AdjustOriginDropProbability(float tableProbability)
+	static float AdjustOriginDropProbability(float tableProbability, bool originDrop, bool characterBoxDrop)
 	{
 		// Origin은 현재 캐릭터의 보유 여부에 따라 보정처리를 해서 드랍 확률이 결정된다.
 		// 기본값은 0.046인데 그걸 공식 하나 적용해서 보정하는 형태. 공식은 다음과 같다.
@@ -329,7 +333,7 @@ public class DropProcessor : MonoBehaviour
 			float adjustWeight = 0.0f;
 			CharacterData characterData = PlayerData.instance.GetCharacterData(TableDataManager.instance.actorTable.dataArray[i].actorId);
 			if (characterData == null)
-				adjustWeight = TableDataManager.instance.actorTable.dataArray[i].charGachaWeight * TableDataManager.instance.actorTable.dataArray[i].noHaveTimes;
+				adjustWeight = TableDataManager.instance.actorTable.dataArray[i].charGachaWeight * TableDataManager.instance.actorTable.dataArray[i].noHaveTimes * (originDrop ? 4.0f : 1.0f);
 			else
 			{
 				if (characterData.needLimitBreak && characterData.limitBreakPoint <= characterData.limitBreakLevel)

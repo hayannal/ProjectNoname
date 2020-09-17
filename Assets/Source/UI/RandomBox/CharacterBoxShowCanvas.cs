@@ -85,7 +85,7 @@ public class CharacterBoxShowCanvas : CharacterShowCanvasBase
 			return;
 
 		_playerActor = playerActor;
-		base.OnLoadedPlayerActor();
+		base.OnLoadedPlayerActor(true);
 		OnAfterLoaded();
 	}
 

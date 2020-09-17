@@ -156,11 +156,15 @@ public class CharacterShowCanvasBase : MonoBehaviour
 		{
 			_cachedActorInfoTableData = TableDataManager.instance.FindActorInfoTableData(_playerActor.actorId);
 
+			// 호출순서상 SetInfoCameraMode(true 호출하기 전에 이 콜백이 호출되는 경우가 있어서 예외처리 적용. null일땐 처리하지 않는다.
 			// override setting
-			if (_cachedActorInfoTableData != null && _cachedActorInfoTableData.infoLightIntensity > 0.0f)
-				_environmentSetting.SetDefaultLightIntensity(_cachedActorInfoTableData.infoLightIntensity);
-			else
-				_environmentSetting.SetDefaultLightIntensity(_defaultLightIntensity);
+			if (_environmentSetting != null)
+			{
+				if (_cachedActorInfoTableData != null && _cachedActorInfoTableData.infoLightIntensity > 0.0f)
+					_environmentSetting.SetDefaultLightIntensity(_cachedActorInfoTableData.infoLightIntensity);
+				else
+					_environmentSetting.SetDefaultLightIntensity(_defaultLightIntensity);
+			}
 		}
 
 		_playerActor.cachedTransform.position = _rootOffsetPosition;

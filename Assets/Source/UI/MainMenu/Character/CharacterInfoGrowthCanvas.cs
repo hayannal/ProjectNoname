@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using MEC;
 
 public class CharacterInfoGrowthCanvas : MonoBehaviour
 {
@@ -390,5 +391,50 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 				CharacterPowerLevelUpCanvas.instance.ShowCanvas(true, characterData, _price);
 			});
 		}
+	}
+
+	string _ignoreResearchPossibleActorId;
+	public void OnPowerLevelUp()
+	{
+		if (ResearchInfoGrowthCanvas.CheckResearch(PlayerData.instance.researchLevel + 1, true) == false)
+			return;
+
+		if (_ignoreResearchPossibleActorId == _actorId)
+			return;
+
+		YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_ResearchPossible"), () =>
+		{
+			Timing.RunCoroutine(ChangeCanvasProcess());
+		}, () =>
+		{
+			_ignoreResearchPossibleActorId = _actorId;
+		});
+	}
+
+	IEnumerator<float> ChangeCanvasProcess()
+	{
+		DelayedLoadingCanvas.Show(true);
+
+		FadeCanvas.instance.FadeOut(0.4f, 1, true);
+		yield return Timing.WaitForSeconds(0.4f);
+
+		CharacterInfoCanvas.instance.OnClickBackButton();
+
+		while (CharacterInfoCanvas.instance.gameObject.activeSelf)
+			yield return Timing.WaitForOneFrame;
+		yield return Timing.WaitForOneFrame;
+
+		CharacterListCanvas.instance.OnClickBackButton();
+		while (CharacterListCanvas.instance.gameObject.activeSelf)
+			yield return Timing.WaitForOneFrame;
+		yield return Timing.WaitForOneFrame;
+
+		UIInstanceManager.instance.ShowCanvasAsync("ResearchCanvas", null);
+
+		while ((ResearchCanvas.instance != null && ResearchCanvas.instance.gameObject.activeSelf) == false)
+			yield return Timing.WaitForOneFrame;
+
+		DelayedLoadingCanvas.Show(false);
+		FadeCanvas.instance.FadeIn(0.2f);
 	}
 }

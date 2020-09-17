@@ -71,6 +71,8 @@ public class CharacterPowerLevelUpCanvas : DetailShowCanvasBase
 		{
 			StackCanvas.Pop(gameObject);
 			_processed = false;
+
+			CharacterInfoGrowthCanvas.instance.OnPowerLevelUp();
 		}
 	}
 

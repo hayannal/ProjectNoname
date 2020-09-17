@@ -203,8 +203,8 @@ public class DropProcessor : MonoBehaviour
 				{
 					switch (dropTableData.subValue[i])
 					{
-						case "f": stringValue = DropManager.instance.GetGachaPowerPointId(true); break;
-						default: stringValue = DropManager.instance.GetGachaPowerPointId(false); break;
+						case "f": stringValue = DropManager.instance.GetGachaPowerPointId(true, false); break;
+						default: stringValue = DropManager.instance.GetGachaPowerPointId(false, true); break;
 					}
 					if (stringValue == "")
 						continue;

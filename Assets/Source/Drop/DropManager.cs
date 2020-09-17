@@ -695,7 +695,7 @@ public class DropManager : MonoBehaviour
 	#region Gacha PowerPoint
 	List<string> _listDroppedPowerPointId = new List<string>();
 	const float _maxPowerPointRate = 1.5f;
-	public string GetGachaPowerPointId(bool adjustOriginPowerPoint, int grade = -1, bool ignoreCheckLobby = false)
+	public string GetGachaPowerPointId(bool adjustOriginPowerPoint, bool adjustCharacterBoxPowerPoint, int grade = -1, bool ignoreCheckLobby = false)
 	{
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
 		if (lobby == false && ignoreCheckLobby == false)
@@ -733,9 +733,49 @@ public class DropManager : MonoBehaviour
 					continue;
 			}
 
+			// 초반 플레이 예외처리 두번째. 중복해서 뽑는걸 막는 로직때문에 이렇게 그냥 continue 하면 하나만 남은 상태에서도 continue하게 되면서 뽑을게 없어져버린다.
+			// 
+			if (adjustOriginPowerPoint || adjustCharacterBoxPowerPoint)
+			{
+				int sum = PlayerData.instance.originOpenCount + PlayerData.instance.characterBoxOpenCount;
+				if (sum <= 9 && actorId == "Actor0201")
+				{
+					bool needContinue = false;
+					if (PlayerData.instance.listCharacterData[i].pp >= 26)
+						needContinue = true;
+					if (needContinue == false)
+					{
+						// pp는 여러개로 쪼개져서 드랍을 굴리기때문에 굴려둔거중에 이미 개수를 초과한다면 더는 굴리지 않도록 해줘야한다.
+						int currentRequestPp = 0;
+						for (int j = 0; j < _listCharacterPpRequest.Count; ++j)
+						{
+							if (_listCharacterPpRequest[j].ChrId == PlayerData.instance.listCharacterData[i].entityKey.Id)
+							{
+								currentRequestPp = _listCharacterPpRequest[j].pp;
+								break;
+							}
+						}
+						if (currentRequestPp >= 26)
+							needContinue = true;
+					}
+					if (needContinue)
+					{
+						// 그래서 간파울 하나 남은 상태에서 continue하는거라 판단될땐 _listDroppedPowerPointId를 초기화 시켜놓고 루프를 다시 돌게해서
+						// 간파울을 제외한 나머지 캐릭들 중에 하나가 나오게 한다.
+						// 이런 상황이라면 _listRandomGachaActorInfo에 아무것도 들어있지 않을거다. 확인할 겸 검사하자.
+						if (PlayerData.instance.listCharacterData.Count == (_listDroppedPowerPointId.Count + 1) && _listRandomGachaActorInfo.Count == 0)
+						{
+							i = -1;
+							_listDroppedPowerPointId.Clear();
+						}
+						continue;
+					}
+				}
+			}
+
 			float weight = baseWeight - PlayerData.instance.listCharacterData[i].pp;
 			// 초반 플레이 예외처리.
-			if (grade == -1 && adjustOriginPowerPoint && PlayerData.instance.originOpenCount <= 2)
+			if (adjustOriginPowerPoint && PlayerData.instance.originOpenCount <= 2)
 			{
 				if (actorId == "Actor1002" || actorId == "Actor2103") { }
 				else
@@ -749,7 +789,11 @@ public class DropManager : MonoBehaviour
 		}
 
 		if (_listRandomGachaActorInfo.Count == 0)
+		{
+			if (adjustOriginPowerPoint || adjustCharacterBoxPowerPoint)
+				Debug.LogError("Invalid Gacha PowerPoint. Nothing has been selected.");
 			return "";
+		}
 
 		int index = -1;
 		float random = Random.Range(0.0f, _listRandomGachaActorInfo[_listRandomGachaActorInfo.Count - 1].sumWeight);

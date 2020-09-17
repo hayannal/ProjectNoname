@@ -304,13 +304,13 @@ public class DailyShopData : MonoBehaviour
 				case "upn":
 					int.TryParse(info.value, out seed);
 					UnityEngine.Random.InitState(seed);
-					actorId = DropManager.instance.GetGachaPowerPointId(false, 0, true);
+					actorId = DropManager.instance.GetGachaPowerPointId(false, false, 0, true);
 					unfixed = true;
 					break;
 				case "uph":
 					int.TryParse(info.value, out seed);
 					UnityEngine.Random.InitState(seed);
-					actorId = DropManager.instance.GetGachaPowerPointId(false, 1, true);
+					actorId = DropManager.instance.GetGachaPowerPointId(false, false, 1, true);
 					unfixed = true;
 					break;
 			}

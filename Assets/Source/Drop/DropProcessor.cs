@@ -319,6 +319,15 @@ public class DropProcessor : MonoBehaviour
 
 	static float AdjustOriginDropProbability(float tableProbability, bool originDrop, bool characterBoxDrop)
 	{
+		// 최초 1회는 무조건 캐릭터가 나와야한다. 이래야 간파울은 2렙에 제한걸릴테니 킵과 다른 일반캐릭터 1개가 pp를 나눠서 얻을 수 있게된다.
+		if (originDrop || characterBoxDrop)
+		{
+			int sum = PlayerData.instance.originOpenCount + PlayerData.instance.characterBoxOpenCount;
+			List<string> listGrantInfo = DropManager.instance.GetGrantCharacterInfo();
+			if (sum == 0 && listGrantInfo.Count == 0)
+				return 1.0f;
+		}
+
 		// Origin은 현재 캐릭터의 보유 여부에 따라 보정처리를 해서 드랍 확률이 결정된다.
 		// 기본값은 0.046인데 그걸 공식 하나 적용해서 보정하는 형태. 공식은 다음과 같다.
 		// 새 드랍확률 = 테이블 드랍확률 * 조정후가중치합 / 조정전가중치합

@@ -13,8 +13,20 @@ public class ResearchTableData
   public int level { get { return _level; } set { _level = value; } }
   
   [SerializeField]
+  int _requiredType;
+  public int requiredType { get { return _requiredType; } set { _requiredType = value; } }
+  
+  [SerializeField]
   int _requiredAccumulatedPowerLevel;
   public int requiredAccumulatedPowerLevel { get { return _requiredAccumulatedPowerLevel; } set { _requiredAccumulatedPowerLevel = value; } }
+  
+  [SerializeField]
+  int _requiredCharacterCount;
+  public int requiredCharacterCount { get { return _requiredCharacterCount; } set { _requiredCharacterCount = value; } }
+  
+  [SerializeField]
+  int _requiredCharacterLevel;
+  public int requiredCharacterLevel { get { return _requiredCharacterLevel; } set { _requiredCharacterLevel = value; } }
   
   [SerializeField]
   int _requiredGold;

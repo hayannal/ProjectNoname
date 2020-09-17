@@ -31,6 +31,10 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 	public Text attackText;
 	public Text diaText;
 	public Text gaugeText;
+	public Transform conditionTransform;
+	public GameObject conditionSumLevelGroupObject;
+	public GameObject conditionCharacterCountGroupObject;
+	public Text powerLevelText;
 
 	public GameObject priceButtonObject;
 	public Image priceButtonImage;
@@ -70,7 +74,7 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 		_tweenReferenceForMove = positionRectTransform.DOAnchorPos(Vector2.zero, 0.3f).SetEase(Ease.OutQuad);
 
 		// RefreshInfo 호출하고 항상 트윈으로 나오기때문에 여기서 셋팅한다.
-		if (priceButtonObject.activeSelf && _needSumLevel == false)
+		if (priceButtonObject.activeSelf && _notEnough == false)
 			AlarmObject.Show(alarmRootTransform);
 		else
 			AlarmObject.Hide(alarmRootTransform);
@@ -112,7 +116,7 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 
 	ObscuredInt _price;
 	ObscuredInt _rewardDia;
-	bool _needSumLevel;
+	bool _notEnough;
 	TweenerCore<float, float, FloatOptions> _tweenReferenceForGauge;
 	void RefreshLevelInfo()
 	{
@@ -148,20 +152,27 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 
 		int current = 0;
 		int max = 0;
+		if (researchTableData.requiredType == 0)
+		{
+			conditionSumLevelGroupObject.SetActive(true);
+			conditionCharacterCountGroupObject.SetActive(false);
+			current = GetCurrentAccumulatedPowerLevel();
+			_conditionParameter0 = max = researchTableData.requiredAccumulatedPowerLevel;
+		}
+		else
+		{
+			conditionSumLevelGroupObject.SetActive(false);
+			conditionCharacterCountGroupObject.SetActive(true);
+			current = GetCurrentConditionCharacterCount(researchTableData.requiredCharacterLevel);
+			_conditionParameter1 = max = researchTableData.requiredCharacterCount;
+			_conditionParameter0 = researchTableData.requiredCharacterLevel;
+			powerLevelText.text = UIString.instance.GetString("GameUI_Power", researchTableData.requiredCharacterLevel);
+		}
+		_notEnough = (current < max);
+		gaugeText.text = UIString.instance.GetString("GameUI_SpacedFraction", current, max);
+
 		if (selectCurrentTargetLevel)
 		{
-			int requiredGold = researchTableData.requiredGold;
-			int prevRequiredAccumulatedPowerLevel = 0;
-			if (_selectedLevel != 1)
-			{
-				ResearchTableData prevResearchTableData = TableDataManager.instance.FindResearchTableData(_selectedLevel - 1);
-				prevRequiredAccumulatedPowerLevel = prevResearchTableData.requiredAccumulatedPowerLevel;
-			}
-			max = researchTableData.requiredAccumulatedPowerLevel - prevRequiredAccumulatedPowerLevel;
-			current = GetCurrentAccumulatedPowerLevel() - prevRequiredAccumulatedPowerLevel;
-			gaugeText.text = UIString.instance.GetString("GameUI_SpacedFraction", current, max);
-			_needSumLevel = (current < max);
-
 			float ratio = (float)current / (float)max;
 			ratio = Mathf.Min(1.0f, ratio);
 			gaugeImage.fillAmount = 0.0f;
@@ -171,6 +182,7 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 			else
 				_reserveGaugeMoveTweenAnimation = true;
 
+			int requiredGold = researchTableData.requiredGold;
 			priceText.text = requiredGold.ToString("N0");
 			bool disablePrice = (CurrencyData.instance.gold < requiredGold || current < max);
 			priceButtonImage.color = !disablePrice ? Color.white : ColorUtil.halfGray;
@@ -185,14 +197,6 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 		{
 			if (_selectedLevel < (PlayerData.instance.researchLevel + 1))
 			{
-				int prevRequiredAccumulatedPowerLevel = 0;
-				if (_selectedLevel != 1)
-				{
-					ResearchTableData prevResearchTableData = TableDataManager.instance.FindResearchTableData(_selectedLevel - 1);
-					prevRequiredAccumulatedPowerLevel = prevResearchTableData.requiredAccumulatedPowerLevel;
-				}
-				current = max = researchTableData.requiredAccumulatedPowerLevel - prevRequiredAccumulatedPowerLevel;
-				gaugeText.text = UIString.instance.GetString("GameUI_SpacedFraction", current, max);
 				gaugeImage.fillAmount = 1.0f;
 				disableButtonText.SetLocalizedText(UIString.instance.GetString("ResearchUI_DoneButton"));
 			}
@@ -217,6 +221,17 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 		int result = 0;
 		for (int i = 0; i < PlayerData.instance.listCharacterData.Count; ++i)
 			result += PlayerData.instance.listCharacterData[i].powerLevel;
+		return result;
+	}
+
+	public static int GetCurrentConditionCharacterCount(int requiredCharacterPowerLevel)
+	{
+		int result = 0;
+		for (int i = 0; i < PlayerData.instance.listCharacterData.Count; ++i)
+		{
+			if (PlayerData.instance.listCharacterData[i].powerLevel >= requiredCharacterPowerLevel)
+				++result;
+		}
 		return result;
 	}
 
@@ -245,6 +260,20 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 		_selectedLevel += 1;
 		RefreshLevelInfo();
 		MoveTween(false);
+	}
+
+	int _conditionParameter0;
+	int _conditionParameter1;
+	public void OnClickConditionSumLevelTextButton()
+	{
+		string text = UIString.instance.GetString("GameUI_ResearchConditionMoreOne", _conditionParameter0);
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, text, 250, conditionTransform, new Vector2(0.0f, -35.0f));
+	}
+
+	public void OnClickConditionCharacterCountTextButton()
+	{
+		string text = UIString.instance.GetString("GameUI_ResearchConditionMoreZero", _conditionParameter0, _conditionParameter1);
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, text, 250, conditionTransform, new Vector2(0.0f, -35.0f));
 	}
 
 	// 드래그 빼기로 하는데 코드는 남겨놔도 되서 캔버스에서 이벤트만 빼두기로 한다.
@@ -284,9 +313,9 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 
 	public void OnClickButton()
 	{
-		if (_needSumLevel)
+		if (_notEnough)
 		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("ResearchUI_NotEnoughLevel"), 2.0f);
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString(conditionSumLevelGroupObject.activeSelf ? "ResearchUI_NotEnoughLevel" : "ResearchUI_NotEnoughCharacter"), 2.0f);
 			return;
 		}
 

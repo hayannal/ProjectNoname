@@ -738,7 +738,7 @@ public class DropManager : MonoBehaviour
 			if (adjustOriginPowerPoint || adjustCharacterBoxPowerPoint)
 			{
 				int sum = PlayerData.instance.originOpenCount + PlayerData.instance.characterBoxOpenCount;
-				if (sum <= 9 && actorId == "Actor0201")
+				if (sum <= 5 && actorId == "Actor0201")
 				{
 					bool needContinue = false;
 					if (PlayerData.instance.listCharacterData[i].pp >= 26)

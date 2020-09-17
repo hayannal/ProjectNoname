@@ -695,7 +695,7 @@ public class DropManager : MonoBehaviour
 	#region Gacha PowerPoint
 	List<string> _listDroppedPowerPointId = new List<string>();
 	const float _maxPowerPointRate = 1.5f;
-	public string GetGachaPowerPointId(bool adjustOriginPowerPoint, bool adjustCharacterBoxPowerPoint, int grade = -1, bool ignoreCheckLobby = false)
+	public string GetGachaPowerPointId(bool originDrop, bool characterBoxDrop, int grade = -1, bool ignoreCheckLobby = false)
 	{
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
 		if (lobby == false && ignoreCheckLobby == false)
@@ -735,7 +735,7 @@ public class DropManager : MonoBehaviour
 
 			// 초반 플레이 예외처리 두번째. 중복해서 뽑는걸 막는 로직때문에 이렇게 그냥 continue 하면 하나만 남은 상태에서도 continue하게 되면서 뽑을게 없어져버린다.
 			// 
-			if (adjustOriginPowerPoint || adjustCharacterBoxPowerPoint)
+			if (originDrop || characterBoxDrop)
 			{
 				int sum = PlayerData.instance.originOpenCount + PlayerData.instance.characterBoxOpenCount;
 				if (sum <= 5 && actorId == "Actor0201")
@@ -775,7 +775,7 @@ public class DropManager : MonoBehaviour
 
 			float weight = baseWeight - PlayerData.instance.listCharacterData[i].pp;
 			// 초반 플레이 예외처리.
-			if (adjustOriginPowerPoint && PlayerData.instance.originOpenCount <= 2)
+			if (originDrop && PlayerData.instance.originOpenCount <= 2)
 			{
 				if (actorId == "Actor1002" || actorId == "Actor2103") { }
 				else
@@ -790,7 +790,7 @@ public class DropManager : MonoBehaviour
 
 		if (_listRandomGachaActorInfo.Count == 0)
 		{
-			if (adjustOriginPowerPoint || adjustCharacterBoxPowerPoint)
+			if (originDrop || characterBoxDrop)
 				Debug.LogError("Invalid Gacha PowerPoint. Nothing has been selected.");
 			return "";
 		}

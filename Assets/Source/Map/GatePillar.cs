@@ -381,7 +381,8 @@ public class GatePillar : MonoBehaviour
 		{
 			// swappable이면서
 			// 다음번 보스의 suggest 캐릭터가 아니면서
-			// 다음번 보스의 suggest 캐릭터를 보유하고 있고, 이 캐릭터의 파워레벨이 권장파워레벨 이상이라면
+			// 다음번 보스의 suggest 캐릭터를 보유하고 있다면 팝업을 띄운다.
+			// 해당 캐릭터의 파워레벨이 권장파워레벨 이상인지는 체크하지 않는게 이걸 해버리면 1렙짜리 뽑아놨을땐 팝업이 뜨지 않게되서 모르고 지나쳐버리게 된다.
 			if (_checkedStageSwapSuggest == false && StageManager.instance.currentStageTableData != null && StageManager.instance.currentStageTableData.swap && PlayerData.instance.swappable)
 			{
 				MapTableData nextMapTableData = StageManager.instance.nextMapTableData;
@@ -537,8 +538,8 @@ public class GatePillar : MonoBehaviour
 		for (int i = 0; i < listCharacterData.Count; ++i)
 		{
 			CharacterData characterData = listCharacterData[i];
-			if (characterData.powerLevel < chapterTableData.suggestedPowerLevel)
-				continue;
+			//if (characterData.powerLevel < chapterTableData.suggestedPowerLevel)
+			//	continue;
 			if (BattleInstanceManager.instance.playerActor.actorId == characterData.actorId)
 				continue;
 			if (CheckSuggestedActor(suggestedActorIdList, characterData.actorId))

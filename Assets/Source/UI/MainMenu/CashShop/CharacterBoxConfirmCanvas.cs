@@ -152,7 +152,7 @@ public class CharacterBoxConfirmCanvas : MonoBehaviour
 			// 캐릭터 뽑기에는 오리진박스나 장비 뽑기와 달리 연속뽑기가 있다.
 			// repeatRemainCount를 0으로 보내면 오리진 박스처럼 한번 굴려진 결과가 바로 결과창에 보이게 되지만
 			// 이 값을 1 이상으로 보내면 내부적으로 n회 돌린 후 누적해서 보여주게 된다. 보낼때마다 패킷 주고받는다.
-			RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Character, _cachedDropProcessor, _repeatRemainCount, () =>
+			RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Character, _cachedDropProcessor, _repeatRemainCount, _priceOnce, () =>
 			{
 				OnCompleteRandomBoxScreen(DropManager.instance.GetGrantCharacterInfo(), DropManager.instance.GetLimitBreakPointInfo(), OnResult);
 			});

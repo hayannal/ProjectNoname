@@ -174,7 +174,7 @@ public class EquipBoxConfirmCanvas : MonoBehaviour
 			// 연출에 의해 캐시샵 가려질때 같이 하이드 시켜야한다.
 			gameObject.SetActive(false);
 
-			RandomBoxScreenCanvas.instance.SetInfo(count == 1 ? RandomBoxScreenCanvas.eBoxType.Equip1 : RandomBoxScreenCanvas.eBoxType.Equip8, _cachedDropProcessor, 0, () =>
+			RandomBoxScreenCanvas.instance.SetInfo(count == 1 ? RandomBoxScreenCanvas.eBoxType.Equip1 : RandomBoxScreenCanvas.eBoxType.Equip8, _cachedDropProcessor, 0, 0, () =>
 			{
 				// 결과창은 각 패킷이 자신의 Response에 맞춰서 보여줘야한다.
 				// 여기서는 장비 그리드를 띄운다.

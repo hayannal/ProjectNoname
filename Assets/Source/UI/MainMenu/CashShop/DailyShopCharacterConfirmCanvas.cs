@@ -254,7 +254,7 @@ public class DailyShopCharacterConfirmCanvas : MonoBehaviour
 				UIInstanceManager.instance.ShowCanvasAsync("RandomBoxScreenCanvas", () =>
 				{
 					gameObject.SetActive(false);
-					RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Character, _cachedDropProcessor, 0, () =>
+					RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Character, _cachedDropProcessor, 0, 0, () =>
 					{
 						CharacterBoxConfirmCanvas.OnCompleteRandomBoxScreen(DropManager.instance.GetGrantCharacterInfo(), DropManager.instance.GetLimitBreakPointInfo(), () =>
 						{

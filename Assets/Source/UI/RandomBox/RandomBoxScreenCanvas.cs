@@ -89,13 +89,15 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 	eBoxType _boxType;
 	DropProcessor _dropProcessor;
 	int _repeatRemainCount;
+	int _repeatPrice;
 	System.Action _completeAction;
 	
-	public void SetInfo(eBoxType boxType, DropProcessor dropProcessor, int repeatRemainCount, System.Action completeAction = null)
+	public void SetInfo(eBoxType boxType, DropProcessor dropProcessor, int repeatRemainCount, int repeatPrice, System.Action completeAction = null)
 	{
 		_dropProcessor = dropProcessor;
 		_boxType = boxType;
 		_repeatRemainCount = repeatRemainCount;
+		_repeatPrice = repeatPrice;
 		_completeAction = completeAction;
 
 		Timing.RunCoroutine(OpenDropProcess());
@@ -349,12 +351,11 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		// 반복 뽑기가 여러개 있었다면 타입별로 나눴겠지만 지금은 구조상 캐릭터뽑기만 반복이 되므로
 		// 조건문 없이 이대로 한다.
 		--_repeatRemainCount;
-		int characterBoxPrice = 50;
 		_dropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, "Zoflrflr", "", true, true);
 		_dropProcessor.AdjustDropRange(3.7f);
 		if (CheatingListener.detectedCheatTable)
 			return;
-		PlayFabApiManager.instance.RequestCharacterBox(characterBoxPrice, OnRecvCharacterBox);
+		PlayFabApiManager.instance.RequestCharacterBox(_repeatPrice, OnRecvCharacterBox);
 	}
 
 	void OnRecvCharacterBox(bool serverFailure)

@@ -213,7 +213,7 @@ public class LevelPackageInfo : MonoBehaviour
 		{
 			WaitingNetworkCanvas.Show(false);
 
-			RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Dia4_6, _cachedDropProcessor, 0, () =>
+			RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Dia4_6, _cachedDropProcessor, 0, 0, () =>
 			{
 				// 다음번 드랍에 영향을 주지 않게 하기위해 미리 클리어해둔다.
 				DropManager.instance.ClearLobbyDropInfo();

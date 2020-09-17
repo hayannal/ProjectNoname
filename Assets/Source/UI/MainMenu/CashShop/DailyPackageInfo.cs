@@ -204,7 +204,7 @@ public class DailyPackageInfo : MonoBehaviour
 					{
 						DropProcessor dropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, "DailyDiamond", "", true, true);
 						//dropProcessor.AdjustDropRange(3.7f);
-						RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Dia1_3, dropProcessor, 0, () =>
+						RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Dia1_3, dropProcessor, 0, 0, () =>
 						{
 							// 다음번 드랍에 영향을 주지 않게 하기위해 미리 클리어해둔다.
 							DropManager.instance.ClearLobbyDropInfo();
@@ -288,7 +288,7 @@ public class DailyPackageInfo : MonoBehaviour
 
 			DropProcessor dropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, "ShopDiamond", "", true, true);
 			dropProcessor.AdjustDropRange(3.7f);
-			RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Dia4_6, dropProcessor, 0, () =>
+			RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Dia4_6, dropProcessor, 0, 0, () =>
 			{
 				// 다음번 드랍에 영향을 주지 않게 하기위해 미리 클리어해둔다.
 				DropManager.instance.ClearLobbyDropInfo();

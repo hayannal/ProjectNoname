@@ -322,7 +322,7 @@ public class MailCanvasListItem : MonoBehaviour
 		List<ItemInstance> listGrantItem = TimeSpaceData.instance.DeserializeItemGrantResult(itemGrantString);
 		UIInstanceManager.instance.ShowCanvasAsync("RandomBoxScreenCanvas", () =>
 		{
-			RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Equip1, _cachedDropProcessor, 0, () =>
+			RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Equip1, _cachedDropProcessor, 0, 0, () =>
 			{
 				// 결과창은 각 패킷이 자신의 Response에 맞춰서 보여줘야한다.
 				// 여기서는 장비 그리드를 띄운다.

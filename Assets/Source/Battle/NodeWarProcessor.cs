@@ -887,7 +887,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		// 이후 뽑기 연출 진행
 		UIInstanceManager.instance.ShowCanvasAsync("RandomBoxScreenCanvas", () =>
 		{
-			RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.NodeWar, _cachedDropProcessor, 0, () =>
+			RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.NodeWar, _cachedDropProcessor, 0, 0, () =>
 			{
 				// 연출이 끝나면 원래 띄워야할 NodeWarResultCanvas를 보여주면 된다.
 				UIInstanceManager.instance.ShowCanvasAsync("NodeWarResultCanvas", () =>

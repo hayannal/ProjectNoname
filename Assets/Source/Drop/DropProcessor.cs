@@ -101,7 +101,7 @@ public class DropProcessor : MonoBehaviour
 							break;
 
 						// Origin의 경우 probability를 적혀있는대로 쓰면 안되고 현재 상황에 맞춰서 가공해야한다.
-						probability = AdjustOriginDropProbability(probability, dropTableData.subValue[i] == "s", dropTableData.subValue[i] == "x");
+						probability = AdjustOriginDropProbability(probability, dropTableData.subValue[i] == "x", dropTableData.subValue[i] == "s");
 						float weight = TableDataManager.instance.FindNotCharAdjustProb(DropManager.instance.GetCurrentNotSteakCharCount());
 						// NotCharTable Adjust Prob 검증
 						if (weight > 1.7f)

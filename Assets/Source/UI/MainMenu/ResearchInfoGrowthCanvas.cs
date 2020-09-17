@@ -235,6 +235,36 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 		return result;
 	}
 
+	public static bool CheckResearch(int researchLevel, bool checkPrice = false)
+	{
+		ResearchTableData researchTableData = TableDataManager.instance.FindResearchTableData(researchLevel);
+		if (researchTableData == null)
+			return false;
+
+		int current = 0;
+		int max = 0;
+		if (researchTableData.requiredType == 0)
+		{
+			current = GetCurrentAccumulatedPowerLevel();
+			max = researchTableData.requiredAccumulatedPowerLevel;
+		}
+		else
+		{
+			current = GetCurrentConditionCharacterCount(researchTableData.requiredCharacterLevel);
+			max = researchTableData.requiredCharacterCount;
+		}
+		if (current < max)
+			return false;
+
+		if (checkPrice)
+		{
+			if (CurrencyData.instance.gold < researchTableData.requiredGold)
+				return false;
+		}
+
+		return true;
+	}
+
 	public void OnClickDetailButton()
 	{
 		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, UIString.instance.GetString("ResearchUI_ResearchMore"), 250, researchTextTransform, new Vector2(0.0f, -35.0f));

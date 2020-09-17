@@ -447,7 +447,7 @@ public class DotMainMenuCanvas : MonoBehaviour
 		ResearchTableData researchTableData = TableDataManager.instance.FindResearchTableData(PlayerData.instance.researchLevel + 1);
 		if (researchTableData == null)
 			return false;
-		if (ResearchInfoGrowthCanvas.GetCurrentAccumulatedPowerLevel() < researchTableData.requiredAccumulatedPowerLevel)
+		if (ResearchInfoGrowthCanvas.CheckResearch(PlayerData.instance.researchLevel + 1) == false)
 			return false;
 		return true;
 	}

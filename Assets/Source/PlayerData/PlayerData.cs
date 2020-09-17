@@ -640,7 +640,7 @@ public class PlayerData : MonoBehaviour
 		if (researchLevel > 0)
 		{
 			ResearchTableData researchTableData = TableDataManager.instance.FindResearchTableData(researchLevel);
-			if (researchTableData == null || ResearchInfoGrowthCanvas.GetCurrentAccumulatedPowerLevel() < researchTableData.requiredAccumulatedPowerLevel)
+			if (researchTableData == null || ResearchInfoGrowthCanvas.CheckResearch(researchLevel) == false)
 				PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidResearchLevel, false, researchLevel);
 		}
 	}

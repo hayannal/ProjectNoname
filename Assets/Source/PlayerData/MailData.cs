@@ -69,7 +69,7 @@ public class MailData : MonoBehaviour
 		UpdateServerMaintenance();
 	}
 
-	public void OnRecvMailData(Dictionary<string, string> titleData, Dictionary<string, UserDataRecord> userReadOnlyData)
+	public void OnRecvMailData(Dictionary<string, string> titleData, Dictionary<string, UserDataRecord> userReadOnlyData, bool newlyCreated)
 	{
 		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
 
@@ -84,16 +84,31 @@ public class MailData : MonoBehaviour
 				_listMyMailTime = serializer.DeserializeObject<List<MyMailData>>(userReadOnlyData["mailDatLst"].Value);
 		}
 
-		// 최초에는 기록된 데이터로 초기화하고 이후 5분마다 서버에서 물어봐서 갱신된 리스트를 받으면 된다.
-		bool needRemove = CheckRemove();
-		bool needAdd = CheckAdd();
-		if (needRemove || needAdd)
+		// 계정 생성시에는 간혹 실패할때가 있다. 시작과 동시에 userReadData 값을 읽으려고 해서 DB에러가 온다.
+		// 사실 에러가 와도 5분 뒤에 다시 보내니까 문제없긴 한데 그래도 로직상 에러 안나는게 좋을테니 바꿔본다.
+		if (newlyCreated)
 		{
-			// 변경해야할 항목이 있다면 서버에 리프레쉬를 알린다.
-			PlayFabApiManager.instance.RequestRefreshMailList(_listMailCreateInfo.Count, OnRecvRefreshMail);
+			if (CheckAdd())
+				mailRefreshTime = ServerTime.UtcNow + TimeSpan.FromSeconds(15);
+			else
+			{
+				mailRefreshTime = ServerTime.UtcNow;
+				CalcNextRefreshTime();
+			}
 		}
-		mailRefreshTime = ServerTime.UtcNow;
-		CalcNextRefreshTime();
+		else
+		{
+			// 일반적인 로그인시에는 기록된 데이터로 초기화하고 이후 5분마다 서버에서 물어봐서 갱신된 리스트를 받으면 된다.
+			bool needRemove = CheckRemove();
+			bool needAdd = CheckAdd();
+			if (needRemove || needAdd)
+			{
+				// 변경해야할 항목이 있다면 서버에 리프레쉬를 알린다.
+				PlayFabApiManager.instance.RequestRefreshMailList(_listMailCreateInfo.Count, OnRecvRefreshMail);
+			}
+			mailRefreshTime = ServerTime.UtcNow;
+			CalcNextRefreshTime();
+		}
 
 		_lateInitialized = false;
 		_updateLateInitialize = true;

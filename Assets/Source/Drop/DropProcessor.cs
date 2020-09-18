@@ -101,7 +101,7 @@ public class DropProcessor : MonoBehaviour
 							break;
 
 						// Origin의 경우 probability를 적혀있는대로 쓰면 안되고 현재 상황에 맞춰서 가공해야한다.
-						probability = AdjustOriginDropProbability(probability, dropTableData.subValue[i] == "x", dropTableData.subValue[i] == "s");
+						probability = AdjustOriginDropProbability(probability, dropTableData.subValue[i] == "x");
 						float weight = TableDataManager.instance.FindNotCharAdjustProb(DropManager.instance.GetCurrentNotSteakCharCount());
 						// NotCharTable Adjust Prob 검증
 						if (weight > 1.7f)
@@ -194,10 +194,10 @@ public class DropProcessor : MonoBehaviour
 				{
 					switch (dropTableData.subValue[i])
 					{
-						case "s": stringValue = DropManager.instance.GetGachaCharacterId(); break;
-						case "x": stringValue = DropManager.instance.GetGachaCharacterId(); break;
-						case "l": stringValue = DropManager.instance.GetGachaCharacterId(0); break;
-						case "u": stringValue = DropManager.instance.GetGachaCharacterId(1); break;
+						case "s": stringValue = DropManager.instance.GetGachaCharacterId(false); break;
+						case "x": stringValue = DropManager.instance.GetGachaCharacterId(true); break;
+						case "l": stringValue = DropManager.instance.GetGachaCharacterId(false, 0); break;
+						case "u": stringValue = DropManager.instance.GetGachaCharacterId(false, 1); break;
 					}
 					// Origin이나 아래 PowerPoint는 특정 조건에 의해(중복 방지라던지 등등) 안나올 수 있다. 이땐 건너뛰어야한다.
 					if (stringValue == "")
@@ -317,16 +317,13 @@ public class DropProcessor : MonoBehaviour
 		DropManager.instance.StackDropExp(dropExpValue);
 	}
 
-	static float AdjustOriginDropProbability(float tableProbability, bool originDrop, bool characterBoxDrop)
+	static float AdjustOriginDropProbability(float tableProbability, bool originDrop)
 	{
 		// 최초 1회는 무조건 캐릭터가 나와야한다. 이래야 간파울은 2렙에 제한걸릴테니 킵과 다른 일반캐릭터 1개가 pp를 나눠서 얻을 수 있게된다.
-		if (originDrop || characterBoxDrop)
-		{
-			int sum = PlayerData.instance.originOpenCount + PlayerData.instance.characterBoxOpenCount;
-			List<string> listGrantInfo = DropManager.instance.GetGrantCharacterInfo();
-			if (sum == 0 && listGrantInfo.Count == 0)
-				return 1.0f;
-		}
+		int sum = PlayerData.instance.originOpenCount + PlayerData.instance.characterBoxOpenCount;
+		List<string> listGrantInfo = DropManager.instance.GetGrantCharacterInfo();
+		if (sum == 0 && listGrantInfo.Count == 0)
+			return 1.0f;
 
 		// Origin은 현재 캐릭터의 보유 여부에 따라 보정처리를 해서 드랍 확률이 결정된다.
 		// 기본값은 0.046인데 그걸 공식 하나 적용해서 보정하는 형태. 공식은 다음과 같다.
@@ -341,8 +338,12 @@ public class DropProcessor : MonoBehaviour
 
 			float adjustWeight = 0.0f;
 			CharacterData characterData = PlayerData.instance.GetCharacterData(TableDataManager.instance.actorTable.dataArray[i].actorId);
-			if (characterData == null)
-				adjustWeight = TableDataManager.instance.actorTable.dataArray[i].charGachaWeight * TableDataManager.instance.actorTable.dataArray[i].noHaveTimes * (originDrop ? 4.0f : 1.0f);
+			if (characterData == null && listGrantInfo.Contains(TableDataManager.instance.actorTable.dataArray[i].actorId) == false)
+			{
+				adjustWeight = TableDataManager.instance.actorTable.dataArray[i].charGachaWeight * TableDataManager.instance.actorTable.dataArray[i].noHaveTimes;
+				if (originDrop && CharacterData.IsUseLegendWeight(TableDataManager.instance.actorTable.dataArray[i]) == false)
+					adjustWeight *= 3.0f;
+			}
 			else
 			{
 				if (characterData.needLimitBreak && characterData.limitBreakPoint <= characterData.limitBreakLevel)

@@ -521,7 +521,7 @@ public class DropManager : MonoBehaviour
 		public float sumWeight;
 	}
 	List<RandomGachaActorInfo> _listRandomGachaActorInfo = null;
-	public string GetGachaCharacterId(int grade = -1, bool ignoreCheckLobby = false)
+	public string GetGachaCharacterId(bool originDrop, int grade = -1, bool ignoreCheckLobby = false)
 	{
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
 		if (lobby == false && ignoreCheckLobby == false)
@@ -581,7 +581,15 @@ public class DropManager : MonoBehaviour
 			if (CharacterData.IsUseLegendWeight(TableDataManager.instance.actorTable.dataArray[i]) && weight > 1.0f)
 				CheatingListener.OnDetectCheatTable();
 
-			sumWeight += (useAdjustWeight ? (weight * TableDataManager.instance.actorTable.dataArray[i].noHaveTimes) : weight);
+			float adjustWeight = weight;
+			if (useAdjustWeight)
+			{
+				weight *= TableDataManager.instance.actorTable.dataArray[i].noHaveTimes;
+				if (originDrop && CharacterData.IsUseLegendWeight(TableDataManager.instance.actorTable.dataArray[i]) == false)
+					adjustWeight *= 3.0f;
+			}
+
+			sumWeight += adjustWeight;
 			RandomGachaActorInfo newInfo = new RandomGachaActorInfo();
 			newInfo.actorId = TableDataManager.instance.actorTable.dataArray[i].actorId;
 			newInfo.sumWeight = sumWeight;

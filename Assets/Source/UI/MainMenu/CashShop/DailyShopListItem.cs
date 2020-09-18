@@ -214,7 +214,7 @@ public class DailyShopListItem : MonoBehaviour
 		if (characterBoxGroupObject) characterBoxGroupObject.SetActive(false);
 
 		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(value);
-		RefreshBackground(actorTableData.grade == 2);
+		RefreshBackground(CharacterData.IsUseLegendWeight(actorTableData));
 
 		AddressableAssetLoadManager.GetAddressableSprite(actorTableData.portraitAddress, "Icon", (sprite) =>
 		{

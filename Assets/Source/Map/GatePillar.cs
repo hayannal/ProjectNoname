@@ -136,7 +136,11 @@ public class GatePillar : MonoBehaviour
 			{
 				_purifyCountShowRemainTime = 0.0f;
 				RefreshPurify();
-				_chaosPurifierShowRemainTime = chaosPurifierShowDelayTime;
+
+				// 마지막 챕터에서는 어차피 도전모드로 갈수없기 때문에 레버를 만들 필요가 없다.
+				int chapterLimit = BattleInstanceManager.instance.GetCachedGlobalConstantInt("ChaosChapterLimit");
+				if (PlayerData.instance.selectedChapter < chapterLimit)
+					_chaosPurifierShowRemainTime = chaosPurifierShowDelayTime;
 			}
 		}
 

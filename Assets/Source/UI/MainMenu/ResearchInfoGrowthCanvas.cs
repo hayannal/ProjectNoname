@@ -30,11 +30,14 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 	public Text hpText;
 	public Text attackText;
 	public Text diaText;
-	public Text gaugeText;
 	public Transform conditionTransform;
 	public GameObject conditionSumLevelGroupObject;
 	public GameObject conditionCharacterCountGroupObject;
-	public Text powerLevelText;
+	public GameObject questionObject;
+	public Text sumPowerLevelText;
+	public Text characterPowerLevelText;
+	public Text sumLevelGaugeText;
+	public Text characterCountGaugeText;
 
 	public GameObject priceButtonObject;
 	public Image priceButtonImage;
@@ -156,20 +159,25 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 		{
 			conditionSumLevelGroupObject.SetActive(true);
 			conditionCharacterCountGroupObject.SetActive(false);
+			questionObject.SetActive(false);
 			current = GetCurrentAccumulatedPowerLevel();
 			_conditionParameter0 = max = researchTableData.requiredAccumulatedPowerLevel;
+			sumPowerLevelText.text = UIString.instance.GetString("GameUI_PowerOnly");
+			sumLevelGaugeText.text = UIString.instance.GetString("GameUI_SpacedFraction", current, max);
 		}
 		else
 		{
 			conditionSumLevelGroupObject.SetActive(false);
 			conditionCharacterCountGroupObject.SetActive(true);
+			questionObject.SetActive(false);
 			current = GetCurrentConditionCharacterCount(researchTableData.requiredCharacterLevel);
 			_conditionParameter1 = max = researchTableData.requiredCharacterCount;
 			_conditionParameter0 = researchTableData.requiredCharacterLevel;
-			powerLevelText.text = UIString.instance.GetString("GameUI_Power", researchTableData.requiredCharacterLevel);
+			characterPowerLevelText.text = UIString.instance.GetString("GameUI_PowerSizeDiff", researchTableData.requiredCharacterLevel);
+			characterCountGaugeText.text = UIString.instance.GetString("GameUI_SpacedFraction", current, max);
 		}
 		_notEnough = (current < max);
-		gaugeText.text = UIString.instance.GetString("GameUI_SpacedFraction", current, max);
+		
 
 		if (selectCurrentTargetLevel)
 		{
@@ -203,7 +211,9 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 
 			if (_selectedLevel > (PlayerData.instance.researchLevel + 1))
 			{
-				gaugeText.text = "???";
+				conditionSumLevelGroupObject.SetActive(false);
+				conditionCharacterCountGroupObject.SetActive(false);
+				questionObject.SetActive(true);
 				gaugeImage.fillAmount = 0.0f;
 				disableButtonText.SetLocalizedText(UIString.instance.GetString("ResearchUI_FormerFirstButton"));
 			}
@@ -296,14 +306,14 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 	int _conditionParameter1;
 	public void OnClickConditionSumLevelTextButton()
 	{
-		string text = UIString.instance.GetString("GameUI_ResearchConditionMoreOne", _conditionParameter0);
-		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, text, 250, conditionTransform, new Vector2(0.0f, -35.0f));
+		string text = UIString.instance.GetString("GameUI_ResearchConditionMoreZero", _conditionParameter0);
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, text, 250, conditionTransform, new Vector2(0.0f, -55.0f));
 	}
 
 	public void OnClickConditionCharacterCountTextButton()
 	{
-		string text = UIString.instance.GetString("GameUI_ResearchConditionMoreZero", _conditionParameter0, _conditionParameter1);
-		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, text, 250, conditionTransform, new Vector2(0.0f, -35.0f));
+		string text = UIString.instance.GetString("GameUI_ResearchConditionMoreOne", _conditionParameter0, _conditionParameter1);
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, text, 250, conditionTransform, new Vector2(0.0f, -55.0f));
 	}
 
 	// 드래그 빼기로 하는데 코드는 남겨놔도 되서 캔버스에서 이벤트만 빼두기로 한다.

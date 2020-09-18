@@ -22,7 +22,7 @@ public class GatePillar : MonoBehaviour
 	public float descriptionObjectIndicatorShowDelayTime = 5.0f;
 	public float energyGaugeShowDelayTime = 0.2f;
 	const float purifyShowDelayTime = 0.3f;
-	const float chaosPurifierShowDelayTime = 0.3f;
+	const float chaosPurifierShowDelayTime = 0.15f;
 
 	public Canvas worldCanvas;
 	public Text floorText;

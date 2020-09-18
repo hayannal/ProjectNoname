@@ -21,7 +21,8 @@ public class GatePillar : MonoBehaviour
 	public GameObject descriptionObjectIndicatorPrefab;
 	public float descriptionObjectIndicatorShowDelayTime = 5.0f;
 	public float energyGaugeShowDelayTime = 0.2f;
-	float purifyShowDelayTime = 0.3f;
+	const float purifyShowDelayTime = 0.3f;
+	const float chaosPurifierShowDelayTime = 0.3f;
 
 	public Canvas worldCanvas;
 	public Text floorText;
@@ -109,6 +110,7 @@ public class GatePillar : MonoBehaviour
 	float _descriptionObjectIndicatorShowRemainTime;
 	float _energyGaugeShowRemainTime;
 	float _purifyCountShowRemainTime;
+	float _chaosPurifierShowRemainTime;
 	bool _maxPurify;
 	void Update()
 	{
@@ -134,15 +136,29 @@ public class GatePillar : MonoBehaviour
 			{
 				_purifyCountShowRemainTime = 0.0f;
 				RefreshPurify();
-				return;
+				_chaosPurifierShowRemainTime = chaosPurifierShowDelayTime;
+			}
+		}
+
+		if (OpenChaosEventGatePillar.instance != null && OpenChaosEventGatePillar.instance.gameObject.activeSelf)
+			return;
+		if (OpenTimeSpacePortal.instance != null && EventInputLockCanvas.instance != null && EventInputLockCanvas.instance.gameObject.activeSelf)
+			return;
+
+		if (_chaosPurifierShowRemainTime > 0.0f)
+		{
+			_chaosPurifierShowRemainTime -= Time.deltaTime;
+			if (_chaosPurifierShowRemainTime <= 0.0f)
+			{
+				_chaosPurifierShowRemainTime = 0.0f;
+				AddressableAssetLoadManager.GetAddressableGameObject("ChaosPurifierLever", "Map", (prefab) =>
+				{
+					BattleInstanceManager.instance.GetCachedObject(prefab, null);
+				});
 			}
 		}
 
 		if (TitleCanvas.instance != null && TitleCanvas.instance.gameObject.activeSelf && PlayerData.instance.currentChallengeMode == false)
-			return;
-		if (OpenChaosEventGatePillar.instance != null && OpenChaosEventGatePillar.instance.gameObject.activeSelf)
-			return;
-		if (OpenTimeSpacePortal.instance != null && EventInputLockCanvas.instance != null && EventInputLockCanvas.instance.gameObject.activeSelf)
 			return;
 		if (RandomBoxScreenCanvas.instance != null && RandomBoxScreenCanvas.instance.gameObject.activeSelf)
 			return;

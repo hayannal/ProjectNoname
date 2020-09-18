@@ -549,6 +549,8 @@ public class MainSceneBuilder : MonoBehaviour
 			EnergyGaugeCanvas.instance.gameObject.SetActive(false);
 		if (DailyBoxGaugeCanvas.instance != null)
 			DailyBoxGaugeCanvas.instance.gameObject.SetActive(false);
+		if (ChaosPurifier.instance != null)
+			ChaosPurifier.instance.gameObject.SetActive(false);
 		if (NewChapterCanvas.instance != null)
 			NewChapterCanvas.instance.gameObject.SetActive(false);
 		if (BattleInstanceManager.instance.playerActor != null)

@@ -53,7 +53,7 @@ public class NodeWarBoostInfoCanvas : MonoBehaviour
 		int price = BattleInstanceManager.instance.GetCachedGlobalConstantInt("RefillBoostDiamond");
 
 		priceText.text = price.ToString("N0");
-		bool disablePrice = (CurrencyData.instance.dia < _price || enablePurchase == false);
+		bool disablePrice = (CurrencyData.instance.dia < price || enablePurchase == false);
 		priceButtonImage.color = !disablePrice ? Color.white : ColorUtil.halfGray;
 		priceText.color = !disablePrice ? Color.white : Color.gray;
 		priceGrayscaleEffect.enabled = disablePrice;

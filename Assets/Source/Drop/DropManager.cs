@@ -743,13 +743,14 @@ public class DropManager : MonoBehaviour
 
 			// 초반 플레이 예외처리 두번째. 중복해서 뽑는걸 막는 로직때문에 이렇게 그냥 continue 하면 하나만 남은 상태에서도 continue하게 되면서 뽑을게 없어져버린다.
 			// 
+			const int Actor0201LimitPp = 49;
 			if (originDrop || characterBoxDrop)
 			{
 				int sum = PlayerData.instance.originOpenCount + PlayerData.instance.characterBoxOpenCount;
 				if (sum <= 5 && actorId == "Actor0201")
 				{
 					bool needContinue = false;
-					if (PlayerData.instance.listCharacterData[i].pp >= 26)
+					if (PlayerData.instance.listCharacterData[i].pp >= Actor0201LimitPp)
 						needContinue = true;
 					if (needContinue == false)
 					{
@@ -763,7 +764,7 @@ public class DropManager : MonoBehaviour
 								break;
 							}
 						}
-						if (currentRequestPp >= 26)
+						if (currentRequestPp >= Actor0201LimitPp)
 							needContinue = true;
 					}
 					if (needContinue)

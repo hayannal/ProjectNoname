@@ -346,7 +346,7 @@ public class DropProcessor : MonoBehaviour
 			}
 			else
 			{
-				if (characterData.needLimitBreak && characterData.limitBreakPoint <= characterData.limitBreakLevel)
+				if (characterData != null && characterData.needLimitBreak && characterData.limitBreakPoint <= characterData.limitBreakLevel)
 					adjustWeight = TableDataManager.instance.actorTable.dataArray[i].charGachaWeight;
 			}
 			adjustSumWeight += adjustWeight;

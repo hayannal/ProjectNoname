@@ -35,12 +35,11 @@ public class ChaosPurifierConfirmCanvas : MonoBehaviour
 
 	void RefreshInfo()
 	{
-		//ResearchTableData researchTableData = TableDataManager.instance.FindResearchTableData(PlayerData.instance.selectedChapter);
-		//if (researchTableData == null)
-		//	return;
+		ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(PlayerData.instance.selectedChapter);
+		if (chapterTableData == null)
+			return;
 
-		//int price = researchTableData.price;
-		int price = 5;
+		int price = chapterTableData.purifyGold;
 
 		priceText.text = price.ToString("N0");
 		bool disablePrice = (CurrencyData.instance.gold < price);
@@ -52,7 +51,7 @@ public class ChaosPurifierConfirmCanvas : MonoBehaviour
 
 	public void OnClickMoreButton()
 	{
-		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, UIString.instance.GetString("GameUI_ChaosPopMore"), 300, subTitleTransform, new Vector2(0.0f, -35.0f));
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, UIString.instance.GetString("GameUI_ChaosPurifyMore"), 300, subTitleTransform, new Vector2(0.0f, -35.0f));
 	}
 
 	int _price;

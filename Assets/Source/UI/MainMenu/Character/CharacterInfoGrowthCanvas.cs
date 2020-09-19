@@ -396,6 +396,9 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 	string _ignoreResearchPossibleActorId;
 	public void OnPowerLevelUp()
 	{
+		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Research) == false)
+			return;
+
 		if (ResearchInfoGrowthCanvas.CheckResearch(PlayerData.instance.researchLevel + 1, true) == false)
 			return;
 

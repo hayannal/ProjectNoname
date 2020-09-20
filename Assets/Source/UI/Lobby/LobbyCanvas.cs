@@ -53,11 +53,23 @@ public class LobbyCanvas : MonoBehaviour
 		if (ClientSaveData.instance.IsCachedInProgressGame() == false)
 			return;
 
+		// 도전모드를 취소할때는 조금 다르게 처리해야한다.
+		// 하나 예외상황이 있는데 카오스모드 오픈 이벤트를 보지 않은 유저들일 경우다.
+		// 아직 카오스모드를 알지도 못하는데 취소하면 도전모드 기회가 날아간다고 적혀있으면 이상하니 결국 둘중에 하나인데
+		//
+		// 전자는 카오스 열리기 전처럼 그냥 도전모드를 유지해주는거다.
+		// 이거의 단점은 강종하면 계속해서 도전모드인채로 유지할 수 있다는건데 한번의 패배도 없이 계속해서 챕터를 깨는건 핵과금밖에 없으니 방안중에 하나다.
+		//
+		// 후자는 취소했을때 카오스 오픈 이벤트를 발생시켜주는거다.
+		// 이거의 단점은 강제 이벤트 처리 패킷을 별도로 만들어서 처리해야한다는거와 심지어 이 상황에서 네트워크 끊겼을때의 복구 처리까지 해야한다는거다.
+		// 개발량이 적지도 않으면서 전자를 했을때의 단점이 크지 않기 때문에 전자 방식으로 가기로 한다.
+		bool needCancelChallengeMode = (PlayerData.instance.currentChallengeMode && EventManager.instance.IsCompleteServerEvent(EventManager.eServerEvent.chaos));
+
 		// 죽은 상태의 저장 데이터인지 확인한다.
 		if (ClientSaveData.instance.GetCachedHpRatio() == 0.0f)
 		{
-			// 도전모드면 클리어 패킷을 보내버림. 로그인 하자마자 보내는거라 막을 방법이 없을거다.
-			if (PlayerData.instance.currentChallengeMode)
+			// 도전모드면 클리어 패킷을 보내버림. 로그인 하자마자 보내는거라 막을 방법이 없을거로 판단.
+			if (needCancelChallengeMode)
 				PlayFabApiManager.instance.RequestCancelChallenge(null, false);
 			OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_ReenterAfterDying"), () =>
 			{
@@ -66,9 +78,8 @@ public class LobbyCanvas : MonoBehaviour
 			return;
 		}
 
-		// 도전모드를 취소할때는 조금 다르게 처리해야한다.
 		string message = UIString.instance.GetString("GameUI_Reenter");
-		if (PlayerData.instance.currentChallengeMode)
+		if (needCancelChallengeMode)
 			message = string.Format("{0}\n{1}", message, UIString.instance.GetString("GameUI_ReenterChallenge"));
 
 		// 아무 이벤트도 실행할게 없는데 제대로 완료처리 되지 않은 게임이 있다면 복구를 물어본다.
@@ -83,7 +94,7 @@ public class LobbyCanvas : MonoBehaviour
 			if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null && TitleCanvas.instance.gameObject.activeSelf)
 				TitleCanvas.instance.FadeTitle();
 
-			if (PlayerData.instance.currentChallengeMode)
+			if (needCancelChallengeMode)
 			{
 				// 도전모드의 재진입을 취소하는거라면 여러가지 할일이 있다.
 				// 먼저 서버 동기화

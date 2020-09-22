@@ -12,6 +12,7 @@ Properties {
 	_Offset("Offset time", Vector) = (0, 0, 0, 0)
 	_MaskPow("Mask pow", Float) = 1
 	_AlphaPow("Alpha pow", Float) = 1
+	_AlphaPowMax("Alpha pow max", Range(0.1, 128)) = 16
 }
 
 Category {
@@ -38,6 +39,7 @@ Category {
 			half _Scale;
 			half _MaskPow;
 			half _AlphaPow;
+			half _AlphaPowMax;
 			half4 _Tex_NextFrame;
 			half InterpolationValue;
 			half4 _Offset;
@@ -94,7 +96,7 @@ Category {
 				
 				half m = saturate(mask - _Cutoff);
 				half alpha = saturate(tex.a * m * _TintColor.a * 2 * i.color.a);
-				return half4(col.rgb * pow(alpha, _AlphaPow), alpha);
+				return half4(col.rgb * min(_AlphaPowMax, pow(alpha, _AlphaPow)), alpha);
 			}
 			ENDCG 
 		}

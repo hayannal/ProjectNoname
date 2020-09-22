@@ -7,8 +7,8 @@ public class CountBarrierAffector : AffectorBase
 	// 해당 어펙터를 쓰려면 액터에다가 본 추가로 넣고 액터 preload 오브젝트 리스트에다가 루프 이펙트나 피격 이벤트 이펙트를 넣어놔야한다.
 	static string BONE_NAME = "Bone_CountBarrier_";
 
-	Color _defaultBarrierColor = new Color(50.0f / 255.0f, 50.0f / 255.0f, 50.0f / 255.0f);
-	Color _hitBarrierColor = new Color(320.0f / 255.0f, 100.0f / 255.0f, 100.0f / 255.0f);
+	Color _defaultBarrierColor = new Color(100.0f / 255.0f, 100.0f / 255.0f, 100.0f / 255.0f);
+	Color _hitBarrierColor = new Color(700.0f / 255.0f, 150.0f / 255.0f, 150.0f / 255.0f);
 
 	int _remainCount;
 	float _endTime;
@@ -114,7 +114,7 @@ public class CountBarrierAffector : AffectorBase
 	Color _currentLoopEffectColor;
 	Color _targetLoopEffectColor;
 	float _barrierBlinkRemainTime = 0.0f;
-	const float BarrierBlinkTime = 0.1f;
+	const float BarrierBlinkTime = 0.08f;
 	bool _lastBarrierPingpongState = false;
 	float _lastBarrierPingpongRemainTime = 0.0f;
 	const float LastBarrierPingpongTime = 0.2f;
@@ -123,7 +123,7 @@ public class CountBarrierAffector : AffectorBase
 		if (_loopEffectMaterial == null)
 			return;
 
-		float lerpPower = 2.0f;
+		float lerpPower = 5.0f;
 		if (_barrierBlinkRemainTime > 0.0f)
 		{
 			lerpPower = 30.0f;
@@ -132,7 +132,7 @@ public class CountBarrierAffector : AffectorBase
 			{
 				_barrierBlinkRemainTime = 0.0f;
 				_targetLoopEffectColor = _defaultBarrierColor;
-				lerpPower = 2.0f;
+				lerpPower = 5.0f;
 
 				if (_remainCount == 1)
 				{

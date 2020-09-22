@@ -168,7 +168,11 @@ public class CountBarrierAffector : AffectorBase
 		{
 			_loopEffectTransform.gameObject.SetActive(false);
 #if UNITY_EDITOR
-			_loopEffectTransform.parent = null;
+			// 이 라인 때문에 몬스터를 소환해둔 상태에서 플레이 모드를 끄면 에러가 나게 된다.
+			// 그렇다고 없애면 배틀씬에서 꺼내놓고 작업을 할수가 없게 된다.
+			// 그래서 씬 이름으로 검사하기로 한다.
+			if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "BattleScene")
+				_loopEffectTransform.parent = null;
 #endif
 			_loopEffectTransform = null;
 		}

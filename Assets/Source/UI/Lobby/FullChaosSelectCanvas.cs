@@ -48,6 +48,7 @@ public class FullChaosSelectCanvas : MonoBehaviour
 		{
 			// 알아서 인디케이터도 삭제될테니 GatePillar만 교체
 			GatePillar.instance.gameObject.SetActive(false);
+			ChaosPurifier.instance.gameObject.SetActive(false);
 			BattleInstanceManager.instance.GetCachedObject(StageManager.instance.challengeGatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
 			BattleInstanceManager.instance.GetCachedObject(challengeGatePillarSpawnEffectPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
 

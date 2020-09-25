@@ -76,8 +76,8 @@ public class ChaosPurifierConfirmCanvas : MonoBehaviour
 		CurrencySmallInfoCanvas.RefreshInfo();
 
 		// FullChaosSelectCanvas에서 하던거 비슷하게 따라하면 된다.
-		ChaosPurifier.instance.gameObject.SetActive(false);
 		GatePillar.instance.gameObject.SetActive(false);
+		ChaosPurifier.instance.gameObject.SetActive(false);
 		BattleInstanceManager.instance.GetCachedObject(StageManager.instance.challengeGatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
 		BattleInstanceManager.instance.GetCachedObject(challengeGatePillarSpawnEffectPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
 

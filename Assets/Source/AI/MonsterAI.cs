@@ -693,6 +693,7 @@ public class MonsterAI : MonoBehaviour
 	public bool lookAtTargetBeforeAttack = true;
 	bool _attackPlayed = false;
 	bool _waitAttackState = false;
+	float _waitAttackRemainTime = 0.0f;
 	void UpdateAttack()
 	{
 		if (targetActor == null)
@@ -716,6 +717,22 @@ public class MonsterAI : MonoBehaviour
 				_attackPlayed = true;
 				if (lookAtTargetBeforeAttack)
 					pathFinderController.movement.rotation = Quaternion.LookRotation(targetActor.cachedTransform.position - actor.cachedTransform.position);
+			}
+			// 간혹가다 Trigger로 발동은 시켜놨는데 Idle로 빠져서 AI가 돌아가지 않는 경우가 생겼다.
+			// 보통 일반적인 보스들한테서는 발생하지 않는데 RobotFive처럼 루프 애니를 사용하는 공격패턴이 있는 보스들한테서는 몇십분에 한번 꼴로 발생했다.
+			// 그렇다고 단일액션 공격만 할수는 없어서 이런식으로 타이머 예외처리를 하기로 한다.
+			// 1.5초간 Idle이 지속된다면 _waitAttackState를 false로 강제로 풀어서 Trigger를 재발동 시킨다.
+			if (actor.actionController.mecanimState.IsState((int)eMecanimState.Idle))
+			{
+				if (_waitAttackRemainTime > 0.0f)
+				{
+					_waitAttackRemainTime -= Time.deltaTime;
+					if (_waitAttackRemainTime <= 0.0f)
+					{
+						_waitAttackRemainTime = 0.0f;
+						_waitAttackState = false;
+					}
+				}
 			}
 			return;
 		}
@@ -746,6 +763,7 @@ public class MonsterAI : MonoBehaviour
 					// 여기서는 Attack State 켜졌다가 꺼지는걸 보고 처리할 수 있으니 Trigger처럼 waitAttackState 변수를 사용하도록 하겠다.
 					//_attackPlayed = true;
 					_waitAttackState = true;
+					_waitAttackRemainTime = 1.5f;
 					break;
 				case eActionPlayType.Trigger:
 					// 트리거로 할땐 바로 위의 Table이나 State와 달리 한프레임 더 늦게 호출이 가 불러지지 않는다는 점때문에 (RandomPlayState를 쓰든 안쓰든 동일하다.)
@@ -772,6 +790,7 @@ public class MonsterAI : MonoBehaviour
 					actor.actionController.animator.SetTrigger(BattleInstanceManager.instance.GetActionNameHash(attackActionName));
 					//_attackPlayed = true;
 					_waitAttackState = true;
+					_waitAttackRemainTime = 1.5f;
 					break;
 			}
 			if (_attackPlayed)

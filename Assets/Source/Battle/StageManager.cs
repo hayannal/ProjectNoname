@@ -133,7 +133,7 @@ public class StageManager : MonoBehaviour
 
 	public void GetNextStageInfo()
 	{
-		if (playStage == GetMaxStage(playChapter))
+		if (playStage == GetCurrentMaxStage())
 		{
 			// last stage
 			return;
@@ -153,7 +153,7 @@ public class StageManager : MonoBehaviour
 	{
 		get
 		{
-			int maxStage = GetMaxStage(playChapter);
+			int maxStage = GetCurrentMaxStage();
 			for (int i = playStage + 1; i <= maxStage; ++i)
 			{
 				string reservedMap = StageDataManager.instance.GetCachedMap(i);
@@ -170,9 +170,16 @@ public class StageManager : MonoBehaviour
 		}
 	}
 
-	public int GetMaxStage(int chapter)
+	public int GetMaxStage(int chapter, bool chaos)
 	{
+		if (chaos)
+			return TableDataManager.instance.FindChapterTableData(playChapter).maxChaosStage;
 		return TableDataManager.instance.FindChapterTableData(playChapter).maxStage;
+	}
+
+	public int GetCurrentMaxStage()
+	{
+		return GetMaxStage(playChapter, PlayerData.instance.currentChaosMode);
 	}
 
 	public float currentMonstrStandardHp { get { return _currentStageTableData.standardHp; } }

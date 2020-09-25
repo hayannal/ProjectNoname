@@ -243,7 +243,7 @@ public class BattleModeProcessorBase
 
 			// 몬스터 킬에는 한가지 예외 상황이 있는데 막보를 잡자마자 강종하면 다음에 들어올때 클리어된 마지막층에 들어와서 정산만 하는 이상한 상황이 발생하게 된다.
 			// 이렇게 해도 되긴한데 뭔가 어색해서 그냥 차라리 보스를 다시 잡는게 나을거 같아서 예외처리 해둔다.(이런식으로 재진입 악용하는 유저도 막기 위하여)
-			if (StageManager.instance.playStage < StageManager.instance.GetMaxStage(StageManager.instance.playChapter))
+			if (StageManager.instance.playStage < StageManager.instance.GetCurrentMaxStage())
 				ClientSaveData.instance.OnChangedMonsterAllKill(true);
 
 			if (LevelUpIndicatorCanvas.IsShow() || DropManager.instance.reservedLevelPackCount > 0)
@@ -268,7 +268,7 @@ public class BattleModeProcessorBase
 	public void OnClearStage()
 	{
 		// last stage
-		if (StageManager.instance.playStage == StageManager.instance.GetMaxStage(StageManager.instance.playChapter))
+		if (StageManager.instance.playStage == StageManager.instance.GetCurrentMaxStage())
 		{
 			LobbyCanvas.instance.battlePauseButton.interactable = false;
 			_endProcess = true;
@@ -344,7 +344,7 @@ public class BattleModeProcessorBase
 		if (BattleInstanceManager.instance.playerActor.actorStatus.IsDie() == false)
 		{
 			HitObject.EnableRigidbodyAndCollider(false, null, BattleInstanceManager.instance.playerActor.GetCollider());
-			if (StageManager.instance.playStage == StageManager.instance.GetMaxStage(StageManager.instance.playChapter))
+			if (StageManager.instance.playStage == StageManager.instance.GetCurrentMaxStage())
 				clear = true;
 		}
 

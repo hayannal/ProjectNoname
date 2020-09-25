@@ -100,7 +100,7 @@ public class BattleResultCanvas : MonoBehaviour
 			_clear = false;
 
 		int playStage = StageManager.instance.playStage;
-		int maxStage = StageManager.instance.GetMaxStage(StageManager.instance.playChapter);
+		int maxStage = StageManager.instance.GetCurrentMaxStage();
 		if (_clear && playStage != maxStage)
 			_clear = false;
 

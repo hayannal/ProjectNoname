@@ -55,7 +55,7 @@ public class StageDataManager : MonoBehaviour
 	{
 		if (_dicCachedMap.Count == 0)
 		{
-			int maxStage = StageManager.instance.GetMaxStage(chapter);
+			int maxStage = StageManager.instance.GetMaxStage(chapter, chaos);
 			for (int i = nextStage; i <= maxStage; ++i)
 			{
 				StageTableData diffData = BattleInstanceManager.instance.GetCachedStageTableData(chapter, i, i == 0 ? false : chaos);
@@ -100,7 +100,7 @@ public class StageDataManager : MonoBehaviour
 			else
 			{
 				listStageId = new List<string>();
-				int maxStage = StageManager.instance.GetMaxStage(chapter);
+				int maxStage = StageManager.instance.GetMaxStage(chapter, false);
 				for (int i = 0; i <= maxStage; ++i)
 				{
 					StageTableData diffData = BattleInstanceManager.instance.GetCachedStageTableData(chapter, i, PlayerData.instance.currentChaosMode);

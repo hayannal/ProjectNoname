@@ -17,6 +17,10 @@ public class ChapterTableData
   public int maxStage { get { return _maxStage; } set { _maxStage = value; } }
   
   [SerializeField]
+  int _maxChaosStage;
+  public int maxChaosStage { get { return _maxChaosStage; } set { _maxChaosStage = value; } }
+  
+  [SerializeField]
   int _suggestedPowerLevel;
   public int suggestedPowerLevel { get { return _suggestedPowerLevel; } set { _suggestedPowerLevel = value; } }
   

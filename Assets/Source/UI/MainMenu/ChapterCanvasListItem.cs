@@ -37,7 +37,7 @@ public class ChapterCanvasListItem : MonoBehaviour
 			int stage = 0;
 			if (chapter == PlayerData.instance.highestPlayChapter)
 				stage = PlayerData.instance.highestClearStage;
-			stageText.text = UIString.instance.GetString("GameUI_StageFraction", stage, StageManager.instance.GetMaxStage(chapter));
+			stageText.text = UIString.instance.GetString("GameUI_StageFraction", stage, StageManager.instance.GetMaxStage(chapter, false));
 		}
 
 		if (chapter == 0)

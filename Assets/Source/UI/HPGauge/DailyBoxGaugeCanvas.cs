@@ -46,6 +46,7 @@ public class DailyBoxGaugeCanvas : MonoBehaviour
 
 		UpdateRemainTime();
 		UpdateRefresh();
+		UpdateGainEffect();
 	}
 
 	public void RefreshGauge(bool applyGainProcess = false)
@@ -184,8 +185,9 @@ public class DailyBoxGaugeCanvas : MonoBehaviour
 	int _reservedGainCount = 0;
 	int _gainStartIndex = 0;
 	bool _onlyDropEffect = false;
-	public void StartGainEffect()
+	void UpdateGainEffect()
 	{
+		// 예약된게 있다면 EventManager.instance.OnLobby가 호출되든 말든 동시에 진행한다.
 		if (_reservedGainCount == 0)
 			return;
 
@@ -195,21 +197,28 @@ public class DailyBoxGaugeCanvas : MonoBehaviour
 		if (GatePillar.instance.gameObject.activeSelf == false)
 			return;
 
-		// 게이트 필라 근처에서 인장을 생성해야한다.
-		Timing.RunCoroutine(DropProcess());
+		// 전투하고 나서 로비로 돌아온 다음에 진행되기 때문에 로딩 캔버스가 풀리는 타임을 기다려야한다.
+		// 이러려면 특이하게도 인스턴스는 있되 gameObject.activeSelf가 false 인 상태를 기다려야한다.
+		if (LoadingCanvas.instance != null && LoadingCanvas.instance.gameObject.activeSelf == false)
+		{
+			// 게이트 필라 근처에서 인장을 생성해야한다.
+			int createCount = _reservedGainCount;
+			_reservedGainCount = 0;
+			Timing.RunCoroutine(DropProcess(createCount));
+		}
 	}
 
-	IEnumerator<float> DropProcess()
+	IEnumerator<float> DropProcess(int dropCount)
 	{
 		float delay = 0.2f;
-		for (int i = 0; i < _reservedGainCount; ++i)
+		for (int i = 0; i < dropCount; ++i)
 		{
 			Vector2 normalizedOffset = UnityEngine.Random.insideUnitCircle.normalized;
 			Vector2 randomOffset = normalizedOffset * UnityEngine.Random.Range(0.7f, 1.4f);
 			Vector3 desirePosition = GatePillar.instance.cachedTransform.position + new Vector3(randomOffset.x, 0.0f, randomOffset.y);
 			BattleInstanceManager.instance.GetCachedObject(DropObjectGroup.instance.dropSealGainPrefab, desirePosition, Quaternion.identity);
 
-			if (i < _reservedGainCount - 1)
+			if (i < dropCount - 1)
 				yield return Timing.WaitForSeconds(delay);
 
 			if (this == null)

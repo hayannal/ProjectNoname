@@ -196,14 +196,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16c7fbc98e43a374b85a6a2909d657eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startDelayRange: {x: 0, y: 0}
+  startDelayRange: {x: 0.2, y: 0.2}
   startState: 3
-  useStateList: 010000010100
+  useStateList: 000000010101
   moveTimeRange: {x: 4, y: 4}
   refreshTickTimeRange: {x: 2, y: 2}
   desireDistance: 5
-  straightMoveTimeRange: {x: 0, y: 0}
-  straightRefreshTickTimeRange: {x: 0, y: 0}
+  straightMoveTimeRange: {x: 2, y: 2}
+  straightRefreshTickTimeRange: {x: 5, y: 5}
   straightRefreshTickWaitTime: 0
   straightMoveType: 0
   customActionPlayType: 1
@@ -215,7 +215,7 @@ MonoBehaviour:
   attackActionName: Attack
   attackActionFadeDuration: 0.05
   lookAtTargetBeforeAttack: 1
-  attackDelayTimeRange: {x: 0.1, y: 0.5}
+  attackDelayTimeRange: {x: 0.5, y: 0.5}
   useAnimatorParameterForAI: 0
   listAnimatorParameterForAI: 
 --- !u!1001 &4020860677489895302
@@ -281,11 +281,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 77a8c7328c51f6b4ab1f14e318b23f59, type: 2}
-    - target: {fileID: 2300000, guid: f2b6f64ec23092a4fbe12d90b4535537, type: 3}
+    - target: {fileID: 2300002, guid: f2b6f64ec23092a4fbe12d90b4535537, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 77a8c7328c51f6b4ab1f14e318b23f59, type: 2}
-    - target: {fileID: 2300002, guid: f2b6f64ec23092a4fbe12d90b4535537, type: 3}
+    - target: {fileID: 2300000, guid: f2b6f64ec23092a4fbe12d90b4535537, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 77a8c7328c51f6b4ab1f14e318b23f59, type: 2}

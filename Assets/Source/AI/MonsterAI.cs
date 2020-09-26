@@ -694,17 +694,40 @@ public class MonsterAI : MonoBehaviour
 	bool _attackPlayed = false;
 	bool _waitAttackState = false;
 	float _waitAttackRemainTime = 0.0f;
+	// Continuous Attack 시그널로 연속공격이 설정될때 사용되는 변수. AI에서는 직접 설정할 수 없다.
+	public bool standbyContinuousAttack { get; set; }
+	public float standbyContinuousAttackDelay { get; set; }
+	float _standbyContinuousAttackRemainTime = 0.0f;
 	void UpdateAttack()
 	{
 		if (targetActor == null)
 			return;
 
+		if (_standbyContinuousAttackRemainTime > 0.0f)
+		{
+			_standbyContinuousAttackRemainTime -= Time.deltaTime;
+			if (_standbyContinuousAttackRemainTime <= 0.0f)
+				_standbyContinuousAttackRemainTime = 0.0f;
+			return;
+		}
+
 		if (_attackPlayed)
 		{
 			if (actor.actionController.mecanimState.IsState((int)eMecanimState.Idle) && actor.actionController.mecanimState.IsState((int)eMecanimState.Attack) == false)
 			{
-				ResetAttackActionStateInfo();
-				NextStep();
+				if (standbyContinuousAttack)
+				{
+					// 공격이 끝나기 전에 연속공격 시그널이 설정되었다면 AttackDelay로 넘어가지 않고 연속공격을 준비한다.
+					ResetAttackActionStateInfo();
+					_standbyContinuousAttackRemainTime = standbyContinuousAttackDelay;
+					standbyContinuousAttack = false;
+					standbyContinuousAttackDelay = 0.0f;
+				}
+				else
+				{
+					ResetAttackActionStateInfo();
+					NextStep();
+				}
 			}
 			return;
 		}

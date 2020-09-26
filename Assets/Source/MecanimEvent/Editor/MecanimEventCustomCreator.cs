@@ -34,6 +34,7 @@ public static class MecanimEventCustomCreator
 		case eMecanimEventType.BattleToast: eventBase = targetState.AddStateMachineBehaviour<MeBattleToast>(); break;
 		case eMecanimEventType.ChangeMecanimState: eventBase = targetState.AddStateMachineBehaviour<MeChangeMecanimState>(); break;
 		case eMecanimEventType.SubAnimator: eventBase = targetState.AddStateMachineBehaviour<MeSubAnimator>(); break;
+		case eMecanimEventType.ContinuousAttack: eventBase = targetState.AddStateMachineBehaviour<MeContinuousAttack>(); break;
 #endregion
 		}
 		return eventBase;
@@ -64,6 +65,7 @@ public static class MecanimEventCustomCreator
 		if (eventBase is MeBattleToast) return eMecanimEventType.BattleToast;
 		if (eventBase is MeChangeMecanimState) return eMecanimEventType.ChangeMecanimState;
 		if (eventBase is MeSubAnimator) return eMecanimEventType.SubAnimator;
+		if (eventBase is MeContinuousAttack) return eMecanimEventType.ContinuousAttack;
 		return eMecanimEventType.State;
 #endregion
 	}

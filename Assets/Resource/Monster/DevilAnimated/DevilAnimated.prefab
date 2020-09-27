@@ -198,10 +198,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startDelayRange: {x: 0.5, y: 0.5}
   startState: 3
-  useStateList: 010000010000
-  moveTimeRange: {x: 4, y: 4}
+  useStateList: 010000010100
+  moveTimeRange: {x: 1, y: 2}
   refreshTickTimeRange: {x: 2, y: 2}
-  desireDistance: 5
+  desireDistance: 2
   straightMoveTimeRange: {x: 0, y: 0}
   straightRefreshTickTimeRange: {x: 0, y: 0}
   straightRefreshTickWaitTime: 0
@@ -211,11 +211,11 @@ MonoBehaviour:
   customActionFadeDuration: 0.05
   chaseDistanceRange: {x: 0, y: 0}
   chaseCancelTimeRange: {x: 0, y: 0}
-  attackActionPlayType: 0
-  attackActionName: Attack
+  attackActionPlayType: 2
+  attackActionName: AttackGroup
   attackActionFadeDuration: 0.05
   lookAtTargetBeforeAttack: 1
-  attackDelayTimeRange: {x: 0, y: 0}
+  attackDelayTimeRange: {x: 0.5, y: 1.5}
   useAnimatorParameterForAI: 0
   listAnimatorParameterForAI: 
 --- !u!1001 &4835829332161051381
@@ -272,18 +272,6 @@ PrefabInstance:
     - target: {fileID: 400016, guid: 2536ecdb19e6dc74782ce75978552135, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400016, guid: 2536ecdb19e6dc74782ce75978552135, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 400016, guid: 2536ecdb19e6dc74782ce75978552135, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 400016, guid: 2536ecdb19e6dc74782ce75978552135, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 9500000, guid: 2536ecdb19e6dc74782ce75978552135, type: 3}
       propertyPath: m_Controller

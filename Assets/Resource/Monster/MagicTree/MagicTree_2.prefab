@@ -204,14 +204,15 @@ MonoBehaviour:
   desireDistance: 5
   straightMoveTimeRange: {x: 0, y: 0}
   straightRefreshTickTimeRange: {x: 0, y: 0}
+  straightRefreshTickWaitTime: 0
   straightMoveType: 0
   customActionPlayType: 1
   customActionName: 
   customActionFadeDuration: 0.05
   chaseDistanceRange: {x: 0, y: 0}
   chaseCancelTimeRange: {x: 0, y: 0}
-  attackActionPlayType: 0
-  attackActionName: Attack
+  attackActionPlayType: 2
+  attackActionName: AttackGroup
   attackActionFadeDuration: 0.05
   lookAtTargetBeforeAttack: 1
   attackDelayTimeRange: {x: 2, y: 4}
@@ -274,12 +275,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400052, guid: 8561ee9b3676f0e438a3ad29b9e27a1b, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.1
+      value: 1.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 400052, guid: 8561ee9b3676f0e438a3ad29b9e27a1b, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 400052, guid: 8561ee9b3676f0e438a3ad29b9e27a1b, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.25
       objectReference: {fileID: 0}
     - target: {fileID: 9500000, guid: 8561ee9b3676f0e438a3ad29b9e27a1b, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: cb07b23db12173842bd0fa189132ac37, type: 2}
+      objectReference: {fileID: 9100000, guid: ed316f64ed4542d4a8afed055dff56c2, type: 2}
     - target: {fileID: 13700000, guid: 8561ee9b3676f0e438a3ad29b9e27a1b, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 

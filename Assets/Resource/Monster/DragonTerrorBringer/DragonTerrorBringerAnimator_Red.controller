@@ -18,7 +18,8 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
-  hitObjectPrefab: {fileID: 4139472375867868061, guid: 097227d4e7836c64794df24e24095c5c,
+  presetAnimatorRoot: 0
+  hitObjectPrefab: {fileID: 3983370775968082175, guid: df813a27e9323904a857fed82bbe94e9,
     type: 3}
   lifeTime: 0.6
   areaHitLifeTimeEarlyOffset: 0
@@ -136,6 +137,7 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
@@ -252,7 +254,8 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
-  hitObjectPrefab: {fileID: 4139472375867868061, guid: 097227d4e7836c64794df24e24095c5c,
+  presetAnimatorRoot: 0
+  hitObjectPrefab: {fileID: 3983370775968082175, guid: df813a27e9323904a857fed82bbe94e9,
     type: 3}
   lifeTime: 0.6
   areaHitLifeTimeEarlyOffset: 0
@@ -412,6 +415,7 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 543431697849790876, guid: cc80c56f1d4401c499efa0abb9b1eb77,
     type: 3}
   lifeTime: 5
@@ -783,6 +787,7 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 543431697849790876, guid: cc80c56f1d4401c499efa0abb9b1eb77,
     type: 3}
   lifeTime: 5
@@ -923,6 +928,7 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
@@ -1040,7 +1046,9 @@ MonoBehaviour:
   lootAtTargetOffsetAngle: 0
   lookAtRandom: 0
   desireDistance: 5
+  minimumDistance: 0
   lerpPower: 5
+  boneName: 
 --- !u!114 &-4122189978725003279
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1059,6 +1067,7 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
@@ -1242,6 +1251,7 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
@@ -1358,6 +1368,7 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
@@ -1504,6 +1515,7 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
@@ -1636,7 +1648,9 @@ MonoBehaviour:
   lootAtTargetOffsetAngle: 0
   lookAtRandom: 0
   desireDistance: 5
+  minimumDistance: 0
   lerpPower: 5
+  boneName: 
 --- !u!1102 &-1215575675028676736
 AnimatorState:
   serializedVersion: 5
@@ -1690,8 +1704,12 @@ MonoBehaviour:
     useHpRatio2: 0
     hpRatioCompareType2: 0
     hpRatioParameter2: 0
-    useTargetActorState: 0
+    useActorState: 0
     actorStateId: 
+    existActorStateParameter: 0
+    useTargetActorState: 0
+    targetActorStateId: 
+    existTargetActorStateParameter: 0
     useMonsterCount: 0
     monsterCountCompareType: 0
     monsterCountParameter: 0
@@ -1712,8 +1730,12 @@ MonoBehaviour:
     useHpRatio2: 0
     hpRatioCompareType2: 0
     hpRatioParameter2: 0
-    useTargetActorState: 0
+    useActorState: 0
     actorStateId: 
+    existActorStateParameter: 0
+    useTargetActorState: 0
+    targetActorStateId: 
+    existTargetActorStateParameter: 0
     useMonsterCount: 0
     monsterCountCompareType: 0
     monsterCountParameter: 0
@@ -1734,8 +1756,12 @@ MonoBehaviour:
     useHpRatio2: 0
     hpRatioCompareType2: 0
     hpRatioParameter2: 0
-    useTargetActorState: 0
+    useActorState: 0
     actorStateId: 
+    existActorStateParameter: 0
+    useTargetActorState: 0
+    targetActorStateId: 
+    existTargetActorStateParameter: 0
     useMonsterCount: 0
     monsterCountCompareType: 0
     monsterCountParameter: 0
@@ -1756,8 +1782,12 @@ MonoBehaviour:
     useHpRatio2: 0
     hpRatioCompareType2: 0
     hpRatioParameter2: 0
-    useTargetActorState: 0
+    useActorState: 0
     actorStateId: 
+    existActorStateParameter: 0
+    useTargetActorState: 0
+    targetActorStateId: 
+    existTargetActorStateParameter: 0
     useMonsterCount: 0
     monsterCountCompareType: 0
     monsterCountParameter: 0
@@ -1778,8 +1808,12 @@ MonoBehaviour:
     useHpRatio2: 0
     hpRatioCompareType2: 0
     hpRatioParameter2: 0
-    useTargetActorState: 0
+    useActorState: 0
     actorStateId: 
+    existActorStateParameter: 0
+    useTargetActorState: 0
+    targetActorStateId: 
+    existTargetActorStateParameter: 0
     useMonsterCount: 0
     monsterCountCompareType: 0
     monsterCountParameter: 0
@@ -1804,6 +1838,7 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
@@ -1942,6 +1977,7 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
@@ -2058,6 +2094,7 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 543431697849790876, guid: cc80c56f1d4401c499efa0abb9b1eb77,
     type: 3}
   lifeTime: 5
@@ -2254,6 +2291,7 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
@@ -2447,6 +2485,7 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
@@ -2641,6 +2680,7 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 543431697849790876, guid: cc80c56f1d4401c499efa0abb9b1eb77,
     type: 3}
   lifeTime: 10
@@ -2869,7 +2909,9 @@ MonoBehaviour:
   lootAtTargetOffsetAngle: 0
   lookAtRandom: 0
   desireDistance: 5
+  minimumDistance: 0
   lerpPower: 5
+  boneName: 
 --- !u!1102 &5491666606755601251
 AnimatorState:
   serializedVersion: 5
@@ -2970,6 +3012,7 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
@@ -3086,6 +3129,7 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
@@ -3202,6 +3246,7 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
@@ -3345,6 +3390,7 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
@@ -3461,6 +3507,7 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 6313189258560900821, guid: 56f289604ce19ec4dab54314c42d7e30,
     type: 3}
   lifeTime: 10
@@ -3579,7 +3626,8 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
-  hitObjectPrefab: {fileID: 4139472375867868061, guid: 097227d4e7836c64794df24e24095c5c,
+  presetAnimatorRoot: 0
+  hitObjectPrefab: {fileID: 3983370775968082175, guid: df813a27e9323904a857fed82bbe94e9,
     type: 3}
   lifeTime: 0.6
   areaHitLifeTimeEarlyOffset: 0
@@ -3749,6 +3797,7 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0

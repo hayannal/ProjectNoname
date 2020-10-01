@@ -4920,8 +4920,7 @@ GameObject:
   m_Component:
   - component: {fileID: 435302}
   - component: {fileID: 8270632}
-  - component: {fileID: 11437802}
-  - component: {fileID: 16675666}
+  - component: {fileID: 6791383006892333737}
   m_Layer: 0
   m_Name: PostEffect
   m_TagString: Untagged
@@ -5039,7 +5038,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
---- !u!114 &11437802
+--- !u!114 &6791383006892333737
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5048,59 +5047,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 120606}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e897c7c3dce1d34ba14e52c5bac6c36, type: 3}
+  m_Script: {fileID: 11500000, guid: cd90d5ee163b5004faa50b9f67e503b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AudioCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 7.0203147
-      outSlope: 7.0203147
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.019222006
-      value: 1
-      inSlope: 0.35459068
-      outSlope: 0.35459068
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: -0.15367037
-      outSlope: -0.15367037
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 0
-  GraphTimeMultiplier: 5
-  IsLoop: 0
---- !u!166 &16675666
-AudioChorusFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 120606}
-  m_Enabled: 1
-  m_DryMix: 0.5
-  m_WetMix1: 0.5
-  m_WetMix2: 0.5
-  m_WetMix3: 0.5
-  m_Delay: 40
-  m_Rate: 0.8
-  m_Depth: 0.1
+  multipleComponent: 0
+  checkDuplicate: 1
+  pitchRandomMultiplier: 1.1
+  startDelay: 0
 --- !u!1 &151824
 GameObject:
   m_ObjectHideFlags: 0
@@ -9913,7 +9866,7 @@ GameObject:
   m_Component:
   - component: {fileID: 483390}
   - component: {fileID: 8273156}
-  - component: {fileID: 11445476}
+  - component: {fileID: 1730415531511039242}
   m_Layer: 0
   m_Name: Explosion
   m_TagString: Untagged
@@ -10031,7 +9984,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
---- !u!114 &11445476
+--- !u!114 &1730415531511039242
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10040,41 +9993,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 161066}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e897c7c3dce1d34ba14e52c5bac6c36, type: 3}
+  m_Script: {fileID: 11500000, guid: cd90d5ee163b5004faa50b9f67e503b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AudioCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 7.0203147
-      outSlope: 7.0203147
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.20158078
-      value: 0.99572384
-      inSlope: 0.35459068
-      outSlope: 0.35459068
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: -0.15367037
-      outSlope: -0.15367037
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 0
-  GraphTimeMultiplier: 2
-  IsLoop: 0
+  multipleComponent: 0
+  checkDuplicate: 1
+  pitchRandomMultiplier: 1.1
+  startDelay: 0

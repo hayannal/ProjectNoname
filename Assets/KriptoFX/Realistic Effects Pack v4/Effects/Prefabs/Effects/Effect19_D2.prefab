@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4899108697849258}
   - component: {fileID: 82231127970134900}
-  - component: {fileID: 114562494489518824}
+  - component: {fileID: 1989714963990982500}
   m_Layer: 0
   m_Name: Flame
   m_TagString: Untagged
@@ -128,7 +128,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
---- !u!114 &114562494489518824
+--- !u!114 &1989714963990982500
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -137,44 +137,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1002687544237260}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e897c7c3dce1d34ba14e52c5bac6c36, type: 3}
+  m_Script: {fileID: 11500000, guid: cd90d5ee163b5004faa50b9f67e503b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AudioCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: -0.09091839
-      outSlope: -0.09091839
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.84999996
-      value: 1
-      inSlope: -0.0571803
-      outSlope: -0.0571803
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0.0000009779816
-      outSlope: 0.0000009779816
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 0
-  GraphTimeMultiplier: 5.2
-  IsLoop: 0
+  multipleComponent: 0
+  checkDuplicate: 0
+  pitchRandomMultiplier: 1
+  startDelay: 0
 --- !u!1 &1012365946848598
 GameObject:
   m_ObjectHideFlags: 0
@@ -185,6 +154,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4080994202528136}
   - component: {fileID: 82314506162468428}
+  - component: {fileID: 4949863018099969367}
   m_Layer: 0
   m_Name: Rocks
   m_TagString: Untagged
@@ -302,6 +272,22 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
+--- !u!114 &4949863018099969367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1012365946848598}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd90d5ee163b5004faa50b9f67e503b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  multipleComponent: 0
+  checkDuplicate: 0
+  pitchRandomMultiplier: 1
+  startDelay: 0
 --- !u!1 &1055259448797410
 GameObject:
   m_ObjectHideFlags: 0
@@ -312,6 +298,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4133087855822750}
   - component: {fileID: 82386501441447106}
+  - component: {fileID: 6283221237026596310}
   m_Layer: 0
   m_Name: PostEffect2
   m_TagString: Untagged
@@ -429,6 +416,22 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
+--- !u!114 &6283221237026596310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1055259448797410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd90d5ee163b5004faa50b9f67e503b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  multipleComponent: 0
+  checkDuplicate: 0
+  pitchRandomMultiplier: 1
+  startDelay: 0
 --- !u!1 &1062271920734148
 GameObject:
   m_ObjectHideFlags: 0
@@ -19006,7 +19009,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4419814234581806}
   - component: {fileID: 82769607455703514}
-  - component: {fileID: 114317049424233532}
+  - component: {fileID: 4645789544673495121}
   m_Layer: 0
   m_Name: PostEffect3
   m_TagString: Untagged
@@ -19124,7 +19127,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
---- !u!114 &114317049424233532
+--- !u!114 &4645789544673495121
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -19133,44 +19136,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1452600244891880}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e897c7c3dce1d34ba14e52c5bac6c36, type: 3}
+  m_Script: {fileID: 11500000, guid: cd90d5ee163b5004faa50b9f67e503b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AudioCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 7.0203147
-      outSlope: 7.0203147
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.061838463
-      value: 0.9978678
-      inSlope: -0.038008716
-      outSlope: -0.038008716
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: -0.15367037
-      outSlope: -0.15367037
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 0
-  GraphTimeMultiplier: 3.5
-  IsLoop: 0
+  multipleComponent: 0
+  checkDuplicate: 0
+  pitchRandomMultiplier: 1
+  startDelay: 0
 --- !u!1 &1485185729736954
 GameObject:
   m_ObjectHideFlags: 0
@@ -24225,7 +24197,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4921589253544972}
   - component: {fileID: 82944371231484016}
-  - component: {fileID: 114358581390849478}
+  - component: {fileID: 6269824623118479835}
   m_Layer: 0
   m_Name: PostEffect
   m_TagString: Untagged
@@ -24343,7 +24315,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
---- !u!114 &114358581390849478
+--- !u!114 &6269824623118479835
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -24352,35 +24324,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1539825545655056}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e897c7c3dce1d34ba14e52c5bac6c36, type: 3}
+  m_Script: {fileID: 11500000, guid: cd90d5ee163b5004faa50b9f67e503b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AudioCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0.75000006
-      value: 1
-      inSlope: 0.07275212
-      outSlope: 0.07275212
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: -0.94000345
-      outSlope: -0.94000345
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 0
-  GraphTimeMultiplier: 2
-  IsLoop: 0
+  multipleComponent: 0
+  checkDuplicate: 0
+  pitchRandomMultiplier: 1
+  startDelay: 0
 --- !u!1 &1614648838348040
 GameObject:
   m_ObjectHideFlags: 0

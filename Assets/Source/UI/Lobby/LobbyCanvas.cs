@@ -466,6 +466,10 @@ public class LobbyCanvas : MonoBehaviour
 					//if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby)
 					//{
 					//}
+
+					// 전투를 진행중이었다면 씬 재로딩 하면서 clientSaveData 체크해야하므로 켜둔다.
+					if (ClientSaveData.instance.IsCachedInProgressGame())
+						ClientSaveData.instance.checkClientSaveDataOnEnterLobby = true;
 				}, false);
 			}
 			_paused = false;

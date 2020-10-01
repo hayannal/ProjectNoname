@@ -22,6 +22,9 @@ public class PauseCanvas : MonoBehaviour
 	}
 	static PauseCanvas _instance = null;
 
+	public GameObject baseRoot;
+	public GameObject battlePauseSimpleMenuRoot;
+
 	public Slider systemVolumeSlider;
 	public Text systemVolumeText;
 	public Slider bgmVolumeSlider;
@@ -250,6 +253,27 @@ public class PauseCanvas : MonoBehaviour
 		OptionManager.instance.lockIcon = 0;
 		lockIconOnOffText.text = "OFF";
 		lockIconOnOffText.color = new Color(0.176f, 0.176f, 0.176f);
+	}
+	#endregion
+
+	#region Simple Menu
+	public void ShowBattlePauseSimpleMenu(bool show)
+	{
+		baseRoot.SetActive(!show);
+		battlePauseSimpleMenuRoot.SetActive(show);
+	}
+
+	public void OnClickSimpleSettingButton()
+	{
+		baseRoot.SetActive(true);
+		battlePauseSimpleMenuRoot.SetActive(false);
+	}
+
+	public void OnClickSimplePlayButton()
+	{
+		gameObject.SetActive(false);
+		baseRoot.SetActive(true);
+		battlePauseSimpleMenuRoot.SetActive(false);
 	}
 	#endregion
 }

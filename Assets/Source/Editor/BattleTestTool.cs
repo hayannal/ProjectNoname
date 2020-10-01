@@ -90,6 +90,49 @@ public class BattleTestTool : EditorWindow
 			if (hpFull && _playerActor != null && _playerActor.actorStatus.GetHPRatio() != 1.0f && _playerActor.actorStatus.IsDie() == false)
 				_playerActor.actorStatus.AddHP(_playerActor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MaxHp));
 
+			if (GUILayout.Button("Get Player Stat"))
+			{
+				PlayerActor playerActor = null;
+				if (CharacterListCanvas.instance != null && CharacterListCanvas.instance.selectedPlayerActor != null)
+					playerActor = CharacterListCanvas.instance.selectedPlayerActor;
+				if (playerActor == null && BattleInstanceManager.instance.playerActor != null)
+					playerActor = BattleInstanceManager.instance.playerActor;
+
+				if (playerActor != null)
+				{
+					ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(playerActor.actorId);
+					PowerLevelTableData powerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(playerActor.actorStatus.powerLevel);
+
+					// powerlevel
+					Debug.LogFormat("Current Character ActorId = {0} / PowerLevel = {1} / Hp = {2} / Atk = {3}",
+						playerActor.actorId, playerActor.actorStatus.powerLevel, powerLevelTableData.hp, powerLevelTableData.atk);
+
+					// research
+					float researchHp = 0.0f;
+					float researchAtk = 0.0f;
+					if (PlayerData.instance.researchLevel > 0)
+					{
+						ResearchTableData researchTableData = TableDataManager.instance.FindResearchTableData(PlayerData.instance.researchLevel);
+						if (researchTableData != null)
+						{
+							researchHp = researchTableData.accumulatedHp;
+							researchAtk = researchTableData.accumulatedAtk;
+						}
+					}
+					Debug.LogFormat("Equip Atk = {0} / Research Hp = {1} / Atk = {2}",
+						TimeSpaceData.instance.cachedEquipStatusList.valueList[(int)eActorStatus.Attack], researchHp, researchAtk);
+					// result
+					Debug.LogFormat("Result Hp = {0} / Atk = {1}",
+						playerActor.actorStatus.GetValue(eActorStatus.MaxHp) / actorTableData.multiHp, playerActor.actorStatus.GetValue(eActorStatus.Attack) / actorTableData.multiAtk);
+					// minus
+					Debug.LogFormat("a-b Hp = {0} / Atk = {1}",
+						playerActor.actorStatus.GetValue(eActorStatus.MaxHp) / actorTableData.multiHp - powerLevelTableData.hp, playerActor.actorStatus.GetValue(eActorStatus.Attack) / actorTableData.multiAtk - powerLevelTableData.atk);
+					// rate
+					Debug.LogFormat("a/b Hp = {0} / Atk = {1}",
+						playerActor.actorStatus.GetValue(eActorStatus.MaxHp) / actorTableData.multiHp / powerLevelTableData.hp, playerActor.actorStatus.GetValue(eActorStatus.Attack) / actorTableData.multiAtk / powerLevelTableData.atk);
+				}
+			}
+
 			_foldoutAffectorGroup = EditorGUILayout.Foldout(_foldoutAffectorGroup, _foldoutAffectorGroup ? "[Hide Affector Group]" : "[Show Affector Group]");
 			if (_foldoutAffectorGroup)
 			{

@@ -173,7 +173,7 @@ public class EquipTransferConfirmCanvas : MonoBehaviour
 		resultMainStatusText.text = displayAttack;
 		_currentAtk = prevValue;
 		_addAtk = nextValue - prevValue;
-		addAtkText.text = string.Format("+{0:N0}", addAtkText);
+		addAtkText.text = string.Format("+{0:N0}", _addAtk);
 
 		priceText.text = price.ToString("N0");
 	}

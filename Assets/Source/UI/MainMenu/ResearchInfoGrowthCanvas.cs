@@ -147,7 +147,7 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 		leftButton.gameObject.SetActive(_selectedLevel != 1);
 		bool hideRightButton = false;
 		if (maxReached) hideRightButton = true;
-		if (_selectedLevel > (PlayerData.instance.researchLevel + 1)) hideRightButton = true;
+		if (_selectedLevel > (PlayerData.instance.researchLevel + 2)) hideRightButton = true;
 		rightButton.gameObject.SetActive(!hideRightButton);
 
 		if (_tweenReferenceForGauge != null)
@@ -209,11 +209,16 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 				disableButtonText.SetLocalizedText(UIString.instance.GetString("ResearchUI_DoneButton"));
 			}
 
-			if (_selectedLevel > (PlayerData.instance.researchLevel + 1))
+			if (_selectedLevel > (PlayerData.instance.researchLevel + 2))
 			{
 				conditionSumLevelGroupObject.SetActive(false);
 				conditionCharacterCountGroupObject.SetActive(false);
 				questionObject.SetActive(true);
+				gaugeImage.fillAmount = 0.0f;
+				disableButtonText.SetLocalizedText(UIString.instance.GetString("ResearchUI_FormerFirstButton"));
+			}
+			else if (_selectedLevel > (PlayerData.instance.researchLevel + 1))
+			{
 				gaugeImage.fillAmount = 0.0f;
 				disableButtonText.SetLocalizedText(UIString.instance.GetString("ResearchUI_FormerFirstButton"));
 			}

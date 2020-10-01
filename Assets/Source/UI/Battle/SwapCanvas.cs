@@ -314,8 +314,14 @@ public class SwapCanvas : MonoBehaviour
 
 		_selectedActorId = actorId;
 
+		bool recommanded = false;
 		for (int i = 0; i < _listSwapCanvasListItem.Count; ++i)
-			_listSwapCanvasListItem[i].ShowSelectObject(_listSwapCanvasListItem[i].actorId == actorId);
+		{
+			bool showSelectObject = (_listSwapCanvasListItem[i].actorId == actorId);
+			_listSwapCanvasListItem[i].ShowSelectObject(showSelectObject);
+			if (showSelectObject)
+				recommanded = _listSwapCanvasListItem[i].recommandedText.gameObject.activeSelf;
+		}
 
 		string firstText = "";
 		if (MainSceneBuilder.instance.lobby == false && BattleInstanceManager.instance.IsInBattlePlayerList(actorId))
@@ -329,6 +335,8 @@ public class SwapCanvas : MonoBehaviour
 			CharacterData characterData = PlayerData.instance.GetCharacterData(actorId);
 			if (characterData.powerLevel > chapterTableData.suggestedMaxPowerLevel)
 				secondText = UIString.instance.GetString("GameUI_TooPowerfulToReward");
+			else if (characterData.powerLevel < chapterTableData.suggestedPowerLevel && recommanded)
+				secondText = UIString.instance.GetString("GameUI_TooWeakToBoss");
 		}
 		bool firstResult = string.IsNullOrEmpty(firstText);
 		bool secondResult = string.IsNullOrEmpty(secondText);

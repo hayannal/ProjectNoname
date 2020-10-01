@@ -240,11 +240,12 @@ public class DropManager : MonoBehaviour
 					continue;
 
 				bool add = false;
-				if (StageManager.instance.playChapter > TableDataManager.instance.equipTable.dataArray[i].startingDropChapter)
+				int playChapter = PlayerData.instance.currentChaosMode ? (StageManager.instance.playChapter - 1) : (int)StageManager.instance.playChapter;
+				if (playChapter > TableDataManager.instance.equipTable.dataArray[i].startingDropChapter)
 					add = true;
 				// MonsterActor.OnDie 함수 안에서 드랍의 모든 정보가 결정되기때문에 StageManager.instance.playStage을 사용해도 괜찮다.
 				// 다음 스테이지로 넘어가서 드랍아이템이 생성되더라도 이미 정보는 다 킬 시점에 결정되기 때문.
-				if (add == false && StageManager.instance.playChapter == TableDataManager.instance.equipTable.dataArray[i].startingDropChapter && StageManager.instance.playStage >= TableDataManager.instance.equipTable.dataArray[i].startingDropStage)
+				if (add == false && playChapter == TableDataManager.instance.equipTable.dataArray[i].startingDropChapter && StageManager.instance.playStage >= TableDataManager.instance.equipTable.dataArray[i].startingDropStage)
 					add = true;
 				if (add == false)
 					continue;

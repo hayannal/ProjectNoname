@@ -173,8 +173,9 @@ public class CharacterShowCanvasBase : MonoBehaviour
 			yaw = _cachedActorInfoTableData.infoRotate;
 		_playerActor.cachedTransform.rotation = Quaternion.Euler(0.0f, yaw, 0.0f);
 		TailAnimatorUpdater.UpdateAnimator(_playerActor.cachedTransform, 15);
-		if (_cachedActorInfoTableData != null && _cachedActorInfoTableData.useInfoIdle)
-			_playerActor.actionController.animator.Play("InfoIdle");
+		bool applyInfoIdle = (_cachedActorInfoTableData != null && _cachedActorInfoTableData.useInfoIdle);
+		_playerActor.actionController.animator.Play(applyInfoIdle ? "InfoIdle" : "Idle");
+		
 		if (MainSceneBuilder.instance.lobby == false)
 		{
 			// lobby가 아닐때란건 아마 전투 후 열리는 영입창이란 얘기다. TimeScale 걸려있을테니 Unscaled로 바꿔둔다. 어차피 씬 이동 할테니 복구코드는 없다.

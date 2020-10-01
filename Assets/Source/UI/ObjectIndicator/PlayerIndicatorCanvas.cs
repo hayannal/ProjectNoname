@@ -72,6 +72,13 @@ public class PlayerIndicatorCanvas : ObjectIndicatorCanvas
 
 	public void OnClickSwapButton()
 	{
-		UIInstanceManager.instance.ShowCanvasAsync("SwapCanvas", null);
+		if (GatePillar.instance.processing)
+			return;
+
+		UIInstanceManager.instance.ShowCanvasAsync("SwapCanvas", () =>
+		{
+			if (GatePillar.instance.processing)
+				SwapCanvas.instance.gameObject.SetActive(false);
+		});
 	}
 }

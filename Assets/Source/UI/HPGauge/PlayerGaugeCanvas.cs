@@ -134,13 +134,14 @@ public class PlayerGaugeCanvas : MonoBehaviour
 		else
 		{
 			// 재진입 중엔 호출될일 없겠지만 혹시 모르니 조건검사 해둔다.
-			if (ClientSaveData.instance.IsLoadingInProgressGame() == false)
+			if (ClientSaveData.instance.IsLoadingInProgressGame() == false && _lastRatio > hpRatio)
+			{
 				ClientSaveData.instance.OnChangedHpRatio(hpRatio);
+				DamageCanvas.instance.ShowDamageScreen();
+			}
 
 			if (mobaEnergyBar.IsDamageZero() && _lateFillDelayRemainTime == 0.0f)
-				_lateFillDelayRemainTime = LateFillDelay;
-
-			DamageCanvas.instance.ShowDamageScreen();
+				_lateFillDelayRemainTime = LateFillDelay;	
 		}
 
 		_lastRatio = hpRatio;

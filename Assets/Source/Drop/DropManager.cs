@@ -93,6 +93,7 @@ public class DropManager : MonoBehaviour
 	#endregion
 
 
+	public int stackDropExp { get { return _stackDropExp; } }
 	int _stackDropExp = 0;
 	public void StackDropExp(int exp)
 	{

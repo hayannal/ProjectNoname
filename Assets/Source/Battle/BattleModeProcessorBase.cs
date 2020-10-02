@@ -10,11 +10,13 @@ public class BattleModeProcessorBase
 {
 	bool _mapLoaded = false;
 	bool _monsterSpawned = false;
+	bool _summonMonsterSpawned = false;
 	int _monsterSpawnCount = 0;
 	int _damageCountInStage = 0;
 
 	public virtual void Update()
 	{
+		UpdateSummonMonsterSpawn();
 		UpdateEndProcess();
 	}
 
@@ -66,6 +68,7 @@ public class BattleModeProcessorBase
 	{
 		_mapLoaded = true;
 		_monsterSpawned = false;
+		_summonMonsterSpawned = false;
 		_monsterSpawnCount = 0;
 
 		// 사실 로비에서는 BattleManager가 만들어지기 전이라 호출되지 않는다.
@@ -210,6 +213,9 @@ public class BattleModeProcessorBase
 
 		_monsterSpawned = true;
 		++_monsterSpawnCount;
+
+		if (monsterActor.summonMonster)
+			_summonMonsterSpawned = true;
 	}
 
 	public virtual void OnDiePlayer(PlayerActor playerActor)
@@ -233,36 +239,41 @@ public class BattleModeProcessorBase
 		--_monsterSpawnCount;
 		if (_mapLoaded && _monsterSpawned && _monsterSpawnCount == 0 && BattleInstanceManager.instance.CheckFinishSequentialMonster())
 		{
-			// all kill monster
-			DropManager.instance.GetStackedDropExp();
+			OnDieMonsterList();
+		}
+	}
 
-			// 한 층이 끝날땐 관련 정보들을 저장해놔야한다. 레벨업을 했다면 hp회복 역시 반영되서 저장될 것이다.
-			ClientSaveData.instance.OnChangedExp(StageManager.instance.playerExp);
-			ClientSaveData.instance.OnChangedHpRatio(BattleInstanceManager.instance.playerActor.actorStatus.GetHPRatio());
-			ClientSaveData.instance.OnChangedSpRatio(BattleInstanceManager.instance.playerActor.actorStatus.GetSPRatio());
+	void OnDieMonsterList()
+	{
+		// all kill monster
+		DropManager.instance.GetStackedDropExp();
 
-			// 몬스터 킬에는 한가지 예외 상황이 있는데 막보를 잡자마자 강종하면 다음에 들어올때 클리어된 마지막층에 들어와서 정산만 하는 이상한 상황이 발생하게 된다.
-			// 이렇게 해도 되긴한데 뭔가 어색해서 그냥 차라리 보스를 다시 잡는게 나을거 같아서 예외처리 해둔다.(이런식으로 재진입 악용하는 유저도 막기 위하여)
-			if (StageManager.instance.playStage < StageManager.instance.GetCurrentMaxStage())
-				ClientSaveData.instance.OnChangedMonsterAllKill(true);
+		// 한 층이 끝날땐 관련 정보들을 저장해놔야한다. 레벨업을 했다면 hp회복 역시 반영되서 저장될 것이다.
+		ClientSaveData.instance.OnChangedExp(StageManager.instance.playerExp);
+		ClientSaveData.instance.OnChangedHpRatio(BattleInstanceManager.instance.playerActor.actorStatus.GetHPRatio());
+		ClientSaveData.instance.OnChangedSpRatio(BattleInstanceManager.instance.playerActor.actorStatus.GetSPRatio());
 
-			if (LevelUpIndicatorCanvas.IsShow() || DropManager.instance.reservedLevelPackCount > 0)
-			{
-				// 게이트 필라 생성하는 타이밍이 카운트를 지정하기에 가장 적당한 곳이다.
-				LevelUpIndicatorCanvas.SetTargetLevelUpCount(StageManager.instance.needLevelUpCount + DropManager.instance.reservedLevelPackCount);
-				StageManager.instance.needLevelUpCount = DropManager.instance.reservedLevelPackCount = 0;
-			}
-			else
-			{
-				BattleManager.instance.OnClearStage();
-			}
+		// 몬스터 킬에는 한가지 예외 상황이 있는데 막보를 잡자마자 강종하면 다음에 들어올때 클리어된 마지막층에 들어와서 정산만 하는 이상한 상황이 발생하게 된다.
+		// 이렇게 해도 되긴한데 뭔가 어색해서 그냥 차라리 보스를 다시 잡는게 나을거 같아서 예외처리 해둔다.(이런식으로 재진입 악용하는 유저도 막기 위하여)
+		if (StageManager.instance.playStage < StageManager.instance.GetCurrentMaxStage())
+			ClientSaveData.instance.OnChangedMonsterAllKill(true);
+
+		if (LevelUpIndicatorCanvas.IsShow() || DropManager.instance.reservedLevelPackCount > 0)
+		{
+			// 게이트 필라 생성하는 타이밍이 카운트를 지정하기에 가장 적당한 곳이다.
+			LevelUpIndicatorCanvas.SetTargetLevelUpCount(StageManager.instance.needLevelUpCount + DropManager.instance.reservedLevelPackCount);
+			StageManager.instance.needLevelUpCount = DropManager.instance.reservedLevelPackCount = 0;
+		}
+		else
+		{
+			BattleManager.instance.OnClearStage();
+		}
 
 #if HUDDPS
 #if UNITY_EDITOR
-			HUDDPS.instance.OnClearStage();
+		HUDDPS.instance.OnClearStage();
 #endif
 #endif
-		}
 	}
 
 	public void OnClearStage()
@@ -299,6 +310,48 @@ public class BattleModeProcessorBase
 		PlayerIndicatorCanvas.Show(true, BattleInstanceManager.instance.playerActor.cachedTransform);
 
 		Timing.RunCoroutine(DelayedShowGatePillar(0.1f));
+	}
+
+	float SummonMonsterSpawnCheckDelay = 1.0f;
+	float _checkMonsterCountRemainTime;
+	int _monsterCountZeroStreakCount = 0;
+	void UpdateSummonMonsterSpawn()
+	{
+		// 이상하게 EvilLich같이 몬스터를 소환하는 기능이 있는 판에서 간혹 판의 종료를 체크하지 못하는 경우가 나온다.
+		// 몹이 생성되는 프레임에 마인이나 날아오던 볼에 맞아서 죽으면 몬스터 카운트가 꼬이는건가 해서 테스트도 해봤는데
+		// 최초 생성이든 재활용이든 문제없이 OnSpawnMonster 호출 후에 OnDieMonster 호출되서 아무런 문제가 생기지 않는다.
+		// 도대체 뭐가 문제인지 원인은 못찾았으나 무조건 고쳐야하는 이슈기 때문에
+		// summonMonster가 포함된 전투에서는 현재 몬스터 카운트를 세서라도 판의 종료를 알리기로 한다.
+		if (_summonMonsterSpawned == false)
+			return;
+
+		// endProcess로 진입했다면 처리하지 않는다.
+		if (_endProcess)
+			return;
+
+		// 마지막층이 아니라면 endProcess로 가진 않을테고 게이트 필라가 나오거나 레벨업 창이 떴을텐데
+		// 간단하게 stackedDropExp로 체크하기로 한다.(GetCachedMonsterAllKill 로 검사해도 될거 같긴 하다.)
+		if (DropManager.instance.stackDropExp == 0)
+			return;
+
+		// 초당 한번씩 셀거고 연속해서 5초동안 체크해서 없으면 클리어로 간주한다.
+		_checkMonsterCountRemainTime -= Time.deltaTime;
+		if (_checkMonsterCountRemainTime < 0.0f)
+		{
+			_checkMonsterCountRemainTime = SummonMonsterSpawnCheckDelay;
+			int monsterCount = BattleInstanceManager.instance.GetLiveMonsterList().Count;
+			if (monsterCount == 0)
+			{
+				++_monsterCountZeroStreakCount;
+				if (_monsterCountZeroStreakCount > 5)
+				{
+					OnDieMonsterList();
+					_summonMonsterSpawned = false;
+				}
+			}
+			else
+				_monsterCountZeroStreakCount = 0;
+		}
 	}
 
 	#region EndGame

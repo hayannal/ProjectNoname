@@ -139,6 +139,8 @@ public class PlayerGaugeCanvas : MonoBehaviour
 
 			if (mobaEnergyBar.IsDamageZero() && _lateFillDelayRemainTime == 0.0f)
 				_lateFillDelayRemainTime = LateFillDelay;
+
+			DamageCanvas.instance.ShowDamageScreen();
 		}
 
 		_lastRatio = hpRatio;

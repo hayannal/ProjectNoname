@@ -26,12 +26,12 @@ public class DamageCanvas : MonoBehaviour
 		GetComponent<Canvas>().worldCamera = UIInstanceManager.instance.GetCachedCameraMain();
 	}
 
-	public void ShowDamageScreen(float duration = 0.3f)
+	public void ShowDamageScreen(float duration = 1.2f)
 	{
 		if (!gameObject.activeSelf)
 			gameObject.SetActive(true);
 
-		damageImage.color = new Color(damageImage.color.r, damageImage.color.g, damageImage.color.b, 0.3f);
+		damageImage.color = new Color(damageImage.color.r, damageImage.color.g, damageImage.color.b, 0.15f);
 		damageImage.DOFade(0.0f, duration);
 		_duration = duration;
 	}

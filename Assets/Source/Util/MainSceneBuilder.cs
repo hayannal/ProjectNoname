@@ -16,11 +16,16 @@ using UnityEditor.AddressableAssets.Settings;
 public class MainSceneBuilder : MonoBehaviour
 {
 	public static MainSceneBuilder instance;
+	public static bool s_initializedAddressable;
 	public static bool s_firstTimeAfterLaunch = true;
 
 	void Awake()
 	{
 		instance = this;
+
+#if !UNITY_EDITOR
+		Debug.LogWarning("MainSceneBuilder Awake");
+#endif
 	}
 
 	public bool mainSceneBuilding { get; private set; }
@@ -30,16 +35,32 @@ public class MainSceneBuilder : MonoBehaviour
 
 	void OnDestroy()
 	{
+#if !UNITY_EDITOR
+		Debug.LogWarning("MainSceneBuilder OnDestroy");
+#endif
+
 		Addressables.Release<GameObject>(_handleTableDataManager);
+
+#if !UNITY_EDITOR
+		Debug.LogWarning("MainSceneBuilder OnDestroy 1");
+#endif
 
 		// 서버오류로 인해 접속못했을 경우 대비해서 체크해둔다.
 		if (_handleStageManager.IsValid() == false && mainSceneBuilding) return;
+
+#if !UNITY_EDITOR
+		Debug.LogWarning("MainSceneBuilder OnDestroy 2");
+#endif
 
 		Addressables.Release<GameObject>(_handleStageManager);
 		Addressables.Release<GameObject>(_handleStartCharacter);
 		Addressables.Release<GameObject>(_handleLobbyCanvas);
 		Addressables.Release<GameObject>(_handleCommonCanvasGroup);
 		Addressables.Release<GameObject>(_handleTreasureChest);
+
+#if !UNITY_EDITOR
+		Debug.LogWarning("MainSceneBuilder OnDestroy 3");
+#endif
 
 		// 이벤트용이라 항상 로드되는게 아니다보니 IsValid체크가 필수다.
 		if (_handleEventGatePillar.IsValid())
@@ -57,9 +78,17 @@ public class MainSceneBuilder : MonoBehaviour
 		if (_handleDropObjectGroup.IsValid())
 			Addressables.Release<GameObject>(_handleDropObjectGroup);
 
+#if !UNITY_EDITOR
+		Debug.LogWarning("MainSceneBuilder OnDestroy 4");
+#endif
+
 		// 게임을 오래 켜두면 번들데이터가 점점 커지게 된다.
 		// 해제를 할만한 가장 적당한 곳은 씬이 파괴될때이다.
 		AddressableAssetLoadManager.CheckRelease();
+
+#if !UNITY_EDITOR
+		Debug.LogWarning("MainSceneBuilder OnDestroy 5");
+#endif
 	}
 
 	AsyncOperationHandle<GameObject> _handleTableDataManager;
@@ -76,8 +105,20 @@ public class MainSceneBuilder : MonoBehaviour
 	AsyncOperationHandle<GameObject> _handleNodeWarPortal;
 	IEnumerator Start()
     {
-		AsyncOperationHandle<UnityEngine.AddressableAssets.ResourceLocators.IResourceLocator> handleInitialize = Addressables.InitializeAsync();
-		yield return handleInitialize;
+#if !UNITY_EDITOR
+		Debug.LogWarning("MainSceneBuilder Start");
+#endif
+
+		if (s_initializedAddressable == false)
+		{
+			AsyncOperationHandle<UnityEngine.AddressableAssets.ResourceLocators.IResourceLocator> handleInitialize = Addressables.InitializeAsync();
+			yield return handleInitialize;
+			s_initializedAddressable = true;
+		}
+
+#if !UNITY_EDITOR
+		Debug.LogWarning("MainSceneBuilder Start 1");
+#endif
 
 		// 씬 빌더는 항상 이 씬이 시작될때 1회만 동작하며 로딩씬을 띄워놓고 현재 상황에 맞춰서 스텝을 진행한다.
 		// 나중에 어드레서블 에셋시스템에도 적어두겠지만, 이번 구조는 1챕터까진 추가 다운로드 없이 진행하는게 목표고 이후 번들을 받는 구조가 되어야한다.
@@ -89,6 +130,10 @@ public class MainSceneBuilder : MonoBehaviour
 		LoadingCanvas.instance.SetProgressBarPoint(0.1f, 0.0f, true);
 		yield return new WaitForEndOfFrame();
 
+#if !UNITY_EDITOR
+		Debug.LogWarning("MainSceneBuilder Start 2");
+#endif
+
 		// 씬 초기화를 하기전에 필수항목부터 로드해야한다.
 		// 테이블을 새로 받으려고 해도 창을 띄우려면 적절한 폰트와 번역된 스트링이 필요하기 때문.
 		// 당연히 사운드 볼륨 설정 같은 것도 로드해야한다.
@@ -99,11 +144,23 @@ public class MainSceneBuilder : MonoBehaviour
 		// step 1-1. UIString 프리팹 로드
 		if (UIString.instance != null) { }
 
+#if !UNITY_EDITOR
+		Debug.LogWarning("MainSceneBuilder Start 3");
+#endif
+
 		// step 1-2. 옵션 매니저
 		if (OptionManager.instance != null) { }
 
+#if !UNITY_EDITOR
+		Debug.LogWarning("MainSceneBuilder Start 4");
+#endif
+
 		// step 1-3. initialize font & string
 		UIString.instance.Initialize(OptionManager.instance.language);
+
+#if !UNITY_EDITOR
+		Debug.LogWarning("MainSceneBuilder Start 5");
+#endif
 
 		// 사실은 여기서 스트링 및 폰트 로딩이 끝나야 제대로 된 에러 메세지창을 띄울 수 있는건데
 		// 문제가 발생하지 않는다면 괜히 기다리는게 되버린다.
@@ -151,6 +208,10 @@ public class MainSceneBuilder : MonoBehaviour
 			yield break;
 		}
 		Instantiate<GameObject>(_handleTableDataManager.Result);
+
+#if !UNITY_EDITOR
+		Debug.LogWarning("MainSceneBuilder Start 6");
+#endif
 
 		// step 3. login
 #if PLAYFAB

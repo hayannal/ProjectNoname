@@ -12,14 +12,31 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 public class AsyncOperationResult<T> where T : Object
 {
 	public AsyncOperationHandle<T> handle;
+	// 콜백이 오면 이 값을 변경해둔다.
+	public bool onLoadComplete;
 	public string category;
-	public System.Action<T> callback;
+	// handle의 콜백을 받아서 처리하는 형태로 바꾸면서 퍼포먼스도 살리고 데드락도 막기로 하면서
+	// 여러개의 콜백을 관리해야할 필요성이 생겼다.
+	// 단독으로 가지고 있던걸 리스트로 바꿔서 관리한다. 평소에는 null이고 하나라도 필요할때 new해서 쓰기로 한다.
+	//public System.Action<T> callback;
+	public List<System.Action<T>> listCallback;
 
 	public bool IsDone
 	{
 		get
 		{
+			// yield return handle 없이 매프레임 그냥 검사하는건
+			// 로드 프로세스의 일부가 Unity의 메인 쓰레드에서 실행되기 때문에 데드락이 발생할 수 있다고 한다.
+			// 그래서 이걸 검사하는건 yield return handle 후에 하거나 혹은 Completed 콜백 후에 해야한다고 한다.
+			// 절대 그냥 업데이트문에서 돌리면 안된다!
+			// 그렇다고 IsDone자체를 없애자니 모든걸 다 콜백으로만 처리해야해서 구조를 짜기 불편한 점도 있다.
+			// 그래서 추가한게 onLoadComplete다! 이건 handle 변수가 아니기때문에 호출되도 문제가 없다.
+			if (onLoadComplete == false)
+				return false;
+
 			if (handle.IsValid() == false)
+				return false;
+			if (handle.Status != AsyncOperationStatus.Succeeded)
 				return false;
 			return handle.IsDone;
 		}
@@ -109,24 +126,25 @@ public class AddressableAssetLoadManager : MonoBehaviour
 					callback(_dicAddressableGameObject[address].Result);
 				else
 				{
-					AsyncOperationGameObjectResult asyncOperationResultForCallback = new AsyncOperationGameObjectResult();
-					asyncOperationResultForCallback.handle = _dicAddressableGameObject[address].handle;
-					asyncOperationResultForCallback.category = category;
-					asyncOperationResultForCallback.callback = callback;
-					_listAddressableGameObjectForCallback.Add(asyncOperationResultForCallback);
-					return asyncOperationResultForCallback;
+					if (_dicAddressableGameObject[address].listCallback == null)
+						_dicAddressableGameObject[address].listCallback = new List<System.Action<GameObject>>();
+					_dicAddressableGameObject[address].listCallback.Add(callback);
 				}
 			}
 			return _dicAddressableGameObject[address];
 		}
 
+		// 이렇게 Dictionary에 넣어놔야 같은 프레임에 같은 어드레스를 호출해도 두번 Addressables.LoadAssetAsync호출되면서 레퍼런스 카운트가 증가되는걸 막을 수 있다.
 		AsyncOperationGameObjectResult asyncOperationResult = new AsyncOperationGameObjectResult();
 		asyncOperationResult.handle = Addressables.LoadAssetAsync<GameObject>(address);
+		asyncOperationResult.handle.Completed += OnLoadDone;
 		asyncOperationResult.category = category;
-		asyncOperationResult.callback = callback;
 		_dicAddressableGameObject.Add(address, asyncOperationResult);
 		if (callback != null)
-			_listAddressableGameObjectForCallback.Add(asyncOperationResult);
+		{
+			asyncOperationResult.listCallback = new List<System.Action<GameObject>>();
+			asyncOperationResult.listCallback.Add(callback);
+		}
 		return asyncOperationResult;
 	}
 
@@ -143,12 +161,9 @@ public class AddressableAssetLoadManager : MonoBehaviour
 					// 동시호출로 인해 들어올때가 대부분일거다.
 					// 가장 중요한 handle은 최초로 호출된 handle을 복사해서 오고 나머지 정보는 동일하게 채운다.
 					// dictionary에는 넣지 않고 callback 대기 리스트에만 넣어놨다가 콜백을 처리한다.
-					AsyncOperationSpriteResult asyncOperationResultForCallback = new AsyncOperationSpriteResult();
-					asyncOperationResultForCallback.handle = _dicAddressableSprite[address].handle;
-					asyncOperationResultForCallback.category = category;
-					asyncOperationResultForCallback.callback = callback;
-					_listAddressableSpriteForCallback.Add(asyncOperationResultForCallback);
-					return asyncOperationResultForCallback;
+					if (_dicAddressableSprite[address].listCallback == null)
+						_dicAddressableSprite[address].listCallback = new List<System.Action<Sprite>>();
+					_dicAddressableSprite[address].listCallback.Add(callback);
 				}
 			}
 			return _dicAddressableSprite[address];
@@ -156,18 +171,89 @@ public class AddressableAssetLoadManager : MonoBehaviour
 
 		AsyncOperationSpriteResult asyncOperationResult = new AsyncOperationSpriteResult();
 		asyncOperationResult.handle = Addressables.LoadAssetAsync<Sprite>(address);
+		asyncOperationResult.handle.Completed += OnLoadDone;
 		asyncOperationResult.category = category;
-		asyncOperationResult.callback = callback;
 		_dicAddressableSprite.Add(address, asyncOperationResult);
 		if (callback != null)
-			_listAddressableSpriteForCallback.Add(asyncOperationResult);
+		{
+			asyncOperationResult.listCallback = new List<System.Action<Sprite>>();
+			asyncOperationResult.listCallback.Add(callback);
+		}
 		return asyncOperationResult;
+	}
+
+	void OnLoadDone(AsyncOperationHandle<GameObject> handle)
+	{
+		string address = "";
+		AsyncOperationGameObjectResult asyncOperationResult = null;
+		Dictionary<string, AsyncOperationGameObjectResult>.Enumerator e = _dicAddressableGameObject.GetEnumerator();
+		while (e.MoveNext())
+		{
+			// hashcode로 검사해도 찾아지긴 한다. handle이 struct라서 직접 비교할 수 없어서 HashCode로 비교하는거다.
+			if (e.Current.Value.handle.GetHashCode() == handle.GetHashCode())
+			{
+				address = e.Current.Key;
+				asyncOperationResult = e.Current.Value;
+				break;
+			}
+		}
+
+		if (handle.Status != AsyncOperationStatus.Succeeded)
+		{
+			// 로딩의 결과가 Succeeded가 아닐때가 난감한데 로딩하려는데 데이터를 못찾은거다. 이게 말이 되나.
+			// 이 경우에는 우선 디버그 로그부터 찍어두고
+			Debug.LogErrorFormat("AsyncOperationStatus Failed!! Address Name = {0}", address);
+
+			// 프리징은 아닐테지만 로딩을 기다리고 있을테니 다시한번 로드를 호출해봐야하나
+			return;
+		}
+
+		// 제대로 로드되었다면 플래그를 걸어서 기록해둔다.
+		asyncOperationResult.onLoadComplete = true;
+
+		// 등록된 콜백 리스트가 있다면 루프 돌면서 전부 실행해준다. 이후 콜백은 비워둔다.
+		if (asyncOperationResult.listCallback != null)
+		{
+			for (int i = 0; i < asyncOperationResult.listCallback.Count; ++i)
+				asyncOperationResult.listCallback[i](handle.Result);
+			asyncOperationResult.listCallback.Clear();
+		}
+	}
+
+	void OnLoadDone(AsyncOperationHandle<Sprite> handle)
+	{
+		string address = "";
+		AsyncOperationSpriteResult asyncOperationResult = null;
+		Dictionary<string, AsyncOperationSpriteResult>.Enumerator e = _dicAddressableSprite.GetEnumerator();
+		while (e.MoveNext())
+		{
+			if (e.Current.Value.handle.GetHashCode() == handle.GetHashCode())
+			{
+				address = e.Current.Key;
+				asyncOperationResult = e.Current.Value;
+				break;
+			}
+		}
+
+		if (handle.Status != AsyncOperationStatus.Succeeded)
+		{
+			Debug.LogErrorFormat("AsyncOperationStatus Failed!! Address Name = {0}", address);
+			return;
+		}
+
+		asyncOperationResult.onLoadComplete = true;
+		if (asyncOperationResult.listCallback != null)
+		{
+			for (int i = 0; i < asyncOperationResult.listCallback.Count; ++i)
+				asyncOperationResult.listCallback[i](handle.Result);
+			asyncOperationResult.listCallback.Clear();
+		}
 	}
 
 	void InternalReleaseAll()
 	{
-		_listAddressableGameObjectForCallback.Clear();
-		_listAddressableSpriteForCallback.Clear();
+		//_listAddressableGameObjectForCallback.Clear();
+		//_listAddressableSpriteForCallback.Clear();
 		Dictionary<string, AsyncOperationGameObjectResult>.Enumerator e1 = _dicAddressableGameObject.GetEnumerator();
 		while (e1.MoveNext())
 			e1.Current.Value.SafeRelease();
@@ -189,6 +275,8 @@ public class AddressableAssetLoadManager : MonoBehaviour
 	}
 	#endregion
 
+	// 더이상 사용하지 않는 Callback 구조. 매프레임 IsDone 돌리는건 너무 비효율적이기도 하고 Deadlock 발생할 가능성이 있어서 쓰면 안된다.
+	/*
 	#region Load Callback
 	List<AsyncOperationGameObjectResult> _listAddressableGameObjectForCallback = new List<AsyncOperationGameObjectResult>();
 	List<AsyncOperationSpriteResult> _listAddressableSpriteForCallback = new List<AsyncOperationSpriteResult>();
@@ -214,4 +302,5 @@ public class AddressableAssetLoadManager : MonoBehaviour
 		}
 	}
 	#endregion
+	*/
 }

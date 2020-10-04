@@ -73,7 +73,7 @@ public class UIString : MonoBehaviour
 		if (_initialized && currentRegion == overrideInitialRegion)
 			return;
 
-		ReloadStringData();
+		StartCoroutine(ReloadStringDataAsync());
 		InitializeFont(overrideInitialRegion);
 
 		_initialized = true;
@@ -82,16 +82,25 @@ public class UIString : MonoBehaviour
 
 	#region StringData
 	AsyncOperationHandle<StringTable> _handleStringTable;
-	void ReloadStringData()
+	bool _onLoadCompleteStringTable;
+	IEnumerator ReloadStringDataAsync()
 	{
+		_onLoadCompleteStringTable = false;
 		if (_handleStringTable.IsValid())
 			Addressables.Release<StringTable>(_handleStringTable);
 
 		_handleStringTable = Addressables.LoadAssetAsync<StringTable>("StringTable");
+		yield return _handleStringTable;
+
+		if (_handleStringTable.Status == AsyncOperationStatus.Succeeded)
+			_onLoadCompleteStringTable = true;
 	}
 
 	public bool IsDoneLoadAsyncStringData()
 	{
+		if (_onLoadCompleteStringTable == false)
+			return false;
+
 		if (_handleStringTable.IsValid() == false || _handleStringTable.IsDone == false)
 			return false;
 
@@ -236,14 +245,18 @@ public class UIString : MonoBehaviour
 	bool _ignoreUnlocalizedFont = false;
 	AsyncOperationHandle<Font> _handleLocalizedFont;
 	AsyncOperationHandle<Font> _handleUnlocalizedFont;
+	bool _onLoadCompleteLocalizedFont;
+	bool _onLoadCompleteUnlocalizedFont;
 	public bool useSystemLocalizedFont { get { return _useSystemLocalizedFont; } }
 	public bool useSystemUnlocalizedFont { get { return _useSystemUnlocalizedFont; } }
 	bool _useSystemLocalizedFont;
 	bool _useSystemUnlocalizedFont;
 	Font _systemFont = null;
 	// 로드중에는 화면 락같은거로 막힐거라 중복 호출되진 않을거다.
-	public void ReloadRegionFont()
+	void ReloadRegionFont()
 	{
+		_onLoadCompleteLocalizedFont = false;
+		_onLoadCompleteUnlocalizedFont = false;
 		if (_handleLocalizedFont.IsValid())
 			Addressables.Release<Font>(_handleLocalizedFont);
 		if (_handleUnlocalizedFont.IsValid())
@@ -282,29 +295,43 @@ public class UIString : MonoBehaviour
 		if (loadable == false)
 			return false;
 
-		if (fontTableId == "Unlocalized")
+		StartCoroutine(LoadFontAsync(fontTableData));
+		return true;
+	}
+
+	IEnumerator LoadFontAsync(FontTableData fontTableData)
+	{
+		if (fontTableData.id == "Unlocalized")
 		{
 			_handleUnlocalizedFont = Addressables.LoadAssetAsync<Font>(fontTableData.fontName);
+			yield return _handleUnlocalizedFont;
+			if (_handleUnlocalizedFont.Status == AsyncOperationStatus.Succeeded)
+				_onLoadCompleteUnlocalizedFont = true;
 		}
 		else
 		{
 			_handleLocalizedFont = Addressables.LoadAssetAsync<Font>(fontTableData.fontName);
 			_ignoreUnlocalizedFont = fontTableData.ignoreUnlocalizedFont;
+			yield return _handleLocalizedFont;
+			if (_handleLocalizedFont.Status == AsyncOperationStatus.Succeeded)
+				_onLoadCompleteLocalizedFont = true;
 		}
-
-		return true;
 	}
 
 	public bool IsDoneLoadAsyncFont()
 	{
 		if (_useSystemLocalizedFont == false)
 		{
+			if (_onLoadCompleteLocalizedFont == false)
+				return false;
 			if (_handleLocalizedFont.IsValid() == false || _handleLocalizedFont.IsDone == false)
 				return false;
 		}
 
 		if (_useSystemUnlocalizedFont == false && _ignoreUnlocalizedFont == false)
 		{
+			if (_onLoadCompleteUnlocalizedFont == false)
+				return false;
 			if (_handleUnlocalizedFont.IsValid() == false || _handleUnlocalizedFont.IsDone == false)
 				return false;
 		}

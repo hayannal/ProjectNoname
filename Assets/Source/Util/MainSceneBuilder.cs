@@ -76,6 +76,9 @@ public class MainSceneBuilder : MonoBehaviour
 	AsyncOperationHandle<GameObject> _handleNodeWarPortal;
 	IEnumerator Start()
     {
+		AsyncOperationHandle<UnityEngine.AddressableAssets.ResourceLocators.IResourceLocator> handleInitialize = Addressables.InitializeAsync();
+		yield return handleInitialize;
+
 		// 씬 빌더는 항상 이 씬이 시작될때 1회만 동작하며 로딩씬을 띄워놓고 현재 상황에 맞춰서 스텝을 진행한다.
 		// 나중에 어드레서블 에셋시스템에도 적어두겠지만, 이번 구조는 1챕터까진 추가 다운로드 없이 진행하는게 목표고 이후 번들을 받는 구조가 되어야한다.
 		// 그렇다고 씬에 넣어두면 Start때 로드하는거라 로딩창이 늦게 나오게 된다. 그러니 결국 Resources 폴더에 넣어두고 로딩하는 방법 말고는 없다.
@@ -141,6 +144,12 @@ public class MainSceneBuilder : MonoBehaviour
 		LoadingCanvas.instance.SetProgressBarPoint(0.3f);
 		_handleTableDataManager = Addressables.LoadAssetAsync<GameObject>("TableDataManager");
 		yield return _handleTableDataManager;
+		// 사실 yield return만 제대로 하면 아래는 호출할 필요가 없어보이므로 나머지는 안하고 가보도록 한다.
+		if (_handleTableDataManager.Status != AsyncOperationStatus.Succeeded)
+		{
+			//MainSceneBuildFailed();
+			yield break;
+		}
 		Instantiate<GameObject>(_handleTableDataManager.Result);
 
 		// step 3. login
@@ -239,7 +248,10 @@ public class MainSceneBuilder : MonoBehaviour
 #if !UNITY_EDITOR
 		Debug.LogWarning("777777777");
 #endif
-		while (!_handleStageManager.IsDone || !_handleStartCharacter.IsDone) yield return null;
+		// 이런식으로 직접 IsDone을 돌리면 안된다. 데드락이 발생할 가능성이 있다.
+		//while (!_handleStageManager.IsDone || !_handleStartCharacter.IsDone) yield return null;
+		yield return _handleStageManager;
+		yield return _handleStartCharacter;
 #if !UNITY_EDITOR
 		Debug.LogWarning("888888888");
 #endif
@@ -355,6 +367,9 @@ public class MainSceneBuilder : MonoBehaviour
 #else
 		Instantiate<GameObject>(_handleTreasureChest.Result);
 #endif
+#if !UNITY_EDITOR
+		Debug.LogWarning("HHHHHHHHH-0");
+#endif
 		if (useTimeSpace)
 		{
 			yield return _handleTimeSpacePortal;
@@ -389,6 +404,9 @@ public class MainSceneBuilder : MonoBehaviour
 #endif
 		}
 
+#if !UNITY_EDITOR
+		Debug.LogWarning("HHHHHHHHH-3");
+#endif
 		// 현재맵의 로딩이 끝나면 다음맵의 프리팹을 로딩해놔야 게이트 필라로 이동시 곧바로 이동할 수 있게 된다.
 		// 원래라면 몹 다 죽이고 호출되는 함수인데 초기 씬 구축에선 할 타이밍이 로비맵 로딩 직후밖에 없다.
 		StageManager.instance.GetNextStageInfo();
@@ -405,7 +423,9 @@ public class MainSceneBuilder : MonoBehaviour
 		Debug.LogWarning("JJJJJJJJJ");
 #endif
 		// step 9-2. lobby ui
-		while (!_handleLobbyCanvas.IsDone || !_handleCommonCanvasGroup.IsDone) yield return null;
+		//while (!_handleLobbyCanvas.IsDone || !_handleCommonCanvasGroup.IsDone) yield return null;
+		yield return _handleLobbyCanvas;
+		yield return _handleCommonCanvasGroup;
 #if !UNITY_EDITOR
 		Debug.LogWarning("KKKKKKKKK");
 #endif
@@ -573,7 +593,8 @@ public class MainSceneBuilder : MonoBehaviour
 		LoadingCanvas.instance.SetProgressBarPoint(0.6f);
 		_handleStageManager = Addressables.LoadAssetAsync<GameObject>("StageManager");
 		_handleStartCharacter = Addressables.LoadAssetAsync<GameObject>(CharacterData.GetAddressByActorId(PlayerData.instance.mainCharacterId));
-		while (!_handleStageManager.IsDone || !_handleStartCharacter.IsDone) yield return null;
+		yield return _handleStageManager;
+		yield return _handleStartCharacter;
 		Instantiate<GameObject>(_handleStageManager.Result);
 #if UNITY_EDITOR
 		Vector3 tutorialPosition = new Vector3(BattleInstanceManager.instance.GetCachedGlobalConstantFloat("TutorialStartX"), 0.0f, BattleInstanceManager.instance.GetCachedGlobalConstantFloat("TutorialStartZ"));
@@ -605,7 +626,8 @@ public class MainSceneBuilder : MonoBehaviour
 		while (UIString.instance.IsDoneLoadAsyncFont() == false)
 			yield return null;
 		// step 9-2. lobby ui
-		while (!_handleLobbyCanvas.IsDone || !_handleCommonCanvasGroup.IsDone) yield return null;
+		yield return _handleLobbyCanvas;
+		yield return _handleCommonCanvasGroup;
 		Instantiate<GameObject>(_handleLobbyCanvas.Result);
 		Instantiate<GameObject>(_handleCommonCanvasGroup.Result);
 

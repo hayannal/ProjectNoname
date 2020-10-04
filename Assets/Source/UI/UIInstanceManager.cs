@@ -247,9 +247,12 @@ public class UIInstanceManager : MonoBehaviour
 			return;
 		}
 
+		// AddressableAssetLoadManager.GetAddressableGameObject의 callback을 사용하지 않는 이유는
+		// 어차피 _dicCanvasPool에다가 Instantiate해서 넣는 절차도 필요하고
+		// showDelayedLoadingCanvas인자에 따라서 하이드 처리도 해줘야하기 때문이다.
 		LoadCanvasAsync loadCanvasAsync = new LoadCanvasAsync();
 		loadCanvasAsync.canvasAddress = canvasAddress;
-		loadCanvasAsync.handleCanvasPrefab = AddressableAssetLoadManager.GetAddressableGameObject(canvasAddress, "Canvas");
+		loadCanvasAsync.handleCanvasPrefab = AddressableAssetLoadManager.GetAddressableGameObject(canvasAddress, "Canvas");//, OnLoadComplete);
 		loadCanvasAsync.calllback = callback;
 		loadCanvasAsync.showDelayedLoadingCanvas = showDelayedLoadingCanvas;
 		_listAsyncOperationResult.Add(loadCanvasAsync);
@@ -257,6 +260,10 @@ public class UIInstanceManager : MonoBehaviour
 		if (showDelayedLoadingCanvas)
 			DelayedLoadingCanvas.Show(true);
 	}
+
+	//void OnLoadComplete(GameObject canvasPrefab)
+	//{
+	//}
 
 	void UpdateAsyncOperation()
 	{

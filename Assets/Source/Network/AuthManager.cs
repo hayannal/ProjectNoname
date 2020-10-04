@@ -249,7 +249,7 @@ public class AuthManager : MonoBehaviour
 
 		// 이땐 로딩 속도를 위해 commonCanvasGroup도 로딩하지 않은 상태라서 직접 로드해서 보여줘야한다.
 		AsyncOperationHandle<GameObject> handleCommonCanvasGroup = Addressables.LoadAssetAsync<GameObject>("CommonCanvasGroup");
-		while (!handleCommonCanvasGroup.IsDone) yield return null;
+		yield return handleCommonCanvasGroup;
 		Instantiate<GameObject>(handleCommonCanvasGroup.Result);
 		OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString(stringId, arg), () =>
 		{

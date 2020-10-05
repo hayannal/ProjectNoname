@@ -81,7 +81,7 @@ MonoBehaviour:
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
   howitzerRandomPositionRadiusRange: {x: 0, y: 0}
-  speed: 4.5
+  speed: 5.5
   useSpeedChange: 0
   targetSpeed: 0
   speedChangeTime: 0
@@ -267,7 +267,7 @@ MonoBehaviour:
   howitzerType: 0
   useWorldSpaceDirection: 0
   bothRandomAngle: 1
-  leftRightRandomAngle: 180
+  leftRightRandomAngle: 120
   leftRandomAngle: 0
   rightRandomAngle: 0
   upDownRandomAngle: 0
@@ -280,13 +280,13 @@ MonoBehaviour:
   speedChangeEase: 6
   overrideSpeedOnCollision: 0
   overrideSpeedTimeOnCollision: 0
-  curve: 60
-  useCurveChange: 0
-  targetCurve: 0
-  curveChangeTime: 0
+  curve: 90
+  useCurveChange: 1
+  targetCurve: 40
+  curveChangeTime: 3
   curveChangeEase: 6
   curveLockY: 1
-  curveStartDelayTime: 2
+  curveStartDelayTime: 0
   followLastPositionWhenDieTarget: 0
   followMeOnHitTarget: 0
   followMinRange: 0
@@ -959,7 +959,7 @@ MonoBehaviour:
     distanceParameter2: 0
     useHpRatio1: 1
     hpRatioCompareType1: 3
-    hpRatioParameter1: 0.75
+    hpRatioParameter1: 0.85
     useHpRatio2: 0
     hpRatioCompareType2: 0
     hpRatioParameter2: 0
@@ -985,7 +985,59 @@ MonoBehaviour:
     distanceParameter2: 0
     useHpRatio1: 1
     hpRatioCompareType1: 3
-    hpRatioParameter1: 0.5
+    hpRatioParameter1: 0.7
+    useHpRatio2: 0
+    hpRatioCompareType2: 0
+    hpRatioParameter2: 0
+    useActorState: 0
+    actorStateId: 
+    existActorStateParameter: 0
+    useTargetActorState: 0
+    targetActorStateId: 
+    existTargetActorStateParameter: 0
+    useMonsterCount: 0
+    monsterCountCompareType: 0
+    monsterCountParameter: 0
+    useCheckWall: 0
+    existWallParameter: 0
+    actionCountLimit: 1
+  - stateName: Base Layer.AttackGroup.Barrier
+    weight: 10
+    useDistance1: 0
+    distanceCompareType1: 0
+    distanceParameter1: 0
+    useDistance2: 0
+    distanceCompareType2: 0
+    distanceParameter2: 0
+    useHpRatio1: 1
+    hpRatioCompareType1: 3
+    hpRatioParameter1: 0.55
+    useHpRatio2: 0
+    hpRatioCompareType2: 0
+    hpRatioParameter2: 0
+    useActorState: 0
+    actorStateId: 
+    existActorStateParameter: 0
+    useTargetActorState: 0
+    targetActorStateId: 
+    existTargetActorStateParameter: 0
+    useMonsterCount: 0
+    monsterCountCompareType: 0
+    monsterCountParameter: 0
+    useCheckWall: 0
+    existWallParameter: 0
+    actionCountLimit: 1
+  - stateName: Base Layer.AttackGroup.Barrier
+    weight: 10
+    useDistance1: 0
+    distanceCompareType1: 0
+    distanceParameter1: 0
+    useDistance2: 0
+    distanceCompareType2: 0
+    distanceParameter2: 0
+    useHpRatio1: 1
+    hpRatioCompareType1: 3
+    hpRatioParameter1: 0.4
     useHpRatio2: 0
     hpRatioCompareType2: 0
     hpRatioParameter2: 0
@@ -1012,6 +1064,32 @@ MonoBehaviour:
     useHpRatio1: 1
     hpRatioCompareType1: 3
     hpRatioParameter1: 0.25
+    useHpRatio2: 0
+    hpRatioCompareType2: 0
+    hpRatioParameter2: 0
+    useActorState: 0
+    actorStateId: 
+    existActorStateParameter: 0
+    useTargetActorState: 0
+    targetActorStateId: 
+    existTargetActorStateParameter: 0
+    useMonsterCount: 0
+    monsterCountCompareType: 0
+    monsterCountParameter: 0
+    useCheckWall: 0
+    existWallParameter: 0
+    actionCountLimit: 1
+  - stateName: Base Layer.AttackGroup.Barrier
+    weight: 10
+    useDistance1: 0
+    distanceCompareType1: 0
+    distanceParameter1: 0
+    useDistance2: 0
+    distanceCompareType2: 0
+    distanceParameter2: 0
+    useHpRatio1: 1
+    hpRatioCompareType1: 3
+    hpRatioParameter1: 0.1
     useHpRatio2: 0
     hpRatioCompareType2: 0
     hpRatioParameter2: 0

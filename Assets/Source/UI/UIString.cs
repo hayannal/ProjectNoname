@@ -90,7 +90,9 @@ public class UIString : MonoBehaviour
 			Addressables.Release<StringTable>(_handleStringTable);
 
 		_handleStringTable = Addressables.LoadAssetAsync<StringTable>("StringTable");
-		yield return _handleStringTable;
+		//yield return _handleStringTable;
+		while (_handleStringTable.IsValid() && !_handleStringTable.IsDone)
+			yield return null;
 
 		if (_handleStringTable.Status == AsyncOperationStatus.Succeeded)
 			_onLoadCompleteStringTable = true;
@@ -304,7 +306,9 @@ public class UIString : MonoBehaviour
 		if (fontTableData.id == "Unlocalized")
 		{
 			_handleUnlocalizedFont = Addressables.LoadAssetAsync<Font>(fontTableData.fontName);
-			yield return _handleUnlocalizedFont;
+			//yield return _handleUnlocalizedFont;
+			while (_handleUnlocalizedFont.IsValid() && !_handleUnlocalizedFont.IsDone)
+				yield return null;
 			if (_handleUnlocalizedFont.Status == AsyncOperationStatus.Succeeded)
 				_onLoadCompleteUnlocalizedFont = true;
 		}
@@ -312,7 +316,9 @@ public class UIString : MonoBehaviour
 		{
 			_handleLocalizedFont = Addressables.LoadAssetAsync<Font>(fontTableData.fontName);
 			_ignoreUnlocalizedFont = fontTableData.ignoreUnlocalizedFont;
-			yield return _handleLocalizedFont;
+			//yield return _handleLocalizedFont;
+			while (_handleLocalizedFont.IsValid() && !_handleLocalizedFont.IsDone)
+				yield return null;
 			if (_handleLocalizedFont.Status == AsyncOperationStatus.Succeeded)
 				_onLoadCompleteLocalizedFont = true;
 		}

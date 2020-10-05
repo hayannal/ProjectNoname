@@ -200,8 +200,9 @@ public class MainSceneBuilder : MonoBehaviour
 		// 지금은 우선 apk넣고 하지만 나중에 서버에서 받는거로 바꿔야한다. 이땐 확인창 안띄운다.
 		LoadingCanvas.instance.SetProgressBarPoint(0.3f);
 		_handleTableDataManager = Addressables.LoadAssetAsync<GameObject>("TableDataManager");
-		yield return _handleTableDataManager;
-		// 사실 yield return만 제대로 하면 아래는 호출할 필요가 없어보이므로 나머지는 안하고 가보도록 한다.
+		//yield return _handleTableDataManager;
+		while (_handleTableDataManager.IsValid() && !_handleTableDataManager.IsDone)
+			yield return null;
 		if (_handleTableDataManager.Status != AsyncOperationStatus.Succeeded)
 		{
 			//MainSceneBuildFailed();
@@ -311,8 +312,25 @@ public class MainSceneBuilder : MonoBehaviour
 #endif
 		// 이런식으로 직접 IsDone을 돌리면 안된다. 데드락이 발생할 가능성이 있다.
 		//while (!_handleStageManager.IsDone || !_handleStartCharacter.IsDone) yield return null;
-		yield return _handleStageManager;
-		yield return _handleStartCharacter;
+		// 라고 해서 yield return 으로 했는데도 여전히 데드락이 발생해서 찾아보니
+		// 로딩 쓰레드쪽에서 자동으로 이 핸들을 릴리즈 시키기때문에 yield return 대기중에 익셉션이 뜰 수 있는 구조라고 한다.
+		// Exception: Attempting to use an invalid operation handle
+		// UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle`1[TObject].get_InternalOp ()
+		// (at Library/PackageCache/com.unity.addressables@1.6.2/Runtime/ResourceManager/AsyncOperations/AsyncOperationHandle.cs:186)
+		// 이렇게 뜬다고 한다.
+		// 그래서 Task를 써서 await로 하거나 Completed 콜백으로 처리해야 제대로 처리할 수 있다고 한다.
+		// 근데 async await는 작은 단위를 Task로 묶어서 멀티쓰레딩을 하기 위함이니 이런 씬 로드 같이 거대함수에 쓰는게 맞는건가 싶기도 하고
+		// 그렇다고 Completed 콜백으로 하기엔 구조를 싹 바꿔야해서 새로 짜야한다.
+		// 그러다가 찾은 방법이
+		// while (handle.IsValid() && !handle.IsDone)
+		//	yield return null;
+		// 이 방법이다. 이건 기존 코루틴 코드를 그대로 유지하면서 핸들이 릴리즈 되더라도 익셉션이 뜨지 않을거라 해서 테스트 해보기로 한다.
+		//yield return _handleStageManager;
+		//yield return _handleStartCharacter;
+		while (_handleStageManager.IsValid() && !_handleStageManager.IsDone)
+			yield return null;
+		while (_handleStartCharacter.IsValid() && !_handleStartCharacter.IsDone)
+			yield return null;
 #if !UNITY_EDITOR
 		Debug.LogWarning("888888888");
 #endif
@@ -406,7 +424,9 @@ public class MainSceneBuilder : MonoBehaviour
 #if !UNITY_EDITOR
 			Debug.LogWarning("GGGGGGGGG-1");
 #endif
-			yield return _handleEventGatePillar;
+			//yield return _handleEventGatePillar;
+			while (_handleEventGatePillar.IsValid() && !_handleEventGatePillar.IsDone)
+				yield return null;
 			Instantiate<GameObject>(_handleEventGatePillar.Result, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
 		}
 		else
@@ -420,7 +440,9 @@ public class MainSceneBuilder : MonoBehaviour
 #if !UNITY_EDITOR
 		Debug.LogWarning("HHHHHHHHH");
 #endif
-		yield return _handleTreasureChest;
+		//yield return _handleTreasureChest;
+		while (_handleTreasureChest.IsValid() && !_handleTreasureChest.IsDone)
+			yield return null;
 #if UNITY_EDITOR
 		newObject = Instantiate<GameObject>(_handleTreasureChest.Result);
 		if (settings.ActivePlayModeDataBuilderIndex == 2)
@@ -433,7 +455,9 @@ public class MainSceneBuilder : MonoBehaviour
 #endif
 		if (useTimeSpace)
 		{
-			yield return _handleTimeSpacePortal;
+			//yield return _handleTimeSpacePortal;
+			while (_handleTimeSpacePortal.IsValid() && !_handleTimeSpacePortal.IsDone)
+				yield return null;
 #if UNITY_EDITOR
 			newObject = Instantiate<GameObject>(_handleTimeSpacePortal.Result);
 			if (settings.ActivePlayModeDataBuilderIndex == 2)
@@ -448,7 +472,9 @@ public class MainSceneBuilder : MonoBehaviour
 
 		if (useNodeWar)
 		{
-			yield return _handleNodeWarPortal;
+			//yield return _handleNodeWarPortal;
+			while (_handleNodeWarPortal.IsValid() && !_handleNodeWarPortal.IsDone)
+				yield return null;
 #if UNITY_EDITOR
 			newObject = Instantiate<GameObject>(_handleNodeWarPortal.Result);
 			if (settings.ActivePlayModeDataBuilderIndex == 2)
@@ -484,9 +510,12 @@ public class MainSceneBuilder : MonoBehaviour
 		Debug.LogWarning("JJJJJJJJJ");
 #endif
 		// step 9-2. lobby ui
-		//while (!_handleLobbyCanvas.IsDone || !_handleCommonCanvasGroup.IsDone) yield return null;
-		yield return _handleLobbyCanvas;
-		yield return _handleCommonCanvasGroup;
+		//yield return _handleLobbyCanvas;
+		//yield return _handleCommonCanvasGroup;
+		while (_handleLobbyCanvas.IsValid() && !_handleLobbyCanvas.IsDone)
+			yield return null;
+		while (_handleCommonCanvasGroup.IsValid() && !_handleCommonCanvasGroup.IsDone)
+			yield return null;
 #if !UNITY_EDITOR
 		Debug.LogWarning("KKKKKKKKK");
 #endif
@@ -518,7 +547,9 @@ public class MainSceneBuilder : MonoBehaviour
 		if (s_firstTimeAfterLaunch)
 		{
 			LoadingCanvas.instance.onlyObjectFade = true;
-			yield return _handleTitleCanvas;
+			//yield return _handleTitleCanvas;
+			while (_handleTitleCanvas.IsValid() && !_handleTitleCanvas.IsDone)
+				yield return null;
 			Instantiate<GameObject>(_handleTitleCanvas.Result);
 		}
 
@@ -589,10 +620,14 @@ public class MainSceneBuilder : MonoBehaviour
 
 		// DropObject의 크기도 커지고 로비뽑기에서 써야해서 BattleManager에서 분리한다.
 		_handleDropObjectGroup = Addressables.LoadAssetAsync<GameObject>("DropObjectGroup");
-		yield return _handleDropObjectGroup;
+		//yield return _handleDropObjectGroup;
+		while (_handleDropObjectGroup.IsValid() && !_handleDropObjectGroup.IsDone)
+			yield return null;
 		Instantiate<GameObject>(_handleDropObjectGroup.Result);
 		_handleBattleManager = Addressables.LoadAssetAsync<GameObject>("BattleManager");
-		yield return _handleBattleManager;
+		//yield return _handleBattleManager;
+		while (_handleBattleManager.IsValid() && !_handleBattleManager.IsDone)
+			yield return null;
 		Instantiate<GameObject>(_handleBattleManager.Result);
 
 		if (buildTutorialScene)
@@ -654,8 +689,10 @@ public class MainSceneBuilder : MonoBehaviour
 		LoadingCanvas.instance.SetProgressBarPoint(0.6f);
 		_handleStageManager = Addressables.LoadAssetAsync<GameObject>("StageManager");
 		_handleStartCharacter = Addressables.LoadAssetAsync<GameObject>(CharacterData.GetAddressByActorId(PlayerData.instance.mainCharacterId));
-		yield return _handleStageManager;
-		yield return _handleStartCharacter;
+		while (_handleStageManager.IsValid() && !_handleStageManager.IsDone)
+			yield return null;
+		while (_handleStartCharacter.IsValid() && !_handleStartCharacter.IsDone)
+			yield return null;
 		Instantiate<GameObject>(_handleStageManager.Result);
 #if UNITY_EDITOR
 		Vector3 tutorialPosition = new Vector3(BattleInstanceManager.instance.GetCachedGlobalConstantFloat("TutorialStartX"), 0.0f, BattleInstanceManager.instance.GetCachedGlobalConstantFloat("TutorialStartZ"));
@@ -687,8 +724,10 @@ public class MainSceneBuilder : MonoBehaviour
 		while (UIString.instance.IsDoneLoadAsyncFont() == false)
 			yield return null;
 		// step 9-2. lobby ui
-		yield return _handleLobbyCanvas;
-		yield return _handleCommonCanvasGroup;
+		while (_handleLobbyCanvas.IsValid() && !_handleLobbyCanvas.IsDone)
+			yield return null;
+		while (_handleCommonCanvasGroup.IsValid() && !_handleCommonCanvasGroup.IsDone)
+			yield return null;
 		Instantiate<GameObject>(_handleLobbyCanvas.Result);
 		Instantiate<GameObject>(_handleCommonCanvasGroup.Result);
 

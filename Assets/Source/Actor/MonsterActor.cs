@@ -479,7 +479,7 @@ public class MonsterActor : Actor
 			// EvilRich의 경우 잔몹을 소환하는데 하필 보스몹이 먼저 죽고 잔몹이 죽게되면
 			// LastDropObject로 설정하는 부분이 호출되지 않아 습득이 안되게 된다.
 			// 그래서 이렇게 강제로 호출해주기로 한다.
-			if (DropManager.instance.IsExistReservedLastDropObject())
+			if (lastMonsterInStage && BattleInstanceManager.instance.IsAliveAnyDropProcessor() == false && DropManager.instance.IsExistReservedLastDropObject())
 				DropManager.instance.ApplyLastDropObject();
 			return;
 		}

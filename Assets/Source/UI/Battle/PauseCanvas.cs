@@ -170,7 +170,8 @@ public class PauseCanvas : MonoBehaviour
 	public void OnClickHomeButton()
 	{
 		bool isNodeWar = BattleManager.instance.IsNodeWar();
-		if (isNodeWar == false && PlayerData.instance.currentChallengeMode)
+		bool needCancelChallengeMode = (PlayerData.instance.currentChallengeMode && EventManager.instance.IsCompleteServerEvent(EventManager.eServerEvent.chaos));
+		if (isNodeWar == false && needCancelChallengeMode)
 		{
 			string message = string.Format("{0}\n{1}", UIString.instance.GetString("GameUI_BackToLobbyDescription"), UIString.instance.GetString("GameUI_BackToLobbyDescriptionChallenge"));
 			YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_BackToLobby"), message, () =>

@@ -14,6 +14,11 @@ public class BaseDamageAffector : AffectorBase {
 			return;
 		}
 
+		// 디버깅 하다보니 아직 Start가 호출되지 않은 몬스터 액터도 생성과 동시에 맞아서 이쪽으로 들어오기도 한다.
+		// 소환용 몬스터한테만 일어나는거긴 한데 어쨌든 null 체크 추가.
+		if (_actor.actorStatus.statusBase == null)
+			return;
+
 		// BaseDamage는 IsDie 검사를 하는게 맞다. 여기서 리턴안하면 MonsterActor의 OnDie호출되면서 몬스터 카운트부터 다 꼬인다.
 		if (_actor.actorStatus.IsDie())
 			return;

@@ -107,16 +107,12 @@ public class MainSceneBuilder : MonoBehaviour
     {
 #if !UNITY_EDITOR
 		Debug.LogWarning("MainSceneBuilder Start");
-#endif
-
 		if (s_initializedAddressable == false)
 		{
 			AsyncOperationHandle<UnityEngine.AddressableAssets.ResourceLocators.IResourceLocator> handleInitialize = Addressables.InitializeAsync();
 			yield return handleInitialize;
 			s_initializedAddressable = true;
 		}
-
-#if !UNITY_EDITOR
 		Debug.LogWarning("MainSceneBuilder Start 1");
 #endif
 

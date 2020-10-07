@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.U2D;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
@@ -67,6 +68,10 @@ public class AsyncOperationSpriteResult : AsyncOperationResult<Sprite>
 {
 }
 
+public class AsyncOperationSpriteAtlasResult : AsyncOperationResult<SpriteAtlas>
+{
+}
+
 public class AddressableAssetLoadManager : MonoBehaviour
 {
 	static AddressableAssetLoadManager instance
@@ -85,6 +90,7 @@ public class AddressableAssetLoadManager : MonoBehaviour
 
 	Dictionary<string, AsyncOperationGameObjectResult> _dicAddressableGameObject = new Dictionary<string, AsyncOperationGameObjectResult>();
 	Dictionary<string, AsyncOperationSpriteResult> _dicAddressableSprite = new Dictionary<string, AsyncOperationSpriteResult>();
+	Dictionary<string, AsyncOperationSpriteAtlasResult> _dicAddressableSpriteAtlas = new Dictionary<string, AsyncOperationSpriteAtlasResult>();
 	Dictionary<string, int> _dicCategoryCount = new Dictionary<string, int>();
 
 	public static AsyncOperationGameObjectResult GetAddressableGameObject(string address, string category = "", System.Action<GameObject> callback = null)
@@ -95,6 +101,11 @@ public class AddressableAssetLoadManager : MonoBehaviour
 	public static AsyncOperationSpriteResult GetAddressableSprite(string address, string category = "", System.Action<Sprite> callback = null)
 	{
 		return instance.InternalGetAddressableSprite(address, category, callback);
+	}
+
+	public static AsyncOperationSpriteAtlasResult GetAddressableSpriteAtlas(string address, string category = "", System.Action<SpriteAtlas> callback = null)
+	{
+		return instance.InternalGetAddressableSpriteAtlas(address, category, callback);
 	}
 
 	public static void ReleaseAll()
@@ -182,6 +193,37 @@ public class AddressableAssetLoadManager : MonoBehaviour
 		return asyncOperationResult;
 	}
 
+	AsyncOperationSpriteAtlasResult InternalGetAddressableSpriteAtlas(string address, string category = "", System.Action<SpriteAtlas> callback = null)
+	{
+		if (_dicAddressableSpriteAtlas.ContainsKey(address))
+		{
+			if (callback != null)
+			{
+				if (_dicAddressableSpriteAtlas[address].IsDone)
+					callback(_dicAddressableSpriteAtlas[address].Result);
+				else
+				{
+					if (_dicAddressableSpriteAtlas[address].listCallback == null)
+						_dicAddressableSpriteAtlas[address].listCallback = new List<System.Action<SpriteAtlas>>();
+					_dicAddressableSpriteAtlas[address].listCallback.Add(callback);
+				}
+			}
+			return _dicAddressableSpriteAtlas[address];
+		}
+
+		AsyncOperationSpriteAtlasResult asyncOperationResult = new AsyncOperationSpriteAtlasResult();
+		asyncOperationResult.handle = Addressables.LoadAssetAsync<SpriteAtlas>(address);
+		asyncOperationResult.handle.Completed += OnLoadDone;
+		asyncOperationResult.category = category;
+		_dicAddressableSpriteAtlas.Add(address, asyncOperationResult);
+		if (callback != null)
+		{
+			asyncOperationResult.listCallback = new List<System.Action<SpriteAtlas>>();
+			asyncOperationResult.listCallback.Add(callback);
+		}
+		return asyncOperationResult;
+	}
+
 	void OnLoadDone(AsyncOperationHandle<GameObject> handle)
 	{
 		string address = "";
@@ -250,10 +292,41 @@ public class AddressableAssetLoadManager : MonoBehaviour
 		}
 	}
 
+	void OnLoadDone(AsyncOperationHandle<SpriteAtlas> handle)
+	{
+		string address = "";
+		AsyncOperationSpriteAtlasResult asyncOperationResult = null;
+		Dictionary<string, AsyncOperationSpriteAtlasResult>.Enumerator e = _dicAddressableSpriteAtlas.GetEnumerator();
+		while (e.MoveNext())
+		{
+			if (e.Current.Value.handle.GetHashCode() == handle.GetHashCode())
+			{
+				address = e.Current.Key;
+				asyncOperationResult = e.Current.Value;
+				break;
+			}
+		}
+
+		if (handle.Status != AsyncOperationStatus.Succeeded)
+		{
+			Debug.LogErrorFormat("AsyncOperationStatus Failed!! Address Name = {0}", address);
+			return;
+		}
+
+		asyncOperationResult.onLoadComplete = true;
+		if (asyncOperationResult.listCallback != null)
+		{
+			for (int i = 0; i < asyncOperationResult.listCallback.Count; ++i)
+				asyncOperationResult.listCallback[i](handle.Result);
+			asyncOperationResult.listCallback.Clear();
+		}
+	}
+
 	void InternalReleaseAll()
 	{
 		//_listAddressableGameObjectForCallback.Clear();
 		//_listAddressableSpriteForCallback.Clear();
+		//_listAddressableSpriteAtlasForCallback.Clear();
 		Dictionary<string, AsyncOperationGameObjectResult>.Enumerator e1 = _dicAddressableGameObject.GetEnumerator();
 		while (e1.MoveNext())
 			e1.Current.Value.SafeRelease();
@@ -262,6 +335,10 @@ public class AddressableAssetLoadManager : MonoBehaviour
 		while (e2.MoveNext())
 			e2.Current.Value.SafeRelease();
 		_dicAddressableSprite.Clear();
+		Dictionary<string, AsyncOperationSpriteAtlasResult>.Enumerator e3 = _dicAddressableSpriteAtlas.GetEnumerator();
+		while (e3.MoveNext())
+			e3.Current.Value.SafeRelease();
+		_dicAddressableSpriteAtlas.Clear();
 		_dicCategoryCount.Clear();
 	}
 
@@ -280,6 +357,7 @@ public class AddressableAssetLoadManager : MonoBehaviour
 	#region Load Callback
 	List<AsyncOperationGameObjectResult> _listAddressableGameObjectForCallback = new List<AsyncOperationGameObjectResult>();
 	List<AsyncOperationSpriteResult> _listAddressableSpriteForCallback = new List<AsyncOperationSpriteResult>();
+	List<AsyncOperationSpriteAtlasResult> _listAddressableSpriteAtlasForCallback = new List<AsyncOperationSpriteAtlasResult>();
 	void Update()
 	{
 		for (int i = _listAddressableGameObjectForCallback.Count - 1; i >= 0; --i)
@@ -299,6 +377,15 @@ public class AddressableAssetLoadManager : MonoBehaviour
 			if (_listAddressableSpriteForCallback[i].callback != null)
 				_listAddressableSpriteForCallback[i].callback(_listAddressableSpriteForCallback[i].Result);
 			_listAddressableSpriteForCallback.Remove(_listAddressableSpriteForCallback[i]);
+		}
+		for (int i = _listAddressableSpriteAtlasForCallback.Count - 1; i >= 0; --i)
+		{
+			if (_listAddressableSpriteAtlasForCallback[i].IsDone == false)
+				continue;
+
+			if (_listAddressableSpriteAtlasForCallback[i].callback != null)
+				_listAddressableSpriteAtlasForCallback[i].callback(_listAddressableSpriteAtlasForCallback[i].Result);
+			_listAddressableSpriteAtlasForCallback.Remove(_listAddressableSpriteAtlasForCallback[i]);
 		}
 	}
 	#endregion

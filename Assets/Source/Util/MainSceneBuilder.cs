@@ -89,6 +89,9 @@ public class MainSceneBuilder : MonoBehaviour
 #if !UNITY_EDITOR
 		Debug.LogWarning("MainSceneBuilder OnDestroy 5");
 #endif
+
+		System.GC.Collect();
+		System.GC.WaitForPendingFinalizers();
 	}
 
 	AsyncOperationHandle<GameObject> _handleTableDataManager;
@@ -520,6 +523,14 @@ public class MainSceneBuilder : MonoBehaviour
 #if !UNITY_EDITOR
 		Debug.LogWarning("LLLLLLLLL");
 #endif
+
+		// step 9-3. clean memory
+		yield return new WaitForEndOfFrame();
+		System.GC.Collect();
+		yield return Resources.UnloadUnusedAssets();
+		System.GC.Collect();
+		System.GC.WaitForPendingFinalizers();
+		yield return new WaitForEndOfFrame();
 
 		// step 10. player hit object caching
 		LoadingCanvas.instance.SetProgressBarPoint(1.0f, 0.0f, true);

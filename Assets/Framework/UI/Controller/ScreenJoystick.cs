@@ -160,6 +160,27 @@ public class ScreenJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 	{
 		for (int i = 0; i < (int)Control.eInputType.Amount; ++i)
 			_touchEventResultList[i] = false;
+
+		// 간혹 렉이 발생하면서 터치가 이미 끝났는데 계속 이동하는 경우가 있다.
+		// 이때를 디버깅해서 보니 _lastDragPointerId 가 -1로 설정되어있었다. 이벤트 순서가 꼬인거 아닐까..
+		// 아무튼 정상적인 상황에서는 동작하면 안되니 최대한 조건을 타이트하게 건다.
+		if (_draggingCount > 0 && joystickImageTransform.gameObject.activeSelf && _lastDragPointerId == -1)
+		{
+#if UNITY_EDITOR
+			bool noInput = (Input.anyKey == false);
+#else
+			bool noInput = (Input.touchCount == 0);
+#endif
+			if (noInput)
+			{
+				#region VirtualAxis
+				UpdateVirtualAxes(Vector3.zero);
+				#endregion
+
+				HideJoystick();
+				_draggingCount = 0;
+			}
+		}
 	}
 
 	void OnBeginDragJoystick(PointerEventData eventData)
@@ -227,16 +248,21 @@ public class ScreenJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 			UpdateVirtualAxes(Vector3.zero);
 			#endregion
 
-			joystickImageTransform.gameObject.SetActive(false);
-			centerImageTransform.gameObject.SetActive(false);
-			if (centerRotationImageTransform != null) centerRotationImageTransform.gameObject.SetActive(false);
-			lineImageRectTransform.gameObject.SetActive(false);
+			HideJoystick();
 		}
 
 		// for multi touch
 		--_draggingCount;
 		if (_draggingCount == 0)
 			_lastDragPointerId = -1;
+	}
+
+	void HideJoystick()
+	{
+		joystickImageTransform.gameObject.SetActive(false);
+		centerImageTransform.gameObject.SetActive(false);
+		if (centerRotationImageTransform != null) centerRotationImageTransform.gameObject.SetActive(false);
+		lineImageRectTransform.gameObject.SetActive(false);
 	}
 
 	bool CheckThreshold(PointerEventData eventData)

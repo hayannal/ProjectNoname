@@ -84,10 +84,11 @@ public class BurrowAffector : AffectorBase
 			// MovePositionCurve 시그널에서 버로우 상태일땐 셋팅 안하는 방법과
 			// 버로우 상태일때 매프레임 -5로 셋팅하는 방법 두가지가 있는데, 둘다 맘에 들지 않는다.
 			// 우선은 레인지 시그널의 길이를 똑같이 설정해서 동시에 끝나도록 처리할텐데 더 좋은 방법이 있는지 고민해보자.
-			if (Mathf.Abs(_actor.cachedTransform.position.y - BurrowAnimationPositionY) < 0.01f && _actor.GetCollider().enabled == true)
+			if (Mathf.Abs(_actor.actionController.cachedAnimatorTransform.localPosition.y - BurrowAnimationPositionY) < 0.01f && _actor.GetCollider().enabled == true)
 				break;
 			yield return Timing.WaitForOneFrame;
 		}
+		_actor.actionController.cachedAnimatorTransform.localPosition = Vector3.zero;
 		_actor.cachedTransform.position = new Vector3(_actor.cachedTransform.position.x, s_BurrowPositionY, _actor.cachedTransform.position.z);
 
 		// loop effect
@@ -174,10 +175,12 @@ public class BurrowAffector : AffectorBase
 			if (_affectorProcessor.gameObject == null || _affectorProcessor.gameObject.activeSelf == false)
 				yield break;
 
-			if (Mathf.Abs(_actor.cachedTransform.position.y) < 0.01f && _actor.GetCollider().enabled == true)
+			if (Mathf.Abs(_actor.actionController.cachedAnimatorTransform.localPosition.y + BurrowAnimationPositionY) < 0.01f && _actor.GetCollider().enabled == true)
 				break;
 			yield return Timing.WaitForOneFrame;
 		}
+		_actor.actionController.cachedAnimatorTransform.localPosition = Vector3.zero;
+		_actor.cachedTransform.position = new Vector3(_actor.cachedTransform.position.x, 0.0f, _actor.cachedTransform.position.z);
 
 		_actor.baseCharacterController.movement.useGravity = true;
 		_actor.actionController.idleAnimator.enabled = true;

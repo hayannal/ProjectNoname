@@ -149,7 +149,7 @@ public class MeMovePositionCurve : MecanimEventBase {
 		{
 			float firstValue = curveY.keys[0].value;
 			float lastValue = curveY.keys[curveY.length - 1].value;
-			_actor.actionController.cachedAnimatorTransform.localPosition = new Vector3(_actor.actionController.cachedAnimatorTransform.localPosition.x, _basePositionY + (lastValue - firstValue), _actor.actionController.cachedAnimatorTransform.localPosition.z);
+			_actor.actionController.cachedAnimatorTransform.localPosition = new Vector3(_actor.actionController.cachedAnimatorTransform.localPosition.x, _basePositionY + lastValue, _actor.actionController.cachedAnimatorTransform.localPosition.z);
 		}
 		if (useLocalPositionX || useLocalPositionZ)
 		{

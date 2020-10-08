@@ -92,15 +92,29 @@ public class RFX4_MobileBloom : MonoBehaviour
 #endif
 
 #if USE_CUSTOM_RENDERER
+	bool _cachedFormat;
+	RenderTextureFormat _cachedRenderTextureFormat;
 	public RenderTextureFormat SupportedHdrFormat()
+	{
+		// avoid gc alloc. SupportsRenderTextureFormat func.
+		if (_cachedFormat)
+			return _cachedRenderTextureFormat;
+
+		if (SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.RGB111110Float))
+			_cachedRenderTextureFormat = RenderTextureFormat.RGB111110Float;
+		else
+			_cachedRenderTextureFormat = RenderTextureFormat.DefaultHDR;
+		_cachedFormat = true;
+		return _cachedRenderTextureFormat;
+	}
 #else
 	RenderTextureFormat SupportedHdrFormat()
-#endif
 	{
         if (SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.RGB111110Float))
             return RenderTextureFormat.RGB111110Float;
         else return RenderTextureFormat.DefaultHDR;
     }
+#endif
 
 
 

@@ -53,8 +53,9 @@ public class RailMonster : MonoBehaviour
 	#region ObjectPool
 	void ReinitializeRail()
 	{
-		_monsterActor.cachedTransform.position = _startPosition;
-		_monsterActor.cachedTransform.rotation = _startRotation;
+		//_monsterActor.cachedTransform.position = _startPosition;
+		//_monsterActor.cachedTransform.rotation = _startRotation;
+		_monsterActor.cachedTransform.SetPositionAndRotation(_startPosition, _startRotation);
 		_monsterActor.gameObject.SetActive(true);
 		_currentNodeIndex = 0;
 

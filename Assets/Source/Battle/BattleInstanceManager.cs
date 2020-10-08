@@ -51,8 +51,9 @@ public class BattleInstanceManager : MonoBehaviour
 			if (!listCachedGameObject[i].activeSelf)
 			{
 				listCachedGameObject[i].transform.parent = parentTransform;
-				listCachedGameObject[i].transform.position = position;
-				listCachedGameObject[i].transform.rotation = rotation;
+				//listCachedGameObject[i].transform.position = position;
+				//listCachedGameObject[i].transform.rotation = rotation;
+				listCachedGameObject[i].transform.SetPositionAndRotation(position, rotation);
 				listCachedGameObject[i].SetActive(true);
 				return listCachedGameObject[i];
 			}
@@ -171,8 +172,9 @@ public class BattleInstanceManager : MonoBehaviour
 			if (!listCachedHitObject[i].gameObject.activeSelf)
 			{
 				listCachedHitObject[i].cachedTransform.parent = parentTransform;
-				listCachedHitObject[i].cachedTransform.position = position;
-				listCachedHitObject[i].cachedTransform.rotation = rotation;
+				//listCachedHitObject[i].cachedTransform.position = position;
+				//listCachedHitObject[i].cachedTransform.rotation = rotation;
+				listCachedHitObject[i].cachedTransform.SetPositionAndRotation(position, rotation);
 				listCachedHitObject[i].gameObject.SetActive(true);
 				return listCachedHitObject[i];
 			}
@@ -254,8 +256,9 @@ public class BattleInstanceManager : MonoBehaviour
 		{
 			if (!_listCachedEmptyHitObject[i].gameObject.activeSelf)
 			{
-				_listCachedEmptyHitObject[i].cachedTransform.position = position;
-				_listCachedEmptyHitObject[i].cachedTransform.rotation = rotation;
+				//_listCachedEmptyHitObject[i].cachedTransform.position = position;
+				//_listCachedEmptyHitObject[i].cachedTransform.rotation = rotation;
+				_listCachedEmptyHitObject[i].cachedTransform.SetPositionAndRotation(position, rotation);
 				//_listCachedEmptyHitObject[i].cachedTransform.localScale = localScale;
 				_listCachedEmptyHitObject[i].gameObject.SetActive(true);
 				return _listCachedEmptyHitObject[i];
@@ -265,8 +268,9 @@ public class BattleInstanceManager : MonoBehaviour
 		GameObject newObject = new GameObject();
 		newObject.name = "EmptyHitObject";
 		Transform newTransform = newObject.transform;
-		newTransform.position = position;
-		newTransform.rotation = rotation;
+		//newTransform.position = position;
+		//newTransform.rotation = rotation;
+		newTransform.SetPositionAndRotation(position, rotation);
 		//newTransform.localScale = localScale;
 		HitObject hitObject = newObject.AddComponent<HitObject>();
 		_listCachedEmptyHitObject.Add(hitObject);
@@ -292,8 +296,9 @@ public class BattleInstanceManager : MonoBehaviour
 			if (!listCachedContinuousHitObjectGenerator[i].gameObject.activeSelf)
 			{
 				listCachedContinuousHitObjectGenerator[i].cachedTransform.parent = parentTransform;
-				listCachedContinuousHitObjectGenerator[i].cachedTransform.position = position;
-				listCachedContinuousHitObjectGenerator[i].cachedTransform.rotation = rotation;
+				//listCachedContinuousHitObjectGenerator[i].cachedTransform.position = position;
+				//listCachedContinuousHitObjectGenerator[i].cachedTransform.rotation = rotation;
+				listCachedContinuousHitObjectGenerator[i].cachedTransform.SetPositionAndRotation(position, rotation);
 				listCachedContinuousHitObjectGenerator[i].gameObject.SetActive(true);
 				return listCachedContinuousHitObjectGenerator[i];
 			}
@@ -319,8 +324,9 @@ public class BattleInstanceManager : MonoBehaviour
 		{
 			if (!_listCachedTransform[i].gameObject.activeSelf)
 			{
-				_listCachedTransform[i].position = position;
-				_listCachedTransform[i].rotation = rotation;
+				//_listCachedTransform[i].position = position;
+				//_listCachedTransform[i].rotation = rotation;
+				_listCachedTransform[i].SetPositionAndRotation(position, rotation);
 				//_listCachedTransform[i].localScale = localScale;
 				_listCachedTransform[i].gameObject.SetActive(true);
 				return _listCachedTransform[i];
@@ -330,8 +336,9 @@ public class BattleInstanceManager : MonoBehaviour
 		GameObject newObject = new GameObject();
 		newObject.name = "DuplicatedObject";
 		Transform duplicatedTransform = newObject.transform;
-		duplicatedTransform.position = position;
-		duplicatedTransform.rotation = rotation;
+		//duplicatedTransform.position = position;
+		//duplicatedTransform.rotation = rotation;
+		duplicatedTransform.SetPositionAndRotation(position, rotation);
 		//duplicatedTransform.localScale = localScale;
 		_listCachedTransform.Add(duplicatedTransform);
 		return duplicatedTransform;
@@ -356,8 +363,9 @@ public class BattleInstanceManager : MonoBehaviour
 			if (!listCachedLineRenderer[i].gameObject.activeSelf)
 			{
 				listCachedLineRenderer[i].transform.parent = parentTransform;
-				listCachedLineRenderer[i].transform.position = position;
-				listCachedLineRenderer[i].transform.rotation = rotation;
+				//listCachedLineRenderer[i].transform.position = position;
+				//listCachedLineRenderer[i].transform.rotation = rotation;
+				listCachedLineRenderer[i].transform.SetPositionAndRotation(position, rotation);
 				listCachedLineRenderer[i].gameObject.SetActive(true);
 				return listCachedLineRenderer[i];
 			}
@@ -391,8 +399,9 @@ public class BattleInstanceManager : MonoBehaviour
 			if (!listCachedRayDesigner[i].gameObject.activeSelf)
 			{
 				listCachedRayDesigner[i].transform.parent = parentTransform;
-				listCachedRayDesigner[i].transform.position = position;
-				listCachedRayDesigner[i].transform.rotation = rotation;
+				//listCachedRayDesigner[i].transform.position = position;
+				//listCachedRayDesigner[i].transform.rotation = rotation;
+				listCachedRayDesigner[i].transform.SetPositionAndRotation(position, rotation);
 				listCachedRayDesigner[i].gameObject.SetActive(true);
 				return listCachedRayDesigner[i];
 			}
@@ -426,8 +435,9 @@ public class BattleInstanceManager : MonoBehaviour
 			if (!listCachedProceduralLightning[i].gameObject.activeSelf)
 			{
 				listCachedProceduralLightning[i].transform.parent = parentTransform;
-				listCachedProceduralLightning[i].transform.position = position;
-				listCachedProceduralLightning[i].transform.rotation = rotation;
+				//listCachedProceduralLightning[i].transform.position = position;
+				//listCachedProceduralLightning[i].transform.rotation = rotation;
+				listCachedProceduralLightning[i].transform.SetPositionAndRotation(position, rotation);
 				listCachedProceduralLightning[i].gameObject.SetActive(true);
 				return listCachedProceduralLightning[i];
 			}
@@ -797,8 +807,9 @@ public class BattleInstanceManager : MonoBehaviour
 		{
 			if (!listCachedDropObject[i].gameObject.activeSelf)
 			{
-				listCachedDropObject[i].cachedTransform.position = position;
-				listCachedDropObject[i].cachedTransform.rotation = rotation;
+				//listCachedDropObject[i].cachedTransform.position = position;
+				//listCachedDropObject[i].cachedTransform.rotation = rotation;
+				listCachedDropObject[i].cachedTransform.SetPositionAndRotation(position, rotation);
 				listCachedDropObject[i].gameObject.SetActive(true);
 				return listCachedDropObject[i];
 			}
@@ -960,8 +971,9 @@ public class BattleInstanceManager : MonoBehaviour
 		{
 			if (!_listCachedPortal[i].gameObject.activeSelf)
 			{
-				_listCachedPortal[i].cachedTransform.position = position;
-				_listCachedPortal[i].cachedTransform.rotation = rotation;
+				//_listCachedPortal[i].cachedTransform.position = position;
+				//_listCachedPortal[i].cachedTransform.rotation = rotation;
+				_listCachedPortal[i].cachedTransform.SetPositionAndRotation(position, rotation);
 				_listCachedPortal[i].gameObject.SetActive(true);
 				return _listCachedPortal[i];
 			}
@@ -1062,8 +1074,9 @@ public class BattleInstanceManager : MonoBehaviour
 			if (!listCachedAttackIndicator[i].gameObject.activeSelf)
 			{
 				listCachedAttackIndicator[i].transform.parent = parentTransform;
-				listCachedAttackIndicator[i].transform.position = position;
-				listCachedAttackIndicator[i].transform.rotation = rotation;
+				//listCachedAttackIndicator[i].transform.position = position;
+				//listCachedAttackIndicator[i].transform.rotation = rotation;
+				listCachedAttackIndicator[i].cachedTransform.SetPositionAndRotation(position, rotation);
 				listCachedAttackIndicator[i].gameObject.SetActive(true);
 				return listCachedAttackIndicator[i];
 			}
@@ -1157,8 +1170,9 @@ public class BattleInstanceManager : MonoBehaviour
 			if (!listCachedRandomBoxAnimator[i].gameObject.activeSelf)
 			{
 				listCachedRandomBoxAnimator[i].transform.parent = parentTransform;
-				listCachedRandomBoxAnimator[i].transform.position = position;
-				listCachedRandomBoxAnimator[i].transform.rotation = rotation;
+				//listCachedRandomBoxAnimator[i].transform.position = position;
+				//listCachedRandomBoxAnimator[i].transform.rotation = rotation;
+				listCachedRandomBoxAnimator[i].cachedTransform.SetPositionAndRotation(position, rotation);
 				listCachedRandomBoxAnimator[i].gameObject.SetActive(true);
 				return listCachedRandomBoxAnimator[i];
 			}

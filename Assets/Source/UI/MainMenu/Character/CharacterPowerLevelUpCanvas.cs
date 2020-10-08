@@ -34,6 +34,7 @@ public class CharacterPowerLevelUpCanvas : DetailShowCanvasBase
 	public Text addAtkText;
 	public Button priceButton;
 	public Text priceText;
+	public GameObject addValueZeroInfoObject;
 	public GameObject exitObject;
 	public Graphic processGraphicElement;
 
@@ -115,6 +116,9 @@ public class CharacterPowerLevelUpCanvas : DetailShowCanvasBase
 		addHpText.text = string.Format("+{0:N0}", _addMaxHp);
 		addAtkText.text = string.Format("+{0:N0}", _addAtk);
 		priceText.text = price.ToString("N0");
+
+		// 추가되는 수치가 0으로 나오면 예외처리 문구를 보여준다.
+		addValueZeroInfoObject.SetActive(addHpText.text == "+0" || addAtkText.text == "+0");
 	}
 
 	public void OnClickDetailButton()

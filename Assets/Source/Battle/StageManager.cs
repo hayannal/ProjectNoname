@@ -173,8 +173,8 @@ public class StageManager : MonoBehaviour
 	public int GetMaxStage(int chapter, bool chaos)
 	{
 		if (chaos)
-			return TableDataManager.instance.FindChapterTableData(playChapter).maxChaosStage;
-		return TableDataManager.instance.FindChapterTableData(playChapter).maxStage;
+			return TableDataManager.instance.FindChapterTableData(chapter).maxChaosStage;
+		return TableDataManager.instance.FindChapterTableData(chapter).maxStage;
 	}
 
 	public int GetCurrentMaxStage()

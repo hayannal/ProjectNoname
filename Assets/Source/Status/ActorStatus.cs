@@ -137,8 +137,10 @@ public class ActorStatus : MonoBehaviour
 			// 아군 몹이라면 플레이어 액터 스탯을 기반으로 계산해야한다.
 			if (BattleInstanceManager.instance.playerActor != null)
 			{
-				standardHp = BattleInstanceManager.instance.playerActor.actorStatus.GetValue(eActorStatus.MaxHp);
-				standardAtk = BattleInstanceManager.instance.playerActor.actorStatus.GetValue(eActorStatus.Attack);
+				PlayerActor playerActor = BattleInstanceManager.instance.playerActor;
+				standardHp = playerActor.actorStatus.GetValue(eActorStatus.MaxHp);
+				standardAtk = playerActor.actorStatus.GetValue(eActorStatus.Attack);
+				_statusBase.valueList[(int)eActorStatus.AttackSpeedAddRate] = playerActor.actorStatus.GetValue(eActorStatus.AttackSpeedAddRate);
 			}
 		}
 		else if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())

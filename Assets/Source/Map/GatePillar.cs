@@ -451,6 +451,7 @@ public class GatePillar : MonoBehaviour
 
 	void ShowRefillEnergyCanvas()
 	{
+		raycastCount = 0;
 		UIInstanceManager.instance.ShowCanvasAsync("ConfirmSpendCanvas", () => {
 
 			if (this == null) return;

@@ -542,6 +542,14 @@ public class DropProcessor : MonoBehaviour
 				}
 			}
 		}
+		else
+		{
+			// EvilLich를 골드 보상 얻을 수 없는 높은 레벨로 깨면 ReservedLastDropObject는 없는데 인장은 얻어야할 상황이 생길 수 있다.
+			// 이때를 대비해서 예외처리 코드 추가.
+			// 이땐 소환된 몹보다 EvilLich를 먼저 잡을때라서 ApplyLastDropObject를 호출하면 안된다.
+			if (dropObjectForException != null && DropManager.instance.IsExistReservedLastDropObject() == false)
+				DropManager.instance.ReserveLastDropObject(dropObjectForException);
+		}
 		
 		gameObject.SetActive(false);
 	}

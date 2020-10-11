@@ -298,7 +298,7 @@ public class DailyShopData : MonoBehaviour
 				case "uch":
 					int.TryParse(info.value, out seed);
 					UnityEngine.Random.InitState(seed);
-					actorId = DropManager.instance.GetGachaCharacterId(false, 1, true);
+					actorId = DropManager.instance.GetGachaCharacterId(false, false, 1, true);
 					unfixed = true;
 					break;
 				case "upn":

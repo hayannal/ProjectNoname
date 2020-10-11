@@ -154,7 +154,7 @@ public class CharacterBoxConfirmCanvas : MonoBehaviour
 			// 이 값을 1 이상으로 보내면 내부적으로 n회 돌린 후 누적해서 보여주게 된다. 보낼때마다 패킷 주고받는다.
 			RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Character, _cachedDropProcessor, _repeatRemainCount, _priceOnce, () =>
 			{
-				OnCompleteRandomBoxScreen(DropManager.instance.GetGrantCharacterInfo(), DropManager.instance.GetLimitBreakPointInfo(), OnResult);
+				OnCompleteRandomBoxScreen(DropManager.instance.GetGrantCharacterInfo(), DropManager.instance.GetTranscendPointInfo(), OnResult);
 			});
 		});
 	}
@@ -162,12 +162,12 @@ public class CharacterBoxConfirmCanvas : MonoBehaviour
 
 
 
-	public static void OnCompleteRandomBoxScreen(List<string> listGrantInfo, List<DropManager.CharacterLbpRequest> listLbpInfo, System.Action resultAction)
+	public static void OnCompleteRandomBoxScreen(List<string> listGrantInfo, List<DropManager.CharacterTrpRequest> listTrpInfo, System.Action resultAction)
 	{
-		if (listGrantInfo.Count + listLbpInfo.Count > 0)
+		if (listGrantInfo.Count + listTrpInfo.Count > 0)
 		{
 			_listGrantInfo = listGrantInfo;
-			_listLbpInfo = listLbpInfo;
+			_listTrpInfo = listTrpInfo;
 			_resultAction = resultAction;
 
 			UIInstanceManager.instance.ShowCanvasAsync("CharacterBoxShowCanvas", () =>
@@ -175,7 +175,7 @@ public class CharacterBoxConfirmCanvas : MonoBehaviour
 				// 여러개 있을거 대비해서 순차적으로 넣어야한다.
 				_grant = listGrantInfo.Count > 0;
 				_index = 0;
-				CharacterBoxShowCanvas.instance.ShowCanvas(_grant ? listGrantInfo[0] : listLbpInfo[0].actorId, OnConfirmCharacterShow);
+				CharacterBoxShowCanvas.instance.ShowCanvas(_grant ? listGrantInfo[0] : listTrpInfo[0].actorId, OnConfirmCharacterShow);
 			});
 		}
 		else
@@ -187,7 +187,7 @@ public class CharacterBoxConfirmCanvas : MonoBehaviour
 
 	// 임시로 들고있다가 연출 후 바로 null로 버린다. 복사없이 레퍼런스만 들고있다가 버리는거다.
 	static List<string> _listGrantInfo;
-	static List<DropManager.CharacterLbpRequest> _listLbpInfo;
+	static List<DropManager.CharacterTrpRequest> _listTrpInfo;
 	static bool _grant;
 	static int _index;
 	static System.Action _resultAction;
@@ -206,12 +206,12 @@ public class CharacterBoxConfirmCanvas : MonoBehaviour
 		}
 		if (_grant == false)
 		{
-			if (_index < _listLbpInfo.Count)
-				CharacterBoxShowCanvas.instance.ShowCanvas(_listLbpInfo[_index].actorId, OnConfirmCharacterShow);
+			if (_index < _listTrpInfo.Count)
+				CharacterBoxShowCanvas.instance.ShowCanvas(_listTrpInfo[_index].actorId, OnConfirmCharacterShow);
 			else
 			{
 				_listGrantInfo = null;
-				_listLbpInfo = null;
+				_listTrpInfo = null;
 
 				if (_resultAction != null)
 					_resultAction();

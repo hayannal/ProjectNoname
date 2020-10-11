@@ -256,7 +256,7 @@ public class DailyShopCharacterConfirmCanvas : MonoBehaviour
 					gameObject.SetActive(false);
 					RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Character, _cachedDropProcessor, 0, 0, () =>
 					{
-						CharacterBoxConfirmCanvas.OnCompleteRandomBoxScreen(DropManager.instance.GetGrantCharacterInfo(), DropManager.instance.GetLimitBreakPointInfo(), () =>
+						CharacterBoxConfirmCanvas.OnCompleteRandomBoxScreen(DropManager.instance.GetGrantCharacterInfo(), DropManager.instance.GetTranscendPointInfo(), () =>
 						{
 							DropManager.instance.ClearLobbyDropInfo();
 
@@ -285,7 +285,7 @@ public class DailyShopCharacterConfirmCanvas : MonoBehaviour
 			case "fl3":
 				CharacterData characterData = PlayerData.instance.GetCharacterData(_selectedCharacterId);
 				if (characterData != null)
-					characterData.limitBreakPoint += 1;
+					characterData.transcendPoint += 1;
 				break;
 		}
 

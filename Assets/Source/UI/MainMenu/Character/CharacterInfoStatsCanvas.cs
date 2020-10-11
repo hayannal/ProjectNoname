@@ -76,7 +76,7 @@ public class CharacterInfoStatsCanvas : MonoBehaviour
 		_remainStatPoint = characterData.remainStatPoint;
 		_sumUsePoint = 0;
 
-		if (characterData.limitBreakLevel == 0)
+		if (characterData.transcendLevel == 0)
 		{
 			needGroupObject.SetActive(true);
 			contentGroupObject.SetActive(false);

@@ -770,10 +770,10 @@ public class PlayFabApiManager : MonoBehaviour
 		int addDia = DropManager.instance.GetLobbyDiaAmount();
 		List<DropManager.CharacterPpRequest> listPpInfo = DropManager.instance.GetPowerPointInfo();
 		List<string> listGrantInfo = DropManager.instance.GetGrantCharacterInfo();
-		List<DropManager.CharacterLbpRequest> listLbpInfo = DropManager.instance.GetLimitBreakPointInfo();
+		List<DropManager.CharacterTrpRequest> listTrpInfo = DropManager.instance.GetTranscendPointInfo();
 
 		int ppCount = listPpInfo.Count;
-		int originCount = listGrantInfo.Count + listLbpInfo.Count;
+		int originCount = listGrantInfo.Count + listTrpInfo.Count;
 		if (ppCount > 5 || originCount > 1)
 		{
 			// 수량 에러
@@ -785,13 +785,13 @@ public class PlayFabApiManager : MonoBehaviour
 		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
 		string jsonListPp = serializer.SerializeObject(listPpInfo);
 		string jsonListGr = serializer.SerializeObject(listGrantInfo);
-		string jsonListLbp = serializer.SerializeObject(listLbpInfo);
-		checkSum = CheckSum(string.Format("{0}_{1}_{2}_{3}_{4}", jsonListPp, jsonListGr, jsonListLbp, addGold, addDia));
+		string jsonListTrp = serializer.SerializeObject(listTrpInfo);
+		checkSum = CheckSum(string.Format("{0}_{1}_{2}_{3}_{4}", jsonListPp, jsonListGr, jsonListTrp, addGold, addDia));
 
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
 			FunctionName = "OpenDailyBox",
-			FunctionParameter = new { Go = addGold, Di = addDia, LstPp = listPpInfo, LstGr = listGrantInfo, LstLbp = listLbpInfo, LstCs = checkSum },
+			FunctionParameter = new { Go = addGold, Di = addDia, LstPp = listPpInfo, LstGr = listGrantInfo, LstTrp = listTrpInfo, LstCs = checkSum },
 			GeneratePlayStreamEvent = true,
 		}, (success) =>
 		{
@@ -808,7 +808,7 @@ public class PlayFabApiManager : MonoBehaviour
 				jsonResult.TryGetValue("adChrIdPay", out object adChrIdPayload);
 
 				++PlayerData.instance.originOpenCount;
-				if ((listLbpInfo.Count + listGrantInfo.Count) == 0)
+				if ((listTrpInfo.Count + listGrantInfo.Count) == 0)
 					++PlayerData.instance.notStreakCharCount;
 				else
 					PlayerData.instance.notStreakCharCount = 0;
@@ -817,7 +817,7 @@ public class PlayFabApiManager : MonoBehaviour
 				PlayerData.instance.OnRecvDailyBoxInfo((string)date, true);
 
 				// 뽑기쪽 처리와 동일한 함수들
-				PlayerData.instance.OnRecvUpdateCharacterStatistics(listPpInfo, listLbpInfo);
+				PlayerData.instance.OnRecvUpdateCharacterStatistics(listPpInfo, listTrpInfo);
 				PlayerData.instance.OnRecvGrantCharacterList(adChrIdPayload);
 
 				// 보통은 failure해도 successCallback 호출을 해줬는데 여기선 아예 뽑기 연출로 가지도 않도록 호출하지 않는다.
@@ -1067,8 +1067,34 @@ public class PlayFabApiManager : MonoBehaviour
 			if (!failure)
 			{
 				WaitingNetworkCanvas.Show(false);
-				CurrencyData.instance.gold -= price;
+				CurrencyData.instance.dia -= price;
 				characterData.OnLimitBreak();
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+
+	public void RequestCharacterTranscend(CharacterData characterData, int price, Action successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "Transcend",
+			FunctionParameter = new { ChrId = characterData.entityKey.Id },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+				CurrencyData.instance.gold -= price;
+				characterData.OnTranscend();
 				if (successCallback != null) successCallback.Invoke();
 			}
 		}, (error) =>
@@ -1552,10 +1578,10 @@ public class PlayFabApiManager : MonoBehaviour
 		// DropProcess를 1회 굴리고나면 DropManager에 정보가 쌓여있다. 이걸 보내면 된다.
 		List<DropManager.CharacterPpRequest> listPpInfo = DropManager.instance.GetPowerPointInfo();
 		List<string> listGrantInfo = DropManager.instance.GetGrantCharacterInfo();
-		List<DropManager.CharacterLbpRequest> listLbpInfo = DropManager.instance.GetLimitBreakPointInfo();
+		List<DropManager.CharacterTrpRequest> listTrpInfo = DropManager.instance.GetTranscendPointInfo();
 
 		int ppCount = listPpInfo.Count;
-		int originCount = listGrantInfo.Count + listLbpInfo.Count;
+		int originCount = listGrantInfo.Count + listTrpInfo.Count;
 		if (ppCount > 6 || originCount > 2)
 		{
 			// 수량 에러
@@ -1567,7 +1593,7 @@ public class PlayFabApiManager : MonoBehaviour
 		int apiCallCount = 4;
 		apiCallCount += listPpInfo.Count;
 		apiCallCount += listGrantInfo.Count * 2;
-		apiCallCount += listLbpInfo.Count;
+		apiCallCount += listTrpInfo.Count;
 
 		if (apiCallCount > 15)
 		{
@@ -1581,13 +1607,13 @@ public class PlayFabApiManager : MonoBehaviour
 		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
 		string jsonListPp = serializer.SerializeObject(listPpInfo);
 		string jsonListGr = serializer.SerializeObject(listGrantInfo);
-		string jsonListLbp = serializer.SerializeObject(listLbpInfo);
+		string jsonListLbp = serializer.SerializeObject(listTrpInfo);
 		checkSum = CheckSum(string.Format("{0}_{1}_{2}", jsonListPp, jsonListGr, jsonListLbp));
 
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
 			FunctionName = "OpenCharBox",
-			FunctionParameter = new { LstPp = listPpInfo, LstGr = listGrantInfo, LstLbp = listLbpInfo, LstCs = checkSum },
+			FunctionParameter = new { LstPp = listPpInfo, LstGr = listGrantInfo, LstTrp = listTrpInfo, LstCs = checkSum },
 			GeneratePlayStreamEvent = true,
 		}, (success) =>
 		{
@@ -1601,13 +1627,13 @@ public class PlayFabApiManager : MonoBehaviour
 				jsonResult.TryGetValue("adChrIdPay", out object adChrIdPayload);
 
 				++PlayerData.instance.characterBoxOpenCount;
-				if ((listLbpInfo.Count + listGrantInfo.Count) == 0)
+				if ((listTrpInfo.Count + listGrantInfo.Count) == 0)
 					PlayerData.instance.notStreakCharCount += 2;
 				else
 					PlayerData.instance.notStreakCharCount = 0;
 
 				// update
-				PlayerData.instance.OnRecvUpdateCharacterStatistics(listPpInfo, listLbpInfo);
+				PlayerData.instance.OnRecvUpdateCharacterStatistics(listPpInfo, listTrpInfo);
 				PlayerData.instance.OnRecvGrantCharacterList(adChrIdPayload);
 				if (successCallback != null) successCallback.Invoke(failure);
 

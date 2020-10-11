@@ -13,9 +13,11 @@ public class CharacterInfoCanvas : MonoBehaviour
 	public MenuButton[] menuButtonList;
 	public GameObject menuRootObject;
 
-	// 4개의 메뉴중에 2개만 알람을 쓰니 따로 관리하도록 한다. 그런데 그림자가 있어야 예뻐져서 각각 그림자도 추가하기로 한다.
+	// 5개의 메뉴중에 3개만 알람을 쓰니 따로 관리하도록 한다. 그런데 그림자가 있어야 예뻐져서 각각 그림자도 추가하기로 한다.
 	public RectTransform growthAlarmRootTransform;
 	public RectTransform growthShadowAlarmRootTransform;
+	public RectTransform transcendAlarmRootTransform;
+	public RectTransform transcendShadowAlarmRootTransform;
 	public RectTransform potentialAlarmRootTransform;
 	public RectTransform potentialShadowAlarmRootTransform;
 
@@ -31,29 +33,52 @@ public class CharacterInfoCanvas : MonoBehaviour
 	{
 		// 항상 최초 시작에는 현재 메뉴를 어디까지 보여줄지 체크해본다.
 		// 이후 초월할때마다 한번씩 갱신하면 될거다.
-		int highestLimitBreakLevel = 0;
+		int highestTranscendLevel = 0;
 		for (int i = 0; i < PlayerData.instance.listCharacterData.Count; ++i)
-			highestLimitBreakLevel = Mathf.Max(highestLimitBreakLevel, PlayerData.instance.listCharacterData[i].limitBreakLevel);
-		RefreshOpenMenuSlot(highestLimitBreakLevel);
+			highestTranscendLevel = Mathf.Max(highestTranscendLevel, PlayerData.instance.listCharacterData[i].transcendLevel);
+		RefreshOpenMenuSlot(highestTranscendLevel);
 
 		// 항상 게임을 처음 켤땐 0번탭을 보게 해준다.
 		OnValueChangedToggle(0);
 	}
 
-	int _highestLimitBreakLevel = -1;
-	public void RefreshOpenMenuSlot(int newLimitBreakLevel)
+	public void RefreshOpenMenuSlotByTranscendPoint()
 	{
-		if (newLimitBreakLevel <= _highestLimitBreakLevel)
+		// 초월이 하나도 안된 상태에서 초월 포인트를 얻으면 초월 메뉴를 보여줘야한다.
+		if (_highestTranscendLevel > 0)
 			return;
 
-		_highestLimitBreakLevel = newLimitBreakLevel;
+		_highestTranscendLevel = -1;
+		RefreshOpenMenuSlot(0);
+	}
+
+	int _highestTranscendLevel = -1;
+	public void RefreshOpenMenuSlot(int newTranscendLevel)
+	{
+		if (newTranscendLevel <= _highestTranscendLevel)
+			return;
+
+		_highestTranscendLevel = newTranscendLevel;
 		int openMenuIndex = 0;
-		switch (_highestLimitBreakLevel)
+		switch (_highestTranscendLevel)
 		{
-			case 0: openMenuIndex = -1; break;
-			case 1: openMenuIndex = 3; break;	/////ch 1
-			case 2: openMenuIndex = 2; break;
-			case 3: openMenuIndex = 3; break;
+			case 0:
+				// 초월이 안된 상태에서는 초월포인트를 가지고 있는지 여부에 따라서 체크하면 된다.
+				// 하나라도 가지고 있으면 두번째 메뉴(초월)까지 보이는거고 그게 아니라면 다 닫혀있으면 된다.
+				bool existTranscendPoint = false;
+				for (int i = 0; i < PlayerData.instance.listCharacterData.Count; ++i)
+				{
+					if (PlayerData.instance.listCharacterData[i].transcendPoint > 0)
+					{
+						existTranscendPoint = true;
+						break;
+					}
+				}
+				openMenuIndex = existTranscendPoint ? 1 : -1;
+				break;
+			case 1: openMenuIndex = 2; break;	/////ch 2
+			case 2: openMenuIndex = 3; break;
+			case 3: openMenuIndex = 4; break;
 		}
 		// 결과가 나오면 우선 그에 맞춰서 숨길거 숨긴다.
 		for (int i = 0; i < menuButtonList.Length; ++i)
@@ -115,7 +140,18 @@ public class CharacterInfoCanvas : MonoBehaviour
 			AlarmObject.Hide(growthShadowAlarmRootTransform);
 		}
 
-		if (characterData != null && characterData.IsAlarmState())
+		if (characterData != null && characterData.IsTranscendAlarmState())
+		{
+			AlarmObject.Show(transcendAlarmRootTransform);
+			AlarmObject.Show(transcendShadowAlarmRootTransform, true, false, false, true);
+		}
+		else
+		{
+			AlarmObject.Hide(transcendAlarmRootTransform);
+			AlarmObject.Hide(transcendShadowAlarmRootTransform);
+		}
+
+		if (characterData != null && characterData.IsPotentialAlarmState())
 		{
 			AlarmObject.Show(potentialAlarmRootTransform);
 			AlarmObject.Show(potentialShadowAlarmRootTransform, true, false, false, true);
@@ -154,6 +190,7 @@ public class CharacterInfoCanvas : MonoBehaviour
 	public void OnClickMenuButton2() { OnValueChangedToggle(1); }
 	public void OnClickMenuButton3() { OnValueChangedToggle(2); }
 	public void OnClickMenuButton4() { OnValueChangedToggle(3); }
+	public void OnClickMenuButton5() { OnValueChangedToggle(4); }
 
 	List<Transform> _listMenuTransform = new List<Transform>();
 	int _lastIndex = -1;

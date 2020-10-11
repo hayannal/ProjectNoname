@@ -102,7 +102,6 @@ public class CharacterLimitBreakCanvas : DetailShowCanvasBase
 		PlayFabApiManager.instance.RequestCharacterLimitBreak(_characterData, _price, () =>
 		{
 			CharacterInfoCanvas.instance.currencySmallInfo.RefreshInfo();
-			CharacterInfoCanvas.instance.RefreshOpenMenuSlot(_characterData.limitBreakLevel);
 			Timing.RunCoroutine(LimitBreakProcess());
 		});
 	}

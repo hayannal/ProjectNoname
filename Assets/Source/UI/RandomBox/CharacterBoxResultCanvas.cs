@@ -65,13 +65,13 @@ public class CharacterBoxResultCanvas : MonoBehaviour
 		int addDia = DropManager.instance.GetLobbyDiaAmount();
 		List<DropManager.CharacterPpRequest> listPpInfo = DropManager.instance.GetPowerPointInfo();
 		List<string> listGrantInfo = DropManager.instance.GetGrantCharacterInfo();
-		List<DropManager.CharacterLbpRequest> listLbpInfo = DropManager.instance.GetLimitBreakPointInfo();
-		RefreshInfo(addGold, addDia, listPpInfo, listGrantInfo, listLbpInfo);
+		List<DropManager.CharacterTrpRequest> listTrpInfo = DropManager.instance.GetTranscendPointInfo();
+		RefreshInfo(addGold, addDia, listPpInfo, listGrantInfo, listTrpInfo);
 	}
 
 	List<CharacterBoxResultListItem> _listOriginResultItem = new List<CharacterBoxResultListItem>();
 	List<CharacterBoxResultListItem> _listResultListItem = new List<CharacterBoxResultListItem>();
-	public void RefreshInfo(int addGold, int addDia, List<DropManager.CharacterPpRequest> listPpInfo, List<string> listGrantInfo, List<DropManager.CharacterLbpRequest> listLbpInfo)
+	public void RefreshInfo(int addGold, int addDia, List<DropManager.CharacterPpRequest> listPpInfo, List<string> listGrantInfo, List<DropManager.CharacterTrpRequest> listTrpInfo)
 	{
 		// 골드나 다이아가 
 		bool goldDia = (addGold > 0) || (addDia > 0);
@@ -89,7 +89,7 @@ public class CharacterBoxResultCanvas : MonoBehaviour
 		}
 
 		bool needOriginGroup = false;
-		int originCount = listGrantInfo.Count + listLbpInfo.Count;
+		int originCount = listGrantInfo.Count + listTrpInfo.Count;
 		if (originCount == 0)
 		{
 			// 구분선 없이 pp리스트만 출력한다.
@@ -115,20 +115,20 @@ public class CharacterBoxResultCanvas : MonoBehaviour
 			CharacterData characterData = PlayerData.instance.GetCharacterData(listGrantInfo[i]);
 			if (characterData != null)
 				powerLevel = characterData.powerLevel;
-			resultListItem.characterListItem.Initialize(listGrantInfo[i], powerLevel, 0, null, null);
+			resultListItem.characterListItem.Initialize(listGrantInfo[i], powerLevel, 0, 0, null, null);
 			resultListItem.Initialize("ShopUI_NewCharacter", 0);
 			_listOriginResultItem.Add(resultListItem);
 		}
 
-		for (int i = 0; i < listLbpInfo.Count; ++i)
+		for (int i = 0; i < listTrpInfo.Count; ++i)
 		{
 			CharacterBoxResultListItem resultListItem = _originContainer.GetCachedItem(originContentItemPrefab, originContentRootRectTransform);
 			int powerLevel = 0;
-			CharacterData characterData = PlayerData.instance.GetCharacterData(listLbpInfo[i].actorId);
+			CharacterData characterData = PlayerData.instance.GetCharacterData(listTrpInfo[i].actorId);
 			if (characterData != null)
 				powerLevel = characterData.powerLevel;
-			resultListItem.characterListItem.Initialize(listLbpInfo[i].actorId, powerLevel, 0, null, null);
-			resultListItem.Initialize("ShopUI_LimitBreakReward", 0);
+			resultListItem.characterListItem.Initialize(listTrpInfo[i].actorId, powerLevel, 0, 0, null, null);
+			resultListItem.Initialize("ShopUI_TranscendReward", 0);
 			_listOriginResultItem.Add(resultListItem);
 		}
 
@@ -145,9 +145,9 @@ public class CharacterBoxResultCanvas : MonoBehaviour
 			if (characterData != null)
 			{
 				powerLevel = characterData.powerLevel;
-				showPlusAlarm = characterData.IsPlusAlarmState(true);
+				showPlusAlarm = characterData.IsPlusAlarmState();
 			}
-			resultListItem.characterListItem.Initialize(listPpInfo[i].actorId, powerLevel, 0, null, null);
+			resultListItem.characterListItem.Initialize(listPpInfo[i].actorId, powerLevel, 0, 0, null, null);
 			resultListItem.characterListItem.ShowAlarm(false);
 			if (showPlusAlarm)
 			{
@@ -166,6 +166,18 @@ public class CharacterBoxResultCanvas : MonoBehaviour
 		if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
 			DotMainMenuCanvas.instance.RefreshCharacterAlarmObject(false);
 		LobbyCanvas.instance.RefreshTutorialPlusAlarmObject();
+
+		// pp 뿐만 아니라 transcendPoint도 획득 가능한 곳이다.
+		if (listTrpInfo.Count > 0)
+		{
+			if (DotMainMenuCanvas.instance != null)
+				DotMainMenuCanvas.instance.RefreshCharacterAlarmObject(false);
+			LobbyCanvas.instance.RefreshAlarmObject(DotMainMenuCanvas.eButtonType.Character, true);
+
+			// 초월메뉴 최초로 보이는 것도 확인해야한다.
+			if (CharacterInfoCanvas.instance != null)
+				CharacterInfoCanvas.instance.RefreshOpenMenuSlotByTranscendPoint();
+		}
 
 		// 모든 표시가 끝나면 DropManager에 있는 정보를 강제로 초기화 시켜줘야한다.
 		DropManager.instance.ClearLobbyDropInfo();

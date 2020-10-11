@@ -128,7 +128,7 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 				{
 					RandomBoxScreenCanvas.instance.SetInfo(useSecond ? RandomBoxScreenCanvas.eBoxType.Origin_Big : RandomBoxScreenCanvas.eBoxType.Origin, dropProcessor, 0, 0, () =>
 					{
-						CharacterBoxConfirmCanvas.OnCompleteRandomBoxScreen(DropManager.instance.GetGrantCharacterInfo(), DropManager.instance.GetLimitBreakPointInfo(), CharacterBoxConfirmCanvas.OnResult);
+						CharacterBoxConfirmCanvas.OnCompleteRandomBoxScreen(DropManager.instance.GetGrantCharacterInfo(), DropManager.instance.GetTranscendPointInfo(), CharacterBoxConfirmCanvas.OnResult);
 					});
 				});
 			}

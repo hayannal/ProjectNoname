@@ -134,22 +134,28 @@ public class DailyShopListItem : MonoBehaviour
 				characterData = PlayerData.instance.GetCharacterData(dailyShopSlotInfo.value);
 				if (characterData == null)
 					break;
-				if (characterData.needLimitBreak && characterData.limitBreakPoint <= characterData.limitBreakLevel && characterData.limitBreakLevel == 0)
+				if (characterData.transcendPoint == 0)
 					return true;
+				//if (characterData.needLimitBreak && characterData.limitBreakPoint <= characterData.limitBreakLevel && characterData.limitBreakLevel == 0)
+				//	return true;
 				break;
 			case "fl2": // fixed Character Limit2
 				characterData = PlayerData.instance.GetCharacterData(dailyShopSlotInfo.value);
 				if (characterData == null)
 					break;
-				if (characterData.needLimitBreak && characterData.limitBreakPoint <= characterData.limitBreakLevel && characterData.limitBreakLevel == 1)
+				if (characterData.transcendPoint == 1)
 					return true;
+				//if (characterData.needLimitBreak && characterData.limitBreakPoint <= characterData.limitBreakLevel && characterData.limitBreakLevel == 1)
+				//	return true;
 				break;
 			case "fl3": // fixed Character Limit3
 				characterData = PlayerData.instance.GetCharacterData(dailyShopSlotInfo.value);
 				if (characterData == null)
 					break;
-				if (characterData.needLimitBreak && characterData.limitBreakPoint <= characterData.limitBreakLevel && characterData.limitBreakLevel == 2)
+				if (characterData.transcendPoint == 2)
 					return true;
+				//if (characterData.needLimitBreak && characterData.limitBreakPoint <= characterData.limitBreakLevel && characterData.limitBreakLevel == 2)
+				//	return true;
 				break;
 			case "uch": // unfixed Heroic Character
 				cachedActorId = DailyShopData.instance.GetUnfixedResult(dailyShopSlotInfo.slotId);

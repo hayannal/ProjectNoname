@@ -194,10 +194,10 @@ public class DropProcessor : MonoBehaviour
 				{
 					switch (dropTableData.subValue[i])
 					{
-						case "s": stringValue = DropManager.instance.GetGachaCharacterId(false); break;
-						case "x": stringValue = DropManager.instance.GetGachaCharacterId(true); break;
-						case "l": stringValue = DropManager.instance.GetGachaCharacterId(false, 0); break;
-						case "u": stringValue = DropManager.instance.GetGachaCharacterId(false, 1); break;
+						case "s": stringValue = DropManager.instance.GetGachaCharacterId(false, true); break;
+						case "x": stringValue = DropManager.instance.GetGachaCharacterId(true, false); break;
+						case "l": stringValue = DropManager.instance.GetGachaCharacterId(false, false, 0); break;
+						case "u": stringValue = DropManager.instance.GetGachaCharacterId(false, false, 1); break;
 					}
 					// Origin이나 아래 PowerPoint는 특정 조건에 의해(중복 방지라던지 등등) 안나올 수 있다. 이땐 건너뛰어야한다.
 					if (stringValue == "")
@@ -346,7 +346,9 @@ public class DropProcessor : MonoBehaviour
 			}
 			else
 			{
-				if (characterData != null && characterData.needLimitBreak && characterData.limitBreakPoint <= characterData.limitBreakLevel)
+				//if (characterData != null && characterData.needLimitBreak && characterData.limitBreakPoint <= characterData.limitBreakLevel)
+				//	adjustWeight = TableDataManager.instance.actorTable.dataArray[i].charGachaWeight;
+				if (characterData != null && characterData.transcendPoint < CharacterData.TranscendMax)
 					adjustWeight = TableDataManager.instance.actorTable.dataArray[i].charGachaWeight;
 			}
 			adjustSumWeight += adjustWeight;

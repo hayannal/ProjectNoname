@@ -30,14 +30,19 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 	public Text atkText;
 	public GameObject sliderRectObject;
 	public Slider ppSlider;
+	public Image sliderFrameImage;
+	public Image sliderFillImage;
 	public Text ppText;
+
 	public GameObject priceButtonObject;
+	public GameObject[] priceTypeObjectList;
 	public Image priceButtonImage;
 	public Text priceText;
-	public Coffee.UIExtensions.UIEffect goldGrayscaleEffect;
+	public Coffee.UIExtensions.UIEffect[] priceGrayscaleEffect;
 	public GameObject maxButtonObject;
 	public Image maxButtonImage;
 	public Text maxButtonText;
+
 	public RectTransform alarmRootTransform;
 
 	void Awake()
@@ -139,9 +144,9 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 
 	bool _overMaxMode = false;
 	bool _limitBreakMode = false;
+	CurrencyData.eCurrencyType _currencyType = CurrencyData.eCurrencyType.Gold;
 	int _price;
 	bool _needPp;
-	bool _needLimitBreakPoint;
 	void RefreshRequired()
 	{
 		AlarmObject.Hide(alarmRootTransform);
@@ -160,12 +165,12 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 		_overMaxMode = false;
 		_limitBreakMode = false;
 		_needPp = false;
-		_needLimitBreakPoint = false;
 		if (powerLevel >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxPowerLevel"))
 		{
 			_overMaxMode = true;
 			ppText.text = UIString.instance.GetString("GameUI_OverPp", pp - characterData.maxPp);
 			ppSlider.value = 1.0f;
+			sliderFrameImage.color = sliderFillImage.color = Color.white;
 			sliderRectObject.SetActive(true);
 			priceButtonObject.SetActive(false);
 
@@ -177,42 +182,59 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 		{
 			int current = 0;
 			int max = 0;
+			int price = 0;
+			bool notEnoughPrice = false;
+			CurrencyData.eCurrencyType currencyType = CurrencyData.eCurrencyType.Diamond;
 			PowerLevelTableData powerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(powerLevel);
 			PowerLevelTableData nextPowerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(powerLevel + 1);
 			if (characterData != null && characterData.needLimitBreak)
 			{
 				_limitBreakMode = true;
-				current = characterData.limitBreakPoint - powerLevelTableData.requiredLimitBreak;
-				max = 1;
-				_needLimitBreakPoint = current < max;
+				ppText.text = UIString.instance.GetString("GameUI_NowPp", pp - powerLevelTableData.requiredAccumulatedPowerPoint);
+				ppSlider.value = 1.0f;
+				sliderFrameImage.color = sliderFillImage.color = ColorUtil.halfGray;
+				switch (characterData.limitBreakLevel)
+				{
+					case 0: price = nextPowerLevelTableData.requiredLimitBreakDiamond0; break;
+					case 1: price = nextPowerLevelTableData.requiredLimitBreakDiamond1; break;
+					case 2: price = nextPowerLevelTableData.requiredLimitBreakDiamond2; break;
+				}
+				notEnoughPrice = (CurrencyData.instance.dia < price);
 			}
 			else
 			{
 				current = pp - powerLevelTableData.requiredAccumulatedPowerPoint;
 				max = nextPowerLevelTableData.requiredPowerPoint;
 				_needPp = current < max;
+				currencyType = CurrencyData.eCurrencyType.Gold;
+				price = nextPowerLevelTableData.requiredGold;
+				notEnoughPrice = (CurrencyData.instance.gold < price);
+
+				if (!dontHave)
+				{
+					ppText.text = UIString.instance.GetString("GameUI_SpacedFraction", current, max);
+					ppSlider.value = Mathf.Min(1.0f, (float)current / (float)max);
+				}
+				sliderFrameImage.color = sliderFillImage.color = Color.white;
+				sliderRectObject.SetActive(!dontHave);
 			}
+			priceText.text = price.ToString("N0");
 
-			if (!dontHave)
-			{
-				ppText.text = UIString.instance.GetString("GameUI_SpacedFraction", current, max);
-				ppSlider.value = Mathf.Min(1.0f, (float)current / (float)max);
-			}
-			sliderRectObject.SetActive(!dontHave);
-
-			int requiredGold = nextPowerLevelTableData.requiredGold;
-			if (_limitBreakMode) requiredGold = nextPowerLevelTableData.requiredLimitBreakGold;
-			priceText.text = requiredGold.ToString("N0");
-
-			bool disablePrice = (dontHave || CurrencyData.instance.gold < requiredGold || current < max);
+			bool disablePrice = (dontHave || notEnoughPrice || current < max);
 			priceButtonImage.color = !disablePrice ? Color.white : ColorUtil.halfGray;
 			priceText.color = !disablePrice ? Color.white : Color.gray;
-			goldGrayscaleEffect.enabled = disablePrice;
+			for (int i = 0; i < priceTypeObjectList.Length; ++i)
+			{
+				priceTypeObjectList[i].SetActive((int)currencyType == i);
+				if ((int)currencyType == i)
+					priceGrayscaleEffect[i].enabled = disablePrice;
+			}
 			priceButtonObject.SetActive(true);
 			maxButtonObject.SetActive(false);
-			_price = requiredGold;
+			_price = price;
+			_currencyType = currencyType;
 
-			if (current >= max)
+			if (max != 0 && current >= max)
 				AlarmObject.Show(alarmRootTransform, false, false, true);
 		}
 	}
@@ -337,7 +359,7 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 				pp = characterData.pp;
 				maxPpOfCurrentLimitBreak = characterData.maxPpOfCurrentLimitBreak;
 			}
-			text = string.Format("{0}\n\n{1}", UIString.instance.GetString("GameUI_CharTranscendenceDesc"), UIString.instance.GetString("GameUI_NowPp", pp - characterData.maxPpOfCurrentLimitBreak));
+			text = UIString.instance.GetString("GameUI_CharLimitBreakStandby");
 		}
 		else
 			text = UIString.instance.GetString("GameUI_CharGaugeDesc");
@@ -359,22 +381,27 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 			return;
 		}
 
-		if (_needLimitBreakPoint)
-		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughLbp"), 2.0f);
-			return;
-		}
-
 		if (_needPp)
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughPp"), 2.0f);
 			return;
 		}
 
-		if (CurrencyData.instance.gold < _price)
+		if (_currencyType == CurrencyData.eCurrencyType.Gold)
 		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughGold"), 2.0f);
-			return;
+			if (CurrencyData.instance.gold < _price)
+			{
+				ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughGold"), 2.0f);
+				return;
+			}
+		}
+		else
+		{
+			if (CurrencyData.instance.dia < _price)
+			{
+				ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughDiamond"), 2.0f);
+				return;
+			}
 		}
 
 		if (characterData.needLimitBreak)

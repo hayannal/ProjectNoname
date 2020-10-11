@@ -13,6 +13,7 @@ public class SwapCanvasListItem : MonoBehaviour
 	public Image lineColorImage;
 	public GameObject powerLevelObject;
 	public Text powerLevelText;
+	public GameObject[] transcendGroupList;
 	public Text nameText;
 	public Text powerSourceText;
 	public Text recommandedText;
@@ -21,7 +22,7 @@ public class SwapCanvasListItem : MonoBehaviour
 	public RectTransform alarmRootTransform;
 
 	public string actorId { get; set; }
-	public void Initialize(string actorId, int powerLevel, int suggestedPowerLevel, string[] suggestedActorIdList, Action<string> clickCallback)
+	public void Initialize(string actorId, int powerLevel, int transcendLevel, int suggestedPowerLevel, string[] suggestedActorIdList, Action<string> clickCallback)
 	{
 		this.actorId = actorId;
 
@@ -35,6 +36,8 @@ public class SwapCanvasListItem : MonoBehaviour
 		powerLevelObject.SetActive(powerLevel > 0);
 		powerLevelText.text = UIString.instance.GetString("GameUI_Power", powerLevel);
 		//powerLevelText.color = (characterData.powerLevel < suggestedPowerLevel) ? new Color(1.0f, 0.1f, 0.1f) : Color.white;
+		for (int i = 0; i < transcendGroupList.Length; ++i)
+			transcendGroupList[i].SetActive(i == (transcendLevel - 1));
 		nameText.SetLocalizedText(UIString.instance.GetString(actorTableData.nameId));
 		powerSourceText.SetLocalizedText(PowerSource.Index2Name(actorTableData.powerSource));
 

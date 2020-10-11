@@ -211,9 +211,13 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 		{
 			SwapCanvasListItem swapCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
 			int powerLevel = 0;
+			int transcendLevel = 0;
 			if (_listAllCharacterInfo[i].characterData != null)
+			{
 				powerLevel = _listAllCharacterInfo[i].characterData.powerLevel;
-			swapCanvasListItem.Initialize(_listAllCharacterInfo[i].actorTableData.actorId, powerLevel, chapterTableData.suggestedPowerLevel, null, OnClickListItem);
+				transcendLevel = _listAllCharacterInfo[i].characterData.transcendLevel;
+			}
+			swapCanvasListItem.Initialize(_listAllCharacterInfo[i].actorTableData.actorId, powerLevel, transcendLevel, chapterTableData.suggestedPowerLevel, null, OnClickListItem);
 			_listSwapCanvasListItem.Add(swapCanvasListItem);
 			// 빈슬롯과 함께 포함되어있는채로 재활용 해야하니 형제들 중 가장 마지막으로 밀어서 순서를 맞춘다.
 			swapCanvasListItem.cachedRectTransform.SetAsLastSibling();

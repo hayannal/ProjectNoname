@@ -523,7 +523,7 @@ public class DropManager : MonoBehaviour
 		public float sumWeight;
 	}
 	List<RandomGachaActorInfo> _listRandomGachaActorInfo = null;
-	public string GetGachaCharacterId(bool originDrop, int grade = -1, bool ignoreCheckLobby = false)
+	public string GetGachaCharacterId(bool originDrop, bool characterBoxDrop, int grade = -1, bool ignoreCheckLobby = false)
 	{
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
 		if (lobby == false && ignoreCheckLobby == false)
@@ -547,7 +547,7 @@ public class DropManager : MonoBehaviour
 			{
 				if (TableDataManager.instance.actorTable.dataArray[i].grade != grade)
 					continue;
-				// grade 지정해서 뽑을땐 lbp가 나오면 안된다.
+				// grade 지정해서 뽑을땐 trp가 나오면 안된다.
 				if (PlayerData.instance.ContainsActor(TableDataManager.instance.actorTable.dataArray[i].actorId))
 					continue;
 
@@ -576,6 +576,13 @@ public class DropManager : MonoBehaviour
 				if (getable == false && PlayerData.instance.ContainsActor(TableDataManager.instance.actorTable.dataArray[i].actorId) && GetableOrigin(TableDataManager.instance.actorTable.dataArray[i].actorId, ref useAdjustWeight))
 					getable = true;
 				if (getable == false)
+					continue;
+			}
+
+			// 초월은 초반 굴림에선 나오지 않게 한다.
+			if ((originDrop && PlayerData.instance.originOpenCount <= 15) || (characterBoxDrop && PlayerData.instance.characterBoxOpenCount <= 8))
+			{
+				if (PlayerData.instance.ContainsActor(TableDataManager.instance.actorTable.dataArray[i].actorId))
 					continue;
 			}
 
@@ -647,7 +654,10 @@ public class DropManager : MonoBehaviour
 			return true;
 		}
 
-		if (characterData.needLimitBreak && characterData.limitBreakPoint <= characterData.limitBreakLevel)
+		// 이제 한계돌파랑 초월이랑 상관없어지면서 limitBreak로 판단하지 않는다.
+		//if (characterData.needLimitBreak && characterData.limitBreakPoint <= characterData.limitBreakLevel)
+		//	return true;
+		if (characterData.transcendPoint < CharacterData.TranscendMax)
 			return true;
 
 		return false;
@@ -842,7 +852,7 @@ public class DropManager : MonoBehaviour
 		_lobbyGold = 0.0f;
 		_listCharacterPpRequest.Clear();
 		_listGrantCharacterRequest.Clear();		
-		_listCharacterLbpRequest.Clear();
+		_listCharacterTrpRequest.Clear();
 		_listEquipIdRequest.Clear();
 	}
 
@@ -911,15 +921,15 @@ public class DropManager : MonoBehaviour
 	}
 
 	List<string> _listGrantCharacterRequest = new List<string>();
-	public class CharacterLbpRequest
+	public class CharacterTrpRequest
 	{
 		public string ChrId;
-		public int lbp;
+		public int trp;
 
 		[System.NonSerialized]
 		public string actorId;
 	}
-	List<CharacterLbpRequest> _listCharacterLbpRequest = new List<CharacterLbpRequest>();
+	List<CharacterTrpRequest> _listCharacterTrpRequest = new List<CharacterTrpRequest>();
 	public void AddOrigin(string actorId)
 	{
 		CharacterData characterData = PlayerData.instance.GetCharacterData(actorId);
@@ -931,11 +941,11 @@ public class DropManager : MonoBehaviour
 		else
 		{
 			// 두개 이상 뽑힐리 없으니 기존값 구해와서 1 증가시키면 된다.
-			CharacterLbpRequest newInfo = new CharacterLbpRequest();
+			CharacterTrpRequest newInfo = new CharacterTrpRequest();
 			newInfo.actorId = characterData.actorId;
 			newInfo.ChrId = characterData.entityKey.Id;
-			newInfo.lbp = characterData.limitBreakPoint + 1;
-			_listCharacterLbpRequest.Add(newInfo);
+			newInfo.trp = characterData.transcendPoint + 1;
+			_listCharacterTrpRequest.Add(newInfo);
 		}
 
 		// 이 함수에 들어왔다는거 자체가 캐릭터를 뽑고있다는걸 의미하니 연출 끝나고 나올 결과창에서 보여줄 캐릭터를 미리 로딩해두기로 한다.
@@ -947,9 +957,9 @@ public class DropManager : MonoBehaviour
 	{
 		return _listGrantCharacterRequest;
 	}
-	public List<CharacterLbpRequest> GetLimitBreakPointInfo()
+	public List<CharacterTrpRequest> GetTranscendPointInfo()
 	{
-		return _listCharacterLbpRequest;
+		return _listCharacterTrpRequest;
 	}
 
 	List<ObscuredString> _listEquipIdRequest = new List<ObscuredString>();

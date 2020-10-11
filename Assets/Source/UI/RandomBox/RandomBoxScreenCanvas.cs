@@ -276,7 +276,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 
 	List<DropManager.CharacterPpRequest> _listSumPpInfo = null;
 	List<string> _listSumGrantInfo = null;
-	List<DropManager.CharacterLbpRequest> _listSumLbpInfo = null;
+	List<DropManager.CharacterTrpRequest> _listSumTrpInfo = null;
 	void SumReward()
 	{
 		// 오리진은 반복이 불가능하므로 골드와 다이아는 제외한채 캐릭터 정보 3개만 누적하도록 하겠다.
@@ -284,12 +284,12 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 			_listSumPpInfo = new List<DropManager.CharacterPpRequest>();
 		if (_listSumGrantInfo == null)
 			_listSumGrantInfo = new List<string>();
-		if (_listSumLbpInfo == null)
-			_listSumLbpInfo = new List<DropManager.CharacterLbpRequest>();
+		if (_listSumTrpInfo == null)
+			_listSumTrpInfo = new List<DropManager.CharacterTrpRequest>();
 
 		List<DropManager.CharacterPpRequest> listPpInfo = DropManager.instance.GetPowerPointInfo();
 		List<string> listGrantInfo = DropManager.instance.GetGrantCharacterInfo();
-		List<DropManager.CharacterLbpRequest> listLbpInfo = DropManager.instance.GetLimitBreakPointInfo();
+		List<DropManager.CharacterTrpRequest> listTrpInfo = DropManager.instance.GetTranscendPointInfo();
 		for (int i = 0; i < listPpInfo.Count; ++i)
 		{
 			bool find = false;
@@ -319,13 +319,13 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 			if (_listSumGrantInfo.Contains(listGrantInfo[i]) == false)
 				_listSumGrantInfo.Add(listGrantInfo[i]);
 		}
-		for (int i = 0; i < listLbpInfo.Count; ++i)
+		for (int i = 0; i < listTrpInfo.Count; ++i)
 		{
-			DropManager.CharacterLbpRequest newInfo = new DropManager.CharacterLbpRequest();
-			newInfo.actorId = listLbpInfo[i].actorId;
-			newInfo.ChrId = listLbpInfo[i].ChrId;
-			newInfo.lbp = listLbpInfo[i].lbp;
-			_listSumLbpInfo.Add(newInfo);
+			DropManager.CharacterTrpRequest newInfo = new DropManager.CharacterTrpRequest();
+			newInfo.actorId = listTrpInfo[i].actorId;
+			newInfo.ChrId = listTrpInfo[i].ChrId;
+			newInfo.trp = listTrpInfo[i].trp;
+			_listSumTrpInfo.Add(newInfo);
 		}
 	}
 
@@ -335,8 +335,8 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 			_listSumPpInfo.Clear();
 		if (_listSumGrantInfo != null)
 			_listSumGrantInfo.Clear();
-		if (_listSumLbpInfo != null)
-			_listSumLbpInfo.Clear();
+		if (_listSumTrpInfo != null)
+			_listSumTrpInfo.Clear();
 	}
 
 	public void OnClickCancelRepeatButton()
@@ -421,7 +421,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 
 		ResetObject();
 
-		CharacterBoxConfirmCanvas.OnCompleteRandomBoxScreen(_listSumGrantInfo, _listSumLbpInfo, OnResult);
+		CharacterBoxConfirmCanvas.OnCompleteRandomBoxScreen(_listSumGrantInfo, _listSumTrpInfo, OnResult);
 	}
 
 	void OnResult()
@@ -434,7 +434,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 			if (CharacterBoxShowCanvas.instance != null && CharacterBoxShowCanvas.instance.gameObject.activeSelf)
 				CharacterBoxShowCanvas.instance.gameObject.SetActive(false);
 
-			CharacterBoxResultCanvas.instance.RefreshInfo(0, 0, _listSumPpInfo, _listSumGrantInfo, _listSumLbpInfo);
+			CharacterBoxResultCanvas.instance.RefreshInfo(0, 0, _listSumPpInfo, _listSumGrantInfo, _listSumTrpInfo);
 		});
 	}
 	#endregion

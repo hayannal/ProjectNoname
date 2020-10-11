@@ -12,11 +12,16 @@ public class CharacterData
 	ObscuredInt _powerLevel;
 	ObscuredInt _pp;
 	ObscuredInt _limitBreakLevel;
-	ObscuredInt _limitBreakPoint;
+	// 한계돌파와 초월로 나뉘면서 limitBreakPoint는 사라졌다. 대신 초월재료 개수와 초월레벨이 추가되었다.
+	ObscuredInt _transcendPoint;
+	ObscuredInt _transcendLevel;
 	public int powerLevel { get { return _powerLevel; } set { _powerLevel = value; } }
 	public int pp { get { return _pp; } set { _pp = value; } }
 	public int limitBreakLevel { get { return _limitBreakLevel; } }
-	public int limitBreakPoint { get { return _limitBreakPoint; } set { _limitBreakPoint = value; } }
+	public int transcendPoint { get { return _transcendPoint; } set { _transcendPoint = value; } }
+	public int transcendLevel { get { return _transcendLevel; } }
+
+	public static int TranscendMax = 3;
 
 	List<ObscuredInt> _listStatPoint = new List<ObscuredInt>();
 	public List<ObscuredInt> listStatPoint { get { return _listStatPoint; } }
@@ -87,7 +92,7 @@ public class CharacterData
 		}
 	}
 
-	public int maxPowerLeveWithoutLimitBreak
+	public int maxPowerLevelWithoutLimitBreak
 	{
 		get
 		{
@@ -110,9 +115,12 @@ public class CharacterData
 	{
 		get
 		{
-			int delta = powerLevel - maxPowerLeveWithoutLimitBreak;
-			if (delta < 0) delta = 0;
-			return delta;
+			//int delta = powerLevel - maxPowerLevelWithoutLimitBreak;
+			//if (delta < 0) delta = 0;
+			//return delta;
+			//
+			// 한계돌파와 초월로 나뉘면서 스탯 포인트 역시 달라졌다.
+			return transcendLevel * 2;
 		}
 	}
 
@@ -128,7 +136,7 @@ public class CharacterData
 	}
 
 	#region Alarm
-	public bool IsPlusAlarmState(bool onlyCheckPp = false)
+	public bool IsPlusAlarmState()
 	{
 		// CharacterInfoGrowthCanvas의 RefreshRequired 함수에서 핵심 코드들만 가져왔다.
 		if (powerLevel >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxPowerLevel"))
@@ -138,12 +146,8 @@ public class CharacterData
 		PowerLevelTableData nextPowerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(powerLevel + 1);
 		if (needLimitBreak)
 		{
-			if (onlyCheckPp)
-				return false;
-
-			int current = limitBreakPoint - powerLevelTableData.requiredLimitBreak;
-			if (current < 1)
-				return false;
+			// 한계돌파와 초월로 나뉘어지면서 한계돌파 대기때는 PlusAlarm이 뜨지 않기로 변경.
+			return false;
 		}
 		else
 		{
@@ -155,6 +159,20 @@ public class CharacterData
 	}
 
 	public bool IsAlarmState()
+	{
+		if (IsTranscendAlarmState() || IsPotentialAlarmState())
+			return true;
+		return false;
+	}
+
+	public bool IsTranscendAlarmState()
+	{
+		if (transcendPoint > transcendLevel)
+			return true;
+		return false;
+	}
+
+	public bool IsPotentialAlarmState()
 	{
 		// 캐릭터에는 잠재로 인해 찍을 포인트가 늘어날때만 진짜 Alarm을 표시한다.
 		if (remainStatPoint > 0)
@@ -192,15 +210,18 @@ public class CharacterData
 		int pow = 1;
 		int pp = 0;
 		int lb = 0;
-		int lbp = 0;
+		int tr = 0;
+		int trp = 0;
 		if (characterStatistics.ContainsKey("pow"))
 			pow = characterStatistics["pow"];
 		if (characterStatistics.ContainsKey("pp"))
 			pp = characterStatistics["pp"];
 		if (characterStatistics.ContainsKey("lb"))
 			lb = characterStatistics["lb"];
-		if (characterStatistics.ContainsKey("lbp"))
-			lbp = characterStatistics["lbp"];
+		if (characterStatistics.ContainsKey("tr"))
+			tr = characterStatistics["tr"];
+		if (characterStatistics.ContainsKey("trp"))
+			trp = characterStatistics["trp"];
 
 		// 검증
 		bool invalid = false;
@@ -219,11 +240,11 @@ public class CharacterData
 
 		if (invalid == false)
 		{
-			// lbp보다 높거나 2단계 이상 차이나도 이상한거다.
-			if (lb > lbp)
-				invalid = true;
-			if (lbp - lb >= 2)
-				invalid = true;
+			// lbp보다 높거나 2단계 이상 차이나도 이상한거다. - lbp가 삭제되면서 필요없는 코드들 지운다.
+			//if (lb > lbp)
+			//	invalid = true;
+			//if (lbp - lb >= 2)
+			//	invalid = true;
 
 			if (invalid == false)
 			{
@@ -239,24 +260,34 @@ public class CharacterData
 							invalid = true;
 					}
 				}
-				if (invalid == false)
-				{
-					// 위 절차를 lbp에 대해서도 해준다.
-					if (lbp != powerLevelTableData.requiredLimitBreak)
-					{
-						PowerLevelTableData nextPowerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(pow + 1);
-						if (nextPowerLevelTableData == null)
-							invalid = true;
-						else
-						{
-							if (lbp != nextPowerLevelTableData.requiredLimitBreak)
-								invalid = true;
-						}
-					}
-				}
+				//if (invalid == false)
+				//{
+				//	// 위 절차를 lbp에 대해서도 해준다.
+				//	if (lbp != powerLevelTableData.requiredLimitBreak)
+				//	{
+				//		PowerLevelTableData nextPowerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(pow + 1);
+				//		if (nextPowerLevelTableData == null)
+				//			invalid = true;
+				//		else
+				//		{
+				//			if (lbp != nextPowerLevelTableData.requiredLimitBreak)
+				//				invalid = true;
+				//		}
+				//	}
+				//}
 			}
 			if (invalid)
 				PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidLimitBreakLevel, false, lb);
+		}
+
+		if (invalid == false)
+		{
+			if (tr > trp)
+				invalid = true;
+			if (trp > TranscendMax)
+				invalid = true;
+			if (invalid)
+				PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidTranscendLevel, false, tr);
 		}
 
 		// 추가 데이터. 잠재 염색 날개 등등.
@@ -268,7 +299,8 @@ public class CharacterData
 		_powerLevel = pow;
 		_pp = pp;
 		_limitBreakLevel = lb;
-		_limitBreakPoint = lbp;
+		_transcendLevel = tr;
+		_transcendPoint = trp;
 
 		// _powerLevel이 저장되고 나서야 파싱할 수 있다.
 		_listStatPoint.Clear();
@@ -301,7 +333,7 @@ public class CharacterData
 			}
 		}
 
-		if (_limitBreakLevel >= 1)	/////ch 2
+		if (_transcendLevel >= 2)	/////ch 2
 		{
 			if (characterStatistics.ContainsKey("train"))
 				_trainingValue = characterStatistics["train"];
@@ -313,7 +345,7 @@ public class CharacterData
 		}
 
 		_listWingGradeId.Clear();
-		if (_limitBreakLevel >= 1)	/////ch 3
+		if (_transcendLevel >= 3)	/////ch 3
 		{
 			if (_listWingGradeId.Count == 0)
 			{
@@ -348,6 +380,12 @@ public class CharacterData
 	{
 		// 한계돌파는 레벨업을 스탯 변화 없이 레벨업을 할 수 있어지는거라서 재계산 안한다.
 		_limitBreakLevel += 1;
+	}
+
+	public void OnTranscend()
+	{
+		// 초월 역시 새 메뉴가 확장되는거라 스탯을 재계산하지 않아도 된다.
+		_transcendLevel += 1;
 	}
 
 	public void OnApplyStats(int strAddPoint, int dexAddPoint, int intAddPoint, int vitAddPoint)

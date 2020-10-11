@@ -645,7 +645,7 @@ public class PlayerData : MonoBehaviour
 		}
 	}
 
-	public void OnRecvUpdateCharacterStatistics(List<DropManager.CharacterPpRequest> listPpInfo, List<DropManager.CharacterLbpRequest> listLbpInfo)
+	public void OnRecvUpdateCharacterStatistics(List<DropManager.CharacterPpRequest> listPpInfo, List<DropManager.CharacterTrpRequest> listTrpInfo)
 	{
 		for (int i = 0; i < listPpInfo.Count; ++i)
 		{
@@ -655,12 +655,12 @@ public class PlayerData : MonoBehaviour
 			characterData.pp = listPpInfo[i].pp;
 		}
 
-		for (int i = 0; i < listLbpInfo.Count; ++i)
+		for (int i = 0; i < listTrpInfo.Count; ++i)
 		{
-			CharacterData characterData = PlayerData.instance.GetCharacterData(listLbpInfo[i].actorId);
+			CharacterData characterData = PlayerData.instance.GetCharacterData(listTrpInfo[i].actorId);
 			if (characterData == null)
 				continue;
-			characterData.limitBreakPoint = listLbpInfo[i].lbp;
+			characterData.transcendPoint = listTrpInfo[i].trp;
 		}
 	}
 

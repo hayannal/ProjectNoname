@@ -137,7 +137,7 @@ public sealed class LocalPlayerController : BaseCharacterController
 		}
 		else
 		{
-			if (actionController.mecanimState.IsState((int)eMecanimState.Move))
+			if (actionController.mecanimState.IsState((int)eMecanimState.Move) && actionController.mecanimState.IsState((int)eMecanimState.Ultimate) == false)
 				actionController.PlayActionByActionName("Idle");
 
 			#region Invalid Move

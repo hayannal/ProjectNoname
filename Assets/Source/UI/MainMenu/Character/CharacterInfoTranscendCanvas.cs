@@ -41,8 +41,6 @@ public class CharacterInfoTranscendCanvas : MonoBehaviour
 
 	public Text rewardText;
 
-	public GameObject effectPrefab;
-
 	void Awake()
 	{
 		instance = this;
@@ -238,38 +236,10 @@ public class CharacterInfoTranscendCanvas : MonoBehaviour
 	void OnRecvTranscend()
 	{
 		CharacterInfoCanvas.instance.currencySmallInfo.RefreshInfo();
-		Timing.RunCoroutine(TranscendProcess());
-	}
 
-	IEnumerator<float> TranscendProcess()
-	{
-		// 인풋 차단
-		CharacterInfoCanvas.instance.inputLockObject.SetActive(true);
-
-		// 인풋 막은 상태에서 이펙트
-		BattleInstanceManager.instance.GetCachedObject(effectPrefab, CharacterListCanvas.instance.rootOffsetPosition, Quaternion.identity, null);
-		yield return Timing.WaitForSeconds(3.0f);
-
-		// 사전 이펙트 끝나갈때쯤 화이트 페이드
-		FadeCanvas.instance.FadeOut(0.3f, 0.85f);
-		yield return Timing.WaitForSeconds(0.3f);
-
-		// 현재 페이지를 리프레쉬 하면서 메뉴부터 알람까지 전부 리프레쉬 한다.
-		RefreshInfo();
-		CharacterInfoCanvas.instance.RefreshOpenMenuSlot(_characterData.transcendLevel);
-
-		CharacterListCanvas.instance.RefreshGrid(false);
-		CharacterInfoCanvas.instance.RefreshAlarmObjectList();
-		CharacterListCanvas.instance.RefreshAlarmList();
-		DotMainMenuCanvas.instance.RefreshCharacterAlarmObject();
-
-		FadeCanvas.instance.FadeIn(2.0f);
-
-		// 페이드 복구중 1초 지나면
-		yield return Timing.WaitForSeconds(1.0f);
-		ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_TranscendenceDone"), 2.0f);
-
-		// 인풋 복구
-		CharacterInfoCanvas.instance.inputLockObject.SetActive(false);
+		UIInstanceManager.instance.ShowCanvasAsync("CharacterTranscendResultCanvas", () =>
+		{
+			CharacterTranscendResultCanvas.instance.ShowTranscendResult(_characterData.transcendLevel);
+		});
 	}
 }

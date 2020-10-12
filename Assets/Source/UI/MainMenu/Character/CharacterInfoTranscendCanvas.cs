@@ -12,8 +12,9 @@ public class CharacterInfoTranscendCanvas : MonoBehaviour
 
 	public Transform transcendTextTransform;
 
-	public Image[] fillImageList;
-	public DOTweenAnimation[] alphaTweenAnimationList;
+	public GameObject[] fillImageObjectList;
+	public GameObject[] tweenAnimationObjectList;
+	public GameObject[] subTweenAnimationObjectList;
 
 	public GameObject maxInfoObject;
 	public GameObject materialInfoObject;
@@ -57,26 +58,9 @@ public class CharacterInfoTranscendCanvas : MonoBehaviour
 		RefreshInfo();
 	}
 
-	void OnDisable()
-	{
-		_reserveAnimation = false;
-	}
-
-	bool _reserveAnimation;
-	int _reserveIndex;
-	void Update()
-	{
-		if (_reserveAnimation)
-		{
-			alphaTweenAnimationList[_reserveIndex].DORestart();
-			_reserveAnimation = false;
-		}
-	}
-
 	#region Info
 	string _actorId;
 	CharacterData _characterData;
-	Color _fillImageDefaultColor = Color.clear;
 	public void RefreshInfo()
 	{
 		AlarmObject.Hide(alarmRootTransform);
@@ -93,37 +77,28 @@ public class CharacterInfoTranscendCanvas : MonoBehaviour
 		_characterData = characterData;
 
 		bool appliedTranscendPoint = false;
-		for (int i = 0; i < fillImageList.Length; ++i)
+		for (int i = 0; i < fillImageObjectList.Length; ++i)
 		{
-			if (_fillImageDefaultColor == Color.clear)
-				_fillImageDefaultColor = fillImageList[i].color;
-
 			if (characterData.transcendLevel > i)
 			{
-				fillImageList[i].gameObject.SetActive(true);
-				alphaTweenAnimationList[i].DOPause();
-				fillImageList[i].color = Color.white;
+				fillImageObjectList[i].gameObject.SetActive(true);
+				tweenAnimationObjectList[i].gameObject.SetActive(false);
+				subTweenAnimationObjectList[i].gameObject.SetActive(false);
 			}
 			else
 			{
 				if (characterData.transcendPoint > i && appliedTranscendPoint == false)
 				{
-					fillImageList[i].gameObject.SetActive(true);
-					if (_started)
-					{
-						fillImageList[i].color = _fillImageDefaultColor;
-						alphaTweenAnimationList[i].DORestart();
-					}
-					else
-					{
-						_reserveAnimation = true;
-						_reserveIndex = i;
-					}
+					fillImageObjectList[i].gameObject.SetActive(false);
+					tweenAnimationObjectList[i].gameObject.SetActive(true);
+					subTweenAnimationObjectList[i].gameObject.SetActive(true);
 					appliedTranscendPoint = true;
 				}
 				else
 				{
-					fillImageList[i].gameObject.SetActive(false);
+					fillImageObjectList[i].gameObject.SetActive(false);
+					tweenAnimationObjectList[i].gameObject.SetActive(false);
+					subTweenAnimationObjectList[i].gameObject.SetActive(false);
 				}
 			}
 		}

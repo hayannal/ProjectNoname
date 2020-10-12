@@ -580,7 +580,7 @@ public class DropManager : MonoBehaviour
 			}
 
 			// 초월은 초반 굴림에선 나오지 않게 한다.
-			if ((originDrop && PlayerData.instance.originOpenCount <= 15) || (characterBoxDrop && PlayerData.instance.characterBoxOpenCount <= 8))
+			if ((originDrop && PlayerData.instance.originOpenCount <= 10) || (characterBoxDrop && PlayerData.instance.characterBoxOpenCount <= 8))
 			{
 				if (PlayerData.instance.ContainsActor(TableDataManager.instance.actorTable.dataArray[i].actorId))
 					continue;

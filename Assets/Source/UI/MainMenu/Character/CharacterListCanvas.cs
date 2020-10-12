@@ -175,6 +175,32 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 					}
 					if (x.actorTableData.grade > y.actorTableData.grade) return -1;
 					else if (x.actorTableData.grade < y.actorTableData.grade) return 1;
+					if (x.characterData != null && y.characterData != null)
+					{
+						if (_currentSortType == SortButton.eSortType.PowerLevel)
+						{
+							if (x.characterData.transcendLevel > y.characterData.transcendLevel) return -1;
+							else if (x.characterData.transcendLevel < y.characterData.transcendLevel) return 1;
+						}
+						else
+						{
+							if (x.characterData.transcendLevel > y.characterData.transcendLevel) return 1;
+							else if (x.characterData.transcendLevel < y.characterData.transcendLevel) return -1;
+						}
+					}
+					if (x.actorTableData.orderIndex < y.actorTableData.orderIndex) return -1;
+					else if (x.actorTableData.orderIndex > y.actorTableData.orderIndex) return 1;
+					break;
+				case SortButton.eSortType.Transcend:
+					if (x.characterData != null && y.characterData != null)
+					{
+						if (x.characterData.transcendLevel > y.characterData.transcendLevel) return -1;
+						else if (x.characterData.transcendLevel < y.characterData.transcendLevel) return 1;
+						if (x.characterData.powerLevel > y.characterData.powerLevel) return -1;
+						else if (x.characterData.powerLevel < y.characterData.powerLevel) return 1;
+					}
+					if (x.actorTableData.grade > y.actorTableData.grade) return -1;
+					else if (x.actorTableData.grade < y.actorTableData.grade) return 1;
 					if (x.actorTableData.orderIndex < y.actorTableData.orderIndex) return -1;
 					else if (x.actorTableData.orderIndex > y.actorTableData.orderIndex) return 1;
 					break;
@@ -188,6 +214,11 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 					}
 					if (x.actorTableData.grade > y.actorTableData.grade) return -1;
 					else if (x.actorTableData.grade < y.actorTableData.grade) return 1;
+					if (x.characterData != null && y.characterData != null)
+					{
+						if (x.characterData.transcendLevel > y.characterData.transcendLevel) return -1;
+						else if (x.characterData.transcendLevel < y.characterData.transcendLevel) return 1;
+					}
 					if (x.actorTableData.orderIndex < y.actorTableData.orderIndex) return -1;
 					else if (x.actorTableData.orderIndex > y.actorTableData.orderIndex) return 1;
 					break;
@@ -198,6 +229,8 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 					{
 						if (x.characterData.powerLevel > y.characterData.powerLevel) return -1;
 						else if (x.characterData.powerLevel < y.characterData.powerLevel) return 1;
+						if (x.characterData.transcendLevel > y.characterData.transcendLevel) return -1;
+						else if (x.characterData.transcendLevel < y.characterData.transcendLevel) return 1;
 					}
 					if (x.actorTableData.orderIndex < y.actorTableData.orderIndex) return -1;
 					else if (x.actorTableData.orderIndex > y.actorTableData.orderIndex) return 1;

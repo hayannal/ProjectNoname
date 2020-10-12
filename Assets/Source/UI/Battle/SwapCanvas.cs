@@ -267,6 +267,9 @@ public class SwapCanvas : MonoBehaviour
 			case SortButton.eSortType.PowerLevelDescending:
 				listCharacterData.Sort(sortButton.comparisonPowerLevelDescending);
 				break;
+			case SortButton.eSortType.Transcend:
+				listCharacterData.Sort(sortButton.comparisonTranscendLevel);
+				break;
 			case SortButton.eSortType.PowerSource:
 				listCharacterData.Sort(sortButton.comparisonPowerSource);
 				break;

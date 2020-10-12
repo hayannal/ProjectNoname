@@ -10,6 +10,7 @@ public class SortButton : MonoBehaviour
 	{
 		PowerLevel,
 		PowerLevelDescending,
+		Transcend,
 		PowerSource,
 		Grade,
 
@@ -56,6 +57,7 @@ public class SortButton : MonoBehaviour
 		{
 			case eSortType.PowerLevel: stringId = "GameUI_OrderByPowerLevel"; break;
 			case eSortType.PowerLevelDescending: stringId = "GameUI_OrderByPowerLevelDescending"; break;
+			case eSortType.Transcend: stringId = "GameUI_OrderByTranscendLevel"; break;
 			case eSortType.PowerSource: stringId = "GameUI_OrderByPowerSource"; break;
 			case eSortType.Grade: stringId = "GameUI_OrderByGrade"; break;
 		}
@@ -119,6 +121,11 @@ public class SortButton : MonoBehaviour
 		{
 			if (xActorTableData.grade > yActorTableData.grade) return -1;
 			else if (xActorTableData.grade < yActorTableData.grade) return 1;
+		}
+		if (x.transcendLevel > y.transcendLevel) return -1;
+		else if (x.transcendLevel < y.transcendLevel) return 1;
+		if (xActorTableData != null && yActorTableData != null)
+		{
 			if (xActorTableData.orderIndex < yActorTableData.orderIndex) return -1;
 			else if (xActorTableData.orderIndex > yActorTableData.orderIndex) return 1;
 		}
@@ -129,6 +136,29 @@ public class SortButton : MonoBehaviour
 	{
 		if (x.powerLevel > y.powerLevel) return 1;
 		else if (x.powerLevel < y.powerLevel) return -1;
+		ActorTableData xActorTableData = TableDataManager.instance.FindActorTableData(x.actorId);
+		ActorTableData yActorTableData = TableDataManager.instance.FindActorTableData(y.actorId);
+		if (xActorTableData != null && yActorTableData != null)
+		{
+			if (xActorTableData.grade > yActorTableData.grade) return -1;
+			else if (xActorTableData.grade < yActorTableData.grade) return 1;
+		}
+		if (x.transcendLevel > y.transcendLevel) return 1;
+		else if (x.transcendLevel < y.transcendLevel) return -1;
+		if (xActorTableData != null && yActorTableData != null)
+		{
+			if (xActorTableData.orderIndex < yActorTableData.orderIndex) return -1;
+			else if (xActorTableData.orderIndex > yActorTableData.orderIndex) return 1;
+		}
+		return 0;
+	};
+
+	public Comparison<CharacterData> comparisonTranscendLevel = delegate (CharacterData x, CharacterData y)
+	{
+		if (x.transcendLevel > y.transcendLevel) return -1;
+		else if (x.transcendLevel < y.transcendLevel) return 1;
+		if (x.powerLevel > y.powerLevel) return -1;
+		else if (x.powerLevel < y.powerLevel) return 1;
 		ActorTableData xActorTableData = TableDataManager.instance.FindActorTableData(x.actorId);
 		ActorTableData yActorTableData = TableDataManager.instance.FindActorTableData(y.actorId);
 		if (xActorTableData != null && yActorTableData != null)
@@ -153,6 +183,11 @@ public class SortButton : MonoBehaviour
 			else if (x.powerLevel < y.powerLevel) return 1;
 			if (xActorTableData.grade > yActorTableData.grade) return -1;
 			else if (xActorTableData.grade < yActorTableData.grade) return 1;
+		}
+		if (x.transcendLevel > y.transcendLevel) return -1;
+		else if (x.transcendLevel < y.transcendLevel) return 1;
+		if (xActorTableData != null && yActorTableData != null)
+		{
 			if (xActorTableData.orderIndex < yActorTableData.orderIndex) return -1;
 			else if (xActorTableData.orderIndex > yActorTableData.orderIndex) return 1;
 		}
@@ -167,8 +202,13 @@ public class SortButton : MonoBehaviour
 		{
 			if (xActorTableData.grade > yActorTableData.grade) return -1;
 			else if (xActorTableData.grade < yActorTableData.grade) return 1;
-			if (x.powerLevel > y.powerLevel) return -1;
-			else if (x.powerLevel < y.powerLevel) return 1;
+		}
+		if (x.powerLevel > y.powerLevel) return -1;
+		else if (x.powerLevel < y.powerLevel) return 1;
+		if (x.transcendLevel > y.transcendLevel) return -1;
+		else if (x.transcendLevel < y.transcendLevel) return 1;
+		if (xActorTableData != null && yActorTableData != null)
+		{
 			if (xActorTableData.orderIndex < yActorTableData.orderIndex) return -1;
 			else if (xActorTableData.orderIndex > yActorTableData.orderIndex) return 1;
 		}

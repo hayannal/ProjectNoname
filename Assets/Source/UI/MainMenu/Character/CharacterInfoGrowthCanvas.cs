@@ -193,7 +193,11 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 				ppText.text = UIString.instance.GetString("GameUI_NowPp", pp - powerLevelTableData.requiredAccumulatedPowerPoint);
 				ppSlider.value = 1.0f;
 				sliderFrameImage.color = sliderFillImage.color = ColorUtil.halfGray;
-				switch (characterData.limitBreakLevel)
+				int grade = 0;
+				ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(_actorId);
+				if (actorTableData != null)
+					grade = actorTableData.grade;
+				switch (grade)
 				{
 					case 0: price = nextPowerLevelTableData.requiredLimitBreakDiamond0; break;
 					case 1: price = nextPowerLevelTableData.requiredLimitBreakDiamond1; break;

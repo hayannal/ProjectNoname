@@ -108,7 +108,7 @@ public class DownloadManager : MonoBehaviour
 		{
 			_totalDownloadSize = (totalDownloadSize * 1.0f);
 			StartCoroutine(ClearAndDownloadProcess(keys));
-		}, 100);
+		}, 100, true);
 	}
 
 	IEnumerator ClearAndDownloadProcess(IEnumerable<object> keys)
@@ -268,7 +268,7 @@ public class DownloadManager : MonoBehaviour
 			{
 				StartCoroutine(ClearAndLobbyDownloadProcess(_keys));
 			});
-		});
+		}, -1, true);
 	}
 
 	IEnumerator ClearAndLobbyDownloadProcess(IEnumerable<object> keys)

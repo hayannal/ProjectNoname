@@ -328,7 +328,7 @@ public class EventManager : MonoBehaviour
 				OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_WaitForUpdateEvent"), () =>
 				{
 					OnCompleteLobbyEvent();
-				});
+				}, -1, true);
 				break;
 			case eClientEvent.OpenSecondDailyBox:
 				// 이것도 터치 받고 이펙트 보여주고 해야하니 코루틴으로 처리한다.

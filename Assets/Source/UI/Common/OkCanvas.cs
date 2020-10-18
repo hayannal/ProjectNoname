@@ -37,7 +37,7 @@ public class OkCanvas : MonoBehaviour
 			_canvas.sortingOrder = _defaultSortOrder;
 	}
 
-	public void ShowCanvas(bool show, string title, string message, System.Action okAction = null, int overrideSortOrder = -1)
+	public void ShowCanvas(bool show, string title, string message, System.Action okAction = null, int overrideSortOrder = -1, bool ignoreBackgroundButton = false)
 	{
 		gameObject.SetActive(show);
 		if (show == false)
@@ -49,10 +49,23 @@ public class OkCanvas : MonoBehaviour
 
 		if (overrideSortOrder != -1)
 			_canvas.sortingOrder = overrideSortOrder;
+
+		_ignoreBackgroundButton = ignoreBackgroundButton;
 	}
 
 	public void OnClickOkButton()
 	{
+		gameObject.SetActive(false);
+		if (_okAction != null)
+			_okAction();
+	}
+
+	bool _ignoreBackgroundButton;
+	public void OnClickBackgroundButton()
+	{
+		if (_ignoreBackgroundButton)
+			return;
+
 		gameObject.SetActive(false);
 		if (_okAction != null)
 			_okAction();

@@ -20,7 +20,7 @@ public class UIString : MonoBehaviour
 	}
 	static UIString _instance = null;
 
-	// 스트링 테이블을 패치 가능한 어드레서블 하나로 통합하면서 직접 연결하지 않기로 한다.
+	// 두개의 테이블로 구분하는건 관리가 너무 불편해서 하지 않기로 한다.
 	//public InApkStringTable inApkStringTable;
 
 	// 그리고 FontTable은 직접 가져와 쓰는거로 해서
@@ -28,6 +28,12 @@ public class UIString : MonoBehaviour
 	// 폰트테이블은 어차피 번역나라가 추가될때 재빌드 해야하므로 Resources에 포함되어도 상관없다.
 	public FontTable fontTable;
 	public LanguageTable languageTable;
+
+	// 리소스 업데이트를 받기 전까지 로컬에서만 사용할 스트링 테이블.
+	// 튜토리얼을 끝내기 전까지는 다운로드가 없어야하기 때문에 이렇게 들고있으면서 쓰는거다.
+	// 그러다가 패치가 가능해진 이후로는 이걸 쓰지 않고 리모트 주소에서 어드레서블로 얻어온 테이블을 사용하기로 한다.
+	// 당연히 데이터 중복이지만 다운로드 받지 않고 게임을 플레이 하려면 Resources에 포함시키는 수밖에 없다.
+	public StringTable stringTableForLocal;
 
 	public LanguageTableData FindLanguageTableData(string languageId)
 	{
@@ -81,15 +87,35 @@ public class UIString : MonoBehaviour
 	#endregion
 
 	#region StringData
+	bool _useStringTableForLocal = false;
 	AsyncOperationHandle<StringTable> _handleStringTable;
 	bool _onLoadCompleteStringTable;
 	IEnumerator ReloadStringDataAsync()
 	{
+		_useStringTableForLocal = false;
 		_onLoadCompleteStringTable = false;
 		if (_handleStringTable.IsValid())
 			Addressables.Release<StringTable>(_handleStringTable);
 
-		_handleStringTable = Addressables.LoadAssetAsync<StringTable>("StringTable");
+		// 이제 StringTable은 Remote Group으로 되어있는데다가 TableDataManager와 달리 용량이 크기 때문에 유저에게 말도 안하고 그냥 받을수는 없다.
+		// 그렇기에 유저에게 패치 확인창을 띄우고 나서 데이터 써서 받은 후에 로드하거나
+		// 한번 캐싱해서 다운로드 받을 필요가 없을때 로드하거나
+		// 위 두개가 다 실패했을땐 apk들어있는 로컬용 스트링 테이블을 써야한다.
+		const string stringTableKey = "StringTable";
+		AsyncOperationHandle<long> getDownloadSizeHandle = Addressables.GetDownloadSizeAsync(stringTableKey);
+		yield return getDownloadSizeHandle;
+		long downloadSize = getDownloadSizeHandle.Result;
+		Addressables.Release<long>(getDownloadSizeHandle);
+
+		if (downloadSize > 0)
+		{
+			// 이럴땐 괜히 로드해서 다운받게 하지 않는다.
+			Debug.LogFormat("Remote StringData Size = {0}", downloadSize / 1024);
+			_useStringTableForLocal = true;
+			yield break;
+		}
+
+		_handleStringTable = Addressables.LoadAssetAsync<StringTable>(stringTableKey);
 		//yield return _handleStringTable;
 		while (_handleStringTable.IsValid() && !_handleStringTable.IsDone)
 			yield return null;
@@ -100,6 +126,10 @@ public class UIString : MonoBehaviour
 
 	public bool IsDoneLoadAsyncStringData()
 	{
+		// local용 StringTable을 쓸때라면 언제나 true
+		if (_useStringTableForLocal)
+			return true;
+
 		if (_onLoadCompleteStringTable == false)
 			return false;
 
@@ -221,10 +251,20 @@ public class UIString : MonoBehaviour
 
 	StringTableData FindStringTableData(string id)
 	{
-		// MainSceneBuilder에서 로딩 완료를 확인하고 캔버스들을 초기화 했을테니 이미 로딩이 되었다고 판단하고 검사하지 않는다.
-		//if (IsDoneLoadAsyncStringData())
-		//	return null;
-		StringTable stringTable = _handleStringTable.Result;
+		StringTable stringTable = null;
+		if (_useStringTableForLocal)
+		{
+			stringTable = stringTableForLocal;
+		}
+		else
+		{
+			// MainSceneBuilder에서 로딩 완료를 확인하고 캔버스들을 초기화 했을테니 이미 로딩이 되었다고 판단하고 검사하지 않는다.
+			//if (IsDoneLoadAsyncStringData())
+				stringTable = _handleStringTable.Result;
+		}
+		if (stringTable == null)
+			return null;
+
 		for (int i = 0; i < stringTable.dataArray.Length; ++i)
 		{
 			if (stringTable.dataArray[i].id == id)

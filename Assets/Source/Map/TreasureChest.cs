@@ -36,7 +36,7 @@ public class TreasureChest : MonoBehaviour
 			_autoShowIndicatorRemainTime = 1.0f;
 		}
 
-		if (ContentsManager.IsTutorialChapter() == false && DownloadManager.instance.IsDownloaded())
+		if (ContentsManager.IsTutorialChapter() == false && PlayerData.instance.lobbyDownloadState == false)
 		{
 			// 일부러 조금 뒤에 보이게 한다. 초기 로딩 줄이기 위해.
 			_gaugeShowRemainTime = gaugeShowDelayTime;

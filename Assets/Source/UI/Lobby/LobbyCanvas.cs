@@ -133,6 +133,12 @@ public class LobbyCanvas : MonoBehaviour
 			return;
 		}
 
+		if (PlayerData.instance.lobbyDownloadState)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_PossibleAfterDownload"), 2.0f);
+			return;
+		}
+
 		if (DotMainMenuCanvas.instance != null)
 		{
 			DotMainMenuCanvas.instance.targetTransform = BattleInstanceManager.instance.playerActor.cachedTransform;
@@ -362,7 +368,7 @@ public class LobbyCanvas : MonoBehaviour
 
 		bool showAlarm = false;
 		if (_isAlarmCashShop || _isAlarmCharacter || _isAlarmResearch || _isAlarmMail) showAlarm = true;
-		if (ContentsManager.IsTutorialChapter()) showAlarm = false;
+		if (ContentsManager.IsTutorialChapter() || PlayerData.instance.lobbyDownloadState) showAlarm = false;
 
 		AlarmObject.Hide(alarmRootTransform);
 		if (_isTutorialPlusAlarmCharacter)
@@ -384,7 +390,7 @@ public class LobbyCanvas : MonoBehaviour
 		}
 		bool showAlarm = false;
 		if (_isAlarmCashShop || _isAlarmCharacter || _isAlarmResearch || _isAlarmMail) showAlarm = true;
-		if (ContentsManager.IsTutorialChapter()) showAlarm = false;
+		if (ContentsManager.IsTutorialChapter() || PlayerData.instance.lobbyDownloadState) showAlarm = false;
 
 		AlarmObject.Hide(alarmRootTransform);
 		if (_isTutorialPlusAlarmCharacter)
@@ -399,7 +405,7 @@ public class LobbyCanvas : MonoBehaviour
 
 		bool showAlarm = false;
 		if (_isAlarmCashShop || _isAlarmCharacter || _isAlarmResearch || _isAlarmMail) showAlarm = true;
-		if (ContentsManager.IsTutorialChapter()) showAlarm = false;
+		if (ContentsManager.IsTutorialChapter() || PlayerData.instance.lobbyDownloadState) showAlarm = false;
 
 		AlarmObject.Hide(alarmRootTransform);
 		if (_isTutorialPlusAlarmCharacter)

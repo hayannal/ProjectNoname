@@ -65,7 +65,7 @@ public class GatePillar : MonoBehaviour
 				_purifyCountShowRemainTime = purifyShowDelayTime;
 				_maxPurify = (PlayerData.instance.purifyCount >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("PurifyMaxCount"));
 			}
-			if (ContentsManager.IsTutorialChapter() == false && DownloadManager.instance.IsDownloaded() && EnergyGaugeCanvas.instance == null)
+			if (ContentsManager.IsTutorialChapter() == false && PlayerData.instance.lobbyDownloadState == false && EnergyGaugeCanvas.instance == null)
 			{
 				// 일부러 조금 뒤에 보이게 한다. 초기 로딩 줄이기 위해.
 				_energyGaugeShowRemainTime = energyGaugeShowDelayTime;
@@ -344,9 +344,10 @@ public class GatePillar : MonoBehaviour
 		if (MainSceneBuilder.instance.lobby)
 		{
 			// check download
-			if (DownloadManager.instance.standbyDownload)
+			if (PlayerData.instance.lobbyDownloadState)
 			{
 				// show download info canvas
+				ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_PossibleAfterDownload"), 2.0f);
 				return false;
 			}
 

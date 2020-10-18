@@ -195,10 +195,21 @@ public class MainSceneBuilder : MonoBehaviour
 		// - 만약 이 로딩이 오래 걸려서 1초를 넘어가면 우하단에 작게 로딩중을 표시해준다.
 		// - 매판 몹을 다 죽이고 게이트필라가 뜨는 순간마다 다음판의 맵 정보를 어싱크로 로딩해둔다.
 
-		// step 2. 테이블 임시 로드
-		// 지금은 우선 apk넣고 하지만 나중에 서버에서 받는거로 바꿔야한다. 이땐 확인창 안띄운다.
+		// step 2. 테이블 로드.
+		// 용량도 작으니 언제나 리모트에서 몰래 받는다. 그래도 여러버전대로 받다보면 쌓일테니 지우고 받아야한다.
 		LoadingCanvas.instance.SetProgressBarPoint(0.3f);
-		_handleTableDataManager = Addressables.LoadAssetAsync<GameObject>("TableDataManager");
+		const string tableDataManagerKey = "TableDataManager";
+		AsyncOperationHandle<long> getDownloadSizeHandle = Addressables.GetDownloadSizeAsync(tableDataManagerKey);
+		yield return getDownloadSizeHandle;
+		if (getDownloadSizeHandle.Result > 0)
+		{
+			Debug.LogFormat("TableData Size = {0}", getDownloadSizeHandle.Result / 1024);
+			AsyncOperationHandle<bool> clearHandle = Addressables.ClearDependencyCacheAsync(tableDataManagerKey, false);
+			yield return clearHandle;
+			Addressables.Release<bool>(clearHandle);
+		}
+		Addressables.Release<long>(getDownloadSizeHandle);
+		_handleTableDataManager = Addressables.LoadAssetAsync<GameObject>(tableDataManagerKey);
 		//yield return _handleTableDataManager;
 		while (_handleTableDataManager.IsValid() && !_handleTableDataManager.IsDone)
 			yield return null;
@@ -527,6 +538,8 @@ public class MainSceneBuilder : MonoBehaviour
 		// step 9-3. clean memory
 		yield return new WaitForEndOfFrame();
 		System.GC.Collect();
+		// 유니티 버그 같긴 한데.. 풀패치를 받고나서 유니티 에디터에서 플레이를 멈췄다가 다시 플레이 할때 최초 씬을 로딩하는건데도 여기서 멈춘다. 유니티를 껐다켜면 발생하지 않는다..
+		// 디바이스에서 발생하지만 않으면 상관없으니 따로 처리하지는 않는다.
 		yield return Resources.UnloadUnusedAssets();
 		System.GC.Collect();
 		System.GC.WaitForPendingFinalizers();
@@ -622,8 +635,20 @@ public class MainSceneBuilder : MonoBehaviour
 		// 워낙 크기가 작으니 LateInitialize에서 해도 문제없을거다.
 		SoundManager.instance.LoadInApkSFXContainer();
 
-		for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)
-			AddressableAssetLoadManager.GetAddressableSprite(TableDataManager.instance.actorTable.dataArray[i].portraitAddress, "Icon", null);
+		// 캐릭터는 언제나 같은 번들안에 있을테니 마지막 번호 하나만 검사하기로 한다.
+		// 다운로드 되어있어서 캐싱할 수 있을때만 프리로드를 걸어둔다.
+		string portraitKey = TableDataManager.instance.actorTable.dataArray[TableDataManager.instance.actorTable.dataArray.Length - 1].portraitAddress;
+		AsyncOperationHandle<long> handle = Addressables.GetDownloadSizeAsync(portraitKey);
+		yield return handle;
+		long downloadSize = handle.Result;
+		Addressables.Release<long>(handle);
+		if (downloadSize == 0)
+		{
+			for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)
+				AddressableAssetLoadManager.GetAddressableSprite(TableDataManager.instance.actorTable.dataArray[i].portraitAddress, "Icon", null);
+		}
+		else
+			Debug.LogFormat("Actor Portrait pIcon Size = {0}", downloadSize / 1024);
 
 		// DropObject의 크기도 커지고 로비뽑기에서 써야해서 BattleManager에서 분리한다.
 		_handleDropObjectGroup = Addressables.LoadAssetAsync<GameObject>("DropObjectGroup");

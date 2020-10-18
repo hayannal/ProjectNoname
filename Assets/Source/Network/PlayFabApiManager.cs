@@ -171,12 +171,32 @@ public class PlayFabApiManager : MonoBehaviour
 	public void OnRecvLoginResult(LoginResult loginResult)
 	{
 		_playFabId = loginResult.PlayFabId;
+		_loginResult = loginResult;
+
 #if USE_TITLE_PLAYER_ENTITY
 		_titlePlayerEntityKey = new PlayFab.DataModels.EntityKey { Id = loginResult.EntityToken.Entity.Id, Type = loginResult.EntityToken.Entity.Type };
 #endif
 
+		// 로그인 처리를 진행하기 전에 서버상태라던가 버전정보를 확인한다.
 		if (CheckServerMaintenance(loginResult.InfoResultPayload.TitleData))
 			return;
+
+		bool needCheckResourceVersion = false;
+		if (CheckVersion(loginResult.InfoResultPayload.TitleData, loginResult.InfoResultPayload.PlayerStatistics, out needCheckResourceVersion) == false)
+			return;
+
+		// 리소스 체크를 해야하는 상황에서만 번들 체크를 한다.
+		if (needCheckResourceVersion)
+		{
+			DownloadManager.instance.CheckDownloadProcess();
+		}
+		else
+			OnLogin();
+	}
+
+	public void OnLogin()
+	{
+		LoginResult loginResult = _loginResult;
 
 		CurrencyData.instance.OnRecvCurrencyData(loginResult.InfoResultPayload.UserVirtualCurrency, loginResult.InfoResultPayload.UserVirtualCurrencyRechargeTimes);
 		DailyShopData.instance.OnRecvShopData(loginResult.InfoResultPayload.TitleData, loginResult.InfoResultPayload.UserReadOnlyData);
@@ -197,6 +217,9 @@ public class PlayFabApiManager : MonoBehaviour
 			// 이게 비동기라서 로그인과 동시에 날아온 인벤 리스트에는 들어있지 않게 된다.
 			// 그래서 직접 캐릭터를 인벤토리에 넣어주고 넘어가면 된다.
 			PlayerData.instance.OnNewlyCreatedPlayer();
+
+			// 더이상 쓰이는 곳 없다.
+			_loginResult = null;
 			return;
 		}
 
@@ -331,12 +354,100 @@ public class PlayFabApiManager : MonoBehaviour
 					DateTime localEndTime = endTime.ToLocalTime();
 					string startArgment = string.Format("{0:00}:{1:00}", localStartTime.Hour, localStartTime.Minute);
 					string endArgment = string.Format("{0:00}:{1:00}", localEndTime.Hour, localEndTime.Minute);
-					StartCoroutine(AuthManager.instance.RestartProcess("SystemUI_ServerDown", startArgment, endArgment));
+					StartCoroutine(AuthManager.instance.RestartProcess(null, "SystemUI_ServerDown", startArgment, endArgment));
 					return true;
 				}
 			}
 		}
 		return false;
+	}
+
+	bool CheckVersion(Dictionary<string, string> titleData, List<StatisticValue> playerStatistics, out bool needCheckResourceVersion)
+	{
+		needCheckResourceVersion = false;
+
+		// 이 시점에서는 아직 PlayerData를 구축하기 전이니 이렇게 직접 체크한다.
+		// highestPlayChapter로 체크해야 기기를 바꾸든 앱을 재설치 하든 데이터를 삭제하든 모든 상황에 대응할 수 있다.
+		// 현재 계정 상태에 따라 다운로드 진행을 결정하는 것.
+		int highestPlayChapter = 0;
+		for (int i = 0; i < playerStatistics.Count; ++i)
+		{
+			if (playerStatistics[i].StatisticName == "highestPlayChapter")
+			{
+				highestPlayChapter = playerStatistics[i].Value;
+				break;
+			}
+		}
+
+		// 튜토리얼을 마치지 않았다면 앱 업뎃이든 번들패치든 할 필요 없다. 바로 리턴.
+		if (highestPlayChapter == 0)
+			return true;
+
+		Debug.LogFormat("Application version = {0}", Application.version);
+
+		// 권장 표기가 메이저.마이너.빌드 표기이지만 굳이 이걸 따르지 않고 가운데 번호를 업데이트 구분 번호로 쓰기로 한다.
+		// 예를 들어 1.15.4 하면 15번 빌드고
+		// 서버에서 받은 업데이트 빌드 번호가 16이면 패치하라고 뜨는 구조다.
+		// 이 번호는 사실 Bundle Code Number랑은 달라질 수 있는데
+		// 이 코드는 마켓에 올릴때 무조건 증가시켜야하는 코드라서 올릴때마다 1씩 증가시킬거고, 리젝같은 이유로 다시 올릴때마다 1씩 올라갈텐데
+		// 아직 유저에게 배포되기 전이라면 빌드번호는 그대로 유지해도 된다.
+		// 어차피 유저에게 배포된 버전보다만 1 높으면 업데이트가 뜨기 때문.
+		// 
+		// 리소스 패치 번호는 맨 뒷번호를 쓸거다. 위에서라면 4번 리소스다. 빌드를 묶을때 Remote Path에다가 그에 맞는 Badge 주소를 입력해놨을테니
+		// 거기에다가 해당 번들들을 넣어두면 될거다.
+		// 심사 빌드를 위해서는 새 Badge 주소를 받아다 적용 후 새 빌드를 뽑으면 그 빌드는 새 Badge를 바라보게 될것이니
+		// 유저들이 빌드 업뎃을 하면 알아서 새 Badge에서 데이터를 긁어와 비교할 것이다.
+		// 
+		// 테이블 패치만 하는 경우가 문제인데,
+		// 이럴땐 새 Badge를 발급 받는게 아니라 원래 연결된 Badge에다가 업데이트된 테이블을 밀어넣으면
+		// 클라가 실행시에 비교 후 업뎃이 있다고 띄우는 형태인거다.
+		// 이걸 위해 Badge를 구분하기 편해야하니 Badge이름에다가 저 리소스 패치 번호를 붙여두는게 구분할때 편할거다.
+		string[] split = Application.version.Split('.');
+		if (split.Length != 3)
+		{
+			// 관리되지 않는 버전 번호다. 패스.
+			return true;
+		}
+
+		// 빌드번호를 서버에 적혀있는 빌드번호와 비교해야한다. 플랫폼을 구분할 필요없기 때문에(Version Code와 다르다.) 그냥 검사하면 된다.
+		int buildNumber = 0;
+		int.TryParse(split[1], out buildNumber);
+		if (titleData.ContainsKey("version") && string.IsNullOrEmpty(titleData["version"]) == false)
+		{
+			var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+			int serverVersion = 0;
+			int.TryParse(titleData["version"], out serverVersion);
+			if (buildNumber < serverVersion)
+			{
+				// 업데이트가 있음을 알려야한다.
+				StartCoroutine(AuthManager.instance.RestartProcess(() =>
+				{
+#if UNITY_EDITOR
+					// 에디터에서는 마켓창 열필요 없으니 종료한다.
+					UnityEditor.EditorApplication.isPlaying = false;
+#endif
+					if (Application.platform == RuntimePlatform.IPhonePlayer)
+					{
+						Application.OpenURL(titleData["iosUrl"]);
+					}
+					else if (Application.platform == RuntimePlatform.Android)
+					{
+						Application.OpenURL("market://details?id=" + Application.identifier);
+					}
+				}, "SystemUI_NeedUpdate"));
+				return false;
+			}
+		}
+
+		// 빌드 업데이트 확인이 끝나면 리소스 체크를 해야하는데,
+		// 리소스 버전은 빌드번호와 달리 직접 서버에 적어두고 비교하는 형태가 아니다.
+		// 어드레서블을 사용하기 때문에 GetDownloadSizeAsync 호출해서 있으면 패치할게 있는거고 0이면 패치할게 없는거다.
+		// 당연히 Async구조이기 때문에 코루틴으로 바꿔서 대기해야한다.
+		//int resourceNumber = 0;
+		//int.TryParse(split[2], out resourceNumber);
+		needCheckResourceVersion = true;
+
+		return true;
 	}
 
 	void OnRecvPlayerDataFailure(PlayFabError error)
@@ -349,7 +460,7 @@ public class PlayFabApiManager : MonoBehaviour
 
 		// 로그인이 성공한 이상 실패할거 같진 않지만 그래도 혹시 모르니 해둔다.
 		Debug.LogError(error.GenerateErrorReport());
-		StartCoroutine(AuthManager.instance.RestartProcess(stringId));
+		StartCoroutine(AuthManager.instance.RestartProcess(null, stringId));
 	}
 
 	void CheckCompleteRecvPlayerData()

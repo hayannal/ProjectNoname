@@ -229,12 +229,12 @@ public class AuthManager : MonoBehaviour
 
 		//PlayFabApiManager.instance.HandleCommonError(error); 호출하는 대신
 		// 로딩 구조 및 sortOrder를 바꿔야해서 직접 처리한다.
-		StartCoroutine(RestartProcess(stringId));
+		StartCoroutine(RestartProcess(null, stringId));
 	}
 
 	// 여러 패킷이 동시에 실패하면 여러개의 RestartProcess가 만들어질 수도 있어서 플래그를 걸어서 체크하기로 한다.
 	bool _restartProcessed = false;
-	public IEnumerator RestartProcess(string stringId = "SystemUI_DisconnectServer", params object[] arg)
+	public IEnumerator RestartProcess(Action callback, string stringId = "SystemUI_DisconnectServer", params object[] arg)
 	{
 		if (_restartProcessed)
 			yield break;
@@ -257,6 +257,11 @@ public class AuthManager : MonoBehaviour
 		{
 			_restartProcessed = false;
 			Addressables.Release<GameObject>(handleCommonCanvasGroup);
+
+			// 콜백이 있을땐 씬 재시작 호출하기 전에 콜백부터 처리
+			if (callback != null)
+				callback();
+
 			SceneManager.LoadScene(0);
 		}, 100);
 	}

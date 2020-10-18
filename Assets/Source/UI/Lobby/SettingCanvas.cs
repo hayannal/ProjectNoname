@@ -120,6 +120,12 @@ public class SettingCanvas : MonoBehaviour
 
 	public void OnClickLanguageButton()
 	{
+		if (PlayerData.instance.lobbyDownloadState)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_PossibleAfterDownload"), 2.0f);
+			return;
+		}
+
 		UIInstanceManager.instance.ShowCanvasAsync("SelectLanguageCanvas", null);
 	}
 	#endregion

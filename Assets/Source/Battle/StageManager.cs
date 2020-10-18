@@ -54,11 +54,12 @@ public class StageManager : MonoBehaviour
 		// 씬의 시작에서 1챕터를 켜려고 할때 번들을 안받은 상태라면 로드가 실패할거다.
 		// 그러니 0챕터를 대신 부르고 다운로드 대기 모드로 동작하게 처리한다.
 		// 이땐 CalcNextStageInfo도 할 필요 없고 그냥 로비만 로딩한 후 못넘어가게 처리하면 된다.
-		if (DownloadManager.instance.IsDownloaded() == false && chapter != 0)
+		if (PlayerData.instance.lobbyDownloadState)
 		{
-			DownloadManager.instance.standbyDownload = true;
 			StageDataManager.instance.nextStageTableData = BattleInstanceManager.instance.GetCachedStageTableData(0, 0, false);
 			StageDataManager.instance.reservedNextMap = StageDataManager.instance.nextStageTableData.overridingMap;
+			nextMapTableData = BattleInstanceManager.instance.GetCachedMapTableData(StageDataManager.instance.reservedNextMap);
+			PrepareNextMap(nextMapTableData, StageDataManager.instance.nextStageTableData.environmentSetting);
 			return;
 		}
 
@@ -138,7 +139,7 @@ public class StageManager : MonoBehaviour
 			// last stage
 			return;
 		}
-		if (DownloadManager.instance.standbyDownload)
+		if (PlayerData.instance.lobbyDownloadState)
 			return;
 
 		int nextStage = playStage + 1;

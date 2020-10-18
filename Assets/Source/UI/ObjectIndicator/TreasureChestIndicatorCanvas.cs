@@ -80,6 +80,12 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 			return;
 		}
 
+		if (PlayerData.instance.lobbyDownloadState)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_PossibleAfterDownload"), 2.0f);
+			return;
+		}
+
 		switch (_buttonType)
 		{
 			case eButtonType.Shop:

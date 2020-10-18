@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using CodeStage.AntiCheat.ObscuredTypes;
 using PlayFab;
 using PlayFab.ClientModels;
@@ -158,10 +160,12 @@ public class DailyShopData : MonoBehaviour
 			dailyShopRefreshTime += TimeSpan.FromDays(1);
 	}
 
-	void LoadDailyEquipIcon()
+	List<string> _listLoadKey = new List<string>();
+	IEnumerator LoadDailyEquipIconAsync()
 	{
 		// 오늘의 일일상점 장비 데이터 아이콘은 미리 로딩해둔다. 장비가 나오는 공간은 5개까지이므로 5개까지만 체크해둔다.
 		// LateInitialize에서 해야 씬 이동하고나서도 다시 로드된다.
+		_listLoadKey.Clear();
 		for (int i = 0; i < 5; ++i)
 		{
 			DailyShopData.DailyShopSlotInfo dailyShopSlotInfo = DailyShopData.instance.GetTodayShopData(i);
@@ -173,14 +177,31 @@ public class DailyShopData : MonoBehaviour
 			if (equipTableData == null)
 				continue;
 
-			AddressableAssetLoadManager.GetAddressableSprite(equipTableData.shotAddress, "Icon", null);
+			_listLoadKey.Add(equipTableData.shotAddress);
+			//AddressableAssetLoadManager.GetAddressableSprite(equipTableData.shotAddress, "Icon", null);
 		}
+
+		// 이미 다운로드 받아서 캐싱이 되어있다면 프리로드 하는거고 아니면 하지 말아야한다.
+		// 모든 장비 아이콘은 한곳에 들어있을거라서 아무거나 하나만 검사해도 되지만
+		// 혹시 나뉘어질수도 있으니 리스트로 넘기도록 한다.
+		AsyncOperationHandle<long> handle = Addressables.GetDownloadSizeAsync(_listLoadKey);
+		yield return handle;
+		long downloadSize = handle.Result;
+		Addressables.Release<long>(handle);
+		if (downloadSize > 0)
+		{
+			Debug.LogFormat("DailyShop EquipIcon Size = {0}", downloadSize / 1024);
+			yield break;
+		}
+
+		for (int i = 0; i < _listLoadKey.Count; ++i)
+			AddressableAssetLoadManager.GetAddressableSprite(_listLoadKey[i], "Icon", null);
 	}
 
 	public void LateInitialize()
 	{
 		CheckUnfixedItemInfo();
-		LoadDailyEquipIcon();
+		StartCoroutine(LoadDailyEquipIconAsync());
 	}
 
 	public DailyShopSlotInfo GetTodayShopData(int slotId)
@@ -460,7 +481,7 @@ public class DailyShopData : MonoBehaviour
 		RegisterUnfixedInfo();
 
 		// 오늘 판매될 Equip의 아이콘도 미리 로드
-		LoadDailyEquipIcon();
+		StartCoroutine(LoadDailyEquipIconAsync());
 	}
 
 	// 전부다 리셋된 상태인지 확인한다. UI 갱신 확인용 함수다.

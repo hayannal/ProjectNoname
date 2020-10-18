@@ -21,6 +21,7 @@ public class LoadingCanvas : MonoBehaviour
 
 	public GameObject progressObject;
 	public Image progressImage;
+	public Text progressText;
 	public DOTweenAnimation objectFadeTweenAnimation;
 	public DOTweenAnimation backgroundFadeTweenAnimation;
 
@@ -50,8 +51,12 @@ public class LoadingCanvas : MonoBehaviour
 			_fillSpeed = fillSpeed;
 	}
 
+	public bool skipProgressAnimation { get; set; }
 	void Update()
 	{
+		if (skipProgressAnimation)
+			return;
+
 		if (progressImage.fillAmount >= 1.0f)
 			return;
 

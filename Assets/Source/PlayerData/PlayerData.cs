@@ -103,6 +103,12 @@ public class PlayerData : MonoBehaviour
 		}
 	}
 
+	// 튜토가 끝나고 다운로드 받을 데이터가 있는지 확인 후 0보다 크다면 로비에서 다운받는 절차를 진행하는 모드다.
+	// 두번째 캐릭터로 플레이 하기전에 나가는걸 방지하기 위해 로비에서 받게 해주는 유일한 스탭.
+	// 혹시라도 멀리 넘어간 계정으로 하다가 로그아웃해서 게스트로 튜토 진행할때는 데이터가 있으니 들어오지 않는다.
+	public bool lobbyDownloadState { get; set; }
+	public long lobbyDownloadSize { get; set; }
+
 	#region Player Info For Client
 	public void OnRecvPlayerInfoForClient()
 	{

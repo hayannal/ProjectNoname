@@ -593,7 +593,7 @@ public class DropManager : MonoBehaviour
 			float adjustWeight = weight;
 			if (useAdjustWeight)
 			{
-				weight *= TableDataManager.instance.actorTable.dataArray[i].noHaveTimes;
+				adjustWeight *= TableDataManager.instance.actorTable.dataArray[i].noHaveTimes;
 				if (originDrop && CharacterData.IsUseLegendWeight(TableDataManager.instance.actorTable.dataArray[i]) == false)
 					adjustWeight *= 3.0f;
 			}

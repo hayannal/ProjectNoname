@@ -1076,6 +1076,35 @@ public class PlayFabApiManager : MonoBehaviour
 #endif
 	#endregion
 
+	#region Experience
+	public void RequestExperience(string actorId, bool onlyRecordPlay, bool addDia, bool showWaitingNetworkCanvas, Action successCallback)
+	{
+		if (showWaitingNetworkCanvas)
+			WaitingNetworkCanvas.Show(true);
+
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "Experience",
+			FunctionParameter = new { Id = actorId, Ply = onlyRecordPlay ? 1 : 0 },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			if (!failure)
+			{
+				if (showWaitingNetworkCanvas)
+					WaitingNetworkCanvas.Show(false);
+				CurrencyData.instance.dia += addDia ? 1 : 0;
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+	#endregion
+
 	#region Chaos
 	public void RequestSelectFullChaos(bool challenge, int addGold, Action successCallback)
 	{

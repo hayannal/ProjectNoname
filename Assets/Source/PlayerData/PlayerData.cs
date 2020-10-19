@@ -500,6 +500,12 @@ public class PlayerData : MonoBehaviour
 			eventState = userData["even"].Value;
 		EventManager.instance.OnRecvServerEvent(eventState);
 
+		// experience
+		string experienceState = "";
+		if (userReadOnlyData.ContainsKey("expr"))
+			experienceState = userReadOnlyData["expr"].Value;
+		ExperienceData.instance.OnRecvData(experienceState);
+
 		// Etc
 		notStreakCount = 0;
 		if (userReadOnlyData.ContainsKey("strCnt"))

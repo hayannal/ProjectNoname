@@ -275,7 +275,7 @@ public class ActionController : MonoBehaviour {
 					{
 						// 궁극기라면 스킬을 실행하기 전에 미리 sp를 차감해야한다.
 						if (actionPlayInfo.actionName == "Ultimate")
-							UseUltimateSp();
+							OnUseUltimate();
 						skillProcessor.ApplyNonAniSkill(selectedSkillInfo);
 					}
 				}
@@ -298,8 +298,9 @@ public class ActionController : MonoBehaviour {
 
 			if (actionPlayInfo.actionName == "Ultimate")
 			{
-				// 궁극기 액티브 스킬은 스킬을 실행시켜놓고 sp제거.
-				UseUltimateSp();
+				// 궁극기 사용에 대한 sp 처리 및 이벤트 등을 처리
+				// 궁극기 액티브 스킬은 스킬을 실행시켜놓고 sp제거하니 여기서 호출하면 된다.
+				OnUseUltimate();
 
 				#region Ultimate Force Set
 				// 간혹가다 궁극기를 눌렀는데 일반어택이 씹어버리고 덮는 경우가 발생했다.
@@ -337,6 +338,16 @@ public class ActionController : MonoBehaviour {
 			detectedPlayAction = true;
 		#endregion
 		return true;
+	}
+
+	void OnUseUltimate()
+	{
+		// 먼저 SP 소모부터 처리
+		UseUltimateSp();
+
+		// 이후 사용 이벤트 체크. 체험모드 안에서 쓸땐 보상 처리를 해줘야한다.
+		if (ExperienceCanvas.instance != null && ExperienceCanvas.instance.gameObject.activeSelf)
+			ExperienceData.instance.OnUseUltimateSkill(actor.actorId);
 	}
 
 	void UseUltimateSp()

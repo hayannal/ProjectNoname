@@ -11,6 +11,7 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 	public Image gradeBackImage;
 	public Text gradeText;
 	public Text nameText;
+	public GameObject experienceRewardGroupObject;
 	public Button experienceButton;
 	public Button swapButton;
 	public Image swapButtonImage;
@@ -81,6 +82,7 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 		}
 		gradeText.SetLocalizedText(UIString.instance.GetString(string.Format("GameUI_CharGrade{0}", actorTableData.grade)));
 		nameText.SetLocalizedText(UIString.instance.GetString(actorTableData.nameId));
+		experienceRewardGroupObject.SetActive(ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Research) && ExperienceData.instance.IsRewarded(actorId) == false);
 
 		bool contains = PlayerData.instance.ContainsActor(actorId);
 		swapButtonImage.color = contains ? Color.white : ColorUtil.halfGray;
@@ -260,6 +262,13 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 
 	public void OnClickExperience()
 	{
+		// 보상 받을 수 있는 상태인데 이미 플레이를 했다면 예외처리를 해서 보상부터 받아야한다.
+		if (experienceRewardGroupObject.activeSelf && ExperienceData.instance.IsPlayed(_actorId))
+		{
+			ExperienceData.instance.ReceiveRewardWithoutPlay(_actorId);
+			return;
+		}
+
 		UIInstanceManager.instance.ShowCanvasAsync("ExperienceCanvas", null);
 	}
 

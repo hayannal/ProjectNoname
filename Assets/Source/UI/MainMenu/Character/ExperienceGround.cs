@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class ExperienceGround : MonoBehaviour
 {
@@ -11,6 +10,7 @@ public class ExperienceGround : MonoBehaviour
 	public float monsterSpawnLineZ = 72.0f;
 	public GameObject monsterPrefab;
 	public Canvas worldCanvas;
+	public GameObject tryRewardTextObject;
 
 	void Awake()
 	{
@@ -28,6 +28,7 @@ public class ExperienceGround : MonoBehaviour
 	void OnEnable()
 	{
 		_spawnRemainTime = 0.0f;
+		tryRewardTextObject.SetActive(ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Research) && ExperienceData.instance.IsRewarded(CharacterListCanvas.instance.selectedActorId) == false);
 
 		_prevPlaneCollider = BattleInstanceManager.instance.planeCollider;
 		_prevGround = BattleInstanceManager.instance.currentGround;

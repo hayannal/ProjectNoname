@@ -18,12 +18,10 @@ public class CharacterInfoTranscendCanvas : MonoBehaviour
 
 	public GameObject maxInfoObject;
 	public GameObject materialInfoObject;
-
-	public GameObject emptySlotObject;
-	public GameObject characterSlotObject;
 	public Image characterImage;
 	public Coffee.UIExtensions.UIGradient gradient;
 	public Image lineColorImage;
+	public GameObject blackObject;
 	public Text nameText;
 
 	public Transform needOriginTextTransform;
@@ -118,8 +116,7 @@ public class CharacterInfoTranscendCanvas : MonoBehaviour
 
 		maxInfoObject.SetActive(false);
 		materialInfoObject.SetActive(true);
-		emptySlotObject.SetActive(!appliedTranscendPoint);
-		characterSlotObject.SetActive(appliedTranscendPoint);
+		blackObject.SetActive(!appliedTranscendPoint);
 
 		// SwapCanvasListItem에서 필요한 것만 가져와서 사용한다.
 		AddressableAssetLoadManager.GetAddressableSprite(actorTableData.portraitAddress, "Icon", (sprite) =>

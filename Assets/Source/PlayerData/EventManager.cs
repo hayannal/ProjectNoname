@@ -26,6 +26,8 @@ public class EventManager : MonoBehaviour
 	{
 		chaos,
 		node,
+		research,
+		balance,
 	}
 
 	// 클라 이벤트는 메모리에만 기억되는 거라서 종료하면 더이상 볼 수 없다. 그래서 중요하지 않은 것들 위주다.
@@ -57,6 +59,7 @@ public class EventManager : MonoBehaviour
 
 	public bool reservedOpenResearchEvent { get; set; }
 	public bool reservedOpenEquipOptionEvent { get; set; }
+	public bool reservedOpenBalanceEvent { get; set; }
 
 	#region OnEvent
 	public void OnEventClearHighestChapter(int chapter, string newCharacterId)
@@ -77,7 +80,9 @@ public class EventManager : MonoBehaviour
 		}
 		else if (chapter == (int)ContentsManager.eOpenContentsByChapter.Research)
 		{
-			reservedOpenResearchEvent = true;
+			// Research와 Balance는 메뉴를 추가한거니 서버 이벤트로 변경하기로 한다.
+			//reservedOpenResearchEvent = true;
+			PushServerEvent(eServerEvent.research);
 		}
 		else if (chapter == (int)ContentsManager.eOpenContentsByChapter.NodeWar)
 		{
@@ -88,6 +93,10 @@ public class EventManager : MonoBehaviour
 		else if (chapter == (int)ContentsManager.eOpenContentsByChapter.EquipOption)
 		{
 			reservedOpenEquipOptionEvent = true;
+		}
+		else if (chapter == (int)ContentsManager.eOpenContentsByChapter.Balance)
+		{
+			PushServerEvent(eServerEvent.balance);
 		}
 		else if (chapter == (int)ContentsManager.eOpenContentsByChapter.SecondDailyBox)
 		{
@@ -208,6 +217,12 @@ public class EventManager : MonoBehaviour
 			return false;
 		return true;
 	}
+
+	public void CompleteServerEvent(eServerEvent serverEvent)
+	{
+		_listCompleteServerEvent.Add(serverEvent);
+		PlayFabApiManager.instance.RequestPushServerEvent(CreateServerEventJson());
+	}
 	#endregion
 
 	void PushServerEvent(eServerEvent serverEvent, string sValue = "", int iValue = 0)
@@ -301,6 +316,12 @@ public class EventManager : MonoBehaviour
 			case eServerEvent.node:
 				StartCoroutine(NodeWarProcess());
 				break;
+			case eServerEvent.research:
+				reservedOpenResearchEvent = true;
+				break;
+			case eServerEvent.balance:
+				reservedOpenBalanceEvent = true;
+				break;
 		}
 	}
 
@@ -371,8 +392,7 @@ public class EventManager : MonoBehaviour
 
 			EventInfoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_OpenChaosName"), UIString.instance.GetString("GameUI_OpenChaosDesc"), UIString.instance.GetString("GameUI_OpenChaosMore"), () =>
 			{
-				_listCompleteServerEvent.Add(eServerEvent.chaos);
-				PlayFabApiManager.instance.RequestPushServerEvent(CreateServerEventJson());
+				CompleteServerEvent(eServerEvent.chaos);
 
 				// 카오스는 챕터 클리어 실패시 뜨는거라 이벤트 연속처리를 하지 않아도 된다.
 				//OnCompleteLobbyEvent();
@@ -504,8 +524,7 @@ public class EventManager : MonoBehaviour
 			
 			EventInfoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_OpenNodeWarName"), UIString.instance.GetString("GameUI_OpenNodeWarDesc"), UIString.instance.GetString("GameUI_OpenNodeWarMore"), () =>
 			{
-				_listCompleteServerEvent.Add(eServerEvent.node);
-				PlayFabApiManager.instance.RequestPushServerEvent(CreateServerEventJson());
+				CompleteServerEvent(eServerEvent.node);
 
 				// 카오스와 달리 스테이지 클리어 후 나오는거라 New Chapter 표시 이벤트도 연달아서 처리해야한다.
 				OnCompleteLobbyEvent();

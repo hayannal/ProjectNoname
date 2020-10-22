@@ -18,6 +18,7 @@ public class DotMainMenuCanvas : MonoBehaviour
 		Chapter,
 		Research,
 		Mail,
+		Balance,
 	}
 	public Transform[] mainMenuButtonTransformList;
 	public RectTransform[] alarmRootTransformList;
@@ -29,6 +30,7 @@ public class DotMainMenuCanvas : MonoBehaviour
 		new int[] { 0, 1, 4 },
 		new int[] { 2, 0, 1, 4 },
 		new int[] { 2, 0, 1, 3, 4 },
+		new int[] { 2, 5, 0, 1, 3, 4 },
 	};
 
 	float[] StartAngleList =
@@ -38,6 +40,7 @@ public class DotMainMenuCanvas : MonoBehaviour
 		60.0f,
 		0.0f,
 		0.0f,
+		-30.0f,
 	};
 
 	float[] RadiusList =
@@ -46,6 +49,7 @@ public class DotMainMenuCanvas : MonoBehaviour
 		1.5f,
 		1.5f,
 		1.75f,
+		2.0f,
 		2.0f,
 	};
 
@@ -81,7 +85,9 @@ public class DotMainMenuCanvas : MonoBehaviour
 
 		// initialize menu content
 		_elementCount = 3;
-		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Research))
+		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Balance))
+			_elementCount = 6;
+		else if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Research))
 			_elementCount = 5;
 		else if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Chapter))
 			_elementCount = 4;
@@ -340,6 +346,17 @@ public class DotMainMenuCanvas : MonoBehaviour
 
 		UIInstanceManager.instance.ShowCanvasAsync("MailCanvas", null);
 	}
+
+	public void OnClickBalanceButton()
+	{
+		if (_reservedHide)
+			return;
+
+		UIInstanceManager.instance.ShowCanvasAsync("BalanceCanvas", () =>
+		{
+			BalanceCanvas.instance.RefreshInfo("");
+		});
+	}
 	#endregion
 
 
@@ -350,6 +367,7 @@ public class DotMainMenuCanvas : MonoBehaviour
 		RefreshCharacterAlarmObject(false);
 		RefreshResearchAlarmObject(false);
 		RefreshMailAlarmObject(false);
+		RefreshBalanceAlarmObject(false);
 	}
 
 	public static bool IsAlarmCashShop()
@@ -471,6 +489,19 @@ public class DotMainMenuCanvas : MonoBehaviour
 		RefreshAlarmObject(show, (int)eButtonType.Mail);
 		if (refreshLobbyAlarm)
 			LobbyCanvas.instance.RefreshAlarmObject(eButtonType.Mail, show);
+	}
+
+	public static bool IsAlarmBalance()
+	{
+		return false;
+	}
+
+	public void RefreshBalanceAlarmObject(bool refreshLobbyAlarm = true)
+	{
+		bool show = IsAlarmBalance();
+		RefreshAlarmObject(show, (int)eButtonType.Balance);
+		if (refreshLobbyAlarm)
+			LobbyCanvas.instance.RefreshAlarmObject(eButtonType.Balance, show);
 	}
 
 	void RefreshAlarmObject(bool show, int buttonIndex)

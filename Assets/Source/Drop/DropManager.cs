@@ -845,11 +845,13 @@ public class DropManager : MonoBehaviour
 	// Drop과 동시에 계산되서 여기에 다 쌓여있게 되니 바로 서버로 보내면 된다.
 	ObscuredInt _lobbyDia = 0;
 	ObscuredFloat _lobbyGold = 0.0f;
+	ObscuredInt _lobbyBalancePp = 0;
 
 	void ClearLobbyDropPacketInfo()
 	{
 		_lobbyDia = 0;
 		_lobbyGold = 0.0f;
+		_lobbyBalancePp = 0;
 		_listCharacterPpRequest.Clear();
 		_listGrantCharacterRequest.Clear();		
 		_listCharacterTrpRequest.Clear();
@@ -918,6 +920,16 @@ public class DropManager : MonoBehaviour
 	public List<CharacterPpRequest> GetPowerPointInfo()
 	{
 		return _listCharacterPpRequest;
+	}
+
+	public void AddLobbyBalancePp(int amount)
+	{
+		_lobbyBalancePp += amount;
+	}
+
+	public int GetLobbyBalancePpAmount()
+	{
+		return _lobbyBalancePp;
 	}
 
 	List<string> _listGrantCharacterRequest = new List<string>();

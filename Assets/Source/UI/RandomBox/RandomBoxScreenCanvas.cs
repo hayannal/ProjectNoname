@@ -275,6 +275,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 	}
 
 	List<DropManager.CharacterPpRequest> _listSumPpInfo = null;
+	int _sumAddBalancePp = 0;
 	List<string> _listSumGrantInfo = null;
 	List<DropManager.CharacterTrpRequest> _listSumTrpInfo = null;
 	void SumReward()
@@ -288,6 +289,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 			_listSumTrpInfo = new List<DropManager.CharacterTrpRequest>();
 
 		List<DropManager.CharacterPpRequest> listPpInfo = DropManager.instance.GetPowerPointInfo();
+		int addBalancePp = DropManager.instance.GetLobbyBalancePpAmount();
 		List<string> listGrantInfo = DropManager.instance.GetGrantCharacterInfo();
 		List<DropManager.CharacterTrpRequest> listTrpInfo = DropManager.instance.GetTranscendPointInfo();
 		for (int i = 0; i < listPpInfo.Count; ++i)
@@ -314,6 +316,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 				_listSumPpInfo.Add(newInfo);
 			}
 		}
+		_sumAddBalancePp += addBalancePp;
 		for (int i = 0; i < listGrantInfo.Count; ++i)
 		{
 			if (_listSumGrantInfo.Contains(listGrantInfo[i]) == false)
@@ -333,6 +336,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 	{
 		if (_listSumPpInfo != null)
 			_listSumPpInfo.Clear();
+		_sumAddBalancePp = 0;
 		if (_listSumGrantInfo != null)
 			_listSumGrantInfo.Clear();
 		if (_listSumTrpInfo != null)
@@ -434,7 +438,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 			if (CharacterBoxShowCanvas.instance != null && CharacterBoxShowCanvas.instance.gameObject.activeSelf)
 				CharacterBoxShowCanvas.instance.gameObject.SetActive(false);
 
-			CharacterBoxResultCanvas.instance.RefreshInfo(0, 0, _listSumPpInfo, _listSumGrantInfo, _listSumTrpInfo);
+			CharacterBoxResultCanvas.instance.RefreshInfo(0, 0, _listSumPpInfo, _sumAddBalancePp, _listSumGrantInfo, _listSumTrpInfo);
 		});
 	}
 	#endregion

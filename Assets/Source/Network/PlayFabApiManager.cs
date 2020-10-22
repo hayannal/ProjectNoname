@@ -880,6 +880,7 @@ public class PlayFabApiManager : MonoBehaviour
 		int addGold = DropManager.instance.GetLobbyGoldAmount();
 		int addDia = DropManager.instance.GetLobbyDiaAmount();
 		List<DropManager.CharacterPpRequest> listPpInfo = DropManager.instance.GetPowerPointInfo();
+		int addBalancePp = DropManager.instance.GetLobbyBalancePpAmount();
 		List<string> listGrantInfo = DropManager.instance.GetGrantCharacterInfo();
 		List<DropManager.CharacterTrpRequest> listTrpInfo = DropManager.instance.GetTranscendPointInfo();
 
@@ -897,12 +898,12 @@ public class PlayFabApiManager : MonoBehaviour
 		string jsonListPp = serializer.SerializeObject(listPpInfo);
 		string jsonListGr = serializer.SerializeObject(listGrantInfo);
 		string jsonListTrp = serializer.SerializeObject(listTrpInfo);
-		checkSum = CheckSum(string.Format("{0}_{1}_{2}_{3}_{4}", jsonListPp, jsonListGr, jsonListTrp, addGold, addDia));
+		checkSum = CheckSum(string.Format("{0}_{1}_{2}_{3}_{4}_{5}", jsonListPp, jsonListGr, jsonListTrp, addGold, addDia, addBalancePp));
 
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
 			FunctionName = "OpenDailyBox",
-			FunctionParameter = new { Go = addGold, Di = addDia, LstPp = listPpInfo, LstGr = listGrantInfo, LstTrp = listTrpInfo, LstCs = checkSum },
+			FunctionParameter = new { Go = addGold, Di = addDia, LstPp = listPpInfo, Bpp = addBalancePp, LstGr = listGrantInfo, LstTrp = listTrpInfo, LstCs = checkSum },
 			GeneratePlayStreamEvent = true,
 		}, (success) =>
 		{
@@ -928,7 +929,7 @@ public class PlayFabApiManager : MonoBehaviour
 				PlayerData.instance.OnRecvDailyBoxInfo((string)date, true);
 
 				// 뽑기쪽 처리와 동일한 함수들
-				PlayerData.instance.OnRecvUpdateCharacterStatistics(listPpInfo, listTrpInfo);
+				PlayerData.instance.OnRecvUpdateCharacterStatistics(listPpInfo, listTrpInfo, addBalancePp);
 				PlayerData.instance.OnRecvGrantCharacterList(adChrIdPayload);
 
 				// 보통은 failure해도 successCallback 호출을 해줬는데 여기선 아예 뽑기 연출로 가지도 않도록 호출하지 않는다.
@@ -1717,6 +1718,7 @@ public class PlayFabApiManager : MonoBehaviour
 		
 		// DropProcess를 1회 굴리고나면 DropManager에 정보가 쌓여있다. 이걸 보내면 된다.
 		List<DropManager.CharacterPpRequest> listPpInfo = DropManager.instance.GetPowerPointInfo();
+		int addBalancePp = DropManager.instance.GetLobbyBalancePpAmount();
 		List<string> listGrantInfo = DropManager.instance.GetGrantCharacterInfo();
 		List<DropManager.CharacterTrpRequest> listTrpInfo = DropManager.instance.GetTranscendPointInfo();
 
@@ -1748,12 +1750,12 @@ public class PlayFabApiManager : MonoBehaviour
 		string jsonListPp = serializer.SerializeObject(listPpInfo);
 		string jsonListGr = serializer.SerializeObject(listGrantInfo);
 		string jsonListLbp = serializer.SerializeObject(listTrpInfo);
-		checkSum = CheckSum(string.Format("{0}_{1}_{2}", jsonListPp, jsonListGr, jsonListLbp));
+		checkSum = CheckSum(string.Format("{0}_{1}_{2}_{3}", jsonListPp, jsonListGr, jsonListLbp, addBalancePp));
 
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
 			FunctionName = "OpenCharBox",
-			FunctionParameter = new { LstPp = listPpInfo, LstGr = listGrantInfo, LstTrp = listTrpInfo, LstCs = checkSum },
+			FunctionParameter = new { LstPp = listPpInfo, Bpp = addBalancePp, LstGr = listGrantInfo, LstTrp = listTrpInfo, LstCs = checkSum },
 			GeneratePlayStreamEvent = true,
 		}, (success) =>
 		{
@@ -1773,7 +1775,7 @@ public class PlayFabApiManager : MonoBehaviour
 					PlayerData.instance.notStreakCharCount = 0;
 
 				// update
-				PlayerData.instance.OnRecvUpdateCharacterStatistics(listPpInfo, listTrpInfo);
+				PlayerData.instance.OnRecvUpdateCharacterStatistics(listPpInfo, listTrpInfo, addBalancePp);
 				PlayerData.instance.OnRecvGrantCharacterList(adChrIdPayload);
 				if (successCallback != null) successCallback.Invoke(failure);
 

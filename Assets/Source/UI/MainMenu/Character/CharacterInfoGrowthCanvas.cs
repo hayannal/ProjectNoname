@@ -34,6 +34,7 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 	public Image sliderFrameImage;
 	public Image sliderFillImage;
 	public Text ppText;
+	public GameObject balanceButtonObject;
 
 	public GameObject priceButtonObject;
 	public GameObject[] priceTypeObjectList;
@@ -163,6 +164,7 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 			pp = characterData.pp;
 			dontHave = false;
 		}
+		balanceButtonObject.SetActive(ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Balance));
 
 		_overMaxMode = false;
 		_limitBreakMode = false;
@@ -377,6 +379,11 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 		else
 			text = UIString.instance.GetString("GameUI_CharGaugeDesc");
 		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, text, 250, ppSlider.transform, new Vector2(10.0f, -35.0f));
+	}
+
+	public void OnClickBalanceButton()
+	{
+
 	}
 
 	public void OnClickLevelUpButton()

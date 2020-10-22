@@ -19,6 +19,7 @@ public class DropProcessor : MonoBehaviour
 		Diamond,
 		Origin,
 		PowerPoint,
+		Balance,
 	}
 
 	#region Static Fuction
@@ -114,6 +115,26 @@ public class DropProcessor : MonoBehaviour
 							dropProcessor.AdjustDropDelay(0.05f);
 						else if (dropTableData.dropId.Contains("Daily"))
 							dropProcessor.AdjustDropDelay(0.1f);
+						break;
+					case eDropType.PowerPoint:
+						// 천칭 메뉴가 열리고나서부터는 PowerPoint 마지막꺼 뽑을때 예외처리를 한다.
+						if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Balance))
+						{
+							// 연속으로 붙어있는걸 고려해서 마지막인지 판단한다.
+							bool lastPowerPoint = false;
+							if ((i + 1) < dropTableData.dropEnum.Length)
+							{
+								eDropType nextDropType = (eDropType)dropTableData.dropEnum[i + 1];
+								if (nextDropType != eDropType.PowerPoint)
+									lastPowerPoint = true;
+							}
+							else
+								lastPowerPoint = true;
+
+							// 적용해도 되는 상황일때 80% 확률로 dropType을 강제로 교체한다.
+							if (lastPowerPoint && Random.value > 0.2f)
+								dropType = eDropType.Balance;
+						}
 						break;
 				}
 			}
@@ -290,6 +311,10 @@ public class DropProcessor : MonoBehaviour
 					dropProcessor.Add(dropType, floatValue, intValue, stringValue);
 					if (lobby) DropManager.instance.AddPowerPoint(stringValue, intValue);
 					break;
+				case eDropType.Balance:
+					dropProcessor.Add(dropType, floatValue, intValue, stringValue);
+					if (lobby) DropManager.instance.AddLobbyBalancePp(intValue);
+					break;
 			}
 		}
 	}
@@ -454,6 +479,7 @@ public class DropProcessor : MonoBehaviour
 				}
 				break;
 			case eDropType.PowerPoint:
+			case eDropType.Balance:
 				newInfo = new DropObjectInfo();
 				newInfo.dropType = dropType;
 				newInfo.intValue = intValue;

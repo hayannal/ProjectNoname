@@ -20,6 +20,10 @@ public class CharacterBoxResultCanvas : MonoBehaviour
 	public RectTransform originContentRootRectTransform;
 	public GameObject ppLineObject;
 
+	public GameObject balancePpLineObject;
+	public GameObject balancePpRootObject;
+	public Text balancePpValueText;
+
 	public GameObject contentItemPrefab;
 	public RectTransform contentRootRectTransform;
 
@@ -64,14 +68,15 @@ public class CharacterBoxResultCanvas : MonoBehaviour
 		int addGold = DropManager.instance.GetLobbyGoldAmount();
 		int addDia = DropManager.instance.GetLobbyDiaAmount();
 		List<DropManager.CharacterPpRequest> listPpInfo = DropManager.instance.GetPowerPointInfo();
+		int addBalancePp = DropManager.instance.GetLobbyBalancePpAmount();
 		List<string> listGrantInfo = DropManager.instance.GetGrantCharacterInfo();
 		List<DropManager.CharacterTrpRequest> listTrpInfo = DropManager.instance.GetTranscendPointInfo();
-		RefreshInfo(addGold, addDia, listPpInfo, listGrantInfo, listTrpInfo);
+		RefreshInfo(addGold, addDia, listPpInfo, addBalancePp, listGrantInfo, listTrpInfo);
 	}
 
 	List<CharacterBoxResultListItem> _listOriginResultItem = new List<CharacterBoxResultListItem>();
 	List<CharacterBoxResultListItem> _listResultListItem = new List<CharacterBoxResultListItem>();
-	public void RefreshInfo(int addGold, int addDia, List<DropManager.CharacterPpRequest> listPpInfo, List<string> listGrantInfo, List<DropManager.CharacterTrpRequest> listTrpInfo)
+	public void RefreshInfo(int addGold, int addDia, List<DropManager.CharacterPpRequest> listPpInfo, int addBalancePp, List<string> listGrantInfo, List<DropManager.CharacterTrpRequest> listTrpInfo)
 	{
 		// 골드나 다이아가 
 		bool goldDia = (addGold > 0) || (addDia > 0);
@@ -134,6 +139,10 @@ public class CharacterBoxResultCanvas : MonoBehaviour
 
 		originContentRootRectTransform.gameObject.SetActive(needOriginGroup);
 		ppLineObject.SetActive(needOriginGroup);
+
+		balancePpLineObject.SetActive(addBalancePp > 0);
+		balancePpRootObject.SetActive(addBalancePp > 0);
+		balancePpValueText.text = string.Format("+{0:N0}", addBalancePp);
 
 		bool levelUpPossible = false;
 		for (int i = 0; i < listPpInfo.Count; ++i)

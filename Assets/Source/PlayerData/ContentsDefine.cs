@@ -12,6 +12,7 @@ public static class ContentsManager
 		Chaos = 4,
 		NodeWar = 5,
 		EquipOption = 6,
+		Balance = 7,
 		SecondDailyBox = 8,
 	}
 

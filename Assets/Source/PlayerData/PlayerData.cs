@@ -49,6 +49,7 @@ public class PlayerData : MonoBehaviour
 	public ObscuredInt researchLevel { get; set; }
 
 	// 뽑기 관련 변수
+	public ObscuredInt balancePp { get; set; }
 	public ObscuredInt notStreakCount { get; set; }
 	public ObscuredInt notStreakCharCount { get; set; }
 	public ObscuredInt originOpenCount { get; set; }
@@ -301,6 +302,7 @@ public class PlayerData : MonoBehaviour
 		sealCount = 0;
 		sharedDailyBoxOpened = false;
 		purifyCount = 0;
+		balancePp = 0;
 		notStreakCount = 0;
 		notStreakCharCount = 0;
 		originOpenCount = 0;
@@ -323,6 +325,7 @@ public class PlayerData : MonoBehaviour
 		//selectedChapter = 1;
 
 		EventManager.instance.OnRecvServerEvent("");
+		ExperienceData.instance.OnRecvData("");
 		TimeSpaceData.instance.ClearInventory();
 		_listCharacterData.Clear();
 		AddNewCharacter("Actor0201", "", 1);
@@ -507,6 +510,14 @@ public class PlayerData : MonoBehaviour
 		ExperienceData.instance.OnRecvData(experienceState);
 
 		// Etc
+		balancePp = 0;
+		if (userReadOnlyData.ContainsKey("balancePp"))
+		{
+			int intValue = 0;
+			if (int.TryParse(userReadOnlyData["balancePp"].Value, out intValue))
+				balancePp = intValue;
+		}
+
 		notStreakCount = 0;
 		if (userReadOnlyData.ContainsKey("strCnt"))
 		{
@@ -645,6 +656,8 @@ public class PlayerData : MonoBehaviour
 		int totalPp = 0;
 		for (int i = 0; i < _listCharacterData.Count; ++i)
 			totalPp += _listCharacterData[i].pp;
+		// balancePp도 합산시켜줘야한다.
+		totalPp += balancePp;
 		if (totalPp > (originOpenCount * PPMaxPerOriginBox + characterBoxOpenCount * PPMaxPerCharacterBox + ppBuyCount))
 			PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidTotalPp, false, totalPp);
 
@@ -657,7 +670,7 @@ public class PlayerData : MonoBehaviour
 		}
 	}
 
-	public void OnRecvUpdateCharacterStatistics(List<DropManager.CharacterPpRequest> listPpInfo, List<DropManager.CharacterTrpRequest> listTrpInfo)
+	public void OnRecvUpdateCharacterStatistics(List<DropManager.CharacterPpRequest> listPpInfo, List<DropManager.CharacterTrpRequest> listTrpInfo, int addBalancePp)
 	{
 		for (int i = 0; i < listPpInfo.Count; ++i)
 		{
@@ -674,6 +687,9 @@ public class PlayerData : MonoBehaviour
 				continue;
 			characterData.transcendPoint = listTrpInfo[i].trp;
 		}
+
+		// 위의 pp와 달리 추가해야할 값이 들어있다.
+		this.balancePp += addBalancePp;
 	}
 
 	public void OnRecvGrantCharacterList(object adCharIdPayload)

@@ -358,6 +358,7 @@ public class LobbyCanvas : MonoBehaviour
 	bool _isAlarmCharacter = false;
 	bool _isAlarmResearch = false;
 	bool _isAlarmMail = false;
+	bool _isAlarmBalance = false;
 	public void RefreshAlarmObject()
 	{
 		_isTutorialPlusAlarmCharacter = DotMainMenuCanvas.IsTutorialPlusAlarmCharacter();
@@ -365,9 +366,10 @@ public class LobbyCanvas : MonoBehaviour
 		_isAlarmCharacter = DotMainMenuCanvas.IsAlarmCharacter();
 		_isAlarmResearch = DotMainMenuCanvas.IsAlarmResearch();
 		_isAlarmMail = DotMainMenuCanvas.IsAlarmMail();
+		_isAlarmBalance = DotMainMenuCanvas.IsAlarmBalance();
 
 		bool showAlarm = false;
-		if (_isAlarmCashShop || _isAlarmCharacter || _isAlarmResearch || _isAlarmMail) showAlarm = true;
+		if (_isAlarmCashShop || _isAlarmCharacter || _isAlarmResearch || _isAlarmMail || _isAlarmBalance) showAlarm = true;
 		if (ContentsManager.IsTutorialChapter() || PlayerData.instance.lobbyDownloadState) showAlarm = false;
 
 		AlarmObject.Hide(alarmRootTransform);
@@ -387,9 +389,10 @@ public class LobbyCanvas : MonoBehaviour
 			case DotMainMenuCanvas.eButtonType.Character: _isAlarmCharacter = changedValue; break;
 			case DotMainMenuCanvas.eButtonType.Research: _isAlarmResearch = changedValue; break;
 			case DotMainMenuCanvas.eButtonType.Mail: _isAlarmMail = changedValue; break;
+			case DotMainMenuCanvas.eButtonType.Balance: _isAlarmBalance = changedValue; break;
 		}
 		bool showAlarm = false;
-		if (_isAlarmCashShop || _isAlarmCharacter || _isAlarmResearch || _isAlarmMail) showAlarm = true;
+		if (_isAlarmCashShop || _isAlarmCharacter || _isAlarmResearch || _isAlarmMail || _isAlarmBalance) showAlarm = true;
 		if (ContentsManager.IsTutorialChapter() || PlayerData.instance.lobbyDownloadState) showAlarm = false;
 
 		AlarmObject.Hide(alarmRootTransform);
@@ -404,7 +407,7 @@ public class LobbyCanvas : MonoBehaviour
 		_isTutorialPlusAlarmCharacter = DotMainMenuCanvas.IsTutorialPlusAlarmCharacter();
 
 		bool showAlarm = false;
-		if (_isAlarmCashShop || _isAlarmCharacter || _isAlarmResearch || _isAlarmMail) showAlarm = true;
+		if (_isAlarmCashShop || _isAlarmCharacter || _isAlarmResearch || _isAlarmMail || _isAlarmBalance) showAlarm = true;
 		if (ContentsManager.IsTutorialChapter() || PlayerData.instance.lobbyDownloadState) showAlarm = false;
 
 		AlarmObject.Hide(alarmRootTransform);

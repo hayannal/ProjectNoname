@@ -306,8 +306,8 @@ public class BalanceCanvas : MonoBehaviour
 				}
 			}
 			targetCharacterLevelValueText.text = targetPowerLevel.ToString();
-			targetCharacterLevelValueText.color = Color.green;
-			targetCharacterLevelGroupObject.SetActive(_targetCharacterBaseLevel != targetPowerLevel);
+			targetCharacterLevelValueText.color = (_targetCharacterBaseLevel != targetPowerLevel) ? Color.green : Color.white;
+			targetCharacterLevelGroupObject.SetActive(_targetPpCharacter.powerLevel != targetPowerLevel);
 		}
 
 		priceButtonObject.SetActive(true);

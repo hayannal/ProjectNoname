@@ -1385,6 +1385,38 @@ public class PlayFabApiManager : MonoBehaviour
 		RetrySendManager.instance.RequestAction(action, true);
 	}
 
+	public void RequestPurchaseBalancePp(int addBalancePp, int price, Action successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "PurchaseBalance",
+			FunctionParameter = new { Bpp = addBalancePp },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
+			jsonResult.TryGetValue("retErr", out object retErr);
+			bool failure = ((retErr.ToString()) == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+				CurrencyData.instance.dia -= price;
+				PlayerData.instance.balancePp += addBalancePp;
+
+				// 성공시에는 구매시간이 날아온다.
+				jsonResult.TryGetValue("date", out object date);
+				PlayerData.instance.OnRecvPurchaseBalance((string)date);
+
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+
 	// 이것도 서버에 저장되는 Entity Object
 	public class CharacterDataEntity1
 	{

@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class BalanceCanvas : MonoBehaviour
 {
@@ -23,6 +25,9 @@ public class BalanceCanvas : MonoBehaviour
 
 	public Transform myBalancePpTextTransform;
 	public Text myBalancePpValueText;
+	public CanvasGroup remainTimeCanvasGroup;
+	public DOTweenAnimation fadeTweenAnimation;
+	public Text remainTimeText;
 
 	public Slider useCountSlider;
 	public Text useCountText;
@@ -54,6 +59,9 @@ public class BalanceCanvas : MonoBehaviour
 			EventManager.instance.reservedOpenBalanceEvent = false;
 			EventManager.instance.CompleteServerEvent(EventManager.eServerEvent.balance);
 		}
+
+		remainTimeCanvasGroup.alpha = 0.0f;
+		RefreshRemainTime();
 	}
 
 	void OnEnable()
@@ -89,11 +97,30 @@ public class BalanceCanvas : MonoBehaviour
 		_lastTargetActorId = "";
 	}
 
+	float _canvasRemainTime = 0.0f;
+	void Update()
+	{
+		if (_canvasRemainTime > 0.0f)
+		{
+			_canvasRemainTime -= Time.deltaTime;
+			if (_canvasRemainTime <= 0.0f)
+			{
+				_canvasRemainTime = 0.0f;
+				fadeTweenAnimation.DORestart();
+			}
+		}
+
+		UpdateRemainTime();
+		UpdateRefresh();
+	}
+
 	CharacterData _highestPpCharacter;
 	CharacterData _targetPpCharacter;
 	int _priceOnce;
 	public void RefreshInfo(string targetActorId)
 	{
+		_priceOnce = BattleInstanceManager.instance.GetCachedGlobalConstantInt("BalanceGoldOnce");
+
 		// 제일 먼저 pp 가장 많은 캐릭을 찾아야한다.
 		List<CharacterData> listCharacterData = PlayerData.instance.listCharacterData;
 		CharacterData highestPpCharacter = listCharacterData[0];
@@ -139,8 +166,6 @@ public class BalanceCanvas : MonoBehaviour
 			AlarmObject.Show(alarmRootTransform, true, true);
 
 		myBalancePpValueText.text = PlayerData.instance.balancePp.ToString("N0");
-		_priceOnce = BattleInstanceManager.instance.GetCachedGlobalConstantInt("BalanceGoldOnce");
-
 		RefreshSliderPrice();
 	}
 
@@ -213,6 +238,20 @@ public class BalanceCanvas : MonoBehaviour
 		useCountSlider.maxValue = maxCount;
 		useCountSlider.value = 0.0f;
 		OnValueChangedRepeatCount(0.0f);
+	}
+
+	void RefreshRemainTime()
+	{
+		if (PlayerData.instance.balancePpPurchased)
+		{
+			_nextResetDateTime = PlayerData.instance.balancePpResetTime;
+			_needUpdate = true;
+			remainTimeText.gameObject.SetActive(true);
+		}
+		else
+		{
+			remainTimeText.gameObject.SetActive(false);
+		}
 	}
 
 	public void OnClickBackButton()
@@ -318,6 +357,41 @@ public class BalanceCanvas : MonoBehaviour
 		priceGrayscaleEffect.enabled = disablePrice;
 	}
 
+	public void OnClickBalancePpPurchaseButton()
+	{
+		// 이미 구매했다면 
+		if (PlayerData.instance.balancePpPurchased)
+		{
+			remainTimeCanvasGroup.alpha = 1.0f;
+			_canvasRemainTime = 5.0f;
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("BalanceUI_PurchaseTodayDone"), 2.0f);
+			return;
+		}
+
+		int addPp = BattleInstanceManager.instance.GetCachedGlobalConstantInt("BalancePowerPointsDay");
+		int price = BattleInstanceManager.instance.GetCachedGlobalConstantInt("BalancePowerPointsDiamond");
+		if (CurrencyData.instance.dia < price)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughDiamond"), 2.0f);
+			return;
+		}
+
+		UIInstanceManager.instance.ShowCanvasAsync("ConfirmSpendCanvas", () =>
+		{
+			ConfirmSpendCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("BalanceUI_Purchase", addPp), CurrencyData.eCurrencyType.Diamond, price, false, () =>
+			{
+				PlayFabApiManager.instance.RequestPurchaseBalancePp(addPp, price, () =>
+				{
+					ConfirmSpendCanvas.instance.gameObject.SetActive(false);
+					currencySmallInfo.RefreshInfo();
+					myBalancePpValueText.text = PlayerData.instance.balancePp.ToString("N0");
+					ToastCanvas.instance.ShowToast(UIString.instance.GetString("BalanceUI_PurchaseDone"), 2.0f);
+					RefreshRemainTime();
+				});
+			});
+		});
+	}
+
 	public void OnClickPriceButton()
 	{
 		if (PlayerData.instance.balancePp == 0)
@@ -342,7 +416,52 @@ public class BalanceCanvas : MonoBehaviour
 	}
 
 
-	
+
+
+
+	DateTime _nextResetDateTime;
+	int _lastRemainTimeSecond = -1;
+	bool _needUpdate = false;
+	void UpdateRemainTime()
+	{
+		if (_needUpdate == false)
+			return;
+		if (remainTimeCanvasGroup.alpha == 0.0f)
+			return;
+
+		if (ServerTime.UtcNow < _nextResetDateTime)
+		{
+			TimeSpan remainTime = _nextResetDateTime - ServerTime.UtcNow;
+			if (_lastRemainTimeSecond != (int)remainTime.TotalSeconds)
+			{
+				remainTimeText.text = string.Format("{0:00}:{1:00}:{2:00}", remainTime.Hours, remainTime.Minutes, remainTime.Seconds);
+				_lastRemainTimeSecond = (int)remainTime.TotalSeconds;
+			}
+		}
+		else
+		{
+			_needUpdate = false;
+			remainTimeText.text = "00:00:00";
+			_needRefresh = true;
+		}
+	}
+
+	bool _needRefresh = false;
+	void UpdateRefresh()
+	{
+		if (_needRefresh == false)
+			return;
+
+		if (PlayerData.instance.balancePpPurchased == false)
+		{
+			RefreshRemainTime();
+			_needRefresh = false;
+		}
+	}
+
+
+
+
 	// ResearchCanvas 와 비슷한 구조로 만든다.
 	public Transform infoCameraTransform;
 	public float infoCameraFov = 43.0f;

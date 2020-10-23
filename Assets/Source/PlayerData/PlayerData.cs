@@ -48,9 +48,13 @@ public class PlayerData : MonoBehaviour
 	public ObscuredInt secondDailyBoxFillCount { get; set; }
 	public ObscuredInt researchLevel { get; set; }
 
-	// 뽑기 관련 변수
+	// 균형의 PP
 	public ObscuredInt balancePp { get; set; }
 	public bool balancePpAlarmState { get; set; }
+	public ObscuredBool balancePpPurchased { get; set; }
+	public DateTime balancePpResetTime { get; private set; }
+
+	// 뽑기 관련 변수
 	public ObscuredInt notStreakCount { get; set; }
 	public ObscuredInt notStreakCharCount { get; set; }
 	public ObscuredInt originOpenCount { get; set; }
@@ -291,6 +295,7 @@ public class PlayerData : MonoBehaviour
 		UpdateDailyTrainingGoldResetTime();
 		UpdateDailyTrainingDiaResetTime();
 		UpdateNodeWarResetTime();
+		UpdateBalancePpPurchaseResetTime();
 	}
 
 	public bool newPlayerAddKeep { get; set; }
@@ -305,6 +310,7 @@ public class PlayerData : MonoBehaviour
 		purifyCount = 0;
 		balancePp = 0;
 		balancePpAlarmState = false;
+		balancePpPurchased = false;
 		notStreakCount = 0;
 		notStreakCharCount = 0;
 		originOpenCount = 0;
@@ -519,6 +525,12 @@ public class PlayerData : MonoBehaviour
 			int intValue = 0;
 			if (int.TryParse(userReadOnlyData["balancePp"].Value, out intValue))
 				balancePp = intValue;
+		}
+		balancePpPurchased = false;
+		if (userReadOnlyData.ContainsKey("lasBppDat"))
+		{
+			if (string.IsNullOrEmpty(userReadOnlyData["lasBppDat"].Value) == false)
+				OnRecvPurchaseBalance(userReadOnlyData["lasBppDat"].Value);
 		}
 
 		notStreakCount = 0;
@@ -1038,6 +1050,42 @@ public class PlayerData : MonoBehaviour
 		// 클라 선처리로 갱신
 		nodeWarCleared = false;
 		nodeWarResetTime += TimeSpan.FromDays(1);
+	}
+	#endregion
+
+	#region Balance Purchase
+	void OnRecvPurchaseBalance(DateTime lastBalancePpPurchaseTime)
+	{
+		if (ServerTime.UtcNow.Year == lastBalancePpPurchaseTime.Year && ServerTime.UtcNow.Month == lastBalancePpPurchaseTime.Month && ServerTime.UtcNow.Day == lastBalancePpPurchaseTime.Day)
+		{
+			balancePpPurchased = true;
+			balancePpResetTime = new DateTime(lastBalancePpPurchaseTime.Year, lastBalancePpPurchaseTime.Month, lastBalancePpPurchaseTime.Day) + TimeSpan.FromDays(1);
+		}
+		else
+			balancePpPurchased = false;
+	}
+
+	public void OnRecvPurchaseBalance(string lastBalancePpPurchaseTimeString)
+	{
+		DateTime lastBalancePpPurchaseTime = new DateTime();
+		if (DateTime.TryParse(lastBalancePpPurchaseTimeString, out lastBalancePpPurchaseTime))
+		{
+			DateTime universalTime = lastBalancePpPurchaseTime.ToUniversalTime();
+			OnRecvPurchaseBalance(universalTime);
+		}
+	}
+
+	void UpdateBalancePpPurchaseResetTime()
+	{
+		if (balancePpPurchased == false)
+			return;
+
+		if (DateTime.Compare(ServerTime.UtcNow, balancePpResetTime) < 0)
+			return;
+
+		// 클라 선처리로 갱신
+		balancePpPurchased = false;
+		balancePpResetTime += TimeSpan.FromDays(1);
 	}
 	#endregion
 }

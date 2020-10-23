@@ -33,6 +33,8 @@ public class BalanceCanvas : MonoBehaviour
 	public Text priceText;
 	public Coffee.UIExtensions.UIEffect priceGrayscaleEffect;
 
+	public RectTransform alarmRootTransform;
+
 	void Awake()
 	{
 		instance = this;
@@ -81,6 +83,7 @@ public class BalanceCanvas : MonoBehaviour
 		if (MainSceneBuilder.instance == null)
 			return;
 
+		DisableNewBalancePp();
 		_balanceGroundObject.SetActive(false);
 		SetInfoCameraMode(false);
 		_lastTargetActorId = "";
@@ -130,6 +133,10 @@ public class BalanceCanvas : MonoBehaviour
 
 		selectText.text = UIString.instance.GetString("BalanceUI_Select");
 		RefreshTargetActor(targetActorId);
+
+		AlarmObject.Hide(alarmRootTransform);
+		if (PlayerData.instance.balancePpAlarmState)
+			AlarmObject.Show(alarmRootTransform, true, true);
 
 		myBalancePpValueText.text = PlayerData.instance.balancePp.ToString("N0");
 		_priceOnce = BattleInstanceManager.instance.GetCachedGlobalConstantInt("BalanceGoldOnce");
@@ -226,6 +233,13 @@ public class BalanceCanvas : MonoBehaviour
 	public void OnClickMyBalancePpTextButton()
 	{
 		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, UIString.instance.GetString("BalanceUI_PPYouGotMore"), 300, myBalancePpTextTransform, new Vector2(0.0f, -35.0f));
+		DisableNewBalancePp();
+	}
+
+	void DisableNewBalancePp()
+	{
+		PlayerData.instance.balancePpAlarmState = false;
+		AlarmObject.Hide(alarmRootTransform);
 	}
 
 	public void OnClickSelectButton()
@@ -319,6 +333,8 @@ public class BalanceCanvas : MonoBehaviour
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("BalanceUI_SetSliderValue"), 2.0f);
 			return;
 		}
+
+		DisableNewBalancePp();
 	}
 
 

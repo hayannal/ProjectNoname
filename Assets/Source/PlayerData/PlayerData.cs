@@ -50,6 +50,7 @@ public class PlayerData : MonoBehaviour
 
 	// 뽑기 관련 변수
 	public ObscuredInt balancePp { get; set; }
+	public bool balancePpAlarmState { get; set; }
 	public ObscuredInt notStreakCount { get; set; }
 	public ObscuredInt notStreakCharCount { get; set; }
 	public ObscuredInt originOpenCount { get; set; }
@@ -303,6 +304,7 @@ public class PlayerData : MonoBehaviour
 		sharedDailyBoxOpened = false;
 		purifyCount = 0;
 		balancePp = 0;
+		balancePpAlarmState = false;
 		notStreakCount = 0;
 		notStreakCharCount = 0;
 		originOpenCount = 0;
@@ -511,6 +513,7 @@ public class PlayerData : MonoBehaviour
 
 		// Etc
 		balancePp = 0;
+		balancePpAlarmState = false;
 		if (userReadOnlyData.ContainsKey("balancePp"))
 		{
 			int intValue = 0;
@@ -688,8 +691,12 @@ public class PlayerData : MonoBehaviour
 			characterData.transcendPoint = listTrpInfo[i].trp;
 		}
 
-		// 위의 pp와 달리 추가해야할 값이 들어있다.
+		// 위의 pp와 달리 추가해야할 값이 들어있다. 얻을때 획득용 알람 처리도 해준다.
 		this.balancePp += addBalancePp;
+		this.balancePpAlarmState = true;
+
+		if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
+			DotMainMenuCanvas.instance.RefreshBalanceAlarmObject();
 	}
 
 	public void OnRecvGrantCharacterList(object adCharIdPayload)

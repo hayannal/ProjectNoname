@@ -493,6 +493,8 @@ public class DotMainMenuCanvas : MonoBehaviour
 
 	public static bool IsAlarmBalance()
 	{
+		if (PlayerData.instance.balancePp > 0 && PlayerData.instance.balancePpAlarmState)
+			return true;
 		return false;
 	}
 

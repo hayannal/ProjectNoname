@@ -240,6 +240,9 @@ public class BalanceCanvas : MonoBehaviour
 	{
 		PlayerData.instance.balancePpAlarmState = false;
 		AlarmObject.Hide(alarmRootTransform);
+
+		if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
+			DotMainMenuCanvas.instance.RefreshBalanceAlarmObject();
 	}
 
 	public void OnClickSelectButton()

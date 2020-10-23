@@ -4,10 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using MEC;
 
 public class BalanceCanvas : MonoBehaviour
 {
 	public static BalanceCanvas instance;
+
+	public CanvasGroup canvasGroup;
+	public Button backKeyButton;
+	public GameObject inputLockObject;
 
 	public CurrencySmallInfo currencySmallInfo;
 	public GameObject balanceGroundObjectPrefab;
@@ -40,9 +45,18 @@ public class BalanceCanvas : MonoBehaviour
 
 	public RectTransform alarmRootTransform;
 
+	public GameObject resultGroupObject;
+	public Text currentPpText;
+	public Text addPpText;
+	public DOTweenAnimation ppValueTweenAnimation;
+	public GameObject messageTextObject;
+	public GameObject exitObject;
+
+	Vector2 _defaultAnchoredPosition;
 	void Awake()
 	{
 		instance = this;
+		_defaultAnchoredPosition = targetCharacterListItem.cachedRectTransform.anchoredPosition;
 	}
 
 	GameObject _balanceGroundObject;
@@ -112,6 +126,7 @@ public class BalanceCanvas : MonoBehaviour
 
 		UpdateRemainTime();
 		UpdateRefresh();
+		UpdatePpText();
 	}
 
 	CharacterData _highestPpCharacter;
@@ -201,15 +216,7 @@ public class BalanceCanvas : MonoBehaviour
 			targetCharacterPpValueText.text = _targetPpCharacter.pp.ToString("N0");
 
 			// 등록된 캐릭터의 현재 찍어둔 레벨 말고 pp로 가능한 레벨을 구해놓는다.
-			for (int i = TableDataManager.instance.powerLevelTable.dataArray.Length - 1; i >= 0; --i)
-			{
-				if (_targetPpCharacter.pp >= TableDataManager.instance.powerLevelTable.dataArray[i].requiredAccumulatedPowerPoint)
-				{
-					_targetCharacterBaseLevel = TableDataManager.instance.powerLevelTable.dataArray[i].powerLevel;
-					break;
-				}
-			}
-
+			_targetCharacterBaseLevel = GetReachablePowerLevel(_targetPpCharacter.pp, 0);
 			_lastTargetActorId = targetActorId;
 			changed = true;
 		}
@@ -217,6 +224,26 @@ public class BalanceCanvas : MonoBehaviour
 		// 캐릭터를 바꿨으면 
 		if (changed)
 			RefreshSliderPrice();
+	}
+
+	int GetReachablePowerLevel(int pp, int defaultLevel)
+	{
+		int powerLevel = defaultLevel;
+		for (int i = TableDataManager.instance.powerLevelTable.dataArray.Length - 1; i >= 0; --i)
+		{
+			if (TableDataManager.instance.powerLevelTable.dataArray[i].powerLevel > BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxPowerLevel"))
+				continue;
+
+			// limitBreak는 우선 검사안해본다.
+			//if (TableDataManager.instance.powerLevelTable.dataArray[i].requiredLimitBreak > 0)
+
+			if (pp >= TableDataManager.instance.powerLevelTable.dataArray[i].requiredAccumulatedPowerPoint)
+			{
+				powerLevel = TableDataManager.instance.powerLevelTable.dataArray[i].powerLevel;
+				break;
+			}
+		}
+		return powerLevel;
 	}
 
 	void RefreshSliderPrice()
@@ -336,15 +363,7 @@ public class BalanceCanvas : MonoBehaviour
 			targetCharacterPpValueText.color = (_sliderCount == 0) ? Color.white : Color.green;
 
 			// 해당 pp에 맞는 레벨을 가져온다.
-			int targetPowerLevel = _targetCharacterBaseLevel;
-			for (int i = TableDataManager.instance.powerLevelTable.dataArray.Length - 1; i >= 0; --i)
-			{
-				if ((_targetPpCharacter.pp + _sliderCount) >= TableDataManager.instance.powerLevelTable.dataArray[i].requiredAccumulatedPowerPoint)
-				{
-					targetPowerLevel = TableDataManager.instance.powerLevelTable.dataArray[i].powerLevel;
-					break;
-				}
-			}
+			int targetPowerLevel = GetReachablePowerLevel(_targetPpCharacter.pp + _sliderCount, _targetCharacterBaseLevel);
 			targetCharacterLevelValueText.text = targetPowerLevel.ToString();
 			targetCharacterLevelValueText.color = (_targetCharacterBaseLevel != targetPowerLevel) ? Color.green : Color.white;
 			targetCharacterLevelGroupObject.SetActive(_targetPpCharacter.powerLevel != targetPowerLevel);
@@ -408,15 +427,178 @@ public class BalanceCanvas : MonoBehaviour
 
 		if (_sliderCount == 0)
 		{
+			// 원래 같으면 등록이 되지 않지만 낮았던 캐릭이라 등록했고 그 캐릭이
+			// 최대 캐릭터와 동일한 pp만큼 성장해서 더이상 슬라이드를 못움직이는 상태일거다. 이땐 메세지를 다르게 처리한다.
+			if (_targetPpCharacter.pp == _highestPpCharacter.pp)
+			{
+				ToastCanvas.instance.ShowToast(UIString.instance.GetString("BalanceUI_SameAsBest"), 2.0f);
+				return;
+			}
+
+			// 그게 아니라면 평소대로 보여주면 된다.
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("BalanceUI_SetSliderValue"), 2.0f);
 			return;
 		}
 
-		DisableNewBalancePp();
+		// 패킷 보내기 전에 미리 현재값으로 셋팅해둔다.
+		_currentPp = _targetPpCharacter.pp;
+		_addValue = _sliderCount;
+		currentPpText.text = _targetPpCharacter.pp.ToString("N0");
+		addPpText.text = string.Format("+{0:N0}", _sliderCount);
+
+		UIInstanceManager.instance.ShowCanvasAsync("ConfirmSpendCanvas", () =>
+		{
+			ConfirmSpendCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("BalanceUI_UseConfirm", _sliderCount), CurrencyData.eCurrencyType.Gold, _priceOnce * _sliderCount, false, () =>
+			{
+				PlayFabApiManager.instance.RequestUseBalancePp(_targetPpCharacter, _sliderCount, _priceOnce * _sliderCount, () =>
+				{
+					ConfirmSpendCanvas.instance.gameObject.SetActive(false);
+					OnRecvUseBalance();
+				});
+			});
+		});
 	}
 
+	void OnRecvUseBalance()
+	{
+		currencySmallInfo.RefreshInfo();
+		DisableNewBalancePp();
+		Timing.RunCoroutine(BalanceProcess());
+	}
 
+	float _currentPp;
+	float _addValue;
+	IEnumerator<float> BalanceProcess()
+	{
+		// 인풋 차단
+		inputLockObject.SetActive(true);
+		backKeyButton.interactable = false;
 
+		// 배경 페이드
+		DOTween.To(() => canvasGroup.alpha, x => canvasGroup.alpha = x, 0.0f, 0.3f).SetEase(Ease.Linear);
+		yield return Timing.WaitForSeconds(0.15f);
+
+		// 대상 캐릭터 아이콘 가운데로 이동
+		targetCharacterListItem.cachedRectTransform.DOAnchorPos(new Vector2(0.0f, _defaultAnchoredPosition.y), 0.6f);
+		yield return Timing.WaitForSeconds(0.6f);
+
+		// 새로운 결과 팝업창이 나오고
+		messageTextObject.SetActive(false);
+		exitObject.SetActive(false);
+		resultGroupObject.SetActive(true);
+		yield return Timing.WaitForSeconds(0.3f);
+
+		float tweenDelay = 0.5f;
+
+		// pp 늘어나는 연출
+		_ppChangeSpeed = -_addValue / ppChangeTime;
+		_floatCurrentPp = _addValue;
+		_updatePpText = true;
+		yield return Timing.WaitForSeconds(ppChangeTime);
+		ppValueTweenAnimation.DORestart();
+		yield return Timing.WaitForSeconds(tweenDelay);
+
+		// 터치하여 나가기 보여주고
+		messageTextObject.SetActive(true);
+		yield return Timing.WaitForSeconds(0.5f);
+
+		exitObject.SetActive(true);
+
+		// Refresh
+		_targetCharacterBaseLevel = GetReachablePowerLevel(_targetPpCharacter.pp, 0);
+		myBalancePpValueText.text = PlayerData.instance.balancePp.ToString("N0");
+		RefreshSliderPrice();
+		DotMainMenuCanvas.instance.RefreshCharacterAlarmObject();
+	}
+
+	const float ppChangeTime = 0.6f;
+	float _ppChangeSpeed;
+	float _floatCurrentPp;
+	int _lastPp;
+	bool _updatePpText;
+	void UpdatePpText()
+	{
+		if (_updatePpText == false)
+			return;
+
+		_floatCurrentPp += _ppChangeSpeed * Time.deltaTime;
+		int currentPpInt = (int)_floatCurrentPp;
+		if (currentPpInt <= 0)
+		{
+			currentPpInt = 0;
+			_updatePpText = false;
+		}
+		if (currentPpInt != _lastPp)
+		{
+			_lastPp = currentPpInt;
+			currentPpText.text = (_currentPp + (_addValue - _lastPp)).ToString("N0");
+			if (_lastPp > 0)
+				addPpText.text = string.Format("+{0:N0}", _lastPp);
+			else
+				addPpText.text = "";
+		}
+	}
+
+	public void OnClickExitResultButton()
+	{
+		// result Object 통째로 끄고
+		resultGroupObject.SetActive(false);
+
+		// 이미 창은 리프레쉬 되었을테니 알파 애니메이션으로 복구
+		Timing.RunCoroutine(ExitResultProcess());
+	}
+
+	IEnumerator<float> ExitResultProcess()
+	{
+		// 대상 캐릭터 아이콘 위치 복구
+		targetCharacterListItem.cachedRectTransform.DOAnchorPos(new Vector2(_defaultAnchoredPosition.x, _defaultAnchoredPosition.y), 0.6f);
+		yield return Timing.WaitForSeconds(0.4f);
+
+		DOTween.To(() => canvasGroup.alpha, x => canvasGroup.alpha = x, 1.0f, 0.3f).SetEase(Ease.Linear);
+		yield return Timing.WaitForSeconds(0.2f);
+
+		// 인풋 복구
+		inputLockObject.SetActive(false);
+		backKeyButton.interactable = true;
+
+		// 레벨업이 가능한 상태라면 바로가기로 보내준다.
+		int reachablePowerLevel = GetReachablePowerLevel(_targetPpCharacter.pp, 0);
+		if (_targetPpCharacter.powerLevel < reachablePowerLevel)
+		{
+			YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("BalanceUI_LevelUpPossible"), () =>
+			{
+				Timing.RunCoroutine(ChangeCanvasProcess(_targetPpCharacter.actorId));
+			});
+		}
+	}
+
+	IEnumerator<float> ChangeCanvasProcess(string actorId)
+	{
+		DelayedLoadingCanvas.Show(true);
+
+		FadeCanvas.instance.FadeOut(0.3f, 1, true);
+		yield return Timing.WaitForSeconds(0.3f);
+
+		OnClickBackButton();
+
+		while (BalanceCanvas.instance.gameObject.activeSelf)
+			yield return Timing.WaitForOneFrame;
+		yield return Timing.WaitForOneFrame;
+
+		UIInstanceManager.instance.ShowCanvasAsync("CharacterListCanvas", () =>
+		{
+			CharacterListCanvas.instance.OnClickListItem(actorId);
+			CharacterListCanvas.instance.OnClickYesButton();
+		});
+
+		while ((CharacterInfoCanvas.instance != null && CharacterInfoCanvas.instance.gameObject.activeSelf) == false)
+			yield return Timing.WaitForOneFrame;
+
+		CharacterInfoCanvas.instance.OnClickMenuButton1();
+
+		DelayedLoadingCanvas.Show(false);
+		FadeCanvas.instance.FadeIn(0.2f);
+	}
 
 
 	DateTime _nextResetDateTime;

@@ -198,6 +198,7 @@ public class PlayFabApiManager : MonoBehaviour
 	{
 		LoginResult loginResult = _loginResult;
 
+		ApplyGlobalTable(loginResult.InfoResultPayload.TitleData);
 		CurrencyData.instance.OnRecvCurrencyData(loginResult.InfoResultPayload.UserVirtualCurrency, loginResult.InfoResultPayload.UserVirtualCurrencyRechargeTimes);
 		DailyShopData.instance.OnRecvShopData(loginResult.InfoResultPayload.TitleData, loginResult.InfoResultPayload.UserReadOnlyData);
 		MailData.instance.OnRecvMailData(loginResult.InfoResultPayload.TitleData, loginResult.InfoResultPayload.UserReadOnlyData, loginResult.NewlyCreated);
@@ -256,6 +257,35 @@ public class PlayFabApiManager : MonoBehaviour
 			FunctionName = "GetServerUtc",
 		}, OnGetServerUtc, OnRecvPlayerDataFailure);
 		++_requestCountForGetPlayerData;
+	}
+
+	void ApplyGlobalTable(Dictionary<string, string> titleData)
+	{
+		// 이미 이 시점에서 TableDataManager의 내용물은 어드레서블로 받은 데이터를 로드한 상태일거다.
+		// 그러니 로그인 즉시 덮어씌우면 서버값을 사용하게 될거다.
+		if (titleData.ContainsKey("int"))
+		{
+			string tableDataString = titleData["int"];
+			if (string.IsNullOrEmpty(tableDataString) == false)
+			{
+				var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+				Dictionary<string, int> globalConstantIntServerTable = serializer.DeserializeObject<Dictionary<string, int>>(tableDataString);
+				Dictionary<string, int>.Enumerator e = globalConstantIntServerTable.GetEnumerator();
+				GlobalConstantIntTable table = TableDataManager.instance.globalConstantIntTable;
+				while (e.MoveNext())
+				{
+					string key = e.Current.Key;
+					for (int i = 0; i < table.dataArray.Length; ++i)
+					{
+						if (table.dataArray[i].id == key)
+						{
+							table.dataArray[i].value = e.Current.Value;
+							break;
+						}
+					}
+				}
+			}
+		}
 	}
 
 #if USE_TITLE_PLAYER_ENTITY
@@ -1383,6 +1413,33 @@ public class PlayFabApiManager : MonoBehaviour
 			});
 		};
 		RetrySendManager.instance.RequestAction(action, true);
+	}
+
+	public void RequestUseBalancePp(CharacterData characterData, int useBalancePp, int price, Action successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "Balance",
+			FunctionParameter = new { ChrId = characterData.entityKey.Id, Bpp = useBalancePp },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+				CurrencyData.instance.gold -= price;
+				PlayerData.instance.balancePp -= useBalancePp;
+				characterData.pp += useBalancePp;
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
 	}
 
 	public void RequestPurchaseBalancePp(int addBalancePp, int price, Action successCallback)

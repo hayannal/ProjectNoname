@@ -172,6 +172,7 @@ public class BalanceCanvas : MonoBehaviour
 			if (_targetPpCharacter == null)
 				return;
 			targetCharacterListItem.Initialize(targetActorId, _targetPpCharacter.powerLevel, _targetPpCharacter.transcendLevel, 0, null, null);
+			targetCharacterListItem.contentRectTransform.anchoredPosition = new Vector2(-19.5f, 12.0f);
 			targetCharacterPpValueText.text = _targetPpCharacter.pp.ToString("N0");
 
 			// 등록된 캐릭터의 현재 찍어둔 레벨 말고 pp로 가능한 레벨을 구해놓는다.

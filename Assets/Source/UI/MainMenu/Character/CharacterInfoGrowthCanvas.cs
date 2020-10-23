@@ -383,7 +383,35 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 
 	public void OnClickBalanceButton()
 	{
+		// 조건이 안맞을땐 이동할 수 없다.
+		if (PlayerData.instance.balancePp == 0)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("BalanceUI_NotEnoughBalancePP"), 2.0f);
+			return;
+		}
 
+		// pp 가장 많은 캐릭을 찾아야한다.
+		List<CharacterData> listCharacterData = PlayerData.instance.listCharacterData;
+		CharacterData highestPpCharacter = listCharacterData[0];
+		for (int i = 1; i < listCharacterData.Count; ++i)
+		{
+			if (listCharacterData[i].pp > highestPpCharacter.pp)
+			{
+				highestPpCharacter = listCharacterData[i];
+				continue;
+			}
+		}
+		CharacterData characterData = PlayerData.instance.GetCharacterData(_actorId);
+		if (characterData.pp == highestPpCharacter.pp)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("BalanceUI_CannotSelectBest"), 2.0f);
+			return;
+		}
+
+		YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_JumpToBalance"), () =>
+		{
+			Timing.RunCoroutine(ChangeCanvasProcess(false));
+		});
 	}
 
 	public void OnClickLevelUpButton()
@@ -454,14 +482,14 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 
 		YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_ResearchPossible"), () =>
 		{
-			Timing.RunCoroutine(ChangeCanvasProcess());
+			Timing.RunCoroutine(ChangeCanvasProcess(true));
 		}, () =>
 		{
 			_ignoreResearchPossibleActorId = _actorId;
 		});
 	}
 
-	IEnumerator<float> ChangeCanvasProcess()
+	IEnumerator<float> ChangeCanvasProcess(bool researchCanvas)
 	{
 		DelayedLoadingCanvas.Show(true);
 
@@ -479,10 +507,23 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 			yield return Timing.WaitForOneFrame;
 		yield return Timing.WaitForOneFrame;
 
-		UIInstanceManager.instance.ShowCanvasAsync("ResearchCanvas", null);
+		if (researchCanvas)
+		{
+			UIInstanceManager.instance.ShowCanvasAsync("ResearchCanvas", null);
 
-		while ((ResearchCanvas.instance != null && ResearchCanvas.instance.gameObject.activeSelf) == false)
-			yield return Timing.WaitForOneFrame;
+			while ((ResearchCanvas.instance != null && ResearchCanvas.instance.gameObject.activeSelf) == false)
+				yield return Timing.WaitForOneFrame;
+		}
+		else
+		{
+			UIInstanceManager.instance.ShowCanvasAsync("BalanceCanvas", () =>
+			{
+				BalanceCanvas.instance.RefreshInfo(_actorId);
+			});
+
+			while ((BalanceCanvas.instance != null && BalanceCanvas.instance.gameObject.activeSelf) == false)
+				yield return Timing.WaitForOneFrame;
+		}
 
 		DelayedLoadingCanvas.Show(false);
 		FadeCanvas.instance.FadeIn(0.2f);

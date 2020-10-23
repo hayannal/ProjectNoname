@@ -363,7 +363,7 @@ public class EquipAmplifyRandomConfirmCanvas : MonoBehaviour
 		}
 		else
 		{
-			int currentAtkInt = (int)_floatCurrentValue;
+			int currentAtkInt = (int)(_floatCurrentValue + 0.99f);
 			if (currentAtkInt <= 0)
 			{
 				currentAtkInt = 0;

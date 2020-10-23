@@ -244,7 +244,7 @@ public class CharacterPowerLevelUpCanvas : DetailShowCanvasBase
 			return;
 
 		_floatCurrentHp += _hpChangeSpeed * Time.deltaTime;
-		int currentHpInt = (int)_floatCurrentHp;
+		int currentHpInt = (int)(_floatCurrentHp + 0.99f);
 		if (currentHpInt <= 0)
 		{
 			currentHpInt = 0;
@@ -272,7 +272,7 @@ public class CharacterPowerLevelUpCanvas : DetailShowCanvasBase
 			return;
 
 		_floatCurrentAtk += _atkChangeSpeed * Time.deltaTime;
-		int currentAtkInt = (int)_floatCurrentAtk;
+		int currentAtkInt = (int)(_floatCurrentAtk + 0.99f);
 		if (currentAtkInt <= 0)
 		{
 			currentAtkInt = 0;

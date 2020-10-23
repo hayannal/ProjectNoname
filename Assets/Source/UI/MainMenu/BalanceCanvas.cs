@@ -522,7 +522,7 @@ public class BalanceCanvas : MonoBehaviour
 			return;
 
 		_floatCurrentPp += _ppChangeSpeed * Time.deltaTime;
-		int currentPpInt = (int)_floatCurrentPp;
+		int currentPpInt = (int)(_floatCurrentPp + 0.99f);
 		if (currentPpInt <= 0)
 		{
 			currentPpInt = 0;

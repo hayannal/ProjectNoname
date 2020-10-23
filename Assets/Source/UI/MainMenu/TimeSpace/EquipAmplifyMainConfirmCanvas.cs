@@ -298,7 +298,7 @@ public class EquipAmplifyMainConfirmCanvas : MonoBehaviour
 			return;
 
 		_floatCurrentAtk += _atkChangeSpeed * Time.deltaTime;
-		int currentAtkInt = (int)_floatCurrentAtk;
+		int currentAtkInt = (int)(_floatCurrentAtk + 0.99f);
 		if (currentAtkInt <= 0)
 		{
 			currentAtkInt = 0;

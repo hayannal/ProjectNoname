@@ -373,7 +373,10 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 		priceButtonObject.SetActive(false);
 		PlayFabApiManager.instance.RequestResearchLevelUp(_selectedLevel, _price, _rewardDia, () =>
 		{
-			ResearchCanvas.instance.currencySmallInfo.RefreshInfo();
+			// 다이아 보상 받는건 연출 뒤에 반영되게 하려고 예외처리 해둔다.
+			//ResearchCanvas.instance.currencySmallInfo.RefreshInfo();
+			ResearchCanvas.instance.currencySmallInfo.goldText.text = CurrencyData.instance.gold.ToString("N0");
+
 			DotMainMenuCanvas.instance.RefreshResearchAlarmObject();
 			Timing.RunCoroutine(ResearchLevelUpProcess());
 		});
@@ -391,6 +394,9 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 		// 이펙트
 		BattleInstanceManager.instance.GetCachedObject(effectPrefab, ResearchObjects.instance.effectRootTransform);
 		yield return Timing.WaitForSeconds(2.0f);
+
+		// 여기서 다이아 갱신까지 다시 되게 한다.
+		ResearchCanvas.instance.currencySmallInfo.RefreshInfo();
 
 		// Toast 알림
 		string stringId = diaObject.activeSelf ? "ResearchUI_RewardedCurrency" : "ResearchUI_RewardedStat";

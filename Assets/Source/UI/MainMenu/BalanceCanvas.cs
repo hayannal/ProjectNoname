@@ -360,12 +360,12 @@ public class BalanceCanvas : MonoBehaviour
 		if (_targetPpCharacter != null)
 		{
 			targetCharacterPpValueText.text = (_targetPpCharacter.pp + _sliderCount).ToString("N0");
-			targetCharacterPpValueText.color = (_sliderCount == 0) ? Color.white : Color.green;
+			targetCharacterPpValueText.color = (_sliderCount == 0) ? Color.white : new Color(0.0f, 0.7725f, 0.0117f);
 
 			// 해당 pp에 맞는 레벨을 가져온다.
 			int targetPowerLevel = GetReachablePowerLevel(_targetPpCharacter.pp + _sliderCount, _targetCharacterBaseLevel);
 			targetCharacterLevelValueText.text = targetPowerLevel.ToString();
-			targetCharacterLevelValueText.color = (_targetCharacterBaseLevel != targetPowerLevel) ? Color.green : Color.white;
+			targetCharacterLevelValueText.color = (_targetCharacterBaseLevel != targetPowerLevel) ? new Color(0.0f, 0.7725f, 0.0117f) : Color.white;
 			targetCharacterLevelGroupObject.SetActive(_targetPpCharacter.powerLevel != targetPowerLevel);
 		}
 
@@ -489,6 +489,7 @@ public class BalanceCanvas : MonoBehaviour
 		yield return Timing.WaitForSeconds(0.3f);
 
 		float tweenDelay = 0.5f;
+		yield return Timing.WaitForSeconds(0.2f);
 
 		// pp 늘어나는 연출
 		_ppChangeSpeed = -_addValue / ppChangeTime;

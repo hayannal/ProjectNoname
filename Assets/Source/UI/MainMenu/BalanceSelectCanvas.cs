@@ -84,7 +84,7 @@ public class BalanceSelectCanvas : MonoBehaviour
 		for (int i = 0; i < listCharacterData.Count; ++i)
 		{
 			SwapCanvasListItem swapCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
-			swapCanvasListItem.Initialize(listCharacterData[i].actorId, listCharacterData[i].powerLevel, listCharacterData[i].transcendLevel, 0, null, OnClickListItem);
+			swapCanvasListItem.Initialize(listCharacterData[i].actorId, listCharacterData[i].powerLevel, SwapCanvasListItem.GetPowerLevelColorState(listCharacterData[i]), listCharacterData[i].transcendLevel, 0, null, OnClickListItem);
 
 			// 여기서는 플러스 알람만 표시해도 되지 않을까.
 			swapCanvasListItem.ShowAlarm(false);

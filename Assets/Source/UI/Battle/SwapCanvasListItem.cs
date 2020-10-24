@@ -21,8 +21,31 @@ public class SwapCanvasListItem : MonoBehaviour
 	public GameObject blackObject;
 	public RectTransform alarmRootTransform;
 
+	public enum ePowerLevelColorState
+	{
+		Normal,		// 기본 상태
+		LimitBreak,	// 한계돌파에 막혀있는 상태
+		RedAlert,	// 한계돌파에 막혀있지만 pp수량이 다음 레벨업 수치를 넘어선 상태. 얼른 한계돌파를 풀고 레벨업을 하란 의미.
+	}
+
+	public static ePowerLevelColorState GetPowerLevelColorState(CharacterData characterData)
+	{
+		if (characterData == null)
+			return ePowerLevelColorState.Normal;
+
+		if (characterData.needLimitBreak)
+		{
+			PowerLevelTableData nextPowerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(characterData.powerLevel + 1);
+			if (characterData.pp >= nextPowerLevelTableData.requiredAccumulatedPowerPoint)
+				return ePowerLevelColorState.RedAlert;
+			return ePowerLevelColorState.LimitBreak;
+		}
+
+		return ePowerLevelColorState.Normal;
+	}
+
 	public string actorId { get; set; }
-	public void Initialize(string actorId, int powerLevel, int transcendLevel, int suggestedPowerLevel, string[] suggestedActorIdList, Action<string> clickCallback)
+	public void Initialize(string actorId, int powerLevel, ePowerLevelColorState colorState, int transcendLevel, int suggestedPowerLevel, string[] suggestedActorIdList, Action<string> clickCallback)
 	{
 		this.actorId = actorId;
 
@@ -36,6 +59,12 @@ public class SwapCanvasListItem : MonoBehaviour
 		powerLevelObject.SetActive(powerLevel > 0);
 		powerLevelText.text = UIString.instance.GetString("GameUI_Power", powerLevel);
 		//powerLevelText.color = (characterData.powerLevel < suggestedPowerLevel) ? new Color(1.0f, 0.1f, 0.1f) : Color.white;
+		switch (colorState)
+		{
+			case ePowerLevelColorState.Normal: powerLevelText.color = Color.white; break;
+			case ePowerLevelColorState.LimitBreak: powerLevelText.color = Color.gray; break;
+			case ePowerLevelColorState.RedAlert: powerLevelText.color = new Color(1.0f, 0.5f, 0.5f); break;				
+		}
 		for (int i = 0; i < transcendGroupList.Length; ++i)
 			transcendGroupList[i].SetActive(i == (transcendLevel - 1));
 		nameText.SetLocalizedText(UIString.instance.GetString(actorTableData.nameId));

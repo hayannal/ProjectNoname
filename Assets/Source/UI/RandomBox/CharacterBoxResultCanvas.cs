@@ -117,10 +117,14 @@ public class CharacterBoxResultCanvas : MonoBehaviour
 		{
 			CharacterBoxResultListItem resultListItem = _originContainer.GetCachedItem(originContentItemPrefab, originContentRootRectTransform);
 			int powerLevel = 0;
+			int transcendLevel = 0;
 			CharacterData characterData = PlayerData.instance.GetCharacterData(listGrantInfo[i]);
 			if (characterData != null)
+			{
 				powerLevel = characterData.powerLevel;
-			resultListItem.characterListItem.Initialize(listGrantInfo[i], powerLevel, 0, 0, null, null);
+				transcendLevel = characterData.transcendLevel;
+			}
+			resultListItem.characterListItem.Initialize(listGrantInfo[i], powerLevel, SwapCanvasListItem.GetPowerLevelColorState(characterData), transcendLevel, 0, null, null);
 			resultListItem.Initialize("ShopUI_NewCharacter", 0);
 			_listOriginResultItem.Add(resultListItem);
 		}
@@ -129,10 +133,14 @@ public class CharacterBoxResultCanvas : MonoBehaviour
 		{
 			CharacterBoxResultListItem resultListItem = _originContainer.GetCachedItem(originContentItemPrefab, originContentRootRectTransform);
 			int powerLevel = 0;
+			int transcendLevel = 0;
 			CharacterData characterData = PlayerData.instance.GetCharacterData(listTrpInfo[i].actorId);
 			if (characterData != null)
+			{
 				powerLevel = characterData.powerLevel;
-			resultListItem.characterListItem.Initialize(listTrpInfo[i].actorId, powerLevel, 0, 0, null, null);
+				transcendLevel = characterData.transcendLevel;
+			}
+			resultListItem.characterListItem.Initialize(listTrpInfo[i].actorId, powerLevel, SwapCanvasListItem.GetPowerLevelColorState(characterData), transcendLevel, 0, null, null);
 			resultListItem.Initialize("ShopUI_TranscendReward", 0);
 			_listOriginResultItem.Add(resultListItem);
 		}
@@ -149,14 +157,16 @@ public class CharacterBoxResultCanvas : MonoBehaviour
 		{
 			CharacterBoxResultListItem resultListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
 			int powerLevel = 0;
+			int transcendLevel = 0;
 			bool showPlusAlarm = false;
 			CharacterData characterData = PlayerData.instance.GetCharacterData(listPpInfo[i].actorId);
 			if (characterData != null)
 			{
 				powerLevel = characterData.powerLevel;
+				transcendLevel = characterData.transcendLevel;
 				showPlusAlarm = characterData.IsPlusAlarmState();
 			}
-			resultListItem.characterListItem.Initialize(listPpInfo[i].actorId, powerLevel, 0, 0, null, null);
+			resultListItem.characterListItem.Initialize(listPpInfo[i].actorId, powerLevel, SwapCanvasListItem.GetPowerLevelColorState(characterData), transcendLevel, 0, null, null);
 			resultListItem.characterListItem.ShowAlarm(false);
 			if (showPlusAlarm)
 			{

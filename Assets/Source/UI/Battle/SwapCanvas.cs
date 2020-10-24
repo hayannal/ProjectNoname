@@ -282,7 +282,7 @@ public class SwapCanvas : MonoBehaviour
 		for (int i = 0; i < listCharacterData.Count; ++i)
 		{
 			SwapCanvasListItem swapCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
-			swapCanvasListItem.Initialize(listCharacterData[i].actorId, listCharacterData[i].powerLevel, listCharacterData[i].transcendLevel, chapterTableData.suggestedPowerLevel, suggestedActorIdList, OnClickListItem);
+			swapCanvasListItem.Initialize(listCharacterData[i].actorId, listCharacterData[i].powerLevel, SwapCanvasListItem.GetPowerLevelColorState(listCharacterData[i]), listCharacterData[i].transcendLevel, chapterTableData.suggestedPowerLevel, suggestedActorIdList, OnClickListItem);
 			_listSwapCanvasListItem.Add(swapCanvasListItem);
 
 			if (firstIndex == -1 && listCharacterData[i].actorId != BattleInstanceManager.instance.playerActor.actorId)

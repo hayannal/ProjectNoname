@@ -36,6 +36,10 @@ public class BalanceSelectCanvas : MonoBehaviour
 
 	void OnDisable()
 	{
+		// 창을 닫을때 알람을 제거해둔다. 재활용 위해.
+		for (int i = 0; i < _listSwapCanvasListItem.Count; ++i)
+			_listSwapCanvasListItem[i].ShowAlarm(false);
+
 		if (DragThresholdController.instance != null)
 			DragThresholdController.instance.ResetUIDragThreshold();
 
@@ -81,6 +85,12 @@ public class BalanceSelectCanvas : MonoBehaviour
 		{
 			SwapCanvasListItem swapCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
 			swapCanvasListItem.Initialize(listCharacterData[i].actorId, listCharacterData[i].powerLevel, listCharacterData[i].transcendLevel, 0, null, OnClickListItem);
+
+			// 여기서는 플러스 알람만 표시해도 되지 않을까.
+			swapCanvasListItem.ShowAlarm(false);
+			if (listCharacterData[i].IsPlusAlarmState())
+				swapCanvasListItem.ShowAlarm(true, true);
+
 			_listSwapCanvasListItem.Add(swapCanvasListItem);
 
 			if (i == (listCharacterData.Count - 1))

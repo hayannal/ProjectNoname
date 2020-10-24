@@ -156,9 +156,8 @@ public class CharacterLimitBreakCanvas : DetailShowCanvasBase
 		processGraphicElement.raycastTarget = false;
 		_processed = true;
 
-		// RefreshGrid는 안했어도 알람표시는 갱신해야한다.
-		// PowerLevelUpCanvas쪽은 RefreshGrid를 호출하는 반면 여기선 저 함수를 호출하지 않기 때문에 Refresh Alarm 만 따로 호출해서 처리한다.
-		CharacterListCanvas.instance.RefreshAlarmList();
+		// 원래는 LimitBreak로 인해 SwapCharacterListItem이 변경되는게 없어서 알람 갱신만 했었는데 이제 powerLevel Text 색상을 바꾸기 때문에 RefreshGrid를 호출해야한다.
+		CharacterListCanvas.instance.RefreshGrid(false);
 		DotMainMenuCanvas.instance.RefreshCharacterAlarmObject();
 	}
 

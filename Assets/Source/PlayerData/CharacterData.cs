@@ -92,25 +92,6 @@ public class CharacterData
 		}
 	}
 
-	public int maxPowerLevelWithoutLimitBreak
-	{
-		get
-		{
-			int max = 0;
-			int maxPowerLevel = BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxPowerLevel");
-			for (int i = 1; i <= maxPowerLevel; ++i)
-			{
-				PowerLevelTableData powerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(i);
-				if (powerLevelTableData == null)
-					continue;
-				if (powerLevelTableData.requiredLimitBreak != 0)
-					break;
-				max = i;
-			}
-			return max;
-		}
-	}
-
 	public int maxStatPoint
 	{
 		get

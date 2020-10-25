@@ -101,7 +101,7 @@ public class CharacterData
 			//return delta;
 			//
 			// 한계돌파와 초월로 나뉘면서 스탯 포인트 역시 달라졌다.
-			return transcendLevel * 2;
+			return transcendLevel * 5;
 		}
 	}
 

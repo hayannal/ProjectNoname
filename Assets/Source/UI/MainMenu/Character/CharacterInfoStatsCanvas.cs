@@ -173,16 +173,19 @@ public class CharacterInfoStatsCanvas : MonoBehaviour
 			case 3: stringId = "GameUI_VitMore"; break;
 		}
 		string text = UIString.instance.GetString(stringId);
-		CharacterData characterData = PlayerData.instance.GetCharacterData(_actorId);
-		if (characterData != null)
-		{
-			List<ObscuredInt> listStatPoint = characterData.listStatPoint;
-			if (index < listStatPoint.Count && listStatPoint[index] > 0)
-			{
-				string usePointText = UIString.instance.GetString("GameUI_AppliedPoints", listStatPoint[index]);
-				text = string.Format("{0}\n\n{1}", text, usePointText);
-			}
-		}
+
+		// 기본값을 0으로 시작하게 되면서 분배된 포인트 표시를 하지 않기로 한다.
+		// 혹시 몰라서 지우지는 않고 주석처리로 남겨둔다.
+		//CharacterData characterData = PlayerData.instance.GetCharacterData(_actorId);
+		//if (characterData != null)
+		//{
+		//	List<ObscuredInt> listStatPoint = characterData.listStatPoint;
+		//	if (index < listStatPoint.Count && listStatPoint[index] > 0)
+		//	{
+		//		string usePointText = UIString.instance.GetString("GameUI_AppliedPoints", listStatPoint[index]);
+		//		text = string.Format("{0}\n\n{1}", text, usePointText);
+		//	}
+		//}
 		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, text, 250, statsTextTransformList[index], new Vector2(10.0f, -35.0f));
 	}
 

@@ -101,6 +101,7 @@ public class ActorStatus : MonoBehaviour
 				_statusBase.valueList[(int)eActorStatus.AttackSpeedAddRate] += GetValueByCharacterWing(characterData, CharacterInfoWingCanvas.eStatsType.AttackSpeed);
 				_statusBase.valueList[(int)eActorStatus.CriticalRate] += GetValueByCharacterWing(characterData, CharacterInfoWingCanvas.eStatsType.CriticalRate);
 				_statusBase.valueList[(int)eActorStatus.CriticalDamageAddRate] += GetValueByCharacterWing(characterData, CharacterInfoWingCanvas.eStatsType.CriticalDamage);
+				_statusBase.valueList[(int)eActorStatus.SpGainAddRate] += GetValueByCharacterWing(characterData, CharacterInfoWingCanvas.eStatsType.SpGain);
 			}
 
 			// over max pp

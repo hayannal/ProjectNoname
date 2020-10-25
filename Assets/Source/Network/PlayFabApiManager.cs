@@ -1441,17 +1441,17 @@ public class PlayFabApiManager : MonoBehaviour
 		});
 	}
 
-	public void RequestChangeWing(CharacterData characterData, int changeType, int wingLookId, int gradeIndex0, int gradeIndex1, int gradeIndex2, int price, Action successCallback)
+	public void RequestChangeWing(CharacterData characterData, int changeType, int wingLookId, int gradeIndex0, int gradeIndex1, int gradeIndex2, int gradeIndex3, int price, Action successCallback)
 	{
 		WaitingNetworkCanvas.Show(true);
 
 		string checkSum = "";
 		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
-		checkSum = CheckSum(string.Format("{0}_{1}_{2}_{3}_{4}_{5}", characterData.entityKey.Id, changeType, wingLookId, gradeIndex0, gradeIndex1, gradeIndex2));
+		checkSum = CheckSum(string.Format("{0}_{1}_{2}_{3}_{4}_{5}_{6}", characterData.entityKey.Id, changeType, wingLookId, gradeIndex0, gradeIndex1, gradeIndex2, gradeIndex3));
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
 			FunctionName = "ChangeWing",
-			FunctionParameter = new { ChrId = characterData.entityKey.Id, ChTp = changeType, Look = wingLookId, Gr0 = gradeIndex0, Gr1 = gradeIndex1, Gr2 = gradeIndex2, InCs = checkSum },
+			FunctionParameter = new { ChrId = characterData.entityKey.Id, ChTp = changeType, Look = wingLookId, Gr0 = gradeIndex0, Gr1 = gradeIndex1, Gr2 = gradeIndex2, Gr3 = gradeIndex3, InCs = checkSum },
 			GeneratePlayStreamEvent = true,
 		}, (success) =>
 		{
@@ -1461,7 +1461,7 @@ public class PlayFabApiManager : MonoBehaviour
 			{
 				WaitingNetworkCanvas.Show(false);
 				CurrencyData.instance.dia -= price;
-				characterData.OnChangeWing(changeType, wingLookId, gradeIndex0, gradeIndex1, gradeIndex2);
+				characterData.OnChangeWing(changeType, wingLookId, gradeIndex0, gradeIndex1, gradeIndex2, gradeIndex3);
 
 				if (successCallback != null) successCallback.Invoke();
 			}

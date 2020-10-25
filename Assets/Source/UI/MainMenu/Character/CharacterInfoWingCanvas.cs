@@ -29,6 +29,9 @@ public class CharacterInfoWingCanvas : MonoBehaviour
 	public GameObject criticalDamageGroupObject;
 	public Transform criticalDamageTextTransform;
 	public Text criticalDamageValueText;
+	public GameObject spGainGroupObject;
+	public Transform spGainTextTransform;
+	public Text spGainValueText;
 
 	public GameObject switchGroupObject;
 	public SwitchAnim hideSwitch;
@@ -57,6 +60,7 @@ public class CharacterInfoWingCanvas : MonoBehaviour
 		AttackSpeed,
 		CriticalRate,
 		CriticalDamage,
+		SpGain,
 
 		Amount,
 	}
@@ -147,6 +151,16 @@ public class CharacterInfoWingCanvas : MonoBehaviour
 							_criticalDamageWingPowerTableData = wingPowerTableData;
 						}
 						break;
+					case (int)eStatsType.SpGain:
+						spGainGroupObject.SetActive(grade > 0);
+						if (grade > 0)
+						{
+							WingPowerTableData wingPowerTableData = TableDataManager.instance.FindWingPowerTableData(i, grade);
+							if (wingPowerTableData != null)
+								spGainValueText.text = string.Format("<color=#{0}>{1}</color>", wingPowerTableData.colorDex, UIString.instance.GetString(wingPowerTableData.gradeName));
+							_spGainWingPowerTableData = wingPowerTableData;
+						}
+						break;
 				}
 			}
 
@@ -220,6 +234,18 @@ public class CharacterInfoWingCanvas : MonoBehaviour
 			UIString.instance.GetString(_criticalDamageWingPowerTableData.gradeName), _criticalDamageWingPowerTableData.value1 * 100.0f);
 		string secondText = GetGradeValueText(_criticalDamageWingPowerTableData.wingType);
 		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, string.Format("{0}\n\n{1}", firstText, secondText), 250, criticalDamageTextTransform, new Vector2(30.0f, -35.0f));
+	}
+
+	WingPowerTableData _spGainWingPowerTableData;
+	public void OnClickSpGainTextButton()
+	{
+		if (_spGainWingPowerTableData == null)
+			return;
+
+		string firstText = string.Format("{0} {1} : {2:0.##}%", UIString.instance.GetString("GameUI_WingsSpGainMore"),
+			UIString.instance.GetString(_spGainWingPowerTableData.gradeName), _spGainWingPowerTableData.value1 * 100.0f);
+		string secondText = GetGradeValueText(_spGainWingPowerTableData.wingType);
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, string.Format("{0}\n\n{1}", firstText, secondText), 250, spGainTextTransform, new Vector2(30.0f, -35.0f));
 	}
 
 	StringBuilder _stringBuilderGrade = new StringBuilder();
@@ -392,6 +418,7 @@ public class CharacterInfoWingCanvas : MonoBehaviour
 		int gradeIndex0 = 0;
 		int gradeIndex1 = 0;
 		int gradeIndex2 = 0;
+		int gradeIndex3 = 0;
 
 		if (changeType == 0 || changeType == 1)
 		{
@@ -409,12 +436,12 @@ public class CharacterInfoWingCanvas : MonoBehaviour
 			}
 		}
 		if (changeType == 0 || changeType == 2)
-			GetWingPowerId(ref gradeIndex0, ref gradeIndex1, ref gradeIndex2);
+			GetWingPowerId(ref gradeIndex0, ref gradeIndex1, ref gradeIndex2, ref gradeIndex3);
 
 		if (CheatingListener.detectedCheatTable)
 			return;
 
-		PlayFabApiManager.instance.RequestChangeWing(_characterData, changeType, wingLookId, gradeIndex0, gradeIndex1, gradeIndex2, price, () =>
+		PlayFabApiManager.instance.RequestChangeWing(_characterData, changeType, wingLookId, gradeIndex0, gradeIndex1, gradeIndex2, gradeIndex3, price, () =>
 		{
 			ConfirmSpendCanvas.instance.gameObject.SetActive(false);
 			CharacterInfoCanvas.instance.currencySmallInfo.RefreshInfo();
@@ -524,74 +551,15 @@ public class CharacterInfoWingCanvas : MonoBehaviour
 		public float sumWeight;
 	}
 	List<RandomWingPowerInfo> _listRandomWingPowerInfo = null;
-	void GetWingPowerId(ref int gradeIndex0, ref int gradeIndex1, ref int gradeIndex2)
+	List<int> _listSelectedType = null;
+	void GetWingPowerId(ref int gradeIndex0, ref int gradeIndex1, ref int gradeIndex2, ref int gradeIndex3)
 	{
-		// 먼저 수량을 굴려본다.
-		int optionCount = UnityEngine.Random.Range(1, 4);
-		if (optionCount == 3)
-			GetWingPowerIdAllCount(ref gradeIndex0, ref gradeIndex1, ref gradeIndex2);
-		else
-			GetWingPowerIdPart(optionCount, ref gradeIndex0, ref gradeIndex1, ref gradeIndex2);
-	}
+		int optionCount = UnityEngine.Random.Range(1, 5);
 
-	void GetWingPowerIdAllCount(ref int gradeIndex0, ref int gradeIndex1, ref int gradeIndex2)
-	{
-		for (int j = 0; j < 3; ++j)
-		{
-			if (_listRandomWingPowerInfo == null)
-				_listRandomWingPowerInfo = new List<RandomWingPowerInfo>();
-			_listRandomWingPowerInfo.Clear();
+		if (_listSelectedType == null)
+			_listSelectedType = new List<int>();
+		_listSelectedType.Clear();
 
-			float sumWeight = 0.0f;
-			for (int i = 0; i < TableDataManager.instance.wingPowerTable.dataArray.Length; ++i)
-			{
-				float weight = TableDataManager.instance.wingPowerTable.dataArray[i].weight;
-				if (weight <= 0.0f)
-					continue;
-
-				// 자기 타입에 맞는거만 넣고 랜덤을 돌린다.
-				if (j != TableDataManager.instance.wingPowerTable.dataArray[i].wingType)
-					continue;
-
-				// weight 검증
-				if (TableDataManager.instance.wingPowerTable.dataArray[i].grade >= 16 && weight > 1.0f)
-					CheatingListener.OnDetectCheatTable();
-
-				sumWeight += weight;
-				RandomWingPowerInfo newInfo = new RandomWingPowerInfo();
-				newInfo.wingPowerTableData = TableDataManager.instance.wingPowerTable.dataArray[i];
-				newInfo.sumWeight = sumWeight;
-				_listRandomWingPowerInfo.Add(newInfo);
-			}
-
-			if (_listRandomWingPowerInfo.Count == 0)
-				continue;
-
-			int index = -1;
-			float random = UnityEngine.Random.Range(0.0f, sumWeight);
-			for (int i = 0; i < _listRandomWingPowerInfo.Count; ++i)
-			{
-				if (random <= _listRandomWingPowerInfo[i].sumWeight)
-				{
-					index = i;
-					break;
-				}
-			}
-			if (index == -1)
-				continue;
-
-			switch (j)
-			{
-				case 0: gradeIndex0 = _listRandomWingPowerInfo[index].wingPowerTableData.grade; break;
-				case 1: gradeIndex1 = _listRandomWingPowerInfo[index].wingPowerTableData.grade; break;
-				case 2: gradeIndex2 = _listRandomWingPowerInfo[index].wingPowerTableData.grade; break;
-			}
-		}
-	}
-
-	void GetWingPowerIdPart(int optionCount, ref int gradeIndex0, ref int gradeIndex1, ref int gradeIndex2)
-	{
-		int _selectedType = -1;
 		for (int j = 0; j < optionCount; ++j)
 		{
 			if (_listRandomWingPowerInfo == null)
@@ -606,7 +574,7 @@ public class CharacterInfoWingCanvas : MonoBehaviour
 					continue;
 
 				// 한번 선택한 타입은 제외하고 랜덤 목록에 넣는다. 처음엔 다 들어간다.
-				if (_selectedType == TableDataManager.instance.wingPowerTable.dataArray[i].wingType)
+				if (_listSelectedType.Contains(TableDataManager.instance.wingPowerTable.dataArray[i].wingType))
 					continue;
 
 				// weight 검증
@@ -641,8 +609,9 @@ public class CharacterInfoWingCanvas : MonoBehaviour
 				case 0: gradeIndex0 = _listRandomWingPowerInfo[index].wingPowerTableData.grade; break;
 				case 1: gradeIndex1 = _listRandomWingPowerInfo[index].wingPowerTableData.grade; break;
 				case 2: gradeIndex2 = _listRandomWingPowerInfo[index].wingPowerTableData.grade; break;
+				case 3: gradeIndex3 = _listRandomWingPowerInfo[index].wingPowerTableData.grade; break;
 			}
-			_selectedType = _listRandomWingPowerInfo[index].wingPowerTableData.wingType;
+			_listSelectedType.Add(_listRandomWingPowerInfo[index].wingPowerTableData.wingType);
 		}
 	}
 	#endregion

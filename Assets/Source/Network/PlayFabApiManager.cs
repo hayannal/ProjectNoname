@@ -34,6 +34,11 @@ public class PlayFabApiManager : MonoBehaviour
 	PlayFab.DataModels.EntityKey _titlePlayerEntityKey;
 #endif
 
+	void Update()
+	{
+		UpdateCliSusQueue();
+	}
+
 	// 네트워크 함수의 특징인데
 	// 로그인이나 로그인 직후 받는 플레이어 데이터(인벤부터 캐릭터 리스트 등등) 등에는
 	// 보통 UI의 인풋-아웃풋 처리로 되는게 아니라서 콜백이 필요없지만
@@ -113,6 +118,8 @@ public class PlayFabApiManager : MonoBehaviour
 		}, 100);
 	}
 
+	bool enableCliSusQueue { get; set; }
+	int lastSendFrameCount { get; set; }
 	public void RequestIncCliSus(eClientSuspectCode clientSuspectCode, bool sendBattleInfo = false, int param2 = 0)
 	{
 		int param1 = 0;
@@ -127,6 +134,23 @@ public class PlayFabApiManager : MonoBehaviour
 			param1 = selected * 100 + powerLevel;
 		}
 
+		if (enableCliSusQueue && !sendBattleInfo)
+		{
+			// 한 프레임에 수십개의 IncCliSus 패킷을 보내니 일부 실패하고 값 덮어쓰고 난리다.
+			// 그래서 로그인처럼 같은 프레임에 다수의 패킷을 보내야하는 상황이라면 같은 프레임에 체크되는지 검사해서 큐에 넣고 천천히 보내기로 한다.
+			if (lastSendFrameCount == Time.frameCount)
+			{
+				if (_queueCliSusInfo == null)
+					_queueCliSusInfo = new Queue<sCliSusInfo>();
+				sCliSusInfo info = new sCliSusInfo();
+				info.code = (int)clientSuspectCode;
+				info.param1 = param1;
+				info.param2 = param2;
+				_queueCliSusInfo.Enqueue(info);
+				return;
+			}
+		}
+
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
 			FunctionName = "IncCliSus",
@@ -134,13 +158,63 @@ public class PlayFabApiManager : MonoBehaviour
 			GeneratePlayStreamEvent = true
 		}, null, (errorCallback) =>
 		{
-			switch (clientSuspectCode)
-			{
-				case eClientSuspectCode.OneShotKillBoss:
-					HandleCommonError(errorCallback);
-					break;
-			}
+			HandleCliSusError(errorCallback, clientSuspectCode);
 		});
+
+		if (enableCliSusQueue && !sendBattleInfo)
+			lastSendFrameCount = Time.frameCount;
+	}
+
+	void HandleCliSusError(PlayFabError errorCallback, eClientSuspectCode clientSuspectCode)
+	{
+		switch (clientSuspectCode)
+		{
+			case eClientSuspectCode.OneShotKillBoss:
+				HandleCommonError(errorCallback);
+				break;
+		}
+	}
+
+	struct sCliSusInfo
+	{
+		public int code;
+		public int param1;
+		public int param2;
+	}
+	Queue<sCliSusInfo> _queueCliSusInfo;
+	const float SendCliSusQueueDelay = 0.333f;
+	float _cliSusSendRemainTime;
+	void UpdateCliSusQueue()
+	{
+		if (_queueCliSusInfo == null)
+			return;
+		if (_queueCliSusInfo.Count == 0)
+			return;
+
+		_cliSusSendRemainTime -= Time.deltaTime;
+		if (_cliSusSendRemainTime < 0.0f)
+		{
+			sCliSusInfo info = _queueCliSusInfo.Dequeue();
+
+			PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+			{
+				FunctionName = "IncCliSus",
+				FunctionParameter = new { Er = info.code, Pa1 = info.param1, Pa2 = info.param2 },
+				GeneratePlayStreamEvent = true
+			}, null, (errorCallback) =>
+			{
+				HandleCliSusError(errorCallback, (eClientSuspectCode)info.code);
+			});
+
+			_cliSusSendRemainTime += SendCliSusQueueDelay;
+		}
+	}
+
+	void ClearCliSusQueue()
+	{
+		if (_queueCliSusInfo == null)
+			return;
+		_queueCliSusInfo.Clear();
 	}
 
 	public static string CheckSum(string input)
@@ -509,9 +583,14 @@ public class PlayFabApiManager : MonoBehaviour
 			entity1Object = JsonUtility.FromJson<PlayerDataEntity1>(playerDataObjectResult.DataObject.ToString());
 		}
 #endif
+
+		// 혹시 다 못보냈더라도 어쩔 수 없다. 이전에 로그인 했던 계정의 정보를 보낼순 없다.
+		ClearCliSusQueue();
+		enableCliSusQueue = true;
 		TimeSpaceData.instance.OnRecvEquipInventory(_loginResult.InfoResultPayload.UserInventory, _loginResult.InfoResultPayload.UserData);
 		PlayerData.instance.OnRecvPlayerData(_loginResult.InfoResultPayload.PlayerStatistics, _loginResult.InfoResultPayload.UserData, _loginResult.InfoResultPayload.UserReadOnlyData, _loginResult.InfoResultPayload.CharacterList);
 		PlayerData.instance.OnRecvCharacterList(_loginResult.InfoResultPayload.CharacterList, _dicCharacterStatisticsResult, _listCharacterEntityObject);
+		enableCliSusQueue = false;
 
 		_loginResult = null;
 #if USE_TITLE_PLAYER_ENTITY

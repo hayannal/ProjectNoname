@@ -282,7 +282,25 @@ public class TargetingProcessor : MonoBehaviour {
 			}
 		}
 
-		if (changeThreshold == 0.0f || _targetList.Count == 0 || _targetList[0] == null || nearestCollider == null || (cachedActorTableData.attackRange > 0.0f && nearestDistance > cachedActorTableData.attackRange))
+		// 사거리가 존재하는 캐릭들이 사거리보다 먼 몹을 타겟팅 할때는 changeThreshold를 사용하지 않기로 한다.
+		// 사거리 짧은 캐릭들이 가만히 서서 다가오는 몹을 처리할때 타겟팅 잘 안바뀌는 문제를 수정하기 위함.
+		bool ignoreChangeThreshold = false;
+		if (cachedActorTableData.attackRange > 0.0f && _targetList.Count > 0 && _targetList[0] != null)
+		{
+			// 두가지 경우가 필요한데
+			// 기존 타겟도 사거리 밖이고 nearest타겟도 사거리 밖인 경우와 기존 타겟은 사거리 밖인데 nearest타겟이 사거리 안인 경우다.
+			// 즉 기존 타겟이 자기 사거리의 밖이면 바로 바뀌는게 맞는 것.
+			Vector3 prevTargetPosition = BattleInstanceManager.instance.GetTransformFromCollider(_targetList[0]).position;
+			Vector3 prevTargetDiff = prevTargetPosition - position;
+			prevTargetDiff.y = 0.0f;
+			float prevDistance = prevTargetDiff.magnitude - ColliderUtil.GetRadius(_targetList[0]);
+			AffectorProcessor prevAffectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(_targetList[0]);
+			AdjustRange(prevAffectorProcessor, prevTargetPosition, position, sphereCastRadiusForCheckWall, findRange, attackRange, ref prevDistance);
+			if (prevDistance > cachedActorTableData.attackRange)
+				ignoreChangeThreshold = true;
+		}
+
+		if (changeThreshold == 0.0f || _targetList.Count == 0 || _targetList[0] == null || nearestCollider == null || ignoreChangeThreshold)
 		{
 			_targetList.Clear();
 			if (nearestDistance != float.MaxValue && nearestCollider != null)

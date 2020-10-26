@@ -322,7 +322,7 @@ public class ActorStatus : MonoBehaviour
 		InitializeActorStatus();
 	}
 
-	static float LnOverConstant1 = 0.00822722242162062f;
+	static float LnOverConstant1 = 0.02827722242162062f;
 	static float LnOverConstant2 = 0.0001f;
 	public float GetAttackAddRateByOverPP()
 	{

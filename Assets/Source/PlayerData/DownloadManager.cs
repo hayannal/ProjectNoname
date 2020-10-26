@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿#define USE_MARK_KEY	// 패치받을 목록을 빠르게 감지하기 위해 각 번들마다 표식을 하나씩 심어두고 이걸 사용해서 다운로드 용량 및 파일 관리를 하기로 한다.
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -37,6 +39,12 @@ public class DownloadManager : MonoBehaviour
 	#endregion
 
 
+	// 패치목록을 별도로 관리하기 위해 각 번들마다 표식을 하나씩 심어두고 그거로 체크하기로 한다.
+	// Remote Group이 늘어나면 꼭 여기에 추가해야한다.
+	// TableDataManager는 항상 최신으로 유지하기 때문에 여기에 등록하지 않는다.
+	// StringTable은 번들에 1개만 들어있는 어드레스라서 별도 추가없이 저 어드레스를 그대로 쓰기로 한다.
+	List<string> _listBundleMarkKey = new List<string> { "StringTable", "_ess", "_map", "_spawnFlag", "_power", "_env", "_char", "_ui", "_bossPreview", "_equip", "_wing" };
+
 	// 앱 시작시에 물어보는 번들리소스 체크 프로세스
 	public void CheckDownloadProcess()
 	{
@@ -64,13 +72,18 @@ public class DownloadManager : MonoBehaviour
 			PlayFabApiManager.instance.OnLogin();
 			yield break;
 		}
-
 		//int keyCount = 0;
 		//foreach (var key in keys)
 		//{
 		//	++keyCount;
 		//}
+
+#if USE_MARK_KEY
+		// 특이한건 위에서 구해온 keys로 계산하는게 아니라 미리 만들어둔 리스트를 사용해 계산하는거다.
+		AsyncOperationHandle<long> handle = Addressables.GetDownloadSizeAsync(_listBundleMarkKey);
+#else
 		AsyncOperationHandle<long> handle = Addressables.GetDownloadSizeAsync(keys);
+#endif
 		yield return handle;
 		long totalDownloadSize = handle.Result;
 		Addressables.Release<long>(handle);
@@ -107,14 +120,23 @@ public class DownloadManager : MonoBehaviour
 		OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("SystemUI_ForceDownloadBeginning", dataSizeString), () =>
 		{
 			_totalDownloadSize = (totalDownloadSize * 1.0f);
+#if USE_MARK_KEY
+			StartCoroutine(ClearAndDownloadProcess(_listBundleMarkKey));
+#else
 			StartCoroutine(ClearAndDownloadProcess(keys));
+#endif
 		}, 100, true);
 	}
 
 	IEnumerator ClearAndDownloadProcess(IEnumerable<object> keys)
 	{
+#if USE_MARK_KEY
+		// 이젠 각 번들마다의 표식 키가 있으니 ClearProcess도 빠르게 진행할 수 있다.
+		yield return ClearProcess(keys);
+#else
 		// 너무 느리니 우선은 꺼둔다.
 		//yield return ClearProcess(keys);
+#endif
 
 		_totalDownloadHandle = Addressables.DownloadDependenciesAsync(keys, Addressables.MergeMode.Union);
 		_totalDownloadHandle.Completed += DownloadComplete;
@@ -128,7 +150,6 @@ public class DownloadManager : MonoBehaviour
 		//Caching.ClearCache();
 
 		// keys의 문제는 전체를 다 들고있다보니까 그냥 지울수가 없다. 필요없는거만 골라내는 절차가 필요하다.
-		// 근데 로직은 맞는데 어드레스 하나씩 확인하다보니 너무 느리다. 다른 방법이 없나.
 		List<string> listClearKey = new List<string>();
 		foreach (var key in keys)
 		{
@@ -206,9 +227,9 @@ public class DownloadManager : MonoBehaviour
 		StartCoroutine(CheckLobbyDownloadCoroutine());
 	}
 
-	IEnumerable<object> _keys = null;
 	IEnumerator CheckLobbyDownloadCoroutine()
 	{
+		// fastest 모드 확인하고
 		IEnumerable<object> keys = null;
 		foreach (var locator in Addressables.ResourceLocators)
 		{
@@ -223,7 +244,12 @@ public class DownloadManager : MonoBehaviour
 		if (keys == null)
 			yield break;
 
+#if USE_MARK_KEY
+		// 미리 만들어둔 MarkKey 리스트를 사용해서 다운로드 체크
+		AsyncOperationHandle<long> handle = Addressables.GetDownloadSizeAsync(_listBundleMarkKey);
+#else
 		AsyncOperationHandle<long> handle = Addressables.GetDownloadSizeAsync(keys);
+#endif
 		yield return handle;
 		long totalDownloadSize = handle.Result;
 		Addressables.Release<long>(handle);
@@ -241,6 +267,8 @@ public class DownloadManager : MonoBehaviour
 
 	public void ShowLobbyDownloadInfo()
 	{
+#if USE_MARK_KEY
+#else
 		IEnumerable<object> keys = null;
 		foreach (var locator in Addressables.ResourceLocators)
 		{
@@ -251,6 +279,7 @@ public class DownloadManager : MonoBehaviour
 				break;
 			}
 		}
+#endif
 
 		long totalDownloadSize = PlayerData.instance.lobbyDownloadSize;
 		string dataSizeString = "";
@@ -260,21 +289,28 @@ public class DownloadManager : MonoBehaviour
 			dataSizeString = string.Format("{0:0.#}KB", (totalDownloadSize * 1.0f) / 1024);
 		_totalDownloadString = dataSizeString;
 		_totalDownloadSize = (totalDownloadSize * 1.0f);
-		_keys = keys;
 
 		OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("SystemUI_ForceDownload", _totalDownloadString), () =>
 		{
 			UIInstanceManager.instance.ShowCanvasAsync("LobbyDownloadCanvas", () =>
 			{
-				StartCoroutine(ClearAndLobbyDownloadProcess(_keys));
+#if USE_MARK_KEY
+				StartCoroutine(ClearAndLobbyDownloadProcess(_listBundleMarkKey));
+#else
+				StartCoroutine(ClearAndLobbyDownloadProcess(keys));
+#endif
 			});
 		}, -1, true);
 	}
 
 	IEnumerator ClearAndLobbyDownloadProcess(IEnumerable<object> keys)
 	{
+#if USE_MARK_KEY
+		yield return ClearProcess(keys);
+#else
 		// 너무 느리니 우선은 꺼둔다.
 		//yield return ClearProcess(keys);
+#endif
 
 		_totalDownloadHandle = Addressables.DownloadDependenciesAsync(keys, Addressables.MergeMode.Union);
 		_totalDownloadHandle.Completed += LobbyDownloadComplete;

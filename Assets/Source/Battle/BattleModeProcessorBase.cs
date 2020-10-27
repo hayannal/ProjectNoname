@@ -532,6 +532,16 @@ public class BattleModeProcessorBase
 		return null;
 	}
 
+	public virtual bool IsSacrificePhase()
+	{
+		return false;
+	}
+
+	public virtual float GetSpawnCountRate(string monsterId)
+	{
+		return 0.0f;
+	}
+
 	public virtual void OnGetSoul(Vector3 getPosition)
 	{
 	}

@@ -155,6 +155,16 @@ public class BattleManager : MonoBehaviour
 		return _currentBattleMode.GetSelectedNodeWarTableData();
 	}
 
+	public virtual bool IsSacrificePhase()
+	{
+		return _currentBattleMode.IsSacrificePhase();
+	}
+
+	public virtual float GetSpawnCountRate(string monsterId)
+	{
+		return _currentBattleMode.GetSpawnCountRate(monsterId);
+	}
+
 	public void OnGetSoul(Vector3 getPosition)
 	{
 		_currentBattleMode.OnGetSoul(getPosition);

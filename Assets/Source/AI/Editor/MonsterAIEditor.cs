@@ -121,6 +121,18 @@ public class MonsterAIEditor : ReorderableArrayInspector
 		{
 			t.chaseDistanceRange = EditorGUILayout.Vector2Field("Chase Distance", t.chaseDistanceRange);
 			t.chaseCancelTimeRange = EditorGUILayout.Vector2Field("Cancel Time", t.chaseCancelTimeRange);
+
+			Color defaultColor = GUI.color;
+			GUI.color = (Color.gray - Color.gray * 0.5f);
+			EditorGUILayout.LabelField("[Node War Option]", EditorStyles.whiteLabel);
+			GUI.color = defaultColor;
+
+			t.useFarawayMode = EditorGUILayout.Toggle("Use Faraway Mode", t.useFarawayMode);
+			if (t.useFarawayMode)
+			{
+				t.chaseTryCountChangeFaraway = EditorGUILayout.IntField("Chase Try Count", t.chaseTryCountChangeFaraway);
+				t.farawayModeChangeRate = EditorGUILayout.FloatField("Change Rate", t.farawayModeChangeRate);
+			}
 		}
 
 		DrawUILine(Color.grey);

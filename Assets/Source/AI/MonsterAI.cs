@@ -92,6 +92,9 @@ public class MonsterAI : MonoBehaviour
 		ResetChaseStateInfo();
 		ResetAttackActionStateInfo();
 		ResetAttackDelayStateInfo();
+
+		_appliedFarawayMode = false;
+		_chaseTryCount = 0;
 	}
 	#endregion
 
@@ -115,6 +118,8 @@ public class MonsterAI : MonoBehaviour
 		ResetAttackActionStateInfo();
 		ResetAttackDelayStateInfo();
 
+		_appliedFarawayMode = false;
+		_chaseTryCount = 0;
 		_initialized = true;
 	}
 
@@ -599,6 +604,13 @@ public class MonsterAI : MonoBehaviour
 	bool _initChaseCancelTime = false;
 	float _chaseCancelTime = 0.0f;
 	Vector3 _lastGoalPosition = Vector3.up;
+	#region Faraway
+	public bool useFarawayMode;
+	public int chaseTryCountChangeFaraway;
+	public float farawayModeChangeRate;
+	bool _appliedFarawayMode;
+	int _chaseTryCount;
+	#endregion
 	void UpdateChase()
 	{
 		if (targetActor == null)
@@ -611,6 +623,16 @@ public class MonsterAI : MonoBehaviour
 			_chaseDistance = Random.Range(chaseDistanceRange.x, chaseDistanceRange.y);
 		if (_initChaseCancelTime == false)
 		{
+			#region Faraway
+			if (BattleManager.instance != null && BattleManager.instance.IsNodeWar() && BattleManager.instance.IsSacrificePhase() == false &&
+				useFarawayMode && _appliedFarawayMode == false && _chaseTryCount >= chaseTryCountChangeFaraway)
+			{
+				// 조건이 성립된 상태에서 해당 몹의 스폰 개수 상태를 확인해야한다.
+				if (Random.value < farawayModeChangeRate && BattleManager.instance.GetSpawnCountRate(actor.actorId) > 0.5f)
+					_appliedFarawayMode = true;
+			}
+			#endregion
+
 			_chaseCancelTime = Random.Range(chaseCancelTimeRange.x, chaseCancelTimeRange.y);
 			if (_chaseCancelTime > 0.0f) _chaseCancelTime += Time.time;
 			_initChaseCancelTime = true;
@@ -624,6 +646,10 @@ public class MonsterAI : MonoBehaviour
 			if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
 				_currentState = eStateType.AttackAction;
 			NextStep();
+			#region Faraway
+			if (BattleManager.instance != null && BattleManager.instance.IsNodeWar() && useFarawayMode && _appliedFarawayMode == false)
+				++_chaseTryCount;
+			#endregion
 			return;
 		}
 
@@ -635,6 +661,10 @@ public class MonsterAI : MonoBehaviour
 			ResetPath();
 			ResetChaseStateInfo();
 			NextStep();
+			#region Faraway
+			if (BattleManager.instance != null && BattleManager.instance.IsNodeWar() && useFarawayMode && _appliedFarawayMode == false)
+				++_chaseTryCount;
+			#endregion
 			return;
 		}
 
@@ -643,7 +673,16 @@ public class MonsterAI : MonoBehaviour
 			if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
 			{
 				nodeWarDestinationState = true;
-				nodeWarDestinationPosition = targetActor.cachedTransform.position;
+				#region Faraway
+				if (_appliedFarawayMode)
+				{
+					Vector3 farDir = (actor.cachedTransform.position - targetActor.cachedTransform.position).normalized;
+					farDir = Quaternion.Euler(0.0f, Random.Range(-45.0f, 45.0f), 0.0f) * farDir;
+					nodeWarDestinationPosition = actor.cachedTransform.position + farDir * NodeWarProcessor.SpawnDistance * 3.0f;
+				}
+				#endregion
+				else
+					nodeWarDestinationPosition = targetActor.cachedTransform.position;
 			}
 			else
 			{

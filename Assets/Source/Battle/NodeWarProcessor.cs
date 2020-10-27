@@ -183,6 +183,11 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		return _selectedNodeWarTableData;
 	}
 
+	public override bool IsSacrificePhase()
+	{
+		return (_phase == ePhase.Sacrifice);
+	}
+
 	#region Monster
 	List<NodeWarSpawnTableData> _listCurrentNodeWarSpawnTableData = new List<NodeWarSpawnTableData>();
 	List<float> _listCurrentSpawnRemainTime = new List<float>();
@@ -254,9 +259,17 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		GameObject monsterPrefab = NodeWarGround.instance.GetMonsterPrefab(monsterId);
 		if (monsterPrefab == null)
 			return;
-		Vector2 normalizedOffset = Random.insideUnitCircle.normalized;
-		Vector2 randomOffset = normalizedOffset * Random.Range(1.0f, 1.1f) * SpawnDistance;
-		Vector3 desirePosition = BattleInstanceManager.instance.playerActor.cachedTransform.position + new Vector3(randomOffset.x, 0.0f, randomOffset.y);
+
+		// 전방에만 나오게 하기 위해서 
+		//Vector2 normalizedOffset = Random.insideUnitCircle.normalized;
+		//Vector2 randomOffset = normalizedOffset * Random.Range(1.0f, 1.1f) * SpawnDistance;
+		//Vector3 desirePosition = BattleInstanceManager.instance.playerActor.cachedTransform.position + new Vector3(randomOffset.x, 0.0f, randomOffset.y);
+
+		Vector3 forward = BattleInstanceManager.instance.playerActor.cachedTransform.forward;
+		forward.y = 0.0f;
+		forward = Quaternion.Euler(0.0f, Random.Range(-30.0f, 30.0f), 0.0f) * forward;
+		forward = forward.normalized * Random.Range(1.0f, 1.1f) * SpawnDistance;
+		Vector3 desirePosition = BattleInstanceManager.instance.playerActor.cachedTransform.position + forward;
 		BattleInstanceManager.instance.GetCachedObject(monsterPrefab, desirePosition, Quaternion.identity);
 	}
 
@@ -301,6 +314,28 @@ public class NodeWarProcessor : BattleModeProcessorBase
 
 		// 위 함수에서 다 처리해서 여기서 할게 없긴 한데 NavMesh가 없는 곳이라 Warning뜨지 않게 처리 하나 해둔다.
 		monsterActor.pathFinderController.agent.enabled = false;
+	}
+
+	public override float GetSpawnCountRate(string monsterId)
+	{
+		for (int i = 0; i < _listCurrentNodeWarSpawnTableData.Count; ++i)
+		{
+			if (_listCurrentNodeWarSpawnTableData[i].monsterId != monsterId)
+				continue;
+
+			if (_listCurrentNodeWarSpawnTableData[i].totalMax)
+			{
+				return (float)_totalAliveMonsterCount / (monsterSpawnBoosted ? LastMonsterMaxCount : DefaultMonsterMaxCount);
+			}
+			else
+			{
+				if (_dicAliveMonsterCount.ContainsKey(monsterId) == false)
+					continue;
+
+				return (float)_dicAliveMonsterCount[monsterId] / (monsterSpawnBoosted ? LastMonsterMaxCount : DefaultMonsterMaxCount);
+			}
+		}
+		return 0.0f;
 	}
 	#endregion
 

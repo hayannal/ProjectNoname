@@ -119,8 +119,8 @@ public class BattleTestTool : EditorWindow
 							researchAtk = researchTableData.accumulatedAtk;
 						}
 					}
-					Debug.LogFormat("Equip Atk = {0} / Research Hp = {1} / Atk = {2}",
-						TimeSpaceData.instance.cachedEquipStatusList.valueList[(int)eActorStatus.Attack], researchHp, researchAtk);
+					Debug.LogFormat("Equip Hp = {0} / Equip Atk = {1} / Research Hp = {2} / Atk = {3}",
+						TimeSpaceData.instance.cachedEquipStatusList.valueList[(int)eActorStatus.MaxHp], TimeSpaceData.instance.cachedEquipStatusList.valueList[(int)eActorStatus.Attack], researchHp, researchAtk);
 					// result
 					Debug.LogFormat("Result Hp = {0} / Atk = {1}",
 						playerActor.actorStatus.GetValue(eActorStatus.MaxHp) / actorTableData.multiHp, playerActor.actorStatus.GetValue(eActorStatus.Attack) / actorTableData.multiAtk);

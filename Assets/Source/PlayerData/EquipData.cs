@@ -224,6 +224,12 @@ public class EquipData
 		// 서브 옵션들을 돌면서 equipStatusList에 모아야한다. 같은 옵은 같은 옵션끼리.
 		for (int i = 0; i < _equipStatusList.valueList.Length; ++i)
 			_equipStatusList.valueList[i] = 0.0f;
+
+		if (_listRandomOptionInfo != null)
+		{
+			for (int i = 0; i < _listRandomOptionInfo.Count; ++i)
+				_equipStatusList.valueList[(int)_listRandomOptionInfo[i].statusType] += _listRandomOptionInfo[i].value;
+		}
 	}
 
 	public float GetMainStatusValueMin(int overrideEnhanceLevel = -1)

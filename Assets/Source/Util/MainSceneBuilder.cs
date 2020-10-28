@@ -123,6 +123,7 @@ public class MainSceneBuilder : MonoBehaviour
 		// 나중에 어드레서블 에셋시스템에도 적어두겠지만, 이번 구조는 1챕터까진 추가 다운로드 없이 진행하는게 목표고 이후 번들을 받는 구조가 되어야한다.
 		// 그렇다고 씬에 넣어두면 Start때 로드하는거라 로딩창이 늦게 나오게 된다. 그러니 결국 Resources 폴더에 넣어두고 로딩하는 방법 말고는 없다.
 		mainSceneBuilding = true;
+		QualitySettings.asyncUploadTimeSlice = 8;
 		LoadingCanvas.instance.gameObject.SetActive(true);
 		// 2번은 호출해야 로딩화면이 온전히 보인다.
 		yield return new WaitForEndOfFrame();
@@ -576,6 +577,7 @@ public class MainSceneBuilder : MonoBehaviour
 		// 마무리 셋팅
 		_waitUpdateRemainCount = 2;
 		mainSceneBuilding = false;
+		QualitySettings.asyncUploadTimeSlice = 2;
 		s_firstTimeAfterLaunch = false;
 	}
 
@@ -775,6 +777,7 @@ public class MainSceneBuilder : MonoBehaviour
 		// 마무리 셋팅
 		_waitUpdateRemainCount = 2;
 		mainSceneBuilding = false;
+		QualitySettings.asyncUploadTimeSlice = 2;
 	}
 #endregion
 #endif

@@ -163,9 +163,13 @@ public class OptionManager : MonoBehaviour
 			_frame = value;
 			_frame = Mathf.Clamp(_frame, 0, 6);
 
-			// QualitySettings.vSyncCount 1이나 2 둘다 테스트 해봤는데 30프레임에서 프레임 튀는 문제를 해결하진 못한다. 그래서 그냥 0으로 간다.
+			// 30프레임일때 vSyncCount값을 2로 설정해서 처리하는 방법도 있지만 이걸 한다고 30프레임의 stuttering이 없어지지 않는다. 그래서 그냥 0으로 간다.
 			QualitySettings.vSyncCount = 0;
+			// targetFrameRate를 -1로 설정하면 모바일 디바이스의 기본값인 30프레임으로 나오지만 이런다고 부드러워지지 않는다.
 			Application.targetFrameRate = GetTargetFrameRate(_frame);
+
+			// deltaTime을 고정할 수 있는 꼼수이지만 사용하지 않는다. 이건 프레임에 따른 차이를 그냥 두는 옛날 고정 프레임 방식이다.
+			//Time.captureFramerate = Screen.currentResolution.refreshRate;
 		}
 	}
 

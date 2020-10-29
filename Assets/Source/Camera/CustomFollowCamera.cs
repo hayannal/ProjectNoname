@@ -18,6 +18,8 @@ public class CustomFollowCamera : MonoBehaviour
 	[SerializeField]
 	private float _followSpeed = 3.0f;
 
+	public float smoothTime = 0.3f;
+
 	#region PROPERTIES
 
 	public Transform targetTransform
@@ -84,6 +86,7 @@ public class CustomFollowCamera : MonoBehaviour
 
 	public bool immediatelyUpdate { set { _immediatelyUpdate = value; } }
 	bool _immediatelyUpdate;
+	Vector3 _velocity = Vector3.zero;
 	public void LateUpdate()
 	{
 		if (targetTransform == null)
@@ -98,7 +101,23 @@ public class CustomFollowCamera : MonoBehaviour
 
 		// 카메라에는 Time.deltaTime 대신 Time.smoothDeltaTime쓰는게 좋다.
 		// 이동량의 정확도보다 부드러운게 더 중요하기 때문. 캐릭이랑 다르다.
-		cachedTransform.position = Vector3.Lerp(cachedTransform.position, cameraRelativePosition, followSpeed * Time.smoothDeltaTime);
+		//cachedTransform.position = Vector3.Lerp(cachedTransform.position, cameraRelativePosition, followSpeed * Time.smoothDeltaTime);
+
+		// 30프레임으로 낮춰도 안끊기게 하려고 다방면으로 테스트 했는데 캐릭터가 리지드바디쓰면 거의 답이없어보인다.
+		// 캐릭 이동과 카메라 이동을 통일해라도 해보고
+		// FixedUpdate에서 직접 보간처리도 해봤는데 여전히 폰에서 30프레임으로 하면 끊긴다.
+		// 그래서 보니 롤 모바일은 리지드바디를 안쓰고 직접 구현한거 같고
+		// 원신은 리지드바디를 써서 그런지(튕기는거보면 딱 리지드바디다) 30프레임 하면 끊기는게 확 느껴진다.
+		// 그래서 결국 2021 이후 버전에서 고쳐지면 그때가서 다시 테스트해봐야 할거 같다.
+		//cachedTransform.position = cameraRelativePosition;
+		//cachedTransform.position = Vector3.Lerp(cachedTransform.position, cameraRelativePosition, lerpFactor);
+		//cachedTransform.position = Vector3.Lerp(cachedTransform.position, cameraRelativePosition, 1 - Mathf.Exp(-2 * Time.deltaTime));
+		//cachedTransform.position = Vector3.SmoothDamp(cachedTransform.position, cameraRelativePosition, ref _velocity, smoothTime, Mathf.Infinity, Time.smoothDeltaTime);
+		//cachedTransform.position = Vector3.SmoothDamp(cachedTransform.position, cameraRelativePosition, ref _velocity, smoothTime, _followSpeed * 2.0f, Time.smoothDeltaTime);
+		//cachedTransform.position = Vector3.SmoothDamp(cachedTransform.position, cameraRelativePosition, ref _velocity, smoothTime, _followSpeed * 2.0f, Time.fixedDeltaTime);
+
+		// 그나마 이 방법이 기존에 쓰던 Lerp보다 조금은 더 나은거 같아서 쓰기로 한다.
+		cachedTransform.position = Vector3.SmoothDamp(cachedTransform.position, cameraRelativePosition, ref _velocity, smoothTime, Mathf.Infinity, Time.smoothDeltaTime);
 	}
 
 	#endregion

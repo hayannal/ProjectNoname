@@ -29,7 +29,7 @@ public static class RandomOption
 			case eRandomCalculateType.Linear:
 				return RandomFromDistribution.RandomRangeLinear(min, max, f1);
 			case eRandomCalculateType.Distribution:
-				return RandomFromDistribution.RandomRangeNormalDistribution(min, max, RandomFromDistribution.ConfidenceLevel_e._999);
+				return RandomFromDistribution.RandomRangeNormalDistribution(min, max, RandomFromDistribution.ConfidenceLevel_e._80);
 		}
 		return 0.0f;
 	}

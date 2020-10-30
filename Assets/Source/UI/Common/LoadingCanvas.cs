@@ -22,6 +22,7 @@ public class LoadingCanvas : MonoBehaviour
 	public GameObject progressObject;
 	public Image progressImage;
 	public Text progressText;
+	public Text backgroundDownloadText;
 	public DOTweenAnimation objectFadeTweenAnimation;
 	public DOTweenAnimation backgroundFadeTweenAnimation;
 

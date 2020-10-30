@@ -179,6 +179,7 @@ public class DownloadManager : MonoBehaviour
 	{
 		LoadingCanvas.instance.skipProgressAnimation = true;
 		LoadingCanvas.instance.progressText.gameObject.SetActive(true);
+		LoadingCanvas.instance.backgroundDownloadText.gameObject.SetActive(true);
 
 		// Calculate progress
 

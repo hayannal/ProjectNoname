@@ -106,6 +106,7 @@ public class EquipTransmuteConfirmCanvas : MonoBehaviour
 		optionStatusValueText.text = displayString;
 		EquipData.RandomOptionInfo info = equipData.GetOption(optionIndex);
 		optionStatusFillImage.fillAmount = info.GetRandomStatusRatio();
+		optionStatusFillImage.color = EquipListStatusInfo.GetGaugeColor(optionStatusFillImage.fillAmount == 1.0f);
 		optionMinText.text = displayMin;
 		optionMaxText.text = displayMax;
 

@@ -62,6 +62,12 @@ public class BattleModeProcessorBase
 		BattleInstanceManager.instance.DisableAllHitObjectMoving();
 		BattleInstanceManager.instance.FinalizeAllHitObject();
 		BattleInstanceManager.instance.FinalizeAllSummonObject();
+
+		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.buildTutorialScene && TutorialLinkAccountCanvas.instance != null && TutorialLinkAccountCanvas.instance.gameObject.activeSelf)
+		{
+			if (StageManager.instance.playStage > 5)
+				TutorialLinkAccountCanvas.instance.gameObject.SetActive(false);
+		}
 	}
 
 	public virtual void OnLoadedMap()

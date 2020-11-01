@@ -60,6 +60,8 @@ public class PauseCanvas : MonoBehaviour
 	{
 		if (LobbyCanvas.instance != null)
 			LobbyCanvas.instance.battlePauseButton.gameObject.SetActive(false);
+		if (TutorialLinkAccountCanvas.instance != null && TutorialLinkAccountCanvas.instance.gameObject.activeSelf)
+			TutorialLinkAccountCanvas.instance.buttonObject.SetActive(false);
 
 		_prevPlayerActorAnimatorUnscaledTime = (BattleInstanceManager.instance.playerActor.actionController.animator.updateMode == AnimatorUpdateMode.UnscaledTime);
 		if (_prevPlayerActorAnimatorUnscaledTime)
@@ -81,6 +83,8 @@ public class PauseCanvas : MonoBehaviour
 	{
 		if (LobbyCanvas.instance != null)
 			LobbyCanvas.instance.battlePauseButton.gameObject.SetActive(true);
+		if (TutorialLinkAccountCanvas.instance != null && TutorialLinkAccountCanvas.instance.gameObject.activeSelf)
+			TutorialLinkAccountCanvas.instance.buttonObject.SetActive(true);
 
 		if (_prevPlayerActorAnimatorUnscaledTime && _prevPlayerActor != null)
 			_prevPlayerActor.actionController.animator.updateMode = AnimatorUpdateMode.UnscaledTime;

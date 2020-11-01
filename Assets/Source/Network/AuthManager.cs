@@ -1,4 +1,4 @@
-﻿//#define Google
+﻿#define Google
 
 using System.Collections;
 using System.Collections.Generic;
@@ -48,16 +48,22 @@ public class AuthManager : MonoBehaviour
 	string _customId;
 
 	Action _onLinkSuccess;
-	Action<bool> _onLinkFailure;
+	Action<bool, PlayFabErrorCode> _onLinkFailure;
+
+	void Update()
+	{
+		UpdateRetryRemainTime();
+		UpdateRetryUnlinkCustomId();
+	}
 
 #if Google
 	//Google
-	public string webClientId = "393852258340-lgd54aqt5h364sb0jp5um8d8vqraqm8b.apps.googleusercontent.com";
+	private string webClientId = "1044940954131-maditus5m72kc7vs7famr207mu3ug65j.apps.googleusercontent.com";
 	private GoogleSignInConfiguration configuration;
 	private GoogleSignInUser googleUser;
 #endif
 
-#if UNITY_EDITOR
+//#if UNITY_EDITOR
 	// Add a menu item named "Do Something" to MyMenu in the menu bar.
 	//[MenuItem("Tools/Network/Delete Cached Login Info")]
 	public static void DeleteCachedLastLoginInfo()
@@ -66,9 +72,8 @@ public class AuthManager : MonoBehaviour
 		ObscuredPrefs.DeleteKey(GUEST_CUSTOM_ID_KEY);
 		Debug.Log("Delete Complete.");
 	}
-#endif
+//#endif
 
-	#region Helper Function
 	public void LoginWithLastLoginType()
 	{
 		eAuthType lastAuthType = GetLastLoginType();
@@ -79,7 +84,7 @@ public class AuthManager : MonoBehaviour
 				break;
 #if Google
 			case eAuthType.Google:
-				LoginWithGoogle();
+				LoginWithGoogle(true);
 				break;
 #endif
 		}
@@ -93,37 +98,9 @@ public class AuthManager : MonoBehaviour
 #if UNITY_EDITOR
 		_customId = Guid.NewGuid().ToString();
 #endif
-		
+
 		RequestLoginWithGuestId(_customId, true);
 	}
-
-#if Google
-	bool _waitForLinkGoogle = false;
-	public void LinkGoogleAccount(Action onLinkSuccess, Action<bool> onLinkFailure)
-	{
-		_waitForLinkGoogle = true;
-		_onLinkSuccess = onLinkSuccess;
-		_onLinkFailure = onLinkFailure;
-
-		LoginWithGoogle();
-	}
-
-	public void Logout()
-	{
-		eAuthType lastAuthType = GetLastLoginType();
-		switch (lastAuthType)
-		{
-			case eAuthType.Google:
-				GoogleSignIn.DefaultInstance.SignOut();
-
-				// 로그아웃시엔 PlayAfterInstallation처럼 첫로딩 후 튜토리얼 시작되야한다.
-				ClearCachedLastLoginInfo();
-				SceneManager.LoadScene(0);
-				break;
-		}
-	}
-#endif
-	#endregion
 
 	public bool IsCachedLastLoginInfo()
 	{
@@ -177,6 +154,8 @@ public class AuthManager : MonoBehaviour
 		parameters.PlayerStatisticNames = playerStatisticNames;
 		// 일일 상점 및 무료 상품은 서버에 올려진 데이터를 받아서 처리해야한다.
 		parameters.GetTitleData = true;
+		// 구글 로그인 연동시 CustomId를 해제해줘야해서 받아야한다.
+		parameters.GetUserAccountInfo = true;
 		return parameters;
 	}
 
@@ -206,7 +185,7 @@ public class AuthManager : MonoBehaviour
 
 		if (IsCachedLastLoginInfo() == false || _requestAuthType != GetLastLoginType())
 		{
-			ObscuredPrefs.SetInt(LAST_AUTH_KEY, (int)_requestAuthType);
+			ChangeLastAuthType(_requestAuthType);
 
 #if UNITY_EDITOR
 			if (_requestAuthType == eAuthType.Guest)
@@ -216,6 +195,11 @@ public class AuthManager : MonoBehaviour
 
 		Debug.LogFormat("Login Successed! PlayFabId : {0}", result.PlayFabId);
 		PlayFabApiManager.instance.OnRecvLoginResult(result);
+	}
+
+	void ChangeLastAuthType(eAuthType authType)
+	{
+		ObscuredPrefs.SetInt(LAST_AUTH_KEY, (int)authType);
 	}
 
 	void OnLoginFailure(PlayFabError error)
@@ -266,8 +250,84 @@ public class AuthManager : MonoBehaviour
 		}, 100);
 	}
 
+	public void OnRecvAccountInfo(UserAccountInfo userAccountInfo)
+	{
+		// 평소에는 할 필요 없는데 구글 로그인 연동 후에 CustomId가 해제되어있지 않다면 해제 처리를 해줘야한다.
+		// 원래는 연동 즉시 보낼텐데 혹시 강종이나 다른 이슈로 처리 안될까봐 여기서 안전하게 한번 더 체크하는거다.
+		if (userAccountInfo.GoogleInfo != null && userAccountInfo.CustomIdInfo != null)
+			SetNeedUnlinkCustomId();
+	}
 
-	#region Link
+	public void SetNeedUnlinkCustomId()
+	{
+		needUnlinkCustomId = true;
+		retryRequestUnlinkCustomId = true;
+	}
+
+	void RequestUnlinkCustomId()
+	{
+		// customId 가 사실 비워져있어도 되는게 서버에서 인자로 비워져있는채로 패킷이 날아오면 마지막으로 등록된 CustomId를 해제한다고 적혀있다.
+		var request = new UnlinkCustomIDRequest { CustomId = "" };
+		PlayFabClientAPI.UnlinkCustomID(request, OnUnlinkSuccess, OnUnlinkFailure);
+	}
+
+	void OnUnlinkSuccess(UnlinkCustomIDResult result)
+	{
+		needUnlinkCustomId = false;
+	}
+
+	void OnUnlinkFailure(PlayFabError error)
+	{
+		Debug.LogError(error.GenerateErrorReport());
+
+		// 왜 실패한거지? 다시 보내보자.
+		retryRequestUnlinkCustomId = true;
+	}
+
+
+
+
+	float _retryGoogleLoginRemainTime;
+	void UpdateRetryRemainTime()
+	{
+		if (_retryGoogleLoginRemainTime > 0.0f)
+		{
+			_retryGoogleLoginRemainTime -= Time.deltaTime;
+			if (_retryGoogleLoginRemainTime <= 0.0f)
+			{
+				_retryGoogleLoginRemainTime = 0.0f;
+				eAuthType lastAuthType = GetLastLoginType();
+				switch (lastAuthType)
+				{
+#if Google
+					case eAuthType.Google:
+						// 재시도때는 계정이라도 바꿀 수 있게 해줘야하지 않을까. 우선 들어올 확률은 적으니 false로 해본다.
+						LoginWithGoogle(false);
+						break;
+#endif
+				}
+			}
+		}
+	}
+
+	public bool needUnlinkCustomId { get; private set; }
+	bool retryRequestUnlinkCustomId { get; set; }
+	void UpdateRetryUnlinkCustomId()
+	{
+		if (retryRequestUnlinkCustomId)
+		{
+			Debug.Log("Retry RequestUnlinkCustomId");
+
+			retryRequestUnlinkCustomId = false;
+			RequestUnlinkCustomId();
+		}
+	}
+
+
+
+
+
+	#region Link Packet
 	void RequestLinkGoogle(string authCode)
 	{
 		var request = new LinkGoogleAccountRequest { ServerAuthCode = authCode };
@@ -276,34 +336,78 @@ public class AuthManager : MonoBehaviour
 
 	void OnLinkGoogleSuccess(LinkGoogleAccountResult result)
 	{
-		PlayerPrefs.SetInt(LAST_AUTH_KEY, (int)eAuthType.Google);
-
-		// 링크에 성공하면 저장되어있던 CustomId를 날려서 로그아웃 하더라도 그 계정에 접속하지 못하게 한다.
-		PlayerPrefs.SetString(GUEST_CUSTOM_ID_KEY, "");
+		// 링크가 성공하면 다음 로그인부터 구글로 로그인하면 된다.
+		ChangeLastAuthType(eAuthType.Google);
 
 #if UNITY_EDITOR
-		Debug.Log("Link Success");
+		ObscuredPrefs.DeleteKey(GUEST_CUSTOM_ID_KEY);
 #endif
 
 		if (_onLinkSuccess != null)
 			_onLinkSuccess();
 	}
 
-	private void OnLinkGoogleFailure(PlayFabError error)
+	void OnLinkGoogleFailure(PlayFabError error)
 	{
-#if UNITY_EDITOR
-		Debug.Log("Link Fail : " + error.ErrorMessage);
-#endif
+		Debug.Log(error.Error.ToString());
+		Debug.Log(error.ErrorMessage);
 
 		if (_onLinkFailure != null)
-			_onLinkFailure(false);
+			_onLinkFailure(false, error.Error);
 	}
-#endregion
+	#endregion
 
+
+
+
+
+
+	bool _waitForLinkGoogle = false;
+	public void LinkGoogleAccount(Action onLinkSuccess, Action<bool, PlayFabErrorCode> onLinkFailure)
+	{
+#if UNITY_EDITOR
+		Debug.LogWarning("Google login cannot be launched from the editor.");
+		return;
+#endif
+
+		// 로그인 할때도 아니고 연동을 할때라면 인풋 막는게 맞겠지
+		WaitingNetworkCanvas.Show(true);
+
+		_waitForLinkGoogle = true;
+		_onLinkSuccess = onLinkSuccess;
+		_onLinkFailure = onLinkFailure;
 
 #if Google
-#region GoogleLogin
-	public void LoginWithGoogle()
+		LoginWithGoogle(false);
+#endif
+	}
+
+	public void LogoutWithGoogle(bool onlySignOut = false)
+	{
+#if Google
+		GoogleSignIn.DefaultInstance.SignOut();
+#endif
+
+		if (onlySignOut)
+			return;
+
+		// 로그아웃시엔 PlayAfterInstallation처럼 첫로딩 후 튜토리얼 시작되야한다. 그러려면 전부다 로그아웃하고 게스트 아이디로 접속해야한다.
+		DeleteCachedLastLoginInfo();
+		ClientSaveData.instance.OnEndGame();
+		PlayerData.instance.ResetData();
+		SceneManager.LoadScene(0);
+	}
+
+	public void RestartWithGoogle()
+	{
+		ChangeLastAuthType(AuthManager.eAuthType.Google);
+		ClientSaveData.instance.OnEndGame();
+		PlayerData.instance.ResetData();
+		SceneManager.LoadScene(0);
+	}
+
+#if Google
+	void LoginWithGoogle(bool silentLogin)
 	{
 		//Setup for Google
 		if (configuration == null)
@@ -323,31 +427,18 @@ public class AuthManager : MonoBehaviour
 
 		Debug.Log("Start login normal.");
 
-		GoogleSignIn.DefaultInstance.SignIn().ContinueWith(
-			GoogleLoginHandler);
+		if (silentLogin)
+			GoogleSignIn.DefaultInstance.SignInSilently().ContinueWith(GoogleLoginHandler);
+		else
+			GoogleSignIn.DefaultInstance.SignIn().ContinueWith(GoogleLoginHandler);
 	}
 
 	private void GoogleLoginHandler(Task<GoogleSignInUser> task)
 	{
 		if (task.IsFaulted)
 		{
+			// 예전엔 계정 선택을 안하고 뒤 누르거나 옆 눌러서 창을 닫으면 Canceled로 왔었는데 최신 빌드에서는 Faulted로 온다.
 			Debug.Log("Login is faulted.");
-
-			using (IEnumerator<System.Exception> enumerator =
-				task.Exception.InnerExceptions.GetEnumerator())
-			{
-				if (enumerator.MoveNext())
-				{
-					GoogleSignIn.SignInException error =
-						(GoogleSignIn.SignInException)enumerator.Current;
-					Debug.Log("Got Error: " + error.Status + " " + error.Message);
-					Debug.Log("Got Error: " + error.InnerException.ToString());
-				}
-				else
-				{
-					Debug.Log("Got Unexpected Exception?!?" + task.Exception);
-				}
-			}
 		}
 		else if (task.IsCanceled)
 		{
@@ -363,15 +454,17 @@ public class AuthManager : MonoBehaviour
 		if (_waitForLinkGoogle)
 		{
 			_waitForLinkGoogle = false;
+			WaitingNetworkCanvas.Show(false);
+
 			if (task.IsFaulted)
 			{
 				if (_onLinkFailure != null)
-					_onLinkFailure(false);
+					_onLinkFailure(true, PlayFabErrorCode.Unknown);
 			}
 			else if (task.IsCanceled)
 			{
 				if (_onLinkFailure != null)
-					_onLinkFailure(true);
+					_onLinkFailure(true, PlayFabErrorCode.Unknown);
 			}
 			else
 			{
@@ -382,13 +475,17 @@ public class AuthManager : MonoBehaviour
 		{
 			if (task.IsFaulted)
 			{
-				if (_onLoginFailure != null)
-					_onLoginFailure(false);
+				// 이제는 로그인이 Silent 형태로 바뀌면서 취소할 일도 없어졌다.
+				// 구글 로그인이 거의 실패할 일이 없으나 아무 처리도 하지 않으면 넘어가질 않을테니 재시도 하게 한다.
+				_retryGoogleLoginRemainTime = 0.2f;
 			}
 			else if (task.IsCanceled)
 			{
-				if (_onLoginFailure != null)
-					_onLoginFailure(true);
+				// 구글 로그인 시도중에 창의 테두리 부분을 무한정 클릭해서 취소를 시키는 경우가 있다.
+				// 이 구글 로그인은 게임보다 더 앞에 나오는 창이기 때문에 UI로 막는다고 이 터치가 안먹히게 할 방법도 없다.
+				// 이때가 링크할때면 상관없는데 유저 캔슬로 처리하면 되는데 하필 로그인하는 동안이면 게스트로 바꾸기도 애매하므로
+				// 시간 조금 기다렸다가 다시 구글 로그인을 시도하는 형태로 구현해본다.
+				_retryGoogleLoginRemainTime = 0.2f;
 			}
 			else
 			{
@@ -397,6 +494,9 @@ public class AuthManager : MonoBehaviour
 		}
 	}
 
+
+
+	// Sample
 	private bool IsGoogleInit()
 	{
 		if (configuration == null)
@@ -436,11 +536,5 @@ public class AuthManager : MonoBehaviour
 		string authCode = googleUser.AuthCode;
 		Debug.Log(String.Format("Auth Code: {0}.", authCode));
 	}
-#endregion
 #endif
-
-
-
-
-
 }

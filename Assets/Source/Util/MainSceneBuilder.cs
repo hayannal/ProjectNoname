@@ -614,6 +614,7 @@ public class MainSceneBuilder : MonoBehaviour
 					StartCoroutine(LateInitialize());
 					LobbyCanvas.instance.OnExitLobby();
 					// 튜토때만 보이는 계정연동 버튼 처리
+					UIInstanceManager.instance.ShowCanvasAsync("TutorialLinkAccountCanvas", null);
 				}
 				else
 				{

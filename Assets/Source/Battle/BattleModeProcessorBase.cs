@@ -186,6 +186,13 @@ public class BattleModeProcessorBase
 			{
 				if (ClientSaveData.instance.GetCachedGatePillar())
 					OnClearStage();
+				else
+				{
+					// 사실 여기로 들어오면 안되는게 몹은 다 죽었고 레벨업창이 뜬것도 아닌데 GatePillar마저 없으면 아무것도 진행되지 않게 된다.
+					// 에러 로그라도 남겨두고 게이트 필라라도 띄워두는게 낫지 않을까.
+					Debug.LogError("Invalid Client Save Data. Force call OnClearStage.");
+					OnClearStage();
+				}
 			}
 		}
 		else

@@ -105,7 +105,9 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 	static int _targetLevelUpCount;
 	public static void SetTargetLevelUpCount(int targetCount)
 	{
-		_targetLevelUpCount = targetCount;
+		// 애초에 막겠지만 혹시라도 중복호출 될때를 대비해서 조건문을 걸어둔다.
+		if (_targetLevelUpCount == 0)
+			_targetLevelUpCount = targetCount;
 	}
 
 	public CanvasGroup canvasGroup;

@@ -504,6 +504,13 @@ public class BattleModeProcessorBase
 
 	void ShowGatePillar()
 	{
+		// 혹시 모를 중복호출에 대비해둔다. 사실 들어오면 안되는거니 로그는 남겨둔다.
+		if (GatePillar.instance != null && GatePillar.instance.gameObject.activeSelf)
+		{
+			Debug.LogError("Invalid call. GatePillar is already active.");
+			return;
+		}
+
 		BattleInstanceManager.instance.GetCachedObject(string.IsNullOrEmpty(StageManager.instance.nextMapTableData.bossName) ? StageManager.instance.gatePillarPrefab : StageManager.instance.bossGatePillarPrefab,
 			StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
 		ClientSaveData.instance.OnChangedGatePillar(true);

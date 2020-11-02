@@ -349,6 +349,10 @@ public class HitObject : MonoBehaviour
 			contactPointBase.y = 0.0f;
 		}
 
+		// 프리셋이면서 라인렌더러가 있다면 contactPointBase의 높이는 0이어야한다.
+		if (meHit.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
+			contactPointBase.y = 0.0f;
+
 		// 점프 중인 상대는 presetAnimatorRoot가 켜있는 UnicornCharacter만 공격가능하다.
 		if (JumpAffector.CheckJump(affectorProcessor))
 		{

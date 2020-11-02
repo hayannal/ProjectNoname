@@ -447,6 +447,7 @@ public class MonsterActor : Actor
 		if (bossMonster)
 		{
 			// 리스트로 들고있는게 이 gaugeCanvas밖에 없어서 여기에 물어본다.
+			// sequentialMonster몬스터의 경우 여기서 Last 체크가 된다. SummonMonster와 달리 총량을 알고있기 때문에 가능하다.
 			if (BossMonsterGaugeCanvas.instance.IsLastAliveMonster(this) == false)
 				return;
 		}
@@ -462,7 +463,9 @@ public class MonsterActor : Actor
 
 		// 마지막 몹을 죽여서 드랍하는 순간에
 		// 기존 드랍템들에 회수 표시를 걸어두고 해당 몹이 드랍할 템들에도 회수 표시를 걸어둔다. 이래야 다음판 드랍템과 섞여도 현재판 드랍템들만 회수할 수 있다.
-		bool lastMonsterInStage = (BattleManager.instance.GetSpawnedMonsterCount() == 1);
+		// delayedSummonMonsterRefCount은 꼭 체크해줘야한다.
+		// Summon 몬스터들은 플레이 중간에 나오는 애들이라 bossMonster로 처리되지도 않고 수량을 미리 알 방법도 없다.
+		bool lastMonsterInStage = (BattleManager.instance.GetSpawnedMonsterCount() == 1 && BattleInstanceManager.instance.delayedSummonMonsterRefCount == 0);
 		if (lastMonsterInStage)
 		{
 			// 스폰된 드랍템에 AfterBattle을 적용

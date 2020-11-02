@@ -1115,6 +1115,12 @@ public class BattleInstanceManager : MonoBehaviour
 		}
 		_listSummonObject.Clear();
 	}
+
+	public int delayedSummonMonsterRefCount { get; private set; }
+	public void AddDelayedSummonMonsterRefCount(int count)
+	{
+		delayedSummonMonsterRefCount += count;
+	}
 	#endregion
 
 	#region Equip Object

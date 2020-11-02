@@ -242,8 +242,27 @@ public class BattleModeProcessorBase
 		if (monsterActor.team.teamId != (int)Team.eTeamID.DefaultMonster || monsterActor.excludeMonsterCount)
 			return;
 
+		// ChaDragon의 Summon 시그널에 또 문제가 생겼다.
+		// 간혹가다 ChaDragon 잡고나서 게이트필라가 안뜨는 문제였는데 이번엔 EvilLich때의 드랍 프로세서가 문제가 아니었고
+		// LevelUpIndicatorCanvas 닫힐때 OnClearStage를 호출하지 못하는게 문제였다.
+		//
+		// 발생원인은 다음과 같다.
+		// ChaDragon 잡자마자 하단의 OnDieMonsterList 함수가 호출되면서 LevelUpIndicatorCanvas.SetTargetLevelUpCount 이 함수로 레벨업 카운트를 기억시켜두는데
+		// 이때 하필 Summon중이던 Fungee가 이후에 나온 것이다.
+		// 이 Fungee를 잡고나면 또 다시 OnDieMonsterList 함수가 호출되는데 이때 LevelUpIndicatorCanvas.SetTargetLevelUpCount 값을 0으로 밀어버린 것이다.
+		// 이랬더니 LevelUpIndicatorCanvas 끝나는 시점에서 selectCount와 비교해서 OnClearStage를 호출하는 로직이 있는데 이게 호출되지 않은 것이다.
+		//
+		// 가장 문제는 요 아래 _monsterSpawnCount == 0 비교하는 곳에서 Summon중인 몬스터가 있으면 OnDieMonsterList를 호출하지 않게 처리해야하는데 이걸 빼먹은거다.
+		// 그런데 더 큰 문제는 Summon시그널로 소환중인 몹이 있는지 검사하는게 더 힘들다는거다. (그래서 체크 안한 것도 있다.)
+		// Summon시그널 자체가 아무 GameObject를 소환할 수 있도록 만들어둔거라 소환중인게 몹이 아닐수도 있고 소환자가 플레이어일수도 있기 때문.
+		// 그러나 이걸 그냥 두기엔 레벨업창이 떠있는데 추가 몬스터가 나온다는 얘기니 사실 고쳐야하는게 맞아보인다.
+		// 그래서 추가한게 BattleInstanceManager의 delayedSummonMonsterRefCount 프로퍼티다.
+		//
+		// OnDieMonsterList 함수가 중복호출 되었을때 위험한지에 대한 것도 고민이긴 한게
+		// BattleManager.instance.OnClearStage(); 라인이 두번 호출되면 게이트필라가 두개 생겨버리게 된다.
+		// 그러니 안전하게 하기 위해서라도 중복호출 대비는 해두는게 좋을거 같아서 예외처리는 해둔다.
 		--_monsterSpawnCount;
-		if (_mapLoaded && _monsterSpawned && _monsterSpawnCount == 0 && BattleInstanceManager.instance.CheckFinishSequentialMonster())
+		if (_mapLoaded && _monsterSpawned && _monsterSpawnCount == 0 && BattleInstanceManager.instance.CheckFinishSequentialMonster() && BattleInstanceManager.instance.delayedSummonMonsterRefCount == 0)
 		{
 			OnDieMonsterList();
 		}
@@ -346,7 +365,7 @@ public class BattleModeProcessorBase
 		{
 			_checkMonsterCountRemainTime = SummonMonsterSpawnCheckDelay;
 			int monsterCount = BattleInstanceManager.instance.GetLiveMonsterList().Count;
-			if (monsterCount == 0)
+			if (monsterCount == 0 && BattleInstanceManager.instance.delayedSummonMonsterRefCount == 0)
 			{
 				++_monsterCountZeroStreakCount;
 				if (_monsterCountZeroStreakCount > 5)

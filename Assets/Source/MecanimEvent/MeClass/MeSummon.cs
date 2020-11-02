@@ -279,6 +279,13 @@ public class MeSummon : MecanimEventBase
 		// 여기서 stage를 기록해두고
 		int playStage = StageManager.instance.playStage;
 
+		// static으로 만들면 소환 도중에 씬 이동 할때나 기타 예외 상황이 발생했을때 리셋하기가 애매해서 BattleInstanceManager에서 카운트 하기로 한다.
+		// 소환 도중에 몹이 죽을때 BattleModeProcessorBase.OnDieMonsterList 를 호출하지 않게 하기 위함이다.
+		// RefCount가 1이라도 높으면 Delayed로 소환중인 몬스터가 있다는거다.
+		// EvilLich의 경우엔 spawnDelay를 쓰지 않고 애니메이션 안에 있기 때문에 Die로 전환시 알아서 취소되니 RefCount를 증가시킬 필요가 없다.
+		if (_actor.IsMonsterActor() && summonMonster)
+			BattleInstanceManager.instance.AddDelayedSummonMonsterRefCount(1);
+
 		yield return Timing.WaitForSeconds(delayTime);
 
 		// avoid gc
@@ -317,6 +324,11 @@ public class MeSummon : MecanimEventBase
 			_reservedSummonFrameCount = 0;
 		}
 		Summon();
+
+		yield return Timing.WaitForOneFrame;
+
+		if (_actor.IsMonsterActor() && summonMonster)
+			BattleInstanceManager.instance.AddDelayedSummonMonsterRefCount(-1);
 	}
 
 	void Summon()

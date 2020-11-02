@@ -369,7 +369,7 @@ public class GatePillar : MonoBehaviour
 
 			// check lobby suggest
 			ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
-			if (_suggestedChapter != StageManager.instance.playChapter && PlayerData.instance.swappable && chapterTableData != null)
+			if (_suggestedChapter != StageManager.instance.playChapter && PlayerData.instance.swappable && chapterTableData != null && ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Chapter))
 			{
 				CharacterData mainCharacterData = PlayerData.instance.GetCharacterData(PlayerData.instance.mainCharacterId);
 				bool showSwapCanvas = false;

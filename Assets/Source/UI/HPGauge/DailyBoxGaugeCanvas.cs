@@ -54,6 +54,10 @@ public class DailyBoxGaugeCanvas : MonoBehaviour
 		int current = PlayerData.instance.sealCount;
 		bool opened = PlayerData.instance.sharedDailyBoxOpened;
 
+		// 이벤트를 진행해야한다면 GainProcess를 돌리지 않기로 한다.
+		if (EventManager.instance.IsStandbyClientEvent(EventManager.eClientEvent.OpenSecondDailyBox) || EventManager.instance.IsStandbyServerEvent(EventManager.eServerEvent.chaos))
+			applyGainProcess = false;
+
 		// opened가 아니면서 sealGainCount가 0보다 클때는 획득 연출이 발생하는 타이밍일거다.
 		if (applyGainProcess && PlayerData.instance.sealGainCount > 0 && PlayerData.instance.sealGainCount <= current && opened == false)
 		{
@@ -63,7 +67,7 @@ public class DailyBoxGaugeCanvas : MonoBehaviour
 			// 일부 조건에서는 획득 연출만 해주고 게이지는 그대로 간다.
 			// 연출을 기다렸다가 꽉차면 받게 하는 식은 스텝을 기다려야해서 불편할테니 예외처리 하는거다.
 			_onlyDropEffect = false;
-			if (current >= gaugeList.Length || EventManager.instance.IsStandbyClientEvent(EventManager.eClientEvent.OpenSecondDailyBox))
+			if (current >= gaugeList.Length)
 				_onlyDropEffect = true;
 			else
 			{

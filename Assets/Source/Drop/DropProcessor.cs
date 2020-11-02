@@ -366,8 +366,12 @@ public class DropProcessor : MonoBehaviour
 			if (characterData == null && listGrantInfo.Contains(TableDataManager.instance.actorTable.dataArray[i].actorId) == false)
 			{
 				adjustWeight = TableDataManager.instance.actorTable.dataArray[i].charGachaWeight * TableDataManager.instance.actorTable.dataArray[i].noHaveTimes;
-				if (originDrop && CharacterData.IsUseLegendWeight(TableDataManager.instance.actorTable.dataArray[i]) == false)
-					adjustWeight *= 3.0f;
+				if (CharacterData.IsUseLegendWeight(TableDataManager.instance.actorTable.dataArray[i]) == false)
+				{
+					// 이 함수는 originDrop 아니면 characterBoxDrop만 호출되기 때문에 이렇게 else에서 처리해도 상관없다.
+					if (originDrop) adjustWeight *= 3.0f;
+					else adjustWeight *= 1.5f;
+				}
 			}
 			else
 			{

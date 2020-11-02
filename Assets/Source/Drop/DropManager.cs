@@ -594,8 +594,11 @@ public class DropManager : MonoBehaviour
 			if (useAdjustWeight)
 			{
 				adjustWeight *= TableDataManager.instance.actorTable.dataArray[i].noHaveTimes;
-				if (originDrop && CharacterData.IsUseLegendWeight(TableDataManager.instance.actorTable.dataArray[i]) == false)
-					adjustWeight *= 3.0f;
+				if (CharacterData.IsUseLegendWeight(TableDataManager.instance.actorTable.dataArray[i]) == false)
+				{
+					if (originDrop) adjustWeight *= 3.0f;
+					else if (characterBoxDrop) adjustWeight *= 1.5f;
+				}
 			}
 
 			sumWeight += adjustWeight;

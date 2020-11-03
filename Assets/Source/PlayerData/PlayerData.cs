@@ -636,7 +636,7 @@ public class PlayerData : MonoBehaviour
 	}
 
 	const int PPMaxPerOriginBox = 80;
-	const int PPMaxPerCharacterBox = 120;
+	const int PPMaxPerCharacterBox = 102;
 	public void OnRecvCharacterList(List<CharacterResult> characterList, Dictionary<string, GetCharacterStatisticsResult> dicCharacterStatistics, List<ObjectResult> characterEntityObjectList)
 	{
 		_listCharacterData.Clear();

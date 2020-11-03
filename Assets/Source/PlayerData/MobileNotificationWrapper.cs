@@ -32,6 +32,8 @@ public class MobileNotificationWrapper : MonoBehaviour
 	}
 
 	// id를 같이 쓰는 Noti들은 그룹으로 묶여서 여러개의 알람이 와도 하나만 노출되게 해준다. 종류별로 묶어쓰면 된다.
+	// deliveryTime이 null이면 즉시 반영이라서 백그라운드 다운로드 후 알림으로 쓸수 있을까 했는데
+	// 어차피 백그라운드 상태에서는 즉시 반영으로 코딩해놔도 코드가 돌지 않기 때문에 Noti가 뜨지 않았다. 그래서 그냥 패스하기로 한다.
 	public void SendNotification(int id, string title, string body, DateTime deliveryTime, int? badgeNumber = null, bool reschedule = false, string smallIcon = null, string largeIcon = null)
 	{
 		IGameNotification notification = manager.CreateNotification();
@@ -45,7 +47,10 @@ public class MobileNotificationWrapper : MonoBehaviour
 		notification.Title = title;
 		notification.Body = body;
 		notification.Group = ChannelId;
-		notification.DeliveryTime = deliveryTime;
+		//if (deliveryTime != null)
+		//{
+			notification.DeliveryTime = deliveryTime;
+		//}
 		notification.SmallIcon = smallIcon;
 		notification.LargeIcon = largeIcon;
 		notification.ShouldAutoCancel = true;

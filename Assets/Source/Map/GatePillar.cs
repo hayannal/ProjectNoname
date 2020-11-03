@@ -638,6 +638,15 @@ public class GatePillar : MonoBehaviour
 				FadeCanvas.instance.FadeIn(0.4f);
 				if (_enterGameServerFailure)
 					ShowRefillEnergyCanvas();
+				if (_networkFailure)
+				{
+					// 네트워크 오류라면 선처리로 차감했던 에너지를 복구해준다.
+					if (ContentsManager.IsTutorialChapter() == false)
+					{
+						int useAmount = BattleInstanceManager.instance.GetCachedGlobalConstantInt("RequiredEnergyToPlay");
+						CurrencyData.instance.OnRecvRefillEnergy(useAmount);
+					}
+				}
 				_enterGameServerFailure = false;
 				_networkFailure = false;
 				// 알파가 어느정도 빠지면 _processing을 풀어준다.

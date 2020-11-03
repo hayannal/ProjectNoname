@@ -18,6 +18,7 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 7662867815922473824, guid: 8b650aeb4e4413941a629bd0dffd71bd,
     type: 3}
   lifeTime: 5
@@ -34,6 +35,7 @@ MonoBehaviour:
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
+  applyRootTransformRotation: 0
   useAreaRotationYChange: 0
   targetAreaRotationY: 0
   areaDistanceMin: 0
@@ -136,7 +138,9 @@ MonoBehaviour:
   lootAtTargetOffsetAngle: 0
   lookAtRandom: 0
   desireDistance: 5
+  minimumDistance: 0
   lerpPower: 5
+  boneName: 
 --- !u!1102 &-7870688956108488034
 AnimatorState:
   serializedVersion: 5
@@ -556,7 +560,9 @@ MonoBehaviour:
   lootAtTargetOffsetAngle: 0
   lookAtRandom: 0
   desireDistance: 5
+  minimumDistance: 0
   lerpPower: 5
+  boneName: 
 --- !u!1102 &711902931308108612
 AnimatorState:
   serializedVersion: 5
@@ -661,8 +667,12 @@ MonoBehaviour:
     useHpRatio2: 0
     hpRatioCompareType2: 0
     hpRatioParameter2: 0
-    useTargetActorState: 0
+    useActorState: 0
     actorStateId: 
+    existActorStateParameter: 0
+    useTargetActorState: 0
+    targetActorStateId: 
+    existTargetActorStateParameter: 0
     useMonsterCount: 1
     monsterCountCompareType: 3
     monsterCountParameter: 16
@@ -683,8 +693,12 @@ MonoBehaviour:
     useHpRatio2: 0
     hpRatioCompareType2: 0
     hpRatioParameter2: 0
-    useTargetActorState: 0
+    useActorState: 0
     actorStateId: 
+    existActorStateParameter: 0
+    useTargetActorState: 0
+    targetActorStateId: 
+    existTargetActorStateParameter: 0
     useMonsterCount: 1
     monsterCountCompareType: 3
     monsterCountParameter: 16
@@ -705,8 +719,12 @@ MonoBehaviour:
     useHpRatio2: 0
     hpRatioCompareType2: 0
     hpRatioParameter2: 0
-    useTargetActorState: 0
+    useActorState: 0
     actorStateId: 
+    existActorStateParameter: 0
+    useTargetActorState: 0
+    targetActorStateId: 
+    existTargetActorStateParameter: 0
     useMonsterCount: 0
     monsterCountCompareType: 3
     monsterCountParameter: 0
@@ -727,8 +745,12 @@ MonoBehaviour:
     useHpRatio2: 0
     hpRatioCompareType2: 0
     hpRatioParameter2: 0
-    useTargetActorState: 0
+    useActorState: 0
     actorStateId: 
+    existActorStateParameter: 0
+    useTargetActorState: 0
+    targetActorStateId: 
+    existTargetActorStateParameter: 0
     useMonsterCount: 0
     monsterCountCompareType: 3
     monsterCountParameter: 0
@@ -797,6 +819,7 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 543431697849790876, guid: cc80c56f1d4401c499efa0abb9b1eb77,
     type: 3}
   lifeTime: 10
@@ -813,6 +836,7 @@ MonoBehaviour:
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
+  applyRootTransformRotation: 0
   useAreaRotationYChange: 0
   targetAreaRotationY: 0
   areaDistanceMin: 0
@@ -967,6 +991,7 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 543431697849790876, guid: cc80c56f1d4401c499efa0abb9b1eb77,
     type: 3}
   lifeTime: 5
@@ -983,6 +1008,7 @@ MonoBehaviour:
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
+  applyRootTransformRotation: 0
   useAreaRotationYChange: 0
   targetAreaRotationY: 0
   areaDistanceMin: 0
@@ -1111,7 +1137,7 @@ AnimatorStateMachine:
     m_Position: {x: 260, y: 40, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -6121394189030717541}
-    m_Position: {x: 420, y: 450, z: 0}
+    m_Position: {x: 260, y: 310, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 5832255390800465783}
     m_Position: {x: 260, y: 220, z: 0}

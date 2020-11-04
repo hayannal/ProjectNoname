@@ -121,13 +121,52 @@ public class CurrencyData : MonoBehaviour
 
 		bool full = (energy >= energyMax);
 		energy -= amount;
-		if (full && energy < energyMax)
+		if (energy < energyMax)
 		{
-			_energyRechargeTime = ServerTime.UtcNow + TimeSpan.FromSeconds(BattleInstanceManager.instance.GetCachedGlobalConstantInt("TimeSecToGetOneEnergy"));
-			_rechargingEnergy = true;
+			if (full)
+			{
+				_energyRechargeTime = ServerTime.UtcNow + TimeSpan.FromSeconds(BattleInstanceManager.instance.GetCachedGlobalConstantInt("TimeSecToGetOneEnergy"));
+				_rechargingEnergy = true;
+			}
+			else
+			{
+				if (OptionManager.instance.energyAlarm == 1)
+				{
+					// full이 아니었다면 이전에 등록되어있던 Noti를 먼저 삭제해야한다.
+					// 만약 energyAlarm을 꺼둔채로 에너지를 소모했다면 취소시킬 Noti가 없을텐데 그걸 판단할 방법은 귀찮으므로 그냥 Cancel 호출하는거로 해둔다.
+					CancelEnergyNotification();
+				}
+			}
+
+			if (OptionManager.instance.energyAlarm == 1)
+			{
+				ReserveEnergyNotification();
+			}
 		}
 		return true;
 	}
+
+	#region Notification
+	const int EnergyNotificationId = 10001;
+	public void ReserveEnergyNotification()
+	{
+		// 충전때까지의 시간을 구해서
+		if (energy >= energyMax)
+			return;
+
+		int diffMinusOne = energyMax - energy - 1;
+		TimeSpan remainTime = _energyRechargeTime - ServerTime.UtcNow;
+		double totalSecond = remainTime.TotalSeconds + diffMinusOne * BattleInstanceManager.instance.GetCachedGlobalConstantInt("TimeSecToGetOneEnergy");
+		DateTime deliveryTime = DateTime.Now.ToLocalTime() + TimeSpan.FromSeconds(totalSecond);
+		MobileNotificationWrapper.instance.SendNotification(EnergyNotificationId, UIString.instance.GetString("SystemUI_EnergyFullTitle"), UIString.instance.GetString("SystemUI_EnergyFullBody"),
+			deliveryTime, null, true, "icon_1", "icon_0");
+	}
+
+	public void CancelEnergyNotification()
+	{
+		MobileNotificationWrapper.instance.CancelPendingNotificationItem(EnergyNotificationId);
+	}
+	#endregion
 
 	// 던전 입장 후 WaitingNetworkCanvas없이 패킷만 주고받아서 rechargeTime 동기화
 	public IEnumerator<float> DelayedSyncEnergyRechargeTime(float delay)
@@ -147,10 +186,21 @@ public class CurrencyData : MonoBehaviour
 
 	public void OnRecvRefillEnergy(int refillAmount)
 	{
+		bool full = (energy >= energyMax);
 		energy += refillAmount;
+
+		if (full == false && OptionManager.instance.energyAlarm == 1)
+			CancelEnergyNotification();
 
 		if (energy >= energyMax)
 			_rechargingEnergy = false;
+		else
+		{
+			if (OptionManager.instance.energyAlarm == 1)
+			{
+				ReserveEnergyNotification();
+			}
+		}
 
 		if (EnergyGaugeCanvas.instance != null)
 			EnergyGaugeCanvas.instance.RefreshEnergy();

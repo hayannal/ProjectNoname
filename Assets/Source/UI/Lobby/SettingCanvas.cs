@@ -22,6 +22,8 @@ public class SettingCanvas : MonoBehaviour
 	public Text accountButtonText;
 	public Slider frameRateSlider;
 	public Text frameRateText;
+	public SwitchAnim energyAlarmSwitch;
+	public Text energyAlarmOnOffText;
 
 	void Awake()
 	{
@@ -63,6 +65,7 @@ public class SettingCanvas : MonoBehaviour
 		LoadLanguage();
 		RefreshAccount();
 		frameRateSlider.value = OptionManager.instance.frame;
+		energyAlarmSwitch.isOn = (OptionManager.instance.energyAlarm == 1);
 	}
 
 	public void SaveOption()
@@ -225,5 +228,29 @@ public class SettingCanvas : MonoBehaviour
 	#endregion
 
 	#region System
-	#endregion
+	public void OnSwitchOnEnergyAlarm()
+	{
+		OptionManager.instance.energyAlarm = 1;
+		energyAlarmOnOffText.text = "ON";
+		energyAlarmOnOffText.color = Color.white;
+
+#if UNITY_ANDROID
+		CurrencyData.instance.ReserveEnergyNotification();
+#elif UNITY_IOS
+		MobileNotificationWrapper.instance.CheckAuthorization(() =>
+		{
+			CurrencyData.instance.ReserveEnergyNotification();
+		});
+#endif
+	}
+
+	public void OnSwitchOffEnergyAlarm()
+	{
+		OptionManager.instance.energyAlarm = 0;
+		energyAlarmOnOffText.text = "OFF";
+		energyAlarmOnOffText.color = new Color(0.176f, 0.176f, 0.176f);
+
+		CurrencyData.instance.CancelEnergyNotification();
+	}
+#endregion
 }

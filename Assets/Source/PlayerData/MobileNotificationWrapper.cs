@@ -69,7 +69,12 @@ public class MobileNotificationWrapper : MonoBehaviour
 	}
 
 #if UNITY_IOS
-	IEnumerator RequestAuthorization()
+	public void CheckAuthorization(Action nextAction = null)
+	{
+		StartCoroutine(RequestAuthorization(nextAction));
+	}
+
+	IEnumerator RequestAuthorization(Action nextAction)
 	{
 		var authorizationOption = AuthorizationOption.Alert | AuthorizationOption.Badge;
 		using (var req = new AuthorizationRequest(authorizationOption, true))
@@ -86,6 +91,13 @@ public class MobileNotificationWrapper : MonoBehaviour
 			res += "\n deviceToken:  " + req.DeviceToken;
 			Debug.Log(res);
 		}
+
+		yield return null;
+
+		// 권한요청을 거절했는지 검사같은거는 뭐로 해야하나.
+
+		if (nextAction != null)
+			nextAction();
 	}
 #endif
 }

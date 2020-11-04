@@ -143,7 +143,7 @@ public class EquipEnhanceConfirmCanvas : MonoBehaviour
 			{
 				successCount += 1;
 				enhanceLevel += 1;
-				if (enhanceLevel >= innerGradeTableData.max)
+				if (enhanceLevel >= TimeSpaceData.instance.maxEnhanceLevel)
 				{
 					maxReached = true;
 					break;

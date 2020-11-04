@@ -83,10 +83,7 @@ public class EquipEnhanceCanvas : MonoBehaviour
 		else
 			EquipInfoGrowthCanvas.instance.RefreshGrid(EquipInfoGrowthCanvas.eGrowthGridType.Enhance);
 
-		InnerGradeTableData innerGradeTableData = TableDataManager.instance.FindInnerGradeTableData(equipData.cachedEquipTableData.innerGrade);
-		if (innerGradeTableData == null)
-			return;
-		RefreshButton(equipData.enhanceLevel >= innerGradeTableData.max);
+		RefreshButton(equipData.enhanceLevel >= TimeSpaceData.instance.maxEnhanceLevel);
 	}
 
 	void RefreshButton(bool showMaxButton)
@@ -98,6 +95,10 @@ public class EquipEnhanceCanvas : MonoBehaviour
 
 			maxButtonImage.color = ColorUtil.halfGray;
 			maxButtonText.color = ColorUtil.halfGray;
+			if (_equipData.enhanceLevel >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxEquipLevel"))
+				maxButtonText.SetLocalizedText(UIString.instance.GetString("EquipUI_MaxReachedEnhance"));
+			else
+				maxButtonText.SetLocalizedText(UIString.instance.GetString("EquipUI_LimitReachedEnhance"));
 			maxButtonObject.SetActive(true);
 		}
 		else
@@ -158,10 +159,7 @@ public class EquipEnhanceCanvas : MonoBehaviour
 
 		if (_equipData == null)
 			return;
-		InnerGradeTableData innerGradeTableData = TableDataManager.instance.FindInnerGradeTableData(_equipData.cachedEquipTableData.innerGrade);
-		if (innerGradeTableData == null)
-			return;
-		RefreshButton(_equipData.enhanceLevel >= innerGradeTableData.max);
+		RefreshButton(_equipData.enhanceLevel >= TimeSpaceData.instance.maxEnhanceLevel);
 	}
 
 	public void OnClickAutoSelect()
@@ -174,13 +172,17 @@ public class EquipEnhanceCanvas : MonoBehaviour
 
 	public void OnClickPriceButton()
 	{
-		InnerGradeTableData innerGradeTableData = TableDataManager.instance.FindInnerGradeTableData(_equipData.cachedEquipTableData.innerGrade);
-		if (innerGradeTableData == null)
-			return;
-
-		if (_equipData.enhanceLevel >= innerGradeTableData.max)
+		if (_equipData.enhanceLevel >= TimeSpaceData.instance.maxEnhanceLevel)
 		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("EquipUI_MaxReachEnhanceToast"), 2.0f);
+			if (_equipData.enhanceLevel >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxEquipLevel"))
+				ToastCanvas.instance.ShowToast(UIString.instance.GetString("EquipUI_MaxReachEnhanceToast"), 2.0f);
+			else
+			{
+				int nextLimitChapter = 0;
+				int nextLimitEnhance = 0;
+				TimeSpaceData.instance.GetNextEnhanceLimitInfo(ref nextLimitChapter, ref nextLimitEnhance);
+				ToastCanvas.instance.ShowToast(UIString.instance.GetString("EquipUI_LimitReachEnhanceToast", nextLimitChapter, nextLimitEnhance), 2.0f);
+			}
 			return;
 		}
 

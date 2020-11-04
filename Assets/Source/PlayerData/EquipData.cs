@@ -194,8 +194,7 @@ public class EquipData
 		bool invalidEquipEnhance = false;
 		if (enhan > 0)
 		{
-			InnerGradeTableData innerGradeTableData = TableDataManager.instance.FindInnerGradeTableData(cachedEquipTableData.innerGrade);
-			if (enhan > innerGradeTableData.max)
+			if (enhan > TimeSpaceData.instance.maxEnhanceLevel)
 				invalidEquipEnhance = true;
 		}
 		if (invalidEquipEnhance)

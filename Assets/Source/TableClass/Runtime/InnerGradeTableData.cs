@@ -13,10 +13,6 @@ public class InnerGradeTableData
   public int innerGrade { get { return _innerGrade; } set { _innerGrade = value; } }
   
   [SerializeField]
-  int _max;
-  public int max { get { return _max; } set { _max = value; } }
-  
-  [SerializeField]
   int _innerGradeZeroEnhanceGold;
   public int innerGradeZeroEnhanceGold { get { return _innerGradeZeroEnhanceGold; } set { _innerGradeZeroEnhanceGold = value; } }
   

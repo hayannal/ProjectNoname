@@ -588,8 +588,9 @@ public class PlayFabApiManager : MonoBehaviour
 		// 혹시 다 못보냈더라도 어쩔 수 없다. 이전에 로그인 했던 계정의 정보를 보낼순 없다.
 		ClearCliSusQueue();
 		enableCliSusQueue = true;
+		PlayerData.instance.OnRecvPlayerStatistics(_loginResult.InfoResultPayload.PlayerStatistics);
 		TimeSpaceData.instance.OnRecvEquipInventory(_loginResult.InfoResultPayload.UserInventory, _loginResult.InfoResultPayload.UserData);
-		PlayerData.instance.OnRecvPlayerData(_loginResult.InfoResultPayload.PlayerStatistics, _loginResult.InfoResultPayload.UserData, _loginResult.InfoResultPayload.UserReadOnlyData, _loginResult.InfoResultPayload.CharacterList);
+		PlayerData.instance.OnRecvPlayerData(_loginResult.InfoResultPayload.UserData, _loginResult.InfoResultPayload.UserReadOnlyData, _loginResult.InfoResultPayload.CharacterList);
 		PlayerData.instance.OnRecvCharacterList(_loginResult.InfoResultPayload.CharacterList, _dicCharacterStatisticsResult, _listCharacterEntityObject);
 		enableCliSusQueue = false;
 

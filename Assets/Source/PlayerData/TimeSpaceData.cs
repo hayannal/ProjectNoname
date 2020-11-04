@@ -50,6 +50,62 @@ public class TimeSpaceData
 	// 그 외 변수들
 	public ObscuredInt notStreakCount { get; set; }
 
+	// 이제 강화 최대값은 고정이 아니다.
+	int _lastHighestPlayChapter;
+	int _cachedMaxEnhanceLevel;
+	public int maxEnhanceLevel
+	{
+		get
+		{
+			// 캐싱된걸 써도 되는지 확인한다.
+			if (_lastHighestPlayChapter == PlayerData.instance.highestPlayChapter)
+				return _cachedMaxEnhanceLevel;
+
+			_lastHighestPlayChapter = PlayerData.instance.highestPlayChapter;
+
+			// 먼저 챕터 도달 수치에 따라서 뽑아온다.
+			int enhanceLevel = 5;
+			if (_lastHighestPlayChapter > 21)
+				enhanceLevel = 30;
+			else if (_lastHighestPlayChapter > 14)
+				enhanceLevel = 20;
+			else if (_lastHighestPlayChapter > 7)
+				enhanceLevel = 10;
+
+			// 이후 기획에서 제한된 값을 뽑아와서 비교
+			int tableMaxEnhance = BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxEquipLevel");
+			_cachedMaxEnhanceLevel = Mathf.Min(enhanceLevel, tableMaxEnhance);
+			return _cachedMaxEnhanceLevel;
+		}
+	}
+
+	public void GetNextEnhanceLimitInfo(ref int nextLimitChapter, ref int nextLimitEnhance)
+	{
+		int highestPlayChapter = PlayerData.instance.highestPlayChapter;
+		if (highestPlayChapter > 21)
+		{
+			// 들어올리 없다.
+		}
+		else if (highestPlayChapter > 14)
+		{
+			nextLimitChapter = 21;
+			nextLimitEnhance = 30;
+		}
+		else if (highestPlayChapter > 7)
+		{
+			nextLimitChapter = 14;
+			nextLimitEnhance = 20;
+		}
+		else
+		{
+			nextLimitChapter = 7;
+			nextLimitEnhance = 10;
+		}
+
+		int tableMaxEnhance = BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxEquipLevel");
+		nextLimitEnhance = Mathf.Min(nextLimitEnhance, tableMaxEnhance);
+	}
+
 	public void OnRecvEquipInventory(List<ItemInstance> userInventory, Dictionary<string, UserDataRecord> userData)
 	{
 		ClearInventory();

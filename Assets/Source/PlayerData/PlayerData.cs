@@ -415,7 +415,8 @@ public class PlayerData : MonoBehaviour
 		}
 	}
 
-	public void OnRecvPlayerData(List<StatisticValue> playerStatistics, Dictionary<string, UserDataRecord> userData, Dictionary<string, UserDataRecord> userReadOnlyData, List<CharacterResult> characterList)
+	// 장비 데이터 처리하기 전에 highestPlayChapter 를 먼저 파싱해야해서 함수를 분리해둔다.
+	public void OnRecvPlayerStatistics(List<StatisticValue> playerStatistics)
 	{
 		// nodeWarClearLevel은 디비에 없을 수 있으므로 초기화가 필요.
 		nodeWarClearLevel = 0;
@@ -428,7 +429,10 @@ public class PlayerData : MonoBehaviour
 				case "nodClLv": nodeWarClearLevel = playerStatistics[i].Value; break;
 			}
 		}
+	}
 
+	public void OnRecvPlayerData(Dictionary<string, UserDataRecord> userData, Dictionary<string, UserDataRecord> userReadOnlyData, List<CharacterResult> characterList)
+	{
 		if (userData.ContainsKey("mainCharacterId"))
 		{
 			string actorId = userData["mainCharacterId"].Value;

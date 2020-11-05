@@ -21,7 +21,18 @@ public class MobileNotificationWrapper : MonoBehaviour
 
 	void Awake()
 	{
-		instance = this;
+		// 코드를 보니 GameNotificationsManager 클래스는 삭제되면 안되는 구조라 DontDestroyOnLoad를 걸어야하는데
+		// 어차피 건드릴거라면 Wrapper에 작업하는게 나아서 여기에다 처리해둔다.
+		// 씬에 존재하는 오브젝트이지만 싱글톤 처리를 해야하니 이런식으로 처리하면 될거다.
+		if (instance == null)
+		{
+			instance = this;
+			DontDestroyOnLoad(gameObject);
+		}
+		else
+		{
+			Destroy(gameObject);
+		}
 	}
 
 	void Start()

@@ -106,6 +106,15 @@ public class ChapterCanvas : MonoBehaviour
 
 	void RefreshChapterInfo()
 	{
+		int chapterLimit = BattleInstanceManager.instance.GetCachedGlobalConstantInt("ChaosChapterLimit");
+		if (_selectedChapter >= chapterLimit)
+		{
+			stagePenaltyText.gameObject.SetActive(false);
+			suggestPowerLevelText.text = "";
+			selectResultText.text = "";
+			return;
+		}
+
 		stagePenaltyText.gameObject.SetActive(false);
 		StageTableData stageTableData = BattleInstanceManager.instance.GetCachedStageTableData(_selectedChapter, 1, false); // PlayerData.instance.currentChaosMode
 		string penaltyString = SwapCanvas.GetPenaltyString(stageTableData);
@@ -126,7 +135,6 @@ public class ChapterCanvas : MonoBehaviour
 		selectResultText.text = "";
 		if (_selectedChapter < PlayerData.instance.highestPlayChapter)
 			selectResultText.SetLocalizedText(UIString.instance.GetString("GameUI_ChapterTooLow", PlayerData.instance.highestPlayChapter - 1));
-		int chapterLimit = BattleInstanceManager.instance.GetCachedGlobalConstantInt("ChaosChapterLimit");
 		if (_selectedChapter >= chapterLimit)
 			selectResultText.SetLocalizedText(UIString.instance.GetString("GameUI_ChapterWaitUpdate"));
 	}

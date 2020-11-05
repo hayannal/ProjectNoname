@@ -1,6 +1,7 @@
 #if UNITY_ANDROID
 using System;
 using Unity.Notifications.Android;
+using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace NotificationSamples.Android
@@ -77,10 +78,21 @@ namespace NotificationSamples.Android
         /// <inheritdoc />
         public string LargeIcon { get => InternalNotification.LargeIcon; set => internalNotification.LargeIcon = value; }
 
-        /// <summary>
-        /// Instantiate a new instance of <see cref="AndroidGameNotification"/>.
-        /// </summary>
-        public AndroidGameNotification()
+		#region Custom Additional Property
+		/// <inheritdoc />
+		public bool ShowTimestamp { get => InternalNotification.ShowTimestamp; set => internalNotification.ShowTimestamp = value; }
+
+		/// <inheritdoc />
+		public bool BigTextStyle { get => (InternalNotification.Style == NotificationStyle.BigTextStyle); set => internalNotification.Style = (value ? NotificationStyle.BigTextStyle : NotificationStyle.None); }
+
+		/// <inheritdoc />
+		public Color? TitleColor { get => InternalNotification.Color; set => internalNotification.Color = value; }
+		#endregion
+
+		/// <summary>
+		/// Instantiate a new instance of <see cref="AndroidGameNotification"/>.
+		/// </summary>
+		public AndroidGameNotification()
         {
             internalNotification = new AndroidNotification();
         }

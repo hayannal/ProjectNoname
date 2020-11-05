@@ -53,7 +53,12 @@ public class MobileNotificationWrapper : MonoBehaviour
 		//}
 		notification.SmallIcon = smallIcon;
 		notification.LargeIcon = largeIcon;
+		// 안드로이드에서는 누르면 사라지는게 디폴트이므로 체크해둔다.
 		notification.ShouldAutoCancel = true;
+		// 안드로이드에서는 시간 표시 나오는게 기본이므로 시간 표시 켜둔다.
+		notification.ShowTimestamp = true;
+		// 혹시 번역이 길어질거 대비해서 BigText로 해둔다. 짧게 나올땐 기본 스타일이랑 똑같이 나오니 문제없을거다.
+		notification.BigTextStyle = true;
 		if (badgeNumber != null)
 		{
 			notification.BadgeNumber = badgeNumber;

@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace NotificationSamples
 {
@@ -77,5 +78,22 @@ namespace NotificationSamples
         /// Notification large icon.
         /// </summary>
         string LargeIcon { get; set; }
-    }
+
+		#region Custom Additional Property
+		/// <summary>
+		/// Does nothing on iOS.
+		/// </summary>
+		bool ShowTimestamp { get; set; }
+
+		/// <summary>
+		/// Does nothing on iOS.
+		/// </summary>
+		bool BigTextStyle { get; set; }
+
+		/// <summary>
+		/// Does nothing on iOS.
+		/// </summary>
+		Color? TitleColor { get; set; }
+		#endregion
+	}
 }

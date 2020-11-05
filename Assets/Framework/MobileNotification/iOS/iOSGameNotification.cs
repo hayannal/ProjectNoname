@@ -147,10 +147,27 @@ namespace NotificationSamples.iOS
         /// </summary>
         public string LargeIcon { get => null; set {} }
 
-        /// <summary>
-        /// Instantiate a new instance of <see cref="iOSGameNotification"/>.
-        /// </summary>
-        public iOSGameNotification()
+		#region Custom Additional Property
+		/// <summary>
+		/// Does nothing on iOS.
+		/// </summary>
+		public bool ShowTimestamp { get; set; }
+
+		/// <summary>
+		/// Does nothing on iOS.
+		/// </summary>
+		public bool BigTextStyle { get; set; }
+
+		/// <summary>
+		/// Does nothing on iOS.
+		/// </summary>
+		public Color? TitleColor { get; set; }
+		#endregion
+
+		/// <summary>
+		/// Instantiate a new instance of <see cref="iOSGameNotification"/>.
+		/// </summary>
+		public iOSGameNotification()
         {
             internalNotification = new iOSNotification
             {

@@ -33,6 +33,9 @@ public class CashShopCanvas : MonoBehaviour
 	public DiaListItem[] diaListItemList;
 	public GoldListItem[] goldListItemList;
 
+	public GameObject termsGroupObject;
+	public GameObject emptyTermsGroupObject;
+
 	void Awake()
 	{
 		instance = this;
@@ -67,6 +70,9 @@ public class CashShopCanvas : MonoBehaviour
 
 		if (DragThresholdController.instance != null)
 			DragThresholdController.instance.ApplyUIDragThreshold();
+
+		termsGroupObject.SetActive(OptionManager.instance.language == "KOR");
+		emptyTermsGroupObject.SetActive(OptionManager.instance.language != "KOR");
 	}
 
 	void OnDisable()

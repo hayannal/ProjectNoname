@@ -69,8 +69,26 @@ namespace NotificationSamples
 
                         // Time (must have a value)
                         writer.Write(notification.DeliveryTime.Value.Ticks);
-                    }
-                }
+
+						// ShouldAutoCancel
+						writer.Write(notification.ShouldAutoCancel);
+
+						// SmallIcon
+						writer.Write(notification.SmallIcon ?? "");
+
+						// LargeIcon
+						writer.Write(notification.LargeIcon ?? "");
+
+						// ShowTimestamp
+						writer.Write(notification.ShowTimestamp);
+
+						// BigTextStyle
+						writer.Write(notification.BigTextStyle);
+
+						// TitleColor
+						// no need not yet
+					}
+				}
             }
         }
 
@@ -127,7 +145,25 @@ namespace NotificationSamples
                         // Time
                         notification.DeliveryTime = new DateTime(reader.ReadInt64(), DateTimeKind.Local);
 
-                        result.Add(notification);
+						// ShouldAutoCancel
+						notification.ShouldAutoCancel = reader.ReadBoolean();
+
+						// SmallIcon
+						notification.SmallIcon = reader.ReadString();
+
+						// LargeIcon
+						notification.LargeIcon = reader.ReadString();
+
+						// ShowTimestamp
+						notification.ShowTimestamp = reader.ReadBoolean();
+
+						// BigTextStyle
+						notification.BigTextStyle = reader.ReadBoolean();
+
+						// TitleColor
+						// pass
+
+						result.Add(notification);
                     }
 
                     return result;

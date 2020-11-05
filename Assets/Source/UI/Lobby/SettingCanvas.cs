@@ -25,6 +25,9 @@ public class SettingCanvas : MonoBehaviour
 	public SwitchAnim energyAlarmSwitch;
 	public Text energyAlarmOnOffText;
 
+	public Text termsText;
+	public Text policyText;
+
 	void Awake()
 	{
 		instance = this;
@@ -39,6 +42,11 @@ public class SettingCanvas : MonoBehaviour
 			DotMainMenuCanvas.instance.OnClickBackButton();
 
 		LoadOption();
+
+		termsText.SetLocalizedText(UIString.instance.GetString("GameUI_TermsOfService"));
+		termsText.fontStyle = FontStyle.Italic;
+		policyText.SetLocalizedText(UIString.instance.GetString("GameUI_PrivacyPolicy"));
+		policyText.fontStyle = FontStyle.Italic;
 	}
 
 	void OnDisable()
@@ -252,5 +260,32 @@ public class SettingCanvas : MonoBehaviour
 
 		CurrencyData.instance.CancelEnergyNotification();
 	}
-#endregion
+	#endregion
+
+	#region Support
+	public void OnClickSupportButton()
+	{
+
+	}
+	#endregion
+
+	#region Terms
+	public void OnClickTermsTextButton()
+	{
+		UIInstanceManager.instance.ShowCanvasAsync("TermsCanvas", () =>
+		{
+			TermsCanvas.instance.RefreshInfo(true);
+			OnClickHomeButton();
+		});
+	}
+
+	public void OnClickPolicyTextButton()
+	{
+		UIInstanceManager.instance.ShowCanvasAsync("TermsCanvas", () =>
+		{
+			TermsCanvas.instance.RefreshInfo(false);
+			OnClickHomeButton();
+		});
+	}
+	#endregion
 }

@@ -40,13 +40,13 @@ public class TermsCanvas : MonoBehaviour
 		{
 			_page = 1;
 			pageText.text = _page.ToString();
-			contentText.text = FindTermsString("GameUI_TermsOfServiceFullOne");
+			contentText.SetLocalizedText(FindTermsString("GameUI_TermsOfServiceFullOne"));
 			pageGroupObject.SetActive(true);
 		}
 		else
 		{
 			pageGroupObject.SetActive(false);
-			contentText.text = FindTermsString("GameUI_PrivacyPolicyFull");
+			contentText.SetLocalizedText(FindTermsString("GameUI_PrivacyPolicyFull"));
 		}
 	}
 
@@ -56,7 +56,7 @@ public class TermsCanvas : MonoBehaviour
 		{
 			_page = 1;
 			pageText.text = _page.ToString();
-			contentText.text = FindTermsString("GameUI_TermsOfServiceFullOne");
+			contentText.SetLocalizedText(FindTermsString("GameUI_TermsOfServiceFullOne"));
 		}
 	}
 
@@ -75,7 +75,11 @@ public class TermsCanvas : MonoBehaviour
 		for (int i = 0; i < stringTermsTable.dataArray.Length; ++i)
 		{
 			if (stringTermsTable.dataArray[i].id == id)
+			{
+				if (OptionManager.instance.language == "KOR")
+					return stringTermsTable.dataArray[i].kor;
 				return stringTermsTable.dataArray[i].eng;
+			}
 		}
 		return "";
 	}

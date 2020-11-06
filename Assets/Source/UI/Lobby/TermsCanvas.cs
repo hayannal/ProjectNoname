@@ -46,9 +46,18 @@ public class TermsCanvas : MonoBehaviour
 		homeButtonObject.SetActive(showHomeButton);
 		groupNameText.SetLocalizedText(UIString.instance.GetString(terms ? "GameUI_TermsOfService" : "GameUI_PrivacyPolicy"));
 
-		_page = 1;
-		pageText.text = _page.ToString();
-		RefreshPageText();
+		if (terms)
+		{
+			_page = 1;
+			pageText.text = _page.ToString();
+			RefreshPageText();
+			pageGroupObject.SetActive(true);
+		}
+		else
+		{
+			pageGroupObject.SetActive(false);
+			RefreshPageText();
+		}
 	}
 
 	public void OnClickLeftButton()
@@ -81,10 +90,9 @@ public class TermsCanvas : MonoBehaviour
 		}
 		else
 		{
-			if (_page == 1) pageStringId = "GameUI_PrivacyPolicyFullOne";
-			else pageStringId = "GameUI_PrivacyPolicyFullTwo";
+			pageStringId = "GameUI_PrivacyPolicyFull";
 		}
-		contentText.text = FindTermsString(pageStringId);
+		contentText.SetLocalizedText(FindTermsString(pageStringId));
 	}
 
 	string FindTermsString(string id)

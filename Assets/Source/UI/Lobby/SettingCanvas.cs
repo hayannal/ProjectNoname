@@ -33,6 +33,11 @@ public class SettingCanvas : MonoBehaviour
 		instance = this;
 	}
 
+	void Start()
+	{
+		_ignoreStartEvent = true;
+	}
+
 	void OnEnable()
 	{
 		if (LobbyCanvas.instance != null)
@@ -73,7 +78,10 @@ public class SettingCanvas : MonoBehaviour
 		LoadLanguage();
 		RefreshAccount();
 		frameRateSlider.value = OptionManager.instance.frame;
+
+		_notUserSetting = true;
 		energyAlarmSwitch.isOn = (OptionManager.instance.energyAlarm == 1);
+		_notUserSetting = false;
 	}
 
 	public void SaveOption()
@@ -236,11 +244,23 @@ public class SettingCanvas : MonoBehaviour
 	#endregion
 
 	#region System
+	// Hexart Switch 특성상 OnEnable 될때마다 자동으로 호출되서 두개 이상 Reserve가 쌓이는 문제가 있어서
+	// WingCanvas에서 했던거 가져와서 유저 입력이 있을때만 Reserve / Cancel 하는거로 수정해둔다.
+	bool _ignoreStartEvent = false;
+	bool _notUserSetting = false;
 	public void OnSwitchOnEnergyAlarm()
 	{
 		OptionManager.instance.energyAlarm = 1;
 		energyAlarmOnOffText.text = "ON";
 		energyAlarmOnOffText.color = Color.white;
+
+		if (_notUserSetting)
+			return;
+		if (_ignoreStartEvent)
+		{
+			_ignoreStartEvent = false;
+			return;
+		}
 
 #if UNITY_ANDROID
 		CurrencyData.instance.ReserveEnergyNotification();
@@ -257,6 +277,14 @@ public class SettingCanvas : MonoBehaviour
 		OptionManager.instance.energyAlarm = 0;
 		energyAlarmOnOffText.text = "OFF";
 		energyAlarmOnOffText.color = new Color(0.176f, 0.176f, 0.176f);
+
+		if (_notUserSetting)
+			return;
+		if (_ignoreStartEvent)
+		{
+			_ignoreStartEvent = false;
+			return;
+		}
 
 		CurrencyData.instance.CancelEnergyNotification();
 	}

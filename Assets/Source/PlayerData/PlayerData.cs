@@ -84,6 +84,9 @@ public class PlayerData : MonoBehaviour
 	// 이벤트 처리가 아니라서 PlayerData에 넣어두기로 한다.
 	public ObscuredInt sealGainCount { get; set; }
 
+	// 이용약관 확인용 변수. 값이 있으면 기록된거로 간주하고 true로 해둔다.
+	public ObscuredBool termsConfirmed { get; set; }
+
 	// 이 카오스가 현재 카오스 상태로 스테이지가 셋팅되어있는지를 알려주는 값이다.
 	// 이전 챕터로 내려갈 경우 서버에 저장된 chaosMode는 1이더라도 스테이지 구성은 도전모드로 셋팅하게 되며
 	// 이땐 false를 리턴하게 될 것이다.
@@ -329,6 +332,7 @@ public class PlayerData : MonoBehaviour
 		nodeWarCleared = false;
 		nodeWarCurrentLevel = 0;
 		nodeWarBoostRemainCount = 0;
+		termsConfirmed = false;
 
 		// 나중에 지울 코드이긴 한데 MainSceneBuilder에서 NEWPLAYER_LEVEL1 디파인 켜둔채로 생성하는 테스트용 루틴일땐 1챕터에서 시작하게 처리해둔다.
 		// NEWPLAYER_LEVEL1 디파인 지울때 같이 지우면 된다.
@@ -640,6 +644,13 @@ public class PlayerData : MonoBehaviour
 			int intValue = 0;
 			if (int.TryParse(userReadOnlyData["nodBst"].Value, out intValue))
 				nodeWarBoostRemainCount = intValue;
+		}
+
+		termsConfirmed = false;
+		if (userReadOnlyData.ContainsKey("termsDat"))
+		{
+			if (string.IsNullOrEmpty(userReadOnlyData["termsDat"].Value) == false)
+				termsConfirmed = true;
 		}
 
 		newlyCreated = false;

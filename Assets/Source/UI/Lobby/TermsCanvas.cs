@@ -9,6 +9,7 @@ public class TermsCanvas : MonoBehaviour
 
 	public StringTermsTable stringTermsTable;
 
+	public GameObject homeButtonObject;
 	public Text groupNameText;
 	public Text contentText;
 
@@ -23,8 +24,10 @@ public class TermsCanvas : MonoBehaviour
 	public void OnClickBackButton()
 	{
 		// StackCanvas를 사용하진 않지만 백버튼인척 하기 위해 이렇게 처리한다.
+		// 홈버튼 안보이는 이용약관 확인창에서는 그냥 닫기만 하면 된다.
 		gameObject.SetActive(false);
-		UIInstanceManager.instance.ShowCanvasAsync("SettingCanvas", null);
+		if (_showHomeButton)
+			UIInstanceManager.instance.ShowCanvasAsync("SettingCanvas", null);
 	}
 
 	public void OnClickHomeButton()
@@ -32,22 +35,20 @@ public class TermsCanvas : MonoBehaviour
 		gameObject.SetActive(false);
 	}
 
+	bool _showTerms;
 	int _page;
-	public void RefreshInfo(bool terms)
+	bool _showHomeButton;
+	public void RefreshInfo(bool terms, bool showHomeButton)
 	{
+		_showTerms = terms;
+		_showHomeButton = showHomeButton;
+
+		homeButtonObject.SetActive(showHomeButton);
 		groupNameText.SetLocalizedText(UIString.instance.GetString(terms ? "GameUI_TermsOfService" : "GameUI_PrivacyPolicy"));
-		if (terms)
-		{
-			_page = 1;
-			pageText.text = _page.ToString();
-			contentText.SetLocalizedText(FindTermsString("GameUI_TermsOfServiceFullOne"));
-			pageGroupObject.SetActive(true);
-		}
-		else
-		{
-			pageGroupObject.SetActive(false);
-			contentText.SetLocalizedText(FindTermsString("GameUI_PrivacyPolicyFull"));
-		}
+
+		_page = 1;
+		pageText.text = _page.ToString();
+		RefreshPageText();
 	}
 
 	public void OnClickLeftButton()
@@ -56,7 +57,7 @@ public class TermsCanvas : MonoBehaviour
 		{
 			_page = 1;
 			pageText.text = _page.ToString();
-			contentText.SetLocalizedText(FindTermsString("GameUI_TermsOfServiceFullOne"));
+			RefreshPageText();
 		}
 	}
 
@@ -66,8 +67,24 @@ public class TermsCanvas : MonoBehaviour
 		{
 			_page = 2;
 			pageText.text = _page.ToString();
-			contentText.text = FindTermsString("GameUI_TermsOfServiceFullTwo");
+			RefreshPageText();
 		}
+	}
+
+	void RefreshPageText()
+	{
+		string pageStringId = "";
+		if (_showTerms)
+		{
+			if (_page == 1) pageStringId = "GameUI_TermsOfServiceFullOne";
+			else pageStringId = "GameUI_TermsOfServiceFullTwo";
+		}
+		else
+		{
+			if (_page == 1) pageStringId = "GameUI_PrivacyPolicyFullOne";
+			else pageStringId = "GameUI_PrivacyPolicyFullTwo";
+		}
+		contentText.text = FindTermsString(pageStringId);
 	}
 
 	string FindTermsString(string id)

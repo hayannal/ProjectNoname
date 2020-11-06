@@ -117,5 +117,17 @@ public class LoadingCanvas : MonoBehaviour
 			EventManager.instance.OnLobby();
 		else if (ClientSaveData.instance.IsCachedInProgressGame())
 			LobbyCanvas.instance.CheckClientSaveData();
+		else
+		{
+			// 아무것도 처리할게 없을때 언어옵션이 한국어라면 약관 띄울 준비를 한다.
+			// 약관창 뜬 상태에서 네트워크 오류로 씬 재시작시 checkRestartScene플래그가 켜지기 때문에 다시 이쪽으로 들어오게 될거다.
+			if (PlayerData.instance.termsConfirmed == false && ContentsManager.IsTutorialChapter() == false && OptionManager.instance.language == "KOR")
+			{
+				UIInstanceManager.instance.ShowCanvasAsync("TermsConfirmCanvas", () =>
+				{
+					TermsConfirmCanvas.instance.ShowCanvas(null);
+				});
+			}
+		}
 	}
 }

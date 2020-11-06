@@ -274,7 +274,7 @@ public class SettingCanvas : MonoBehaviour
 	{
 		UIInstanceManager.instance.ShowCanvasAsync("TermsCanvas", () =>
 		{
-			TermsCanvas.instance.RefreshInfo(true);
+			TermsCanvas.instance.RefreshInfo(true, true);
 			OnClickHomeButton();
 		});
 	}
@@ -283,7 +283,7 @@ public class SettingCanvas : MonoBehaviour
 	{
 		UIInstanceManager.instance.ShowCanvasAsync("TermsCanvas", () =>
 		{
-			TermsCanvas.instance.RefreshInfo(false);
+			TermsCanvas.instance.RefreshInfo(false, true);
 			OnClickHomeButton();
 		});
 	}

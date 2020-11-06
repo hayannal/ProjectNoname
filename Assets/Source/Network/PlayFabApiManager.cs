@@ -2360,6 +2360,31 @@ public class PlayFabApiManager : MonoBehaviour
 	}
 	#endregion
 
+	#region Terms
+	public void RequestConfirmTerms(Action successCallback)
+	{
+		ExecuteCloudScriptRequest request = new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "Terms",
+			FunctionParameter = new { Terms = 1 },
+			GeneratePlayStreamEvent = true,
+		};
+		Action action = () =>
+		{
+			PlayFabClientAPI.ExecuteCloudScript(request, (success) =>
+			{
+				RetrySendManager.instance.OnSuccess();
+				PlayerData.instance.termsConfirmed = true;
+				if (successCallback != null) successCallback.Invoke();
+			}, (error) =>
+			{
+				RetrySendManager.instance.OnFailure();
+			});
+		};
+		RetrySendManager.instance.RequestAction(action, true);
+	}
+	#endregion
+
 
 
 

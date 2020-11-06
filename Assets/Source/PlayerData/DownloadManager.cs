@@ -347,13 +347,33 @@ public class DownloadManager : MonoBehaviour
 		var status = handle.Status;
 		if (status == AsyncOperationStatus.Succeeded)
 		{
-			// 로비에 있으니 메세지박스 하나는 띄워놓고 확인 누르면 씬을 이동시켜줘야한다.
-			OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("SystemUI_LobbyDownloadComplete"), () =>
+			// CheckTerms
+			if (OptionManager.instance.language == "KOR" && PlayerData.instance.termsConfirmed == false)
 			{
-				PlayerData.instance.lobbyDownloadState = false;
-				Addressables.Release(_totalDownloadHandle);
-				SceneManager.LoadScene(0);
-			});
+				// lobbyDownload는 새로 생성되서 계정연동이 되지 않은 상태의 계정이므로 약관을 본적이 없다.
+				// 그러니 한국에서는 약관 동의창을 다운로드 확인창 대신 띄우면 된다.
+				// 동의 누르지 않고 재접해버리면 시작화면에서 띄워준다.
+				UIInstanceManager.instance.ShowCanvasAsync("TermsConfirmCanvas", () =>
+				{
+					TermsConfirmCanvas.instance.ShowCanvas(() =>
+					{
+						PlayerData.instance.lobbyDownloadState = false;
+						Addressables.Release(_totalDownloadHandle);
+						SceneManager.LoadScene(0);
+					});
+				});
+			}
+			else
+			{
+				// 해외는 항상 이게 뜨는거다.
+				// 로비에 있으니 메세지박스 하나는 띄워놓고 확인 누르면 씬을 이동시켜줘야한다.
+				OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("SystemUI_LobbyDownloadComplete"), () =>
+				{
+					PlayerData.instance.lobbyDownloadState = false;
+					Addressables.Release(_totalDownloadHandle);
+					SceneManager.LoadScene(0);
+				});
+			}
 		}
 		else
 		{

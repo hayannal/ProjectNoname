@@ -739,7 +739,7 @@ public class PlayFabApiManager : MonoBehaviour
 		ClientSaveData.instance.OnEndGame();
 	}
 
-	public void RequestCancelChallenge(Action successCallback, bool checkClientSaveDataOnEnterLobby)
+	public void RequestCancelChallenge(Action successCallback)
 	{
 		if (PlayerData.instance.clientOnly)
 		{
@@ -772,14 +772,7 @@ public class PlayFabApiManager : MonoBehaviour
 				if (successCallback != null) successCallback.Invoke();
 			}, (error) =>
 			{
-				// 네트워크 오류로 인해 처리되지 않아 재시작 할 경우를 대비해서 
-				RetrySendManager.instance.OnFailure(() =>
-				{
-					// 필요하다면 플래그를 켜둔다.
-					// 지금은 도전모드 CancelChallenge 패킷 못 보냈을때에만 사용된다.
-					if (checkClientSaveDataOnEnterLobby)
-						ClientSaveData.instance.checkClientSaveDataOnEnterLobby = true;
-				});
+				RetrySendManager.instance.OnFailure();
 			});
 		};
 		RetrySendManager.instance.RequestAction(action, true);

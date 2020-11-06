@@ -185,7 +185,7 @@ public class PauseCanvas : MonoBehaviour
 				{
 					SaveOption();
 					SceneManager.LoadScene(0);
-				}, true);
+				});
 			});
 			return;
 		}

@@ -109,6 +109,9 @@ public class PlayerData : MonoBehaviour
 		}
 	}
 
+	// 네트워크 오류로 인해 씬을 재시작할때는 타이틀 떠서 진입하듯 초기 프로세스들을 검사해야한다.
+	public bool checkRestartScene { get; set; }
+
 	// 튜토가 끝나고 다운로드 받을 데이터가 있는지 확인 후 0보다 크다면 로비에서 다운받는 절차를 진행하는 모드다.
 	// 두번째 캐릭터로 플레이 하기전에 나가는걸 방지하기 위해 로비에서 받게 해주는 유일한 스탭.
 	// 혹시라도 멀리 넘어간 계정으로 하다가 로그아웃해서 게스트로 튜토 진행할때는 데이터가 있으니 들어오지 않는다.
@@ -362,9 +365,13 @@ public class PlayerData : MonoBehaviour
 		// 이게 가장 중요. 다른 것들은 받을때 알아서 다 비우고 다시 셋팅한다.
 		loginned = false;
 		newlyCreated = false;
+		lobbyDownloadState = false;
 
 		// OnRecvPlayerData 함수들 두번 받아도 아무 문제없게 짜두면 여기서 딱히 할일은 없을거다.
 		// 두번 받는거 뿐만 아니라 모든 변수를 다 덮어서 기록하는지도 확인하면 완벽하다.(건너뛰면 이전값이 남을테니 위험)
+		//
+		// 대신 진입시에 앱구동처럼 처리하기 위해 재시작 플래그를 여기서 걸어둔다.
+		checkRestartScene = true;
 	}
 
 	public void AddNewCharacter(string actorId, string serverCharacterId, int powerLevel, bool reinitializeActorStatus = false)

@@ -30,9 +30,6 @@ public class ClientSaveData : MonoBehaviour
 		ObscuredPrefs.OnAlterationDetected += SavesAlterationDetected;
 	}
 
-	// 앱 실행시가 아니라 씬 재로딩 할때에도 ClientSaveData를 체크해야하는지 여부를 기억. 네트워크 재시도 오류때에도 도전모드 실패 패킷을 보내게 하기 위함이다.
-	public bool checkClientSaveDataOnEnterLobby;
-
 	public bool savesAlterationDetected { get; private set; }
 	void SavesAlterationDetected()
 	{

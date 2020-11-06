@@ -40,10 +40,6 @@ public class LobbyCanvas : MonoBehaviour
 		expGaugeEndPointImage.gameObject.SetActive(false);
 		_defaultExpGaugeHeight = expGaugeRectTransform.sizeDelta.y;
 		_defaultExpGaugeColor = expGaugeImage.color;
-
-		// 이게 켜있으면 TitleCanvas보이지 않는 씬 재로드일때에도 재진입 로직을 체크한다.
-		if (ClientSaveData.instance.checkClientSaveDataOnEnterLobby)
-			CheckClientSaveData();
 	}
 
 	// 원래 이 함수는 앱 실행 후 1회만 TitleCanvas 없어지는 시점에 호출되지만 네트워크 오류로 인한 재시작시 호출될때도 있다.
@@ -68,12 +64,9 @@ public class LobbyCanvas : MonoBehaviour
 		// 죽은 상태의 저장 데이터인지 확인한다.
 		if (ClientSaveData.instance.GetCachedHpRatio() == 0.0f)
 		{
-			// 도전모드면 클리어 패킷을 보내버림. 로그인 하자마자 보내는거라 막을 방법이 없을거로 판단.
-			if (needCancelChallengeMode)
-				PlayFabApiManager.instance.RequestCancelChallenge(null, false);
 			OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_ReenterAfterDying"), () =>
 			{
-				ClientSaveData.instance.OnEndGame();
+				CancelClientSaveData(needCancelChallengeMode);
 			});
 			return;
 		}
@@ -94,25 +87,7 @@ public class LobbyCanvas : MonoBehaviour
 			if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null && TitleCanvas.instance.gameObject.activeSelf)
 				TitleCanvas.instance.FadeTitle();
 
-			if (needCancelChallengeMode)
-			{
-				// 도전모드의 재진입을 취소하는거라면 여러가지 할일이 있다.
-				// 먼저 서버 동기화
-				PlayFabApiManager.instance.RequestCancelChallenge(() =>
-				{
-					ClientSaveData.instance.OnEndGame();
-
-					// 이제 게이트 필라를 카오스 모드꺼로 바꿔주고
-					GatePillar.instance.gameObject.SetActive(false);
-					BattleInstanceManager.instance.GetCachedObject(StageManager.instance.gatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
-					//BattleInstanceManager.instance.GetCachedObject(challengeGatePillarSpawnEffectPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
-
-					// 가장 중요한 맵 재구축. 씬 이동 없이 해야한다. 이름은 ChangeChallengeMode지만 전환용으로 쓸수도 있다.
-					StageManager.instance.ChangeChallengeMode();
-				}, true);
-			}
-			else
-				ClientSaveData.instance.OnEndGame();
+			CancelClientSaveData(needCancelChallengeMode);
 		}, true);
 
 		// 여기서 복구할때 필요한 레벨팩 이펙트들을 미리 로딩해놓는다.
@@ -120,6 +95,29 @@ public class LobbyCanvas : MonoBehaviour
 		string jsonCachedLevelPackData = ClientSaveData.instance.GetCachedLevelPackData();
 		if (string.IsNullOrEmpty(jsonCachedLevelPackData) == false)
 			LevelPackDataManager.instance.PreloadInProgressLevelPackData(jsonCachedLevelPackData);
+	}
+
+	void CancelClientSaveData(bool needCancelChallengeMode)
+	{
+		if (!needCancelChallengeMode)
+		{
+			// 평소라면 패킷 보낼거 없이 ClientSaveData만 비우면 된다.
+			ClientSaveData.instance.OnEndGame();
+			return;
+		}
+
+		// 도전모드의 재진입을 취소하는거라면 여러가지 할일이 있다.
+		// 먼저 서버 동기화
+		PlayFabApiManager.instance.RequestCancelChallenge(() =>
+		{
+			// 이제 게이트 필라를 카오스 모드꺼로 바꿔주고
+			GatePillar.instance.gameObject.SetActive(false);
+			BattleInstanceManager.instance.GetCachedObject(StageManager.instance.gatePillarPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
+			//BattleInstanceManager.instance.GetCachedObject(challengeGatePillarSpawnEffectPrefab, StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
+
+			// 가장 중요한 맵 재구축. 씬 이동 없이 해야한다. 이름은 ChangeChallengeMode지만 전환용으로 쓸수도 있다.
+			StageManager.instance.ChangeChallengeMode();
+		});
 	}
 
 	public void OnClickDotButton()
@@ -476,9 +474,17 @@ public class LobbyCanvas : MonoBehaviour
 					//{
 					//}
 
-					// 전투를 진행중이었다면 씬 재로딩 하면서 clientSaveData 체크해야하므로 켜둔다.
-					if (ClientSaveData.instance.IsCachedInProgressGame())
-						ClientSaveData.instance.checkClientSaveDataOnEnterLobby = true;
+					// 원래는 여기에서만 
+					// ClientSaveData.instance.checkClientSaveDataOnEnterLobby 플래그라던가
+					// PlayerData.instance.checkRestartScene 플래그를 만들어서 관리하려고 했었는데
+					// 사실 10분 지난거 체크하는거 말고도 와이파이 바뀌거나 네트워크 오류로 인해서
+					// 언제든지 씬 리셋이 되는 상황이 발생할 수 있기 때문에
+					// PlayerData.instance.ResetData가 호출하면서 재로그인할때 각종 진입처리를 다시 하는게 맞았다.
+					//
+					// 진입처리에는 서버 이벤트도 있고 ClientSaveData도 있고 나중에는 이용약관 확인창까지 포함되는 바람에
+					// 이러다보니 어차피 플래그는 ResetData에서 거는게 맞으며
+					// 여기서는 그냥 CommonErrorHandler로 알아서 처리되고 넘어가면 끝인거로 처리하기로 한다.
+
 				}, false);
 			}
 			_paused = false;

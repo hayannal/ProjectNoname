@@ -94,11 +94,7 @@ public class TitleCanvas : MonoBehaviour
 
 	void OnFadeOut()
 	{
-		// SaveData 처리를 여기서 직접 하려다보니 타이틀이 없을때 처리하기가 애매해서 LobbyCanvas쪽으로 빼기로 한다.
-		// Event를 진행할게 있다면 튕겨서 재접한 상황은 아니라 정상적인 종료나 패배일거다. 처음 켤때만 호출되는 곳이니 서버 이벤트만 있는지 검사하면 된다.
-		if (EventManager.instance.IsStandbyServerEvent())
-			EventManager.instance.OnLobby();
-		else
-			LobbyCanvas.instance.CheckClientSaveData();
+		// 여기서 직접 하려다보니 타이틀이 없을때 처리하기가 애매해서 LoadingCanvas쪽으로 모든걸 처리하고 여기서는 호출하는 형태로만 한다.
+		LoadingCanvas.instance.OnEnterLobby();
 	}
 }

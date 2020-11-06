@@ -245,7 +245,8 @@ public class DownloadManager : MonoBehaviour
 		if (keys == null)
 		{
 			// 툴에서 예외처리를 위해서 다운로드 사이즈 0인거처럼 처리해준다.
-			PlayerData.instance.checkRestartScene = true;
+			if (OptionManager.instance.language == "KOR")
+				PlayerData.instance.checkRestartScene = true;
 			yield break;
 		}
 
@@ -264,7 +265,8 @@ public class DownloadManager : MonoBehaviour
 		if (totalDownloadSize == 0)
 		{
 			// 튜토를 클리어했는데 다운로드 받을게 없는 계정들은 약관 확인창을 강제로 띄워야하므로 플래그를 걸어둔다.
-			PlayerData.instance.checkRestartScene = true;
+			if (OptionManager.instance.language == "KOR")
+				PlayerData.instance.checkRestartScene = true;
 			yield break;
 		}
 

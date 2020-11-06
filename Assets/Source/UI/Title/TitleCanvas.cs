@@ -61,7 +61,7 @@ public class TitleCanvas : MonoBehaviour
 		// 게임 설치 후 새 계정에서 튜토시작해서 죽지 않고 클리어 후 로비에 오면 타이틀이 뜨는데
 		// 이 타이틀이 뜨고나서 클릭이든 이동에 의해 사라질때 1챕터 진입 클라 이벤트가 떠야하므로 예외처리 해둔다.
 		// 1.5초동안 사라지게 되어있었으니 0.7초 쉬고 처리하면 될거같다.
-		if (EventManager.instance.IsStandbyClientEvent(EventManager.eClientEvent.NewChapter))
+		if (EventManager.instance.IsStandbyClientEvent(EventManager.eClientEvent.NewChapter) && PlayerData.instance.lobbyDownloadState == false)
 			Timing.RunCoroutine(ShowNewChapterEventAfterTitle(0.7f));
 	}
 
@@ -94,6 +94,14 @@ public class TitleCanvas : MonoBehaviour
 
 	void OnFadeOut()
 	{
+		// lobbyDownloadState가 켜있을때는 튜토맵을 로딩할거기 때문에 1챕터 클라이벤트도 표시를 하지 않고 다음번 제대로 씬이 로딩될때 보여주도록 한다.
+		// 다운로드 창만 보여주고 리턴.
+		if (PlayerData.instance.lobbyDownloadState)
+		{
+			DownloadManager.instance.ShowLobbyDownloadInfo();
+			return;
+		}
+
 		// 여기서 직접 하려다보니 타이틀이 없을때 처리하기가 애매해서 LoadingCanvas쪽으로 모든걸 처리하고 여기서는 호출하는 형태로만 한다.
 		LoadingCanvas.instance.OnEnterLobby();
 	}

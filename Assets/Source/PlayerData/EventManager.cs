@@ -291,13 +291,6 @@ public class EventManager : MonoBehaviour
 
 	public void OnCompleteLobbyEvent()
 	{
-		// lobbyDownloadState가 켜있을때는 튜토맵을 로딩할거기 때문에 1챕터 도달 표시를 하지 않고 다음번 제대로 씬이 로딩될때 보여주도록 한다.
-		if (PlayerData.instance.lobbyDownloadState)
-		{
-			DownloadManager.instance.ShowLobbyDownloadInfo();
-			return;
-		}
-
 		// 로비에서 진행된 서버 이벤트가 끝나면 클라 이벤트를 1회 실행시켜준다.
 		if (_queClientEventInfo.Count > 0)
 		{

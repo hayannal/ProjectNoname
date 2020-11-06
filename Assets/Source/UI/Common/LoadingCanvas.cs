@@ -94,6 +94,13 @@ public class LoadingCanvas : MonoBehaviour
 	{
 		gameObject.SetActive(false);
 
+		// lobbyDownloadState가 켜있을때는 튜토맵을 로딩할거기 때문에 1챕터 클라이벤트도 표시를 하지 않고 다음번 제대로 씬이 로딩될때 보여주도록 한다.
+		if (PlayerData.instance.lobbyDownloadState)
+		{
+			DownloadManager.instance.ShowLobbyDownloadInfo();
+			return;
+		}
+
 		// 타이틀 안나올때의 로비 진입 이벤트. 여기가 시작점이다.
 		if (PlayerData.instance.checkRestartScene)
 		{
@@ -132,7 +139,8 @@ public class LoadingCanvas : MonoBehaviour
 						// 튜토 깨자마자 1챕터로 넘어올텐데 예외처리를 하기 위해 checkRestartScene은 걸려있는 상태일거다.
 						// 약관창 처리를 위해서 이렇게 해둔건데 문제는 NewChapter 이벤트가 큐에 쌓여져있어서
 						// 다음번 씬 이동시에 나올텐데 이걸 바로 나오게 하기 위해서 여기에서 처리해둔다.
-						if (EventManager.instance.IsStandbyClientEvent(EventManager.eClientEvent.NewChapter))
+						bool showTitleCanvas = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null && TitleCanvas.instance.gameObject.activeSelf);
+						if (EventManager.instance.IsStandbyClientEvent(EventManager.eClientEvent.NewChapter) && showTitleCanvas == false)
 							EventManager.instance.OnCompleteLobbyEvent();
 					});
 				});

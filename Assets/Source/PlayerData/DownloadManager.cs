@@ -357,6 +357,12 @@ public class DownloadManager : MonoBehaviour
 		var status = handle.Status;
 		if (status == AsyncOperationStatus.Succeeded)
 		{
+			// 혹시라도 약관 보고 있었다면 닫아야한다.
+			if (SettingCanvas.instance != null && SettingCanvas.instance.gameObject.activeSelf)
+				SettingCanvas.instance.gameObject.SetActive(false);
+			if (TermsCanvas.instance != null && TermsCanvas.instance.gameObject.activeSelf)
+				TermsCanvas.instance.gameObject.SetActive(false);
+
 			// CheckTerms
 			if (OptionManager.instance.language == "KOR" && PlayerData.instance.termsConfirmed == false)
 			{

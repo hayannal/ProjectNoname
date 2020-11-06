@@ -125,7 +125,16 @@ public class LoadingCanvas : MonoBehaviour
 			{
 				UIInstanceManager.instance.ShowCanvasAsync("TermsConfirmCanvas", () =>
 				{
-					TermsConfirmCanvas.instance.ShowCanvas(null);
+					TermsConfirmCanvas.instance.ShowCanvas(() =>
+					{
+						// 보통의 경우엔 안해도 되지만, 예외처리 하나가 있다.
+						// 튜토를 진행하는데 하필 데이터는 다 받은 상태고(보통은 로그아웃으로 인한 걸거다.) 이때 이미 타이틀캔버스는 보이지 않아도 되는 케이스라서
+						// 튜토 깨자마자 1챕터로 넘어올텐데 예외처리를 하기 위해 checkRestartScene은 걸려있는 상태일거다.
+						// 약관창 처리를 위해서 이렇게 해둔건데 문제는 NewChapter 이벤트가 큐에 쌓여져있어서
+						// 다음번 씬 이동시에 나올텐데 이걸 바로 나오게 하기 위해서 여기에서 처리해둔다.
+						if (EventManager.instance.IsStandbyClientEvent(EventManager.eClientEvent.NewChapter))
+							EventManager.instance.OnCompleteLobbyEvent();
+					});
 				});
 			}
 		}

@@ -243,7 +243,11 @@ public class DownloadManager : MonoBehaviour
 		}
 
 		if (keys == null)
+		{
+			// 툴에서 예외처리를 위해서 다운로드 사이즈 0인거처럼 처리해준다.
+			PlayerData.instance.checkRestartScene = true;
 			yield break;
+		}
 
 #if USE_MARK_KEY
 		// 미리 만들어둔 MarkKey 리스트를 사용해서 다운로드 체크
@@ -258,7 +262,11 @@ public class DownloadManager : MonoBehaviour
 		// 하나라도 받을게 있다면 저 모드를 켜두고 씬 이동할때 나머지들을 처리하면 된다.
 		// 맵을 튜토리얼껄 띄운다거나 게이트필라 동작하지 않게 막는다거나 등등
 		if (totalDownloadSize == 0)
+		{
+			// 튜토를 클리어했는데 다운로드 받을게 없는 계정들은 약관 확인창을 강제로 띄워야하므로 플래그를 걸어둔다.
+			PlayerData.instance.checkRestartScene = true;
 			yield break;
+		}
 
 		// DownloadManager는 항상 필요한게 아니라서 씬이동시 삭제되기 때문에 PlayerData쪽에 저장해둔다.
 		PlayerData.instance.lobbyDownloadState = true;

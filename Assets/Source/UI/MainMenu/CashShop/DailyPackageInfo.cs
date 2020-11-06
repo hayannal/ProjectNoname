@@ -100,7 +100,7 @@ public class DailyPackageInfo : MonoBehaviour
 			dailyDiaTweenAnimation.DOPause();
 			receiveTextTweenAnimation.DOPause();
 			priceTextTransform.gameObject.SetActive(true);
-			bool kor = (OptionManager.instance.language == "KOR");
+			bool kor = (Application.systemLanguage == SystemLanguage.Korean);
 			priceTextTransform.anchoredPosition = new Vector2(kor ? 10.0f : 0.0f, 0.0f);
 			wonText.gameObject.SetActive(kor);
 			if (kor)

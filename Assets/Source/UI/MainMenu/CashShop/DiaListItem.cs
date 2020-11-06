@@ -15,7 +15,7 @@ public class DiaListItem : MonoBehaviour
 	public void SetInfo(ShopDiamondTableData shopDiamondTableData)
 	{
 		amountText.text = shopDiamondTableData.buyingGems.ToString("N0");
-		if (OptionManager.instance.language == "KOR")
+		if (Application.systemLanguage == SystemLanguage.Korean)
 		{
 			priceTextTransform.anchoredPosition = new Vector2(10.0f, 0.0f);
 			priceText.text = shopDiamondTableData.kor.ToString("N0");

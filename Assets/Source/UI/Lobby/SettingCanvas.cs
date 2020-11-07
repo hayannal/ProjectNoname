@@ -181,8 +181,8 @@ public class SettingCanvas : MonoBehaviour
 				// 게스트 상태면 로그인을 해야한다.
 				AuthManager.instance.LinkGoogleAccount(() =>
 				{
-					// 성공시에는 딱히 별다른 메세지 처리도 하지 않고 버튼 텍스트만 바꾸면 된다.
 					RefreshAccount();
+					ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_SignInDone"), 2.0f);
 
 					// 그렇지만 따로 표시는 안해도 커스텀 아이디를 삭제해주는 처리가 필요하다.
 					AuthManager.instance.SetNeedUnlinkCustomId();

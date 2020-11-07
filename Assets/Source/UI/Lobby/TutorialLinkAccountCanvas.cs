@@ -19,9 +19,8 @@ public class TutorialLinkAccountCanvas : MonoBehaviour
 		// 이땐 항상 게스트 상태다.
 		AuthManager.instance.LinkGoogleAccount(() =>
 		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_SignInDone"), 2.0f);
 			AuthManager.instance.SetNeedUnlinkCustomId();
-
-			// 성공시에는 메세지 표시라도 해야하나.
 			gameObject.SetActive(false);
 
 		}, (cancel, failure) =>

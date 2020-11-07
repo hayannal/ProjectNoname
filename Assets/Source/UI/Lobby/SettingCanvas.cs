@@ -293,7 +293,16 @@ public class SettingCanvas : MonoBehaviour
 	#region Support
 	public void OnClickSupportButton()
 	{
+		if (PlayerData.instance.lobbyDownloadState)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_PossibleAfterDownload"), 2.0f);
+			return;
+		}
 
+		UIInstanceManager.instance.ShowCanvasAsync("SupportListCanvas", () =>
+		{
+			OnClickHomeButton();
+		});
 	}
 	#endregion
 

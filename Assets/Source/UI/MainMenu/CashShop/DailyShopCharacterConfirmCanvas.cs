@@ -286,6 +286,15 @@ public class DailyShopCharacterConfirmCanvas : MonoBehaviour
 				CharacterData characterData = PlayerData.instance.GetCharacterData(_selectedCharacterId);
 				if (characterData != null)
 					characterData.transcendPoint += 1;
+
+				// transcendPoint 획득했으니 갱신. CharacterBoxResultCanvas에서 하던거 가져온다.
+				if (DotMainMenuCanvas.instance != null)
+					DotMainMenuCanvas.instance.RefreshCharacterAlarmObject(false);
+				LobbyCanvas.instance.RefreshAlarmObject(DotMainMenuCanvas.eButtonType.Character, true);
+
+				// 초월메뉴 최초로 보이는 것도 확인해야한다.
+				if (CharacterInfoCanvas.instance != null)
+					CharacterInfoCanvas.instance.RefreshOpenMenuSlotByTranscendPoint();
 				break;
 		}
 

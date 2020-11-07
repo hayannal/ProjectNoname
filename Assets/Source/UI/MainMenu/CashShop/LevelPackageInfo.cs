@@ -31,8 +31,8 @@ public class LevelPackageInfo : MonoBehaviour
 		for (int i = 0; i < TableDataManager.instance.shopLevelPackageTable.dataArray.Length; ++i)
 		{
 			int researchLevel = TableDataManager.instance.shopLevelPackageTable.dataArray[i].level;
-			//if (PlayerData.instance.researchLevel < researchLevel)
-			//	continue;
+			if (PlayerData.instance.researchLevel < researchLevel)
+				continue;
 			if (PlayerData.instance.IsPurchasedLevelPackage(researchLevel))
 				continue;
 

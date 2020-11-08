@@ -25,8 +25,25 @@ public class SupportReadCanvas : MonoBehaviour
 		gameObject.SetActive(false);
 	}
 
-	public void RefreshText(string value)
+	public void RefreshText(SupportData.MySupportData data)
 	{
-		bodyText.SetLocalizedText(value);
+		switch (data.type)
+		{
+			case 0:
+				bodyText.supportRichText = false;
+				break;
+			case 1:
+				bodyText.supportRichText = true;
+				break;
+		}
+
+		if (string.IsNullOrEmpty(data.sid))
+		{
+			bodyText.SetLocalizedText(data.body);
+		}
+		else
+		{
+			bodyText.SetLocalizedText(UIString.instance.GetString(data.sid));
+		}
 	}
 }

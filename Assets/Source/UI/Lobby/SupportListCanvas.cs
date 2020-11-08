@@ -61,57 +61,33 @@ public class SupportListCanvas : MonoBehaviour
 			_listSupportCanvasListItem[i].gameObject.SetActive(false);
 		_listSupportCanvasListItem.Clear();
 
-		List<MailData.MyMailData> listMyMailData = MailData.instance.listMyMailData;
-		if (listMyMailData == null || listMyMailData.Count == 0)
+		List<SupportData.MySupportData> listMySupportData = SupportData.instance.listMySupportData;
+		if (listMySupportData == null || listMySupportData.Count == 0)
 		{
 			emptySupportObject.SetActive(true);
 			return;
 		}
 
-		/*
-		int chapterLimit = BattleInstanceManager.instance.GetCachedGlobalConstantInt("ChaosChapterLimit");
-		for (int i = 0; i < TableDataManager.instance.chapterTable.dataArray.Length; ++i)
+		for (int i = 0; i < listMySupportData.Count; ++i)
 		{
-			ChapterCanvasListItem chapterCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
-			chapterCanvasListItem.Initialize(TableDataManager.instance.chapterTable.dataArray[i].chapter);
-			_listChapterCanvasListItem.Add(chapterCanvasListItem);
+			// 미처 삭제하지 못한 문의내역 중에 오래된 문의는 아예 표시하지 않기로 하려다가 클라는 rcdDat를 파싱하지 않기로 했었어서 그냥 패스하기로 한다.
+			//
 
-			// 현재 챕터 넘어서는거 1개까지만 표기하고 break
-			if (TableDataManager.instance.chapterTable.dataArray[i].chapter > PlayerData.instance.highestPlayChapter)
-				break;
-			if (TableDataManager.instance.chapterTable.dataArray[i].chapter >= chapterLimit)
-				break;
+			SupportCanvasListItem supportCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
+			supportCanvasListItem.Initialize(i, listMySupportData[i]);
+			_listSupportCanvasListItem.Add(supportCanvasListItem);
 		}
-		*/
 	}
 
-	public void OnClickListItem(int chapter)
+	public void OnClickListItem(SupportData.MySupportData data)
 	{
-		// 보기창이 열려야한다.
-
-		/*
-		if (chapter > PlayerData.instance.highestPlayChapter)
+		gameObject.SetActive(false);
+		UIInstanceManager.instance.ShowCanvasAsync("SupportReadCanvas", () =>
 		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_CannotGoChapter", PlayerData.instance.highestPlayChapter), 1.0f);
-			return;
-		}
-		if (chapter == 0)
-		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_CannotGoTrainingChapter"), 1.0f);
-			return;
-		}
-
-		_selectedChapter = chapter;
-		RefreshChapterInfo();
-
-		for (int i = 0; i < _listChapterCanvasListItem.Count; ++i)
-			_listChapterCanvasListItem[i].ShowSelectObject(_listChapterCanvasListItem[i].chapter == chapter);
-		*/
+			SupportReadCanvas.instance.RefreshText(data);
+		});
 	}
 
-
-
-	
 	public void OnClickWriteButton()
 	{
 		gameObject.SetActive(false);

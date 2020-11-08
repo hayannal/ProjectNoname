@@ -47,9 +47,11 @@ public class SupportWriteCanvas : MonoBehaviour
 
 		YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_SupportSendConfirm"), () =>
 		{
+			PlayFabApiManager.instance.ReqeustWriteInquiry(bodyInputField.text, () =>
+			{
+				gameObject.SetActive(false);
+				UIInstanceManager.instance.ShowCanvasAsync("SupportListCanvas", null);
+			});
 		});
-
-		//gameObject.SetActive(false);
-		//UIInstanceManager.instance.ShowCanvasAsync("SupportWriteCanvas", null);
 	}
 }

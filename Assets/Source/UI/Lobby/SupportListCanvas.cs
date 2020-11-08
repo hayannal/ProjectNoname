@@ -81,16 +81,18 @@ public class SupportListCanvas : MonoBehaviour
 
 	public void OnClickListItem(SupportData.MySupportData data)
 	{
-		gameObject.SetActive(false);
 		UIInstanceManager.instance.ShowCanvasAsync("SupportReadCanvas", () =>
 		{
+			gameObject.SetActive(false);
 			SupportReadCanvas.instance.RefreshText(data);
 		});
 	}
 
 	public void OnClickWriteButton()
 	{
-		gameObject.SetActive(false);
-		UIInstanceManager.instance.ShowCanvasAsync("SupportWriteCanvas", null);
+		UIInstanceManager.instance.ShowCanvasAsync("SupportWriteCanvas", () =>
+		{
+			gameObject.SetActive(false);
+		});
 	}
 }

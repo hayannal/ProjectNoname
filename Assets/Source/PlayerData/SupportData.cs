@@ -21,11 +21,12 @@ public class SupportData : MonoBehaviour
 	}
 	static SupportData _instance = null;
 
-	// 플레이팹에 적혀있는 데이터 크기는 30만 바이트지만 25만으로 제한걸고 쓰도록 하자.
-	const int TotalDataSizeLimit = 250000;
+	// 플레이팹에 적혀있는 데이터 크기는 30만 바이트지만 25만으로 제한걸고 쓰도록 하자. 이건 서버에서 사용하는 값이라 주석처리
+	// 25만도 너무 많은거 같아서 2만으로 줄여둔다. 로그인 할때마다 받아야하니 너무 길면 별로인듯 하다.
+	//const int TotalDataSizeLimit = 20000;
 
-	// 6개월이 지나면 삭제될거다.
-	public const int OldDataMonth = 6;
+	// 6개월이 지나면 삭제될거다. 이거 역시 서버에서 리프레쉬때 사용한다.
+	//public const int OldDataMonth = 6;
 
 	public class MySupportData
 	{

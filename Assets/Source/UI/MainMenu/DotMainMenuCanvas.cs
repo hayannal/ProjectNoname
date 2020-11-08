@@ -462,6 +462,8 @@ public class DotMainMenuCanvas : MonoBehaviour
 
 	public static bool IsAlarmResearch()
 	{
+		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Research) == false)
+			return false;
 		ResearchTableData researchTableData = TableDataManager.instance.FindResearchTableData(PlayerData.instance.researchLevel + 1);
 		if (researchTableData == null)
 			return false;

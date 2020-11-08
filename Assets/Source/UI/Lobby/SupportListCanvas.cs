@@ -68,6 +68,7 @@ public class SupportListCanvas : MonoBehaviour
 			return;
 		}
 
+		emptySupportObject.SetActive(false);
 		for (int i = 0; i < listMySupportData.Count; ++i)
 		{
 			// 미처 삭제하지 못한 문의내역 중에 오래된 문의는 아예 표시하지 않기로 하려다가 클라는 rcdDat를 파싱하지 않기로 했었어서 그냥 패스하기로 한다.

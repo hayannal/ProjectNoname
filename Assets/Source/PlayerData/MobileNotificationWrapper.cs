@@ -11,6 +11,7 @@ using Unity.Notifications.iOS;
 // Framework/MobileNotificationWrapper 폴더에 있는 파일들은 다 Sample에 있는거 수정없이 가져온거니 혹시 버전업할거라면 통째로 바꿔치기 하면 될거다.
 // 이건 그 Sample을 쓰기 편하게 만든 헬퍼 클래스다.
 // GameObject.FindObjectOfType<GameNotificationsManager>(); 함수 써서 찾기 싫어서 아예 씬에다가 등록해서 쓰기로 한다.
+// 다른 매니저들과 달리 항상 존재해야하기 때문에 로그인해서 생성하는 형태도 아니고 씬에 두고 앱 시작할때 생성되게 한다.
 public class MobileNotificationWrapper : MonoBehaviour
 {
 	public static MobileNotificationWrapper instance;

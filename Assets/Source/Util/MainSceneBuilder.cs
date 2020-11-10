@@ -574,6 +574,9 @@ public class MainSceneBuilder : MonoBehaviour
 			Instantiate<GameObject>(_handleTitleCanvas.Result);
 		}
 
+		// 마무리 셋팅하기 직전에 IAP Listener 초기화
+		if (IAPListenerWrapper.instance != null) { }
+
 		// 마무리 셋팅
 		_waitUpdateRemainCount = 2;
 		mainSceneBuilding = false;
@@ -774,6 +777,9 @@ public class MainSceneBuilder : MonoBehaviour
 			for (int i = 0; i < BattleInstanceManager.instance.playerActor.cachingObjectList.Length; ++i)
 				_listCachingObject.Add(BattleInstanceManager.instance.GetCachedObject(BattleInstanceManager.instance.playerActor.cachingObjectList[i], Vector3.right, Quaternion.identity));
 		}
+
+		// 마무리 셋팅하기 직전에 IAP Listener 초기화
+		if (IAPListenerWrapper.instance != null) { }
 
 		// 마무리 셋팅
 		_waitUpdateRemainCount = 2;

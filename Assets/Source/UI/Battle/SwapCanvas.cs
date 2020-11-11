@@ -497,8 +497,8 @@ public class SwapCanvas : MonoBehaviour
 		for (int i = 0; i < suggestedActorIdList.Length; ++i)
 		{
 			string actorId = suggestedActorIdList[i];
-			if (PlayerData.instance.ContainsActor(actorId) == false)
-				continue;
+			//if (PlayerData.instance.ContainsActor(actorId) == false)
+			//	continue;
 			if (_stringBuilderActor.Length > 0)
 				_stringBuilderActor.Append(", ");
 			_stringBuilderActor.Append("<color=#00AB00>");

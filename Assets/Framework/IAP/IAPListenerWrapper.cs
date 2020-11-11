@@ -30,6 +30,14 @@ public class IAPListenerWrapper : MonoBehaviour
 	}
 	static IAPListenerWrapper _instance = null;
 
+	// Listener를 테스트 해보니 IAPButton이 제대로 다 동작하는 캐시샵 페이지에서도 모든 메세지를 Listen하고 있어서 중복으로 들어오게 된다.
+	// IAP Button이 하나도 보이기 전에 수동초기화를 할때만 받게 하고 싶은거라
+	// on off 기능을 추가하기로 한다.
+	public void EnableListener(bool enable)
+	{
+		cachedIAPListener.enabled = enable;
+	}
+
 	public void OnPurchaseComplete(Product product)
 	{
 		Debug.Log("IAP Listener OnPurchaseComplete");

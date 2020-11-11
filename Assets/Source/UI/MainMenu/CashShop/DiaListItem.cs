@@ -104,7 +104,7 @@ public class DiaListItem : MonoBehaviour
 			// 연출을 처리해도 될 순간까지 오면 WaitingNetworkCanvas 켜놨던거 하이드.
 			WaitingNetworkCanvas.Show(false);
 
-			DropProcessor dropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, "ShopDia", "", true, true);
+			DropProcessor dropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, "ShopDiamond", "", true, true);
 			dropProcessor.AdjustDropRange(3.7f);
 			RandomBoxScreenCanvas.instance.SetInfo(IsBigDiaBox() ? RandomBoxScreenCanvas.eBoxType.Dia4_6 : RandomBoxScreenCanvas.eBoxType.Dia1_3, dropProcessor, 0, 0, () =>
 			{

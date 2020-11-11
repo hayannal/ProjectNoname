@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Purchasing;
 using PlayFab;
 using PlayFab.ClientModels;
 
@@ -18,6 +19,9 @@ public class LevelPackageInfo : MonoBehaviour
 	public RectTransform lineImageRectTransform;
 	public RectTransform rightTopRectTransform;
 	public Text nameText;
+
+	public Button iapBridgeButton;
+	public IAPButton iapButton;
 
 	ShopLevelPackageTableData _shopLevelPackageTableData;
 	GameObject _subPrefabObject;
@@ -74,6 +78,17 @@ public class LevelPackageInfo : MonoBehaviour
 		RefreshLineImage();
 		_updateRefreshLineImage = true;
 		_shopLevelPackageTableData = shopLevelPackageTableData;
+
+		// 다른 캐시상품들과 달리 프리팹 하나에서 정보를 바꿔가며 내용을 구성하기 때문에 productId에는 최초꺼로 설정되어있다.
+		// 이걸 현재에 맞는 상품으로 바꿔주는 절차가 필요하다.
+		iapButton.productId = shopLevelPackageTableData.serverItemId;
+		gameObject.SetActive(true);
+	}
+
+	// 구매 복구시에는 강제로 셋팅해서 처리해야한다.
+	public void ForceSetShopLevelPackageTableData(ShopLevelPackageTableData shopLevelPackageTableData)
+	{
+		_shopLevelPackageTableData = shopLevelPackageTableData;
 	}
 
 	int FindImagePrefabIndex(string name)
@@ -126,14 +141,40 @@ public class LevelPackageInfo : MonoBehaviour
 		// 통신이 되는 상황이면 나머지 스텝을 진행하면 되는데 인풋차단부터 걸어놔야 안전하다.
 		WaitingNetworkCanvas.Show(true);
 
-		// 원래라면 IAP 결제를 진행해야하는데 차후에 붙이기로 했으니 성공했다고 가정하고 Validate패킷 대신 일반 구매 패킷으로 처리해본다.
-		PlayFabApiManager.instance.RequestValidateLevelPackage(_shopLevelPackageTableData.serverItemId, _shopLevelPackageTableData, () =>
-		{
-			// 서버에서 구매 ok가 떨어지면 아마 Confirm부터 해야할텐데 지금은 일반 함수로 구현하는거니 패스하고
-			//ConfirmPurchase
+		// 숨겨둔 IAP 버튼을 호출해서 결제 진행
+		iapBridgeButton.onClick.Invoke();
+	}
 
+	public void OnPurchaseComplete(Product product)
+	{
+		RequestServerPacket(product, false);
+	}
+
+	void RequestServerPacket(Product product, bool confirmPending)
+	{
+#if UNITY_ANDROID
+		Debug.LogFormat("PurchaseComplete. isoCurrencyCode = {0} / localizedPrice = {1}", product.metadata.isoCurrencyCode, product.metadata.localizedPrice);
+
+		GooglePurchaseData data = new GooglePurchaseData(product.receipt);
+
+		// 플레이팹은 센트 단위로 시작하기 때문에 100을 곱해서 넘기는게 맞는데 한국돈 결제일때는 얼마로 보내야하는거지? 이렇게 * 100 해도 되는건가?
+		PlayFabApiManager.instance.RequestValidateLevelPackage(product.metadata.isoCurrencyCode, (uint)(product.metadata.localizedPrice * 100), data.inAppPurchaseData, data.inAppDataSignature,
+			_shopLevelPackageTableData, () =>
+#elif UNITY_IOS
+		iOSReceiptData data = new iOSReceiptData(product.receipt);
+
+		// 플레이팹은 센트 단위로 시작하기 때문에 100을 곱해서 넘기는게 맞는데 한국돈 결제일때는 얼마로 보내야하는거지? 이렇게 * 100 해도 되는건가?
+		PlayFabApiManager.instance.RequestValidateLevelPackage(product.metadata.isoCurrencyCode, (int)(product.metadata.localizedPrice * 100), data.Payload,
+			_shopLevelPackageTableData, () =>
+#endif
+		{
 			// 여기서부턴 연출을 시작해야한다.
 			DropLevelPackage();
+			if (confirmPending)
+			{
+				CodelessIAPStoreListener.Instance.StoreController.ConfirmPendingPurchase(product);
+				IAPListenerWrapper.instance.ConfirmPending(product);
+			}
 		});
 	}
 
@@ -298,4 +339,34 @@ public class LevelPackageInfo : MonoBehaviour
 		});
 	}
 	#endregion
+
+	public void OnPurchaseFailed(Product product, PurchaseFailureReason reason)
+	{
+		WaitingNetworkCanvas.Show(false);
+
+		if (reason == PurchaseFailureReason.UserCancelled)
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("ShopUI_UserCancel"), 2.0f);
+		else if (reason == PurchaseFailureReason.DuplicateTransaction)
+		{
+			// 레벨패키지는 다른 구매와 달리 인벤토리 체크를 해야한다.
+			if ((_shopLevelPackageTableData.buyingEquipKey > 0 || _shopLevelPackageTableData.buyingLegendEquipKey > 0) && TimeSpaceData.instance.IsInventoryVisualMax())
+			{
+				OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("ShopUI_NotDoneBuyingInventory", product.metadata.localizedTitle), null, -1, true);
+				return;
+			}
+
+			YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("ShopUI_NotDoneBuyingProgress", product.metadata.localizedTitle), () =>
+			{
+				WaitingNetworkCanvas.Show(true);
+				RequestServerPacket(product, true);
+			}, () =>
+			{
+			}, true);
+		}
+		else
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("ShopUI_PurchaseFailure"), 2.0f);
+			Debug.LogFormat("PurchaseFailed reason {0}", reason.ToString());
+		}
+	}
 }

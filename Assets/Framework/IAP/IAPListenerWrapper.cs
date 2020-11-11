@@ -37,6 +37,8 @@ public class IAPListenerWrapper : MonoBehaviour
 
 	Product _failedProduct;
 	PurchaseFailureReason _failedReason;
+	public Product failedProduct { get { return _failedProduct; } }
+	public PurchaseFailureReason failedReason { get { return _failedReason; } }
 	public void OnPurchaseFailed(Product product, PurchaseFailureReason reason)
 	{
 		Debug.Log("IAP Listener OnPurchaseFailed");
@@ -52,6 +54,26 @@ public class IAPListenerWrapper : MonoBehaviour
 			_failedProduct = product;
 			_failedReason = reason;
 			Debug.LogFormat("PurchaseFailed reason {0}", reason.ToString());
+		}
+	}
+
+	public void ConfirmPending(Product product)
+	{
+		// 제대로 종료되었다면 null로 리셋시켜둔다.
+		if (_failedProduct.definition.id == product.definition.id)
+			_failedProduct = null;
+	}
+
+
+
+	IAPListener _iapListener;
+	public IAPListener cachedIAPListener
+	{
+		get
+		{
+			if (_iapListener == null)
+				_iapListener = GetComponent<IAPListener>();
+			return _iapListener;
 		}
 	}
 }

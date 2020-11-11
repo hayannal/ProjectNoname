@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Purchasing;
 using DG.Tweening;
 
 public class DailyPackageInfo : MonoBehaviour
@@ -27,6 +28,8 @@ public class DailyPackageInfo : MonoBehaviour
 	public Text remainTimeText;
 
 	public RectTransform alarmRootTransform;
+
+	public Button iapBridgeButton;
 
 	bool _started = false;
 	void Start()
@@ -233,14 +236,39 @@ public class DailyPackageInfo : MonoBehaviour
 		// 인풋 차단
 		WaitingNetworkCanvas.Show(true);
 
-		// 원래라면 IAP 결제를 진행해야하는데 차후에 붙이기로 했으니 성공했다고 가정하고 Validate패킷 대신 일반 구매 패킷으로 처리해본다.
-		PlayFabApiManager.instance.RequestValidateDailyPackage(_shopDailyDiamondTableData.serverItemId, _shopDailyDiamondTableData.dailyCount, _shopDailyDiamondTableData.buyingGems, () =>
-		{
-			// 
-			//ConfirmPurchase
+		// 숨겨둔 IAP 버튼을 호출해서 결제 진행
+		iapBridgeButton.onClick.Invoke();
+	}
 
-			// 연출
+	public void OnPurchaseComplete(Product product)
+	{
+		RequestServerPacket(product, false);
+	}
+
+	void RequestServerPacket(Product product, bool confirmPending)
+	{
+#if UNITY_ANDROID
+		Debug.LogFormat("PurchaseComplete. isoCurrencyCode = {0} / localizedPrice = {1}", product.metadata.isoCurrencyCode, product.metadata.localizedPrice);
+
+		GooglePurchaseData data = new GooglePurchaseData(product.receipt);
+
+		// 플레이팹은 센트 단위로 시작하기 때문에 100을 곱해서 넘기는게 맞는데 한국돈 결제일때는 얼마로 보내야하는거지? 이렇게 * 100 해도 되는건가?
+		PlayFabApiManager.instance.RequestValidateDailyPackage(product.metadata.isoCurrencyCode, (uint)(product.metadata.localizedPrice * 100), data.inAppPurchaseData, data.inAppDataSignature,
+			_shopDailyDiamondTableData.dailyCount, _shopDailyDiamondTableData.buyingGems, () =>
+#elif UNITY_IOS
+		iOSReceiptData data = new iOSReceiptData(product.receipt);
+
+		// 플레이팹은 센트 단위로 시작하기 때문에 100을 곱해서 넘기는게 맞는데 한국돈 결제일때는 얼마로 보내야하는거지? 이렇게 * 100 해도 되는건가?
+		PlayFabApiManager.instance.RequestValidateDailyPackage(product.metadata.isoCurrencyCode, (int)(product.metadata.localizedPrice * 100), data.Payload,
+			_shopDailyDiamondTableData.dailyCount, _shopDailyDiamondTableData.buyingGems, () =>
+#endif
+		{
 			DropDailyPackage();
+			if (confirmPending)
+			{
+				CodelessIAPStoreListener.Instance.StoreController.ConfirmPendingPurchase(product);
+				IAPListenerWrapper.instance.ConfirmPending(product);
+			}
 		});
 	}
 
@@ -310,5 +338,28 @@ public class DailyPackageInfo : MonoBehaviour
 	{
 		// 여기선 강제로 추가만 하면 된다.
 		PlayFabApiManager.instance.RequestNetworkOnce(OnResponse, null, true);
+	}
+
+	public void OnPurchaseFailed(Product product, PurchaseFailureReason reason)
+	{
+		WaitingNetworkCanvas.Show(false);
+
+		if (reason == PurchaseFailureReason.UserCancelled)
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("ShopUI_UserCancel"), 2.0f);
+		else if (reason == PurchaseFailureReason.DuplicateTransaction)
+		{
+			YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("ShopUI_NotDoneBuyingProgress", product.metadata.localizedTitle), () =>
+			{
+				WaitingNetworkCanvas.Show(true);
+				RequestServerPacket(product, true);
+			}, () =>
+			{
+			}, true);
+		}
+		else
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("ShopUI_PurchaseFailure"), 2.0f);
+			Debug.LogFormat("PurchaseFailed reason {0}", reason.ToString());
+		}
 	}
 }

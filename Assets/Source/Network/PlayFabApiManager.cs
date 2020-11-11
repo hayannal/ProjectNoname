@@ -2016,18 +2016,52 @@ public class PlayFabApiManager : MonoBehaviour
 		});
 	}
 
-	public void RequestValidateLevelPackage(string serverItemId, ShopLevelPackageTableData shopLevelPackageTableData, Action successCallback)
-	//public void RequestValidateLevelPackage(string receiptJson, int price, int buyingGold, Action successCallback)
+#if UNITY_ANDROID
+	public void RequestValidateDiaBox(string isoCurrencyCode, uint price, string receiptJson, string signature, int buyingDia, Action successCallback)
 	{
-		//PlayFabClientAPI.ValidateGooglePlayPurchase(new ValidateGooglePlayPurchaseRequest()
-		//{
-		//	ReceiptJson = receiptJson,
-		//}
-		PlayFabClientAPI.PurchaseItem(new PurchaseItemRequest()
+		PlayFabClientAPI.ValidateGooglePlayPurchase(new ValidateGooglePlayPurchaseRequest()
 		{
-			ItemId = serverItemId,
-			Price = 1,
-			VirtualCurrency = CurrencyData.GoldCode()
+			CurrencyCode = isoCurrencyCode,
+			PurchasePrice = price,
+			ReceiptJson = receiptJson,
+			Signature = signature
+#elif UNITY_IOS
+	public void RequestValidateDiaBox(string isoCurrencyCode, int price, string receiptData, int buyingDia, Action successCallback)
+	{
+		PlayFabClientAPI.ValidateIOSReceipt(new ValidateIOSReceiptRequest()
+		{
+			CurrencyCode = isoCurrencyCode,
+			PurchasePrice = price,
+			ReceiptData = receiptData
+#endif
+		}, (success) =>
+		{
+			CurrencyData.instance.dia += buyingDia;
+			if (successCallback != null) successCallback.Invoke();
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+
+#if UNITY_ANDROID
+	public void RequestValidateLevelPackage(string isoCurrencyCode, uint price, string receiptJson, string signature, ShopLevelPackageTableData shopLevelPackageTableData, Action successCallback)
+	{
+		PlayFabClientAPI.ValidateGooglePlayPurchase(new ValidateGooglePlayPurchaseRequest()
+		{
+			CurrencyCode = isoCurrencyCode,
+			PurchasePrice = price,
+			ReceiptJson = receiptJson,
+			Signature = signature
+#elif UNITY_IOS
+	public void RequestValidateLevelPackage(string isoCurrencyCode, int price, string receiptData, ShopLevelPackageTableData shopLevelPackageTableData, Action successCallback)
+	{
+		PlayFabClientAPI.ValidateIOSReceipt(new ValidateIOSReceiptRequest()
+		{
+			CurrencyCode = isoCurrencyCode,
+			PurchasePrice = price,
+			ReceiptData = receiptData
+#endif
 		}, (success) =>
 		{
 			// bundle 안에 있는건 날아오지 않는다. 그래서 success만 오면 알아서 올려줘야한다.
@@ -2063,24 +2097,26 @@ public class PlayFabApiManager : MonoBehaviour
 		RetrySendManager.instance.RequestAction(action, true);
 	}
 
-	public void RequestValidateDailyPackage(string serverItemId, int dayCount, int buyingDia, Action successCallback)
-	//public void RequestValidateDailyPackage(string receiptJson, int buyingDia, Action successCallback)
+#if UNITY_ANDROID
+	public void RequestValidateDailyPackage(string isoCurrencyCode, uint price, string receiptJson, string signature, int dayCount, int buyingDia, Action successCallback)	
 	{
-		//PlayFabClientAPI.ValidateGooglePlayPurchase(new ValidateGooglePlayPurchaseRequest()
-		//{
-		//	ReceiptJson = receiptJson,
-		//}
-		PlayFabClientAPI.PurchaseItem(new PurchaseItemRequest()
+		PlayFabClientAPI.ValidateGooglePlayPurchase(new ValidateGooglePlayPurchaseRequest()
 		{
-			ItemId = serverItemId,
-			Price = 1,
-			VirtualCurrency = CurrencyData.GoldCode()
+			CurrencyCode = isoCurrencyCode,
+			PurchasePrice = price,
+			ReceiptJson = receiptJson,
+			Signature = signature
+#elif UNITY_IOS
+	public void RequestValidateDailyPackage(string isoCurrencyCode, int price, string receiptData, int dayCount, int buyingDia, Action successCallback)
+	{
+		PlayFabClientAPI.ValidateIOSReceipt(new ValidateIOSReceiptRequest()
+		{
+			CurrencyCode = isoCurrencyCode,
+			PurchasePrice = price,
+			ReceiptData = receiptData
+#endif
 		}, (success) =>
 		{
-			// bundle 안에 있는건 날아오지 않는다. 그래서 success만 오면 알아서 올려줘야한다.
-			// 우선 골드1부터 차감해서 동기부터 맞춘다.(임시가격)
-			CurrencyData.instance.gold -= 1;
-
 			CurrencyData.instance.dailyDiaRemainCount += dayCount;
 			CurrencyData.instance.dia += buyingDia;
 

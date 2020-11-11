@@ -575,7 +575,7 @@ public class MainSceneBuilder : MonoBehaviour
 		}
 
 		// 마무리 셋팅하기 직전에 IAP Listener 초기화
-		if (IAPListenerWrapper.instance != null) { }
+		IAPListenerWrapper.instance.EnableListener(true);
 
 		// 마무리 셋팅
 		_waitUpdateRemainCount = 2;
@@ -779,7 +779,7 @@ public class MainSceneBuilder : MonoBehaviour
 		}
 
 		// 마무리 셋팅하기 직전에 IAP Listener 초기화
-		if (IAPListenerWrapper.instance != null) { }
+		IAPListenerWrapper.instance.EnableListener(true);
 
 		// 마무리 셋팅
 		_waitUpdateRemainCount = 2;

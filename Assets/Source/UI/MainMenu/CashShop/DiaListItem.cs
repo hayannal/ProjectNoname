@@ -73,17 +73,17 @@ public class DiaListItem : MonoBehaviour
 	void RequestServerPacket(Product product, bool confirmPending)
 	{
 #if UNITY_ANDROID
-		Debug.LogFormat("PurchaseComplete. isoCurrencyCode = {0} / localizedPrice = {1}", product.metadata.isoCurrencyCode, product.metadata.localizedPrice);
-
+		//Debug.LogFormat("PurchaseComplete. isoCurrencyCode = {0} / localizedPrice = {1}", product.metadata.isoCurrencyCode, product.metadata.localizedPrice);
 		GooglePurchaseData data = new GooglePurchaseData(product.receipt);
 
-		// 플레이팹은 센트 단위로 시작하기 때문에 100을 곱해서 넘기는게 맞는데 한국돈 결제일때는 얼마로 보내야하는거지? 이렇게 * 100 해도 되는건가?
-		PlayFabApiManager.instance.RequestValidateDiaBox(product.metadata.isoCurrencyCode, (uint)(product.metadata.localizedPrice * 100), data.inAppPurchaseData, data.inAppDataSignature,
+		// 플레이팹은 센트 단위로 시작하기 때문에 100을 곱해서 넘기는게 맞는데 한국돈 결제일때도 * 100 해서 보내야하는지 궁금해서 테스트 해봤다.
+		// 0을 보냈더니 플레이어 현금 구매 Stream이 뜨지 않는다.(player_realmoney_purchase 이벤트)
+		// 함수 설명에는 필수 인자가 아니었는데 0보내면 인식을 안하게 내부적으로 되어있는건가 싶다.
+		// 그래서 곱하기 100을 안하고 그냥 보내봤더니 1200원 KRW를 샀는데 12원 KRW를 산거처럼 처리된다. 즉 USD로 사든 KRW로 사든 * 100은 무조건 해서 보내야한다.
+		PlayFabApiManager.instance.RequestValidateDiaBox(product.metadata.isoCurrencyCode, (uint)product.metadata.localizedPrice * 100, data.inAppPurchaseData, data.inAppDataSignature,
 			_shopDiamondTableData.buyingGems, () =>
 #elif UNITY_IOS
 		iOSReceiptData data = new iOSReceiptData(product.receipt);
-
-		// 플레이팹은 센트 단위로 시작하기 때문에 100을 곱해서 넘기는게 맞는데 한국돈 결제일때는 얼마로 보내야하는거지? 이렇게 * 100 해도 되는건가?
 		PlayFabApiManager.instance.RequestValidateDiaBox(product.metadata.isoCurrencyCode, (int)(product.metadata.localizedPrice * 100), data.Payload, _shopDiamondTableData.buyingGems, () =>
 #endif
 		{

@@ -248,17 +248,11 @@ public class DailyPackageInfo : MonoBehaviour
 	void RequestServerPacket(Product product, bool confirmPending)
 	{
 #if UNITY_ANDROID
-		Debug.LogFormat("PurchaseComplete. isoCurrencyCode = {0} / localizedPrice = {1}", product.metadata.isoCurrencyCode, product.metadata.localizedPrice);
-
-		GooglePurchaseData data = new GooglePurchaseData(product.receipt);
-
-		// 플레이팹은 센트 단위로 시작하기 때문에 100을 곱해서 넘기는게 맞는데 한국돈 결제일때는 얼마로 보내야하는거지? 이렇게 * 100 해도 되는건가?
+		GooglePurchaseData data = new GooglePurchaseData(product.receipt);		
 		PlayFabApiManager.instance.RequestValidateDailyPackage(product.metadata.isoCurrencyCode, (uint)(product.metadata.localizedPrice * 100), data.inAppPurchaseData, data.inAppDataSignature,
 			_shopDailyDiamondTableData.dailyCount, _shopDailyDiamondTableData.buyingGems, () =>
 #elif UNITY_IOS
 		iOSReceiptData data = new iOSReceiptData(product.receipt);
-
-		// 플레이팹은 센트 단위로 시작하기 때문에 100을 곱해서 넘기는게 맞는데 한국돈 결제일때는 얼마로 보내야하는거지? 이렇게 * 100 해도 되는건가?
 		PlayFabApiManager.instance.RequestValidateDailyPackage(product.metadata.isoCurrencyCode, (int)(product.metadata.localizedPrice * 100), data.Payload,
 			_shopDailyDiamondTableData.dailyCount, _shopDailyDiamondTableData.buyingGems, () =>
 #endif

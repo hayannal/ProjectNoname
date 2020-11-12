@@ -574,8 +574,10 @@ public class MainSceneBuilder : MonoBehaviour
 			Instantiate<GameObject>(_handleTitleCanvas.Result);
 		}
 
-		// 마무리 셋팅하기 직전에 IAP Listener 초기화
-		IAPListenerWrapper.instance.EnableListener(true);
+		// 마무리 셋팅하기 직전에 IAP Listener 초기화. 대신 튜토중이라면 패스한다.
+		// 어차피 캐시샵을 열지 못하는 상황이라 복구가 가능해져도 뽑기가 되버리니 이상할거다. 그러니 패스.
+		if (ContentsManager.IsTutorialChapter() == false)
+			IAPListenerWrapper.instance.EnableListener(true);
 
 		// 마무리 셋팅
 		_waitUpdateRemainCount = 2;
@@ -778,8 +780,8 @@ public class MainSceneBuilder : MonoBehaviour
 				_listCachingObject.Add(BattleInstanceManager.instance.GetCachedObject(BattleInstanceManager.instance.playerActor.cachingObjectList[i], Vector3.right, Quaternion.identity));
 		}
 
-		// 마무리 셋팅하기 직전에 IAP Listener 초기화
-		IAPListenerWrapper.instance.EnableListener(true);
+		// 마무리 셋팅하기 직전에 IAP Listener 초기화. 튜토 전투씬이라면 굳이 초기화할 필요 없다.
+		//IAPListenerWrapper.instance.EnableListener(true);
 
 		// 마무리 셋팅
 		_waitUpdateRemainCount = 2;

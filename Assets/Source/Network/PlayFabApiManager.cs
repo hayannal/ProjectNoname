@@ -2065,10 +2065,6 @@ public class PlayFabApiManager : MonoBehaviour
 #endif
 		}, (success) =>
 		{
-			// bundle 안에 있는건 날아오지 않는다. 그래서 success만 오면 알아서 올려줘야한다.
-			// 우선 골드1부터 차감해서 동기부터 맞춘다.(임시가격)
-			CurrencyData.instance.gold -= 1;
-
 			CurrencyData.instance.dia += shopLevelPackageTableData.buyingGems;
 			CurrencyData.instance.gold += shopLevelPackageTableData.buyingGold;
 			CurrencyData.instance.equipBoxKey += shopLevelPackageTableData.buyingEquipKey;

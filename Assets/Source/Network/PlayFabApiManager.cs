@@ -2017,7 +2017,7 @@ public class PlayFabApiManager : MonoBehaviour
 	}
 
 #if UNITY_ANDROID
-	public void RequestValidateDiaBox(string isoCurrencyCode, uint price, string receiptJson, string signature, int buyingDia, Action successCallback)
+	public void RequestValidateDiaBox(string isoCurrencyCode, uint price, string receiptJson, string signature, int buyingDia, Action successCallback, Action<PlayFabError> failureCallback)
 	{
 		PlayFabClientAPI.ValidateGooglePlayPurchase(new ValidateGooglePlayPurchaseRequest()
 		{
@@ -2026,7 +2026,7 @@ public class PlayFabApiManager : MonoBehaviour
 			ReceiptJson = receiptJson,
 			Signature = signature
 #elif UNITY_IOS
-	public void RequestValidateDiaBox(string isoCurrencyCode, int price, string receiptData, int buyingDia, Action successCallback)
+	public void RequestValidateDiaBox(string isoCurrencyCode, int price, string receiptData, int buyingDia, Action successCallback, Action<PlayFabError> failureCallback)
 	{
 		PlayFabClientAPI.ValidateIOSReceipt(new ValidateIOSReceiptRequest()
 		{
@@ -2041,11 +2041,12 @@ public class PlayFabApiManager : MonoBehaviour
 		}, (error) =>
 		{
 			HandleCommonError(error);
+			if (failureCallback != null) failureCallback.Invoke(error);
 		});
 	}
 
 #if UNITY_ANDROID
-	public void RequestValidateLevelPackage(string isoCurrencyCode, uint price, string receiptJson, string signature, ShopLevelPackageTableData shopLevelPackageTableData, Action successCallback)
+	public void RequestValidateLevelPackage(string isoCurrencyCode, uint price, string receiptJson, string signature, ShopLevelPackageTableData shopLevelPackageTableData, Action successCallback, Action<PlayFabError> failureCallback)
 	{
 		PlayFabClientAPI.ValidateGooglePlayPurchase(new ValidateGooglePlayPurchaseRequest()
 		{
@@ -2054,7 +2055,7 @@ public class PlayFabApiManager : MonoBehaviour
 			ReceiptJson = receiptJson,
 			Signature = signature
 #elif UNITY_IOS
-	public void RequestValidateLevelPackage(string isoCurrencyCode, int price, string receiptData, ShopLevelPackageTableData shopLevelPackageTableData, Action successCallback)
+	public void RequestValidateLevelPackage(string isoCurrencyCode, int price, string receiptData, ShopLevelPackageTableData shopLevelPackageTableData, Action successCallback, Action<PlayFabError> failureCallback)
 	{
 		PlayFabClientAPI.ValidateIOSReceipt(new ValidateIOSReceiptRequest()
 		{
@@ -2077,6 +2078,7 @@ public class PlayFabApiManager : MonoBehaviour
 		}, (error) =>
 		{
 			HandleCommonError(error);
+			if (failureCallback != null) failureCallback.Invoke(error);
 		});
 	}
 
@@ -2098,7 +2100,7 @@ public class PlayFabApiManager : MonoBehaviour
 	}
 
 #if UNITY_ANDROID
-	public void RequestValidateDailyPackage(string isoCurrencyCode, uint price, string receiptJson, string signature, int dayCount, int buyingDia, Action successCallback)	
+	public void RequestValidateDailyPackage(string isoCurrencyCode, uint price, string receiptJson, string signature, int dayCount, int buyingDia, Action successCallback, Action<PlayFabError> failureCallback)	
 	{
 		PlayFabClientAPI.ValidateGooglePlayPurchase(new ValidateGooglePlayPurchaseRequest()
 		{
@@ -2107,7 +2109,7 @@ public class PlayFabApiManager : MonoBehaviour
 			ReceiptJson = receiptJson,
 			Signature = signature
 #elif UNITY_IOS
-	public void RequestValidateDailyPackage(string isoCurrencyCode, int price, string receiptData, int dayCount, int buyingDia, Action successCallback)
+	public void RequestValidateDailyPackage(string isoCurrencyCode, int price, string receiptData, int dayCount, int buyingDia, Action successCallback, Action<PlayFabError> failureCallback)
 	{
 		PlayFabClientAPI.ValidateIOSReceipt(new ValidateIOSReceiptRequest()
 		{
@@ -2124,6 +2126,7 @@ public class PlayFabApiManager : MonoBehaviour
 		}, (error) =>
 		{
 			HandleCommonError(error);
+			if (failureCallback != null) failureCallback.Invoke(error);
 		});
 	}
 

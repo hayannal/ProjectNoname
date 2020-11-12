@@ -82,59 +82,6 @@ public class CashShopCanvas : MonoBehaviour
 		CheckIAPListener();
 	}
 
-	void CheckIAPListener()
-	{
-		if (IAPListenerWrapper.instance.failedReason != PurchaseFailureReason.DuplicateTransaction || IAPListenerWrapper.instance.failedProduct == null)
-		{
-			// 결제하다 미처리 된게 아니라면 딱히 처리할 필요가 없어보인다.
-			// 나머지 오류는 무시
-			return;
-		}
-
-		Product failedProduct = IAPListenerWrapper.instance.failedProduct;
-		Debug.LogFormat("IAPListener failed product id : {0}", failedProduct.definition.id);
-		Debug.LogFormat("IAPListener failed product storeSpecificId : {0}", failedProduct.definition.storeSpecificId);
-
-		// 완료되지 않은 구매상품의 아이디에 따라 뭘 진행시킬지 판단해야한다.
-		// 레벨패키지인지 확인
-		for (int i = 0; i < TableDataManager.instance.shopLevelPackageTable.dataArray.Length; ++i)
-		{
-			if (TableDataManager.instance.shopLevelPackageTable.dataArray[i].serverItemId == failedProduct.definition.id)
-			{
-				// 사실 여기서 레벨패키지의 현재 상태가 failedProduct와 같은지 다른지 판단할수도 있는데
-				// 이걸 다르다고 복구 안해주고 진행중이던 계정을 가져오라 하면 더 문제가 커질 수 있다.
-				// 유저가 이 계정을 못찾겠다고 하면서 찾아달라고 문의를 하면 우린 더 많은 일을 해야하기 때문.
-				// 그래서 해당 상품으로 셋팅하고 복구를 진행하기로 한다.
-				//if (levelPackageInfo.gameObject.activeSelf == false || levelPackageInfo.)
-				levelPackageInfo.ForceSetShopLevelPackageTableData(TableDataManager.instance.shopLevelPackageTable.dataArray[i]);
-				levelPackageInfo.OnPurchaseFailed(failedProduct, IAPListenerWrapper.instance.failedReason);
-				break;
-			}
-		}
-
-		// 데일리패키지인지 확인
-		for (int i = 0; i < TableDataManager.instance.shopDailyDiamondTable.dataArray.Length; ++i)
-		{
-			if (TableDataManager.instance.shopDailyDiamondTable.dataArray[i].serverItemId == failedProduct.definition.id)
-			{
-				// 데일리패키지 역시 레벨패키지와 마찬가지로 이 상품을 구매할 수 있는지 없는지 체크하지 않고 그냥 진행한다.
-				dailyPackageInfo.OnPurchaseFailed(failedProduct, IAPListenerWrapper.instance.failedReason);
-				break;
-			}
-		}
-
-		// 다이아박스인지 확인
-		DiaListItem failedDiaListItem = null;
-		for (int i = 0; i < diaListItemList.Length; ++i)
-		{
-			if (diaListItemList[i].serverItemId == failedProduct.definition.id)
-			{
-				failedDiaListItem.OnPurchaseFailed(failedProduct, IAPListenerWrapper.instance.failedReason);
-				break;
-			}
-		}
-	}
-
 	void OnDisable()
 	{
 		if (DragThresholdController.instance != null)
@@ -152,6 +99,47 @@ public class CashShopCanvas : MonoBehaviour
 	public void OnClickHomeButton()
 	{
 		LobbyCanvas.Home();
+	}
+
+	void CheckIAPListener()
+	{
+		if (IAPListenerWrapper.instance.pendingProduct == null)
+			return;
+
+		Product pendingProduct = IAPListenerWrapper.instance.pendingProduct;
+		Debug.LogFormat("Check IAPListener pending product id : {0}", pendingProduct.definition.id);
+		//Debug.LogFormat("IAPListener failed product storeSpecificId : {0}", failedProduct.definition.storeSpecificId);
+
+		// 완료되지 않은 구매상품의 아이디에 따라 뭘 진행시킬지 판단해야한다.
+		// 레벨패키지인지 확인
+		for (int i = 0; i < TableDataManager.instance.shopLevelPackageTable.dataArray.Length; ++i)
+		{
+			if (TableDataManager.instance.shopLevelPackageTable.dataArray[i].serverItemId == pendingProduct.definition.id)
+			{
+				levelPackageInfo.RetryPurchase(pendingProduct, TableDataManager.instance.shopLevelPackageTable.dataArray[i]);
+				break;
+			}
+		}
+
+		// 데일리패키지인지 확인
+		for (int i = 0; i < TableDataManager.instance.shopDailyDiamondTable.dataArray.Length; ++i)
+		{
+			if (TableDataManager.instance.shopDailyDiamondTable.dataArray[i].serverItemId == pendingProduct.definition.id)
+			{
+				dailyPackageInfo.RetryPurchase(pendingProduct);
+				break;
+			}
+		}
+
+		// 다이아박스인지 확인
+		for (int i = 0; i < diaListItemList.Length; ++i)
+		{
+			if (diaListItemList[i].serverItemId == pendingProduct.definition.id)
+			{
+				diaListItemList[i].RetryPurchase(pendingProduct);
+				break;
+			}
+		}
 	}
 
 	public void RefreshDailyShopInfo()

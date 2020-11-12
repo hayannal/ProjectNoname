@@ -85,12 +85,6 @@ public class LevelPackageInfo : MonoBehaviour
 		gameObject.SetActive(true);
 	}
 
-	// 구매 복구시에는 강제로 셋팅해서 처리해야한다.
-	public void ForceSetShopLevelPackageTableData(ShopLevelPackageTableData shopLevelPackageTableData)
-	{
-		_shopLevelPackageTableData = shopLevelPackageTableData;
-	}
-
 	int FindImagePrefabIndex(string name)
 	{
 		for (int i = 0; i < levelPackagePrefabList.Length; ++i)
@@ -147,10 +141,10 @@ public class LevelPackageInfo : MonoBehaviour
 
 	public void OnPurchaseComplete(Product product)
 	{
-		RequestServerPacket(product, false);
+		RequestServerPacket(product);
 	}
 
-	void RequestServerPacket(Product product, bool confirmPending)
+	void RequestServerPacket(Product product)
 	{
 #if UNITY_ANDROID
 		GooglePurchaseData data = new GooglePurchaseData(product.receipt);
@@ -162,12 +156,18 @@ public class LevelPackageInfo : MonoBehaviour
 			_shopLevelPackageTableData, () =>
 #endif
 		{
+			CodelessIAPStoreListener.Instance.StoreController.ConfirmPendingPurchase(product);
+			IAPListenerWrapper.instance.CheckConfirmPendingPurchase(product);
+
 			// 여기서부턴 연출을 시작해야한다.
 			DropLevelPackage();
-			if (confirmPending)
+			
+		}, (error) =>
+		{
+			if (error.Error == PlayFab.PlayFabErrorCode.ReceiptAlreadyUsed)
 			{
 				CodelessIAPStoreListener.Instance.StoreController.ConfirmPendingPurchase(product);
-				IAPListenerWrapper.instance.ConfirmPending(product);
+				IAPListenerWrapper.instance.CheckConfirmPendingPurchase(product);
 			}
 		});
 	}
@@ -342,25 +342,41 @@ public class LevelPackageInfo : MonoBehaviour
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("ShopUI_UserCancel"), 2.0f);
 		else if (reason == PurchaseFailureReason.DuplicateTransaction)
 		{
-			// 레벨패키지는 다른 구매와 달리 인벤토리 체크를 해야한다.
-			if ((_shopLevelPackageTableData.buyingEquipKey > 0 || _shopLevelPackageTableData.buyingLegendEquipKey > 0) && TimeSpaceData.instance.IsInventoryVisualMax())
-			{
-				OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("ShopUI_NotDoneBuyingInventory", product.metadata.localizedTitle), null, -1, true);
-				return;
-			}
-
-			YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("ShopUI_NotDoneBuyingProgress", product.metadata.localizedTitle), () =>
-			{
-				WaitingNetworkCanvas.Show(true);
-				RequestServerPacket(product, true);
-			}, () =>
-			{
-			}, true);
 		}
 		else
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("ShopUI_PurchaseFailure"), 2.0f);
 			Debug.LogFormat("PurchaseFailed reason {0}", reason.ToString());
 		}
+	}
+
+	public void RetryPurchase(Product product, ShopLevelPackageTableData shopLevelPackageTableData)
+	{
+		// 이미 구매했던 상품인지 확인해야한다.
+		// IsPurchasedLevelPackage로 검사하는거라 구매하지 않은 먼 레벨의 패키지를 사려고 할수도 있는데(조작같은거로) 이건 허용하기로 한다.
+		// 어쨌든 사지 않은걸 사는거니 허용.
+		if (PlayerData.instance.IsPurchasedLevelPackage(shopLevelPackageTableData.level))
+		{
+			OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("ShopUI_NotDoneBuyingAccount", product.metadata.localizedTitle), null, -1, true);
+			return;
+		}
+
+		// 레벨패키지는 다른 구매와 달리 인벤토리 체크를 해야한다.
+		if ((shopLevelPackageTableData.buyingEquipKey > 0 || shopLevelPackageTableData.buyingLegendEquipKey > 0) && TimeSpaceData.instance.IsInventoryVisualMax())
+		{
+			OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("ShopUI_NotDoneBuyingInventory", product.metadata.localizedTitle), null, -1, true);
+			return;
+		}
+
+		YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("ShopUI_NotDoneBuyingProgress", product.metadata.localizedTitle), () =>
+		{
+			WaitingNetworkCanvas.Show(true);
+
+			// 구매 복구시에는 강제로 셋팅해서 처리해야한다.
+			_shopLevelPackageTableData = shopLevelPackageTableData;
+			RequestServerPacket(product);
+		}, () =>
+		{
+		}, true);
 	}
 }

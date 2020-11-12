@@ -67,10 +67,10 @@ public class DiaListItem : MonoBehaviour
 
 	public void OnPurchaseComplete(Product product)
 	{
-		RequestServerPacket(product, false);
+		RequestServerPacket(product);
 	}
 
-	void RequestServerPacket(Product product, bool confirmPending)
+	void RequestServerPacket(Product product)
 	{
 #if UNITY_ANDROID
 		//Debug.LogFormat("PurchaseComplete. isoCurrencyCode = {0} / localizedPrice = {1}", product.metadata.isoCurrencyCode, product.metadata.localizedPrice);
@@ -87,11 +87,22 @@ public class DiaListItem : MonoBehaviour
 		PlayFabApiManager.instance.RequestValidateDiaBox(product.metadata.isoCurrencyCode, (int)(product.metadata.localizedPrice * 100), data.Payload, _shopDiamondTableData.buyingGems, () =>
 #endif
 		{
+			CodelessIAPStoreListener.Instance.StoreController.ConfirmPendingPurchase(product);
+			IAPListenerWrapper.instance.CheckConfirmPendingPurchase(product);
 			DropDiaBox();
-			if (confirmPending)
+		}, (error) =>
+		{
+			// 거의 그럴일은 없겠지만 서버에서 영수증 처리 후 오는 패킷을 받지 못해서 ConfirmPendingPurchase하지 못했다면
+			// 다음번 재시작 후 클라이언트는 아직 미완료된줄 알고 재구매 처리를 할텐데
+			// 서버에 보내보니 이미 영수증을 사용했다고 뜬다면 이쪽으로 오게 된다.
+			// 이럴땐 이미 디비에는 구매했던 템들이 다 들어있는 상황일테니 ConfirmPendingPurchase 처리를 해주면 된다.
+			//
+			// 오히려 여기 더 자주 들어올만한 상황은 영수증 패킷 조작해서 보내는 악성 유저들일거다.
+			// 그러니 안내메세지 처리같은거 없이 그냥 Confirm처리 하고 시작화면으로 보내도록 한다.
+			if (error.Error == PlayFab.PlayFabErrorCode.ReceiptAlreadyUsed)
 			{
 				CodelessIAPStoreListener.Instance.StoreController.ConfirmPendingPurchase(product);
-				IAPListenerWrapper.instance.ConfirmPending(product);
+				IAPListenerWrapper.instance.CheckConfirmPendingPurchase(product);
 			}
 		});
 	}
@@ -142,18 +153,28 @@ public class DiaListItem : MonoBehaviour
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("ShopUI_UserCancel"), 2.0f);
 		else if (reason == PurchaseFailureReason.DuplicateTransaction)
 		{
-			YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("ShopUI_NotDoneBuyingProgress", product.metadata.localizedTitle), () =>
-			{
-				WaitingNetworkCanvas.Show(true);
-				RequestServerPacket(product, true);
-			}, () =>
-			{
-			}, true);
+			// 미처리된 상품이 있는걸 감지하고 캐시샵에 들어오면 복구할거냐는 창을 띄우는데
+			// 이때 No를 누르고 직접 구매했던 상품을 눌러서 구글결제 코드를 작동시키면 이미 구입한 상품이라는 오류 메세지를 보여주고 이걸 닫으면
+			// OnPurchaseFailed 를 PurchaseFailureReason.DuplicateTransaction 인자와 호출함과 동시에
+			// 곧바로 OnPurchaseComplete 함수도 호출해서 어떤 상품을 구매했었는지 보내온다.
+			// 즉 Failed함수와 Complete함수가 동시에 실행되는 것.
+			// 예전 IAP 버전초기때는 이 Failed함수만 호출되었던거 같은데 이렇게 Complete도 오다보니 굳이 여기서 예외처리를 할 필요가 없게 되었다.
 		}
 		else
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("ShopUI_PurchaseFailure"), 2.0f);
 			Debug.LogFormat("PurchaseFailed reason {0}", reason.ToString());
 		}
+	}
+
+	public void RetryPurchase(Product product)
+	{
+		YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("ShopUI_NotDoneBuyingProgress", product.metadata.localizedTitle), () =>
+		{
+			WaitingNetworkCanvas.Show(true);
+			RequestServerPacket(product);
+		}, () =>
+		{
+		}, true);
 	}
 }

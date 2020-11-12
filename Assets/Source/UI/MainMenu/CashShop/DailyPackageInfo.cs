@@ -242,10 +242,10 @@ public class DailyPackageInfo : MonoBehaviour
 
 	public void OnPurchaseComplete(Product product)
 	{
-		RequestServerPacket(product, false);
+		RequestServerPacket(product);
 	}
 
-	void RequestServerPacket(Product product, bool confirmPending)
+	void RequestServerPacket(Product product)
 	{
 #if UNITY_ANDROID
 		GooglePurchaseData data = new GooglePurchaseData(product.receipt);		
@@ -257,11 +257,16 @@ public class DailyPackageInfo : MonoBehaviour
 			_shopDailyDiamondTableData.dailyCount, _shopDailyDiamondTableData.buyingGems, () =>
 #endif
 		{
+			CodelessIAPStoreListener.Instance.StoreController.ConfirmPendingPurchase(product);
+			IAPListenerWrapper.instance.CheckConfirmPendingPurchase(product);
 			DropDailyPackage();
-			if (confirmPending)
+
+		}, (error) =>
+		{
+			if (error.Error == PlayFab.PlayFabErrorCode.ReceiptAlreadyUsed)
 			{
 				CodelessIAPStoreListener.Instance.StoreController.ConfirmPendingPurchase(product);
-				IAPListenerWrapper.instance.ConfirmPending(product);
+				IAPListenerWrapper.instance.CheckConfirmPendingPurchase(product);
 			}
 		});
 	}
@@ -342,18 +347,24 @@ public class DailyPackageInfo : MonoBehaviour
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("ShopUI_UserCancel"), 2.0f);
 		else if (reason == PurchaseFailureReason.DuplicateTransaction)
 		{
-			YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("ShopUI_NotDoneBuyingProgress", product.metadata.localizedTitle), () =>
-			{
-				WaitingNetworkCanvas.Show(true);
-				RequestServerPacket(product, true);
-			}, () =>
-			{
-			}, true);
 		}
 		else
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("ShopUI_PurchaseFailure"), 2.0f);
 			Debug.LogFormat("PurchaseFailed reason {0}", reason.ToString());
 		}
+	}
+
+	public void RetryPurchase(Product product)
+	{
+		// 데일리패키지는 특별히 할인된 상품이 아니니 구매할 수 있는지 없는지 체크하지 않고 그냥 진행한다.
+		// 어차피 카운트만 올리면 되는거라 상관없다.
+		YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("ShopUI_NotDoneBuyingProgress", product.metadata.localizedTitle), () =>
+		{
+			WaitingNetworkCanvas.Show(true);
+			RequestServerPacket(product);
+		}, () =>
+		{
+		}, true);
 	}
 }

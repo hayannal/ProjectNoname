@@ -225,7 +225,8 @@ public class SettingCanvas : MonoBehaviour
 				}
 
 				// 이미 연동되어있는 상태라면 확인창을 띄우고 로그아웃을 해야한다.
-				YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_LogOutConfirm"), () =>
+				string message = string.Format("{0}\n\n{1}", AuthManager.instance.GetGoogleUserId(), UIString.instance.GetString("GameUI_LogOutConfirm"));
+				YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), message, () =>
 				{
 					AuthManager.instance.LogoutWithGoogle();
 				});

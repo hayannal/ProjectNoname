@@ -406,6 +406,17 @@ public class AuthManager : MonoBehaviour
 		SceneManager.LoadScene(0);
 	}
 
+
+
+	public string GetGoogleUserId()
+	{
+#if Google
+		if (googleUser != null)
+			return googleUser.UserId;
+#endif
+		return "";
+	}
+
 #if Google
 	void LoginWithGoogle(bool silentLogin)
 	{

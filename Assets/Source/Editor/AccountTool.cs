@@ -66,6 +66,7 @@ public class AccountTool : EditorWindow
 				if (GUILayout.Button("Set Custom Id"))
 				{
 					AuthManager.SetGuestCustomId(_guestCustomId);
+					AuthManager.ChangeLastAuthType(AuthManager.eAuthType.Guest);
 				}
 			}
 			GUILayout.EndHorizontal();

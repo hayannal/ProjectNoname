@@ -113,6 +113,11 @@ public class AuthManager : MonoBehaviour
 		return (eAuthType)lastLogin;
 	}
 
+	public static void ChangeLastAuthType(eAuthType authType)
+	{
+		ObscuredPrefs.SetInt(LAST_AUTH_KEY, (int)authType);
+	}
+
 	public static string GetLastGuestCustomId()
 	{
 		string customId = SystemInfo.deviceUniqueIdentifier;
@@ -195,11 +200,6 @@ public class AuthManager : MonoBehaviour
 
 		Debug.LogFormat("Login Successed! PlayFabId : {0}", result.PlayFabId);
 		PlayFabApiManager.instance.OnRecvLoginResult(result);
-	}
-
-	void ChangeLastAuthType(eAuthType authType)
-	{
-		ObscuredPrefs.SetInt(LAST_AUTH_KEY, (int)authType);
 	}
 
 	void OnLoginFailure(PlayFabError error)

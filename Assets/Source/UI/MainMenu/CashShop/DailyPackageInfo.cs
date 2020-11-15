@@ -15,7 +15,6 @@ public class DailyPackageInfo : MonoBehaviour
 	public DOTweenAnimation dailyDiaTweenAnimation;
 	public Text priceText;
 	public RectTransform priceTextTransform;
-	public Text wonText;
 
 	public Text addText;
 	public GameObject remainDayTextObject;
@@ -103,18 +102,16 @@ public class DailyPackageInfo : MonoBehaviour
 			dailyDiaTweenAnimation.DOPause();
 			receiveTextTweenAnimation.DOPause();
 			priceTextTransform.gameObject.SetActive(true);
-			bool kor = (Application.systemLanguage == SystemLanguage.Korean);
-			priceTextTransform.anchoredPosition = new Vector2(kor ? 10.0f : 0.0f, 0.0f);
-			wonText.gameObject.SetActive(kor);
-			if (kor)
-			{
-				priceText.text = _shopDailyDiamondTableData.kor.ToString("N0");
-				wonText.SetLocalizedText(BattleInstanceManager.instance.GetCachedGlobalConstantString("KoreaWon"));
-			}
+
+			Product product = CodelessIAPStoreListener.Instance.GetProduct(_shopDailyDiamondTableData.serverItemId);
+			if (product != null && product.metadata != null && product.metadata.localizedPrice > 0)
+				priceText.text = product.metadata.localizedPriceString;
 			else
 			{
-				priceText.text = string.Format("$ {0:0.##}", _shopDailyDiamondTableData.eng);
-				wonText.gameObject.SetActive(false);
+				if (Application.systemLanguage == SystemLanguage.Korean)
+					priceText.text = string.Format("{0}{1:N0}", BattleInstanceManager.instance.GetCachedGlobalConstantString("KoreaWon"), _shopDailyDiamondTableData.kor);
+				else
+					priceText.text = string.Format("$ {0:0.##}", _shopDailyDiamondTableData.eng);
 			}
 
 			addText.gameObject.SetActive(true);

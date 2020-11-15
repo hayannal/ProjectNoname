@@ -14,7 +14,6 @@ public class LevelPackageInfo : MonoBehaviour
 	public Text valueXText;
 	public Text priceText;
 	public RectTransform priceTextTransform;
-	public Text wonText;
 	public Text prevPriceText;
 	public RectTransform lineImageRectTransform;
 	public RectTransform rightTopRectTransform;
@@ -58,20 +57,26 @@ public class LevelPackageInfo : MonoBehaviour
 
 		valueXText.text = string.Format("{0}x", shopLevelPackageTableData.times);
 
-		bool kor = (Application.systemLanguage == SystemLanguage.Korean);
-		priceTextTransform.anchoredPosition = new Vector2(kor ? 10.0f : 0.0f, 0.0f);
-		wonText.gameObject.SetActive(kor);
-		if (kor)
+		Product product = CodelessIAPStoreListener.Instance.GetProduct(shopLevelPackageTableData.serverItemId);
+		if (product != null && product.metadata != null && product.metadata.localizedPrice > 0)
 		{
-			prevPriceText.text = shopLevelPackageTableData.beforeKor.ToString("N0");
-			priceText.text = shopLevelPackageTableData.kor.ToString("N0");
-			wonText.SetLocalizedText(BattleInstanceManager.instance.GetCachedGlobalConstantString("KoreaWon"));
+			prevPriceText.gameObject.SetActive(false);
+			priceText.text = product.metadata.localizedPriceString;
 		}
 		else
 		{
-			prevPriceText.text = string.Format("$ {0:0.##}", shopLevelPackageTableData.beforEng);
-			priceText.text = string.Format("$ {0:0.##}", shopLevelPackageTableData.eng);
-			wonText.gameObject.SetActive(false);
+			if (Application.systemLanguage == SystemLanguage.Korean)
+			{
+				prevPriceText.text = shopLevelPackageTableData.beforeKor.ToString("N0");
+				prevPriceText.gameObject.SetActive(shopLevelPackageTableData.beforeKor > 0);
+				priceText.text = string.Format("{0}{1:N0}", BattleInstanceManager.instance.GetCachedGlobalConstantString("KoreaWon"), shopLevelPackageTableData.kor);
+			}
+			else
+			{
+				prevPriceText.text = string.Format("$ {0:0.##}", shopLevelPackageTableData.beforEng);
+				prevPriceText.gameObject.SetActive(shopLevelPackageTableData.beforEng > 0.0f);
+				priceText.text = string.Format("$ {0:0.##}", shopLevelPackageTableData.eng);
+			}
 		}
 		nameText.SetLocalizedText(UIString.instance.GetString(shopLevelPackageTableData.boxName));
 

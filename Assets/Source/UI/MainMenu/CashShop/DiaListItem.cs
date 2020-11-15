@@ -8,8 +8,6 @@ public class DiaListItem : MonoBehaviour
 {
 	public Text amountText;
 	public Text priceText;
-	public RectTransform priceTextTransform;
-	public Text wonText;
 	public GameObject addObject;
 	public Text addText;
 	public Button iapBridgeButton;
@@ -29,18 +27,16 @@ public class DiaListItem : MonoBehaviour
 		_shopDiamondTableData = shopDiamondTableData;
 
 		amountText.text = shopDiamondTableData.buyingGems.ToString("N0");
-		if (Application.systemLanguage == SystemLanguage.Korean)
-		{
-			priceTextTransform.anchoredPosition = new Vector2(10.0f, 0.0f);
-			priceText.text = shopDiamondTableData.kor.ToString("N0");
-			wonText.gameObject.SetActive(true);
-			wonText.SetLocalizedText(BattleInstanceManager.instance.GetCachedGlobalConstantString("KoreaWon"));
-		}
+
+		Product product = CodelessIAPStoreListener.Instance.GetProduct(shopDiamondTableData.serverItemId);
+		if (product != null && product.metadata != null && product.metadata.localizedPrice > 0)
+			priceText.text = product.metadata.localizedPriceString;
 		else
 		{
-			priceTextTransform.anchoredPosition = Vector2.zero;
-			priceText.text = string.Format("$ {0:0.##}", shopDiamondTableData.eng);
-			wonText.gameObject.SetActive(false);
+			if (Application.systemLanguage == SystemLanguage.Korean)
+				priceText.text = string.Format("{0}{1:N0}", BattleInstanceManager.instance.GetCachedGlobalConstantString("KoreaWon"), shopDiamondTableData.kor);
+			else
+				priceText.text = string.Format("$ {0:0.##}", shopDiamondTableData.eng);
 		}
 
 		bool useAdd = (string.IsNullOrEmpty(shopDiamondTableData.addText) == false);

@@ -412,7 +412,7 @@ public class AuthManager : MonoBehaviour
 	{
 #if Google
 		if (googleUser != null)
-			return googleUser.UserId;
+			return googleUser.Email;
 #endif
 		return "";
 	}

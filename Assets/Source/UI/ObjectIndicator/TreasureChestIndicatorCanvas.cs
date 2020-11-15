@@ -111,7 +111,10 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 		while (CodelessIAPStoreListener.initializationComplete == false)
 			yield return Timing.WaitForOneFrame;
 
-		UIInstanceManager.instance.ShowCanvasAsync("CashShopCanvas", null);
+		UIInstanceManager.instance.ShowCanvasAsync("CashShopCanvas", () =>
+		{
+			DelayedLoadingCanvas.Show(false);
+		}, false);
 	}
 
 	void OnClickOpenDailyBox()

@@ -489,41 +489,19 @@ public class PlayFabApiManager : MonoBehaviour
 		if (highestPlayChapter == 0)
 			return true;
 
-		Debug.LogFormat("Application version = {0}", Application.version);
-
-		// 권장 표기가 메이저.마이너.빌드 표기이지만 굳이 이걸 따르지 않고 가운데 번호를 업데이트 구분 번호로 쓰기로 한다.
-		// 예를 들어 1.15.4 하면 15번 빌드고
-		// 서버에서 받은 업데이트 빌드 번호가 16이면 패치하라고 뜨는 구조다.
-		// 이 번호는 사실 Bundle Code Number랑은 달라질 수 있는데
-		// 이 코드는 마켓에 올릴때 무조건 증가시켜야하는 코드라서 올릴때마다 1씩 증가시킬거고, 리젝같은 이유로 다시 올릴때마다 1씩 올라갈텐데
-		// 아직 유저에게 배포되기 전이라면 빌드번호는 그대로 유지해도 된다.
-		// 어차피 유저에게 배포된 버전보다만 1 높으면 업데이트가 뜨기 때문.
-		// 
-		// 리소스 패치 번호는 맨 뒷번호를 쓸거다. 위에서라면 4번 리소스다. 빌드를 묶을때 Remote Path에다가 그에 맞는 Badge 주소를 입력해놨을테니
-		// 거기에다가 해당 번들들을 넣어두면 될거다.
-		// 심사 빌드를 위해서는 새 Badge 주소를 받아다 적용 후 새 빌드를 뽑으면 그 빌드는 새 Badge를 바라보게 될것이니
-		// 유저들이 빌드 업뎃을 하면 알아서 새 Badge에서 데이터를 긁어와 비교할 것이다.
-		// 
-		// 테이블 패치만 하는 경우가 문제인데,
-		// 이럴땐 새 Badge를 발급 받는게 아니라 원래 연결된 Badge에다가 업데이트된 테이블을 밀어넣으면
-		// 클라가 실행시에 비교 후 업뎃이 있다고 띄우는 형태인거다.
-		// 이걸 위해 Badge를 구분하기 편해야하니 Badge이름에다가 저 리소스 패치 번호를 붙여두는게 구분할때 편할거다.
-		string[] split = Application.version.Split('.');
-		if (split.Length != 3)
-		{
-			// 관리되지 않는 버전 번호다. 패스.
-			return true;
-		}
-
-		// 빌드번호를 서버에 적혀있는 빌드번호와 비교해야한다. 플랫폼을 구분할 필요없기 때문에(Version Code와 다르다.) 그냥 검사하면 된다.
-		int buildNumber = 0;
-		int.TryParse(split[1], out buildNumber);
-		if (titleData.ContainsKey("version") && string.IsNullOrEmpty(titleData["version"]) == false)
+		// 빌드번호를 서버에 적혀있는 빌드번호와 비교해야한다.
+		BuildVersionInfo versionInfo = null;
+#if UNITY_ANDROID
+		versionInfo = Resources.Load<BuildVersionInfo>("Build/BuildVersionInfo_Android");
+#elif UNITY_IOS
+		versionInfo = Resources.Load<BuildVersionInfo>("Build/BuildVersionInfo_iOS");
+#endif
+		if (titleData.ContainsKey(versionInfo.serverKeyName) && string.IsNullOrEmpty(titleData[versionInfo.serverKeyName]) == false)
 		{
 			var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
 			int serverVersion = 0;
-			int.TryParse(titleData["version"], out serverVersion);
-			if (buildNumber < serverVersion)
+			int.TryParse(titleData[versionInfo.serverKeyName], out serverVersion);
+			if (versionInfo.updateVersion < serverVersion)
 			{
 				// 업데이트가 있음을 알려야한다.
 				StartCoroutine(AuthManager.instance.RestartProcess(() =>

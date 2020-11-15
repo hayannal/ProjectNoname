@@ -47,7 +47,7 @@ Shader "KY/add_two" {
             #pragma fragment frag
             #include "UnityCG.cginc"
             #pragma multi_compile_fwdbase
-            #pragma exclude_renderers metal d3d11_9x xbox360 xboxone ps3 ps4 psp2 
+            #pragma exclude_renderers d3d11_9x xbox360 xboxone ps3 ps4 psp2 
             #pragma target 3.0
             uniform float4 _TimeEditor;
             uniform sampler2D _MainTex; uniform float4 _MainTex_ST;

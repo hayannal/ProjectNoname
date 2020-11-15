@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Purchasing;
+using MEC;
 
 public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 {
@@ -99,6 +101,16 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 
 	void OnClickOpenShop()
 	{
+		Timing.RunCoroutine(ShowCashShopAsync());
+	}
+
+	IEnumerator<float> ShowCashShopAsync()
+	{
+		DelayedLoadingCanvas.Show(true);
+
+		while (CodelessIAPStoreListener.initializationComplete == false)
+			yield return Timing.WaitForOneFrame;
+
 		UIInstanceManager.instance.ShowCanvasAsync("CashShopCanvas", null);
 	}
 

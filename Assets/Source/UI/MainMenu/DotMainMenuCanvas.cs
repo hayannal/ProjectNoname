@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Purchasing;
 using DG.Tweening;
+using MEC;
 
 public class DotMainMenuCanvas : MonoBehaviour
 {
@@ -303,6 +305,16 @@ public class DotMainMenuCanvas : MonoBehaviour
 	{
 		if (_reservedHide)
 			return;
+
+		Timing.RunCoroutine(ShowCashShopAsync());
+	}
+
+	IEnumerator<float> ShowCashShopAsync()
+	{
+		DelayedLoadingCanvas.Show(true);
+
+		while (CodelessIAPStoreListener.initializationComplete == false)
+			yield return Timing.WaitForOneFrame;
 
 		UIInstanceManager.instance.ShowCanvasAsync("CashShopCanvas", null);
 	}

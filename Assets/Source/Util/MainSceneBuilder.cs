@@ -276,6 +276,15 @@ public class MainSceneBuilder : MonoBehaviour
 		}
 #endif
 
+		// 마무리 셋팅하기 직전에 IAP Listener 초기화. 대신 튜토중이라면 패스한다.
+		// 어차피 캐시샵을 열지 못하는 상황이라 복구가 가능해져도 뽑기가 되버리니 이상할거다. 그러니 패스.
+		// 원래는 이렇게 마무리 셋팅부분에서 하려고 했었는데
+		// IAP로부터 상품 가격을 받아와서 처리하는 방식으로 바꾸다보니 이 초기화가 늦어지면 캐시샵 뜨는게 느려지게 된다.
+		// 그래서 로그인 후 즉시 하는거로 시점을 바꾸기로 한다.
+		// 이쯤되서 로딩시켜두면 느릴일도 없을거 같다.
+		if (ContentsManager.IsTutorialChapter() == false)
+			IAPListenerWrapper.instance.EnableListener(true);
+
 		// 서버와 연동 후 64비트 빌드를 뽑아봤는데 하필 요 부분쯤부터-40% 근처 프로그래스바가 올라가지 않으면서 프리징 되는 현상이 발생했다.
 		// 이상하게도 32비트도 정상이고 64비트인데 PLAYFAB디파인을 주석처리한 빌드도 정상인데
 		// PLAYFAB 디파인 켠 빌드에서만 거의 0.5%? 수준으로 프리징이 발생한다.
@@ -573,11 +582,6 @@ public class MainSceneBuilder : MonoBehaviour
 				yield return null;
 			Instantiate<GameObject>(_handleTitleCanvas.Result);
 		}
-
-		// 마무리 셋팅하기 직전에 IAP Listener 초기화. 대신 튜토중이라면 패스한다.
-		// 어차피 캐시샵을 열지 못하는 상황이라 복구가 가능해져도 뽑기가 되버리니 이상할거다. 그러니 패스.
-		if (ContentsManager.IsTutorialChapter() == false)
-			IAPListenerWrapper.instance.EnableListener(true);
 
 		// 마무리 셋팅
 		_waitUpdateRemainCount = 2;

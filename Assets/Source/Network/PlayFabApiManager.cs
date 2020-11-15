@@ -496,6 +496,7 @@ public class PlayFabApiManager : MonoBehaviour
 #elif UNITY_IOS
 		versionInfo = Resources.Load<BuildVersionInfo>("Build/BuildVersionInfo_iOS");
 #endif
+		Debug.LogFormat("Build Version _.{0}.{1}", versionInfo.updateVersion, versionInfo.addressableVersion);
 		if (titleData.ContainsKey(versionInfo.serverKeyName) && string.IsNullOrEmpty(titleData[versionInfo.serverKeyName]) == false)
 		{
 			var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);

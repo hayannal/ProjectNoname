@@ -93,8 +93,6 @@ public class AuthManager : MonoBehaviour
 	public void RequestCreateGuestAccount()
 	{
 		_customId = SystemInfo.deviceUniqueIdentifier;
-#if UNITY_IOS || UNITY_IPHONE
-#endif
 #if UNITY_EDITOR
 		_customId = Guid.NewGuid().ToString();
 #endif
@@ -121,8 +119,6 @@ public class AuthManager : MonoBehaviour
 	public static string GetLastGuestCustomId()
 	{
 		string customId = SystemInfo.deviceUniqueIdentifier;
-#if UNITY_IOS || UNITY_IPHONE
-#endif
 #if UNITY_EDITOR
 		customId = ObscuredPrefs.GetString(GUEST_CUSTOM_ID_KEY);
 #endif
@@ -210,6 +206,16 @@ public class AuthManager : MonoBehaviour
 		string stringId = "SystemUI_DisconnectServer";
 		if (error.Error == PlayFabErrorCode.AccountBanned)
 			stringId = "SystemUI_Banned";
+		else if (error.Error == PlayFabErrorCode.GoogleOAuthError)
+		{
+			if (_requestAuthType == eAuthType.Google)
+			{
+#if Google
+				Debug.Log("Logout Google Sign-in by OAuth Error");
+				GoogleSignIn.DefaultInstance.SignOut();
+#endif
+			}
+		}
 
 		//PlayFabApiManager.instance.HandleCommonError(error); 호출하는 대신
 		// 로딩 구조 및 sortOrder를 바꿔야해서 직접 처리한다.

@@ -33,11 +33,6 @@ public class DiaListItem : MonoBehaviour
 			priceText.text = product.metadata.localizedPriceString;
 		else
 		{
-			// 두번째 커밋 테스트중 이걸 Cherry-pick할거다.
-			// 릴리즈 브랜치 후 커밋테스트중
-			// 계속 커밋 테스트중
-			// 또 다시 브랜치 커밋 테스트중
-			// 브랜치 커밋 테스트중.
 			//Debug.LogWarning("Dia Product localizedPrice is zero.");
 			if (Application.systemLanguage == SystemLanguage.Korean)
 				priceText.text = string.Format("{0}{1:N0}", BattleInstanceManager.instance.GetCachedGlobalConstantString("KoreaWon"), shopDiamondTableData.kor);

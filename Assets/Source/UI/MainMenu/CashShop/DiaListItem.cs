@@ -33,6 +33,7 @@ public class DiaListItem : MonoBehaviour
 			priceText.text = product.metadata.localizedPriceString;
 		else
 		{
+			// 또 다시 브랜치 커밋 테스트중
 			// 브랜치 커밋 테스트중.
 			//Debug.LogWarning("Dia Product localizedPrice is zero.");
 			if (Application.systemLanguage == SystemLanguage.Korean)

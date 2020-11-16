@@ -61,7 +61,7 @@ public class AuthManager : MonoBehaviour
 #if UNITY_ANDROID
 	private string webClientId = "1044940954131-maditus5m72kc7vs7famr207mu3ug65j.apps.googleusercontent.com";
 #elif UNITY_IOS
-	private string webClientId = "1044940954131-586eevmokvgnn432agp3uev967t36rpb.apps.googleusercontent.com";
+	private string webClientId = "1044940954131-42mmb45rm3s2jr2e3utg10fo19m8qaua.apps.googleusercontent.com";
 #endif
 	private GoogleSignInConfiguration configuration;
 	private GoogleSignInUser googleUser;

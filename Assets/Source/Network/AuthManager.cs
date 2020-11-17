@@ -206,8 +206,10 @@ public class AuthManager : MonoBehaviour
 		string stringId = "SystemUI_DisconnectServer";
 		if (error.Error == PlayFabErrorCode.AccountBanned)
 			stringId = "SystemUI_Banned";
-		else if (error.Error == PlayFabErrorCode.GoogleOAuthError)
+		else if (error.Error == PlayFabErrorCode.InvalidGoogleToken || error.Error == PlayFabErrorCode.GoogleOAuthError)
 		{
+			// 혹시나 구글 로그인 관련해서 에러가 온다면 SignOut을 시켜놔야 Google SignIn 계정 선택창이라도 띄울 수 있게 된다.
+			// 정상적인 경우에는 거의 발생하지 않을 일이다.
 			if (_requestAuthType == eAuthType.Google)
 			{
 #if Google

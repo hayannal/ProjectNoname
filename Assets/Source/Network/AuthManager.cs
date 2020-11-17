@@ -426,6 +426,12 @@ public class AuthManager : MonoBehaviour
 #if Google
 	void LoginWithGoogle(bool silentLogin)
 	{
+#if UNITY_IOS
+		// iOS에서는 사일런트 로그인이 이전 로그인 정보를 리턴하는 구조로 바뀌었기 때문에(구글 iOS 로그인 5.0.0부터 변경됨)
+		// 더이상 silentLogin을 사용할 수 없다. iOS에서는 항상 false.
+		silentLogin = false;
+#endif
+
 		//Setup for Google
 		if (configuration == null)
 		{

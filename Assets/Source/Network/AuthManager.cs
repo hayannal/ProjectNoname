@@ -152,14 +152,20 @@ public class AuthManager : MonoBehaviour
 
 	static string GetDeviceUniqueIdentifier()
 	{
-#if UNITY_IOS
+#if !UNITY_EDITOR && UNITY_IOS
 		// 먼저 키체인을 뒤져서 저장되어있는지 확인하고 있으면 불러온다.
-		string savedIdentifier = KeyChain.BindGetKeyChainUser();
+		string jsonSavedInfo = KeyChain.BindGetKeyChainUser();
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		Dictionary<string, string> dicSavedInfo = serializer.DeserializeObject<Dictionary<string, string>>(jsonSavedInfo);
+		string savedIdentifier = "";
+		if (dicSavedInfo.ContainsKey("uuid"))
+			savedIdentifier = dicSavedInfo["uuid"];
+
 		if (string.IsNullOrEmpty(savedIdentifier))
 		{
 			// 없으면 SystemInfo.deviceUniqueIdentifier를 통해서 하나 만든 후 세이브 해두고 리턴.
 			savedIdentifier = SystemInfo.deviceUniqueIdentifier;
-			KeyChain.BindSetKeyChainUser("0", savedIdentifier);
+			KeyChain.BindSetKeyChainUser("_unknown", savedIdentifier);
 		}
 		Debug.LogFormat("GetDeviceUniqueIdentifier {0}", savedIdentifier);
 		return savedIdentifier;

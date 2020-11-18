@@ -746,7 +746,7 @@ public class AuthManager : MonoBehaviour
 		}
 
 		Debug.Log("Start facebook login.");
-		FB.LogInWithPublishPermissions(new List<string>() { "public_profile", "email", "publish_actions" }, AuthCallback);
+		FB.LogInWithPublishPermissions(new List<string>() { "public_profile", "email" }, AuthCallback);
 	}
 
 	private void AuthCallback(ILoginResult result)

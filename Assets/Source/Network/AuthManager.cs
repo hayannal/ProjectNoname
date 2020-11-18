@@ -143,7 +143,7 @@ public class AuthManager : MonoBehaviour
 #if Facebook
 #if UNITY_IOS
 			case eAuthType.Facebook:
-				LoginWithFacebook(true);
+				LoginWithFacebook();
 				break;
 #endif
 #endif
@@ -386,7 +386,7 @@ public class AuthManager : MonoBehaviour
 #if Facebook
 #if UNITY_IOS
 					case eAuthType.Facebook:
-						LoginWithFacebook(false);
+						LoginWithFacebook();
 						break;
 #endif
 #endif
@@ -689,7 +689,7 @@ public class AuthManager : MonoBehaviour
 		_onLinkFailure = onLinkFailure;
 
 #if Facebook
-		LoginWithFacebook(false);
+		LoginWithFacebook();
 #endif
 	}
 
@@ -730,7 +730,7 @@ public class AuthManager : MonoBehaviour
 	}
 
 #if Facebook
-	void LoginWithFacebook(bool silently)
+	void LoginWithFacebook()
 	{
 		if (!FB.IsInitialized)
 		{
@@ -742,10 +742,10 @@ public class AuthManager : MonoBehaviour
 			return;
 		}
 
-		if (silently)
+		if (_waitForLinkFacebook == false)
 		{
 			// 구글과 달리 페이스북은 초기화때 이미 로그인된 상태를 감지해서 받아오는 기능이 있다.
-			// 그러니 silently때는 이미 로그인 되어있는지만 판단하면 된다.
+			// 그러니 로그인을 할때는 이미 로그인 되어있는지만 판단하면 된다.
 			if (FB.IsLoggedIn && AccessToken.CurrentAccessToken != null)
 			{
 				Debug.Log("Facebook login already.");

@@ -732,9 +732,15 @@ public class AuthManager : MonoBehaviour
 #if Facebook
 	void LoginWithFacebook()
 	{
-		// 이럴 일은 없을거 같지만 샘플에도 체크하는 코드 있으니 추가.
+		// 앱 처음 켜서 들어가려고 할때 FB가 초기화 되어있지 않을 가능성이 높다.
 		if (!FB.IsInitialized)
 		{
+			if (_waitForLinkFacebook == false)
+			{
+				_retryLoginRemainTime = 0.2f;
+				return;
+			}
+
 			Debug.LogError("Facebook is not initialized.");
 			return;
 		}

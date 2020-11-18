@@ -16,6 +16,11 @@ public class TutorialLinkAccountCanvas : MonoBehaviour
 	// 거의 SettingCanvas에서 하던거와 비슷하다. 대신 로그아웃이 없고 연동하기만 있다.
 	public void OnClickLinkAccountButton()
 	{
+#if UNITY_IOS
+		OnClickLinkFacebookButton();
+		return;
+#endif
+
 		// 이땐 항상 게스트 상태다.
 		AuthManager.instance.LinkGoogleAccount(() =>
 		{
@@ -43,4 +48,35 @@ public class TutorialLinkAccountCanvas : MonoBehaviour
 			}
 		});
 	}
+
+#if UNITY_IOS
+	void OnClickLinkFacebookButton()
+	{
+		// 구글때와 비슷하게
+		AuthManager.instance.LinkFacebookAccount(() =>
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_SignInDone"), 2.0f);
+			AuthManager.instance.SetNeedUnlinkCustomId();
+			gameObject.SetActive(false);
+
+		}, (cancel, failure) =>
+		{
+			if (cancel)
+				return;
+			if (failure == PlayFab.PlayFabErrorCode.Unknown)
+				return;
+
+			if (failure == PlayFab.PlayFabErrorCode.LinkedAccountAlreadyClaimed)
+			{
+				YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_SignInAlready"), () =>
+				{
+					AuthManager.instance.RestartWithFacebook();
+				}, () =>
+				{
+					AuthManager.instance.LogoutWithFacebook(true);
+				});
+			}
+		});
+	}
+#endif
 }

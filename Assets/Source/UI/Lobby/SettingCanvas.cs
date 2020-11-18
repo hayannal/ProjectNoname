@@ -19,6 +19,8 @@ public class SettingCanvas : MonoBehaviour
 	public Text lockIconOnOffText;
 
 	public Text languageButtonText;
+	public GameObject googleImageObject;
+	public GameObject facebookImageObject;
 	public Text accountButtonText;
 	public Slider frameRateSlider;
 	public Text frameRateText;
@@ -36,6 +38,13 @@ public class SettingCanvas : MonoBehaviour
 	void Start()
 	{
 		_ignoreStartEvent = true;
+#if UNITY_ANDROID
+		googleImageObject.SetActive(true);
+		facebookImageObject.SetActive(false);
+#elif UNITY_IOS
+		googleImageObject.SetActive(false);
+		facebookImageObject.SetActive(true);
+#endif
 	}
 
 	void OnEnable()

@@ -28,7 +28,11 @@ public class OptionManager : MonoBehaviour
 	float _bgmVolume = 1.0f;
 	float _systemVolume = 1.0f;
 	string _language = "KOR";
+#if UNITY_IOS
+	int _frame = 6;
+#else
 	int _frame = 5;
+#endif
 	int _useDoubleTab = 1;
 	int _lockIcon = 0;
 	int _energyAlarm = 0;
@@ -169,7 +173,11 @@ public class OptionManager : MonoBehaviour
 		set
 		{
 			_frame = value;
+#if UNITY_IOS
+			_frame = Mathf.Clamp(_frame, 5, 6);
+#else
 			_frame = Mathf.Clamp(_frame, 0, 6);
+#endif
 
 			// 30프레임일때 vSyncCount값을 2로 설정해서 처리하는 방법도 있지만 이걸 한다고 30프레임의 stuttering이 없어지지 않는다. 그래서 그냥 0으로 간다.
 			QualitySettings.vSyncCount = 0;
@@ -188,6 +196,10 @@ public class OptionManager : MonoBehaviour
 		{
 			// 카메라 포지션 lerp에 Time.smoothDeltaTime를 사용하는게 가장 효과적이라서 굳이 50프레임일때 52프레임으로 늘릴 이유는 없어보인다.
 			// 숫자 적힌대로 설정하기로 한다.
+#if UNITY_IOS
+			case 6: targetFrameRate = 60; break;
+			default: targetFrameRate = 30; break;
+#else
 			case 0: targetFrameRate = 30; break;
 			case 1: targetFrameRate = 35; break;
 			case 2: targetFrameRate = 40; break;
@@ -195,6 +207,7 @@ public class OptionManager : MonoBehaviour
 			case 4: targetFrameRate = 50; break;
 			case 5: targetFrameRate = 55; break;
 			case 6: targetFrameRate = 60; break;
+#endif
 		}
 		return targetFrameRate;
 	}
@@ -204,6 +217,10 @@ public class OptionManager : MonoBehaviour
 		int targetFrameRate = 60;
 		switch (frame)
 		{
+#if UNITY_IOS
+			case 6: targetFrameRate = 60; break;
+			default: targetFrameRate = 30; break;
+#else
 			case 0: targetFrameRate = 30; break;
 			case 1: targetFrameRate = 35; break;
 			case 2: targetFrameRate = 40; break;
@@ -211,6 +228,7 @@ public class OptionManager : MonoBehaviour
 			case 4: targetFrameRate = 50; break;
 			case 5: targetFrameRate = 55; break;
 			case 6: targetFrameRate = 60; break;
+#endif
 		}
 		return targetFrameRate;
 	}

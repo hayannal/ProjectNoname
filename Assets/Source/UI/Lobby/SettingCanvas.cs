@@ -86,6 +86,9 @@ public class SettingCanvas : MonoBehaviour
 
 		LoadLanguage();
 		RefreshAccount();
+#if UNITY_IOS
+		frameRateSlider.minValue = 5;
+#endif
 		frameRateSlider.value = OptionManager.instance.frame;
 
 		_notUserSetting = true;

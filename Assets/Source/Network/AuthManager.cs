@@ -150,9 +150,27 @@ public class AuthManager : MonoBehaviour
 		}
 	}
 
+	static string GetDeviceUniqueIdentifier()
+	{
+#if UNITY_IOS
+		// 먼저 키체인을 뒤져서 저장되어있는지 확인하고 있으면 불러온다.
+		string savedIdentifier = KeyChain.BindGetKeyChainUser();
+		if (string.IsNullOrEmpty(savedIdentifier))
+		{
+			// 없으면 SystemInfo.deviceUniqueIdentifier를 통해서 하나 만든 후 세이브 해두고 리턴.
+			savedIdentifier = SystemInfo.deviceUniqueIdentifier;
+			KeyChain.BindSetKeyChainUser("0", savedIdentifier);
+		}
+		Debug.LogFormat("GetDeviceUniqueIdentifier {0}", savedIdentifier);
+		return savedIdentifier;
+#endif
+
+		return SystemInfo.deviceUniqueIdentifier;
+	}
+
 	public void RequestCreateGuestAccount()
 	{
-		_customId = SystemInfo.deviceUniqueIdentifier;
+		_customId = GetDeviceUniqueIdentifier();
 #if UNITY_EDITOR
 		_customId = Guid.NewGuid().ToString();
 #endif
@@ -178,7 +196,7 @@ public class AuthManager : MonoBehaviour
 
 	public static string GetLastGuestCustomId()
 	{
-		string customId = SystemInfo.deviceUniqueIdentifier;
+		string customId = GetDeviceUniqueIdentifier();
 #if UNITY_EDITOR
 		customId = ObscuredPrefs.GetString(GUEST_CUSTOM_ID_KEY);
 #endif

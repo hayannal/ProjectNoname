@@ -143,7 +143,7 @@ public class AuthManager : MonoBehaviour
 #if Facebook
 #if UNITY_IOS
 			case eAuthType.Facebook:
-				LoginWithFacebook();
+				LoginWithFacebook(true);
 				break;
 #endif
 #endif
@@ -386,7 +386,7 @@ public class AuthManager : MonoBehaviour
 #if Facebook
 #if UNITY_IOS
 					case eAuthType.Facebook:
-						LoginWithFacebook();
+						LoginWithFacebook(false);
 						break;
 #endif
 #endif
@@ -689,7 +689,7 @@ public class AuthManager : MonoBehaviour
 		_onLinkFailure = onLinkFailure;
 
 #if Facebook
-		LoginWithFacebook();
+		LoginWithFacebook(false);
 #endif
 	}
 
@@ -730,19 +730,28 @@ public class AuthManager : MonoBehaviour
 	}
 
 #if Facebook
-	void LoginWithFacebook()
+	void LoginWithFacebook(bool silently)
 	{
-		// 앱 처음 켜서 들어가려고 할때 FB가 초기화 되어있지 않을 가능성이 높다.
 		if (!FB.IsInitialized)
 		{
+			Debug.Log("Facebook is not initialized.");
+
+			// 앱 처음 켜서 들어가려고 할때 FB가 초기화 되어있지 않을 가능성이 높다. 대기시간 두고 조금 뒤에 다시 시도하게 한다.
 			if (_waitForLinkFacebook == false)
-			{
 				_retryLoginRemainTime = 0.2f;
+			return;
+		}
+
+		if (silently)
+		{
+			// 구글과 달리 페이스북은 초기화때 이미 로그인된 상태를 감지해서 받아오는 기능이 있다.
+			// 그러니 silently때는 이미 로그인 되어있는지만 판단하면 된다.
+			if (FB.IsLoggedIn && AccessToken.CurrentAccessToken != null)
+			{
+				Debug.Log("Facebook login already.");
+				AuthCallback(null);
 				return;
 			}
-
-			Debug.LogError("Facebook is not initialized.");
-			return;
 		}
 
 		Debug.Log("Start facebook login.");
@@ -791,6 +800,7 @@ public class AuthManager : MonoBehaviour
 			}
 			else
 			{
+				// 구글과 마찬가지
 				_retryLoginRemainTime = 0.2f;
 			}
 		}

@@ -160,6 +160,7 @@ public class SettingCanvas : MonoBehaviour
 				accountButtonText.SetLocalizedText(UIString.instance.GetString("GameUI_SignIn"));
 				break;
 			case AuthManager.eAuthType.Google:
+			case AuthManager.eAuthType.Facebook:
 				accountButtonText.SetLocalizedText(UIString.instance.GetString("GameUI_LogOut"));
 				break;
 		}
@@ -167,6 +168,11 @@ public class SettingCanvas : MonoBehaviour
 
 	public void OnClickGoogleButton()
 	{
+#if UNITY_IOS
+		OnClickFacebookButton();
+		return;
+#endif
+
 		// 구현부 없이 그냥 호출하면 아무일 안일어나는 소셜 함수다.
 		// 게다가 구글플레이서비스나 iOS 게임센터에 연결되는 형태니 Sign-in 과는 상관없으므로 사용하지 않는다.
 		//Social.localUser.Authenticate((bool success) =>
@@ -233,6 +239,59 @@ public class SettingCanvas : MonoBehaviour
 				break;
 		}
 	}
+
+#if UNITY_IOS
+	// 아이폰에서는 페이스북쪽으로 처리해준다.
+	void OnClickFacebookButton()
+	{
+		AuthManager.eAuthType lastAuthType = AuthManager.instance.GetLastLoginType();
+		switch (lastAuthType)
+		{
+			case AuthManager.eAuthType.Guest:
+				AuthManager.instance.LinkFacebookAccount(() =>
+				{
+					RefreshAccount();
+					ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_SignInDone"), 2.0f);
+					AuthManager.instance.SetNeedUnlinkCustomId();
+
+				}, (cancel, failure) =>
+				{
+					if (cancel)
+						return;
+					if (failure == PlayFab.PlayFabErrorCode.Unknown)
+						return;
+
+					if (failure == PlayFab.PlayFabErrorCode.LinkedAccountAlreadyClaimed)
+					{
+						YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_SignInAlready"), () =>
+						{
+							// 이미 페이스북 로그인은 되어있는 상태지만 Last AuthType는 CustomId인 상태다. 그러니 Last AuthType을 바꾸고 씬을 재시작시켜야한다.
+							AuthManager.instance.RestartWithFacebook();
+						}, () =>
+						{
+							AuthManager.instance.LogoutWithFacebook(true);
+						});
+					}
+				});
+				break;
+			case AuthManager.eAuthType.Facebook:
+				// 로그아웃 예외처리는 구글과 마찬가지로 처리
+				if (AuthManager.instance.needUnlinkCustomId)
+				{
+					ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_LogOutException"), 2.0f);
+					return;
+				}
+
+				// 이미 연동되어있는 상태라면 확인창을 띄우고 로그아웃을 해야한다.
+				string message = string.Format("{0}\n\n{1}", AuthManager.instance.GetFacebookUserId(), UIString.instance.GetString("GameUI_LogOutConfirm"));
+				YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), message, () =>
+				{
+					AuthManager.instance.LogoutWithFacebook();
+				});
+				break;
+		}
+	}
+#endif
 	#endregion
 
 	#region Frame Rate

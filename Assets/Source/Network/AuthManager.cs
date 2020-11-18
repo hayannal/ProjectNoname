@@ -1,4 +1,5 @@
 ﻿#define Google
+#define Facebook
 
 using System.Collections;
 using System.Collections.Generic;
@@ -13,6 +14,11 @@ using PlayFab.ClientModels;
 #if Google
 using Google;
 using System.Threading.Tasks;
+#endif
+#if Facebook
+#if UNITY_IOS
+using Facebook.Unity;
+#endif
 #endif
 #if UNITY_EDITOR
 using UnityEditor;
@@ -50,6 +56,53 @@ public class AuthManager : MonoBehaviour
 	Action _onLinkSuccess;
 	Action<bool, PlayFabErrorCode> _onLinkFailure;
 
+#if Facebook
+#if UNITY_IOS
+	void Start()
+	{
+		if (!FB.IsInitialized)
+		{
+			// Initialize the Facebook SDK
+			FB.Init(InitCallback, OnHideUnity);
+		}
+		else
+		{
+			// Already initialized, signal an app activation App Event
+			FB.ActivateApp();
+		}
+	}
+
+	void InitCallback()
+	{
+		if (FB.IsInitialized)
+		{
+			// Signal an app activation App Event
+			FB.ActivateApp();
+			// Continue with Facebook SDK
+			// ...
+		}
+		else
+		{
+			Debug.Log("Failed to Initialize the Facebook SDK");
+		}
+	}
+
+	void OnHideUnity(bool isGameShown)
+	{
+		//if (!isGameShown)
+		//{
+		//	// Pause the game - we will need to hide
+		//	Time.timeScale = 0;
+		//}
+		//else
+		//{
+		//	// Resume the game - we're getting focus again
+		//	Time.timeScale = 1;
+		//}
+	}
+#endif
+#endif
+
 	void Update()
 	{
 		UpdateRetryRemainTime();
@@ -86,6 +139,13 @@ public class AuthManager : MonoBehaviour
 			case eAuthType.Google:
 				LoginWithGoogle(true);
 				break;
+#endif
+#if Facebook
+#if UNITY_IOS
+			case eAuthType.Facebook:
+				LoginWithFacebook();
+				break;
+#endif
 #endif
 		}
 	}
@@ -180,7 +240,17 @@ public class AuthManager : MonoBehaviour
 		PlayFabClientAPI.LoginWithGoogleAccount(request, OnLoginSuccess, OnLoginFailure);
 	}
 
-	void OnLoginSuccess(LoginResult result)
+	void RequestLoginWithFacebook(string accessToken)
+	{
+		PlayFabApiManager.instance.StartTimeRecord("Login");
+		_requestAuthType = eAuthType.Facebook;
+
+		GetPlayerCombinedInfoRequestParams parameters = CreateLoginParameters();
+		var request = new LoginWithFacebookRequest { AccessToken = accessToken, CreateAccount = false, InfoRequestParameters = parameters };
+		PlayFabClientAPI.LoginWithFacebook(request, OnLoginSuccess, OnLoginFailure);
+	}
+
+	void OnLoginSuccess(PlayFab.ClientModels.LoginResult result)
 	{
 		PlayFabApiManager.instance.EndTimeRecord("Login");
 
@@ -295,15 +365,15 @@ public class AuthManager : MonoBehaviour
 
 
 
-	float _retryGoogleLoginRemainTime;
+	float _retryLoginRemainTime;
 	void UpdateRetryRemainTime()
 	{
-		if (_retryGoogleLoginRemainTime > 0.0f)
+		if (_retryLoginRemainTime > 0.0f)
 		{
-			_retryGoogleLoginRemainTime -= Time.deltaTime;
-			if (_retryGoogleLoginRemainTime <= 0.0f)
+			_retryLoginRemainTime -= Time.deltaTime;
+			if (_retryLoginRemainTime <= 0.0f)
 			{
-				_retryGoogleLoginRemainTime = 0.0f;
+				_retryLoginRemainTime = 0.0f;
 				eAuthType lastAuthType = GetLastLoginType();
 				switch (lastAuthType)
 				{
@@ -312,6 +382,13 @@ public class AuthManager : MonoBehaviour
 						// 재시도때는 계정이라도 바꿀 수 있게 해줘야하지 않을까. 우선 들어올 확률은 적으니 false로 해본다.
 						LoginWithGoogle(false);
 						break;
+#endif
+#if Facebook
+#if UNITY_IOS
+					case eAuthType.Facebook:
+						LoginWithFacebook();
+						break;
+#endif
 #endif
 				}
 			}
@@ -363,6 +440,35 @@ public class AuthManager : MonoBehaviour
 		if (_onLinkFailure != null)
 			_onLinkFailure(false, error.Error);
 	}
+
+#if UNITY_IOS
+	void RequestLinkFacebook(string accessToken)
+	{
+		var request = new LinkFacebookAccountRequest { AccessToken = accessToken };
+		PlayFabClientAPI.LinkFacebookAccount(request, OnLinkFacebookSuccess, OnLinkFacebookFailure);
+	}
+
+	void OnLinkFacebookSuccess(LinkFacebookAccountResult result)
+	{
+		ChangeLastAuthType(eAuthType.Facebook);
+
+#if UNITY_EDITOR
+		ObscuredPrefs.DeleteKey(GUEST_CUSTOM_ID_KEY);
+#endif
+
+		if (_onLinkSuccess != null)
+			_onLinkSuccess();
+	}
+
+	void OnLinkFacebookFailure(PlayFabError error)
+	{
+		Debug.Log(error.Error.ToString());
+		Debug.Log(error.ErrorMessage);
+
+		if (_onLinkFailure != null)
+			_onLinkFailure(false, error.Error);
+	}
+#endif
 	#endregion
 
 
@@ -428,12 +534,6 @@ public class AuthManager : MonoBehaviour
 #if Google
 	void LoginWithGoogle(bool silentLogin)
 	{
-#if UNITY_IOS
-		// iOS에서는 사일런트 로그인이 이전 로그인 정보를 리턴하는 구조로 바뀌었기 때문에(구글 iOS 로그인 5.0.0부터 변경됨)
-		// 더이상 silentLogin을 사용할 수 없다. iOS에서는 항상 false.
-		silentLogin = false;
-#endif
-
 		//Setup for Google
 		if (configuration == null)
 		{
@@ -502,7 +602,7 @@ public class AuthManager : MonoBehaviour
 			{
 				// 이제는 로그인이 Silent 형태로 바뀌면서 취소할 일도 없어졌다.
 				// 구글 로그인이 거의 실패할 일이 없으나 아무 처리도 하지 않으면 넘어가질 않을테니 재시도 하게 한다.
-				_retryGoogleLoginRemainTime = 0.2f;
+				_retryLoginRemainTime = 0.2f;
 			}
 			else if (task.IsCanceled)
 			{
@@ -510,7 +610,7 @@ public class AuthManager : MonoBehaviour
 				// 이 구글 로그인은 게임보다 더 앞에 나오는 창이기 때문에 UI로 막는다고 이 터치가 안먹히게 할 방법도 없다.
 				// 이때가 링크할때면 상관없는데 유저 캔슬로 처리하면 되는데 하필 로그인하는 동안이면 게스트로 바꾸기도 애매하므로
 				// 시간 조금 기다렸다가 다시 구글 로그인을 시도하는 형태로 구현해본다.
-				_retryGoogleLoginRemainTime = 0.2f;
+				_retryLoginRemainTime = 0.2f;
 			}
 			else
 			{
@@ -561,5 +661,134 @@ public class AuthManager : MonoBehaviour
 		string authCode = googleUser.AuthCode;
 		Debug.Log(String.Format("Auth Code: {0}.", authCode));
 	}
+#endif
+
+
+
+
+
+
+
+
+
+
+
+
+#if UNITY_IOS
+	bool _waitForLinkFacebook = false;
+	public void LinkFacebookAccount(Action onLinkSuccess, Action<bool, PlayFabErrorCode> onLinkFailure)
+	{
+#if UNITY_EDITOR
+		Debug.LogWarning("Google login cannot be launched from the editor.");
+		return;
+#endif
+		WaitingNetworkCanvas.Show(true);
+
+		_waitForLinkFacebook = true;
+		_onLinkSuccess = onLinkSuccess;
+		_onLinkFailure = onLinkFailure;
+
+#if Facebook
+		LoginWithFacebook();
+#endif
+	}
+
+	public void LogoutWithFacebook(bool onlySignOut = false)
+	{
+#if Facebook
+		FB.LogOut();
+#endif
+
+		if (onlySignOut)
+			return;
+
+		// 로그아웃시에 하는 것도 구글과 비슷
+		DeleteCachedLastLoginInfo();
+		ClientSaveData.instance.OnEndGame();
+		PlayerData.instance.ResetData();
+		SceneManager.LoadScene(0);
+	}
+
+	public void RestartWithFacebook()
+	{
+		// 리스타트도 마찬가지
+		ChangeLastAuthType(AuthManager.eAuthType.Facebook);
+		ClientSaveData.instance.OnEndGame();
+		PlayerData.instance.ResetData();
+		SceneManager.LoadScene(0);
+	}
+
+
+
+	public string GetFacebookUserId()
+	{
+#if Facebook
+		if (AccessToken.CurrentAccessToken != null)
+			return AccessToken.CurrentAccessToken.UserId;
+#endif
+		return "";
+	}
+
+#if Facebook
+	void LoginWithFacebook()
+	{
+		// 이럴 일은 없을거 같지만 샘플에도 체크하는 코드 있으니 추가.
+		if (!FB.IsInitialized)
+		{
+			Debug.LogError("Facebook is not initialized.");
+			return;
+		}
+
+		Debug.Log("Start facebook login.");
+		FB.LogInWithPublishPermissions(new List<string>() { "public_profile", "email", "publish_actions" }, AuthCallback);
+	}
+
+	private void AuthCallback(ILoginResult result)
+	{
+		if (FB.IsLoggedIn)
+		{
+			Debug.Log("Facebook login successed.");
+
+			// AccessToken class will have session details
+			var aToken = AccessToken.CurrentAccessToken;
+
+			// Print current access token's User ID
+			Debug.Log(aToken.UserId);
+
+			//FB.API("me?fields=email,name", HttpMethod.GET, APICallBack);
+		}
+		else
+		{
+			Debug.Log("User cancelled login.");
+		}
+
+		if (_waitForLinkFacebook)
+		{
+			_waitForLinkFacebook = false;
+			WaitingNetworkCanvas.Show(false);
+
+			if (FB.IsLoggedIn)
+			{
+				RequestLinkFacebook(AccessToken.CurrentAccessToken.TokenString);
+			}
+			else
+			{
+				if (_onLinkFailure != null)
+					_onLinkFailure(true, PlayFabErrorCode.Unknown);
+			}
+		}
+		else
+		{
+			if (FB.IsLoggedIn)
+			{
+				RequestLoginWithFacebook(AccessToken.CurrentAccessToken.TokenString);
+			}
+			else
+			{
+				_retryLoginRemainTime = 0.2f;
+			}
+		}
+	}
+#endif
 #endif
 }

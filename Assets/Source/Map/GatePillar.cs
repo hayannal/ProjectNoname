@@ -136,11 +136,6 @@ public class GatePillar : MonoBehaviour
 			{
 				_purifyCountShowRemainTime = 0.0f;
 				RefreshPurify();
-
-				// 마지막 챕터에서는 어차피 도전모드로 갈수없기 때문에 레버를 만들 필요가 없다.
-				int chapterLimit = BattleInstanceManager.instance.GetCachedGlobalConstantInt("ChaosChapterLimit");
-				if (_maxPurify == false && PlayerData.instance.selectedChapter < chapterLimit)
-					_chaosPurifierShowRemainTime = chaosPurifierShowDelayTime;
 			}
 		}
 
@@ -235,6 +230,11 @@ public class GatePillar : MonoBehaviour
 			chaosPurifyImageList[i].color = _maxPurify ? purifyHighlightColor : purifyNormalColor;
 		}
 		chaosRootObject.SetActive(true);
+
+		// 마지막 챕터에서는 어차피 도전모드로 갈수없기 때문에 레버를 만들 필요가 없다.
+		int chapterLimit = BattleInstanceManager.instance.GetCachedGlobalConstantInt("ChaosChapterLimit");
+		if (_maxPurify == false && PlayerData.instance.selectedChapter < chapterLimit)
+			_chaosPurifierShowRemainTime = chaosPurifierShowDelayTime;
 	}
 
 	void OnCollisionEnter(Collision collision)

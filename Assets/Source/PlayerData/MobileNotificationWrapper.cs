@@ -93,8 +93,10 @@ public class MobileNotificationWrapper : MonoBehaviour
 
 	IEnumerator RequestAuthorization(Action nextAction)
 	{
+		bool grantedResult = false;
+
 		var authorizationOption = AuthorizationOption.Alert | AuthorizationOption.Badge;
-		using (var req = new AuthorizationRequest(authorizationOption, true))
+		using (var req = new AuthorizationRequest(authorizationOption, false))
 		{
 			while (!req.IsFinished)
 			{
@@ -107,11 +109,19 @@ public class MobileNotificationWrapper : MonoBehaviour
 			res += "\n error:  " + req.Error;
 			res += "\n deviceToken:  " + req.DeviceToken;
 			Debug.Log(res);
+
+			grantedResult = req.Granted;
 		}
 
 		yield return null;
 
 		// 권한요청을 거절했는지 검사같은거는 뭐로 해야하나.
+		// 혹은 여기서 한번 거절했으면 계속 grantedResult false로 되려나? 그럼 이거로 판단할 수 있을거 같은디
+		if (grantedResult == false)
+		{
+			OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_EnergyNotiAppleLast"));
+			yield break;
+		}
 
 		if (nextAction != null)
 			nextAction();

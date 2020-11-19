@@ -39,7 +39,7 @@ public class MobileNotificationWrapper : MonoBehaviour
 	void Start()
 	{
 		// 채널은 하나만 쓴다.
-		var c1 = new GameNotificationChannel(ChannelId, "Default Game Channel", "Generic notifications");
+		var c1 = new GameNotificationChannel(ChannelId, "Energy Charge Channel", "Gate Stone");
 		manager.Initialize(c1);
 	}
 

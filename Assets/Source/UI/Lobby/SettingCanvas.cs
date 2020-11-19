@@ -45,6 +45,8 @@ public class SettingCanvas : MonoBehaviour
 #elif UNITY_IOS
 		googleImageObject.SetActive(false);
 		facebookImageObject.SetActive(true);
+		// minValue를 고치는건 한번만 하면 된다.
+		frameRateSlider.minValue = 5;
 #endif
 	}
 
@@ -87,9 +89,6 @@ public class SettingCanvas : MonoBehaviour
 
 		LoadLanguage();
 		RefreshAccount();
-#if UNITY_IOS
-		frameRateSlider.minValue = 5;
-#endif
 		frameRateSlider.value = OptionManager.instance.frame;
 
 		_notUserSetting = true;

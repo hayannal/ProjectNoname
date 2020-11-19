@@ -742,16 +742,7 @@ public class AuthManager : MonoBehaviour
 		SceneManager.LoadScene(0);
 	}
 
-
-
-	public string GetFacebookUserId()
-	{
-#if Facebook
-		if (AccessToken.CurrentAccessToken != null)
-			return AccessToken.CurrentAccessToken.UserId;
-#endif
-		return "";
-	}
+	
 
 #if Facebook
 	void LoginWithFacebook()

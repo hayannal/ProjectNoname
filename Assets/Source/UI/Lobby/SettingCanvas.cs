@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Michsky.UI.Hexart;
+using MEC;
 
 public class SettingCanvas : MonoBehaviour
 {
@@ -339,8 +340,18 @@ public class SettingCanvas : MonoBehaviour
 		MobileNotificationWrapper.instance.CheckAuthorization(() =>
 		{
 			CurrencyData.instance.ReserveEnergyNotification();
+		}, () =>
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_EnergyNotiAppleLast"), 2.0f);
+			Timing.RunCoroutine(DelayedResetSwitch());
 		});
 #endif
+	}
+
+	IEnumerator<float> DelayedResetSwitch()
+	{
+		yield return Timing.WaitForOneFrame;
+		energyAlarmSwitch.AnimateSwitch();
 	}
 
 	public void OnSwitchOffEnergyAlarm()

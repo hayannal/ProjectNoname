@@ -86,12 +86,12 @@ public class MobileNotificationWrapper : MonoBehaviour
 	}
 
 #if UNITY_IOS
-	public void CheckAuthorization(Action nextAction = null)
+	public void CheckAuthorization(Action okAction = null, Action noAction = null)
 	{
-		StartCoroutine(RequestAuthorization(nextAction));
+		StartCoroutine(RequestAuthorization(okAction, noAction));
 	}
 
-	IEnumerator RequestAuthorization(Action nextAction)
+	IEnumerator RequestAuthorization(Action okAction, Action noAction)
 	{
 		bool grantedResult = false;
 
@@ -115,16 +115,20 @@ public class MobileNotificationWrapper : MonoBehaviour
 
 		yield return null;
 
-		// 권한요청을 거절했는지 검사같은거는 뭐로 해야하나.
-		// 혹은 여기서 한번 거절했으면 계속 grantedResult false로 되려나? 그럼 이거로 판단할 수 있을거 같은디
+		// 저 위에 Granted값에 따라 권한요청을 거절했는지 허용했는지 체크할 수 있다.
+		// 문서상에서는 iOSNotificationCenter.GetNotificationSettings를 호출해서 현재 기기에서 셋팅한 값을 알수 있다고 하는데
+		// 이거 호출할 필요도 없이 위의 코드로도 다 리턴되서 날아온다.
+		// 한번 허용한 담에 기기설정에서 끄고나면 이 Granted 역시 false로 날아오니
+		// false일때 앱 알림 허용해달라는 메세지 하나 보여주기로 한다.
 		if (grantedResult == false)
 		{
-			OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_EnergyNotiAppleLast"));
+			if (noAction != null)
+				noAction();
 			yield break;
 		}
 
-		if (nextAction != null)
-			nextAction();
+		if (okAction != null)
+			okAction();
 	}
 #endif
 }

@@ -246,6 +246,7 @@ public class StageManager : MonoBehaviour
 			if (string.IsNullOrEmpty(cachedEnvironmentSetting) == false)
 			{
 				_handleEnvironmentSettingPrefab = AddressableAssetLoadManager.GetAddressableGameObject(cachedEnvironmentSetting, "EnvironmentSetting");
+				_environmentSettingAddress = cachedEnvironmentSetting;
 				return;
 			}
 		}

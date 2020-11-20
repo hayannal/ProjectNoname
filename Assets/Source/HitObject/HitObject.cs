@@ -578,6 +578,8 @@ public class HitObject : MonoBehaviour
 				result = rotation * result;
 			}
 		}
+		if (result == Vector3.zero)
+			result = Vector3.forward;
 		if (meHit.startDirectionType == HitObjectMovement.eStartDirectionType.Direction && meHit.useWorldSpaceDirection)
 			return result;
 		if (meHit.createPositionType == eCreatePositionType.Bone && meHit.useBoneRotation)

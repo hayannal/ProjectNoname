@@ -109,7 +109,7 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 		if (_targetLevelUpCount == 0)
 			_targetLevelUpCount = targetCount;
 		else
-			Debug.LogError("Invalid call. _targetLevelUpCount is not zero.");
+			Debug.LogErrorFormat("Invalid call. _targetLevelUpCount is not zero. {0} {1}", _targetLevelUpCount, targetCount);
 	}
 
 	public CanvasGroup canvasGroup;

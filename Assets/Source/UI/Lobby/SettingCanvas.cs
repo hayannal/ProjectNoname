@@ -20,6 +20,7 @@ public class SettingCanvas : MonoBehaviour
 	public Text lockIconOnOffText;
 
 	public Text languageButtonText;
+	public Transform accountTextTransform;
 	public GameObject googleImageObject;
 	public GameObject facebookImageObject;
 	public Text accountButtonText;
@@ -176,6 +177,11 @@ public class SettingCanvas : MonoBehaviour
 				accountButtonText.SetLocalizedText(UIString.instance.GetString("GameUI_LogOut"));
 				break;
 		}
+	}
+
+	public void OnClickAccountMoreButton()
+	{
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, UIString.instance.GetString("GameUI_AccountMore"), 300, accountTextTransform, new Vector2(0.0f, -35.0f));
 	}
 
 	public void OnClickGoogleButton()

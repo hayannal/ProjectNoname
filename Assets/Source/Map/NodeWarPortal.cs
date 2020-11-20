@@ -84,16 +84,17 @@ public class NodeWarPortal : MonoBehaviour
 	{
 		if (_needUpdate == false)
 			return;
-		if (canvasGroup.alpha == 0.0f)
-			return;
 
 		if (ServerTime.UtcNow < _nextResetDateTime)
 		{
-			TimeSpan remainTime = _nextResetDateTime - ServerTime.UtcNow;
-			if (_lastRemainTimeSecond != (int)remainTime.TotalSeconds)
+			if (canvasGroup.alpha > 0.0f)
 			{
-				remainTimeText.text = string.Format("{0:00}:{1:00}:{2:00}", remainTime.Hours, remainTime.Minutes, remainTime.Seconds);
-				_lastRemainTimeSecond = (int)remainTime.TotalSeconds;
+				TimeSpan remainTime = _nextResetDateTime - ServerTime.UtcNow;
+				if (_lastRemainTimeSecond != (int)remainTime.TotalSeconds)
+				{
+					remainTimeText.text = string.Format("{0:00}:{1:00}:{2:00}", remainTime.Hours, remainTime.Minutes, remainTime.Seconds);
+					_lastRemainTimeSecond = (int)remainTime.TotalSeconds;
+				}
 			}
 		}
 		else

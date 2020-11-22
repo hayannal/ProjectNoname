@@ -179,12 +179,10 @@ public class DownloadManager : MonoBehaviour
 	{
 		LoadingCanvas.instance.skipProgressAnimation = true;
 		LoadingCanvas.instance.progressText.gameObject.SetActive(true);
-#if UNITY_IOS
+
 		// 아이폰에서는 백그라운드 다운로드가 먹히질 않는다.
+		// 해보니 삼성폰에서도 안되길래 NeverSleep으로 통일하기로 한다.
 		Screen.sleepTimeout = SleepTimeout.NeverSleep;
-#else
-		LoadingCanvas.instance.backgroundDownloadText.gameObject.SetActive(true);
-#endif
 
 		// Calculate progress
 
@@ -208,10 +206,7 @@ public class DownloadManager : MonoBehaviour
 	AsyncOperationHandle<GameObject> _handleCommonCanvasGroup;
 	void DownloadComplete(AsyncOperationHandle handle)
 	{
-#if UNITY_IOS
-		// 아이폰에서는 SleepTimeout 바꿨던거 복구
 		Screen.sleepTimeout = SleepTimeout.SystemSetting;
-#endif
 
 		StopCoroutine(DownloadProgress());
 
@@ -340,11 +335,8 @@ public class DownloadManager : MonoBehaviour
 	}
 
 	IEnumerator LobbyDownloadProgress()
-	{
-#if UNITY_IOS
-		// 로비다운로드에도 sleepTimeout 변경코드 적용
+	{		
 		Screen.sleepTimeout = SleepTimeout.NeverSleep;
-#endif
 
 		// Calculate progress
 
@@ -367,9 +359,7 @@ public class DownloadManager : MonoBehaviour
 
 	void LobbyDownloadComplete(AsyncOperationHandle handle)
 	{
-#if UNITY_IOS
 		Screen.sleepTimeout = SleepTimeout.SystemSetting;
-#endif
 
 		StopCoroutine(LobbyDownloadProgress());
 

@@ -19,7 +19,8 @@ public static class CustomBuildPostProcess
 		pbxProject.ReadFromFile(pbxProjectPath);
 
 		//string targetGUID = pbxProject.TargetGuidByName(PBXProject.GetUnityMainTargetGuid());
-		string targetGUID = pbxProject.TargetGuidByName("Unity-iPhone");
+		//string targetGUID = pbxProject.TargetGuidByName("Unity-iPhone");
+		string targetGUID = pbxProject.GetUnityMainTargetGuid();
 		string bundleId = pbxProject.GetBuildPropertyForAnyConfig(targetGUID, "PRODUCT_BUNDLE_IDENTIFIER");
 		string productName = pbxProject.GetBuildPropertyForAnyConfig(targetGUID, "PRODUCT_NAME");
 		Debug.LogFormat("BundleId : {0} / ProductName : {1}", bundleId, productName);

@@ -38,7 +38,8 @@ public static class CustomBuildPostProcess
 		pbxProject.WriteToFile(pbxProjectPath);
 
 
-		// plist
+		// plist는 안바꾸고 그냥 냅둬보기로 한다.
+		/*
 		string infoPlistPath = pathToBuildProject + "/Info.plist";
 		PlistDocument plistDoc = new PlistDocument();
 		plistDoc.ReadFromFile(infoPlistPath);
@@ -48,6 +49,7 @@ public static class CustomBuildPostProcess
 			rootDict.SetString("CFBundleIdentifier", bundleId);
 			plistDoc.WriteToFile(infoPlistPath);
 		}
+		*/
 
 		/*
 		// Bitcode

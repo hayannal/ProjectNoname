@@ -219,7 +219,27 @@ public class DailyShopData : MonoBehaviour
 			if (_listDailyShopSlotInfo[i].type == "")
 				continue;
 			if (_listDailyShopSlotInfo[i].dy == day && _listDailyShopSlotInfo[i].sl == slotId)
+			{
+				#region REPLACE_UPH
+				// OnRecvShopData에서 받고나서 전부 처리할수도 있지만 사실 바로 쓰지도 않을 데이터를 전부 다 돌면서 바꿔두는게 더 비효율일거 같아서
+				// Get하는 이 타이밍에 바꿔치기가 필요하다면 바꾸기로 한다.
+				if (_listDailyShopSlotInfo[i].type == "uph")
+				{
+					int heroicCharacterCount = 0;
+					List<CharacterData> listCharacterData = PlayerData.instance.listCharacterData;
+					for (int j = 0; j < listCharacterData.Count; ++j)
+					{
+						ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(listCharacterData[j].actorId);
+						if (actorTableData.grade == 1)
+							++heroicCharacterCount;
+					}
+					// 3명 미만이라면 upn으로 교체
+					if (heroicCharacterCount < 3)
+						_listDailyShopSlotInfo[i].tp = "upn";
+				}
+				#endregion
 				return _listDailyShopSlotInfo[i];
+			}
 		}
 		return null;
 	}

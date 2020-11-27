@@ -2,7 +2,9 @@
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Callbacks;
+#if UNITY_IOS
 using UnityEditor.iOS.Xcode;
+#endif
 
 public static class CustomBuildPostProcess
 {
@@ -12,6 +14,7 @@ public static class CustomBuildPostProcess
 		if (buildTarget != BuildTarget.iOS)
 			return;
 
+#if UNITY_IOS
 		Debug.Log("[PostBuild] pathToBuildProject: " + pathToBuildProject);
 
 		string pbxProjectPath = PBXProject.GetPBXProjectPath(pathToBuildProject);
@@ -83,5 +86,6 @@ public static class CustomBuildPostProcess
 			}
 		}
 		*/
+#endif
 	}
 }

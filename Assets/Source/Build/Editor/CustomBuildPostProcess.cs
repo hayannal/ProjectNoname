@@ -67,10 +67,11 @@ public static class CustomBuildPostProcess
 
 			pbxProject.WriteToFile(projectPath);
 		}
+		*/
 
 		// NonExemptEncryption
 		{
-			string infoPlistPath = path + "/Info.plist";
+			string infoPlistPath = pathToBuildProject + "/Info.plist";
 
 			PlistDocument plistDoc = new PlistDocument();
 			plistDoc.ReadFromFile(infoPlistPath);
@@ -85,7 +86,6 @@ public static class CustomBuildPostProcess
 				Debug.LogError("ERROR: Can't open " + infoPlistPath);
 			}
 		}
-		*/
 #endif
 	}
 }

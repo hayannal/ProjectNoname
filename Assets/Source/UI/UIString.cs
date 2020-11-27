@@ -173,14 +173,14 @@ public class UIString : MonoBehaviour
 				case "THA": value = stringTableData.tha; find = true; break;
 				case "VIE": value = stringTableData.vie; find = true; break;
 				case "PRT": value = stringTableData.prt; find = true; break;
-				case "ARB": value = stringTableData.arb; find = true; break;
+				case "ARB": value = stringTableData.arb; find = true; ConvertRTL(ref value); break;
 				case "BLR": value = stringTableData.blr; find = true; break;
 				case "BGR": value = stringTableData.bgr; find = true; break;
 				case "CZE": value = stringTableData.cze; find = true; break;
 				case "DUT": value = stringTableData.dut; find = true; break;
 				case "FIN": value = stringTableData.fin; find = true; break;
 				case "GRE": value = stringTableData.gre; find = true; break;
-				case "HBR": value = stringTableData.hbr; find = true; break;
+				case "HBR": value = stringTableData.hbr; find = true; ConvertRTL(ref value); break;
 				case "HGR": value = stringTableData.hgr; find = true; break;
 				case "MLY": value = stringTableData.mly; find = true; break;
 				case "POL": value = stringTableData.pol; find = true; break;
@@ -204,6 +204,17 @@ public class UIString : MonoBehaviour
 		}
 
 		return string.Format("UID:{0}", id);
+	}
+
+	RTLTMPro.FastStringBuilder _outputFastStringBuilder;
+	void ConvertRTL(ref string value)
+	{
+		if (_outputFastStringBuilder == null)
+			_outputFastStringBuilder = new RTLTMPro.FastStringBuilder(RTLTMPro.RTLSupport.DefaultBufferSize);
+
+		RTLTMPro.RTLSupport.FixRTL(value, _outputFastStringBuilder, false, false, true);
+		value = _outputFastStringBuilder.ToString();
+		_outputFastStringBuilder.Clear();
 	}
 
 	public string GetString(string key, params object[] arg)

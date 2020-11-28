@@ -45,9 +45,9 @@ namespace RTLTMPro
             TashkeelFixer.RestoreTashkeel(glyphFixerOutput);
 
             // Fix flow of the text and put the result in FinalLetters field
-            LigatureFixer.Fix(glyphFixerOutput, output, farsi, fixTextTags, preserveNumbers);
+            LigatureFixer.Fix(glyphFixerOutput, output, farsi, false, preserveNumbers);
 
-            if (fixTextTags)
+            if (fixTextTags && TextUtils.IsRTLInput(output.ToString()))
             {
                 RichTextFixer.Fix(output);
             }

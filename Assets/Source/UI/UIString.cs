@@ -212,7 +212,7 @@ public class UIString : MonoBehaviour
 		if (_outputFastStringBuilder == null)
 			_outputFastStringBuilder = new RTLTMPro.FastStringBuilder(RTLTMPro.RTLSupport.DefaultBufferSize);
 
-		RTLTMPro.RTLSupport.FixRTL(value, _outputFastStringBuilder, false, false, true);
+		RTLTMPro.RTLSupport.FixRTL(value, _outputFastStringBuilder, false, true, true);
 		value = _outputFastStringBuilder.ToString();
 		_outputFastStringBuilder.Clear();
 	}

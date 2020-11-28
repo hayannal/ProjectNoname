@@ -61,8 +61,9 @@ namespace RTLTMPro
                             int openingTagLength = tagEnd - tagStart;
                             int closingTagLength = closingTag.End - closingTag.Start;
 
-                            text.Reverse(tagStart, openingTagLength);
-                            text.Reverse(closingTag.Start, closingTagLength);
+							text.Swap(tagStart, tagEnd, closingTag.Start, closingTag.End);
+                            //text.Reverse(tagStart, openingTagLength);
+                            //text.Reverse(closingTag.Start, closingTagLength);
                         }
                         else
                         {
@@ -75,6 +76,7 @@ namespace RTLTMPro
                     {
                         ClosedTags.Add(new Tag(tagStart, tagEnd));
                         ClosedTagsHash.Add(hashCode);
+						tagEnd -= 1;
                         break;
                     }
                     case 3: // Self contained tag

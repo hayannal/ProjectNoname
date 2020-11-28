@@ -139,6 +139,36 @@ namespace RTLTMPro
             Reverse(0, Length);
         }
 
+		public void Swap(int tagStart, int tagEnd, int closingTagStart, int closingTagEnd)
+		{
+			// check open-close tag order
+			if (tagStart < closingTagStart)
+				return;
+
+			string tag = new string(array, tagStart, tagEnd - tagStart);
+			string closingTag = new string(array, closingTagStart, closingTagEnd - closingTagStart);
+			string content = new string(array, closingTagEnd, tagStart - closingTagEnd);
+
+			int currentIndex = closingTagStart;
+			for (int i = 0; i < tag.Length; i++)
+			{
+				array[currentIndex] = tag[i];
+				++currentIndex;
+			}
+
+			for (int i = 0; i < content.Length; i++)
+			{
+				array[currentIndex] = content[i];
+				++currentIndex;
+			}
+
+			for (int i = 0; i < closingTag.Length; i++)
+			{
+				array[currentIndex] = closingTag[i];
+				++currentIndex;
+			}
+		}
+
         public void Substring(FastStringBuilder output, int start, int length)
         {
             output.Length = 0;

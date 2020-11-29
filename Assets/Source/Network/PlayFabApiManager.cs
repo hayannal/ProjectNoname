@@ -331,6 +331,7 @@ public class PlayFabApiManager : MonoBehaviour
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
 			FunctionName = "GetServerUtc",
+			GeneratePlayStreamEvent = true,
 		}, OnGetServerUtc, OnRecvPlayerDataFailure);
 		++_requestCountForGetPlayerData;
 	}

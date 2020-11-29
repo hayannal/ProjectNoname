@@ -77,7 +77,9 @@ MonoBehaviour:
   lootAtTargetOffsetAngle: 0
   lookAtRandom: 0
   desireDistance: 5
+  minimumDistance: 0
   lerpPower: 5
+  boneName: 
 --- !u!1102 &-2473529730778767166
 AnimatorState:
   serializedVersion: 5
@@ -222,6 +224,7 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 5848472822562479349, guid: b719df7e41737594083d0fc791e3e390,
     type: 3}
   lifeTime: 10
@@ -238,6 +241,7 @@ MonoBehaviour:
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
+  applyRootTransformRotation: 0
   useAreaRotationYChange: 0
   targetAreaRotationY: 0
   areaDistanceMin: 0
@@ -354,6 +358,7 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 5848472822562479349, guid: b719df7e41737594083d0fc791e3e390,
     type: 3}
   lifeTime: 10
@@ -370,6 +375,7 @@ MonoBehaviour:
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
+  applyRootTransformRotation: 0
   useAreaRotationYChange: 0
   targetAreaRotationY: 0
   areaDistanceMin: 0
@@ -418,7 +424,7 @@ MonoBehaviour:
   parallelDistance: 0
   ignoreMainHitObjectByParallel: 0
   circularSectorCount: 2
-  circularSectorBetweenAngle: 30
+  circularSectorBetweenAngle: 45
   circularSectorUseWorldSpace: 0
   circularSectorWorldSpaceCenterAngleY: 0
   ignoreMainHitObjectByCircularSector: 1

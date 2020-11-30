@@ -199,19 +199,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startDelayRange: {x: 0, y: 0}
   startState: 3
-  useStateList: 010001010100
+  useStateList: 010000010100
   moveTimeRange: {x: 0, y: 2}
   refreshTickTimeRange: {x: 2, y: 2}
   desireDistance: 3
   straightMoveTimeRange: {x: 0, y: 0}
   straightRefreshTickTimeRange: {x: 0, y: 0}
-  straightRefreshTickWaitTime: 0
   straightMoveType: 0
   customActionPlayType: 1
   customActionName: 
   customActionFadeDuration: 0.05
-  chaseDistanceRange: {x: 7, y: 9}
+  chaseDistanceRange: {x: 9, y: 9}
   chaseCancelTimeRange: {x: 2, y: 4}
+  useFarawayMode: 0
+  chaseTryCountChangeFaraway: 0
+  farawayModeChangeRate: 0
   attackActionPlayType: 2
   attackActionName: AttackGroup
   attackActionFadeDuration: 0.05
@@ -290,11 +292,11 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 3f5375029a987a443b07070ae7b85974, type: 2}
-    - target: {fileID: 13700002, guid: a1f046e7353037f4c84dfcb5a919d4f9, type: 3}
+    - target: {fileID: 13700000, guid: a1f046e7353037f4c84dfcb5a919d4f9, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 956b93a88a4f16a4fb984ad463190110, type: 2}
-    - target: {fileID: 13700000, guid: a1f046e7353037f4c84dfcb5a919d4f9, type: 3}
+    - target: {fileID: 13700002, guid: a1f046e7353037f4c84dfcb5a919d4f9, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 956b93a88a4f16a4fb984ad463190110, type: 2}

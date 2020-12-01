@@ -204,18 +204,20 @@ MonoBehaviour:
   desireDistance: 5
   straightMoveTimeRange: {x: 2, y: 2}
   straightRefreshTickTimeRange: {x: 5, y: 5}
-  straightRefreshTickWaitTime: 0
   straightMoveType: 0
   customActionPlayType: 1
   customActionName: 
   customActionFadeDuration: 0.05
   chaseDistanceRange: {x: 1, y: 1}
   chaseCancelTimeRange: {x: 0, y: 0}
+  useFarawayMode: 0
+  chaseTryCountChangeFaraway: 0
+  farawayModeChangeRate: 0
   attackActionPlayType: 0
   attackActionName: Attack
   attackActionFadeDuration: 0.05
   lookAtTargetBeforeAttack: 1
-  attackDelayTimeRange: {x: 0.5, y: 0.5}
+  attackDelayTimeRange: {x: 1.5, y: 1.5}
   useAnimatorParameterForAI: 0
   listAnimatorParameterForAI: 
 --- !u!1001 &4020860677489895302
@@ -273,11 +275,7 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 9500000, guid: f2b6f64ec23092a4fbe12d90b4535537, type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: f39dc3f6e86b3a04db5ce116ad3ff8bd, type: 2}
-    - target: {fileID: 13700000, guid: f2b6f64ec23092a4fbe12d90b4535537, type: 3}
+    - target: {fileID: 2300000, guid: f2b6f64ec23092a4fbe12d90b4535537, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 77a8c7328c51f6b4ab1f14e318b23f59, type: 2}
@@ -285,7 +283,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 77a8c7328c51f6b4ab1f14e318b23f59, type: 2}
-    - target: {fileID: 2300000, guid: f2b6f64ec23092a4fbe12d90b4535537, type: 3}
+    - target: {fileID: 9500000, guid: f2b6f64ec23092a4fbe12d90b4535537, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: f39dc3f6e86b3a04db5ce116ad3ff8bd, type: 2}
+    - target: {fileID: 13700000, guid: f2b6f64ec23092a4fbe12d90b4535537, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 77a8c7328c51f6b4ab1f14e318b23f59, type: 2}

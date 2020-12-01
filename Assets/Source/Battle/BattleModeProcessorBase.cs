@@ -493,7 +493,7 @@ public class BattleModeProcessorBase
 
 		// 클리어 했다면 시간 체크 한번 해본다.
 		// 강종으로 인한 재접속때 안하는거 추가해야한다.
-		if (clear && ClientSaveData.instance.inProgressGame)  // && IsRetryByCrash == false
+		if (clear && ClientSaveData.instance.inProgressGame == false)  // && IsRetryByCrash == false
 		{
 			TimeSpan timeSpan = DateTime.Now - _startDateTime;
 			bool sus = false;

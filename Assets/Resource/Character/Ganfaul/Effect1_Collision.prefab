@@ -142,6 +142,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   multipleComponent: 0
   checkDuplicate: 1
+  pitchRandomMultiplier: 1
+  startDelay: 0
 --- !u!1 &4225582290400697901
 GameObject:
   m_ObjectHideFlags: 0
@@ -243,6 +245,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -254,6 +257,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 1
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -4944,6 +4948,7 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -4956,6 +4961,7 @@ ParticleSystemRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -9667,6 +9673,7 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -9679,6 +9686,7 @@ ParticleSystemRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -9774,12 +9782,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startDelay: 0
   numberOfShakes: 3
-  shakeAmountMin: {x: 0, y: 0, z: 0}
+  shakeAmountMin: {x: 0.1, y: 0.1, z: 0.1}
   shakeAmountMax: {x: 0.4, y: 0.4, z: 0.4}
   rotationAmountMin: {x: 0, y: 0, z: 0.01}
-  rotationAmountMax: {x: 0, y: 0, z: 0.08}
-  distanceMin: 0.01
+  rotationAmountMax: {x: 0, y: 0, z: 0.06}
+  distanceMin: 0.03
   distanceMax: 0.1
-  speedMin: 15
-  speedMax: 20
-  decay: 0.75
+  speedMin: 30
+  speedMax: 35
+  decay: 0.4

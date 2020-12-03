@@ -131,6 +131,7 @@ AnimatorState:
   - {fileID: -1049766806834685529}
   - {fileID: 7443512438005037681}
   - {fileID: 5204974978355160004}
+  - {fileID: 8817421097183497452}
   - {fileID: -2619383633338443429}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -162,6 +163,10 @@ MonoBehaviour:
   StartTime: 0.29
   EndTime: 1
   targetDetectType: 2
+  presetType: 0
+  multiPresetCount: 0
+  ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 1262846755526404, guid: d1ecd0e9592bda441abb1ff5ca62b610,
     type: 3}
   lifeTime: 3
@@ -178,6 +183,9 @@ MonoBehaviour:
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
+  applyRootTransformRotation: 0
+  useAreaRotationYChange: 0
+  targetAreaRotationY: 0
   areaDistanceMin: 0
   areaDistanceMax: 0
   areaHeightMin: 0
@@ -204,14 +212,21 @@ MonoBehaviour:
   targetSpeed: 0
   speedChangeTime: 0
   speedChangeEase: 6
+  overrideSpeedOnCollision: 0
+  overrideSpeedTimeOnCollision: 0
   curve: 0
-  curveAdd: 0
+  useCurveChange: 0
+  targetCurve: 0
+  curveChangeTime: 0
+  curveChangeEase: 6
   curveLockY: 0
   curveStartDelayTime: 0
-  curveLifeTime: 0
-  endFollowOverTargetDistance: 0
-  overrideLifeTimeWhenDieTarget: 0
+  followLastPositionWhenDieTarget: 0
+  followMeOnHitTarget: 0
+  followMinRange: 0
+  useRandomTurn: 0
   accelTurn: 0
+  randomTurnRotateYawRange: {x: 0, y: 0}
   gravity: -9.81
   parallelCount: 2
   parallelDistance: 0.25
@@ -230,6 +245,7 @@ MonoBehaviour:
   bounceWallQuadCount: 0
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
+  overrideRicochetDistance: 0
   overrideRicochetSpeed: 0
   useHitStay: 0
   hitStayInterval: 0
@@ -313,6 +329,7 @@ MonoBehaviour:
   fixedWorldPositionY: 0
   direction: {x: 0, y: 0, z: 1}
   parentName: EyeBone_Right
+  followPosition: 0
 --- !u!114 &6649347608798660281
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -347,6 +364,7 @@ MonoBehaviour:
   fixedWorldPositionY: 0
   direction: {x: 0, y: 0, z: 1}
   parentName: EyeBone_Left
+  followPosition: 0
 --- !u!1102 &8503796429965771016
 AnimatorState:
   serializedVersion: 5
@@ -374,3 +392,24 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!114 &8817421097183497452
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.29
+  EndTime: 1
+  effectData: {fileID: 3136301650636350254, guid: b94d9992d5c1e7546be440ce9cf50424,
+    type: 3}
+  offset: {x: 0, y: 0, z: 0}
+  fixedWorldPositionY: 0
+  direction: {x: 0, y: 0, z: 1}
+  parentName: 
+  followPosition: 0

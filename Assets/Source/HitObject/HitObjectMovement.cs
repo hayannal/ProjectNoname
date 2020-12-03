@@ -225,7 +225,7 @@ public class HitObjectMovement : MonoBehaviour {
 		_rigidbody.angularVelocity = Vector3.zero;
 		cachedTransform.forward = _forward;
 
-		if (_signal.movementType == eMovementType.Direct && IsAppliedRicochet() == false)
+		if (_signal.movementType == eMovementType.Direct && IsAppliedRicochet() == false && _signal.bounceWallQuadCount == 0 && _signal.useHitStay == false)
 		{
 			if (_signal.monsterThroughCount == -1 || _signal.monsterThroughCount > 0 || _signal.wallThrough || _signal.quadThrough)
 			{

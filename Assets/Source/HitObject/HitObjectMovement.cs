@@ -275,6 +275,13 @@ public class HitObjectMovement : MonoBehaviour {
 			reflectVelocity = Quaternion.Euler(0.0f, Random.Range(-45.0f, 45.0f), 0.0f) * wallNormal.normalized * reflectVelocity.magnitude;
 		}
 
+		// 간혹가다 벽을 수직으로 바라보는 반사벡터가 나오길래 예외처리 추가해본다.
+		// 반사된 벡터가 하필 벽의 노말 안쪽으로 들어가는거라면 반대로 돌려준다.
+		if (Vector3.Dot(reflectVelocity.normalized, wallNormal.normalized) < 0.0f)
+		{
+			reflectVelocity *= -1.0f;
+		}
+		
 		// 반사방향으로 직선을 그어서 충돌하는게 있는지 확인한다. CheckWall
 		// 이랬더니 ㄴ 사이에 들어가서 모서리에서 튕기지 않는 버그가 발생했다. 근접했다고 그냥 리턴하면 안되는거였다.
 		// 그래서 체크로직을 조금만 수정해보기로 한다.

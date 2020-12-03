@@ -87,15 +87,20 @@ public class TeleportedAffector : AffectorBase
 		BattleInstanceManager.instance.RemoveTeleportedAffector(this);
 		_actor.cachedTransform.position = _prevPosition;
 		_actor.baseCharacterController.movement.useGravity = true;
-		HitObject.EnableRigidbodyAndCollider(true, _actor.GetRigidbody(), _actor.GetCollider());
-		_actor.actionController.idleAnimator.enabled = true;
-		_actor.actionController.PlayActionByActionName("Idle");
-		_actor.EnableAI(true);
-		if (_actor.IsMonsterActor())
+
+		// 죽어서 되돌아오는 경우라면 AI쪽은 복구하지 않는다.
+		if (_actor.actorStatus.IsDie() == false)
 		{
-			MonsterActor monsterActor = _actor as MonsterActor;
-			if (monsterActor != null)
-				monsterActor.monsterAI.OnFinalizeTeleportedAffector();
+			HitObject.EnableRigidbodyAndCollider(true, _actor.GetRigidbody(), _actor.GetCollider());
+			_actor.actionController.idleAnimator.enabled = true;
+			_actor.actionController.PlayActionByActionName("Idle");
+			_actor.EnableAI(true);
+			if (_actor.IsMonsterActor())
+			{
+				MonsterActor monsterActor = _actor as MonsterActor;
+				if (monsterActor != null)
+					monsterActor.monsterAI.OnFinalizeTeleportedAffector();
+			}
 		}
 
 		if (_positionEffectObject != null)

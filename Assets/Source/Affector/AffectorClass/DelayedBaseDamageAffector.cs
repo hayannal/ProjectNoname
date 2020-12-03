@@ -101,5 +101,20 @@ public class DelayedBaseDamageAffector : AffectorBase
 
 		if (_damageEffectPrefab != null)
 			BattleInstanceManager.instance.GetCachedObject(_damageEffectPrefab, _affectorProcessor.cachedTransform.position, Quaternion.identity);
+
+
+		// 한가지 예외처리 할게 생겼다.
+		// 다른 케이스에서는 괜찮은데 하필 TeleportedAffector가 붙어있는 상태에서 죽을 경우
+		// 되돌려주는 처리를 수동으로 해야했는데
+		// 이 검사를 MonsterActor의 OnDie함수에서 체크하는게 맞아보이나
+		// 그럼 굳이 평소에도 계속해서 TeleportedAffector가 붙어있는지를 체크해야하는 부하가 생겨버린다.
+		//
+		// 그래서 차라리 여기에서만 체크하기로 한다.
+		if (_actor.actorStatus.IsDie())
+		{
+			TeleportedAffector teleportedAffector = (TeleportedAffector)_affectorProcessor.GetFirstContinuousAffector(eAffectorType.Teleported);
+			if (teleportedAffector != null)
+				teleportedAffector.FinalizeAffector();
+		}
 	}
 }

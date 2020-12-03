@@ -343,7 +343,7 @@ public class HitObject : MonoBehaviour
 		bool ignoreShowHitEffect = false;
 
 		// Preset타입은 Burrow를 공격할 수 없다.
-		if (affectorProcessor.IsContinuousAffectorType(eAffectorType.Burrow) || BurrowOnStartAffector.CheckBurrow(affectorProcessor))
+		if (affectorProcessor.IsContinuousAffectorType(eAffectorType.Burrow) || BurrowOnStartAffector.CheckBurrow(affectorProcessor) || TargetingProcessor.IsOutOfRange(affectorProcessor))
 		{
 			ignoreApplyAffectorValue = true;
 			contactPointBase.y = 0.0f;

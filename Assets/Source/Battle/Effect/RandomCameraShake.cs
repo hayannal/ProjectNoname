@@ -40,6 +40,9 @@ public class RandomCameraShake : MonoBehaviour
 
 	void PlayShake()
 	{
+		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.waitCachingObject)
+			return;
+
 		if (startDelay == 0.0f)
 			Shake();
 		else

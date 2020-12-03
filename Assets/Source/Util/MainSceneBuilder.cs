@@ -600,6 +600,7 @@ public class MainSceneBuilder : MonoBehaviour
 	// Update is called once per frame
 	List<GameObject> _listCachingObject = null;
 	int _waitUpdateRemainCount;
+	public bool waitCachingObject { get { return _waitUpdateRemainCount > 0; } }
     void LateUpdate()
     {
 		if (_waitUpdateRemainCount > 0)

@@ -300,7 +300,10 @@ public class ActionController : MonoBehaviour {
 			{
 				// 궁극기 사용에 대한 sp 처리 및 이벤트 등을 처리
 				// 궁극기 액티브 스킬은 스킬을 실행시켜놓고 sp제거하니 여기서 호출하면 된다.
-				OnUseUltimate();
+				// 근데 여기서 안하기로 한다. 아무리 아래 Ultimate 상태까지 넣어두고 예외처리를 해놔도
+				// 정말 간혹가다 Ultimate액션이 안나가는 경우가 있는데 어느 부분인지를 찾을수가 없다.
+				// 그래서 차라리 Ultimate State가 시작되는 부분에서 호출하기로 한다.
+				//OnUseUltimate();
 
 				#region Ultimate Force Set
 				// 간혹가다 궁극기를 눌렀는데 일반어택이 씹어버리고 덮는 경우가 발생했다.
@@ -340,7 +343,7 @@ public class ActionController : MonoBehaviour {
 		return true;
 	}
 
-	void OnUseUltimate()
+	public void OnUseUltimate()
 	{
 		// 먼저 SP 소모부터 처리
 		UseUltimateSp();

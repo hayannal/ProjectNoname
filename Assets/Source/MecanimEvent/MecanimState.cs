@@ -24,6 +24,7 @@ public class MecanimState : MonoBehaviour {
 		m_Animator = GetComponent<Animator>();
 	}
 
+	ActionController _actionController;
 	StateInfo _stateInfo = new StateInfo();
 	public void StartState(int stateID, int fullPathHash)
 	{
@@ -49,6 +50,18 @@ public class MecanimState : MonoBehaviour {
 		_stateInfo.stateID = stateID;
 		_stateInfo.fullPathHash = fullPathHash;
 		m_listStateInfo.Add(_stateInfo);
+
+		#region Ultimate State
+		// Ultimate 액션이 발동되는게 확실시 되면 SP를 차감시킨다. 액션이 있는 궁극기의 경우엔 이게 가장 안전하다.
+		if (stateID == (int)MecanimStateDefine.eMecanimState.Ultimate)
+		{
+			//Debug.LogFormat("Ulti State : {0}", Time.frameCount);
+			if (_actionController == null && transform.parent != null)
+				_actionController = transform.parent.GetComponent<ActionController>();
+			if (_actionController != null)
+				_actionController.OnUseUltimate();
+		}
+		#endregion
 	}
 
 	public void EndState(int stateID, int fullPathHash)

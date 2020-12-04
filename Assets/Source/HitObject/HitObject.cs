@@ -1405,6 +1405,7 @@ public class HitObject : MonoBehaviour
 			_dicHitStayTime.Clear();
 		ClearIgnoreList();
 		_settedHitEffectLineRendererStartPosition = false;
+		_ignoreWallCollidedEffect = false;
 
 		// 히트 오브젝트 애니메이터를 발동시켜놨으면 첫번째 프레임이 호출될때까지는 기다려야한다.
 		if (_hitObjectAnimatorStarted && ignoreAnimator == false)
@@ -1528,6 +1529,7 @@ public class HitObject : MonoBehaviour
 		return returnValue;
 	}
 
+	bool _ignoreWallCollidedEffect = false;
 	List<AffectorProcessor> _listOneHitPerTarget = null;
 	void OnCollisionEnter(Collision collision)
 	{
@@ -1663,14 +1665,30 @@ public class HitObject : MonoBehaviour
 			if (collided)
 			{
 				bool ignoreEffect = false;
-				if (_signal.movementType == HitObjectMovement.eMovementType.Howitzer && _signal.wallThrough && wallCollided)
-					ignoreEffect = true;
-				if (wallCollided && _signal.wallThrough && _signal.movementType == HitObjectMovement.eMovementType.Direct)
+				if (wallCollided && _signal.wallThrough)
 				{
-					if (_statusStructForHitObject.monsterActor)
+					// JellyFishGirl
+					if (_signal.movementType == HitObjectMovement.eMovementType.Howitzer)
 						ignoreEffect = true;
-					if (_statusStructForHitObject.monsterActor == false && _remainRicochetCount > 0)
-						ignoreEffect = true;
+					else if (_signal.movementType == HitObjectMovement.eMovementType.Direct)
+					{
+						if (_statusStructForHitObject.monsterActor)
+							ignoreEffect = true;
+						if (_statusStructForHitObject.monsterActor == false)
+						{
+							// RPG Knight
+							if (_remainRicochetCount > 0)
+								ignoreEffect = true;
+							// Linhi. only first wallThrough
+							if (_signal.quadThrough)
+							{
+								if (_ignoreWallCollidedEffect)
+									ignoreEffect = true;
+								else
+									_ignoreWallCollidedEffect = true;
+							}
+						}
+					}
 				}
 
 				if (ignoreEffect == false)

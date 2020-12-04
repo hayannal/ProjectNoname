@@ -755,11 +755,6 @@ public class HitObject : MonoBehaviour
 					continue;
 			}
 
-			// dicHitStayTime검사를 하지 않으면 장판의 다단히트에도 반응하게 된다.
-			// 클릭했을때의 최초 히트에만 반응하는게 더 자연스럽기 때문에 바꿔둔다.
-			if (GatePillar.instance != null && GatePillar.instance.gameObject.activeSelf && dicHitStayTime == null)
-				GatePillar.instance.CheckHitObject(statusForHitObject.teamId, gatePillarCompareTime, col);
-
 			bool ignoreAffectorProcessor = false;
 
 			// one Hit Per Target
@@ -774,6 +769,10 @@ public class HitObject : MonoBehaviour
 
 			if (ignoreAffectorProcessor == false)
 			{
+				// 어펙터 적용가능할 타임에 하는게 가장 효율적이다.
+				if (GatePillar.instance != null && GatePillar.instance.gameObject.activeSelf)
+					GatePillar.instance.CheckHitObject(statusForHitObject.teamId, gatePillarCompareTime, col);
+
 				HitParameter hitParameter = new HitParameter();
 				hitParameter.hitNormal = forward;
 				hitParameter.contactNormal = -diff.normalized;

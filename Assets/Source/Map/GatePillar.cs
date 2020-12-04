@@ -103,6 +103,7 @@ public class GatePillar : MonoBehaviour
 
 	void ResetFlagForServerFailure()
 	{
+		_spawnTime = Time.time;
 		raycastCount = 0;
 		changeEffectParticleRootObject.SetActive(false);
 	}
@@ -386,6 +387,7 @@ public class GatePillar : MonoBehaviour
 				}
 				if (showSwapCanvas)
 				{
+					_spawnTime = Time.time;
 					raycastCount = 0;
 					FullscreenYesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_EnterInfo"), UIString.instance.GetString(descStringId), () => {
 						_suggestedChapter = StageManager.instance.playChapter;
@@ -410,6 +412,7 @@ public class GatePillar : MonoBehaviour
 				if (nextMapTableData != null && string.IsNullOrEmpty(nextMapTableData.bossName) == false &&
 					CheckSuggestedActor(nextMapTableData.suggestedActorId, BattleInstanceManager.instance.playerActor.actorId) == false && HasSuggestedActor(nextMapTableData.suggestedActorId))
 				{
+					_spawnTime = Time.time;
 					raycastCount = 0;
 					FullscreenYesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_EnterInfo"), UIString.instance.GetString("GameUI_EnterRecommendDesc"), () => {
 						_checkedStageSwapSuggest = true;
@@ -452,6 +455,7 @@ public class GatePillar : MonoBehaviour
 
 	void ShowRefillEnergyCanvas()
 	{
+		_spawnTime = Time.time;
 		raycastCount = 0;
 		UIInstanceManager.instance.ShowCanvasAsync("ConfirmSpendCanvas", () => {
 

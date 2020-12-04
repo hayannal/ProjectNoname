@@ -166,6 +166,10 @@ public class PlayerAI : MonoBehaviour
 		if (actor.affectorProcessor.IsContinuousAffectorType(eAffectorType.CannotAction))
 			return;
 
+		// 궁극기 중에는 어차피 돌릴 이유가 없지 않나
+		if (actor.actionController.mecanimState.IsState((int)eMecanimState.Ultimate))
+			return;
+
 		// 시즈탱크 퉁퉁포처럼 플레이어가 이동하는 동안에도 포탑은 알아서 쏘는 거까지 커버하려면
 		// 인풋이 없는거나 Move가 아닌거로 체크해선 안된다.
 		// Idle 혹은 Attackable 같은 뭔가가 필요해보인다.

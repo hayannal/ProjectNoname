@@ -778,7 +778,11 @@ public class MonsterAI : MonoBehaviour
 				_waitAttackState = false;
 				_attackPlayed = true;
 				if (lookAtTargetBeforeAttack)
-					pathFinderController.movement.rotation = Quaternion.LookRotation(targetActor.cachedTransform.position - actor.cachedTransform.position);
+				{
+					Vector3 diff = targetActor.cachedTransform.position - actor.cachedTransform.position;
+					diff.y = 0.0f;
+					pathFinderController.movement.rotation = Quaternion.LookRotation(diff);
+				}
 			}
 			// 간혹가다 Trigger로 발동은 시켜놨는데 Idle로 빠져서 AI가 돌아가지 않는 경우가 생겼다.
 			// 보통 일반적인 보스들한테서는 발생하지 않는데 RobotFive처럼 루프 애니를 사용하는 공격패턴이 있는 보스들한테서는 몇십분에 한번 꼴로 발생했다.
@@ -858,7 +862,11 @@ public class MonsterAI : MonoBehaviour
 			if (_attackPlayed)
 			{
 				if (lookAtTargetBeforeAttack)
-					pathFinderController.movement.rotation = Quaternion.LookRotation(targetActor.cachedTransform.position - actor.cachedTransform.position);
+				{
+					Vector3 diff = targetActor.cachedTransform.position - actor.cachedTransform.position;
+					diff.y = 0.0f;
+					pathFinderController.movement.rotation = Quaternion.LookRotation(diff);
+				}
 			}
 		}
 	}

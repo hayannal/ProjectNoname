@@ -35,6 +35,7 @@ public enum eAffectorType
 	TimeSlow,
 
 	MonsterThroughHitObject = 31,
+	WallThroughHitObject,
 	RicochetHitObject,
 	BounceWallQuadHitObject,
 	ParallelHitObject,
@@ -43,8 +44,8 @@ public enum eAffectorType
 	BackNwayGenerator,
 	RepeatHitObject,
 	AttackWeightHitObject,
-	CertainHpHitObject,
 
+	CertainHpHitObject,
 	TeleportingHitObject,
 	AddGeneratorCreateCount,
 	ArcFormHitObject,

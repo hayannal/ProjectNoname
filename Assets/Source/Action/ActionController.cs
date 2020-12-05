@@ -257,7 +257,10 @@ public class ActionController : MonoBehaviour {
 		SkillProcessor.SkillInfo selectedSkillInfo = null;
 		int actionNameHash = actionPlayInfo.actionNameHash;
 		if (normalAttack)
+		{
 			ChangeAttackStateAffector.CheckChange(actor.affectorProcessor, ref actionNameHash);
+			ChangeAttackStateByDistanceAffector.CheckChange(actor.affectorProcessor, ref actionNameHash);
+		}
 		bool passiveOrNonAni = false;
 		if (!string.IsNullOrEmpty(actionPlayInfo.skillId) && skillProcessor != null)
 		{

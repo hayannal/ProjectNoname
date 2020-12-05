@@ -31,6 +31,7 @@ public enum eAffectorType
 	EnlargeDamage,
 	RemoveColliderHitObject,
 	ChangeAttackState,
+	ChangeAttackStateByDistance,
 	TimeSlow,
 
 	MonsterThroughHitObject = 31,

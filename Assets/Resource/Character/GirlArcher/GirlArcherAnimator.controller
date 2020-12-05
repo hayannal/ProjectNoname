@@ -52,7 +52,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Move
-  m_Speed: 1
+  m_Speed: 0.8
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours:
@@ -104,6 +104,7 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 1449260960837898, guid: 07beb6e5592f75846a22bd7dce51dee7,
     type: 3}
   lifeTime: 3
@@ -120,6 +121,9 @@ MonoBehaviour:
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
+  applyRootTransformRotation: 0
+  useAreaRotationYChange: 0
+  targetAreaRotationY: 0
   areaDistanceMin: 0
   areaDistanceMax: 0
   areaHeightMin: 0
@@ -148,13 +152,13 @@ MonoBehaviour:
   speedChangeEase: 6
   overrideSpeedOnCollision: 0
   overrideSpeedTimeOnCollision: 0
-  curve: 720
+  curve: 520
   useCurveChange: 1
-  targetCurve: 20
-  curveChangeTime: 0.85
+  targetCurve: 0
+  curveChangeTime: 0.3
   curveChangeEase: 6
   curveLockY: 1
-  curveStartDelayTime: 0.02
+  curveStartDelayTime: 0.15
   followLastPositionWhenDieTarget: 1
   followMeOnHitTarget: 0
   followMinRange: 8
@@ -180,6 +184,7 @@ MonoBehaviour:
   bounceWallQuadCount: 0
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
+  overrideRicochetDistance: 0
   overrideRicochetSpeed: 0
   useHitStay: 0
   hitStayInterval: 0
@@ -309,6 +314,7 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 1449260960837898, guid: e1c0702b97c28c94f857146ffe7c04ad,
     type: 3}
   lifeTime: 3
@@ -325,6 +331,9 @@ MonoBehaviour:
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
+  applyRootTransformRotation: 0
+  useAreaRotationYChange: 0
+  targetAreaRotationY: 0
   areaDistanceMin: 0
   areaDistanceMax: 0
   areaHeightMin: 0
@@ -384,6 +393,7 @@ MonoBehaviour:
   bounceWallQuadCount: 0
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
+  overrideRicochetDistance: 0
   overrideRicochetSpeed: 0
   useHitStay: 0
   hitStayInterval: 0
@@ -452,6 +462,7 @@ MonoBehaviour:
   fixedWorldPositionY: 0
   direction: {x: 0, y: 0, z: 1}
   parentName: 
+  followPosition: 0
 --- !u!1101 &1088221558251298553
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -468,7 +479,7 @@ AnimatorStateTransition:
   serializedVersion: 3
   m_TransitionDuration: 0.1
   m_TransitionOffset: 0
-  m_ExitTime: 0.62
+  m_ExitTime: 0.32
   m_HasExitTime: 1
   m_HasFixedDuration: 0
   m_InterruptionSource: 0
@@ -550,3 +561,4 @@ MonoBehaviour:
   fixedWorldPositionY: 0
   direction: {x: 0, y: 0, z: 1}
   parentName: 
+  followPosition: 0

@@ -246,7 +246,7 @@ public class ActorStatus : MonoBehaviour
 				if (criticalPower2 != 0.0f) value += (criticalPower2 * s_criticalPowerConstantA / s_criticalPowerConstantB);
 				break;
 			case eActorStatus.AttackAddRate:
-				value += AddAttackByHpAffector.GetValue(actor.affectorProcessor, actor.actorStatus.GetHPRatio());
+				value += AddAttackByHpAffector.GetValue(actor.affectorProcessor);
 				value += PositionBuffAffector.GetAttackAddRate(actor.affectorProcessor);
 				break;
 		}

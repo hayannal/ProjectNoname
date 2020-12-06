@@ -80,5 +80,6 @@ public enum eAffectorType
 	MonsterSleeping,
 	BurrowOnStart,
 	Jump,
+	HealSpOnDamage,
 }
 #endregion

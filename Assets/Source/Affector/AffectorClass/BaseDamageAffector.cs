@@ -245,6 +245,7 @@ public class BaseDamageAffector : AffectorBase {
 		bool onDie = _actor.actorStatus.IsDie();
 		_actor.actorStatus.AddHP(-damage);
 		ChangeActorStatusAffector.OnDamage(_affectorProcessor);
+		HealSpOnDamageAffector.OnDamage(_affectorProcessor, hitParameter.statusStructForHitObject.bossMonsterActor);
 		CallAffectorValueAffector.OnEvent(_affectorProcessor, CallAffectorValueAffector.eEventType.OnDamage, damage);
 		ReduceContinuousDamageAffector.OnDamage(_affectorProcessor);
 		MonsterSleepingAffector.OnDamage(_affectorProcessor);

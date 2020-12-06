@@ -64,7 +64,9 @@ MonoBehaviour:
   lootAtTargetOffsetAngle: 0
   lookAtRandom: 0
   desireDistance: 5
+  minimumDistance: 0
   lerpPower: 5
+  boneName: 
 --- !u!1102 &-4713780209319880699
 AnimatorState:
   serializedVersion: 5
@@ -214,13 +216,14 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 1519322442116508, guid: 8864afea65d7782418ab162817b6cb5e,
     type: 3}
   lifeTime: 5
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
-  maxDistance: 3.9
+  maxDistance: 3.2
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -230,6 +233,7 @@ MonoBehaviour:
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
+  applyRootTransformRotation: 0
   useAreaRotationYChange: 0
   targetAreaRotationY: 0
   areaDistanceMin: 0
@@ -441,6 +445,7 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 1593574840045950, guid: 3df800b0508b5ff4abcfa2777f3f3858,
     type: 3}
   lifeTime: 5
@@ -457,6 +462,7 @@ MonoBehaviour:
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
+  applyRootTransformRotation: 0
   useAreaRotationYChange: 0
   targetAreaRotationY: 0
   areaDistanceMin: 0

@@ -23,7 +23,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Move
-  m_Speed: 1
+  m_Speed: 1.15
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours:
@@ -62,6 +62,7 @@ MonoBehaviour:
   fixedWorldPositionY: 0
   direction: {x: 0, y: 0, z: 1}
   parentName: 
+  followPosition: 0
 --- !u!1107 &-1805817263514781681
 AnimatorStateMachine:
   serializedVersion: 5
@@ -169,13 +170,14 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 1641535938182635914, guid: c2ad8855225521148b55a6d7d73e1c87,
     type: 3}
   lifeTime: 1
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
-  maxDistance: 5
+  maxDistance: 3.2
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -185,6 +187,9 @@ MonoBehaviour:
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
+  applyRootTransformRotation: 0
+  useAreaRotationYChange: 0
+  targetAreaRotationY: 0
   areaDistanceMin: 0
   areaDistanceMax: 0
   areaHeightMin: 0
@@ -211,14 +216,18 @@ MonoBehaviour:
   targetSpeed: 0
   speedChangeTime: 0
   speedChangeEase: 6
+  overrideSpeedOnCollision: 0
+  overrideSpeedTimeOnCollision: 0
   curve: 0
-  curveAdd: 0
+  useCurveChange: 0
+  targetCurve: 0
+  curveChangeTime: 0
+  curveChangeEase: 6
   curveLockY: 1
   curveStartDelayTime: 0
-  curveLifeTime: 0
-  endFollowOverTargetDistance: 0
-  overrideLifeTimeWhenDieTarget: 0
+  followLastPositionWhenDieTarget: 0
   followMeOnHitTarget: 0
+  followMinRange: 0
   useRandomTurn: 0
   accelTurn: 0
   randomTurnRotateYawRange: {x: 0, y: 0}
@@ -240,6 +249,7 @@ MonoBehaviour:
   bounceWallQuadCount: 0
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
+  overrideRicochetDistance: 0
   overrideRicochetSpeed: 0
   useHitStay: 0
   hitStayInterval: 0

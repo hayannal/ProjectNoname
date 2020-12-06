@@ -254,7 +254,7 @@ public class BaseDamageAffector : AffectorBase {
 		{
 			VampireAffector.OnHit(attackerActor.affectorProcessor, damage);
 			HealSpOnHitAffector.OnHit(attackerActor.affectorProcessor);
-			HitFlagAffector.OnHit(attackerActor.affectorProcessor);
+			HitFlagAffector.OnHit(attackerActor.affectorProcessor, hitParameter.statusStructForHitObject.targetDetectType);
 			ReflectDamageAffector.OnDamage(_affectorProcessor, attackerActor, damage);
 			CallAffectorValueAffector.OnEvent(attackerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnHit, damage);
 			AttackWeightHitObjectAffector.OnEvent(attackerActor.affectorProcessor, _affectorProcessor, damageRatio);

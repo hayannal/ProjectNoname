@@ -575,13 +575,18 @@ public class MeHitObject : MecanimEventBase {
 		if (actor.IsPlayerActor())
 		{
 			PlayerActor playerActor = actor as PlayerActor;
-			if (playerActor != null && playerActor.actionController.waitAttackSignal)
+			if (playerActor != null)
 			{
-				playerActor.actionController.waitAttackSignal = false;
-				ChangeAttackStateAffector.OnEventNormalAttack(playerActor.affectorProcessor);
+				HitFlagAffector.OnEventAttack(playerActor.affectorProcessor, targetDetectType);
+
+				if (playerActor.actionController.waitAttackSignal)
+				{
+					playerActor.actionController.waitAttackSignal = false;
+					ChangeAttackStateAffector.OnEventNormalAttack(playerActor.affectorProcessor);
 #if UNITY_EDITOR
-				//Debug.LogFormat("wait FirstAttackSignal frameCount = {0} / Time = {1}", Time.frameCount, Time.time);
+					//Debug.LogFormat("wait FirstAttackSignal frameCount = {0} / Time = {1}", Time.frameCount, Time.time);
 #endif
+				}
 			}
 		}
 

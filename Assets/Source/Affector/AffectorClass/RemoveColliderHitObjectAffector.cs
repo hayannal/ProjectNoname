@@ -118,7 +118,7 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 		// 1회 공격을 해야만 반격액션을 사용할 수 있는 구조로 바꾼다.
 		if (removed && AnimatorParameterHash != 0)
 		{
-			bool hitted = HitFlagAffector.PopHitted(_affectorProcessor);
+			bool hitted = HitFlagAffector.GetHitted(_affectorProcessor);
 			if (hitted)
 				_actor.actionController.animator.SetBool(AnimatorParameterHash, true);
 		}

@@ -653,6 +653,9 @@ public class HitObject : MonoBehaviour
 		statusStructForHitObject.parallelAddCountByLevelPack = normalAttack ? ParallelHitObjectAffector.GetAddCount(actor.affectorProcessor) : 0;
 		// repeat은 액션이 끝나고도 딜레이 기다렸다가 나갈 수 있기 때문에 여기서 체크하면 안된다.
 		//statusStructForHitObject.repeatAddCountByLevelPack = normalAttack ? RepeatHitObjectAffector.GetAddCount(actor.affectorProcessor) : 0;
+
+		if (normalAttack)
+			WallThroughHitObjectAffector.CheckThrough(actor.affectorProcessor, ref statusStructForHitObject.wallThroughByAffector, ref statusStructForHitObject.quadThroughByAffector);
 	}
 
 	static Collider[] s_colliderList = null;
@@ -1075,6 +1078,8 @@ public class HitObject : MonoBehaviour
 	int _remainMonsterThroughCount;
 	int _remainBounceWallQuadCount;
 	int _remainRicochetCount;
+	bool _wallThrough;
+	bool _quadThrough;
 
 	HitObjectMovement _hitObjectMovement;
 	HitObjectLineRenderer _hitObjectLineRenderer;
@@ -1150,6 +1155,8 @@ public class HitObject : MonoBehaviour
 		_remainMonsterThroughCount = _signal.monsterThroughCount + statusStructForHitObject.monsterThroughAddCountByLevelPack;
 		_remainBounceWallQuadCount = _signal.bounceWallQuadCount + statusStructForHitObject.bounceWallQuadAddCountByLevelPack;
 		_remainRicochetCount = _signal.ricochetCount + statusStructForHitObject.ricochetAddCountByLevelPack;
+		_wallThrough = (_signal.wallThrough || statusStructForHitObject.wallThroughByAffector);
+		_quadThrough = (_signal.quadThrough || statusStructForHitObject.quadThroughByAffector);
 
 		// Sub Component
 		if (meHit.lifeTime > 0.0f)
@@ -1584,7 +1591,7 @@ public class HitObject : MonoBehaviour
 				groundQuadCollided = true;
 				wallNormal = contact.normal;
 
-				if (_signal.quadThrough)
+				if (_quadThrough)
 					AddIgnoreList(col, false);
 			}
 
@@ -1655,7 +1662,7 @@ public class HitObject : MonoBehaviour
 					wallCollided = true;
 					wallNormal = contact.normal;
 
-					if (_signal.wallThrough)
+					if (_wallThrough)
 						AddIgnoreList(col, false);
 				}
 			}
@@ -1664,7 +1671,7 @@ public class HitObject : MonoBehaviour
 			if (collided)
 			{
 				bool ignoreEffect = false;
-				if (wallCollided && _signal.wallThrough)
+				if (wallCollided && _wallThrough)
 				{
 					// JellyFishGirl
 					if (_signal.movementType == HitObjectMovement.eMovementType.Howitzer)
@@ -1679,7 +1686,7 @@ public class HitObject : MonoBehaviour
 							if (_remainRicochetCount > 0)
 								ignoreEffect = true;
 							// Linhi. only first wallThrough
-							if (_signal.quadThrough)
+							if (_quadThrough)
 							{
 								if (_ignoreWallCollidedEffect)
 									ignoreEffect = true;
@@ -1783,7 +1790,7 @@ public class HitObject : MonoBehaviour
 				_remainBounceWallQuadCount -= 1;
 				useBounce = true;
 			}
-			else if (_signal.wallThrough)
+			else if (_wallThrough)
 				useThrough = true;
 			else
 			{
@@ -1800,7 +1807,7 @@ public class HitObject : MonoBehaviour
 				_remainBounceWallQuadCount -= 1;
 				useBounce = true;
 			}
-			else if (_signal.quadThrough)
+			else if (_quadThrough)
 				useThrough = true;
 			else
 			{

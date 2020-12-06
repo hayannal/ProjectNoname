@@ -33,6 +33,8 @@ public struct StatusStructForHitObject
 
 	// for affector
 	public float damage;
+	public bool wallThroughByAffector;
+	public bool quadThroughByAffector;
 
 	// example
 	//public float hp;	// hp is in StatusBase

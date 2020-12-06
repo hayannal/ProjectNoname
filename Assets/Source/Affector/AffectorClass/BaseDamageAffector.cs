@@ -208,20 +208,27 @@ public class BaseDamageAffector : AffectorBase {
 		if (enlargeDamageValue != 0.0f)
 			damage *= (1.0f + enlargeDamageValue);
 
-		if (_actor.actorStatus.GetHP() == _actor.actorStatus.GetValue(eActorStatus.MaxHp) && damage < _actor.actorStatus.GetHP())
+		if (_actor.actorStatus.GetHP() == _actor.actorStatus.GetValue(eActorStatus.MaxHp))
 		{
 			if (attackerActor == null) attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(hitParameter.statusStructForHitObject.actorInstanceId);
 			if (attackerActor != null)
 			{
-				// 이렇게 statusStructForHitObject를 통해서 체크하지 않고 직접 어펙터로 체크하는 방식은
-				// 발사하고 나서 즉사 어펙터를 얻었을때도 적용되기 때문에
-				// 엄밀히 말하자면 안좋은 구조긴 하다.
-				// 하지만 발사하고 나서 곧바로 즉사를 얻을 수 없다는 점 때문에, 샘플용으로 두기로 한다.
-				// (이 방법을 쓰면 statusStructForHitObject에 멤버변수를 추가하지 않아도 된다는 장점이 있긴 하다.)
-				if (InstantDeathAffector.CheckInstantDeath(attackerActor.affectorProcessor, _actor))
+				float addDamageValueByTargetHp = AddAttackByHpAffector.GetValueType2(attackerActor.affectorProcessor);
+				if (addDamageValueByTargetHp != 0.0f)
+					damage *= (1.0f + addDamageValueByTargetHp);
+
+				if (damage < _actor.actorStatus.GetHP())
 				{
-					damage = _actor.actorStatus.GetHP() + 1.0f;
-					FloatingDamageTextRootCanvas.instance.ShowText(FloatingDamageText.eFloatingDamageType.Headshot, _actor);
+					// 이렇게 statusStructForHitObject를 통해서 체크하지 않고 직접 어펙터로 체크하는 방식은
+					// 발사하고 나서 즉사 어펙터를 얻었을때도 적용되기 때문에
+					// 엄밀히 말하자면 안좋은 구조긴 하다.
+					// 하지만 발사하고 나서 곧바로 즉사를 얻을 수 없다는 점 때문에, 샘플용으로 두기로 한다.
+					// (이 방법을 쓰면 statusStructForHitObject에 멤버변수를 추가하지 않아도 된다는 장점이 있긴 하다.)
+					if (InstantDeathAffector.CheckInstantDeath(attackerActor.affectorProcessor, _actor))
+					{
+						damage = _actor.actorStatus.GetHP() + 1.0f;
+						FloatingDamageTextRootCanvas.instance.ShowText(FloatingDamageText.eFloatingDamageType.Headshot, _actor);
+					}
 				}
 			}
 		}

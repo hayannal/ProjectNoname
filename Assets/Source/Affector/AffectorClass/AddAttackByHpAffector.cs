@@ -26,6 +26,7 @@ public class AddAttackByHpAffector : AffectorBase
 		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
 
 		_value = affectorValueLevelTableData.fValue2;
+		_type = affectorValueLevelTableData.iValue1;
 	}
 
 	public override void OverrideAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
@@ -39,7 +40,25 @@ public class AddAttackByHpAffector : AffectorBase
 			return;
 	}
 
-	public static float GetValue(AffectorProcessor affectorProcessor, float hpRate)
+	int _type;
+	float GetAddAttack()
+	{
+		switch (_type)
+		{
+			case 0:
+				return _value * (1.0f - _actor.actorStatus.GetHPRatio());
+			case 1:
+				if (_actor.actorStatus.GetHPRatio() >= 1.0f)
+					return _value;
+				break;
+			//case 2:
+				// 여기서 처리하지 않는다.
+				//break;
+		}
+		return 0.0f;
+	}
+
+	public static float GetValue(AffectorProcessor affectorProcessor)
 	{
 		List<AffectorBase> listAddAttackByHpAffector = affectorProcessor.GetContinuousAffectorList(eAffectorType.AddAttackByHp);
 		if (listAddAttackByHpAffector == null)
@@ -53,11 +72,29 @@ public class AddAttackByHpAffector : AffectorBase
 			AddAttackByHpAffector addAttackByHpAffector = listAddAttackByHpAffector[i] as AddAttackByHpAffector;
 			if (addAttackByHpAffector == null)
 				continue;
-			result += addAttackByHpAffector.value;
+			result += addAttackByHpAffector.GetAddAttack();
 		}
-		if (result == 0.0f)
+		return result;
+	}
+
+	public static float GetValueType2(AffectorProcessor affectorProcessor)
+	{
+		List<AffectorBase> listAddAttackByHpAffector = affectorProcessor.GetContinuousAffectorList(eAffectorType.AddAttackByHp);
+		if (listAddAttackByHpAffector == null)
 			return 0.0f;
 
-		return result * (1.0f - hpRate);
+		float result = 0.0f;
+		for (int i = 0; i < listAddAttackByHpAffector.Count; ++i)
+		{
+			if (listAddAttackByHpAffector[i].finalized)
+				continue;
+			AddAttackByHpAffector addAttackByHpAffector = listAddAttackByHpAffector[i] as AddAttackByHpAffector;
+			if (addAttackByHpAffector == null)
+				continue;
+			if (addAttackByHpAffector._type != 2)
+				continue;
+			result += addAttackByHpAffector.value;
+		}
+		return result;
 	}
 }

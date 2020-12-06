@@ -35,6 +35,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.ChangeAttackState: affectorBase = new ChangeAttackStateAffector(); break;
 			case eAffectorType.ChangeAttackStateByDistance: affectorBase = new ChangeAttackStateByDistanceAffector(); break;
 			case eAffectorType.TimeSlow: affectorBase = new TimeSlowAffector(); break;
+			case eAffectorType.HitFlag: affectorBase = new HitFlagAffector(); break;
 			case eAffectorType.MonsterThroughHitObject: affectorBase = new MonsterThroughHitObjectAffector(); break;
 			case eAffectorType.WallThroughHitObject: affectorBase = new WallThroughHitObjectAffector(); break;
 			case eAffectorType.RicochetHitObject: affectorBase = new RicochetHitObjectAffector(); break;
@@ -105,6 +106,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.ChangeAttackState:
 			case eAffectorType.ChangeAttackStateByDistance:
 			case eAffectorType.TimeSlow:
+			case eAffectorType.HitFlag:
 			case eAffectorType.MonsterThroughHitObject:
 			case eAffectorType.WallThroughHitObject:
 			case eAffectorType.RicochetHitObject:

@@ -33,6 +33,7 @@ public enum eAffectorType
 	ChangeAttackState,
 	ChangeAttackStateByDistance,
 	TimeSlow,
+	HitFlag,
 
 	MonsterThroughHitObject = 31,
 	WallThroughHitObject,

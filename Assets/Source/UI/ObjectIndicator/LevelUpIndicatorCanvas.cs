@@ -142,6 +142,11 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 		exclusiveOkButtonObject.SetActive(false);
 	}
 
+	void OnDestroy()
+	{
+		_targetLevelUpCount = 0;
+	}
+
 	// Update is called once per frame
 	void Update()
 	{

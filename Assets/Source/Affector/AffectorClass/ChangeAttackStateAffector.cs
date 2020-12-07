@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class ChangeAttackStateAffector : AffectorBase
 {
+	int _swapTypeValue = 0;
 	int _changeCount = 0;
 	int _actionNameHash = 0;
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
@@ -20,21 +21,34 @@ public class ChangeAttackStateAffector : AffectorBase
 			return;
 		}
 
-		_changeCount = affectorValueLevelTableData.iValue1;
+		_swapTypeValue = affectorValueLevelTableData.iValue3;
+		if (_swapTypeValue == 1)
+			_changeCount = affectorValueLevelTableData.iValue1;
 		_actionNameHash = Animator.StringToHash(affectorValueLevelTableData.sValue1);
 	}
 
 	int _count;
 	void OnEventNormalAttack()
 	{
-		++_count;
-		if (_count >= _changeCount)
-			_count -= _changeCount;
+		if (_swapTypeValue == 1)
+		{
+			++_count;
+			if (_count >= _changeCount)
+				_count -= _changeCount;
+		}
 	}
 
 	bool CheckChange(ref int actionNameHash)
 	{
-		if ((_count + 1) == _changeCount)
+		if (_swapTypeValue == 1)
+		{
+			if ((_count + 1) == _changeCount)
+			{
+				actionNameHash = _actionNameHash;
+				return true;
+			}
+		}
+		else
 		{
 			actionNameHash = _actionNameHash;
 			return true;

@@ -118,6 +118,8 @@ public class AttackOnMovingAffector : AffectorBase
 	{
 		// 공속에 따라 딜레이는 애니메이션 속도 변하듯 변해야한다. ActionController의 OnChangedAttackSpeedAddRatio에서 가져왔다.
 		float remainTime = _affectorValueLevelTableData.fValue2;
+		float delayRatio = (_affectorValueLevelTableData.fValue3 > 0.0f) ? _affectorValueLevelTableData.fValue3 : 1.0f;
+		remainTime *= delayRatio;
 		float attackSpeedAddRate = _actor.actorStatus.GetValue(eActorStatus.AttackSpeedAddRate);
 		return (remainTime / (1.0f + attackSpeedAddRate * 0.3333f));
 	}

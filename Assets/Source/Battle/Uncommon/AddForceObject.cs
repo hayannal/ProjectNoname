@@ -17,6 +17,7 @@ public class AddForceObject : MonoBehaviour
 
 	List<Transform> _listTransform = new List<Transform>();
 	List<Rigidbody> _listRigidbody = new List<Rigidbody>();
+	List<Collider> _listCollider = new List<Collider>();
 	List<Vector3> _listPosition = new List<Vector3>();
 	List<Quaternion> _listRotation = new List<Quaternion>();
 	void Awake()
@@ -31,8 +32,12 @@ public class AddForceObject : MonoBehaviour
 			Rigidbody childRigidbody = transformList[i].GetComponent<Rigidbody>();
 			if (childRigidbody == null)
 				continue;
+			Collider childCollider = transformList[i].GetComponent<Collider>();
+			if (childCollider == null)
+				continue;
 			_listTransform.Add(transformList[i]);
 			_listRigidbody.Add(childRigidbody);
+			_listCollider.Add(childCollider);
 			_listPosition.Add(transformList[i].localPosition);
 			_listRotation.Add(transformList[i].localRotation);
 			transformList[i].gameObject.layer = ONLY_DEFAULT_LAYER;
@@ -56,6 +61,11 @@ public class AddForceObject : MonoBehaviour
 			GameObject newObject = BattleInstanceManager.instance.GetCachedObject(uncommonDropPrefab, dropPosition, Quaternion.identity);
 			newObject.layer = ONLY_DEFAULT_LAYER;
 			Rigidbody rigidbody = newObject.GetComponent<Rigidbody>();
+			Collider collider = newObject.GetComponent<Collider>();
+
+			for (int i = 0; i < _listCollider.Count; ++i)
+				Physics.IgnoreCollision(collider, _listCollider[i], true);
+			
 			Vector3 dropCenter = dropPosition;
 			Vector3 sideCenter = Random.onUnitSphere;
 			sideCenter.y = 0.0f;

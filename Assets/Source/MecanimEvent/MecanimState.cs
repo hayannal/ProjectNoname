@@ -53,7 +53,7 @@ public class MecanimState : MonoBehaviour {
 
 		#region Ultimate State
 		// Ultimate 액션이 발동되는게 확실시 되면 SP를 차감시킨다. 액션이 있는 궁극기의 경우엔 이게 가장 안전하다.
-		if (stateID == (int)MecanimStateDefine.eMecanimState.Ultimate)
+		if (stateID == (int)MecanimStateDefine.eMecanimState.Ultimate && fullPathHash != 0)
 		{
 			//Debug.LogFormat("Ulti State : {0}", Time.frameCount);
 			if (_actionController == null && transform.parent != null)

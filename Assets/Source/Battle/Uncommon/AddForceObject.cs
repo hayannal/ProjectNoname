@@ -51,10 +51,12 @@ public class AddForceObject : MonoBehaviour
 
 		if (dropUncommonObject)
 		{
-			GameObject newObject = BattleInstanceManager.instance.GetCachedObject(uncommonDropPrefab, cachedTransform.position + Vector3.up, Quaternion.identity);
+			Vector3 dropPosition = cachedTransform.position;
+			dropPosition.y = 1.0f;
+			GameObject newObject = BattleInstanceManager.instance.GetCachedObject(uncommonDropPrefab, dropPosition, Quaternion.identity);
 			newObject.layer = ONLY_DEFAULT_LAYER;
 			Rigidbody rigidbody = newObject.GetComponent<Rigidbody>();
-			Vector3 dropCenter = cachedTransform.position + Vector3.up;
+			Vector3 dropCenter = dropPosition;
 			Vector3 sideCenter = Random.onUnitSphere;
 			sideCenter.y = 0.0f;
 			sideCenter = sideCenter.normalized * 0.2f;

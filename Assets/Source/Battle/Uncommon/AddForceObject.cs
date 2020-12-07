@@ -59,7 +59,7 @@ public class AddForceObject : MonoBehaviour
 			Vector3 dropCenter = dropPosition;
 			Vector3 sideCenter = Random.onUnitSphere;
 			sideCenter.y = 0.0f;
-			sideCenter = sideCenter.normalized * 0.2f;
+			sideCenter = sideCenter.normalized * 1.0f;
 			dropCenter.x += sideCenter.x;
 			dropCenter.z += sideCenter.z;
 			float force = dropForce;

@@ -33,7 +33,7 @@ public class UncommonDropObject : MonoBehaviour
 		}
 		else
 		{
-			if (_rigidbody.IsSleeping())
+			if (_rigidbody.velocity.sqrMagnitude < 1.0f)
 			{
 				_getable = true;
 				nameCanvasRectTransform.rotation = Quaternion.identity;

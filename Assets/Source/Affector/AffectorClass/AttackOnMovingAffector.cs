@@ -108,7 +108,8 @@ public class AttackOnMovingAffector : AffectorBase
 		else
 			_signalDelayRemainTime = GetSignalDelayTime();
 
-		_actor.cooltimeProcessor.ApplyCooltime(PlayerAI.NormalAttackName, _actor.actorStatus.GetValue(eActorStatus.AttackDelay));
+		float delayRatio = (_affectorValueLevelTableData.fValue3 > 0.0f) ? _affectorValueLevelTableData.fValue3 : 1.0f;
+		_actor.cooltimeProcessor.ApplyCooltime(PlayerAI.NormalAttackName, _actor.actorStatus.GetValue(eActorStatus.AttackDelay) * delayRatio);
 		_normalAttackCooltime = _actor.cooltimeProcessor.GetCooltime(PlayerAI.NormalAttackName);
 	}
 

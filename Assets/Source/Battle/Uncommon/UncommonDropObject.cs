@@ -27,6 +27,9 @@ public class UncommonDropObject : MonoBehaviour
 		if (_getable)
 		{
 			UpdateDistance();
+
+			if (nameCanvasRectTransform.rotation != Quaternion.identity)
+				nameCanvasRectTransform.rotation = Quaternion.identity;
 		}
 		else
 		{

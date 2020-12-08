@@ -414,10 +414,17 @@ public class PlayFabApiManager : MonoBehaviour
 	TimeSpan _timeSpanForServerUtc;
 	void OnGetServerUtc(ExecuteCloudScriptResult success)
 	{
-		string serverUtcTimeString = (string)success.FunctionResult;
+		PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
+		jsonResult.TryGetValue("date", out object date);
+		jsonResult.TryGetValue("ms", out object ms);
+
 		DateTime serverUtcTime = new DateTime();
-		if (DateTime.TryParse(serverUtcTimeString, out serverUtcTime))
+		if (DateTime.TryParse((string)date, out serverUtcTime))
 		{
+			double millisecond = 0.0;
+			double.TryParse(ms.ToString(), out millisecond);
+			serverUtcTime = serverUtcTime.AddMilliseconds(millisecond);
+
 			DateTime universalTime = serverUtcTime.ToUniversalTime();
 			// 클라 시간을 변경했으면 DateTime.UtcNow도 달라지기 때문에 그냥 믿으면 안된다. 서버 타임이랑 비교해서 차이값을 기록해둔다.
 			// DateTime.UtcNow에다가 offset을 더해서 예측하는 방식이므로 universalTime에서 DateTime.UtcNow를 빼서 기록해둔다.

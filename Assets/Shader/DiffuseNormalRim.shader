@@ -30,6 +30,10 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 		_EdgeSize ("EdgeSize", Range(0,1)) = 0.2
 		_Noise ("Noise", 2D) = "white" {}
 		_EdgeCutoff ("Edge Cutoff", Range(0, 1)) = 0.0
+
+		[Toggle(_BASERIM)] _UseBaseRim("========== Use Base Rim ==========", Float) = 0
+		_BaseRimColor("Base Rim Color", Color) = (1.0, 1.0, 0.0)
+		_BaseRimPower("Base Rim Power", Range(-1.0, 2)) = -0.1
 	}
 	SubShader {
 		Tags { "RenderType"="Opaque" }
@@ -38,6 +42,7 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 		CGPROGRAM
 		#pragma surface surf Lambert exclude_path:prepass nolightmap noforwardadd
 		#pragma multi_compile _ _DISSOLVE
+		#pragma multi_compile _ _BASERIM
 		#pragma shader_feature _CUTOFF
 		#pragma shader_feature _EMISSIVE
 		#pragma shader_feature _HUE
@@ -81,6 +86,11 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 		half _EdgeSize;
 		sampler2D _Noise;
 		half _EdgeCutoff;
+#endif
+
+#if _BASERIM
+		half4 _BaseRimColor;
+		half _BaseRimPower;
 #endif
 
 		// Vertex를 연산할 때 필요한 데이터를 정합니다.
@@ -153,6 +163,16 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 			o.Albedo = lerp(o.Albedo, _EmissiveColor.rgb, c.a * _EmissiveColor.a);
 #endif
 
+#if _BASERIM
+			//half baseRim = 1.0f - saturate(dot(normalize(IN.viewDir), o.Normal));
+			//half t = pow(baseRim, _BaseRimPower);
+			//o.Albedo = lerp(o.Albedo, _BaseRimColor.rgb * t, t);
+
+			half baseRim = 1.0f - saturate(dot(normalize(IN.viewDir), o.Normal));
+			half t = saturate(baseRim - _BaseRimPower);
+			o.Albedo = lerp(o.Albedo, _BaseRimColor.rgb * t, t);
+#endif
+
 #if _DISSOLVE
 			half Noise = tex2D(_Noise, IN.uv_Noise).r;
 			Noise = lerp(0, 1, Noise);
@@ -176,6 +196,13 @@ Shader "FrameworkPV/DiffuseRimNormal" {
 			//o.Albedo.g = saturate(o.Albedo.g);
 			//o.Albedo.b = saturate(o.Albedo.b);
 #endif
+
+//#if _BASERIM
+			// too bright
+			//half baseRim = 1.0f - saturate(dot(normalize(IN.viewDir), o.Normal));
+			//o.Emission += _BaseRimColor.rgb * saturate(baseRim - _BaseRimPower);
+			//o.Emission += _BaseRimColor.rgb * pow(baseRim, _BaseRimPower);
+//#endif
 		}
 		ENDCG
 

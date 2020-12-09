@@ -162,6 +162,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 					_trapSpawnDelayMax = TableDataManager.instance.nodeWarTrapTable.dataArray[i].maxPeriodStepOne;
 					_trapSpawnDelayStep2Min = TableDataManager.instance.nodeWarTrapTable.dataArray[i].minPeriodStepTwo;
 					_trapSpawnDelayStep2Max = TableDataManager.instance.nodeWarTrapTable.dataArray[i].maxPeriodStepTwo;
+					_trapNoSpawnRange = TableDataManager.instance.nodeWarTrapTable.dataArray[i].trapNoSpawnRange;
 				}
 			}
 			_disableTrap = !findTrapInfo;
@@ -348,6 +349,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	float _trapSpawnDelayStep2Min = 3.0f;
 	float _trapSpawnDelayStep2Max = 7.0f;
 	float _trapFirstWaitingRemainTime;
+	float _trapNoSpawnRange = 12.0f;
 	void UpdateTrap()
 	{
 		if (_phase == ePhase.Success)
@@ -396,7 +398,6 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	}
 
 	public float TrapSpawnDistance = 24.0f;
-	const float TrapNoSpawnRange = 12.0f;
 	bool GetTrapSpawnPosition(ref Vector3 resultPosition)
 	{
 		Vector3 playerPosition = BattleInstanceManager.instance.playerActor.cachedTransform.position;
@@ -411,13 +412,13 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			desirePosition.z += offset.y * 2.0f;
 
 			// 랜덤으로 나온 포지션 근처에 이미 트랩이 존재한다면 다시 시도.
-			if (NodeWarTrap.IsExistInRange(desirePosition, TrapNoSpawnRange))
+			if (NodeWarTrap.IsExistInRange(desirePosition, _trapNoSpawnRange))
 				continue;
 			if (_phase != ePhase.FindSoul && NodeWarExitArea.instance != null)
 			{
 				Vector3 diff = desirePosition - NodeWarExitArea.instance.cachedTransform.position;
 				diff.y = 0.0f;
-				if (diff.sqrMagnitude < (NodeWarExitArea.instance.lastHealAreaRange + TrapNoSpawnRange * 0.5f) * (NodeWarExitArea.instance.lastHealAreaRange + TrapNoSpawnRange * 0.5f))
+				if (diff.sqrMagnitude < (NodeWarExitArea.instance.lastHealAreaRange + _trapNoSpawnRange * 0.5f) * (NodeWarExitArea.instance.lastHealAreaRange + _trapNoSpawnRange * 0.5f))
 					continue;
 			}
 			resultPosition = desirePosition;
@@ -433,13 +434,13 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			desirePosition.y = 0.0f;
 			desirePosition.z += offset.y * TrapSpawnDistance;
 
-			if (NodeWarTrap.IsExistInRange(desirePosition, TrapNoSpawnRange))
+			if (NodeWarTrap.IsExistInRange(desirePosition, _trapNoSpawnRange))
 				continue;
 			if (_phase != ePhase.FindSoul && NodeWarExitArea.instance != null)
 			{
 				Vector3 diff = desirePosition - NodeWarExitArea.instance.cachedTransform.position;
 				diff.y = 0.0f;
-				if (diff.sqrMagnitude < (NodeWarExitArea.instance.lastHealAreaRange + TrapNoSpawnRange * 0.5f) * (NodeWarExitArea.instance.lastHealAreaRange + TrapNoSpawnRange * 0.5f))
+				if (diff.sqrMagnitude < (NodeWarExitArea.instance.lastHealAreaRange + _trapNoSpawnRange * 0.5f) * (NodeWarExitArea.instance.lastHealAreaRange + _trapNoSpawnRange * 0.5f))
 					continue;
 			}
 			resultPosition = desirePosition;

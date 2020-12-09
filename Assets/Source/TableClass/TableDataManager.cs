@@ -54,6 +54,7 @@ public class TableDataManager : MonoBehaviour
 	public NodeWarTable nodeWarTable;
 	public NodeWarSpawnTable nodeWarSpawnTable;
 	public NodeWarTrapTable nodeWarTrapTable;
+	public ChapterTrapTable chapterTrapTable;
 
 	void Awake()
 	{
@@ -471,6 +472,19 @@ public class TableDataManager : MonoBehaviour
 		{
 			if (nodeWarSpawnTable.dataArray[i].monsterId == monsterId)
 				return nodeWarSpawnTable.dataArray[i];
+		}
+		return null;
+	}
+
+	public ChapterTrapTableData FindChapterTrapTableData(int chapter, bool lastStage)
+	{
+		for (int i = 0; i < chapterTrapTable.dataArray.Length; ++i)
+		{
+			if (chapterTrapTable.dataArray[i].chapter == chapter)
+			{
+				if ((lastStage && chapterTrapTable.dataArray[i].last == 1) || (lastStage == false && chapterTrapTable.dataArray[i].last == 0))
+					return chapterTrapTable.dataArray[i];
+			}
 		}
 		return null;
 	}

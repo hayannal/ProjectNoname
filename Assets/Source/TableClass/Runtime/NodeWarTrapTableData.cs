@@ -40,4 +40,8 @@ public class NodeWarTrapTableData
   float _maxPeriodStepTwo;
   public float maxPeriodStepTwo { get { return _maxPeriodStepTwo; } set { _maxPeriodStepTwo = value; } }
   
+  [SerializeField]
+  float _trapNoSpawnRange;
+  public float trapNoSpawnRange { get { return _trapNoSpawnRange; } set { _trapNoSpawnRange = value; } }
+  
 }

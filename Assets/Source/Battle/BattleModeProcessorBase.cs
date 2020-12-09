@@ -18,6 +18,7 @@ public class BattleModeProcessorBase
 	{
 		UpdateSummonMonsterSpawn();
 		UpdateEndProcess();
+		UpdateTrap();
 	}
 
 	DateTime _startDateTime;
@@ -68,6 +69,9 @@ public class BattleModeProcessorBase
 			if (StageManager.instance.playStage > 5)
 				TutorialLinkAccountCanvas.instance.gameObject.SetActive(false);
 		}
+
+		// 항상 꺼두는게 기본이고 보스몹이 스폰될때부터 처리해야한다.
+		_enableTrap = false;
 	}
 
 	public virtual void OnLoadedMap()
@@ -219,6 +223,7 @@ public class BattleModeProcessorBase
 		ClientSaveData.instance.OnFinishLoadGame();
 	}
 
+	int _lastCheckedStageForTrap = -1;
 	public virtual void OnSpawnMonster(MonsterActor monsterActor)
 	{
 		if (monsterActor.team.teamId != (int)Team.eTeamID.DefaultMonster || monsterActor.excludeMonsterCount)
@@ -229,6 +234,18 @@ public class BattleModeProcessorBase
 
 		if (monsterActor.summonMonster)
 			_summonMonsterSpawned = true;
+
+		#region ChapterTrap
+		if (monsterActor.bossMonster)
+		{
+			// 보스의 스폰때마다 호출될테니 스테이지 당 1회만 호출될 수 있도록 체크를 한다.
+			if (_lastCheckedStageForTrap != StageManager.instance.playStage)
+			{
+				InitializeTrap();
+				_lastCheckedStageForTrap = StageManager.instance.playStage;
+			}
+		}
+		#endregion
 	}
 
 	public virtual void OnDiePlayer(PlayerActor playerActor)
@@ -303,6 +320,8 @@ public class BattleModeProcessorBase
 		{
 			BattleManager.instance.OnClearStage();
 		}
+
+		_enableTrap = false;
 
 #if HUDDPS
 #if UNITY_EDITOR
@@ -544,6 +563,97 @@ public class BattleModeProcessorBase
 			StageManager.instance.currentGatePillarSpawnPosition, Quaternion.identity);
 		ClientSaveData.instance.OnChangedGatePillar(true);
 	}
+
+
+
+	#region ChapterTrap
+	// 후반부 챕터의 보스전에서는 트랩이 생성된다.
+	// NodeWar때랑 달리 스테이지 별로 
+	bool _enableTrap = false;
+	GameObject _trapPrefab;
+	float _trapSpawnRemainTime;
+	float _trapSpawnDelayMin = 3.0f;
+	float _trapSpawnDelayMax = 7.0f;
+	float _trapFirstWaitingRemainTime;
+	float _trapNoSpawnRange = 12.0f;
+	void InitializeTrap()
+	{
+		_enableTrap = false;
+		bool lastStage = (StageManager.instance.playStage == StageManager.instance.GetCurrentMaxStage());
+		ChapterTrapTableData chapterTrapTableData = TableDataManager.instance.FindChapterTrapTableData(StageManager.instance.playChapter, lastStage);
+		if (chapterTrapTableData == null)
+			return;
+
+		_trapFirstWaitingRemainTime = chapterTrapTableData.firstWaiting;
+		_trapSpawnDelayMin = chapterTrapTableData.minPeriod;
+		_trapSpawnDelayMax = chapterTrapTableData.maxPeriod;
+		_trapSpawnRemainTime = 0.0f;
+		_trapNoSpawnRange = chapterTrapTableData.trapNoSpawnRange;
+		_enableTrap = true;
+
+		AddressableAssetLoadManager.GetAddressableGameObject(chapterTrapTableData.trapAddress, "Trap", (prefab) =>
+		{
+			_trapPrefab = prefab;
+		});
+	}
+
+	void UpdateTrap()
+	{
+		// 보스를 상대할때만 나오고 죽이고 나서는 더이상 스폰되지 않는다.
+		if (_enableTrap == false)
+			return;
+
+		if (_trapFirstWaitingRemainTime > 0.0f)
+		{
+			_trapFirstWaitingRemainTime -= Time.deltaTime;
+			if (_trapFirstWaitingRemainTime <= 0.0f)
+				_trapFirstWaitingRemainTime = 0.0f;
+			return;
+		}
+
+		_trapSpawnRemainTime -= Time.deltaTime;
+		if (_trapSpawnRemainTime < 0.0f)
+		{
+			// 거의 일어나지 않겠지만 혹시라도 아직 트립 프리팹이 로딩되지 않았다면 1초후에 다시 시도하게 한다.
+			if (_trapPrefab == null)
+			{
+				_trapSpawnRemainTime += 1.0f;
+				return;
+			}
+
+			Vector3 resultPosition = Vector3.zero;
+			if (GetTrapSpawnPosition(ref resultPosition))
+			{
+				BattleInstanceManager.instance.GetCachedObject(_trapPrefab, resultPosition, Quaternion.identity);
+				_trapSpawnRemainTime += UnityEngine.Random.Range(_trapSpawnDelayMin, _trapSpawnDelayMax);
+			}
+			else
+			{
+				// 이 자리에서 만들 수 없다고 판단되면 잠시 딜레이를 줘서 조금 후에 다시 체크하도록 한다.
+				_trapSpawnRemainTime += 1.0f;
+			}
+		}
+	}
+
+	bool GetTrapSpawnPosition(ref Vector3 resultPosition)
+	{
+		for (int i = 0; i < 20; ++i)
+		{
+			// 맵의 크기 안에서 임의의 위치에 나오면 된다.
+			Vector3 desirePosition = Vector3.zero;
+
+			desirePosition.x = UnityEngine.Random.Range(CustomFollowCamera.instance.cachedQuadLeft, CustomFollowCamera.instance.cachedQuadRight);
+			desirePosition.y = 0.0f;
+			desirePosition.z = UnityEngine.Random.Range(CustomFollowCamera.instance.cachedQuadDown, CustomFollowCamera.instance.cachedQuadUp);
+
+			if (NodeWarTrap.IsExistInRange(desirePosition, _trapNoSpawnRange))
+				continue;
+			resultPosition = desirePosition;
+			return true;
+		}
+		return false;
+	}
+	#endregion
 
 
 

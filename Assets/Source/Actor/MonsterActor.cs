@@ -17,6 +17,7 @@ public class MonsterActor : Actor
 	public SequentialMonster sequentialMonster { get; set; }
 	public bool summonMonster { get; set; }
 	public bool excludeMonsterCount { get; set; }
+	public bool eliteMonster { get; private set; }
 
 	// 다른 옵션들과 달리 team설정은 초기화때 한번만 하기 때문에 팀을 바꿔가면서 재활용할 순 없다.
 	// 게임 도중에 팀을 섞어쓸일이 없을거 같아서 우선 이대로 간다.
@@ -57,6 +58,7 @@ public class MonsterActor : Actor
 			group.CheckAllDisable();
 		sequentialMonster = null;
 		summonMonster = false;
+		eliteMonster = false;
 	}
 	#endregion
 
@@ -99,6 +101,9 @@ public class MonsterActor : Actor
 
 	void InitializeMonster()
 	{
+		// 엘리트 체크는 몬스터 초기화 직전에 해둔다. eliteMonter가 켜지면 그에 따라 스탯이랑 AI랑 다르게 적용하면 된다.
+		CheckEliteMonster();
+
 		actorStatus.InitializeMonsterStatus();
 		InitializePassiveSkill();
 		monsterAI.InitializeAI();
@@ -171,6 +176,60 @@ public class MonsterActor : Actor
 		}
 	}
 	#endregion
+
+	void CheckEliteMonster()
+	{
+		if (reservedAllyTeam || excludeMonsterCount)
+			return;
+		if (summonMonster || sequentialMonster != null)
+			return;
+
+		// 개발 편의성을 위해 엘리트 몬스터는 기존에 배치된 몬스터를 상황에 따라 수정해서 쓰는 형태로 개발하게 되었다.
+		// 그러면서도 엘리트 몬스터가 나오지 않는 중저렙 챕터를 플레이할때 괜히 부하가 발생하는 것을 막기 위해
+		// 사용할때만 마테리얼 변화 같은걸 적용하고 다 쓰고 꺼질때 초기형태로 되돌리기로 한다.
+		// 그래서 엘리트 몬스터라고 따로 풀을 사용하는 것도 아니고 다 함께 같은 풀을 사용하기로 한다.
+
+		bool needEliteMonster = false;
+		// 현재 플레이 중인 스테이지에서 엘리트 몬스터를 필요로 하지 않는다면 그냥 리턴하면 끝.
+		if (needEliteMonster == false)
+			return;
+
+		// 엘리트 몬스터가 필요한 상황이라면
+		// 새로 스테이지를 진입해서 생성된 몬스터인지 혹은 강종으로 인한 재진입인지를 판단해서 처리해야한다.
+		// Start에서 호출될때는 이미 IsLoadingInProgressGame가 끝나있는 상태일테니 별도로 기억해둔 값으로 판단해야한다.
+		//if (ClientSaveData.instance.IsLoadingInProgressGame())
+		if (BattleInstanceManager.instance.useCachedEliteInfo)
+		{
+			//Debug.Log("Use Cached Elite Monster Info");
+			List<int> listEliteMonsterIndex = ClientSaveData.instance.GetCachedEliteMonsterIndexList();
+			if (listEliteMonsterIndex.Contains(BattleInstanceManager.instance.monsterIndex))
+				eliteMonster = true;
+		}
+		else
+		{
+			//Debug.Log("Check Elite Monster Info");
+
+			// 재진입이 아니라면 랜덤하게 엘리트 속성을 부여하고
+			float eliteRate = 0.5f;
+			if (eliteRate > 0.0f && Random.value <= eliteRate)
+				eliteMonster = true;
+
+			if (eliteMonster)
+			{
+				// 재진입을 위해서 기록을 해놓아야한다.
+				ClientSaveData.instance.OnAddedEliteMonsterIndex(BattleInstanceManager.instance.monsterIndex);
+			}
+		}
+
+		// 인덱스는 선별되지 않은 몹이더라도 항상 증가시켜야한다.
+		++BattleInstanceManager.instance.monsterIndex;
+
+		if (eliteMonster == false)
+			return;
+
+		// 마테리얼을 바꾸는 컴포넌트 적용하고(리셋도 이 스크립트가 담당한다.)
+		EliteMonsterRim.ShowRim(cachedTransform);
+	}
 
 	bool _needNavMeshAgentWarp = false;
 	void Update()

@@ -563,6 +563,18 @@ public class BattleInstanceManager : MonoBehaviour
 	}
 	#endregion
 
+	#region Monster Index
+	public int monsterIndex { get; set; }
+	public bool useCachedEliteInfo { get; set; }
+	public void OnPreInitializeMonster()
+	{
+		monsterIndex = 0;
+
+		// 이 타이밍에 저장해놔야 MonsterActor의 Start때에도 제대로 판단할 수 있게 된다.
+		useCachedEliteInfo = ClientSaveData.instance.IsLoadingInProgressGame();
+	}
+	#endregion
+
 	#region PathFinder Agent
 	Dictionary<int, int> _dicPathFinderAgentRefCount = new Dictionary<int, int>();
 	public void OnInitializePathFinderAgent(int agentTypeID)

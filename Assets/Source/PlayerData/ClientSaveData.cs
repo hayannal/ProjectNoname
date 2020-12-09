@@ -184,6 +184,7 @@ public class ClientSaveData : MonoBehaviour
 		ClearDropItemList();
 		OnChangedDropGold(0.0f);
 		OnChangedDropSeal(0);
+		ClearEliteMonsterIndexList();
 	}
 
 	void ResaveEnterFlagValues(string newEnterFlag)
@@ -209,6 +210,7 @@ public class ClientSaveData : MonoBehaviour
 		float dropGold = GetCachedDropGold();
 		int dropSeal = GetCachedDropSeal();
 		string stagePenaltyId = GetCachedStagePenalty();
+		string jsonEliteMonsterData = GetCachedEliteMonsterData();
 
 		// 새 값으로 교체하고
 		ObscuredPrefs.SetString("enterFlag", newEnterFlag);
@@ -237,6 +239,7 @@ public class ClientSaveData : MonoBehaviour
 		OnChangedDropGold(dropGold);
 		OnChangedDropSeal(dropSeal);
 		if (string.IsNullOrEmpty(stagePenaltyId) == false) OnChangedStagePenalty(stagePenaltyId);
+		if (string.IsNullOrEmpty(jsonEliteMonsterData) == false) OnChangedEliteMonsterData(jsonEliteMonsterData);
 	}
 
 	public bool IsLoadingInProgressGame()
@@ -275,6 +278,7 @@ public class ClientSaveData : MonoBehaviour
 		ObscuredPrefs.DeleteKey("cachedStage");
 		ObscuredPrefs.DeleteKey("cachedEnvironment");
 		ClearDropItemList();
+		ClearEliteMonsterIndexList();
 	}
 
 	public string GetCachedEnterFlag() { return ObscuredPrefs.GetString("enterFlag"); }
@@ -361,6 +365,30 @@ public class ClientSaveData : MonoBehaviour
 	// 패널티 버프 디버프
 	public void OnChangedStagePenalty(string stagePenaltyId) { SetCachedString("cachedStagePenalty", stagePenaltyId); }
 	public string GetCachedStagePenalty() { return GetCachedString("cachedStagePenalty"); }
+
+	// 엘리트 몬스터 리스트
+	void OnChangedEliteMonsterData(string jsonEliteMonsterData) { SetCachedString("cachedEliteMonsterData", jsonEliteMonsterData); }
+	string GetCachedEliteMonsterData() { return GetCachedString("cachedEliteMonsterData"); }
+	List<int> _listEliteMonsterIndex = new List<int>();
+	public void ClearEliteMonsterIndexList()
+	{
+		_listEliteMonsterIndex.Clear();
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		OnChangedEliteMonsterData(serializer.SerializeObject(_listEliteMonsterIndex));
+	}
+	public void OnAddedEliteMonsterIndex(int index)
+	{
+		_listEliteMonsterIndex.Add(index);
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		OnChangedEliteMonsterData(serializer.SerializeObject(_listEliteMonsterIndex));
+	}
+	public List<int> GetCachedEliteMonsterIndexList()
+	{
+		string jsonEliteMonsterData = GetCachedEliteMonsterData();
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		_listEliteMonsterIndex = serializer.DeserializeObject<List<int>>(jsonEliteMonsterData);
+		return _listEliteMonsterIndex;
+	}
 
 
 	#region Helper

@@ -122,7 +122,7 @@ public class ActorStatus : MonoBehaviour
 		OnChangedStatus();
 	}
 
-	public void InitializeMonsterStatus()
+	public void InitializeMonsterStatus(bool eliteMonster, bool bossMonster)
 	{
 		if (_statusBase == null)
 			_statusBase = new MonsterStatusList();
@@ -162,6 +162,16 @@ public class ActorStatus : MonoBehaviour
 		_statusBase.valueList[(int)eActorStatus.AttackDelay] = monsterTableData.attackDelay;
 		_statusBase.valueList[(int)eActorStatus.EvadeRate] = monsterTableData.evadeRate;
 		_statusBase.valueList[(int)eActorStatus.MoveSpeed] = monsterTableData.moveSpeed;
+
+		if (eliteMonster)
+		{
+			int playChapter = PlayerData.instance.currentChaosMode ? (StageManager.instance.playChapter - 1) : (int)StageManager.instance.playChapter;
+			ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(playChapter);
+			if (bossMonster)
+				_statusBase.valueList[(int)eActorStatus.MaxHp] *= chapterTableData.bossEliteHpRate;
+			else
+				_statusBase.valueList[(int)eActorStatus.Attack] *= chapterTableData.normalEliteAtkRate;
+		}
 
 		//if (isServer)
 		_statusBase._hp = _lastMaxHp = GetValue(eActorStatus.MaxHp);

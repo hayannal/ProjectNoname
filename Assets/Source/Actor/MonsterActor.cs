@@ -104,7 +104,7 @@ public class MonsterActor : Actor
 		// 엘리트 체크는 몬스터 초기화 직전에 해둔다. eliteMonter가 켜지면 그에 따라 스탯이랑 AI랑 다르게 적용하면 된다.
 		CheckEliteMonster();
 
-		actorStatus.InitializeMonsterStatus();
+		actorStatus.InitializeMonsterStatus(eliteMonster, bossMonster);
 		InitializePassiveSkill();
 		monsterAI.InitializeAI();
 
@@ -189,7 +189,7 @@ public class MonsterActor : Actor
 		// 사용할때만 마테리얼 변화 같은걸 적용하고 다 쓰고 꺼질때 초기형태로 되돌리기로 한다.
 		// 그래서 엘리트 몬스터라고 따로 풀을 사용하는 것도 아니고 다 함께 같은 풀을 사용하기로 한다.
 
-		bool needEliteMonster = false;
+		bool needEliteMonster = (StageManager.instance.currentStageTableData.createEliteRate > 0.0f);
 		// 현재 플레이 중인 스테이지에서 엘리트 몬스터를 필요로 하지 않는다면 그냥 리턴하면 끝.
 		if (needEliteMonster == false)
 			return;
@@ -210,7 +210,7 @@ public class MonsterActor : Actor
 			//Debug.Log("Check Elite Monster Info");
 
 			// 재진입이 아니라면 랜덤하게 엘리트 속성을 부여하고
-			float eliteRate = 0.5f;
+			float eliteRate = StageManager.instance.currentStageTableData.createEliteRate;
 			if (eliteRate > 0.0f && Random.value <= eliteRate)
 				eliteMonster = true;
 

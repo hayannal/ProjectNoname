@@ -48,4 +48,12 @@ public class ChapterTableData
   string _chapterMusic;
   public string chapterMusic { get { return _chapterMusic; } set { _chapterMusic = value; } }
   
+  [SerializeField]
+  float _normalEliteAtkRate;
+  public float normalEliteAtkRate { get { return _normalEliteAtkRate; } set { _normalEliteAtkRate = value; } }
+  
+  [SerializeField]
+  float _bossEliteHpRate;
+  public float bossEliteHpRate { get { return _bossEliteHpRate; } set { _bossEliteHpRate = value; } }
+  
 }

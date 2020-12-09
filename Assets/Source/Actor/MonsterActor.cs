@@ -87,6 +87,12 @@ public class MonsterActor : Actor
 		if (cachedTransform.parent != null)
 			group = cachedTransform.parent.GetComponent<GroupMonster>();
 
+		if (reservedAllyTeam)
+		{
+			// 테이블에 넣기에도 애매하고 MeSummon 에 넣기에도 애매하다. 우선 하드코딩.
+			targetingProcessor.sphereCastRadiusForCheckWall = 0.1f;
+		}
+
 		// common
 		InitializeMonster();
 	}

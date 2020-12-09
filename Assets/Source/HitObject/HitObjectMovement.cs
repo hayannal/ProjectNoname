@@ -452,6 +452,13 @@ public class HitObjectMovement : MonoBehaviour {
 				}
 				break;
 			case eMovementType.FollowTarget:
+				if (_needApplySpeed)
+				{
+					_velocity = _rigidbody.velocity = cachedTransform.forward * _speed;
+					_forward = cachedTransform.forward;
+					_needApplySpeed = false;
+				}
+
 				if (_ignoreFollow)
 					break;
 				if (_signal.curveStartDelayTime > 0.0f && _remainCurveStartDelayTime > 0.0f)

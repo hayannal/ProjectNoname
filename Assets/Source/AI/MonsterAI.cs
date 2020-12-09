@@ -252,7 +252,9 @@ public class MonsterAI : MonoBehaviour
 		if (_currentFindDelay <= 0.0f)
 		{
 			_currentFindDelay += TargetFindDelay;
-			if (targetingProcessor.FindNearestTarget(Team.eTeamCheckFilter.Enemy, PlayerAI.FindTargetRange))
+
+			if (targetingProcessor.FindNearestMonster(PlayerAI.FindTargetRange, -1.0f))
+			//if (targetingProcessor.FindNearestTarget(Team.eTeamCheckFilter.Enemy, PlayerAI.FindTargetRange))
 			{
 				Collider targetCollider = targetingProcessor.GetTarget();
 				targetRadius = ColliderUtil.GetRadius(targetCollider);

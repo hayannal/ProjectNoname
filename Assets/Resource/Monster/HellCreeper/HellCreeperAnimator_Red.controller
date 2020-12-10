@@ -15,6 +15,10 @@ MonoBehaviour:
   StartTime: 0.23
   EndTime: 1
   targetDetectType: 2
+  presetType: 0
+  multiPresetCount: 0
+  ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 1148682111013571456, guid: 0881914fe86a350489d6f4b9cb714a1b,
     type: 3}
   lifeTime: 5
@@ -31,6 +35,9 @@ MonoBehaviour:
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
+  applyRootTransformRotation: 0
+  useAreaRotationYChange: 0
+  targetAreaRotationY: 0
   areaDistanceMin: 0
   areaDistanceMax: 0
   areaHeightMin: 0
@@ -57,13 +64,21 @@ MonoBehaviour:
   targetSpeed: 0
   speedChangeTime: 0
   speedChangeEase: 6
+  overrideSpeedOnCollision: 0
+  overrideSpeedTimeOnCollision: 0
   curve: 0
-  curveAdd: 0
+  useCurveChange: 0
+  targetCurve: 0
+  curveChangeTime: 0
+  curveChangeEase: 6
   curveLockY: 0
   curveStartDelayTime: 0
-  curveLifeTime: 0
-  endFollowOverTargetDistance: 0
+  followLastPositionWhenDieTarget: 0
+  followMeOnHitTarget: 0
+  followMinRange: 0
+  useRandomTurn: 0
   accelTurn: 0
+  randomTurnRotateYawRange: {x: 0, y: 0}
   gravity: -9.81
   parallelCount: 0
   parallelDistance: 0
@@ -78,9 +93,12 @@ MonoBehaviour:
   monsterThroughCount: 0
   wallThrough: 0
   quadThrough: 0
+  overrideResetIgnoreSqrMagnitude: 0
   bounceWallQuadCount: 0
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
+  overrideRicochetDistance: 0
+  overrideRicochetSpeed: 0
   useHitStay: 0
   hitStayInterval: 0
   hitStayIgnoreDuplicate: 0
@@ -128,6 +146,21 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!114 &-7145775774161800792
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2e6805f699075e4eae576dc1aabd338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.02
+  EndTime: 0.15
+  speed: 0.5
 --- !u!1107 &-6540346028188328965
 AnimatorStateMachine:
   serializedVersion: 5
@@ -167,7 +200,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Move
-  m_Speed: 1
+  m_Speed: 1.75
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours:
@@ -300,6 +333,10 @@ MonoBehaviour:
   StartTime: 0.38360658
   EndTime: 1
   targetDetectType: 2
+  presetType: 0
+  multiPresetCount: 0
+  ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 2980114538203738185, guid: ca249187681010f4eaf70e5e08ec06bf,
     type: 3}
   lifeTime: 5
@@ -316,6 +353,9 @@ MonoBehaviour:
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
+  applyRootTransformRotation: 0
+  useAreaRotationYChange: 0
+  targetAreaRotationY: 0
   areaDistanceMin: 0
   areaDistanceMax: 0
   areaHeightMin: 0
@@ -342,13 +382,21 @@ MonoBehaviour:
   targetSpeed: 0
   speedChangeTime: 0
   speedChangeEase: 6
+  overrideSpeedOnCollision: 0
+  overrideSpeedTimeOnCollision: 0
   curve: 0
-  curveAdd: 0
+  useCurveChange: 0
+  targetCurve: 0
+  curveChangeTime: 0
+  curveChangeEase: 6
   curveLockY: 0
   curveStartDelayTime: 0
-  curveLifeTime: 0
-  endFollowOverTargetDistance: 0
+  followLastPositionWhenDieTarget: 0
+  followMeOnHitTarget: 0
+  followMinRange: 0
+  useRandomTurn: 0
   accelTurn: 0
+  randomTurnRotateYawRange: {x: 0, y: 0}
   gravity: -9.81
   parallelCount: 0
   parallelDistance: 0
@@ -363,9 +411,12 @@ MonoBehaviour:
   monsterThroughCount: 0
   wallThrough: 0
   quadThrough: 0
+  overrideResetIgnoreSqrMagnitude: 0
   bounceWallQuadCount: 0
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
+  overrideRicochetDistance: 0
+  overrideRicochetSpeed: 0
   useHitStay: 0
   hitStayInterval: 0
   hitStayIgnoreDuplicate: 0
@@ -417,6 +468,7 @@ AnimatorState:
   - {fileID: -8312465886865830073}
   - {fileID: 4123474508561784844}
   - {fileID: -1547629371166981988}
+  - {fileID: -7145775774161800792}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1

@@ -142,7 +142,7 @@ public class NodeWarExitArea : MonoBehaviour
 		if (_healAreaAffectorValue == null)
 		{
 			_healAreaAffectorValue = new AffectorValueLevelTableData();
-			_healAreaAffectorValue.fValue3 = 0.2f;
+			_healAreaAffectorValue.fValue3 = 0.1f;
 		}
 
 		// Heal Tick 체크

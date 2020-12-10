@@ -69,6 +69,9 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		playerActor.skillProcessor.AddLevelPack("AtkBest", false, 0);
 		playerActor.skillProcessor.AddLevelPack("AtkBest", false, 0);
 		playerActor.skillProcessor.AddLevelPack("AtkBest", false, 0);
+		playerActor.skillProcessor.AddLevelPack("MaxHpBest", false, 0);
+		playerActor.skillProcessor.AddLevelPack("MaxHpBest", false, 0);
+		playerActor.skillProcessor.AddLevelPack("MaxHpBest", false, 0);
 		playerActor.skillProcessor.AddLevelPack("AtkSpeedBest", false, 0);
 		playerActor.skillProcessor.AddLevelPack("AtkSpeedBest", false, 0);
 		playerActor.skillProcessor.AddLevelPack("AtkSpeedBest", false, 0);
@@ -81,8 +84,8 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		playerActor.skillProcessor.AddLevelPack("MoveSpeedUpOnAttacked", false, 0);
 		playerActor.skillProcessor.AddLevelPack("AtkUpOnLowerHpBetter", false, 0);
 		playerActor.skillProcessor.AddLevelPack("AtkUpOnLowerHpBetter", false, 0);
-		playerActor.skillProcessor.AddLevelPack("HealSpOnAttackBetter", false, 0);
-		playerActor.skillProcessor.AddLevelPack("HealSpOnAttackBetter", false, 0);
+		//playerActor.skillProcessor.AddLevelPack("HealSpOnAttackBetter", false, 0);
+		//playerActor.skillProcessor.AddLevelPack("HealSpOnAttackBetter", false, 0);
 	}
 
 	public override void OnLoadedMap()

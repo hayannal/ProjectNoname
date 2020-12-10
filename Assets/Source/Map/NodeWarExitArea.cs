@@ -76,7 +76,7 @@ public class NodeWarExitArea : MonoBehaviour
 	// 장판이 켜지고나서 영역 밖으로 나가면 일정 주기마다 데미지를 강제로 입힌다.
 	const float OutAreaDamageTimeMin = 3.0f;
 	const float OutAreaDamageTimeMax = 8.0f;
-	const float OutAreaMultiAtk = 1.1f;
+	const float OutAreaMultiAtk = 1.5f;
 	bool _outAreaForText;
 	float _outAreaRemainTime;
 	// 힐영역 시작범위는 9m
@@ -84,7 +84,7 @@ public class NodeWarExitArea : MonoBehaviour
 	// 힐영역 시작 스케일값은 4.0
 	const float BaseHealAreaScaleX = 4.0f;
 	// 힐영역 시간 및 Tick
-	const float HealAreaTick = 0.6666f;
+	const float HealAreaTick = 1.25f;
 	float _healAreaTickRemainTime;
 	AffectorValueLevelTableData _healAreaAffectorValue;
 	AffectorValueLevelTableData _damageAreaAffectorValue;
@@ -142,7 +142,7 @@ public class NodeWarExitArea : MonoBehaviour
 		if (_healAreaAffectorValue == null)
 		{
 			_healAreaAffectorValue = new AffectorValueLevelTableData();
-			_healAreaAffectorValue.fValue3 = 0.3f;
+			_healAreaAffectorValue.fValue3 = 0.2f;
 		}
 
 		// Heal Tick 체크

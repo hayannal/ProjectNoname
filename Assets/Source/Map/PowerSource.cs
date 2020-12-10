@@ -30,6 +30,18 @@ public class PowerSource : MonoBehaviour
 		return "";
 	}
 
+	public static string Index2SmallName(int powerSource)
+	{
+		switch (powerSource)
+		{
+			case 0: return UIString.instance.GetString("GameUI_MagicSmall");
+			case 1: return UIString.instance.GetString("GameUI_MachineSmall");
+			case 2: return UIString.instance.GetString("GameUI_NatureSmall");
+			case 3: return UIString.instance.GetString("GameUI_QigongSmall");
+		}
+		return "";
+	}
+
 	void OnEnable()
 	{
 		_spawnedGatePillar = false;

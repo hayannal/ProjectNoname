@@ -641,6 +641,7 @@ public class MainSceneBuilder : MonoBehaviour
 		if (buildTutorialScene == false)
 		{
 			LobbyCanvas.instance.RefreshAlarmObject();
+			PlayerData.instance.LateInitialize();
 			DailyShopData.instance.LateInitialize();
 			TimeSpaceData.instance.LateInitialize();
 		}

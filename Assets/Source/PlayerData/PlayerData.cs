@@ -79,6 +79,7 @@ public class PlayerData : MonoBehaviour
 	public ObscuredInt nodeWarClearLevel { get; set; }
 	public ObscuredInt nodeWarCurrentLevel { get; set; }
 	public ObscuredInt nodeWarBoostRemainCount { get; set; }
+	public ObscuredInt nodeWarBonusPowerSource { get; set; }
 
 	// sealCount 획득 연출용 변수. 클라에만 저장해두고 로비 돌아갈때 보여준다.
 	// 이벤트 처리가 아니라서 PlayerData에 넣어두기로 한다.
@@ -646,6 +647,21 @@ public class PlayerData : MonoBehaviour
 				nodeWarBoostRemainCount = intValue;
 		}
 
+		#region Unfixed NodeWar Bonus Info
+		// NodeWar의 보너스 파워소스는 클라가 결정해서 서버에 기록해두는 형태다.
+		if (userReadOnlyData.ContainsKey("lasUnfxNodDat"))
+		{
+			if (string.IsNullOrEmpty(userReadOnlyData["lasUnfxNodDat"].Value) == false)
+				_lastUnfixedDateTimeString = userReadOnlyData["lasUnfxNodDat"].Value;
+		}
+
+		if (userReadOnlyData.ContainsKey("nodBnsPs"))
+		{
+			if (string.IsNullOrEmpty(userReadOnlyData["nodBnsPs"].Value) == false)
+				_nodeWarBonusString = userReadOnlyData["nodBnsPs"].Value;
+		}
+		#endregion
+
 		termsConfirmed = false;
 		if (userReadOnlyData.ContainsKey("termsDat"))
 		{
@@ -828,6 +844,59 @@ public class PlayerData : MonoBehaviour
 				_dailyBoxRefreshRetryRemainCount = 2;
 			}
 		});
+	}
+	#endregion
+
+	public void LateInitialize()
+	{
+		CheckUnfixedNodeWarInfo();
+	}
+
+	#region Unifxed NodeWar Bonus Info
+	string _lastUnfixedDateTimeString = "";
+	string _nodeWarBonusString = "";
+	// 클라 구동 후 노드워 들어가기 전에 1회만 체크하면 된다.
+	bool _checkedUnfixedNodeWarInfo = false;
+	void CheckUnfixedNodeWarInfo()
+	{
+		if (_checkedUnfixedNodeWarInfo)
+			return;
+		if (ContentsManager.IsTutorialChapter())
+			return;
+
+		bool needRegister = false;
+		if (_lastUnfixedDateTimeString == "")
+			needRegister = true;
+		if (needRegister == false)
+		{
+			DateTime lastUnfixedItemDateTime = new DateTime();
+			if (DateTime.TryParse(_lastUnfixedDateTimeString, out lastUnfixedItemDateTime))
+			{
+				DateTime universalTime = lastUnfixedItemDateTime.ToUniversalTime();
+				if (ServerTime.UtcNow.Year == universalTime.Year && ServerTime.UtcNow.Month == universalTime.Month && ServerTime.UtcNow.Day == universalTime.Day)
+				{
+					int result = 0;
+					int.TryParse(_nodeWarBonusString, out result);
+					nodeWarBonusPowerSource = result;
+				}
+				else
+					needRegister = true;
+			}
+		}
+		_checkedUnfixedNodeWarInfo = true;
+
+		if (needRegister == false)
+			return;
+		RegisterNodeWarBonusPowerSource();
+	}
+
+	void RegisterNodeWarBonusPowerSource()
+	{
+		nodeWarBonusPowerSource = 0;
+		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.NodeWar))
+			nodeWarBonusPowerSource = UnityEngine.Random.Range(0, 4);
+
+		PlayFabApiManager.instance.RequestRegisterNodeWarBonusPowerSource(nodeWarBonusPowerSource);
 	}
 	#endregion
 
@@ -1072,6 +1141,9 @@ public class PlayerData : MonoBehaviour
 		// 클라 선처리로 갱신
 		nodeWarCleared = false;
 		nodeWarResetTime += TimeSpan.FromDays(1);
+
+		// 이 타이밍에 보너스 PowerSource 갱신도 같이 해준다.
+		RegisterNodeWarBonusPowerSource();
 	}
 	#endregion
 

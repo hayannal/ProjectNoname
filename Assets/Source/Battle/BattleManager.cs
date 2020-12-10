@@ -155,6 +155,11 @@ public class BattleManager : MonoBehaviour
 		return _currentBattleMode.GetSelectedNodeWarTableData();
 	}
 
+	public bool IsFirstClearNodeWar()
+	{
+		return _currentBattleMode.IsFirstClear();
+	}
+
 	public virtual bool IsSacrificePhase()
 	{
 		return _currentBattleMode.IsSacrificePhase();

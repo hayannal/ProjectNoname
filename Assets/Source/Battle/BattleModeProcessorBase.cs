@@ -684,6 +684,11 @@ public class BattleModeProcessorBase
 		return null;
 	}
 
+	public virtual bool IsFirstClear()
+	{
+		return false;
+	}
+
 	public virtual bool IsSacrificePhase()
 	{
 		return false;

@@ -64,6 +64,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		ApplyNodeWarLevelPack(BattleInstanceManager.instance.playerActor);
 	}
 
+	public static float BonusAddRate = 1.0f;
 	public static void ApplyNodeWarLevelPack(PlayerActor playerActor)
 	{
 		playerActor.skillProcessor.CheckAllExclusiveLevelPack();
@@ -87,6 +88,17 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		playerActor.skillProcessor.AddLevelPack("AtkUpOnLowerHpBetter", false, 0);
 		//playerActor.skillProcessor.AddLevelPack("HealSpOnAttackBetter", false, 0);
 		//playerActor.skillProcessor.AddLevelPack("HealSpOnAttackBetter", false, 0);
+
+		// powerSource Bonus는 직접 스탯에 적용한다.
+		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(playerActor.actorId);
+		if (PlayerData.instance.nodeWarBonusPowerSource == actorTableData.powerSource)
+		{
+			AffectorValueLevelTableData changeStatusAffectorValue = new AffectorValueLevelTableData();
+			changeStatusAffectorValue.fValue1 = -1.0f;
+			changeStatusAffectorValue.fValue2 = BonusAddRate;
+			changeStatusAffectorValue.iValue1 = (int)ActorStatusDefine.eActorStatus.NormalMonsterDamageIncreaseAddRate;
+			playerActor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.ChangeActorStatus, changeStatusAffectorValue, playerActor, true);
+		}
 	}
 
 	public override void OnLoadedMap()
@@ -186,6 +198,11 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	public override NodeWarTableData GetSelectedNodeWarTableData()
 	{
 		return _selectedNodeWarTableData;
+	}
+
+	public override bool IsFirstClear()
+	{
+		return _firstClear;
 	}
 
 	public override bool IsSacrificePhase()

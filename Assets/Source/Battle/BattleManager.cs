@@ -175,6 +175,11 @@ public class BattleManager : MonoBehaviour
 		_currentBattleMode.OnGetHealOrb(getPosition);
 	}
 
+	public void OnGetSpHealOrb(Vector3 getPosition)
+	{
+		_currentBattleMode.OnGetSpHealOrb(getPosition);
+	}
+
 	public void OnGetBoostOrb(Vector3 getPosition)
 	{
 		_currentBattleMode.OnGetBoostOrb(getPosition);

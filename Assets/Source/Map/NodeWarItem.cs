@@ -11,6 +11,7 @@ public class NodeWarItem : MonoBehaviour
 		HealOrb,
 		BoostOrb,
 		SpecialPack,
+		SpHealOrb,
 	}
 
 	public eItemType itemType;
@@ -222,6 +223,10 @@ public class NodeWarItem : MonoBehaviour
 			case eItemType.SpecialPack:
 				// 이렇게 먹자마자 사라지는 아이템도 있을 수 있다.
 				//gameObject.SetActive(false);
+				break;
+			case eItemType.SpHealOrb:
+				BattleManager.instance.OnGetSpHealOrb(cachedTransform.position);
+				_waitEndAnimation = true;
 				break;
 		}
 

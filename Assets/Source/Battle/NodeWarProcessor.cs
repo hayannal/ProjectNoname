@@ -42,6 +42,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		UpdateTrap();
 		//UpdateSpawnSoul();
 		UpdateSpawnHealOrb();
+		UpdateSpawnSpHealOrb();
 		UpdateSpawnBoostOrb();
 		UpdateEndProcess();
 	}
@@ -594,6 +595,47 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		healAffectorValue.fValue3 = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("NodeWarHeal");
 		BattleInstanceManager.instance.playerActor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Heal, healAffectorValue, BattleInstanceManager.instance.playerActor, false);
 		BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.healOrbGetEffectPrefab, getPosition, Quaternion.identity);
+	}
+	#endregion
+
+	#region SpHeal Orb
+	float _spHealOrbSpawnRemainTime;
+	const float SpHealOrbSpawnDelay = 5.5f;
+	void UpdateSpawnSpHealOrb()
+	{
+		if (_phase == ePhase.Success)
+			return;
+
+		if (BattleInstanceManager.instance.playerActor.actionController.mecanimState.IsState((int)eMecanimState.Move) == false)
+			return;
+
+		//if (_listSoulGetPosition.Count == 0)
+		//	return;
+
+		_spHealOrbSpawnRemainTime -= Time.deltaTime;
+		if (_spHealOrbSpawnRemainTime < 0.0f)
+		{
+			if (NodeWarItem.GetActiveItemCount(BattleInstanceManager.instance.playerActor.cachedTransform.position, SpawnDistance) >= 2)
+			{
+				_spHealOrbSpawnRemainTime += 1.0f;
+				return;
+			}
+
+			Vector2 normalizedOffset = Random.insideUnitCircle.normalized;
+			Vector2 randomOffset = normalizedOffset * Random.Range(1.0f, 1.1f) * SpawnDistance;
+			Vector3 desirePosition = BattleInstanceManager.instance.playerActor.cachedTransform.position + new Vector3(randomOffset.x, 0.0f, randomOffset.y);
+			BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.spHealOrbPrefab, desirePosition, Quaternion.identity);
+			_spHealOrbSpawnRemainTime += SpHealOrbSpawnDelay;
+		}
+	}
+
+	public override void OnGetSpHealOrb(Vector3 getPosition)
+	{
+		AffectorValueLevelTableData healAffectorValue = new AffectorValueLevelTableData();
+		healAffectorValue.fValue3 = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("NodeWarSpHeal");
+		healAffectorValue.iValue1 = 1;
+		BattleInstanceManager.instance.playerActor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Heal, healAffectorValue, BattleInstanceManager.instance.playerActor, false);
+		BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.spHealOrbGetEffectPrefab, getPosition, Quaternion.identity);
 	}
 	#endregion
 

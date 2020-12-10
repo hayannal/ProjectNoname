@@ -702,6 +702,10 @@ public class BattleModeProcessorBase
 	{
 	}
 
+	public virtual void OnGetSpHealOrb(Vector3 getPosition)
+	{
+	}
+
 	public virtual void OnGetBoostOrb(Vector3 getPosition)
 	{
 	}

@@ -22,9 +22,7 @@ public class TimeSpaceGround : MonoBehaviour
 	GameObject _prevEnvironmentSettingObject;
 	void OnEnable()
 	{
-		translationEffectorTransform.parent = BattleInstanceManager.instance.playerActor.cachedTransform;
-		translationEffectorTransform.localPosition = Vector2.zero;
-		translationEffectorTransform.gameObject.SetActive(true);
+		RefreshTranslationEffectorTransform();
 
 		// 먼저 이렇게 Disable 처리하고 자신의 환경셋팅을 켜야한다.
 		// 이래야 제대로 임시 환경셋팅에 등록된다.
@@ -76,6 +74,13 @@ public class TimeSpaceGround : MonoBehaviour
 			timeSpaceAltarList[i].RefreshAlarmObject();
 	}
 	#endregion
+
+	public void RefreshTranslationEffectorTransform()
+	{
+		translationEffectorTransform.parent = BattleInstanceManager.instance.playerActor.cachedTransform;
+		translationEffectorTransform.localPosition = Vector2.zero;
+		translationEffectorTransform.gameObject.SetActive(true);
+	}
 
 
 

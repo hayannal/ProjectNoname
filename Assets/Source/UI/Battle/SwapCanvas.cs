@@ -121,7 +121,7 @@ public class SwapCanvas : MonoBehaviour
 		chapterRootObject.SetActive(true);
 		swapRootObject.SetActive(false);
 
-		int currentLevel = PlayerData.instance.nodeWarClearLevel;
+		int currentLevel = PlayerData.instance.nodeWarCurrentLevel;
 		if (currentLevel == 0)
 			currentLevel = 1;
 		else if (currentLevel == BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxNodeWarLevel"))

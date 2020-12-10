@@ -264,16 +264,21 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		if (monsterPrefab == null)
 			return;
 
-		// 전방에만 나오게 하기 위해서 
-		//Vector2 normalizedOffset = Random.insideUnitCircle.normalized;
-		//Vector2 randomOffset = normalizedOffset * Random.Range(1.0f, 1.1f) * SpawnDistance;
-		//Vector3 desirePosition = BattleInstanceManager.instance.playerActor.cachedTransform.position + new Vector3(randomOffset.x, 0.0f, randomOffset.y);
-
-		Vector3 forward = BattleInstanceManager.instance.playerActor.cachedTransform.forward;
-		forward.y = 0.0f;
-		forward = Quaternion.Euler(0.0f, Random.Range(-30.0f, 30.0f), 0.0f) * forward;
-		forward = forward.normalized * Random.Range(1.0f, 1.1f) * SpawnDistance;
-		Vector3 desirePosition = BattleInstanceManager.instance.playerActor.cachedTransform.position + forward;
+		Vector3 desirePosition = Vector3.zero;
+		if (BattleInstanceManager.instance.playerActor.actionController.mecanimState.IsState((int)eMecanimState.Move))
+		{
+			Vector3 forward = BattleInstanceManager.instance.playerActor.cachedTransform.forward;
+			forward.y = 0.0f;
+			forward = Quaternion.Euler(0.0f, Random.Range(-30.0f, 30.0f), 0.0f) * forward;
+			forward = forward.normalized * Random.Range(1.0f, 1.1f) * SpawnDistance;
+			desirePosition = BattleInstanceManager.instance.playerActor.cachedTransform.position + forward;
+		}
+		else
+		{
+			Vector2 normalizedOffset = Random.insideUnitCircle.normalized;
+			Vector2 randomOffset = normalizedOffset * Random.Range(1.0f, 1.1f) * SpawnDistance;
+			desirePosition = BattleInstanceManager.instance.playerActor.cachedTransform.position + new Vector3(randomOffset.x, 0.0f, randomOffset.y);
+		}
 		BattleInstanceManager.instance.GetCachedObject(monsterPrefab, desirePosition, Quaternion.identity);
 	}
 

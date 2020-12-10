@@ -311,7 +311,7 @@ public class PlayerActor : Actor
 		if (show)
 		{
 			if (_cachedUltimateIndicatorTransform == null)
-				_cachedUltimateIndicatorTransform = BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.ultimateCirclePrefab, null).transform;
+				_cachedUltimateIndicatorTransform = BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.ultimateCirclePrefab, cachedTransform.position, Quaternion.identity).transform;
 			if (_cachedUltimateIndicatorTransform != null)
 				_cachedUltimateIndicatorTransform.gameObject.SetActive(true);
 		}

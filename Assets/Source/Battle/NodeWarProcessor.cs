@@ -743,6 +743,9 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			List<MonsterActor> listMonsterActor = BattleInstanceManager.instance.GetLiveMonsterList();
 			for (int i = listMonsterActor.Count - 1; i >= 0; --i)
 			{
+				if (listMonsterActor[i].team.teamId != (int)Team.eTeamID.DefaultMonster || listMonsterActor[i].excludeMonsterCount)
+					continue;
+
 				MonsterActor monsterActor = listMonsterActor[i];
 				monsterActor.actorStatus.SetHpRatio(0.0f);
 				monsterActor.DieForNodeWar();

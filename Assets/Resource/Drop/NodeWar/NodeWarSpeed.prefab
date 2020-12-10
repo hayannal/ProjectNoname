@@ -50,6 +50,19 @@ MonoBehaviour:
   mainObject: {fileID: 6893414065114041494}
   areaEffectTransform: {fileID: 5646777521508317969}
   particleSystemRenderer: {fileID: 1558964861952269982}
+  autoGetEffectTranform: {fileID: 0}
+  useJumpAnimation: 0
+  jumpTransform: {fileID: 0}
+  jumpPower: 1
+  jumpStartY: 0.5
+  jumpEndY: 0
+  jumpDuration: 1
+  secondJumpPower: 0.5
+  secondJumpDuration: 0.5
+  pullStartDelay: 0.5
+  pullStartSpeed: 3
+  pullAcceleration: 2
+  trailTransform: {fileID: 0}
 --- !u!1 &4056104234810157197
 GameObject:
   m_ObjectHideFlags: 0
@@ -274,7 +287,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.8301887, g: 0.8301887, b: 0.57564974, a: 0.2509804}
+      maxColor: {r: 0.5764706, g: 0.83137256, b: 0.60366404, a: 0.2509804}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -4730,6 +4743,7 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -4742,6 +4756,7 @@ ParticleSystemRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -4801,38 +4816,24 @@ MonoBehaviour:
   onStart:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   onPlay:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   onUpdate:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   onStepComplete:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   onComplete:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   onTweenCreated:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   onRewind:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   targetIsSelf: 1
   targetGO: {fileID: 0}
   tweenTargetIsTargetGO: 1
@@ -4915,6 +4916,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4526835954622639376}
     m_Modifications:
+    - target: {fileID: 192494, guid: 50cb736dd95d6c9419a1f42e296cb08f, type: 3}
+      propertyPath: m_Name
+      value: 11_D
+      objectReference: {fileID: 0}
     - target: {fileID: 450416, guid: 50cb736dd95d6c9419a1f42e296cb08f, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -4931,21 +4936,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 192494, guid: 50cb736dd95d6c9419a1f42e296cb08f, type: 3}
-      propertyPath: m_Name
-      value: 11_D
-      objectReference: {fileID: 0}
     - target: {fileID: 19850140, guid: 50cb736dd95d6c9419a1f42e296cb08f, type: 3}
       propertyPath: InitialModule.startColor.maxColor.r
-      value: 0.8584906
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 19850140, guid: 50cb736dd95d6c9419a1f42e296cb08f, type: 3}
       propertyPath: InitialModule.startColor.maxColor.g
-      value: 0.85280037
+      value: 0.85882354
       objectReference: {fileID: 0}
     - target: {fileID: 19850140, guid: 50cb736dd95d6c9419a1f42e296cb08f, type: 3}
       propertyPath: InitialModule.startColor.maxColor.b
-      value: 0.19842473
+      value: 0.21301153
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 50cb736dd95d6c9419a1f42e296cb08f, type: 3}

@@ -117,7 +117,7 @@ public class ChapterCanvas : MonoBehaviour
 
 		stagePenaltyText.gameObject.SetActive(false);
 		StageTableData stageTableData = BattleInstanceManager.instance.GetCachedStageTableData(_selectedChapter, 1, false); // PlayerData.instance.currentChaosMode
-		string penaltyString = SwapCanvas.GetPenaltyString(stageTableData);
+		string penaltyString = GetPenaltyString(stageTableData);
 		if (string.IsNullOrEmpty(penaltyString) == false)
 		{
 			stagePenaltyText.SetLocalizedText(penaltyString);
@@ -137,6 +137,30 @@ public class ChapterCanvas : MonoBehaviour
 			selectResultText.SetLocalizedText(UIString.instance.GetString("GameUI_ChapterTooLow", PlayerData.instance.highestPlayChapter - 1));
 		if (_selectedChapter >= chapterLimit)
 			selectResultText.SetLocalizedText(UIString.instance.GetString("GameUI_ChapterWaitUpdate"));
+	}
+
+	public static string GetPenaltyString(StageTableData stageTableData)
+	{
+		string penaltyString = "";
+		if (!string.IsNullOrEmpty(stageTableData.penaltyRepresentative))
+		{
+			string[] penaltyParameterList = UIString.instance.ParseParameterString(stageTableData.repreParameter);
+			penaltyString = UIString.instance.GetString(stageTableData.penaltyRepresentative, penaltyParameterList);
+		}
+		else
+		{
+			if (stageTableData.stagePenaltyId.Length == 1)
+			{
+				// 패널티가 하나만 있을땐 직접 구해와서 표시해준다.
+				StagePenaltyTableData stagePenaltyTableData = TableDataManager.instance.FindStagePenaltyTableData(stageTableData.stagePenaltyId[0]);
+				if (stagePenaltyTableData != null)
+				{
+					string[] nameParameterList = UIString.instance.ParseParameterString(stagePenaltyTableData.nameParameter);
+					penaltyString = UIString.instance.GetString(stagePenaltyTableData.penaltyName, nameParameterList);
+				}
+			}
+		}
+		return penaltyString;
 	}
 
 

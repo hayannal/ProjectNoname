@@ -83,28 +83,24 @@ public class SwapCanvas : MonoBehaviour
 
 	void RefreshCommonInfo()
 	{
-		// 챕터 디버프 어펙터는 로비 바로 다음 스테이지에서 뽑아와서 표시해준다.(여기서 넣는거 아니다. 보여주기만 한다.)
-		// 없으면 표시하지 않는다.
-		// 실제로 넣는건 해당 시점에서 하니 여기서는 신경쓰지 않아도 된다.
-		// 카오스에서는 여러개 들어있을 수도 있는데 이땐 아마 설명창에 여러개 중 하나가 되는 식이라고 표시될거다. 통합 스트링 제공.
-		// 사실 챕터에 넣을 수 있지만 스테이지에 연결해두는 이유가
-		// 언젠가 나중에 챕터 중간에도 이 디버프를 변경시킬 상황이 올까봐 미리 확장시켜서 여기에 두는 것이다.
+		// 플레이 중에는 현재 적용중인 패널티를 보여주면 된다. 로비에서 뜰때는 보여주기가 애매해서 띄우지 않는다.
 		stagePenaltyText.gameObject.SetActive(false);
-		if (StageDataManager.instance.existNextStageInfo)
+		string penaltyString = "";
+		if (MainSceneBuilder.instance.lobby == false && BattleInstanceManager.instance.playerActor.currentStagePenaltyTableData != null)
 		{
-			string penaltyString = GetPenaltyString(StageDataManager.instance.nextStageTableData);
-			// 카오스 모드 중에는 현재 걸려있는걸 추가로 검사한다.
-			if (string.IsNullOrEmpty(penaltyString) && PlayerData.instance.currentChaosMode && MainSceneBuilder.instance.lobby == false && BattleInstanceManager.instance.playerActor.currentStagePenaltyTableData != null)
-			{
-				StagePenaltyTableData stagePenaltyTableData = BattleInstanceManager.instance.playerActor.currentStagePenaltyTableData;
-				string[] nameParameterList = UIString.instance.ParseParameterString(stagePenaltyTableData.nameParameter);
-				penaltyString = UIString.instance.GetString(stagePenaltyTableData.penaltyName, nameParameterList);
-			}
-			if (string.IsNullOrEmpty(penaltyString) == false)
-			{
-				stagePenaltyText.SetLocalizedText(penaltyString);
-				stagePenaltyText.gameObject.SetActive(true);
-			}
+			StagePenaltyTableData stagePenaltyTableData = BattleInstanceManager.instance.playerActor.currentStagePenaltyTableData;
+			string[] nameParameterList = UIString.instance.ParseParameterString(stagePenaltyTableData.nameParameter);
+			penaltyString = UIString.instance.GetString(stagePenaltyTableData.penaltyName, nameParameterList);
+		}
+		// 이렇게 게이트필라 쳐서 나오는 SwapCanvas에서는 1층에 설정된거 뽑아와서 보여줄 수도 있긴 한데(카오스에 설정된 것도 보여줄 수 있다.)
+		// 카오스는 이런거 신경쓰지 않고 입장하기로 했기 때문에
+		// 그리고 레벨이 낮을때만 뜨는것도 이상한거 같아서(챕터 선택창에 뜨기도 했었으니) 아예 로비에서 뜨는 SwapCanvas에서는 보여주지 않기로 결정했다.
+		//else		
+		//	penaltyString = ChapterCanvas.GetPenaltyString(StageDataManager.instance.nextStageTableData);
+		if (string.IsNullOrEmpty(penaltyString) == false)
+		{
+			stagePenaltyText.SetLocalizedText(penaltyString);
+			stagePenaltyText.gameObject.SetActive(true);
 		}
 
 		selectResultText.text = "";
@@ -116,30 +112,6 @@ public class SwapCanvas : MonoBehaviour
 		// 파워레벨은 항상 표시
 		string rangeString = UIString.instance.GetString("GameUI_NumberRange", chapterTableData.suggestedPowerLevel, chapterTableData.suggestedMaxPowerLevel);
 		suggestPowerLevelText.SetLocalizedText(string.Format("{0} {1}", UIString.instance.GetString("GameUI_SuggestedPowerLevel"), rangeString));
-	}
-
-	public static string GetPenaltyString(StageTableData stageTableData)
-	{
-		string penaltyString = "";
-		if (!string.IsNullOrEmpty(stageTableData.penaltyRepresentative))
-		{
-			string[] penaltyParameterList = UIString.instance.ParseParameterString(stageTableData.repreParameter);
-			penaltyString = UIString.instance.GetString(stageTableData.penaltyRepresentative, penaltyParameterList);
-		}
-		else
-		{
-			if (stageTableData.stagePenaltyId.Length == 1)
-			{
-				// 패널티가 하나만 있을땐 직접 구해와서 표시해준다.
-				StagePenaltyTableData stagePenaltyTableData = TableDataManager.instance.FindStagePenaltyTableData(stageTableData.stagePenaltyId[0]);
-				if (stagePenaltyTableData != null)
-				{
-					string[] nameParameterList = UIString.instance.ParseParameterString(stagePenaltyTableData.nameParameter);
-					penaltyString = UIString.instance.GetString(stagePenaltyTableData.penaltyName, nameParameterList);
-				}
-			}
-		}
-		return penaltyString;
 	}
 
 	void RefreshNodeWarInfo()

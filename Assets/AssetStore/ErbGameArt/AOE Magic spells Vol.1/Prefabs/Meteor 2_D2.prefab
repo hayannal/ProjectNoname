@@ -14485,6 +14485,7 @@ GameObject:
   - component: {fileID: 199464607094549790}
   - component: {fileID: 82107801207380162}
   - component: {fileID: 5873372320963670631}
+  - component: {fileID: -2614044444702139993}
   m_Layer: 0
   m_Name: Meteor 2_D2
   m_TagString: Untagged
@@ -19334,7 +19335,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 15519c007e7ba5241802ac3ac4c4c53b, type: 3}
-  m_PlayOnAwake: 0
+  m_PlayOnAwake: 1
   m_Volume: 0.8
   m_Pitch: 1
   Loop: 0
@@ -19442,6 +19443,22 @@ MonoBehaviour:
   speedMin: 30
   speedMax: 35
   decay: 0.5
+--- !u!114 &-2614044444702139993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1593574840045950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd90d5ee163b5004faa50b9f67e503b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  multipleComponent: 0
+  checkDuplicate: 0
+  pitchRandomMultiplier: 1
+  startDelay: 0
 --- !u!1 &1688705103268012
 GameObject:
   m_ObjectHideFlags: 0

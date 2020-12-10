@@ -56,7 +56,7 @@ public class NodeWarGround : MonoBehaviour
 	{
 		worldCanvas.worldCamera = UIInstanceManager.instance.GetCachedCameraMain();
 		SetSafeLineRadius(3.0f, 80);
-		SetSafeLineText();
+		SetSafeLineText(false);
 
 		int clearLevel = PlayerData.instance.nodeWarClearLevel;
 		int currentLevel = PlayerData.instance.nodeWarCurrentLevel;
@@ -183,9 +183,15 @@ public class NodeWarGround : MonoBehaviour
 		}
 	}
 
-	void SetSafeLineText()
+	void SetSafeLineText(bool onlyStartText)
 	{
 		string startText = UIString.instance.GetString("GameUI_StartOutOfLine");
+		if (onlyStartText)
+		{
+			safeAreaInfoText.SetLocalizedText(startText);
+			return;
+		}
+
 		string bonusText = GetNodeWarBonusString();
 		safeAreaInfoText.SetLocalizedText(string.Format("{0}\n{1}", startText, bonusText));
 	}
@@ -436,6 +442,7 @@ public class NodeWarGround : MonoBehaviour
 			_objectIndicatorCanvas = null;
 		}
 		boostSignObject.SetActive(false);
+		SetSafeLineText(true);
 		BattleManager.instance.OnSelectedNodeWarLevel(selectedLevel);
 	}
 

@@ -233,8 +233,8 @@ public class DailyShopData : MonoBehaviour
 						if (actorTableData.grade == 1)
 							++heroicCharacterCount;
 					}
-					// 3명 미만이라면 upn으로 교체
-					if (heroicCharacterCount < 3)
+					// 5명 미만이라면 upn으로 교체
+					if (heroicCharacterCount < 5)
 						_listDailyShopSlotInfo[i].tp = "upn";
 				}
 				#endregion

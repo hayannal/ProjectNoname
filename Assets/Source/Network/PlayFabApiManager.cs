@@ -763,7 +763,7 @@ public class PlayFabApiManager : MonoBehaviour
 				RetrySendManager.instance.OnFailure();
 			});
 		};
-		RetrySendManager.instance.RequestAction(action, true);
+		RetrySendManager.instance.RequestAction(action, true, true);
 	}
 	
 	public void RequestEndGame(bool clear, bool currentChaos, int playChapter, int stage, int addGold, int addSeal, List<ObscuredString> listDropItemId, Action<bool, string, string> successCallback)    // List<Item>
@@ -839,7 +839,7 @@ public class PlayFabApiManager : MonoBehaviour
 				RetrySendManager.instance.OnFailure();
 			});
 		};
-		RetrySendManager.instance.RequestAction(action, true);
+		RetrySendManager.instance.RequestAction(action, true, true);
 	}
 	#endregion
 
@@ -908,7 +908,7 @@ public class PlayFabApiManager : MonoBehaviour
 				RetrySendManager.instance.OnFailure();
 			});
 		};
-		RetrySendManager.instance.RequestAction(action, true);
+		RetrySendManager.instance.RequestAction(action, true, true);
 	}
 
 	public void RequestDownNodeWarLevel(Action successCallback)

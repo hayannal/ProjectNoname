@@ -26,6 +26,9 @@ public class RetrySendManager : MonoBehaviour {
 	// 패킷 전송시 화면 차단도 대행
 	bool _showWaitingNetworkCanvas;
 
+	// 실패시 YesNo창 나올텐데 background눌러도 무시되는지도 대행
+	bool _ignoreBackgroundNoButton;
+
 	// Retry가 하는 일은 다음과 같다
 	// 1. 우선 패킷을 보낸다. 빨리 끝날줄 알았는데 지체되면 네트워크 딜레이 팝업창을 조금 늦게 띄운다.
 	// 2. 성공하면 원래대로 성공콜백이 호출될거다.
@@ -34,10 +37,11 @@ public class RetrySendManager : MonoBehaviour {
 	// 5. 재시작 or 다시 시도 누르면
 	// 5-1. 재시작은 그냥 메인씬 복귀
 	// 5-2. 다시 시도 누르면 아까 보냈던 패킷을 다시 보내고 결과에 따라 처리도 원래대로 해야한다.
-	public void RequestAction(Action requestAction, bool showWaitingNetworkCanvas)
+	public void RequestAction(Action requestAction, bool showWaitingNetworkCanvas, bool ignoreBackgroundNoButton = false)
 	{
 		_cachedAction = requestAction;
 		_showWaitingNetworkCanvas = showWaitingNetworkCanvas;
+		_ignoreBackgroundNoButton = ignoreBackgroundNoButton;
 
 		if (_showWaitingNetworkCanvas)
 			WaitingNetworkCanvas.Show(true);
@@ -75,15 +79,16 @@ public class RetrySendManager : MonoBehaviour {
 			// 모든 정보를 다시 받아야하기 때문에 로그인부터 하는게 맞다.
 			PlayerData.instance.ResetData();
 			SceneManager.LoadScene(0);
-		});
+		}, _ignoreBackgroundNoButton);
 	}
 
 	#region Multi Request
 	List<Action> _listRequestAction;
-	public void RequestActionList(List<Action> listRequestAction, bool showWaitingNetworkCanvas)
+	public void RequestActionList(List<Action> listRequestAction, bool showWaitingNetworkCanvas, bool ignoreBackgroundNoButton = false)
 	{
 		_listRequestAction = listRequestAction;
 		_showWaitingNetworkCanvas = showWaitingNetworkCanvas;
+		_ignoreBackgroundNoButton = ignoreBackgroundNoButton;
 
 		if (_showWaitingNetworkCanvas)
 			WaitingNetworkCanvas.Show(true);
@@ -135,7 +140,7 @@ public class RetrySendManager : MonoBehaviour {
 				// 모든 정보를 다시 받아야하기 때문에 로그인부터 하는게 맞다.
 				PlayerData.instance.ResetData();
 				SceneManager.LoadScene(0);
-			});
+			}, _ignoreBackgroundNoButton);
 		}
 		else
 		{

@@ -37,6 +37,7 @@ public class PlayFabApiManager : MonoBehaviour
 	void Update()
 	{
 		UpdateCliSusQueue();
+		UpdateServerUtc();
 	}
 
 	// 네트워크 함수의 특징인데
@@ -429,7 +430,8 @@ public class PlayFabApiManager : MonoBehaviour
 			// 클라 시간을 변경했으면 DateTime.UtcNow도 달라지기 때문에 그냥 믿으면 안된다. 서버 타임이랑 비교해서 차이값을 기록해둔다.
 			// DateTime.UtcNow에다가 offset을 더해서 예측하는 방식이므로 universalTime에서 DateTime.UtcNow를 빼서 기록해둔다.
 			// 정확하게는 클라가 고친 시간 오프셋값에다가 서버에서 클라까지 오는 패킷 딜레이까지 포함된 시간이다.
-			_timeSpanForServerUtc = universalTime - DateTime.UtcNow;
+			_timeSpanForServerUtc = DateTime.UtcNow - universalTime;
+			_serverUtcRefreshTime = GetServerUtcTime() + TimeSpan.FromMinutes(ServerRefreshFastDelay);
 
 			// for latency
 			// 원래는 latency 보정용으로 하려고 했는데, 패킷의 가는 시간이 길고 오는 시간이 짧아지면
@@ -449,8 +451,71 @@ public class PlayFabApiManager : MonoBehaviour
 
 	public DateTime GetServerUtcTime()
 	{
-		return DateTime.UtcNow + _timeSpanForServerUtc;
+		return DateTime.UtcNow - _timeSpanForServerUtc;
 	}
+
+	#region Refresh ServerUtc
+	// 위에서 이어지는 내용이긴 한데
+	// _timeSpanForServerUtc 값이 실상은 서버에서 클라까지 오는 패킷 딜레이를 포함하다보니 로그인때 하필 이 오차가 크게 저장될 경우
+	// 이후 GetServerUtcTime() 값을 비교해서 서버에 요청할때 시간이 틀어질 수 있다는걸 의미했다.
+	// 그래서 이 오차를 최대한 줄이기 위해 중간중간 패킷을 다시 보내서 서버와의 오차가 가장 적어지도록 갱신하기로 한다.
+	// 초반 10회는 2분 간격으로 보내고 그 이후부터는 5분 간격으로 보낸다.
+	// 이건 계정 전환을 해도 리셋할 필요가 없으니 그냥 앱이 가동되고 나서부터 제일 오차가 적은 값을 사용하면 된다.
+	DateTime _serverUtcRefreshTime;
+	const int ServerRefreshFastDelay = 1;
+	const int ServerRefreshDelay = 5;
+	int _serverUtcRefreshFastRemainCount = 10;
+	void UpdateServerUtc()
+	{
+		if (PlayerData.instance.loginned == false)
+			return;
+
+		if (DateTime.Compare(GetServerUtcTime(), _serverUtcRefreshTime) < 0)
+			return;
+
+		int minutes = ServerRefreshDelay;
+		if (_serverUtcRefreshFastRemainCount > 0)
+		{
+			minutes = ServerRefreshFastDelay;
+			--_serverUtcRefreshFastRemainCount;
+		}
+		_serverUtcRefreshTime = GetServerUtcTime() + TimeSpan.FromMinutes(minutes);
+
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "GetServerUtc",
+		}, (success) =>
+		{
+			PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
+			jsonResult.TryGetValue("date", out object date);
+			jsonResult.TryGetValue("ms", out object ms);
+
+			DateTime serverUtcTime = new DateTime();
+			if (DateTime.TryParse((string)date, out serverUtcTime))
+			{
+				double millisecond = 0.0;
+				double.TryParse(ms.ToString(), out millisecond);
+				serverUtcTime = serverUtcTime.AddMilliseconds(millisecond);
+
+				DateTime universalTime = serverUtcTime.ToUniversalTime();
+
+				// 위의 파싱은 로그인때 했던거와 같지만 갱신할때는 이전에 저장된거와 비교해서 패킷 딜레이가 더 짧아질때만 적용하면 된다.
+				// 패킷 딜레이가 짧아질수록 TimeSpan값이 커지기 때문에 아래와 같이 클때 덮으면 된다.
+				// 클라가 타임을 변조해서 느리게 하든 빠르게 하든 동일하다.
+				TimeSpan timeSpanForServerUtc = DateTime.UtcNow - universalTime;
+				if (timeSpanForServerUtc < _timeSpanForServerUtc)
+				{
+					_timeSpanForServerUtc = timeSpanForServerUtc;
+					Debug.LogFormat("ServerUtc TimeSpan : {0}", _timeSpanForServerUtc.TotalMilliseconds);
+				}
+			}
+		}, (error) =>
+		{
+			// 주기적으로 보내는거라 에러 핸들링 하면 안된다.
+			//HandleCommonError(error);
+		});
+	}
+	#endregion
 
 	bool CheckServerMaintenance(Dictionary<string, string> titleData)
 	{

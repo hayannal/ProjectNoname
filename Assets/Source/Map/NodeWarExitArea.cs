@@ -16,6 +16,7 @@ public class NodeWarExitArea : MonoBehaviour
 
 	public Transform areaBaseTransform;
 	public Transform areaOverTransform;
+	public GameObject areaHealEffectPrefab;
 	public GameObject sacrificeEffectPrefab;
 	public GameObject outAreaAttackEffectPrefab;
 	public GameObject areaActiveEffectPrefab;
@@ -158,7 +159,7 @@ public class NodeWarExitArea : MonoBehaviour
 		if (inRange)
 		{
 			BattleInstanceManager.instance.playerActor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Heal, _healAreaAffectorValue, BattleInstanceManager.instance.playerActor, false);
-			BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.healEffectPrefab, BattleInstanceManager.instance.playerActor.cachedTransform.position, Quaternion.identity, BattleInstanceManager.instance.playerActor.cachedTransform);
+			BattleInstanceManager.instance.GetCachedObject(areaHealEffectPrefab, BattleInstanceManager.instance.playerActor.cachedTransform.position, Quaternion.identity, BattleInstanceManager.instance.playerActor.cachedTransform);
 
 			// 처음 area안으로 들어올때 스크린 이펙트를 보여준다. 최초 1회만 보여준다.
 			if (inAreaForEffect == false)

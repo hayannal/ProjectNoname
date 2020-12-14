@@ -76,8 +76,11 @@ public class SpawnFlag : MonoBehaviour
 		}
 		else
 		{
-			// 몬스터의 인덱스를 관리하기 위해 호출
-			BattleInstanceManager.instance.OnPreInitializeMonster();
+			if (editorSpawn == false)
+			{
+				// 몬스터의 인덱스를 관리하기 위해 호출
+				BattleInstanceManager.instance.OnPreInitializeMonster();
+			}
 
 			// 여기는 평소엔 절대 건너뛰면 안되는 곳이다.
 			for (int i = 0; i < _listSpawnInfo.Count; ++i)

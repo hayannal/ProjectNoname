@@ -46,7 +46,10 @@ public class RFX4_Decal : MonoBehaviour
 				{
 #endif
 				var pos = transform.localPosition;
-                pos.z += 0.1f;
+				if (transform.localEulerAngles.z > 0.0f)
+					pos.z += 0.1f;
+				else
+					pos.y += 0.1f;
                 transform.localPosition = pos;
                 var scale = transform.localScale;
                 scale.y = 0.001f;

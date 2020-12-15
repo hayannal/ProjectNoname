@@ -436,6 +436,8 @@ public class LobbyCanvas : MonoBehaviour
 			return;
 		if (battlePauseButton.interactable == false)
 			return;
+		if (FullscreenYesNoCanvas.IsShow())
+			return;
 
 		if (pauseStatus)
 		{

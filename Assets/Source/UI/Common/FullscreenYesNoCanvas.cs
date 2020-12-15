@@ -26,6 +26,16 @@ public class FullscreenYesNoCanvas : MonoBehaviour
 	System.Action _yesAction;
 	System.Action _noAction;
 
+	public static bool IsShow()
+	{
+		// instance접근 없이 보여지고 있는지 판단하기 위해 나중에 추가된 함수
+		if (_instance == null)
+			return false;
+		if (_instance.gameObject == null)
+			return false;
+		return _instance.gameObject.activeSelf;
+	}
+
 	void OnEnable()
 	{
 		animator.Play("Modal Dialog In");

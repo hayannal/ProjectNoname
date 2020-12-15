@@ -183,7 +183,7 @@ public class TargetingProcessor : MonoBehaviour {
 			float colliderRadius = ColliderUtil.GetRadius(monsterCollider);
 			if (colliderRadius == -1.0f) continue;
 
-			if (IsOutOfRangePresetMultiTarget(meHit, listMonsterActor[i].affectorProcessor))
+			if (IsOutOfRangePresetMultiTarget(meHit, listMonsterActor[i].affectorProcessor, checkBurrow))
 				continue;
 
 			// distance
@@ -247,6 +247,8 @@ public class TargetingProcessor : MonoBehaviour {
 	// NavMesh 도달 여부. 이 컬럼 역시 복사해서 가지고 있어야 어펙터로 인한 오버라이드 등이 적용될 수 있다.
 	// Yuki와 EnergyShieldRobot 두 캐릭터는 위가 0보다 크면서도 아래 값이 false인 캐릭터다. 폭발형 캐릭터는 클로즈 되어있더라도 벽 넘어를 때려야하기 때문.
 	public bool checkNavMeshReachable { get; set; }
+	// Burrow한 적을 타겟팅 우선순위에서 멀리 있는거처럼 미룰지 여부
+	public bool checkBurrow { get; set; }
 
 	// 간혹가다 몬스터의 Collider를 꺼야할때가 있어서 Physic으로 검사하면 타겟팅이 잠시 풀리게 되버렸다. (땅 투과시)
 	// 그래서 차라리 몬스터 리스트를 히트오브젝트처럼 등록해놨다가 받아오는 형태로 가기로 한다.
@@ -281,7 +283,7 @@ public class TargetingProcessor : MonoBehaviour {
 			Vector3 diff = listMonsterActor[i].cachedTransform.position - position;
 			diff.y = 0.0f;
 			float distance = diff.magnitude - colliderRadius;
-			AdjustRange(listMonsterActor[i].affectorProcessor, listMonsterActor[i].cachedTransform.position, position, sphereCastRadiusForCheckWall, findRange, attackRange, ref distance);
+			AdjustRange(listMonsterActor[i].affectorProcessor, listMonsterActor[i].cachedTransform.position, position, sphereCastRadiusForCheckWall, checkBurrow, findRange, attackRange, ref distance);
 			if (distance < nearestDistance)
 			{
 				nearestDistance = distance;
@@ -302,7 +304,7 @@ public class TargetingProcessor : MonoBehaviour {
 			prevTargetDiff.y = 0.0f;
 			float prevDistance = prevTargetDiff.magnitude - ColliderUtil.GetRadius(_targetList[0]);
 			AffectorProcessor prevAffectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(_targetList[0]);
-			AdjustRange(prevAffectorProcessor, prevTargetPosition, position, sphereCastRadiusForCheckWall, findRange, attackRange, ref prevDistance);
+			AdjustRange(prevAffectorProcessor, prevTargetPosition, position, sphereCastRadiusForCheckWall, checkBurrow, findRange, attackRange, ref prevDistance);
 			if (prevDistance > attackRange)
 				ignoreChangeThreshold = true;
 		}
@@ -323,14 +325,14 @@ public class TargetingProcessor : MonoBehaviour {
 			prevTargetDiff.y = 0.0f;
 			float prevDistance = prevTargetDiff.magnitude - ColliderUtil.GetRadius(_targetList[0]);
 			AffectorProcessor prevAffectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(_targetList[0]);
-			AdjustRange(prevAffectorProcessor, prevTargetPosition, position, sphereCastRadiusForCheckWall, findRange, attackRange, ref prevDistance);
+			AdjustRange(prevAffectorProcessor, prevTargetPosition, position, sphereCastRadiusForCheckWall, checkBurrow, findRange, attackRange, ref prevDistance);
 
 			Vector3 currentTargetPosition = BattleInstanceManager.instance.GetTransformFromCollider(nearestCollider).position;
 			Vector3 currentTargetDiff = currentTargetPosition - position;
 			currentTargetDiff.y = 0.0f;
 			float currentDistance = currentTargetDiff.magnitude - ColliderUtil.GetRadius(nearestCollider);
 			AffectorProcessor currentAffectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(nearestCollider);
-			AdjustRange(currentAffectorProcessor, currentTargetPosition, position, sphereCastRadiusForCheckWall, findRange, attackRange, ref currentDistance);
+			AdjustRange(currentAffectorProcessor, currentTargetPosition, position, sphereCastRadiusForCheckWall, checkBurrow, findRange, attackRange, ref currentDistance);
 
 			if (currentDistance <= prevDistance - changeThreshold)
 			{
@@ -405,20 +407,20 @@ public class TargetingProcessor : MonoBehaviour {
 		return false;
 	}
 
-	static bool IsOutOfRangePresetMultiTarget(MeHitObject meHit, AffectorProcessor affectorProcessor)
+	static bool IsOutOfRangePresetMultiTarget(MeHitObject meHit, AffectorProcessor affectorProcessor, bool checkBurrow)
 	{
 		if (IsOutOfRange(affectorProcessor))
 			return true;
-		if (affectorProcessor.IsContinuousAffectorType(eAffectorType.Burrow))
+		if (checkBurrow && affectorProcessor.IsContinuousAffectorType(eAffectorType.Burrow))
 			return true;
-		if (BurrowOnStartAffector.CheckBurrow(affectorProcessor))	// 패시브라서 타입으로 체크하면 항상 true가 되서 이 함수로 처리해야한다.
+		if (checkBurrow && BurrowOnStartAffector.CheckBurrow(affectorProcessor))	// 패시브라서 타입으로 체크하면 항상 true가 되서 이 함수로 처리해야한다.
 			return true;
 		if (meHit.presetAnimatorRoot == false && JumpAffector.CheckJump(affectorProcessor))	// 몸에다가 직격을 날리는 프리셋만이 점프 중인 몹을 공격할 수 있다.
 			return true;
 		return false;
 	}
 	
-	public static void AdjustRange(AffectorProcessor affectorProcessor, Vector3 targetPosition, Vector3 position, float sphereCastRadiusForCheckWall, float findRange, float attackRange, ref float distance)
+	static void AdjustRange(AffectorProcessor affectorProcessor, Vector3 targetPosition, Vector3 position, float sphereCastRadiusForCheckWall, bool checkBurrow, float findRange, float attackRange, ref float distance)
 	{
 		bool applyOutOfRange = false;
 		bool applyFarthest = false;
@@ -427,9 +429,9 @@ public class TargetingProcessor : MonoBehaviour {
 
 		if (sphereCastRadiusForCheckWall > 0.0f && CheckWall(position, targetPosition, sphereCastRadiusForCheckWall))
 			applyFarthest = true;
-		if (affectorProcessor.IsContinuousAffectorType(eAffectorType.Burrow))
+		if (checkBurrow && affectorProcessor.IsContinuousAffectorType(eAffectorType.Burrow))
 			applyFarthest = true;
-		if (BurrowOnStartAffector.CheckBurrow(affectorProcessor))
+		if (checkBurrow && BurrowOnStartAffector.CheckBurrow(affectorProcessor))
 			applyFarthest = true;
 
 		if (applyFarthest)

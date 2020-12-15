@@ -85,6 +85,10 @@ public class ActorTableData
   public bool checkNavMeshReachable { get { return _checkNavMeshReachable; } set { _checkNavMeshReachable = value; } }
   
   [SerializeField]
+  bool _checkBurrow;
+  public bool checkBurrow { get { return _checkBurrow; } set { _checkBurrow = value; } }
+  
+  [SerializeField]
   bool _flying;
   public bool flying { get { return _flying; } set { _flying = value; } }
   

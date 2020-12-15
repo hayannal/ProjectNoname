@@ -424,25 +424,36 @@ public class TargetingProcessor : MonoBehaviour {
 	{
 		bool applyOutOfRange = false;
 		bool applyFarthest = false;
+		bool applyFar = false;
 		if (IsOutOfRange(affectorProcessor))
 			applyOutOfRange = true;
 
 		if (sphereCastRadiusForCheckWall > 0.0f && CheckWall(position, targetPosition, sphereCastRadiusForCheckWall))
 			applyFarthest = true;
-		if (checkBurrow && affectorProcessor.IsContinuousAffectorType(eAffectorType.Burrow))
-			applyFarthest = true;
-		if (checkBurrow && BurrowOnStartAffector.CheckBurrow(affectorProcessor))
-			applyFarthest = true;
+		if (applyFarthest == false)
+		{
+			if (checkBurrow && affectorProcessor.IsContinuousAffectorType(eAffectorType.Burrow))
+				applyFar = true;
+			if (checkBurrow && BurrowOnStartAffector.CheckBurrow(affectorProcessor))
+				applyFar = true;
+		}
 
+		if (applyFar)
+		{
+			// Burrow는 Farthest보다는 가깝게 처리해주는게 더 직관적이다.
+			float adjustBaseRange = findRange;
+			if (attackRange > 0.0f) adjustBaseRange = attackRange;
+			distance = adjustBaseRange + distance * 0.001f;
+		}
 		if (applyFarthest)
 		{
 			// 사거리가 있을때는 사거리 근처 쯤으로 보정하고 사거리가 없을때는 findRange 근처로 보정한다.
 			float adjustBaseRange = findRange;
 			if (attackRange > 0.0f) adjustBaseRange = attackRange;
-			distance = adjustBaseRange + distance * 0.001f;
+			distance = adjustBaseRange * 2.0f + distance * 0.001f;
 		}
 		if (applyOutOfRange)
-			distance += findRange * 2.0f;
+			distance += findRange * 3.0f;
 	}
 #endif
 

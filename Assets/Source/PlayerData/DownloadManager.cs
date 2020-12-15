@@ -213,6 +213,10 @@ public class DownloadManager : MonoBehaviour
 		var status = handle.Status;
 		if (status == AsyncOperationStatus.Succeeded)
 		{
+			// 패치를 받고 씬을 재시작할때는 스트링을 다시 로드하기 위해서 현재 region값에 빈값을 넣어둔다.
+			// 패치 목록에 스트링이 껴있는지는 판단하지 않고 그냥 처리한다. 어차피 재로딩도 빠르다.
+			UIString.instance.currentRegion = "";
+
 			Addressables.Release(_totalDownloadHandle);
 			Addressables.Release<GameObject>(_handleCommonCanvasGroup);
 			SceneManager.LoadScene(0);
@@ -382,6 +386,7 @@ public class DownloadManager : MonoBehaviour
 				{
 					TermsConfirmCanvas.instance.ShowCanvas(() =>
 					{
+						UIString.instance.currentRegion = "";
 						PlayerData.instance.lobbyDownloadState = false;
 						Addressables.Release(_totalDownloadHandle);
 						SceneManager.LoadScene(0);
@@ -394,6 +399,7 @@ public class DownloadManager : MonoBehaviour
 				// 로비에 있으니 메세지박스 하나는 띄워놓고 확인 누르면 씬을 이동시켜줘야한다.
 				OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("SystemUI_LobbyDownloadComplete"), () =>
 				{
+					UIString.instance.currentRegion = "";
 					PlayerData.instance.lobbyDownloadState = false;
 					Addressables.Release(_totalDownloadHandle);
 					SceneManager.LoadScene(0);

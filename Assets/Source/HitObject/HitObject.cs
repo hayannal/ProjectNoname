@@ -670,6 +670,8 @@ public class HitObject : MonoBehaviour
 		float maxDistance = meHit.areaDistanceMax;
 		maxDistance = Mathf.Max(Mathf.Abs(meHit.areaHeightMax), maxDistance);
 		maxDistance = Mathf.Max(Mathf.Abs(meHit.areaHeightMin), maxDistance);
+		// 최대 사거리의 지하에 있는 Burrow몬스터도 타겟에 포함되려면 일정량 버퍼가 필요하다.
+		maxDistance *= 1.5f;
 		int resultCount = Physics.OverlapSphereNonAlloc(areaPosition, maxDistance, s_colliderList); // meHit.areaDistanceMax * parentTransform.localScale.x
 
 		// step 2. Check each object.

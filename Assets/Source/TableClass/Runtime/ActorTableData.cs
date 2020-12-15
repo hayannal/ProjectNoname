@@ -81,6 +81,10 @@ public class ActorTableData
   public float targetingSphereRadius { get { return _targetingSphereRadius; } set { _targetingSphereRadius = value; } }
   
   [SerializeField]
+  bool _checkNavMeshReachable;
+  public bool checkNavMeshReachable { get { return _checkNavMeshReachable; } set { _checkNavMeshReachable = value; } }
+  
+  [SerializeField]
   bool _flying;
   public bool flying { get { return _flying; } set { _flying = value; } }
   

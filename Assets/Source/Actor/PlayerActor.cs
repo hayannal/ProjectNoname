@@ -77,6 +77,7 @@ public class PlayerActor : Actor
 		skillProcessor.InitializeSkill();
 		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(actorId);
 		targetingProcessor.sphereCastRadiusForCheckWall = actorTableData.targetingSphereRadius;
+		targetingProcessor.checkNavMeshReachable = actorTableData.checkNavMeshReachable;
 		flying = actorTableData.flying;
 
 		// 처음 캐릭을 만들땐 생성까진 해두고 Hide여부는 SetActive로 제어하기로 한다.

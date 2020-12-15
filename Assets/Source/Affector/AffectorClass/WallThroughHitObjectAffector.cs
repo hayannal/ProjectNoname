@@ -7,6 +7,7 @@ public class WallThroughHitObjectAffector : AffectorBase
 	bool _wallThrough;
 	bool _quadThrough;
 	bool _overrideSphereCastRadius;
+	bool _overrideCheckNav;
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
 		if (_actor == null)
@@ -24,19 +25,27 @@ public class WallThroughHitObjectAffector : AffectorBase
 		_wallThrough = (affectorValueLevelTableData.iValue1 == 1);
 		_quadThrough = (affectorValueLevelTableData.iValue2 == 1);
 
-		if (affectorValueLevelTableData.iValue3 == 1)
+		if (affectorValueLevelTableData.fValue1 > 0.0f)
 		{
 			_overrideSphereCastRadius = true;
-			_actor.targetingProcessor.sphereCastRadiusForCheckWall = affectorValueLevelTableData.fValue1;
+			_actor.targetingProcessor.sphereCastRadiusForCheckWall = affectorValueLevelTableData.fValue2;
+		}
+		if (affectorValueLevelTableData.fValue3 > 0.0f)
+		{
+			_overrideCheckNav = true;
+			_actor.targetingProcessor.checkNavMeshReachable = (affectorValueLevelTableData.fValue4 > 0.0f);
 		}
 	}
 
 	public override void FinalizeAffector()
 	{
-		if (_overrideSphereCastRadius)
+		if (_overrideSphereCastRadius || _overrideCheckNav)
 		{
 			ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(_actor.actorId);
-			_actor.targetingProcessor.sphereCastRadiusForCheckWall = actorTableData.targetingSphereRadius;
+			if (_overrideSphereCastRadius)
+				_actor.targetingProcessor.sphereCastRadiusForCheckWall = actorTableData.targetingSphereRadius;
+			if (_overrideCheckNav)
+				_actor.targetingProcessor.checkNavMeshReachable = actorTableData.checkNavMeshReachable;
 		}
 	}
 

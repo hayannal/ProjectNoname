@@ -344,7 +344,7 @@ public class PlayerAI : MonoBehaviour
 	{
 		if (ExperienceCanvas.instance != null && ExperienceCanvas.instance.gameObject.activeSelf)
 			return true;
-		if (actor.targetingProcessor.sphereCastRadiusForCheckWall == 0.0f)
+		if (actor.targetingProcessor.checkNavMeshReachable == false)
 			return true;
 		if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
 			return true;

@@ -239,8 +239,15 @@ public class TargetingProcessor : MonoBehaviour {
 	#endregion
 
 #if USE_MONSTER_LIST
+	// 아래 두 변수는 actorTable에 있는 컬럼인데 cachedActorTableData에서 가져다 쓰지않고 이쪽으로 복사하는 이유는
+	// 소환체 몹이나 어펙터로 오버라이드 해야하는 경우가 있어서 이렇게 복사하는거다.
+	//
 	// 0이면 벽검사를 하지 않는다. 0보다 크면 SphereCast로 벽을 검사해서 타겟을 찾는다.
 	public float sphereCastRadiusForCheckWall { get; set; }
+	// NavMesh 도달 여부. 이 컬럼 역시 복사해서 가지고 있어야 어펙터로 인한 오버라이드 등이 적용될 수 있다.
+	// Yuki와 EnergyShieldRobot 두 캐릭터는 위가 0보다 크면서도 아래 값이 false인 캐릭터다. 폭발형 캐릭터는 클로즈 되어있더라도 벽 넘어를 때려야하기 때문.
+	public bool checkNavMeshReachable { get; set; }
+
 	// 간혹가다 몬스터의 Collider를 꺼야할때가 있어서 Physic으로 검사하면 타겟팅이 잠시 풀리게 되버렸다. (땅 투과시)
 	// 그래서 차라리 몬스터 리스트를 히트오브젝트처럼 등록해놨다가 받아오는 형태로 가기로 한다.
 	// Die시 빠지기 때문에 Die검사를 추가로 할 필요도 없다.

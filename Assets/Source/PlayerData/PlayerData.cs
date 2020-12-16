@@ -743,7 +743,7 @@ public class PlayerData : MonoBehaviour
 
 		// 위의 pp와 달리 추가해야할 값이 들어있다. 얻을때 획득용 알람 처리도 해준다.
 		this.balancePp += addBalancePp;
-		this.balancePpAlarmState = true;
+		if (addBalancePp > 0) this.balancePpAlarmState = true;
 
 		if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
 			DotMainMenuCanvas.instance.RefreshBalanceAlarmObject();

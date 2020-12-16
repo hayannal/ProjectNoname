@@ -311,9 +311,12 @@ public class EventManager : MonoBehaviour
 				break;
 			case eServerEvent.research:
 				reservedOpenResearchEvent = true;
+				// 플래그만 켜는거라서 서버 이벤트도 쌓여있다면 동시에 처리할 수 있다.
+				OnLobby();
 				break;
 			case eServerEvent.balance:
 				reservedOpenBalanceEvent = true;
+				OnLobby();
 				break;
 		}
 	}

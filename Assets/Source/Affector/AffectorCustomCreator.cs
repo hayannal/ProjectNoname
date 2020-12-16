@@ -77,6 +77,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.BurrowOnStart: affectorBase = new BurrowOnStartAffector(); break;
 			case eAffectorType.Jump: affectorBase = new JumpAffector(); break;
 			case eAffectorType.HealSpOnDamage: affectorBase = new HealSpOnDamageAffector(); break;
+			case eAffectorType.GiveAffectorValue: affectorBase = new GiveAffectorValueAffector(); break;
 			#endregion
 		}
 		return affectorBase;

@@ -81,5 +81,6 @@ public enum eAffectorType
 	BurrowOnStart,
 	Jump,
 	HealSpOnDamage,
+	GiveAffectorValue,
 }
 #endregion

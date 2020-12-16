@@ -299,7 +299,7 @@ public class BalanceCanvas : MonoBehaviour
 
 	public void OnClickMyBalancePpTextButton()
 	{
-		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, UIString.instance.GetString("BalanceUI_PPYouGotMore"), 300, myBalancePpTextTransform, new Vector2(0.0f, -35.0f));
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, UIString.instance.GetString("BalanceUI_PPYouGotMore"), 300, myBalancePpTextTransform, new Vector2(0.0f, -80.0f));
 		DisableNewBalancePp();
 	}
 

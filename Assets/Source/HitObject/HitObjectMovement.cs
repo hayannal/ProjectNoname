@@ -238,6 +238,7 @@ public class HitObjectMovement : MonoBehaviour {
 				{
 					//Debug.Log("Adjust Through Direction!");
 					_rigidbody.position = cachedTransform.position = startPosition + _velocity.normalized * dirWithStart.magnitude;
+					_rigidbody.velocity = _velocity = cachedTransform.forward * _speed;
 				}
 			}
 		}

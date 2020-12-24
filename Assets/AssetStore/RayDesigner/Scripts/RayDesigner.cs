@@ -265,6 +265,8 @@ public class RayDesigner : MonoBehaviour
             BezierPoints[i] = b.GetPointAtTime(time);
             time += step;
         }
+		Offset1 = Vector3.zero;
+		Offset2 = Vector3.zero;
 #if UNITY_EDITOR
         if (!ShowGizmos)
             return;

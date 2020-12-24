@@ -142,6 +142,17 @@ public class TooltipCanvas : MonoBehaviour
 		if (cachedRectTransform.parent != null)
 		{
 			Canvas parentCanvas = cachedRectTransform.parent.GetComponentInParent<Canvas>();
+
+			// 한가지 예외처리 할게 있는데
+			// CashShopCanvas 같은 경우엔 Sort Order 를 오버라이딩 하기위해 바로 위에다가 캔버스를 추가해놓았다.
+			// 이러다보니 루트 Canvas의 localScale을 구해와야 하는데 이 Sort Order 캔버스의 localScale을 곱하느라 Offset값이 틀어지게 되었다.
+			// 그래서 이걸 체크하기 위해 Canvas Scaler가 붙어있는지 확인하고 없으면 그 위의 루트 Canvas를 찾기로 한다.
+			CanvasScaler parentCanvasScaler = parentCanvas.GetComponent<CanvasScaler>();
+			if (parentCanvasScaler == null)
+			{
+				if (parentCanvas.transform.parent != null)
+					parentCanvas = parentCanvas.transform.parent.GetComponentInParent<Canvas>();
+			}
 			if (parentCanvas != null)
 			{
 				offset.x *= parentCanvas.transform.localScale.x;

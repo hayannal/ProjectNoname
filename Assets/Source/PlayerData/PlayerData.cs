@@ -48,6 +48,10 @@ public class PlayerData : MonoBehaviour
 	public ObscuredInt secondDailyBoxFillCount { get; set; }
 	public ObscuredInt researchLevel { get; set; }
 
+	// 일일 정보 갱신 타임. 여러개 몰아서 한다.
+	public DateTime unfixedResetTime { get; private set; }
+	public ObscuredBool unfixedResetInitialized { get; private set; }
+
 	// 균형의 PP
 	public ObscuredInt balancePp { get; set; }
 	public bool balancePpAlarmState { get; set; }
@@ -297,12 +301,13 @@ public class PlayerData : MonoBehaviour
 	#region Server
 	void Update()
 	{
-		UpdateDailyBoxResetTime();
+		//UpdateDailyBoxResetTime();
 		UpdateDailyPackageResetTime();
 		UpdateDailyTrainingGoldResetTime();
 		UpdateDailyTrainingDiaResetTime();
 		UpdateNodeWarResetTime();
 		UpdateBalancePpPurchaseResetTime();
+		UpdateUnfixedTime();
 	}
 
 	public bool newPlayerAddKeep { get; set; }
@@ -809,46 +814,151 @@ public class PlayerData : MonoBehaviour
 		}
 	}
 
-	bool _waitServerResponseForDailyBoxResetTime;
-	int _dailyBoxRefreshRetryRemainCount = 2;
-	void UpdateDailyBoxResetTime()
+	//bool _waitServerResponseForDailyBoxResetTime;
+	//int _dailyBoxRefreshRetryRemainCount = 2;
+	//void UpdateDailyBoxResetTime()
+	//{
+	//	if (_waitServerResponseForDailyBoxResetTime)
+	//		return;
+	//
+	//	if (_dailyBoxRefreshRetryRemainCount == 0)
+	//		return;
+	//
+	//	if (sharedDailyBoxOpened == false)
+	//		return;
+	//
+	//	if (DateTime.Compare(ServerTime.UtcNow, dailyBoxResetTime) < 0)
+	//		return;
+	//
+	//	// Energy와 달리 여긴 서버응답 꼭 받고 넘겨야해서 클라가 선처리 하지 않는다.
+	//	_waitServerResponseForDailyBoxResetTime = true;
+	//	PlayFabApiManager.instance.RequestRefreshDailyInfo((serverFailure) =>
+	//	{
+	//		_waitServerResponseForDailyBoxResetTime = false;
+	//		if (serverFailure)
+	//		{
+	//			// 뭔가 잘못 된거다. 재접해서 새로 받기 전까진 15초마다 다시 보내보자. 재시도는 2회만 하도록 한다.
+	//			dailyBoxResetTime += TimeSpan.FromSeconds(15);
+	//			_dailyBoxRefreshRetryRemainCount--;
+	//		}
+	//		else
+	//		{
+	//			// 날짜 바꾸는거에 대해 ok가 떨어졌다. 데일리상자가 초기화 된거로 처리해둔다.
+	//			sharedDailyBoxOpened = false;
+	//			dailyBoxResetTime += TimeSpan.FromDays(1);
+	//			_dailyBoxRefreshRetryRemainCount = 2;
+	//		}
+	//	});
+	//}
+
+	// 일반적인 DateTime 리셋과 달리 서버에다가 데이터를 올려서 기록시켜두는 로직들이 여러개 추가되었다.
+	// 제일 기본적으로는 일일퀘이고 그 담에 추가된게 Unfixed 상점 리스트고 그 다음에 추가된게 NodeWar 보너스 타입이다.
+	// 이 세가지 모두 공통적인 문제가 있었는데
+	// 아무리 패킷 딜레이를 오차 안생기게 여러번 체크한다해도
+	// 59분 59초 535ms 이런식으로 날짜가 갱신되기 직전 서버에 도착하는 경우가 있어서 에러가 나는거였다.
+	// (ServerUtc 를 사용하더라도 발생하는 문제였다. 이 안에는 서버에서 클라로 오는 시간까지 포함되어있기 때문)
+	//
+	// 그래서 차라리 서버한테 시간 받아서 다음날 넘어간건지 확인한 후 갱신하는 것들을 모아서 한번에 하면
+	// 조금 늦게 처리되더라도 안전하게 갱신할 수 있겠다 싶어서 하단의 로직을 추가하기로 했다.
+	bool _waitServerResponseForUnfixedResetTime;
+	int _unfixedRefreshRetryRemainCount = 30;
+	void UpdateUnfixedTime()
 	{
-		if (_waitServerResponseForDailyBoxResetTime)
+		if (loginned == false)
+			return;
+		if (unfixedResetInitialized == false)
 			return;
 
-		if (_dailyBoxRefreshRetryRemainCount == 0)
+		if (_waitServerResponseForUnfixedResetTime)
+			return;
+		if (_unfixedRefreshRetryRemainCount == 0)
 			return;
 
-		if (sharedDailyBoxOpened == false)
+		// ServerTime.UtcNow와 비교하는 진짜 의미는 이쯤 보내면 서버의 24:00쯤에 딱 맞춰서 도착하겠지 라는 의미다.
+		// 즉 패킷이 갑자기 빨리 가면 59분 59초 xxx ms에도 도착할 수 있다는 얘기다.
+		if (DateTime.Compare(ServerTime.UtcNow, unfixedResetTime) < 0)
 			return;
 
-		if (DateTime.Compare(ServerTime.UtcNow, dailyBoxResetTime) < 0)
-			return;
-
-		// Energy와 달리 여긴 서버응답 꼭 받고 넘겨야해서 클라가 선처리 하지 않는다.
-		_waitServerResponseForDailyBoxResetTime = true;
-		PlayFabApiManager.instance.RequestRefreshDailyInfo((serverFailure) =>
+		// 여긴 서버응답 꼭 받고 처리를 진행할거라서 클라가 선처리 하지 않는다.
+		_waitServerResponseForUnfixedResetTime = true;
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
-			_waitServerResponseForDailyBoxResetTime = false;
-			if (serverFailure)
+			FunctionName = "GetServerUtc",
+		}, (success) =>
+		{
+			_waitServerResponseForUnfixedResetTime = false;
+
+			PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
+			jsonResult.TryGetValue("date", out object date);
+
+			bool refreshed = false;
+			double nextSecond = 0.5;
+			DateTime serverUtcTime = new DateTime();
+			if (DateTime.TryParse((string)date, out serverUtcTime))
 			{
-				// 뭔가 잘못 된거다. 재접해서 새로 받기 전까진 15초마다 다시 보내보자. 재시도는 2회만 하도록 한다.
-				dailyBoxResetTime += TimeSpan.FromSeconds(15);
-				_dailyBoxRefreshRetryRemainCount--;
+				DateTime universalTime = serverUtcTime.ToUniversalTime();
+				if (universalTime.Year == unfixedResetTime.Year && universalTime.Month == unfixedResetTime.Month && universalTime.Day == unfixedResetTime.Day)
+				{
+					// 이러면 확실히 서버에서도 다음날이 된걸 확인할 수 있다는거다.
+					Debug.Log("Daily Unfixed Refreshed Start");
+					refreshed = true;
+					unfixedResetTime += TimeSpan.FromDays(1);
+					_unfixedRefreshRetryRemainCount = 30;
+
+					// 여기서 각종 갱신 처리 및 패킷들을 보내면 문제없을거다.
+					if (sharedDailyBoxOpened)
+						sharedDailyBoxOpened = false;
+					DailyShopData.instance.ResetDailyShopSlotPurchaseInfo();
+					DailyShopData.instance.ResetDailyFreeItemInfo();
+					RegisterNodeWarBonusPowerSource();
+				}
+				else
+				{
+					// 다음날이 아니라면 얼마나 남았는지 판단하고 차이에 따라 다르게 처리한다. 3초 이상이면 3초까지 땡겨놓고 그 이하라면 0.5초 단위로 다시 보내서 확인하기로 한다.
+					TimeSpan remainTime = unfixedResetTime - universalTime;
+					if (remainTime > TimeSpan.FromSeconds(3))
+					{
+						nextSecond = remainTime.TotalSeconds - 3;
+						Debug.LogFormat("Too different : {0} seconds", nextSecond);
+					}
+				}
 			}
-			else
+
+			if (refreshed == false)
 			{
-				// 날짜 바꾸는거에 대해 ok가 떨어졌다. 데일리상자가 초기화 된거로 처리해둔다.
-				sharedDailyBoxOpened = false;
-				dailyBoxResetTime += TimeSpan.FromDays(1);
-				_dailyBoxRefreshRetryRemainCount = 2;
+				// 뭔가 잘못 된거다. 재접해서 새로 받기 전까진 0.5초마다 다시 보내보자. 재시도는 30회
+				unfixedResetTime += TimeSpan.FromSeconds(nextSecond);
+				_unfixedRefreshRetryRemainCount--;
 			}
+		}, (error) =>
+		{
+			// 입력막는 캔버스 없이 보내는거라 에러 핸들링 하면 안된다.
+			//HandleCommonError(error);
+
+			// 시간 갱신만 해두면 될듯.
+			_waitServerResponseForUnfixedResetTime = false;
+			unfixedResetTime += TimeSpan.FromSeconds(0.5);
+
+			// 네트워크 오류일수도 있으니 여기서는 카운트를 차감하지 않는다.
+			//_unfixedRefreshRetryRemainCount--;
 		});
+	}
+
+	public bool IsWaitingRefreshDailyInfo()
+	{
+		if (_waitServerResponseForUnfixedResetTime)
+			return true;
+		if (unfixedResetInitialized && DateTime.Compare(ServerTime.UtcNow, unfixedResetTime) >= 0)
+			return true;
+		return false;
 	}
 	#endregion
 
 	public void LateInitialize()
 	{
+		unfixedResetTime = new DateTime(ServerTime.UtcNow.Year, ServerTime.UtcNow.Month, ServerTime.UtcNow.Day) + TimeSpan.FromDays(1);
+		unfixedResetInitialized = true;
+
 		CheckUnfixedNodeWarInfo();
 	}
 
@@ -1142,8 +1252,8 @@ public class PlayerData : MonoBehaviour
 		nodeWarCleared = false;
 		nodeWarResetTime += TimeSpan.FromDays(1);
 
-		// 이 타이밍에 보너스 PowerSource 갱신도 같이 해준다.
-		RegisterNodeWarBonusPowerSource();
+		// 이 타이밍에 사실 서버의 시간이 다음날이라고 확정된 타임은 아니다.
+		//RegisterNodeWarBonusPowerSource();
 	}
 	#endregion
 

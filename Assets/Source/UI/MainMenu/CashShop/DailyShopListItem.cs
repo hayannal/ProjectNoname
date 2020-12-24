@@ -423,6 +423,12 @@ public class DailyShopListItem : MonoBehaviour
 			return;
 		}
 
+		if (PlayerData.instance.IsWaitingRefreshDailyInfo())
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("ShopUI_CannotBuyCalculating"), 2.0f);
+			return;
+		}
+
 		if (_slotInfo.type == "fe")
 		{
 			if (TimeSpaceData.instance.IsInventoryVisualMax())

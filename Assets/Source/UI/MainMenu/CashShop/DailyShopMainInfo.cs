@@ -93,6 +93,11 @@ public class DailyShopMainInfo : MonoBehaviour
 			_needUpdate = false;
 			remainTimeText.text = "00:00:00";
 			_needRefresh = true;
+
+			if (DailyShopCharacterConfirmCanvas.instance != null && DailyShopCharacterConfirmCanvas.instance.gameObject.activeSelf)
+				DailyShopCharacterConfirmCanvas.instance.gameObject.SetActive(false);
+			if (DailyShopEquipConfirmCanvas.instance != null && DailyShopEquipConfirmCanvas.instance.gameObject.activeSelf)
+				DailyShopEquipConfirmCanvas.instance.gameObject.SetActive(false);
 		}
 	}
 

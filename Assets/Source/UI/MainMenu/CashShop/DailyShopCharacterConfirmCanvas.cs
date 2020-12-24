@@ -149,7 +149,10 @@ public class DailyShopCharacterConfirmCanvas : MonoBehaviour
 		CharacterInfoCanvas.instance.ReserveBackButton(() =>
 		{
 			CharacterListCanvas.instance.OnClickBackButton();
-			gameObject.SetActive(true);			
+
+			DailyShopData.DailyShopSlotInfo dailyShopSlotInfo = DailyShopData.instance.GetTodayShopData(_slotInfo.slotId);
+			if (dailyShopSlotInfo == _slotInfo)
+				gameObject.SetActive(true);
 		});
 	}
 

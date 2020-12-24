@@ -57,7 +57,7 @@ public class DailyShopData : MonoBehaviour
 	List<DailyFreeItemInfo> _listDailyFreeItemInfo;
 
 	public ObscuredBool dailyFreeItemReceived { get; set; }
-	public DateTime dailyFreeItemResetTime { get; private set; }
+	//public DateTime dailyFreeItemResetTime { get; private set; }
 
 	// 상점 갱신시간. 구매와 상관없이 갱신에 사용한다.
 	public DateTime dailyShopRefreshTime { get; private set; }
@@ -69,8 +69,8 @@ public class DailyShopData : MonoBehaviour
 	void Update()
 	{
 		UpdateDailyShopRefreshTime();
-		UpdateDailyShopSlotResetTime();
-		UpdateDailyFreeItemResetTime();
+		//UpdateDailyShopSlotResetTime();
+		//UpdateDailyFreeItemResetTime();
 	}
 
 	void OnRecvShopData(Dictionary<string, string> titleData)
@@ -479,6 +479,7 @@ public class DailyShopData : MonoBehaviour
 		});
 	}
 
+	/*
 	void UpdateDailyShopSlotResetTime()
 	{
 		if (_listDailyShopSlotInfo == null)
@@ -487,6 +488,14 @@ public class DailyShopData : MonoBehaviour
 		if (DateTime.Compare(ServerTime.UtcNow, dailyShopSlotPurchasedResetTime) < 0)
 			return;
 
+		// 여기에서 클라가 단독으로 리셋했더니 자꾸 서버에 59분 59초 임의의 ms쯤 도착해버려서 에러로 처리될때가 종종 발생했다.
+		// 그래서 PlayerData쪽에서 서버 날짜 검증후 확인되면 리셋을 처리하기로 한다.
+		//ResetDailyShopSlotPurchaseInfo();
+	}
+	*/
+
+	public void ResetDailyShopSlotPurchaseInfo()
+	{
 		// 갱신 타이밍은 항상 동일
 		dailyShopSlotPurchasedResetTime += TimeSpan.FromDays(1);
 
@@ -497,7 +506,7 @@ public class DailyShopData : MonoBehaviour
 				_listShopSlotPurchased[i] = false;
 		}
 
-		// 이 타이밍에 unfixed 갱신처리도 해줘야한다. 이땐 날짜 비교안해도 되니 바로 갱신하면 된다.
+		// 이 타이밍에 unfixed 갱신처리도 해줘야한다.
 		RegisterUnfixedInfo();
 
 		// 오늘 판매될 Equip의 아이콘도 미리 로드
@@ -546,7 +555,7 @@ public class DailyShopData : MonoBehaviour
 		if (ServerTime.UtcNow.Year == lastDailyFreeItemReceiveTime.Year && ServerTime.UtcNow.Month == lastDailyFreeItemReceiveTime.Month && ServerTime.UtcNow.Day == lastDailyFreeItemReceiveTime.Day)
 		{
 			dailyFreeItemReceived = true;
-			dailyFreeItemResetTime = new DateTime(lastDailyFreeItemReceiveTime.Year, lastDailyFreeItemReceiveTime.Month, lastDailyFreeItemReceiveTime.Day) + TimeSpan.FromDays(1);
+			//dailyFreeItemResetTime = new DateTime(lastDailyFreeItemReceiveTime.Year, lastDailyFreeItemReceiveTime.Month, lastDailyFreeItemReceiveTime.Day) + TimeSpan.FromDays(1);
 		}
 		else
 			dailyFreeItemReceived = false;
@@ -562,17 +571,21 @@ public class DailyShopData : MonoBehaviour
 		}
 	}
 
-	void UpdateDailyFreeItemResetTime()
+	//void UpdateDailyFreeItemResetTime()
+	//{
+	//	if (dailyFreeItemReceived == false)
+	//		return;
+	//
+	//	if (DateTime.Compare(ServerTime.UtcNow, dailyFreeItemResetTime) < 0)
+	//		return;
+	//
+	//	ResetDailyFreeItemInfo();
+	//}
+
+	public void ResetDailyFreeItemInfo()
 	{
-		if (dailyFreeItemReceived == false)
-			return;
-
-		if (DateTime.Compare(ServerTime.UtcNow, dailyFreeItemResetTime) < 0)
-			return;
-
-		// 일퀘와 달리 창을 열어야만 보이기도 하고 노출되는 횟수가 적을거 같아서 하루 갱신될때 서버에 알리지 않고 클라가 선처리 하기로 한다.
-		dailyFreeItemReceived = false;
-		dailyFreeItemResetTime += TimeSpan.FromDays(1);
+		if (dailyFreeItemReceived)
+			dailyFreeItemReceived = false;
 
 		// 일일 다이아는 안가지고 있는 유저가 있겠지만 FreeItem은 모두에게 적용된다. 여기서 처리하기로 한다.
 		if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)

@@ -105,8 +105,13 @@ public class DailyShopEquipConfirmCanvas : MonoBehaviour
 			DailyShopEquipDetailCanvas.instance.ShowCanvas(true, equipTableData, () =>
 			{
 				// 확인 누르면 바로 캐시샵으로 돌아와서 이 Confirm창을 다시 띄워야한다.
-				gameObject.SetActive(true);
-				ShowCanvas(true, _slotInfo);
+				// 그런데 혹시 날짜가 바뀌었다면 띄우지 않고 패스시켜야한다.
+				DailyShopData.DailyShopSlotInfo dailyShopSlotInfo = DailyShopData.instance.GetTodayShopData(_slotInfo.slotId);
+				if (dailyShopSlotInfo == _slotInfo)
+				{
+					gameObject.SetActive(true);
+					ShowCanvas(true, _slotInfo);
+				}
 			});
 		});
 	}

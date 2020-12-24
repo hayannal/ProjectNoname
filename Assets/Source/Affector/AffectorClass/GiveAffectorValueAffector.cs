@@ -54,5 +54,12 @@ public class GiveAffectorValueAffector : AffectorBase
 
 		if (string.IsNullOrEmpty(affectorValueLevelTableData.sValue1) == false)
 			BattleToastCanvas.instance.ShowToast(UIString.instance.GetString(affectorValueLevelTableData.sValue1), 2.5f);
+
+		if (!string.IsNullOrEmpty(affectorValueLevelTableData.sValue4))
+		{
+			GameObject effectPrefab = FindPreloadObject(affectorValueLevelTableData.sValue4);
+			if (effectPrefab != null)
+				BattleInstanceManager.instance.GetCachedObject(effectPrefab, _actor.cachedTransform.position, _actor.cachedTransform.rotation);
+		}
 	}
 }

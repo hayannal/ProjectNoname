@@ -409,6 +409,8 @@ public class DailyShopListItem : MonoBehaviour
 	{
 		if (_updateRefreshLineImage)
 		{
+			prevPriceText.gameObject.SetActive(false);
+			prevPriceText.gameObject.SetActive(true);
 			RefreshLineImage();
 			_updateRefreshLineImage = false;
 		}

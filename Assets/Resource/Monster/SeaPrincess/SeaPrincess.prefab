@@ -180,7 +180,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actorId: SeaPrincess
-  commonPoolPreloadObjectList: []
+  commonPoolPreloadObjectList:
+  - {fileID: 100002, guid: 2a73202e12f28fd45b6ce46510470d46, type: 3}
   selfPassivePreloadObjectList: []
   gaugeOffsetY: 1.2
   monsterHpGaugeWidth: 1
@@ -197,9 +198,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startDelayRange: {x: 0.25, y: 0.25}
-  startState: 2
-  useStateList: 000001010100
-  moveTimeRange: {x: 1, y: 1}
+  startState: 0
+  useStateList: 010001010100
+  moveTimeRange: {x: 1, y: 2}
   refreshTickTimeRange: {x: 1, y: 1}
   desireDistance: 5
   straightMoveTimeRange: {x: 0, y: 0}
@@ -209,7 +210,7 @@ MonoBehaviour:
   customActionPlayType: 1
   customActionName: 
   customActionFadeDuration: 0.05
-  chaseDistanceRange: {x: 7, y: 7}
+  chaseDistanceRange: {x: 6, y: 8}
   chaseCancelTimeRange: {x: 4, y: 10}
   useFarawayMode: 0
   chaseTryCountChangeFaraway: 0
@@ -218,7 +219,7 @@ MonoBehaviour:
   attackActionName: AttackGroup
   attackActionFadeDuration: 0.44
   lookAtTargetBeforeAttack: 1
-  attackDelayTimeRange: {x: 1.5, y: 1.5}
+  attackDelayTimeRange: {x: 0.1, y: 0.3}
   useAnimatorParameterForAI: 0
   listAnimatorParameterForAI: 
 --- !u!1001 &3802438764624318270
@@ -291,6 +292,14 @@ PrefabInstance:
     - target: {fileID: 400162, guid: 50c561459ed778a4ba81abad6e604ec0, type: 3}
       propertyPath: m_LocalScale.y
       value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 400162, guid: 50c561459ed778a4ba81abad6e604ec0, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.85
+      objectReference: {fileID: 0}
+    - target: {fileID: 400162, guid: 50c561459ed778a4ba81abad6e604ec0, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.85
       objectReference: {fileID: 0}
     - target: {fileID: 2300000, guid: 50c561459ed778a4ba81abad6e604ec0, type: 3}
       propertyPath: m_Materials.Array.data[0]

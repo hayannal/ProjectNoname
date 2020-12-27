@@ -46,10 +46,20 @@ public class GiveAffectorValueAffector : AffectorBase
 			{
 				string[] affectorValueIdList = BattleInstanceManager.instance.GetCachedString2StringList(affectorValueLevelTableData.sValue2);
 				for (int j = 0; j < affectorValueIdList.Length; ++j)
-					listMonsterActor[i].affectorProcessor.ApplyAffectorValue(affectorValueIdList[j], hitParameter, false);
+				{
+					if (affectorValueLevelTableData.iValue1 == 0)
+						listMonsterActor[i].affectorProcessor.ApplyAffectorValue(affectorValueIdList[j], hitParameter, false);
+					else if (affectorValueLevelTableData.iValue1 == 1)
+						listMonsterActor[i].affectorProcessor.AddActorState(affectorValueIdList[j], hitParameter);
+				}
 			}
 			else
-				listMonsterActor[i].affectorProcessor.ApplyAffectorValue(affectorValueLevelTableData.sValue2, hitParameter, false);
+			{
+				if (affectorValueLevelTableData.iValue1 == 0)
+					listMonsterActor[i].affectorProcessor.ApplyAffectorValue(affectorValueLevelTableData.sValue2, hitParameter, false);
+				else if (affectorValueLevelTableData.iValue1 == 1)
+					listMonsterActor[i].affectorProcessor.AddActorState(affectorValueLevelTableData.sValue2, hitParameter);
+			}
 		}
 
 		if (string.IsNullOrEmpty(affectorValueLevelTableData.sValue1) == false)

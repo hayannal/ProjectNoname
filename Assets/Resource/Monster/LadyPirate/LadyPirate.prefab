@@ -181,7 +181,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actorId: LadyPirate
   commonPoolPreloadObjectList: []
-  selfPassivePreloadObjectList: []
+  selfPassivePreloadObjectList:
+  - {fileID: 1961478501609223962, guid: 256189656cab2ea46a0ac087f3ac5d7c, type: 3}
   gaugeOffsetY: 1.2
   monsterHpGaugeWidth: 1
 --- !u!114 &8707822800560944561
@@ -199,9 +200,9 @@ MonoBehaviour:
   startDelayRange: {x: 0.25, y: 0.25}
   startState: 0
   useStateList: 010000010000
-  moveTimeRange: {x: 2, y: 2}
-  refreshTickTimeRange: {x: 1, y: 1}
-  desireDistance: 5
+  moveTimeRange: {x: 2, y: 4}
+  refreshTickTimeRange: {x: 1.5, y: 1.5}
+  desireDistance: 2
   straightMoveTimeRange: {x: 0, y: 0}
   straightRefreshTickTimeRange: {x: 0, y: 0}
   straightRefreshTickWaitTime: 0

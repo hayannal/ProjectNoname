@@ -249,6 +249,7 @@ public class BaseDamageAffector : AffectorBase {
 		CallAffectorValueAffector.OnEvent(_affectorProcessor, CallAffectorValueAffector.eEventType.OnDamage, damage);
 		ReduceContinuousDamageAffector.OnDamage(_affectorProcessor);
 		MonsterSleepingAffector.OnDamage(_affectorProcessor);
+		CastAffector.OnDamage(_affectorProcessor);
 		if (attackerActor == null) attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(hitParameter.statusStructForHitObject.actorInstanceId);
 		if (attackerActor != null)
 		{

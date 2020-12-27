@@ -82,5 +82,6 @@ public enum eAffectorType
 	Jump,
 	HealSpOnDamage,
 	GiveAffectorValue,
+	Cast,
 }
 #endregion

@@ -128,7 +128,6 @@ public class HitObject : MonoBehaviour
 						}
 						Vector3 contactPoint = Vector3.zero;
 						Vector3 contactNormal = Vector3.zero;
-						attackerPosition.y = 1.0f;
 						if (CheckRaycastWall(attackerPosition, attackerForward, length, ref contactPoint, ref contactNormal))
 						{
 							if (meHit.showHitEffect)
@@ -325,7 +324,6 @@ public class HitObject : MonoBehaviour
 			float length = diff.magnitude;
 			Vector3 contactPoint = Vector3.zero;
 			Vector3 contactNormal = Vector3.zero;
-			attackerPosition.y = 1.0f;
 			if (CheckRaycastWall(attackerPosition, attackerForward, length, ref contactPoint, ref contactNormal))
 			{
 				if (meHit.showHitEffect)
@@ -823,6 +821,7 @@ public class HitObject : MonoBehaviour
 		if (s_raycastHitList == null)
 			s_raycastHitList = new RaycastHit[100];
 
+		areaPosition.y = 1.0f;
 		int resultCount = Physics.RaycastNonAlloc(areaPosition, areaForward, s_raycastHitList, maxDistance, 1);
 		for (int i = 0; i < resultCount; ++i)
 		{

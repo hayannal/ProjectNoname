@@ -276,7 +276,7 @@ public class BaseDamageAffector : AffectorBase {
 				if (monsterActor != null && monsterActor.groupMonster && monsterActor.group.IsLastAliveMonster(monsterActor) == false)
 					ignoreOnKill = true;
 				// 한방에 보스 몹 처리..
-				if (PlayerData.instance.clientOnly == false && monsterActor.bossMonster && monsterActor.sequentialMonster == false &&
+				if (PlayerData.instance.clientOnly == false && monsterActor.bossMonster && monsterActor.sequentialMonster == false && monsterActor.summonMonster == false &&
 					PlayerData.instance.highestPlayChapter == PlayerData.instance.selectedChapter && damage > monsterActor.actorStatus.GetValue(eActorStatus.MaxHp))
 				{
 					PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.OneShotKillBoss, true, (int)damage);

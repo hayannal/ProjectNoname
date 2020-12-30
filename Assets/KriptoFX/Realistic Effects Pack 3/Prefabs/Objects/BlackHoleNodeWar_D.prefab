@@ -71,7 +71,7 @@ GameObject:
   m_Component:
   - component: {fileID: 400058}
   - component: {fileID: 8200000}
-  - component: {fileID: 11400044}
+  - component: {fileID: 5607281202675770339}
   m_Layer: 0
   m_Name: Sound
   m_TagString: Untagged
@@ -189,7 +189,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &11400044
+--- !u!114 &5607281202675770339
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -198,16 +198,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 100058}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30bab3a2e3e65024ba713d217ec06d88, type: 3}
+  m_Script: {fileID: 11500000, guid: cd90d5ee163b5004faa50b9f67e503b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxVolume: 1
-  StartDelay: 0
-  FadeInSpeed: 2
-  FadeOutDelay: 0
-  FadeOutSpeed: 4
-  FadeOutAfterCollision: 0
-  UseHideStatus: 1
+  multipleComponent: 0
+  checkDuplicate: 0
+  pitchRandomMultiplier: 1
+  startDelay: 0
 --- !u!1 &100064
 GameObject:
   m_ObjectHideFlags: 0
@@ -263,6 +260,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -274,6 +272,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0

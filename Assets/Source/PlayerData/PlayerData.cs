@@ -41,6 +41,8 @@ public class PlayerData : MonoBehaviour
 	// 이 카오스는 마지막 챕터의 카오스 상태를 저장하는 값이다. 이건 4챕터 이후에 도전모드 상태에서 질때 바뀌며 유저가 선택으로 바꾸는 값이 아니다.
 	public ObscuredBool chaosMode { get; set; }
 	public ObscuredInt purifyCount { get; set; }
+	public ObscuredBool todayFreePurifyApplied { get; set; }
+	public DateTime todayFreePurifyResetTime { get; private set; }
 	public ObscuredInt sealCount { get; set; }
 	public ObscuredBool sharedDailyBoxOpened { get; set; }
 	public DateTime dailyBoxResetTime { get; private set; }
@@ -302,6 +304,7 @@ public class PlayerData : MonoBehaviour
 	void Update()
 	{
 		//UpdateDailyBoxResetTime();
+		UpdateFreePurifyResetTime();
 		UpdateDailyPackageResetTime();
 		UpdateDailyTrainingGoldResetTime();
 		UpdateDailyTrainingDiaResetTime();
@@ -320,6 +323,7 @@ public class PlayerData : MonoBehaviour
 		sealCount = 0;
 		sharedDailyBoxOpened = false;
 		purifyCount = 0;
+		todayFreePurifyApplied = false;
 		balancePp = 0;
 		balancePpAlarmState = false;
 		balancePpPurchased = false;
@@ -499,6 +503,13 @@ public class PlayerData : MonoBehaviour
 			int intValue = 0;
 			if (int.TryParse(userData["SHpur"].Value, out intValue))
 				purifyCount = intValue;
+		}
+
+		todayFreePurifyApplied = false;
+		if (userReadOnlyData.ContainsKey("lasFrePurDat"))
+		{
+			if (string.IsNullOrEmpty(userReadOnlyData["lasFrePurDat"].Value) == false)
+				OnRecvFreePurifyInfo(userReadOnlyData["lasFrePurDat"].Value);
 		}
 
 		if (userData.ContainsKey("seal"))
@@ -951,6 +962,44 @@ public class PlayerData : MonoBehaviour
 		if (unfixedResetInitialized && DateTime.Compare(ServerTime.UtcNow, unfixedResetTime) >= 0)
 			return true;
 		return false;
+	}
+	#endregion
+
+	#region Today Free Purify
+	void OnRecvFreePurifyInfo(DateTime lastTodayFreePurifyApplyTime)
+	{
+		if (ServerTime.UtcNow.Year == lastTodayFreePurifyApplyTime.Year && ServerTime.UtcNow.Month == lastTodayFreePurifyApplyTime.Month && ServerTime.UtcNow.Day == lastTodayFreePurifyApplyTime.Day)
+		{
+			todayFreePurifyApplied = true;
+			todayFreePurifyResetTime = new DateTime(lastTodayFreePurifyApplyTime.Year, lastTodayFreePurifyApplyTime.Month, lastTodayFreePurifyApplyTime.Day) + TimeSpan.FromDays(1);
+		}
+		else
+			todayFreePurifyApplied = false;
+	}
+
+	public void OnRecvFreePurifyInfo(string lastTodayFreePurifyApplyTimeString)
+	{
+		DateTime lastTodayFreePurifyApplyTime = new DateTime();
+		if (DateTime.TryParse(lastTodayFreePurifyApplyTimeString, out lastTodayFreePurifyApplyTime))
+		{
+			DateTime universalTime = lastTodayFreePurifyApplyTime.ToUniversalTime();
+			OnRecvFreePurifyInfo(universalTime);
+		}
+	}
+
+	void UpdateFreePurifyResetTime()
+	{
+		if (todayFreePurifyApplied == false)
+			return;
+
+		if (DateTime.Compare(ServerTime.UtcNow, todayFreePurifyResetTime) < 0)
+			return;
+
+		// 해당 창에서는 팝업창이라 타이머 표시를 하지 않을거라서 여기서 처리해준다.
+		if (ChaosPurifierConfirmCanvas.instance != null && ChaosPurifierConfirmCanvas.instance.gameObject.activeSelf)
+			ChaosPurifierConfirmCanvas.instance.gameObject.SetActive(false);
+		todayFreePurifyApplied = false;
+		todayFreePurifyResetTime += TimeSpan.FromDays(1);
 	}
 	#endregion
 

@@ -1323,14 +1323,21 @@ public class PlayFabApiManager : MonoBehaviour
 			GeneratePlayStreamEvent = true,
 		}, (success) =>
 		{
-			string resultString = (string)success.FunctionResult;
-			bool failure = (resultString == "1");
+			PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
+			jsonResult.TryGetValue("retErr", out object retErr);
+			bool failure = ((retErr.ToString()) == "1");
 			if (!failure)
 			{
 				WaitingNetworkCanvas.Show(false);
 				PlayerData.instance.chaosMode = false;
 				CurrencyData.instance.gold -= priceGold;
 				PlayerData.instance.purifyCount = 0;
+				jsonResult.TryGetValue("retFre", out object freeApplied);
+				if ((freeApplied.ToString()) == "1")
+				{
+					jsonResult.TryGetValue("date", out object date);
+					PlayerData.instance.OnRecvFreePurifyInfo((string)date);
+				}
 				if (successCallback != null) successCallback.Invoke();
 			}
 		}, (error) =>

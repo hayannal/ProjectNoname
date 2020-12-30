@@ -8,6 +8,7 @@ public class ChaosPurifierConfirmCanvas : MonoBehaviour
 	public static ChaosPurifierConfirmCanvas instance;
 
 	public Transform subTitleTransform;
+	public GameObject todayFreePurifyAppliedTextObject;
 
 	public Text priceText;
 	public GameObject buttonObject;
@@ -40,6 +41,9 @@ public class ChaosPurifierConfirmCanvas : MonoBehaviour
 			return;
 
 		int price = chapterTableData.purifyGold;
+		if (PlayerData.instance.todayFreePurifyApplied == false)
+			price = 0;
+		todayFreePurifyAppliedTextObject.SetActive(PlayerData.instance.todayFreePurifyApplied == false);
 
 		priceText.text = price.ToString("N0");
 		bool disablePrice = (CurrencyData.instance.gold < price);

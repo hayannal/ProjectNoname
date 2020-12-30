@@ -50,6 +50,8 @@ public partial class SoundManager : MonoBehaviour
 	{
 		if (_inApkSFXContainer == null)
 			return;
+		if (OptionManager.instance.systemVolume == 0.0f)
+			return;
 
 		for (int i = 0; i < _inApkSFXContainer.sfxData.Count; ++i)
 		{

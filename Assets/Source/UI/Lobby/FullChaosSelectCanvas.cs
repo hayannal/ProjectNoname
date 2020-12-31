@@ -86,6 +86,8 @@ public class FullChaosSelectCanvas : MonoBehaviour
 
 	void OnRecvRevert(string itemGrantString)
 	{
+		GatePillar.instance.RefreshPurify(true);
+
 		// 연출은 연출대로 두고
 		// 연출 끝나고 나올 결과창에서 아이콘이 느리게 보이는걸 방지하기 위해 아이콘의 프리로드를 진행한다.
 		List<ItemInstance> listGrantItem = null;
@@ -118,28 +120,14 @@ public class FullChaosSelectCanvas : MonoBehaviour
 
 			RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Revert, _cachedDropProcessor, 0, 0, () =>
 			{
-				if (listGrantItem == null)
+				// 장비가 없더라도 장비 결과창에 예외처리 되어있으니 EquipBoxResultCanvas만 사용해서 보여주면 된다.
+				UIInstanceManager.instance.ShowCanvasAsync("EquipBoxResultCanvas", () =>
 				{
-					// 보상으로 장비가 나오지 않았다면 공용 재화창을 사용하고
-					UIInstanceManager.instance.ShowCanvasAsync("CurrencyBoxResultCanvas", () =>
-					{
-						CurrencyBoxResultCanvas.instance.RefreshInfo(addGold, addDia);
+					EquipBoxResultCanvas.instance.RefreshInfo(listGrantItem, addGold, addDia);
 
-						// 결과창을 보여주는 타이밍에 게이트 필라도 갱신해둔다.
-						GatePillar.instance.RefreshPurify();
-					});
-				}
-				else
-				{
-					// 장비가 나왔다면 장비결과창을 쓴다.
-					UIInstanceManager.instance.ShowCanvasAsync("EquipBoxResultCanvas", () =>
-					{
-						EquipBoxResultCanvas.instance.RefreshInfo(listGrantItem, addGold, addDia);
-
-						// 결과창을 보여주는 타이밍에 게이트 필라도 갱신해둔다.
-						GatePillar.instance.RefreshPurify();
-					});
-				}
+					// 결과창을 보여주는 타이밍에 게이트 필라 옆 레버도 갱신해둔다.
+					GatePillar.instance.SetChaosPurifierLeverShowRemainTime();
+				});
 			});
 		});
 	}

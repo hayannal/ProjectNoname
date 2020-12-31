@@ -10,9 +10,12 @@ public class EquipBoxResultCanvas : MonoBehaviour
 	public static EquipBoxResultCanvas instance;
 
 	public GameObject goldDiaRectObject;
+	public GameObject goldRectObject;
+	public GameObject diaRectObject;
 	public Text goldValueText;
 	public Text diaValueText;
 
+	public GameObject equipRectObject;
 	public GameObject contentItemPrefab;
 	public RectTransform contentRootRectTransform;
 	public GridLayoutGroup contentGridLayoutGroup;
@@ -65,6 +68,8 @@ public class EquipBoxResultCanvas : MonoBehaviour
 	{
 		bool goldDia = (addGold > 0) || (addDia > 0);
 		goldDiaRectObject.SetActive(goldDia);
+		goldRectObject.SetActive(addGold > 0);
+		diaRectObject.SetActive(addDia > 0);
 		if (goldDia)
 		{
 			goldValueText.text = addGold.ToString("N0");
@@ -75,8 +80,13 @@ public class EquipBoxResultCanvas : MonoBehaviour
 			_listEquipCanvasListItem[i].gameObject.SetActive(false);
 		_listEquipCanvasListItem.Clear();
 
-		if (listGrantItem == null)
+		bool showGrantItemList = (listGrantItem != null && listGrantItem.Count > 0);
+		equipRectObject.SetActive(showGrantItemList);
+		if (!showGrantItemList)
+		{
+			Timing.RunCoroutine(NoItemProcess());
 			return;
+		}
 
 		// 이 타이밍이 가장 갱신하기 좋은 타이밍이다.
 		if (TimeSpacePortal.instance != null && TimeSpacePortal.instance.gameObject.activeSelf)
@@ -86,6 +96,12 @@ public class EquipBoxResultCanvas : MonoBehaviour
 
 		contentGridLayoutGroup.childAlignment = (listGrantItem.Count == 1) ? TextAnchor.MiddleCenter : TextAnchor.UpperLeft;
 		Timing.RunCoroutine(ItemProcess(listGrantItem));
+	}
+
+	IEnumerator<float> NoItemProcess()
+	{
+		yield return Timing.WaitForSeconds(0.2f);
+		exitGroupObject.SetActive(true);
 	}
 
 	IEnumerator<float> ItemProcess(List<ItemInstance> listGrantItem)

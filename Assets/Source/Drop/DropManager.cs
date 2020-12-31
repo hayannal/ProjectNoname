@@ -304,9 +304,62 @@ public class DropManager : MonoBehaviour
 	}
 	#endregion
 
+	List<RandomDropEquipInfo> _listFullChaosRevertDropEquipInfo = null;
+	public string GetFullChaosRevertDropEquipId()
+	{
+		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
+		if (lobby == false)
+			return "";
+
+		if (_listFullChaosRevertDropEquipInfo == null)
+			_listFullChaosRevertDropEquipInfo = new List<RandomDropEquipInfo>();
+		_listFullChaosRevertDropEquipInfo.Clear();
+
+		float sumWeight = 0.0f;
+		for (int i = 0; i < TableDataManager.instance.equipTable.dataArray.Length; ++i)
+		{
+			float weight = TableDataManager.instance.equipTable.dataArray[i].stageDropWeight;
+			if (weight <= 0.0f)
+				continue;
+
+			// 환원 보상은 Stage 0 으로 처리하기 때문에 챕터만 비교해서 이전 챕터꺼만 포함시키면 된다. 같은 챕터의 스테이지는 비교할 필요 없다.
+			bool add = false;
+			int playChapter = PlayerData.instance.currentChaosMode ? (StageManager.instance.playChapter - 1) : (int)StageManager.instance.playChapter;
+			if (playChapter > TableDataManager.instance.equipTable.dataArray[i].startingDropChapter)
+				add = true;
+			if (add == false)
+				continue;
+
+			// 환원 보상에서는 전설 아이템이 나오지 않는다.
+			if (EquipData.IsUseLegendKey(TableDataManager.instance.equipTable.dataArray[i]))
+				continue;
+
+			sumWeight += weight;
+			RandomDropEquipInfo newInfo = new RandomDropEquipInfo();
+			newInfo.equipTableData = TableDataManager.instance.equipTable.dataArray[i];
+			newInfo.sumWeight = sumWeight;
+			_listFullChaosRevertDropEquipInfo.Add(newInfo);
+		}
+
+		if (_listFullChaosRevertDropEquipInfo.Count == 0)
+			return "";
+
+		int index = -1;
+		float random = Random.Range(0.0f, _listFullChaosRevertDropEquipInfo[_listFullChaosRevertDropEquipInfo.Count - 1].sumWeight);
+		for (int i = 0; i < _listFullChaosRevertDropEquipInfo.Count; ++i)
+		{
+			if (random <= _listFullChaosRevertDropEquipInfo[i].sumWeight)
+			{
+				index = i;
+				break;
+			}
+		}
+		if (index == -1)
+			return "";
+		return _listFullChaosRevertDropEquipInfo[index].equipTableData.equipId;
+	}
 
 
-	
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// 이 아래서부터는 Lobby에서 사용하는 가차용 뽑기 로직들이다.
 	// 한번 드랍프로세서가 동작하고 나서는 패킷 주고받은 후 초기화를 해줘야한다.

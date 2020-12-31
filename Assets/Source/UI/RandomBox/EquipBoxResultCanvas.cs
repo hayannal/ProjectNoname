@@ -63,7 +63,7 @@ public class EquipBoxResultCanvas : MonoBehaviour
 	List<EquipCanvasListItem> _listEquipCanvasListItem = new List<EquipCanvasListItem>();
 	public void RefreshInfo(List<ItemInstance> listGrantItem, int addGold = 0, int addDia = 0)
 	{
-		bool goldDia = (addDia > 0) || (addDia > 0);
+		bool goldDia = (addGold > 0) || (addDia > 0);
 		goldDiaRectObject.SetActive(goldDia);
 		if (goldDia)
 		{

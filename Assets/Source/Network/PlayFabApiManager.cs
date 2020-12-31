@@ -1284,14 +1284,14 @@ public class PlayFabApiManager : MonoBehaviour
 	#endregion
 
 	#region Chaos
-	public void RequestSelectFullChaos(bool challenge, int addGold, Action successCallback)
+	public void RequestSelectFullChaos(Action successCallback)
 	{
 		WaitingNetworkCanvas.Show(true);
 
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
 			FunctionName = "SelectFullChaos",
-			FunctionParameter = new { Chl = challenge ? 1 : 0 },
+			FunctionParameter = new { Chl = 1 },
 			GeneratePlayStreamEvent = true,
 		}, (success) =>
 		{
@@ -1300,11 +1300,54 @@ public class PlayFabApiManager : MonoBehaviour
 			if (!failure)
 			{
 				WaitingNetworkCanvas.Show(false);
-				if (challenge)
-					PlayerData.instance.chaosMode = false;
-				CurrencyData.instance.gold += addGold;
+				PlayerData.instance.chaosMode = false;
 				PlayerData.instance.purifyCount = 0;
 				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+
+	public void RequestSelectFullChaosRevert(Action<string> successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		// RequestSelectFullChaos함수는 도전모드일때 쓰는 함수고 RequestSelectFullChaosRevert 함수는 환원시에 사용하는 함수다.
+		// 도전모드 전환과 달리 드랍 아이디 굴려서 드랍템 및 골드 보상 정보까지 보내야해서 별도의 패킷으로 처리하기로 한다.
+		int addGold = DropManager.instance.GetLobbyGoldAmount();
+		int addDia = DropManager.instance.GetLobbyDiaAmount();
+		List<ObscuredString> listDropItemId = DropManager.instance.GetLobbyDropItemInfo();
+
+		string checkSum = "";
+		List<TimeSpaceData.ItemGrantRequest> listItemGrantRequest = TimeSpaceData.instance.GenerateGrantRequestInfo(listDropItemId, ref checkSum);
+
+		// 지금까지 장비 체크섬은 장비만 따로 했었다. 여기서는 드랍 골드 다이아도 보내야하므로 체크섬을 나눠서 처리하기로 한다.
+		string checkSum2 = "";
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		checkSum2 = CheckSum(string.Format("{0}_{1}_{2}", addGold, addDia, "ibqpxu"));
+		
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "SelectFullChaosRevert",
+			FunctionParameter = new { Go = addGold, Di = addDia, CrcyCs = checkSum2, Lst = listItemGrantRequest, LstCs = checkSum },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
+			jsonResult.TryGetValue("retErr", out object retErr);
+			bool failure = ((retErr.ToString()) == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+				CurrencyData.instance.gold += addGold;
+				CurrencyData.instance.dia += addDia;
+				PlayerData.instance.purifyCount = 0;
+				jsonResult.TryGetValue("itmRet", out object itmRet);
+				if ((string)itmRet != "")
+					TimeSpaceData.instance.OnRecvItemGrantResult((string)itmRet, false);
+				if (successCallback != null) successCallback.Invoke((string)itmRet);
 			}
 		}, (error) =>
 		{

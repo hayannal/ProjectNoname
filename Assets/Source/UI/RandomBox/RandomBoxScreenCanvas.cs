@@ -19,6 +19,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		Gold,
 		Origin_Big,
 		NodeWar,
+		Revert,
 	}
 
 	public GameObject[] boxPrefabList;

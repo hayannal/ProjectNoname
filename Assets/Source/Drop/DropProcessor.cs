@@ -468,7 +468,9 @@ public class DropProcessor : MonoBehaviour
 			case eDropType.Ultimate:
 				break;
 			case eDropType.Diamond:
-				int splitCount = Random.Range(1, 3);
+				int splitCount = Random.Range(3, 5);
+				if (intValue < 3) splitCount = intValue;
+				else if (intValue <= 10) splitCount = 3;
 				if (_adjustDropDelay >= 0.1f) splitCount = Random.Range(5, 10);
 				else if (_adjustDropDelay > 0.0f) splitCount = Random.Range(12, 20);
 				int quotient = intValue / splitCount;

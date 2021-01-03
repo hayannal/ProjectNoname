@@ -43,6 +43,11 @@ public class FullscreenYesNoCanvas : MonoBehaviour
 		_needRootCanvasGroupZeroAlpha = true;
 	}
 
+	void OnDisable()
+	{
+		_needCheckRootCanvasGroupAlpha = false;
+	}
+
 	public void ShowCanvas(bool show, string title, string message, System.Action yesAction, System.Action noAction = null)
 	{
 		gameObject.SetActive(show);

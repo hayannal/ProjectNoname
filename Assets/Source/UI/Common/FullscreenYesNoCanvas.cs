@@ -39,6 +39,8 @@ public class FullscreenYesNoCanvas : MonoBehaviour
 	void OnEnable()
 	{
 		animator.Play("Modal Dialog In");
+		rootCanvasGroup.alpha = 0.0f;
+		_needRootCanvasGroupZeroAlpha = true;
 	}
 
 	public void ShowCanvas(bool show, string title, string message, System.Action yesAction, System.Action noAction = null)
@@ -79,6 +81,20 @@ public class FullscreenYesNoCanvas : MonoBehaviour
 		{
 			_needCheckRootCanvasGroupAlpha = false;
 			gameObject.SetActive(false);
+		}
+	}
+
+	// 게이트 필라 칠때 나오게 되어있는데
+	// 이게 OnCollisionEnter도 있고 MecanimEventBase.OnStateUpdate도 있고 캐싱이냐 최초 생성이냐에 따라 다른 결과가 나온다.
+	// 모든 상황에서 animator 자동으로 실행될때 alpha값을 0에서부터 시작하려면
+	// 렌더링 하기 직전 LateUpdate에서 alpha를 재설정 하는게 제일 안전해서 이렇게 예외처리 하기로 한다.
+	bool _needRootCanvasGroupZeroAlpha = false;
+	private void LateUpdate()
+	{
+		if (_needRootCanvasGroupZeroAlpha)
+		{
+			rootCanvasGroup.alpha = 0.0f;
+			_needRootCanvasGroupZeroAlpha = false;
 		}
 	}
 }

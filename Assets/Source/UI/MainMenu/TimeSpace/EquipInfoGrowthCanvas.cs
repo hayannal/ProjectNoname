@@ -223,6 +223,24 @@ public class EquipInfoGrowthCanvas : MonoBehaviour
 							continue;
 						if (_equipData.uniqueId == listEquipData[j].uniqueId)
 							continue;
+						switch ((TimeSpaceData.eEquipSlotType)_equipData.cachedEquipTableData.equipType)
+						{
+							case TimeSpaceData.eEquipSlotType.Gun:
+							case TimeSpaceData.eEquipSlotType.Shield:
+							case TimeSpaceData.eEquipSlotType.TwoHanded:
+								if (_equipData.cachedEquipTableData.equipType != listEquipData[j].cachedEquipTableData.equipType)
+									continue;
+								break;
+							default:
+								switch ((TimeSpaceData.eEquipSlotType)listEquipData[j].cachedEquipTableData.equipType)
+								{
+									case TimeSpaceData.eEquipSlotType.Gun:
+									case TimeSpaceData.eEquipSlotType.Shield:
+									case TimeSpaceData.eEquipSlotType.TwoHanded:
+										continue;
+								}
+								break;
+						}
 						_listCurrentEquipData.Add(listEquipData[j]);
 					}
 				}
@@ -293,7 +311,19 @@ public class EquipInfoGrowthCanvas : MonoBehaviour
 		{
 			switch (gridType)
 			{
-				case eGrowthGridType.Enhance: emptyText.SetLocalizedText(UIString.instance.GetString("EquipUI_NoMaterialForEnhance")); break;
+				case eGrowthGridType.Enhance:
+					switch ((TimeSpaceData.eEquipSlotType)_equipData.cachedEquipTableData.equipType)
+					{
+						case TimeSpaceData.eEquipSlotType.Gun:
+						case TimeSpaceData.eEquipSlotType.Shield:
+						case TimeSpaceData.eEquipSlotType.TwoHanded:
+							emptyText.SetLocalizedText(UIString.instance.GetString("EquipUI_NoMaterialForEnhanceSuperior"));
+							break;
+						default:
+							emptyText.SetLocalizedText(UIString.instance.GetString("EquipUI_NoMaterialForEnhance"));
+							break;
+					}
+					break;
 				case eGrowthGridType.Transfer: emptyText.SetLocalizedText(UIString.instance.GetString("EquipUI_NoMaterialForTransfer")); break;
 				case eGrowthGridType.Transmute: emptyText.SetLocalizedText(UIString.instance.GetString("EquipUI_NoMaterialForTransmute")); break;
 				case eGrowthGridType.Amplify: emptyText.SetLocalizedText(UIString.instance.GetString(amplifyMain ? "EquipUI_NoMaterialForAmplifyMain" : "EquipUI_NoMaterialForAmplifyRandom")); break;

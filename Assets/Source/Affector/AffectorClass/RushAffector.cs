@@ -120,7 +120,7 @@ public class RushAffector : AffectorBase
 		if (_agentTypeID == -1) _agentTypeID = MeLookAt.GetAgentTypeID(_actor);
 		while (true)
 		{
-			randomPosition = _actor.cachedTransform.position + _actor.cachedTransform.forward * Random.Range(0.0f, 10.0f);
+			randomPosition = _actor.cachedTransform.position + _actor.cachedTransform.forward * Random.Range(_affectorValueLevelTableData.fValue2, 10.0f);
 			
 			// AI쪽 코드에서 가져와본다.
 			randomPosition.y = 0.0f;

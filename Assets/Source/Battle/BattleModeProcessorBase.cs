@@ -209,9 +209,19 @@ public class BattleModeProcessorBase
 		// 파워소스는 파워소스쪽에서 캐싱된 정보 읽어서 처리한다.
 
 		// 남은건 획득 아이템 리스트다.
+		int legendItemCount = 0;
 		List<string> listDropItemId = ClientSaveData.instance.GetCachedDropItemList();
 		for (int i = 0; i < listDropItemId.Count; ++i)
+		{
 			DropManager.instance.AddDropItem(listDropItemId[i]);
+			EquipTableData equipTableData = TableDataManager.instance.FindEquipTableData(listDropItemId[i]);
+			if (equipTableData == null)
+				continue;
+			if (EquipData.IsUseLegendKey(equipTableData))
+				++legendItemCount;
+		}
+		DropManager.instance.droppedStageItemCount = listDropItemId.Count;
+		DropManager.instance.droppedLengendItemCount = legendItemCount;
 
 		// 골드와 인장은 마지막 축적된 값을 기억해놨다가 가져오면 된다. 위의 템과 달리 중요도가 낮아서 DropObject의 획득 시점에 기록하는거로 되어있다.
 		float dropGold = ClientSaveData.instance.GetCachedDropGold();

@@ -104,7 +104,7 @@ inline fixed SelectFlowChannel(fixed3 mask)
 	o.Normal = UnpackNormal(tex2D(_NormalMap, IN.uv_MainTex));
 
 #define NG_FLOW_UV	\
-	o.flowUV = TRANSFORM_TEX(v.texcoord, _FlowTex) + _FlowSpeed.xy * _Time.y;
+	o.flowUV = TRANSFORM_TEX(v.texcoord, _FlowTex) + fmod(_FlowSpeed.xy * _Time.y, 1.0f);
 
 #define NG_FLOW(flowMask)	\
 	fixed3 flow = tex2D(_FlowTex, IN.flowUV).rgb * _FlowPower;	\

@@ -353,6 +353,8 @@ public sealed class LocalPlayerController : BaseCharacterController
 		bool movable = true;
 		if (actor.actionController.mecanimState.IsState((int)eMecanimState.Ultimate))
 			movable = false;
+		if (actor.affectorProcessor.IsContinuousAffectorType(eAffectorType.CannotAction))
+			movable = false;
 		if (movable == false)
 		{
 			moveDirection = Vector3.zero;

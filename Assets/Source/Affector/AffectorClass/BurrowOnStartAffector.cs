@@ -8,7 +8,6 @@ using MecanimStateDefine;
 public class BurrowOnStartAffector : AffectorBase
 {
 	bool _standby = false;
-	bool _standbyChangeCollider = false;
 	AffectorValueLevelTableData _affectorValueLevelTableData;
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
@@ -31,45 +30,30 @@ public class BurrowOnStartAffector : AffectorBase
 		_standby = true;
 	}
 
-	public override void UpdateAffector()
-	{
-		UpdateAttack();
-	}
-
-	// 기존 BurrowAffector와 달리 AI가 돌면서 공격타임때 버로우를 풀고 나와서 공격하는 형태다. 나오거나 들어가는 도중에는 DisableActorCollider 상태다.
-	void UpdateAttack()
+	public override void SendInfo(string arg)
 	{
 		if (_actor.actorStatus.IsDie())
 			return;
 
-		// 대기중인 상태에서 AI가 돌면 공격으로 진행될거다. 이때 공격으로 전환되는걸 기다렸다가
-		if (_standby)
+		if (arg == "burrowOff")
 		{
-			if (_standbyChangeCollider && _actor.GetCollider().enabled == true)
+			if (_standby)
 			{
 				// 이때가 다 올라온 시점일거다.
 				_actor.actionController.cachedAnimatorTransform.localPosition = Vector3.zero;
 				_actor.cachedTransform.position = new Vector3(_actor.cachedTransform.position.x, 0.0f, _actor.cachedTransform.position.z);
 				_standby = false;
-				_standbyChangeCollider = false;
 			}
-
-			if (_actor.actionController.mecanimState.IsState((int)eMecanimState.Attack))
-				_standbyChangeCollider = true;
 		}
-		else
+		else if (arg == "burrowOn")
 		{
-			if (_actor.actionController.mecanimState.IsState((int)eMecanimState.Attack) == false)
-			{
-				// 이때가 다 내려간 시점일거다.
-				// 사실 정확히 처리하려면 DisableActorCollider 발동되는 시점에 내려야하는데
-				// 어차피 안내려도 컬리더가 꺼있어서 타격이 들어가지 않아서 상관없긴 하다. 우선 이렇게 해본다.
-				// 이래야 standby 구분도 명확하게 내려와있을땐 standby true 나머지 상황에선 false로 된다.
-				_actor.actionController.cachedAnimatorTransform.localPosition = new Vector3(0.0f, -BurrowAffector.s_BurrowPositionY, 0.0f);
-				_actor.cachedTransform.position = new Vector3(_actor.cachedTransform.position.x, BurrowAffector.s_BurrowPositionY, _actor.cachedTransform.position.z);
-				_standby = true;
-				_standbyChangeCollider = false;
-			}
+			// 이때가 다 내려간 시점일거다.
+			// 사실 정확히 처리하려면 DisableActorCollider 발동되는 시점에 내려야하는데
+			// 어차피 안내려도 컬리더가 꺼있어서 타격이 들어가지 않아서 상관없긴 하다. 우선 이렇게 해본다.
+			// 이래야 standby 구분도 명확하게 내려와있을땐 standby true 나머지 상황에선 false로 된다.
+			_actor.actionController.cachedAnimatorTransform.localPosition = new Vector3(0.0f, -BurrowAffector.s_BurrowPositionY, 0.0f);
+			_actor.cachedTransform.position = new Vector3(_actor.cachedTransform.position.x, BurrowAffector.s_BurrowPositionY, _actor.cachedTransform.position.z);
+			_standby = true;
 		}
 	}
 

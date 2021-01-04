@@ -1,19 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-8383627107893544859
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b304bedb50f7e3b4c8c8bed4d2d10f92, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTime: 0.35
-  EndTime: 1
 --- !u!114 &-7934483339405519081
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -123,6 +109,22 @@ MonoBehaviour:
   StartTime: 0.2
   EndTime: 1
   enable: 0
+--- !u!114 &-4182307943618723195
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a6b0c07dd424c3439221fee24c5b563, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.68
+  EndTime: 1
+  affectorType: 76
+  sendInfo: burrowOff
 --- !u!114 &-3884742660079981101
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -141,6 +143,7 @@ MonoBehaviour:
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 543431697849790876, guid: cc80c56f1d4401c499efa0abb9b1eb77,
     type: 3}
   lifeTime: 5
@@ -167,6 +170,7 @@ MonoBehaviour:
   areaAngle: 0
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
+  checkTargetForward: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -255,7 +259,7 @@ AnimatorState:
   - {fileID: -194806666226842339}
   m_StateMachineBehaviours:
   - {fileID: -7934483339405519081}
-  - {fileID: 4720312216024799436}
+  - {fileID: -4182307943618723195}
   - {fileID: -4260223322191774763}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -367,7 +371,7 @@ AnimatorState:
   m_Transitions: []
   m_StateMachineBehaviours:
   - {fileID: 8502698631452757910}
-  - {fileID: -8383627107893544859}
+  - {fileID: 382864353682554227}
   - {fileID: -5198315870090592747}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -433,6 +437,22 @@ AnimatorController:
     m_IKPass: 0
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
+--- !u!114 &382864353682554227
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a6b0c07dd424c3439221fee24c5b563, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.35
+  EndTime: 1
+  affectorType: 76
+  sendInfo: burrowOn
 --- !u!1101 &705404166352664322
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -474,22 +494,9 @@ MonoBehaviour:
   lootAtTargetOffsetAngle: 0
   lookAtRandom: 0
   desireDistance: 5
+  minimumDistance: 0
   lerpPower: 20
   boneName: Turret_v1_tower
---- !u!114 &4720312216024799436
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b304bedb50f7e3b4c8c8bed4d2d10f92, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTime: 0
-  EndTime: 0.68
 --- !u!114 &5488554311197839853
 MonoBehaviour:
   m_ObjectHideFlags: 1

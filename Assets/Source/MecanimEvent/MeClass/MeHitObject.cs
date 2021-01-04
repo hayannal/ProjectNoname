@@ -45,6 +45,7 @@ public class MeHitObject : MecanimEventBase {
 	public float areaAngle;
 	public bool checkRaycastWallInArea;
 	public bool applyCollisionDamageInterval;
+	public bool checkTargetForward;
 
 	public int repeatCount;
 	public float repeatInterval;
@@ -213,6 +214,7 @@ public class MeHitObject : MecanimEventBase {
 			areaAngle = EditorGUILayout.FloatField("Area Angle :", areaAngle);
 			checkRaycastWallInArea = EditorGUILayout.Toggle("Check Wall :", checkRaycastWallInArea);
 			applyCollisionDamageInterval = EditorGUILayout.Toggle("Apply Collision Interval :", applyCollisionDamageInterval);
+			checkTargetForward = EditorGUILayout.Toggle("Check Target Forward :", checkTargetForward);
 		}
 
 		EditorGUILayout.LabelField("-----------------------------------------------------------------");

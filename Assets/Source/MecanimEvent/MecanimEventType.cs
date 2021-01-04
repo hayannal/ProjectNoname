@@ -10,6 +10,7 @@ public enum eMecanimEventType
 	TimeScale,
 	Destroy,
 	ApplyAffector,
+	SendInfoToAffector,
 	AnimatorSpeed,
 	AnimatorParameter,
 	HitObject,

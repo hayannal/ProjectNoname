@@ -63,6 +63,10 @@ public class AffectorBase
 	{
 	}
 
+	public virtual void SendInfo(string arg)
+	{
+	}
+
 
 
 

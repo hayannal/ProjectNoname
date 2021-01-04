@@ -741,7 +741,7 @@ public class HitObject : MonoBehaviour
 			if (meHit.checkRaycastWallInArea)
 			{
 				Vector3 attackerPosition = areaPosition;
-				Vector3 attackerForward = areaForward;
+				Vector3 attackerForward = forward;
 				float length = diff.magnitude;
 				Actor attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(statusForHitObject.actorInstanceId);
 				if (attackerActor != null)

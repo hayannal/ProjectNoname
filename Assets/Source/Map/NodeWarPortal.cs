@@ -190,6 +190,8 @@ public class NodeWarPortal : MonoBehaviour
 			return;
 		if (RandomBoxScreenCanvas.instance != null && RandomBoxScreenCanvas.instance.gameObject.activeSelf)
 			return;
+		if (StackCanvas.IsStacked())
+			return;
 
 		if (PlayerData.instance.nodeWarCleared)
 			return;

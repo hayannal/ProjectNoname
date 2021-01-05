@@ -758,14 +758,6 @@ public class HitObject : MonoBehaviour
 					continue;
 			}
 
-			// check target forward
-			if (meHit.checkTargetForward)
-			{
-				// area 중심부를 바라보고 있어야 히트 적용
-				if (Vector3.Dot(forward, BattleInstanceManager.instance.GetTransformFromCollider(col).forward) > 0.0f)
-					continue;
-			}
-
 			bool ignoreAffectorProcessor = false;
 
 			// one Hit Per Target

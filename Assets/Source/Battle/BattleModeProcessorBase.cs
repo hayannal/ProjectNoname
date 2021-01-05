@@ -59,6 +59,7 @@ public class BattleModeProcessorBase
 		}
 
 		RailMonster.OnPreInstantiateMap();
+		PositionFlag.OnPreInstantiateMap();
 		BattleInstanceManager.instance.FinalizeAllPositionBuffAffector(true);
 		BattleInstanceManager.instance.DisableAllHitObjectMoving();
 		BattleInstanceManager.instance.FinalizeAllHitObject();

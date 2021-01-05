@@ -25,6 +25,12 @@ public class CannotActionAffector : AffectorBase
 			return;
 		}
 
+		if (PositionFlag.IsInRange(_affectorProcessor, "ignoreCannotAction"))
+		{
+			finalized = true;
+			return;
+		}
+
 		// lifeTime
 		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
 

@@ -38,12 +38,27 @@ AnimatorStateTransition:
   serializedVersion: 3
   m_TransitionDuration: 0.25
   m_TransitionOffset: 0
-  m_ExitTime: 0.7
+  m_ExitTime: 0.75
   m_HasExitTime: 1
   m_HasFixedDuration: 0
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!114 &-8340945860909754297
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2e6805f699075e4eae576dc1aabd338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0
+  EndTime: 0.5
+  speed: 0.75
 --- !u!114 &-7957452471757106178
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -89,6 +104,7 @@ MonoBehaviour:
   areaAngle: 0
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
+  checkTargetForward: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -280,6 +296,7 @@ MonoBehaviour:
   areaAngle: 0
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
+  checkTargetForward: 0
   repeatCount: 8
   repeatInterval: 0.1
   movementType: 1
@@ -523,22 +540,6 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
---- !u!114 &-3347376884503431017
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60fa1780ac802fb41a5e009957e39ff3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTime: 0.5
-  EndTime: 1
-  attackDelay: 0.1
-  overrideRate: 0.5
 --- !u!114 &-2713240626521158841
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -605,7 +606,6 @@ AnimatorState:
   - {fileID: 5462048518988655332}
   - {fileID: 3184788572995209397}
   - {fileID: -5068864117925173696}
-  - {fileID: -3347376884503431017}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -760,6 +760,7 @@ AnimatorState:
   - {fileID: -7554717853433771939}
   - {fileID: 5887004815655071142}
   - {fileID: 8216856221321356973}
+  - {fileID: -8340945860909754297}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -898,7 +899,7 @@ MonoBehaviour:
     existWallParameter: 0
     actionCountLimit: 0
   - stateName: Base Layer.AttackGroup.CastAttack3
-    weight: 1.3
+    weight: 1
     useDistance1: 0
     distanceCompareType1: 0
     distanceParameter1: 0
@@ -994,6 +995,7 @@ MonoBehaviour:
   areaAngle: 0
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
+  checkTargetForward: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -1164,6 +1166,7 @@ MonoBehaviour:
   areaAngle: 0
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
+  checkTargetForward: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -1349,6 +1352,7 @@ MonoBehaviour:
   areaAngle: 0
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
+  checkTargetForward: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -1524,6 +1528,7 @@ MonoBehaviour:
   areaAngle: 0
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
+  checkTargetForward: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0

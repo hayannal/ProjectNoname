@@ -79,15 +79,6 @@ public class HitObjectMovement : MonoBehaviour {
 			_tweenReferenceForSpeedChange = DOTween.To(() => _speed, x => _speed = x, targetSpeed, _signal.speedChangeTime).SetEase(_signal.speedChangeEase);
 		}
 
-		if (_signal.useCurveChange)
-		{
-			_remainCurveStartDelayTime = 0.0f;
-			if (_signal.curveStartDelayTime == 0.0f)
-				ApplyCurveChangeTween();
-			else
-				_remainCurveStartDelayTime = _signal.curveStartDelayTime;
-		}
-
 		switch(_signal.movementType)
 		{
 			case eMovementType.FollowTarget:
@@ -113,6 +104,18 @@ public class HitObjectMovement : MonoBehaviour {
 				_rigidbody.velocity = cachedTransform.forward * _speed;
 				_forward = cachedTransform.forward;
 				_ignoreFollow = false;
+
+				if (_signal.useCurveChange)
+				{
+					if (_tweenReferenceForCurveChange != null)
+						_tweenReferenceForCurveChange.Kill();
+
+					_remainCurveStartDelayTime = 0.0f;
+					if (_signal.curveStartDelayTime == 0.0f)
+						ApplyCurveChangeTween();
+					else
+						_remainCurveStartDelayTime = _signal.curveStartDelayTime;
+				}
 				break;
 			case eMovementType.Direct:
 			case eMovementType.Turn:
@@ -367,8 +370,6 @@ public class HitObjectMovement : MonoBehaviour {
 	TweenerCore<float, float, FloatOptions> _tweenReferenceForCurveChange;
 	void ApplyCurveChangeTween()
 	{
-		if (_tweenReferenceForCurveChange != null)
-			_tweenReferenceForCurveChange.Kill();
 		_tweenReferenceForCurveChange = DOTween.To(() => _currentCurve, x => _currentCurve = x, _signal.targetCurve, _signal.curveChangeTime).SetEase(_signal.curveChangeEase);
 	}
 

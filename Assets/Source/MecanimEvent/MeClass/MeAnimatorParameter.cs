@@ -16,6 +16,8 @@ public class MeAnimatorParameter : MecanimEventBase
 	public bool bValue;
 	public bool triggerValue;
 
+	public bool useRandombValue;
+
 #if UNITY_EDITOR
 	override public void OnGUI_PropertyWindow()
 	{
@@ -31,6 +33,7 @@ public class MeAnimatorParameter : MecanimEventBase
 				break;
 			case AnimatorControllerParameterType.Bool:
 				bValue = EditorGUILayout.Toggle("Value", bValue);
+				useRandombValue = EditorGUILayout.Toggle("Use Random", useRandombValue);
 				break;
 			case AnimatorControllerParameterType.Trigger:
 				triggerValue = EditorGUILayout.Toggle("Value", triggerValue);
@@ -54,6 +57,8 @@ public class MeAnimatorParameter : MecanimEventBase
 				animator.SetInteger(_hash, iValue);
 				break;
 			case AnimatorControllerParameterType.Bool:
+				if (useRandombValue)
+					bValue = (Random.value > 0.5f) ? true : false;
 				animator.SetBool(_hash, bValue);
 				break;
 			case AnimatorControllerParameterType.Trigger:

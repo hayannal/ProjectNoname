@@ -70,7 +70,11 @@ public class SettingCanvas : MonoBehaviour
 	void OnDisable()
 	{
 		if (LobbyCanvas.instance != null)
-			LobbyCanvas.instance.lobbyOptionButton.gameObject.SetActive(true);
+		{
+			bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
+			if (lobby)
+				LobbyCanvas.instance.lobbyOptionButton.gameObject.SetActive(true);
+		}
 	}
 
 	public void OnClickHomeButton()

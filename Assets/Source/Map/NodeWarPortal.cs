@@ -267,6 +267,8 @@ public class NodeWarPortal : MonoBehaviour
 	{
 		if (_processing)
 			yield break;
+		if (GatePillar.instance != null && GatePillar.instance.gameObject.activeSelf && GatePillar.instance.processing)
+			yield break;
 
 		_processing = true;
 

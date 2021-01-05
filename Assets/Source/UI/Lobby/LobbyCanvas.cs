@@ -137,15 +137,15 @@ public class LobbyCanvas : MonoBehaviour
 			return;
 		}
 
+		if (NodeWarPortal.instance != null && NodeWarPortal.instance.enteredPortal)
+			return;
+
 		if (DotMainMenuCanvas.instance != null)
 		{
 			DotMainMenuCanvas.instance.targetTransform = BattleInstanceManager.instance.playerActor.cachedTransform;
 			DotMainMenuCanvas.instance.ToggleShow();
 			return;
 		}
-
-		if (NodeWarPortal.instance != null && NodeWarPortal.instance.enteredPortal)
-			return;
 
 		UIInstanceManager.instance.ShowCanvasAsync("DotMainMenuCanvas", () => {
 

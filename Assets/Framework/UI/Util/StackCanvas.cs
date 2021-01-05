@@ -51,6 +51,13 @@ public class StackCanvas : MonoBehaviour
 		return _instance.InternalIsInStack(canvasObject, exceptFirst);
 	}
 
+	public static bool IsStacked()
+	{
+		if (_instance == null)
+			return false;
+		return _instance.InternalIsStacked();
+	}
+
 	// 스택구조는 크게 둘로 나뉜다.
 	// 현재창이 보이면서 그 위에 새로운 창이 쌓이는 구조. 혹은 현재창은 숨겨놓고 새창이 뜨는 구조.
 	// 전자는 사실 이 구조를 안써도 되는데 써야되는 순간이 있다. 바로 DotMainMenu처럼 맨 위에 뜰때만 환경을 어둡게 처리하는 경우다.
@@ -210,5 +217,10 @@ public class StackCanvas : MonoBehaviour
 			++index;
 		}
 		return find;
+	}
+
+	public bool InternalIsStacked()
+	{
+		return _stackCanvas.Count > 0;
 	}
 }

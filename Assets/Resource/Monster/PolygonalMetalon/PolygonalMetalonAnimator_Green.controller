@@ -45,6 +45,7 @@ MonoBehaviour:
   areaAngle: 0
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
+  checkTargetForward: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -180,6 +181,28 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!114 &-7740189758608240588
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8516055b55eb644780db6f97bb409f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0
+  EndTime: 0.35
+  lookAtTarget: 1
+  leftRightRandomAngle: 0
+  lootAtTargetOffsetAngle: 0
+  lookAtRandom: 0
+  desireDistance: 5
+  minimumDistance: 0
+  lerpPower: 5
+  boneName: 
 --- !u!114 &-7636384304562826638
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -225,6 +248,7 @@ MonoBehaviour:
   areaAngle: 0
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
+  checkTargetForward: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -529,7 +553,7 @@ MonoBehaviour:
     existTargetActorStateParameter: 0
     useMonsterCount: 1
     monsterCountCompareType: 3
-    monsterCountParameter: 2
+    monsterCountParameter: 3
     useCheckWall: 0
     existWallParameter: 0
     actionCountLimit: 0
@@ -555,7 +579,7 @@ MonoBehaviour:
     existTargetActorStateParameter: 0
     useMonsterCount: 1
     monsterCountCompareType: 3
-    monsterCountParameter: 2
+    monsterCountParameter: 3
     useCheckWall: 0
     existWallParameter: 0
     actionCountLimit: 0
@@ -669,6 +693,7 @@ MonoBehaviour:
   areaAngle: 0
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
+  checkTargetForward: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -800,11 +825,12 @@ AnimatorState:
   m_StateMachineBehaviours:
   - {fileID: 6021597073333362820}
   - {fileID: 3131219399166307214}
+  - {fileID: -7740189758608240588}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
   m_Mirror: 0
-  m_SpeedParameterActive: 1
+  m_SpeedParameterActive: 0
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
@@ -890,10 +916,11 @@ MonoBehaviour:
   areaAngle: 0
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
-  repeatCount: 0
-  repeatInterval: 0
+  checkTargetForward: 0
+  repeatCount: 1
+  repeatInterval: 0.3
   movementType: 0
-  startDirectionType: 2
+  startDirectionType: 0
   startDirection: {x: 0, y: 0, z: 1}
   howitzerType: 0
   useWorldSpaceDirection: 0
@@ -928,13 +955,12 @@ MonoBehaviour:
   parallelCount: 0
   parallelDistance: 0
   ignoreMainHitObjectByParallel: 0
-  circularSectorCount: 0
-  circularSectorBetweenAngle: 0
+  circularSectorCount: 2
+  circularSectorBetweenAngle: 15
   circularSectorUseWorldSpace: 0
   circularSectorWorldSpaceCenterAngleY: 0
-  ignoreMainHitObjectByCircularSector: 0
-  continuousHitObjectGeneratorBaseList:
-  - {fileID: 5824825149802700135, guid: d788afab0f11c6045819ef6080557868, type: 3}
+  ignoreMainHitObjectByCircularSector: 1
+  continuousHitObjectGeneratorBaseList: []
   contactAll: 0
   monsterThroughCount: 0
   wallThrough: 0
@@ -1224,12 +1250,13 @@ MonoBehaviour:
   useAreaRotationYChange: 0
   targetAreaRotationY: 0
   areaDistanceMin: 0
-  areaDistanceMax: 3.1
+  areaDistanceMax: 2.9
   areaHeightMin: 0
   areaHeightMax: 2
-  areaAngle: 25
+  areaAngle: 15
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
+  checkTargetForward: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -1293,7 +1320,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttackMelee2.0
+  - NormalAttackMelee1.25
   showHitEffect: 0
   hitEffectObject: {fileID: 0}
   hitEffectLookAtNormal: 0
@@ -1403,6 +1430,7 @@ MonoBehaviour:
   areaAngle: 0
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
+  checkTargetForward: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -1719,6 +1747,7 @@ MonoBehaviour:
   areaAngle: 0
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
+  checkTargetForward: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0

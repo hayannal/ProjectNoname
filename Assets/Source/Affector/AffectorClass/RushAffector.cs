@@ -11,6 +11,7 @@ public class RushAffector : AffectorBase
 		TargetPosition,
 		RandomPosition,
 		TargetWithDistance,	// 0을 기본베이스로 일정거리 달리면 끝나는 형태다.
+		WorldPosition,
 	}
 
 	float _endTime;
@@ -72,6 +73,18 @@ public class RushAffector : AffectorBase
 			case eRushType.TargetWithDistance:
 				diff = _targetPosition - _actor.cachedTransform.position;
 				break;
+			case eRushType.WorldPosition:
+				float[] valueList = BattleInstanceManager.instance.GetCachedMultiHitDamageRatioList(_affectorValueLevelTableData.sValue3);
+				if (valueList.Length == 2)
+				{
+					_targetPosition.x = valueList[0];
+					_targetPosition.z = valueList[1];
+				}
+				diff = _targetPosition - _actor.cachedTransform.position;
+
+				// 웓드포지션은 LookAt 시그널에서 처리하기 어려우니 어펙터 안에서 처리해준다.
+				_actor.baseCharacterController.movement.rotation = Quaternion.LookRotation(diff);
+				break;
 		}
 
 		_actorRadius = ColliderUtil.GetRadius(_actor.GetCollider());
@@ -83,6 +96,7 @@ public class RushAffector : AffectorBase
 			case eRushType.TargetPosition:
 			case eRushType.RandomPosition:
 			case eRushType.TargetWithDistance:
+			case eRushType.WorldPosition:
 				float rushDistance = diff.magnitude;
 				rushDistance += _affectorValueLevelTableData.fValue3;
 				if (rushDistance < 0.0f)

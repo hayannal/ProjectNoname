@@ -337,6 +337,7 @@ public class EquipListCanvas : EquipShowCanvasBase
 		// 신규 장비를 장착하면 탭에 있던 new표시도 리프레쉬
 		equipData.newEquip = false;
 		equipTypeButtonList[positionIndex].RefreshAlarmObject();
+		equipTypeButtonList[positionIndex].RefreshEquipGrade();
 	}
 
 	public void OnUnequip(EquipData equipData)
@@ -351,6 +352,9 @@ public class EquipListCanvas : EquipShowCanvasBase
 		// 밖에 있는 시공간 제단을 업데이트 해줘야한다.
 		int positionIndex = equipData.cachedEquipTableData.equipType;
 		TimeSpaceGround.instance.timeSpaceAltarList[positionIndex].RefreshEquipObject();
+
+		// 장비 해제하면 equipTypeButton에도 알려야한다.
+		equipTypeButtonList[positionIndex].RefreshEquipGrade();
 	}
 
 	

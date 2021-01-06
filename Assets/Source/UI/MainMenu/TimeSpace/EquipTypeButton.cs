@@ -9,12 +9,41 @@ public class EquipTypeButton : MonoBehaviour
 	public RectTransform contentRectTransform;
 	public Image backgroundImage;
 	public int positionIndex;
+	public Image equipGradeImage;
 	public RectTransform alarmRootTransform;
 
 	void OnEnable()
 	{
+		RefreshEquipGrade();
+
 		// 9탭이 보이는 상황에서 아이템이 갑자기 사라지는 일은 장착이나 해제니 그때만 예외처리 해주면 된다.
 		RefreshAlarmObject();
+	}
+
+	public static Color GetGradeBarColor(int grade)
+	{
+		switch (grade)
+		{
+			case 0: return new Color(0.792f, 0.792f, 0.792f);
+			case 1: return new Color(0.266f, 0.776f, 0.266f);
+			case 2: return new Color(0.18f, 0.678f, 0.98f);
+			case 3: return new Color(0.7f, 0.2f, 1.0f);
+			case 4: return new Color(0.9f, 0.592f, 0.192f);
+		}
+		return Color.white;
+	}
+
+	public void RefreshEquipGrade()
+	{
+		EquipData equipData = TimeSpaceData.instance.GetEquippedDataByType((TimeSpaceData.eEquipSlotType)positionIndex);
+		if (equipData == null)
+		{
+			equipGradeImage.gameObject.SetActive(false);
+			return;
+		}
+
+		equipGradeImage.color = GetGradeBarColor(equipData.cachedEquipTableData.grade);
+		equipGradeImage.gameObject.SetActive(true);
 	}
 
 	public bool selected { get; set; }

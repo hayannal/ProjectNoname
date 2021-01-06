@@ -7,6 +7,7 @@ public class Trap : MonoBehaviour
 {
 	public float multiAtk;
 	public float hitStayInterval;
+	public bool damageIncludingFlying;
 	public int hitStayIdForIgnoreDuplicate = 99;
 	//public string[] affectorValueIdList;
 	const int _tempActorInstanceId = 99;
@@ -37,7 +38,7 @@ public class Trap : MonoBehaviour
 		PlayerActor playerActor = affectorProcessor.actor as PlayerActor;
 		if (playerActor == null)
 			return;
-		if (playerActor.flying)
+		if (damageIncludingFlying == false && playerActor.flying)
 			return;
 
 		// check Levitation Character

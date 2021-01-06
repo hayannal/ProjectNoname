@@ -28,5 +28,6 @@ public enum eMecanimEventType
 	ChangeMecanimState,
 	SubAnimator,
 	ContinuousAttack,
+	Flash,
 }
 #endregion

@@ -36,6 +36,7 @@ public static class MecanimEventCustomCreator
 		case eMecanimEventType.ChangeMecanimState: eventBase = targetState.AddStateMachineBehaviour<MeChangeMecanimState>(); break;
 		case eMecanimEventType.SubAnimator: eventBase = targetState.AddStateMachineBehaviour<MeSubAnimator>(); break;
 		case eMecanimEventType.ContinuousAttack: eventBase = targetState.AddStateMachineBehaviour<MeContinuousAttack>(); break;
+		case eMecanimEventType.Flash: eventBase = targetState.AddStateMachineBehaviour<MeFlash>(); break;
 #endregion
 		}
 		return eventBase;
@@ -68,6 +69,7 @@ public static class MecanimEventCustomCreator
 		if (eventBase is MeChangeMecanimState) return eMecanimEventType.ChangeMecanimState;
 		if (eventBase is MeSubAnimator) return eMecanimEventType.SubAnimator;
 		if (eventBase is MeContinuousAttack) return eMecanimEventType.ContinuousAttack;
+		if (eventBase is MeFlash) return eMecanimEventType.Flash;
 		return eMecanimEventType.State;
 #endregion
 	}

@@ -201,7 +201,11 @@ public class SequentialMonster : MonoBehaviour
 
 		float sumHp = 0.0f;
 		for (int i = 0; i < _listAliveMonsterActor.Count; ++i)
+		{
+			if (_listAliveMonsterActor[i].bossMonster == false)
+				continue;
 			sumHp += _listAliveMonsterActor[i].actorStatus.GetHP();
+		}
 		sumHp += (totalCount - _createdInstanceCount) * _sumBossHpPerSpawnSequence;
 		return sumHp;
 	}

@@ -161,27 +161,22 @@ public class DailyShopListItem : MonoBehaviour
 				cachedActorId = DailyShopData.instance.GetUnfixedResult(dailyShopSlotInfo.slotId);
 				if (cachedActorId == "")
 					break;
-				for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)
-				{
-					if (TableDataManager.instance.actorTable.dataArray[i].grade != 1)
-						continue;
-					if (PlayerData.instance.ContainsActor(TableDataManager.instance.actorTable.dataArray[i].actorId) == false)
-						return true;
-				}
+				if (PlayerData.instance.ContainsActor(cachedActorId) == false)
+					return true;
 				break;
 			case "upn": // unfixed Normal Character PP
 				cachedActorId = DailyShopData.instance.GetUnfixedResult(dailyShopSlotInfo.slotId);
 				if (cachedActorId == "")
 					break;
-				// 캐싱한걸 검사하고 나서 진짜로 인벤에서 뽑을 수 있는지도 확인해야한다. 이래야 오리진에서 뽑아왔을때 못뽑는 것들을 숨길 수 있다.
-				if (PlayerData.instance.ContainsActorByGrade(0))
+				// 캐싱한걸 검사하고 나서 진짜로 인벤에 해당 캐릭터를 소유하고 있는지 확인해본다.
+				if (PlayerData.instance.ContainsActor(cachedActorId))
 					return true;
 				break;
 			case "uph": // unfixed Heroic Character PP
 				cachedActorId = DailyShopData.instance.GetUnfixedResult(dailyShopSlotInfo.slotId);
 				if (cachedActorId == "")
 					break;
-				if (PlayerData.instance.ContainsActorByGrade(1))
+				if (PlayerData.instance.ContainsActor(cachedActorId))
 					return true;
 				break;
 		}

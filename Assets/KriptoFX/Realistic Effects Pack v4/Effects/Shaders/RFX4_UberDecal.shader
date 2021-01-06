@@ -8,6 +8,7 @@ Shader "KriptoFX/RFX4/Decal"
 	[Space]
 	[PerRendererData]	[HDR]_TintColor("Tint Color", Color) = (1,1,1,1)
 		_MainTex("Main Texture", 2D) = "white" {}
+	[Toggle(USE_QUAD_DECAL)] _UseQuadDecal("Use Quad Decal", Int) = 0
 	[Toggle(USE_ALPHA_POW)] _UseAlphaPow("Use Alpha Pow", Int) = 0
 		_AlphaPow("Alpha pow", Float) = 1
 		[Space]

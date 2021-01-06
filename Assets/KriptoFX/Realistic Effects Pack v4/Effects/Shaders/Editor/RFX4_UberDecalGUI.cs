@@ -10,6 +10,7 @@ public class RFX4_UberDecalGUI : ShaderGUI
     {
         var _MainTex = ShaderGUI.FindProperty("_MainTex", properties);
         var _TintColor = ShaderGUI.FindProperty("_TintColor", properties);
+		var _UseQuadDecal = ShaderGUI.FindProperty("_UseQuadDecal", properties);
         var _UseAlphaPow = ShaderGUI.FindProperty("_UseAlphaPow", properties);
         var _AlphaPow = ShaderGUI.FindProperty("_AlphaPow", properties);
         //var _UseLighting = ShaderGUI.FindProperty("_UseLighting", properties);
@@ -46,6 +47,7 @@ public class RFX4_UberDecalGUI : ShaderGUI
 
         m.TextureProperty(_MainTex, _MainTex.displayName);
         m.ColorProperty(_TintColor, _TintColor.displayName);
+		m.ShaderProperty(_UseQuadDecal, _UseQuadDecal.displayName);
         m.ShaderProperty(_UseAlphaPow, _UseAlphaPow.displayName);
         if (Mathf.Abs(_UseAlphaPow.floatValue - 1) < TOLERANCE)
         {

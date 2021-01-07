@@ -62,6 +62,8 @@ public class PlayRandomStateWithCondition : ControlStateBase
 		public Condition.eCompareType monsterCountCompareType;
 		[ConditionalHide("useMonsterCount", true)]
 		public int monsterCountParameter;
+		[ConditionalHide("useMonsterCount", true)]
+		public bool onlySummonMonsterCount;
 		public bool useCheckWall;
 		[ConditionalHide("useCheckWall", true)]
 		public bool existWallParameter;
@@ -165,7 +167,25 @@ public class PlayRandomStateWithCondition : ControlStateBase
 
 			if (randomStateWithConditionInfoList[i].useMonsterCount)
 			{
-				if (Condition.CompareValue(randomStateWithConditionInfoList[i].monsterCountCompareType, BattleManager.instance.GetSpawnedMonsterCount(), randomStateWithConditionInfoList[i].monsterCountParameter) == false)
+				int monsterCount = 0;
+				if (randomStateWithConditionInfoList[i].onlySummonMonsterCount)
+				{
+					List<MonsterActor> listMonsterActor = BattleInstanceManager.instance.GetLiveMonsterList();
+					for (int j = 0; j < listMonsterActor.Count; ++j)
+					{
+						if (listMonsterActor[j].actorStatus.IsDie())
+							continue;
+						if (listMonsterActor[j].team.teamId != (int)Team.eTeamID.DefaultMonster || listMonsterActor[j].excludeMonsterCount)
+							continue;
+						if (listMonsterActor[j].summonMonster == false)
+							continue;
+						++monsterCount;
+					}
+				}
+				else
+					monsterCount = BattleManager.instance.GetSpawnedMonsterCount();
+
+				if (Condition.CompareValue(randomStateWithConditionInfoList[i].monsterCountCompareType, monsterCount, randomStateWithConditionInfoList[i].monsterCountParameter) == false)
 					continue;
 			}
 

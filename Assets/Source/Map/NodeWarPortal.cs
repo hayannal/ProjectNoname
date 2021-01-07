@@ -163,7 +163,14 @@ public class NodeWarPortal : MonoBehaviour
 		}
 
 		if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
+		{
+			// DotMainMenu가 스택 내부에 있는거라면 캐시샵이든 캐릭터창이든 열고있다는 얘기다. 이땐 처리할 필요가 없다.
+			if (StackCanvas.IsInStack(DotMainMenuCanvas.instance.gameObject))
+				return;
+
+			// 그게 아니라 최상위에 있는거라면 자동으로 닫아주면 된다.
 			DotMainMenuCanvas.instance.OnClickBackButton();
+		}
 
 		StartOpen();
 	}

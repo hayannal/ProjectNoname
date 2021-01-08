@@ -121,6 +121,7 @@ public class MonsterAIEditor : ReorderableArrayInspector
 		{
 			t.chaseDistanceRange = EditorGUILayout.Vector2Field("Chase Distance", t.chaseDistanceRange);
 			t.chaseCancelTimeRange = EditorGUILayout.Vector2Field("Cancel Time", t.chaseCancelTimeRange);
+			t.cancelLeadsToAttack = EditorGUILayout.Toggle("Cancel Leads To Attack", t.cancelLeadsToAttack);
 
 			Color defaultColor = GUI.color;
 			GUI.color = (Color.gray - Color.gray * 0.5f);

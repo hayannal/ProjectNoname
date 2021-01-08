@@ -602,6 +602,7 @@ public class MonsterAI : MonoBehaviour
 	#region Chase
 	public Vector2 chaseDistanceRange;
 	public Vector2 chaseCancelTimeRange;
+	public bool cancelLeadsToAttack = false;
 	float _chaseDistance = 0.0f;
 	bool _initChaseCancelTime = false;
 	float _chaseCancelTime = 0.0f;
@@ -644,9 +645,16 @@ public class MonsterAI : MonoBehaviour
 		{
 			ResetPath();
 			ResetChaseStateInfo();
-			_currentState = eStateType.AttackDelay;
-			if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+
+			if (cancelLeadsToAttack)
+			{
+				// cancelLeadsToAttack이 켜있으면 체이스가 성공한거처럼 Attack으로 넘어가게 하면 된다.
+			}
+			else if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
 				_currentState = eStateType.AttackAction;
+			else
+				_currentState = eStateType.AttackDelay;
+
 			NextStep();
 			#region Faraway
 			if (BattleManager.instance != null && BattleManager.instance.IsNodeWar() && useFarawayMode && _appliedFarawayMode == false)

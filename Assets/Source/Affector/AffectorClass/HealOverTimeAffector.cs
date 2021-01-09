@@ -57,9 +57,9 @@ public class HealOverTimeAffector : AffectorBase
 			_remainTickTime += _affectorValueLevelTableData.fValue2;
 
 			float heal = 0.0f;
-			if (_affectorValueLevelTableData.fValue3 > 0.0f)
+			if (_affectorValueLevelTableData.fValue3 != 0.0f)
 				heal += (_actor.actorStatus.GetValue(eActorStatus.MaxHp) * _affectorValueLevelTableData.fValue3);
-			if (_affectorValueLevelTableData.fValue4 > 0.0f)
+			if (_affectorValueLevelTableData.fValue4 != 0.0f)
 				heal += (_hitParameterDamage * _affectorValueLevelTableData.fValue4);
 
 			_actor.actorStatus.AddHP(heal);

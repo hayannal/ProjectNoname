@@ -242,7 +242,6 @@ MonoBehaviour:
   areaAngle: 0
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
-  checkTargetForward: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 1
@@ -264,7 +263,7 @@ MonoBehaviour:
   speedChangeEase: 6
   overrideSpeedOnCollision: 0
   overrideSpeedTimeOnCollision: 0
-  curve: 60
+  curve: 40
   useCurveChange: 0
   targetCurve: 0
   curveChangeTime: 0
@@ -391,7 +390,6 @@ MonoBehaviour:
   areaAngle: 0
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
-  checkTargetForward: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 1
@@ -413,13 +411,13 @@ MonoBehaviour:
   speedChangeEase: 6
   overrideSpeedOnCollision: 0
   overrideSpeedTimeOnCollision: 0
-  curve: 60
+  curve: 40
   useCurveChange: 0
   targetCurve: 0
   curveChangeTime: 0
   curveChangeEase: 6
   curveLockY: 1
-  curveStartDelayTime: 2
+  curveStartDelayTime: 1.5
   followLastPositionWhenDieTarget: 0
   followMeOnHitTarget: 0
   followMinRange: 0
@@ -489,7 +487,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Move
-  m_Speed: 1
+  m_Speed: 0.8
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours:
@@ -644,7 +642,6 @@ MonoBehaviour:
   areaAngle: 0
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
-  checkTargetForward: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -764,7 +761,6 @@ MonoBehaviour:
   areaAngle: 0
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
-  checkTargetForward: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -962,7 +958,6 @@ MonoBehaviour:
   areaAngle: 0
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
-  checkTargetForward: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 1
@@ -984,7 +979,7 @@ MonoBehaviour:
   speedChangeEase: 6
   overrideSpeedOnCollision: 0
   overrideSpeedTimeOnCollision: 0
-  curve: 60
+  curve: 40
   useCurveChange: 0
   targetCurve: 0
   curveChangeTime: 0
@@ -1082,7 +1077,6 @@ MonoBehaviour:
   areaAngle: 0
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
-  checkTargetForward: 0
   repeatCount: 2
   repeatInterval: 0.15
   movementType: 0
@@ -1217,7 +1211,6 @@ MonoBehaviour:
   areaAngle: 0
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
-  checkTargetForward: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -1440,7 +1433,6 @@ MonoBehaviour:
   areaAngle: 0
   checkRaycastWallInArea: 0
   applyCollisionDamageInterval: 0
-  checkTargetForward: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -1479,8 +1471,8 @@ MonoBehaviour:
   parallelCount: 0
   parallelDistance: 0
   ignoreMainHitObjectByParallel: 0
-  circularSectorCount: 5
-  circularSectorBetweenAngle: 10
+  circularSectorCount: 4
+  circularSectorBetweenAngle: 12
   circularSectorUseWorldSpace: 0
   circularSectorWorldSpaceCenterAngleY: 0
   ignoreMainHitObjectByCircularSector: 1
@@ -1634,7 +1626,6 @@ MonoBehaviour:
   areaAngle: 120
   checkRaycastWallInArea: 1
   applyCollisionDamageInterval: 0
-  checkTargetForward: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -1772,6 +1763,7 @@ MonoBehaviour:
     useMonsterCount: 0
     monsterCountCompareType: 0
     monsterCountParameter: 0
+    onlySummonMonsterCount: 0
     useCheckWall: 0
     existWallParameter: 0
     actionCountLimit: 0
@@ -1798,6 +1790,7 @@ MonoBehaviour:
     useMonsterCount: 0
     monsterCountCompareType: 0
     monsterCountParameter: 0
+    onlySummonMonsterCount: 0
     useCheckWall: 0
     existWallParameter: 0
     actionCountLimit: 0
@@ -1824,6 +1817,7 @@ MonoBehaviour:
     useMonsterCount: 0
     monsterCountCompareType: 0
     monsterCountParameter: 0
+    onlySummonMonsterCount: 0
     useCheckWall: 0
     existWallParameter: 0
     actionCountLimit: 0
@@ -1850,6 +1844,7 @@ MonoBehaviour:
     useMonsterCount: 0
     monsterCountCompareType: 0
     monsterCountParameter: 0
+    onlySummonMonsterCount: 0
     useCheckWall: 0
     existWallParameter: 0
     actionCountLimit: 0
@@ -1876,6 +1871,7 @@ MonoBehaviour:
     useMonsterCount: 0
     monsterCountCompareType: 0
     monsterCountParameter: 0
+    onlySummonMonsterCount: 0
     useCheckWall: 0
     existWallParameter: 0
     actionCountLimit: 0
@@ -1947,7 +1943,7 @@ MonoBehaviour:
   StartTime: 0.45
   EndTime: 1
   attackDelay: 0.5
-  overrideRate: 0.75
+  overrideRate: 0.5
 --- !u!1102 &7591962192666843768
 AnimatorState:
   serializedVersion: 5

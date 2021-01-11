@@ -214,6 +214,7 @@ public class PlayerActor : Actor
 	void Update()
 	{
 		UpdateUltimateIndicator();
+		UpdateStagePaneltyEffect();
 	}
 
 	#region Stage Penalty Affector
@@ -256,10 +257,75 @@ public class PlayerActor : Actor
 		if (!showAlarm)
 			return;
 
+		ClientSaveData.instance.OnChangedStagePenalty(stagePenaltyId);
+
+		Timing.RunCoroutine(DelayedShowPaneltyEffect(0.2f, stagePenaltyTableData));
+	}
+
+	IEnumerator<float> DelayedShowPaneltyEffect(float delay, StagePenaltyTableData stagePenaltyTableData)
+	{
+		// 스테이지 패널티가 적용되는 상황에서 알람 텍스트를 보여야하는 타이밍에 이펙트도 보여줘야하는데
+		// 한가지 추가로 검사할게 있다.
+		// 자신이 현재의 패널티에 걸리는지 체크하는거다. 이게 카오스에서는 랜덤으로 결정되기 때문에 텍스트 말고도 이거로 표현하는거다.
+		// 아래 코드는 SwapCanvas 열릴때 하던 코드 가져와서 변경해서 쓴다.
+		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(actorId);
+		bool showStagePaneltyEffect = false;
+		for (int i = 0; i < stagePenaltyTableData.affectorValueId.Length; ++i)
+		{
+			AffectorValueLevelTableData affectorValueLevelTableData = TableDataManager.instance.FindAffectorValueLevelTableData(stagePenaltyTableData.affectorValueId[i], 1);
+			if (affectorValueLevelTableData == null)
+				continue;
+
+			for (int j = 0; j < affectorValueLevelTableData.conditionValueId.Length; ++j)
+			{
+				ConditionValueTableData conditionValueTableData = TableDataManager.instance.FindConditionValueTableData(affectorValueLevelTableData.conditionValueId[j]);
+				if (conditionValueTableData == null)
+					continue;
+
+				if ((Condition.eConditionType)conditionValueTableData.conditionId == Condition.eConditionType.DefenderPowerSource && (Condition.eCompareType)conditionValueTableData.compareType == Condition.eCompareType.Equal)
+				{
+					int.TryParse(conditionValueTableData.value, out int intValue);
+					if (actorTableData.powerSource == intValue)
+						showStagePaneltyEffect = true;
+				}
+			}
+		}
+
+		if (showStagePaneltyEffect)
+		{
+			AddressableAssetLoadManager.GetAddressableGameObject("StagePaneltyEffect", "CommonEffect");
+		}
+
+		yield return Timing.WaitForSeconds(delay);
+
+		if (this == null)
+			yield break;
+		if (gameObject.activeSelf == false)
+			yield break;
+
 		string[] penaltyMindParameterList = UIString.instance.ParseParameterString(stagePenaltyTableData.mindParameter);
 		BattleToastCanvas.instance.ShowToast(UIString.instance.GetString(stagePenaltyTableData.penaltyMindText, penaltyMindParameterList), 2.5f);
 
-		ClientSaveData.instance.OnChangedStagePenalty(stagePenaltyId);
+		if (showStagePaneltyEffect)
+		{
+			AddressableAssetLoadManager.GetAddressableGameObject("StagePaneltyEffect", "CommonEffect", (prefab) =>
+			{
+				_cachedStagePaneltyEffectTransform = BattleInstanceManager.instance.GetCachedObject(prefab, cachedTransform.position, Quaternion.identity).transform;
+			});
+		}
+	}
+
+	Transform _cachedStagePaneltyEffectTransform;
+	void UpdateStagePaneltyEffect()
+	{
+		if (_cachedStagePaneltyEffectTransform == null)
+			return;
+		if (_cachedStagePaneltyEffectTransform.gameObject == null)
+			return;
+		if (_cachedStagePaneltyEffectTransform.gameObject.activeSelf == false)
+			return;
+
+		_cachedStagePaneltyEffectTransform.position = cachedTransform.position;
 	}
 	#endregion
 

@@ -62,7 +62,10 @@ public class HealOverTimeAffector : AffectorBase
 			if (_affectorValueLevelTableData.fValue4 != 0.0f)
 				heal += (_hitParameterDamage * _affectorValueLevelTableData.fValue4);
 
-			_actor.actorStatus.AddHP(heal);
+			if (_affectorValueLevelTableData.iValue1 == 1)
+				_actor.actorStatus.AddSP(heal);
+			else
+				_actor.actorStatus.AddHP(heal);
 		}
 	}
 }

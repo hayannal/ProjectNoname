@@ -124,7 +124,7 @@ public class CharacterBoxResultCanvas : MonoBehaviour
 				powerLevel = characterData.powerLevel;
 				transcendLevel = characterData.transcendLevel;
 			}
-			resultListItem.characterListItem.Initialize(listGrantInfo[i], powerLevel, SwapCanvasListItem.GetPowerLevelColorState(characterData), transcendLevel, 0, null, null);
+			resultListItem.characterListItem.Initialize(listGrantInfo[i], powerLevel, SwapCanvasListItem.GetPowerLevelColorState(characterData), transcendLevel, 0, null, null, null);
 			resultListItem.Initialize("ShopUI_NewCharacter", 0);
 			_listOriginResultItem.Add(resultListItem);
 		}
@@ -140,7 +140,7 @@ public class CharacterBoxResultCanvas : MonoBehaviour
 				powerLevel = characterData.powerLevel;
 				transcendLevel = characterData.transcendLevel;
 			}
-			resultListItem.characterListItem.Initialize(listTrpInfo[i].actorId, powerLevel, SwapCanvasListItem.GetPowerLevelColorState(characterData), transcendLevel, 0, null, null);
+			resultListItem.characterListItem.Initialize(listTrpInfo[i].actorId, powerLevel, SwapCanvasListItem.GetPowerLevelColorState(characterData), transcendLevel, 0, null, null, null);
 			resultListItem.Initialize("ShopUI_TranscendReward", 0);
 			_listOriginResultItem.Add(resultListItem);
 		}
@@ -166,7 +166,7 @@ public class CharacterBoxResultCanvas : MonoBehaviour
 				transcendLevel = characterData.transcendLevel;
 				showPlusAlarm = characterData.IsPlusAlarmState();
 			}
-			resultListItem.characterListItem.Initialize(listPpInfo[i].actorId, powerLevel, SwapCanvasListItem.GetPowerLevelColorState(characterData), transcendLevel, 0, null, null);
+			resultListItem.characterListItem.Initialize(listPpInfo[i].actorId, powerLevel, SwapCanvasListItem.GetPowerLevelColorState(characterData), transcendLevel, 0, null, null, null);
 			resultListItem.characterListItem.ShowAlarm(false);
 			if (showPlusAlarm)
 			{

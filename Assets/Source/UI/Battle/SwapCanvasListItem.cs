@@ -45,7 +45,7 @@ public class SwapCanvasListItem : MonoBehaviour
 	}
 
 	public string actorId { get; set; }
-	public void Initialize(string actorId, int powerLevel, ePowerLevelColorState colorState, int transcendLevel, int suggestedPowerLevel, string[] suggestedActorIdList, Action<string> clickCallback)
+	public void Initialize(string actorId, int powerLevel, ePowerLevelColorState colorState, int transcendLevel, int suggestedPowerLevel, string[] suggestedActorIdList, List<int> listPenaltyPowerSource, Action<string> clickCallback)
 	{
 		this.actorId = actorId;
 
@@ -96,6 +96,7 @@ public class SwapCanvasListItem : MonoBehaviour
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
 		if (lobby == false && GatePillar.CheckSuggestedActor(suggestedActorIdList, actorId))
 		{
+			recommandedText.color = (listPenaltyPowerSource != null && listPenaltyPowerSource.Contains(actorTableData.powerSource)) ? new Color(0.831f, 0.831f, 0.831f) : new Color(0.074f, 1.0f, 0.0f);
 			recommandedText.SetLocalizedText(UIString.instance.GetString("GameUI_Suggested"));
 			recommandedText.gameObject.SetActive(true);
 		}

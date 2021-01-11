@@ -170,7 +170,7 @@ public class BalanceCanvas : MonoBehaviour
 		}
 
 		_highestPpCharacter = highestPpCharacter;
-		highestCharacterListItem.Initialize(highestPpCharacter.actorId, highestPpCharacter.powerLevel, SwapCanvasListItem.GetPowerLevelColorState(highestPpCharacter), highestPpCharacter.transcendLevel, 0, null, null);
+		highestCharacterListItem.Initialize(highestPpCharacter.actorId, highestPpCharacter.powerLevel, SwapCanvasListItem.GetPowerLevelColorState(highestPpCharacter), highestPpCharacter.transcendLevel, 0, null, null, null);
 		highestCharacterPpValueText.text = highestPpCharacter.pp.ToString("N0");
 
 		selectText.text = UIString.instance.GetString("BalanceUI_Select");
@@ -211,7 +211,7 @@ public class BalanceCanvas : MonoBehaviour
 			_targetPpCharacter = PlayerData.instance.GetCharacterData(targetActorId);
 			if (_targetPpCharacter == null)
 				return;
-			targetCharacterListItem.Initialize(targetActorId, _targetPpCharacter.powerLevel, SwapCanvasListItem.GetPowerLevelColorState(_targetPpCharacter), _targetPpCharacter.transcendLevel, 0, null, null);
+			targetCharacterListItem.Initialize(targetActorId, _targetPpCharacter.powerLevel, SwapCanvasListItem.GetPowerLevelColorState(_targetPpCharacter), _targetPpCharacter.transcendLevel, 0, null, null, null);
 			targetCharacterListItem.contentRectTransform.anchoredPosition = new Vector2(-19.5f, 12.0f);
 			targetCharacterPpValueText.text = _targetPpCharacter.pp.ToString("N0");
 

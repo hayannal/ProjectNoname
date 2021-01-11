@@ -5,7 +5,7 @@ using ActorStatusDefine;
 
 public class Condition : MonoBehaviour
 {
-	enum eConditionType
+	public enum eConditionType
 	{
 		AttackerHpRatio = 1,
 		DefenderHpRatio,

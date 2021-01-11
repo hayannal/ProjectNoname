@@ -227,7 +227,12 @@ public class SwapCanvas : MonoBehaviour
 		{
 			MapTableData nextMapTableData = StageManager.instance.nextMapTableData;
 			if (nextMapTableData != null && string.IsNullOrEmpty(nextMapTableData.bossName) == false)
+			{
 				suggestedActorIdList = nextMapTableData.suggestedActorId;
+
+				// 전에는 여기서 suggestedActorIdList만 넘겼었는데 이젠 penalty타입도 계산해놨다가 표시하는 곳에서 회색으로 알려줘야한다.
+				RefreshPenaltyPowerSource();
+			}
 		}
 
 		List<CharacterData> listCharacterData = PlayerData.instance.listCharacterData;
@@ -254,7 +259,7 @@ public class SwapCanvas : MonoBehaviour
 		for (int i = 0; i < listCharacterData.Count; ++i)
 		{
 			SwapCanvasListItem swapCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
-			swapCanvasListItem.Initialize(listCharacterData[i].actorId, listCharacterData[i].powerLevel, SwapCanvasListItem.GetPowerLevelColorState(listCharacterData[i]), listCharacterData[i].transcendLevel, chapterTableData.suggestedPowerLevel, suggestedActorIdList, OnClickListItem);
+			swapCanvasListItem.Initialize(listCharacterData[i].actorId, listCharacterData[i].powerLevel, SwapCanvasListItem.GetPowerLevelColorState(listCharacterData[i]), listCharacterData[i].transcendLevel, chapterTableData.suggestedPowerLevel, suggestedActorIdList, _listCachedPenaltyPowerSource, OnClickListItem);
 			_listSwapCanvasListItem.Add(swapCanvasListItem);
 
 			if (firstIndex == -1 && listCharacterData[i].actorId != BattleInstanceManager.instance.playerActor.actorId)
@@ -267,6 +272,39 @@ public class SwapCanvas : MonoBehaviour
 
 		// 항목이 적을땐 가운데 정렬 하려고 했는데 안쓰게 되면서 지울까 하다가 혹시 몰라서 코드는 남겨둔다.
 		//RefreshContentPosition();
+	}
+
+	List<int> _listCachedPenaltyPowerSource = new List<int>();
+	void RefreshPenaltyPowerSource()
+	{
+		_listCachedPenaltyPowerSource.Clear();
+
+		if (MainSceneBuilder.instance.lobby)
+			return;
+		if (BattleInstanceManager.instance.playerActor.currentStagePenaltyTableData == null)
+			return;
+		
+		StagePenaltyTableData stagePenaltyTableData = BattleInstanceManager.instance.playerActor.currentStagePenaltyTableData;
+		for (int i = 0; i < stagePenaltyTableData.affectorValueId.Length; ++i)
+		{
+			AffectorValueLevelTableData affectorValueLevelTableData = TableDataManager.instance.FindAffectorValueLevelTableData(stagePenaltyTableData.affectorValueId[i], 1);
+			if (affectorValueLevelTableData == null)
+				continue;
+
+			for (int j = 0; j < affectorValueLevelTableData.conditionValueId.Length; ++j)
+			{
+				ConditionValueTableData conditionValueTableData = TableDataManager.instance.FindConditionValueTableData(affectorValueLevelTableData.conditionValueId[j]);
+				if (conditionValueTableData == null)
+					continue;
+
+				if ((Condition.eConditionType)conditionValueTableData.conditionId == Condition.eConditionType.DefenderPowerSource && (Condition.eCompareType)conditionValueTableData.compareType == Condition.eCompareType.Equal)
+				{
+					int.TryParse(conditionValueTableData.value, out int intValue);
+					if (_listCachedPenaltyPowerSource.Contains(intValue) == false)
+						_listCachedPenaltyPowerSource.Add(intValue);
+				}
+			}
+		}
 	}
 
 	RectTransform _contentParentRectTransform;
@@ -473,17 +511,25 @@ public class SwapCanvas : MonoBehaviour
 			if (string.IsNullOrEmpty(actorName))
 				continue;
 
+			bool applyPenalty = false;
+			ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(actorId);
+			if (_listCachedPenaltyPowerSource != null && _listCachedPenaltyPowerSource.Contains(actorTableData.powerSource)) applyPenalty = true;
+
 			//if (PlayerData.instance.ContainsActor(actorId) == false)
 			//	continue;
 			if (_stringBuilderActor.Length > 0)
 				_stringBuilderActor.Append(", ");
-			_stringBuilderActor.Append("<color=#00AB00>");
+			_stringBuilderActor.Append(applyPenalty ? "<color=#707070>" : "<color=#00AB00>");
 			_stringBuilderActor.Append(actorName);
 			_stringBuilderActor.Append("</color>");
 		}
 		if (_stringBuilderActor.Length == 0)
 		{
-			_stringBuilderActor.Append("<color=#00AB00>");
+			bool applyPenalty = false;
+			ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(suggestedActorIdList[0]);
+			if (_listCachedPenaltyPowerSource != null && _listCachedPenaltyPowerSource.Contains(actorTableData.powerSource)) applyPenalty = true;
+
+			_stringBuilderActor.Append(applyPenalty ? "<color=#707070>" : "<color=#00AB00>");
 			_stringBuilderActor.Append(CharacterData.GetNameByActorId(suggestedActorIdList[0]));
 			_stringBuilderActor.Append("</color>");
 		}

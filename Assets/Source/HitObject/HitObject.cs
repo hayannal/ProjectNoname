@@ -128,7 +128,7 @@ public class HitObject : MonoBehaviour
 						}
 						Vector3 contactPoint = Vector3.zero;
 						Vector3 contactNormal = Vector3.zero;
-						if (CheckRaycastWall(attackerPosition, attackerForward, length, ref contactPoint, ref contactNormal))
+						if (CheckRaycastWall(attackerPosition, attackerForward, length, meHit.raycastWallHeight, ref contactPoint, ref contactNormal))
 						{
 							if (meHit.showHitEffect)
 								HitEffect.ShowHitEffect(meHit, contactPoint, contactNormal, 0);
@@ -324,7 +324,7 @@ public class HitObject : MonoBehaviour
 			float length = diff.magnitude;
 			Vector3 contactPoint = Vector3.zero;
 			Vector3 contactNormal = Vector3.zero;
-			if (CheckRaycastWall(attackerPosition, attackerForward, length, ref contactPoint, ref contactNormal))
+			if (CheckRaycastWall(attackerPosition, attackerForward, length, meHit.raycastWallHeight, ref contactPoint, ref contactNormal))
 			{
 				if (meHit.showHitEffect)
 					HitEffect.ShowHitEffect(meHit, contactPoint, contactNormal, 0);
@@ -754,7 +754,7 @@ public class HitObject : MonoBehaviour
 				}
 				Vector3 contactPoint = Vector3.zero;
 				Vector3 contactNormal = Vector3.zero;
-				if (CheckRaycastWall(attackerPosition, attackerForward, length, ref contactPoint, ref contactNormal))
+				if (CheckRaycastWall(attackerPosition, attackerForward, length, meHit.raycastWallHeight, ref contactPoint, ref contactNormal))
 					continue;
 			}
 
@@ -816,12 +816,12 @@ public class HitObject : MonoBehaviour
 		}
 	}
 
-	static bool CheckRaycastWall(Vector3 areaPosition, Vector3 areaForward, float maxDistance, ref Vector3 contactPoint, ref Vector3 contactNormal)
+	static bool CheckRaycastWall(Vector3 areaPosition, Vector3 areaForward, float maxDistance, float raycastWallHeight, ref Vector3 contactPoint, ref Vector3 contactNormal)
 	{
 		if (s_raycastHitList == null)
 			s_raycastHitList = new RaycastHit[100];
 
-		areaPosition.y = 1.0f;
+		areaPosition.y = raycastWallHeight;
 		int resultCount = Physics.RaycastNonAlloc(areaPosition, areaForward, s_raycastHitList, maxDistance, 1);
 		for (int i = 0; i < resultCount; ++i)
 		{

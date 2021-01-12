@@ -17,10 +17,12 @@ public class EquipTransferConfirmCanvas : MonoBehaviour
 	public Transform titleTextTransform;
 	public EquipCanvasListItem materialEquipListItem;
 	public Text materialMainStatusText;
+	public Text materialMainStatusMaxText;
 	public Image materialMainStatusFillImage;
 	public EquipCanvasListItem prevEquipListItem;
 	public EquipCanvasListItem nextEquipListItem;
 	public Text mainStatusText;
+	public Text mainStatusMaxText;
 	public Image mainStatusFillImage;
 
 	public GameObject standbyEffectPrefab;
@@ -142,6 +144,8 @@ public class EquipTransferConfirmCanvas : MonoBehaviour
 		materialMainStatusText.text = materialDisplayString;
 		materialMainStatusFillImage.fillAmount = materialEquipData.GetMainStatusRatio();
 		materialMainStatusFillImage.color = EquipListStatusInfo.GetGaugeColor(materialMainStatusFillImage.fillAmount == 1.0f);
+		int maxEquipLevel = BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxEquipLevel");
+		materialMainStatusMaxText.text = string.Format("<size=12>MAX</size> {0}", ActorStatus.GetDisplayAttack(materialEquipData.GetMainStatusValueMax(maxEquipLevel)).ToString("N0"));
 
 		prevEquipListItem.Initialize(equipData, null);
 		nextEquipListItem.Initialize(equipData, null);
@@ -168,6 +172,7 @@ public class EquipTransferConfirmCanvas : MonoBehaviour
 		int nextValue = 0;
 		int.TryParse(nextDisplayString.Replace(",", ""), out nextValue);
 		mainStatusText.text = nextDisplayString;
+		mainStatusMaxText.text = string.Format("<size=12>MAX</size> {0}", ActorStatus.GetDisplayAttack(equipData.GetMainStatusValueMax(maxEquipLevel)).ToString("N0"));
 
 		resultEquipListItem.Initialize(equipData, null);
 		resultMainStatusText.text = displayAttack;

@@ -7,7 +7,7 @@ public class VampireAffector : AffectorBase
 {
 	float _endTime;
 	static float s_f3Constant = 35.0f;
-	static float s_f4Constant = 30.0f;
+	static float s_f4Constant = 60.0f;
 
 	AffectorValueLevelTableData _affectorValueLevelTableData;
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)

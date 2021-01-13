@@ -68,6 +68,7 @@ public class PlayRandomStateWithCondition : ControlStateBase
 		[ConditionalHide("useCheckWall", true)]
 		public bool existWallParameter;
 		public int actionCountLimit;
+		public float actionCooltime;
 	}
 	public RandomStateWithConditionInfo[] randomStateWithConditionInfoList;
 
@@ -206,6 +207,9 @@ public class PlayRandomStateWithCondition : ControlStateBase
 			if (randomStateWithConditionInfoList[i].actionCountLimit > 0 && GetActionCount(randomStateWithConditionInfoList[i].stateName) >= randomStateWithConditionInfoList[i].actionCountLimit)
 				continue;
 
+			if (randomStateWithConditionInfoList[i].actionCooltime > 0.0f && _actor.actionController.cooltimeProcessor.CheckCooltime(randomStateWithConditionInfoList[i].stateName))
+				continue;
+
 			sumWeight += randomStateWithConditionInfoList[i].weight;
 			randomStateWithConditionInfoList[i].sumWeight = sumWeight;
 			_listRandomState.Add(randomStateWithConditionInfoList[i]);
@@ -229,6 +233,8 @@ public class PlayRandomStateWithCondition : ControlStateBase
 				selectedStateName = _listRandomState[i].stateName;
 				if (_listRandomState[i].actionCountLimit > 0)
 					AddActionCount(_listRandomState[i].stateName);
+				if (_listRandomState[i].actionCooltime > 0.0f)
+					_actor.actionController.cooltimeProcessor.ApplyCooltime(_listRandomState[i].stateName, _listRandomState[i].actionCooltime);
 				break;
 			}
 		}

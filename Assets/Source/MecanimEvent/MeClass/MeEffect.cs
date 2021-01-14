@@ -12,6 +12,7 @@ public class MeEffect : MecanimEventBase {
 	public Vector3 offset;
 	public bool fixedWorldPositionY;
 	public Vector3 direction = Vector3.forward;
+	public bool useWorldSpaceDirection;
 	public string parentName;
 	public bool followPosition;
 
@@ -22,6 +23,7 @@ public class MeEffect : MecanimEventBase {
 		offset = EditorGUILayout.Vector3Field("Offset :", offset);
 		fixedWorldPositionY = EditorGUILayout.Toggle("Fixed World Position Y :", fixedWorldPositionY);
 		direction = EditorGUILayout.Vector3Field("Direction :", direction);
+		useWorldSpaceDirection = EditorGUILayout.Toggle("Use World Space :", useWorldSpaceDirection);
 		parentName = EditorGUILayout.TextField("Parent Transform Name :", parentName);
 		followPosition = EditorGUILayout.Toggle("Follow Position :", followPosition);
 	}
@@ -49,7 +51,11 @@ public class MeEffect : MecanimEventBase {
 			if (_spawnTransform != null)
 			{
 				//Vector3 result = offset * animator.transform.localScale.x;
-				Vector3 rotation = _spawnTransform.TransformDirection(direction);
+				Vector3 resultFoward = Vector3.forward;
+				if (useWorldSpaceDirection)
+					resultFoward = direction;
+				else
+					resultFoward = _spawnTransform.TransformDirection(direction);
 				if (fixedWorldPositionY)
 				{
 					Vector3 convertOffset = Vector3.zero;
@@ -57,10 +63,10 @@ public class MeEffect : MecanimEventBase {
 					convertOffset.z = offset.z;
 					Vector3 spawnPosition = _spawnTransform.TransformPoint(convertOffset);
 					spawnPosition.y = offset.y;
-					effectObject = BattleInstanceManager.instance.GetCachedObject(effectData, spawnPosition, Quaternion.LookRotation(rotation));
+					effectObject = BattleInstanceManager.instance.GetCachedObject(effectData, spawnPosition, Quaternion.LookRotation(resultFoward));
 				}
 				else
-					effectObject = BattleInstanceManager.instance.GetCachedObject(effectData, _spawnTransform.TransformPoint(offset), Quaternion.LookRotation(rotation));
+					effectObject = BattleInstanceManager.instance.GetCachedObject(effectData, _spawnTransform.TransformPoint(offset), Quaternion.LookRotation(resultFoward));
 			}
 		}
 		else

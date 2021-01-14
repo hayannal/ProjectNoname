@@ -295,8 +295,6 @@ AnimatorState:
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours:
-  - {fileID: 1612562831651883147}
-  - {fileID: 2310240437118648253}
   - {fileID: 300013058899529199}
   - {fileID: 8767870765966635585}
   m_Position: {x: 50, y: 50, z: 0}
@@ -439,7 +437,7 @@ MonoBehaviour:
   presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 1213669126786022100, guid: 50f1b7407b626ec4796dff27735242b6,
     type: 3}
-  lifeTime: 0.2
+  lifeTime: 2
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 0
@@ -449,7 +447,7 @@ MonoBehaviour:
   teamCheckType: 0
   createPositionType: 0
   boneName: 
-  offset: {x: 0, y: 1, z: 0}
+  offset: {x: 0, y: 0, z: 0}
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
@@ -470,7 +468,7 @@ MonoBehaviour:
   startDirectionType: 1
   startDirection: {x: 0, y: 0, z: 1}
   howitzerType: 0
-  useWorldSpaceDirection: 0
+  useWorldSpaceDirection: 1
   bothRandomAngle: 1
   leftRightRandomAngle: 0
   leftRandomAngle: 0
@@ -519,7 +517,7 @@ MonoBehaviour:
   overrideRicochetDistance: 0
   overrideRicochetSpeed: 0
   useHitStay: 1
-  hitStayInterval: 1
+  hitStayInterval: 3
   hitStayIgnoreDuplicate: 1
   hitStayIdForIgnoreDuplicate: 97
   hitStayLineRendererTrigger: 0
@@ -552,27 +550,6 @@ MonoBehaviour:
   StartTime: 0
   EndTime: 1
   state: 3
---- !u!114 &1612562831651883147
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTime: 0.64
-  EndTime: 1
-  effectData: {fileID: 7135899216470490236, guid: c641d9874ebe3a3459f7670640657e19,
-    type: 3}
-  offset: {x: 0, y: 0, z: 0}
-  fixedWorldPositionY: 0
-  direction: {x: 0, y: 0, z: 1}
-  parentName: 
-  followPosition: 0
 --- !u!114 &2161847951066724493
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -610,27 +587,6 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
---- !u!114 &2310240437118648253
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTime: 0.64
-  EndTime: 1
-  effectData: {fileID: 7135899216470490236, guid: aa63f431556751a4090073af3633f801,
-    type: 3}
-  offset: {x: 0, y: 0, z: 0}
-  fixedWorldPositionY: 0
-  direction: {x: 0, y: 0, z: 1}
-  parentName: 
-  followPosition: 0
 --- !u!1102 &7302462590490233560
 AnimatorState:
   serializedVersion: 5
@@ -749,7 +705,7 @@ MonoBehaviour:
   presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 1213669126786022100, guid: a0f556559db2e2f469c27ba9cfaef3d4,
     type: 3}
-  lifeTime: 0.2
+  lifeTime: 2
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 0
@@ -759,7 +715,7 @@ MonoBehaviour:
   teamCheckType: 0
   createPositionType: 0
   boneName: 
-  offset: {x: 0, y: 1, z: 0}
+  offset: {x: 0, y: 0, z: 0}
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
@@ -780,7 +736,7 @@ MonoBehaviour:
   startDirectionType: 1
   startDirection: {x: 0, y: 0, z: 1}
   howitzerType: 0
-  useWorldSpaceDirection: 0
+  useWorldSpaceDirection: 1
   bothRandomAngle: 1
   leftRightRandomAngle: 0
   leftRandomAngle: 0
@@ -829,7 +785,7 @@ MonoBehaviour:
   overrideRicochetDistance: 0
   overrideRicochetSpeed: 0
   useHitStay: 1
-  hitStayInterval: 1
+  hitStayInterval: 3
   hitStayIgnoreDuplicate: 1
   hitStayIdForIgnoreDuplicate: 97
   hitStayLineRendererTrigger: 0

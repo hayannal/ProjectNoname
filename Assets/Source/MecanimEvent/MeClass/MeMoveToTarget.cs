@@ -11,6 +11,8 @@ public class MeMoveToTarget : MecanimEventBase
 
 	public float distanceOffset;
 	//public bool useChase;
+	public bool useTransform;
+	public bool transformMoveUseDelta;
 
 #if UNITY_EDITOR
 	override public void OnGUI_PropertyWindow()
@@ -22,7 +24,6 @@ public class MeMoveToTarget : MecanimEventBase
 
 	// 기본적으로 MovePositionCurve와 같이 Rigidbody사용해서 전진한다.
 	Actor _actor = null;
-	float _velocityZ = 0.0f;
 	override public void OnRangeSignalStart(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		if (_actor == null)
@@ -37,12 +38,13 @@ public class MeMoveToTarget : MecanimEventBase
 		// Radius 검사는 하지 않고 포지션끼리 체크해서 거리를 계산한다.
 		// 그러니 -3미터 설정하면 타겟으로부터 3미터 가까운 지점에 멈추게 된다.
 
-		_velocityZ = 0.0f;
+		float velocityZ = 0.0f;
+		Vector3 targetPosition = Vector3.zero;
 		Vector3 diff = Vector3.zero;
 		float durationTime = (EndTime - StartTime) * stateInfo.length;
 		if (_actor.targetingProcessor.GetTarget() == null)
 		{
-			Vector3 targetPosition = HitObject.GetFallbackTargetPosition(_actor.cachedTransform);
+			targetPosition = HitObject.GetFallbackTargetPosition(_actor.cachedTransform);
 			diff = targetPosition - _actor.cachedTransform.position;
 			diff.y = 0.0f;
 		}
@@ -52,24 +54,44 @@ public class MeMoveToTarget : MecanimEventBase
 			Transform targetTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
 			if (targetTransform != null)
 			{
-				diff = targetTransform.position - _actor.cachedTransform.position;
+				targetPosition = targetTransform.position;
+				diff = targetPosition - _actor.cachedTransform.position;
 				diff.y = 0.0f;
 			}
 		}
-		if (diff.magnitude + distanceOffset > 0.0f)
-			_velocityZ = (diff.magnitude + distanceOffset) / durationTime;
 
-		if (_velocityZ != 0.0f)
+		// SeaPrincess처럼 공중에 올라서 찍는걸 사용할때 컬리더를 끄고 점프 상태 및 DontDie상태로 바꾸는 경우엔 하단의 Velocity어펙터가 먹히질 않게된다.
+		// 이럴땐 Transform이동으로 처리해서 이동시켜야한다. 장애물이 있으면 어색할테니 주의해서 사용해야한다.
+		if (useTransform)
+		{
+			_targetPosition = targetPosition;
+			_targetPosition += -diff.normalized * distanceOffset;
+			_startPosition = _actor.cachedTransform.position;
+			_speed = (_targetPosition - _startPosition) / durationTime;
+			_durationTime = durationTime;
+			_t = 0.0f;
+			return;
+		}
+
+		if (diff.magnitude + distanceOffset > 0.0f)
+			velocityZ = (diff.magnitude + distanceOffset) / durationTime;
+
+		if (velocityZ != 0.0f)
 		{
 			// MovePositionCurve에서 했던거처럼 FixedUpdate가 필요하니 VelocityAffector를 호출한다.
 			AffectorValueLevelTableData velocityAffectorValue = new AffectorValueLevelTableData();
 			velocityAffectorValue.fValue1 = durationTime;
 			velocityAffectorValue.fValue2 = 0.0f;
-			velocityAffectorValue.fValue3 = _velocityZ;
+			velocityAffectorValue.fValue3 = velocityZ;
 			_actor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Velocity, velocityAffectorValue, _actor, false);
 		}
 	}
 
+	Vector3 _startPosition;
+	Vector3 _targetPosition;
+	Vector3 _speed;
+	float _durationTime;
+	float _t;
 	override public void OnRangeSignal(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 #if UNITY_EDITOR
@@ -94,6 +116,23 @@ public class MeMoveToTarget : MecanimEventBase
 		//if (useChase)
 		//{
 		//}
+
+		if (useTransform)
+		{
+			// 트랜스폼을 사용해 이동시키는거도 크게 둘로 나눌 수 있다.
+			if (transformMoveUseDelta)
+			{
+				// 하나는 캐릭터 방향을 lookAt시그널에 맡기고 총 이동량만큼만 이동시키는 방법이다.
+				// Velocity로 이동하는 것과 비슷한 방식이다. lookAt은 건드리지 않게 때문에 장애물에 의해 막히거나 비스듬히 되면 목적 위치가 틀어질 수 있다.
+				_actor.cachedTransform.position += _speed * Time.deltaTime;
+			}
+			else
+			{
+				// 하나는 진짜 포지션 비교해서 목적지에 다다르게 하는 방식이다.(SeaPrincess처럼 AttackIndicator까지 그려놓은 경우라면 이렇게 찍어야 정확해진다.)
+				_t += Time.deltaTime;
+				_actor.cachedTransform.position = _startPosition + (_targetPosition - _startPosition) * (_t / _durationTime);
+			}
+		}
 	}
 
 	override public void OnRangeSignalEnd(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -105,6 +144,19 @@ public class MeMoveToTarget : MecanimEventBase
 
 		if (_actor == null)
 			return;
+
+		if (useTransform)
+		{
+			if (transformMoveUseDelta)
+			{
+			}
+			else
+			{
+				// 시그널 끝날때 포지션 보정까지 해준다.
+				_actor.cachedTransform.position = _targetPosition;
+			}
+			return;
+		}
 
 		_actor.GetRigidbody().velocity = Vector3.zero;
 	}

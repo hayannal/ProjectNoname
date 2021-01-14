@@ -297,6 +297,7 @@ AnimatorState:
   m_StateMachineBehaviours:
   - {fileID: 300013058899529199}
   - {fileID: 8767870765966635585}
+  - {fileID: 4740224247238576167}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -437,7 +438,7 @@ MonoBehaviour:
   presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 1213669126786022100, guid: 50f1b7407b626ec4796dff27735242b6,
     type: 3}
-  lifeTime: 2
+  lifeTime: 0.2
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 0
@@ -517,7 +518,7 @@ MonoBehaviour:
   overrideRicochetDistance: 0
   overrideRicochetSpeed: 0
   useHitStay: 1
-  hitStayInterval: 2.2
+  hitStayInterval: 1
   hitStayIgnoreDuplicate: 1
   hitStayIdForIgnoreDuplicate: 97
   hitStayLineRendererTrigger: 0
@@ -587,6 +588,28 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!114 &4740224247238576167
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.58
+  EndTime: 1
+  effectData: {fileID: 6315314745592264269, guid: 9c7287871059f9b4380c1ca4888f959e,
+    type: 3}
+  offset: {x: 0, y: 0, z: 0}
+  fixedWorldPositionY: 0
+  direction: {x: 0, y: 0, z: 1}
+  useWorldSpaceDirection: 1
+  parentName: 
+  followPosition: 0
 --- !u!1102 &7302462590490233560
 AnimatorState:
   serializedVersion: 5
@@ -705,7 +728,7 @@ MonoBehaviour:
   presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 1213669126786022100, guid: a0f556559db2e2f469c27ba9cfaef3d4,
     type: 3}
-  lifeTime: 2
+  lifeTime: 0.2
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 0
@@ -785,7 +808,7 @@ MonoBehaviour:
   overrideRicochetDistance: 0
   overrideRicochetSpeed: 0
   useHitStay: 1
-  hitStayInterval: 2.2
+  hitStayInterval: 1
   hitStayIgnoreDuplicate: 1
   hitStayIdForIgnoreDuplicate: 97
   hitStayLineRendererTrigger: 0

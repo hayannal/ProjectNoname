@@ -5,10 +5,18 @@ using ActorStatusDefine;
 
 public class ContinuousHitObjectGeneratorBase : MonoBehaviour
 {
+	public enum eMoveType
+	{
+		None,
+		Forward,
+	}
+
 	public bool disableOnChangeState = true;
 	public bool ignoreMainHitObject = true;
 	public bool attachChild = true;
 	public int createCount;
+	public eMoveType moveType = eMoveType.None;
+	public float moveSpeed;
 	protected int _initializedCreateCount;
 
 	int _fullPathHash;
@@ -108,6 +116,24 @@ public class ContinuousHitObjectGeneratorBase : MonoBehaviour
 			return false;
 
 		return true;
+	}
+
+	protected bool UpdateMove()
+	{
+		if (moveType == eMoveType.None)
+			return false;
+
+		switch (moveType)
+		{
+			case eMoveType.Forward:
+				cachedTransform.position += cachedTransform.forward * moveSpeed * Time.deltaTime;
+				break;
+		}
+
+		// 이동 후 맵 밖으로 나갔는지 확인해야한다.
+		if (BattleInstanceManager.instance.currentGround != null && BattleInstanceManager.instance.currentGround.IsInQuadBound(cachedTransform.position) == false)
+			return true;
+		return false;
 	}
 
 

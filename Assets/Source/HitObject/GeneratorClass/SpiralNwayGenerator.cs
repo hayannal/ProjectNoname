@@ -36,14 +36,25 @@ public class SpiralNwayGenerator : ContinuousHitObjectGeneratorBase
 			return;
 		}
 
-		if (_parentActor.actorStatus.IsDie())
+		if (moveType == eMoveType.None)
 		{
-			gameObject.SetActive(false);
-			return;
-		}
+			if (_parentActor.actorStatus.IsDie())
+			{
+				gameObject.SetActive(false);
+				return;
+			}
 
-		if (_parentActor.affectorProcessor.IsContinuousAffectorType(eAffectorType.CannotAction))
-			return;
+			if (_parentActor.affectorProcessor.IsContinuousAffectorType(eAffectorType.CannotAction))
+				return;
+		}
+		else
+		{
+			if (UpdateMove())
+			{
+				gameObject.SetActive(false);
+				return;
+			}
+		}
 
 		_remainLineIntervalTime -= Time.deltaTime;
 		if (_remainLineIntervalTime < 0.0f)

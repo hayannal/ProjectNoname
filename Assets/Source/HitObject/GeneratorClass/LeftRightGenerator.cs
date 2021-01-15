@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using ActorStatusDefine;
 
-public class TransformForwardGenerator : ContinuousHitObjectGeneratorBase
+public class LeftRightGenerator : ContinuousHitObjectGeneratorBase
 {
-	[Header("TransformForwardGenerator")]
+	[Header("LeftRightGenerator")]
 	public float interval;
 
 	int _remainCreateCount;
@@ -57,7 +57,8 @@ public class TransformForwardGenerator : ContinuousHitObjectGeneratorBase
 			_remainCreateCount -= 1;
 			_remainIntervalTime += interval;
 
-			Generate(cachedTransform.position, cachedTransform.rotation);
+			Generate(cachedTransform.position, cachedTransform.rotation * Quaternion.Euler(0.0f, -90.0f, 0.0f), true);
+			Generate(cachedTransform.position, cachedTransform.rotation * Quaternion.Euler(0.0f, 90.0f, 0.0f), true);
 		}
 
 		if (_remainCreateCount <= 0)

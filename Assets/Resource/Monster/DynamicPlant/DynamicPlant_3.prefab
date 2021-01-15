@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 4543707997930759161}
   - component: {fileID: 8344082660855998949}
   m_Layer: 0
-  m_Name: DynamicPlant
+  m_Name: DynamicPlant_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,7 +47,7 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5093250030016679636}
   m_Enabled: 1
-  m_AgentTypeID: -902729914
+  m_AgentTypeID: -1923039037
   m_Radius: 0.5
   m_Speed: 3.5
   m_Acceleration: 8
@@ -87,7 +87,7 @@ CapsuleCollider:
   m_Material: {fileID: 13400000, guid: 176724f165ed631408775764c436d474, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.65
+  m_Radius: 0.5
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
@@ -179,7 +179,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be6d548a09164c64eb8e5ab315bdae7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actorId: DynamicPlant_1
+  actorId: DynamicPlant_3
   commonPoolPreloadObjectList: []
   selfPassivePreloadObjectList: []
   gaugeOffsetY: 0
@@ -279,15 +279,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400016, guid: 25cab3194f9eccf43ae0afa99ea10076, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.01
+      value: 0.008
       objectReference: {fileID: 0}
     - target: {fileID: 400016, guid: 25cab3194f9eccf43ae0afa99ea10076, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.01
+      value: 0.008
       objectReference: {fileID: 0}
     - target: {fileID: 400016, guid: 25cab3194f9eccf43ae0afa99ea10076, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.01
+      value: 0.008
       objectReference: {fileID: 0}
     - target: {fileID: 400020, guid: 25cab3194f9eccf43ae0afa99ea10076, type: 3}
       propertyPath: m_LocalScale.x
@@ -304,11 +304,11 @@ PrefabInstance:
     - target: {fileID: 9500000, guid: 25cab3194f9eccf43ae0afa99ea10076, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 4912ce82b3f90b345976d1838c21fe76, type: 2}
+      objectReference: {fileID: 9100000, guid: 272f1109de49b6f4883805275ba121cb, type: 2}
     - target: {fileID: 13700000, guid: 25cab3194f9eccf43ae0afa99ea10076, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: a4da75a1766adf349994b9a1c557e62d, type: 2}
+      objectReference: {fileID: 2100000, guid: b6415b9fd116c334d82b89446d27727c, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 25cab3194f9eccf43ae0afa99ea10076, type: 3}
 --- !u!4 &4912787007161758784 stripped

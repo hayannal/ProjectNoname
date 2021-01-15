@@ -172,15 +172,9 @@ public class BattleTestTool : EditorWindow
 						_playerActor.skillProcessor.AddLevelPack("CritBetter", false, 0);
 						_playerActor.skillProcessor.AddLevelPack("CritBetter", false, 0);
 					}
-					if (GUILayout.Button("5Lv Pack"))
+					if (GUILayout.Button("15Lv Pack"))
 					{
-						string exclusiveLevelPackId = TableDataManager.instance.FindActorLevelPackByLevel(BattleInstanceManager.instance.playerActor.actorId, 5);
-						if (string.IsNullOrEmpty(exclusiveLevelPackId) == false)
-						{
-							// 전용팩은 레벨팩 데이터 매니저에 넣으면 안된다.
-							//LevelPackDataManager.instance.AddLevelPack(BattleInstanceManager.instance.playerActor.actorId, exclusiveLevelPackId);
-							BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack(exclusiveLevelPackId, true, 5);
-						}
+						BattleInstanceManager.instance.playerActor.skillProcessor.CheckAllExclusiveLevelPack();
 					}
 				}
 				GUILayout.EndHorizontal();

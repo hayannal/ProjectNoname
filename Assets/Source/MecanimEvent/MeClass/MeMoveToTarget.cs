@@ -13,6 +13,7 @@ public class MeMoveToTarget : MecanimEventBase
 	//public bool useChase;
 	public bool useTransform;
 	public bool transformMoveUseDelta;
+	public bool useRegisterdCustomTargetPosition;
 
 #if UNITY_EDITOR
 	override public void OnGUI_PropertyWindow()
@@ -42,21 +43,28 @@ public class MeMoveToTarget : MecanimEventBase
 		Vector3 targetPosition = Vector3.zero;
 		Vector3 diff = Vector3.zero;
 		float durationTime = (EndTime - StartTime) * stateInfo.length;
-		if (_actor.targetingProcessor.GetTarget() == null)
+		if (useRegisterdCustomTargetPosition && _actor.targetingProcessor.IsRegisteredCustomTargetPosition())
 		{
-			targetPosition = HitObject.GetFallbackTargetPosition(_actor.cachedTransform);
-			diff = targetPosition - _actor.cachedTransform.position;
-			diff.y = 0.0f;
+			targetPosition = _actor.targetingProcessor.GetCustomTargetPosition(0);
 		}
 		else
 		{
-			Collider targetCollider = _actor.targetingProcessor.GetTarget();
-			Transform targetTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
-			if (targetTransform != null)
+			if (_actor.targetingProcessor.GetTarget() == null)
 			{
-				targetPosition = targetTransform.position;
+				targetPosition = HitObject.GetFallbackTargetPosition(_actor.cachedTransform);
 				diff = targetPosition - _actor.cachedTransform.position;
 				diff.y = 0.0f;
+			}
+			else
+			{
+				Collider targetCollider = _actor.targetingProcessor.GetTarget();
+				Transform targetTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
+				if (targetTransform != null)
+				{
+					targetPosition = targetTransform.position;
+					diff = targetPosition - _actor.cachedTransform.position;
+					diff.y = 0.0f;
+				}
 			}
 		}
 

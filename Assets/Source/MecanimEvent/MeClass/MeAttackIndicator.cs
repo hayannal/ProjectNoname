@@ -32,6 +32,7 @@ public class MeAttackIndicator : MecanimEventBase
 	public bool wallThrough;
 	public bool quadThrough;
 	//public int bounceWallQuadCount;	// not supported
+	public bool registerCustomTargetPosition;
 
 #if UNITY_EDITOR
 	override public void OnGUI_PropertyWindow()
@@ -50,6 +51,7 @@ public class MeAttackIndicator : MecanimEventBase
 				case eCreatePositionType.LocalPosition:
 				case eCreatePositionType.TargetPosition:
 					offset = EditorGUILayout.Vector3Field("Offset :", offset);
+					registerCustomTargetPosition = EditorGUILayout.Toggle("Register Custom Target Position :", registerCustomTargetPosition);
 					break;
 				case eCreatePositionType.RushPosition:
 					offset.z = EditorGUILayout.FloatField("Distance Offset :", offset.z);
@@ -114,6 +116,9 @@ public class MeAttackIndicator : MecanimEventBase
 							createPosition = targetTransform.TransformPoint(offset);
 							createRotation = Quaternion.LookRotation(targetTransform.TransformDirection(startDirection));
 							parentTransform = targetTransform;
+
+							if (registerCustomTargetPosition)
+								_actor.targetingProcessor.SetCustomTargetPosition(createPosition);
 						}
 					}
 					else

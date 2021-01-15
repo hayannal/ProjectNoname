@@ -111,14 +111,14 @@ AnimatorState:
   m_StateMachineBehaviours:
   - {fileID: 1026580213795760944}
   m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
+  m_IKOnFeet: 1
   m_WriteDefaultValues: 1
-  m_Mirror: 0
+  m_Mirror: 1
   m_SpeedParameterActive: 0
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 5c3ffc51b8db17b47824cf9c3e5652d4, type: 3}
+  m_Motion: {fileID: 7400000, guid: fde11d335af76ba458631b22ed8ffe40, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -136,11 +136,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e43e6a362dfb1b54e87ca9ea29c0926b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.02
+  StartTime: 0.19
   EndTime: 0.6
   distanceOffset: 0.001
   useTransform: 1
   transformMoveUseDelta: 0
+  useRegisterdCustomTargetPosition: 1
 --- !u!114 &-7226574494273476350
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -431,7 +432,7 @@ AnimatorState:
   - {fileID: -6220184889740427975}
   - {fileID: 2881674016000882105}
   m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
+  m_IKOnFeet: 1
   m_WriteDefaultValues: 1
   m_Mirror: 0
   m_SpeedParameterActive: 0
@@ -488,11 +489,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e43e6a362dfb1b54e87ca9ea29c0926b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.02
+  StartTime: 0.19
   EndTime: 0.6
   distanceOffset: 0.001
   useTransform: 1
   transformMoveUseDelta: 0
+  useRegisterdCustomTargetPosition: 1
 --- !u!114 &-5460895713956565525
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -970,6 +972,7 @@ MonoBehaviour:
   sphereCastRadius: 0.2
   wallThrough: 0
   quadThrough: 0
+  registerCustomTargetPosition: 1
 --- !u!114 &-3811522096448618253
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -1166,6 +1169,7 @@ MonoBehaviour:
   sphereCastRadius: 0.2
   wallThrough: 0
   quadThrough: 0
+  registerCustomTargetPosition: 1
 --- !u!114 &-2269084097258015668
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -1315,7 +1319,7 @@ AnimatorState:
   - {fileID: 671228497620431669}
   - {fileID: 5772506938581093472}
   m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
+  m_IKOnFeet: 1
   m_WriteDefaultValues: 1
   m_Mirror: 0
   m_SpeedParameterActive: 0
@@ -1471,6 +1475,7 @@ MonoBehaviour:
   sphereCastRadius: 0.2
   wallThrough: 0
   quadThrough: 0
+  registerCustomTargetPosition: 0
 --- !u!114 &563951862157878313
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -1972,6 +1977,7 @@ MonoBehaviour:
   sphereCastRadius: 0.2
   wallThrough: 0
   quadThrough: 0
+  registerCustomTargetPosition: 1
 --- !u!114 &2437955909443718290
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -2601,6 +2607,7 @@ MonoBehaviour:
   sphereCastRadius: 0.2
   wallThrough: 0
   quadThrough: 0
+  registerCustomTargetPosition: 0
 --- !u!114 &7219037655650624637
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -2740,7 +2747,7 @@ AnimatorState:
   - {fileID: -3811522096448618253}
   - {fileID: -303329150685150736}
   m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
+  m_IKOnFeet: 1
   m_WriteDefaultValues: 1
   m_Mirror: 0
   m_SpeedParameterActive: 0
@@ -2779,11 +2786,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e43e6a362dfb1b54e87ca9ea29c0926b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.02
+  StartTime: 0.19
   EndTime: 0.6
   distanceOffset: 0.001
   useTransform: 1
   transformMoveUseDelta: 0
+  useRegisterdCustomTargetPosition: 1
 --- !u!1102 &8310359120360110225
 AnimatorState:
   serializedVersion: 5
@@ -2804,7 +2812,7 @@ AnimatorState:
   - {fileID: -3599969436185525550}
   - {fileID: -995825738319165705}
   m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
+  m_IKOnFeet: 1
   m_WriteDefaultValues: 1
   m_Mirror: 0
   m_SpeedParameterActive: 0

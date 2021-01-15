@@ -47,7 +47,7 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7253101741729949418}
   m_Enabled: 1
-  m_AgentTypeID: -902729914
+  m_AgentTypeID: -1923039037
   m_Radius: 0.5
   m_Speed: 3.5
   m_Acceleration: 8
@@ -87,7 +87,7 @@ CapsuleCollider:
   m_Material: {fileID: 13400000, guid: 176724f165ed631408775764c436d474, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.65
+  m_Radius: 0.5
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
@@ -107,7 +107,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   _groundLimit: 60
-  _stepOffset: 0.65
+  _stepOffset: 0.5
   _ledgeOffset: 0
   _castDistance: 0.5
   _triggerInteraction: 1
@@ -198,15 +198,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startDelayRange: {x: 0.25, y: 0.25}
   startState: 0
-  useStateList: 0100010101
+  useStateList: 010001010100
   moveTimeRange: {x: 5, y: 5}
   refreshTickTimeRange: {x: 1, y: 1}
   desireDistance: 5
+  straightMoveTimeRange: {x: 0, y: 0}
+  straightRefreshTickTimeRange: {x: 0, y: 0}
+  straightMoveType: 0
   customActionPlayType: 1
   customActionName: 
   customActionFadeDuration: 0.05
-  chaseDistanceRange: {x: 1.5, y: 1.5}
+  chaseDistanceRange: {x: 2.3, y: 2.7}
   chaseCancelTimeRange: {x: 4, y: 10}
+  cancelLeadsToAttack: 0
+  useFarawayMode: 0
+  chaseTryCountChangeFaraway: 0
+  farawayModeChangeRate: 0
   attackActionPlayType: 0
   attackActionName: Attack
   attackActionFadeDuration: 0.44
@@ -269,15 +276,27 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 400002, guid: 49a911d25a0c0a54daf16af0ffa3bd1e, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.95
+      objectReference: {fileID: 0}
+    - target: {fileID: 400002, guid: 49a911d25a0c0a54daf16af0ffa3bd1e, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.95
+      objectReference: {fileID: 0}
+    - target: {fileID: 400002, guid: 49a911d25a0c0a54daf16af0ffa3bd1e, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.95
+      objectReference: {fileID: 0}
+    - target: {fileID: 2300004, guid: 49a911d25a0c0a54daf16af0ffa3bd1e, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 919165dea34f7784cbfd46912aa61f58, type: 2}
     - target: {fileID: 9500000, guid: 49a911d25a0c0a54daf16af0ffa3bd1e, type: 3}
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: ba6e81a0007156444bd70e2fa724d1f6, type: 2}
     - target: {fileID: 13700000, guid: 49a911d25a0c0a54daf16af0ffa3bd1e, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 919165dea34f7784cbfd46912aa61f58, type: 2}
-    - target: {fileID: 2300004, guid: 49a911d25a0c0a54daf16af0ffa3bd1e, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 919165dea34f7784cbfd46912aa61f58, type: 2}

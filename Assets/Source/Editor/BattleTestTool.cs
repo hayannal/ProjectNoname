@@ -174,7 +174,10 @@ public class BattleTestTool : EditorWindow
 					}
 					if (GUILayout.Button("15Lv Pack"))
 					{
-						BattleInstanceManager.instance.playerActor.skillProcessor.CheckAllExclusiveLevelPack();
+						int prevStageLevel = StageManager.instance.playerLevel;
+						StageManager.instance.playerLevel = 15;
+						_playerActor.skillProcessor.CheckAllExclusiveLevelPack();
+						StageManager.instance.playerLevel = prevStageLevel;
 					}
 				}
 				GUILayout.EndHorizontal();

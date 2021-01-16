@@ -743,14 +743,20 @@ public class HitObject : MonoBehaviour
 				Vector3 attackerPosition = areaPosition;
 				Vector3 attackerForward = forward;
 				float length = diff.magnitude;
-				Actor attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(statusForHitObject.actorInstanceId);
-				if (attackerActor != null)
+				bool useAreaPosition = false;
+				// Bei나 Yuka가 쓰는 원거리 장판은 장판의 중심에서 판단해야해서 attackActor를 구할 필요가 없다.
+				if (meHit.lifeTime > 0 && Mathf.Abs(meHit.areaHeightMin - BurrowAffector.s_BurrowPositionY) < 0.01f) useAreaPosition = true;
+				if (useAreaPosition == false)
 				{
-					attackerPosition = attackerActor.cachedTransform.position;
-					attackerForward = attackerActor.cachedTransform.forward;
-					Vector3 attackerPositionDiff = BattleInstanceManager.instance.GetTransformFromCollider(col).position - attackerPosition;
-					attackerPositionDiff.y = 0.0f;
-					length = attackerPositionDiff.magnitude;
+					Actor attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(statusForHitObject.actorInstanceId);
+					if (attackerActor != null)
+					{
+						attackerPosition = attackerActor.cachedTransform.position;
+						attackerForward = attackerActor.cachedTransform.forward;
+						Vector3 attackerPositionDiff = BattleInstanceManager.instance.GetTransformFromCollider(col).position - attackerPosition;
+						attackerPositionDiff.y = 0.0f;
+						length = attackerPositionDiff.magnitude;
+					}
 				}
 				Vector3 contactPoint = Vector3.zero;
 				Vector3 contactNormal = Vector3.zero;

@@ -47,6 +47,9 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 	{
 		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
 
+		if (_onStartEffectTransform != null)
+			_onStartEffectTransform.gameObject.SetActive(false);
+
 		if (_onStartEffectPrefab != null)
 			_onStartEffectTransform = BattleInstanceManager.instance.GetCachedObject(_onStartEffectPrefab, _actor.cachedTransform.position, _actor.cachedTransform.rotation, null).transform;
 	}

@@ -128,7 +128,11 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 			playerPowerSourceIndex = actorTableData.powerSource;
 		powerSourceIconImage.sprite = null;
 		powerSourceIconImage.sprite = CommonCanvasGroup.instance.powerSourceIconSpriteList[playerPowerSourceIndex];
-		OnChangedSP(playerActor, true);
+
+		// 최초로 셋팅할때는 반짝일 필요 없다.
+		IgnoreBlink(true);
+		OnChangedSP(playerActor);
+		IgnoreBlink(false);
 	}
 
 	#region ButtonScale
@@ -387,11 +391,23 @@ public class SkillSlotIcon : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 	#endregion
 
 	#region SP
-	public void OnChangedSP(PlayerActor playerActor, bool ignoreBlink = false)
+	// OnChangedSP의 두번째 인자로 ignoreBlink를 제어하려다보니 AddSP부터 쭉 전달해야해서 불편하다.
+	// 그냥 ignoreBlink모드를 켰다 껐다 하는 식으로 처리하기로 한다.
+	bool _ignoreBlink = false;
+	public void IgnoreBlink(bool ignore)
 	{
+		_ignoreBlink = ignore;
+	}
+
+	public void OnChangedSP(PlayerActor playerActor)
+	{
+		// 설정된 플래그를 가져온다.
+		bool ignoreBlink = _ignoreBlink;
+
 		float spRatio = playerActor.actorStatus.GetSPRatio();
 		if (spRatio >= 1.0f)
 		{
+			// 설정된 플래그가 false더라도 풀로 찰때는 일부러 반짝이는 연출을 하지 않는다.
 			if (!spGaugeObject.activeSelf)
 				ignoreBlink = true;
 			

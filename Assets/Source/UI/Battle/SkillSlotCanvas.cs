@@ -53,4 +53,10 @@ public class SkillSlotCanvas : MonoBehaviour
 		if (_ultimateSkillSlotIcon != null)
 			_ultimateSkillSlotIcon.OnChangedSP(playerActor);
 	}
+
+	public void SetIgnoreSpBlink(bool ignoreBlink)
+	{
+		if (_ultimateSkillSlotIcon != null)
+			_ultimateSkillSlotIcon.IgnoreBlink(ignoreBlink);
+	}
 }

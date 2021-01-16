@@ -64,7 +64,12 @@ public class HealOverTimeAffector : AffectorBase
 				heal += (_hitParameterDamage * _affectorValueLevelTableData.fValue4);
 
 			if (healSpFlag)
+			{
+				bool ignoreBlink = (_affectorValueLevelTableData.iValue2 == 1);
+				if (ignoreBlink) SkillSlotCanvas.instance.SetIgnoreSpBlink(true);
 				_actor.actorStatus.AddSP(heal);
+				if (ignoreBlink) SkillSlotCanvas.instance.SetIgnoreSpBlink(false);
+			}
 			else
 				_actor.actorStatus.AddHP(heal);
 		}

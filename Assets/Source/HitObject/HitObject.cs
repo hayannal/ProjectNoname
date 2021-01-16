@@ -744,8 +744,12 @@ public class HitObject : MonoBehaviour
 				Vector3 attackerForward = forward;
 				float length = diff.magnitude;
 				bool useAreaPosition = false;
-				// Bei나 Yuka가 쓰는 원거리 장판은 장판의 중심에서 판단해야해서 attackActor를 구할 필요가 없다.
-				if (meHit.lifeTime > 0 && Mathf.Abs(meHit.areaHeightMin - BurrowAffector.s_BurrowPositionY) < 0.01f) useAreaPosition = true;
+				// Bei나 Yuka가 쓰는 원거리 장판은 장판의 중심에서 몹사이를 판단해야해서 attackActor를 구할 필요가 없지만 areaForward를 다시 구해야한다.
+				if (meHit.lifeTime > 0 && Mathf.Abs(meHit.areaHeightMin - BurrowAffector.s_BurrowPositionY) < 0.01f)
+				{
+					useAreaPosition = true;
+					attackerForward = diff.normalized;
+				}
 				if (useAreaPosition == false)
 				{
 					Actor attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(statusForHitObject.actorInstanceId);

@@ -728,6 +728,10 @@ public class BattleModeProcessorBase
 	{
 	}
 
+	public virtual void OnGetInvincibleOrb(Vector3 getPosition)
+	{
+	}
+
 
 	public virtual void OnTryActiveExitArea()
 	{

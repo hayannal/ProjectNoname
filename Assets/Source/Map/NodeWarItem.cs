@@ -12,6 +12,7 @@ public class NodeWarItem : MonoBehaviour
 		BoostOrb,
 		SpecialPack,
 		SpHealOrb,
+		InvincibleOrb,
 	}
 
 	public eItemType itemType;
@@ -40,6 +41,11 @@ public class NodeWarItem : MonoBehaviour
 	public float pullAcceleration = 2.0f;
 	public Transform trailTransform;
 
+	// InvincibleOrb만 사용하는 수명값이다.
+	[Space(10)]
+	public float lifeTime = 0.0f;
+	public DOTweenAnimation lifeTimeTweenAnimation;
+
 	static int s_particleColorPropertyID;
 	Color _particleDefaultColor;
 
@@ -57,6 +63,12 @@ public class NodeWarItem : MonoBehaviour
 			trailTransform.gameObject.SetActive(false);
 
 		InitializeJump();
+
+		if (lifeTime > 0.0f)
+		{
+			lifeTimeTweenAnimation.transform.localScale = Vector3.one;
+			_remainLifeTime = lifeTime;
+		}
 	}
 
 	void OnDisable()
@@ -82,6 +94,7 @@ public class NodeWarItem : MonoBehaviour
 		UpdatePull();
 		UpdateDistance();
 		UpdateAlpha();
+		UpdateLifeTime();
 	}
 
 	const float ValidDistance = 30.0f;
@@ -228,7 +241,19 @@ public class NodeWarItem : MonoBehaviour
 				BattleManager.instance.OnGetSpHealOrb(cachedTransform.position);
 				_waitEndAnimation = true;
 				break;
+			case eItemType.InvincibleOrb:
+				BattleManager.instance.OnGetInvincibleOrb(cachedTransform.position);
+				_waitEndAnimation = true;
+				break;
 		}
+
+		ProcessEndAnimation();
+	}
+
+	public void ProcessEndAnimation(bool forceEndAnimation = false)
+	{
+		if (forceEndAnimation)
+			_waitEndAnimation = true;
 
 		if (_waitEndAnimation)
 		{
@@ -245,6 +270,30 @@ public class NodeWarItem : MonoBehaviour
 	{
 		gameObject.SetActive(false);
 	}
+
+	#region LifeTime
+	float _remainLifeTime;
+	void UpdateLifeTime()
+	{
+		if (_remainLifeTime > 0.0f)
+		{
+			_remainLifeTime -= Time.deltaTime;
+			if (_remainLifeTime <= 0.0f)
+			{
+				_remainLifeTime = 0.0f;
+
+				// 오브젝트에 걸려있는 트윈애니메이션을 실행시키고 끝날때 OnComplete으로 올거다.
+				lifeTimeTweenAnimation.DORestart();
+			}
+		}
+	}
+
+	public void OnCompleteLifeTimeAnimation()
+	{
+		// 라이프타임이 끝나면 먹진 않았지만 획득애니 처리 후 삭제되게 한다.
+		ProcessEndAnimation(true);
+	}
+	#endregion
 
 
 

@@ -44,6 +44,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		UpdateSpawnHealOrb();
 		UpdateSpawnSpHealOrb();
 		UpdateSpawnBoostOrb();
+		UpdateSpawnInvincibleOrb();
 		UpdateEndProcess();
 	}
 
@@ -189,6 +190,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		_soulSpawnRemainTime = SoulSpawnDelay;
 		_healOrbSpawnRemainTime = HealOrbSpawnDelay;
 		_boostOrbSpawnRemainTime = BoostOrbSpawnDelay;
+		_invincibleOrbSpawnRemainTime = Random.Range(InvincibleOrbSpawnDelayMin, InvincibleOrbSpawnDelayMax);
 		BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarRule1Mind"), 3.5f);
 
 		// 패시브 스킬로 OnStartStage 이벤트 쓰는 캐릭들이 있어서 추가해둔다. 대표적으로 스팀펑크 로봇.
@@ -698,6 +700,102 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		boostAffectorValue.iValue1 = (int)ActorStatusDefine.eActorStatus.MoveSpeed;
 		BattleInstanceManager.instance.playerActor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.ChangeActorStatus, boostAffectorValue, BattleInstanceManager.instance.playerActor, false);
 		BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.boostOrbGetEffectPrefab, getPosition, Quaternion.identity);
+	}
+	#endregion
+
+	#region Invincible Orb
+	// 동시에 하나만 존재해야하며 수집 페이즈가 넘어서면 있던걸 삭제해야하고 더이상 생성하지 말아야한다.
+	NodeWarItem _cachedNodeWarInvincibleOrb;
+	float _invincibleOrbSpawnRemainTime;
+	const float InvincibleOrbSpawnDelayMin = 15.0f;
+	const float InvincibleOrbSpawnDelayMax = 60.0f;
+	void UpdateSpawnInvincibleOrb()
+	{
+		if (_phase != ePhase.FindSoul)
+		{
+			// 페이즈 넘어갈때 만들어져있는게 있다면 삭제하는 코드는 라이프타임이 들어가면서 쓰지 않기로 한다.
+			//if (_cachedNodeWarInvincibleOrb != null && _cachedNodeWarInvincibleOrb.gameObject.activeSelf)
+			//{
+			//	_cachedNodeWarInvincibleOrb.ProcessEndAnimation(true);
+			//	_cachedNodeWarInvincibleOrb = null;
+			//}
+			return;
+		}
+
+		if (BattleInstanceManager.instance.playerActor.actionController.mecanimState.IsState((int)eMecanimState.Move) == false)
+			return;
+		if (BattleInstanceManager.instance.playerActor.affectorProcessor.IsContinuousAffectorType(eAffectorType.Invincible))
+			return;
+
+		if (_cachedNodeWarInvincibleOrb != null)
+		{
+			if (_cachedNodeWarInvincibleOrb.gameObject.activeSelf)
+			{
+				return;
+			}
+			else
+			{
+				// 거리에 의해 꺼졌을 가능성도 있다. 혹은 자체 라이프 타임에 의해 꺼졌을 가능성도 있다. 이럴땐 null로 바꾸고 다음 스탭 진행
+				_cachedNodeWarInvincibleOrb = null;
+			}
+		}
+
+		_invincibleOrbSpawnRemainTime -= Time.deltaTime;
+		if (_invincibleOrbSpawnRemainTime < 0.0f)
+		{
+			if (NodeWarItem.GetActiveItemCount(BattleInstanceManager.instance.playerActor.cachedTransform.position, SpawnDistance) >= 2)
+			{
+				_invincibleOrbSpawnRemainTime += 1.0f;
+				return;
+			}
+
+			Vector2 normalizedOffset = Random.insideUnitCircle.normalized;
+			Vector2 randomOffset = normalizedOffset * Random.Range(1.1f, 1.2f) * SpawnDistance;
+			Vector3 desirePosition = BattleInstanceManager.instance.playerActor.cachedTransform.position + new Vector3(randomOffset.x, 0.0f, randomOffset.y);
+			GameObject invincibleOrbObject = BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.invincibleOrbPrefab, desirePosition, Quaternion.identity);
+			_cachedNodeWarInvincibleOrb = invincibleOrbObject.GetComponent<NodeWarItem>();
+			_invincibleOrbSpawnRemainTime += (Random.Range(InvincibleOrbSpawnDelayMin, InvincibleOrbSpawnDelayMax) + _invincibleOrbGetCount * 60.0f);
+		}
+	}
+
+	static string s_generatedHealOverTimeId = "_generatedId_NodeWarHealOverTime";
+	static string s_generatedMoveSpeedId = "_generatedId_NodeWarMoveSpeed";
+	static string s_generatedInvincibleId = "_generatedId_NodeWarInvincible";
+	int _invincibleOrbGetCount = 0;
+	public override void OnGetInvincibleOrb(Vector3 getPosition)
+	{
+		PlayerActor playerActor = BattleInstanceManager.instance.playerActor;
+		float duration = 10.0f;
+
+		AffectorValueLevelTableData healOverTimeAffectorValue = new AffectorValueLevelTableData();
+		healOverTimeAffectorValue.affectorValueId = s_generatedHealOverTimeId;
+		healOverTimeAffectorValue.fValue1 = duration;
+		healOverTimeAffectorValue.fValue2 = 0.033f;
+		healOverTimeAffectorValue.fValue3 = 0.033f; // BattleInstanceManager.instance.GetCachedGlobalConstantFloat("NodeWarHeal");
+		healOverTimeAffectorValue.iValue1 = 1;
+		healOverTimeAffectorValue.iValue2 = 1;	// ignoreBlinkSp
+		playerActor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.HealOverTime, healOverTimeAffectorValue, playerActor, false);
+
+		AffectorValueLevelTableData boostAffectorValue = new AffectorValueLevelTableData();
+		boostAffectorValue.affectorValueId = s_generatedMoveSpeedId;
+		boostAffectorValue.fValue1 = duration;
+		boostAffectorValue.fValue2 = 0.75f;
+		boostAffectorValue.iValue1 = (int)ActorStatusDefine.eActorStatus.MoveSpeed;
+		playerActor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.ChangeActorStatus, boostAffectorValue, playerActor, false);
+
+		AffectorValueLevelTableData invincibleAffectorValue = new AffectorValueLevelTableData();
+		invincibleAffectorValue.affectorValueId = s_generatedInvincibleId;
+		invincibleAffectorValue.fValue1 = duration;
+		playerActor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Invincible, invincibleAffectorValue, playerActor, false);
+
+		BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.invincibleOrbGetEffectPrefab, getPosition, Quaternion.identity);
+
+		Transform buffEffectTransform = BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.invincibleBuffEffectPrefab, playerActor.cachedTransform.position, Quaternion.identity).transform;
+		FollowTransform.Follow(buffEffectTransform, playerActor.cachedTransform, Vector3.zero);
+
+		// 버프 처리를 하고나선 다시 생성될 수 있도록 리셋
+		_invincibleOrbGetCount++;
+		_cachedNodeWarInvincibleOrb = null;
 	}
 	#endregion
 

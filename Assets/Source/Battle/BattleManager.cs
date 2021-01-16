@@ -190,6 +190,11 @@ public class BattleManager : MonoBehaviour
 		_currentBattleMode.OnGetBoostOrb(getPosition);
 	}
 
+	public void OnGetInvincibleOrb(Vector3 getPosition)
+	{
+		_currentBattleMode.OnGetInvincibleOrb(getPosition);
+	}
+
 
 	public void OnTryActiveExitArea()
 	{

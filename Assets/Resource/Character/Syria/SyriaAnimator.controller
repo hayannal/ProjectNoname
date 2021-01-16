@@ -35,8 +35,10 @@ MonoBehaviour:
   offset: {x: 0, y: 0, z: 0}
   fixedWorldPositionY: 0
   direction: {x: 0, y: 0, z: 1}
+  useWorldSpaceDirection: 0
   parentName: 
   followPosition: 0
+  immediateDisableFollowEffect: 0
 --- !u!114 &-6792190852366882244
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -175,8 +177,10 @@ MonoBehaviour:
   offset: {x: 0, y: 0, z: 0}
   fixedWorldPositionY: 0
   direction: {x: 0, y: 0, z: 1}
+  useWorldSpaceDirection: 0
   parentName: 
   followPosition: 1
+  immediateDisableFollowEffect: 1
 --- !u!114 &-2567610659293185601
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -220,6 +224,7 @@ MonoBehaviour:
   areaHeightMax: 2
   areaAngle: 135
   checkRaycastWallInArea: 0
+  raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
   repeatCount: 0
   repeatInterval: 0
@@ -338,6 +343,7 @@ MonoBehaviour:
   areaHeightMax: 0
   areaAngle: 0
   checkRaycastWallInArea: 0
+  raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
   repeatCount: 0
   repeatInterval: 0
@@ -582,8 +588,10 @@ MonoBehaviour:
   offset: {x: 0, y: 0.8, z: 0}
   fixedWorldPositionY: 0
   direction: {x: 0, y: 0, z: 1}
+  useWorldSpaceDirection: 0
   parentName: 
   followPosition: 0
+  immediateDisableFollowEffect: 0
 --- !u!114 &1713618744503645604
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -642,6 +650,7 @@ MonoBehaviour:
   areaHeightMax: 2
   areaAngle: 135
   checkRaycastWallInArea: 0
+  raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
   repeatCount: 0
   repeatInterval: 0
@@ -847,6 +856,7 @@ MonoBehaviour:
   iValue: 0
   bValue: 0
   triggerValue: 0
+  useRandombValue: 0
 --- !u!1102 &7414550577343486471
 AnimatorState:
   serializedVersion: 5
@@ -910,8 +920,10 @@ MonoBehaviour:
   offset: {x: 0, y: 0.8, z: 0}
   fixedWorldPositionY: 0
   direction: {x: 0, y: 0, z: 1}
+  useWorldSpaceDirection: 0
   parentName: 
   followPosition: 0
+  immediateDisableFollowEffect: 0
 --- !u!1102 &8503796429965771016
 AnimatorState:
   serializedVersion: 5

@@ -15,6 +15,7 @@ public class MeEffect : MecanimEventBase {
 	public bool useWorldSpaceDirection;
 	public string parentName;
 	public bool followPosition;
+	public bool immediateDisableFollowEffect;
 
 #if UNITY_EDITOR
 	override public void OnGUI_PropertyWindow()
@@ -36,7 +37,12 @@ public class MeEffect : MecanimEventBase {
 	{
 		// follow할때는 동시에 하나만 존재해야 겹치지 않는다.
 		if (followPosition && _followEffectTransform != null && _followEffectTransform.gameObject.activeSelf)
-			DisableParticleEmission.DisableEmission(_followEffectTransform);
+		{
+			if (immediateDisableFollowEffect)
+				_followEffectTransform.gameObject.SetActive(false);
+			else
+				DisableParticleEmission.DisableEmission(_followEffectTransform);
+		}
 
 		GameObject effectObject = null;
 		if (string.IsNullOrEmpty(parentName))

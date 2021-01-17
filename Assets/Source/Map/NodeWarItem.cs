@@ -273,6 +273,7 @@ public class NodeWarItem : MonoBehaviour
 
 	#region LifeTime
 	float _remainLifeTime;
+	float _remainTweenTime;
 	void UpdateLifeTime()
 	{
 		if (_remainLifeTime > 0.0f)
@@ -282,16 +283,28 @@ public class NodeWarItem : MonoBehaviour
 			{
 				_remainLifeTime = 0.0f;
 
-				// 오브젝트에 걸려있는 트윈애니메이션을 실행시키고 끝날때 OnComplete으로 올거다.
+				// 총 3초짜리로 해놓고 계속 쉐이크 되게 하다가
 				lifeTimeTweenAnimation.DORestart();
+				_remainTweenTime = 2.0f;
 			}
 		}
-	}
 
-	public void OnCompleteLifeTimeAnimation()
-	{
-		// 라이프타임이 끝나면 먹진 않았지만 획득애니 처리 후 삭제되게 한다.
-		ProcessEndAnimation(true);
+		if (_remainTweenTime > 0.0f)
+		{
+			_remainTweenTime -= Time.deltaTime;
+			if (_remainTweenTime <= 0.0f)
+			{
+				_remainTweenTime = 0.0f;
+
+				// 2초만 재생하고 쉐이크를 멈추고 스케일 애니를 적용시킨다.
+				lifeTimeTweenAnimation.DOPause();
+				lifeTimeTweenAnimation.transform.DOScale(new Vector3(0.0f, 0.0f, 0.0f), 0.3f).SetEase(Ease.Linear).onComplete = () => {
+
+					// 라이프타임이 끝나면 먹진 않았지만 획득애니 처리 후 삭제되게 한다.
+					ProcessEndAnimation(true);
+				};
+			}
+		}
 	}
 	#endregion
 

@@ -246,7 +246,7 @@ public class BalanceCanvas : MonoBehaviour
 		return powerLevel;
 	}
 
-	void RefreshSliderPrice()
+	void RefreshSliderPrice(bool resetUseCount = true)
 	{
 		int maxCount = PlayerData.instance.balancePp;
 		if (_targetPpCharacter == null)
@@ -263,8 +263,16 @@ public class BalanceCanvas : MonoBehaviour
 
 		useCountSlider.minValue = 0.0f;
 		useCountSlider.maxValue = maxCount;
-		useCountSlider.value = 0.0f;
-		OnValueChangedRepeatCount(0.0f);
+
+		if (resetUseCount)
+		{
+			useCountSlider.value = 0.0f;
+			OnValueChangedRepeatCount(0.0f);
+		}
+		else
+		{
+			OnValueChangedRepeatCount(_sliderCount);
+		}
 	}
 
 	void RefreshRemainTime()
@@ -406,6 +414,10 @@ public class BalanceCanvas : MonoBehaviour
 					myBalancePpValueText.text = PlayerData.instance.balancePp.ToString("N0");
 					ToastCanvas.instance.ShowToast(UIString.instance.GetString("BalanceUI_PurchaseDone"), 2.0f);
 					RefreshRemainTime();
+
+					// 등록이 되어있다면 슬라이더 값을 다시 설정하는데 사용량은 그대로 놔둬야한다.
+					if (_targetPpCharacter != null)
+						RefreshSliderPrice(false);
 				});
 			});
 		});

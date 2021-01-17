@@ -765,7 +765,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	public override void OnGetInvincibleOrb(Vector3 getPosition)
 	{
 		PlayerActor playerActor = BattleInstanceManager.instance.playerActor;
-		float duration = 10.0f;
+		float duration = 12.5f;
 
 		AffectorValueLevelTableData healOverTimeAffectorValue = new AffectorValueLevelTableData();
 		healOverTimeAffectorValue.affectorValueId = s_generatedHealOverTimeId;

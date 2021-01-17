@@ -62,7 +62,16 @@ public class ActorStatus : MonoBehaviour
 
 			// equip
 			for (int i = 0; i < _statusBase.valueList.Length; ++i)
-				_statusBase.valueList[i] += TimeSpaceData.instance.cachedEquipStatusList.valueList[i];
+			{
+				if (i == (int)eActorStatus.Attack)
+				{
+					// 장비의 주 스탯인 공격의 경우엔 파워레벨에 따라서 적용할 수 있는 배율값이 장비 등급에 따라 달라진다.
+					// 그래서 합산해둔 값을 사용할 수 없어서 TimeSpaceData에서 계산해서 가져와야한다.
+					_statusBase.valueList[i] += TimeSpaceData.instance.GetCachedEquipAttackStatusWithEfficiency(powerLevelTableData.equipEfficiency);
+				}
+				else
+					_statusBase.valueList[i] += TimeSpaceData.instance.cachedEquipStatusList.valueList[i];
+			}
 
 			// research
 			if (PlayerData.instance.researchLevel > 0)

@@ -226,6 +226,29 @@ public class TimeSpaceData
 		}
 	}
 
+	public float GetCachedEquipAttackStatusWithEfficiency(float[] equipEfficiency)
+	{
+		float result = 0.0f;
+		Dictionary<int, EquipData>.Enumerator e = _dicEquippedData.GetEnumerator();
+		while (e.MoveNext())
+		{
+			EquipData equipData = e.Current.Value;
+			if (equipData == null)
+				continue;
+
+			// 이제 모든 템은 기본값이 Attack인데 이걸 그냥 쓰는게 아니라 efficiency에 따라 곱해져서 누적해야한다.
+			float mainValue = equipData.mainStatusValue;
+			if (equipData.cachedEquipTableData.innerGrade < equipEfficiency.Length)
+				mainValue *= equipEfficiency[equipData.cachedEquipTableData.innerGrade];
+			result += mainValue;
+
+			// 옵션으로 붙은 공격력의 경우엔 보정 처리 없이 그냥 더해준다. 보정 안받는단 얘기.
+			if ((int)eActorStatus.Attack < equipData.equipStatusList.valueList.Length)
+				result += equipData.equipStatusList.valueList[(int)eActorStatus.Attack];
+		}
+		return result;
+	}
+
 	EquipData FindEquipData(string uniqueId, eEquipSlotType equipSlotType)
 	{
 		List<EquipData> listEquipData = GetEquipListByType(equipSlotType);

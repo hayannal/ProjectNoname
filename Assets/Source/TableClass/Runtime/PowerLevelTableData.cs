@@ -48,4 +48,8 @@ public class PowerLevelTableData
   int _requiredGold;
   public int requiredGold { get { return _requiredGold; } set { _requiredGold = value; } }
   
+  [SerializeField]
+  float[] _equipEfficiency = new float[0];
+  public float[] equipEfficiency { get { return _equipEfficiency; } set { _equipEfficiency = value; } }
+  
 }

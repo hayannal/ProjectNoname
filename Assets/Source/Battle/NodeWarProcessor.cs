@@ -796,6 +796,19 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		// 버프 처리를 하고나선 다시 생성될 수 있도록 리셋
 		_invincibleOrbGetCount++;
 		_cachedNodeWarInvincibleOrb = null;
+
+		Timing.RunCoroutine(ScreenBlinkEffectProcess());
+	}
+
+	IEnumerator<float> ScreenBlinkEffectProcess()
+	{
+		FadeCanvas.instance.FadeOut(0.2f, 0.6f);
+		yield return Timing.WaitForSeconds(0.2f);
+
+		if (this == null)
+			yield break;
+
+		FadeCanvas.instance.FadeIn(0.8f);
 	}
 	#endregion
 

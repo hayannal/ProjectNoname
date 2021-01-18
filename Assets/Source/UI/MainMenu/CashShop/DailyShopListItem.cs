@@ -361,12 +361,10 @@ public class DailyShopListItem : MonoBehaviour
 		}
 	}
 
-	public static Color s_basicBlurImageColor = new Color(0.094f, 0.945f, 0.871f, 0.42f);
-	public static Color s_basicBackgroundImageColor = new Color(0.0f, 1.0f, 0.749f, 0.42f);
 	void RefreshBackground(bool isLightenBackground)
 	{
-		blurImage.color = isLightenBackground ? new Color(0.945f, 0.945f, 0.094f, 0.42f) : s_basicBlurImageColor;
-		backgroundImge.color = isLightenBackground ? new Color(1.0f, 1.0f, 1.0f, 0.42f) : s_basicBackgroundImageColor;
+		blurImage.color = isLightenBackground ? new Color(0.945f, 0.945f, 0.094f, 0.42f) : new Color(0.094f, 0.945f, 0.871f, 0.42f);
+		backgroundImge.color = isLightenBackground ? new Color(1.0f, 1.0f, 1.0f, 0.42f) : new Color(0.0f, 1.0f, 0.749f, 0.42f);
 		backgroundImge.sprite = backgroundSpriteList[isLightenBackground ? 0 : 1];
 	}
 	

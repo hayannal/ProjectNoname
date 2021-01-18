@@ -10,10 +10,9 @@ public class DailyShopMinorInfo : MonoBehaviour
 	public DailyShopListItem[] dailyShopListItemList;
 	public GridLayoutGroup gridLayoutGroup;
 
-	public RectTransform slotAddButtonRectTransform;
-	public Image slotAddBlurImage;
-	public Image slotAddBackgroundImage;
+	public RectTransform slotAddItemTransform;
 	public Text slotAddSubText;
+	public Text slotAddPriceText;
 
 	int _itemCountOfLine = 3;
 	float _defaultHeight = 512.0f;
@@ -21,7 +20,7 @@ public class DailyShopMinorInfo : MonoBehaviour
 
 	public void RefreshInfo()
 	{
-		// 6그리드의 가장 첫번재 항목은 항상 일일 무료 아이템이다. 이건 사라지지 않는다.
+		// 9그리드의 가장 첫번재 항목은 항상 일일 무료 아이템이다. 이건 사라지지 않는다.
 		// 그래서 데이터도 DailyShopData를 받아오는게 아니라 클라가 가지고 있는 테이블에서 가져와서 셋팅한다.
 		dailyFreeItem.RefreshInfo();
 		RefreshShopItemInfo();
@@ -45,7 +44,6 @@ public class DailyShopMinorInfo : MonoBehaviour
 
 		// 각각의 슬롯 정보를 확인했으면 슬롯 확장이 되는 상태인지를 봐야한다.
 		bool showShopSlotAddButton = false;
-		float additionalHeight = 0.0f;
 		int currentShopUnlockLevel = DailyShopData.instance.unlockLevel;
 		for (int i = 0; i < _slotAddChapterList.Length; ++i)
 		{
@@ -61,33 +59,42 @@ public class DailyShopMinorInfo : MonoBehaviour
 		if (showShopSlotAddButton)
 		{
 			string subTextStringId = "";
+			int price = 0;
 			switch (currentShopUnlockLevel)
 			{
-				case 0: subTextStringId = "ShopUIName_ExtendPeriodicFirstSub"; break;
-				case 1: subTextStringId = "ShopUIName_ExtendPeriodicSecondSub"; break;
-				case 2: subTextStringId = "ShopUIName_ExtendPeriodicThirdSub"; break;
+				case 0:
+					subTextStringId = "ShopUIName_ExtendPeriodicFirstSub";
+					price = BattleInstanceManager.instance.GetCachedGlobalConstantInt("ExtendPeriodShopOne");
+					break;
+				case 1:
+					subTextStringId = "ShopUIName_ExtendPeriodicSecondSub";
+					price = BattleInstanceManager.instance.GetCachedGlobalConstantInt("ExtendPeriodShopTwo");
+					break;
+				case 2:
+					subTextStringId = "ShopUIName_ExtendPeriodicThirdSub";
+					price = BattleInstanceManager.instance.GetCachedGlobalConstantInt("ExtendPeriodShopThree");
+					break;
 			}
 			slotAddSubText.SetLocalizedText(UIString.instance.GetString(subTextStringId));
-			slotAddBlurImage.color = DailyShopListItem.s_basicBlurImageColor;
-			slotAddBackgroundImage.color = DailyShopListItem.s_basicBackgroundImageColor;
-			additionalHeight = slotAddButtonRectTransform.sizeDelta.y + gridLayoutGroup.spacing.y;
-			slotAddButtonRectTransform.gameObject.SetActive(true);
+			slotAddPriceText.text = price.ToString("N0");
+			slotAddItemTransform.gameObject.SetActive(true);
+			++activeItemCount;
 		}
 		else
-			slotAddButtonRectTransform.gameObject.SetActive(false);
+			slotAddItemTransform.gameObject.SetActive(false);
 
 		// 0번 아이템은 일일 무료라 항상 존재하기 때문에 아에 없어지는 경우는 없고 최소 한줄은 나온다.
 		int lineCount = (activeItemCount / _itemCountOfLine) + 1;
 		switch (lineCount)
 		{
 			case 1:
-				rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, _defaultHeight - (gridLayoutGroup.cellSize.y + gridLayoutGroup.spacing.y) * 2.0f + additionalHeight);
+				rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, _defaultHeight - (gridLayoutGroup.cellSize.y + gridLayoutGroup.spacing.y) * 2.0f);
 				break;
 			case 2:
-				rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, _defaultHeight - (gridLayoutGroup.cellSize.y + gridLayoutGroup.spacing.y) + additionalHeight);
+				rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, _defaultHeight - (gridLayoutGroup.cellSize.y + gridLayoutGroup.spacing.y));
 				break;
 			case 3:
-				rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, _defaultHeight + additionalHeight);
+				rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, _defaultHeight);
 				break;
 		}
 	}

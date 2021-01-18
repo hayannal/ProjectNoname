@@ -34,11 +34,11 @@ public class DailyShopMajorInfo : MonoBehaviour
 		_dailyResetTime = DailyShopData.instance.dailyShopSlotPurchasedResetTime;
 		_needUpdate = true;
 
-		// 5번 6번이 상단에 나오는 큰 아이템 두개다.
-		// 7번 8번과 달리 구매했어도 blackObject로 가려져서 보여져야한다.
+		// 8번 9번이 상단에 나오는 큰 아이템 두개다.
+		// 10번 11번과 달리 구매했어도 blackObject로 가려져서 보여져야한다.
 		int showCount = 0;
-		DailyShopData.DailyShopSlotInfo dailyShopSlotInfo1 = DailyShopData.instance.GetTodayShopData(5);
-		DailyShopData.DailyShopSlotInfo dailyShopSlotInfo2 = DailyShopData.instance.GetTodayShopData(6);
+		DailyShopData.DailyShopSlotInfo dailyShopSlotInfo1 = DailyShopData.instance.GetTodayShopData(8);
+		DailyShopData.DailyShopSlotInfo dailyShopSlotInfo2 = DailyShopData.instance.GetTodayShopData(9);
 		dailyShopListItem1.gameObject.SetActive(dailyShopSlotInfo1 != null);
 		dailyShopListItem2.gameObject.SetActive(dailyShopSlotInfo2 != null);
 		if (dailyShopSlotInfo1 != null)

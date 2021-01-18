@@ -24,7 +24,7 @@ public class DailyShopData : MonoBehaviour
 	}
 	static DailyShopData _instance = null;
 
-	public const int ShopSlotMax = 8;
+	public const int ShopSlotMax = 11;
 
 	public class DailyShopSlotInfo
 	{
@@ -65,6 +65,9 @@ public class DailyShopData : MonoBehaviour
 	// 구매여부 리스트. 5일짜리로 보이는 7번 8번 항목도 사실은 일일 구매 여부로 관리된다. 대신 같은 캐릭터로 연속되어있어서 한번 사면 보이지 않을뿐인거다.
 	List<ObscuredBool> _listShopSlotPurchased;
 	public DateTime dailyShopSlotPurchasedResetTime { get; private set; }
+
+	// 유료 슬롯 언락단계. 계정 생성하면 0으로 시작해서 세번 다 오픈해야 3으로 되는 구조다.
+	public ObscuredInt unlockLevel { get; set; }
 
 	void Update()
 	{
@@ -158,15 +161,24 @@ public class DailyShopData : MonoBehaviour
 		}
 		else
 			dailyShopRefreshTime += TimeSpan.FromDays(1);
+
+		// 유료 슬롯 개방 여부
+		unlockLevel = 0;
+		if (userReadOnlyData.ContainsKey("shpUnlckLv"))
+		{
+			int intValue = 0;
+			if (int.TryParse(userReadOnlyData["shpUnlckLv"].Value, out intValue))
+				unlockLevel = intValue;
+		}
 	}
 
 	List<string> _listLoadKey = new List<string>();
 	IEnumerator LoadDailyEquipIconAsync()
 	{
-		// 오늘의 일일상점 장비 데이터 아이콘은 미리 로딩해둔다. 장비가 나오는 공간은 5개까지이므로 5개까지만 체크해둔다.
+		// 오늘의 일일상점 장비 데이터 아이콘은 미리 로딩해둔다. 장비가 나오는 공간은 8개까지이므로 8개까지만 체크해둔다.
 		// LateInitialize에서 해야 씬 이동하고나서도 다시 로드된다.
 		_listLoadKey.Clear();
-		for (int i = 0; i < 5; ++i)
+		for (int i = 0; i < 8; ++i)
 		{
 			DailyShopData.DailyShopSlotInfo dailyShopSlotInfo = DailyShopData.instance.GetTodayShopData(i);
 			if (dailyShopSlotInfo == null)

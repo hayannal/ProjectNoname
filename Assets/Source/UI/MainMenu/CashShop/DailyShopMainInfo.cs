@@ -18,12 +18,12 @@ public class DailyShopMainInfo : MonoBehaviour
 
 	public void RefreshInfo()
 	{
-		// 7번 8번이 최상단에 나오는 큰 아이템 두개다. 기간이 긴 아이템을 위로 빼서 보여주는데 쓴다.
+		// 10번 11번이 최상단에 나오는 큰 아이템 두개다. 기간이 긴 아이템을 위로 빼서 보여주는데 쓴다.
 		// 둘다 없으면 이 항목 통쨰로 숨겨둔다.
-		// 5번 6번과 달리 예외처리가 하나 있는데 두 아이템 모두 보여줄 필요가 없을땐 통째로 숨긴다는거다.
+		// 8번 9번과 달리 예외처리가 하나 있는데 두 아이템 모두 보여줄 필요가 없을땐 통째로 숨긴다는거다.
 		int showCount = 0;
-		DailyShopData.DailyShopSlotInfo dailyShopSlotInfo1 = DailyShopData.instance.GetTodayShopData(7);
-		DailyShopData.DailyShopSlotInfo dailyShopSlotInfo2 = DailyShopData.instance.GetTodayShopData(8);
+		DailyShopData.DailyShopSlotInfo dailyShopSlotInfo1 = DailyShopData.instance.GetTodayShopData(10);
+		DailyShopData.DailyShopSlotInfo dailyShopSlotInfo2 = DailyShopData.instance.GetTodayShopData(11);
 		DailyShopData.DailyShopSlotInfo selectedSlotInfo = null;
 		dailyShopListItem1.gameObject.SetActive(dailyShopSlotInfo1 != null);
 		dailyShopListItem2.gameObject.SetActive(dailyShopSlotInfo2 != null);
@@ -48,7 +48,7 @@ public class DailyShopMainInfo : MonoBehaviour
 
 		// 그리고 또 하나 예외처리도 있는데
 		// 시간표시가 1일짜리로 고정되지 않는다는거다.
-		// 7번이든 8번이든 아무거나 하나 골라서
+		// 10번이든 11번이든 아무거나 하나 골라서
 		// 몇일까지 같은 항목인지 계산해서 3일 남았으면 72:20:15 이런식으로 표시해야한다.
 		if (selectedSlotInfo == null)
 			return;

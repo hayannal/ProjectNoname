@@ -35,6 +35,13 @@ public class DailyShopListItem : MonoBehaviour
 	DailyShopData.DailyShopSlotInfo _slotInfo;
 	public bool RefreshInfo(DailyShopData.DailyShopSlotInfo dailyShopSlotInfo)
 	{
+		// 유료 슬롯의 경우엔 구매했는지를 먼저 확인해야한다.
+		if (CheckVisibleByUnlock(dailyShopSlotInfo) == false)
+		{
+			gameObject.SetActive(false);
+			return false;
+		}
+
 		// 각각의 타입마다 보여져야할 조건이 다르다.
 		// 보여지면 안되는 상황이라면 숨겨야한다.
 		if (CheckVisible(dailyShopSlotInfo) == false)
@@ -85,6 +92,27 @@ public class DailyShopListItem : MonoBehaviour
 		}
 		RefreshPrice();
 		gameObject.SetActive(true);
+		return true;
+	}
+
+	bool CheckVisibleByUnlock(DailyShopData.DailyShopSlotInfo dailyShopSlotInfo)
+	{
+		switch (dailyShopSlotInfo.slotId)
+		{
+			// 5번 6번 7번 슬롯만 Unlock 여부를 체크하면 된다.
+			case 5:
+				if (DailyShopData.instance.unlockLevel < 1)
+					return false;
+				break;
+			case 6:
+				if (DailyShopData.instance.unlockLevel < 2)
+					return false;
+				break;
+			case 7:
+				if (DailyShopData.instance.unlockLevel < 3)
+					return false;
+				break;
+		}
 		return true;
 	}
 
@@ -333,10 +361,12 @@ public class DailyShopListItem : MonoBehaviour
 		}
 	}
 
+	public static Color s_basicBlurImageColor = new Color(0.094f, 0.945f, 0.871f, 0.42f);
+	public static Color s_basicBackgroundImageColor = new Color(0.0f, 1.0f, 0.749f, 0.42f);
 	void RefreshBackground(bool isLightenBackground)
 	{
-		blurImage.color = isLightenBackground ? new Color(0.945f, 0.945f, 0.094f, 0.42f) : new Color(0.094f, 0.945f, 0.871f, 0.42f);
-		backgroundImge.color = isLightenBackground ? new Color(1.0f, 1.0f, 1.0f, 0.42f) : new Color(0.0f, 1.0f, 0.749f, 0.42f);
+		blurImage.color = isLightenBackground ? new Color(0.945f, 0.945f, 0.094f, 0.42f) : s_basicBlurImageColor;
+		backgroundImge.color = isLightenBackground ? new Color(1.0f, 1.0f, 1.0f, 0.42f) : s_basicBackgroundImageColor;
 		backgroundImge.sprite = backgroundSpriteList[isLightenBackground ? 0 : 1];
 	}
 	

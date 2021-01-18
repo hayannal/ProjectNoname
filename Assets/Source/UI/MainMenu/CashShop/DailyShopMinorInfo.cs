@@ -94,5 +94,6 @@ public class DailyShopMinorInfo : MonoBehaviour
 
 	public void OnClickDailySlotAddButton()
 	{
+		UIInstanceManager.instance.ShowCanvasAsync("DailyShopSlotConfirmCanvas", null);
 	}
 }

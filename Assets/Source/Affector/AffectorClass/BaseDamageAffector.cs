@@ -71,6 +71,22 @@ public class BaseDamageAffector : AffectorBase {
 		//float damage = hitParameter.statusBase.valueList[(int)eActorStatus.Attack] - _actor.actorStatus.GetValue(eActorStatus.Defense);
 		float damage = hitParameter.statusBase.valueList[(int)eActorStatus.Attack];
 
+		// 저렙일때의 보정처리는 damage 오자마자 최초에 처리한다.
+		// 사실 이건 CollisionDamageAffector에서도 하고 ReflectDamageAffector에서도 필요한거긴 하지만
+		// 플레이어가 맞을때에 대한 보정처리는 너무 심해질 경우 꽥 하고 죽어버리기 때문에 느낌상 안좋을거 같아서
+		// 심하게 보정하지 않을거라면 어차피 패스해도 될거 같았다.
+		// 그래서 이 BaseDamageAffector에서만 처리하기로 한다.
+		float adjustStandardPowerLevelDiffValue = 0.0f;
+		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
+		// NodeWar는 적용받지 않도록 lobby인거처럼 처리
+		if (lobby == false && BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+			lobby = true;
+		if (lobby == false)
+		{
+			ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
+			adjustStandardPowerLevelDiffValue = chapterTableData.standardPowerLevel - BattleInstanceManager.instance.playerActor.actorStatus.powerLevel;
+		}
+
 		// Calc Damage
 		float damageRatio = 1.0f;
 		switch (affectorValueLevelTableData.iValue1)
@@ -117,6 +133,9 @@ public class BaseDamageAffector : AffectorBase {
 
 		if (_actor.IsMonsterActor() && monsterActor != null)
 		{
+			if (adjustStandardPowerLevelDiffValue > 0.0f)
+				damage /= AdjustAttackByStandardPowerLevel_Player(adjustStandardPowerLevelDiffValue);
+
 			if ((int)eActorStatus.NormalMonsterDamageIncreaseAddRate < hitParameter.statusBase.valueList.Length)
 			{
 				float damageIncreaseAddRate = hitParameter.statusBase.valueList[monsterActor.bossMonster ? (int)eActorStatus.BossMonsterDamageIncreaseAddRate : (int)eActorStatus.NormalMonsterDamageIncreaseAddRate];
@@ -131,6 +150,9 @@ public class BaseDamageAffector : AffectorBase {
 
 		if (_actor.IsPlayerActor())
 		{
+			if (adjustStandardPowerLevelDiffValue > 0.0f)
+				damage *= AdjustAttackByStandardPowerLevel_Monster(adjustStandardPowerLevelDiffValue);
+
 			if (hitParameter.statusStructForHitObject.monsterActor)
 			{
 				float damageDecreaseAddRate = _actor.actorStatus.GetValue(hitParameter.statusStructForHitObject.bossMonsterActor ? eActorStatus.BossMonsterDamageDecreaseAddRate : eActorStatus.NormalMonsterDamageDecreaseAddRate);
@@ -319,5 +341,23 @@ public class BaseDamageAffector : AffectorBase {
 			HitBlink.ShowHitBlink(_affectorProcessor.cachedTransform);
 		if (hitParameter.statusStructForHitObject.showHitRimBlink)
 			HitRimBlink.ShowHitRimBlink(_affectorProcessor.cachedTransform, hitParameter.contactNormal);
+	}
+
+	static float xAdjust_Player = 5.5f;
+	static float yAdjust_Player = 1.0f;
+	static float aAdjust_Player = 1.1f;
+	static float bAdjust_Player = 4.0f;
+	public static float AdjustAttackByStandardPowerLevel_Player(float diffStandard)
+	{
+		return bAdjust_Player / (1.0f + Mathf.Exp(-aAdjust_Player * (diffStandard - xAdjust_Player))) + yAdjust_Player;
+	}
+
+	static float xAdjust_Monster = 6.05f;
+	static float yAdjust_Monster = 1.0f;
+	static float aAdjust_Monster = 0.8f;
+	static float bAdjust_Monster = 2.0f;
+	public static float AdjustAttackByStandardPowerLevel_Monster(float diffStandard)
+	{
+		return bAdjust_Monster / (1.0f + Mathf.Exp(-aAdjust_Monster * (diffStandard - xAdjust_Monster))) + yAdjust_Monster;
 	}
 }

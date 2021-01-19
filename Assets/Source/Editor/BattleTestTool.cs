@@ -110,8 +110,10 @@ public class BattleTestTool : EditorWindow
 					// chapter standard powerlevel
 					ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
 					float diffStandard = chapterTableData.standardPowerLevel - playerActor.actorStatus.powerLevel;
-					Debug.LogFormat("Current Standard PowerLevel = {0} / Diff = {1} / Adjust = {2}",
-						chapterTableData.standardPowerLevel, diffStandard, (diffStandard > 0.0f) ? BaseDamageAffector.AdjustAttackByStandardPowerLevel_Player(diffStandard) : 1.0f);
+					Debug.LogFormat("Current Standard PowerLevel = {0} / Diff = {1} / Adjust_Player = {2} / Adjust_Monster = {3}",
+						chapterTableData.standardPowerLevel, diffStandard,
+						(diffStandard > 0.0f) ? BaseDamageAffector.AdjustAttackByStandardPowerLevel_Player(diffStandard) : 1.0f,
+						(diffStandard > 0.0f) ? BaseDamageAffector.AdjustAttackByStandardPowerLevel_Monster(diffStandard) : 1.0f);
 
 					// research
 					float researchHp = 0.0f;

@@ -489,6 +489,7 @@ public class SwapCanvas : MonoBehaviour
 			if (GatePillar.instance != null && GatePillar.instance.gameObject.activeSelf)
 				GatePillar.instance.OnCompleteStageSwap();
 			BattleInstanceManager.instance.FinalizeAllSummonObject();
+			ClientSaveData.instance.OnChangedCloseSwap(true);
 		}
 
 		// 로딩 대기창 닫는다.

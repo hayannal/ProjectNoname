@@ -495,6 +495,28 @@ MonoBehaviour:
   useTransform: 1
   transformMoveUseDelta: 0
   useRegisterdCustomTargetPosition: 1
+--- !u!1101 &-5481821478755766194
+AnimatorStateTransition:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions: []
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 0}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0.25
+  m_TransitionOffset: 0
+  m_ExitTime: 0.73214287
+  m_HasExitTime: 1
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
 --- !u!114 &-5460895713956565525
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -563,7 +585,7 @@ MonoBehaviour:
   useAreaRotationYChange: 0
   targetAreaRotationY: 0
   areaDistanceMin: 0
-  areaDistanceMax: 5
+  areaDistanceMax: 4.4
   areaHeightMin: 0
   areaHeightMax: 2
   areaAngle: 360
@@ -633,7 +655,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttackEtc1.25
+  - NormalAttackEtc01
   showHitEffect: 0
   hitEffectObject: {fileID: 0}
   hitEffectLookAtNormal: 0
@@ -904,7 +926,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttackEtc1.25
+  - NormalAttackEtc01
   showHitEffect: 0
   hitEffectObject: {fileID: 0}
   hitEffectLookAtNormal: 0
@@ -982,7 +1004,7 @@ MonoBehaviour:
   useAreaRotationYChange: 0
   targetAreaRotationY: 0
   areaDistanceMin: 0
-  areaDistanceMax: 5
+  areaDistanceMax: 4.4
   areaHeightMin: 0
   areaHeightMax: 2
   areaAngle: 360
@@ -1052,7 +1074,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttackEtc1.25
+  - NormalAttackEtc01
   showHitEffect: 0
   hitEffectObject: {fileID: 0}
   hitEffectLookAtNormal: 0
@@ -1082,7 +1104,7 @@ MonoBehaviour:
   overrideLifeTime: 0
   offset: {x: 0, y: 0, z: 0}
   startDirection: {x: 0, y: 0, z: 1}
-  areaRadius: 5
+  areaRadius: 4.4
   attachPrefab: 0
   createPositionType: 1
   lineMaxDistance: 0
@@ -1430,7 +1452,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: CastAttack1
-  m_Speed: 1
+  m_Speed: 1.2
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours:
@@ -1438,6 +1460,7 @@ AnimatorState:
   - {fileID: 7219037655650624637}
   - {fileID: 671228497620431669}
   - {fileID: 5772506938581093472}
+  - {fileID: 4152619611817621052}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 1
   m_WriteDefaultValues: 1
@@ -1587,7 +1610,7 @@ MonoBehaviour:
   overrideLifeTime: 0
   offset: {x: 0, y: 0, z: 0}
   startDirection: {x: 0, y: 0, z: 1}
-  areaRadius: 5
+  areaRadius: 4.4
   attachPrefab: 1
   createPositionType: 0
   lineMaxDistance: 0
@@ -1699,7 +1722,7 @@ MonoBehaviour:
   useAreaRotationYChange: 0
   targetAreaRotationY: 0
   areaDistanceMin: 0
-  areaDistanceMax: 5
+  areaDistanceMax: 4.4
   areaHeightMin: 0
   areaHeightMax: 2
   areaAngle: 360
@@ -2273,7 +2296,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Move
-  m_Speed: 1
+  m_Speed: 0.85
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours:
@@ -2307,6 +2330,22 @@ MonoBehaviour:
   StartTime: 0
   EndTime: 1
   state: 3
+--- !u!114 &4152619611817621052
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60fa1780ac802fb41a5e009957e39ff3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.3
+  EndTime: 1
+  attackDelay: 0.5
+  overrideRate: 0.7
 --- !u!114 &4410251973174214752
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -2430,7 +2469,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttackEtc1.25
+  - NormalAttackEtc01
   showHitEffect: 0
   hitEffectObject: {fileID: 0}
   hitEffectLookAtNormal: 0
@@ -2719,7 +2758,7 @@ MonoBehaviour:
   overrideLifeTime: 0
   offset: {x: 0, y: 0, z: 0}
   startDirection: {x: 0, y: 0, z: 1}
-  areaRadius: 5
+  areaRadius: 4.4
   attachPrefab: 1
   createPositionType: 0
   lineMaxDistance: 0
@@ -2962,7 +3001,7 @@ AnimatorStateMachine:
     m_Position: {x: 260, y: -150, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 8783597436754629016}
-    m_Position: {x: 260, y: 60, z: 0}
+    m_Position: {x: 350, y: 60, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 8310359120360110225}
     m_Position: {x: 260, y: 140, z: 0}
@@ -2971,16 +3010,16 @@ AnimatorStateMachine:
     m_Position: {x: 260, y: 210, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 7379109392485507103}
-    m_Position: {x: 260, y: 550, z: 0}
+    m_Position: {x: 260, y: 450, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -4549235398934983112}
     m_Position: {x: 260, y: 310, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1468301353150240475}
-    m_Position: {x: 260, y: 660, z: 0}
+    m_Position: {x: 260, y: 560, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 8812951629290942838}
-    m_Position: {x: 260, y: 740, z: 0}
+    m_Position: {x: 260, y: 640, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []

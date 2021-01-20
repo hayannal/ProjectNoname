@@ -174,11 +174,11 @@ public class BattleTestTool : EditorWindow
 					if (GUILayout.Button("Better Pack Set"))
 					{
 						_playerActor.skillProcessor.AddLevelPack("AtkBetter", false, 0);
-						_playerActor.skillProcessor.AddLevelPack("AtkBetter", false, 0);
+						//_playerActor.skillProcessor.AddLevelPack("AtkBetter", false, 0);
 						_playerActor.skillProcessor.AddLevelPack("AtkSpeedBetter", false, 0);
-						_playerActor.skillProcessor.AddLevelPack("AtkSpeedBetter", false, 0);
+						//_playerActor.skillProcessor.AddLevelPack("AtkSpeedBetter", false, 0);
 						_playerActor.skillProcessor.AddLevelPack("CritBetter", false, 0);
-						_playerActor.skillProcessor.AddLevelPack("CritBetter", false, 0);
+						//_playerActor.skillProcessor.AddLevelPack("CritBetter", false, 0);
 					}
 					if (GUILayout.Button("15Lv Pack"))
 					{

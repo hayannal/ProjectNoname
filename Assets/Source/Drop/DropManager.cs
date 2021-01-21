@@ -394,7 +394,7 @@ public class DropManager : MonoBehaviour
 		if (needRefresh)
 		{
 			// AdjustWeight 검증
-			if (notStreakAdjustWeight > 1.7f)
+			if (notStreakAdjustWeight > 17.2f)
 				CheatingListener.OnDetectCheatTable();
 
 			if (_listRandomDropEquipInfo == null)

@@ -385,6 +385,8 @@ public class EventManager : MonoBehaviour
 			// 멀리 생성해둔 게이트 필라 가져오면서 곧바로 indicator 뜨도록 설정.
 			origGatePillarObject.transform.position = StageManager.instance.currentGatePillarSpawnPosition;
 			GatePillar.instance.descriptionObjectIndicatorShowDelayTime = 0.5f;
+			if (EnergyGaugeCanvas.instance != null && EnergyGaugeCanvas.instance.gameObject.activeSelf)
+				EnergyGaugeCanvas.instance.cachedTransform.position = origGatePillarObject.transform.position;
 
 			EventInfoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_OpenChaosName"), UIString.instance.GetString("GameUI_OpenChaosDesc"), UIString.instance.GetString("GameUI_OpenChaosMore"), () =>
 			{

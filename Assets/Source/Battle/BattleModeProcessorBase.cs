@@ -532,7 +532,7 @@ public class BattleModeProcessorBase
 			bool sus = false;
 			if (timeSpan < TimeSpan.FromMinutes(10) && PlayerData.instance.highestPlayChapter == PlayerData.instance.selectedChapter)
 				sus = true;
-			if (ContentsManager.IsTutorialChapter())
+			if (StageManager.instance.playChapter == 0)
 				sus = false;
 			if (sus == false && timeSpan < TimeSpan.FromSeconds(30))
 				sus = true;

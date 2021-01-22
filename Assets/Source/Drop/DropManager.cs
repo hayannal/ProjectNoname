@@ -369,6 +369,7 @@ public class DropManager : MonoBehaviour
 		// 연차 중에는 이왕이면 pp를 각각 나눠서 뽑는다. 캐릭터는 동시에 같은 캐릭터를 뽑을 수 없다. 연속으로 전설템을 못뽑으면 확률이 증가한다. 등등의 조건을 처리하기 위해 사용하는 임시 변수들이다.
 		_droppedNotStreakItemCount = 0;
 		droppedNotStreakCharCount = 0;
+		droppedNotStreakLegendCharCount = 0;
 		_listDroppedActorId.Clear();
 		_listDroppedPowerPointId.Clear();
 
@@ -654,6 +655,18 @@ public class DropManager : MonoBehaviour
 				}
 			}
 
+			if (CharacterData.IsUseLegendWeight(TableDataManager.instance.actorTable.dataArray[i]))
+			{
+				if (characterBoxDrop)
+				{
+					float notStreakLegendAdjustWeight = TableDataManager.instance.FindNotLegendCharAdjustWeight(DropManager.instance.GetCurrentNotStreakLegendCharCount());
+					// NotLegendCharTable Adjust Weight 검증
+					if (notStreakLegendAdjustWeight > 4.2f)
+						CheatingListener.OnDetectCheatTable();
+					adjustWeight *= notStreakLegendAdjustWeight;
+				}
+			}
+
 			sumWeight += adjustWeight;
 			RandomGachaActorInfo newInfo = new RandomGachaActorInfo();
 			newInfo.actorId = TableDataManager.instance.actorTable.dataArray[i].actorId;
@@ -670,6 +683,13 @@ public class DropManager : MonoBehaviour
 		{
 			if (random <= _listRandomGachaActorInfo[i].sumWeight)
 			{
+				if (characterBoxDrop)
+				{
+					// 캐릭터 박스 드랍 굴림이었는데 전설이 안나온다면
+					ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(_listRandomGachaActorInfo[i].actorId);
+					if (CharacterData.IsUseLegendWeight(actorTableData) == false)
+						++droppedNotStreakLegendCharCount;
+				}
 				index = i;
 				break;
 			}
@@ -686,6 +706,13 @@ public class DropManager : MonoBehaviour
 	{
 		// 임시변수를 만들어서 계산하다가 서버에서 리턴받을때 적용해보자
 		return PlayerData.instance.notStreakCharCount + droppedNotStreakCharCount;
+	}
+
+	public int droppedNotStreakLegendCharCount { get; set; }
+	public int GetCurrentNotStreakLegendCharCount()
+	{
+		// 위와 마찬가지로 전설용 Streak도 굴리는 중간에 개수 합산하는게 필요하다.
+		return PlayerData.instance.notStreakLegendCharCount + droppedNotStreakLegendCharCount;
 	}
 
 	List<string> _listDroppedActorId = new List<string>();

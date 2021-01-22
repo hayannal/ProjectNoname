@@ -63,6 +63,7 @@ public class PlayerData : MonoBehaviour
 	// 뽑기 관련 변수
 	public ObscuredInt notStreakCount { get; set; }
 	public ObscuredInt notStreakCharCount { get; set; }
+	public ObscuredInt notStreakLegendCharCount { get; set; }
 	public ObscuredInt originOpenCount { get; set; }
 	public ObscuredInt characterBoxOpenCount { get; set; }
 	// pp 총합산 검증을 위해 상점에서 구매한 pp 카운트를 저장해두는 변수
@@ -329,6 +330,7 @@ public class PlayerData : MonoBehaviour
 		balancePpPurchased = false;
 		notStreakCount = 0;
 		notStreakCharCount = 0;
+		notStreakLegendCharCount = 0;
 		originOpenCount = 0;
 		characterBoxOpenCount = 0;
 		ppBuyCount = 0;
@@ -579,6 +581,14 @@ public class PlayerData : MonoBehaviour
 			int intValue = 0;
 			if (int.TryParse(userReadOnlyData["strCh"].Value, out intValue))
 				notStreakCharCount = intValue;
+		}
+
+		notStreakLegendCharCount = 0;
+		if (userReadOnlyData.ContainsKey("strLeCh"))
+		{
+			int intValue = 0;
+			if (int.TryParse(userReadOnlyData["strLeCh"].Value, out intValue))
+				notStreakLegendCharCount = intValue;
 		}
 
 		originOpenCount = 0;

@@ -2036,12 +2036,32 @@ public class PlayFabApiManager : MonoBehaviour
 		string jsonListPp = serializer.SerializeObject(listPpInfo);
 		string jsonListGr = serializer.SerializeObject(listGrantInfo);
 		string jsonListLbp = serializer.SerializeObject(listTrpInfo);
-		checkSum = CheckSum(string.Format("{0}_{1}_{2}_{3}", jsonListPp, jsonListGr, jsonListLbp, addBalancePp));
+
+		// notStreakLegendChar는 OriginBox에서는 체크하지 않고 CharBox에서만 체크한다. 이건 클라가 해서 checkSum에 포함시켜야해서 여기서 체크한다.
+		bool existLegendChar = false;
+		for (int i = 0; i < listTrpInfo.Count; ++i)
+		{
+			ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(listTrpInfo[i].actorId);
+			if (actorTableData == null)
+				continue;
+			if (CharacterData.IsUseLegendWeight(actorTableData))
+				existLegendChar = true;
+		}
+		for (int i = 0; i < listGrantInfo.Count; ++i)
+		{
+			ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(listGrantInfo[i]);
+			if (actorTableData == null)
+				continue;
+			if (CharacterData.IsUseLegendWeight(actorTableData))
+				existLegendChar = true;
+		}
+
+		checkSum = CheckSum(string.Format("{0}_{1}_{2}_{3}_{4}", jsonListPp, jsonListGr, jsonListLbp, addBalancePp, existLegendChar ? 1 : 0));
 
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
 			FunctionName = "OpenCharBox",
-			FunctionParameter = new { LstPp = listPpInfo, Bpp = addBalancePp, LstGr = listGrantInfo, LstTrp = listTrpInfo, LstCs = checkSum },
+			FunctionParameter = new { LstPp = listPpInfo, Bpp = addBalancePp, LstGr = listGrantInfo, LstTrp = listTrpInfo, LeCh = (existLegendChar ? 1 : 0), LstCs = checkSum },
 			GeneratePlayStreamEvent = true,
 		}, (success) =>
 		{
@@ -2059,6 +2079,10 @@ public class PlayFabApiManager : MonoBehaviour
 					PlayerData.instance.notStreakCharCount += 2;
 				else
 					PlayerData.instance.notStreakCharCount = 0;
+				if (existLegendChar == false)
+					PlayerData.instance.notStreakLegendCharCount += 2;
+				else
+					PlayerData.instance.notStreakLegendCharCount = 0;
 
 				// update
 				PlayerData.instance.OnRecvUpdateCharacterStatistics(listPpInfo, listTrpInfo, addBalancePp);

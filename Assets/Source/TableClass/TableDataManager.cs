@@ -37,6 +37,7 @@ public class TableDataManager : MonoBehaviour
 	public RemainTable remainTable;
 	public NotStreakTable notStreakTable;
 	public NotCharTable notCharTable;
+	public NotLegendCharTable notLegendCharTable;
 	public FixedCharTable fixedCharTable;
 	public StageExpTable stageExpTable;
 	public DamageRateTable damageRateTable;
@@ -357,6 +358,16 @@ public class TableDataManager : MonoBehaviour
 		{
 			if (notCharTable.dataArray[i].accumulateMin <= count)
 				return notCharTable.dataArray[i].adjustProb;
+		}
+		return 0.0f;
+	}
+
+	public float FindNotLegendCharAdjustWeight(int count)
+	{
+		for (int i = notLegendCharTable.dataArray.Length - 1; i >= 0; --i)
+		{
+			if (notLegendCharTable.dataArray[i].accumulateMin <= count)
+				return notLegendCharTable.dataArray[i].adjustWeight;
 		}
 		return 0.0f;
 	}

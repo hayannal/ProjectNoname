@@ -80,6 +80,9 @@ public class CharacterBoxConfirmCanvas : MonoBehaviour
 
 			float adjustWeight = (useAdjustWeight ? (weight * TableDataManager.instance.actorTable.dataArray[i].noHaveTimes) : weight);
 
+			if (CharacterData.IsUseLegendWeight(TableDataManager.instance.actorTable.dataArray[i]))
+				adjustWeight *= TableDataManager.instance.FindNotLegendCharAdjustWeight(DropManager.instance.GetCurrentNotStreakLegendCharCount());
+
 			if (_dicGradeWeight.ContainsKey(TableDataManager.instance.actorTable.dataArray[i].grade))
 				_dicGradeWeight[TableDataManager.instance.actorTable.dataArray[i].grade] += adjustWeight;
 			else

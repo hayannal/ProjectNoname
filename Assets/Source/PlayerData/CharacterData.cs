@@ -185,6 +185,23 @@ public class CharacterData
 		return actorTableData.grade >= 2;
 	}
 
+	static float s_legendAdjustWeightByCount = 0.0f;
+	public static float GetLegendAdjustWeightByCount()
+	{
+		if (s_legendAdjustWeightByCount != 0.0f)
+			return s_legendAdjustWeightByCount;
+
+		float sumWeight = 0.0f;
+		for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)
+		{
+			if (IsUseLegendWeight(TableDataManager.instance.actorTable.dataArray[i]) == false)
+				continue;
+			sumWeight += TableDataManager.instance.actorTable.dataArray[i].charGachaWeight;
+		}
+		s_legendAdjustWeightByCount = 12.0f / sumWeight;
+		return s_legendAdjustWeightByCount;
+	}
+
 
 	public void Initialize(Dictionary<string, int> characterStatistics, PlayFabApiManager.CharacterDataEntity1 dataObject)
 	{

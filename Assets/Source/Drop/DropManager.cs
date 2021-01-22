@@ -414,7 +414,10 @@ public class DropManager : MonoBehaviour
 					CheatingListener.OnDetectCheatTable();
 
 				if (EquipData.IsUseNotStreakGacha(TableDataManager.instance.equipTable.dataArray[i]))
+				{
+					weight *= EquipData.GetLegendAdjustWeightByCount();
 					weight *= notStreakAdjustWeight;
+				}
 
 				sumWeight += weight;
 				RandomDropEquipInfo newInfo = new RandomDropEquipInfo();
@@ -659,6 +662,10 @@ public class DropManager : MonoBehaviour
 			{
 				if (characterBoxDrop)
 				{
+					// 전설 최대 가중치 합 보정.
+					adjustWeight *= CharacterData.GetLegendAdjustWeightByCount();
+
+					// 드랍 안될때 보너스 적용.
 					float notStreakLegendAdjustWeight = TableDataManager.instance.FindNotLegendCharAdjustWeight(DropManager.instance.GetCurrentNotStreakLegendCharCount());
 					// NotLegendCharTable Adjust Weight 검증
 					if (notStreakLegendAdjustWeight > 4.2f)

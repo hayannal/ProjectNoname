@@ -75,7 +75,10 @@ public class EquipBoxConfirmCanvas : MonoBehaviour
 				continue;
 
 			if (EquipData.IsUseNotStreakGacha(TableDataManager.instance.equipTable.dataArray[i]))
+			{
+				weight *= EquipData.GetLegendAdjustWeightByCount();
 				weight *= notStreakAdjustWeight;
+			}
 
 			sumWeight += weight;
 

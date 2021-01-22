@@ -103,7 +103,24 @@ public class EquipData
 
 	public static bool IsUseNotStreakGacha(EquipTableData equipTableData)
 	{
-		return (equipTableData.innerGrade == 4 || equipTableData.innerGrade == 5);
+		return (equipTableData.innerGrade == 4 || equipTableData.innerGrade == 5 || equipTableData.innerGrade == 6);
+	}
+
+	static float s_legendAdjustWeightByCount = 0.0f;
+	public static float GetLegendAdjustWeightByCount()
+	{
+		if (s_legendAdjustWeightByCount != 0.0f)
+			return s_legendAdjustWeightByCount;
+
+		float sumWeight = 0.0f;
+		for (int i = 0; i < TableDataManager.instance.equipTable.dataArray.Length; ++i)
+		{
+			if (IsUseLegendKey(TableDataManager.instance.equipTable.dataArray[i]) == false)
+				continue;
+			sumWeight += TableDataManager.instance.equipTable.dataArray[i].equipGachaWeight;
+		}
+		s_legendAdjustWeightByCount = 21.87f / sumWeight;
+		return s_legendAdjustWeightByCount;
 	}
 
 	public void Initialize(Dictionary<string, string> customData)

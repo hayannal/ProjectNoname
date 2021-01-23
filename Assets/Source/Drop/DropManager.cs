@@ -668,7 +668,7 @@ public class DropManager : MonoBehaviour
 					// 드랍 안될때 보너스 적용.
 					float notStreakLegendAdjustWeight = TableDataManager.instance.FindNotLegendCharAdjustWeight(DropManager.instance.GetCurrentNotStreakLegendCharCount());
 					// NotLegendCharTable Adjust Weight 검증
-					if (notStreakLegendAdjustWeight > 4.2f)
+					if (notStreakLegendAdjustWeight > 9.99f)
 						CheatingListener.OnDetectCheatTable();
 					adjustWeight *= notStreakLegendAdjustWeight;
 				}

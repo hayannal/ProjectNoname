@@ -71,7 +71,11 @@ public class CharacterBoxConfirmCanvas : MonoBehaviour
 			if (weight <= 0.0f)
 				continue;
 
-			sumWeight += TableDataManager.instance.actorTable.dataArray[i].charGachaWeight;
+			// LegendAdjustWeightByCount는 sumWeight에 반영되어야한다.
+			float weightForSum = TableDataManager.instance.actorTable.dataArray[i].charGachaWeight;
+			if (CharacterData.IsUseLegendWeight(TableDataManager.instance.actorTable.dataArray[i]))
+				weightForSum *= CharacterData.GetLegendAdjustWeightByCount();
+			sumWeight += weightForSum;
 
 			// 초기 필수캐릭 습득 여부랑 상관없이 획득가능한지만 체크한다. 못얻을땐 0%로 해놔야 표시하기 편하다.
 			bool useAdjustWeight = false;

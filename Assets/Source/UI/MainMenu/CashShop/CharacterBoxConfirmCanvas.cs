@@ -94,7 +94,7 @@ public class CharacterBoxConfirmCanvas : MonoBehaviour
 			{
 				// 전설이 아닐때는 미보유인지 아닌지를 구분해서 특별한 보정처리를 한다.
 				if (useAdjustWeight)
-					adjustWeight += TableDataManager.instance.actorTable.dataArray[i].charGachaWeight * (1.0f - DropManager.GetGradeAdjust(TableDataManager.instance.actorTable.dataArray[i]));
+					adjustWeight += TableDataManager.instance.actorTable.dataArray[i].charGachaWeight * (DropManager.GetGradeAdjust(TableDataManager.instance.actorTable.dataArray[i]) - 1.0f);
 				else
 					adjustWeight *= DropManager.GetGradeAdjust(TableDataManager.instance.actorTable.dataArray[i]);
 			}

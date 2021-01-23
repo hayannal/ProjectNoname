@@ -647,25 +647,17 @@ public class DropManager : MonoBehaviour
 			if (CharacterData.IsUseLegendWeight(TableDataManager.instance.actorTable.dataArray[i]) && weight > 1.0f)
 				CheatingListener.OnDetectCheatTable();
 
-			float adjustWeight = weight;
-			if (useAdjustWeight)
-			{
-				// 미보유
-				adjustWeight *= TableDataManager.instance.actorTable.dataArray[i].noHaveTimes;
-				if (CharacterData.IsUseLegendWeight(TableDataManager.instance.actorTable.dataArray[i]) == false)
-				{
-					if (originDrop) adjustWeight *= 3.0f;
-					else if (characterBoxDrop) adjustWeight *= 1.5f;
-				}
-			}
+			float adjustWeight = (useAdjustWeight ? (weight * TableDataManager.instance.actorTable.dataArray[i].noHaveTimes) : weight);
 
 			if (CharacterData.IsUseLegendWeight(TableDataManager.instance.actorTable.dataArray[i]))
 			{
+				adjustWeight *= DropManager.GetGradeAdjust(TableDataManager.instance.actorTable.dataArray[i]);
+
+				// 전설 최대 가중치 합 보정.
+				adjustWeight *= CharacterData.GetLegendAdjustWeightByCount();
+
 				if (characterBoxDrop)
 				{
-					// 전설 최대 가중치 합 보정.
-					adjustWeight *= CharacterData.GetLegendAdjustWeightByCount();
-
 					// 드랍 안될때 보너스 적용.
 					float notStreakLegendAdjustWeight = TableDataManager.instance.FindNotLegendCharAdjustWeight(DropManager.instance.GetCurrentNotStreakLegendCharCount());
 					// NotLegendCharTable Adjust Weight 검증
@@ -673,6 +665,19 @@ public class DropManager : MonoBehaviour
 						CheatingListener.OnDetectCheatTable();
 					adjustWeight *= notStreakLegendAdjustWeight;
 				}
+			}
+			else
+			{
+				// 전설이 아닐때는 미보유인지 아닌지를 구분해서 특별한 보정처리를 한다.
+				if (useAdjustWeight)
+				{
+					// 미보유
+					if (originDrop) adjustWeight *= 3.0f;
+					else if (characterBoxDrop) adjustWeight *= 1.5f;
+					adjustWeight += TableDataManager.instance.actorTable.dataArray[i].charGachaWeight * (DropManager.GetGradeAdjust(TableDataManager.instance.actorTable.dataArray[i]) - 1.0f);
+				}
+				else
+					adjustWeight *= DropManager.GetGradeAdjust(TableDataManager.instance.actorTable.dataArray[i]);
 			}
 
 			sumWeight += adjustWeight;

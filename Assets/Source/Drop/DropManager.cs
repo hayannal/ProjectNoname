@@ -650,6 +650,7 @@ public class DropManager : MonoBehaviour
 			float adjustWeight = weight;
 			if (useAdjustWeight)
 			{
+				// 미보유
 				adjustWeight *= TableDataManager.instance.actorTable.dataArray[i].noHaveTimes;
 				if (CharacterData.IsUseLegendWeight(TableDataManager.instance.actorTable.dataArray[i]) == false)
 				{
@@ -751,6 +752,44 @@ public class DropManager : MonoBehaviour
 			return true;
 
 		return false;
+	}
+
+	public static float GetGradeAdjust(ActorTableData actorTableData)
+	{
+		// 테이블에 있는 해당 등급의 캐릭터 수 / (테이블에 있는 해당 등급의 캐릭터 수 - 해당 등급에서 내가 초월까지 완료해 더이상 얻을 수 없는 캐릭터 수)
+		float totalCharacterCountByGrade = DropManager.instance.GetTotalCharacterCountByGrade(actorTableData.grade);
+		float cantGetCount = 0;
+		for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)
+		{
+			if (TableDataManager.instance.actorTable.dataArray[i].grade != actorTableData.grade)
+				continue;
+
+			bool useAdjustWeight = false;
+			if (DropManager.instance.GetableOrigin(TableDataManager.instance.actorTable.dataArray[i].actorId, ref useAdjustWeight) == false)
+				cantGetCount += 1.0f;
+		}
+		return totalCharacterCountByGrade / (totalCharacterCountByGrade - cantGetCount);
+	}
+
+	Dictionary<int, int> _dicTotalCharacterCountByGrade = null;
+	public int GetTotalCharacterCountByGrade(int grade)
+	{
+		if (_dicTotalCharacterCountByGrade == null)
+			_dicTotalCharacterCountByGrade = new Dictionary<int, int>();
+
+		// 테이블에 있는 해당 등급의 캐릭터 수
+		// 고정이기 때문에 캐싱해서 쓴다.
+		if (_dicTotalCharacterCountByGrade.ContainsKey(grade))
+			return _dicTotalCharacterCountByGrade[grade];
+
+		int count = 0;
+		for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)
+		{
+			if (TableDataManager.instance.actorTable.dataArray[i].grade == grade)
+				++count;
+		}
+		_dicTotalCharacterCountByGrade.Add(grade, count);
+		return count;
 	}
 
 	#region Sub-Region Fixed Character Group

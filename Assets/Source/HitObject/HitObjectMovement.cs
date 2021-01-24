@@ -388,6 +388,7 @@ public class HitObjectMovement : MonoBehaviour {
 		//}
 
 		UpdateOverrideSpeed();
+		UpdateTimerRicochet();
 
 		switch (_signal.movementType)
 		{
@@ -580,7 +581,8 @@ public class HitObjectMovement : MonoBehaviour {
 			return null;
 		return _listRicochet[_listRicochet.Count - 1];
 	}
-	
+
+	List<MonsterActor> _listTimerRicochetMonsterActor = null;
 	public bool IsEnableRicochet(int teamId, Team.eTeamCheckFilter filter)
 	{
 		Vector3 position = cachedTransform.position;
@@ -589,6 +591,52 @@ public class HitObjectMovement : MonoBehaviour {
 		Collider nearestCollider = null;
 		float containsNearestDistance = float.MaxValue;
 		Collider containsNearestCollider = null;
+
+		if (_signal.useTimerRicochet)
+		{
+			if (_listTimerRicochetMonsterActor == null)
+				_listTimerRicochetMonsterActor = new List<MonsterActor>();
+			_listTimerRicochetMonsterActor.Clear();
+
+			List<MonsterActor> listMonsterActor = BattleInstanceManager.instance.GetLiveMonsterList();
+			for (int i = 0; i < listMonsterActor.Count; ++i)
+			{
+				Collider monsterCollider = listMonsterActor[i].GetCollider();
+
+				// 이미 컬리더가 켜있는 후보는 result안에 들어있을 것이다. 안켜져있는 후보중에 찾아서 넣어두면 된다.
+				if (monsterCollider.enabled)
+					continue;
+
+				// 컬리더 꺼있는거 중에는 Burrow도 있고 컬리더무시몹도 있고 많기 때문에 이중에 골라서 추가해야한다.
+				if (false)
+					continue;
+
+				// team check
+				// timerRicochet은 플레이어만 켠다. 팀체크 패스
+
+				// object radius
+				float colliderRadius = ColliderUtil.GetRadius(monsterCollider);
+				if (colliderRadius == -1.0f) continue;
+
+				// distance
+				Vector3 targetPosition = listMonsterActor[i].cachedTransform.position;
+				Vector3 diff = targetPosition - cachedTransform.position;
+				diff.y = 0.0f;
+				if (diff.magnitude - colliderRadius > ((_signal.overrideRicochetDistance > 0.0f) ? _signal.overrideRicochetDistance : DefaultRicochetRange)) continue;
+
+				_listTimerRicochetMonsterActor.Add(listMonsterActor[i]);
+			}
+
+			if (_listTimerRicochetMonsterActor.Count > 0)
+			{
+				Collider[] newResult = new Collider[result.Length + _listTimerRicochetMonsterActor.Count];
+				for (int i = 0; i < result.Length; ++i)
+					newResult[i] = result[i];
+				for (int i = result.Length; i < newResult.Length; ++i)
+					newResult[i] = _listTimerRicochetMonsterActor[i - result.Length].GetCollider();
+				result = newResult;
+			}
+		}
 		for (int i = 0; i < result.Length; ++i)
 		{
 			// affector processor
@@ -695,12 +743,33 @@ public class HitObjectMovement : MonoBehaviour {
 		Vector3 normalizedDiff = diff.normalized;
 		_velocity = _rigidbody.velocity = normalizedDiff * _speed;
 		_forward = cachedTransform.forward = normalizedDiff;
+
+		if (_signal.useTimerRicochet)
+			_nextReservedRicochetRemainTime = diff.magnitude / _speed;
 		return true;
 	}
 
 	public bool IsAppliedRicochet()
 	{
 		return (_listRicochet != null && _listRicochet.Count > 0);
+	}
+	#endregion
+
+	#region Timer Ricochet
+	float _nextReservedRicochetRemainTime;
+	void UpdateTimerRicochet()
+	{
+		if (_nextReservedRicochetRemainTime > 0.0f)
+		{
+			_nextReservedRicochetRemainTime -= Time.deltaTime;
+			if (_nextReservedRicochetRemainTime <= 0.0f)
+			{
+				_nextReservedRicochetRemainTime = 0.0f;
+
+				// 히트 처리 및 다음 리코세 처리까지 다 호출되어야한다.
+				_hitObject.OnCollisionByCollider(_nextReservedRicochetTargetCollider);
+			}
+		}
 	}
 	#endregion
 

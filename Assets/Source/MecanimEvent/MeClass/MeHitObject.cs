@@ -109,6 +109,8 @@ public class MeHitObject : MecanimEventBase {
 	public bool ricochetOneHitPerTarget;
 	public float overrideRicochetDistance;
 	public float overrideRicochetSpeed;
+	// RpgKnight를 위해 만든 옵션. 충돌처리 없이 일정시간 후에 알아서 리코세가 발동하는 형태다. 그래서 Area로 만들고 ignoreAreaHitLifeTimeRange 걸어두면 된다.
+	public bool useTimerRicochet;
 	public bool useHitStay;
 	public float hitStayInterval;
 	public bool hitStayIgnoreDuplicate;
@@ -359,6 +361,7 @@ public class MeHitObject : MecanimEventBase {
 				ricochetOneHitPerTarget = EditorGUILayout.Toggle("Ricochet One Hit Per Target :", ricochetOneHitPerTarget);
 				overrideRicochetDistance = EditorGUILayout.FloatField("Override Ricochet Distance :", overrideRicochetDistance);
 				overrideRicochetSpeed = EditorGUILayout.FloatField("Override Ricochet Speed :", overrideRicochetSpeed);
+				useTimerRicochet = EditorGUILayout.Toggle("Timer Ricochet :", useTimerRicochet);
 			}
 
 			if (oneHitPerTarget == false)

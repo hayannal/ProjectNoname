@@ -1759,7 +1759,7 @@ public class HitObject : MonoBehaviour
 					ricochetApplied = true;
 					++_statusStructForHitObject.ricochetIndex;
 					_remainRicochetCount -= 1;
-					if (colliderEnabled)
+					if (colliderEnabled && _signal.useTimerRicochet == false)
 					{
 						if (_signal.useHitStay == false)
 						{
@@ -1853,6 +1853,46 @@ public class HitObject : MonoBehaviour
 		}
 
 		OnFinalizeByCollision();
+	}
+
+	// Timer Ricochet 기능 구현하면서 추가한 함수. 특정 시간 이후에 강제로 이 몹이 맞은거처럼 처리해야해서
+	// 위 OnCollisionEnter에서 필요한 기능만 복사해오게 되었다.
+	public void OnCollisionByCollider(Collider col)
+	{
+		AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(col);
+		if (affectorProcessor == null)
+			return;
+
+		bool ignoreAffectorProcessor = false;
+		if (_signal.oneHitPerTarget)
+		{
+			if (_listOneHitPerTarget == null) _listOneHitPerTarget = new List<AffectorProcessor>();
+			if (_listOneHitPerTarget.Contains(affectorProcessor))
+				ignoreAffectorProcessor = true;
+		}
+
+		Vector3 contactPoint = affectorProcessor.cachedTransform.position;
+		contactPoint.y = cachedTransform.position.y;
+		Vector3 contactNormal = -cachedTransform.forward;
+		if (ignoreAffectorProcessor == false && _signal.useHitStay == false)
+		{
+			OnCollisionEnterAffectorProcessor(affectorProcessor, contactPoint, contactNormal);
+			if (_signal.oneHitPerTarget)
+				_listOneHitPerTarget.Add(affectorProcessor);
+			if (_remainRicochetCount > 0 && _hitObjectMovement != null)
+				_hitObjectMovement.AddRicochet(col, _remainRicochetCount == (_signal.ricochetCount + statusStructForHitObject.ricochetAddCountByLevelPack));
+
+			if (_remainMonsterThroughCount > 0 || _remainMonsterThroughCount == -1)
+				AddIgnoreList(col, true);
+			// 리코세는 가능여부 판단하고 해야해서 OnPostCollided함수 안에서 한다.
+		}
+
+		if (_signal.showHitEffect)
+			HitEffect.ShowHitEffect(_signal, contactPoint, contactNormal, _statusStructForHitObject.weaponIDAtCreation);
+		if (_signal.hitEffectLineRendererType != HitEffect.eLineRendererType.None)
+			HitEffect.ShowHitEffectLineRenderer(_signal, GetHitEffectLineRendererStartPosition(contactPoint), contactPoint);
+
+		OnPostCollided(true, false, false, false, true, Vector3.forward, false);
 	}
 
 	List<Collider> _listStayedCollider;

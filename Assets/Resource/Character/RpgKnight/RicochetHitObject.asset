@@ -14,15 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0
   EndTime: 1
-  targetDetectType: 2
+  targetDetectType: 1
   presetType: 0
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 913101303298452110, guid: 521cbd76398a6554fa7291d18cdc74fc,
     type: 3}
-  lifeTime: 5
+  lifeTime: 2
   areaHitLifeTimeEarlyOffset: 0
-  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
+  ignoreAreaHitLifeTimeRange: {x: 2, y: 0}
   movable: 1
   maxDistance: 0
   defaultSphereCastDistance: 0
@@ -34,12 +35,16 @@ MonoBehaviour:
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
+  applyRootTransformRotation: 0
+  useAreaRotationYChange: 0
+  targetAreaRotationY: 0
   areaDistanceMin: 0
   areaDistanceMax: 0
   areaHeightMin: 0
   areaHeightMax: 0
   areaAngle: 0
   checkRaycastWallInArea: 0
+  raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
   repeatCount: 0
   repeatInterval: 0
@@ -60,14 +65,18 @@ MonoBehaviour:
   targetSpeed: 0
   speedChangeTime: 0
   speedChangeEase: 6
+  overrideSpeedOnCollision: 0
+  overrideSpeedTimeOnCollision: 0
   curve: 0
-  curveAdd: 0
+  useCurveChange: 0
+  targetCurve: 0
+  curveChangeTime: 0
+  curveChangeEase: 6
   curveLockY: 1
   curveStartDelayTime: 0
-  curveLifeTime: 0
-  endFollowOverTargetDistance: 0
-  overrideLifeTimeWhenDieTarget: 0
+  followLastPositionWhenDieTarget: 0
   followMeOnHitTarget: 0
+  followMinRange: 0
   useRandomTurn: 0
   accelTurn: 0
   randomTurnRotateYawRange: {x: 0, y: 0}
@@ -89,7 +98,9 @@ MonoBehaviour:
   bounceWallQuadCount: 0
   ricochetCount: 5
   ricochetOneHitPerTarget: 1
+  overrideRicochetDistance: 0
   overrideRicochetSpeed: 0
+  useTimerRicochet: 1
   useHitStay: 0
   hitStayInterval: 0
   hitStayIgnoreDuplicate: 0

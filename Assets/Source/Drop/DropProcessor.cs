@@ -356,37 +356,70 @@ public class DropProcessor : MonoBehaviour
 		// 새 드랍확률 = 테이블 드랍확률 * 조정후가중치합 / 조정전가중치합
 		//
 		// 이건 FixedChar 를 다 뽑기 전이든 아니든 동일하기 때문에 로직이 나눠지지 않는다.
-		float prevSumWeight = 0.0f;
+		// CharacterBoxConfirmCanvas 에 있는 돋보기 코드를 기반으로 만드니 최대한 비슷하게 해둔다.
+		float sumWeight = 0.0f;
 		float adjustSumWeight = 0.0f;
 		for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)
 		{
-			prevSumWeight += TableDataManager.instance.actorTable.dataArray[i].charGachaWeight;
+			float weight = TableDataManager.instance.actorTable.dataArray[i].charGachaWeight;
+			if (weight <= 0.0f)
+				continue;
 
-			float adjustWeight = 0.0f;
+			// LegendAdjustWeightByCount는 sumWeight에 반영되어야한다.
+			float weightForSum = TableDataManager.instance.actorTable.dataArray[i].charGachaWeight;
+			if (CharacterData.IsUseLegendWeight(TableDataManager.instance.actorTable.dataArray[i]))
+				weightForSum *= CharacterData.GetLegendAdjustWeightByCount();
+			sumWeight += weightForSum;
+
+			bool useAdjustWeight = false;
+			// 여기선 listGrantInfo도 체크해야해서 GetableOrigin를 사용하지 않는다.
+			//if (DropManager.instance.GetableOrigin(TableDataManager.instance.actorTable.dataArray[i].actorId, ref useAdjustWeight) == false)
+			//	weight = 0.0f;
 			CharacterData characterData = PlayerData.instance.GetCharacterData(TableDataManager.instance.actorTable.dataArray[i].actorId);
 			if (characterData == null && listGrantInfo.Contains(TableDataManager.instance.actorTable.dataArray[i].actorId) == false)
 			{
-				adjustWeight = TableDataManager.instance.actorTable.dataArray[i].charGachaWeight * TableDataManager.instance.actorTable.dataArray[i].noHaveTimes;
-				if (CharacterData.IsUseLegendWeight(TableDataManager.instance.actorTable.dataArray[i]) == false)
-				{
-					// 이 함수는 originDrop 아니면 characterBoxDrop만 호출되기 때문에 이렇게 else에서 처리해도 상관없다.
-					if (originDrop) adjustWeight *= 3.0f;
-					else adjustWeight *= 1.5f;
-				}
+				if (TableDataManager.instance.actorTable.dataArray[i].actorId == "Actor2103")
+					weight = 0.0f;
+				else
+					useAdjustWeight = true;
 			}
 			else
 			{
-				//if (characterData != null && characterData.needLimitBreak && characterData.limitBreakPoint <= characterData.limitBreakLevel)
-				//	adjustWeight = TableDataManager.instance.actorTable.dataArray[i].charGachaWeight;
 				if (characterData != null && characterData.transcendPoint < CharacterData.TranscendMax)
-					adjustWeight = TableDataManager.instance.actorTable.dataArray[i].charGachaWeight;
+				{ }
+				else
+					weight = 0.0f;
 			}
+
+			float adjustWeight = (useAdjustWeight ? (weight * TableDataManager.instance.actorTable.dataArray[i].noHaveTimes) : weight);
+
+			if (CharacterData.IsUseLegendWeight(TableDataManager.instance.actorTable.dataArray[i]))
+			{
+				adjustWeight *= DropManager.GetGradeAdjust(TableDataManager.instance.actorTable.dataArray[i]);
+				adjustWeight *= CharacterData.GetLegendAdjustWeightByCount();
+				if (originDrop == false)
+					adjustWeight *= TableDataManager.instance.FindNotLegendCharAdjustWeight(DropManager.instance.GetCurrentNotStreakLegendCharCount());
+			}
+			else
+			{
+				// 전설이 아닐때는 미보유인지 아닌지를 구분해서 특별한 보정처리를 한다.
+				if (useAdjustWeight)
+				{
+					// 미보유
+					if (originDrop) adjustWeight *= 3.0f;
+					else adjustWeight *= 1.5f;
+					adjustWeight += TableDataManager.instance.actorTable.dataArray[i].charGachaWeight * (DropManager.GetGradeAdjust(TableDataManager.instance.actorTable.dataArray[i]) - 1.0f);
+				}
+				else
+					adjustWeight *= DropManager.GetGradeAdjust(TableDataManager.instance.actorTable.dataArray[i]);
+			}
+
 			adjustSumWeight += adjustWeight;
 		}
-		if (prevSumWeight == 0.0f)
+		if (sumWeight == 0.0f)
 			return 0.0f;
 
-		return tableProbability * adjustSumWeight / prevSumWeight;
+		return tableProbability * adjustSumWeight / sumWeight;
 	}
 
 	public static float GetOriginProbability(string dropId)

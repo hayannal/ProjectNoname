@@ -717,7 +717,8 @@ public class PlayFabApiManager : MonoBehaviour
 			CurrencyData.instance.OnRecvCurrencyData(success.VirtualCurrency, success.VirtualCurrencyRechargeTimes);
 		}, (error) =>
 		{
-			HandleCommonError(error);
+			// 갑자기 전투중에 튕기니 이상하다. 이거는 에러처리 하지 않기로 한다.
+			//HandleCommonError(error);
 		});
 	}
 

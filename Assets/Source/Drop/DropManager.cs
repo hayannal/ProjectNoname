@@ -762,8 +762,8 @@ public class DropManager : MonoBehaviour
 	public static float GetGradeAdjust(ActorTableData actorTableData)
 	{
 		// 테이블에 있는 해당 등급의 캐릭터 수 / (테이블에 있는 해당 등급의 캐릭터 수 - 해당 등급에서 내가 초월까지 완료해 더이상 얻을 수 없는 캐릭터 수)
-		float totalCharacterCountByGrade = DropManager.instance.GetTotalCharacterCountByGrade(actorTableData.grade);
-		float cantGetCount = 0;
+		int totalCharacterCountByGrade = DropManager.instance.GetTotalCharacterCountByGrade(actorTableData.grade);
+		int cantGetCount = 0;
 		for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)
 		{
 			if (TableDataManager.instance.actorTable.dataArray[i].grade != actorTableData.grade)
@@ -771,9 +771,11 @@ public class DropManager : MonoBehaviour
 
 			bool useAdjustWeight = false;
 			if (DropManager.instance.GetableOrigin(TableDataManager.instance.actorTable.dataArray[i].actorId, ref useAdjustWeight) == false)
-				cantGetCount += 1.0f;
+				cantGetCount += 1;
 		}
-		return totalCharacterCountByGrade / (totalCharacterCountByGrade - cantGetCount);
+		if (totalCharacterCountByGrade == cantGetCount)
+			return 0.0f;
+		return (float)totalCharacterCountByGrade / (float)(totalCharacterCountByGrade - cantGetCount);
 	}
 
 	Dictionary<int, int> _dicTotalCharacterCountByGrade = null;

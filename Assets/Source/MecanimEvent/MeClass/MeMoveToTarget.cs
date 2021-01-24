@@ -43,9 +43,12 @@ public class MeMoveToTarget : MecanimEventBase
 		Vector3 targetPosition = Vector3.zero;
 		Vector3 diff = Vector3.zero;
 		float durationTime = (EndTime - StartTime) * stateInfo.length;
+		// 다른 시그널에서 등록한 CustomTargetPosition을 사용할때 이렇게 가져와서 쓴다.
 		if (useRegisterdCustomTargetPosition && _actor.targetingProcessor.IsRegisteredCustomTargetPosition())
 		{
 			targetPosition = _actor.targetingProcessor.GetCustomTargetPosition(0);
+			diff = targetPosition - _actor.cachedTransform.position;
+			diff.y = 0.0f;
 		}
 		else
 		{

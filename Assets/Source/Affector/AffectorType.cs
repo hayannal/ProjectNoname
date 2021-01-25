@@ -83,5 +83,7 @@ public enum eAffectorType
 	HealSpOnDamage,
 	GiveAffectorValue,
 	Cast,
+
+	OnOffCollider,
 }
 #endregion

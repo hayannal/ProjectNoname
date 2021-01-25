@@ -79,6 +79,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.HealSpOnDamage: affectorBase = new HealSpOnDamageAffector(); break;
 			case eAffectorType.GiveAffectorValue: affectorBase = new GiveAffectorValueAffector(); break;
 			case eAffectorType.Cast: affectorBase = new CastAffector(); break;
+			case eAffectorType.OnOffCollider: affectorBase = new OnOffColliderAffector(); break;
 			#endregion
 		}
 		return affectorBase;
@@ -151,6 +152,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.Jump:
 			case eAffectorType.HealSpOnDamage:
 			case eAffectorType.Cast:
+			case eAffectorType.OnOffCollider:
 				return true;
 			#endregion
 		}

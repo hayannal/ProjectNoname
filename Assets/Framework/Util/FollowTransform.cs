@@ -25,6 +25,7 @@ public class FollowTransform : MonoBehaviour
 	public void Follow(Transform targetTransform, Vector3 worldOffset, bool disableOnDisableTarget)
 	{
 		_targetTransform = targetTransform;
+		_worldOffset = worldOffset;
 		_follow = true;
 	}
 

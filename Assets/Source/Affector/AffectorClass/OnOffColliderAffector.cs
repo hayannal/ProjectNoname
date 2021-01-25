@@ -62,7 +62,7 @@ public class OnOffColliderAffector : AffectorBase
 		{
 			// 검은 컬러로 바꿔주는건 몬스터에 한해서 처리한다.
 			// 몬스터는 항상 DiffuseNormalRim으로 되어있기 때문에 담당 클래스에게 요청하는 형태다.
-			//HitRimBlink.ChangeMainColor(_affectorProcessor.cachedTransform, Color.black);
+			ChangeMainColor.ChangeColor(_affectorProcessor.cachedTransform, Color.black);
 			_changedBlackColor = true;
 		}
 
@@ -85,7 +85,7 @@ public class OnOffColliderAffector : AffectorBase
 		else
 		{
 			// 이미 유령화 중에 또 쓴거다.
-
+			// 별다른 처리가 필요하지 않다.
 		}
 	}
 
@@ -121,12 +121,6 @@ public class OnOffColliderAffector : AffectorBase
 			_loopEffectTransform = null;
 		}
 
-		if (_changedBlackColor)
-		{
-			//HitRimBlink.ResetMainColor(_affectorProcessor.cachedTransform);
-			_changedBlackColor = false;
-		}
-
 		_lightAppliedRemainTime = 0.0f;
 
 		// 이미 죽은 상태라면 collider를 복구할 필요는 없다.
@@ -136,6 +130,13 @@ public class OnOffColliderAffector : AffectorBase
 		Collider collider = _actor.GetCollider();
 		if (collider != null)
 			collider.enabled = true;
+
+		// 죽어서 풀릴때는 리셋하지 않는다.
+		if (_changedBlackColor)
+		{
+			ChangeMainColor.ResetColor(_affectorProcessor.cachedTransform);
+			_changedBlackColor = false;
+		}
 	}
 
 #if UNITY_EDITOR
@@ -156,29 +157,17 @@ public class OnOffColliderAffector : AffectorBase
 		}
 		else
 		{
-			_lightAppliedRemainTime = duration;
-
-			if (_onLightEffectPrefab != null)
-				BattleInstanceManager.instance.GetCachedObject(_onLightEffectPrefab, _affectorProcessor.cachedTransform.position + Vector3.up, Quaternion.identity);
-
 			// 어펙터를 삭제하는건 아니지만 없어진거처럼 처리.
 			FinalizeAffector();
+
+			if (_onLightEffectPrefab != null)
+			{
+				Transform onLightEffectTransform = BattleInstanceManager.instance.GetCachedObject(_onLightEffectPrefab, _affectorProcessor.cachedTransform.position + Vector3.up, Quaternion.identity).transform;
+				FollowTransform.Follow(onLightEffectTransform, _affectorProcessor.cachedTransform, Vector3.up);
+			}
+
+			_lightAppliedRemainTime = duration;
 		}
-
-		/*
-		
-
-		if (_loopEffectMaterial != null)
-		{
-			_targetLoopEffectColor = _hitBarrierColor;
-			_barrierBlinkRemainTime = BarrierBlinkTime;
-		}
-
-		
-
-		if (_remainCount == 0)
-			finalized = true;
-		*/
 	}
 
 	void CheckDie()

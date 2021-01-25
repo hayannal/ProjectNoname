@@ -38,6 +38,8 @@ public class BattleManager : MonoBehaviour
 	public GameObject portalMoveEffectPrefab;
 	public GameObject portalGaugePrefab;
 
+	public GameObject onOffColliderAreaPrefab;
+
 	// for level pack
 	public GameObject diagonalNwayGeneratorPrefab;
 	public GameObject leftRightNwayGeneratorPrefab;

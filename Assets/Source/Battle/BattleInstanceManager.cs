@@ -1019,6 +1019,34 @@ public class BattleInstanceManager : MonoBehaviour
 	}
 	#endregion
 
+	#region OnOffColliderArea
+	List<OnOffColliderArea> _listCachedOnOffColliderArea = new List<OnOffColliderArea>();
+	public OnOffColliderArea GetCachedOnOffColliderArea(Vector3 position, Quaternion rotation)
+	{
+		for (int i = 0; i < _listCachedOnOffColliderArea.Count; ++i)
+		{
+			if (!_listCachedOnOffColliderArea[i].gameObject.activeSelf)
+			{
+				//_listCachedPortal[i].cachedTransform.position = position;
+				//_listCachedPortal[i].cachedTransform.rotation = rotation;
+				_listCachedOnOffColliderArea[i].cachedTransform.SetPositionAndRotation(position, rotation);
+				_listCachedOnOffColliderArea[i].gameObject.SetActive(true);
+				return _listCachedOnOffColliderArea[i];
+			}
+		}
+
+		GameObject newObject = Instantiate<GameObject>(BattleManager.instance.onOffColliderAreaPrefab, position, rotation, null);
+#if UNITY_EDITOR
+		AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+		if (settings.ActivePlayModeDataBuilderIndex == 2)
+			ObjectUtil.ReloadShader(newObject);
+#endif
+		OnOffColliderArea onOffColliderArea = newObject.GetComponent<OnOffColliderArea>();
+		_listCachedOnOffColliderArea.Add(onOffColliderArea);
+		return onOffColliderArea;
+	}
+	#endregion
+
 	#region Sequential Monster
 	List<SequentialMonster> _listSequentialMonster;
 	public SequentialMonster bossGaugeSequentialMonster { get; set; }

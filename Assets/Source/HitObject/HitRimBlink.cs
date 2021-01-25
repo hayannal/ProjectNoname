@@ -5,7 +5,6 @@ using UnityEngine;
 public class HitRimBlink : MonoBehaviour {
 
 	public static int HIT_RIM_ADD_DIR;
-	public static int HIT_COLOR_INTENSITY;
 	public static int HIT_RIM_POWER;
 	//public static int HIT_RIM_UV_NORMAL;
 	static AnimationCurveAsset s_HitRimCurveAsset;
@@ -18,7 +17,6 @@ public class HitRimBlink : MonoBehaviour {
 	public static void ShowHitRimBlink(Transform rootTransform, Vector3 hitNormal, bool firstCaching = false)
 	{
 		if (HIT_RIM_ADD_DIR == 0) HIT_RIM_ADD_DIR = Shader.PropertyToID("_RimDirAdjust");
-		if (HIT_COLOR_INTENSITY == 0) HIT_COLOR_INTENSITY = Shader.PropertyToID("_Color");
 		if (HIT_RIM_POWER == 0) HIT_RIM_POWER = Shader.PropertyToID("_RimPower");
 		//if (HIT_RIM_UV_NORMAL == 0) HIT_RIM_UV_NORMAL = Shader.PropertyToID("_RimNormalTex");
 		//if (s_HitCurveAsset == null) s_HitCurveAsset = AssetBundleManager.LoadAsset<AnimationCurveAsset>("animationcurve.unity3d", "HitBlink");
@@ -93,7 +91,7 @@ public class HitRimBlink : MonoBehaviour {
 				if (_cachedMaterials[i] == null)
 					continue;
 				_cachedMaterials[i].SetFloat(HIT_RIM_POWER, resultRim);
-				_cachedMaterials[i].SetFloat(HIT_COLOR_INTENSITY, resultColor);
+				//_cachedMaterials[i].SetFloat(HIT_COLOR_INTENSITY, resultColor);
 				//_cachedMaterials[i].SetTextureOffset(HIT_RIM_UV_NORMAL, new Vector2(Random.value, Random.value));
 			}
 		}

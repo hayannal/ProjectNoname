@@ -46,10 +46,11 @@ public class OnOffColliderAffector : AffectorBase
 			GameObject loopEffectPrefab = FindPreloadObject(affectorValueLevelTableData.sValue3);
 			if (loopEffectPrefab != null)
 			{
-				_loopEffectTransform = BattleInstanceManager.instance.GetCachedObject(loopEffectPrefab, _affectorProcessor.cachedTransform).transform;
+				_loopEffectTransform = BattleInstanceManager.instance.GetCachedObject(loopEffectPrefab, null).transform;
 				_loopEffectTransform.localPosition = Vector3.zero;
 				_loopEffectTransform.localRotation = Quaternion.identity;
 				_loopEffectTransform.localScale = Vector3.one;
+				FollowTransform.Follow(_loopEffectTransform, _affectorProcessor.cachedTransform, Vector3.zero);
 			}
 		}
 
@@ -117,13 +118,6 @@ public class OnOffColliderAffector : AffectorBase
 		if (_loopEffectTransform != null)
 		{
 			DisableParticleEmission.DisableEmission(_loopEffectTransform);
-#if UNITY_EDITOR
-			// 이 라인 때문에 몬스터를 소환해둔 상태에서 플레이 모드를 끄면 에러가 나게 된다.
-			// 그렇다고 없애면 배틀씬에서 꺼내놓고 작업을 할수가 없게 된다.
-			// 그래서 씬 이름으로 검사하기로 한다.
-			if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "BattleScene")
-				_loopEffectTransform.parent = null;
-#endif
 			_loopEffectTransform = null;
 		}
 

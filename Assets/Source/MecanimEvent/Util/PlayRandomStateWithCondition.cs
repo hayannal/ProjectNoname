@@ -67,6 +67,9 @@ public class PlayRandomStateWithCondition : ControlStateBase
 		public bool useCheckWall;
 		[ConditionalHide("useCheckWall", true)]
 		public bool existWallParameter;
+		public bool useActorCollider;
+		[ConditionalHide("useActorCollider", true)]
+		public bool enabledActorColliderParameter;
 		public int actionCountLimit;
 		public float actionCooltime;
 	}
@@ -201,6 +204,15 @@ public class PlayRandomStateWithCondition : ControlStateBase
 				if (randomStateWithConditionInfoList[i].existWallParameter && wallResult == false)
 					continue;
 				if (randomStateWithConditionInfoList[i].existWallParameter == false && wallResult)
+					continue;
+			}
+
+			if (randomStateWithConditionInfoList[i].useActorCollider)
+			{
+				if (_actor.GetCollider() == null)
+					continue;
+
+				if (randomStateWithConditionInfoList[i].enabledActorColliderParameter != _actor.GetCollider().enabled)
 					continue;
 			}
 

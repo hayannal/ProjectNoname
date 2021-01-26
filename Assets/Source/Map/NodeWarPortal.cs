@@ -363,6 +363,18 @@ public class NodeWarPortal : MonoBehaviour
 		NodeWarGround.instance.InitializeGround(_randomNodeWarPlanePrefab, _randomNodeWarEnvPrefab);
 		gameObject.SetActive(false);
 
+		#region Effect Preload
+		// 무적 버프 이펙트가 먹을때 유난히 끊겨서 캐싱을 해보기로 한다.
+		SoundManager.instance.SetUiVolume(0.0f);
+		yield return Timing.WaitForOneFrame;
+		GameObject effectObject = BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.invincibleBuffEffectPrefab, BattleInstanceManager.instance.playerActor.cachedTransform.position, Quaternion.identity);
+		yield return Timing.WaitForOneFrame;
+		yield return Timing.WaitForOneFrame;
+		effectObject.SetActive(false);
+		// 캐싱 오브젝트 끌때 바로 복구
+		SoundManager.instance.SetUiVolume(OptionManager.instance.systemVolume);
+		#endregion
+
 		// 레벨업 이펙트 나올테니 평소보다 조금 더 길게 보여준다.
 		FadeCanvas.instance.FadeIn(1.8f);
 

@@ -41,6 +41,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		UpdateMonsterDistance();
 		UpdateTrap();
 		//UpdateSpawnSoul();
+		UpdateGetSoulText();
 		UpdateSpawnHealOrb();
 		UpdateSpawnSpHealOrb();
 		UpdateSpawnBoostOrb();
@@ -186,6 +187,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		}
 		_phase = ePhase.FindSoul;
 		_phaseStartTime = Time.time;
+		_lastGetSoulTime = Time.time;
 		_trapSpawnRemainTime = Random.Range(_trapSpawnDelayMin, _trapSpawnDelayMax);
 		_soulSpawnRemainTime = SoulSpawnDelay;
 		_healOrbSpawnRemainTime = HealOrbSpawnDelay;
@@ -510,6 +512,19 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		}
 	}
 
+	float _lastGetSoulTime;
+	void UpdateGetSoulText()
+	{
+		if (_phase != ePhase.FindSoul)
+			return;
+
+		if (Time.time > _lastGetSoulTime + 15.0f)
+		{
+			BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarRule1Mind"), 2.5f);
+			_lastGetSoulTime = Time.time;
+		}
+	}
+
 	const float SoulNoDropRange = 24.0f;
 	List<Vector3> _listSoulGetPosition = new List<Vector3>();
 	bool GetSoulSpawnPosition(ref Vector3 resultPosition)
@@ -544,6 +559,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 
 	public override void OnGetSoul(Vector3 getPosition)
 	{
+		_lastGetSoulTime = Time.time;
 		_listSoulGetPosition.Add(getPosition);
 		BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.soulGetEffectPrefab, getPosition, Quaternion.identity);
 

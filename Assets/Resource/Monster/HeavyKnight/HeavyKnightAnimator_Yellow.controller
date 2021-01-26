@@ -19,7 +19,9 @@ MonoBehaviour:
   lootAtTargetOffsetAngle: 0
   lookAtRandom: 0
   desireDistance: 5
+  minimumDistance: 0
   lerpPower: 5
+  boneName: 
 --- !u!114 &-8536720576038055333
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -163,7 +165,9 @@ MonoBehaviour:
   lootAtTargetOffsetAngle: 0
   lookAtRandom: 0
   desireDistance: 5
+  minimumDistance: 0
   lerpPower: 20
+  boneName: 
 --- !u!1107 &-6540346028188328965
 AnimatorStateMachine:
   serializedVersion: 5
@@ -252,7 +256,9 @@ MonoBehaviour:
   lootAtTargetOffsetAngle: 0
   lookAtRandom: 0
   desireDistance: 5
+  minimumDistance: 0
   lerpPower: 10
+  boneName: 
 --- !u!114 &-5689367311784846291
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -342,6 +348,10 @@ MonoBehaviour:
   StartTime: 0.63
   EndTime: 1
   targetDetectType: 2
+  presetType: 0
+  multiPresetCount: 0
+  ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 6313189258560900821, guid: 56f289604ce19ec4dab54314c42d7e30,
     type: 3}
   lifeTime: 5
@@ -358,12 +368,16 @@ MonoBehaviour:
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
+  applyRootTransformRotation: 0
+  useAreaRotationYChange: 0
+  targetAreaRotationY: 0
   areaDistanceMin: 0
   areaDistanceMax: 0
   areaHeightMin: 0
   areaHeightMax: 0
   areaAngle: 0
   checkRaycastWallInArea: 0
+  raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
   repeatCount: 0
   repeatInterval: 0
@@ -384,13 +398,21 @@ MonoBehaviour:
   targetSpeed: 0
   speedChangeTime: 0
   speedChangeEase: 6
+  overrideSpeedOnCollision: 0
+  overrideSpeedTimeOnCollision: 0
   curve: 0
-  curveAdd: 0
+  useCurveChange: 0
+  targetCurve: 0
+  curveChangeTime: 0
+  curveChangeEase: 6
   curveLockY: 1
   curveStartDelayTime: 0
-  curveLifeTime: 0
-  endFollowOverTargetDistance: 0
+  followLastPositionWhenDieTarget: 0
+  followMeOnHitTarget: 0
+  followMinRange: 0
+  useRandomTurn: 0
   accelTurn: 0
+  randomTurnRotateYawRange: {x: 0, y: 0}
   gravity: -9.81
   parallelCount: 0
   parallelDistance: 0
@@ -405,9 +427,13 @@ MonoBehaviour:
   monsterThroughCount: 0
   wallThrough: 0
   quadThrough: 0
+  overrideResetIgnoreSqrMagnitude: 0
   bounceWallQuadCount: 0
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
+  overrideRicochetDistance: 0
+  overrideRicochetSpeed: 0
+  useTimerRicochet: 0
   useHitStay: 0
   hitStayInterval: 0
   hitStayIgnoreDuplicate: 0
@@ -504,6 +530,10 @@ MonoBehaviour:
   StartTime: 0.63
   EndTime: 1
   targetDetectType: 2
+  presetType: 0
+  multiPresetCount: 0
+  ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 6313189258560900821, guid: 56f289604ce19ec4dab54314c42d7e30,
     type: 3}
   lifeTime: 5
@@ -520,12 +550,16 @@ MonoBehaviour:
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
+  applyRootTransformRotation: 0
+  useAreaRotationYChange: 0
+  targetAreaRotationY: 0
   areaDistanceMin: 0
   areaDistanceMax: 0
   areaHeightMin: 0
   areaHeightMax: 0
   areaAngle: 0
   checkRaycastWallInArea: 0
+  raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
   repeatCount: 0
   repeatInterval: 0
@@ -546,13 +580,21 @@ MonoBehaviour:
   targetSpeed: 0
   speedChangeTime: 0
   speedChangeEase: 6
+  overrideSpeedOnCollision: 0
+  overrideSpeedTimeOnCollision: 0
   curve: 0
-  curveAdd: 0
+  useCurveChange: 0
+  targetCurve: 0
+  curveChangeTime: 0
+  curveChangeEase: 6
   curveLockY: 1
   curveStartDelayTime: 0
-  curveLifeTime: 0
-  endFollowOverTargetDistance: 0
+  followLastPositionWhenDieTarget: 0
+  followMeOnHitTarget: 0
+  followMinRange: 0
+  useRandomTurn: 0
   accelTurn: 0
+  randomTurnRotateYawRange: {x: 0, y: 0}
   gravity: -9.81
   parallelCount: 0
   parallelDistance: 0
@@ -567,9 +609,13 @@ MonoBehaviour:
   monsterThroughCount: 0
   wallThrough: 0
   quadThrough: 0
+  overrideResetIgnoreSqrMagnitude: 0
   bounceWallQuadCount: 0
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
+  overrideRicochetDistance: 0
+  overrideRicochetSpeed: 0
+  useTimerRicochet: 0
   useHitStay: 0
   hitStayInterval: 0
   hitStayIgnoreDuplicate: 0
@@ -659,6 +705,10 @@ MonoBehaviour:
   StartTime: 0.63
   EndTime: 1
   targetDetectType: 2
+  presetType: 0
+  multiPresetCount: 0
+  ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 6313189258560900821, guid: 56f289604ce19ec4dab54314c42d7e30,
     type: 3}
   lifeTime: 5
@@ -675,12 +725,16 @@ MonoBehaviour:
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
+  applyRootTransformRotation: 0
+  useAreaRotationYChange: 0
+  targetAreaRotationY: 0
   areaDistanceMin: 0
   areaDistanceMax: 0
   areaHeightMin: 0
   areaHeightMax: 0
   areaAngle: 0
   checkRaycastWallInArea: 0
+  raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
   repeatCount: 0
   repeatInterval: 0
@@ -701,13 +755,21 @@ MonoBehaviour:
   targetSpeed: 0
   speedChangeTime: 0
   speedChangeEase: 6
+  overrideSpeedOnCollision: 0
+  overrideSpeedTimeOnCollision: 0
   curve: 0
-  curveAdd: 0
+  useCurveChange: 0
+  targetCurve: 0
+  curveChangeTime: 0
+  curveChangeEase: 6
   curveLockY: 1
   curveStartDelayTime: 0
-  curveLifeTime: 0
-  endFollowOverTargetDistance: 0
+  followLastPositionWhenDieTarget: 0
+  followMeOnHitTarget: 0
+  followMinRange: 0
+  useRandomTurn: 0
   accelTurn: 0
+  randomTurnRotateYawRange: {x: 0, y: 0}
   gravity: -9.81
   parallelCount: 0
   parallelDistance: 0
@@ -722,9 +784,13 @@ MonoBehaviour:
   monsterThroughCount: 0
   wallThrough: 0
   quadThrough: 0
+  overrideResetIgnoreSqrMagnitude: 0
   bounceWallQuadCount: 0
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
+  overrideRicochetDistance: 0
+  overrideRicochetSpeed: 0
+  useTimerRicochet: 0
   useHitStay: 0
   hitStayInterval: 0
   hitStayIgnoreDuplicate: 0
@@ -809,7 +875,9 @@ MonoBehaviour:
   lootAtTargetOffsetAngle: 0
   lookAtRandom: 0
   desireDistance: 5
+  minimumDistance: 0
   lerpPower: 10
+  boneName: 
 --- !u!1102 &-1215575675028676736
 AnimatorState:
   serializedVersion: 5
@@ -922,6 +990,10 @@ MonoBehaviour:
   StartTime: 0.63
   EndTime: 1
   targetDetectType: 2
+  presetType: 0
+  multiPresetCount: 0
+  ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 6313189258560900821, guid: 56f289604ce19ec4dab54314c42d7e30,
     type: 3}
   lifeTime: 5
@@ -938,12 +1010,16 @@ MonoBehaviour:
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
+  applyRootTransformRotation: 0
+  useAreaRotationYChange: 0
+  targetAreaRotationY: 0
   areaDistanceMin: 0
   areaDistanceMax: 0
   areaHeightMin: 0
   areaHeightMax: 0
   areaAngle: 0
   checkRaycastWallInArea: 0
+  raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
   repeatCount: 0
   repeatInterval: 0
@@ -964,13 +1040,21 @@ MonoBehaviour:
   targetSpeed: 0
   speedChangeTime: 0
   speedChangeEase: 6
+  overrideSpeedOnCollision: 0
+  overrideSpeedTimeOnCollision: 0
   curve: 0
-  curveAdd: 0
+  useCurveChange: 0
+  targetCurve: 0
+  curveChangeTime: 0
+  curveChangeEase: 6
   curveLockY: 1
   curveStartDelayTime: 0
-  curveLifeTime: 0
-  endFollowOverTargetDistance: 0
+  followLastPositionWhenDieTarget: 0
+  followMeOnHitTarget: 0
+  followMinRange: 0
+  useRandomTurn: 0
   accelTurn: 0
+  randomTurnRotateYawRange: {x: 0, y: 0}
   gravity: -9.81
   parallelCount: 0
   parallelDistance: 0
@@ -985,9 +1069,13 @@ MonoBehaviour:
   monsterThroughCount: 0
   wallThrough: 0
   quadThrough: 0
+  overrideResetIgnoreSqrMagnitude: 0
   bounceWallQuadCount: 0
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
+  overrideRicochetDistance: 0
+  overrideRicochetSpeed: 0
+  useTimerRicochet: 0
   useHitStay: 0
   hitStayInterval: 0
   hitStayIgnoreDuplicate: 0
@@ -1091,7 +1179,9 @@ MonoBehaviour:
   lootAtTargetOffsetAngle: 0
   lookAtRandom: 0
   desireDistance: 5
+  minimumDistance: 0
   lerpPower: 5
+  boneName: 
 --- !u!1107 &1716283751575539540
 AnimatorStateMachine:
   serializedVersion: 5
@@ -1214,6 +1304,10 @@ MonoBehaviour:
   StartTime: 0.49
   EndTime: 1
   targetDetectType: 1
+  presetType: 0
+  multiPresetCount: 0
+  ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
@@ -1229,12 +1323,16 @@ MonoBehaviour:
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
+  applyRootTransformRotation: 0
+  useAreaRotationYChange: 0
+  targetAreaRotationY: 0
   areaDistanceMin: 0
   areaDistanceMax: 6.7
   areaHeightMin: 0
   areaHeightMax: 2
   areaAngle: 120
   checkRaycastWallInArea: 0
+  raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
   repeatCount: 0
   repeatInterval: 0
@@ -1255,13 +1353,21 @@ MonoBehaviour:
   targetSpeed: 0
   speedChangeTime: 0
   speedChangeEase: 6
+  overrideSpeedOnCollision: 0
+  overrideSpeedTimeOnCollision: 0
   curve: 0
-  curveAdd: 0
+  useCurveChange: 0
+  targetCurve: 0
+  curveChangeTime: 0
+  curveChangeEase: 6
   curveLockY: 0
   curveStartDelayTime: 0
-  curveLifeTime: 0
-  endFollowOverTargetDistance: 0
+  followLastPositionWhenDieTarget: 0
+  followMeOnHitTarget: 0
+  followMinRange: 0
+  useRandomTurn: 0
   accelTurn: 0
+  randomTurnRotateYawRange: {x: 0, y: 0}
   gravity: -9.81
   parallelCount: 0
   parallelDistance: 0
@@ -1276,9 +1382,13 @@ MonoBehaviour:
   monsterThroughCount: 0
   wallThrough: 0
   quadThrough: 0
+  overrideResetIgnoreSqrMagnitude: 0
   bounceWallQuadCount: 0
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
+  overrideRicochetDistance: 0
+  overrideRicochetSpeed: 0
+  useTimerRicochet: 0
   useHitStay: 0
   hitStayInterval: 0
   hitStayIgnoreDuplicate: 0
@@ -1366,6 +1476,10 @@ MonoBehaviour:
   StartTime: 0.63
   EndTime: 0.67
   targetDetectType: 1
+  presetType: 0
+  multiPresetCount: 0
+  ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
@@ -1377,16 +1491,20 @@ MonoBehaviour:
   teamCheckType: 0
   createPositionType: 0
   boneName: 
-  offset: {x: 0, y: 0, z: 0.1}
+  offset: {x: -0.2, y: 0, z: 0.1}
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: -3
+  applyRootTransformRotation: 0
+  useAreaRotationYChange: 0
+  targetAreaRotationY: 0
   areaDistanceMin: 0.8
   areaDistanceMax: 4.3
   areaHeightMin: 0
   areaHeightMax: 2
-  areaAngle: 20
+  areaAngle: 16
   checkRaycastWallInArea: 0
+  raycastWallHeight: 0.5
   applyCollisionDamageInterval: 1
   repeatCount: 0
   repeatInterval: 0
@@ -1407,13 +1525,21 @@ MonoBehaviour:
   targetSpeed: 0
   speedChangeTime: 0
   speedChangeEase: 6
+  overrideSpeedOnCollision: 0
+  overrideSpeedTimeOnCollision: 0
   curve: 0
-  curveAdd: 0
+  useCurveChange: 0
+  targetCurve: 0
+  curveChangeTime: 0
+  curveChangeEase: 6
   curveLockY: 1
   curveStartDelayTime: 0
-  curveLifeTime: 0
-  endFollowOverTargetDistance: 0
+  followLastPositionWhenDieTarget: 0
+  followMeOnHitTarget: 0
+  followMinRange: 0
+  useRandomTurn: 0
   accelTurn: 0
+  randomTurnRotateYawRange: {x: 0, y: 0}
   gravity: -9.81
   parallelCount: 0
   parallelDistance: 0
@@ -1428,9 +1554,13 @@ MonoBehaviour:
   monsterThroughCount: 0
   wallThrough: 0
   quadThrough: 0
+  overrideResetIgnoreSqrMagnitude: 0
   bounceWallQuadCount: 0
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
+  overrideRicochetDistance: 0
+  overrideRicochetSpeed: 0
+  useTimerRicochet: 0
   useHitStay: 0
   hitStayInterval: 0
   hitStayIgnoreDuplicate: 0
@@ -1509,6 +1639,10 @@ MonoBehaviour:
   StartTime: 0.62
   EndTime: 1
   targetDetectType: 1
+  presetType: 0
+  multiPresetCount: 0
+  ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 0}
   lifeTime: 0
   areaHitLifeTimeEarlyOffset: 0
@@ -1524,12 +1658,16 @@ MonoBehaviour:
   useBoneRotation: 0
   fixedWorldPositionY: 0
   areaRotationY: 0
+  applyRootTransformRotation: 0
+  useAreaRotationYChange: 0
+  targetAreaRotationY: 0
   areaDistanceMin: 0
   areaDistanceMax: 1
   areaHeightMin: 0
   areaHeightMax: 2
   areaAngle: 45
   checkRaycastWallInArea: 0
+  raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
   repeatCount: 0
   repeatInterval: 0
@@ -1550,13 +1688,21 @@ MonoBehaviour:
   targetSpeed: 0
   speedChangeTime: 0
   speedChangeEase: 6
+  overrideSpeedOnCollision: 0
+  overrideSpeedTimeOnCollision: 0
   curve: 0
-  curveAdd: 0
+  useCurveChange: 0
+  targetCurve: 0
+  curveChangeTime: 0
+  curveChangeEase: 6
   curveLockY: 0
   curveStartDelayTime: 0
-  curveLifeTime: 0
-  endFollowOverTargetDistance: 0
+  followLastPositionWhenDieTarget: 0
+  followMeOnHitTarget: 0
+  followMinRange: 0
+  useRandomTurn: 0
   accelTurn: 0
+  randomTurnRotateYawRange: {x: 0, y: 0}
   gravity: -9.81
   parallelCount: 0
   parallelDistance: 0
@@ -1571,9 +1717,13 @@ MonoBehaviour:
   monsterThroughCount: 0
   wallThrough: 0
   quadThrough: 0
+  overrideResetIgnoreSqrMagnitude: 0
   bounceWallQuadCount: 0
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
+  overrideRicochetDistance: 0
+  overrideRicochetSpeed: 0
+  useTimerRicochet: 0
   useHitStay: 0
   hitStayInterval: 0
   hitStayIgnoreDuplicate: 0
@@ -1757,6 +1907,7 @@ MonoBehaviour:
   sphereCastRadius: 0.2
   wallThrough: 0
   quadThrough: 0
+  registerCustomTargetPosition: 0
 --- !u!114 &7363083532164061960
 MonoBehaviour:
   m_ObjectHideFlags: 1

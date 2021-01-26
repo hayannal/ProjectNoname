@@ -176,6 +176,15 @@ public class OnOffColliderAffector : AffectorBase
 		finalized = true;
 	}
 
+	bool IsActive()
+	{
+		// 컬리더가 꺼있다면 유령상태일거다.
+		Collider collider = _actor.GetCollider();
+		if (collider == null)
+			return false;
+		return (collider.enabled == false);
+	}
+
 	public static bool OnLight(AffectorProcessor affectorProcessor, float duration)
 	{
 		OnOffColliderAffector onOffColliderAffector = (OnOffColliderAffector)affectorProcessor.GetFirstContinuousAffector(eAffectorType.OnOffCollider);
@@ -193,5 +202,14 @@ public class OnOffColliderAffector : AffectorBase
 			return;
 
 		onOffColliderAffector.CheckDie();
+	}
+
+	public static bool IsActive(AffectorProcessor affectorProcessor)
+	{
+		OnOffColliderAffector onOffColliderAffector = (OnOffColliderAffector)affectorProcessor.GetFirstContinuousAffector(eAffectorType.OnOffCollider);
+		if (onOffColliderAffector == null)
+			return false;
+
+		return onOffColliderAffector.IsActive();
 	}
 }

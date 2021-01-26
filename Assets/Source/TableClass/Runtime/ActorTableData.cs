@@ -89,6 +89,10 @@ public class ActorTableData
   public bool checkBurrow { get { return _checkBurrow; } set { _checkBurrow = value; } }
   
   [SerializeField]
+  bool _checkGhost;
+  public bool checkGhost { get { return _checkGhost; } set { _checkGhost = value; } }
+  
+  [SerializeField]
   bool _flying;
   public bool flying { get { return _flying; } set { _flying = value; } }
   

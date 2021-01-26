@@ -95,6 +95,7 @@ public class MonsterActor : Actor
 			targetingProcessor.sphereCastRadiusForCheckWall = 0.1f;
 			targetingProcessor.checkNavMeshReachable = true;
 			targetingProcessor.checkBurrow = true;
+			targetingProcessor.checkGhost = true;
 		}
 
 		// common

@@ -67,6 +67,7 @@ public class MeHitObject : MecanimEventBase {
 	public float targetSpeed;
 	public float speedChangeTime;
 	public DG.Tweening.Ease speedChangeEase = DG.Tweening.Ease.OutQuad;
+	public bool repeatSpeedChange;
 	public float overrideSpeedOnCollision;
 	public float overrideSpeedTimeOnCollision;
 	public float curve;
@@ -301,6 +302,7 @@ public class MeHitObject : MecanimEventBase {
 						targetSpeed = EditorGUILayout.FloatField("Target Speed :", targetSpeed);
 						speedChangeTime = EditorGUILayout.FloatField("Speed Change Time :", speedChangeTime);
 						speedChangeEase = (DG.Tweening.Ease)EditorGUILayout.EnumPopup("Easy Type :", speedChangeEase);
+						repeatSpeedChange = EditorGUILayout.Toggle("Repeat Speed Change :", repeatSpeedChange);
 					}
 				}
 			}

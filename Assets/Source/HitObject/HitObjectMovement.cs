@@ -46,6 +46,17 @@ public class HitObjectMovement : MonoBehaviour {
 	public Vector3 howitzerTargetPosition { get; set; }
 	#endregion
 
+	void OnDisable()
+	{
+		// 반복 셋팅되는 형태라 다음번 재사용시 useSpeedChange옵션이 꺼있는 곳에서 가져가면 트윈이 남아있을 수 있기 때문에
+		// 초기화 코드를 넣기로 한다.
+		if (_signal.repeatSpeedChange)
+		{
+			if (_tweenReferenceForSpeedChange != null)
+				_tweenReferenceForSpeedChange.Kill();
+		}
+	}
+
 	Transform _cachedParentActorTransform;
 	TweenerCore<float, float, FloatOptions> _tweenReferenceForSpeedChange;
 	public void InitializeSignal(HitObject hitObject, MeHitObject meHit, Actor parentActor, Rigidbody rigidbody, int hitSignalIndexInAction)
@@ -76,7 +87,14 @@ public class HitObjectMovement : MonoBehaviour {
 				targetSpeed *= (1.0f - slowRate);
 			if (_tweenReferenceForSpeedChange != null)
 				_tweenReferenceForSpeedChange.Kill();
-			_tweenReferenceForSpeedChange = DOTween.To(() => _speed, x => _speed = x, targetSpeed, _signal.speedChangeTime).SetEase(_signal.speedChangeEase);
+			if (_signal.repeatSpeedChange)
+			{
+				_tweenReferenceForSpeedChange = DOTween.To(() => _speed, x => _speed = x, targetSpeed, _signal.speedChangeTime).SetEase(_signal.speedChangeEase).OnComplete(OnCompleteRepeatSpeedChange);
+				_repeatStartSpeed = _speed;
+				_repeatTargetSpeed = targetSpeed;
+			}
+			else
+				_tweenReferenceForSpeedChange = DOTween.To(() => _speed, x => _speed = x, targetSpeed, _signal.speedChangeTime).SetEase(_signal.speedChangeEase);
 		}
 
 		switch(_signal.movementType)
@@ -218,6 +236,14 @@ public class HitObjectMovement : MonoBehaviour {
 				_forward = cachedTransform.forward = _rigidbody.velocity.normalized;
 				break;
 		}
+	}
+
+	float _repeatStartSpeed;
+	float _repeatTargetSpeed;
+	void OnCompleteRepeatSpeedChange()
+	{
+		_speed = _repeatStartSpeed;
+		_tweenReferenceForSpeedChange = DOTween.To(() => _speed, x => _speed = x, _repeatTargetSpeed, _signal.speedChangeTime).SetEase(_signal.speedChangeEase).OnComplete(OnCompleteRepeatSpeedChange);
 	}
 
 	Vector3 _velocity;

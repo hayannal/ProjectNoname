@@ -84,6 +84,7 @@ public class MeHitObject : MecanimEventBase {
 	public bool useRandomTurn;
 	public float accelTurn;
 	public Vector2 randomTurnRotateYawRange;
+	public float zigZagIntervalTime;
 	public float gravity = -9.81f;
 
 	public int parallelCount;

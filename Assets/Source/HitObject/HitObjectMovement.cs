@@ -13,6 +13,7 @@ public class HitObjectMovement : MonoBehaviour {
 		FollowTarget,
 		Turn,
 		Howitzer,
+		ZigZag
 	}
 
 	public enum eStartDirectionType
@@ -41,6 +42,9 @@ public class HitObjectMovement : MonoBehaviour {
 	Vector3 _followTargetPosition;
 	float _currentCurve;
 	bool _ignoreFollow;
+
+	float _zigZagRemainTime;
+	bool _zigZagLeftOrRight;
 
 	#region Custom Howitzer
 	public Vector3 howitzerTargetPosition { get; set; }
@@ -200,6 +204,22 @@ public class HitObjectMovement : MonoBehaviour {
 					howitzerTargetPosition += new Vector3(randomRadius.x, 0.0f, randomRadius.y);
 				}
 				ComputeHowitzer();
+				break;
+			case eMovementType.ZigZag:
+				// 기본적으로는 직전하게 설정한 후 각도를 바꿔서 지그재그로 나가게 해준다.
+				_velocity = _rigidbody.velocity = cachedTransform.forward * _speed;
+				_forward = cachedTransform.forward;
+
+				// 최초 1회는 인터벌의 반만큼으로 시간 설정
+				_zigZagRemainTime = _signal.zigZagIntervalTime * 0.5f;
+				_zigZagLeftOrRight = (Random.value < 0.5f);
+				Quaternion halfRotation = Quaternion.AngleAxis(_zigZagLeftOrRight ? -45.0f : 45.0f, Vector3.up);
+
+				// 재설정
+				_rigidbody.MoveRotation(_rigidbody.rotation * halfRotation);
+				cachedTransform.rotation = _rigidbody.rotation;
+				_velocity = _rigidbody.velocity = cachedTransform.forward * _speed;
+				_forward = cachedTransform.forward;
 				break;
 		}
 
@@ -534,6 +554,21 @@ public class HitObjectMovement : MonoBehaviour {
 				// currentPosition을 적용해버리면 rigidbody도 앞으로 나아가고 transform도 앞으로 나아가서 두배로 가게 된다. 둘중 하나만 한다면 rigidbody만 하는게 맞다.
 				_rigidbody.velocity = _velocity;
 				_forward = cachedTransform.forward = _rigidbody.velocity.normalized;
+				break;
+			case eMovementType.ZigZag:
+				_zigZagRemainTime -= Time.fixedDeltaTime;
+				if (_zigZagRemainTime < 0.0f)
+				{
+					_zigZagLeftOrRight ^= true;
+					_zigZagRemainTime += _signal.zigZagIntervalTime;
+					Quaternion perpendicularRotation = Quaternion.AngleAxis(_zigZagLeftOrRight ? -90.0f : 90.0f, Vector3.up);
+
+					// 재설정
+					_rigidbody.MoveRotation(_rigidbody.rotation * perpendicularRotation);
+					cachedTransform.rotation = _rigidbody.rotation;
+					_velocity = _rigidbody.velocity = cachedTransform.forward * _speed;
+					_forward = cachedTransform.forward;
+				}
 				break;
 		}
 	}

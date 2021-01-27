@@ -139,6 +139,7 @@ AnimatorState:
   - {fileID: -1049766806834685529}
   - {fileID: -8241733205721431210}
   - {fileID: -6291593003363474487}
+  - {fileID: -947694654812179853}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -176,7 +177,7 @@ MonoBehaviour:
     type: 3}
   lifeTime: 1
   areaHitLifeTimeEarlyOffset: 0
-  ignoreAreaHitLifeTimeRange: {x: 0, y: 1.3}
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0.78}
   movable: 1
   maxDistance: 10
   defaultSphereCastDistance: 0
@@ -197,6 +198,7 @@ MonoBehaviour:
   areaHeightMax: 2
   areaAngle: 360
   checkRaycastWallInArea: 0
+  raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
   repeatCount: 0
   repeatInterval: 0
@@ -217,6 +219,7 @@ MonoBehaviour:
   targetSpeed: 0
   speedChangeTime: 0.4
   speedChangeEase: 6
+  repeatSpeedChange: 0
   overrideSpeedOnCollision: 0
   overrideSpeedTimeOnCollision: 0
   curve: 0
@@ -252,8 +255,9 @@ MonoBehaviour:
   ricochetOneHitPerTarget: 0
   overrideRicochetDistance: 0
   overrideRicochetSpeed: 0
+  useTimerRicochet: 0
   useHitStay: 1
-  hitStayInterval: 0.2
+  hitStayInterval: 0.17
   hitStayIgnoreDuplicate: 0
   hitStayIdForIgnoreDuplicate: 0
   hitStayLineRendererTrigger: 0
@@ -271,6 +275,21 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 1
+--- !u!114 &-947694654812179853
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2e6805f699075e4eae576dc1aabd338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0
+  EndTime: 0.4
+  speed: 1.15
 --- !u!91 &9100000
 AnimatorController:
   m_ObjectHideFlags: 0

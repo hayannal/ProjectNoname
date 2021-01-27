@@ -662,6 +662,12 @@ public class HitObjectMovement : MonoBehaviour {
 			List<MonsterActor> listMonsterActor = BattleInstanceManager.instance.GetLiveMonsterList();
 			for (int i = 0; i < listMonsterActor.Count; ++i)
 			{
+#if UNITY_EDITOR
+				// 배틀씬에서 SpawnFlag 꺼내놓고 플레이할 경우 삭제된채 들어있게 된다. 에디터에서만 검사한다.
+				if (listMonsterActor[i] == null)
+					continue;
+#endif
+
 				Collider monsterCollider = listMonsterActor[i].GetCollider();
 
 				// 이미 컬리더가 켜있는 후보는 result안에 들어있을 것이다. 안켜져있는 후보중에 찾아서 넣어두면 된다.
@@ -669,7 +675,11 @@ public class HitObjectMovement : MonoBehaviour {
 					continue;
 
 				// 컬리더 꺼있는거 중에는 Burrow도 있고 컬리더무시몹도 있고 많기 때문에 이중에 골라서 추가해야한다.
-				if (false)
+				bool apply = false;
+				if (OnOffColliderAffector.IsActive(listMonsterActor[i].affectorProcessor))
+					apply = true;
+
+				if (apply == false)
 					continue;
 
 				// team check

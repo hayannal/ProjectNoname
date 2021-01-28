@@ -87,6 +87,7 @@ public class PlayerData : MonoBehaviour
 	public ObscuredInt nodeWarCurrentLevel { get; set; }
 	public ObscuredInt nodeWarBoostRemainCount { get; set; }
 	public ObscuredInt nodeWarBonusPowerSource { get; set; }
+	public ObscuredBool nodeWarAgainOpened { get; set; }
 
 	// sealCount 획득 연출용 변수. 클라에만 저장해두고 로비 돌아갈때 보여준다.
 	// 이벤트 처리가 아니라서 PlayerData에 넣어두기로 한다.
@@ -344,6 +345,7 @@ public class PlayerData : MonoBehaviour
 		nodeWarCleared = false;
 		nodeWarCurrentLevel = 0;
 		nodeWarBoostRemainCount = 0;
+		nodeWarAgainOpened = false;
 		termsConfirmed = false;
 
 		// 나중에 지울 코드이긴 한데 MainSceneBuilder에서 NEWPLAYER_LEVEL1 디파인 켜둔채로 생성하는 테스트용 루틴일땐 1챕터에서 시작하게 처리해둔다.
@@ -671,6 +673,13 @@ public class PlayerData : MonoBehaviour
 			int intValue = 0;
 			if (int.TryParse(userReadOnlyData["nodBst"].Value, out intValue))
 				nodeWarBoostRemainCount = intValue;
+		}
+
+		nodeWarAgainOpened = false;
+		if (userReadOnlyData.ContainsKey("lasNodAgDat"))
+		{
+			if (string.IsNullOrEmpty(userReadOnlyData["lasNodAgDat"].Value) == false)
+				OnRecvNodeWarOpenAgainInfo(userReadOnlyData["lasNodAgDat"].Value);
 		}
 
 		#region Unfixed NodeWar Bonus Info
@@ -1299,9 +1308,34 @@ public class PlayerData : MonoBehaviour
 		}
 	}
 
+	void OnRecvNodeWarOpenAgainInfo(DateTime lastNodeWarOpenAgainTime)
+	{
+		if (ServerTime.UtcNow.Year == lastNodeWarOpenAgainTime.Year && ServerTime.UtcNow.Month == lastNodeWarOpenAgainTime.Month && ServerTime.UtcNow.Day == lastNodeWarOpenAgainTime.Day)
+		{
+			nodeWarAgainOpened = true;
+
+			// ResetTime은 따로 변수 추가하지 않고 nodeWarCleared가 썼던 변수를 같이 사용한다.
+			// 둘 중 하나 셋팅된거중에 아무거나 쓰면 된다. 혹은 둘다 되어있더라도 같은 값이 나올테니 아무거나 쓰면 된다.
+			nodeWarResetTime = new DateTime(lastNodeWarOpenAgainTime.Year, lastNodeWarOpenAgainTime.Month, lastNodeWarOpenAgainTime.Day) + TimeSpan.FromDays(1);
+		}
+		else
+			nodeWarAgainOpened = false;
+	}
+
+	public void OnRecvNodeWarOpenAgainInfo(string lastNodeWarOpenAgainTimeString)
+	{
+		DateTime lastNodeWarOpenAgainTime = new DateTime();
+		if (DateTime.TryParse(lastNodeWarOpenAgainTimeString, out lastNodeWarOpenAgainTime))
+		{
+			DateTime universalTime = lastNodeWarOpenAgainTime.ToUniversalTime();
+			OnRecvNodeWarOpenAgainInfo(universalTime);
+		}
+	}
+
 	void UpdateNodeWarResetTime()
 	{
-		if (nodeWarCleared == false)
+		// 오늘자 노드워를 클리어 하거나 재오픈을 했다면 리셋이 필요하다.
+		if (nodeWarCleared == false && nodeWarAgainOpened == false)
 			return;
 
 		if (DateTime.Compare(ServerTime.UtcNow, nodeWarResetTime) < 0)
@@ -1309,6 +1343,7 @@ public class PlayerData : MonoBehaviour
 
 		// 클라 선처리로 갱신
 		nodeWarCleared = false;
+		nodeWarAgainOpened = false;
 		nodeWarResetTime += TimeSpan.FromDays(1);
 
 		// 이 타이밍에 사실 서버의 시간이 다음날이라고 확정된 타임은 아니다.

@@ -34,8 +34,9 @@ public class NodeWarPortal : MonoBehaviour
 		RefreshRemainTime();
 	}
 
-	void RefreshRemainTime()
+	public void RefreshRemainTime()
 	{
+		// 재오픈 여부와 상관없이 nodeWarCleared 상태만 보고 처리. 클리어를 할 수 있는 상태면 대기 이펙트를 보여준다.
 		if (PlayerData.instance.nodeWarCleared)
 		{
 			_nextResetDateTime = PlayerData.instance.nodeWarResetTime;
@@ -45,6 +46,7 @@ public class NodeWarPortal : MonoBehaviour
 		}
 		else
 		{
+			_needUpdate = false;
 			remainTimeText.gameObject.SetActive(false);
 			standbyEffectObject.SetActive(true);
 		}
@@ -155,7 +157,7 @@ public class NodeWarPortal : MonoBehaviour
 				return;
 		}
 
-		if (PlayerData.instance.nodeWarCleared)
+		if (PlayerData.instance.nodeWarCleared && PlayerData.instance.nodeWarAgainOpened)
 		{
 			canvasGroup.alpha = 1.0f;
 			_canvasRemainTime = 5.0f;
@@ -166,6 +168,19 @@ public class NodeWarPortal : MonoBehaviour
 		if (TimeSpaceData.instance.IsInventoryVisualMax())
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_ManageInventory"), 2.0f);
+			return;
+		}
+
+		if (PlayerData.instance.nodeWarCleared && PlayerData.instance.nodeWarAgainOpened == false)
+		{
+			canvasGroup.alpha = 1.0f;
+			_canvasRemainTime = 5.0f;
+
+			TimeSpan remainTimeSpan = _nextResetDateTime - ServerTime.UtcNow;
+			if (remainTimeSpan < TimeSpan.FromMinutes(5.0))
+				ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarNotEnoughTime"), 2.0f);
+			else
+				ShowIndicator();
 			return;
 		}
 
@@ -232,9 +247,16 @@ public class NodeWarPortal : MonoBehaviour
 		if (affectorProcessor.actor.team.teamId == (int)Team.eTeamID.DefaultMonster)
 			return;
 
+		if (_showIndicator)
+		{
+			HideIndicator();
+			return;
+		}
+
 		_enteredPortal = false;
 		//openingEffectObject.SetActive(false);
-		DisableParticleEmission.DisableEmission(openingEffectObject.transform);
+		if (openingEffectObject.activeSelf)
+			DisableParticleEmission.DisableEmission(openingEffectObject.transform);
 	}
 
 
@@ -382,6 +404,31 @@ public class NodeWarPortal : MonoBehaviour
 	}
 
 
+
+	ObjectIndicatorCanvas _objectIndicatorCanvas;
+	bool _showIndicator;
+	void ShowIndicator()
+	{
+		_showIndicator = true;
+
+		AddressableAssetLoadManager.GetAddressableGameObject("NodeWarEnterAgainIndicator", "Canvas", (prefab) =>
+		{
+			if (this == null) return;
+			if (gameObject == null) return;
+			if (gameObject.activeInHierarchy == false) return;
+			if (_showIndicator == false) return;
+
+			_objectIndicatorCanvas = UIInstanceManager.instance.GetCachedObjectIndicatorCanvas(prefab);
+			_objectIndicatorCanvas.targetTransform = transform;
+		});
+	}
+
+	public void HideIndicator()
+	{
+		if (_objectIndicatorCanvas != null && _objectIndicatorCanvas.gameObject.activeSelf)
+			_objectIndicatorCanvas.gameObject.SetActive(false);
+		_showIndicator = false;
+	}
 
 
 

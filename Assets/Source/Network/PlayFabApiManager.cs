@@ -1046,6 +1046,41 @@ public class PlayFabApiManager : MonoBehaviour
 			HandleCommonError(error);
 		});
 	}
+
+	public void RequestOpenAgainNodeWar(int price, Action successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "OpenAgainNodeWar",
+			FunctionParameter = new { Ent = 1 },
+			GeneratePlayStreamEvent = true
+		}, (success) =>
+		{
+			PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
+			jsonResult.TryGetValue("retErr", out object retErr);
+			bool failure = ((retErr.ToString()) == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+				CurrencyData.instance.dia -= price;
+
+				// 특이한점은 nodeWarCleared를 강제로 안깬거처럼 되돌려놔야 한다는거다.
+				// 이렇게해서 오늘 한번 더 클리어할 기회를 준다. 서버에서는 클리어 날짜를 하루전으로 변경하는 방식으로 같은 일을 수행한다. 그래서 재접해도 적용되게 처리한다.
+				PlayerData.instance.nodeWarCleared = false;
+
+				// 성공시에만 date파싱을 한다.
+				jsonResult.TryGetValue("date", out object date);
+				PlayerData.instance.OnRecvNodeWarOpenAgainInfo((string)date);
+
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
 	#endregion
 
 

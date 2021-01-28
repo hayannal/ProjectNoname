@@ -9,8 +9,11 @@ public class ConfirmSpendCanvas : MonoBehaviour
 
 	public Text titleText;
 	public Text messageText;
-	public Text spendCountText;
-	public GameObject[] currencyTypeObjectList;
+
+	public Text priceText;
+	public GameObject[] priceTypeObjectList;
+	public Image priceButtonImage;
+	public Coffee.UIExtensions.UIEffect[] priceGrayscaleEffect;
 
 	System.Action _okAction;
 
@@ -34,9 +37,21 @@ public class ConfirmSpendCanvas : MonoBehaviour
 
 		titleText.SetLocalizedText(title);
 		messageText.SetLocalizedText(message);
-		for (int i = 0; i < currencyTypeObjectList.Length; ++i)
-			currencyTypeObjectList[i].SetActive((int)currencyType == i);
-		spendCountText.text = spendCount.ToString("N0");
+
+		priceText.text = spendCount.ToString("N0");
+		bool disablePrice = false;
+		if (currencyType == CurrencyData.eCurrencyType.Gold)
+			disablePrice = (CurrencyData.instance.gold < spendCount);
+		else
+			disablePrice = (CurrencyData.instance.dia < spendCount);
+		priceButtonImage.color = !disablePrice ? Color.white : ColorUtil.halfGray;
+		priceText.color = !disablePrice ? Color.white : Color.gray;
+		for (int i = 0; i < priceTypeObjectList.Length; ++i)
+		{
+			priceTypeObjectList[i].SetActive((int)currencyType == i);
+			if ((int)currencyType == i)
+				priceGrayscaleEffect[i].enabled = disablePrice;
+		}
 
 		_showCurrencySmallInfoCanvas = showCurrencySmallInfoCanvas;
 		if (showCurrencySmallInfoCanvas)

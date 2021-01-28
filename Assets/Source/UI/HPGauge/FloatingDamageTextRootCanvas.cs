@@ -38,6 +38,11 @@ public class FloatingDamageTextRootCanvas : MonoBehaviour
 
 	public void ShowText(FloatingDamageText.eFloatingDamageType floatingDamageType, Actor actor)
 	{
+#if UNITY_EDITOR
+		if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "BattleScene")
+			return;
+#endif
+
 		// position ani
 		int index = FloatingDamageTextRootCanvas.instance.GetPositionAnimationIndex(actor);
 		index = index % floatingDamageTextPrefabList.Length;

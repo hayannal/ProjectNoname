@@ -96,7 +96,7 @@ public class PlayFabApiManager : MonoBehaviour
 				return;
 		}
 
-		if (error.Error == PlayFabErrorCode.ServiceUnavailable || error.HttpCode == 400)
+		if (error.Error == PlayFabErrorCode.ServiceUnavailable || error.Error == PlayFabErrorCode.DownstreamServiceUnavailable || error.Error == PlayFabErrorCode.APIRequestLimitExceeded || error.HttpCode == 400)
 		{
 			OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("SystemUI_DisconnectServer"), () =>
 			{

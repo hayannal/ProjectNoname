@@ -106,6 +106,9 @@ public class TeleportTargetPositionAffector : AffectorBase
 					}
 				}
 				break;
+			case 4:
+				_actor.cachedTransform.position = GetTeleportPosition(new Vector3(_affectorValueLevelTableData.fValue3, 0.0f, _affectorValueLevelTableData.fValue4));
+				break;
 		}
 
 		if (_onStartEffectPrefab != null)

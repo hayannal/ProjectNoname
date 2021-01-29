@@ -222,7 +222,7 @@ MonoBehaviour:
     useActorCollider: 0
     enabledActorColliderParameter: 0
     actionCountLimit: 0
-    actionCooltime: 0
+    actionCooltime: 3
 --- !u!114 &-8311919262964380374
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1378,6 +1378,7 @@ AnimatorState:
   - {fileID: 6849499806269995181}
   - {fileID: 1939561632117833411}
   - {fileID: 8987458936024993943}
+  - {fileID: 7053317509004855576}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -2451,6 +2452,22 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 0
+--- !u!114 &7053317509004855576
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60fa1780ac802fb41a5e009957e39ff3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.3
+  EndTime: 1
+  attackDelay: 0.8
+  overrideRate: 0.5
 --- !u!114 &7631648055763034638
 MonoBehaviour:
   m_ObjectHideFlags: 1

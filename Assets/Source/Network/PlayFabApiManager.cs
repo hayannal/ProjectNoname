@@ -1695,6 +1695,9 @@ public class PlayFabApiManager : MonoBehaviour
 				CurrencyData.instance.dia -= price;
 				PlayerData.instance.balancePp += addBalancePp;
 
+				// 상점에서 pp구매한거처럼 마찬가지로 balancePpBuyCount 증가시켜놔야한다.
+				PlayerData.instance.balancePpBuyCount += addBalancePp;
+
 				// 성공시에는 구매시간이 날아온다.
 				jsonResult.TryGetValue("date", out object date);
 				PlayerData.instance.OnRecvPurchaseBalance((string)date);

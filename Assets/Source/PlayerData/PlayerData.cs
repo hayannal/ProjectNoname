@@ -59,6 +59,7 @@ public class PlayerData : MonoBehaviour
 	public bool balancePpAlarmState { get; set; }
 	public ObscuredBool balancePpPurchased { get; set; }
 	public DateTime balancePpResetTime { get; private set; }
+	public ObscuredInt balancePpBuyCount { get; set; }
 
 	// 뽑기 관련 변수
 	public ObscuredInt notStreakCount { get; set; }
@@ -329,6 +330,7 @@ public class PlayerData : MonoBehaviour
 		balancePp = 0;
 		balancePpAlarmState = false;
 		balancePpPurchased = false;
+		balancePpBuyCount = 0;
 		notStreakCount = 0;
 		notStreakCharCount = 0;
 		notStreakLegendCharCount = 0;
@@ -569,6 +571,14 @@ public class PlayerData : MonoBehaviour
 				OnRecvPurchaseBalance(userReadOnlyData["lasBppDat"].Value);
 		}
 
+		balancePpBuyCount = 0;
+		if (userReadOnlyData.ContainsKey("bppBuyCnt"))
+		{
+			int intValue = 0;
+			if (int.TryParse(userReadOnlyData["bppBuyCnt"].Value, out intValue))
+				balancePpBuyCount = intValue;
+		}
+
 		notStreakCount = 0;
 		if (userReadOnlyData.ContainsKey("strCnt"))
 		{
@@ -746,7 +756,7 @@ public class PlayerData : MonoBehaviour
 			totalPp += _listCharacterData[i].pp;
 		// balancePp도 합산시켜줘야한다.
 		totalPp += balancePp;
-		if (totalPp > (originOpenCount * PPMaxPerOriginBox + characterBoxOpenCount * PPMaxPerCharacterBox + ppBuyCount))
+		if (totalPp > (originOpenCount * PPMaxPerOriginBox + characterBoxOpenCount * PPMaxPerCharacterBox + ppBuyCount + balancePpBuyCount))
 			PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidTotalPp, false, totalPp);
 
 		// 연구레벨 체크

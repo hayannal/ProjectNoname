@@ -169,7 +169,7 @@ public class CharacterShowCanvasBase : MonoBehaviour
 
 		_playerActor.cachedTransform.position = _rootOffsetPosition;
 		float yaw = charactorY;
-		if (_cachedActorInfoTableData != null && _cachedActorInfoTableData.infoRotate != 0.0f)
+		if (CharacterListCanvas.instance != null && CharacterListCanvas.instance.gameObject.activeSelf && _cachedActorInfoTableData != null && _cachedActorInfoTableData.infoRotate != 0.0f)
 			yaw = _cachedActorInfoTableData.infoRotate;
 		_playerActor.cachedTransform.rotation = Quaternion.Euler(0.0f, yaw, 0.0f);
 		TailAnimatorUpdater.UpdateAnimator(_playerActor.cachedTransform, 15);

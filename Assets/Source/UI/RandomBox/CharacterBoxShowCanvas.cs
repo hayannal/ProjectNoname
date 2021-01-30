@@ -22,12 +22,36 @@ public class CharacterBoxShowCanvas : CharacterShowCanvasBase
 		instance = this;
 	}
 
+	void OnEnable()
+	{
+		// CharacterShowCanvasBase 클래스를 기반으로 만들어져있는데 이게 사실은 CharacterListCanvas에 맞춰서 만들어진건데
+		// CharacterListCanvas뿐만 아니라 ExperienceCanvas까지 다 엮여있어서 이제와서 고치기가 너무 어렵다.
+		// 그래서 CharacterShowCanvasBase를 수정하지 않는 선에서 어떤식으로 호출되어도 캐릭터가 잘 보여지도록 처리해보기로 한다.
+		// 
+		// 우선 현재 캐릭터 기반으로 카메라 모드를 변경시키고
+		_playerActor = BattleInstanceManager.instance.playerActor;
+		SetInfoCameraMode(true, _playerActor.actorId);
+
+		// 현재 캐릭터를 꺼둔다.
+		_playerActor.gameObject.SetActive(false);
+
+		// 그리고 아예 null로 바꿔서 곧바로 OnDisable이 호출되더라도-그럴일은 없겠지만
+		// 잘 복구되도록 한다.
+		_playerActor = null;
+	}
+
 	void OnDisable()
 	{
 		if (_effectObject != null)
 			_effectObject.SetActive(false);
-		if (_playerActor != null)
+
+		// 캐릭터 여러개 보여지다보면 _playerActor가 바뀌어져있을거다. 복구시켜준다.
+		if (_playerActor != BattleInstanceManager.instance.playerActor)
+		{
 			_playerActor.gameObject.SetActive(false);
+			_playerActor = BattleInstanceManager.instance.playerActor;
+			_playerActor.gameObject.SetActive(true);
+		}
 
 		SetInfoCameraMode(false, "");
 	}
@@ -51,6 +75,7 @@ public class CharacterBoxShowCanvas : CharacterShowCanvasBase
 		{
 			_playerActor = playerActor;
 			_playerActor.gameObject.SetActive(true);
+			base.OnLoadedPlayerActor(true);
 			OnAfterLoaded();
 		}
 		else

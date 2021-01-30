@@ -47,8 +47,8 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8821399775536959137}
   m_Enabled: 1
-  m_AgentTypeID: -1923039037
-  m_Radius: 0.5
+  m_AgentTypeID: 1479372276
+  m_Radius: 0.35
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -198,15 +198,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startDelayRange: {x: 8, y: 8}
   startState: 2
-  useStateList: 0000010101
+  useStateList: 000001010100
   moveTimeRange: {x: 4.5, y: 4.5}
   refreshTickTimeRange: {x: 1.5, y: 1.5}
   desireDistance: 5
+  straightMoveTimeRange: {x: 0, y: 0}
+  straightRefreshTickTimeRange: {x: 0, y: 0}
+  straightRefreshTickWaitTime: 0
+  straightMoveType: 0
   customActionPlayType: 1
   customActionName: 
   customActionFadeDuration: 0.05
   chaseDistanceRange: {x: 1.7, y: 1.7}
   chaseCancelTimeRange: {x: 0, y: 0}
+  cancelLeadsToAttack: 0
+  useFarawayMode: 0
+  chaseTryCountChangeFaraway: 0
+  farawayModeChangeRate: 0
   attackActionPlayType: 0
   attackActionName: Attack
   attackActionFadeDuration: 0.44

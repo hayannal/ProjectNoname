@@ -340,6 +340,29 @@ public class HitObject : MonoBehaviour
 		bool ignoreApplyAffectorValue = false;
 		bool ignoreShowHitEffect = false;
 
+		// 거리제한이 있는 캐릭터의 Preset이라면 거리를 벗어났는지 판단해줘야한다.
+		float attackRange = 0.0f;
+		if (parentActor.IsPlayerActor())
+		{
+			PlayerActor playerActor = parentActor as PlayerActor;
+			if (playerActor != null)
+				attackRange = playerActor.playerAI.actorTableAttackRange;
+		}
+		if (attackRange > 0.0f)
+		{
+			// 근데 검사할때 너무 칼같이 검사하면 경계에 닿았다가 조금 멀어진 적한테 미스나게 되니 어느정도 보정을 해주기로 한다.
+			Vector3 diff = parentTransform.position - targetColliderTransform.position;
+			diff.y = 0.0f;
+			if (diff.magnitude - colliderRadius > (attackRange + 0.5f))
+			{
+				// 멀어졌다고 판단되면 AffectorValue도 적용하지 않고
+				ignoreApplyAffectorValue = true;
+
+				// 히트이펙트 위치도 변경해줘야한다. 정면이 안어색한거 같으니 정면으로 해본다.
+				contactPointBase = parentTransform.position + parentTransform.forward * attackRange;
+			}
+		}
+
 		// Preset타입은 Burrow를 공격할 수 없다.
 		if (affectorProcessor.IsContinuousAffectorType(eAffectorType.Burrow) || BurrowOnStartAffector.CheckBurrow(affectorProcessor) || TargetingProcessor.IsOutOfRange(affectorProcessor))
 		{

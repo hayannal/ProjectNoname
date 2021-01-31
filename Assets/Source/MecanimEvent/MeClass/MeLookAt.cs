@@ -16,6 +16,8 @@ public class MeLookAt : MecanimEventBase
 	public bool lookAtRandom;
 	public float desireDistance = 5.0f;
 	public float minimumDistance = 0.0f;
+	public bool lookAtWorldPosition;
+	public Vector3 worldPosition;
 	public float lerpPower = 60.0f;
 	public string boneName;
 
@@ -37,6 +39,11 @@ public class MeLookAt : MecanimEventBase
 			lookAtTarget = false;
 			desireDistance = EditorGUILayout.FloatField("Desire Distance :", desireDistance);
 			minimumDistance = EditorGUILayout.FloatField("Minimum Distance :", minimumDistance);
+		}
+		lookAtWorldPosition = EditorGUILayout.Toggle("LookAt World Position :", lookAtWorldPosition);
+		if (lookAtWorldPosition)
+		{
+			worldPosition = EditorGUILayout.Vector3Field("World Position :", worldPosition);
 		}
 		lerpPower = EditorGUILayout.FloatField("Lerp Power :", lerpPower);
 		boneName = EditorGUILayout.TextField("Bone Name :", boneName);
@@ -107,6 +114,8 @@ public class MeLookAt : MecanimEventBase
 
 		if (lookAtRandom && _initializedRandom)
 			targetPosition = _randomPosition;
+		if (lookAtWorldPosition)
+			targetPosition = worldPosition;
 
 		Vector3 basePosition = _actor.cachedTransform.position;
 		if (_boneTransform != null) basePosition = _boneTransform.position;

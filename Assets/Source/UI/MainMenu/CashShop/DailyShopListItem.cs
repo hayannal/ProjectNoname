@@ -26,6 +26,7 @@ public class DailyShopListItem : MonoBehaviour
 	public Text onlyPriceText;
 	public GameObject[] onlyPriceTypeObjectList;
 	public GameObject purchasedObject;
+	public GameObject cannotPurchaseObject;
 	public GameObject addObject;
 	public Text addText;
 	public Slider ppSlider;
@@ -133,23 +134,10 @@ public class DailyShopListItem : MonoBehaviour
 					return true;
 				break;
 			case "bn":  // normal Character Box
-				for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)
-				{
-					if (TableDataManager.instance.actorTable.dataArray[i].grade != 0)
-						continue;
-					if (PlayerData.instance.ContainsActor(TableDataManager.instance.actorTable.dataArray[i].actorId) == false)
-						return true;
-				}
-				break;
+				// 상자가 보이되 구매불가로 처리하면서 항상 true를 리턴하기로 한다.
+				return true;
 			case "bh":  // heroic Character Box
-				for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)
-				{
-					if (TableDataManager.instance.actorTable.dataArray[i].grade != 1)
-						continue;
-					if (PlayerData.instance.ContainsActor(TableDataManager.instance.actorTable.dataArray[i].actorId) == false)
-						return true;
-				}
-				break;
+				return true;
 			case "fc":  // fixed Character
 				if (PlayerData.instance.ContainsActor(dailyShopSlotInfo.value) == false)
 					return true;
@@ -371,15 +359,64 @@ public class DailyShopListItem : MonoBehaviour
 	void RefreshPrice()
 	{
 		bool purchased = DailyShopData.instance.IsPurchasedTodayShopData(_slotInfo.slotId);
-		blackObject.SetActive(purchased);
-		purchasedObject.SetActive(purchased);
 		if (purchased)
 		{
+			blackObject.SetActive(purchased);
+			purchasedObject.SetActive(purchased);
+
 			priceText.gameObject.SetActive(false);
 			prevPriceText.gameObject.SetActive(false);
 			onlyPriceObject.SetActive(false);
+			cannotPurchaseObject.SetActive(false);
 			return;
 		}
+
+		// 구매 불가 체크
+		bool cannotPurchase = false;
+		bool canPurchase = false;
+		switch (_slotInfo.type)
+		{
+			case "bn":
+				for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)
+				{
+					if (TableDataManager.instance.actorTable.dataArray[i].grade != 0)
+						continue;
+					if (PlayerData.instance.ContainsActor(TableDataManager.instance.actorTable.dataArray[i].actorId) == false)
+					{
+						canPurchase = true;
+						break;
+					}
+				}
+				cannotPurchase = !canPurchase;
+				break;
+			case "bh":
+				for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)
+				{
+					if (TableDataManager.instance.actorTable.dataArray[i].grade != 1)
+						continue;
+					if (PlayerData.instance.ContainsActor(TableDataManager.instance.actorTable.dataArray[i].actorId) == false)
+					{
+						canPurchase = true;
+						break;
+					}
+				}
+				cannotPurchase = !canPurchase;
+				break;
+		}
+		if (cannotPurchase)
+		{
+			blackObject.SetActive(true);
+			cannotPurchaseObject.SetActive(true);
+
+			priceText.gameObject.SetActive(false);
+			prevPriceText.gameObject.SetActive(false);
+			onlyPriceObject.SetActive(false);
+			purchasedObject.SetActive(false);
+			return;
+		}
+
+		blackObject.SetActive(false);
+		purchasedObject.SetActive(false);
 
 		int prevPrice = _slotInfo.prevPrice;
 		int price = _slotInfo.price;
@@ -444,7 +481,10 @@ public class DailyShopListItem : MonoBehaviour
 	{
 		if (blackObject.activeSelf)
 		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("ShopUI_AlreadyThatItem"), 2.0f);
+			if (cannotPurchaseObject.activeSelf)
+				ToastCanvas.instance.ShowToast(UIString.instance.GetString("ShopUI_CannotBuyItem"), 2.0f);
+			else
+				ToastCanvas.instance.ShowToast(UIString.instance.GetString("ShopUI_AlreadyThatItem"), 2.0f);
 			return;
 		}
 

@@ -71,6 +71,14 @@ public class Ground : MonoBehaviour
 		return position;
 	}
 
+	public Vector3 GetRandomPositionInQuadBound(float boundAdjust = 0.0f)
+	{
+		Vector3 position = Vector3.zero;
+		position.x = Random.Range(_bounds.min.x + boundAdjust, _bounds.max.x - boundAdjust);
+		position.z = Random.Range(_bounds.min.z + boundAdjust, _bounds.max.z - boundAdjust);
+		return position;
+	}
+
 	#region Runtime NavMesh
 	Dictionary<int, NavMeshSurface> _dicNavMeshSurface = null;
 	public void BakeNavMesh(int agentTypeID)

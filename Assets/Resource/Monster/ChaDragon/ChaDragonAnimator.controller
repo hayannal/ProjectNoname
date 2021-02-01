@@ -25,6 +25,7 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
@@ -44,6 +45,7 @@ MonoBehaviour:
   areaHeightMax: 0
   areaAngle: 0
   checkRaycastWallInArea: 0
+  raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
   repeatCount: 0
   repeatInterval: 0
@@ -64,6 +66,7 @@ MonoBehaviour:
   targetSpeed: 0
   speedChangeTime: 0
   speedChangeEase: 6
+  repeatSpeedChange: 0
   overrideSpeedOnCollision: 0
   overrideSpeedTimeOnCollision: 0
   curve: 0
@@ -79,6 +82,7 @@ MonoBehaviour:
   useRandomTurn: 0
   accelTurn: 0
   randomTurnRotateYawRange: {x: 0, y: 0}
+  zigZagIntervalTime: 0
   gravity: -9.81
   parallelCount: 0
   parallelDistance: 0
@@ -99,6 +103,7 @@ MonoBehaviour:
   ricochetOneHitPerTarget: 0
   overrideRicochetDistance: 0
   overrideRicochetSpeed: 0
+  useTimerRicochet: 0
   useHitStay: 0
   hitStayInterval: 0
   hitStayIgnoreDuplicate: 0
@@ -139,6 +144,8 @@ MonoBehaviour:
   lookAtRandom: 0
   desireDistance: 5
   minimumDistance: 0
+  lookAtWorldPosition: 0
+  worldPosition: {x: 0, y: 0, z: 0}
   lerpPower: 5
   boneName: 
 --- !u!1102 &-7870688956108488034
@@ -282,7 +289,6 @@ AnimatorState:
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours:
-  - {fileID: 1607655402912634740}
   - {fileID: 1203261721524045204}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -577,6 +583,8 @@ MonoBehaviour:
   lookAtRandom: 0
   desireDistance: 5
   minimumDistance: 0
+  lookAtWorldPosition: 0
+  worldPosition: {x: 0, y: 0, z: 0}
   lerpPower: 5
   boneName: 
 --- !u!1102 &711902931308108612
@@ -692,9 +700,13 @@ MonoBehaviour:
     useMonsterCount: 1
     monsterCountCompareType: 3
     monsterCountParameter: 16
+    onlySummonMonsterCount: 0
     useCheckWall: 0
     existWallParameter: 0
+    useActorCollider: 0
+    enabledActorColliderParameter: 0
     actionCountLimit: 0
+    actionCooltime: 0
   - stateName: Base Layer.AttackGroup.Summon2
     weight: 1
     useDistance1: 0
@@ -718,9 +730,13 @@ MonoBehaviour:
     useMonsterCount: 1
     monsterCountCompareType: 3
     monsterCountParameter: 16
+    onlySummonMonsterCount: 0
     useCheckWall: 0
     existWallParameter: 0
+    useActorCollider: 0
+    enabledActorColliderParameter: 0
     actionCountLimit: 0
+    actionCooltime: 0
   - stateName: Base Layer.AttackGroup.CastAttack1
     weight: 1
     useDistance1: 0
@@ -744,9 +760,13 @@ MonoBehaviour:
     useMonsterCount: 0
     monsterCountCompareType: 3
     monsterCountParameter: 0
+    onlySummonMonsterCount: 0
     useCheckWall: 0
     existWallParameter: 0
+    useActorCollider: 0
+    enabledActorColliderParameter: 0
     actionCountLimit: 0
+    actionCooltime: 0
   - stateName: Base Layer.AttackGroup.CastAttack2
     weight: 1
     useDistance1: 0
@@ -770,26 +790,13 @@ MonoBehaviour:
     useMonsterCount: 0
     monsterCountCompareType: 3
     monsterCountParameter: 0
+    onlySummonMonsterCount: 0
     useCheckWall: 0
     existWallParameter: 0
+    useActorCollider: 0
+    enabledActorColliderParameter: 0
     actionCountLimit: 0
---- !u!114 &1607655402912634740
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f2975bb63eaed5744b93c28f39ecfc67, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  randomStateInfoList:
-  - stateName: Base Layer.AttackGroup.CastAttack1
-    weight: 1
-  - stateName: Base Layer.AttackGroup.RushStart
-    weight: 1
+    actionCooltime: 0
 --- !u!1102 &3726615272282266331
 AnimatorState:
   serializedVersion: 5
@@ -842,6 +849,7 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
@@ -861,6 +869,7 @@ MonoBehaviour:
   areaHeightMax: 0
   areaAngle: 0
   checkRaycastWallInArea: 0
+  raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
   repeatCount: 0
   repeatInterval: 0
@@ -881,6 +890,7 @@ MonoBehaviour:
   targetSpeed: 0
   speedChangeTime: 0
   speedChangeEase: 6
+  repeatSpeedChange: 0
   overrideSpeedOnCollision: 0
   overrideSpeedTimeOnCollision: 0
   curve: 0
@@ -896,6 +906,7 @@ MonoBehaviour:
   useRandomTurn: 0
   accelTurn: 0
   randomTurnRotateYawRange: {x: 0, y: 0}
+  zigZagIntervalTime: 0
   gravity: -9.81
   parallelCount: 0
   parallelDistance: 0
@@ -916,6 +927,7 @@ MonoBehaviour:
   ricochetOneHitPerTarget: 0
   overrideRicochetDistance: 0
   overrideRicochetSpeed: 0
+  useTimerRicochet: 0
   useHitStay: 0
   hitStayInterval: 0
   hitStayIgnoreDuplicate: 0
@@ -1014,6 +1026,7 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
@@ -1033,6 +1046,7 @@ MonoBehaviour:
   areaHeightMax: 0
   areaAngle: 0
   checkRaycastWallInArea: 0
+  raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
   repeatCount: 0
   repeatInterval: 0
@@ -1053,6 +1067,7 @@ MonoBehaviour:
   targetSpeed: 0
   speedChangeTime: 0
   speedChangeEase: 6
+  repeatSpeedChange: 0
   overrideSpeedOnCollision: 0
   overrideSpeedTimeOnCollision: 0
   curve: 0
@@ -1068,6 +1083,7 @@ MonoBehaviour:
   useRandomTurn: 0
   accelTurn: 0
   randomTurnRotateYawRange: {x: 0, y: 0}
+  zigZagIntervalTime: 0
   gravity: -9.81
   parallelCount: 0
   parallelDistance: 0
@@ -1089,6 +1105,7 @@ MonoBehaviour:
   ricochetOneHitPerTarget: 0
   overrideRicochetDistance: 0
   overrideRicochetSpeed: 0
+  useTimerRicochet: 0
   useHitStay: 0
   hitStayInterval: 0
   hitStayIgnoreDuplicate: 0

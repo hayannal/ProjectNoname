@@ -4,6 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
+using MEC;
 
 public class HitObjectMovement : MonoBehaviour {
 
@@ -59,12 +60,27 @@ public class HitObjectMovement : MonoBehaviour {
 			if (_tweenReferenceForSpeedChange != null)
 				_tweenReferenceForSpeedChange.Kill();
 		}
+		_moveStartDelayApplied = false;
 	}
 
 	Transform _cachedParentActorTransform;
 	TweenerCore<float, float, FloatOptions> _tweenReferenceForSpeedChange;
+	bool _moveStartDelayApplied = false;
 	public void InitializeSignal(HitObject hitObject, MeHitObject meHit, Actor parentActor, Rigidbody rigidbody, int hitSignalIndexInAction)
 	{
+		// 이동을 시작하기까지의 딜레이가 있다면 전부 홀드시켜놨다가 대기 후 처리해야한다.
+		if (meHit.moveStartDelay > 0.0f)
+		{
+			if (_moveStartDelayApplied)
+				_moveStartDelayApplied = false;
+			else
+			{
+				_moveStartDelayApplied = true;
+				Timing.RunCoroutine(DelayedInitializeSignal(hitObject, meHit, parentActor, rigidbody, hitSignalIndexInAction));
+				return;
+			}
+		}
+
 		_hitObject = hitObject;
 		_signal = meHit;
 		_createTime = Time.time;
@@ -229,6 +245,34 @@ public class HitObjectMovement : MonoBehaviour {
 
 		_origSpeed = _overrideSpeedRemainTime = 0.0f;
 		_needApplySpeed = false;
+	}
+
+	IEnumerator<float> DelayedInitializeSignal(HitObject hitObject, MeHitObject meHit, Actor parentActor, Rigidbody rigidbody, int hitSignalIndexInAction)
+	{
+		// 속도 0짜리로 설정 한번 해놓고 다시 셋팅하는 형태다.
+		_hitObject = hitObject;
+		_signal = meHit;
+		_createTime = Time.time;
+		_createPosition = cachedTransform.position;
+		_rigidbody = rigidbody;
+		_rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+		_rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+
+		_speed = 0;
+		_velocity = _rigidbody.velocity = cachedTransform.forward * _speed;
+		_forward = cachedTransform.forward;
+
+		yield return Timing.WaitForSeconds(meHit.moveStartDelay);
+
+		// avoid gc
+		if (this == null)
+			yield break;
+		if (gameObject.activeSelf == false)
+			yield break;
+		if (rigidbody.detectCollisions == false)
+			yield break;
+
+		InitializeSignal(hitObject, meHit, parentActor, rigidbody, hitSignalIndexInAction);
 	}
 
 	public void ComputeHowitzer()

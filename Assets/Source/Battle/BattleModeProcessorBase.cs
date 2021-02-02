@@ -530,12 +530,24 @@ public class BattleModeProcessorBase
 		{
 			TimeSpan timeSpan = DateTime.Now - _startDateTime;
 			bool sus = false;
-			if (timeSpan < TimeSpan.FromMinutes(10) && PlayerData.instance.highestPlayChapter == PlayerData.instance.selectedChapter)
-				sus = true;
-			if (StageManager.instance.playChapter == 0)
-				sus = false;
-			if (sus == false && timeSpan < TimeSpan.FromSeconds(30))
-				sus = true;
+			if (PlayerData.instance.highestPlayChapter == PlayerData.instance.selectedChapter)
+			{
+				if (StageManager.instance.playChapter == 0)
+				{
+					if (timeSpan < TimeSpan.FromSeconds(30))
+						sus = true;
+				}
+				else if (StageManager.instance.playChapter == 7 || StageManager.instance.playChapter == 14)
+				{
+					if (timeSpan < TimeSpan.FromMinutes(3))
+						sus = true;
+				}
+				else
+				{
+					if (timeSpan < TimeSpan.FromMinutes(10))
+						sus = true;
+				}
+			}
 			if (sus)
 				PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.FastEndGame, true, (int)timeSpan.TotalSeconds);
 		}

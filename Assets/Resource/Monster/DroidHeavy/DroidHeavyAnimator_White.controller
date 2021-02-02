@@ -68,6 +68,7 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
@@ -588,6 +589,7 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
@@ -609,7 +611,7 @@ MonoBehaviour:
   checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
-  repeatCount: 2
+  repeatCount: 4
   repeatInterval: 0.1
   movementType: 0
   startDirectionType: 2
@@ -928,6 +930,7 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
@@ -989,7 +992,7 @@ MonoBehaviour:
   parallelCount: 0
   parallelDistance: 0
   ignoreMainHitObjectByParallel: 0
-  circularSectorCount: 2
+  circularSectorCount: 3
   circularSectorBetweenAngle: 30
   circularSectorUseWorldSpace: 0
   circularSectorWorldSpaceCenterAngleY: 0
@@ -1075,6 +1078,7 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
@@ -1350,6 +1354,7 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
@@ -1473,6 +1478,7 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
@@ -1534,7 +1540,7 @@ MonoBehaviour:
   parallelCount: 0
   parallelDistance: 0
   ignoreMainHitObjectByParallel: 0
-  circularSectorCount: 2
+  circularSectorCount: 3
   circularSectorBetweenAngle: 30
   circularSectorUseWorldSpace: 0
   circularSectorWorldSpaceCenterAngleY: 0
@@ -1611,6 +1617,7 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
@@ -1698,7 +1705,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
-  - NormalAttack1.5
+  - NormalAttack2.0
   showHitEffect: 1
   hitEffectObject: {fileID: 1124335935880280, guid: b6d68723f7e26204d8f14d607141cc13,
     type: 3}
@@ -1734,6 +1741,7 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
@@ -1857,6 +1865,7 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
@@ -2069,6 +2078,7 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
@@ -2279,6 +2289,7 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
@@ -2340,7 +2351,7 @@ MonoBehaviour:
   parallelCount: 0
   parallelDistance: 0
   ignoreMainHitObjectByParallel: 0
-  circularSectorCount: 2
+  circularSectorCount: 3
   circularSectorBetweenAngle: 30
   circularSectorUseWorldSpace: 0
   circularSectorWorldSpaceCenterAngleY: 0
@@ -2402,6 +2413,7 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
@@ -2658,7 +2670,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: CastAttack4 2
+  m_Name: CastAttack4-1
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -2786,9 +2798,39 @@ MonoBehaviour:
     actionCooltime: 0
   - stateName: Base Layer.AttackGroup.CastAttack4
     weight: 1
-    useDistance1: 0
-    distanceCompareType1: 0
-    distanceParameter1: 0
+    useDistance1: 1
+    distanceCompareType1: 4
+    distanceParameter1: 7.5
+    useDistance2: 0
+    distanceCompareType2: 0
+    distanceParameter2: 0
+    useHpRatio1: 0
+    hpRatioCompareType1: 0
+    hpRatioParameter1: 0
+    useHpRatio2: 0
+    hpRatioCompareType2: 0
+    hpRatioParameter2: 0
+    useActorState: 0
+    actorStateId: 
+    existActorStateParameter: 0
+    useTargetActorState: 0
+    targetActorStateId: 
+    existTargetActorStateParameter: 0
+    useMonsterCount: 0
+    monsterCountCompareType: 0
+    monsterCountParameter: 0
+    onlySummonMonsterCount: 0
+    useCheckWall: 0
+    existWallParameter: 0
+    useActorCollider: 0
+    enabledActorColliderParameter: 0
+    actionCountLimit: 0
+    actionCooltime: 0
+  - stateName: Base Layer.AttackGroup.CastAttack4-1
+    weight: 1
+    useDistance1: 1
+    distanceCompareType1: 3
+    distanceParameter1: 7.5
     useDistance2: 0
     distanceCompareType2: 0
     distanceParameter2: 0
@@ -2854,6 +2896,7 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
@@ -2875,7 +2918,7 @@ MonoBehaviour:
   checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
-  repeatCount: 2
+  repeatCount: 4
   repeatInterval: 0.1
   movementType: 0
   startDirectionType: 0

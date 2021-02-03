@@ -72,6 +72,7 @@ public class PlayRandomStateWithCondition : ControlStateBase
 		public bool enabledActorColliderParameter;
 		public int actionCountLimit;
 		public float actionCooltime;
+		public bool applyCooltimeOnStart;
 	}
 	public RandomStateWithConditionInfo[] randomStateWithConditionInfoList;
 
@@ -80,11 +81,13 @@ public class PlayRandomStateWithCondition : ControlStateBase
 		//Debug.Log("PlayRandomStateWithCondition OnDisable");
 		if (_dicActionCount != null)
 			_dicActionCount.Clear();
+		_enabled = false;
 	}
 
 	List<RandomStateWithConditionInfo> _listRandomState;
 	Actor _actor = null;
 	int _lastState = 0;
+	bool _enabled = false;
 	// OnStateEnter is called before OnStateEnter is called on any state inside this state machine
 	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
@@ -114,6 +117,19 @@ public class PlayRandomStateWithCondition : ControlStateBase
 		if (_listRandomState == null)
 			_listRandomState = new List<RandomStateWithConditionInfo>();
 		_listRandomState.Clear();
+
+		// 진짜 OnEnable함수에서는 animator에 접근할 수 없다보니 actor를 찾을 수 없다.
+		// 그래서 액터가 생성되는 타이밍에 적용할 수는 없지만 최초 공격을 하려고 Enter되는 순간에 applyCooltimeOnStart을 처리하기로 한다.
+		// 어느정도 비슷한 효과는 나올거다.
+		if (_enabled == false)
+		{
+			_enabled = true;
+			for (int i = 0; i < randomStateWithConditionInfoList.Length; ++i)
+			{
+				if (randomStateWithConditionInfoList[i].actionCooltime > 0.0f && randomStateWithConditionInfoList[i].applyCooltimeOnStart)
+					_actor.actionController.cooltimeProcessor.ApplyCooltime(randomStateWithConditionInfoList[i].stateName, randomStateWithConditionInfoList[i].actionCooltime);
+			}
+		}
 
 		float sumWeight = 0.0f;
 		for (int i = 0; i < randomStateWithConditionInfoList.Length; ++i)

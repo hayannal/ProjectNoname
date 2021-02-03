@@ -393,6 +393,11 @@ public class GatePillar : MonoBehaviour
 					showSwapCanvas = true;
 					descStringId = "GameUI_EnterTooPowerfulDesc";
 				}
+				if (showSwapCanvas == false && PlayerData.instance.currentChaosMode == false && CheckStagePenalty())
+				{
+					showSwapCanvas = true;
+					descStringId = "GameUI_EnterPenaltyDesc";
+				}
 				if (showSwapCanvas)
 				{
 					_spawnTime = Time.time;
@@ -440,6 +445,50 @@ public class GatePillar : MonoBehaviour
 	public void OnCompleteStageSwap()
 	{
 		_checkedStageSwapSuggest = true;
+	}
+
+	bool CheckStagePenalty()
+	{
+		// 로비에서 도전모드일때 스테이지 패널티 체크하는 함수다.
+		// 아직 적용되어있지 않은 상태이기 때문에 nextStage 그러니까 1층 데이터에서 가져와서 체크해야한다.
+		// 
+		if (StageDataManager.instance.nextStageTableData == null)
+			return false;
+
+		// 아마 도전모드에선 1개만 들어있을거라 랜덤을 돌리든 [0]으로 접근하든 똑같을거다.
+		string stagePenaltyId = "";
+		if (StageDataManager.instance.nextStageTableData != null && StageDataManager.instance.nextStageTableData.stagePenaltyId.Length > 0)
+			stagePenaltyId = StageDataManager.instance.nextStageTableData.stagePenaltyId[Random.Range(0, StageDataManager.instance.nextStageTableData.stagePenaltyId.Length)];
+
+		if (string.IsNullOrEmpty(stagePenaltyId))
+			return false;
+
+		StagePenaltyTableData stagePenaltyTableData = TableDataManager.instance.FindStagePenaltyTableData(stagePenaltyId);
+		if (stagePenaltyTableData == null)
+			return false;
+
+		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(BattleInstanceManager.instance.playerActor.actorId);
+		for (int i = 0; i < stagePenaltyTableData.affectorValueId.Length; ++i)
+		{
+			AffectorValueLevelTableData affectorValueLevelTableData = TableDataManager.instance.FindAffectorValueLevelTableData(stagePenaltyTableData.affectorValueId[i], 1);
+			if (affectorValueLevelTableData == null)
+				continue;
+
+			for (int j = 0; j < affectorValueLevelTableData.conditionValueId.Length; ++j)
+			{
+				ConditionValueTableData conditionValueTableData = TableDataManager.instance.FindConditionValueTableData(affectorValueLevelTableData.conditionValueId[j]);
+				if (conditionValueTableData == null)
+					continue;
+
+				if ((Condition.eConditionType)conditionValueTableData.conditionId == Condition.eConditionType.DefenderPowerSource && (Condition.eCompareType)conditionValueTableData.compareType == Condition.eCompareType.Equal)
+				{
+					int.TryParse(conditionValueTableData.value, out int intValue);
+					if (actorTableData.powerSource == intValue)
+						return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	#region Energy

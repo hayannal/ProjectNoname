@@ -85,6 +85,7 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
@@ -146,8 +147,8 @@ MonoBehaviour:
   parallelCount: 0
   parallelDistance: 0
   ignoreMainHitObjectByParallel: 0
-  circularSectorCount: 12
-  circularSectorBetweenAngle: 10
+  circularSectorCount: 16
+  circularSectorBetweenAngle: 7
   circularSectorUseWorldSpace: 0
   circularSectorWorldSpaceCenterAngleY: 0
   ignoreMainHitObjectByCircularSector: 1
@@ -218,6 +219,8 @@ MonoBehaviour:
   lookAtRandom: 0
   desireDistance: 5
   minimumDistance: 0
+  lookAtWorldPosition: 0
+  worldPosition: {x: 0, y: 0, z: 0}
   lerpPower: 4
   boneName: 
 --- !u!114 &-7945155003657774525
@@ -240,6 +243,8 @@ MonoBehaviour:
   lookAtRandom: 0
   desireDistance: 5
   minimumDistance: 0
+  lookAtWorldPosition: 0
+  worldPosition: {x: 0, y: 0, z: 0}
   lerpPower: 50
   boneName: 
 --- !u!1102 &-7870688956108488034
@@ -331,6 +336,7 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
@@ -493,6 +499,7 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
@@ -700,6 +707,7 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
@@ -928,6 +936,8 @@ MonoBehaviour:
   lookAtRandom: 0
   desireDistance: 5
   minimumDistance: 0
+  lookAtWorldPosition: 0
+  worldPosition: {x: 0, y: 0, z: 0}
   lerpPower: 4
   boneName: 
 --- !u!1102 &-2473529730778767166
@@ -1113,6 +1123,7 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
@@ -1300,6 +1311,7 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
@@ -1423,6 +1435,7 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
@@ -1730,6 +1743,7 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
@@ -2153,6 +2167,7 @@ MonoBehaviour:
     enabledActorColliderParameter: 0
     actionCountLimit: 0
     actionCooltime: 0
+    applyCooltimeOnStart: 0
   - stateName: Base Layer.AttackGroup.CloseAttack1
     weight: 3
     useDistance1: 0
@@ -2183,6 +2198,7 @@ MonoBehaviour:
     enabledActorColliderParameter: 0
     actionCountLimit: 0
     actionCooltime: 0
+    applyCooltimeOnStart: 0
   - stateName: Base Layer.AttackGroup.FarAttack1
     weight: 2
     useDistance1: 0
@@ -2213,6 +2229,7 @@ MonoBehaviour:
     enabledActorColliderParameter: 0
     actionCountLimit: 0
     actionCooltime: 0
+    applyCooltimeOnStart: 0
   - stateName: Base Layer.AttackGroup.NoWallAttack1
     weight: 4
     useDistance1: 0
@@ -2243,6 +2260,7 @@ MonoBehaviour:
     enabledActorColliderParameter: 0
     actionCountLimit: 0
     actionCooltime: 0
+    applyCooltimeOnStart: 0
   - stateName: Base Layer.AttackGroup.ThroughAttack2
     weight: 2
     useDistance1: 0
@@ -2273,6 +2291,7 @@ MonoBehaviour:
     enabledActorColliderParameter: 0
     actionCountLimit: 0
     actionCooltime: 0
+    applyCooltimeOnStart: 0
   - stateName: Base Layer.AttackGroup.NoWallAttack2
     weight: 4
     useDistance1: 0
@@ -2303,6 +2322,7 @@ MonoBehaviour:
     enabledActorColliderParameter: 0
     actionCountLimit: 0
     actionCooltime: 0
+    applyCooltimeOnStart: 0
   - stateName: Base Layer.AttackGroup.Summon2
     weight: 10
     useDistance1: 0
@@ -2333,6 +2353,7 @@ MonoBehaviour:
     enabledActorColliderParameter: 0
     actionCountLimit: 1
     actionCooltime: 0
+    applyCooltimeOnStart: 0
   - stateName: Base Layer.AttackGroup.Summon1
     weight: 2
     useDistance1: 0
@@ -2363,6 +2384,7 @@ MonoBehaviour:
     enabledActorColliderParameter: 0
     actionCountLimit: 0
     actionCooltime: 12
+    applyCooltimeOnStart: 0
 --- !u!206 &7591506801022674054
 BlendTree:
   m_ObjectHideFlags: 1
@@ -2433,6 +2455,7 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0

@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class OnOffColliderArea : MonoBehaviour
 {
+	public static OnOffColliderArea instance;
+
 	public float activeDuration = 10.0f;
 	public float cooltimeDuration = 3.0f;
 	public GameObject activeGroundEffectObject;
@@ -18,6 +20,12 @@ public class OnOffColliderArea : MonoBehaviour
 
 	float _activeRemainTime;
 	float _cooltimeRemainTime;
+	public float activeRemainTime { get { return _activeRemainTime; } }
+
+	void Awake()
+	{
+		instance = this;
+	}
 
 	void Start()
 	{

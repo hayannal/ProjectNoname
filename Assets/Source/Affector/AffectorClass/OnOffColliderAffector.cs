@@ -25,7 +25,20 @@ public class OnOffColliderAffector : AffectorBase
 		// lifeTime
 		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
 
-		ApplyAffector(affectorValueLevelTableData);
+		// 소환용 몹으로 쓰게되면서 장치를 활성화한 상태에서 몹이 생성되는 경우가 생기게 되었다.
+		// 그래서 혹시 활성화 중이라면 유령화가 적용되지 않은채 쿨타임만 적용해서 시작하면 된다.
+		bool ignoreApply = false;
+		if (OnOffColliderArea.instance != null && OnOffColliderArea.instance.gameObject.activeSelf)
+		{
+			if (OnOffColliderArea.instance.activeRemainTime > 0.0f)
+			{
+				_lightAppliedRemainTime = OnOffColliderArea.instance.activeRemainTime;
+				ignoreApply = true;
+			}
+		}
+
+		if (ignoreApply == false)
+			ApplyAffector(affectorValueLevelTableData);
 
 #if UNITY_EDITOR
 		_affectorProcessor.dontClearOnDisable = true;

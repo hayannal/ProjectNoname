@@ -81,7 +81,7 @@ public class Ground : MonoBehaviour
 
 	#region Runtime NavMesh
 	Dictionary<int, NavMeshSurface> _dicNavMeshSurface = null;
-	public void BakeNavMesh(int agentTypeID)
+	public void BakeNavMesh(int agentTypeID, bool useBoundAdjust = true)
 	{
 		if (_dicNavMeshSurface == null)
 			_dicNavMeshSurface = new Dictionary<int, NavMeshSurface>();
@@ -98,8 +98,8 @@ public class Ground : MonoBehaviour
 			navMeshSurface.collectObjects = CollectObjects.Volume;
 			navMeshSurface.useGeometry = NavMeshCollectGeometry.PhysicsColliders;
 			navMeshSurface.center = _bounds.center;
-			// 쿼드만큼 딱 볼륨 잡아서 구으면 경계면이 이쁘게 안나와서 0.5씩 더해서 뽑는다. 1더하니 네비가 Quad넘어서 미세하게 구워져서 0.5로 바꾼다.
-			navMeshSurface.size = _bounds.size + Vector3.one * 0.5f;
+			// 쿼드만큼 딱 볼륨 잡아서 구으면 경계면이 이쁘게 안나와서 0.5씩 더해서 뽑는다. 0.5 더하니 네비가 Quad넘어서 모서리에 조금씩 더 구워져서 0.3으로 바꾼다.
+			navMeshSurface.size = _bounds.size + (useBoundAdjust ? Vector3.one * 0.3f : Vector3.zero);
 			_dicNavMeshSurface.Add(agentTypeID, navMeshSurface);
 		}
 		navMeshSurface.BuildNavMesh();

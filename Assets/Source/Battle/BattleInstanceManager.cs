@@ -585,7 +585,7 @@ public class BattleInstanceManager : MonoBehaviour
 		if (_dicPathFinderAgentRefCount.ContainsKey(agentTypeID) == false)
 		{
 			_dicPathFinderAgentRefCount.Add(agentTypeID, 1);
-			currentGround.BakeNavMesh(agentTypeID);
+			currentGround.BakeNavMesh(agentTypeID, true);
 			AddTotalPathFinderAgentRefCount(1);
 			return;
 		}
@@ -629,7 +629,7 @@ public class BattleInstanceManager : MonoBehaviour
 		{
 			_totalPathFinderAgentRefCount += addCount;
 			if (_totalPathFinderAgentRefCount == 1)
-				currentGround.BakeNavMesh(_bulletFlyingAgentTypeID);
+				currentGround.BakeNavMesh(_bulletFlyingAgentTypeID, false);
 		}
 		else
 		{
@@ -651,7 +651,7 @@ public class BattleInstanceManager : MonoBehaviour
 			if (e.Current.Value <= 0)
 				continue;
 
-			currentGround.BakeNavMesh(e.Current.Key);
+			currentGround.BakeNavMesh(e.Current.Key, true);
 		}
 	}
 	#endregion

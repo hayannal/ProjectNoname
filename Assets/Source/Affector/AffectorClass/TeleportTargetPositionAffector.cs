@@ -107,7 +107,7 @@ public class TeleportTargetPositionAffector : AffectorBase
 				}
 				break;
 			case 4:
-				_actor.cachedTransform.position = GetTeleportPosition(new Vector3(_affectorValueLevelTableData.fValue3, 0.0f, _affectorValueLevelTableData.fValue4));
+				_actor.cachedTransform.position = GetRandomWorldPosition();
 				break;
 		}
 
@@ -190,5 +190,46 @@ public class TeleportTargetPositionAffector : AffectorBase
 		desirePosition.x += randomCircle.x;
 		desirePosition.z += randomCircle.y;
 		return desirePosition;
+	}
+
+	Vector3 GetRandomWorldPosition()
+	{
+		int tryBreakCount = 0;
+		if (_agentTypeID == -1) _agentTypeID = MeLookAt.GetAgentTypeID(_actor);
+		while (true)
+		{
+			Vector3 desirePosition = Vector3.zero;
+
+			// 이걸 쓰게될 보스는 스테이지 보스라서 currentGround가 있다고 가정하고 처리해둔다.
+			if (BattleInstanceManager.instance.currentGround != null)
+				desirePosition = BattleInstanceManager.instance.currentGround.GetRandomPositionInQuadBound(1.0f);
+
+			NavMeshHit hit;
+			NavMeshQueryFilter navMeshQueryFilter = new NavMeshQueryFilter();
+			navMeshQueryFilter.areaMask = NavMesh.AllAreas;
+			navMeshQueryFilter.agentTypeID = _agentTypeID;
+			// 다른 곳은 몰라도 여긴 아예 안들어올거다.
+			//if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+			//{
+			//	result = randomPosition;
+			//	break;
+			//}
+
+			if (NavMesh.SamplePosition(desirePosition, out hit, 1.0f, navMeshQueryFilter))
+			{
+				Vector3 diff = hit.position - BattleInstanceManager.instance.playerActor.cachedTransform.position;
+				diff.y = 0.0f;
+				if (diff.sqrMagnitude > (_affectorValueLevelTableData.fValue2 * _affectorValueLevelTableData.fValue2))
+					return hit.position;
+			}
+
+			// exception handling
+			++tryBreakCount;
+			if (tryBreakCount > 200)
+			{
+				Debug.LogErrorFormat("Teleport Position Error. {0}. Not found valid random position.", StageManager.instance.GetCurrentSpawnFlagName());
+				return _origPosition;
+			}
+		}
 	}
 }

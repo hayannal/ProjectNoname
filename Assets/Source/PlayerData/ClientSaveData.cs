@@ -184,6 +184,7 @@ public class ClientSaveData : MonoBehaviour
 		ClearDropItemList();
 		OnChangedDropGold(0.0f);
 		OnChangedDropSeal(0);
+		OnChangedClearPoint(0);
 		ClearEliteMonsterIndexList();
 	}
 
@@ -211,6 +212,7 @@ public class ClientSaveData : MonoBehaviour
 		int dropSeal = GetCachedDropSeal();
 		string stagePenaltyId = GetCachedStagePenalty();
 		string jsonEliteMonsterData = GetCachedEliteMonsterData();
+		int clearPoint = GetCachedClearPoint();
 
 		// 새 값으로 교체하고
 		ObscuredPrefs.SetString("enterFlag", newEnterFlag);
@@ -240,6 +242,7 @@ public class ClientSaveData : MonoBehaviour
 		OnChangedDropSeal(dropSeal);
 		if (string.IsNullOrEmpty(stagePenaltyId) == false) OnChangedStagePenalty(stagePenaltyId);
 		if (string.IsNullOrEmpty(jsonEliteMonsterData) == false) OnChangedEliteMonsterData(jsonEliteMonsterData);
+		OnChangedClearPoint(clearPoint);
 	}
 
 	public bool IsLoadingInProgressGame()
@@ -389,6 +392,10 @@ public class ClientSaveData : MonoBehaviour
 		_listEliteMonsterIndex = serializer.DeserializeObject<List<int>>(jsonEliteMonsterData);
 		return _listEliteMonsterIndex;
 	}
+
+	// 배틀 클리어 포인트
+	public void OnChangedClearPoint(int clearPoint) { SetCachedInt("cachedClearPoint", clearPoint); }
+	public int GetCachedClearPoint() { return GetCachedInt("cachedClearPoint"); }
 
 
 	#region Helper

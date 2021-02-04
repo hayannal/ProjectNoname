@@ -108,4 +108,8 @@ public class StageTableData
   float _createEliteRate;
   public float createEliteRate { get { return _createEliteRate; } set { _createEliteRate = value; } }
   
+  [SerializeField]
+  float _fastClearLimit;
+  public float fastClearLimit { get { return _fastClearLimit; } set { _fastClearLimit = value; } }
+  
 }

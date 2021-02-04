@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using MEC;
+using CodeStage.AntiCheat.ObscuredTypes;
 
 public class BattleModeProcessorBase
 {
@@ -13,6 +14,8 @@ public class BattleModeProcessorBase
 	bool _summonMonsterSpawned = false;
 	int _monsterSpawnCount = 0;
 	int _damageCountInStage = 0;
+	float _spawnFlagStartTime = 0.0f;
+	ObscuredInt _clearPoint;
 
 	public virtual void Update()
 	{
@@ -99,6 +102,7 @@ public class BattleModeProcessorBase
 	public void OnSpawnFlag()
 	{
 		_damageCountInStage = 0;
+		_spawnFlagStartTime = Time.time;
 
 		if (BattleInstanceManager.instance.playerActor != null)
 		{	
@@ -230,6 +234,9 @@ public class BattleModeProcessorBase
 		int dropSeal = ClientSaveData.instance.GetCachedDropSeal();
 		DropManager.instance.AddDropSeal(dropSeal);
 
+		// 레벨팩 리프레쉬에 쓰이는 배틀 클리어 포인트도 로드
+		_clearPoint = ClientSaveData.instance.GetCachedClearPoint();
+
 		// 끝나면 ClientSaveData에 로드 완료를 알린다.
 		ClientSaveData.instance.OnFinishLoadGame();
 	}
@@ -320,6 +327,19 @@ public class BattleModeProcessorBase
 			ClientSaveData.instance.OnChangedMonsterAllKill(true);
 			ClientSaveData.instance.ClearEliteMonsterIndexList();
 		}
+
+		// 레벨팩 처리하기 전에 먼저 클리어 보너스를 체크해야한다. 튜토에서는 하지 않는다.
+		bool noHitClear = (_damageCountInStage == 0);
+		bool fastClear = false;
+		float stageClearTime = Time.time - _spawnFlagStartTime;
+		if (StageManager.instance.currentStageTableData != null && stageClearTime < StageManager.instance.currentStageTableData.fastClearLimit)
+			fastClear = true;
+		if (ContentsManager.IsTutorialChapter())
+			fastClear = noHitClear = false;
+		if (noHitClear) _clearPoint += 1;
+		if (fastClear) _clearPoint += 1;
+		ClientSaveData.instance.OnChangedClearPoint(_clearPoint);
+		LobbyCanvas.instance.ShowClearPointInfo(fastClear, noHitClear);
 
 		if (LevelUpIndicatorCanvas.IsShow() || DropManager.instance.reservedLevelPackCount > 0)
 		{

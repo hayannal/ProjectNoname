@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using MEC;
 
 public class LobbyCanvas : MonoBehaviour
 {
@@ -20,6 +21,12 @@ public class LobbyCanvas : MonoBehaviour
 	public DOTweenAnimation expGaugeColorTween;
 	public Image expGaugeEndPointImage;
 	public RectTransform alarmRootTransform;
+	public GameObject fastClearSmallToastObject;
+	public Text fastClearText;
+	public DOTweenAnimation fastClearTweenAnimation;
+	public GameObject noHitClearSmallToastObject;
+	public Text noHitClearText;
+	public DOTweenAnimation noHitClearTweenAnimation;
 
 	void Awake()
 	{
@@ -40,6 +47,9 @@ public class LobbyCanvas : MonoBehaviour
 		expGaugeEndPointImage.gameObject.SetActive(false);
 		_defaultExpGaugeHeight = expGaugeRectTransform.sizeDelta.y;
 		_defaultExpGaugeColor = expGaugeImage.color;
+
+		fastClearText.text = UIString.instance.GetString("GameUI_FastClearPoint");
+		noHitClearText.text = UIString.instance.GetString("GameUI_NoHitClearPoint");
 	}
 
 	// 원래 이 함수는 앱 실행 후 1회만 TitleCanvas 없어지는 시점에 호출되지만 네트워크 오류로 인한 재시작시 호출될때도 있다.
@@ -413,6 +423,83 @@ public class LobbyCanvas : MonoBehaviour
 			AlarmObject.ShowTutorialPlusAlarm(alarmRootTransform);
 		else if (showAlarm)
 			AlarmObject.Show(alarmRootTransform, true, true);
+	}
+	#endregion
+
+	#region Clear Point Info
+	public void ShowClearPointInfo(bool fastClear, bool noHitClear)
+	{
+		// 둘다 클리어일때는 위에 있는 fastClear 먼저 보여주고 약간의 딜레이 후 noHitClear를 보여준다.
+		if (fastClear && noHitClear)
+		{
+			Timing.RunCoroutine(DelayedShowClearPointInfo());
+		}
+		else if (fastClear || noHitClear)
+		{
+			fastClearSmallToastObject.SetActive(fastClear);
+			noHitClearSmallToastObject.SetActive(noHitClear);
+		}
+	}
+
+	IEnumerator<float> DelayedShowClearPointInfo()
+	{
+		fastClearSmallToastObject.SetActive(true);
+
+		yield return Timing.WaitForSeconds(0.2f);
+
+		// avoid gc
+		if (this == null)
+			yield break;
+
+		noHitClearSmallToastObject.SetActive(true);
+	}
+
+	public void OnCompleteFastClearTweenAnimation()
+	{
+		Timing.RunCoroutine(DelayedBackwardFastClearTweenAnimation());
+	}
+
+	IEnumerator<float> DelayedBackwardFastClearTweenAnimation()
+	{
+		yield return Timing.WaitForSeconds(2.0f);
+
+		// avoid gc
+		if (this == null)
+			yield break;
+
+		fastClearTweenAnimation.DOPlayBackwards();
+
+		yield return Timing.WaitForSeconds(1.0f);
+
+		// avoid gc
+		if (this == null)
+			yield break;
+
+		fastClearSmallToastObject.SetActive(false);
+	}
+
+	public void OnCompleteNoHitClearTweenAnimation()
+	{
+		Timing.RunCoroutine(DelayedBackwardNoHitClearTweenAnimation());
+	}
+
+	IEnumerator<float> DelayedBackwardNoHitClearTweenAnimation()
+	{
+		yield return Timing.WaitForSeconds(2.0f);
+
+		// avoid gc
+		if (this == null)
+			yield break;
+
+		noHitClearTweenAnimation.DOPlayBackwards();
+
+		yield return Timing.WaitForSeconds(1.0f);
+
+		// avoid gc
+		if (this == null)
+			yield break;
+
+		noHitClearSmallToastObject.SetActive(false);
 	}
 	#endregion
 

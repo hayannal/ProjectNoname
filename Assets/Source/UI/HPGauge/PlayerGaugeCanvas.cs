@@ -61,7 +61,8 @@ public class PlayerGaugeCanvas : MonoBehaviour
 		//widthRectTransform.sizeDelta = new Vector2(monsterActor.monsterHpGaugeWidth * _defaultWidth, widthRectTransform.sizeDelta.y);
 		mobaEnergyBar.MaxValue = playerActor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MaxHp);
 		mobaEnergyBar.Value = playerActor.actorStatus.GetHP();
-		mobaEnergyBar.SmallGapInterval = mobaEnergyBar.MaxValue / (g1 * Mathf.Log(mobaEnergyBar.MaxValue) + g2);
+		float baseMaxHp = playerActor.actorStatus.GetMaxHpWithoutLevelPack();
+		mobaEnergyBar.SmallGapInterval = baseMaxHp / (g1 * Mathf.Log(baseMaxHp) + g2);
 		_lastMaxValue = mobaEnergyBar.MaxValue;
 		_lastRatio = playerActor.actorStatus.GetHPRatio();
 		_targetTransform = playerActor.cachedTransform;

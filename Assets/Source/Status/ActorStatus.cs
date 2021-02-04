@@ -279,6 +279,14 @@ public class ActorStatus : MonoBehaviour
 		return value;
 	}
 
+	public float GetMaxHpWithoutLevelPack()
+	{
+		float value = GetCachedValue(eActorStatus.MaxHp);
+		float addRate = GetCachedValue(eActorStatus.MaxHpAddRate);
+		if (addRate != 0.0f) value *= (1.0f + addRate);
+		return value;
+	}
+
 	#region Stats Point
 	float GetValueByCharacterStats(CharacterData characterData, CharacterInfoStatsCanvas.eStatsType statsType, bool value2)
 	{

@@ -81,6 +81,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.Cast: affectorBase = new CastAffector(); break;
 			case eAffectorType.OnOffCollider: affectorBase = new OnOffColliderAffector(); break;
 			case eAffectorType.AddSpGainByHp: affectorBase = new AddSpGainByHpAffector(); break;
+			case eAffectorType.ChangeHitColliderSize: affectorBase = new ChangeHitColliderSizeAffector(); break;
 			#endregion
 		}
 		return affectorBase;
@@ -155,6 +156,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.Cast:
 			case eAffectorType.OnOffCollider:
 			case eAffectorType.AddSpGainByHp:
+			case eAffectorType.ChangeHitColliderSize:
 				return true;
 			#endregion
 		}

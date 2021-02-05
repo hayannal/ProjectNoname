@@ -85,6 +85,7 @@ public enum eAffectorType
 	Cast,
 
 	OnOffCollider,
-	AddSpGainByHp
+	AddSpGainByHp,
+	ChangeHitColliderSize,
 }
 #endregion

@@ -104,6 +104,13 @@ public class NodeWarPortal : MonoBehaviour
 			_needUpdate = false;
 			remainTimeText.text = "00:00:00";
 			_needRefresh = true;
+
+			// 만약 갱신되는 타이밍에 포탈 위에 서있는 상태고 인디케이터가 떠있는 상태라면 지워줘야한다.
+			if (_showIndicator)
+			{
+				HideIndicator();
+				return;
+			}
 		}
 	}
 

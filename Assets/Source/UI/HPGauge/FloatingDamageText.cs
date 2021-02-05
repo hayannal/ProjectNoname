@@ -17,6 +17,7 @@ public class FloatingDamageText : MonoBehaviour
 		PaybackSp,
 		HealSpOnAttack,
 		Critical,
+		MaxHpIncrease,
 	}
 
 	public Text damageText;
@@ -53,6 +54,9 @@ public class FloatingDamageText : MonoBehaviour
 				break;
 			case eFloatingDamageType.Critical:
 				damageText.SetLocalizedText(UIString.instance.GetString("GameUI_Critical"));
+				break;
+			case eFloatingDamageType.MaxHpIncrease:
+				damageText.SetLocalizedText(UIString.instance.GetString("GameUI_MaxHpIncrease"));
 				break;
 		}
 		damageText.color = Color.white;

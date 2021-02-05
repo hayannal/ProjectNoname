@@ -89,6 +89,19 @@ public class PowerSource : MonoBehaviour
 		if (affectorProcessor.actor.team.teamId == (int)Team.eTeamID.DefaultMonster)
 			return;
 
+		// 힐을 적용하기 전에 최대 hp 상태인지 확인하고 보너스 팩을 준다.
+		if (affectorProcessor.actor.actorStatus.GetHPRatio() >= 1.0f)
+		{
+			PlayerActor playerActor = affectorProcessor.actor as PlayerActor;
+			if (playerActor != null)
+			{
+				LevelPackDataManager.instance.AddLevelPack(playerActor.actorId, "MaxHp");
+				playerActor.skillProcessor.AddLevelPack("MaxHp", false, 0);
+				ClientSaveData.instance.OnChangedLevelPackData(LevelPackDataManager.instance.GetCachedLevelPackData());
+			}
+			FloatingDamageTextRootCanvas.instance.ShowText(FloatingDamageText.eFloatingDamageType.MaxHpIncrease, affectorProcessor.actor);
+		}
+
 		AffectorValueLevelTableData healAffectorValue = new AffectorValueLevelTableData();
 		healAffectorValue.fValue3 = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("PowerSourceHeal");
 		healAffectorValue.fValue3 += affectorProcessor.actor.actorStatus.GetValue(eActorStatus.PowerSourceHealAddRate);

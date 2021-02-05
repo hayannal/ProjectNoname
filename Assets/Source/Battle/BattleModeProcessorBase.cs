@@ -717,6 +717,19 @@ public class BattleModeProcessorBase
 		return _damageCountInStage;
 	}
 
+	public int GetClearPoint()
+	{
+		return _clearPoint;
+	}
+
+	public void AddClearPoint(int add)
+	{
+		_clearPoint += add;
+
+		// 값이 변하고 나면 꼭 기록해놔야한다.
+		ClientSaveData.instance.OnChangedClearPoint(_clearPoint);
+	}
+
 
 
 

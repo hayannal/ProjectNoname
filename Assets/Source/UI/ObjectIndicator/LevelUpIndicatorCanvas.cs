@@ -8,6 +8,7 @@ using UnityEditor.AddressableAssets.Settings;
 #endif
 using MEC;
 using PlayFab;
+using CodeStage.AntiCheat.ObscuredTypes;
 
 public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 {
@@ -120,6 +121,10 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 	public GameObject exclusiveOkButtonObject;
 	public GameObject titleTextObject;
 	public Text titleText;
+	public GameObject currentClearPointGroupObject;
+	public Text currentClearPointText;
+	public GameObject refreshButtonGroupObject;
+	public Text refreshPriceText;
 
 	// Start is called before the first frame update
 	void Start()
@@ -140,6 +145,8 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 			buttonList[i].gameObject.SetActive(false);
 		exclusiveButton.gameObject.SetActive(false);
 		exclusiveOkButtonObject.SetActive(false);
+		currentClearPointGroupObject.SetActive(false);
+		refreshButtonGroupObject.SetActive(false);
 	}
 
 	void OnDestroy()
@@ -219,6 +226,8 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 		// 1회만 해야하는데 어차피 한번 셋팅하고 Loading플래그는 바로 풀릴거라 따로 호출할건 없이 여기서만 로드해두면 된다.
 		if (ClientSaveData.instance.IsLoadingInProgressGame())
 		{
+			_refreshStackCount = ClientSaveData.instance.GetCachedRefreshStackCount();
+
 			string jsonRandomLevelPackData = ClientSaveData.instance.GetCachedRandomLevelPackData();
 			if (string.IsNullOrEmpty(jsonRandomLevelPackData) == false)
 			{
@@ -347,6 +356,40 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 			if (this == null)
 				yield break;
 		}
+
+		if (ContentsManager.IsTutorialChapter())
+			yield break;
+
+		yield return Timing.WaitForSeconds(0.5f);
+
+		currentClearPointText.text = BattleManager.instance.GetClearPoint().ToString("N0");
+		refreshPriceText.text = GetRefreshPrice().ToString();
+		currentClearPointGroupObject.SetActive(true);
+		refreshButtonGroupObject.SetActive(true);
+	}
+
+	ObscuredInt _refreshStackCount = 0;
+	int GetRefreshPrice()
+	{
+		if (_levelUpType == (int)eLevelUpType.NoHitLevelPack)
+		{
+			switch (_refreshStackCount)
+			{
+				case 0: return 5;
+				case 1: return 10;
+				case 2: return 15;
+				default: return 20;
+			}
+		}
+
+		switch (_refreshStackCount)
+		{
+			case 0: return 2;
+			case 1: return 4;
+			case 2: return 6;
+			case 3: return 8;
+			default: return 10;
+		}
 	}
 
 	#region Exclusive Info
@@ -381,6 +424,10 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 			case (int)eLevelUpType.LevelPack: ClientSaveData.instance.OnAddedRemainLevelPackCount(-1); break;
 			case (int)eLevelUpType.NoHitLevelPack: ClientSaveData.instance.OnAddedRemainNoHitLevelPackCount(-1); break;
 		}
+
+		// 갱신 횟수도 초기화
+		_refreshStackCount = 0;
+		ClientSaveData.instance.OnChangedRefreshStackCount(_refreshStackCount);
 
 		// 예약이 되어있다면 창을 닫지 않고 항목만 갱신
 		if (_listReservedLevelUpType.Count > 0)
@@ -465,6 +512,31 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 			gameObject.SetActive(false);
 		}
 	}
+
+
+	#region Clear Point
+	public void OnClickRefreshButton()
+	{
+		if (BattleManager.instance.GetClearPoint() < GetRefreshPrice())
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughPoint"), 2.0f);
+			return;
+		}
+		BattleManager.instance.AddClearPoint(-GetRefreshPrice());
+
+		RefreshLevelPackList();
+
+		for (int i = 0; i < buttonList.Length; ++i)
+			buttonList[i].gameObject.SetActive(false);
+		OnCompleteLineAnimation();
+
+		++_refreshStackCount;
+		ClientSaveData.instance.OnChangedRefreshStackCount(_refreshStackCount);
+
+		refreshPriceText.text = GetRefreshPrice().ToString();
+		currentClearPointText.text = BattleManager.instance.GetClearPoint().ToString("N0");
+	}
+	#endregion
 
 
 	#region InProgressGame

@@ -146,6 +146,16 @@ public class BattleManager : MonoBehaviour
 		return _currentBattleMode.GetDamageCountOnStage();
 	}
 
+	public int GetClearPoint()
+	{
+		return _currentBattleMode.GetClearPoint();
+	}
+
+	public void AddClearPoint(int add)
+	{
+		_currentBattleMode.AddClearPoint(add);
+	}
+
 	#region NodeWar
 	public void OnSelectedNodeWarLevel(int level)
 	{

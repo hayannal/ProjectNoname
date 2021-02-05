@@ -213,6 +213,7 @@ public class ClientSaveData : MonoBehaviour
 		string stagePenaltyId = GetCachedStagePenalty();
 		string jsonEliteMonsterData = GetCachedEliteMonsterData();
 		int clearPoint = GetCachedClearPoint();
+		int refreshStackCount = GetCachedRefreshStackCount();
 
 		// 새 값으로 교체하고
 		ObscuredPrefs.SetString("enterFlag", newEnterFlag);
@@ -243,6 +244,7 @@ public class ClientSaveData : MonoBehaviour
 		if (string.IsNullOrEmpty(stagePenaltyId) == false) OnChangedStagePenalty(stagePenaltyId);
 		if (string.IsNullOrEmpty(jsonEliteMonsterData) == false) OnChangedEliteMonsterData(jsonEliteMonsterData);
 		OnChangedClearPoint(clearPoint);
+		OnChangedRefreshStackCount(refreshStackCount);
 	}
 
 	public bool IsLoadingInProgressGame()
@@ -396,6 +398,8 @@ public class ClientSaveData : MonoBehaviour
 	// 배틀 클리어 포인트
 	public void OnChangedClearPoint(int clearPoint) { SetCachedInt("cachedClearPoint", clearPoint); }
 	public int GetCachedClearPoint() { return GetCachedInt("cachedClearPoint"); }
+	public void OnChangedRefreshStackCount(int refreshStackCount) { SetCachedInt("cachedRefreshStackCount", refreshStackCount); }
+	public int GetCachedRefreshStackCount() { return GetCachedInt("cachedRefreshStackCount"); }
 
 
 	#region Helper

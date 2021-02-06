@@ -87,5 +87,6 @@ public enum eAffectorType
 	OnOffCollider,
 	AddSpGainByHp,
 	ChangeHitColliderSize,
+	AddAttackByContinuousKill,
 }
 #endregion

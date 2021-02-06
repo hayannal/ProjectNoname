@@ -2345,6 +2345,36 @@ public class PlayFabApiManager : MonoBehaviour
 		});
 	}
 
+#if UNITY_ANDROID
+	public void RequestValidateReturnScroll(string isoCurrencyCode, uint price, string receiptJson, string signature, int buyingScroll, int buyingGold, Action successCallback, Action<PlayFabError> failureCallback)
+	{
+		PlayFabClientAPI.ValidateGooglePlayPurchase(new ValidateGooglePlayPurchaseRequest()
+		{
+			CurrencyCode = isoCurrencyCode,
+			PurchasePrice = price,
+			ReceiptJson = receiptJson,
+			Signature = signature
+#elif UNITY_IOS
+	public void RequestValidateDiaBox(string isoCurrencyCode, int price, string receiptData, int buyingDia, Action successCallback, Action<PlayFabError> failureCallback)
+	{
+		PlayFabClientAPI.ValidateIOSReceipt(new ValidateIOSReceiptRequest()
+		{
+			CurrencyCode = isoCurrencyCode,
+			PurchasePrice = price,
+			ReceiptData = receiptData
+#endif
+		}, (success) =>
+		{
+			CurrencyData.instance.returnScroll += buyingScroll;
+			CurrencyData.instance.gold += buyingGold;
+			if (successCallback != null) successCallback.Invoke();
+		}, (error) =>
+		{
+			HandleCommonError(error);
+			if (failureCallback != null) failureCallback.Invoke(error);
+		});
+	}
+
 	public void RequestGetFreeItem(int addDia, int addGold, int addEnergy, Action<bool> successCallback)
 	{
 		WaitingNetworkCanvas.Show(true);

@@ -34,6 +34,9 @@ public class CashShopCanvas : MonoBehaviour
 	public DiaListItem[] diaListItemList;
 	public GoldListItem[] goldListItemList;
 
+	public GameObject returnScrollRectObject;
+	public ReturnScrollItem[] returnScrollItemList;
+
 	public GameObject termsGroupObject;
 	public GameObject emptyTermsGroupObject;
 
@@ -140,6 +143,16 @@ public class CashShopCanvas : MonoBehaviour
 				break;
 			}
 		}
+
+		// 귀환 주문서인지 확인
+		for (int i = 0; i < returnScrollItemList.Length; ++i)
+		{
+			if (returnScrollItemList[i].serverItemId == pendingProduct.definition.id)
+			{
+				returnScrollItemList[i].RetryPurchase(pendingProduct);
+				break;
+			}
+		}
 	}
 
 	public void RefreshDailyShopInfo()
@@ -197,6 +210,14 @@ public class CashShopCanvas : MonoBehaviour
 			if (i >= TableDataManager.instance.shopGoldTable.dataArray.Length)
 				break;
 			goldListItemList[i].SetInfo(TableDataManager.instance.shopGoldTable.dataArray[i]);
+		}
+
+		returnScrollRectObject.SetActive(ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.SecondDailyBox));
+		for (int i = 0; i < returnScrollItemList.Length; ++i)
+		{
+			if (i >= TableDataManager.instance.shopDiamondTable.dataArray.Length)
+				break;
+			returnScrollItemList[i].SetInfo(TableDataManager.instance.shopDiamondTable.dataArray[i]);
 		}
 	}
 

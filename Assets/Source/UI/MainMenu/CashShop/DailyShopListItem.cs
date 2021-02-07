@@ -367,7 +367,7 @@ public class DailyShopListItem : MonoBehaviour
 			priceText.gameObject.SetActive(false);
 			prevPriceText.gameObject.SetActive(false);
 			onlyPriceObject.SetActive(false);
-			cannotPurchaseObject.SetActive(false);
+			if (cannotPurchaseObject != null) cannotPurchaseObject.SetActive(false);
 			return;
 		}
 
@@ -406,7 +406,7 @@ public class DailyShopListItem : MonoBehaviour
 		if (cannotPurchase)
 		{
 			blackObject.SetActive(true);
-			cannotPurchaseObject.SetActive(true);
+			if (cannotPurchaseObject != null) cannotPurchaseObject.SetActive(true);
 
 			priceText.gameObject.SetActive(false);
 			prevPriceText.gameObject.SetActive(false);
@@ -481,7 +481,7 @@ public class DailyShopListItem : MonoBehaviour
 	{
 		if (blackObject.activeSelf)
 		{
-			if (cannotPurchaseObject.activeSelf)
+			if (cannotPurchaseObject != null && cannotPurchaseObject.activeSelf)
 				ToastCanvas.instance.ShowToast(UIString.instance.GetString("ShopUI_CannotBuyItem"), 2.0f);
 			else
 				ToastCanvas.instance.ShowToast(UIString.instance.GetString("ShopUI_AlreadyThatItem"), 2.0f);

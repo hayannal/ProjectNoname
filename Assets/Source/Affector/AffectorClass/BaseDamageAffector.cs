@@ -122,7 +122,10 @@ public class BaseDamageAffector : AffectorBase {
 				criticalDamageRate += hitParameter.statusBase.valueList[(int)eActorStatus.CriticalDamageAddRate];
 				if (attackerActor == null) attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(hitParameter.statusStructForHitObject.actorInstanceId);
 				if (attackerActor != null)
+				{
 					criticalDamageRate += AddCriticalDamageByTargetHpAffector.GetValue(attackerActor.affectorProcessor, _actor.actorStatus.GetHPRatio());
+					VampireAffector.OnCritical(attackerActor.affectorProcessor);
+				}
 				if (criticalDamageRate > 0.0f)
 				{
 					damage *= (1.0f + criticalDamageRate);

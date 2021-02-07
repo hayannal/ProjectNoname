@@ -6,6 +6,7 @@ using ActorStatusDefine;
 public class VampireAffector : AffectorBase
 {
 	float _endTime;
+	static float s_f2Constant = 35.0f;
 	static float s_f3Constant = 35.0f;
 	static float s_f4Constant = 50.0f;
 
@@ -84,5 +85,33 @@ public class VampireAffector : AffectorBase
 
 		float ratio = value / (1.0f + value) / s_f4Constant;
 		affectorProcessor.actor.actorStatus.AddHP(damage * ratio);
+	}
+
+	public static void OnCritical(AffectorProcessor affectorProcessor)
+	{
+		if (affectorProcessor.actor == null)
+			return;
+		if (affectorProcessor.actor.actorStatus.IsDie())
+			return;
+		List<AffectorBase> listVampireAffector = affectorProcessor.GetContinuousAffectorList(eAffectorType.Vampire);
+		if (listVampireAffector == null)
+			return;
+
+		float value = 0.0f;
+		for (int i = 0; i < listVampireAffector.Count; ++i)
+		{
+			if (listVampireAffector[i].finalized)
+				continue;
+			VampireAffector vampireAffector = listVampireAffector[i] as VampireAffector;
+			if (vampireAffector == null)
+				continue;
+			value += vampireAffector._affectorValueLevelTableData.fValue2;
+		}
+		if (value == 0.0f)
+			return;
+
+		float ratio = value / (1.0f + value) / s_f2Constant;
+		float vampire = affectorProcessor.actor.actorStatus.GetValue(eActorStatus.MaxHp) * ratio;
+		affectorProcessor.actor.actorStatus.AddHP(vampire);
 	}
 }

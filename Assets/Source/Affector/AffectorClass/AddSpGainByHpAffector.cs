@@ -52,7 +52,7 @@ public class AddSpGainByHpAffector : AffectorBase
 					return _value;
 				break;
 			//case 2:
-				// 여기서 처리하지 않는다.
+				// AddAttackByHpAffector와 달리 2 타입을 사용하지 않는다.
 				//break;
 		}
 		return 0.0f;
@@ -73,27 +73,6 @@ public class AddSpGainByHpAffector : AffectorBase
 			if (addSpGainByHpAffector == null)
 				continue;
 			result += addSpGainByHpAffector.GetAddSpGain();
-		}
-		return result;
-	}
-
-	public static float GetValueType2(AffectorProcessor affectorProcessor)
-	{
-		List<AffectorBase> listAddSpGainByHpAffector = affectorProcessor.GetContinuousAffectorList(eAffectorType.AddSpGainByHp);
-		if (listAddSpGainByHpAffector == null)
-			return 0.0f;
-
-		float result = 0.0f;
-		for (int i = 0; i < listAddSpGainByHpAffector.Count; ++i)
-		{
-			if (listAddSpGainByHpAffector[i].finalized)
-				continue;
-			AddSpGainByHpAffector addSpGainByHpAffector = listAddSpGainByHpAffector[i] as AddSpGainByHpAffector;
-			if (addSpGainByHpAffector == null)
-				continue;
-			if (addSpGainByHpAffector._type != 2)
-				continue;
-			result += addSpGainByHpAffector.value;
 		}
 		return result;
 	}

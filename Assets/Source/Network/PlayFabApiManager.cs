@@ -2355,7 +2355,7 @@ public class PlayFabApiManager : MonoBehaviour
 			ReceiptJson = receiptJson,
 			Signature = signature
 #elif UNITY_IOS
-	public void RequestValidateDiaBox(string isoCurrencyCode, int price, string receiptData, int buyingDia, Action successCallback, Action<PlayFabError> failureCallback)
+	public void RequestValidateReturnScroll(string isoCurrencyCode, int price, string receiptData, int buyingScroll, int buyingGold, Action successCallback, Action<PlayFabError> failureCallback)
 	{
 		PlayFabClientAPI.ValidateIOSReceipt(new ValidateIOSReceiptRequest()
 		{

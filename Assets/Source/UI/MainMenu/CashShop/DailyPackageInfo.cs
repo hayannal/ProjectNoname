@@ -214,7 +214,7 @@ public class DailyPackageInfo : MonoBehaviour
 							// 결과로는 공용 재화 획득창을 띄워준다.
 							UIInstanceManager.instance.ShowCanvasAsync("CurrencyBoxResultCanvas", () =>
 							{
-								CurrencyBoxResultCanvas.instance.RefreshInfo(0, _shopDailyDiamondTableData.GemsDailyGems, false, true);
+								CurrencyBoxResultCanvas.instance.RefreshInfo(0, _shopDailyDiamondTableData.GemsDailyGems, 0, false, true);
 							});
 						});
 					});
@@ -324,7 +324,7 @@ public class DailyPackageInfo : MonoBehaviour
 				{
 					int addDia = _shopDailyDiamondTableData.buyingGems;
 					if (_receivableFirstDay) addDia += _shopDailyDiamondTableData.GemsDailyGems;
-					CurrencyBoxResultCanvas.instance.RefreshInfo(0, addDia, _receivableFirstDay);
+					CurrencyBoxResultCanvas.instance.RefreshInfo(0, addDia, 0, _receivableFirstDay);
 				});
 			});
 		});

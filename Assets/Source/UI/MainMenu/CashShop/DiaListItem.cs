@@ -121,7 +121,7 @@ public class DiaListItem : MonoBehaviour
 
 				UIInstanceManager.instance.ShowCanvasAsync("CurrencyBoxResultCanvas", () =>
 				{
-					CurrencyBoxResultCanvas.instance.RefreshInfo(0, _shopDiamondTableData.buyingGems);
+					CurrencyBoxResultCanvas.instance.RefreshInfo(0, _shopDiamondTableData.buyingGems, 0);
 				});
 			});
 		});

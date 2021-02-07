@@ -265,7 +265,7 @@ public class LevelPackageInfo : MonoBehaviour
 					// 장비가 들어있지 않은 레벨패키지는 공용 재화창을 사용하고
 					UIInstanceManager.instance.ShowCanvasAsync("CurrencyBoxResultCanvas", () =>
 					{
-						CurrencyBoxResultCanvas.instance.RefreshInfo(_shopLevelPackageTableData.buyingGold, _shopLevelPackageTableData.buyingGems);
+						CurrencyBoxResultCanvas.instance.RefreshInfo(_shopLevelPackageTableData.buyingGold, _shopLevelPackageTableData.buyingGems, 0);
 					});
 				}
 				else

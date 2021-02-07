@@ -60,7 +60,7 @@ public class GoldBoxConfirmCanvas : MonoBehaviour
 					// 결과로는 공용 재화 획득창을 띄워준다.
 					UIInstanceManager.instance.ShowCanvasAsync("CurrencyBoxResultCanvas", () =>
 					{
-						CurrencyBoxResultCanvas.instance.RefreshInfo(_shopGoldTableData.buyingGold, 0);
+						CurrencyBoxResultCanvas.instance.RefreshInfo(_shopGoldTableData.buyingGold, 0, 0);
 					});
 				});
 			});

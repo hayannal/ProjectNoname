@@ -20,6 +20,7 @@ public class DropProcessor : MonoBehaviour
 		Origin,
 		PowerPoint,
 		Balance,
+		ReturnScroll,
 	}
 
 	#region Static Fuction
@@ -316,6 +317,9 @@ public class DropProcessor : MonoBehaviour
 					dropProcessor.Add(dropType, floatValue, intValue, stringValue);
 					if (lobby) DropManager.instance.AddLobbyBalancePp(intValue);
 					break;
+				case eDropType.ReturnScroll:
+					dropProcessor.Add(dropType, floatValue, intValue, stringValue);
+					break;
 			}
 		}
 	}
@@ -480,6 +484,7 @@ public class DropProcessor : MonoBehaviour
 			case eDropType.Gacha:
 			case eDropType.Seal:
 			case eDropType.Origin:
+			case eDropType.ReturnScroll:
 				for (int i = 0; i < intValue; ++i)
 				{
 					newInfo = new DropObjectInfo();

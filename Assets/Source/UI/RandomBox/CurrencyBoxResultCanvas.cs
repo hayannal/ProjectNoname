@@ -13,6 +13,8 @@ public class CurrencyBoxResultCanvas : MonoBehaviour
 	public RectTransform diaGroupRectTransform;
 	public Text diaValueText;
 	public GameObject includeTodayRewardText;
+	public GameObject returnScrollRootObject;
+	public Text returnScrollCountText;
 
 	void Awake()
 	{
@@ -27,7 +29,7 @@ public class CurrencyBoxResultCanvas : MonoBehaviour
 
 	int _addGold;
 	int _addDia;
-	public void RefreshInfo(int addGold, int addDia, bool showIncludeFirstDayReward = false, bool claim = false)
+	public void RefreshInfo(int addGold, int addDia, int addReturnScroll, bool showIncludeFirstDayReward = false, bool claim = false)
 	{
 		titleText.SetLocalizedText(UIString.instance.GetString(claim ? "ShopUI_ClaimComplete" : "ShopUI_PurchaseComplete"));
 
@@ -55,6 +57,9 @@ public class CurrencyBoxResultCanvas : MonoBehaviour
 		}
 
 		includeTodayRewardText.SetActive(showIncludeFirstDayReward);
+
+		returnScrollRootObject.SetActive(addReturnScroll > 0);
+		returnScrollCountText.text = (addReturnScroll > 1) ? addReturnScroll.ToString() : "";
 	}
 
 	const float diaChangeTime = 0.6f;

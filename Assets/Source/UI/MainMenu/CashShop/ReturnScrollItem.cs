@@ -80,7 +80,7 @@ public class ReturnScrollItem : MonoBehaviour
 			CodelessIAPStoreListener.Instance.StoreController.ConfirmPendingPurchase(product);
 			IAPListenerWrapper.instance.CheckConfirmPendingPurchase(product);
 
-			DropDiaBox();
+			DropReturnScrollBox();
 		}, (error) =>
 		{
 			if (error.Error == PlayFab.PlayFabErrorCode.ReceiptAlreadyUsed)
@@ -91,7 +91,7 @@ public class ReturnScrollItem : MonoBehaviour
 		});
 	}
 
-	void DropDiaBox()
+	void DropReturnScrollBox()
 	{
 		// 연출
 		UIInstanceManager.instance.ShowCanvasAsync("RandomBoxScreenCanvas", () =>
@@ -99,8 +99,9 @@ public class ReturnScrollItem : MonoBehaviour
 			// 연출을 처리해도 될 순간까지 오면 WaitingNetworkCanvas 켜놨던거 하이드.
 			WaitingNetworkCanvas.Show(false);
 
-			DropProcessor dropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, "ShopDiamond", "", true, true);
-			dropProcessor.AdjustDropRange(3.7f);
+			bool bigBox = (_shopReturnScrollTableData.buyingGold > 0);
+			DropProcessor dropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, bigBox ? "ReturnScrolls" : "ReturnScroll", "", true, true);
+			if (bigBox) dropProcessor.AdjustDropRange(3.7f);
 			RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Gold, dropProcessor, 0, 0, () =>
 			{
 				DropManager.instance.ClearLobbyDropInfo();
@@ -108,7 +109,7 @@ public class ReturnScrollItem : MonoBehaviour
 
 				UIInstanceManager.instance.ShowCanvasAsync("CurrencyBoxResultCanvas", () =>
 				{
-					CurrencyBoxResultCanvas.instance.RefreshInfo(_shopReturnScrollTableData.buyingGold, 0);
+					CurrencyBoxResultCanvas.instance.RefreshInfo(_shopReturnScrollTableData.buyingGold, 0, _shopReturnScrollTableData.buyingReturnScrolls);
 				});
 			});
 		});

@@ -74,7 +74,7 @@ public class ReturnScrollItem : MonoBehaviour
 			_shopReturnScrollTableData.buyingReturnScrolls, _shopReturnScrollTableData.buyingGold, () =>
 #elif UNITY_IOS
 		iOSReceiptData data = new iOSReceiptData(product.receipt);
-		PlayFabApiManager.instance.RequestValidateReturnScroll(product.metadata.isoCurrencyCode, (int)(product.metadata.localizedPrice * 100), data.Payload, _shopDiamondTableData.buyingReturnScrolls, _shopReturnScrollTableData.buyingGold, () =>
+		PlayFabApiManager.instance.RequestValidateReturnScroll(product.metadata.isoCurrencyCode, (int)(product.metadata.localizedPrice * 100), data.Payload, _shopReturnScrollTableData.buyingReturnScrolls, _shopReturnScrollTableData.buyingGold, () =>
 #endif
 		{
 			CodelessIAPStoreListener.Instance.StoreController.ConfirmPendingPurchase(product);

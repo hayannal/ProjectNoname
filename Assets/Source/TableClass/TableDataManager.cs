@@ -48,6 +48,7 @@ public class TableDataManager : MonoBehaviour
 	public ShopBoxTable shopBoxTable;
 	public ShopLevelPackageTable shopLevelPackageTable;
 	public ShopDailyDiamondTable shopDailyDiamondTable;
+	public ShopReturnScrollTable shopReturnScrollTable;
 	public ResearchTable researchTable;
 	public ExtraStatTable extraStatTable;
 	public WingLookTable wingLookTable;

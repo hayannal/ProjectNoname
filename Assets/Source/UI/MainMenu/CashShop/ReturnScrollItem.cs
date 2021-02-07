@@ -16,31 +16,32 @@ public class ReturnScrollItem : MonoBehaviour
 	{
 		get
 		{
-			//if (_shopDiamondTableData != null)
-			//	return _shopDiamondTableData.serverItemId;
+			if (_shopReturnScrollTableData != null)
+				return _shopReturnScrollTableData.serverItemId;
 			return "";
 		}
 	}
-	ShopDiamondTableData _shopDiamondTableData;
-	public void SetInfo(ShopDiamondTableData shopDiamondTableData)
+	ShopReturnScrollTableData _shopReturnScrollTableData;
+	public void SetInfo(ShopReturnScrollTableData shopReturnScrollTableData)
 	{
-		int goldAmount = 5500;
-		int scrollAmount = (goldAmount > 0) ? 5 : 1;
+		_shopReturnScrollTableData = shopReturnScrollTableData;
+
+		int goldAmount = _shopReturnScrollTableData.buyingGold;
+		int scrollAmount = _shopReturnScrollTableData.buyingReturnScrolls;
 		if (buyingGoldText != null)
 			buyingGoldText.text = goldAmount.ToString("N0");
 		if (buyingReturnScrollText != null)
 			buyingReturnScrollText.text = scrollAmount.ToString("N0");
 
-		//Product product = CodelessIAPStoreListener.Instance.GetProduct(_shopDailyDiamondTableData.serverItemId);
-		Product product = CodelessIAPStoreListener.Instance.GetProduct("levelbox0");
+		Product product = CodelessIAPStoreListener.Instance.GetProduct(_shopReturnScrollTableData.serverItemId);
 		if (product != null && product.metadata != null && product.metadata.localizedPrice > 0)
 			priceText.text = product.metadata.localizedPriceString;
 		else
 		{
 			if (Application.systemLanguage == SystemLanguage.Korean)
-				priceText.text = string.Format("{0}{1:N0}", BattleInstanceManager.instance.GetCachedGlobalConstantString("KoreaWon"), 5000);
+				priceText.text = string.Format("{0}{1:N0}", BattleInstanceManager.instance.GetCachedGlobalConstantString("KoreaWon"), _shopReturnScrollTableData.kor);
 			else
-				priceText.text = string.Format("$ {0:0.##}", 0.99f);
+				priceText.text = string.Format("$ {0:0.##}", _shopReturnScrollTableData.eng);
 		}
 	}
 
@@ -70,10 +71,10 @@ public class ReturnScrollItem : MonoBehaviour
 #if UNITY_ANDROID
 		GooglePurchaseData data = new GooglePurchaseData(product.receipt);
 		PlayFabApiManager.instance.RequestValidateReturnScroll(product.metadata.isoCurrencyCode, (uint)product.metadata.localizedPrice * 100, data.inAppPurchaseData, data.inAppDataSignature,
-			_shopDiamondTableData.buyingGems, 1, () =>
+			_shopReturnScrollTableData.buyingReturnScrolls, _shopReturnScrollTableData.buyingGold, () =>
 #elif UNITY_IOS
 		iOSReceiptData data = new iOSReceiptData(product.receipt);
-		PlayFabApiManager.instance.RequestValidateReturnScroll(product.metadata.isoCurrencyCode, (int)(product.metadata.localizedPrice * 100), data.Payload, _shopDiamondTableData.buyingGems, 1, () =>
+		PlayFabApiManager.instance.RequestValidateReturnScroll(product.metadata.isoCurrencyCode, (int)(product.metadata.localizedPrice * 100), data.Payload, _shopDiamondTableData.buyingReturnScrolls, _shopReturnScrollTableData.buyingGold, () =>
 #endif
 		{
 			CodelessIAPStoreListener.Instance.StoreController.ConfirmPendingPurchase(product);
@@ -100,14 +101,14 @@ public class ReturnScrollItem : MonoBehaviour
 
 			DropProcessor dropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, "ShopDiamond", "", true, true);
 			dropProcessor.AdjustDropRange(3.7f);
-			RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Dia4_6, dropProcessor, 0, 0, () =>
+			RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Gold, dropProcessor, 0, 0, () =>
 			{
 				DropManager.instance.ClearLobbyDropInfo();
 				CashShopCanvas.instance.currencySmallInfo.RefreshInfo();
 
 				UIInstanceManager.instance.ShowCanvasAsync("CurrencyBoxResultCanvas", () =>
 				{
-					CurrencyBoxResultCanvas.instance.RefreshInfo(0, _shopDiamondTableData.buyingGems);
+					CurrencyBoxResultCanvas.instance.RefreshInfo(_shopReturnScrollTableData.buyingGold, 0);
 				});
 			});
 		});

@@ -15,6 +15,7 @@ public class SpawnFlag : MonoBehaviour
 	public Transform playerClearSpawnTransform;
 	public Transform gatePillarSpawnTransform;
 	public Transform powerSourceSpawnTransform;
+	public Transform returnScrollSpawnTransform;
 
 	[Serializable]
 	public class SpawnInfo
@@ -118,6 +119,8 @@ public class SpawnFlag : MonoBehaviour
 			StageManager.instance.spawnPowerSourcePrefab = powerSourceSpawnTransform.gameObject.activeSelf;
 			if (StageManager.instance.spawnPowerSourcePrefab)
 				StageManager.instance.currentPowerSourceSpawnPosition = powerSourceSpawnTransform.position;
+			if (returnScrollSpawnTransform != null)
+				StageManager.instance.currentReturnScrollSpawnPosition = returnScrollSpawnTransform.position;
 
 			if (BattleManager.instance != null)
 				BattleManager.instance.OnSpawnFlag();

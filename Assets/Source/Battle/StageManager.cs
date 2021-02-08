@@ -431,6 +431,7 @@ public class StageManager : MonoBehaviour
 	public Vector3 currentGatePillarSpawnPosition { get; set; }
 	public bool spawnPowerSourcePrefab { get; set; }
 	public Vector3 currentPowerSourceSpawnPosition { get; set; }
+	public Vector3 currentReturnScrollSpawnPosition { get; set; }
 
 	#region For Canvas EnvironmentSetting
 	public GameObject currentEnvironmentSettingObjectForCanvas { get; set; }

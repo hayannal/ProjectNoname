@@ -562,6 +562,52 @@ public class StageManager : MonoBehaviour
 	}
 	#endregion
 
+	#region Return Scroll
+	// 이번 플레이 중에 리턴 스크롤을 사용했는지를 기억. 사용했다면 다시 죽었을때는 귀환창이 뜨지 않아야한다.
+	// 새 enterFlag 설정할 때 초기화 해줘야한다.
+	public bool returnScrollUsed { get; set; }
+
+	public bool IsUsableReturnScroll()
+	{
+		return (CurrencyData.instance.returnScroll > 0 && returnScrollUsed == false);
+	}
+
+	public void UseReturnScroll()
+	{
+		returnScrollUsed = true;
+		ClientSaveData.instance.OnChangedReturnScroll(true);
+	}
+
+	ObscuredBool _lastPowerSourceSaved = false;
+	ObscuredInt _lastPowerSourceStage = 0;
+	ObscuredString _lastPowerSourceActorId = "";
+	public void SaveReturnScrollPoint()
+	{
+		// 먼저 스테이지 매니저 안에다가 기록해두고
+		_lastPowerSourceSaved = true;
+		_lastPowerSourceStage = playStage;
+		_lastPowerSourceActorId = BattleInstanceManager.instance.playerActor.actorId;
+
+		// 재접시 복구해야하니 ClientSaveData에도 저장해둔다. 서버에 저장하는 방법은 전투 중간에 패킷을 보내야하는 경우가 생겨버리기땜에 하지 않기로 한다.
+		ClientSaveData.instance.OnChangedLastPowerSourceSaved(true);
+		ClientSaveData.instance.OnChangedLastPowerSourceStage(playStage);
+		ClientSaveData.instance.OnChangedLastPowerSourceActorId(BattleInstanceManager.instance.playerActor.actorId);
+	}
+
+	public bool IsSavedReturnScrollPoint()
+	{
+		return _lastPowerSourceSaved;
+	}
+
+	public void SetReturnScrollForInProgressGame()
+	{
+		_lastPowerSourceSaved = ClientSaveData.instance.GetCachedLastPowerSourceSaved();
+		_lastPowerSourceStage = ClientSaveData.instance.GetCachedLastPowerSourceStage();
+		_lastPowerSourceActorId = ClientSaveData.instance.GetCachedLastPowerSourceActorId();
+		returnScrollUsed = ClientSaveData.instance.GetCachedReturnScroll();
+	}
+	#endregion
+
 	#region InProgressGame
 	public int playerExp { get { return _playerExp; } }
 	public void SetLevelExpForInProgressGame(int exp)

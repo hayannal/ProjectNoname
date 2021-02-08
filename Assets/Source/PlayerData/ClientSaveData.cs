@@ -184,8 +184,10 @@ public class ClientSaveData : MonoBehaviour
 		ClearDropItemList();
 		OnChangedDropGold(0.0f);
 		OnChangedDropSeal(0);
-		OnChangedClearPoint(0);
 		ClearEliteMonsterIndexList();
+		OnChangedClearPoint(0);
+		OnChangedLastPowerSourceSaved(false);
+		OnChangedReturnScroll(false);
 	}
 
 	void ResaveEnterFlagValues(string newEnterFlag)
@@ -214,6 +216,10 @@ public class ClientSaveData : MonoBehaviour
 		string jsonEliteMonsterData = GetCachedEliteMonsterData();
 		int clearPoint = GetCachedClearPoint();
 		int refreshStackCount = GetCachedRefreshStackCount();
+		bool lastPowerSourceSaved = GetCachedLastPowerSourceSaved();
+		int lastPowerSourceStage = GetCachedLastPowerSourceStage();
+		string lastPowerSourceActorId = GetCachedLastPowerSourceActorId();
+		bool returnScrollUsed = GetCachedReturnScroll();
 
 		// 새 값으로 교체하고
 		ObscuredPrefs.SetString("enterFlag", newEnterFlag);
@@ -245,6 +251,10 @@ public class ClientSaveData : MonoBehaviour
 		if (string.IsNullOrEmpty(jsonEliteMonsterData) == false) OnChangedEliteMonsterData(jsonEliteMonsterData);
 		OnChangedClearPoint(clearPoint);
 		OnChangedRefreshStackCount(refreshStackCount);
+		OnChangedLastPowerSourceSaved(lastPowerSourceSaved);
+		OnChangedLastPowerSourceStage(lastPowerSourceStage);
+		OnChangedLastPowerSourceActorId(lastPowerSourceActorId);
+		OnChangedReturnScroll(returnScrollUsed);
 	}
 
 	public bool IsLoadingInProgressGame()
@@ -400,6 +410,16 @@ public class ClientSaveData : MonoBehaviour
 	public int GetCachedClearPoint() { return GetCachedInt("cachedClearPoint"); }
 	public void OnChangedRefreshStackCount(int refreshStackCount) { SetCachedInt("cachedRefreshStackCount", refreshStackCount); }
 	public int GetCachedRefreshStackCount() { return GetCachedInt("cachedRefreshStackCount"); }
+
+	// 귀환 주문서 세이브 포인트
+	public void OnChangedLastPowerSourceSaved(bool enable) { SetCachedInt("cachedLastPowerSource", enable ? 1 : 0); }
+	public bool GetCachedLastPowerSourceSaved() { return GetCachedInt("cachedLastPowerSource") == 1; }
+	public void OnChangedLastPowerSourceActorId(string stagePenaltyId) { SetCachedString("cachedLastPowerSourceActor", stagePenaltyId); }
+	public string GetCachedLastPowerSourceActorId() { return GetCachedString("cachedLastPowerSourceActor"); }
+	public void OnChangedLastPowerSourceStage(int dropSeal) { SetCachedInt("cachedLastPowerSourceStage", dropSeal); }
+	public int GetCachedLastPowerSourceStage() { return GetCachedInt("cachedLastPowerSourceStage"); }
+	public void OnChangedReturnScroll(bool enable) { SetCachedInt("cachedReturnScroll", enable ? 1 : 0); }
+	public bool GetCachedReturnScroll() { return GetCachedInt("cachedReturnScroll") == 1; }
 
 
 	#region Helper

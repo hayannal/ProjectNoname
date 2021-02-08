@@ -45,6 +45,11 @@ public class ReturnScrollItem : MonoBehaviour
 		}
 	}
 
+	public void OnClickDetailButton()
+	{
+		UIInstanceManager.instance.ShowCanvasAsync("ReturnScrollInfoCanvas", null);
+	}
+
 	public void OnClickButton()
 	{
 		// 실제 구매

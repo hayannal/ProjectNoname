@@ -158,6 +158,7 @@ public class BattleModeProcessorBase
 
 		int exp = ClientSaveData.instance.GetCachedExp();
 		StageManager.instance.SetLevelExpForInProgressGame(exp);
+		StageManager.instance.SetReturnScrollForInProgressGame();
 
 		float hpRatio = ClientSaveData.instance.GetCachedHpRatio();
 		float spRatio = ClientSaveData.instance.GetCachedSpRatio();

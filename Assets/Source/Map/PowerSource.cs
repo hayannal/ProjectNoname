@@ -58,6 +58,20 @@ public class PowerSource : MonoBehaviour
 			ClientSaveData.instance.OnChangedPowerSource(false);
 			_guideMessageShowRemainTime = 5.0f;
 		}
+
+		// 귀환 주문서를 구입하지 않은 사람도 8챕터 가면 세이브 포인트가 보여야한다.
+		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.SecondDailyBox))
+			_returnScrollPointShowRemainTime = 0.1f;
+	}
+
+	void OnDisable()
+	{
+		// 파워소스가 리턴스크롤 포인트를 만들기때문에 파워소스 없앨때 같이 없애줘야한다.
+		if (_returnScrollObject != null)
+		{
+			_returnScrollObject.SetActive(false);
+			_returnScrollObject = null;
+		}
 	}
 
 	bool _spawnedGatePillar;
@@ -138,8 +152,24 @@ public class PowerSource : MonoBehaviour
 	}
 
 	float _guideMessageShowRemainTime;
+	float _returnScrollPointShowRemainTime;
+	GameObject _returnScrollObject;
 	void Update()
 	{
+		if (_returnScrollPointShowRemainTime > 0.0f)
+		{
+			_returnScrollPointShowRemainTime -= Time.deltaTime;
+			if (_returnScrollPointShowRemainTime <= 0.0f)
+			{
+				_returnScrollPointShowRemainTime = 0.0f;
+
+				AddressableAssetLoadManager.GetAddressableGameObject("ReturnScrollPoint", "Map", (prefab) =>
+				{
+					_returnScrollObject = BattleInstanceManager.instance.GetCachedObject(prefab, StageManager.instance.currentReturnScrollSpawnPosition, Quaternion.identity);
+				});
+			}
+		}
+
 		if (_spawnedGatePillar == true)
 			return;
 

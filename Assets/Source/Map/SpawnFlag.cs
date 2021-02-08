@@ -66,7 +66,7 @@ public class SpawnFlag : MonoBehaviour
 			Transform childTransform = cachedTransform.GetChild(i);
 			if (childTransform == playerStartSpawnTransform || childTransform == playerClearSpawnTransform)
 				continue;
-			if (childTransform == gatePillarSpawnTransform || childTransform == powerSourceSpawnTransform)
+			if (childTransform == gatePillarSpawnTransform || childTransform == powerSourceSpawnTransform || childTransform == returnScrollSpawnTransform)
 				continue;
 			DestroyImmediate(childTransform.gameObject);
 		}

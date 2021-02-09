@@ -12,6 +12,7 @@ using SubjectNerd.Utilities;
 using UnityEngine.SceneManagement;
 using CodeStage.AntiCheat.ObscuredTypes;
 using ActorStatusDefine;
+using PlayFab;
 
 public class StageManager : MonoBehaviour
 {

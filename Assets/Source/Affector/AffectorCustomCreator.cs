@@ -82,6 +82,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.OnOffCollider: affectorBase = new OnOffColliderAffector(); break;
 			case eAffectorType.AddSpGainByHp: affectorBase = new AddSpGainByHpAffector(); break;
 			case eAffectorType.ChangeHitColliderSize: affectorBase = new ChangeHitColliderSizeAffector(); break;
+			case eAffectorType.AddAttackByContinuousKill: affectorBase = new AddAttackByContinuousKillAffector(); break;
 			#endregion
 		}
 		return affectorBase;
@@ -157,6 +158,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.OnOffCollider:
 			case eAffectorType.AddSpGainByHp:
 			case eAffectorType.ChangeHitColliderSize:
+			case eAffectorType.AddAttackByContinuousKill:
 				return true;
 			#endregion
 		}

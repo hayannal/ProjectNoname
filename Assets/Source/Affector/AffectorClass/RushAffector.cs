@@ -196,6 +196,12 @@ public class RushAffector : AffectorBase
 				_endTime += Time.deltaTime;
 		}
 
+		if (_actor.affectorProcessor.IsContinuousAffectorType(eAffectorType.Teleported))
+		{
+			finalized = true;
+			return;
+		}
+
 		if (CheckEndTime(_endTime) == false)
 			return;
 
@@ -331,6 +337,8 @@ public class RushAffector : AffectorBase
 		if (_actor.GetRigidbody() != null)
 			_actor.GetRigidbody().velocity = Vector3.zero;
 		if (_actor.actorStatus.IsDie())
+			return;
+		if (_actor.affectorProcessor.IsContinuousAffectorType(eAffectorType.Teleported))
 			return;
 		if (string.IsNullOrEmpty(_affectorValueLevelTableData.sValue1))
 			return;

@@ -124,6 +124,8 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 	public GameObject currentClearPointGroupObject;
 	public Text currentClearPointText;
 	public GameObject refreshButtonGroupObject;
+	public Image refreshIconImage;
+	public Image refreshPriceImage;
 	public Text refreshPriceText;
 
 	// Start is called before the first frame update
@@ -366,6 +368,8 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 		refreshPriceText.text = GetRefreshPrice().ToString();
 		currentClearPointGroupObject.SetActive(true);
 		refreshButtonGroupObject.SetActive(true);
+		bool disablePrice = (BattleManager.instance.GetClearPoint() < GetRefreshPrice());
+		refreshIconImage.color = refreshPriceImage.color = refreshPriceText.color = !disablePrice ? Color.white : Color.gray;
 	}
 
 	ObscuredInt _refreshStackCount = 0;
@@ -535,6 +539,8 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 
 		refreshPriceText.text = GetRefreshPrice().ToString();
 		currentClearPointText.text = BattleManager.instance.GetClearPoint().ToString("N0");
+		bool disablePrice = (BattleManager.instance.GetClearPoint() < GetRefreshPrice());
+		refreshIconImage.color = refreshPriceImage.color = refreshPriceText.color = !disablePrice ? Color.white : Color.gray;
 	}
 	#endregion
 

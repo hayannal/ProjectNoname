@@ -18,6 +18,7 @@ public class MainSceneBuilder : MonoBehaviour
 	public static MainSceneBuilder instance;
 	public static bool s_initializedAddressable;
 	public static bool s_firstTimeAfterLaunch = true;
+	public static bool s_buildReturnScrollUsedScene = false;
 
 	void Awake()
 	{
@@ -224,6 +225,14 @@ public class MainSceneBuilder : MonoBehaviour
 #if !UNITY_EDITOR
 		Debug.LogWarning("MainSceneBuilder Start 6");
 #endif
+
+		// step 3-0. return scroll
+		// 로그인 하기 전에 귀환 스크롤 사용인지 확인해서 마지막 파워소스로 되돌리는 상황인지 확인해야한다.
+		if (s_buildReturnScrollUsedScene)
+		{
+			yield return BuildReturnScrollSceneCoroutine();
+			yield break;
+		}
 
 		// step 3. login
 #if PLAYFAB
@@ -618,13 +627,17 @@ public class MainSceneBuilder : MonoBehaviour
 				SoundManager.instance.SetUiVolume(OptionManager.instance.systemVolume);
 
 				// step 12. fade out
-				if (buildTutorialScene)
+				if (buildTutorialScene || s_buildReturnScrollUsedScene)
 				{
 					// 0챕터 1스테이지에서 시작하는거라 강제로 전투모드로 바꿔준다.
 					StartCoroutine(LateInitialize());
 					LobbyCanvas.instance.OnExitLobby();
-					// 튜토때만 보이는 계정연동 버튼 처리
-					UIInstanceManager.instance.ShowCanvasAsync("TutorialLinkAccountCanvas", null);
+
+					if (buildTutorialScene)
+					{
+						// 튜토때만 보이는 계정연동 버튼 처리
+						UIInstanceManager.instance.ShowCanvasAsync("TutorialLinkAccountCanvas", null);
+					}
 				}
 				else
 				{
@@ -638,7 +651,8 @@ public class MainSceneBuilder : MonoBehaviour
 
 	IEnumerator LateInitialize()
 	{
-		if (buildTutorialScene == false)
+		bool battleScene = (buildTutorialScene || s_buildReturnScrollUsedScene);
+		if (battleScene == false)
 		{
 			LobbyCanvas.instance.RefreshAlarmObject();
 			PlayerData.instance.LateInitialize();
@@ -676,7 +690,7 @@ public class MainSceneBuilder : MonoBehaviour
 			yield return null;
 		Instantiate<GameObject>(_handleBattleManager.Result);
 
-		if (buildTutorialScene)
+		if (battleScene)
 		{
 			BattleManager.instance.OnSpawnFlag();
 			LoadingCanvas.instance.FadeOutObject();
@@ -787,6 +801,79 @@ public class MainSceneBuilder : MonoBehaviour
 		}
 
 		// 마무리 셋팅하기 직전에 IAP Listener 초기화. 튜토 전투씬이라면 굳이 초기화할 필요 없다.
+		//IAPListenerWrapper.instance.EnableListener(true);
+
+		// 마무리 셋팅
+		_waitUpdateRemainCount = 2;
+		mainSceneBuilding = false;
+		QualitySettings.asyncUploadTimeSlice = 2;
+	}
+#endregion
+
+#region Return Scroll Scene
+	// 귀환 스크롤 쓸때는 씬을 재구축해야 버그가 생기지 않을 확률이 높아진다.
+	public static string s_lastPowerSourceEnvironmentSettingAddress;
+	IEnumerator BuildReturnScrollSceneCoroutine()
+	{
+		// step 4. set lobby
+		_handleLobbyCanvas = Addressables.LoadAssetAsync<GameObject>("LobbyCanvas");
+		_handleCommonCanvasGroup = Addressables.LoadAssetAsync<GameObject>("CommonCanvasGroup");
+
+		// step 5, 6
+		LoadingCanvas.instance.SetProgressBarPoint(0.6f);
+		_handleStageManager = Addressables.LoadAssetAsync<GameObject>("StageManager");
+		_handleStartCharacter = Addressables.LoadAssetAsync<GameObject>(CharacterData.GetAddressByActorId(ClientSaveData.instance.GetCachedBattleActor()));
+		while (_handleStageManager.IsValid() && !_handleStageManager.IsDone)
+			yield return null;
+		while (_handleStartCharacter.IsValid() && !_handleStartCharacter.IsDone)
+			yield return null;
+		Instantiate<GameObject>(_handleStageManager.Result);
+#if UNITY_EDITOR
+		GameObject newObject = Instantiate<GameObject>(_handleStartCharacter.Result, Vector3.zero, Quaternion.identity);
+		AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+		if (settings.ActivePlayModeDataBuilderIndex == 2)
+			ObjectUtil.ReloadShader(newObject);
+#else
+		Instantiate<GameObject>(_handleStartCharacter.Result);
+#endif
+
+		// 로딩 자체를 안해버리면 handle없어서 오류 날 수 있으니 Instantiate는 안해도 로딩은 해두자.
+		LoadingCanvas.instance.SetProgressBarPoint(0.9f);
+		_handleTreasureChest = Addressables.LoadAssetAsync<GameObject>("TreasureChest");
+
+		// 마지막 부활지점
+		StageManager.instance.InitializeStage(PlayerData.instance.selectedChapter, ClientSaveData.instance.GetCachedLastPowerSourceStage());
+		while (StageManager.instance.IsDoneLoadAsyncNextStage() == false)
+			yield return null;
+		StageManager.instance.MoveToNextStage(true);
+
+		// step 8. gate pillar & TreasureChest
+		yield return new WaitUntil(() => waitSpawnFlag);
+		SoundManager.instance.PlayBattleBgm(ClientSaveData.instance.GetCachedBattleActor());
+
+		StageManager.instance.GetNextStageInfo();
+		while (UIString.instance.IsDoneLoadAsyncStringData() == false)
+			yield return null;
+		while (UIString.instance.IsDoneLoadAsyncFont() == false)
+			yield return null;
+		// step 9-2. lobby ui
+		while (_handleLobbyCanvas.IsValid() && !_handleLobbyCanvas.IsDone)
+			yield return null;
+		while (_handleCommonCanvasGroup.IsValid() && !_handleCommonCanvasGroup.IsDone)
+			yield return null;
+		Instantiate<GameObject>(_handleLobbyCanvas.Result);
+		Instantiate<GameObject>(_handleCommonCanvasGroup.Result);
+
+		// step 10. player hit object caching
+		LoadingCanvas.instance.SetProgressBarPoint(1.0f, 0.0f, true);
+		if (BattleInstanceManager.instance.playerActor.cachingObjectList != null && BattleInstanceManager.instance.playerActor.cachingObjectList.Length > 0)
+		{
+			_listCachingObject = new List<GameObject>();
+			for (int i = 0; i < BattleInstanceManager.instance.playerActor.cachingObjectList.Length; ++i)
+				_listCachingObject.Add(BattleInstanceManager.instance.GetCachedObject(BattleInstanceManager.instance.playerActor.cachingObjectList[i], Vector3.right, Quaternion.identity));
+		}
+
+		// 마무리 셋팅하기 직전에 IAP Listener 초기화 해야하는데 전투씬이니까 패스
 		//IAPListenerWrapper.instance.EnableListener(true);
 
 		// 마무리 셋팅

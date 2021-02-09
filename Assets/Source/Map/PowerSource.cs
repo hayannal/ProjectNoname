@@ -46,7 +46,12 @@ public class PowerSource : MonoBehaviour
 	{
 		_spawnedGatePillar = false;
 
-		if (ClientSaveData.instance.IsLoadingInProgressGame())
+		if (MainSceneBuilder.s_buildReturnScrollUsedScene)
+		{
+			// 귀환중이라면 예외처리
+			_spawnedGatePillar = true;
+		}
+		else if (ClientSaveData.instance.IsLoadingInProgressGame())
 		{
 			if (ClientSaveData.instance.GetCachedPowerSource())
 				_spawnedGatePillar = true;

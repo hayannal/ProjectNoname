@@ -153,7 +153,12 @@ public class BattleModeProcessorBase
 	void InitializeInProgressGame()
 	{
 		// OnSpawnFlag의 마지막 부분이 플레이어를 복구하기 가장 적절한 타이밍이다.
-		if (ClientSaveData.instance.IsLoadingInProgressGame() == false)
+		bool useCachedData = false;
+		if (ClientSaveData.instance.IsLoadingInProgressGame())
+			useCachedData = true;
+		if (MainSceneBuilder.s_buildReturnScrollUsedScene)
+			useCachedData = true;
+		if (useCachedData == false)
 			return;
 
 		int exp = ClientSaveData.instance.GetCachedExp();
@@ -238,6 +243,13 @@ public class BattleModeProcessorBase
 		// 레벨팩 리프레쉬에 쓰이는 배틀 클리어 포인트도 로드
 		_clearPoint = ClientSaveData.instance.GetCachedClearPoint();
 
+		// 여기까지 셋팅했으면 귀환 주문서 씬 전환은 끝난거다. 플래그를 초기화해둔다.
+		if (MainSceneBuilder.s_buildReturnScrollUsedScene)
+		{
+			MainSceneBuilder.s_buildReturnScrollUsedScene = false;
+			return;
+		}
+
 		// 끝나면 ClientSaveData에 로드 완료를 알린다.
 		ClientSaveData.instance.OnFinishLoadGame();
 	}
@@ -272,6 +284,15 @@ public class BattleModeProcessorBase
 		// 여기서 인풋은 막되
 		LobbyCanvas.instance.battlePauseButton.interactable = false;
 
+		#region Return Scroll
+		// 정산전에 한번 부활 가능한 상태인지 판단해야한다.
+		if (StageManager.instance.IsUsableReturnScroll() && StageManager.instance.IsSavedReturnScrollPoint())
+		{
+			PrepareReturnScroll();
+			return;
+		}
+		#endregion
+
 		// 바로 정산처리 하면 안되고
 		// 드랍 아이템 존재하는지 확인 후 없으면 바로 1초 타이머를 센다.
 		// 획득할 수 있는 드랍 아이템이 존재하면 다 획득 후 1초 타이머를 센다.
@@ -279,6 +300,36 @@ public class BattleModeProcessorBase
 		_endProcess = true;
 		_endProcessWaitRemainTime = 2.0f;
 	}
+
+	#region Return Scroll
+	void PrepareReturnScroll()
+	{
+		// 귀환할 준비를 한다.
+		// 이미 입력은 안통하는 상태일테니 시간 멈추고
+		Time.timeScale = 0.0f;
+
+		// 네트워크 대기화면 켜두고
+		WaitingNetworkCanvas.Show(true);
+
+		// 네트워크가 가능한 상태인지 확인
+		PlayFabApiManager.instance.RequestNetwork(OnResponse);
+
+		// 이후 통신이 제대로 되고나면 진행할 이펙트와 교체할 캐릭터를 미리 로딩걸어둔다.
+		StageManager.instance.PrepareReturnScroll();
+	}
+
+	void OnResponse()
+	{
+		// 네트워크에 문제가 없다면 스크롤 차감 패킷을 보내서 확인
+		PlayFabApiManager.instance.RequestUseReturnScroll(OnRecvUseReturnScroll);
+	}
+
+	void OnRecvUseReturnScroll()
+	{
+		// 서버에서 ok 떨어지면 귀환처리를 진행
+		StageManager.instance.ReturnLastPowerSourcePoint();
+	}
+	#endregion
 
 	public virtual void OnDieMonster(MonsterActor monsterActor)
 	{

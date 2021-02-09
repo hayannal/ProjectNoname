@@ -9,6 +9,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 #else
 using SubjectNerd.Utilities;
 #endif
+using UnityEngine.SceneManagement;
 using CodeStage.AntiCheat.ObscuredTypes;
 using ActorStatusDefine;
 
@@ -61,6 +62,11 @@ public class StageManager : MonoBehaviour
 			nextMapTableData = BattleInstanceManager.instance.GetCachedMapTableData(StageDataManager.instance.reservedNextMap);
 			PrepareNextMap(nextMapTableData, StageDataManager.instance.nextStageTableData.environmentSetting);
 			return;
+		}
+
+		if (MainSceneBuilder.s_buildReturnScrollUsedScene)
+		{
+			StageDataManager.instance.SetCachedMapData(ClientSaveData.instance.GetCachedMapData());
 		}
 
 		GetStageInfo(playChapter, playStage);
@@ -229,6 +235,7 @@ public class StageManager : MonoBehaviour
 	AsyncOperationGameObjectResult _handleNextPortalFlagPrefab;
 	AsyncOperationGameObjectResult _handleEnvironmentSettingPrefab;
 	string _environmentSettingAddress;
+	string _lastEnvironmentSettingAddress;
 	void PrepareNextMap(MapTableData mapTableData, string[] environmentSettingList)
 	{
 		_handleNextPlanePrefab = AddressableAssetLoadManager.GetAddressableGameObject(mapTableData.plane, "Map");
@@ -249,6 +256,13 @@ public class StageManager : MonoBehaviour
 				_environmentSettingAddress = cachedEnvironmentSetting;
 				return;
 			}
+		}
+
+		if (MainSceneBuilder.s_buildReturnScrollUsedScene)
+		{
+			_handleEnvironmentSettingPrefab = AddressableAssetLoadManager.GetAddressableGameObject(MainSceneBuilder.s_lastPowerSourceEnvironmentSettingAddress, "EnvironmentSetting");
+			_environmentSettingAddress = MainSceneBuilder.s_lastPowerSourceEnvironmentSettingAddress;
+			return;
 		}
 
 		// 환경은 위의 맵 정보와 달리 들어오면 설정하고 아니면 패스하는 형태다. 그래서 없을땐 null로 한다.
@@ -340,6 +354,9 @@ public class StageManager : MonoBehaviour
 			if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby) lobby = true;
 			if (lobby == false)
 				ClientSaveData.instance.OnChangedEnvironmentSetting(_environmentSettingAddress);
+
+			// 마지막으로 생성한 env address를 들고있는다.
+			_lastEnvironmentSettingAddress = _environmentSettingAddress;
 		}
 #else
 		for (int i = 0; i < planePrefabList.Length; ++i)
@@ -592,6 +609,12 @@ public class StageManager : MonoBehaviour
 		ClientSaveData.instance.OnChangedLastPowerSourceSaved(true);
 		ClientSaveData.instance.OnChangedLastPowerSourceStage(playStage);
 		ClientSaveData.instance.OnChangedLastPowerSourceActorId(BattleInstanceManager.instance.playerActor.actorId);
+
+		// 한가지 문제가 있는데 일반적인 PowerSource 나오는 층에서는 환경셋팅이 비어져있는게 보통인데
+		// 로비를 들리지 않고 씬을 구축해야하기때문에 환경셋팅을 어딘가 저장해놓을 필요가 생겼다.
+		// 그런데 이건 ClientSaveData에 두기도 뭐한게 재진입 로직에서는 전혀 필요가 없다.
+		// 그래서 별도의 위치에 기록해두고 부활씬으로 재구축할때 사용하기로 한다.
+		MainSceneBuilder.s_lastPowerSourceEnvironmentSettingAddress = _lastEnvironmentSettingAddress;
 	}
 
 	public bool IsSavedReturnScrollPoint()
@@ -606,8 +629,72 @@ public class StageManager : MonoBehaviour
 		_lastPowerSourceActorId = ClientSaveData.instance.GetCachedLastPowerSourceActorId();
 		returnScrollUsed = ClientSaveData.instance.GetCachedReturnScroll();
 	}
-	#endregion
 
+	// 로딩 준비
+	GameObject _returnScrollEffectPrefab = null;
+	public void PrepareReturnScroll()
+	{
+		AddressableAssetLoadManager.GetAddressableGameObject("ReturnScrollEffect", "CommonEffect", (prefab) =>
+		{
+			_returnScrollEffectPrefab = prefab;
+		});
+
+		if (BattleInstanceManager.instance.playerActor.actorId != _lastPowerSourceActorId)
+		{
+			PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(_lastPowerSourceActorId);
+			if (playerActor == null)
+				AddressableAssetLoadManager.GetAddressableGameObject(CharacterData.GetAddressByActorId(_lastPowerSourceActorId), "Character");
+		}
+	}
+
+	// 실제 이동하는 함수. ClientSaveData.MoveToInProgressGame 에서 가져와서 변형시켜 쓴다.
+	public void ReturnLastPowerSourcePoint()
+	{
+		// 제일 먼저 할일은 클라에 캐싱된 전투 데이터를 수정하는 것. 이걸 해놔야 바로 꺼지더라도 복구할 수 있다.
+		ClientSaveData.instance.OnChangedStage(_lastPowerSourceStage);
+		ClientSaveData.instance.OnChangedBattleActor(_lastPowerSourceActorId);
+		ClientSaveData.instance.OnChangedHpRatio(1.0f);
+		ClientSaveData.instance.OnChangedSpRatio(1.0f);
+		ClientSaveData.instance.OnChangedGatePillar(true);
+		ClientSaveData.instance.OnChangedPowerSource(true);
+		ClientSaveData.instance.OnChangedCloseSwap(false);
+
+		// 사용한 BattleActor 리스트도 강제로 초기화
+		List<string> listBattleActor = new List<string>();
+		listBattleActor.Add(_lastPowerSourceActorId);
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		string jsonBattleActorData = serializer.SerializeObject(listBattleActor);
+		ClientSaveData.instance.OnChangedBattleActorData(jsonBattleActorData);
+
+		// 마지막엔 returnScroll 사용한 것도 기억시켜둔다.
+		UseReturnScroll();
+
+		// 여기까지 했으면 진짜 연출 시작할거니 코루틴으로 넘어가서 처리한다.
+		StartCoroutine(NextMapProcess());
+	}
+
+	System.Collections.IEnumerator NextMapProcess()
+	{
+		while (_returnScrollEffectPrefab == null)
+			yield return new WaitForEndOfFrame();
+
+		BattleInstanceManager.instance.GetCachedObject(_returnScrollEffectPrefab, BattleInstanceManager.instance.playerActor.cachedTransform.position, Quaternion.identity);
+
+		yield return new WaitForSecondsRealtime(3.4f);
+
+		FadeCanvas.instance.FadeOut(0.2f, 1.0f, true, true);
+		yield return new WaitForSecondsRealtime(0.2f);
+
+		// 씬 이동으로 처리하기로 한다.
+		// 씬 이동으로 하지 않으면 각종 몬스터 재활용 이슈부터 텔레포트 러쉬 소환부터 드랍오브젝트 보스HP UI까지 별 이슈가 다 걸린다.
+		// 하나하나 테스트 하면서 검증할바엔 씬을 초기화 해서 넘어가기로 한다.
+		yield return new WaitForSecondsRealtime(0.1f);
+		Time.timeScale = 1.0f;
+		MainSceneBuilder.s_buildReturnScrollUsedScene = true;
+		SceneManager.LoadScene(0);
+	}
+	#endregion
+	
 	#region InProgressGame
 	public int playerExp { get { return _playerExp; } }
 	public void SetLevelExpForInProgressGame(int exp)

@@ -206,6 +206,8 @@ public class PlayerActor : Actor
 		bool showPlayerCanvas = true;
 		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.buildTutorialScene)
 			showPlayerCanvas = false;
+		if (MainSceneBuilder.instance != null && MainSceneBuilder.s_buildReturnScrollUsedScene)
+			showPlayerCanvas = false;
 		if (lobby == false && showPlayerCanvas)
 			InitializeCanvas();
 

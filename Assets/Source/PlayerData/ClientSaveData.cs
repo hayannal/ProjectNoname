@@ -297,6 +297,7 @@ public class ClientSaveData : MonoBehaviour
 	}
 
 	public string GetCachedEnterFlag() { return ObscuredPrefs.GetString("enterFlag"); }
+	public string GetCachedMapData() { return GetCachedString("mapData"); }
 
 	public void OnChangedStage(int stage) { SetCachedInt("cachedStage", stage); }
 	public int GetCachedStage() { return GetCachedInt("cachedStage"); }

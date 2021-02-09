@@ -907,6 +907,31 @@ public class PlayFabApiManager : MonoBehaviour
 		};
 		RetrySendManager.instance.RequestAction(action, true, true);
 	}
+
+	public void RequestUseReturnScroll(Action successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "UseReturnScroll",
+			FunctionParameter = new { Ret = 1 },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+				CurrencyData.instance.returnScroll -= 1;
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
 	#endregion
 
 	#region NodeWar

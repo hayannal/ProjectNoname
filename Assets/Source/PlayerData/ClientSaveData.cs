@@ -188,6 +188,7 @@ public class ClientSaveData : MonoBehaviour
 		OnChangedClearPoint(0);
 		OnChangedLastPowerSourceSaved(false);
 		OnChangedReturnScroll(false);
+		OnChangedAllyContinuousKillCount(0);
 	}
 
 	void ResaveEnterFlagValues(string newEnterFlag)
@@ -220,6 +221,7 @@ public class ClientSaveData : MonoBehaviour
 		int lastPowerSourceStage = GetCachedLastPowerSourceStage();
 		string lastPowerSourceActorId = GetCachedLastPowerSourceActorId();
 		bool returnScrollUsed = GetCachedReturnScroll();
+		int allyContinuousKillCount = GetCachedAllyContinuousKillCount();
 
 		// 새 값으로 교체하고
 		ObscuredPrefs.SetString("enterFlag", newEnterFlag);
@@ -255,6 +257,7 @@ public class ClientSaveData : MonoBehaviour
 		OnChangedLastPowerSourceStage(lastPowerSourceStage);
 		OnChangedLastPowerSourceActorId(lastPowerSourceActorId);
 		OnChangedReturnScroll(returnScrollUsed);
+		OnChangedAllyContinuousKillCount(allyContinuousKillCount);
 	}
 
 	public bool IsLoadingInProgressGame()
@@ -421,6 +424,12 @@ public class ClientSaveData : MonoBehaviour
 	public int GetCachedLastPowerSourceStage() { return GetCachedInt("cachedLastPowerSourceStage"); }
 	public void OnChangedReturnScroll(bool enable) { SetCachedInt("cachedReturnScroll", enable ? 1 : 0); }
 	public bool GetCachedReturnScroll() { return GetCachedInt("cachedReturnScroll") == 1; }
+
+
+	// 어펙터 전용 변수들
+	public void OnChangedAllyContinuousKillCount(int allyContinuousKillCount) { SetCachedInt("cachedAllyContinuousKillCount", allyContinuousKillCount); }
+	public int GetCachedAllyContinuousKillCount() { return GetCachedInt("cachedAllyContinuousKillCount"); }
+	
 
 
 	#region Helper

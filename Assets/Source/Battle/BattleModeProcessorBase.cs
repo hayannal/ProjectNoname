@@ -243,6 +243,9 @@ public class BattleModeProcessorBase
 		// 레벨팩 리프레쉬에 쓰이는 배틀 클리어 포인트도 로드
 		_clearPoint = ClientSaveData.instance.GetCachedClearPoint();
 
+		// 기타 정보들도 불러줘야한다.
+		BattleInstanceManager.instance.allyContinuousKillCount = ClientSaveData.instance.GetCachedAllyContinuousKillCount();
+
 		// 여기까지 셋팅했으면 귀환 주문서 씬 전환은 끝난거다. 플래그를 초기화해둔다.
 		if (MainSceneBuilder.s_buildReturnScrollUsedScene)
 		{

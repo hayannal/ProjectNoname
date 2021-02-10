@@ -7,6 +7,7 @@ using UnityEditor.AddressableAssets.Settings;
 #endif
 using DigitalRuby.ThunderAndLightning;
 using PlayFab;
+using CodeStage.AntiCheat.ObscuredTypes;
 
 public class BattleInstanceManager : MonoBehaviour
 {
@@ -1362,6 +1363,24 @@ public class BattleInstanceManager : MonoBehaviour
 	}
 	#endregion
 
+
+
+
+	#region AddAttackByContinuousKillAffector Argument
+	ObscuredInt _allyContinuousKillCount;
+	public int allyContinuousKillCount
+	{
+		get
+		{
+			return _allyContinuousKillCount;
+		}
+		set
+		{
+			_allyContinuousKillCount = value;
+			ClientSaveData.instance.OnChangedAllyContinuousKillCount(_allyContinuousKillCount);
+		}
+	}
+	#endregion
 
 
 

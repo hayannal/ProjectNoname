@@ -1,12 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using CodeStage.AntiCheat.ObscuredTypes;
 
 public class AddAttackByContinuousKillAffector : AffectorBase
 {
 	float _endTime;
 	float _value;
 	float value { get { return _value; } }
+	bool _allyTeam;
+	bool allyTeam { get { return _allyTeam; } }
 
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
@@ -26,6 +29,8 @@ public class AddAttackByContinuousKillAffector : AffectorBase
 		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
 
 		_value = affectorValueLevelTableData.fValue2;
+
+		_allyTeam = (_actor.team.teamId == (int)Team.eTeamID.DefaultAlly);
 	}
 
 	public override void OverrideAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
@@ -41,18 +46,31 @@ public class AddAttackByContinuousKillAffector : AffectorBase
 
 	float GetAddAttack()
 	{
-		return _value * _continuousKillCount;
+		//Debug.LogFormat("allyContinuousKillCount : {0}", BattleInstanceManager.instance.allyContinuousKillCount);
+
+		int count = 0;
+		if (_allyTeam)
+			count = BattleInstanceManager.instance.allyContinuousKillCount;
+		else
+			count = _continuousKillCount;
+		return _value * count;
 	}
 
-	int _continuousKillCount = 0;
+	ObscuredInt _continuousKillCount = 0;
 	void OnDamage()
 	{
-		_continuousKillCount = 0;
+		if (_allyTeam)
+			BattleInstanceManager.instance.allyContinuousKillCount = 0;
+		else
+			_continuousKillCount = 0;
 	}
 
 	void OnKill()
 	{
-		_continuousKillCount += 1;
+		if (_allyTeam)
+			BattleInstanceManager.instance.allyContinuousKillCount += 1;
+		else
+			_continuousKillCount += 1;
 	}
 
 	public static void OnKill(AffectorProcessor affectorProcessor)
@@ -69,6 +87,10 @@ public class AddAttackByContinuousKillAffector : AffectorBase
 			if (addAttackByContinuousKillAffector == null)
 				continue;
 			addAttackByContinuousKillAffector.OnKill();
+
+			// 아군 팀의 어펙터는 내부변수를 공유해서 쓰니까 1회만 적용해야한다.
+			if (addAttackByContinuousKillAffector.allyTeam)
+				break;
 		}
 	}
 
@@ -86,6 +108,10 @@ public class AddAttackByContinuousKillAffector : AffectorBase
 			if (addAttackByContinuousKillAffector == null)
 				continue;
 			addAttackByContinuousKillAffector.OnDamage();
+
+			// 아군 팀의 어펙터는 내부변수를 공유해서 쓰니까 1회만 적용해야한다.
+			if (addAttackByContinuousKillAffector.allyTeam)
+				break;
 		}
 	}
 

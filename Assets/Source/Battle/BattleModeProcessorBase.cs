@@ -587,6 +587,7 @@ public class BattleModeProcessorBase
 				{
 					PlayerData.instance.chaosMode = true;
 					PlayerData.instance.purifyCount = 0;
+					PlayerData.instance.chaosModeOpened = true;
 				}
 
 				EventManager.instance.OnEventPlayHighestChapter(PlayerData.instance.highestPlayChapter);

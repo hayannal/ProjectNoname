@@ -40,6 +40,8 @@ public class PlayerData : MonoBehaviour
 	public ObscuredInt selectedChapter { get; set; }
 	// 이 카오스는 마지막 챕터의 카오스 상태를 저장하는 값이다. 이건 4챕터 이후에 도전모드 상태에서 질때 바뀌며 유저가 선택으로 바꾸는 값이 아니다.
 	public ObscuredBool chaosMode { get; set; }
+	// 이건 한번이라도 카오스가 열렸었는지를 기억하는 변수
+	public ObscuredBool chaosModeOpened { get; set; }
 	public ObscuredInt purifyCount { get; set; }
 	public ObscuredBool todayFreePurifyApplied { get; set; }
 	public DateTime todayFreePurifyResetTime { get; private set; }
@@ -139,6 +141,7 @@ public class PlayerData : MonoBehaviour
 		highestClearStage = 0;
 		selectedChapter = 1;
 		chaosMode = false;
+		chaosModeOpened = false;
 
 		// temp
 		loginned = true;
@@ -323,6 +326,7 @@ public class PlayerData : MonoBehaviour
 		highestClearStage = 0;
 		selectedChapter = 0;
 		chaosMode = false;
+		chaosModeOpened = false;
 		sealCount = 0;
 		sharedDailyBoxOpened = false;
 		purifyCount = 0;
@@ -501,6 +505,14 @@ public class PlayerData : MonoBehaviour
 			int intValue = 0;
 			if (int.TryParse(userData["SHcha"].Value, out intValue))
 				chaosMode = (intValue == 1);
+		}
+
+		chaosModeOpened = false;
+		if (userData.ContainsKey("SHchaOpn"))
+		{
+			int intValue = 0;
+			if (int.TryParse(userData["SHchaOpn"].Value, out intValue))
+				chaosModeOpened = (intValue == 1);
 		}
 
 		purifyCount = 0;

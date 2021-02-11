@@ -36,11 +36,30 @@ public class TreasureChest : MonoBehaviour
 			_autoShowIndicatorRemainTime = 1.0f;
 		}
 
+		if (TreasureChestIndicatorCanvas.IsSubQuestBoxType())
+		{
+			if (QuestData.instance.currentQuestStep == QuestData.eQuestStep.Select)
+				_autoShowIndicatorRemainTime = 1.0f;
+
+			// 최초 로그인의 Start 가 호출될때는 LateInitialize가 호출되기 전이라서 IsCompleteQuest결과를 알 수가 없다.
+			// 이때는 QuestData에게 알려서 퀘스트 셋팅이 되면 알람체크를 한번 더 해보라고 알려야한다.
+			if (QuestData.instance.CheckValidQuestList(true) == true)
+			{
+				if (QuestData.instance.IsCompleteQuest())
+					_autoShowIndicatorRemainTime = 1.0f;
+			}
+		}
+
 		if (ContentsManager.IsTutorialChapter() == false && PlayerData.instance.lobbyDownloadState == false)
 		{
 			// 일부러 조금 뒤에 보이게 한다. 초기 로딩 줄이기 위해.
 			_gaugeShowRemainTime = gaugeShowDelayTime;
 		}
+	}
+
+	public void SetAutoShowIndicatorRemainTime(float time)
+	{
+		_autoShowIndicatorRemainTime = time;
 	}
 
 	float _gaugeShowRemainTime;

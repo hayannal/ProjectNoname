@@ -354,6 +354,8 @@ public class ActionController : MonoBehaviour {
 		// 이후 사용 이벤트 체크. 체험모드 안에서 쓸땐 보상 처리를 해줘야한다.
 		if (ExperienceCanvas.instance != null && ExperienceCanvas.instance.gameObject.activeSelf)
 			ExperienceData.instance.OnUseUltimateSkill(actor.actorId);
+
+		QuestData.instance.OnQuestEvent(QuestData.eQuestClearType.Ultimate);
 	}
 
 	void UseUltimateSp()

@@ -243,6 +243,9 @@ public class BattleModeProcessorBase
 		// 레벨팩 리프레쉬에 쓰이는 배틀 클리어 포인트도 로드
 		_clearPoint = ClientSaveData.instance.GetCachedClearPoint();
 
+		// 퀘스트 관련 정보도 복구
+		QuestData.instance.SetQuestInfoForInProgressGame();
+
 		// 기타 정보들도 불러줘야한다.
 		BattleInstanceManager.instance.allyContinuousKillCount = ClientSaveData.instance.GetCachedAllyContinuousKillCount();
 
@@ -391,8 +394,16 @@ public class BattleModeProcessorBase
 			fastClear = true;
 		if (ContentsManager.IsTutorialChapter())
 			fastClear = noHitClear = false;
-		if (noHitClear) _clearPoint += 1;
-		if (fastClear) _clearPoint += 1;
+		if (noHitClear)
+		{
+			_clearPoint += 1;
+			QuestData.instance.OnQuestEvent(QuestData.eQuestClearType.NoHitClear);
+		}
+		if (fastClear)
+		{
+			_clearPoint += 1;
+			QuestData.instance.OnQuestEvent(QuestData.eQuestClearType.FastClear);
+		}
 		ClientSaveData.instance.OnChangedClearPoint(_clearPoint);
 		LobbyCanvas.instance.ShowClearPointInfo(fastClear, noHitClear);
 

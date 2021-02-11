@@ -57,6 +57,7 @@ public class TableDataManager : MonoBehaviour
 	public NodeWarSpawnTable nodeWarSpawnTable;
 	public NodeWarTrapTable nodeWarTrapTable;
 	public ChapterTrapTable chapterTrapTable;
+	public SubQuestTable subQuestTable;
 
 	void Awake()
 	{
@@ -497,6 +498,16 @@ public class TableDataManager : MonoBehaviour
 				if ((lastStage && chapterTrapTable.dataArray[i].last == 1) || (lastStage == false && chapterTrapTable.dataArray[i].last == 0))
 					return chapterTrapTable.dataArray[i];
 			}
+		}
+		return null;
+	}
+
+	public SubQuestTableData FindSubQuestTableData(string type)
+	{
+		for (int i = 0; i < subQuestTable.dataArray.Length; ++i)
+		{
+			if (subQuestTable.dataArray[i].type == type)
+				return subQuestTable.dataArray[i];
 		}
 		return null;
 	}

@@ -11,6 +11,7 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 	{
 		Shop,
 		DailyBox,
+		SubQuest,
 	}
 	eButtonType _buttonType;
 
@@ -44,6 +45,8 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 
 		if (IsDailyBoxType())
 			_buttonType = eButtonType.DailyBox;
+		else if (IsSubQuestBoxType())
+			_buttonType = eButtonType.SubQuest;
 
 		AlarmObject.Hide(alarmRootTransform);
 
@@ -57,6 +60,11 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 				AlarmObject.Show(alarmRootTransform);
 				stringId = "GameUI_OneCharBox";
 				break;
+			case eButtonType.SubQuest:
+				if (QuestData.instance.IsCompleteQuest())
+					AlarmObject.Show(alarmRootTransform);
+				stringId = "GameUI_SubQuestBig";
+				break;
 		}
 		for (int i = 0; i < buttonTextList.Length; ++i)
 			buttonTextList[i].SetLocalizedText(UIString.instance.GetString(stringId));
@@ -65,6 +73,13 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 	public static bool IsDailyBoxType()
 	{
 		if (PlayerData.instance.sharedDailyBoxOpened == false && PlayerData.instance.sealCount >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("SealMaxCount"))
+			return true;
+		return false;
+	}
+
+	public static bool IsSubQuestBoxType()
+	{
+		if (PlayerData.instance.sharedDailyBoxOpened == true && PlayerData.instance.chaosModeOpened && QuestData.instance.todayQuestRewardedCount < QuestData.DailyMaxCount)
 			return true;
 		return false;
 	}
@@ -95,6 +110,9 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 				break;
 			case eButtonType.DailyBox:
 				OnClickOpenDailyBox();
+				break;
+			case eButtonType.SubQuest:
+				OnClickSubQuest();
 				break;
 		}
 	}
@@ -154,5 +172,32 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 				});
 			}
 		});
+	}
+
+	void OnClickSubQuest()
+	{
+		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null && TitleCanvas.instance.gameObject.activeSelf)
+			TitleCanvas.instance.FadeTitle();
+
+		// 퀘스트는 현재 진행상황에 따라 다르게 처리되어야한다.
+		// 아예 진행할 수 없는 상태거나 하루에 진행할 수 있는 최대 횟수를 다 채웠다면 뜨지 않을테니
+		// 이 경우는 고려하지 않아도 된다.
+		//
+		// 진행할 수 있는 상황에서 둘중에 하나 선택해야하는 상태
+		// 선택 후 진행중
+		// 완료 후 보상받을 수 있는 상태
+		// 이렇게 3가지다.
+		switch (QuestData.instance.currentQuestStep)
+		{
+			case QuestData.eQuestStep.Select:
+				// 생성은 했는데 아직 선택을 하지 않은 상태
+				// 생성되어있는 정보로 창을 열기만 하면 된다.
+				UIInstanceManager.instance.ShowCanvasAsync("QuestSelectCanvas", null);
+				break;
+			case QuestData.eQuestStep.Proceeding:
+				// 진행중이거나 완료되서 일때도 받은 정보로 보여주기만 하면 된다. 하지만 창이 Select때와 다르다.
+				UIInstanceManager.instance.ShowCanvasAsync("QuestInfoCanvas", null);
+				break;
+		}
 	}
 }

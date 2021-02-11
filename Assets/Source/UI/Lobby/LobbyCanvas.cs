@@ -113,6 +113,8 @@ public class LobbyCanvas : MonoBehaviour
 		{
 			// 평소라면 패킷 보낼거 없이 ClientSaveData만 비우면 된다.
 			ClientSaveData.instance.OnEndGame();
+			// 이건 로그인 직후니 안해도 되지 않나..
+			//QuestData.instance.OnEndGame(true);
 			return;
 		}
 

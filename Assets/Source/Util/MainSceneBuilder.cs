@@ -658,6 +658,7 @@ public class MainSceneBuilder : MonoBehaviour
 			PlayerData.instance.LateInitialize();
 			DailyShopData.instance.LateInitialize();
 			TimeSpaceData.instance.LateInitialize();
+			QuestData.instance.LateInitialize();
 		}
 
 		// 워낙 크기가 작으니 LateInitialize에서 해도 문제없을거다.

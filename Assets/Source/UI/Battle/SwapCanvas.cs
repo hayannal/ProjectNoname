@@ -490,6 +490,7 @@ public class SwapCanvas : MonoBehaviour
 				GatePillar.instance.OnCompleteStageSwap();
 			BattleInstanceManager.instance.FinalizeAllSummonObject();
 			ClientSaveData.instance.OnChangedCloseSwap(true);
+			QuestData.instance.OnQuestEvent(QuestData.eQuestClearType.Swap);
 		}
 
 		// 로딩 대기창 닫는다.

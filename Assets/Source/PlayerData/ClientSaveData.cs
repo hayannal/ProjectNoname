@@ -188,6 +188,7 @@ public class ClientSaveData : MonoBehaviour
 		OnChangedClearPoint(0);
 		OnChangedLastPowerSourceSaved(false);
 		OnChangedReturnScroll(false);
+		OnChangedQuestTemporaryAddCount(0);
 		OnChangedAllyContinuousKillCount(0);
 	}
 
@@ -221,6 +222,7 @@ public class ClientSaveData : MonoBehaviour
 		int lastPowerSourceStage = GetCachedLastPowerSourceStage();
 		string lastPowerSourceActorId = GetCachedLastPowerSourceActorId();
 		bool returnScrollUsed = GetCachedReturnScroll();
+		int questTemporaryAddCount = GetCachedQuestTemporaryAddCount();
 		int allyContinuousKillCount = GetCachedAllyContinuousKillCount();
 
 		// 새 값으로 교체하고
@@ -257,6 +259,7 @@ public class ClientSaveData : MonoBehaviour
 		OnChangedLastPowerSourceStage(lastPowerSourceStage);
 		OnChangedLastPowerSourceActorId(lastPowerSourceActorId);
 		OnChangedReturnScroll(returnScrollUsed);
+		OnChangedQuestTemporaryAddCount(questTemporaryAddCount);
 		OnChangedAllyContinuousKillCount(allyContinuousKillCount);
 	}
 
@@ -424,6 +427,10 @@ public class ClientSaveData : MonoBehaviour
 	public int GetCachedLastPowerSourceStage() { return GetCachedInt("cachedLastPowerSourceStage"); }
 	public void OnChangedReturnScroll(bool enable) { SetCachedInt("cachedReturnScroll", enable ? 1 : 0); }
 	public bool GetCachedReturnScroll() { return GetCachedInt("cachedReturnScroll") == 1; }
+
+	// 퀘스트 진행 카운트
+	public void OnChangedQuestTemporaryAddCount(int questTemporaryAddCount) { SetCachedInt("cachedQuestTempAddCount", questTemporaryAddCount); }
+	public int GetCachedQuestTemporaryAddCount() { return GetCachedInt("cachedQuestTempAddCount"); }
 
 
 	// 어펙터 전용 변수들

@@ -963,6 +963,7 @@ public class PlayerData : MonoBehaviour
 					DailyShopData.instance.ResetDailyShopSlotPurchaseInfo();
 					DailyShopData.instance.ResetDailyFreeItemInfo();
 					RegisterNodeWarBonusPowerSource();
+					QuestData.instance.ResetQuestStepInfo();
 				}
 				else
 				{

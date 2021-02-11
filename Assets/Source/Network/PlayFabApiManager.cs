@@ -279,6 +279,7 @@ public class PlayFabApiManager : MonoBehaviour
 		DailyShopData.instance.OnRecvShopData(loginResult.InfoResultPayload.TitleData, loginResult.InfoResultPayload.UserReadOnlyData);
 		MailData.instance.OnRecvMailData(loginResult.InfoResultPayload.TitleData, loginResult.InfoResultPayload.UserReadOnlyData, loginResult.NewlyCreated);
 		SupportData.instance.OnRecvSupportData(loginResult.InfoResultPayload.UserReadOnlyData);
+		QuestData.instance.OnRecvQuestData(loginResult.InfoResultPayload.UserReadOnlyData);
 
 		if (loginResult.NewlyCreated)
 		{
@@ -791,6 +792,7 @@ public class PlayFabApiManager : MonoBehaviour
 		}, null, null);
 
 		ClientSaveData.instance.OnEndGame();
+		QuestData.instance.OnEndGame(true);
 	}
 
 	public void RequestCancelChallenge(Action successCallback)
@@ -823,6 +825,8 @@ public class PlayFabApiManager : MonoBehaviour
 				}
 				// 도전모드 취소할땐 서버 처리가 다 끝나야지만 재진입 저장 데이터를 초기화 시켜야한다. 이래야 네트워크 상황 안좋아서 재시도할때도 제대로 처리할 수 있게 된다.
 				ClientSaveData.instance.OnEndGame();
+				// 도전모드에서는 어차피 쌓이지 않으니 안해도 된다.
+				//QuestData.instance.OnEndGame();
 				if (successCallback != null) successCallback.Invoke();
 			}, (error) =>
 			{
@@ -900,6 +904,7 @@ public class PlayFabApiManager : MonoBehaviour
 				}
 				if (successCallback != null) successCallback.Invoke(clear, (string)adChrId, (string)itmRet);
 				ClientSaveData.instance.OnEndGame();
+				QuestData.instance.OnEndGame();
 			}, (error) =>
 			{
 				RetrySendManager.instance.OnFailure();
@@ -2724,6 +2729,118 @@ public class PlayFabApiManager : MonoBehaviour
 			{
 				WaitingNetworkCanvas.Show(false);
 				SupportData.instance.OnRecvWriteInquiry(body);
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+	#endregion
+
+	#region Quest
+	public void RequestRegisterQuestList(List<QuestData.QuestInfo> listQuestInfoForSend, Action successCallback)
+	{
+		string checkSum = "";
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		string jsonListQst = serializer.SerializeObject(listQuestInfoForSend);
+		checkSum = CheckSum(string.Format("{0}_{1}", jsonListQst, "cibpjqzrh"));
+
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "SetQuestList",
+			FunctionParameter = new { Lst = listQuestInfoForSend, LstCs = checkSum },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			if (failure)
+				HandleCommonError();
+			else
+			{
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+	public void RequestSelectQuest(int questIdx, Action successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "SelectQuest",
+			FunctionParameter = new { QstIdx = questIdx },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+				QuestData.instance.currentQuestIndex = questIdx;
+				QuestData.instance.currentQuestStep = QuestData.eQuestStep.Proceeding;
+				QuestData.instance.currentQuestProceedingCount = 0;
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+	public void RequestQuestProceedingCount(int addCount, Action successCallback)
+	{
+		string input = string.Format("{0}_{1}", addCount, "cpkwqizmn");
+		string checkSum = CheckSum(input);
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "QuestProceedingCount",
+			FunctionParameter = new { Add = addCount, Cs = checkSum },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			if (failure)
+				HandleCommonError();
+			else
+			{
+				QuestData.instance.currentQuestProceedingCount += addCount;
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+	public void RequestCompleteQuest(bool doubleClaim, int diaCount, int addGold, Action successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "CompleteQuest",
+			FunctionParameter = new { Dbl = doubleClaim ? 1 : 0 },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+
+				QuestData.instance.currentQuestStep = QuestData.eQuestStep.Select;
+				QuestData.instance.currentQuestIndex = 0;
+				QuestData.instance.currentQuestProceedingCount = 0;
+				QuestData.instance.todayQuestRewardedCount += 1;
+				if (doubleClaim)
+					CurrencyData.instance.dia -= diaCount;
+				CurrencyData.instance.gold += addGold;
 				if (successCallback != null) successCallback.Invoke();
 			}
 		}, (error) =>

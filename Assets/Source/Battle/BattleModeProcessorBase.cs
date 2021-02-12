@@ -420,6 +420,9 @@ public class BattleModeProcessorBase
 
 		_enableTrap = false;
 
+		if (StageManager.instance.bossStage)
+			QuestData.instance.OnQuestEvent(QuestData.eQuestClearType.ClearBossStage);
+
 #if HUDDPS
 #if UNITY_EDITOR
 		HUDDPS.instance.OnClearStage();

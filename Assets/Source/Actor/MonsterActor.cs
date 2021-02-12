@@ -303,6 +303,8 @@ public class MonsterActor : Actor
 			}
 		}
 
+		QuestData.instance.OnQuestEvent(QuestData.eQuestClearType.KillMonster);
+
 		monsterAI.ResetPath();
 		//BehaviorDesigner.Runtime.BehaviorTree bt = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
 		//if (bt != null) bt.enabled = false;

@@ -32,13 +32,20 @@ public class QuestData : MonoBehaviour
 	public enum eQuestClearType
 	{
 		KillMonster,
-		KillBossMonster,
+		ClearBossStage,
 		Swap,
 		NoHitClear,
 		PowerSource,
 		Critical,
 		FastClear,
 		Ultimate,
+	}
+
+	public enum eQuestCondition
+	{
+		None,
+		PowerSource,
+		Grade,
 	}
 
 	public const int DailyMaxCount = 3;
@@ -50,7 +57,8 @@ public class QuestData : MonoBehaviour
 		public int cnt;     // need count
 		public int rwd;     // reward
 
-		public int sub;		// sub condition
+		public int cdtn;    // sub condition
+		public int param;	// condition parameter
 	}
 	List<QuestInfo> _listQuestInfo;
 
@@ -70,7 +78,7 @@ public class QuestData : MonoBehaviour
 		switch (type)
 		{
 			case "1": return eQuestClearType.KillMonster;
-			case "2": return eQuestClearType.KillBossMonster;
+			case "2": return eQuestClearType.ClearBossStage;
 			case "3": return eQuestClearType.Swap;
 			case "4": return eQuestClearType.NoHitClear;
 			case "5": return eQuestClearType.PowerSource;
@@ -295,9 +303,42 @@ public class QuestData : MonoBehaviour
 		questNeedCountIndex2 = _listTempIndex[UnityEngine.Random.Range(0, _listTempIndex.Count)];
 	}
 
+	List<int> _listTempCondition = new List<int>();
+	List<float> _listGradeWeight = new List<float>();
 	void SetSubCondition(QuestInfo questInfo)
 	{
 		// 추가 조건은 페어랑 상관없이 개별로 하면 된다.
+		// 먼저 추가 조건이 쓰이는지부터 굴려본다.
+		_listTempCondition.Clear();
+		_listTempCondition.Add((int)eQuestCondition.None);
+		_listTempCondition.Add((int)eQuestCondition.None);
+		_listTempCondition.Add((int)eQuestCondition.PowerSource);
+		_listTempCondition.Add((int)eQuestCondition.Grade);
+
+		questInfo.cdtn = _listTempCondition[UnityEngine.Random.Range(0, _listTempCondition.Count)];
+		switch (questInfo.cdtn)
+		{
+			case (int)eQuestCondition.None:
+				break;
+			case (int)eQuestCondition.PowerSource:
+				questInfo.param = UnityEngine.Random.Range(0, 4);
+				break;
+			case (int)eQuestCondition.Grade:
+				_listGradeWeight.Clear();
+				float sumWeight = 1.5f; _listGradeWeight.Add(sumWeight);
+				sumWeight += 1.25f; _listGradeWeight.Add(sumWeight);
+				sumWeight += 1.0f; _listGradeWeight.Add(sumWeight);
+				float randomResult = UnityEngine.Random.Range(0.0f, sumWeight);
+				for (int i = 0; i < _listGradeWeight.Count; ++i)
+				{
+					if (randomResult <= _listGradeWeight[i])
+					{
+						questInfo.param = i;
+						break;
+					}
+				}
+				break;
+		}
 	}
 	#endregion
 
@@ -366,7 +407,17 @@ public class QuestData : MonoBehaviour
 		// 조건들 체크
 		if (Type2ClearType(selectedQuestInfo.tp) != questClearType)
 			return;
-
+		switch (selectedQuestInfo.cdtn)
+		{
+			case (int)eQuestCondition.PowerSource:
+				if (BattleInstanceManager.instance.playerActor.targetingProcessor.cachedActorTableData.powerSource != selectedQuestInfo.param)
+					return;
+				break;
+			case (int)eQuestCondition.Grade:
+				if (BattleInstanceManager.instance.playerActor.targetingProcessor.cachedActorTableData.grade != selectedQuestInfo.param)
+					return;
+				break;
+		}
 
 		// 여기까지 통과했으면 임시변수에 누적해두고
 		// 플레이 종료시 갱신 함수를 날려서 갱신하면 된다.

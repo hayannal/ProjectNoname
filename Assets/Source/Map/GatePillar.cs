@@ -349,6 +349,8 @@ public class GatePillar : MonoBehaviour
 			return false;
 		if (RandomBoxScreenCanvas.instance != null && RandomBoxScreenCanvas.instance.gameObject.activeSelf)
 			return false;
+		if (StackCanvas.IsStacked())
+			return false;
 
 		if (MainSceneBuilder.instance.lobby)
 		{

@@ -79,7 +79,7 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 
 	public static bool IsSubQuestBoxType()
 	{
-		if (PlayerData.instance.sharedDailyBoxOpened == true && PlayerData.instance.chaosModeOpened && QuestData.instance.todayQuestRewardedCount < QuestData.DailyMaxCount)
+		if (PlayerData.instance.sharedDailyBoxOpened == true && PlayerData.instance.chaosModeOpened)
 			return true;
 		return false;
 	}
@@ -180,13 +180,16 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 			TitleCanvas.instance.FadeTitle();
 
 		// 퀘스트는 현재 진행상황에 따라 다르게 처리되어야한다.
-		// 아예 진행할 수 없는 상태거나 하루에 진행할 수 있는 최대 횟수를 다 채웠다면 뜨지 않을테니
-		// 이 경우는 고려하지 않아도 된다.
-		//
+		// 모든걸 완료한 상태라면
+		if (QuestData.instance.todayQuestRewardedCount >= QuestData.DailyMaxCount)
+		{
+			UIInstanceManager.instance.ShowCanvasAsync("QuestEndCanvas", null);
+			return;
+		}
+
 		// 진행할 수 있는 상황에서 둘중에 하나 선택해야하는 상태
-		// 선택 후 진행중
-		// 완료 후 보상받을 수 있는 상태
-		// 이렇게 3가지다.
+		// 선택 후 진행중이거나 보상을 받을 수 있는 상태
+		// 이렇게 2가지다.
 		switch (QuestData.instance.currentQuestStep)
 		{
 			case QuestData.eQuestStep.Select:

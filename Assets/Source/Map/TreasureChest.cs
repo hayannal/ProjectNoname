@@ -38,7 +38,7 @@ public class TreasureChest : MonoBehaviour
 
 		if (TreasureChestIndicatorCanvas.IsSubQuestBoxType())
 		{
-			if (QuestData.instance.currentQuestStep == QuestData.eQuestStep.Select)
+			if (QuestData.instance.todayQuestRewardedCount < QuestData.DailyMaxCount && QuestData.instance.currentQuestStep == QuestData.eQuestStep.Select)
 				_autoShowIndicatorRemainTime = 1.0f;
 
 			// 최초 로그인의 Start 가 호출될때는 LateInitialize가 호출되기 전이라서 IsCompleteQuest결과를 알 수가 없다.

@@ -4,42 +4,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class QuestSelectCanvas : MonoBehaviour
+public class QuestEndCanvas : MonoBehaviour
 {
-	public static QuestSelectCanvas instance;
-
 	public Transform subTitleTransform;
-	public Text descText;
 	public Text remainTimeText;
-	public QuestInfoItem info1;
-	public QuestInfoItem info2;
-
-	void Awake()
-	{
-		instance = this;
-	}
 
 	void OnEnable()
 	{
 		CurrencySmallInfoCanvas.Show(true);
 
-		if (PlayerData.instance.currentChaosMode)
-			descText.SetLocalizedText(UIString.instance.GetString("QuestUI_SubQuestDesc"));
-		else
-			descText.SetLocalizedText(string.Format("{0}\n{1}", UIString.instance.GetString("QuestUI_SubQuestDesc"), UIString.instance.GetString("QuestUI_NotChaos")));
-
-		// 퀘스트는 시간제한이 걸려있다. 오늘 안하면 모든게 초기화.
 		_questResetTime = QuestData.instance.todayQuestResetTime;
 		_needUpdate = true;
-
-		int currentIndex = QuestData.instance.todayQuestRewardedCount * 2;
-		QuestData.QuestInfo questInfo1 = QuestData.instance.FindQuestInfoByIndex(currentIndex);
-		QuestData.QuestInfo questInfo2 = QuestData.instance.FindQuestInfoByIndex(currentIndex + 1);
-		if (questInfo1 != null && questInfo2 != null)
-		{
-			info1.RefreshInfo(questInfo1);
-			info2.RefreshInfo(questInfo2);
-		}
 	}
 
 	void OnDisable()
@@ -78,9 +53,8 @@ public class QuestSelectCanvas : MonoBehaviour
 			if (TreasureChest.instance != null)
 				TreasureChest.instance.HideIndicatorCanvas(true);
 
-			// 퀘스트는 다음날이 되면 바로 진행할 수 없고 오리진박스를 열고나서야 된다. 그러니 창을 닫아준다.
+			// 진행중이던게 아니니 그냥 토스트 없이 닫아본다.
 			//_needRefresh = true;
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("QuestUI_TimeOut"), 2.0f);
 			gameObject.SetActive(false);
 		}
 	}

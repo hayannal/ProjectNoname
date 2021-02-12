@@ -33,6 +33,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 
 	bool _isShowGatePillarIndicator;
 	bool _isShowTreasureChestIndicator;
+	bool _isShowQuestInfoCanvas;
 	void OnEnable()
 	{
 		repeatButtonGroupObject.SetActive(false);
@@ -63,6 +64,15 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 			// 로비에서 TreasureChest Indicator 통해서 상점을 열었을때는 DotMainMenuCanvas 변경없이 StackCanvas 처리를 한다.
 			StackCanvas.Push(gameObject);
 		}
+
+		if (QuestInfoCanvas.instance != null && QuestInfoCanvas.instance.gameObject.activeSelf)
+		{
+			// 캐시샵과 달리 QuestInfoCanvas에서 굴림을 진행하더라도 다음에 열리는건 QuestSelectCanvas가 되어야한다.
+			// 만약 하루 서브퀘스트 수량을 다 채웠다면 뜨지 않아야한다.
+			// 이렇게 조건처리를 직접 해야하므로 StackCanvas를 사용하지 않고 퀘스트 매니저에게 끝나는걸 알리고 위임하기로 한다.
+			QuestInfoCanvas.instance.gameObject.SetActive(false);
+			_isShowQuestInfoCanvas = true;
+		}
 	}
 
 	void OnDisable()
@@ -85,6 +95,9 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		{
 			StackCanvas.Pop(gameObject);
 		}
+
+		if (_isShowQuestInfoCanvas)
+			QuestInfoCanvas.instance.OnCompleteRandomBox();
 	}
 
 	eBoxType _boxType;

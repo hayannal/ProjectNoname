@@ -106,12 +106,9 @@ public class QuestInfoCanvas : MonoBehaviour
 			_needUpdate = false;
 			remainTimeText.text = "00:00:00";
 
-			// 서브퀘스트라고 떠있는 인디케이터 역시 갱신하지 않으면 다시 창을 열게될거다.
+			// 서브퀘스트라고 떠있는 인디케이터 닫아버린다.
 			if (TreasureChest.instance != null)
-			{
 				TreasureChest.instance.HideIndicatorCanvas(true);
-				TreasureChest.instance.HideIndicatorCanvas(false);
-			}
 
 			// 퀘스트는 다음날이 되면 바로 진행할 수 없고 오리진박스를 열고나서야 된다. 그러니 창을 닫아준다.
 			//_needRefresh = true;
@@ -140,7 +137,11 @@ public class QuestInfoCanvas : MonoBehaviour
 			return;
 		}
 
-		PlayFabApiManager.instance.RequestCompleteQuest(true, _price, _addGold * 2, OnRecvCompleteQuest);
+		if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
+			DotMainMenuCanvas.instance.OnClickBackButton();
+
+		_addGold *= 2;
+		PlayFabApiManager.instance.RequestCompleteQuest(true, _price, _addGold, OnRecvCompleteQuest);
 	}
 
 	public void OnClickClaimButton()
@@ -151,6 +152,9 @@ public class QuestInfoCanvas : MonoBehaviour
 			return;
 		}
 
+		if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
+			DotMainMenuCanvas.instance.OnClickBackButton();
+
 		PlayFabApiManager.instance.RequestCompleteQuest(false, 0, _addGold, OnRecvCompleteQuest);
 	}
 
@@ -159,12 +163,11 @@ public class QuestInfoCanvas : MonoBehaviour
 		// 우선 보상처리를 위해 골드 연출부터 하고
 		UIInstanceManager.instance.ShowCanvasAsync("RandomBoxScreenCanvas", () =>
 		{
-			// 연출 시작될때 같이 하이드 시켜야한다.
-			gameObject.SetActive(false);
+			// 닫는건 RandomBoxScreenCanvas에서 확인하고 알아서 닫아줄거다.
+			//gameObject.SetActive(false);
 
-			DropProcessor dropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, "ShopGold", "", true, true);
-			dropProcessor.AdjustDropRange(3.7f);
-			RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Gold, dropProcessor, 0, 0, () =>
+			DropProcessor dropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, "QuestGold", "", true, true);
+			RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Origin, dropProcessor, 0, 0, () =>
 			{
 				// 다음번 드랍에 영향을 주지 않게 하기위해 미리 클리어해둔다.
 				DropManager.instance.ClearLobbyDropInfo();
@@ -176,13 +179,17 @@ public class QuestInfoCanvas : MonoBehaviour
 				});
 			});
 		});
+	}
 
+	public void OnCompleteRandomBox()
+	{
 		// 연출 후 아직 3회 전부한게 아니라면 퀘스트 선택창을 띄운다.
 		if (QuestData.instance.todayQuestRewardedCount < QuestData.DailyMaxCount)
 		{
-
+			UIInstanceManager.instance.ShowCanvasAsync("QuestSelectCanvas", null);
+			return;
 		}
 
-		// 3회 전부 한거라면 연출 후 오늘의 3회를 전부 완료했다는 토스트를
+		// 3회 전부 한거라면 토스트 띄울까 했는데 그냥 패스
 	}
 }

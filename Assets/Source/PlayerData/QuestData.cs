@@ -247,6 +247,8 @@ public class QuestData : MonoBehaviour
 			// 여기에서 처리하면 오리진박스 오픈하고나서 설정하지 않아도 되기때문에 하는게 좋을거 같다.
 			currentQuestIndex = 0;
 			currentQuestStep = eQuestStep.Select;
+			currentQuestProceedingCount = 0;
+			todayQuestRewardedCount = 0;
 			_lastCachedQuestIndex = -1;
 
 			OnCompleteRecvQuestList();
@@ -280,7 +282,7 @@ public class QuestData : MonoBehaviour
 				continue;
 			_listTempIndex.Add(i);
 		}
-		int secondIndex = UnityEngine.Random.Range(0, _listTempIndex.Count);
+		int secondIndex = _listTempIndex[UnityEngine.Random.Range(0, _listTempIndex.Count)];
 		questType2 = TableDataManager.instance.subQuestTable.dataArray[secondIndex].type;
 
 		_listTempIndex.Clear();

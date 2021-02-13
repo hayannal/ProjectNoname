@@ -15,6 +15,7 @@ public class QuestInfoCanvas : MonoBehaviour
 	public QuestInfoItem info;
 	public Image gaugeImage;
 	public Text gaugeText;
+	public Text completeText;
 
 	public Text priceText;
 	public Image priceButtonImage;
@@ -35,11 +36,6 @@ public class QuestInfoCanvas : MonoBehaviour
 	{
 		CurrencySmallInfoCanvas.Show(true);
 
-		if (PlayerData.instance.currentChaosMode)
-			descText.SetLocalizedText(UIString.instance.GetString("QuestUI_NowQuest"));
-		else
-			descText.SetLocalizedText(string.Format("{0}\n{1}", UIString.instance.GetString("QuestUI_NowQuest"), UIString.instance.GetString("QuestUI_NotChaos")));
-
 		// 진행중인 퀘스트 역시 시간제한이 걸려있다. 오늘 안하면 모든게 초기화.
 		_questResetTime = QuestData.instance.todayQuestResetTime;
 		_needUpdate = true;
@@ -54,11 +50,27 @@ public class QuestInfoCanvas : MonoBehaviour
 		// 진행도 표시
 		int currentCount = QuestData.instance.currentQuestProceedingCount;
 		int maxCount = questInfo.cnt;
-		gaugeImage.fillAmount = (float)(currentCount) / maxCount;
-		gaugeText.text = string.Format("{0} / {1}", currentCount, maxCount);
 
 		// 완료 체크
 		_complete = (currentCount >= maxCount);
+
+		if (_complete)
+		{
+			descText.SetLocalizedText(UIString.instance.GetString("QuestUI_OneDone"));
+			gaugeImage.color = DailyFreeItem.GetGoldTextColor();
+			completeText.text = UIString.instance.GetString("QuestUI_QuestCompleteNoti");
+		}
+		else
+		{
+			if (PlayerData.instance.currentChaosMode)
+				descText.SetLocalizedText(UIString.instance.GetString("QuestUI_NowQuest"));
+			else
+				descText.SetLocalizedText(string.Format("{0}\n{1}", UIString.instance.GetString("QuestUI_NowQuest"), UIString.instance.GetString("QuestUI_NotChaos")));
+			gaugeImage.color = Color.white;
+		}
+		gaugeImage.fillAmount = (float)(currentCount) / maxCount;
+		gaugeText.text = string.Format("{0} / {1}", currentCount, maxCount);
+		completeText.gameObject.SetActive(_complete);
 
 		int price = BattleInstanceManager.instance.GetCachedGlobalConstantInt("SubQuestGoldDoubleDiamond");
 		priceText.text = price.ToString("N0");

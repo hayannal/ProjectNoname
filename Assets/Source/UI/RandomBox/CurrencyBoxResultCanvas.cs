@@ -8,12 +8,15 @@ public class CurrencyBoxResultCanvas : MonoBehaviour
 	public static CurrencyBoxResultCanvas instance;
 
 	public Text titleText;
+
+	public GameObject currencyGroupObject;
+	public RectTransform returnScrollGroupObjectTransform;
+
 	public RectTransform goldGroupRectTransform;
 	public Text goldValueText;
 	public RectTransform diaGroupRectTransform;
 	public Text diaValueText;
 	public GameObject includeTodayRewardText;
-	public GameObject returnScrollRootObject;
 	public Text returnScrollCountText;
 
 	void Awake()
@@ -37,6 +40,7 @@ public class CurrencyBoxResultCanvas : MonoBehaviour
 		_addDia = addDia;
 		goldGroupRectTransform.gameObject.SetActive(addGold > 0);
 		diaGroupRectTransform.gameObject.SetActive(addDia > 0);
+		currencyGroupObject.SetActive(addGold > 0 || addDia > 0);
 
 		if (addGold > 0)
 		{
@@ -58,7 +62,9 @@ public class CurrencyBoxResultCanvas : MonoBehaviour
 
 		includeTodayRewardText.SetActive(showIncludeFirstDayReward);
 
-		returnScrollRootObject.SetActive(addReturnScroll > 0);
+		returnScrollGroupObjectTransform.gameObject.SetActive(addReturnScroll > 0);
+		if (addReturnScroll > 0)
+			returnScrollGroupObjectTransform.anchoredPosition = new Vector2(returnScrollGroupObjectTransform.anchoredPosition.x, ((addGold > 0 || addDia > 0) ? -220.0f : -35.0f));
 		returnScrollCountText.text = (addReturnScroll > 1) ? addReturnScroll.ToString() : "";
 	}
 

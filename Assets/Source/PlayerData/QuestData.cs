@@ -307,6 +307,9 @@ public class QuestData : MonoBehaviour
 	List<float> _listGradeWeight = new List<float>();
 	void SetSubCondition(QuestInfo questInfo)
 	{
+		if (Type2ClearType(questInfo.tp) == eQuestClearType.Swap)
+			return;
+
 		// 추가 조건은 페어랑 상관없이 개별로 하면 된다.
 		// 먼저 추가 조건이 쓰이는지부터 굴려본다.
 		_listTempCondition.Clear();

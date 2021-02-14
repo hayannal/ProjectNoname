@@ -76,7 +76,7 @@ public class QuestSelectCanvas : MonoBehaviour
 
 			// 서브퀘스트라고 떠있는 인디케이터 닫아버린다.
 			if (TreasureChest.instance != null)
-				TreasureChest.instance.HideIndicatorCanvas(true);
+				TreasureChest.instance.HideIndicatorCanvas(true, true);
 
 			// 퀘스트는 다음날이 되면 바로 진행할 수 없고 오리진박스를 열고나서야 된다. 그러니 창을 닫아준다.
 			//_needRefresh = true;

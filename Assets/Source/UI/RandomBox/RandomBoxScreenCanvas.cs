@@ -72,6 +72,12 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 			// 이렇게 조건처리를 직접 해야하므로 StackCanvas를 사용하지 않고 퀘스트 매니저에게 끝나는걸 알리고 위임하기로 한다.
 			QuestInfoCanvas.instance.gameObject.SetActive(false);
 			_isShowQuestInfoCanvas = true;
+
+			// 예외처리 할게 하나 있는데
+			// 만약 세번째 퀘스트를 완료한 상황이라면 더이상 TreasureChest의 Indicator가 다시 뜰 필요가 없어진다.
+			// 이 상황이라면 _isShowTreasureChestIndicator값을 false로 바꿔서 숨겨둔걸 복구하지 않고 그냥 숨긴채로 놔두기로 한다.
+			if (QuestData.instance.todayQuestRewardedCount >= QuestData.DailyMaxCount)
+				_isShowTreasureChestIndicator = false;
 		}
 	}
 

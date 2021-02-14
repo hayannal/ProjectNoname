@@ -6,8 +6,15 @@ using UnityEngine.UI;
 
 public class QuestEndCanvas : MonoBehaviour
 {
+	public static QuestEndCanvas instance;
+
 	public Transform subTitleTransform;
 	public Text remainTimeText;
+
+	void Awake()
+	{
+		instance = this;
+	}
 
 	void OnEnable()
 	{

@@ -137,6 +137,15 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 
 	void OnClickOpenDailyBox()
 	{
+		if (GatePillar.instance.processing)
+			return;
+		if (NodeWarPortal.instance != null && NodeWarPortal.instance.processing)
+			return;
+		if (TimeSpacePortal.instance != null && TimeSpacePortal.instance.processing)
+			return;
+		if (NodeWarPortal.instance != null && NodeWarPortal.instance.enteredPortal)
+			return;
+
 		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null && TitleCanvas.instance.gameObject.activeSelf)
 			TitleCanvas.instance.FadeTitle();
 
@@ -176,6 +185,15 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 
 	void OnClickSubQuest()
 	{
+		if (GatePillar.instance.processing)
+			return;
+		if (NodeWarPortal.instance != null && NodeWarPortal.instance.processing)
+			return;
+		if (TimeSpacePortal.instance != null && TimeSpacePortal.instance.processing)
+			return;
+		if (NodeWarPortal.instance != null && NodeWarPortal.instance.enteredPortal)
+			return;
+
 		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null && TitleCanvas.instance.gameObject.activeSelf)
 			TitleCanvas.instance.FadeTitle();
 

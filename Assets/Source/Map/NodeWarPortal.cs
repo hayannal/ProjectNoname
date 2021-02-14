@@ -227,6 +227,12 @@ public class NodeWarPortal : MonoBehaviour
 			return;
 		if (RandomBoxScreenCanvas.instance != null && RandomBoxScreenCanvas.instance.gameObject.activeSelf)
 			return;
+		if (QuestSelectCanvas.instance != null && QuestSelectCanvas.instance.gameObject.activeSelf)
+			return;
+		if (QuestInfoCanvas.instance != null && QuestInfoCanvas.instance.gameObject.activeSelf)
+			return;
+		if (QuestEndCanvas.instance != null && QuestSelectCanvas.instance.gameObject.activeSelf)
+			return;
 		if (StackCanvas.IsStacked())
 			return;
 

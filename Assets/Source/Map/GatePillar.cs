@@ -349,6 +349,12 @@ public class GatePillar : MonoBehaviour
 			return false;
 		if (RandomBoxScreenCanvas.instance != null && RandomBoxScreenCanvas.instance.gameObject.activeSelf)
 			return false;
+		if (QuestSelectCanvas.instance != null && QuestSelectCanvas.instance.gameObject.activeSelf)
+			return false;
+		if (QuestInfoCanvas.instance != null && QuestInfoCanvas.instance.gameObject.activeSelf)
+			return false;
+		if (QuestEndCanvas.instance != null && QuestSelectCanvas.instance.gameObject.activeSelf)
+			return false;
 		if (StackCanvas.IsStacked())
 			return false;
 

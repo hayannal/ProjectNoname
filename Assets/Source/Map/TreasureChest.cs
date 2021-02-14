@@ -153,6 +153,7 @@ public class TreasureChest : MonoBehaviour
 	public void HideIndicatorCanvas(bool hide)
 	{
 		_objectIndicatorCanvas.gameObject.SetActive(!hide);
+		_spawnedIndicator = !hide;
 	}
 
 	float _shieldActivationDir;

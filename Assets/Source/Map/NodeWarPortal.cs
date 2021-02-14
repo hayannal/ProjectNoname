@@ -34,6 +34,11 @@ public class NodeWarPortal : MonoBehaviour
 		RefreshRemainTime();
 	}
 
+	void OnDisable()
+	{
+		HideIndicator();
+	}
+
 	public void RefreshRemainTime()
 	{
 		// 재오픈 여부와 상관없이 nodeWarCleared 상태만 보고 처리. 클리어를 할 수 있는 상태면 대기 이펙트를 보여준다.

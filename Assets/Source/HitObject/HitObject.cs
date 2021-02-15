@@ -1731,6 +1731,16 @@ public class HitObject : MonoBehaviour
 					}
 				}
 
+				if (groundQuadCollided && _quadThrough)
+				{
+					if (_signal.movementType == HitObjectMovement.eMovementType.Direct)
+					{
+						// FairyFlower_Green
+						if (_statusStructForHitObject.monsterActor)
+							ignoreEffect = true;
+					}
+				}
+
 				if (ignoreEffect == false)
 				{
 					if (_signal.showHitEffect)

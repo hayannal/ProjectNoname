@@ -108,6 +108,7 @@ public class MeHitObject : MecanimEventBase {
 	public bool quadThrough;
 	public float overrideResetIgnoreSqrMagnitude;
 	public int bounceWallQuadCount;
+	public bool bounceToTarget;
 	public int ricochetCount;
 	public bool ricochetOneHitPerTarget;
 	public float overrideRicochetDistance;
@@ -362,6 +363,8 @@ public class MeHitObject : MecanimEventBase {
 				overrideResetIgnoreSqrMagnitude = EditorGUILayout.FloatField("Override Reset Ignore Sqr :", overrideResetIgnoreSqrMagnitude);
 			}
 			bounceWallQuadCount = EditorGUILayout.IntField("Bounce Wall Quad Count :", bounceWallQuadCount);
+			if (bounceWallQuadCount > 0)
+				bounceToTarget = EditorGUILayout.Toggle("Bounce To Target :", bounceToTarget);
 			ricochetCount = EditorGUILayout.IntField("Ricochet Count :", ricochetCount);
 			if (ricochetCount > 0)
 			{

@@ -239,6 +239,16 @@ public class HitObjectMovement : MonoBehaviour {
 				break;
 		}
 
+		if (_signal.bounceWallQuadCount > 0 && _signal.bounceToTarget)
+		{
+			Collider targetCollider = parentActor.targetingProcessor.GetTarget();
+			if (targetCollider != null)
+			{
+				AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(targetCollider);
+				_followTargetActor = affectorProcessor.actor;
+			}
+		}
+
 		if (_listRicochet != null)
 			_listRicochet.Clear();
 		_parentActorSphereCastRadiusForCheckWall = parentActor.targetingProcessor.sphereCastRadiusForCheckWall;
@@ -340,6 +350,12 @@ public class HitObjectMovement : MonoBehaviour {
 	int _lastBounceFrameCount;
 	public void Bounce(Vector3 wallNormal)
 	{
+		if (_signal.bounceToTarget)
+		{
+			BounceToTarget(wallNormal);
+			return;
+		}
+
 		//_velocity = Vector3.Reflect(_velocity, wallNormal);
 
 		// 디버깅해보니 아래 코드가 있어도 여전히 rigidbody의 속도가 줄어드는 경우가 생겼다.
@@ -454,6 +470,22 @@ public class HitObjectMovement : MonoBehaviour {
 			}
 		}
 		return false;
+	}
+
+	void BounceToTarget(Vector3 wallNormal)
+	{
+		// 튕기는 지점에서 타겟을 향하는 벡터를 구해야한다. 저장된게 없다면 이상한거다.
+		if (_followTargetActor == null)
+			return;
+		Vector3 diff = _followTargetActor.cachedTransform.position - cachedTransform.position;
+		diff.y = 0.0f;
+		if (Vector3.Dot(wallNormal, diff.normalized) <= 0.0f)
+			return;
+
+		_velocity = diff.normalized * _velocity.magnitude;
+		_rigidbody.velocity = _velocity;
+		_rigidbody.angularVelocity = Vector3.zero;
+		_forward = cachedTransform.forward = _rigidbody.velocity.normalized;
 	}
 
 	float _remainCurveStartDelayTime = 0.0f;

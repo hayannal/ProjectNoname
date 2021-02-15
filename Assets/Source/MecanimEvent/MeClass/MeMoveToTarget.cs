@@ -10,6 +10,7 @@ public class MeMoveToTarget : MecanimEventBase
 	override public bool RangeSignal { get { return true; } }
 
 	public float distanceOffset;
+	public float maxDistance;
 	//public bool useChase;
 	public bool useTransform;
 	public bool transformMoveUseDelta;
@@ -69,6 +70,12 @@ public class MeMoveToTarget : MecanimEventBase
 					diff.y = 0.0f;
 				}
 			}
+		}
+
+		if (maxDistance > 0.0f && diff.magnitude > maxDistance)
+		{
+			diff = diff.normalized * maxDistance;
+			targetPosition = _actor.cachedTransform.position + diff;
 		}
 
 		// SeaPrincess처럼 공중에 올라서 찍는걸 사용할때 컬리더를 끄고 점프 상태 및 DontDie상태로 바꾸는 경우엔 하단의 Velocity어펙터가 먹히질 않게된다.

@@ -1403,6 +1403,11 @@ public class HitObject : MonoBehaviour
 
 	void UpdateLifeTime()
 	{
+		// lifeTime -1일때 무제한 처리를 처음부터 해두지 않아서 고쳐야할게 너무 많다.
+		// 그래서 진짜 예외처리긴 한데 10000 이상으로 되어있으면 무제한으로 처리하기로 한다.
+		if (_signal.lifeTime >= 10000.0f)
+			return;
+
 		if (_signal.RangeSignal == false && _createTime + _signal.lifeTime < Time.time)
 		{
 			OnFinalizeByLifeTime();

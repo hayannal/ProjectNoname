@@ -448,6 +448,13 @@ public class QuestData : MonoBehaviour
 			return;
 		}
 
+		// 플레이 도중에 다음날이 되면 _temporaryAddCount 값은 0보다 큰데 Step이 강제로 바뀌어있을거다. 이럴땐 보내지 않는다.
+		if (currentQuestStep != eQuestStep.Proceeding)
+		{
+			_temporaryAddCount = 0;
+			return;
+		}
+
 		PlayFabApiManager.instance.RequestQuestProceedingCount(_temporaryAddCount, () =>
 		{
 			_temporaryAddCount = 0;

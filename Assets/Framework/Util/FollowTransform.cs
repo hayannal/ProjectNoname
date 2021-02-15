@@ -5,7 +5,7 @@ using UnityEngine;
 public class FollowTransform : MonoBehaviour
 {
 	#region staticFunction
-	public static void Follow(Transform rootTransform, Transform targetTransform, Vector3 worldOffset, bool disableOnDisableTarget = true)
+	public static void Follow(Transform rootTransform, Transform targetTransform, Vector3 worldOffset, bool disableOnDisableTarget = false)
 	{
 		FollowTransform followTransform = rootTransform.GetComponent<FollowTransform>();
 		if (followTransform == null) followTransform = rootTransform.gameObject.AddComponent<FollowTransform>();
@@ -26,6 +26,7 @@ public class FollowTransform : MonoBehaviour
 	{
 		_targetTransform = targetTransform;
 		_worldOffset = worldOffset;
+		_disableOnDisableTarget = disableOnDisableTarget;
 		_follow = true;
 	}
 

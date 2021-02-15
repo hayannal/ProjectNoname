@@ -10,6 +10,7 @@ public class MeMoveToTarget : MecanimEventBase
 	override public bool RangeSignal { get { return true; } }
 
 	public float distanceOffset;
+	public Vector2 randomPositionRadiusRange;
 	public float maxDistance;
 	//public bool useChase;
 	public bool useTransform;
@@ -20,6 +21,8 @@ public class MeMoveToTarget : MecanimEventBase
 	override public void OnGUI_PropertyWindow()
 	{
 		distanceOffset = EditorGUILayout.FloatField("Distance Offset :", distanceOffset);
+		randomPositionRadiusRange = EditorGUILayout.Vector2Field("Random Position Radius Range :", randomPositionRadiusRange);
+		maxDistance = EditorGUILayout.FloatField("Max Distance :", maxDistance);
 		//useChase = EditorGUILayout.Toggle("Use Chase :", useChase);
 	}
 #endif
@@ -40,6 +43,8 @@ public class MeMoveToTarget : MecanimEventBase
 		// Radius 검사는 하지 않고 포지션끼리 체크해서 거리를 계산한다.
 		// 그러니 -3미터 설정하면 타겟으로부터 3미터 가까운 지점에 멈추게 된다.
 
+		Vector2 randomRadius = Random.insideUnitCircle * randomPositionRadiusRange;
+
 		float velocityZ = 0.0f;
 		Vector3 targetPosition = Vector3.zero;
 		Vector3 diff = Vector3.zero;
@@ -48,6 +53,7 @@ public class MeMoveToTarget : MecanimEventBase
 		if (useRegisterdCustomTargetPosition && _actor.targetingProcessor.IsRegisteredCustomTargetPosition())
 		{
 			targetPosition = _actor.targetingProcessor.GetCustomTargetPosition(0);
+			targetPosition += new Vector3(randomRadius.x, 0.0f, randomRadius.y);
 			diff = targetPosition - _actor.cachedTransform.position;
 			diff.y = 0.0f;
 		}
@@ -56,6 +62,7 @@ public class MeMoveToTarget : MecanimEventBase
 			if (_actor.targetingProcessor.GetTarget() == null)
 			{
 				targetPosition = HitObject.GetFallbackTargetPosition(_actor.cachedTransform);
+				targetPosition += new Vector3(randomRadius.x, 0.0f, randomRadius.y);
 				diff = targetPosition - _actor.cachedTransform.position;
 				diff.y = 0.0f;
 			}
@@ -66,6 +73,7 @@ public class MeMoveToTarget : MecanimEventBase
 				if (targetTransform != null)
 				{
 					targetPosition = targetTransform.position;
+					targetPosition += new Vector3(randomRadius.x, 0.0f, randomRadius.y);
 					diff = targetPosition - _actor.cachedTransform.position;
 					diff.y = 0.0f;
 				}

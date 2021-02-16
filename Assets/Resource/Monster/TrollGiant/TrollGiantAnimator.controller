@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 607bb5ed821de264982a3a1a0b6a018b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.4
+  StartTime: 0.2
   EndTime: 1
   affectorValueId: RushTrollGiant
   affectorValueLevel: 0
@@ -307,16 +307,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartTime: 0
-  EndTime: 0.35
+  EndTime: 0.15
   lookAtTarget: 1
-  leftRightRandomAngle: 0
+  leftRightRandomAngle: 5
   lootAtTargetOffsetAngle: 0
   lookAtRandom: 0
   desireDistance: 5
   minimumDistance: 0
   lookAtWorldPosition: 0
   worldPosition: {x: 0, y: 0, z: 0}
-  lerpPower: 10
+  lerpPower: 20
   boneName: 
 --- !u!114 &-5678145834614340075
 MonoBehaviour:
@@ -384,7 +384,7 @@ MonoBehaviour:
     weight: 1
     useDistance1: 1
     distanceCompareType1: 3
-    distanceParameter1: 3
+    distanceParameter1: 2.4
     useDistance2: 0
     distanceCompareType2: 0
     distanceParameter2: 0
@@ -415,7 +415,7 @@ MonoBehaviour:
     weight: 1
     useDistance1: 1
     distanceCompareType1: 6
-    distanceParameter1: 3
+    distanceParameter1: 2.4
     useDistance2: 0
     distanceCompareType2: 0
     distanceParameter2: 0
@@ -690,7 +690,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: RushLoop
-  m_Speed: 2
+  m_Speed: 2.5
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours:
@@ -838,7 +838,7 @@ AnimatorStateTransition:
   serializedVersion: 3
   m_TransitionDuration: 0.1
   m_TransitionOffset: 0
-  m_ExitTime: 0.5
+  m_ExitTime: 0.2
   m_HasExitTime: 1
   m_HasFixedDuration: 0
   m_InterruptionSource: 0
@@ -949,16 +949,16 @@ MonoBehaviour:
   overrideRicochetSpeed: 0
   useTimerRicochet: 0
   useHitStay: 1
-  hitStayInterval: 0.7
-  hitStayIgnoreDuplicate: 0
-  hitStayIdForIgnoreDuplicate: 0
+  hitStayInterval: 2
+  hitStayIgnoreDuplicate: 1
+  hitStayIdForIgnoreDuplicate: 99
   hitStayLineRendererTrigger: 0
   onlyUsedAsTrigger: 0
   oneHitPerTarget: 0
   useLineRenderer: 0
   affectorValueIdList:
   - NormalAttackMelee01
-  - AddForceCommonStrong
+  - AddForceTrollGiant
   showHitEffect: 0
   hitEffectObject: {fileID: 0}
   hitEffectLookAtNormal: 0
@@ -1075,7 +1075,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 103a63d9ada304948adbac0e5356a9c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.2
+  StartTime: 0.1
   EndTime: 1
   enable: 0
 --- !u!114 &7873302236263431255

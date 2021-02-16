@@ -198,7 +198,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startDelayRange: {x: 0.1, y: 0.25}
   startState: 2
-  useStateList: 010001010000
+  useStateList: 000001010000
   moveTimeRange: {x: 1.5, y: 2}
   refreshTickTimeRange: {x: 2, y: 2}
   desireDistance: 2
@@ -209,14 +209,14 @@ MonoBehaviour:
   customActionPlayType: 1
   customActionName: 
   customActionFadeDuration: 0.05
-  chaseDistanceRange: {x: 3, y: 5.5}
-  chaseCancelTimeRange: {x: 0, y: 0}
-  cancelLeadsToAttack: 0
+  chaseDistanceRange: {x: 2.4, y: 2.4}
+  chaseCancelTimeRange: {x: 2, y: 3}
+  cancelLeadsToAttack: 1
   useFarawayMode: 0
   chaseTryCountChangeFaraway: 0
   farawayModeChangeRate: 0
-  attackActionPlayType: 0
-  attackActionName: Attack
+  attackActionPlayType: 2
+  attackActionName: AttackGroup
   attackActionFadeDuration: 0.44
   lookAtTargetBeforeAttack: 1
   attackDelayTimeRange: {x: 0.2, y: 0.5}
@@ -280,7 +280,7 @@ PrefabInstance:
     - target: {fileID: 9500000, guid: 26a9250b5db505a4494770a3821c374b, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 1757803f69c75da44a660617ba03dacc, type: 2}
+      objectReference: {fileID: 9100000, guid: 9bb71dbd2546ede41813c8ee65d19921, type: 2}
     - target: {fileID: 13700000, guid: 26a9250b5db505a4494770a3821c374b, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 

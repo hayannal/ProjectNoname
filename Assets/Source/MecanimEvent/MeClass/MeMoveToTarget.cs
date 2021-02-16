@@ -2,8 +2,7 @@
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
-using System.Collections;
-using ECM.Components;
+using UnityEngine.AI;
 
 public class MeMoveToTarget : MecanimEventBase
 {
@@ -16,6 +15,7 @@ public class MeMoveToTarget : MecanimEventBase
 	public bool useTransform;
 	public bool transformMoveUseDelta;
 	public bool useRegisterdCustomTargetPosition;
+	public bool checkNavPosition;
 
 #if UNITY_EDITOR
 	override public void OnGUI_PropertyWindow()
@@ -24,6 +24,7 @@ public class MeMoveToTarget : MecanimEventBase
 		randomPositionRadiusRange = EditorGUILayout.Vector2Field("Random Position Radius Range :", randomPositionRadiusRange);
 		maxDistance = EditorGUILayout.FloatField("Max Distance :", maxDistance);
 		//useChase = EditorGUILayout.Toggle("Use Chase :", useChase);
+		checkNavPosition = EditorGUILayout.Toggle("Check Nav Position :", checkNavPosition);
 	}
 #endif
 
@@ -56,6 +57,7 @@ public class MeMoveToTarget : MecanimEventBase
 			targetPosition += new Vector3(randomRadius.x, 0.0f, randomRadius.y);
 			diff = targetPosition - _actor.cachedTransform.position;
 			diff.y = 0.0f;
+			targetPosition += -diff.normalized * distanceOffset;
 		}
 		else
 		{
@@ -65,6 +67,7 @@ public class MeMoveToTarget : MecanimEventBase
 				targetPosition += new Vector3(randomRadius.x, 0.0f, randomRadius.y);
 				diff = targetPosition - _actor.cachedTransform.position;
 				diff.y = 0.0f;
+				targetPosition += -diff.normalized * distanceOffset;
 			}
 			else
 			{
@@ -76,6 +79,7 @@ public class MeMoveToTarget : MecanimEventBase
 					targetPosition += new Vector3(randomRadius.x, 0.0f, randomRadius.y);
 					diff = targetPosition - _actor.cachedTransform.position;
 					diff.y = 0.0f;
+					targetPosition += -diff.normalized * distanceOffset;
 				}
 			}
 		}
@@ -90,8 +94,14 @@ public class MeMoveToTarget : MecanimEventBase
 		// 이럴땐 Transform이동으로 처리해서 이동시켜야한다. 장애물이 있으면 어색할테니 주의해서 사용해야한다.
 		if (useTransform)
 		{
+			// Transform을 안쓸때는 컬리더가 꺼있지도 않을테고 rigidbody를 밀어서 옮기는거라 네비메시 검사를 아예 할필요가 없는데
+			// Transform 써서 이동하는 경우에는 갑자기 벽 위로 올라갈 수가 있다.
+			// 이걸 대비헤서 checkNavPosition이 켜있다면 내비 검사를 해서 새로운 위치를 구해야한다.
+			if (checkNavPosition) targetPosition = GetNavPosition(targetPosition);
+
+			// SeaPrincess처럼 장애물이 없는 곳은 Nav검사 할필요 없이 그냥 하면 된다.
 			_targetPosition = targetPosition;
-			_targetPosition += -diff.normalized * distanceOffset;
+
 			_startPosition = _actor.cachedTransform.position;
 			_speed = (_targetPosition - _startPosition) / durationTime;
 			_durationTime = durationTime;
@@ -111,6 +121,45 @@ public class MeMoveToTarget : MecanimEventBase
 			velocityAffectorValue.fValue3 = velocityZ;
 			_actor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Velocity, velocityAffectorValue, _actor, false);
 		}
+	}
+
+	// Summon Signal에서 가져와 쓴다.
+	int _agentTypeID = -1;
+	Vector3 GetNavPosition(Vector3 desirePosition)
+	{
+		Vector3 result = Vector3.zero;
+		float maxDistance = 1.0f;
+		int tryBreakCount = 0;
+		desirePosition.y = 0.0f;
+		if (_agentTypeID == -1) _agentTypeID = MeLookAt.GetAgentTypeID(_actor);
+		while (true)
+		{
+			// AI쪽 코드에서 가져와서 변형
+			NavMeshHit hit;
+			NavMeshQueryFilter navMeshQueryFilter = new NavMeshQueryFilter();
+			navMeshQueryFilter.areaMask = NavMesh.AllAreas;
+			navMeshQueryFilter.agentTypeID = _agentTypeID;
+			if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+			{
+				result = desirePosition;
+				break;
+			}
+			if (NavMesh.SamplePosition(desirePosition, out hit, maxDistance, navMeshQueryFilter))
+			{
+				result = hit.position;
+				break;
+			}
+			maxDistance += 1.0f;
+
+			// exception handling
+			++tryBreakCount;
+			if (tryBreakCount > 50)
+			{
+				Debug.LogError("MeMoveToTarget NavPosition Error. Not found valid nav position.");
+				return desirePosition;
+			}
+		}
+		return result;
 	}
 
 	Vector3 _startPosition;

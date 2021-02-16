@@ -914,6 +914,11 @@ public class PlayerData : MonoBehaviour
 	// 조금 늦게 처리되더라도 안전하게 갱신할 수 있겠다 싶어서 하단의 로직을 추가하기로 했다.
 	bool _waitServerResponseForUnfixedResetTime;
 	int _unfixedRefreshRetryRemainCount = 30;
+	// 그런데 한번 Send해두고 응답이 없을 경우도 있었더니 이 패킷의 응답이 올때까지는 계속 00:00:00 인채로 대기하게 된다.
+	// 지금은 갱신이 필요한 상황이니 Send하고도 1초안에 응답이 없으면 바로 재시도하고
+	// 이후 혹시 중복해서 응답이 오면 빨리 오는거만 처리하고 나머지는 무시하기로 한다.
+	float _retryRefreshRemainTime = 0.0f;
+	int _lastRefreshedUniversalTimeDay = 0;
 	void UpdateUnfixedTime()
 	{
 		if (loginned == false)
@@ -922,7 +927,23 @@ public class PlayerData : MonoBehaviour
 			return;
 
 		if (_waitServerResponseForUnfixedResetTime)
+		{
+			// GetServerUtc 호출한거에 대한 응답을 기다리고 있는데 1초 동안 오지 않는다면 다시 보내본다.
+			if (_retryRefreshRemainTime > 0.0f)
+			{
+				_retryRefreshRemainTime -= Time.deltaTime;
+				if (_retryRefreshRemainTime <= 0.0f)
+				{
+					_waitServerResponseForUnfixedResetTime = false;
+					_retryRefreshRemainTime = 0.0f;
+
+					_unfixedRefreshRetryRemainCount--;
+					if (_unfixedRefreshRetryRemainCount <= 0)
+						PlayFabApiManager.instance.HandleCommonError();
+				}
+			}
 			return;
+		}
 		if (_unfixedRefreshRetryRemainCount == 0)
 			return;
 
@@ -931,11 +952,13 @@ public class PlayerData : MonoBehaviour
 		if (DateTime.Compare(ServerTime.UtcNow, unfixedResetTime) < 0)
 			return;
 
-		// 여긴 서버응답 꼭 받고 처리를 진행할거라서 클라가 선처리 하지 않는다.
+		// 여긴 서버응답 꼭 받고 처리를 진행할거라서 서버 응답을 기다려야한다.
 		_waitServerResponseForUnfixedResetTime = true;
+		_retryRefreshRemainTime = 1.0f;
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
 			FunctionName = "GetServerUtc",
+			GeneratePlayStreamEvent = true,
 		}, (success) =>
 		{
 			_waitServerResponseForUnfixedResetTime = false;
@@ -949,12 +972,18 @@ public class PlayerData : MonoBehaviour
 			if (DateTime.TryParse((string)date, out serverUtcTime))
 			{
 				DateTime universalTime = serverUtcTime.ToUniversalTime();
+
+				// 혹시 여러개 보낸거로 인해서 중복 처리 될 샹황이라면 그냥 리턴
+				if (_lastRefreshedUniversalTimeDay == universalTime.Day)
+					return;
+
 				if (universalTime.Year == unfixedResetTime.Year && universalTime.Month == unfixedResetTime.Month && universalTime.Day == unfixedResetTime.Day)
 				{
 					// 이러면 확실히 서버에서도 다음날이 된걸 확인할 수 있다는거다.
 					Debug.Log("Daily Unfixed Refreshed Start");
 					refreshed = true;
-					unfixedResetTime += TimeSpan.FromDays(1);
+					_lastRefreshedUniversalTimeDay = universalTime.Day;
+					unfixedResetTime = new DateTime(serverUtcTime.Year, serverUtcTime.Month, serverUtcTime.Day) + TimeSpan.FromDays(1);
 					_unfixedRefreshRetryRemainCount = 30;
 
 					// 여기서 각종 갱신 처리 및 패킷들을 보내면 문제없을거다.
@@ -982,6 +1011,8 @@ public class PlayerData : MonoBehaviour
 				// 뭔가 잘못 된거다. 재접해서 새로 받기 전까진 0.5초마다 다시 보내보자. 재시도는 30회
 				unfixedResetTime += TimeSpan.FromSeconds(nextSecond);
 				_unfixedRefreshRetryRemainCount--;
+				if (_unfixedRefreshRetryRemainCount <= 0)
+					PlayFabApiManager.instance.HandleCommonError();
 			}
 		}, (error) =>
 		{
@@ -992,8 +1023,10 @@ public class PlayerData : MonoBehaviour
 			_waitServerResponseForUnfixedResetTime = false;
 			unfixedResetTime += TimeSpan.FromSeconds(0.5);
 
-			// 네트워크 오류일수도 있으니 여기서는 카운트를 차감하지 않는다.
-			//_unfixedRefreshRetryRemainCount--;
+			// 네트워크 오류여도 진행불가 상태일거라 판단하고 재접속을 시킨다.
+			_unfixedRefreshRetryRemainCount--;
+			if (_unfixedRefreshRetryRemainCount <= 0)
+				PlayFabApiManager.instance.HandleCommonError();
 		});
 	}
 

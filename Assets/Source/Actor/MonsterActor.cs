@@ -174,6 +174,10 @@ public class MonsterActor : Actor
 
 			if (AffectorCustomCreator.IsContinuousAffector(passiveAffector.affectorType))
 				_listPassiveAffector.Add(passiveAffector);
+			else if (passiveAffector.affectorType == eAffectorType.CreateHitObject)
+			{
+				// 일부 특정 타입의 어펙터들은 허용
+			}
 			else
 				Debug.LogErrorFormat("Non-continuous affector in a passive skill! / AffectorValueId = {1}", cachedMonsterTableData.passiveAffectorValueId[i]);
 		}

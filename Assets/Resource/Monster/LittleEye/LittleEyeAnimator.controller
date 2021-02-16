@@ -144,6 +144,7 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
@@ -169,7 +170,7 @@ MonoBehaviour:
   repeatInterval: 0
   movementType: 1
   startDirectionType: 1
-  startDirection: {x: 0.5, y: 0, z: 1}
+  startDirection: {x: 0.7, y: 0, z: 1}
   howitzerType: 0
   useWorldSpaceDirection: 0
   bothRandomAngle: 1
@@ -200,6 +201,7 @@ MonoBehaviour:
   useRandomTurn: 0
   accelTurn: 0
   randomTurnRotateYawRange: {x: 0, y: 0}
+  zigZagIntervalTime: 0
   gravity: -9.81
   parallelCount: 0
   parallelDistance: 0
@@ -216,6 +218,7 @@ MonoBehaviour:
   quadThrough: 0
   overrideResetIgnoreSqrMagnitude: 0
   bounceWallQuadCount: 0
+  bounceToTarget: 0
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
   overrideRicochetDistance: 0
@@ -271,7 +274,7 @@ AnimatorStateTransition:
   m_IsExit: 0
   serializedVersion: 3
   m_TransitionDuration: 0.2
-  m_TransitionOffset: 1168355
+  m_TransitionOffset: 0
   m_ExitTime: 0.9
   m_HasExitTime: 1
   m_HasFixedDuration: 0
@@ -578,6 +581,7 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
@@ -603,7 +607,7 @@ MonoBehaviour:
   repeatInterval: 0
   movementType: 1
   startDirectionType: 1
-  startDirection: {x: -0.5, y: 0, z: 1}
+  startDirection: {x: -0.7, y: 0, z: 1}
   howitzerType: 0
   useWorldSpaceDirection: 0
   bothRandomAngle: 1
@@ -634,6 +638,7 @@ MonoBehaviour:
   useRandomTurn: 0
   accelTurn: 0
   randomTurnRotateYawRange: {x: 0, y: 0}
+  zigZagIntervalTime: 0
   gravity: -9.81
   parallelCount: 0
   parallelDistance: 0
@@ -650,6 +655,7 @@ MonoBehaviour:
   quadThrough: 0
   overrideResetIgnoreSqrMagnitude: 0
   bounceWallQuadCount: 0
+  bounceToTarget: 0
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
   overrideRicochetDistance: 0

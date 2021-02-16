@@ -62,6 +62,8 @@ MonoBehaviour:
   lookAtRandom: 0
   desireDistance: 5
   minimumDistance: 0
+  lookAtWorldPosition: 0
+  worldPosition: {x: 0, y: 0, z: 0}
   lerpPower: 5
   boneName: 
 --- !u!114 &-2057150615174720581
@@ -84,10 +86,11 @@ MonoBehaviour:
   ignorePresetHitEffectOnCustomTargetPosition: 0
   presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 0}
-  lifeTime: 0
+  lifeTime: 0.41
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 0
+  moveStartDelay: 0
   maxDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
@@ -107,8 +110,8 @@ MonoBehaviour:
   areaHeightMax: 2
   areaAngle: 10
   checkRaycastWallInArea: 0
+  raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
-  checkTargetForward: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -128,6 +131,7 @@ MonoBehaviour:
   targetSpeed: 0
   speedChangeTime: 0
   speedChangeEase: 6
+  repeatSpeedChange: 0
   overrideSpeedOnCollision: 0
   overrideSpeedTimeOnCollision: 0
   curve: 0
@@ -143,6 +147,7 @@ MonoBehaviour:
   useRandomTurn: 0
   accelTurn: 0
   randomTurnRotateYawRange: {x: 0, y: 0}
+  zigZagIntervalTime: 0
   gravity: -9.81
   parallelCount: 0
   parallelDistance: 0
@@ -159,17 +164,19 @@ MonoBehaviour:
   quadThrough: 0
   overrideResetIgnoreSqrMagnitude: 0
   bounceWallQuadCount: 0
+  bounceToTarget: 0
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
   overrideRicochetDistance: 0
   overrideRicochetSpeed: 0
+  useTimerRicochet: 0
   useHitStay: 0
   hitStayInterval: 0
   hitStayIgnoreDuplicate: 0
   hitStayIdForIgnoreDuplicate: 0
   hitStayLineRendererTrigger: 0
   onlyUsedAsTrigger: 0
-  oneHitPerTarget: 0
+  oneHitPerTarget: 1
   useLineRenderer: 0
   affectorValueIdList:
   - NormalAttackGreekWarrior
@@ -201,8 +208,10 @@ MonoBehaviour:
   offset: {x: 0, y: 0, z: 0}
   fixedWorldPositionY: 0
   direction: {x: 0, y: 0, z: 1}
+  useWorldSpaceDirection: 0
   parentName: 
   followPosition: 0
+  immediateDisableFollowEffect: 0
 --- !u!1107 &-1805817263514781681
 AnimatorStateMachine:
   serializedVersion: 5

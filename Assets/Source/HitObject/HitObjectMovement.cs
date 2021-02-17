@@ -350,10 +350,11 @@ public class HitObjectMovement : MonoBehaviour {
 	int _lastBounceFrameCount;
 	public void Bounce(Vector3 wallNormal)
 	{
+		// BounceToTarget이 실패하면 일반 Bounce처리로 넘어간다.
 		if (_signal.bounceToTarget)
 		{
-			BounceToTarget(wallNormal);
-			return;
+			if (BounceToTarget(wallNormal))
+				return;
 		}
 
 		//_velocity = Vector3.Reflect(_velocity, wallNormal);
@@ -472,20 +473,24 @@ public class HitObjectMovement : MonoBehaviour {
 		return false;
 	}
 
-	void BounceToTarget(Vector3 wallNormal)
+	bool BounceToTarget(Vector3 wallNormal)
 	{
 		// 튕기는 지점에서 타겟을 향하는 벡터를 구해야한다. 저장된게 없다면 이상한거다.
 		if (_followTargetActor == null)
-			return;
+			return false;
 		Vector3 diff = _followTargetActor.cachedTransform.position - cachedTransform.position;
 		diff.y = 0.0f;
 		if (Vector3.Dot(wallNormal, diff.normalized) <= 0.0f)
-			return;
+			return false;
+
+		if (_velocity.magnitude < _speed * 0.9f)
+			_velocity = _velocity.normalized * _speed;
 
 		_velocity = diff.normalized * _velocity.magnitude;
 		_rigidbody.velocity = _velocity;
 		_rigidbody.angularVelocity = Vector3.zero;
 		_forward = cachedTransform.forward = _rigidbody.velocity.normalized;
+		return true;
 	}
 
 	float _remainCurveStartDelayTime = 0.0f;

@@ -837,7 +837,12 @@ public class HitObject : MonoBehaviour
 					{
 						MonsterActor monsterActor = attackerActor as MonsterActor;
 						if (monsterActor != null)
-							monsterActor.ApplyCollisionStayInterval();
+						{
+							if (meHit.useHitStay && meHit.hitStayInterval > 0.0f)
+								monsterActor.ApplyCollisionStayInterval(meHit.hitStayInterval);
+							else
+								monsterActor.ApplyCollisionStayInterval();
+						}
 					}
 				}
 

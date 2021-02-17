@@ -498,11 +498,18 @@ public class MonsterActor : Actor
 		return false;
 	}
 
-	public void ApplyCollisionStayInterval()
+	public void ApplyCollisionStayInterval(float overrideDuration = 0.0f)
 	{
-		_lastCollisionStayTime = Time.time;
 		if (_collisionStayInterval == 0.0f)
 			_collisionStayInterval = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("CollisionDamageInterval");
+
+		if (overrideDuration == 0.0f)
+			_lastCollisionStayTime = Time.time;
+		else
+		{
+			// 히트가 들어간 시간을 저장하는 형태라서 override Duration이 있을 경우에는 아래처럼 계산하면 된다.
+			_lastCollisionStayTime = Time.time + overrideDuration - _collisionStayInterval;
+		}
 	}
 	#endregion
 

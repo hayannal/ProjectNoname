@@ -30,6 +30,15 @@ public class ChildTransformGenerator : ContinuousHitObjectGeneratorBase
 	// Update is called once per frame
 	void Update()
 	{
+#if UNITY_EDITOR
+		// 배틀씬에서는 ParentActor가 삭제될 수 있으니 이렇게 예외처리 해준다.
+		if (_parentActor == null)
+		{
+			FinalizeHitObject();
+			return;
+		}
+#endif
+
 		if (CheckChangeState())
 		{
 			FinalizeHitObject();

@@ -102,7 +102,12 @@ public class QuestData : MonoBehaviour
 		return null;
 	}
 
-	
+
+
+	void Update()
+	{
+		UpdateQuestResetTime();
+	}
 
 	public void OnRecvQuestData(Dictionary<string, UserDataRecord> userReadOnlyData)
 	{
@@ -345,10 +350,26 @@ public class QuestData : MonoBehaviour
 	}
 	#endregion
 
+	void UpdateQuestResetTime()
+	{
+		if (_listQuestInfo == null)
+			return;
+
+		if (DateTime.Compare(ServerTime.UtcNow, todayQuestResetTime) < 0)
+			return;
+
+		// 서버와의 통신 여부와 상관없이 무조건 갱신해야한다.
+		todayQuestResetTime += TimeSpan.FromDays(1);
+
+		// 갱신할때 인디케이터도 같이 처리. 퀘스트 창은 각자가 알아서 스스로를 닫을거고 인디케이터만 처리해주면 된다.
+		if (TreasureChest.instance.IsShowIndicatorCanvas() && TreasureChestIndicatorCanvas.IsSubQuestBoxType())
+			TreasureChest.instance.HideIndicatorCanvas(true, true);
+	}
+
 	public void ResetQuestStepInfo()
 	{
 		// 갱신 타이밍은 항상 동일
-		todayQuestResetTime += TimeSpan.FromDays(1);
+		//todayQuestResetTime += TimeSpan.FromDays(1);
 
 		todayQuestRewardedCount = 0;
 
@@ -359,12 +380,6 @@ public class QuestData : MonoBehaviour
 
 		// 이 타이밍에 다음날 새로 열리는 퀘스트 갱신처리도 함께 해준다.
 		RegisterQuestList();
-
-		// 하필 서브퀘스트 인디케이터가 보이는 상태라면 닫아야한다.
-		// 원래 TreasureChestIndicatorCanvas.instance 는 없는 구조였는데 어쩔 수 없이 빠르게 수정하느라 이렇게 해둔다.
-		// HideIndicatorCanvas로 호출해야 제대로 닫히게 된다. 그냥 SetActive(false)하면 안된다.
-		if (TreasureChestIndicatorCanvas.instance != null && TreasureChestIndicatorCanvas.instance.gameObject.activeSelf && TreasureChestIndicatorCanvas.instance.IsShowQuestBoxType())
-			TreasureChest.instance.HideIndicatorCanvas(true, true);
 	}
 
 	public bool IsCompleteQuest()

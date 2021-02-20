@@ -7,8 +7,6 @@ using MEC;
 
 public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 {
-	public static TreasureChestIndicatorCanvas instance;
-
 	enum eButtonType
 	{
 		Shop,
@@ -20,11 +18,6 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 	public GameObject buttonRootObject;
 	public Text[] buttonTextList;
 	public RectTransform alarmRootTransform;
-
-	void Awake()
-	{
-		instance = this;
-	}
 
 	// Start is called before the first frame update
 	void Start()
@@ -89,11 +82,6 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 		if (PlayerData.instance.sharedDailyBoxOpened == true && PlayerData.instance.chaosModeOpened)
 			return true;
 		return false;
-	}
-
-	public bool IsShowQuestBoxType()
-	{
-		return (_buttonType == eButtonType.SubQuest);
 	}
 
 	public void OnClickButton()

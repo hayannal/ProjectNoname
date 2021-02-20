@@ -359,6 +359,12 @@ public class QuestData : MonoBehaviour
 
 		// 이 타이밍에 다음날 새로 열리는 퀘스트 갱신처리도 함께 해준다.
 		RegisterQuestList();
+
+		// 하필 서브퀘스트 인디케이터가 보이는 상태라면 닫아야한다.
+		// 원래 TreasureChestIndicatorCanvas.instance 는 없는 구조였는데 어쩔 수 없이 빠르게 수정하느라 이렇게 해둔다.
+		// HideIndicatorCanvas로 호출해야 제대로 닫히게 된다. 그냥 SetActive(false)하면 안된다.
+		if (TreasureChestIndicatorCanvas.instance != null && TreasureChestIndicatorCanvas.instance.gameObject.activeSelf && TreasureChestIndicatorCanvas.instance.IsShowQuestBoxType())
+			TreasureChest.instance.HideIndicatorCanvas(true, true);
 	}
 
 	public bool IsCompleteQuest()

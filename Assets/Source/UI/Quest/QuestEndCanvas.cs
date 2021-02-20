@@ -56,10 +56,6 @@ public class QuestEndCanvas : MonoBehaviour
 			_needUpdate = false;
 			remainTimeText.text = "00:00:00";
 
-			// 서브퀘스트라고 떠있는 인디케이터 닫아버린다.
-			if (TreasureChest.instance != null)
-				TreasureChest.instance.HideIndicatorCanvas(true, true);
-
 			// 진행중이던게 아니니 그냥 토스트 없이 닫아본다.
 			//_needRefresh = true;
 			gameObject.SetActive(false);

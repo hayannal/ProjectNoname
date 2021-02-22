@@ -14,6 +14,7 @@ public class MeMoveToTarget : MecanimEventBase
 	//public bool useChase;
 	public bool useTransform;
 	public bool transformMoveUseDelta;
+	public bool updateTargetPosition;
 	public bool useRegisterdCustomTargetPosition;
 	public bool checkNavPosition;
 
@@ -24,7 +25,15 @@ public class MeMoveToTarget : MecanimEventBase
 		randomPositionRadiusRange = EditorGUILayout.Vector2Field("Random Position Radius Range :", randomPositionRadiusRange);
 		maxDistance = EditorGUILayout.FloatField("Max Distance :", maxDistance);
 		//useChase = EditorGUILayout.Toggle("Use Chase :", useChase);
-		checkNavPosition = EditorGUILayout.Toggle("Check Nav Position :", checkNavPosition);
+
+		useTransform = EditorGUILayout.Toggle("Use Transform :", useTransform);
+		if (useTransform)
+		{
+			transformMoveUseDelta = EditorGUILayout.Toggle("Use Delta :", transformMoveUseDelta);
+			if (transformMoveUseDelta == false)
+				updateTargetPosition = EditorGUILayout.Toggle("Update Target Position :", updateTargetPosition);
+			checkNavPosition = EditorGUILayout.Toggle("Check Nav Position :", checkNavPosition);
+		}
 	}
 #endif
 
@@ -43,13 +52,49 @@ public class MeMoveToTarget : MecanimEventBase
 		// 돌진과 달리 애니도중에 Area로 공격하는데 주로 사용되기 때문에
 		// Radius 검사는 하지 않고 포지션끼리 체크해서 거리를 계산한다.
 		// 그러니 -3미터 설정하면 타겟으로부터 3미터 가까운 지점에 멈추게 된다.
-
-		Vector2 randomRadius = Random.insideUnitCircle * randomPositionRadiusRange;
-
 		float velocityZ = 0.0f;
-		Vector3 targetPosition = Vector3.zero;
-		Vector3 diff = Vector3.zero;
 		float durationTime = (EndTime - StartTime) * stateInfo.length;
+		Vector3 diff = Vector3.zero;
+		Vector3 targetPosition = GetTargetPosition(ref diff);
+
+		// SeaPrincess처럼 공중에 올라서 찍는걸 사용할때 컬리더를 끄고 점프 상태 및 DontDie상태로 바꾸는 경우엔 하단의 Velocity어펙터가 먹히질 않게된다.
+		// 이럴땐 Transform이동으로 처리해서 이동시켜야한다. 장애물이 있으면 어색할테니 주의해서 사용해야한다.
+		if (useTransform)
+		{
+			// Transform을 안쓸때는 컬리더가 꺼있지도 않을테고 rigidbody를 밀어서 옮기는거라 네비메시 검사를 아예 할필요가 없는데
+			// Transform 써서 이동하는 경우에는 갑자기 벽 위로 올라갈 수가 있다.
+			// 이걸 대비헤서 checkNavPosition이 켜있다면 내비 검사를 해서 새로운 위치를 구해야한다.
+			if (checkNavPosition) targetPosition = GetNavPosition(targetPosition);
+
+			// SeaPrincess처럼 장애물이 없는 곳은 Nav검사 할필요 없이 그냥 하면 된다.
+			_targetPosition = targetPosition;
+
+			_startPosition = _actor.cachedTransform.position;
+			_speed = (_targetPosition - _startPosition) / durationTime;
+			_durationTime = durationTime;
+			_t = 0.0f;
+			return;
+		}
+
+		if (diff.magnitude + distanceOffset > 0.0f)
+			velocityZ = (diff.magnitude + distanceOffset) / durationTime;
+
+		if (velocityZ != 0.0f)
+		{
+			// MovePositionCurve에서 했던거처럼 FixedUpdate가 필요하니 VelocityAffector를 호출한다.
+			AffectorValueLevelTableData velocityAffectorValue = new AffectorValueLevelTableData();
+			velocityAffectorValue.fValue1 = durationTime;
+			velocityAffectorValue.fValue2 = 0.0f;
+			velocityAffectorValue.fValue3 = velocityZ;
+			_actor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Velocity, velocityAffectorValue, _actor, false);
+		}
+	}
+
+	Vector3 GetTargetPosition(ref Vector3 diff)
+	{
+		Vector2 randomRadius = Random.insideUnitCircle * randomPositionRadiusRange;
+		Vector3 targetPosition = Vector3.zero;
+		
 		// 다른 시그널에서 등록한 CustomTargetPosition을 사용할때 이렇게 가져와서 쓴다.
 		if (useRegisterdCustomTargetPosition && _actor.targetingProcessor.IsRegisteredCustomTargetPosition())
 		{
@@ -90,37 +135,7 @@ public class MeMoveToTarget : MecanimEventBase
 			targetPosition = _actor.cachedTransform.position + diff;
 		}
 
-		// SeaPrincess처럼 공중에 올라서 찍는걸 사용할때 컬리더를 끄고 점프 상태 및 DontDie상태로 바꾸는 경우엔 하단의 Velocity어펙터가 먹히질 않게된다.
-		// 이럴땐 Transform이동으로 처리해서 이동시켜야한다. 장애물이 있으면 어색할테니 주의해서 사용해야한다.
-		if (useTransform)
-		{
-			// Transform을 안쓸때는 컬리더가 꺼있지도 않을테고 rigidbody를 밀어서 옮기는거라 네비메시 검사를 아예 할필요가 없는데
-			// Transform 써서 이동하는 경우에는 갑자기 벽 위로 올라갈 수가 있다.
-			// 이걸 대비헤서 checkNavPosition이 켜있다면 내비 검사를 해서 새로운 위치를 구해야한다.
-			if (checkNavPosition) targetPosition = GetNavPosition(targetPosition);
-
-			// SeaPrincess처럼 장애물이 없는 곳은 Nav검사 할필요 없이 그냥 하면 된다.
-			_targetPosition = targetPosition;
-
-			_startPosition = _actor.cachedTransform.position;
-			_speed = (_targetPosition - _startPosition) / durationTime;
-			_durationTime = durationTime;
-			_t = 0.0f;
-			return;
-		}
-
-		if (diff.magnitude + distanceOffset > 0.0f)
-			velocityZ = (diff.magnitude + distanceOffset) / durationTime;
-
-		if (velocityZ != 0.0f)
-		{
-			// MovePositionCurve에서 했던거처럼 FixedUpdate가 필요하니 VelocityAffector를 호출한다.
-			AffectorValueLevelTableData velocityAffectorValue = new AffectorValueLevelTableData();
-			velocityAffectorValue.fValue1 = durationTime;
-			velocityAffectorValue.fValue2 = 0.0f;
-			velocityAffectorValue.fValue3 = velocityZ;
-			_actor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Velocity, velocityAffectorValue, _actor, false);
-		}
+		return targetPosition;
 	}
 
 	// Summon Signal에서 가져와 쓴다.
@@ -203,6 +218,16 @@ public class MeMoveToTarget : MecanimEventBase
 			}
 			else
 			{
+				// CactusBoss때문에 기능이 하나 추가되었는데 타겟 위치를 매프레임 갱신하는 기능이다.
+				// 이게 있어야 멀어지는 플레이어를 추적하면서 다가가서 점프공격을 할 수 있다.
+				if (updateTargetPosition)
+				{
+					Vector3 diff = Vector3.zero;
+					Vector3 targetPosition = GetTargetPosition(ref diff);
+					if (checkNavPosition) targetPosition = GetNavPosition(targetPosition);
+					_targetPosition = targetPosition;
+				}
+
 				// 하나는 진짜 포지션 비교해서 목적지에 다다르게 하는 방식이다.(SeaPrincess처럼 AttackIndicator까지 그려놓은 경우라면 이렇게 찍어야 정확해진다.)
 				_t += Time.deltaTime;
 				_actor.cachedTransform.position = _startPosition + (_targetPosition - _startPosition) * (_t / _durationTime);

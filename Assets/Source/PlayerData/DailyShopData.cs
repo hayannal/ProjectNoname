@@ -457,7 +457,7 @@ public class DailyShopData : MonoBehaviour
 		if (_dicUnfixedData.ContainsKey(slotId.ToString()))
 			return _dicUnfixedData[slotId.ToString()];
 
-		Debug.LogError("GetUnfixedResult Error. Not found slotId.");
+		Debug.LogErrorFormat("GetUnfixedResult Error. Not found slotId. : {0}", slotId);
 		return "";
 	}
 	#endregion

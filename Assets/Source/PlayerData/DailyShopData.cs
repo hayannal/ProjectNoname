@@ -538,7 +538,7 @@ public class DailyShopData : MonoBehaviour
 		// 전날에 하나도 구매하지 않은 상황이라면 바로 true를 리턴하게 되버린다.
 		// 그러니 resetTime까지 갱신되었는지 확인해보자.
 		// 서버와 클라의 시간 오차에 의해 칼같이 하면 미리 갱신하려고 할수도 있으니 한시간 혹은 반나절 이상 차이나는지 확인하는게 제일 안전할거다.
-		if (DateTime.Compare(ServerTime.UtcNow + TimeSpan.FromDays(0.5), dailyShopSlotPurchasedResetTime) < 0)
+		if (DateTime.Compare(ServerTime.UtcNow + TimeSpan.FromDays(0.5), dailyShopSlotPurchasedResetTime) > 0)
 			return false;
 
 		return true;

@@ -10,6 +10,7 @@ public class EquipListCanvas : EquipShowCanvasBase
 	public EquipTypeButton[] equipTypeButtonList;
 	public EquipListStatusInfo diffStatusInfo;
 	public EquipListStatusInfo equippedStatusInfo;
+	public GameObject reopenButtonObject;
 	public GameObject reopenEquippedStatusInfoTextObject;
 	bool _closeEquippedStatusInfoByUser;
 	public GameObject detailButtonObject;
@@ -61,6 +62,7 @@ public class EquipListCanvas : EquipShowCanvasBase
 		if (DragThresholdController.instance != null)
 			DragThresholdController.instance.ApplyUIDragThreshold();
 
+		reopenButtonObject.SetActive(false);
 		reopenEquippedStatusInfoTextObject.gameObject.SetActive(false);
 
 		// CharacterListCanvas 와 비슷한 구조다.
@@ -136,7 +138,10 @@ public class EquipListCanvas : EquipShowCanvasBase
 			if (equipData != null)
 				RefreshEquippedStatusInfo(equipData);
 			else
+			{
 				equippedStatusInfo.gameObject.SetActive(false);
+				reopenButtonObject.SetActive(false);
+			}
 		}
 	}
 	#endregion
@@ -201,7 +206,10 @@ public class EquipListCanvas : EquipShowCanvasBase
 				if (equipData != null)
 					RefreshEquippedStatusInfo(equipData);
 				else
+				{
 					equippedStatusInfo.gameObject.SetActive(false);
+					reopenButtonObject.SetActive(false);
+				}
 			}
 
 			// 인벤토리를 리프레쉬 하는데 열려있는 정보창의 equipData가 삭제되었다면 템을 삭제한 후 리프레쉬 한걸거다. 이땐 정보창을 강제로 닫아준다.
@@ -282,6 +290,7 @@ public class EquipListCanvas : EquipShowCanvasBase
 			equippedStatusInfo.gameObject.SetActive(false);
 		equippedStatusInfo.RefreshInfo(equipData, true);
 		equippedStatusInfo.gameObject.SetActive(true);
+		reopenButtonObject.SetActive(false);
 	}
 
 	public void OnCloseDiffStatusInfo()
@@ -298,6 +307,7 @@ public class EquipListCanvas : EquipShowCanvasBase
 
 	public void OnCloseEquippedStatusInfo()
 	{
+		reopenButtonObject.SetActive(true);
 		reopenEquippedStatusInfoTextObject.SetActive(true);
 		_closeEquippedStatusInfoByUser = true;
 	}
@@ -329,6 +339,7 @@ public class EquipListCanvas : EquipShowCanvasBase
 		// 모든 비교창을 닫는다.
 		diffStatusInfo.gameObject.SetActive(false);
 		equippedStatusInfo.gameObject.SetActive(false);
+		reopenButtonObject.SetActive(true);
 
 		// 밖에 있는 시공간 제단을 업데이트 해줘야한다.
 		int positionIndex = equipData.cachedEquipTableData.equipType;
@@ -348,6 +359,7 @@ public class EquipListCanvas : EquipShowCanvasBase
 		// 모든 비교창을 닫는다.
 		diffStatusInfo.gameObject.SetActive(false);
 		equippedStatusInfo.gameObject.SetActive(false);
+		reopenButtonObject.SetActive(false);
 
 		// 밖에 있는 시공간 제단을 업데이트 해줘야한다.
 		int positionIndex = equipData.cachedEquipTableData.equipType;
@@ -368,6 +380,7 @@ public class EquipListCanvas : EquipShowCanvasBase
 		if (equippedStatusInfo.gameObject.activeSelf)
 			return;
 
+		reopenButtonObject.SetActive(false);
 		reopenEquippedStatusInfoTextObject.gameObject.SetActive(false);
 		RefreshEquippedStatusInfo(equipData);
 		SoundManager.instance.PlaySFX("GridOn");

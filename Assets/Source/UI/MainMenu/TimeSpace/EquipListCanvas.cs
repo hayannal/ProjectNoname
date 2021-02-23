@@ -62,7 +62,8 @@ public class EquipListCanvas : EquipShowCanvasBase
 		if (DragThresholdController.instance != null)
 			DragThresholdController.instance.ApplyUIDragThreshold();
 
-		reopenButtonObject.SetActive(false);
+		// 여기서 equippedStatusInfo 하이드 시키지 않는거처럼 reopenButtonObject도 그냥 놔둬야한다. 이래야 돋보기 보고 나올때 마지막 상태가 유지된다.
+		//reopenButtonObject.SetActive(false);
 		reopenEquippedStatusInfoTextObject.gameObject.SetActive(false);
 
 		// CharacterListCanvas 와 비슷한 구조다.
@@ -142,6 +143,11 @@ public class EquipListCanvas : EquipShowCanvasBase
 				equippedStatusInfo.gameObject.SetActive(false);
 				reopenButtonObject.SetActive(false);
 			}
+		}
+		else
+		{
+			EquipData equipData = TimeSpaceData.instance.GetEquippedDataByType((TimeSpaceData.eEquipSlotType)positionIndex);
+			reopenButtonObject.SetActive(equipData != null);
 		}
 	}
 	#endregion

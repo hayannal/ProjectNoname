@@ -329,14 +329,31 @@ public class NodeWarExitArea : MonoBehaviour
 
 		// avoid gc
 		if (this == null)
+		{
+			// 타이밍상 거의 일어날거 같지 않긴 한데 씬이 날아가버리는거라면 static으로 된거만 복구시켜두는 형태로 가본다.
+			EnvironmentSetting.ResetGlobalLightIntensityRatio();
 			yield break;
+		}
+
+		// 전투중이라서 Die검사를 해야한다. 여기서 죽으면 발동 안하고 취소되는거다.
+		if (BattleInstanceManager.instance.playerActor.actorStatus.IsDie())
+		{
+			EnvironmentSetting.ResetGlobalLightIntensityRatio();
+			CustomRenderer.instance.bloom.ResetDirtIntensity();
+			_processing = false;
+			yield break;
+		}
 
 		FadeCanvas.instance.FadeOut(0.2f, 0.7f);
 		yield return Timing.WaitForSeconds(0.2f);
 
 		// avoid gc
 		if (this == null)
+		{
+			// 타이밍상 거의 일어날거 같지 않긴 한데 씬이 날아가버리는거라면 static으로 된거만 복구시켜두는 형태로 가본다.
+			EnvironmentSetting.ResetGlobalLightIntensityRatio();
 			yield break;
+		}
 
 		EnvironmentSetting.ResetGlobalLightIntensityRatio();
 		CustomRenderer.instance.bloom.ResetDirtIntensity();

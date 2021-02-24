@@ -15,6 +15,7 @@ public class MeSummon : MecanimEventBase
 		LocalPosition,
 		TargetPosition,
 		TargetDistanceRatio,
+		RandomWorldPosition,
 	}
 
 	override public bool RangeSignal { get { return true; } }
@@ -27,6 +28,7 @@ public class MeSummon : MecanimEventBase
 	public Vector2 randomPositionRadiusRange;
 	public Vector3 direction = Vector3.forward;
 	public bool checkNavPosition = true;
+
 	public bool calcCreatePositionInEndSignal;
 	public bool disableOnMapChanged;
 	public GameObject castingLoopEffectPrefab;
@@ -207,6 +209,9 @@ public class MeSummon : MecanimEventBase
 					_createRotation = Quaternion.LookRotation(_actor.cachedTransform.TransformDirection(direction));
 				}
 				break;
+			case eCreatePositionType.RandomWorldPosition:
+				_createPosition = GetRandomWorldPosition();
+				break;
 		}
 		Vector2 randomRadius = Random.insideUnitCircle * randomPositionRadiusRange;
 		_createPosition += new Vector3(randomRadius.x, 0.0f, randomRadius.y);
@@ -248,6 +253,43 @@ public class MeSummon : MecanimEventBase
 			}
 		}
 		return result;
+	}
+
+	// TeleportTargetPositionAffector 에서 가져와 변형해서 쓴다.
+	Vector3 GetRandomWorldPosition()
+	{
+		int tryBreakCount = 0;
+		// 소환할 몬스터가 비슷한 Agent일거라 생각하고 코딩
+		if (_agentTypeID == -1) _agentTypeID = MeLookAt.GetAgentTypeID(_actor);
+		while (true)
+		{
+			Vector3 desirePosition = Vector3.zero;
+
+			// 이걸 쓰게될 보스는 스테이지 보스라서 currentGround가 있다고 가정하고 처리해둔다.
+			if (BattleInstanceManager.instance.currentGround != null)
+				desirePosition = BattleInstanceManager.instance.currentGround.GetRandomPositionInQuadBound(1.0f);
+
+			NavMeshHit hit;
+			NavMeshQueryFilter navMeshQueryFilter = new NavMeshQueryFilter();
+			navMeshQueryFilter.areaMask = NavMesh.AllAreas;
+			navMeshQueryFilter.agentTypeID = _agentTypeID;
+
+			if (NavMesh.SamplePosition(desirePosition, out hit, 1.0f, navMeshQueryFilter))
+			{
+				Vector3 diff = hit.position - BattleInstanceManager.instance.playerActor.cachedTransform.position;
+				diff.y = 0.0f;
+				if (diff.sqrMagnitude > (1.5f * 1.5f))
+					return hit.position;
+			}
+
+			// exception handling
+			++tryBreakCount;
+			if (tryBreakCount > 200)
+			{
+				Debug.LogErrorFormat("Summon Random Position Error.");
+				return desirePosition;
+			}
+		}
 	}
 
 	// 위임 객체가 없기 때문에 리스트로 관리할 순 없고 예약은 1개만 가능하다.

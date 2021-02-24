@@ -91,6 +91,30 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!114 &-7837221564365441361
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8516055b55eb644780db6f97bb409f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0
+  EndTime: 0.5
+  lookAtTarget: 0
+  leftRightRandomAngle: 0
+  lootAtTargetOffsetAngle: 0
+  lookAtRandom: 0
+  desireDistance: 5
+  minimumDistance: 0
+  lookAtWorldPosition: 1
+  worldPosition: {x: 0, y: 0, z: 0}
+  lerpPower: 10
+  boneName: 
 --- !u!1102 &-7677008457743633062
 AnimatorState:
   serializedVersion: 5
@@ -153,7 +177,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6dd69c027857c1a40a0f86487312847f, type: 3}
   m_Name: 
@@ -192,7 +216,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartTime: 0.13
-  EndTime: 0.31
+  EndTime: 0.25
   useLocalPositionX: 0
   curveX:
     serializedVersion: 2
@@ -214,20 +238,20 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 4.040913
-      outSlope: 4.040913
+      inSlope: 5.1123233
+      outSlope: 5.1123233
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.056220096
+      outWeight: 0.036516853
     - serializedVersion: 3
       time: 1
-      value: 3
-      inSlope: 2.4173312
-      outSlope: 2.4173312
+      value: 4
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.056220114
+      inWeight: 0
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -628,7 +652,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6dd69c027857c1a40a0f86487312847f, type: 3}
   m_Name: 
@@ -674,7 +698,6 @@ AnimatorState:
   - {fileID: 8015874969618347690}
   - {fileID: 906515853092365785}
   - {fileID: 7353047267681241605}
-  - {fileID: 3832634345421719813}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -696,7 +719,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6dd69c027857c1a40a0f86487312847f, type: 3}
   m_Name: 
@@ -761,6 +784,7 @@ AnimatorState:
   - {fileID: -7563752004418218998}
   - {fileID: 335340434174517084}
   - {fileID: -27556485782030938}
+  - {fileID: -7837221564365441361}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -875,13 +899,13 @@ MonoBehaviour:
   repeatSpeedChange: 0
   overrideSpeedOnCollision: 0
   overrideSpeedTimeOnCollision: 0
-  curve: 60
+  curve: 30
   useCurveChange: 1
   targetCurve: 0
   curveChangeTime: 2.5
   curveChangeEase: 6
   curveLockY: 1
-  curveStartDelayTime: 0
+  curveStartDelayTime: 1
   followLastPositionWhenDieTarget: 0
   followMeOnHitTarget: 0
   followMinRange: 0
@@ -1225,7 +1249,7 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: AttackAniSpeedRatio
---- !u!114 &-987651891028637622
+--- !u!114 &-991313078801496918
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1233,6 +1257,21 @@ MonoBehaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 103a63d9ada304948adbac0e5356a9c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.5
+  EndTime: 1
+  enable: 1
+--- !u!114 &-987651891028637622
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6dd69c027857c1a40a0f86487312847f, type: 3}
   m_Name: 
@@ -1428,10 +1467,28 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  useLocalPositionZ: 0
+  useLocalPositionZ: 1
   curveZ:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 5
+      outSlope: 5
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 5
+      inSlope: 5
+      outSlope: 5
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -1451,7 +1508,7 @@ MonoBehaviour:
   EndTime: 0.48
   distanceOffset: 1.1
   randomPositionRadiusRange: {x: 0.2, y: 0.2}
-  maxDistance: 5.5
+  maxDistance: 4.5
   useTransform: 1
   transformMoveUseDelta: 0
   updateTargetPosition: 0
@@ -1473,7 +1530,7 @@ AnimatorStateTransition:
   serializedVersion: 3
   m_TransitionDuration: 0.10000013
   m_TransitionOffset: 0
-  m_ExitTime: 0.8000001
+  m_ExitTime: 0.9
   m_HasExitTime: 1
   m_HasFixedDuration: 0
   m_InterruptionSource: 0
@@ -1651,7 +1708,7 @@ MonoBehaviour:
   EndTime: 0.48
   distanceOffset: 1.1
   randomPositionRadiusRange: {x: 0.2, y: 0.2}
-  maxDistance: 5.5
+  maxDistance: 4.5
   useTransform: 1
   transformMoveUseDelta: 0
   updateTargetPosition: 0
@@ -1721,7 +1778,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6dd69c027857c1a40a0f86487312847f, type: 3}
   m_Name: 
@@ -1763,6 +1820,7 @@ AnimatorState:
   - {fileID: -1330233915793445654}
   - {fileID: 4778462179385860829}
   - {fileID: 8633547214084321482}
+  - {fileID: -991313078801496918}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -1852,21 +1910,6 @@ MonoBehaviour:
   worldPosition: {x: 0, y: 0, z: 0}
   lerpPower: 1
   boneName: 
---- !u!114 &3832634345421719813
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 103a63d9ada304948adbac0e5356a9c9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTime: 0.5
-  EndTime: 1
-  enable: 1
 --- !u!114 &4141272230442643233
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1880,7 +1923,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartTime: 0.33
-  EndTime: 0.51
+  EndTime: 0.45
   useLocalPositionX: 0
   curveX:
     serializedVersion: 2
@@ -1902,20 +1945,20 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 4.040913
-      outSlope: 4.040913
+      inSlope: 6.3955293
+      outSlope: 6.3955293
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.056220096
+      outWeight: 0.027153557
     - serializedVersion: 3
       time: 1
-      value: 3
-      inSlope: 2.4173312
-      outSlope: 2.4173312
+      value: 4
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.056220114
+      inWeight: 0
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -2124,7 +2167,7 @@ MonoBehaviour:
   EndTime: 0.48
   distanceOffset: 1.1
   randomPositionRadiusRange: {x: 0.2, y: 0.2}
-  maxDistance: 5.5
+  maxDistance: 4.5
   useTransform: 1
   transformMoveUseDelta: 0
   updateTargetPosition: 0
@@ -2193,14 +2236,14 @@ MonoBehaviour:
   StartTime: 0
   EndTime: 0.13
   lookAtTarget: 1
-  leftRightRandomAngle: 20
+  leftRightRandomAngle: 10
   lootAtTargetOffsetAngle: 0
   lookAtRandom: 0
   desireDistance: 5
   minimumDistance: 0
   lookAtWorldPosition: 0
   worldPosition: {x: 0, y: 0, z: 0}
-  lerpPower: 30
+  lerpPower: 15
   boneName: 
 --- !u!114 &5444794276653154577
 MonoBehaviour:
@@ -2217,14 +2260,14 @@ MonoBehaviour:
   StartTime: 0.315
   EndTime: 0.33
   lookAtTarget: 1
-  leftRightRandomAngle: 20
+  leftRightRandomAngle: 10
   lootAtTargetOffsetAngle: 0
   lookAtRandom: 0
   desireDistance: 5
   minimumDistance: 0
   lookAtWorldPosition: 0
   worldPosition: {x: 0, y: 0, z: 0}
-  lerpPower: 60
+  lerpPower: 30
   boneName: 
 --- !u!1102 &6487498419641233720
 AnimatorState:
@@ -2234,7 +2277,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: RushAttack1
-  m_Speed: 0.6
+  m_Speed: 0.5
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: -400902963814577136}
@@ -2297,7 +2340,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartTime: 0.35
-  EndTime: 0.51
+  EndTime: 0.45
   targetDetectType: 1
   presetType: 0
   multiPresetCount: 0
@@ -2326,7 +2369,7 @@ MonoBehaviour:
   areaDistanceMax: 1.7
   areaHeightMin: 0
   areaHeightMax: 2
-  areaAngle: 25
+  areaAngle: 18
   checkRaycastWallInArea: 1
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 1
@@ -2459,7 +2502,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartTime: 0.15
-  EndTime: 0.31
+  EndTime: 0.25
   targetDetectType: 1
   presetType: 0
   multiPresetCount: 0
@@ -2488,7 +2531,7 @@ MonoBehaviour:
   areaDistanceMax: 1.7
   areaHeightMin: 0
   areaHeightMax: 2
-  areaAngle: 25
+  areaAngle: 18
   checkRaycastWallInArea: 1
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 1

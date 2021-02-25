@@ -103,6 +103,8 @@ public class BurrowAffector : AffectorBase
 
 		_remainAttackCount = _affectorValueLevelTableData.iValue2;
 		_attackDelayRemainTime = _affectorValueLevelTableData.fValue3;
+		_damageCountMaxForCancel = _affectorValueLevelTableData.iValue3;
+		_damageCountForCancel = 0;
 
 #if UNITY_EDITOR
 		if (_remainAttackCount == 0) Debug.LogErrorFormat("BurrowAffector Invalid Data : iValue2 is zero");
@@ -187,6 +189,15 @@ public class BurrowAffector : AffectorBase
 		_actor.actionController.PlayActionByActionName("Idle");
 		_actor.EnableAI(true);
 		finalized = true;
+
+		// 피격 횟수로 인한 캔슬 카운트가 0보다 크다면 아마도 보스일 것이다. 이땐 잠시 무적을 걸어서 다음번 공격이 나갈때까지 다시 버로우 되지 않도록 처리한다.
+		if (_affectorValueLevelTableData.iValue3 > 0)
+		{
+			eAffectorType affectorType = eAffectorType.Invincible;
+			AffectorValueLevelTableData invincibleAffectorValue = new AffectorValueLevelTableData();
+			invincibleAffectorValue.fValue1 = 2.0f;
+			_affectorProcessor.ExecuteAffectorValueWithoutTable(affectorType, invincibleAffectorValue, _actor, false);
+		}
 	}
 
 	bool CheckBurrow()
@@ -214,6 +225,25 @@ public class BurrowAffector : AffectorBase
 		return true;
 	}
 
+	int _damageCountMaxForCancel;
+	int _damageCountForCancel;
+	void OnDamage()
+	{
+		if (_damageCountMaxForCancel == 0)
+			return;
+
+		if (CheckBurrow() == false)
+			return;
+
+		++_damageCountForCancel;
+		if (_damageCountForCancel >= _damageCountMaxForCancel)
+		{
+			// 시간이 다된거처럼 처리해야한다.
+			_attackDelayRemainTime = _affectorValueLevelTableData.fValue1;
+			_burrowEndRemainTime = 0.001f;
+		}
+	}
+
 	public static bool CheckBurrow(AffectorProcessor affectorProcessor)
 	{
 		BurrowAffector burrowAffector = (BurrowAffector)affectorProcessor.GetFirstContinuousAffector(eAffectorType.Burrow);
@@ -230,5 +260,14 @@ public class BurrowAffector : AffectorBase
 			return false;
 
 		return burrowAffector.CheckDie();
+	}
+
+	public static void OnDamage(AffectorProcessor affectorProcessor)
+	{
+		BurrowAffector burrowAffector = (BurrowAffector)affectorProcessor.GetFirstContinuousAffector(eAffectorType.Burrow);
+		if (burrowAffector == null)
+			return;
+
+		burrowAffector.OnDamage();
 	}
 }

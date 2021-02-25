@@ -217,7 +217,8 @@ public class MainSceneBuilder : MonoBehaviour
 			yield return null;
 		if (_handleTableDataManager.Status != AsyncOperationStatus.Succeeded)
 		{
-			//MainSceneBuildFailed();
+			// 처음으로 시도하는 url 다운로드에서 에러가 난거니 서버와의 접속 오류를 표시하고 씬을 재시작시켜본다.
+			PlayFabApiManager.instance.HandleCommonError();
 			yield break;
 		}
 		Instantiate<GameObject>(_handleTableDataManager.Result);

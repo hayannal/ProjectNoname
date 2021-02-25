@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class ChangeAttackStateByDistanceAffector : AffectorBase
 {
+	bool _checkBurrow = false;
 	float _baseDistance = 0.0f;
 	int _actionNameHash = 0;
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
@@ -20,6 +21,7 @@ public class ChangeAttackStateByDistanceAffector : AffectorBase
 			return;
 		}
 
+		_checkBurrow = (affectorValueLevelTableData.iValue1 == 1);
 		_baseDistance = affectorValueLevelTableData.fValue1;
 		_actionNameHash = Animator.StringToHash(affectorValueLevelTableData.sValue1);
 	}
@@ -29,6 +31,24 @@ public class ChangeAttackStateByDistanceAffector : AffectorBase
 		TargetingProcessor targetingProcessor = _actor.targetingProcessor;
 		if (targetingProcessor.GetTarget() == null)
 			return false;
+		AffectorProcessor targetAffectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(targetingProcessor.GetTarget());
+		if (targetAffectorProcessor == null)
+			return false;
+
+		// 타겟이 버로우면
+		if (_checkBurrow)
+		{
+			bool applyChange = false;
+			if (targetAffectorProcessor.IsContinuousAffectorType(eAffectorType.Burrow))
+				applyChange = true;
+			if (applyChange == false && BurrowOnStartAffector.CheckBurrow(targetAffectorProcessor))
+				applyChange = true;
+			if (applyChange)
+			{
+				actionNameHash = _actionNameHash;
+				return true;
+			}
+		}
 
 		Vector3 targetPosition = targetingProcessor.GetTargetPosition();
 		Vector3 diff = targetPosition - _actor.cachedTransform.position;

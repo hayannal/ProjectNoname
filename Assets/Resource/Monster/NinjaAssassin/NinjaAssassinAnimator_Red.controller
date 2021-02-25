@@ -16,15 +16,11 @@ AnimatorState:
   - {fileID: -2029008854774472680}
   - {fileID: 9054498492453637403}
   - {fileID: 8903951199580086983}
-  - {fileID: -7179209164401688981}
-  - {fileID: -987651891028637622}
   - {fileID: -4877039885829546243}
   - {fileID: 4457848009123950331}
   - {fileID: 5058052091546857237}
   - {fileID: 1062116695291765779}
   - {fileID: -4521004047934375293}
-  - {fileID: 2106146976546058589}
-  - {fileID: -4234195585443950769}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -170,39 +166,6 @@ MonoBehaviour:
   StartTime: 0.19
   EndTime: 0.48
   state: 6
---- !u!114 &-7179209164401688981
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6dd69c027857c1a40a0f86487312847f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTime: 0.9
-  EndTime: 0.9
-  summonPrefab: {fileID: 1008095049274550713, guid: db57d4bd1e9f0284e901a6ae6ab43d47,
-    type: 3}
-  summonMonster: 1
-  applyParentTeamId: 0
-  excludeMonsterCount: 0
-  createPositionType: 4
-  offset: {x: 0, y: 0, z: 0}
-  randomPositionRadiusRange: {x: 0, y: 0}
-  direction: {x: 0, y: 0, z: 1}
-  checkNavPosition: 1
-  calcCreatePositionInEndSignal: 1
-  disableOnMapChanged: 0
-  castingLoopEffectPrefab: {fileID: 0}
-  noLoop: 0
-  summonEffectPrefab: {fileID: 1961478501609223962, guid: 256189656cab2ea46a0ac087f3ac5d7c,
-    type: 3}
-  activeMaxCount: 0
-  prevObjectDisableEffectPrefab: {fileID: 0}
-  spawnDelay: 0.8
 --- !u!114 &-7041609915807361833
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -652,7 +615,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6dd69c027857c1a40a0f86487312847f, type: 3}
   m_Name: 
@@ -712,39 +675,6 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: AttackAniSpeedRatio
---- !u!114 &-4234195585443950769
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6dd69c027857c1a40a0f86487312847f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTime: 0.9
-  EndTime: 0.9
-  summonPrefab: {fileID: 8183109732966392227, guid: 674799dbbd57aec40a838580e3192bfa,
-    type: 3}
-  summonMonster: 1
-  applyParentTeamId: 0
-  excludeMonsterCount: 0
-  createPositionType: 4
-  offset: {x: 0, y: 0, z: 0}
-  randomPositionRadiusRange: {x: 0, y: 0}
-  direction: {x: 0, y: 0, z: 1}
-  checkNavPosition: 1
-  calcCreatePositionInEndSignal: 1
-  disableOnMapChanged: 0
-  castingLoopEffectPrefab: {fileID: 0}
-  noLoop: 0
-  summonEffectPrefab: {fileID: 1961478501609223962, guid: 256189656cab2ea46a0ac087f3ac5d7c,
-    type: 3}
-  activeMaxCount: 0
-  prevObjectDisableEffectPrefab: {fileID: 0}
-  spawnDelay: 0.8
 --- !u!114 &-3949385338227559684
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1264,39 +1194,6 @@ MonoBehaviour:
   StartTime: 0.5
   EndTime: 1
   enable: 1
---- !u!114 &-987651891028637622
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6dd69c027857c1a40a0f86487312847f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTime: 0.9
-  EndTime: 0.9
-  summonPrefab: {fileID: 1008095049274550713, guid: db57d4bd1e9f0284e901a6ae6ab43d47,
-    type: 3}
-  summonMonster: 1
-  applyParentTeamId: 0
-  excludeMonsterCount: 0
-  createPositionType: 4
-  offset: {x: 0, y: 0, z: 0}
-  randomPositionRadiusRange: {x: 0, y: 0}
-  direction: {x: 0, y: 0, z: 1}
-  checkNavPosition: 1
-  calcCreatePositionInEndSignal: 1
-  disableOnMapChanged: 0
-  castingLoopEffectPrefab: {fileID: 0}
-  noLoop: 0
-  summonEffectPrefab: {fileID: 1961478501609223962, guid: 256189656cab2ea46a0ac087f3ac5d7c,
-    type: 3}
-  activeMaxCount: 0
-  prevObjectDisableEffectPrefab: {fileID: 0}
-  spawnDelay: 0.8
 --- !u!1101 &-954766939797887295
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -1771,39 +1668,6 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!114 &2106146976546058589
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6dd69c027857c1a40a0f86487312847f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTime: 0.9
-  EndTime: 0.9
-  summonPrefab: {fileID: 8183109732966392227, guid: 674799dbbd57aec40a838580e3192bfa,
-    type: 3}
-  summonMonster: 1
-  applyParentTeamId: 0
-  excludeMonsterCount: 0
-  createPositionType: 4
-  offset: {x: 0, y: 0, z: 0}
-  randomPositionRadiusRange: {x: 0, y: 0}
-  direction: {x: 0, y: 0, z: 1}
-  checkNavPosition: 1
-  calcCreatePositionInEndSignal: 1
-  disableOnMapChanged: 0
-  castingLoopEffectPrefab: {fileID: 0}
-  noLoop: 0
-  summonEffectPrefab: {fileID: 1961478501609223962, guid: 256189656cab2ea46a0ac087f3ac5d7c,
-    type: 3}
-  activeMaxCount: 0
-  prevObjectDisableEffectPrefab: {fileID: 0}
-  spawnDelay: 0.8
 --- !u!1102 &2498183352960982509
 AnimatorState:
   serializedVersion: 5

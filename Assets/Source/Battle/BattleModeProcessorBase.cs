@@ -555,6 +555,17 @@ public class BattleModeProcessorBase
 				clear = true;
 		}
 
+		// 패킷처리 완료 후 나올 결과창에서 아이콘이 느리게 보이는걸 방지하기 위해 아이콘의 프리로드를 진행한다.
+		List<ObscuredString> listDropItemId = DropManager.instance.GetStackedDropEquipList();
+		for (int i = 0; i < listDropItemId.Count; ++i)
+		{
+			EquipTableData equipTableData = TableDataManager.instance.FindEquipTableData(listDropItemId[i]);
+			if (equipTableData == null)
+				continue;
+
+			AddressableAssetLoadManager.GetAddressableSprite(equipTableData.shotAddress, "Icon", null);
+		}
+
 		PlayFabApiManager.instance.RequestEndGame(clear, PlayerData.instance.currentChaosMode, StageManager.instance.playChapter, StageManager.instance.playStage - 1,
 			DropManager.instance.GetStackedDropGold(), DropManager.instance.GetStackedDropSeal(), DropManager.instance.GetStackedDropEquipList(), (result, newCharacterId, itemGrantString) =>
 		{

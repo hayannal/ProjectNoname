@@ -195,7 +195,7 @@ public class BurrowAffector : AffectorBase
 		{
 			eAffectorType affectorType = eAffectorType.Invincible;
 			AffectorValueLevelTableData invincibleAffectorValue = new AffectorValueLevelTableData();
-			invincibleAffectorValue.fValue1 = 2.0f;
+			invincibleAffectorValue.fValue1 = 1.0f;
 			_affectorProcessor.ExecuteAffectorValueWithoutTable(affectorType, invincibleAffectorValue, _actor, false);
 		}
 	}

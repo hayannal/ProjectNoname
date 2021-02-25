@@ -86,17 +86,16 @@ public class SwapCanvas : MonoBehaviour
 		// 플레이 중에는 현재 적용중인 패널티를 보여주면 된다. 로비에서 뜰때는 보여주기가 애매해서 띄우지 않는다.
 		stagePenaltyText.gameObject.SetActive(false);
 		string penaltyString = "";
-		if (BattleInstanceManager.instance.playerActor.currentStagePenaltyTableData != null)
+		if (MainSceneBuilder.instance.lobby == false && BattleInstanceManager.instance.playerActor.currentStagePenaltyTableData != null)
 		{
 			StagePenaltyTableData stagePenaltyTableData = BattleInstanceManager.instance.playerActor.currentStagePenaltyTableData;
 			string[] nameParameterList = UIString.instance.ParseParameterString(stagePenaltyTableData.nameParameter);
 			penaltyString = UIString.instance.GetString(stagePenaltyTableData.penaltyName, nameParameterList);
 		}
-		// 이렇게 게이트필라 쳐서 나오는 SwapCanvas에서는 1층에 설정된거 뽑아와서 보여줄 수도 있긴 한데(카오스에 설정된 것도 보여줄 수 있다.)
-		// 카오스는 이런거 신경쓰지 않고 입장하기로 했기 때문에
-		// 그리고 레벨이 낮을때만 뜨는것도 이상한거 같아서(챕터 선택창에 뜨기도 했었으니) 아예 로비에서 뜨는 SwapCanvas에서는 보여주지 않기로 결정했다.
-		//else		
-		//	penaltyString = ChapterCanvas.GetPenaltyString(StageDataManager.instance.nextStageTableData);
+		if (MainSceneBuilder.instance.lobby && PlayerData.instance.currentChaosMode == false)
+		{
+			penaltyString = ChapterCanvas.GetPenaltyString(StageDataManager.instance.nextStageTableData);
+		}
 		if (string.IsNullOrEmpty(penaltyString) == false)
 		{
 			stagePenaltyText.SetLocalizedText(penaltyString);

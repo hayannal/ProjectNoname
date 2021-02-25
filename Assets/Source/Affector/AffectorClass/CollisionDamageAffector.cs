@@ -63,7 +63,12 @@ public class CollisionDamageAffector : AffectorBase
 		_actor.actorStatus.AddHP(-damage);
 		ChangeActorStatusAffector.OnDamage(_affectorProcessor);
 		CallAffectorValueAffector.OnEvent(_affectorProcessor, CallAffectorValueAffector.eEventType.OnDamage, damage);
+
+		// 마인으로 몬스터 공격할때는 이 어펙터를 사용하므로 몬스터꺼도 호출해주긴 해야한다.
+		MonsterSleepingAffector.OnDamage(_affectorProcessor);
+		CastAffector.OnDamage(_affectorProcessor);
 		AddAttackByContinuousKillAffector.OnDamage(_affectorProcessor);
+		BurrowAffector.OnDamage(_affectorProcessor);
 
 #if UNITY_EDITOR
 		//Debug.LogFormat("Current = {0} / Max = {1} / Damage = {2} / frameCount = {3} : CollisionDamage", _actor.actorStatus.GetHP(), _actor.actorStatus.GetValue(eActorStatus.MaxHp), damage, Time.frameCount);

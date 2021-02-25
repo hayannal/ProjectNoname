@@ -427,6 +427,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 			yield return Timing.WaitForSeconds(0.8f);
 
 		// 드랍프로세서를 작동
+		_dropProcessor.cachedTransform.position = _randomBoxAnimator.cachedTransform.position;
 		_dropProcessor.StartDrop();
 
 		// 드랍프로세서는 드랍이 끝나면 알아서 active false로 바뀔테니 그때를 기다린다.

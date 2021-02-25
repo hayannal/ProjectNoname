@@ -16,7 +16,9 @@ public class DailyShopMinorInfo : MonoBehaviour
 
 	int _itemCountOfLine = 3;
 	float _defaultHeight = 512.0f;
+	int _normalCharacterCountConditionForSlotAdd = 4;
 	int[] _slotAddChapterList = {4, 6, 8};
+	int[] _slotAddIdList = {5, 6, 7};
 
 	public void RefreshInfo()
 	{
@@ -43,16 +45,34 @@ public class DailyShopMinorInfo : MonoBehaviour
 		}
 
 		// 각각의 슬롯 정보를 확인했으면 슬롯 확장이 되는 상태인지를 봐야한다.
+		// 일반 캐릭터가 4명 이상일때만 확장이 가능하다.
 		bool showShopSlotAddButton = false;
+		int normalCharacterCount = 0;
 		int currentShopUnlockLevel = DailyShopData.instance.unlockLevel;
-		for (int i = 0; i < _slotAddChapterList.Length; ++i)
+		List<CharacterData> listCharacterData = PlayerData.instance.listCharacterData;
+		for (int i = 0; i < listCharacterData.Count; ++i)
 		{
-			if (PlayerData.instance.highestPlayChapter >= _slotAddChapterList[i])
+			ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(listCharacterData[i].actorId);
+			if (actorTableData.grade == 0)
+				++normalCharacterCount;
+		}
+		if (normalCharacterCount >= _normalCharacterCountConditionForSlotAdd)
+		{
+			for (int i = 0; i < _slotAddChapterList.Length; ++i)
 			{
-				if (currentShopUnlockLevel < (i + 1))
+				if (PlayerData.instance.highestPlayChapter >= _slotAddChapterList[i])
 				{
-					showShopSlotAddButton = true;
-					break;
+					if (currentShopUnlockLevel < (i + 1))
+					{
+						// 예외처리 체크해야할게 하나 있다.
+						// 이번에 확장될 슬롯이 하필 Visible 조건에 충족되지 않으면 보이면 안된다.
+						DailyShopData.DailyShopSlotInfo dailyShopSlotInfoForAdd = DailyShopData.instance.GetTodayShopData(_slotAddIdList[i]);
+						if (dailyShopSlotInfoForAdd == null || DailyShopListItem.CheckVisible(dailyShopSlotInfoForAdd) == false)
+							break;
+
+						showShopSlotAddButton = true;
+						break;
+					}
 				}
 			}
 		}

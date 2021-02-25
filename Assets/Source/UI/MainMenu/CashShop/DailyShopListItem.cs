@@ -117,7 +117,7 @@ public class DailyShopListItem : MonoBehaviour
 		return true;
 	}
 
-	bool CheckVisible(DailyShopData.DailyShopSlotInfo dailyShopSlotInfo)
+	public static bool CheckVisible(DailyShopData.DailyShopSlotInfo dailyShopSlotInfo)
 	{
 		// 예외상황이 하나 있는데 영입하지 않은 노멀 캐릭터가 하나 남은 상태에서 bn 상품으로 마지막 노멀 캐릭터를 영입하면
 		// 구매완료 대신 아예 Visible에서 false가 되면서 항목 자체가 사라져버린다.

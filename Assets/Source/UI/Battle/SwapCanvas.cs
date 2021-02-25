@@ -86,7 +86,7 @@ public class SwapCanvas : MonoBehaviour
 		// 플레이 중에는 현재 적용중인 패널티를 보여주면 된다. 로비에서 뜰때는 보여주기가 애매해서 띄우지 않는다.
 		stagePenaltyText.gameObject.SetActive(false);
 		string penaltyString = "";
-		if (MainSceneBuilder.instance.lobby == false && BattleInstanceManager.instance.playerActor.currentStagePenaltyTableData != null)
+		if (BattleInstanceManager.instance.playerActor.currentStagePenaltyTableData != null)
 		{
 			StagePenaltyTableData stagePenaltyTableData = BattleInstanceManager.instance.playerActor.currentStagePenaltyTableData;
 			string[] nameParameterList = UIString.instance.ParseParameterString(stagePenaltyTableData.nameParameter);

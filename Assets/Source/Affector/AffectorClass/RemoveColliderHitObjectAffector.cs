@@ -91,6 +91,9 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 			if (hitObject == null)
 				continue;
 
+			if (hitObject.IsIgnoreRemoveColliderAffector())
+				continue;
+
 			// team check
 			if (!Team.CheckTeamFilter(_actor.team.teamId, hitObject.statusStructForHitObject.teamId, Team.eTeamCheckFilter.Enemy))
 				continue;

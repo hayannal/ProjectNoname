@@ -284,6 +284,9 @@ public class PlayerAI : MonoBehaviour
 			if (hitObject == null)
 				continue;
 
+			if (hitObject.IsIgnoreRemoveColliderAffector())
+				continue;
+
 			// team check
 			if (!Team.CheckTeamFilter(actor.team.teamId, hitObject.statusStructForHitObject.teamId, Team.eTeamCheckFilter.Enemy))
 				continue;

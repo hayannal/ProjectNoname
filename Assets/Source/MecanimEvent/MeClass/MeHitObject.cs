@@ -125,6 +125,9 @@ public class MeHitObject : MecanimEventBase {
 	public bool onlyUsedAsTrigger;
 	public bool oneHitPerTarget = false;
 	public bool useLineRenderer;
+
+	// 특수 프로퍼티
+	public bool ignoreRemoveColliderAffector;
 	
 
 	// 부채꼴을 쓸때 저 위가 되냐 - 안쓸거다
@@ -392,6 +395,7 @@ public class MeHitObject : MecanimEventBase {
 				oneHitPerTarget = EditorGUILayout.Toggle("One Hit Per Target :", oneHitPerTarget);
 			}
 			useLineRenderer = EditorGUILayout.Toggle("Use LineRenderer :", useLineRenderer);
+			ignoreRemoveColliderAffector = EditorGUILayout.Toggle("Ignore Remove Collider", ignoreRemoveColliderAffector);
 			EditorGUILayout.LabelField("-----------------------------------------------------------------");
 		}
 		else if (targetDetectType == HitObject.eTargetDetectType.Area || targetDetectType == HitObject.eTargetDetectType.SphereCast)

@@ -2241,6 +2241,17 @@ public class HitObject : MonoBehaviour
 	#endregion
 
 
+	#region Etc
+	public bool IsIgnoreRemoveColliderAffector()
+	{
+		// Area타입이나 SphereCast타입이면 Collider가 없기 때문에 아예 호출조차 안될거다.
+		if (_signal == null)
+			return false;
+		return _signal.ignoreRemoveColliderAffector;
+	}
+	#endregion
+
+
 
 
 

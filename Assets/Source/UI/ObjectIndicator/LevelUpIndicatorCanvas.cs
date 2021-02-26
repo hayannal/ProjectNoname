@@ -443,6 +443,12 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 			for (int i = 0; i < buttonList.Length; ++i)
 				buttonList[i].gameObject.SetActive(false);
 			OnCompleteLineAnimation();
+
+			// 아이콘 3개가 보이고 나서 갱신되면 헷갈린다. OnClickRefreshButton에서 처리했던거처럼 바로 갱신해주는게 좋아보인다.
+			refreshPriceText.text = GetRefreshPrice().ToString();
+			currentClearPointText.text = BattleManager.instance.GetClearPoint().ToString("N0");
+			bool disablePrice = (BattleManager.instance.GetClearPoint() < GetRefreshPrice());
+			refreshIconImage.color = refreshPriceImage.color = refreshPriceText.color = !disablePrice ? Color.white : Color.gray;
 			return;
 		}
 

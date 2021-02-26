@@ -17,6 +17,7 @@ public class ContinuousHitObjectGeneratorBase : MonoBehaviour
 	public int createCount;
 	public eMoveType moveType = eMoveType.None;
 	public float moveSpeed;
+	public bool checkQuadBound = true;
 	protected int _initializedCreateCount;
 
 	int _fullPathHash;
@@ -131,8 +132,12 @@ public class ContinuousHitObjectGeneratorBase : MonoBehaviour
 		}
 
 		// 이동 후 맵 밖으로 나갔는지 확인해야한다.
-		if (BattleInstanceManager.instance.currentGround != null && BattleInstanceManager.instance.currentGround.IsInQuadBound(cachedTransform.position) == false)
-			return true;
+		if (checkQuadBound)
+		{
+			if (BattleInstanceManager.instance.currentGround != null && BattleInstanceManager.instance.currentGround.IsInQuadBound(cachedTransform.position) == false)
+				return true;
+		}
+
 		return false;
 	}
 

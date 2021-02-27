@@ -6,6 +6,7 @@ using MecanimStateDefine;
 public class ChangeAttackStateByTimeAffector : AffectorBase
 {
 	float _chargingTime = 0.0f;
+	string _onStartStageKey = "";
 	int _actionNameHash = 0;
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
@@ -22,6 +23,7 @@ public class ChangeAttackStateByTimeAffector : AffectorBase
 		}
 
 		_chargingTime = affectorValueLevelTableData.fValue2;
+		_onStartStageKey = affectorValueLevelTableData.sValue2;
 		_actionNameHash = Animator.StringToHash(affectorValueLevelTableData.sValue1);
 	}
 
@@ -30,18 +32,79 @@ public class ChangeAttackStateByTimeAffector : AffectorBase
 		UpdateMovedTime();
 	}
 
+	public override void DisableAffector()
+	{
+		FinalizeAffector();
+	}
+
+	public override void FinalizeAffector()
+	{
+		if (_canvasShowState)
+		{
+			PlayerIgnoreEvadeCanvas.instance.ShowIgnoreEvade(false, null);
+			_canvasShowState = false;
+			_movedTime = 0.0f;
+		}
+	}
+
 	float _movedTime = 0.0f;
+	bool _canvasShowState = false;
 	void UpdateMovedTime()
 	{
 		if (_actor.actionController.mecanimState.IsState((int)eMecanimState.Move) == false)
 			return;
 
-		_movedTime += Time.deltaTime;
+		if (_movedTime < _chargingTime)
+			_movedTime += Time.deltaTime;
+		if (_movedTime > _chargingTime)
+			_movedTime = _chargingTime;
+
+		// UI쪽 처리할땐 로컬 플레이어인지 확인해야한다.
+		if (_actor != BattleInstanceManager.instance.playerActor)
+		{
+			//PlayerIgnoreEvadeCanvas.instance.ShowIgnoreEvade(false, null);
+			return;
+		}
+
+		if (_movedTime > 0.0f && _canvasShowState == false)
+		{
+			PlayerIgnoreEvadeCanvas.instance.ShowIgnoreEvade(true, BattleInstanceManager.instance.playerActor);
+			PlayerIgnoreEvadeCanvas.instance.SetImageType(PlayerIgnoreEvadeCanvas.eImageType.Charging);
+			_canvasShowState = true;
+		}
+
+		if (_canvasShowState)
+			PlayerIgnoreEvadeCanvas.instance.SetPercent(_movedTime / _chargingTime);
 	}
 
 	void OnEventNormalAttack()
 	{
 		_movedTime = 0.0f;
+
+		if (_canvasShowState)
+		{
+			PlayerIgnoreEvadeCanvas.instance.ShowIgnoreEvade(false, null);
+			_canvasShowState = false;
+		}
+	}
+
+	void OnEventStartStage()
+	{
+		if (string.IsNullOrEmpty(_onStartStageKey))
+			return;
+
+		if (DefaultContainerAffector.ContainsValue(_affectorProcessor, _onStartStageKey) == false)
+			return;
+
+		if (_canvasShowState == false)
+		{
+			PlayerIgnoreEvadeCanvas.instance.ShowIgnoreEvade(true, BattleInstanceManager.instance.playerActor);
+			PlayerIgnoreEvadeCanvas.instance.SetImageType(PlayerIgnoreEvadeCanvas.eImageType.Charging);
+			_canvasShowState = true;
+		}
+
+		_movedTime = _chargingTime;
+		PlayerIgnoreEvadeCanvas.instance.SetPercent(1.0f);
 	}
 
 	bool CheckChange(ref int actionNameHash)
@@ -61,6 +124,15 @@ public class ChangeAttackStateByTimeAffector : AffectorBase
 			return;
 
 		changeAttackStateByTimeAffector.OnEventNormalAttack();
+	}
+
+	public static void OnEventStartStage(AffectorProcessor affectorProcessor)
+	{
+		ChangeAttackStateByTimeAffector changeAttackStateByTimeAffector = (ChangeAttackStateByTimeAffector)affectorProcessor.GetFirstContinuousAffector(eAffectorType.ChangeAttackStateByTime);
+		if (changeAttackStateByTimeAffector == null)
+			return;
+
+		changeAttackStateByTimeAffector.OnEventStartStage();
 	}
 
 	public static void CheckChange(AffectorProcessor affectorProcessor, ref int actionNameHash)

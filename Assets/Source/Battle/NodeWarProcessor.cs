@@ -197,6 +197,8 @@ public class NodeWarProcessor : BattleModeProcessorBase
 
 		// 패시브 스킬로 OnStartStage 이벤트 쓰는 캐릭들이 있어서 추가해둔다. 대표적으로 스팀펑크 로봇.
 		CallAffectorValueAffector.OnEvent(BattleInstanceManager.instance.playerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnStartStage);
+
+		// 조우시 차징 100% 되는 SciFiWarrior도 추가되었지만 금방 충전되기도 하고 스팀펑크 로봇처럼 필수가 아니라서 패스하기로 한다.
 	}
 
 	public override NodeWarTableData GetSelectedNodeWarTableData()

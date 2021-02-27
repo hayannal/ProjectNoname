@@ -141,7 +141,10 @@ public class BattleModeProcessorBase
 		// 호출 순서상 CallAffectorValueAffector.eEventType.OnStartStage 보다는 앞에 호출되어야해서 위로 올려둔다.
 		InitializeInProgressGame();
 		if (callOnStartStage && BattleInstanceManager.instance.playerActor != null)
+		{
 			CallAffectorValueAffector.OnEvent(BattleInstanceManager.instance.playerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnStartStage);
+			ChangeAttackStateByTimeAffector.OnEventStartStage(BattleInstanceManager.instance.playerActor.affectorProcessor);
+		}
 
 #if HUDDPS
 #if UNITY_EDITOR

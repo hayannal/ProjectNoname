@@ -32,6 +32,7 @@ public enum eAffectorType
 	RemoveColliderHitObject,
 	ChangeAttackState,
 	ChangeAttackStateByDistance,
+	ChangeAttackStateByTime,
 	TimeSlow,
 	HitFlag,
 

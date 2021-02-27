@@ -34,6 +34,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.RemoveColliderHitObject: affectorBase = new RemoveColliderHitObjectAffector(); break;
 			case eAffectorType.ChangeAttackState: affectorBase = new ChangeAttackStateAffector(); break;
 			case eAffectorType.ChangeAttackStateByDistance: affectorBase = new ChangeAttackStateByDistanceAffector(); break;
+			case eAffectorType.ChangeAttackStateByTime: affectorBase = new ChangeAttackStateByTimeAffector(); break;
 			case eAffectorType.TimeSlow: affectorBase = new TimeSlowAffector(); break;
 			case eAffectorType.HitFlag: affectorBase = new HitFlagAffector(); break;
 			case eAffectorType.MonsterThroughHitObject: affectorBase = new MonsterThroughHitObjectAffector(); break;
@@ -112,6 +113,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.RemoveColliderHitObject:
 			case eAffectorType.ChangeAttackState:
 			case eAffectorType.ChangeAttackStateByDistance:
+			case eAffectorType.ChangeAttackStateByTime:
 			case eAffectorType.TimeSlow:
 			case eAffectorType.HitFlag:
 			case eAffectorType.MonsterThroughHitObject:

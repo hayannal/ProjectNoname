@@ -94,7 +94,8 @@ public class DelayedBaseDamageAffector : AffectorBase
 		if (_baseDamageAffectorValue == null)
 		{
 			_baseDamageAffectorValue = new AffectorValueLevelTableData();
-			_baseDamageAffectorValue.fValue1 = _affectorValueLevelTableData.fValue1;			
+			_baseDamageAffectorValue.fValue1 = _affectorValueLevelTableData.fValue1;
+			_baseDamageAffectorValue.iValue3 = _affectorValueLevelTableData.iValue3;
 		}
 		_affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.BaseDamage, _baseDamageAffectorValue, _affackerActor, false);
 		HitRimBlink.ShowHitRimBlink(_affectorProcessor.cachedTransform, _affectorProcessor.cachedTransform.forward);

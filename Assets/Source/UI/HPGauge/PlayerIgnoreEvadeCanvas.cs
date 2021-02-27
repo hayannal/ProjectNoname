@@ -27,6 +27,13 @@ public class PlayerIgnoreEvadeCanvas : MonoBehaviour
 	}
 	static PlayerIgnoreEvadeCanvas _instance = null;
 
+	public enum eImageType
+	{
+		Accuracy,
+		Charging,
+	}
+
+	public GameObject[] imageObjectList;
 	public Text percentText;
 	
 	void Start()
@@ -58,6 +65,12 @@ public class PlayerIgnoreEvadeCanvas : MonoBehaviour
 		_offsetY = playerActor.gaugeOffsetY;
 		_targetTransform = playerActor.cachedTransform;
 		GetTargetHeight(_targetTransform);
+	}
+
+	public void SetImageType(eImageType imageType)
+	{
+		for (int i = 0; i < imageObjectList.Length; ++i)
+			imageObjectList[i].SetActive((int)imageType == i);
 	}
 
 	public void SetPercent(float rate)

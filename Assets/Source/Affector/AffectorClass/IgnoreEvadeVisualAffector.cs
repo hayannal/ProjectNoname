@@ -83,6 +83,7 @@ public class IgnoreEvadeVisualAffector : AffectorBase
 			_initEvade = evadeRate;
 			_currentIgnoreEvade = 1.0f - _initEvade;
 			PlayerIgnoreEvadeCanvas.instance.ShowIgnoreEvade(true, BattleInstanceManager.instance.playerActor);
+			PlayerIgnoreEvadeCanvas.instance.SetImageType(PlayerIgnoreEvadeCanvas.eImageType.Accuracy);
 			PlayerIgnoreEvadeCanvas.instance.SetPercent(_currentIgnoreEvade);
 			_canvasShowState = true;
 		}

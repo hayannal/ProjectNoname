@@ -38,6 +38,12 @@ public class ChangeAttackStateAffector : AffectorBase
 		}
 	}
 
+	void OnEventStartStage()
+	{
+		if (_swapTypeValue == 1)
+			_count = 0;
+	}
+
 	bool CheckChange(ref int actionNameHash)
 	{
 		if (_swapTypeValue == 1)
@@ -63,6 +69,15 @@ public class ChangeAttackStateAffector : AffectorBase
 			return;
 
 		changeAttackStateAffector.OnEventNormalAttack();
+	}
+
+	public static void OnEventStartStage(AffectorProcessor affectorProcessor)
+	{
+		ChangeAttackStateAffector changeAttackStateAffector = (ChangeAttackStateAffector)affectorProcessor.GetFirstContinuousAffector(eAffectorType.ChangeAttackState);
+		if (changeAttackStateAffector == null)
+			return;
+
+		changeAttackStateAffector.OnEventStartStage();
 	}
 
 	public static void CheckChange(AffectorProcessor affectorProcessor, ref int actionNameHash)

@@ -33,6 +33,7 @@ public class PlayerIgnoreEvadeCanvas : MonoBehaviour
 		Charging,
 	}
 
+	public GameObject rootObject;
 	public GameObject[] imageObjectList;
 	public Text percentText;
 	
@@ -88,6 +89,29 @@ public class PlayerIgnoreEvadeCanvas : MonoBehaviour
 			{
 				UpdateGaugePosition();
 				_prevTargetPosition = _targetTransform.position;
+			}
+		}
+
+		// 캐릭터창 예외처리. 캐릭터창 안에서는 보이면 안된다. 로비에서만 따로 검사한다.
+		// 그런데 캐릭터창 안에서도 체험모드면 또 보여야해서 CharacterListCanvas의 Stack 여부로는 판단하기가 어렵다.
+		// 그래서 아예 카메라와의 거리를 보고 판단하기로 한다.
+		// 이렇게 처리하면 Accuracy든 Charging이든 상관없이 이후에 어떤 타입이 추가되어도 알아서 다 처리되게 된다.
+		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby)
+		{
+			if (rootObject.activeSelf)
+			{
+				if (CharacterListCanvas.instance != null && StackCanvas.IsInStack(CharacterListCanvas.instance.gameObject, false))
+				{
+					Vector3 diff = CustomFollowCamera.instance.cachedTransform.position - cachedTransform.position;
+					if (diff.x * diff.x + diff.y * diff.y + diff.z * diff.z < 8.0f * 8.0f)
+						rootObject.SetActive(false);
+				}
+			}
+			else
+			{
+				Vector3 diff = CustomFollowCamera.instance.cachedTransform.position - cachedTransform.position;
+				if (diff.x * diff.x + diff.y * diff.y + diff.z * diff.z > 8.0f * 8.0f)
+					rootObject.SetActive(true);
 			}
 		}
 

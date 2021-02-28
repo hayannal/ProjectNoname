@@ -6,6 +6,7 @@ public class ChangeAttackStateAffector : AffectorBase
 {
 	int _swapTypeValue = 0;
 	int _changeCount = 0;
+	string _onStartStageKey = "";
 	int _actionNameHash = 0;
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
@@ -24,6 +25,7 @@ public class ChangeAttackStateAffector : AffectorBase
 		_swapTypeValue = affectorValueLevelTableData.iValue3;
 		if (_swapTypeValue == 1)
 			_changeCount = affectorValueLevelTableData.iValue1;
+		_onStartStageKey = affectorValueLevelTableData.sValue2;
 		_actionNameHash = Animator.StringToHash(affectorValueLevelTableData.sValue1);
 	}
 
@@ -41,7 +43,15 @@ public class ChangeAttackStateAffector : AffectorBase
 	void OnEventStartStage()
 	{
 		if (_swapTypeValue == 1)
+		{
+			if (string.IsNullOrEmpty(_onStartStageKey) == false && DefaultContainerAffector.ContainsValue(_affectorProcessor, _onStartStageKey))
+			{
+				_count = _changeCount - 1;
+				return;
+			}
+
 			_count = 0;
+		}
 	}
 
 	bool CheckChange(ref int actionNameHash)

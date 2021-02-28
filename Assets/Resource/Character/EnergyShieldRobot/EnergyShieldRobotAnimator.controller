@@ -15,6 +15,21 @@ MonoBehaviour:
   StartTime: 0
   EndTime: 1
   state: 1
+--- !u!114 &-6193727489859855113
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2e6805f699075e4eae576dc1aabd338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.001
+  EndTime: 0.16
+  speed: 0.4
 --- !u!1101 &-6133095942530601855
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -228,8 +243,10 @@ MonoBehaviour:
   offset: {x: -0.2, y: 0.8, z: 1.05}
   fixedWorldPositionY: 0
   direction: {x: 0, y: 0, z: 1}
+  useWorldSpaceDirection: 0
   parentName: 
   followPosition: 0
+  immediateDisableFollowEffect: 0
 --- !u!114 &4592927804541963796
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -260,6 +277,7 @@ AnimatorState:
   - {fileID: 6150349524343407894}
   - {fileID: 4592927804541963796}
   - {fileID: 2000037617292275182}
+  - {fileID: -6193727489859855113}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -299,6 +317,7 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 6.5
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
@@ -318,6 +337,7 @@ MonoBehaviour:
   areaHeightMax: 0
   areaAngle: 0
   checkRaycastWallInArea: 0
+  raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
   repeatCount: 0
   repeatInterval: 0
@@ -333,11 +353,12 @@ MonoBehaviour:
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
   howitzerRandomPositionRadiusRange: {x: 0, y: 0}
-  speed: 8
+  speed: 11
   useSpeedChange: 0
   targetSpeed: 0
   speedChangeTime: 0
   speedChangeEase: 6
+  repeatSpeedChange: 0
   overrideSpeedOnCollision: 0
   overrideSpeedTimeOnCollision: 0
   curve: 0
@@ -353,6 +374,7 @@ MonoBehaviour:
   useRandomTurn: 0
   accelTurn: 0
   randomTurnRotateYawRange: {x: 0, y: 0}
+  zigZagIntervalTime: 0
   gravity: -9.81
   parallelCount: 0
   parallelDistance: 0
@@ -369,10 +391,12 @@ MonoBehaviour:
   quadThrough: 0
   overrideResetIgnoreSqrMagnitude: 0
   bounceWallQuadCount: 0
+  bounceToTarget: 0
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
   overrideRicochetDistance: 0
   overrideRicochetSpeed: 0
+  useTimerRicochet: 0
   useHitStay: 0
   hitStayInterval: 0
   hitStayIgnoreDuplicate: 0
@@ -381,6 +405,7 @@ MonoBehaviour:
   onlyUsedAsTrigger: 0
   oneHitPerTarget: 0
   useLineRenderer: 0
+  ignoreRemoveColliderAffector: 0
   affectorValueIdList: []
   showHitEffect: 1
   hitEffectObject: {fileID: 100002, guid: e4ebc63719aa4df4994029365caec877, type: 3}

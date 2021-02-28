@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2e6805f699075e4eae576dc1aabd338, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.01
+  StartTime: 0.001
   EndTime: 0.2
-  speed: 0.5
+  speed: 0.8
 --- !u!114 &-4719363929114567285
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -287,6 +287,7 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 20
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
@@ -306,6 +307,7 @@ MonoBehaviour:
   areaHeightMax: 0
   areaAngle: 0
   checkRaycastWallInArea: 0
+  raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
   repeatCount: 0
   repeatInterval: 0
@@ -326,6 +328,7 @@ MonoBehaviour:
   targetSpeed: 30
   speedChangeTime: 1.6
   speedChangeEase: 6
+  repeatSpeedChange: 0
   overrideSpeedOnCollision: 0
   overrideSpeedTimeOnCollision: 0
   curve: 0
@@ -341,6 +344,7 @@ MonoBehaviour:
   useRandomTurn: 0
   accelTurn: 0
   randomTurnRotateYawRange: {x: 0, y: 0}
+  zigZagIntervalTime: 0
   gravity: -9.81
   parallelCount: 1
   parallelDistance: 0.9
@@ -357,10 +361,12 @@ MonoBehaviour:
   quadThrough: 0
   overrideResetIgnoreSqrMagnitude: 0
   bounceWallQuadCount: 0
+  bounceToTarget: 0
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
   overrideRicochetDistance: 0
   overrideRicochetSpeed: 0
+  useTimerRicochet: 0
   useHitStay: 0
   hitStayInterval: 0
   hitStayIgnoreDuplicate: 0
@@ -369,6 +375,7 @@ MonoBehaviour:
   onlyUsedAsTrigger: 0
   oneHitPerTarget: 0
   useLineRenderer: 0
+  ignoreRemoveColliderAffector: 0
   affectorValueIdList:
   - NormalAttackLinhi
   showHitEffect: 1
@@ -399,8 +406,10 @@ MonoBehaviour:
   offset: {x: 0, y: 0, z: 0}
   fixedWorldPositionY: 0
   direction: {x: 0, y: 0, z: 1}
+  useWorldSpaceDirection: 0
   parentName: Weapon_r
   followPosition: 0
+  immediateDisableFollowEffect: 0
 --- !u!1101 &4270325903947159373
 AnimatorStateTransition:
   m_ObjectHideFlags: 1

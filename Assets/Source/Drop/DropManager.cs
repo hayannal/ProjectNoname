@@ -446,6 +446,9 @@ public class DropManager : MonoBehaviour
 		// 전설이 나오지 않으면 바로 누적시켜놔야 다음번 드랍될때 GetCurrentNotSteakCount()값이 달라지면서 체크할 수 있게된다.
 		if (EquipData.IsUseLegendKey(_listRandomDropEquipInfo[index].equipTableData) == false)
 			++_droppedNotStreakItemCount;
+		else
+			// 전설이 나오면 서버에 패킷 보내기 전이지만 리셋을 해놔야 다음번 계산할때 가중치 테이블을 초기화 할 수 있다.
+			PlayerData.instance.notStreakCount = 0;
 		return _listRandomDropEquipInfo[index].equipTableData.equipId;
 	}
 	int _droppedNotStreakItemCount = 0;
@@ -702,6 +705,9 @@ public class DropManager : MonoBehaviour
 					ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(_listRandomGachaActorInfo[i].actorId);
 					if (CharacterData.IsUseLegendWeight(actorTableData) == false)
 						++droppedNotStreakLegendCharCount;
+					else
+						// notStreakCount처럼 패킷 받기전에 리셋해준다.
+						PlayerData.instance.notStreakLegendCharCount = 0;
 				}
 				index = i;
 				break;

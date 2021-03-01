@@ -10,6 +10,8 @@ public class RandomPositionGenerator : ContinuousHitObjectGeneratorBase
 	public float interval;
 
 	public bool useRandomWorldAxisDirection;
+	public bool useRandomWorldDiagonalDirection;
+	public bool addOppositeSideDirection;
 
 	int _remainCreateCount;
 	float _remainIntervalTime;
@@ -64,7 +66,26 @@ public class RandomPositionGenerator : ContinuousHitObjectGeneratorBase
 				}
 				rotation = Quaternion.LookRotation(randomDirection);
 			}
+			if (useRandomWorldDiagonalDirection)
+			{
+				int random = Random.Range(0, 4);
+				Vector3 randomDirection = Vector3.forward;
+				switch (random)
+				{
+					case 0: randomDirection = Vector3.forward + Vector3.right; break;
+					case 1: randomDirection = Vector3.back + Vector3.left; break;
+					case 2: randomDirection = Vector3.right - Vector3.forward; break;
+					case 3: randomDirection = Vector3.left - Vector3.back; break;
+				}
+				rotation = Quaternion.LookRotation(randomDirection);
+			}
 			Generate(position, rotation, true);
+
+			if (addOppositeSideDirection)
+			{
+				rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f) * rotation;
+				Generate(position, rotation, true);
+			}
 			
 			if (_remainCreateCount <= 0)
 				gameObject.SetActive(false);

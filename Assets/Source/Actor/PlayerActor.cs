@@ -460,7 +460,7 @@ public class PlayerActor : Actor
 
 		// hide상태일때는 현재 위치에 따라 나눠서 처리해야한다.
 		bool hide = true;
-		if (CharacterListCanvas.instance != null && StackCanvas.IsInStack(CharacterListCanvas.instance.gameObject, false))
+		if (CharacterListCanvas.instance != null && StackCanvas.IsInStack(CharacterListCanvas.instance.gameObject, false) && StackCanvas.IsProcessHome() == false)
 			hide = false;
 		_wingObject.SetActive(!hide);
 	}

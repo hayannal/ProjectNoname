@@ -58,6 +58,13 @@ public class StackCanvas : MonoBehaviour
 		return _instance.InternalIsStacked();
 	}
 
+	public static bool IsProcessHome()
+	{
+		if (_instance == null)
+			return false;
+		return _instance.InternalIsProcessHome();
+	}
+
 	// 스택구조는 크게 둘로 나뉜다.
 	// 현재창이 보이면서 그 위에 새로운 창이 쌓이는 구조. 혹은 현재창은 숨겨놓고 새창이 뜨는 구조.
 	// 전자는 사실 이 구조를 안써도 되는데 써야되는 순간이 있다. 바로 DotMainMenu처럼 맨 위에 뜰때만 환경을 어둡게 처리하는 경우다.
@@ -222,5 +229,11 @@ public class StackCanvas : MonoBehaviour
 	public bool InternalIsStacked()
 	{
 		return _stackCanvas.Count > 0;
+	}
+
+	// 홈으로 가는 중에 InternalIsInStack 호출할때 (날개정보창 혹은 CharacterListCanvas에서 홈 누를때) Stack에 없는거로 처리하기 위해 체크함수 추가.
+	public bool InternalIsProcessHome()
+	{
+		return _processHome;
 	}
 }

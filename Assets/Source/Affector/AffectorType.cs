@@ -89,5 +89,6 @@ public enum eAffectorType
 	AddSpGainByHp,
 	ChangeHitColliderSize,
 	AddAttackByContinuousKill,
+	Resurrect,
 }
 #endregion

@@ -286,6 +286,9 @@ public class MonsterActor : Actor
 
 	public override void OnDie()
 	{
+		if (ResurrectAffector.CheckResurrect(affectorProcessor))
+			return;
+
 		base.OnDie();
 
 		if (sequentialMonster != null)

@@ -57,6 +57,11 @@ public class PlayRandomStateWithCondition : ControlStateBase
 		public string targetActorStateId;
 		[ConditionalHide("useTargetActorState", true)]
 		public bool existTargetActorStateParameter;
+		public bool useActorAffectorType;
+		[ConditionalHide("useActorAffectorType", true)]
+		public eAffectorType actorAffectorType;
+		[ConditionalHide("useActorAffectorType", true)]
+		public bool existActorAffectorTypeParameter;
 		public bool useMonsterCount;
 		[ConditionalHide("useMonsterCount", true)]
 		public Condition.eCompareType monsterCountCompareType;
@@ -183,6 +188,12 @@ public class PlayRandomStateWithCondition : ControlStateBase
 				{
 					continue;
 				}
+			}
+
+			if (randomStateWithConditionInfoList[i].useActorAffectorType)
+			{
+				if (_actor.affectorProcessor.IsContinuousAffectorType(randomStateWithConditionInfoList[i].actorAffectorType) != randomStateWithConditionInfoList[i].existActorAffectorTypeParameter)
+					continue;
 			}
 
 			if (randomStateWithConditionInfoList[i].useMonsterCount)

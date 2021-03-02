@@ -73,4 +73,12 @@ public class ResurrectAffector : AffectorBase
 			return false;
 		return resurrectAffector.CheckResurrect();
 	}
+
+	public static bool IsProcessingResurrect(AffectorProcessor affectorProcessor)
+	{
+		ResurrectAffector resurrectAffector = (ResurrectAffector)affectorProcessor.GetFirstContinuousAffector(eAffectorType.Resurrect);
+		if (resurrectAffector == null)
+			return false;
+		return resurrectAffector._processing;
+	}
 }

@@ -47,7 +47,8 @@ public class ChildTransformGenerator : ContinuousHitObjectGeneratorBase
 
 		if (moveType == eMoveType.None)
 		{
-			if (_parentActor.actorStatus.IsDie())
+			// 이 제네레이터만 부활 도중에 생성해야해서 이렇게 처리한다.
+			if (_parentActor.actorStatus.IsDie() && ResurrectAffector.IsProcessingResurrect(_parentActor.affectorProcessor) == false)
 			{
 				FinalizeHitObject();
 				return;

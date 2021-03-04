@@ -360,8 +360,10 @@ public class ActorStatus : MonoBehaviour
 		InitializeActorStatus();
 	}
 
-	static float LnOverConstant1 = 0.02827722242162062f;
-	static float LnOverConstant2 = 0.0001f;
+	static float xAdjust_OverPp = 240.0f;
+	static float yAdjust_OverPp = -0.0301f;
+	static float aAdjust_OverPp = 0.005f;
+	static float bAdjust_OverPp = 0.13f;
 	public float GetAttackAddRateByOverPP()
 	{
 		int overMaxPp = 0;
@@ -374,7 +376,7 @@ public class ActorStatus : MonoBehaviour
 		}
 		if (overMaxPp == 0)
 			return 0.0f;
-		return LnOverConstant1 * Mathf.Log(overMaxPp) + LnOverConstant2;
+		return bAdjust_OverPp / (1.0f + Mathf.Exp(-aAdjust_OverPp * (overMaxPp - xAdjust_OverPp))) + yAdjust_OverPp;
 	}
 
 	public bool IsDie()

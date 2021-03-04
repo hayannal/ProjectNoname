@@ -132,8 +132,8 @@ public class DropProcessor : MonoBehaviour
 							else
 								lastPowerPoint = true;
 
-							// 적용해도 되는 상황일때 65% 확률로 dropType을 강제로 교체한다.
-							if (lastPowerPoint && Random.value < 0.65f)
+							// 적용해도 되는 상황일때 33% 확률로 dropType을 강제로 교체한다.
+							if (lastPowerPoint && Random.value < 0.33f)
 								dropType = eDropType.Balance;
 						}
 						break;

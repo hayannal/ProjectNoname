@@ -134,14 +134,16 @@ public class CharacterBoxResultCanvas : MonoBehaviour
 			CharacterBoxResultListItem resultListItem = _originContainer.GetCachedItem(originContentItemPrefab, originContentRootRectTransform);
 			int powerLevel = 0;
 			int transcendLevel = 0;
+			bool transcendCondition = false;
 			CharacterData characterData = PlayerData.instance.GetCharacterData(listTrpInfo[i].actorId);
 			if (characterData != null)
 			{
 				powerLevel = characterData.powerLevel;
 				transcendLevel = characterData.transcendLevel;
+				transcendCondition = (characterData.transcendPoint >= CharacterData.GetTranscendPoint(characterData.transcendLevel + 1));
 			}
 			resultListItem.characterListItem.Initialize(listTrpInfo[i].actorId, powerLevel, SwapCanvasListItem.GetPowerLevelColorState(characterData), transcendLevel, 0, null, null, null);
-			resultListItem.Initialize("ShopUI_TranscendReward", 0);
+			resultListItem.Initialize(transcendCondition ? "ShopUI_TranscendReward" : "", 0);
 			_listOriginResultItem.Add(resultListItem);
 		}
 

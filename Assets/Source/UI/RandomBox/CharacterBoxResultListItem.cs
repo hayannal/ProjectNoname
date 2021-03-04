@@ -11,12 +11,12 @@ public class CharacterBoxResultListItem : MonoBehaviour
 
 	public void Initialize(string stringId, int pp)
 	{
-		commentText.gameObject.SetActive(pp == 0);
+		commentText.gameObject.SetActive(string.IsNullOrEmpty(stringId) == false);
 		ppText.gameObject.SetActive(pp > 0);
 
 		if (pp > 0)
 			ppText.text = string.Format("+{0:N0}", pp);
-		else
+		else if (string.IsNullOrEmpty(stringId) == false)
 			commentText.SetLocalizedText(UIString.instance.GetString(stringId));
 	}
 

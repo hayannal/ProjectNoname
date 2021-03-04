@@ -150,7 +150,7 @@ public class DailyShopListItem : MonoBehaviour
 				characterData = PlayerData.instance.GetCharacterData(dailyShopSlotInfo.value);
 				if (characterData == null)
 					break;
-				if (characterData.transcendPoint == 0)
+				if (characterData.transcendPoint < CharacterData.GetTranscendPoint(1))
 					return true;
 				//if (characterData.needLimitBreak && characterData.limitBreakPoint <= characterData.limitBreakLevel && characterData.limitBreakLevel == 0)
 				//	return true;
@@ -159,7 +159,7 @@ public class DailyShopListItem : MonoBehaviour
 				characterData = PlayerData.instance.GetCharacterData(dailyShopSlotInfo.value);
 				if (characterData == null)
 					break;
-				if (characterData.transcendPoint == 1)
+				if (characterData.transcendPoint >= CharacterData.GetTranscendPoint(1) && characterData.transcendPoint < CharacterData.GetTranscendPoint(2))
 					return true;
 				//if (characterData.needLimitBreak && characterData.limitBreakPoint <= characterData.limitBreakLevel && characterData.limitBreakLevel == 1)
 				//	return true;
@@ -168,7 +168,7 @@ public class DailyShopListItem : MonoBehaviour
 				characterData = PlayerData.instance.GetCharacterData(dailyShopSlotInfo.value);
 				if (characterData == null)
 					break;
-				if (characterData.transcendPoint == 2)
+				if (characterData.transcendPoint >= CharacterData.GetTranscendPoint(2) && characterData.transcendPoint < CharacterData.GetTranscendPoint(3))
 					return true;
 				//if (characterData.needLimitBreak && characterData.limitBreakPoint <= characterData.limitBreakLevel && characterData.limitBreakLevel == 2)
 				//	return true;

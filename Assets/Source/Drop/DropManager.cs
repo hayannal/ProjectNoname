@@ -759,7 +759,7 @@ public class DropManager : MonoBehaviour
 		// 이제 한계돌파랑 초월이랑 상관없어지면서 limitBreak로 판단하지 않는다.
 		//if (characterData.needLimitBreak && characterData.limitBreakPoint <= characterData.limitBreakLevel)
 		//	return true;
-		if (characterData.transcendPoint < CharacterData.TranscendMax)
+		if (characterData.transcendPoint < CharacterData.GetTranscendPoint(CharacterData.TranscendLevelMax))
 			return true;
 
 		return false;

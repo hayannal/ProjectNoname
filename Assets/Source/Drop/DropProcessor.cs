@@ -389,7 +389,7 @@ public class DropProcessor : MonoBehaviour
 			}
 			else
 			{
-				if (characterData != null && characterData.transcendPoint < CharacterData.TranscendMax)
+				if (characterData != null && characterData.transcendPoint < CharacterData.GetTranscendPoint(CharacterData.TranscendLevelMax))
 				{ }
 				else
 					weight = 0.0f;

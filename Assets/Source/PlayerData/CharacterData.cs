@@ -21,7 +21,26 @@ public class CharacterData
 	public int transcendPoint { get { return _transcendPoint; } set { _transcendPoint = value; } }
 	public int transcendLevel { get { return _transcendLevel; } }
 
-	public static int TranscendMax = 3;
+	public static int TranscendLevelMax = 3;
+
+	public static int GetTranscendPoint(int transcendLevel)
+	{
+		switch (transcendLevel)
+		{
+			case 1:
+				return 1;
+			case 2:
+				return 3;
+			case 3:
+				return 6;
+		}
+		return 0;
+	}
+
+	public static int GetTranscendDenominatorPoint(int transcendLevel)
+	{
+		return GetTranscendPoint(transcendLevel) - GetTranscendPoint(transcendLevel - 1);
+	}
 
 	List<ObscuredInt> _listStatPoint = new List<ObscuredInt>();
 	public List<ObscuredInt> listStatPoint { get { return _listStatPoint; } }
@@ -148,7 +167,7 @@ public class CharacterData
 
 	public bool IsTranscendAlarmState()
 	{
-		if (transcendPoint > transcendLevel)
+		if (transcendPoint >= CharacterData.GetTranscendPoint(transcendLevel + 1))
 			return true;
 		return false;
 	}
@@ -280,9 +299,9 @@ public class CharacterData
 
 		if (invalid == false)
 		{
-			if (tr > trp)
+			if (GetTranscendPoint(tr) > trp)
 				invalid = true;
-			if (trp > TranscendMax)
+			if (trp > GetTranscendPoint(TranscendLevelMax))
 				invalid = true;
 			if (invalid)
 				PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidTranscendLevel, false, tr);

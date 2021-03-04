@@ -85,7 +85,7 @@ public class CharacterInfoTranscendCanvas : MonoBehaviour
 			}
 			else
 			{
-				if (characterData.transcendPoint > i && appliedTranscendPoint == false)
+				if (characterData.transcendPoint >= CharacterData.GetTranscendPoint(i + 1) && appliedTranscendPoint == false)
 				{
 					fillImageObjectList[i].gameObject.SetActive(false);
 					tweenAnimationObjectList[i].gameObject.SetActive(true);
@@ -101,7 +101,7 @@ public class CharacterInfoTranscendCanvas : MonoBehaviour
 			}
 		}
 
-		if (characterData.transcendLevel >= CharacterData.TranscendMax)
+		if (characterData.transcendLevel >= CharacterData.TranscendLevelMax)
 		{
 			maxInfoObject.SetActive(true);
 			materialInfoObject.SetActive(false);
@@ -144,7 +144,8 @@ public class CharacterInfoTranscendCanvas : MonoBehaviour
 				break;
 		}
 
-		needOriginCountText.text = UIString.instance.GetString("GameUI_SpacedFraction", characterData.transcendPoint - characterData.transcendLevel, 1);
+		needOriginCountText.text = UIString.instance.GetString("GameUI_SpacedFraction",
+			characterData.transcendPoint - CharacterData.GetTranscendPoint(characterData.transcendLevel), CharacterData.GetTranscendDenominatorPoint(characterData.transcendLevel + 1));
 
 		int price = 0;
 		switch (characterData.transcendLevel)
@@ -195,13 +196,13 @@ public class CharacterInfoTranscendCanvas : MonoBehaviour
 		if (_characterData == null)
 			return;
 
-		if (_characterData.transcendLevel >= CharacterData.TranscendMax)
+		if (_characterData.transcendLevel >= CharacterData.TranscendLevelMax)
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_MaxTranscendenceToast"), 2.0f);
 			return;
 		}
 
-		if (_characterData.transcendPoint <= _characterData.transcendLevel)
+		if (_characterData.transcendPoint < CharacterData.GetTranscendPoint(_characterData.transcendLevel + 1))
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_TranscendenceRequireOrigin"), 2.0f);
 			return;

@@ -119,8 +119,18 @@ public class LoadingCanvas : MonoBehaviour
 		// 우선순위 높은거부터 처리할게 있는지 판단한다.
 		// Event를 진행할게 있다면 튕겨서 재접한 상황은 아니라 정상적인 종료나 패배일거다. 처음 켤때만 호출되는 곳이니 서버 이벤트만 있는지 검사하면 된다.
 		// 클라이벤트는 씬 재시작시 어차피 사라지기 때문에 서버이벤트 여부만 판단해도 충분하다.
+
+		// 화면 잠구고 진행하는 서버 이벤트일 경우엔 나머지 일들을 수행할 필요가 없다. 그러니 미리 체크해서 기억시켜두고
+		bool lockScreenServerEvent = false;
+		if (EventManager.instance.IsStandbyServerEvent(EventManager.eServerEvent.chaos) || EventManager.instance.IsStandbyServerEvent(EventManager.eServerEvent.node))
+			lockScreenServerEvent = true;
+
+		// research나 balance같이 화면 잠구는 이벤트가 아니라면 플래그만 걸어두고 나머지를 진행하면 된다.
 		if (EventManager.instance.IsStandbyServerEvent())
 			EventManager.instance.OnLobby();
+
+		if (lockScreenServerEvent)
+		{ }
 		else if (ClientSaveData.instance.IsCachedInProgressGame())
 			LobbyCanvas.instance.CheckClientSaveData();
 		else

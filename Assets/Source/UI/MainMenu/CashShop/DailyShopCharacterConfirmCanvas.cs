@@ -86,6 +86,9 @@ public class DailyShopCharacterConfirmCanvas : MonoBehaviour
 			case "fl1":
 			case "fl2":
 			case "fl3":
+			case "fl4":
+			case "fl5":
+			case "fl6":
 				AddressableAssetLoadManager.GetAddressableGameObject(CharacterData.GetAddressByActorId(selectedCharacterId), "Character");
 				break;
 		}
@@ -114,6 +117,9 @@ public class DailyShopCharacterConfirmCanvas : MonoBehaviour
 			case "fl1":
 			case "fl2":
 			case "fl3":
+			case "fl4":
+			case "fl5":
+			case "fl6":
 				// 획득하지 않은 캐릭터나 보유중인 캐릭터 모두 CharacterInfoCanvas까지 들어가면 된다.
 				Timing.RunCoroutine(ChangeCanvasProcess());
 				break;
@@ -286,6 +292,9 @@ public class DailyShopCharacterConfirmCanvas : MonoBehaviour
 			case "fl1":
 			case "fl2":
 			case "fl3":
+			case "fl4":
+			case "fl5":
+			case "fl6":
 				CharacterData characterData = PlayerData.instance.GetCharacterData(_selectedCharacterId);
 				if (characterData != null)
 					characterData.transcendPoint += 1;

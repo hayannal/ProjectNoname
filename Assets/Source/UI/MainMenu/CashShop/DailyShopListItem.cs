@@ -72,13 +72,12 @@ public class DailyShopListItem : MonoBehaviour
 			case "fp":  // fixed Character PP
 				RefreshCharacterPpImage(_slotInfo.value);
 				break;
-			case "fl1": // fixed Character Limit1
-				RefreshCharacterIconImage(_slotInfo.value);
-				break;
-			case "fl2": // fixed Character Limit2
-				RefreshCharacterIconImage(_slotInfo.value);
-				break;
-			case "fl3": // fixed Character Limit3
+			case "fl1": // fixed Character Trp
+			case "fl2":
+			case "fl3":
+			case "fl4":
+			case "fl5":
+			case "fl6":
 				RefreshCharacterIconImage(_slotInfo.value);
 				break;
 			case "uch": // unfixed Heroic Character
@@ -146,32 +145,62 @@ public class DailyShopListItem : MonoBehaviour
 				if (PlayerData.instance.ContainsActor(dailyShopSlotInfo.value))
 					return true;
 				break;
-			case "fl1": // fixed Character Limit1
+			case "fl1": // fixed Character Trp
 				characterData = PlayerData.instance.GetCharacterData(dailyShopSlotInfo.value);
 				if (characterData == null)
 					break;
-				if (characterData.transcendPoint < CharacterData.GetTranscendPoint(1))
+				if (characterData.transcendPoint == 0)
 					return true;
+				//if (characterData.transcendPoint < CharacterData.GetTranscendPoint(1))
+				//	return true;
+
 				//if (characterData.needLimitBreak && characterData.limitBreakPoint <= characterData.limitBreakLevel && characterData.limitBreakLevel == 0)
 				//	return true;
 				break;
-			case "fl2": // fixed Character Limit2
+			case "fl2": // fixed Character Trp
 				characterData = PlayerData.instance.GetCharacterData(dailyShopSlotInfo.value);
 				if (characterData == null)
 					break;
-				if (characterData.transcendPoint >= CharacterData.GetTranscendPoint(1) && characterData.transcendPoint < CharacterData.GetTranscendPoint(2))
+				if (characterData.transcendPoint == 1)
 					return true;
+				//if (characterData.transcendPoint >= CharacterData.GetTranscendPoint(1) && characterData.transcendPoint < CharacterData.GetTranscendPoint(2))
+				//	return true;
+
 				//if (characterData.needLimitBreak && characterData.limitBreakPoint <= characterData.limitBreakLevel && characterData.limitBreakLevel == 1)
 				//	return true;
 				break;
-			case "fl3": // fixed Character Limit3
+			case "fl3": // fixed Character Trp
 				characterData = PlayerData.instance.GetCharacterData(dailyShopSlotInfo.value);
 				if (characterData == null)
 					break;
-				if (characterData.transcendPoint >= CharacterData.GetTranscendPoint(2) && characterData.transcendPoint < CharacterData.GetTranscendPoint(3))
+				if (characterData.transcendPoint == 2)
 					return true;
+				//if (characterData.transcendPoint >= CharacterData.GetTranscendPoint(2) && characterData.transcendPoint < CharacterData.GetTranscendPoint(3))
+				//	return true;
+
 				//if (characterData.needLimitBreak && characterData.limitBreakPoint <= characterData.limitBreakLevel && characterData.limitBreakLevel == 2)
 				//	return true;
+				break;
+			case "fl4": // fixed Character Trp
+				characterData = PlayerData.instance.GetCharacterData(dailyShopSlotInfo.value);
+				if (characterData == null)
+					break;
+				if (characterData.transcendPoint == 3)
+					return true;
+				break;
+			case "fl5": // fixed Character Trp
+				characterData = PlayerData.instance.GetCharacterData(dailyShopSlotInfo.value);
+				if (characterData == null)
+					break;
+				if (characterData.transcendPoint == 4)
+					return true;
+				break;
+			case "fl6": // fixed Character Trp
+				characterData = PlayerData.instance.GetCharacterData(dailyShopSlotInfo.value);
+				if (characterData == null)
+					break;
+				if (characterData.transcendPoint == 5)
+					return true;
 				break;
 			case "uch": // unfixed Heroic Character
 				cachedActorId = DailyShopData.instance.GetUnfixedResult(dailyShopSlotInfo.slotId);

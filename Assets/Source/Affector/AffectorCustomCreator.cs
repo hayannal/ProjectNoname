@@ -85,6 +85,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.ChangeHitColliderSize: affectorBase = new ChangeHitColliderSizeAffector(); break;
 			case eAffectorType.AddAttackByContinuousKill: affectorBase = new AddAttackByContinuousKillAffector(); break;
 			case eAffectorType.Resurrect: affectorBase = new ResurrectAffector(); break;
+			case eAffectorType.ChargingAction: affectorBase = new ChargingActionAffector(); break;
 			#endregion
 		}
 		return affectorBase;
@@ -163,6 +164,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.ChangeHitColliderSize:
 			case eAffectorType.AddAttackByContinuousKill:
 			case eAffectorType.Resurrect:
+			case eAffectorType.ChargingAction:
 				return true;
 			#endregion
 		}

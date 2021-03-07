@@ -90,5 +90,6 @@ public enum eAffectorType
 	ChangeHitColliderSize,
 	AddAttackByContinuousKill,
 	Resurrect,
+	ChargingAction,
 }
 #endregion

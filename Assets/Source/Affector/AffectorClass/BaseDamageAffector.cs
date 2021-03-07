@@ -278,6 +278,7 @@ public class BaseDamageAffector : AffectorBase {
 		CastAffector.OnDamage(_affectorProcessor);
 		AddAttackByContinuousKillAffector.OnDamage(_affectorProcessor);
 		BurrowAffector.OnDamage(_affectorProcessor);
+		ChargingActionAffector.OnDamage(_affectorProcessor, damage);
 		if (attackerActor == null) attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(hitParameter.statusStructForHitObject.actorInstanceId);
 		if (attackerActor != null)
 		{

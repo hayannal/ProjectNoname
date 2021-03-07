@@ -69,6 +69,7 @@ public class CollisionDamageAffector : AffectorBase
 		CastAffector.OnDamage(_affectorProcessor);
 		AddAttackByContinuousKillAffector.OnDamage(_affectorProcessor);
 		BurrowAffector.OnDamage(_affectorProcessor);
+		ChargingActionAffector.OnDamage(_affectorProcessor, damage);
 
 #if UNITY_EDITOR
 		//Debug.LogFormat("Current = {0} / Max = {1} / Damage = {2} / frameCount = {3} : CollisionDamage", _actor.actorStatus.GetHP(), _actor.actorStatus.GetValue(eActorStatus.MaxHp), damage, Time.frameCount);

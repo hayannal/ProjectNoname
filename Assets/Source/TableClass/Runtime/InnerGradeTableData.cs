@@ -125,6 +125,10 @@ public class InnerGradeTableData
   public int transferGold { get { return _transferGold; } set { _transferGold = value; } }
   
   [SerializeField]
+  float _reconstructPoint;
+  public float reconstructPoint { get { return _reconstructPoint; } set { _reconstructPoint = value; } }
+  
+  [SerializeField]
   int _sellGold;
   public int sellGold { get { return _sellGold; } set { _sellGold = value; } }
   

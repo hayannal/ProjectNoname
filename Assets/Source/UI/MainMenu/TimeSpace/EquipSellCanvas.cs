@@ -215,15 +215,15 @@ public class EquipSellCanvas : EquipShowCanvasBase
 			if (result && listGrade.Contains(_listEquipCanvasListItem[i].equipData.cachedEquipTableData.grade) == false)
 				result = false;
 
+			if (result && _listMultiSelectUniqueId.Count >= MAX_SELECT_COUNT)
+				result = false;
+
 			if (result)
 			{
 				_listMultiSelectUniqueId.Add(_listEquipCanvasListItem[i].equipData.uniqueId);
 				_listMultiSelectEquipData.Add(_listEquipCanvasListItem[i].equipData);
 			}
 			_listEquipCanvasListItem[i].ShowSelectObject(result);
-
-			if (_listMultiSelectUniqueId.Count >= MAX_SELECT_COUNT)
-				break;
 		}
 
 		RefreshCountText();

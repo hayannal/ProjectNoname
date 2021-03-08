@@ -354,6 +354,10 @@ public class PlayerData : MonoBehaviour
 		nodeWarAgainOpened = false;
 		termsConfirmed = false;
 
+		// Obscured 아니지만 함께 처리
+		_parsedLastLevelPackageResetDateTime = false;
+		_parsedServerLevelPackageResetDateTime = false;
+
 		// 나중에 지울 코드이긴 한데 MainSceneBuilder에서 NEWPLAYER_LEVEL1 디파인 켜둔채로 생성하는 테스트용 루틴일땐 1챕터에서 시작하게 처리해둔다.
 		// NEWPLAYER_LEVEL1 디파인 지울때 같이 지우면 된다.
 		//highestPlayChapter = 1;
@@ -642,7 +646,11 @@ public class PlayerData : MonoBehaviour
 		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
 		_listLevelPackage = null;
 		if (userData.ContainsKey("lvPckLst"))
-			_listLevelPackage = serializer.DeserializeObject<List<int>>(userData["lvPckLst"].Value);
+		{
+			string lvPckLstString = userData["lvPckLst"].Value;
+			if (string.IsNullOrEmpty(lvPckLstString) == false)
+				_listLevelPackage = serializer.DeserializeObject<List<int>>(lvPckLstString);
+		}
 
 		// 마지막 오픈 시간을 받는건 데일리패키지 역시 마찬가지다.
 		sharedDailyPackageOpened = false;
@@ -993,6 +1001,7 @@ public class PlayerData : MonoBehaviour
 					DailyShopData.instance.ResetDailyFreeItemInfo();
 					RegisterNodeWarBonusPowerSource();
 					QuestData.instance.ResetQuestStepInfo();
+					CheckLevelPackageResetInfo();
 				}
 				else
 				{
@@ -1219,6 +1228,83 @@ public class PlayerData : MonoBehaviour
 			_listLevelPackage.Add(level);
 		return _listLevelPackage;
 	}
+
+	#region Reset LevelPackage
+	public void OnRecvLevelPackageResetInfo(Dictionary<string, string> titleData, Dictionary<string, UserDataRecord> userReadOnlyData)
+	{
+		OnRecvLevelPackageResetInfo(titleData);
+
+		_parsedLastLevelPackageResetDateTime = false;
+		if (userReadOnlyData.ContainsKey("lasLvRstDat"))
+		{
+			if (string.IsNullOrEmpty(userReadOnlyData["lasLvRstDat"].Value) == false)
+				OnRecvLastLevelPackageResetInfo(userReadOnlyData["lasLvRstDat"].Value);
+		}
+
+		CheckLevelPackageResetInfo();
+	}
+
+	bool _parsedServerLevelPackageResetDateTime = false;
+	DateTime _serverLevelPackageResetTime;
+	public void OnRecvLevelPackageResetInfo(Dictionary<string, string> titleData)
+	{
+		_parsedServerLevelPackageResetDateTime = false;
+
+		if (titleData.ContainsKey("lvRst") == false)
+			return;
+
+		string serverLevelPackageResetTimeString = titleData["lvRst"];
+		if (string.IsNullOrEmpty(serverLevelPackageResetTimeString))
+			return;
+
+		DateTime serverLevelPackageResetTime = new DateTime();
+		if (DateTime.TryParse(serverLevelPackageResetTimeString, out serverLevelPackageResetTime))
+		{
+			_serverLevelPackageResetTime = serverLevelPackageResetTime.ToUniversalTime();
+			_parsedServerLevelPackageResetDateTime = true;
+		}
+	}
+
+	bool _parsedLastLevelPackageResetDateTime = false;
+	DateTime _lastLevelPackageResetTime;
+	void OnRecvLastLevelPackageResetInfo(string lastLevelPackageResetTimeString)
+	{
+		_parsedLastLevelPackageResetDateTime = false;
+
+		DateTime lastlevelPackageResetTime = new DateTime();
+		if (DateTime.TryParse(lastLevelPackageResetTimeString, out lastlevelPackageResetTime))
+		{
+			_lastLevelPackageResetTime = lastlevelPackageResetTime.ToUniversalTime();
+			_parsedLastLevelPackageResetDateTime = true;
+		}
+	}
+
+	void CheckLevelPackageResetInfo()
+	{
+		if (_parsedServerLevelPackageResetDateTime == false)
+			return;
+
+		// 파싱이 되어있는 상태라면
+		// 현재 등록되어있는걸 구해서 없거나 그거보다 과거면 패킷을 보내야한다.
+		bool needRequest = false;
+		if (_parsedLastLevelPackageResetDateTime == false)
+			needRequest = true;
+		if (_parsedLastLevelPackageResetDateTime && _lastLevelPackageResetTime < _serverLevelPackageResetTime)
+			needRequest = true;
+
+		if (needRequest == false)
+			return;
+
+		PlayFabApiManager.instance.RequestResetLevelPackage(() =>
+		{
+			// 타이머가 있는 캔버스도 아니라서 정확한 시간을 필요로 하지 않는다.
+			// 그냥 지금 시간으로 해두면 다음날까지 켜놔도 새로 리셋되지 않을테니 오늘 날짜로만 넣어두기로 한다.
+			_listLevelPackage = null;
+			_lastLevelPackageResetTime = ServerTime.UtcNow;
+			_parsedLastLevelPackageResetDateTime = true;
+		});
+	}
+	#endregion
 
 
 	void OnRecvDailyPackageInfo(DateTime lastDailyPackageOpenTime)

@@ -488,6 +488,10 @@ public class DailyShopData : MonoBehaviour
 			OnRecvShopData(dicData);
 
 			// 이땐 절대 구매 내역을 초기화 하면 안된다. 이 타이밍은 날짜 갱신 5분전에 상점 리스트를 새로 받는거라 구매 내역은 실제로 날짜가 갱신되는 타이밍에 해야한다.
+
+
+			// 테이블 받는 로직이 이미 구현되어있어서 레벨팩 리셋 타이머도 같이 처리해주기로 한다.
+			PlayerData.instance.OnRecvLevelPackageResetInfo(dicData);
 		});
 	}
 

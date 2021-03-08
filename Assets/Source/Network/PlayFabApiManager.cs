@@ -280,6 +280,7 @@ public class PlayFabApiManager : MonoBehaviour
 		MailData.instance.OnRecvMailData(loginResult.InfoResultPayload.TitleData, loginResult.InfoResultPayload.UserReadOnlyData, loginResult.NewlyCreated);
 		SupportData.instance.OnRecvSupportData(loginResult.InfoResultPayload.UserReadOnlyData);
 		QuestData.instance.OnRecvQuestData(loginResult.InfoResultPayload.UserReadOnlyData);
+		PlayerData.instance.OnRecvLevelPackageResetInfo(loginResult.InfoResultPayload.TitleData, loginResult.InfoResultPayload.UserReadOnlyData);
 
 		if (loginResult.NewlyCreated)
 		{
@@ -2546,6 +2547,27 @@ public class PlayFabApiManager : MonoBehaviour
 				WaitingNetworkCanvas.Show(false);
 				CurrencyData.instance.dia -= price;
 				DailyShopData.instance.unlockLevel += 1;
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+
+	public void RequestResetLevelPackage(Action successCallback)
+	{
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "ResetLevelPackage",
+			FunctionParameter = new { Lv = 1 },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			if (!failure)
+			{
 				if (successCallback != null) successCallback.Invoke();
 			}
 		}, (error) =>

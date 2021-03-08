@@ -150,7 +150,7 @@ public static class RandomOption
 			if (exceptType != eActorStatus.ExAmount)
 			{
 				eActorStatus type = eActorStatus.ExAmount;
-				System.Enum.TryParse<eActorStatus>(TableDataManager.instance.optionTable.dataArray[i].option, out eType);
+				System.Enum.TryParse<eActorStatus>(TableDataManager.instance.optionTable.dataArray[i].option, out type);
 				if (type == exceptType)
 					continue;
 			}

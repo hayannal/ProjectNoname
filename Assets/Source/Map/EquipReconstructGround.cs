@@ -87,7 +87,7 @@ public class EquipReconstructGround : MonoBehaviour
 		_updateValueText = true;
 	}
 
-	const float valueChangeTime = 0.4f;
+	const float valueChangeTime = 0.3f;
 	float _valueChangeRemainTime;
 	float _valueChangeSpeed;
 	bool _plusOrMinus;

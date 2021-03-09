@@ -24,6 +24,7 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 	public Text reconstructNameText;
 	public Text reconstructOnOffText;
 	public Button autoSelectButton;
+	public Transform tooltipTargetTransform;
 
 	public GameObject contentItemPrefab;
 	public RectTransform contentRootRectTransform;
@@ -370,6 +371,11 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 		autoSelectButton.gameObject.SetActive(true);
 		RefreshMainButton(false);
 		RefreshGrid(false);
+	}
+
+	public void OnClickDetailButton()
+	{
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, UIString.instance.GetString("AlchemyUI_ReconstructMore"), 250, tooltipTargetTransform, new Vector2(0.0f, -35.0f));
 	}
 
 	public void OnClickMainButton()

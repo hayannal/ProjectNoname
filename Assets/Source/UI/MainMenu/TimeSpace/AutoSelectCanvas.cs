@@ -94,7 +94,9 @@ public class AutoSelectCanvas : MonoBehaviour
 			return;
 		}
 
-		if (EquipSellCanvas.instance != null && EquipSellCanvas.instance.gameObject.activeSelf)
+		if (EquipReconstructCanvas.instance != null && EquipReconstructCanvas.instance.gameObject.activeSelf)
+			EquipReconstructCanvas.instance.OnAutoSelect(_listGrade, enhancedSwitch.isOn);
+		else if (EquipSellCanvas.instance != null && EquipSellCanvas.instance.gameObject.activeSelf)
 			EquipSellCanvas.instance.OnAutoSelect(_listGrade, enhancedSwitch.isOn);
 		else
 			EquipInfoGrowthCanvas.instance.OnAutoSelect(_listGrade, enhancedSwitch.isOn);

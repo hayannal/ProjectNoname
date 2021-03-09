@@ -50,6 +50,9 @@ public class TimeSpaceData
 	// 그 외 변수들
 	public ObscuredInt notStreakCount { get; set; }
 
+	// 재구축 포인트
+	public ObscuredInt reconstructPoint { get; set; }
+
 	// 이제 강화 최대값은 고정이 아니다.
 	int _lastHighestPlayChapter;
 	int _cachedMaxEnhanceLevel;
@@ -106,7 +109,7 @@ public class TimeSpaceData
 		nextLimitEnhance = Mathf.Min(nextLimitEnhance, tableMaxEnhance);
 	}
 
-	public void OnRecvEquipInventory(List<ItemInstance> userInventory, Dictionary<string, UserDataRecord> userData)
+	public void OnRecvEquipInventory(List<ItemInstance> userInventory, Dictionary<string, UserDataRecord> userData, Dictionary<string, UserDataRecord> userReadOnlyData)
 	{
 		ClearInventory();
 
@@ -157,6 +160,15 @@ public class TimeSpaceData
 
 		// status
 		RefreshCachedStatus();
+
+		// reconstruct
+		reconstructPoint = 0;
+		if (userReadOnlyData.ContainsKey("recon"))
+		{
+			int intValue = 0;
+			if (int.TryParse(userReadOnlyData["recon"].Value, out intValue))
+				reconstructPoint = intValue;
+		}
 	}
 
 	public void ClearInventory()

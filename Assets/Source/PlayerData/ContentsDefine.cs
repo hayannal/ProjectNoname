@@ -14,6 +14,7 @@ public static class ContentsManager
 		EquipOption = 6,
 		Balance = 7,
 		SecondDailyBox = 8,
+		Reconstruct = 9,
 	}
 
 	public enum eOpenContentsByChapterStage

@@ -28,6 +28,7 @@ public class EventManager : MonoBehaviour
 		node,
 		research,
 		balance,
+		reconstruct,
 	}
 
 	// 클라 이벤트는 메모리에만 기억되는 거라서 종료하면 더이상 볼 수 없다. 그래서 중요하지 않은 것들 위주다.
@@ -60,6 +61,7 @@ public class EventManager : MonoBehaviour
 	public bool reservedOpenResearchEvent { get; set; }
 	public bool reservedOpenEquipOptionEvent { get; set; }
 	public bool reservedOpenBalanceEvent { get; set; }
+	public bool reservedOpenReconstructEvent { get; set; }
 
 	#region OnEvent
 	public void OnEventClearHighestChapter(int chapter, string newCharacterId)
@@ -105,6 +107,10 @@ public class EventManager : MonoBehaviour
 			if (PlayerData.instance.sharedDailyBoxOpened)
 				++PlayerData.instance.secondDailyBoxFillCount;
 			PushClientEvent(eClientEvent.OpenSecondDailyBox);
+		}
+		else if (chapter == (int)ContentsManager.eOpenContentsByChapter.Reconstruct)
+		{
+			PushServerEvent(eServerEvent.reconstruct);
 		}
 
 		int chapterLimit = BattleInstanceManager.instance.GetCachedGlobalConstantInt("ChaosChapterLimit");
@@ -316,6 +322,10 @@ public class EventManager : MonoBehaviour
 				break;
 			case eServerEvent.balance:
 				reservedOpenBalanceEvent = true;
+				OnLobby();
+				break;
+			case eServerEvent.reconstruct:
+				reservedOpenReconstructEvent = true;
 				OnLobby();
 				break;
 		}

@@ -13,6 +13,7 @@ public class TimeSpaceGround : MonoBehaviour
 	public ObjectTransformEffectorDeformer objectTransformEffectorDeformer;
 	public ObjectScaleEffectorDeformer objectScaleEffectorDeformer;
 	public TimeSpaceAltar[] timeSpaceAltarList;
+	public GameObject reconstructRootObject;
 
 	void Awake()
 	{
@@ -35,6 +36,8 @@ public class TimeSpaceGround : MonoBehaviour
 		TailAnimatorUpdater.UpdateAnimator(BattleInstanceManager.instance.playerActor.cachedTransform, 15);
 		CustomFollowCamera.instance.immediatelyUpdate = true;
 		SoundManager.instance.PlaySFX("TimeSpaceEnter");
+
+		reconstructRootObject.SetActive(ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Reconstruct));
 	}
 
 	void OnDisable()

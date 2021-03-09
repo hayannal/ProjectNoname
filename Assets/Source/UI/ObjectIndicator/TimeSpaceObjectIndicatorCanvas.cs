@@ -9,6 +9,8 @@ public class TimeSpaceObjectIndicatorCanvas : ObjectIndicatorCanvas
 	public Text[] buttonTextList;
 	public string[] buttonStringIdList;
 
+	public RectTransform alarmRootTransform;
+
 	// Start is called before the first frame update
 	void Start()
 	{
@@ -48,6 +50,14 @@ public class TimeSpaceObjectIndicatorCanvas : ObjectIndicatorCanvas
 			case TimeSpaceObject.eTimeSpaceObjectType.Sell:
 				UIInstanceManager.instance.ShowCanvasAsync("EquipSellCanvas", null);
 				break;
+			case TimeSpaceObject.eTimeSpaceObjectType.Reconstruct:
+				UIInstanceManager.instance.ShowCanvasAsync("EquipReconstructCanvas", null);
+				break;
 		}
+	}
+
+	public bool IsShowAlarmObject()
+	{
+		return false;
 	}
 }

@@ -74,15 +74,28 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 			// 맥스라면 재구축으로 보여야한다.
 			if (reconstructSwitch.isOn == false)
 				reconstructSwitch.AnimateSwitch();
-			autoSelectButton.gameObject.SetActive(false);
+			else
+			{
+				autoSelectButton.gameObject.SetActive(false);
+				RefreshMainButton(true);
+				RefreshGrid(true);
+			}
 		}
 		else
 		{
 			// 맥스가 아닐때는 분해로 보여야한다.
 			if (reconstructSwitch.isOn)
 				reconstructSwitch.AnimateSwitch();
-			autoSelectButton.gameObject.SetActive(true);
+			else
+			{
+				autoSelectButton.gameObject.SetActive(true);
+				RefreshMainButton(false);
+				RefreshGrid(false);
+			}
 		}
+
+		EquipReconstructGround.instance.SetBaseValue((float)TimeSpaceData.instance.reconstructPoint / ReconstructPointMax);
+		EquipReconstructGround.instance.ClearTargetValue();
 	}
 
 	void OnDisable()
@@ -165,6 +178,7 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 		RefreshCountText(reconstruct);
 		noNeedText.gameObject.SetActive(_listCurrentEquipData.Count == 0);
 		selectTextObject.SetActive(false);
+		EquipReconstructGround.instance.ClearTargetValue();
 
 		_listCurrentEquipData.Sort(delegate (EquipData x, EquipData y)
 		{
@@ -199,6 +213,13 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 			selectCountText.text = string.Format(TimeSpaceData.instance.IsInventoryVisualMax() ? "<color=#FF2200>{0}</color> / {1}" : "{0} / {1}", TimeSpaceData.instance.inventoryItemCount, TimeSpaceData.InventoryVisualMax);
 		else
 			selectCountText.text = string.Format("{0} / {1}", _listMultiSelectEquipData.Count, _multiSelectMax);
+	}
+
+	void RefreshMainButton(bool reconstruct)
+	{
+		mainButtonText.SetLocalizedText(UIString.instance.GetString(reconstruct ? "AlchemyUI_ReconstructBig" : "AlchemyUI_DeconstructBig"));
+		mainButtonImage.color = reconstruct ? Color.white : ColorUtil.halfGray;
+		mainButtonText.color = reconstruct ? Color.white : ColorUtil.halfGray;
 	}
 
 	public void OnClickListItem(EquipData equipData)
@@ -275,18 +296,18 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("EquipUI_NoneForCondition"), 2.0f);
 	}
 
-	int _price;
+	ObscuredInt _sumPoint;
 	void OnMultiSelectMaterial()
 	{
-		_price = 0;
+		_sumPoint = 0;
 		for (int i = 0; i < _listMultiSelectEquipData.Count; ++i)
 		{
 			InnerGradeTableData innerGradeTableData = TableDataManager.instance.FindInnerGradeTableData(_listMultiSelectEquipData[i].cachedEquipTableData.innerGrade);
 			if (innerGradeTableData == null)
 				continue;
-			_price += innerGradeTableData.sellGold;
+			_sumPoint += innerGradeTableData.reconstructPoint;
 		}
-		//EquipSellGround.instance.SetTargetPrice(_price);
+		EquipReconstructGround.instance.SetTargetValue((float)_sumPoint / ReconstructPointMax);
 
 		if (_listMultiSelectEquipData.Count > 0)
 		{
@@ -325,14 +346,11 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 			return;
 		}
 
-		mainButtonText.SetLocalizedText(UIString.instance.GetString("AlchemyUI_ReconstructBig"));
-		mainButtonImage.color = Color.white;
-		mainButtonText.color = Color.white;
-
 		reconstructNameText.SetLocalizedText(UIString.instance.GetString("AlchemyUI_ReconstructOn"));
 		reconstructOnOffText.text = "ON";
 		reconstructOnOffText.color = Color.white;
 		autoSelectButton.gameObject.SetActive(false);
+		RefreshMainButton(true);
 		RefreshGrid(true);
 	}
 
@@ -346,14 +364,11 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 			return;
 		}
 
-		mainButtonText.SetLocalizedText(UIString.instance.GetString("AlchemyUI_DeconstructBig"));
-		mainButtonImage.color = ColorUtil.halfGray;
-		mainButtonText.color = ColorUtil.halfGray;
-
 		reconstructNameText.SetLocalizedText(UIString.instance.GetString("AlchemyUI_ReconstructOff"));
 		reconstructOnOffText.text = "OFF";
 		reconstructOnOffText.color = new Color(0.176f, 0.176f, 0.176f);
 		autoSelectButton.gameObject.SetActive(true);
+		RefreshMainButton(false);
 		RefreshGrid(false);
 	}
 
@@ -368,7 +383,7 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 				return;
 			}
 
-			PlayFabApiManager.instance.RequestSellEquip(_listMultiSelectEquipData, _price, OnRecvSellEquip);
+			PlayFabApiManager.instance.RequestSellEquip(_listMultiSelectEquipData, _sumPoint, OnRecvSellEquip);
 		}
 		else
 		{
@@ -381,7 +396,7 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 			string alertStirngId = CheckSellAlert();
 			System.Action action = () =>
 			{
-				PlayFabApiManager.instance.RequestSellEquip(_listMultiSelectEquipData, _price, OnRecvSellEquip);
+				PlayFabApiManager.instance.RequestSellEquip(_listMultiSelectEquipData, _sumPoint, OnRecvSellEquip);
 			};
 
 			if (string.IsNullOrEmpty(alertStirngId))

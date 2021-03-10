@@ -481,6 +481,10 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 				}
 			}
 		}
+
+		// 누적시키고 나서 총량이 최대치를 넘으면 안된다.
+		if (TimeSpaceData.instance.reconstructPoint + _sumPoint > ReconstructPointMax)
+			_sumPoint = ReconstructPointMax - TimeSpaceData.instance.reconstructPoint;
 		
 		PlayFabApiManager.instance.RequestDeconstructEquip(_listMultiSelectEquipData, _sumPoint, OnRecvDeconstructEquip);
 	}

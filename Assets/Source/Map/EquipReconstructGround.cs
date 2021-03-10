@@ -16,6 +16,7 @@ public class EquipReconstructGround : MonoBehaviour
 	public Text addValueText;
 	public Image gaugeImage;
 	public Animator crateAnimator;
+	public GameObject greatSuccessTextObject;
 
 	void Awake()
 	{
@@ -39,6 +40,7 @@ public class EquipReconstructGround : MonoBehaviour
 	void Update()
 	{
 		UpdateValueText();
+		UpdateBaseValueText();
 
 		if (_reserveGaugeMoveTweenAnimation)
 		{
@@ -50,6 +52,7 @@ public class EquipReconstructGround : MonoBehaviour
 	TweenerCore<float, float, FloatOptions> _tweenReferenceForGauge;
 	public void SetBaseValue(float ratio)
 	{
+		_currentBaseValue = ratio;
 		baseValueText.text = string.Format("{0:0.###}%", ratio * 100.0f);
 
 		if (_tweenReferenceForGauge != null)
@@ -71,7 +74,17 @@ public class EquipReconstructGround : MonoBehaviour
 
 	public void SetDeconstructResult(bool greatSuccess, float baseRatio)
 	{
-		SetBaseValue(baseRatio);
+		if (_tweenReferenceForGauge != null)
+			_tweenReferenceForGauge.Kill();
+		_tweenReferenceForGauge = DOTween.To(() => gaugeImage.fillAmount, x => gaugeImage.fillAmount = x, GetAdjustFillAmount(baseRatio), valueChangeTime).SetEase(Ease.OutQuad);
+
+		SetTargetBaseValue(baseRatio);
+
+		if (greatSuccess)
+		{
+			greatSuccessTextObject.SetActive(false);
+			greatSuccessTextObject.SetActive(true);
+		}
 	}
 
 	public void ClearTargetValue()
@@ -128,4 +141,49 @@ public class EquipReconstructGround : MonoBehaviour
 		else
 			addValueText.text = string.Format("+{0:0.##}%", _currentValue * 100.0f);
 	}
+
+
+
+	#region BaseValue Animation
+	// 분해 연출 후에 베이스 수치도 주르륵 올라가는 연출이 필요해졌다. 복사해서 쓴다.
+	float _targetBaseValue;
+	public void SetTargetBaseValue(float value)
+	{
+		_targetBaseValue = value;
+
+		_baseValueChangeSpeed = (_targetBaseValue - _currentBaseValue) / valueChangeTime;
+		_plusOrMinusForBase = (_baseValueChangeSpeed > 0.0f) ? true : false;
+		_updateBaseValueText = true;
+	}
+
+	float _baseValueChangeSpeed;
+	bool _plusOrMinusForBase;
+	float _currentBaseValue;
+	bool _updateBaseValueText;
+	void UpdateBaseValueText()
+	{
+		if (_updateBaseValueText == false)
+			return;
+
+		_currentBaseValue += _baseValueChangeSpeed * Time.deltaTime;
+		if (_plusOrMinusForBase)
+		{
+			if (_currentBaseValue >= _targetBaseValue)
+			{
+				_currentBaseValue = _targetBaseValue;
+				_updateBaseValueText = false;
+			}
+		}
+		else
+		{
+
+			if (_currentBaseValue <= _targetBaseValue)
+			{
+				_currentBaseValue = _targetBaseValue;
+				_updateBaseValueText = false;
+			}
+		}
+		baseValueText.text = string.Format("+{0:0.##}%", _currentBaseValue * 100.0f);
+	}
+	#endregion
 }

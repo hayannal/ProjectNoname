@@ -69,6 +69,11 @@ public class EquipReconstructGround : MonoBehaviour
 		return ratio * 0.5f;
 	}
 
+	public void SetDeconstructResult(bool greatSuccess, float baseRatio)
+	{
+		SetBaseValue(baseRatio);
+	}
+
 	public void ClearTargetValue()
 	{
 		_targetValue = 0.0f;

@@ -49,7 +49,7 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 		{
 			UIInstanceManager.instance.ShowCanvasAsync("EventInfoCanvas", () =>
 			{
-				EventInfoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("AlchemyUI_CrateName"), UIString.instance.GetString("AlchemyUI_CrateMore"), UIString.instance.GetString("AlchemyUI_CrateDesc"), null, 0.785f);
+				EventInfoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("AlchemyUI_CrateName"), UIString.instance.GetString("AlchemyUI_CrateDesc"), UIString.instance.GetString("AlchemyUI_CrateMore"), null, 0.785f);
 			});
 			EventManager.instance.reservedOpenReconstructEvent = false;
 			EventManager.instance.CompleteServerEvent(EventManager.eServerEvent.reconstruct);
@@ -235,11 +235,16 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 
 	List<string> _listMultiSelectUniqueId = new List<string>();
 	List<EquipData> _listMultiSelectEquipData = new List<EquipData>();
-	public List<EquipData> listMultiSelectEquipData { get { return _listMultiSelectEquipData; } }
 	public void OnMultiSelectListItem(EquipData equipData)
 	{
 		bool contains = _listMultiSelectUniqueId.Contains(equipData.uniqueId);
 		if (contains == false && _listMultiSelectEquipData.Count >= MAX_SELECT_COUNT)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("EquipUI_CannotSelectMore"), 1.0f);
+			return;
+		}
+
+		if (contains == false && IsReachableGaugeMax())
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("EquipUI_CannotSelectMore"), 1.0f);
 			return;
@@ -265,6 +270,11 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 		OnMultiSelectMaterial();
 	}
 
+	bool IsReachableGaugeMax()
+	{
+		return ((TimeSpaceData.instance.reconstructPoint + _sumPoint) >= ReconstructPointMax);
+	}
+
 	public void OnAutoSelect(List<int> listGrade, bool includeEnhanced)
 	{
 		_listMultiSelectUniqueId.Clear();
@@ -282,12 +292,17 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 			if (result && _listMultiSelectUniqueId.Count >= MAX_SELECT_COUNT)
 				result = false;
 
+			if (result && IsReachableGaugeMax())
+				result = false;
+
 			if (result)
 			{
 				_listMultiSelectUniqueId.Add(_listEquipCanvasListItem[i].equipData.uniqueId);
 				_listMultiSelectEquipData.Add(_listEquipCanvasListItem[i].equipData);
 			}
 			_listEquipCanvasListItem[i].ShowSelectObject(result);
+
+			RefreshSumPoint();
 		}
 
 		RefreshCountText(false);
@@ -297,8 +312,7 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("EquipUI_NoneForCondition"), 2.0f);
 	}
 
-	ObscuredInt _sumPoint;
-	void OnMultiSelectMaterial()
+	void RefreshSumPoint()
 	{
 		_sumPoint = 0;
 		for (int i = 0; i < _listMultiSelectEquipData.Count; ++i)
@@ -308,6 +322,12 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 				continue;
 			_sumPoint += innerGradeTableData.reconstructPoint;
 		}
+	}
+
+	ObscuredInt _sumPoint;
+	void OnMultiSelectMaterial()
+	{
+		RefreshSumPoint();
 		EquipReconstructGround.instance.SetTargetValue((float)_sumPoint / ReconstructPointMax);
 
 		if (_listMultiSelectEquipData.Count > 0)
@@ -389,7 +409,8 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 				return;
 			}
 
-			PlayFabApiManager.instance.RequestSellEquip(_listMultiSelectEquipData, _sumPoint, OnRecvSellEquip);
+			// 재구축은 드랍을 굴려야한다.
+			//PlayFabApiManager.instance.RequestSellEquip(_listMultiSelectEquipData, _sumPoint, OnRecvSellEquip);
 		}
 		else
 		{
@@ -399,10 +420,10 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 				return;
 			}
 
-			string alertStirngId = CheckSellAlert();
+			string alertStirngId = CheckDeconstructAlert();
 			System.Action action = () =>
 			{
-				PlayFabApiManager.instance.RequestSellEquip(_listMultiSelectEquipData, _sumPoint, OnRecvSellEquip);
+				DeconstructEquip();
 			};
 
 			if (string.IsNullOrEmpty(alertStirngId))
@@ -417,7 +438,54 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 		}
 	}
 
-	string CheckSellAlert()
+	bool _greatSuccess;
+	bool _leftEquip;
+	void DeconstructEquip()
+	{
+		// 대성공 확률은 고정
+		bool greatSuccess = (Random.value < 0.1f);
+		_greatSuccess = false;
+
+		// 대성공하지 않았다면 그냥 들어있는 재료의 양만큼 적용하면 되고 대성공 했다면 최대치를 넘었는지 확인해서 넘치는 재료를 골라내야한다.
+		if (greatSuccess)
+		{
+			_greatSuccess = true;
+			int tempResultValue = TimeSpaceData.instance.reconstructPoint + _sumPoint * 2;
+			if (tempResultValue > ReconstructPointMax)
+			{
+				tempResultValue = TimeSpaceData.instance.reconstructPoint;
+				int removeIndex = -1;
+				for (int i = 0; i < _listMultiSelectEquipData.Count; ++i)
+				{
+					InnerGradeTableData innerGradeTableData = TableDataManager.instance.FindInnerGradeTableData(_listMultiSelectEquipData[i].cachedEquipTableData.innerGrade);
+					if (innerGradeTableData == null)
+						continue;
+					tempResultValue += innerGradeTableData.reconstructPoint * 2;
+					if (tempResultValue >= ReconstructPointMax)
+					{
+						removeIndex = i + 1;
+						break;
+					}
+				}
+
+				if (removeIndex != -1 && removeIndex < _listMultiSelectEquipData.Count)
+				{
+					for (int i = _listMultiSelectEquipData.Count - 1; i >= 0; --i)
+					{
+						if (i >= removeIndex)
+						{
+							_listMultiSelectEquipData.RemoveAt(i);
+							_leftEquip = true;
+						}
+					}
+				}
+			}
+		}
+		
+		PlayFabApiManager.instance.RequestDeconstructEquip(_listMultiSelectEquipData, _sumPoint, OnRecvDeconstructEquip);
+	}
+
+	string CheckDeconstructAlert()
 	{
 		for (int i = 0; i < _listMultiSelectEquipData.Count; ++i)
 		{
@@ -427,12 +495,31 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 		return "";
 	}
 
-	void OnRecvSellEquip()
+	void OnRecvDeconstructEquip()
 	{
-		//currencySmallInfo.RefreshInfo();
-		//RefreshGrid();
-		EquipSellGround.instance.SetTargetPrice(0);
-		ToastCanvas.instance.ShowToast(UIString.instance.GetString("EquipUI_SellComplete"), 2.0f);
+		_sumPoint = 0;
+		EquipReconstructGround.instance.SetDeconstructResult(_greatSuccess, (float)TimeSpaceData.instance.reconstructPoint / ReconstructPointMax);
+		EquipReconstructGround.instance.SetTargetValue(0.0f);
+
+		// refresh
+		if (TimeSpaceData.instance.reconstructPoint >= ReconstructPointMax)
+		{
+			reconstructSwitch.AnimateSwitch();
+		}
+		else
+		{
+			RefreshMainButton(false);
+			RefreshGrid(false);
+		}
+
+		if (_leftEquip)
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("AlchemyUI_ResultLeftEquip"), 2.0f);
+		else if (TimeSpaceData.instance.reconstructPoint >= ReconstructPointMax)
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("AlchemyUI_ReconstructModeOff"), 2.0f);
+		else if (_greatSuccess)
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("AlchemyUI_ResultGreatSuccess"), 2.0f);
+		else
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("AlchemyUI_ResultSuccess"), 2.0f);
 	}
 
 

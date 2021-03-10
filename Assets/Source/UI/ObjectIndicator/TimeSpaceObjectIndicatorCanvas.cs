@@ -25,6 +25,8 @@ public class TimeSpaceObjectIndicatorCanvas : ObjectIndicatorCanvas
 	void OnDisable()
 	{
 		buttonRootObject.SetActive(false);
+
+		alarmRootTransform.gameObject.SetActive(false);
 	}
 
 	TimeSpaceObject.eTimeSpaceObjectType _timeSpaceObjectType;
@@ -38,6 +40,10 @@ public class TimeSpaceObjectIndicatorCanvas : ObjectIndicatorCanvas
 			buttonTextList[i].SetLocalizedText(UIString.instance.GetString(stringId));
 
 		_timeSpaceObjectType = timeSpaceObjectType;
+
+		AlarmObject.Hide(alarmRootTransform);
+		if (timeSpaceObjectType == TimeSpaceObject.eTimeSpaceObjectType.Reconstruct && EventManager.instance.reservedOpenReconstructEvent)
+			AlarmObject.Show(alarmRootTransform, true, true);
 	}
 
 	public void OnClickButton()
@@ -52,12 +58,17 @@ public class TimeSpaceObjectIndicatorCanvas : ObjectIndicatorCanvas
 				break;
 			case TimeSpaceObject.eTimeSpaceObjectType.Reconstruct:
 				UIInstanceManager.instance.ShowCanvasAsync("EquipReconstructCanvas", null);
+
+				if (EventManager.instance.reservedOpenReconstructEvent)
+					AlarmObject.Hide(alarmRootTransform);
 				break;
 		}
 	}
 
 	public bool IsShowAlarmObject()
 	{
+		if (alarmRootTransform.childCount > 0 && alarmRootTransform.GetChild(0).gameObject.activeSelf)
+			return true;
 		return false;
 	}
 }

@@ -27,8 +27,7 @@ public class TimeSpaceObject : MonoBehaviour
 	{
 		// 재구축의 경우 처음 등장할때는 항상 보이게 해야한다. 느낌표도 필요하다.
 		if (timeSpaceObjectType == eTimeSpaceObjectType.Reconstruct && EventManager.instance.reservedOpenReconstructEvent)
-		{
-		}
+			ShowIndicator();
 	}
 
 	void OnDisable()

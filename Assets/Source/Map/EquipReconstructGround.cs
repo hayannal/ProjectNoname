@@ -121,6 +121,6 @@ public class EquipReconstructGround : MonoBehaviour
 		if (_currentValue == 0.0f)
 			addValueText.text = "";
 		else
-			addValueText.text = string.Format("+{0:0.###}%", _currentValue * 100.0f);
+			addValueText.text = string.Format("+{0:0.##}%", _currentValue * 100.0f);
 	}
 }

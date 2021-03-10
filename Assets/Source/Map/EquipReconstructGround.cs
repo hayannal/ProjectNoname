@@ -118,9 +118,9 @@ public class EquipReconstructGround : MonoBehaviour
 		}
 
 		//resultOptionStatusValueText.text = string.Format("{0:0.##}%", (_currentValue + (_addValue - _floatCurrentValue)));
-		if (_updateValueText)
-			addValueText.text = string.Format("+{0:0.###}%", _currentValue * 100.0f);
-		else if (_currentValue == 0.0f)
+		if (_currentValue == 0.0f)
 			addValueText.text = "";
+		else
+			addValueText.text = string.Format("+{0:0.###}%", _currentValue * 100.0f);
 	}
 }

@@ -1413,7 +1413,7 @@ public class PlayFabApiManager : MonoBehaviour
 				PlayerData.instance.purifyCount = 0;
 				jsonResult.TryGetValue("itmRet", out object itmRet);
 				if ((string)itmRet != "")
-					TimeSpaceData.instance.OnRecvItemGrantResult((string)itmRet, false);
+					TimeSpaceData.instance.OnRecvGrantEquip((string)itmRet);
 				if (successCallback != null) successCallback.Invoke((string)itmRet);
 			}
 		}, (error) =>

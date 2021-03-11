@@ -1162,7 +1162,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		CurrencyData.instance.dia += addDia;
 
 		if (itemGrantString != "")
-			TimeSpaceData.instance.OnRecvItemGrantResult(itemGrantString, false);
+			TimeSpaceData.instance.OnRecvGrantEquip(itemGrantString);
 
 		// 클리어 했다면 시간 체크 한번 해본다. 아무리 빨라도 30초 안에 한거면 뭔가 이상한거다.
 		if (clear)

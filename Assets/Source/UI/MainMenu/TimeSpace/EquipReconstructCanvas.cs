@@ -30,6 +30,7 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 
 	public GameObject contentItemPrefab;
 	public RectTransform contentRootRectTransform;
+	public RectTransform scrollViewRectTransform;
 
 	public EquipListStatusInfo materialSmallStatusInfo;
 
@@ -38,9 +39,11 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 	}
 	CustomItemContainer _container = new CustomItemContainer();
 
+	float _defaultScrollViewWidth;
 	void Awake()
 	{
 		instance = this;
+		_defaultScrollViewWidth = scrollViewRectTransform.sizeDelta.x;
 	}
 
 	void Start()
@@ -69,6 +72,9 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 		// 다른 캔버스들과 달리 뽑기연출 뜰때 카메라 모드를 풀어야하므로 StackCanvas.Pop함수보다 위로 올려둔다.
 		SetInfoCameraMode(true);
 
+		// 입장시 Grid는 무조건 1회 만들어둔다.
+		RefreshGrid();
+
 		// 상황에 따라 다르게 처리해야한다.
 		if (TimeSpaceData.instance.reconstructPoint >= ReconstructPointMax)
 		{
@@ -79,7 +85,7 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 			{
 				autoSelectButton.gameObject.SetActive(false);
 				RefreshMainButton(true);
-				RefreshGrid(true);
+				RefreshTextInfo(true);
 			}
 		}
 		else
@@ -91,7 +97,7 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 			{
 				autoSelectButton.gameObject.SetActive(true);
 				RefreshMainButton(false);
-				RefreshGrid(false);
+				RefreshTextInfo(false);
 			}
 		}
 
@@ -154,7 +160,7 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 	List<EquipData> _listCurrentEquipData = new List<EquipData>();
 	int _multiSelectMax = 0;
 	int MAX_SELECT_COUNT = 20;
-	void RefreshGrid(bool reconstruct)
+	void RefreshGrid()
 	{
 		_listMultiSelectUniqueId.Clear();
 		_listMultiSelectEquipData.Clear();
@@ -169,27 +175,18 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 		_listCurrentEquipData.Clear();
 		List<EquipData> listEquipData = null;
 		_multiSelectMax = MAX_SELECT_COUNT;
-		if (reconstruct == false)
+		for (int i = 0; i < (int)TimeSpaceData.eEquipSlotType.Amount; ++i)
 		{
-			for (int i = 0; i < (int)TimeSpaceData.eEquipSlotType.Amount; ++i)
+			listEquipData = TimeSpaceData.instance.GetEquipListByType((TimeSpaceData.eEquipSlotType)i);
+			for (int j = 0; j < listEquipData.Count; ++j)
 			{
-				listEquipData = TimeSpaceData.instance.GetEquipListByType((TimeSpaceData.eEquipSlotType)i);
-				for (int j = 0; j < listEquipData.Count; ++j)
-				{
-					if (TimeSpaceData.instance.IsEquipped(listEquipData[j]))
-						continue;
-					if (listEquipData[j].isLock)
-						continue;
-					_listCurrentEquipData.Add(listEquipData[j]);
-				}
+				if (TimeSpaceData.instance.IsEquipped(listEquipData[j]))
+					continue;
+				if (listEquipData[j].isLock)
+					continue;
+				_listCurrentEquipData.Add(listEquipData[j]);
 			}
 		}
-		RefreshCountText(reconstruct);
-		noNeedText.gameObject.SetActive(_listCurrentEquipData.Count == 0);
-		if (noNeedText.gameObject.activeSelf)
-			noNeedText.SetLocalizedText(UIString.instance.GetString(reconstruct ? "AlchemyUI_NoNeedMaterial" : "GameUI_EmptyEquip"));
-		selectTextObject.SetActive(false);
-		EquipReconstructGround.instance.ClearTargetValue();
 
 		_listCurrentEquipData.Sort(delegate (EquipData x, EquipData y)
 		{
@@ -214,6 +211,16 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 			if (_listCurrentEquipData[i].newEquip) equipCanvasListItem.ShowAlarm(true);
 			_listEquipCanvasListItem.Add(equipCanvasListItem);
 		}
+	}
+
+	void RefreshTextInfo(bool reconstruct)
+	{
+		RefreshCountText(reconstruct);
+		noNeedText.gameObject.SetActive(_listCurrentEquipData.Count == 0 || reconstruct);
+		if (noNeedText.gameObject.activeSelf)
+			noNeedText.SetLocalizedText(UIString.instance.GetString(reconstruct ? "AlchemyUI_NoNeedMaterial" : "GameUI_EmptyEquip"));
+		selectTextObject.SetActive(false);
+		EquipReconstructGround.instance.ClearTargetValue();
 	}
 
 	void RefreshCountText(bool reconstruct)
@@ -382,7 +389,11 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 		reconstructOnOffText.color = Color.white;
 		autoSelectButton.gameObject.SetActive(false);
 		RefreshMainButton(true);
-		RefreshGrid(true);
+		RefreshTextInfo(true);
+
+		// 전체 Refresh가 느려서 처음 생성할때만 하고 Switch 하는 형태로 간다.
+		//RefreshGrid(true);
+		SwitchGrid(true);
 	}
 
 	public void OnSwitchOffReconstruct()
@@ -400,7 +411,26 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 		reconstructOnOffText.color = new Color(0.176f, 0.176f, 0.176f);
 		autoSelectButton.gameObject.SetActive(true);
 		RefreshMainButton(false);
-		RefreshGrid(false);
+		RefreshTextInfo(false);
+		//RefreshGrid(false);
+		SwitchGrid(false);
+	}
+
+	void SwitchGrid(bool reconstruct)
+	{
+		// content 루트를 꺼보니 여전히 안에 있는 항목을 전부 꺼야해서 느리다.
+		// 그래서 scrollView의 가로 크기를 줄이기로 한다.
+		scrollViewRectTransform.sizeDelta = new Vector2(reconstruct ? -1 : _defaultScrollViewWidth, scrollViewRectTransform.sizeDelta.y);
+
+		if (reconstruct)
+		{
+			_listMultiSelectUniqueId.Clear();
+			_listMultiSelectEquipData.Clear();
+
+			for (int i = 0; i < _listEquipCanvasListItem.Count; ++i)
+				_listEquipCanvasListItem[i].ShowSelectObject(false);
+		}
+		_sumPoint = 0;
 	}
 
 	public void OnClickDetailButton()
@@ -538,8 +568,30 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 		else
 		{
 			RefreshMainButton(false);
-			RefreshGrid(false);
+			// 아이템 개수 많을때는 느려서 삭제할 항목만 지우기로 한다.
+			//RefreshGrid(false);
 		}
+
+		for (int i = _listEquipCanvasListItem.Count - 1; i >= 0; --i)
+		{
+			if (_listEquipCanvasListItem[i].gameObject.activeSelf == false)
+				continue;
+
+			if (_listMultiSelectUniqueId.Contains(_listEquipCanvasListItem[i].equipData.uniqueId))
+			{
+				_listEquipCanvasListItem[i].ShowAlarm(false);
+				_listEquipCanvasListItem[i].gameObject.SetActive(false);
+
+				int removeIndex = i;
+				EquipData removeEquipData = _listEquipCanvasListItem[i].equipData;
+
+				_listMultiSelectEquipData.Remove(_listEquipCanvasListItem[i].equipData);
+				_listMultiSelectUniqueId.Remove(removeEquipData.uniqueId);
+				_listCurrentEquipData.RemoveAt(removeIndex);
+				_listEquipCanvasListItem.RemoveAt(removeIndex);
+			}
+		}
+		RefreshTextInfo(false);
 
 		if (_leftEquip)
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("AlchemyUI_ResultLeftEquip"), 2.0f);

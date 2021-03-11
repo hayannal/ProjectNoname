@@ -294,7 +294,34 @@ public class EquipSellCanvas : EquipShowCanvasBase
 	void OnRecvSellEquip()
 	{
 		currencySmallInfo.RefreshInfo();
-		RefreshGrid();
+
+		// Grid를 통째로 리프레쉬하니 느려져서 선택된 아이템들만 꺼두기로 한다.
+		//RefreshGrid();
+
+		// EquipReconstructCanvas 하면서 만든 코드다. 복사해서 가져온다.
+		for (int i = _listEquipCanvasListItem.Count - 1; i >= 0; --i)
+		{
+			if (_listEquipCanvasListItem[i].gameObject.activeSelf == false)
+				continue;
+
+			if (_listMultiSelectUniqueId.Contains(_listEquipCanvasListItem[i].equipData.uniqueId))
+			{
+				_listEquipCanvasListItem[i].ShowAlarm(false);
+				_listEquipCanvasListItem[i].gameObject.SetActive(false);
+
+				int removeIndex = i;
+				EquipData removeEquipData = _listEquipCanvasListItem[i].equipData;
+
+				_listMultiSelectEquipData.Remove(_listEquipCanvasListItem[i].equipData);
+				_listMultiSelectUniqueId.Remove(removeEquipData.uniqueId);
+				_listCurrentEquipData.RemoveAt(removeIndex);
+				_listEquipCanvasListItem.RemoveAt(removeIndex);
+			}
+		}
+
+		RefreshCountText();
+		emptyText.gameObject.SetActive(_listCurrentEquipData.Count == 0);
+		selectTextObject.SetActive(false);
 		EquipSellGround.instance.SetTargetPrice(0);
 		ToastCanvas.instance.ShowToast(UIString.instance.GetString("EquipUI_SellComplete"), 2.0f);
 	}

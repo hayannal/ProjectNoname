@@ -472,7 +472,8 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 		if (greatSuccess)
 		{
 			_greatSuccess = true;
-			int tempResultValue = TimeSpaceData.instance.reconstructPoint + _sumPoint * 2;
+			_sumPoint *= 2;
+			int tempResultValue = TimeSpaceData.instance.reconstructPoint + _sumPoint;
 			if (tempResultValue > ReconstructPointMax)
 			{
 				tempResultValue = TimeSpaceData.instance.reconstructPoint;

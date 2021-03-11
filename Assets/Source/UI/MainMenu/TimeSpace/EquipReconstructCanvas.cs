@@ -186,6 +186,8 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 		}
 		RefreshCountText(reconstruct);
 		noNeedText.gameObject.SetActive(_listCurrentEquipData.Count == 0);
+		if (noNeedText.gameObject.activeSelf)
+			noNeedText.SetLocalizedText(UIString.instance.GetString(reconstruct ? "AlchemyUI_NoNeedMaterial" : "GameUI_EmptyEquip"));
 		selectTextObject.SetActive(false);
 		EquipReconstructGround.instance.ClearTargetValue();
 

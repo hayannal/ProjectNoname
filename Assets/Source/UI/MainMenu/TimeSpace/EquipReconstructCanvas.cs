@@ -119,10 +119,13 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 
 		materialSmallStatusInfo.gameObject.SetActive(false);
 
-		// 다른 캔버스들과 달리 뽑기연출 뜰때 카메라 모드를 풀어야하므로 StackCanvas.Pop함수보다 위로 올려둔다.
+		bool popResult = StackCanvas.Pop(gameObject);
+
+		// 다른 캔버스들과 달리 뽑기연출 뜰때 카메라 모드를 풀어야하므로 StackCanvas.Pop함수보다 위로 올려두려고 했는데
+		// 위로 올리면 DotMainMenu연채로 이 창 열고 닫을때 조명에 문제가 생겨서 popResult에 기억시켜두고 호출하기로 한다.
 		SetInfoCameraMode(false);
 
-		if (StackCanvas.Pop(gameObject))
+		if (popResult)
 			return;
 
 		// CharacterListCanvas 와 비슷한 구조다.

@@ -2094,6 +2094,56 @@ public class PlayFabApiManager : MonoBehaviour
 			HandleCommonError(error);
 		});
 	}
+
+	public void RequestReconstructEquip(List<ObscuredString> listEquipId, int addDia, Action<bool, string> successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		ExecuteCloudScriptRequest request = null;
+		if (addDia == 0)
+		{
+			string checkSum = "";
+			List<TimeSpaceData.ItemGrantRequest> listItemGrantRequest = TimeSpaceData.instance.GenerateGrantRequestInfo(listEquipId, ref checkSum);
+			request = new ExecuteCloudScriptRequest()
+			{
+				FunctionName = "ReconstructEquip",
+				FunctionParameter = new { Re = 1, EqpLst = listItemGrantRequest, EqpLstCs = checkSum },
+				GeneratePlayStreamEvent = true,
+			};
+		}
+		else
+		{
+			string input = string.Format("{0}_{1}", addDia, "zibkqpowm");
+			string checkSum = CheckSum(input);
+			request = new ExecuteCloudScriptRequest()
+			{
+				FunctionName = "ReconstructEquip",
+				FunctionParameter = new { Re = 0, Di = addDia, Cs = checkSum },
+				GeneratePlayStreamEvent = true,
+			};
+		}
+		
+		PlayFabClientAPI.ExecuteCloudScript(request, (success) =>
+		{
+			PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
+			jsonResult.TryGetValue("retErr", out object retErr);
+			bool failure = ((retErr.ToString()) == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+
+				CurrencyData.instance.dia += addDia;
+				TimeSpaceData.instance.reconstructPoint = 0;
+
+				jsonResult.TryGetValue("itmRet", out object itmRet);
+
+				if (successCallback != null) successCallback.Invoke(failure, (string)itmRet);
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
 	#endregion
 
 	#region Gacha

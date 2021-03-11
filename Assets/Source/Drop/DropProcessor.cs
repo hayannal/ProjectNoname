@@ -236,6 +236,20 @@ public class DropProcessor : MonoBehaviour
 					if (stringValue == "")
 						continue;
 				}
+				else if (dropType == eDropType.Diamond)
+				{
+					if (dropTableData.dropId.Contains("Reconstruct"))
+					{
+						if (EquipReconstructCanvas.instance != null)
+						{
+							int rewardAmount = EquipReconstructCanvas.instance.GetDiaAmount();
+							if (rewardAmount == 1 || rewardAmount == 2)
+								intValue = rewardAmount;
+							else
+								intValue = 3;
+						}
+					}
+				}
 			}
 
 			switch (dropType)

@@ -5,14 +5,16 @@ using UnityEngine.UI;
 using Michsky.UI.Hexart;
 using CodeStage.AntiCheat.ObscuredTypes;
 using MEC;
+using PlayFab.ClientModels;
 
 public class EquipReconstructCanvas : EquipShowCanvasBase
 {
 	public static EquipReconstructCanvas instance;
 
 	public const int ReconstructPointMax = 10000;
-	public const int ReconstructMinimumLimit = 2000;
+	public const int ReconstructMinimumLimit = 1500;
 
+	public CurrencySmallInfo currencySmallInfo;
 	public Text mainButtonText;
 	public Image mainButtonImage;
 
@@ -58,15 +60,13 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 
 	void OnEnable()
 	{
-		// EquipListCanvas 에서 가져와서 EquipInfoGrowthCanvas와 합쳐서 사용한다.
+		// EquipSellCanvas와 마찬가지로 EquipListCanvas 에서 가져와서 EquipInfoGrowthCanvas와 합쳐서 만들어본다.
 		bool restore = StackCanvas.Push(gameObject, false, null, OnPopStack);
 
 		if (DragThresholdController.instance != null)
 			DragThresholdController.instance.ApplyUIDragThreshold();
 
-		if (restore)
-			return;
-
+		// 다른 캔버스들과 달리 뽑기연출 뜰때 카메라 모드를 풀어야하므로 StackCanvas.Pop함수보다 위로 올려둔다.
 		SetInfoCameraMode(true);
 
 		// 상황에 따라 다르게 처리해야한다.
@@ -97,6 +97,13 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 
 		EquipReconstructGround.instance.SetBaseValue((float)TimeSpaceData.instance.reconstructPoint / ReconstructPointMax);
 		EquipReconstructGround.instance.ClearTargetValue();
+
+		if (restore)
+		{
+			// 이 창에서 restore가 일어나는 경우는 재구축 연출 끝나고 돌아올때 뿐이다.
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("AlchemyUI_ReconstructModeOff"), 2.0f);
+			return;
+		}
 	}
 
 	void OnDisable()
@@ -105,6 +112,9 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 			DragThresholdController.instance.ResetUIDragThreshold();
 
 		materialSmallStatusInfo.gameObject.SetActive(false);
+
+		// 다른 캔버스들과 달리 뽑기연출 뜰때 카메라 모드를 풀어야하므로 StackCanvas.Pop함수보다 위로 올려둔다.
+		SetInfoCameraMode(false);
 
 		if (StackCanvas.Pop(gameObject))
 			return;
@@ -119,8 +129,6 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 			return;
 		if (MainSceneBuilder.instance == null)
 			return;
-
-		SetInfoCameraMode(false);
 
 		for (int i = 0; i < _listEquipCanvasListItem.Count; ++i)
 			_listEquipCanvasListItem[i].ShowAlarm(false);
@@ -409,8 +417,22 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 				return;
 			}
 
-			// 재구축은 드랍을 굴려야한다.
-			//PlayFabApiManager.instance.RequestSellEquip(_listMultiSelectEquipData, _sumPoint, OnRecvSellEquip);
+			string alertStirngId = CheckReconstructAlert();
+			string arg = string.Format("{0:0.##}", ((float)TimeSpaceData.instance.reconstructPoint / ReconstructPointMax * 100.0f));
+			System.Action action = () =>
+			{
+				ReconstructEquip();
+			};
+
+			if (string.IsNullOrEmpty(alertStirngId))
+				action.Invoke();
+			else
+			{
+				YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString(alertStirngId, arg), () =>
+				{
+					action.Invoke();
+				});
+			}
 		}
 		else
 		{
@@ -494,7 +516,7 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 		for (int i = 0; i < _listMultiSelectEquipData.Count; ++i)
 		{
 			if (_listMultiSelectEquipData[i].cachedEquipTableData.grade >= BASE_GRADE)
-				return "EquipUI_WarningSell";
+				return "AlchemyUI_WarningDeconstruct";
 		}
 		return "";
 	}
@@ -519,14 +541,116 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 		if (_leftEquip)
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("AlchemyUI_ResultLeftEquip"), 2.0f);
 		else if (TimeSpaceData.instance.reconstructPoint >= ReconstructPointMax)
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("AlchemyUI_ReconstructModeOff"), 2.0f);
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("AlchemyUI_ReconstructModeOn"), 2.0f);
 		else if (_greatSuccess)
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("AlchemyUI_ResultGreatSuccess"), 2.0f);
 		else
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("AlchemyUI_ResultSuccess"), 2.0f);
 	}
 
+	DropProcessor _cachedDropProcessor;
+	ObscuredInt _addDia;
+	public int GetDiaAmount() { return _addDia; }
+	void ReconstructEquip()
+	{
+		// 재구축 확률을 먼저 굴려보고 성공하면
+		bool success = (Random.value <= ((float)TimeSpaceData.instance.reconstructPoint / ReconstructPointMax));
+		if (success)
+		{
+			// 오리진 박스와 마찬가지로 먼저 드랍프로세서부터 만들어야한다.
+			_cachedDropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, "Wjstjfwkdqlk", "", true, true);
+			if (CheatingListener.detectedCheatTable)
+				return;
 
+			PlayFabApiManager.instance.RequestReconstructEquip(DropManager.instance.GetLobbyDropItemInfo(), 0, OnRecvReconstructEquip);
+		}
+		else
+		{
+			// 실패시에는 쌓여있는 퍼센트에다가 0.3 곱한만큼의 다이아를 받아야한다.
+			float calc = TimeSpaceData.instance.reconstructPoint * 0.01f * 0.075f;
+			calc = Random.Range(calc - 0.625f, calc + 0.625f);
+			int diaAmount = Mathf.RoundToInt(calc);
+			_addDia = diaAmount;
+
+			// 먼저 패킷을 보내서 통신 후
+			PlayFabApiManager.instance.RequestReconstructEquip(null, diaAmount, OnRecvReconstructDia);
+		}
+	}
+
+	string CheckReconstructAlert()
+	{
+		if (TimeSpaceData.instance.reconstructPoint < ReconstructPointMax)
+		{
+			return "AlchemyUI_ReconstructConfirm";
+		}
+		return "";
+	}
+
+	void OnRecvReconstructEquip(bool serverFailure, string itemGrantString)
+	{
+		// 실패했는데 굳이 처리해줄 필요가 없다.
+		if (serverFailure)
+			return;
+		if (itemGrantString == "")
+			return;
+
+		// 캐릭터와 달리 장비는 드랍프로세서에서 정보를 뽑아쓰는게 아니라서 미리 클리어해도 상관없다.
+		DropManager.instance.ClearLobbyDropInfo();
+
+		EquipData grantEquipData = TimeSpaceData.instance.OnRecvGrantEquip(itemGrantString, 1);
+		if (grantEquipData == null)
+			return;
+
+		// 연출은 연출대로 두고
+		// 연출 끝나고 나올 결과창에서 아이콘이 느리게 보이는걸 방지하기 위해 아이콘의 프리로드를 진행한다.
+		List<ItemInstance> listGrantItem = null;
+		if (itemGrantString != "")
+		{
+			listGrantItem = TimeSpaceData.instance.DeserializeItemGrantResult(itemGrantString);
+			for (int i = 0; i < listGrantItem.Count; ++i)
+			{
+				EquipTableData equipTableData = TableDataManager.instance.FindEquipTableData(listGrantItem[i].ItemId);
+				if (equipTableData == null)
+					continue;
+
+				AddressableAssetLoadManager.GetAddressableSprite(equipTableData.shotAddress, "Icon", null);
+			}
+		}
+
+		// 연출 및 보상 처리.
+		UIInstanceManager.instance.ShowCanvasAsync("RandomBoxScreenCanvas", () =>
+		{
+			RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Equip1, _cachedDropProcessor, 0, 0, () =>
+			{
+				UIInstanceManager.instance.ShowCanvasAsync("EquipBoxResultCanvas", () =>
+				{
+					EquipBoxResultCanvas.instance.RefreshInfo(listGrantItem);
+				});
+			});
+		});
+	}
+
+	void OnRecvReconstructDia(bool serverFailure, string itemGrantString)
+	{
+		if (itemGrantString != "")
+			return;
+
+		// 연출
+		UIInstanceManager.instance.ShowCanvasAsync("RandomBoxScreenCanvas", () =>
+		{
+			DropProcessor dropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, "ReconstructDiamond", "", true, true);
+			RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Equip1, dropProcessor, 0, 0, () =>
+			{
+				DropManager.instance.ClearLobbyDropInfo();
+				currencySmallInfo.RefreshInfo();
+
+				UIInstanceManager.instance.ShowCanvasAsync("CurrencyBoxResultCanvas", () =>
+				{
+					CurrencyBoxResultCanvas.instance.RefreshInfo(0, _addDia, 0, false, true);
+				});
+			});
+		});
+	}
 
 	public void OnClickBackButton()
 	{

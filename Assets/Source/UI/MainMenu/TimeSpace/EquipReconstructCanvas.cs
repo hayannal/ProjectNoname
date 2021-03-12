@@ -566,16 +566,7 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 
 		// refresh
 		if (TimeSpaceData.instance.reconstructPoint >= ReconstructPointMax)
-		{
 			reconstructSwitch.AnimateSwitch();
-		}
-		else
-		{
-			RefreshMainButton(false);
-			// 아이템 개수 많을때는 느려서 삭제할 항목만 지우기로 한다.
-			//RefreshGrid(false);
-			RefreshTextInfo(false);
-		}
 
 		for (int i = _listEquipCanvasListItem.Count - 1; i >= 0; --i)
 		{
@@ -595,6 +586,17 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 				_listCurrentEquipData.RemoveAt(removeIndex);
 				_listEquipCanvasListItem.RemoveAt(removeIndex);
 			}
+		}
+
+		// _listMultiSelectEquipData 그리드 정리 후에 호출해야해서 아래로 빼둔다.
+		if (TimeSpaceData.instance.reconstructPoint >= ReconstructPointMax)
+		{ }
+		else
+		{
+			RefreshMainButton(false);
+			// 아이템 개수 많을때는 느려서 삭제할 항목만 지우기로 한다.
+			//RefreshGrid(false);
+			RefreshTextInfo(false);
 		}
 
 		if (_leftEquip)

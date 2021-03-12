@@ -573,6 +573,7 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 			RefreshMainButton(false);
 			// 아이템 개수 많을때는 느려서 삭제할 항목만 지우기로 한다.
 			//RefreshGrid(false);
+			RefreshTextInfo(false);
 		}
 
 		for (int i = _listEquipCanvasListItem.Count - 1; i >= 0; --i)
@@ -594,7 +595,6 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 				_listEquipCanvasListItem.RemoveAt(removeIndex);
 			}
 		}
-		RefreshTextInfo(false);
 
 		if (_leftEquip)
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("AlchemyUI_ResultLeftEquip"), 2.0f);
@@ -604,6 +604,9 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("AlchemyUI_ResultGreatSuccess"), 2.0f);
 		else
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("AlchemyUI_ResultSuccess"), 2.0f);
+
+		_leftEquip = false;
+		_greatSuccess = false;
 	}
 
 	DropProcessor _cachedDropProcessor;

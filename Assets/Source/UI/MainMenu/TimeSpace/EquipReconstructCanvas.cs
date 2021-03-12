@@ -165,6 +165,7 @@ public class EquipReconstructCanvas : EquipShowCanvasBase
 	int MAX_SELECT_COUNT = 20;
 	void RefreshGrid()
 	{
+		_sumPoint = 0;
 		_listMultiSelectUniqueId.Clear();
 		_listMultiSelectEquipData.Clear();
 

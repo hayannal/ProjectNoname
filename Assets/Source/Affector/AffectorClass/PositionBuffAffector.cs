@@ -105,4 +105,14 @@ public class PositionBuffAffector : AffectorBase
 			return positionBuffAffector._affectorValueLevelTableData.fValue3;
 		return 0;
 	}
+
+	public static float GetEvadeAddRate(AffectorProcessor affectorProcessor)
+	{
+		PositionBuffAffector positionBuffAffector = (PositionBuffAffector)affectorProcessor.GetFirstContinuousAffector(eAffectorType.PositionBuff);
+		if (positionBuffAffector == null)
+			return 0;
+		if (positionBuffAffector.IsInRange(affectorProcessor))
+			return positionBuffAffector._affectorValueLevelTableData.fValue4;
+		return 0;
+	}
 }

@@ -91,5 +91,6 @@ public enum eAffectorType
 	AddAttackByContinuousKill,
 	Resurrect,
 	ChargingAction,
+	OnMoveBuff,
 }
 #endregion

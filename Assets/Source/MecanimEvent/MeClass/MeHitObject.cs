@@ -26,6 +26,7 @@ public class MeHitObject : MecanimEventBase {
 	public bool movable;
 	public float moveStartDelay;
 	public float maxDistance;
+	public bool useDynamicMaxDistanceByTargetDistance;
 	public float defaultSphereCastDistance;
 	public float sphereCastRadius;
 	public Team.eTeamCheckFilter teamCheckType;
@@ -198,6 +199,7 @@ public class MeHitObject : MecanimEventBase {
 			{
 				moveStartDelay = EditorGUILayout.FloatField("Move Start Delay :", moveStartDelay);
 				maxDistance = EditorGUILayout.FloatField("Max Distance :", maxDistance);
+				useDynamicMaxDistanceByTargetDistance = EditorGUILayout.Toggle("Dynamic Max Distance :", useDynamicMaxDistanceByTargetDistance);
 			}
 		}
 		teamCheckType = (Team.eTeamCheckFilter)EditorGUILayout.EnumPopup("Team Check Type :", teamCheckType);

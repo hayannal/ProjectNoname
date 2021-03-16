@@ -1095,6 +1095,7 @@ public class HitObject : MonoBehaviour
 	Vector3 _createPosition;
 	Vector3 _createForward;
 	float _parentHitObjectCreateTime;
+	float _dynamicMaxDistanceByTargetDistance;
 	StatusBase _statusBase;
 	StatusStructForHitObject _statusStructForHitObject;
 	Rigidbody _rigidbody { get; set; }
@@ -1140,6 +1141,18 @@ public class HitObject : MonoBehaviour
 		_createForward = cachedTransform.forward;
 		_statusBase = statusBase;
 		CopyEtcStatusForHitObject(ref _statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
+
+		if (_signal.useDynamicMaxDistanceByTargetDistance && parentActor.targetingProcessor.GetTarget() != null)
+		{
+			Collider targetCollider = parentActor.targetingProcessor.GetTarget();
+			Transform targetTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
+			if (targetTransform != null)
+			{
+				Vector3 diff = targetTransform.position - cachedTransform.position;
+				diff.y = 0.0f;
+				_dynamicMaxDistanceByTargetDistance = diff.magnitude;
+			}
+		}
 
 #if UNITY_EDITOR
 		//Debug.LogFormat("HitObject Create Time = {0}", _createTime);
@@ -1425,6 +1438,8 @@ public class HitObject : MonoBehaviour
 		if (_signal.movable == false)
 			return;
 		float maxDistance = _signal.maxDistance;
+		if (_signal.useDynamicMaxDistanceByTargetDistance && _dynamicMaxDistanceByTargetDistance > 0.0f)
+			maxDistance = _dynamicMaxDistanceByTargetDistance;
 		if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
 		{
 			if (maxDistance == 0.0f || (_hitObjectMovement != null && _hitObjectMovement.IsAppliedRicochet()))

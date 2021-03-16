@@ -86,6 +86,16 @@ public class PositionBuffAffector : AffectorBase
 
 
 
+	public static int GetGeneratorAddCount(AffectorProcessor affectorProcessor)
+	{
+		PositionBuffAffector positionBuffAffector = (PositionBuffAffector)affectorProcessor.GetFirstContinuousAffector(eAffectorType.PositionBuff);
+		if (positionBuffAffector == null)
+			return 0;
+		if (positionBuffAffector.IsInRange(affectorProcessor))
+			return positionBuffAffector._affectorValueLevelTableData.iValue2;
+		return 0;
+	}
+
 	public static int GetCircularSectorCount(AffectorProcessor affectorProcessor)
 	{
 		PositionBuffAffector positionBuffAffector = (PositionBuffAffector)affectorProcessor.GetFirstContinuousAffector(eAffectorType.PositionBuff);

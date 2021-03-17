@@ -33,6 +33,11 @@ public class ImmortalWillAffector : AffectorBase
 		noConditionImmortal = (affectorValueLevelTableData.iValue1 == 1);
 	}
 
+	public override void OverrideAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
+	{
+		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
+	}
+
 	public override void UpdateAffector()
 	{
 		if (CheckEndTime(_endTime) == false)

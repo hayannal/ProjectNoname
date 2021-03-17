@@ -92,7 +92,10 @@ public class OnMoveBuffAffector : AffectorBase
 			if (_actor.actionController.mecanimState.IsState((int)eMecanimState.Move))
 			{
 				if (_onStartEffectPrefab != null)
-					BattleInstanceManager.instance.GetCachedObject(_onStartEffectPrefab, _actor.cachedTransform.position, Quaternion.identity);
+				{
+					Transform onStartEffectObject = BattleInstanceManager.instance.GetCachedObject(_onStartEffectPrefab, _actor.cachedTransform.position, Quaternion.identity).transform;
+					FollowTransform.Follow(onStartEffectObject, _actor.cachedTransform, Vector3.zero);
+				}
 				LoopEffectOnOff(true);
 				_applied = true;
 			}

@@ -7,6 +7,7 @@ public class OnMoveBuffAffector : AffectorBase
 {
 	float _endTime;
 	bool _applied;
+	GameObject _onStartEffectPrefab;
 	Transform _onOffLoopEffectTransform;
 	List<ParticleSystem> _listOnOffLoopParticleSystem;
 	Transform _loopEffectTransform;
@@ -51,6 +52,9 @@ public class OnMoveBuffAffector : AffectorBase
 				FollowTransform.Follow(_loopEffectTransform, _actor.cachedTransform, Vector3.zero);
 			}
 		}
+
+		if (string.IsNullOrEmpty(affectorValueLevelTableData.sValue2) == false)
+			_onStartEffectPrefab = FindPreloadObject(affectorValueLevelTableData.sValue2);
 	}
 
 	void LoopEffectOnOff(bool enabled)
@@ -87,6 +91,8 @@ public class OnMoveBuffAffector : AffectorBase
 		{
 			if (_actor.actionController.mecanimState.IsState((int)eMecanimState.Move))
 			{
+				if (_onStartEffectPrefab != null)
+					BattleInstanceManager.instance.GetCachedObject(_onStartEffectPrefab, _actor.cachedTransform.position, Quaternion.identity);
 				LoopEffectOnOff(true);
 				_applied = true;
 			}

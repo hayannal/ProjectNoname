@@ -364,6 +364,10 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 
 		yield return Timing.WaitForSeconds(0.5f);
 
+		// avoid gc
+		if (this == null)
+			yield break;
+
 		currentClearPointText.text = BattleManager.instance.GetClearPoint().ToString("N0");
 		refreshPriceText.text = GetRefreshPrice().ToString();
 		currentClearPointGroupObject.SetActive(true);

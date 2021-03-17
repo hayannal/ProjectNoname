@@ -1092,6 +1092,7 @@ public class HitObject : MonoBehaviour
 
 	MeHitObject _signal;
 	float _createTime;
+	float _additionalLifeTime;
 	Vector3 _createPosition;
 	Vector3 _createForward;
 	float _parentHitObjectCreateTime;
@@ -1141,6 +1142,7 @@ public class HitObject : MonoBehaviour
 		_createForward = cachedTransform.forward;
 		_statusBase = statusBase;
 		CopyEtcStatusForHitObject(ref _statusStructForHitObject, parentActor, meHit, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
+		_additionalLifeTime = LifeTimeHitObjectAffector.GetAddLifeTime(parentActor.affectorProcessor);
 
 		if (_signal.useDynamicMaxDistanceByTargetDistance && parentActor.targetingProcessor.GetTarget() != null)
 		{
@@ -1426,7 +1428,7 @@ public class HitObject : MonoBehaviour
 		if (_signal.lifeTime >= 10000.0f)
 			return;
 
-		if (_signal.RangeSignal == false && _createTime + _signal.lifeTime < Time.time)
+		if (_signal.RangeSignal == false && _createTime + _additionalLifeTime + _signal.lifeTime < Time.time)
 		{
 			OnFinalizeByLifeTime();
 			return;

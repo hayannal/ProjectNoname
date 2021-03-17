@@ -51,6 +51,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.TeleportingHitObject: affectorBase = new TeleportingHitObjectAffector(); break;
 			case eAffectorType.AddGeneratorCreateCount: affectorBase = new AddGeneratorCreateCountAffector(); break;
 			case eAffectorType.ArcFormHitObject: affectorBase = new ArcFormHitObjectAffector(); break;
+			case eAffectorType.LifeTimeHitObject: affectorBase = new LifeTimeHitObjectAffector(); break;
 			case eAffectorType.Invincible: affectorBase = new InvincibleAffector(); break;
 			case eAffectorType.CountBarrier: affectorBase = new CountBarrierAffector(); break;
 			case eAffectorType.InvincibleTortoise: affectorBase = new InvincibleTortoiseAffector(); break;
@@ -134,6 +135,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.TeleportingHitObject:
 			case eAffectorType.AddGeneratorCreateCount:
 			case eAffectorType.ArcFormHitObject:
+			case eAffectorType.LifeTimeHitObject:
 			case eAffectorType.Invincible:
 			case eAffectorType.CountBarrier:
 			case eAffectorType.InvincibleTortoise:

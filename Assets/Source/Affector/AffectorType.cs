@@ -51,6 +51,7 @@ public enum eAffectorType
 	TeleportingHitObject,
 	AddGeneratorCreateCount,
 	ArcFormHitObject,
+	LifeTimeHitObject,
 
 	DropItem = 51,
 	Invincible,

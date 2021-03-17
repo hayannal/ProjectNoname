@@ -7,6 +7,7 @@ public class ImmortalWillAffector : AffectorBase
 	float _endTime;
 	float _value;
 	float value { get { return _value; } }
+	bool noConditionImmortal { get; set; }
 
 	const float StandardHitCountForMonsterKillingPlayer = 4.5f;
 
@@ -28,6 +29,8 @@ public class ImmortalWillAffector : AffectorBase
 		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
 
 		_value = affectorValueLevelTableData.fValue2;
+
+		noConditionImmortal = (affectorValueLevelTableData.iValue1 == 1);
 	}
 
 	public override void UpdateAffector()
@@ -42,6 +45,7 @@ public class ImmortalWillAffector : AffectorBase
 		if (listImmortalWillAffector == null)
 			return false;
 
+		bool noConditionImmortal = false;
 		float result = 0.0f;
 		for (int i = 0; i < listImmortalWillAffector.Count; ++i)
 		{
@@ -50,7 +54,19 @@ public class ImmortalWillAffector : AffectorBase
 			ImmortalWillAffector immortalWillAffector = listImmortalWillAffector[i] as ImmortalWillAffector;
 			if (immortalWillAffector == null)
 				continue;
+
+			if (immortalWillAffector.noConditionImmortal)
+			{
+				noConditionImmortal = true;
+				break;
+			}
+
 			result += immortalWillAffector.value;
+		}
+		if (noConditionImmortal)
+		{
+			FloatingDamageTextRootCanvas.instance.ShowText(FloatingDamageText.eFloatingDamageType.Immortal, affectorProcessor.actor);
+			return true;
 		}
 		if (result == 0.0f)
 			return false;

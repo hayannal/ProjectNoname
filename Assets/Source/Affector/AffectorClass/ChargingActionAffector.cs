@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class ChargingActionAffector : AffectorBase
 {
 	float _targetDamage;
+	Transform _loopEffectTransform;
 
 	float _endTime;
 	AffectorValueLevelTableData _affectorValueLevelTableData;
@@ -14,6 +15,7 @@ public class ChargingActionAffector : AffectorBase
 			return;
 		if (_actor.actorStatus.IsDie())
 		{
+			_breaked = true;
 			finalized = true;
 			return;
 		}
@@ -23,12 +25,25 @@ public class ChargingActionAffector : AffectorBase
 
 		_affectorValueLevelTableData = affectorValueLevelTableData;
 
-		_targetDamage = _actor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MaxHp) * affectorValueLevelTableData.fValue2;
-
-		UIInstanceManager.instance.ShowCanvasAsync("BossMonsterChargingCanvas", () =>
+		if (_affectorValueLevelTableData.iValue1 == 0)
 		{
-			BossMonsterChargingCanvas.instance.RefreshGauge(1.0f, false);
-		});
+			_targetDamage = _actor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MaxHp) * affectorValueLevelTableData.fValue2;
+
+			UIInstanceManager.instance.ShowCanvasAsync("BossMonsterChargingCanvas", () =>
+			{
+				BossMonsterChargingCanvas.instance.RefreshGauge(1.0f, false);
+			});
+		}
+
+		if (string.IsNullOrEmpty(affectorValueLevelTableData.sValue3) == false)
+		{
+			GameObject loopEffectPrefab = FindPreloadObject(affectorValueLevelTableData.sValue3);
+			if (loopEffectPrefab != null)
+			{
+				_loopEffectTransform = BattleInstanceManager.instance.GetCachedObject(loopEffectPrefab, _actor.cachedTransform.position, Quaternion.identity).transform;
+				FollowTransform.Follow(_loopEffectTransform, _actor.cachedTransform, Vector3.zero);
+			}
+		}
 	}
 
 	public override void OverrideAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
@@ -62,8 +77,17 @@ public class ChargingActionAffector : AffectorBase
 
 	public override void FinalizeAffector()
 	{
-		if (BossMonsterChargingCanvas.instance != null && BossMonsterChargingCanvas.instance.gameObject.activeSelf)
-			BossMonsterChargingCanvas.instance.gameObject.SetActive(false);
+		if (_affectorValueLevelTableData.iValue1 == 0)
+		{
+			if (BossMonsterChargingCanvas.instance != null && BossMonsterChargingCanvas.instance.gameObject.activeSelf)
+				BossMonsterChargingCanvas.instance.gameObject.SetActive(false);
+		}
+
+		if (_loopEffectTransform != null)
+		{
+			DisableParticleEmission.DisableEmission(_loopEffectTransform);
+			_loopEffectTransform = null;
+		}
 
 		if (_actor.actorStatus.IsDie())
 			return;
@@ -82,6 +106,10 @@ public class ChargingActionAffector : AffectorBase
 	bool _breaked = false;
 	void OnDamage(float damage)
 	{
+		// 1이면 데미지를 입고 풀리는 형태가 아니다.
+		if (_affectorValueLevelTableData.iValue1 == 1)
+			return;
+
 		_sumDamage += damage;
 
 		if (BossMonsterChargingCanvas.instance != null && BossMonsterChargingCanvas.instance.gameObject.activeSelf)

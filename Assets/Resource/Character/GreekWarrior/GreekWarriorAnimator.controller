@@ -15,6 +15,28 @@ MonoBehaviour:
   StartTime: 0
   EndTime: 1
   state: 1
+--- !u!1101 &-5006869270480898138
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions: []
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 205491906482928572}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0.2
+  m_TransitionOffset: 0
+  m_ExitTime: 0.5
+  m_HasExitTime: 1
+  m_HasFixedDuration: 0
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
 --- !u!1102 &-4713780209319880699
 AnimatorState:
   serializedVersion: 5
@@ -92,6 +114,7 @@ MonoBehaviour:
   movable: 0
   moveStartDelay: 0
   maxDistance: 0
+  useDynamicMaxDistanceByTargetDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -178,6 +201,7 @@ MonoBehaviour:
   onlyUsedAsTrigger: 0
   oneHitPerTarget: 1
   useLineRenderer: 0
+  ignoreRemoveColliderAffector: 0
   affectorValueIdList:
   - NormalAttackGreekWarrior
   - AddForceCommon
@@ -236,6 +260,12 @@ AnimatorStateMachine:
   - serializedVersion: 1
     m_State: {fileID: 7303087640506140157}
     m_Position: {x: 410, y: -110, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: 5809905859837135401}
+    m_Position: {x: 410, y: 350, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: 205491906482928572}
+    m_Position: {x: 410, y: 420, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -332,6 +362,50 @@ AnimatorController:
     m_IKPass: 0
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
+--- !u!1102 &205491906482928572
+AnimatorState:
+  serializedVersion: 5
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Ultimate1 0
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours:
+  - {fileID: 2470847125662963185}
+  - {fileID: 6668399587334595665}
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 6054495045822736046, guid: a24dc806a7f074a4793a4f9ed75027fe,
+    type: 3}
+  m_Tag: 
+  m_SpeedParameter: AttackAniSpeedRatio
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
+--- !u!114 &2470847125662963185
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebaa29644feeec143b4ef6156771ef54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0
+  EndTime: 1
+  state: 5
 --- !u!114 &2676919929297662778
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -362,6 +436,106 @@ MonoBehaviour:
   StartTime: 0.45
   EndTime: 1
   speed: 1.2
+--- !u!114 &3931831873074311277
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 607bb5ed821de264982a3a1a0b6a018b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.01
+  EndTime: 1
+  affectorValueId: UltimateImmortalGreekWarrior
+  affectorValueLevel: 0
+--- !u!114 &4881817642737185617
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 103a63d9ada304948adbac0e5356a9c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.1
+  EndTime: 1
+  enable: 0
+--- !u!1102 &5809905859837135401
+AnimatorState:
+  serializedVersion: 5
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Ultimate1
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions:
+  - {fileID: -5006869270480898138}
+  m_StateMachineBehaviours:
+  - {fileID: 8150640049728858239}
+  - {fileID: 4881817642737185617}
+  - {fileID: 3931831873074311277}
+  - {fileID: 6808352561901318178}
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 3389304938137667666, guid: a24dc806a7f074a4793a4f9ed75027fe,
+    type: 3}
+  m_Tag: 
+  m_SpeedParameter: AttackAniSpeedRatio
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
+--- !u!114 &6668399587334595665
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 103a63d9ada304948adbac0e5356a9c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.5
+  EndTime: 1
+  enable: 1
+--- !u!114 &6808352561901318178
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.01
+  EndTime: 1
+  effectData: {fileID: 100000, guid: e8e449789c37edb4ab2ceab2e5e5af3e, type: 3}
+  offset: {x: 0, y: 0, z: 0}
+  fixedWorldPositionY: 0
+  direction: {x: 0, y: 0, z: 1}
+  useWorldSpaceDirection: 0
+  parentName: 
+  followPosition: 1
+  immediateDisableFollowEffect: 1
 --- !u!1102 &7303087640506140157
 AnimatorState:
   serializedVersion: 5
@@ -403,6 +577,21 @@ MonoBehaviour:
   StartTime: 0
   EndTime: 1
   state: 2
+--- !u!114 &8150640049728858239
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebaa29644feeec143b4ef6156771ef54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0
+  EndTime: 1
+  state: 5
 --- !u!1102 &8503796429965771016
 AnimatorState:
   serializedVersion: 5

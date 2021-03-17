@@ -92,5 +92,6 @@ public enum eAffectorType
 	Resurrect,
 	ChargingAction,
 	OnMoveBuff,
+	AddAttackRange,
 }
 #endregion

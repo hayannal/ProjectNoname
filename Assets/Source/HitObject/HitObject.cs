@@ -124,7 +124,7 @@ public class HitObject : MonoBehaviour
 						{
 							PlayerActor playerActor = parentActor as PlayerActor;
 							if (playerActor != null)
-								length = playerActor.playerAI.actorTableAttackRange;
+								length = playerActor.playerAI.currentAttackRange;
 						}
 						Vector3 contactPoint = Vector3.zero;
 						Vector3 contactNormal = Vector3.zero;
@@ -346,7 +346,7 @@ public class HitObject : MonoBehaviour
 		{
 			PlayerActor playerActor = parentActor as PlayerActor;
 			if (playerActor != null)
-				attackRange = playerActor.playerAI.actorTableAttackRange;
+				attackRange = playerActor.playerAI.currentAttackRange;
 		}
 		if (attackRange > 0.0f)
 		{

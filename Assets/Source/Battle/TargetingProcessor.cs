@@ -132,6 +132,7 @@ public class TargetingProcessor : MonoBehaviour {
 	int _lastRefreshMultiTargetFrameCount;
 	List<Collider> _listMultiTargetTemporary;
 	List<MonsterActor> _listMultiTargetMonsterTemporary;
+	PlayerAI _playerAI;
 	public void FindPresetMultiTargetMonsterList(MeHitObject meHit)
 	{
 		// 거리 기반이 아니라 거리 내 랜덤이다보니 매 프레임 호출할때마다 타겟이 변경되게 된다. 그러니 여러번 호출되어도 같은 결과를 보장하기 위해 프레임당 1회로 갱신을 제한해둔다.
@@ -139,6 +140,15 @@ public class TargetingProcessor : MonoBehaviour {
 			return;
 
 		if (actor.IsPlayerActor() == false)
+			return;
+
+		if (_playerAI == null)
+		{
+			PlayerActor playerActor = actor as PlayerActor;
+			if (playerActor != null)
+				_playerAI = playerActor.playerAI;
+		}
+		if (_playerAI == null)
 			return;
 
 		// 멀티타겟을 하는 캐릭터만 이 작업을 수행한다.
@@ -189,10 +199,10 @@ public class TargetingProcessor : MonoBehaviour {
 			// distance
 			Vector3 diff = listMonsterActor[i].cachedTransform.position - position;
 			diff.y = 0.0f;
-			if (cachedActorTableData.attackRange > 0.0f)
+			if (_playerAI.currentAttackRange > 0.0f)
 			{
 				float distance = diff.magnitude - colliderRadius;
-				if (distance > cachedActorTableData.attackRange)
+				if (distance > _playerAI.currentAttackRange)
 					continue;
 			}
 

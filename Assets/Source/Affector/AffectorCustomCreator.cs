@@ -87,6 +87,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.Resurrect: affectorBase = new ResurrectAffector(); break;
 			case eAffectorType.ChargingAction: affectorBase = new ChargingActionAffector(); break;
 			case eAffectorType.OnMoveBuff: affectorBase = new OnMoveBuffAffector(); break;
+			case eAffectorType.AddAttackRange: affectorBase = new AddAttackRangeAffector(); break;
 			#endregion
 		}
 		return affectorBase;
@@ -167,6 +168,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.Resurrect:
 			case eAffectorType.ChargingAction:
 			case eAffectorType.OnMoveBuff:
+			case eAffectorType.AddAttackRange:
 				return true;
 			#endregion
 		}

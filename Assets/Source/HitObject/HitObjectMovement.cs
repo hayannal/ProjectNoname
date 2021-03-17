@@ -197,7 +197,7 @@ public class HitObjectMovement : MonoBehaviour {
 					{
 						PlayerActor playerActor = parentActor as PlayerActor;
 						if (playerActor != null)
-							attackRange = playerActor.playerAI.actorTableAttackRange;
+							attackRange = playerActor.playerAI.currentAttackRange;
 					}
 					Vector3 startPosition = cachedTransform.position;
 					startPosition.y = 0.0f;

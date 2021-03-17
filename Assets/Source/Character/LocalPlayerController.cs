@@ -18,8 +18,7 @@ public sealed class LocalPlayerController : BaseCharacterController
 	Actor _actor;
 	ActionController _actionController;
 	Transform _cameraTransform;
-	float _actorTableAttackRange;
-
+	PlayerAI _playerAI;
 	#endregion
 
 	#region PROPERTIES
@@ -36,9 +35,6 @@ public sealed class LocalPlayerController : BaseCharacterController
 			if (_actor != null)
 				return _actor;
 			_actor = GetComponent<Actor>();
-			ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(_actor.actorId);
-			if (actorTableData != null)
-				_actorTableAttackRange = actorTableData.attackRange;
 			return _actor;
 		}
 	}
@@ -64,6 +60,19 @@ public sealed class LocalPlayerController : BaseCharacterController
 			if (mainCamera != null)
 				_cameraTransform = mainCamera.transform;
 			return _cameraTransform;
+		}
+	}
+
+	public PlayerAI playerAI
+	{
+		get
+		{
+			if (_playerAI != null)
+				return _playerAI;
+			PlayerActor playerActor = actor as PlayerActor;
+			if (playerActor != null)
+				_playerAI = playerActor.playerAI;
+			return _playerAI;
 		}
 	}
 
@@ -290,7 +299,7 @@ public sealed class LocalPlayerController : BaseCharacterController
 
 	Vector3 CheckAttackRange(Vector3 targetPosition, Collider targetCollider)
 	{
-		if (_actorTableAttackRange == 0.0f)
+		if (playerAI.currentAttackRange == 0.0f)
 			return targetPosition;
 
 		float targetRadius = 0.0f;
@@ -299,10 +308,10 @@ public sealed class LocalPlayerController : BaseCharacterController
 
 		Vector3 diff = targetPosition - actor.cachedTransform.position;
 		diff.y = 0.0f;
-		if (diff.sqrMagnitude - (targetRadius * targetRadius) > _actorTableAttackRange * _actorTableAttackRange)
+		if (diff.sqrMagnitude - (targetRadius * targetRadius) > playerAI.currentAttackRange * playerAI.currentAttackRange)
 		{
-			RangeIndicator.instance.ShowIndicator(_actorTableAttackRange, true, cachedTransform, true);
-			targetPosition = actor.cachedTransform.position + diff.normalized * _actorTableAttackRange;
+			RangeIndicator.instance.ShowIndicator(playerAI.currentAttackRange, true, cachedTransform, true);
+			targetPosition = actor.cachedTransform.position + diff.normalized * playerAI.currentAttackRange;
 		}
 		return targetPosition;
 	}

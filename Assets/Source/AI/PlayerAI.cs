@@ -72,7 +72,7 @@ public class PlayerAI : MonoBehaviour
 		if (_currentFindDelay <= 0.0f)
 		{
 			_currentFindDelay += TargetFindDelay;
-			if (targetingProcessor.FindNearestMonster(FindTargetRange, _actorTableAttackRange, actor.actionController.mecanimState.IsState((int)eMecanimState.Move) ? 0.0f : TargetChangeThreshold))
+			if (targetingProcessor.FindNearestMonster(FindTargetRange, currentAttackRange, actor.actionController.mecanimState.IsState((int)eMecanimState.Move) ? 0.0f : TargetChangeThreshold))
 			{
 				targetCollider = targetingProcessor.GetTarget();
 				_targetColliderRadius = ColliderUtil.GetRadius(targetCollider);
@@ -148,7 +148,8 @@ public class PlayerAI : MonoBehaviour
 	float _actorTableAttackHitObjectRange;
 	#endregion
 	float _actorTableAttackRange;
-	public float actorTableAttackRange { get { return _actorTableAttackRange; } }
+	public float currentAttackRange { get { return _actorTableAttackRange + addAttackRange; } }
+	public float addAttackRange { get; set; }
 	public const string NormalAttackName = "Attack";
 	Cooltime _normalAttackCooltime;
 	void UpdateAttack()
@@ -245,7 +246,7 @@ public class PlayerAI : MonoBehaviour
 
 	bool IsInAttackRange(Vector3 diff)
 	{
-		float maxDistance = _actorTableAttackRange;
+		float maxDistance = currentAttackRange;
 		if (maxDistance == 0.0f && BattleManager.instance != null && BattleManager.instance.IsNodeWar())
 			maxDistance = NodeWarProcessor.SpawnDistance;
 		else
@@ -336,7 +337,7 @@ public class PlayerAI : MonoBehaviour
 		Transform targetTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
 		Vector3 diff = targetTransform.position - actor.cachedTransform.position;
 		diff.y = 0.0f;
-		RangeIndicator.instance.ShowIndicator(_actorTableAttackRange, !IsInAttackRange(diff), actor.cachedTransform, false);
+		RangeIndicator.instance.ShowIndicator(currentAttackRange, !IsInAttackRange(diff), actor.cachedTransform, false);
 	}
 
 	NavMeshPath _navMeshPath;

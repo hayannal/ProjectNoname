@@ -38,7 +38,7 @@ public class MeState : MecanimEventBase {
 			mecanimState = animator.GetComponent<MecanimState>();
 		if (mecanimState != null)
 		{
-			mecanimState.StartState(state, stateInfo.fullPathHash);
+			mecanimState.StartState(state, stateInfo.fullPathHash, stateInfo.loop, stateInfo.IsTag("IgnoreUseUltimate"));
 #if UNITY_EDITOR
 			if (state == (int)MecanimStateDefine.eMecanimState.Attack && BattleInstanceManager.instance.playerActor.actionController.animator == animator)
 			{

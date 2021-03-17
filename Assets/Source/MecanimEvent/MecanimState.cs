@@ -26,7 +26,7 @@ public class MecanimState : MonoBehaviour {
 
 	ActionController _actionController;
 	StateInfo _stateInfo = new StateInfo();
-	public void StartState(int stateID, int fullPathHash)
+	public void StartState(int stateID, int fullPathHash, bool loop, bool ignoreUseUltimate)
 	{
 		#region Idle State
 		// 우연히 플레이어의 AI가 켜있는데도 공격을 안하는 현상을 찾게되서 상태값을 확인해보니 Move와 Idle이 동시에 들어있었다.
@@ -53,7 +53,7 @@ public class MecanimState : MonoBehaviour {
 
 		#region Ultimate State
 		// Ultimate 액션이 발동되는게 확실시 되면 SP를 차감시킨다. 액션이 있는 궁극기의 경우엔 이게 가장 안전하다.
-		if (stateID == (int)MecanimStateDefine.eMecanimState.Ultimate && fullPathHash != 0)
+		if (stateID == (int)MecanimStateDefine.eMecanimState.Ultimate && fullPathHash != 0 && loop == false && ignoreUseUltimate == false)
 		{
 			//Debug.LogFormat("Ulti State : {0}", Time.frameCount);
 			if (_actionController == null && transform.parent != null)

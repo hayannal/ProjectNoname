@@ -38,10 +38,6 @@ public class AddAttackRangeAffector : AffectorBase
 			PlayerActor playerActor = _actor as PlayerActor;
 			if (playerActor != null)
 				playerActor.playerAI.addAttackRange = affectorValueLevelTableData.fValue2;
-
-			LocalPlayerController localPlayerController = BattleInstanceManager.instance.playerActor.baseCharacterController as LocalPlayerController;
-			if (localPlayerController != null)
-				localPlayerController.dontMove = true;
 		}
 	}
 

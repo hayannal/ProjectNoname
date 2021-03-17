@@ -24125,6 +24125,7 @@ GameObject:
   - component: {fileID: 4528744564800940}
   - component: {fileID: 198808352593471874}
   - component: {fileID: 199431761672809398}
+  - component: {fileID: 1461208542986071607}
   m_Layer: 0
   m_Name: Magic circle 24_D
   m_TagString: Untagged
@@ -28962,6 +28963,29 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!114 &1461208542986071607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1142957917334646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da6612240c354cb4abb66363c62ab797, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startDelay: 1.8
+  numberOfShakes: 3
+  shakeAmountMin: {x: 0.3, y: 0.3, z: 0.3}
+  shakeAmountMax: {x: 0.4, y: 0.4, z: 0.4}
+  rotationAmountMin: {x: 0, y: 0, z: 0.04}
+  rotationAmountMax: {x: 0, y: 0, z: 0.08}
+  distanceMin: 0.08
+  distanceMax: 0.12
+  speedMin: 35
+  speedMax: 40
+  decay: 0.2
 --- !u!1 &1202781039489866
 GameObject:
   m_ObjectHideFlags: 0

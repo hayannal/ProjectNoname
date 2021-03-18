@@ -129,6 +129,7 @@ public class MeHitObject : MecanimEventBase {
 
 	// 특수 프로퍼티
 	public bool ignoreRemoveColliderAffector;
+	public bool aliveOnlyOne;
 	
 
 	// 부채꼴을 쓸때 저 위가 되냐 - 안쓸거다
@@ -649,11 +650,26 @@ public class MeHitObject : MecanimEventBase {
 		InitializeHitObject(spawnTransform, this, actor, parentTransform, statusBase, parentHitObjectCreateTime, hitSignalIndexInAction);
 	}
 
+	HitObject _cachedMainHitObject;
 	protected virtual void InitializeHitObject(Transform spawnTransform, MeHitObject meHit, Actor parentActor, Transform parentTransform, StatusBase statusBase, float parentHitObjectCreateTime, int hitSignalIndexInAction)
 	{
+		// 재활용되서 다른 곳에서 쓰이고 있었다면 지워질 수 있는데 이건 거의 궁극기 오브젝트에만 쓸거라서 다른 곳에서 재활용 되지 않을거다. 주의해서 사용하자.
+		if (aliveOnlyOne && _cachedMainHitObject != null && _cachedMainHitObject.gameObject.activeSelf)
+		{
+			// Area든 Collider든 아래 함수로 다 지워질거다.
+			_cachedMainHitObject.FinalizeHitObject(true);
+			_cachedMainHitObject = null;
+		}
+
 		// Repeat처리가 가장 먼저다.
 		// 그런데 상황에 따라 메인 발사체를 스폰하지 않을 수 있다.
-		HitObject.InitializeHit(spawnTransform, meHit, parentActor, parentTransform, statusBase, parentHitObjectCreateTime, hitSignalIndexInAction, 0, 0);
+		HitObject mainHitObject = HitObject.InitializeHit(spawnTransform, meHit, parentActor, parentTransform, statusBase, parentHitObjectCreateTime, hitSignalIndexInAction, 0, 0);
+
+		if (aliveOnlyOne)
+		{
+			// aliveOnlyOne 옵션이 켜있을때는 히트 오브젝트만 캐싱해두고 동시에 하나만 존재하게 해준다. Repeat쪽은 처리 안한다. 필살기 같은 히트 오브젝트를 위함이니까.
+			_cachedMainHitObject = mainHitObject;
+		}
 
 		bool normalAttack = parentActor.actionController.mecanimState.IsState((int)eMecanimState.Attack);
 		int repeatAddCountByLevelPack = normalAttack ? RepeatHitObjectAffector.GetAddCount(parentActor.affectorProcessor) : 0;

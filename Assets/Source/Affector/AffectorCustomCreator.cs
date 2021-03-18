@@ -89,6 +89,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.ChargingAction: affectorBase = new ChargingActionAffector(); break;
 			case eAffectorType.OnMoveBuff: affectorBase = new OnMoveBuffAffector(); break;
 			case eAffectorType.AddAttackRange: affectorBase = new AddAttackRangeAffector(); break;
+			case eAffectorType.DelayedCreateHitObject: affectorBase = new DelayedCreateHitObjectAffector(); break;
 			#endregion
 		}
 		return affectorBase;
@@ -171,6 +172,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.ChargingAction:
 			case eAffectorType.OnMoveBuff:
 			case eAffectorType.AddAttackRange:
+			case eAffectorType.DelayedCreateHitObject:
 				return true;
 			#endregion
 		}

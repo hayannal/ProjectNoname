@@ -94,5 +94,6 @@ public enum eAffectorType
 	ChargingAction,
 	OnMoveBuff,
 	AddAttackRange,
+	DelayedCreateHitObject,
 }
 #endregion

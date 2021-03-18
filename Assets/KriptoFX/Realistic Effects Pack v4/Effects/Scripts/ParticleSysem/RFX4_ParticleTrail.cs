@@ -54,6 +54,10 @@ public class RFX4_ParticleTrail : MonoBehaviour
     private Transform t;
     //private bool isInitialized;
 
+	#region Stop Update
+	public bool stopUpdate { get; set; }
+	#endregion
+
     void OnEnable()
     {
         if (Target != null) targetT = Target.transform;
@@ -98,6 +102,11 @@ public class RFX4_ParticleTrail : MonoBehaviour
     {
         if (dict.Count > 10)
             RemoveEmptyTrails();
+
+		#region StopUpdate
+		if (stopUpdate)
+			return;
+		#endregion
 
         int count = ps.GetParticles(particles);
         for (int i = 0; i < count; i++) {

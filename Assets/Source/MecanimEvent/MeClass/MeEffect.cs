@@ -15,7 +15,8 @@ public class MeEffect : MecanimEventBase {
 	public bool useWorldSpaceDirection;
 	public string parentName;
 	public bool followPosition;
-	public bool immediateDisableFollowEffect;
+	public bool aliveOnlyOne;
+	public bool immediateDisableAliveOnlyOne;
 
 #if UNITY_EDITOR
 	override public void OnGUI_PropertyWindow()
@@ -32,16 +33,16 @@ public class MeEffect : MecanimEventBase {
 
 	Transform _spawnTransform;
 	DummyFinder _dummyFinder = null;
-	Transform _followEffectTransform;
+	Transform _aliveOnlyOneEffectTransform;
 	override public void OnSignal(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
-		// follow할때는 동시에 하나만 존재해야 겹치지 않는다.
-		if (followPosition && _followEffectTransform != null && _followEffectTransform.gameObject.activeSelf)
+		// aliveOnlyOne이면 동시에 하나만 존재해야한다.
+		if (aliveOnlyOne && _aliveOnlyOneEffectTransform != null && _aliveOnlyOneEffectTransform.gameObject.activeSelf)
 		{
-			if (immediateDisableFollowEffect)
-				_followEffectTransform.gameObject.SetActive(false);
+			if (immediateDisableAliveOnlyOne)
+				_aliveOnlyOneEffectTransform.gameObject.SetActive(false);
 			else
-				DisableParticleEmission.DisableEmission(_followEffectTransform);
+				DisableParticleEmission.DisableEmission(_aliveOnlyOneEffectTransform);
 		}
 
 		GameObject effectObject = null;
@@ -86,13 +87,14 @@ public class MeEffect : MecanimEventBase {
 		}
 		if (effectObject != null)
 		{
+			Transform effectTransform = effectObject.transform;
+
 			if (animator.updateMode == AnimatorUpdateMode.UnscaledTime)
-				UnscaledTimeEffect.Unscaled(effectObject.transform);
+				UnscaledTimeEffect.Unscaled(effectTransform);
 			if (followPosition)
-			{
-				_followEffectTransform = effectObject.transform;
-				FollowTransform.Follow(_followEffectTransform, _spawnTransform, offset);
-			}
+				FollowTransform.Follow(effectTransform, _spawnTransform, offset);
+			if (aliveOnlyOne)
+				_aliveOnlyOneEffectTransform = effectTransform;
 		}
 	}
 }

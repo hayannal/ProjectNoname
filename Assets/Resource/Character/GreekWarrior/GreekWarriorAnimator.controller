@@ -202,6 +202,7 @@ MonoBehaviour:
   oneHitPerTarget: 1
   useLineRenderer: 0
   ignoreRemoveColliderAffector: 0
+  aliveOnlyOne: 0
   affectorValueIdList:
   - NormalAttackGreekWarrior
   - AddForceCommon
@@ -235,7 +236,8 @@ MonoBehaviour:
   useWorldSpaceDirection: 0
   parentName: 
   followPosition: 0
-  immediateDisableFollowEffect: 0
+  aliveOnlyOne: 0
+  immediateDisableAliveOnlyOne: 0
 --- !u!1107 &-1805817263514781681
 AnimatorStateMachine:
   serializedVersion: 5
@@ -535,7 +537,8 @@ MonoBehaviour:
   useWorldSpaceDirection: 0
   parentName: 
   followPosition: 1
-  immediateDisableFollowEffect: 1
+  aliveOnlyOne: 1
+  immediateDisableAliveOnlyOne: 1
 --- !u!1102 &7303087640506140157
 AnimatorState:
   serializedVersion: 5

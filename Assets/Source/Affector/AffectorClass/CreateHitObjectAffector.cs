@@ -4,6 +4,8 @@ using ActorStatusDefine;
 
 public class CreateHitObjectAffector : AffectorBase
 {
+	HitObject _cachedMainHitObject;
+
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
 		if (_actor == null)
@@ -42,6 +44,18 @@ public class CreateHitObjectAffector : AffectorBase
 				parentActor = findActor;
 		}
 
+		// MeHitObject에서와는 달리 문제가 있는게 MeHitObject는 캐릭터의 시그널에 있다보니 각각의 시그널이 다 각자의 인스턴스를 가지지만
+		// 여기 이 CreateHitObjectAffector는 AffectorProcessor당 한개만 만들어서 공용으로 쓰기때문에 _cachedMainHitObject를 공유하게 되버린다.
+		// 그런데 이렇게 해도 큰 문제가 없는게
+		// 캐릭하나에 여러개의 CreateHitObjectAffector를 연결해서 쓰지 않고 거의 대부분은 한개 쓰거나 안쓰기때문이라
+		// 우선은 이런 형태로 가보기로 한다.
+		if (info.meHit.aliveOnlyOne && _cachedMainHitObject != null && _cachedMainHitObject.gameObject.activeSelf)
+		{
+			// Area든 Collider든 아래 함수로 다 지워질거다.
+			_cachedMainHitObject.FinalizeHitObject(true);
+			_cachedMainHitObject = null;
+		}
+
 		HitObject hitObject = HitObject.InitializeHit(spawnTransform, info.meHit, parentActor, parentTransform, null, 0.0f, 0, 0, 0);
 		if (hitObject != null)
 		{
@@ -61,6 +75,9 @@ public class CreateHitObjectAffector : AffectorBase
 				hitObject.hitObjectMovement.AddRicochet(col, true);
 				hitObject.OnPostCollided(true, false, false, false, true, Vector3.forward, false);
 			}
+
+			if (info.meHit.aliveOnlyOne)
+				_cachedMainHitObject = hitObject;
 		}
 	}
 }

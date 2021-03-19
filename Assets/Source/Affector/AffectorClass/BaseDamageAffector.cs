@@ -106,7 +106,7 @@ public class BaseDamageAffector : AffectorBase {
 		damage *= damageRatio;
 
 		Actor attackerActor = null;
-		if ((int)eActorStatus.CriticalRate < hitParameter.statusBase.valueList.Length)
+		if ((int)eActorStatus.CriticalRate < hitParameter.statusBase.valueList.Length && affectorValueLevelTableData.sValue4 == "")
 		{
 			float criticalRate = hitParameter.statusBase.valueList[(int)eActorStatus.CriticalRate];
 			if (hitParameter.statusStructForHitObject.monsterActor == false)

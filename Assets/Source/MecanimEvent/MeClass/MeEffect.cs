@@ -17,6 +17,7 @@ public class MeEffect : MecanimEventBase {
 	public bool followPosition;
 	public bool aliveOnlyOne;
 	public bool immediateDisableAliveOnlyOne;
+	public bool disableOnMapChanged;
 
 #if UNITY_EDITOR
 	override public void OnGUI_PropertyWindow()
@@ -95,6 +96,8 @@ public class MeEffect : MecanimEventBase {
 				FollowTransform.Follow(effectTransform, _spawnTransform, offset);
 			if (aliveOnlyOne)
 				_aliveOnlyOneEffectTransform = effectTransform;
+			if (disableOnMapChanged)
+				BattleInstanceManager.instance.OnInitializeManagedEffectObject(effectObject);
 		}
 	}
 }

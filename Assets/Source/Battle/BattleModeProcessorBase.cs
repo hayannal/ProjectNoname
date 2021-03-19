@@ -67,6 +67,7 @@ public class BattleModeProcessorBase
 		BattleInstanceManager.instance.DisableAllHitObjectMoving();
 		BattleInstanceManager.instance.FinalizeAllHitObject();
 		BattleInstanceManager.instance.FinalizeAllSummonObject();
+		BattleInstanceManager.instance.FinalizeAllManagedEffectObject();
 
 		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.buildTutorialScene && TutorialLinkAccountCanvas.instance != null && TutorialLinkAccountCanvas.instance.gameObject.activeSelf)
 		{

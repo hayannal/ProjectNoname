@@ -1164,6 +1164,29 @@ public class BattleInstanceManager : MonoBehaviour
 	}
 	#endregion
 
+	#region Managed Effect Object
+	List<GameObject> _listManagedEffectObject = new List<GameObject>();
+	public void OnInitializeManagedEffectObject(GameObject effectObject)
+	{
+		if (_listManagedEffectObject.Contains(effectObject))
+			return;
+		_listManagedEffectObject.Add(effectObject);
+	}
+
+	public void FinalizeAllManagedEffectObject()
+	{
+		for (int i = 0; i < _listManagedEffectObject.Count; ++i)
+		{
+			if (_listManagedEffectObject[i] == null)
+				continue;
+			if (_listManagedEffectObject[i].gameObject.activeSelf == false)
+				continue;
+			_listManagedEffectObject[i].gameObject.SetActive(false);
+		}
+		_listManagedEffectObject.Clear();
+	}
+	#endregion
+
 	#region Equip Object
 	Dictionary<GameObject, List<EquipPrefabInfo>> _dicEquipObjectInstancePool = new Dictionary<GameObject, List<EquipPrefabInfo>>();
 	public EquipPrefabInfo GetCachedEquipObject(GameObject prefab, Transform parentTransform)

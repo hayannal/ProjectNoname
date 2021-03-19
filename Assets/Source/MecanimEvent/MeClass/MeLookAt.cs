@@ -18,6 +18,7 @@ public class MeLookAt : MecanimEventBase
 	public float minimumDistance = 0.0f;
 	public bool lookAtWorldPosition;
 	public Vector3 worldPosition;
+	public bool lookAtLowestMonster;
 	public float lerpPower = 60.0f;
 	public string boneName;
 
@@ -45,6 +46,7 @@ public class MeLookAt : MecanimEventBase
 		{
 			worldPosition = EditorGUILayout.Vector3Field("World Position :", worldPosition);
 		}
+		lookAtLowestMonster = EditorGUILayout.Toggle("LookAt Lowest Monster :", lookAtLowestMonster);
 		lerpPower = EditorGUILayout.FloatField("Lerp Power :", lerpPower);
 		boneName = EditorGUILayout.TextField("Bone Name :", boneName);
 	}
@@ -56,6 +58,7 @@ public class MeLookAt : MecanimEventBase
 	Vector3 _randomPosition;
 	DummyFinder _dummyFinder = null;
 	Transform _boneTransform;
+	MonsterActor _lowestMonsterActor = null;
 	override public void OnRangeSignalStart(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		if (_actor == null)
@@ -94,6 +97,25 @@ public class MeLookAt : MecanimEventBase
 			_initializedRandom = true;
 			//_actor.baseCharacterController.movement.rotation = Quaternion.Euler(new Vector3(0.0f, Random.Range(0.0f, 360.0f), 0.0f));
 		}
+
+		if (lookAtLowestMonster && _actor != null)
+		{
+			_lowestMonsterActor = null;
+			float lowestHp = float.MaxValue;
+			List<MonsterActor> listMonsterActor = BattleInstanceManager.instance.GetLiveMonsterList();
+			for (int i = 0; i < listMonsterActor.Count; ++i)
+			{
+				if (listMonsterActor[i].actorStatus.IsDie())
+					continue;
+				if (listMonsterActor[i].team.teamId != (int)Team.eTeamID.DefaultMonster || listMonsterActor[i].excludeMonsterCount)
+					continue;
+				if (listMonsterActor[i].actorStatus.GetHP() < lowestHp)
+				{
+					_lowestMonsterActor = listMonsterActor[i];
+					lowestHp = listMonsterActor[i].actorStatus.GetHP();
+				}
+			}
+		}
 	}
 
 	override public void OnRangeSignalEnd(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -116,6 +138,13 @@ public class MeLookAt : MecanimEventBase
 			targetPosition = _randomPosition;
 		if (lookAtWorldPosition)
 			targetPosition = worldPosition;
+		if (lookAtLowestMonster && _actor != null)
+		{
+			if (_lowestMonsterActor != null && _lowestMonsterActor.actorStatus.IsDie() == false)
+				targetPosition = _lowestMonsterActor.cachedTransform.position;
+			else
+				return;
+		}
 
 		Vector3 basePosition = _actor.cachedTransform.position;
 		if (_boneTransform != null) basePosition = _boneTransform.position;

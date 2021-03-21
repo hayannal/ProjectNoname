@@ -73,6 +73,134 @@ MonoBehaviour:
   StartTime: 0
   EndTime: 0.85
   state: 3
+--- !u!114 &-2388844017464787988
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.38
+  EndTime: 1
+  targetDetectType: 1
+  presetType: 0
+  multiPresetCount: 0
+  ignorePresetHitEffectOnCustomTargetPosition: 0
+  presetAnimatorRoot: 0
+  hitObjectPrefab: {fileID: 1084503267942022, guid: 951c64e9b845d254cbacbfc74084ad43,
+    type: 3}
+  lifeTime: 8
+  areaHitLifeTimeEarlyOffset: 0
+  ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
+  movable: 1
+  moveStartDelay: 0
+  maxDistance: 0
+  useDynamicMaxDistanceByTargetDistance: 0
+  defaultSphereCastDistance: 0
+  sphereCastRadius: 0
+  teamCheckType: 0
+  createPositionType: 0
+  boneName: 
+  offset: {x: 0, y: 0, z: 0}
+  useBoneRotation: 0
+  fixedWorldPositionY: 0
+  areaRotationY: 0
+  applyRootTransformRotation: 0
+  useAreaRotationYChange: 0
+  targetAreaRotationY: 0
+  areaDistanceMin: 0
+  areaDistanceMax: 0.4
+  areaHeightMin: 0
+  areaHeightMax: 2
+  areaAngle: 360
+  checkRaycastWallInArea: 0
+  raycastWallHeight: 0.5
+  applyCollisionDamageInterval: 0
+  removeColliderArea: 1
+  repeatCount: 0
+  repeatInterval: 0
+  movementType: 0
+  startDirectionType: 0
+  startDirection: {x: 0, y: 0, z: 1}
+  howitzerType: 0
+  useWorldSpaceDirection: 0
+  bothRandomAngle: 1
+  leftRightRandomAngle: 0
+  leftRandomAngle: 0
+  rightRandomAngle: 0
+  upDownRandomAngle: 0
+  howitzerTargetPositionOffset: {x: 0, y: 0}
+  howitzerRandomPositionRadiusRange: {x: 0, y: 0}
+  speed: 5
+  useSpeedChange: 1
+  targetSpeed: 0
+  speedChangeTime: 1
+  speedChangeEase: 6
+  repeatSpeedChange: 0
+  overrideSpeedOnCollision: 0
+  overrideSpeedTimeOnCollision: 0
+  curve: 0
+  useCurveChange: 0
+  targetCurve: 0
+  curveChangeTime: 0
+  curveChangeEase: 6
+  curveLockY: 1
+  curveStartDelayTime: 0
+  followLastPositionWhenDieTarget: 0
+  followMeOnHitTarget: 0
+  followMinRange: 0
+  useRandomTurn: 0
+  accelTurn: 0
+  randomTurnRotateYawRange: {x: 0, y: 0}
+  zigZagIntervalTime: 0
+  gravity: -9.81
+  parallelCount: 0
+  parallelDistance: 0
+  ignoreMainHitObjectByParallel: 0
+  circularSectorCount: 0
+  circularSectorBetweenAngle: 0
+  circularSectorUseWorldSpace: 0
+  circularSectorWorldSpaceCenterAngleY: 0
+  ignoreMainHitObjectByCircularSector: 0
+  continuousHitObjectGeneratorBaseList:
+  - {fileID: 6306036100373121913, guid: f2ffb007dc801094aa460c0eef8e0039, type: 3}
+  contactAll: 0
+  monsterThroughCount: 0
+  wallThrough: 0
+  quadThrough: 0
+  overrideResetIgnoreSqrMagnitude: 0
+  bounceWallQuadCount: 0
+  bounceToTarget: 0
+  ricochetCount: 0
+  ricochetOneHitPerTarget: 0
+  overrideRicochetDistance: 0
+  overrideRicochetSpeed: 0
+  useTimerRicochet: 0
+  useHitStay: 0
+  hitStayInterval: 0
+  hitStayIgnoreDuplicate: 0
+  hitStayIdForIgnoreDuplicate: 0
+  hitStayLineRendererTrigger: 0
+  onlyUsedAsTrigger: 0
+  oneHitPerTarget: 1
+  useLineRenderer: 0
+  ignoreRemoveColliderAffector: 0
+  aliveOnlyOne: 0
+  affectorValueIdList: []
+  showHitEffect: 0
+  hitEffectObject: {fileID: 0}
+  hitEffectLookAtNormal: 0
+  useWeaponHitEffect: 0
+  weaponDummyName: 
+  hitEffectLineRendererType: 0
+  hitEffectLineRendererObject: {fileID: 0}
+  showHitBlink: 0
+  showHitRimBlink: 0
 --- !u!1107 &-1805817263514781681
 AnimatorStateMachine:
   serializedVersion: 5
@@ -97,6 +225,9 @@ AnimatorStateMachine:
   - serializedVersion: 1
     m_State: {fileID: 2686220052156446420}
     m_Position: {x: 410, y: -110, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: -1654910843313828767}
+    m_Position: {x: 410, y: 350, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -107,6 +238,35 @@ AnimatorStateMachine:
   m_ExitPosition: {x: 800, y: 120, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
   m_DefaultState: {fileID: 8503796429965771016}
+--- !u!1102 &-1654910843313828767
+AnimatorState:
+  serializedVersion: 5
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Ultimate1
+  m_Speed: 1.2
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours:
+  - {fileID: -980247505290451935}
+  - {fileID: -2388844017464787988}
+  - {fileID: -152219720608969611}
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 1
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 7400000, guid: 3414c515c6a2f334da03b4ab3d547691, type: 3}
+  m_Tag: 
+  m_SpeedParameter: AttackAniSpeedRatio
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!1102 &-1605484021271178934
 AnimatorState:
   serializedVersion: 5
@@ -161,6 +321,36 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!114 &-980247505290451935
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebaa29644feeec143b4ef6156771ef54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0
+  EndTime: 0.85
+  state: 5
+--- !u!114 &-152219720608969611
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2e6805f699075e4eae576dc1aabd338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.5
+  EndTime: 1
+  speed: 1.8
 --- !u!91 &9100000
 AnimatorController:
   m_ObjectHideFlags: 0
@@ -214,7 +404,9 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 0
+  useDynamicMaxDistanceByTargetDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -233,7 +425,9 @@ MonoBehaviour:
   areaHeightMax: 0
   areaAngle: 0
   checkRaycastWallInArea: 0
+  raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 1
   movementType: 0
@@ -253,6 +447,7 @@ MonoBehaviour:
   targetSpeed: 0
   speedChangeTime: 0
   speedChangeEase: 6
+  repeatSpeedChange: 0
   overrideSpeedOnCollision: 0
   overrideSpeedTimeOnCollision: 0
   curve: 0
@@ -268,6 +463,7 @@ MonoBehaviour:
   useRandomTurn: 0
   accelTurn: 0
   randomTurnRotateYawRange: {x: 0, y: 0}
+  zigZagIntervalTime: 0
   gravity: -9.81
   parallelCount: 0
   parallelDistance: 0
@@ -285,10 +481,12 @@ MonoBehaviour:
   quadThrough: 0
   overrideResetIgnoreSqrMagnitude: 0
   bounceWallQuadCount: 1
+  bounceToTarget: 0
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
   overrideRicochetDistance: 0
   overrideRicochetSpeed: 0
+  useTimerRicochet: 0
   useHitStay: 0
   hitStayInterval: 0
   hitStayIgnoreDuplicate: 0
@@ -297,6 +495,8 @@ MonoBehaviour:
   onlyUsedAsTrigger: 0
   oneHitPerTarget: 0
   useLineRenderer: 0
+  ignoreRemoveColliderAffector: 0
+  aliveOnlyOne: 0
   affectorValueIdList:
   - NormalAttackLola
   showHitEffect: 1

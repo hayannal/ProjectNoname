@@ -91,6 +91,9 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 	{
 		Vector3 areaPosition = centerPosition;
 
+		// 대부분의 Bullet은 다 1.0 높이로 오기때문에 1로 바꿔서 처리한다.
+		areaPosition.y = 1.0f;
+
 		// step 1. Physics.OverlapSphere
 		float maxDistance = areaDistance;
 		Collider[] result = Physics.OverlapSphere(areaPosition, maxDistance); // meHit.areaDistanceMax * parentTransform.localScale.x

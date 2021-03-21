@@ -48,6 +48,7 @@ public class MeHitObject : MecanimEventBase {
 	public bool checkRaycastWallInArea;
 	public float raycastWallHeight = 0.5f;
 	public bool applyCollisionDamageInterval;
+	public bool removeColliderArea;
 
 	public int repeatCount;
 	public float repeatInterval;

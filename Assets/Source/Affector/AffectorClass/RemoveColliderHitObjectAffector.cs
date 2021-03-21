@@ -75,15 +75,28 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 
 	void RemoveColliderHitObject()
 	{
-		Vector3 areaPosition = _applyFollow ? _actor.cachedTransform.position : _startPosition;
+		bool removed = false;
+		Remove(_applyFollow ? _actor.cachedTransform.position : _startPosition, _radius, _areaAngle, _applyFollow ? _actor.cachedTransform.forward : _startForward, _actor.team.teamId, ref removed);
+
+		// 1회 공격을 해야만 반격액션을 사용할 수 있는 구조로 바꾼다.
+		if (removed && AnimatorParameterHash != 0)
+		{
+			bool hitted = HitFlagAffector.GetHitted(_affectorProcessor);
+			if (hitted)
+				_actor.actionController.animator.SetBool(AnimatorParameterHash, true);
+		}
+	}
+
+	public static void Remove(Vector3 centerPosition, float areaDistance, float areaAngle, Vector3 areaForward, int teamId, ref bool removed)
+	{
+		Vector3 areaPosition = centerPosition;
 
 		// step 1. Physics.OverlapSphere
-		float maxDistance = _radius;
+		float maxDistance = areaDistance;
 		Collider[] result = Physics.OverlapSphere(areaPosition, maxDistance); // meHit.areaDistanceMax * parentTransform.localScale.x
 
 		// step 2. Check each object.
 		float hitEffectShowRate = 1.0f;
-		bool removed = false;
 		for (int i = 0; i < result.Length; ++i)
 		{
 			// affector processor
@@ -95,11 +108,11 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 				continue;
 
 			// team check
-			if (!Team.CheckTeamFilter(_actor.team.teamId, hitObject.statusStructForHitObject.teamId, Team.eTeamCheckFilter.Enemy))
+			if (!Team.CheckTeamFilter(teamId, hitObject.statusStructForHitObject.teamId, Team.eTeamCheckFilter.Enemy))
 				continue;
 
 			// angle
-			if (_areaAngle > 0.0f)
+			if (areaAngle > 0.0f)
 			{
 				Vector3 diff = BattleInstanceManager.instance.GetTransformFromCollider(result[i]).position - areaPosition;
 				diff.y = 0.0f;
@@ -107,11 +120,10 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 				if (colliderRadius == -1.0f)
 					continue;
 
-				Vector3 areaForward = _applyFollow ? _actor.cachedTransform.forward : _startForward;
 				float angle = Vector3.Angle(areaForward, diff.normalized);
 				float hypotenuse = Mathf.Sqrt(diff.sqrMagnitude + colliderRadius * colliderRadius);
 				float adjustAngle = Mathf.Rad2Deg * Mathf.Acos(diff.magnitude / hypotenuse);
-				if (_areaAngle * 0.5f < angle - adjustAngle)
+				if (areaAngle * 0.5f < angle - adjustAngle)
 					continue;
 			}
 
@@ -119,14 +131,6 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 			hitObject.OnFinalizeByRemove(hitEffectShowRate);
 			hitEffectShowRate *= 0.5f;
 			removed = true;
-		}
-
-		// 1회 공격을 해야만 반격액션을 사용할 수 있는 구조로 바꾼다.
-		if (removed && AnimatorParameterHash != 0)
-		{
-			bool hitted = HitFlagAffector.GetHitted(_affectorProcessor);
-			if (hitted)
-				_actor.actionController.animator.SetBool(AnimatorParameterHash, true);
 		}
 	}
 

@@ -1343,6 +1343,12 @@ public class HitObject : MonoBehaviour
 		// Range 시그널이 아닌 Area는 자체적으로 시간값 가지고 검사한다. 발사체 형태의 부채꼴을 처리하기 위함.
 		if (_signal.RangeSignal == false && _signal.lifeTime > 0.0f)
 			UpdateAreaOrSphereCast();
+
+		if (_signal.targetDetectType == eTargetDetectType.Area && _signal.removeColliderArea)
+		{
+			bool removed = false;
+			RemoveColliderHitObjectAffector.Remove(cachedTransform.position, _signal.areaDistanceMax, _signal.areaAngle, cachedTransform.forward, _statusStructForHitObject.teamId, ref removed);
+		}
 	}
 
 	public void UpdateAreaOrSphereCast()

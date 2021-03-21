@@ -164,8 +164,19 @@ public class HitObject : MonoBehaviour
 				}
 			}
 
-			// check area generator
+			// 원래 circular 처리는 Collider 타입에서만 했었는데 Area도 있으면 편할거 같아서 추가해본다. lifeTime이 있는 Area만 해당된다.
 			bool ignoreAreaMainHitObjectByGenerator = false;
+			for (int i = 0; i < meHit.circularSectorCount; ++i)
+			{
+				float centerAngleY = meHit.circularSectorUseWorldSpace ? meHit.circularSectorWorldSpaceCenterAngleY : Quaternion.LookRotation(areaDirection).eulerAngles.y;
+				float baseAngle = meHit.circularSectorCount % 2 == 0 ? centerAngleY - (meHit.circularSectorBetweenAngle / 2f) : centerAngleY;
+				float angle = WavingNwayGenerator.GetShiftedAngle(i, baseAngle, meHit.circularSectorBetweenAngle);
+				HitObject circularSectorHitObject = GetCachedHitObject(meHit, areaPosition, Quaternion.Euler(0.0f, angle, 0.0f));
+				if (circularSectorHitObject == null)
+					continue;
+				circularSectorHitObject.InitializeHitObject(meHit, parentActor, statusBase, parentHitObjectCreateTime, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack);
+			}
+
 			if (meHit.continuousHitObjectGeneratorBaseList != null)
 			{
 				for (int i = 0; i < meHit.continuousHitObjectGeneratorBaseList.Count; ++i)
@@ -178,7 +189,7 @@ public class HitObject : MonoBehaviour
 					continuousHitObjectGenerator.InitializeGenerator(meHit, parentActor, statusBase, hitSignalIndexInAction, repeatIndex, repeatAddCountByLevelPack, spawnTransform);
 				}
 			}
-			if (ignoreAreaMainHitObjectByGenerator)
+			if (meHit.ignoreMainHitObjectByCircularSector || ignoreAreaMainHitObjectByGenerator)
 				return null;
 
 			// HitObject 프리팹이 있거나 lifeTime이 있다면 생성하고 아니면 패스.

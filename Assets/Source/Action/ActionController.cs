@@ -23,6 +23,7 @@ public class ActionController : MonoBehaviour {
 		public float fadeDuration;
 		public string skillId;	// only Id. Find skillinfo when use skill.
 		//public string castingId;
+		public float actionCooltime;
 	}
 
 	List<ActionInfo> _listActionInfo;
@@ -166,6 +167,7 @@ public class ActionController : MonoBehaviour {
 		info.actionNameHash = Animator.StringToHash(actionTableData.mecanimName);
 		info.fadeDuration = actionTableData.fadeDuration;
 		info.skillId = actionTableData.skillId;
+		info.actionCooltime = actionTableData.actionCooltime;
 
 		if (!string.IsNullOrEmpty(actionTableData.controlId))
 		{
@@ -225,6 +227,14 @@ public class ActionController : MonoBehaviour {
 			normalAttack = true;
 			if (cooltimeProcessor.CheckCooltime(actionPlayInfo.actionName))
 				return false;
+		}
+		if (actionPlayInfo.actionName == "Ultimate")
+		{
+			if (cooltimeProcessor.CheckCooltime(actionPlayInfo.actionName))
+			{
+				BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_ActionCoolDown"), 2.0f);
+				return false;
+			}
 		}
 
 		#region Attack Cancel
@@ -351,6 +361,10 @@ public class ActionController : MonoBehaviour {
 	{
 		// 먼저 SP 소모부터 처리
 		UseUltimateSp();
+
+		ActionInfo actionPlayInfo = GetActionInfoByName("Ultimate");
+		if (actionPlayInfo != null && actionPlayInfo.actionCooltime > 0.0f)
+			cooltimeProcessor.ApplyCooltime(actionPlayInfo.actionName, actionPlayInfo.actionCooltime);
 
 		// 이후 사용 이벤트 체크. 체험모드 안에서 쓸땐 보상 처리를 해줘야한다.
 		if (ExperienceCanvas.instance != null && ExperienceCanvas.instance.gameObject.activeSelf)

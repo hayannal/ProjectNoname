@@ -40,4 +40,8 @@ public class ActionTableData
   string _skillId;
   public string skillId { get { return _skillId; } set { _skillId = value; } }
   
+  [SerializeField]
+  float _actionCooltime;
+  public float actionCooltime { get { return _actionCooltime; } set { _actionCooltime = value; } }
+  
 }

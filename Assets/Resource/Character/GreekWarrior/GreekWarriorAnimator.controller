@@ -86,6 +86,7 @@ MonoBehaviour:
   minimumDistance: 0
   lookAtWorldPosition: 0
   worldPosition: {x: 0, y: 0, z: 0}
+  lookAtLowestMonster: 0
   lerpPower: 5
   boneName: 
 --- !u!114 &-2057150615174720581
@@ -135,6 +136,7 @@ MonoBehaviour:
   checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -238,6 +240,7 @@ MonoBehaviour:
   followPosition: 0
   aliveOnlyOne: 0
   immediateDisableAliveOnlyOne: 0
+  disableOnMapChanged: 0
 --- !u!1107 &-1805817263514781681
 AnimatorStateMachine:
   serializedVersion: 5
@@ -534,11 +537,12 @@ MonoBehaviour:
   offset: {x: 0, y: 0, z: 0}
   fixedWorldPositionY: 0
   direction: {x: 0, y: 0, z: 1}
-  useWorldSpaceDirection: 0
+  useWorldSpaceDirection: 1
   parentName: 
   followPosition: 1
   aliveOnlyOne: 1
   immediateDisableAliveOnlyOne: 1
+  disableOnMapChanged: 0
 --- !u!1102 &7303087640506140157
 AnimatorState:
   serializedVersion: 5

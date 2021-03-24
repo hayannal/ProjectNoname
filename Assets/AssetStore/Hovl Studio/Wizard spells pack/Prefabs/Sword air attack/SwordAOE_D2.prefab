@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4979570318696616}
   - component: {fileID: 198253971608474962}
   - component: {fileID: 199997866886373830}
+  - component: {fileID: 4868018756593106966}
   m_Layer: 0
   m_Name: SwordAOE_D2
   m_TagString: Untagged
@@ -4847,6 +4848,29 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!114 &4868018756593106966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1529907042512856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da6612240c354cb4abb66363c62ab797, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startDelay: 0.2
+  numberOfShakes: 2
+  shakeAmountMin: {x: 0.1, y: 0.1, z: 0.1}
+  shakeAmountMax: {x: 0.2, y: 0.2, z: 0.2}
+  rotationAmountMin: {x: 0, y: 0, z: 0.04}
+  rotationAmountMax: {x: 0, y: 0, z: 0.06}
+  distanceMin: 0.04
+  distanceMax: 0.08
+  speedMin: 20
+  speedMax: 35
+  decay: 0.8
 --- !u!1 &1909373787693226
 GameObject:
   m_ObjectHideFlags: 0

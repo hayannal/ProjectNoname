@@ -31,6 +31,12 @@ public class CannotActionAffector : AffectorBase
 			return;
 		}
 
+		if (_affectorProcessor.IsContinuousAffectorType(eAffectorType.RemoveCannotAction))
+		{
+			finalized = true;
+			return;
+		}
+
 		// lifeTime
 		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
 
@@ -61,6 +67,12 @@ public class CannotActionAffector : AffectorBase
 		{
 			finalized = true;
 			_actor.actorStatus.OnChangedStatus(ActorStatusDefine.eActorStatus.MoveSpeed);
+			return;
+		}
+
+		if (_affectorProcessor.IsContinuousAffectorType(eAffectorType.RemoveCannotAction))
+		{
+			finalized = true;
 			return;
 		}
 

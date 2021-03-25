@@ -95,5 +95,6 @@ public enum eAffectorType
 	OnMoveBuff,
 	AddAttackRange,
 	DelayedCreateHitObject,
+	RemoveCannotAction,
 }
 #endregion

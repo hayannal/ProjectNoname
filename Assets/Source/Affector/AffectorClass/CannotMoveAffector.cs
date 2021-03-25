@@ -28,12 +28,15 @@ public class CannotMoveAffector : AffectorBase
 		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
 
 		// loop effect
-		GameObject loopEffectPrefab = FindPreloadObject(affectorValueLevelTableData.sValue3);
-		if (loopEffectPrefab != null)
+		if (string.IsNullOrEmpty(affectorValueLevelTableData.sValue3) == false)
 		{
-			_loopEffectTransform = BattleInstanceManager.instance.GetCachedObject(loopEffectPrefab, _actor.cachedTransform.position, _actor.cachedTransform.rotation).transform;
-			_loopEffectTransform.localScale = Vector3.zero;
-			_loopEffectTransform.DOScale(1.0f, ScaleStartDuration).SetEase(Ease.OutQuad);
+			GameObject loopEffectPrefab = FindPreloadObject(affectorValueLevelTableData.sValue3);
+			if (loopEffectPrefab != null)
+			{
+				_loopEffectTransform = BattleInstanceManager.instance.GetCachedObject(loopEffectPrefab, _actor.cachedTransform.position, _actor.cachedTransform.rotation).transform;
+				_loopEffectTransform.localScale = Vector3.zero;
+				_loopEffectTransform.DOScale(1.0f, ScaleStartDuration).SetEase(Ease.OutQuad);
+			}
 		}
 
 		if (_actor.IsMonsterActor())

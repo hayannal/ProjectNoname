@@ -73,6 +73,7 @@ public class CannotActionAffector : AffectorBase
 		if (_affectorProcessor.IsContinuousAffectorType(eAffectorType.RemoveCannotAction))
 		{
 			finalized = true;
+			_actor.actorStatus.OnChangedStatus(ActorStatusDefine.eActorStatus.MoveSpeed);
 			return;
 		}
 

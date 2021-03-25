@@ -63,6 +63,7 @@ MonoBehaviour:
   checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -230,7 +231,7 @@ MonoBehaviour:
   minimumDistance: 0
   lookAtWorldPosition: 0
   worldPosition: {x: 0, y: 0, z: 0}
-  lookAtLowestMonster: 0
+  lookAtHighestMonster: 0
   lerpPower: 5
   boneName: 
 --- !u!114 &-1983272325917752842
@@ -331,7 +332,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0
   EndTime: 0.28
-  lookAtTarget: 1
+  lookAtTarget: 0
   leftRightRandomAngle: 0
   lootAtTargetOffsetAngle: 0
   lookAtRandom: 0
@@ -339,7 +340,7 @@ MonoBehaviour:
   minimumDistance: 0
   lookAtWorldPosition: 0
   worldPosition: {x: 0, y: 0, z: 0}
-  lookAtLowestMonster: 0
+  lookAtHighestMonster: 1
   lerpPower: 60
   boneName: 
 --- !u!1102 &-1088882121441906198
@@ -420,6 +421,7 @@ MonoBehaviour:
   checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0

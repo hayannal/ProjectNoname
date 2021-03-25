@@ -18,7 +18,7 @@ public class MeLookAt : MecanimEventBase
 	public float minimumDistance = 0.0f;
 	public bool lookAtWorldPosition;
 	public Vector3 worldPosition;
-	public bool lookAtLowestMonster;
+	public bool lookAtHighestMonster;
 	public float lerpPower = 60.0f;
 	public string boneName;
 
@@ -46,7 +46,7 @@ public class MeLookAt : MecanimEventBase
 		{
 			worldPosition = EditorGUILayout.Vector3Field("World Position :", worldPosition);
 		}
-		lookAtLowestMonster = EditorGUILayout.Toggle("LookAt Lowest Monster :", lookAtLowestMonster);
+		lookAtHighestMonster = EditorGUILayout.Toggle("LookAt Highest Monster :", lookAtHighestMonster);
 		lerpPower = EditorGUILayout.FloatField("Lerp Power :", lerpPower);
 		boneName = EditorGUILayout.TextField("Bone Name :", boneName);
 	}
@@ -58,7 +58,7 @@ public class MeLookAt : MecanimEventBase
 	Vector3 _randomPosition;
 	DummyFinder _dummyFinder = null;
 	Transform _boneTransform;
-	MonsterActor _lowestMonsterActor = null;
+	MonsterActor _highestMonsterActor = null;
 	override public void OnRangeSignalStart(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		if (_actor == null)
@@ -98,10 +98,10 @@ public class MeLookAt : MecanimEventBase
 			//_actor.baseCharacterController.movement.rotation = Quaternion.Euler(new Vector3(0.0f, Random.Range(0.0f, 360.0f), 0.0f));
 		}
 
-		if (lookAtLowestMonster && _actor != null)
+		if (lookAtHighestMonster && _actor != null)
 		{
-			_lowestMonsterActor = null;
-			float lowestHp = float.MaxValue;
+			_highestMonsterActor = null;
+			float highestHp = 0.0f;
 			List<MonsterActor> listMonsterActor = BattleInstanceManager.instance.GetLiveMonsterList();
 			for (int i = 0; i < listMonsterActor.Count; ++i)
 			{
@@ -109,10 +109,10 @@ public class MeLookAt : MecanimEventBase
 					continue;
 				if (listMonsterActor[i].team.teamId != (int)Team.eTeamID.DefaultMonster || listMonsterActor[i].excludeMonsterCount)
 					continue;
-				if (listMonsterActor[i].actorStatus.GetHP() < lowestHp)
+				if (listMonsterActor[i].actorStatus.GetHP() > highestHp)
 				{
-					_lowestMonsterActor = listMonsterActor[i];
-					lowestHp = listMonsterActor[i].actorStatus.GetHP();
+					_highestMonsterActor = listMonsterActor[i];
+					highestHp = listMonsterActor[i].actorStatus.GetHP();
 				}
 			}
 		}
@@ -138,10 +138,10 @@ public class MeLookAt : MecanimEventBase
 			targetPosition = _randomPosition;
 		if (lookAtWorldPosition)
 			targetPosition = worldPosition;
-		if (lookAtLowestMonster && _actor != null)
+		if (lookAtHighestMonster && _actor != null)
 		{
-			if (_lowestMonsterActor != null && _lowestMonsterActor.actorStatus.IsDie() == false)
-				targetPosition = _lowestMonsterActor.cachedTransform.position;
+			if (_highestMonsterActor != null && _highestMonsterActor.actorStatus.IsDie() == false)
+				targetPosition = _highestMonsterActor.cachedTransform.position;
 			else
 				return;
 		}

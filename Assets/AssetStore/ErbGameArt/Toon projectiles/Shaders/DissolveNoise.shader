@@ -12,6 +12,7 @@ Shader "ERB/Particles/DissolveNoise"
 		_Dissolvecolor("Dissolve color", Color) = (1,1,1,1)
 		[Toggle]_Usetexturecolor("Use texture color", Float) = 0
 		[Toggle]_Usetexturedissolve("Use texture dissolve", Float) = 0
+		_Opacity("Opacity", Range( 0 , 1)) = 1
 		[HideInInspector] _texcoord( "", 2D ) = "white" {}
 	}
 
@@ -71,6 +72,7 @@ Shader "ERB/Particles/DissolveNoise"
 				uniform float _Usetexturedissolve;
 				uniform float4 _DissolvespeedXY;
 				uniform float4 _Dissolvecolor;
+				uniform float _Opacity;
 
 				v2f vert ( appdata_t v )
 				{
@@ -116,7 +118,7 @@ Shader "ERB/Particles/DissolveNoise"
 					float clampResult87 = clamp( ( (-4.0 + (( (-0.65 + (( 1.0 - uv0_TextureNoise.z ) - 0.0) * (0.65 - -0.65) / (1.0 - 0.0)) + lerp(tex2DNode91.r,( tex2DNode91.r * mainTexr123 ),_Usetexturedissolve) ) - 0.0) * (7.0 - -4.0) / (1.0 - 0.0)) * 3.0 ) , 0.0 , 1.0 );
 					float4 lerpResult92 = lerp( lerp(temp_output_93_0,( temp_output_93_0 * tex2DNode4 ),_Usetexturecolor) , lerp(_Dissolvecolor,( _Dissolvecolor * tex2DNode4 ),_Usetexturecolor) , ( clampResult87 * temp_output_88_0 ));
 					float clampResult99 = clamp( (-15.0 + (( lerp(tex2DNode91.r,( tex2DNode91.r * mainTexr123 ),_Usetexturedissolve) + (-0.65 + (uv0_TextureNoise.w - 0.0) * (0.65 - -0.65) / (1.0 - 0.0)) ) - 0.0) * (15.0 - -15.0) / (1.0 - 0.0)) , 0.0 , 1.0 );
-					float4 appendResult2 = (float4((( Emission59 * lerpResult92 * i.color )).rgb , ( i.color.a * tex2DNode4.a * clampResult99 )));
+					float4 appendResult2 = (float4((( Emission59 * lerpResult92 * i.color )).rgb , ( i.color.a * tex2DNode4.a * clampResult99 * _Opacity )));
 					
 					fixed4 col = appendResult2;
 					return col;

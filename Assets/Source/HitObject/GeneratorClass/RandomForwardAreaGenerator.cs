@@ -7,6 +7,7 @@ public class RandomForwardAreaGenerator : ContinuousHitObjectGeneratorBase
 {
 	[Header("RandomForwardAreaGenerator")]
 	public float interval;
+	public bool firstGenForward;
 
 	int _remainCreateCount;
 	float _remainIntervalTime;
@@ -42,11 +43,16 @@ public class RandomForwardAreaGenerator : ContinuousHitObjectGeneratorBase
 		_remainIntervalTime -= Time.deltaTime;
 		if (_remainIntervalTime < 0.0f)
 		{
+			bool firstGen = (_initializedCreateCount == _remainCreateCount);
+
 			_remainCreateCount -= 1;
 			_remainIntervalTime += interval;
 
 			Quaternion randomRotation = Quaternion.Euler(0.0f, Random.Range(-180.0f, 180.0f), 0.0f) * cachedTransform.rotation;
-			Generate(cachedTransform.position, randomRotation, true);
+			if (firstGenForward && firstGen)
+				Generate(cachedTransform.position, cachedTransform.rotation, true);
+			else
+				Generate(cachedTransform.position, randomRotation, true);
 		}
 
 		if (_remainCreateCount <= 0)

@@ -12,6 +12,8 @@ public class ReduceDamageAffector : AffectorBase
 		Trap,
 	}
 
+	bool _useEndTime;
+	float _endTime;
 	AffectorValueLevelTableData _affectorValueLevelTableData;
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
@@ -28,6 +30,22 @@ public class ReduceDamageAffector : AffectorBase
 		}
 
 		_affectorValueLevelTableData = affectorValueLevelTableData;
+
+		// fValue1이 보통 시간인데 자리가 없어서 iValue1 에다가 0.001f 곱한걸 시간으로 쓰기로 한다. ms단위. 0이면 무제한.
+		if (affectorValueLevelTableData.iValue1 > 0)
+		{
+			_useEndTime = true;
+			_endTime = CalcEndTime(affectorValueLevelTableData.iValue1 * 0.001f);
+		}
+	}
+
+	public override void UpdateAffector()
+	{
+		if (_useEndTime == false)
+			return;
+
+		if (CheckEndTime(_endTime) == false)
+			return;
 	}
 
 	float GetValue(eReduceDamageType eType)

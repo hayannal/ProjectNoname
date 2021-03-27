@@ -96,5 +96,7 @@ public enum eAffectorType
 	AddAttackRange,
 	DelayedCreateHitObject,
 	RemoveCannotAction,
+
+	Roll,
 }
 #endregion

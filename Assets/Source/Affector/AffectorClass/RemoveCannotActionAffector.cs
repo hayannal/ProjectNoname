@@ -31,7 +31,10 @@ public class RemoveCannotActionAffector : AffectorBase
 		// loop effect
 		GameObject loopEffectPrefab = FindPreloadObject(affectorValueLevelTableData.sValue3);
 		if (loopEffectPrefab != null)
+		{
 			_loopEffectTransform = BattleInstanceManager.instance.GetCachedObject(loopEffectPrefab, _actor.cachedTransform.position, _actor.cachedTransform.rotation).transform;
+			FollowTransform.Follow(_loopEffectTransform, _actor.cachedTransform, Vector3.zero);
+		}
 
 		if (!string.IsNullOrEmpty(affectorValueLevelTableData.sValue4))
 			_startEffectPrefab = FindPreloadObject(affectorValueLevelTableData.sValue4);

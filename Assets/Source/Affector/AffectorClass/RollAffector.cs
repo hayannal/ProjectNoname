@@ -6,7 +6,6 @@ using ECM.Common;
 public class RollAffector : AffectorBase
 {
 	float _endTime;
-	float _speed;
 
 	AffectorValueLevelTableData _affectorValueLevelTableData;
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
@@ -23,7 +22,6 @@ public class RollAffector : AffectorBase
 		// lifeTime
 		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
 
-		_speed = _actor.actorStatus.GetValue(eActorStatus.MoveSpeed);
 		_moveDirection = _actor.cachedTransform.forward;
 	}
 
@@ -78,7 +76,7 @@ public class RollAffector : AffectorBase
 			return;
 		}
 
-		_actor.GetRigidbody().velocity = _actor.cachedTransform.forward * (_speed + _affectorValueLevelTableData.fValue2);
+		_actor.GetRigidbody().velocity = _actor.cachedTransform.forward * _affectorValueLevelTableData.fValue2;
 	}
 
 	public override void FinalizeAffector()

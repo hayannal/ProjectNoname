@@ -48,6 +48,7 @@ public class DelayedCreateHitObjectAffector : AffectorBase
 		if (_createHitObjectAffectorValue == null)
 		{
 			_createHitObjectAffectorValue = new AffectorValueLevelTableData();
+			_createHitObjectAffectorValue.iValue3 = _affectorValueLevelTableData.iValue3;
 			_createHitObjectAffectorValue.sValue1 = _affectorValueLevelTableData.sValue1;
 		}
 		_affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.CreateHitObject, _createHitObjectAffectorValue, _actor, false);

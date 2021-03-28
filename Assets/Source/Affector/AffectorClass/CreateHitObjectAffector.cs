@@ -78,6 +78,9 @@ public class CreateHitObjectAffector : AffectorBase
 
 			if (info.meHit.aliveOnlyOne)
 				_cachedMainHitObject = hitObject;
+
+			if (affectorValueLevelTableData.iValue3 == 1)
+				FollowTransform.Follow(hitObject.cachedTransform, parentActor.cachedTransform, Vector3.zero);
 		}
 	}
 }

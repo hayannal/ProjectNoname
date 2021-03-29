@@ -78,7 +78,7 @@ public class RemoveCannotActionAffector : AffectorBase
 	{
 		if (_loopEffectTransform != null)
 		{
-			_loopEffectTransform.gameObject.SetActive(false);
+			DisableParticleEmission.DisableEmission(_loopEffectTransform);
 			_loopEffectTransform = null;
 		}
 	}

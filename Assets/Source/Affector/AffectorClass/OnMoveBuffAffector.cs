@@ -107,14 +107,17 @@ public class OnMoveBuffAffector : AffectorBase
 		// 끌때는 재활용을 위해 복구해놓기로 한다.
 		if (_applied)
 		{
-			LoopEffectOnOff(true);
+			if (_onOffLoopEffectTransform != null)
+			{
+				DisableParticleEmission.DisableEmission(_onOffLoopEffectTransform);
+				_onOffLoopEffectTransform = null;
+			}
 			_applied = false;
 		}
-
-		if (_onOffLoopEffectTransform != null)
+		else
 		{
-			DisableParticleEmission.DisableEmission(_onOffLoopEffectTransform);
-			_onOffLoopEffectTransform = null;
+			LoopEffectOnOff(true);
+			_onOffLoopEffectTransform.gameObject.SetActive(false);
 		}
 
 		if (_loopEffectTransform != null)

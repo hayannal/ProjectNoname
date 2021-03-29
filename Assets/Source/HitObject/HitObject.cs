@@ -455,7 +455,26 @@ public class HitObject : MonoBehaviour
 		switch (meHit.createPositionType)
 		{
 			case eCreatePositionType.Offset: t = parentActorTransform; break;
-			case eCreatePositionType.TargetPosition: t = GetTargetTransform(meHit, parentActor.targetingProcessor, hitSignalIndexInAction); break;
+			case eCreatePositionType.TargetPosition:
+
+				int targetIndex = -1;
+				if (meHit.startDirectionType == HitObjectMovement.eStartDirectionType.ToFirstTarget)
+					targetIndex = 0;
+				else if (meHit.startDirectionType == HitObjectMovement.eStartDirectionType.ToMultiTarget)
+					targetIndex = hitSignalIndexInAction;
+
+				Collider targetCollider = parentActor.targetingProcessor.GetTarget(targetIndex);
+				if (targetCollider != null)
+				{
+					AffectorProcessor targetAffectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(targetCollider);
+					if (targetAffectorProcessor != null)
+					{
+						t = targetAffectorProcessor.cachedTransform;
+						if (BurrowAffector.CheckBurrow(targetAffectorProcessor) || BurrowOnStartAffector.CheckBurrow(targetAffectorProcessor))
+							offset.y -= BurrowAffector.s_BurrowPositionY;
+					}
+				}
+				break;
 		}
 		Vector3 spawnPosition = Vector3.zero;
 		if (t != null)
@@ -510,17 +529,6 @@ public class HitObject : MonoBehaviour
 		Vector3 offsetPosition = baseTransform.TransformPoint(parallelOffset);
 		offsetPosition -= basePosition;
 		return baseSpawnPosition + offsetPosition;
-	}
-
-	public static Transform GetTargetTransform(MeHitObject meHit, TargetingProcessor targetingProcessor, int hitSignalIndexInAction)
-	{
-		int targetIndex = -1;
-		if (meHit.startDirectionType == HitObjectMovement.eStartDirectionType.ToFirstTarget)
-			targetIndex = 0;
-		else if (meHit.startDirectionType == HitObjectMovement.eStartDirectionType.ToMultiTarget)
-			targetIndex = hitSignalIndexInAction;
-
-		return targetingProcessor.GetTargetTransform(targetIndex);
 	}
 
 	public static Vector3 GetTargetPosition(MeHitObject meHit, Actor parentActor, int hitSignalIndexInAction)

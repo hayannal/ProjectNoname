@@ -52,7 +52,7 @@ public class AutoSideAttackAffector : AffectorBase
 
 	void OnEventStartStage()
 	{
-		_remainTime = _createHitObjectAffectorValue.fValue2;
+		_remainTime = _affectorValueLevelTableData.fValue2;
 	}
 
 

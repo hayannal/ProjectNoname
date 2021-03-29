@@ -92,6 +92,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.DelayedCreateHitObject: affectorBase = new DelayedCreateHitObjectAffector(); break;
 			case eAffectorType.RemoveCannotAction: affectorBase = new RemoveCannotActionAffector(); break;
 			case eAffectorType.Roll: affectorBase = new RollAffector(); break;
+			case eAffectorType.AutoSideAttack: affectorBase = new AutoSideAttackAffector(); break;
 			#endregion
 		}
 		return affectorBase;
@@ -177,6 +178,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.DelayedCreateHitObject:
 			case eAffectorType.RemoveCannotAction:
 			case eAffectorType.Roll:
+			case eAffectorType.AutoSideAttack:
 				return true;
 			#endregion
 		}

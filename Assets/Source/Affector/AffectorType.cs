@@ -98,5 +98,6 @@ public enum eAffectorType
 	RemoveCannotAction,
 
 	Roll,
+	AutoSideAttack,
 }
 #endregion

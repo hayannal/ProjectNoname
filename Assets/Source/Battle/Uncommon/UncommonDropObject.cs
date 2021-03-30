@@ -44,6 +44,9 @@ public class UncommonDropObject : MonoBehaviour
 
 	void UpdateDistance()
 	{
+		if (BattleInstanceManager.instance.playerActor.actorStatus.GetSPRatio() >= 1.0f)
+			return;
+
 		Vector3 playerPosition = BattleInstanceManager.instance.playerActor.cachedTransform.position;
 		float playerRadius = BattleInstanceManager.instance.playerActor.actorRadius;
 		Vector3 position = cachedTransform.position;

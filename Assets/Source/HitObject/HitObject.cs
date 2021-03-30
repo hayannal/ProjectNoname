@@ -474,6 +474,8 @@ public class HitObject : MonoBehaviour
 							offset.y -= BurrowAffector.s_BurrowPositionY;
 					}
 				}
+				else
+					t = null;
 				break;
 		}
 		Vector3 spawnPosition = Vector3.zero;

@@ -4,6 +4,7 @@ using System.Collections;
 public class InvincibleAffector : AffectorBase
 {
 	float _endTime;
+	bool _ignoreText;
 
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
@@ -15,6 +16,8 @@ public class InvincibleAffector : AffectorBase
 
 		// lifeTime
 		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
+
+		_ignoreText = (affectorValueLevelTableData.iValue3 == 1);
 	}
 
 	public override void UpdateAffector()
@@ -25,7 +28,10 @@ public class InvincibleAffector : AffectorBase
 
 	void OnDamage()
 	{
+		if (_ignoreText)
+			return;
 
+		FloatingDamageTextRootCanvas.instance.ShowText(FloatingDamageText.eFloatingDamageType.Invincible, _actor);
 	}
 
 	public static bool CheckInvincible(AffectorProcessor affectorProcessor)

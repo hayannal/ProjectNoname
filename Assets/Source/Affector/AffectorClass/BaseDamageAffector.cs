@@ -46,7 +46,6 @@ public class BaseDamageAffector : AffectorBase {
 		{
 			if (_actor.GetRigidbody() != null)
 				_actor.GetRigidbody().velocity = Vector3.zero;
-			FloatingDamageTextRootCanvas.instance.ShowText(FloatingDamageText.eFloatingDamageType.Invincible, _actor);
 			return;
 		}
 

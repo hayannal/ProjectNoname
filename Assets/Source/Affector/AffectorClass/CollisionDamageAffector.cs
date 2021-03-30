@@ -19,10 +19,7 @@ public class CollisionDamageAffector : AffectorBase
 
 		// 플레이어도 보호막은 안쓰지만 무적은 일시적으로 사용하기로 했다. 무적 검사루틴 추가.
 		if (InvincibleAffector.CheckInvincible(_affectorProcessor))
-		{
-			FloatingDamageTextRootCanvas.instance.ShowText(FloatingDamageText.eFloatingDamageType.Invincible, _actor);
 			return;
-		}
 
 		float damage = StageManager.instance.currentStageTableData.standardAtk;
 		if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())

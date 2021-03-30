@@ -165,6 +165,7 @@ MonoBehaviour:
   checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -320,6 +321,7 @@ MonoBehaviour:
   checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -428,6 +430,22 @@ AnimatorController:
     m_IKPass: 0
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
+--- !u!114 &1366177265952978031
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 607bb5ed821de264982a3a1a0b6a018b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.05
+  EndTime: 1
+  affectorValueId: InvincibleNecromancerFour
+  affectorValueLevel: 0
 --- !u!114 &2126510092431887390
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -471,7 +489,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartTime: 0
-  EndTime: 0.95
+  EndTime: 0.9
   state: 5
 --- !u!114 &3948586427987823445
 MonoBehaviour:
@@ -495,7 +513,7 @@ MonoBehaviour:
   minimumDistance: 0
   lookAtWorldPosition: 0
   worldPosition: {x: 0, y: 0, z: 0}
-  lookAtLowestMonster: 0
+  lookAtHighestMonster: 0
   lerpPower: 5
   boneName: 
 --- !u!114 &5264227078058698804
@@ -511,7 +529,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartTime: 0
-  EndTime: 0.85
+  EndTime: 0.99
 --- !u!1102 &6493754592267700729
 AnimatorState:
   serializedVersion: 5
@@ -527,6 +545,7 @@ AnimatorState:
   - {fileID: 3835133380779394814}
   - {fileID: -1551462265510850293}
   - {fileID: 3948586427987823445}
+  - {fileID: 1366177265952978031}
   - {fileID: 5264227078058698804}
   - {fileID: 2203421198909046949}
   - {fileID: -3739178653987784123}

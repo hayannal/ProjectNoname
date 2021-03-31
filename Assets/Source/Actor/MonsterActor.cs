@@ -570,7 +570,7 @@ public class MonsterActor : Actor
 		}
 
 		// summon 시그널로 만들어진 몬스터는 아무것도 드랍하지 않는다.
-		if (summonMonster)
+		if (summonMonster && team.teamId == (int)Team.eTeamID.DefaultMonster && excludeMonsterCount == false)
 		{
 			// EvilRich의 경우 잔몹을 소환하는데 하필 보스몹이 먼저 죽고 잔몹이 죽게되면
 			// LastDropObject로 설정하는 부분이 호출되지 않아 습득이 안되게 된다.

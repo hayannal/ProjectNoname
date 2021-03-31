@@ -93,6 +93,8 @@ public static class AffectorCustomCreator
 			case eAffectorType.RemoveCannotAction: affectorBase = new RemoveCannotActionAffector(); break;
 			case eAffectorType.Roll: affectorBase = new RollAffector(); break;
 			case eAffectorType.AutoSideAttack: affectorBase = new AutoSideAttackAffector(); break;
+			//case eAffectorType.TransportAttack: affectorBase = new TransportAttackAffector(); break;
+			case eAffectorType.PaybackSpFull: affectorBase = new PaybackSpFullAffector(); break;
 			#endregion
 		}
 		return affectorBase;
@@ -179,6 +181,8 @@ public static class AffectorCustomCreator
 			case eAffectorType.RemoveCannotAction:
 			case eAffectorType.Roll:
 			case eAffectorType.AutoSideAttack:
+			case eAffectorType.TransportAttack:
+			case eAffectorType.PaybackSpFull:
 				return true;
 			#endregion
 		}

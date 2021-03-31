@@ -375,6 +375,12 @@ public class ActionController : MonoBehaviour {
 
 	void UseUltimateSp()
 	{
+		if (PaybackSpFullAffector.OnUseUltimateSp(actor.affectorProcessor) == true)
+		{
+			FloatingDamageTextRootCanvas.instance.ShowText(FloatingDamageText.eFloatingDamageType.PaybackSp, actor);
+			return;
+		}
+
 		float needSp = actor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MaxSp);
 		float payback = PaybackSpAffector.GetValue(actor.affectorProcessor);
 		if (payback != 0.0f)

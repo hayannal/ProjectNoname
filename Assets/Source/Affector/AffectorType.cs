@@ -99,5 +99,7 @@ public enum eAffectorType
 
 	Roll,
 	AutoSideAttack,
+	TransportAttack,
+	PaybackSpFull,
 }
 #endregion

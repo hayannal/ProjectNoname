@@ -558,6 +558,30 @@ public class AffectorProcessor : MonoBehaviour {
 
 
 
+	#region CannotAction RefCount
+	// 여러개의 CannotAction 이 중복될때는 해당 액터별로 RefCount로 관리해야해서 이렇게 추가해둔다.
+	int _cannotActionRefCount = 0;
+	float _cannotActionPrevSpeed = 0.0f;
+	public void SavePrevSpeed(float speed)
+	{
+		if (_cannotActionRefCount == 0)
+			_cannotActionPrevSpeed = speed;
+
+		++_cannotActionRefCount;
+	}
+
+	public void RestorePrevSpeed(Animator animator)
+	{
+		--_cannotActionRefCount;
+		if (_cannotActionRefCount == 0)
+		{
+			animator.speed = _cannotActionPrevSpeed;
+			_cannotActionPrevSpeed = 0.0f;
+		}
+	}
+	#endregion
+
+
 
 
 

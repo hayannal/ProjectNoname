@@ -40,7 +40,7 @@ public class CannotActionAffector : AffectorBase
 		// lifeTime
 		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
 
-		SavePrevSpeed(_actor.actionController.animator.speed);
+		_affectorProcessor.SavePrevSpeed(_actor.actionController.animator.speed);
 		_actor.actionController.animator.speed = 0.0f;
 		_defaultAnimatorLocalPosition = _actor.actionController.cachedAnimatorTransform.localPosition;
 		_actor.actorStatus.OnChangedStatus(ActorStatusDefine.eActorStatus.MoveSpeed);
@@ -84,7 +84,7 @@ public class CannotActionAffector : AffectorBase
 			return;
 
 		_actor.actionController.cachedAnimatorTransform.localPosition = _defaultAnimatorLocalPosition;
-		RestorePrevSpeed(_actor.actionController.animator);
+		_affectorProcessor.RestorePrevSpeed(_actor.actionController.animator);
 		_applied = false;
 	}
 
@@ -97,26 +97,5 @@ public class CannotActionAffector : AffectorBase
 		pingPong -= PingPongMove * 0.5f;
 		_actor.actionController.cachedAnimatorTransform.position = _actor.cachedTransform.position + new Vector3(pingPong, 0.0f, 0.0f);
 		_actor.actionController.cachedAnimatorTransform.localPosition += _defaultAnimatorLocalPosition;
-	}
-
-	// 여러개의 CannotActionAffector가 적용될때를 대비해서 적용되기 전의 스피드를 static에다가 저장해두고 refCount로 관리하기로 한다.
-	static int s_refCount = 0;
-	static float s_prevSpeed = 0.0f;
-	public static void SavePrevSpeed(float speed)
-	{
-		if (s_refCount == 0)
-			s_prevSpeed = speed;
-
-		++s_refCount;
-	}
-
-	public static void RestorePrevSpeed(Animator animator)
-	{
-		--s_refCount;
-		if (s_refCount == 0)
-		{
-			animator.speed = s_prevSpeed;
-			s_prevSpeed = 0.0f;
-		}
 	}
 }

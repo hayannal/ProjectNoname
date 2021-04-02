@@ -5,6 +5,13 @@ using ActorStatusDefine;
 
 public class UncommonDropObject : MonoBehaviour
 {
+	public enum eUncommonDropType
+	{
+		DroneCore,
+		PowerLightning,
+	}
+
+	public eUncommonDropType uncommonDropType;
 	public float getRange = 0.5f;
 	public RectTransform nameCanvasRectTransform;
 
@@ -44,8 +51,15 @@ public class UncommonDropObject : MonoBehaviour
 
 	void UpdateDistance()
 	{
-		if (BattleInstanceManager.instance.playerActor.actorStatus.GetSPRatio() >= 1.0f)
-			return;
+		switch (uncommonDropType)
+		{
+			case eUncommonDropType.DroneCore:
+				if (BattleInstanceManager.instance.playerActor.actorStatus.GetSPRatio() >= 1.0f)
+					return;
+				break;
+			case eUncommonDropType.PowerLightning:
+				break;
+		}
 
 		Vector3 playerPosition = BattleInstanceManager.instance.playerActor.cachedTransform.position;
 		float playerRadius = BattleInstanceManager.instance.playerActor.actorRadius;
@@ -55,7 +69,15 @@ public class UncommonDropObject : MonoBehaviour
 		diff.y = playerPosition.z - position.z;
 		if (diff.x * diff.x + diff.y * diff.y < (getRange + playerRadius) * (getRange + playerRadius))
 		{
-			BattleInstanceManager.instance.playerActor.actorStatus.AddSP(BattleInstanceManager.instance.playerActor.actorStatus.GetValue(eActorStatus.MaxSp));
+			switch (uncommonDropType)
+			{
+				case eUncommonDropType.DroneCore:
+					BattleInstanceManager.instance.playerActor.actorStatus.AddSP(BattleInstanceManager.instance.playerActor.actorStatus.GetValue(eActorStatus.MaxSp));
+					break;
+				case eUncommonDropType.PowerLightning:
+					ChangeAttackStateAffector.CheckBulletBoost(BattleInstanceManager.instance.playerActor.affectorProcessor);
+					break;
+			}
 			gameObject.SetActive(false);
 		}
 	}

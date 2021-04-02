@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using CodeStage.AntiCheat.ObscuredTypes;
 
 public class ChangeAttackStateAffector : AffectorBase
 {
@@ -32,6 +33,12 @@ public class ChangeAttackStateAffector : AffectorBase
 	int _count;
 	void OnEventNormalAttack()
 	{
+		if (_remainBoostCount > 0)
+		{
+			--_remainBoostCount;
+			return;
+		}
+
 		if (_swapTypeValue == 1)
 		{
 			++_count;
@@ -56,6 +63,12 @@ public class ChangeAttackStateAffector : AffectorBase
 
 	bool CheckChange(ref int actionNameHash)
 	{
+		if (_remainBoostCount > 0)
+		{
+			actionNameHash = _actionNameHash;
+			return true;
+		}
+
 		if (_swapTypeValue == 1)
 		{
 			if ((_count + 1) == _changeCount)
@@ -70,6 +83,13 @@ public class ChangeAttackStateAffector : AffectorBase
 			return true;
 		}
 		return false;
+	}
+
+	ObscuredInt _remainBoostCount;
+	void CheckBulletBoost()
+	{
+		// 해당 아이템을 습득하면 5회는 무조건 강한 공격으로 나가게 된다.
+		_remainBoostCount = 5;
 	}
 
 	public static void OnEventNormalAttack(AffectorProcessor affectorProcessor)
@@ -97,5 +117,14 @@ public class ChangeAttackStateAffector : AffectorBase
 			return;
 
 		changeAttackStateAffector.CheckChange(ref actionNameHash);
+	}
+
+	public static void CheckBulletBoost(AffectorProcessor affectorProcessor)
+	{
+		ChangeAttackStateAffector changeAttackStateAffector = (ChangeAttackStateAffector)affectorProcessor.GetFirstContinuousAffector(eAffectorType.ChangeAttackState);
+		if (changeAttackStateAffector == null)
+			return;
+
+		changeAttackStateAffector.CheckBulletBoost();
 	}
 }

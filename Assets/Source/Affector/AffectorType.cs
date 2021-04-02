@@ -99,6 +99,7 @@ public enum eAffectorType
 
 	Roll,
 	AutoSideAttack,
+	TransportSummon,
 	TransportAttack,
 	PaybackSpFull,
 }

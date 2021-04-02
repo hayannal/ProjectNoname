@@ -70,7 +70,7 @@ public class PauseCanvas : MonoBehaviour
 			_prevPlayerActor.actionController.animator.updateMode = AnimatorUpdateMode.Normal;
 		}
 		_prevTimeScale = Time.timeScale;
-		Time.timeScale = 0.0f;
+		Time.timeScale = (BattleInstanceManager.instance.playerActor.actorId == "Actor1039") ? 0.000001f : 0.0f;
 
 		LoadOption();
 		RefreshGrid();

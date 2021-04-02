@@ -26,6 +26,7 @@ public class HitObject : MonoBehaviour
 		Offset,
 		Bone,
 		TargetPosition,
+		WorldPosition,
 	}
 
 	#region staticFunction
@@ -479,7 +480,11 @@ public class HitObject : MonoBehaviour
 				break;
 		}
 		Vector3 spawnPosition = Vector3.zero;
-		if (t != null)
+		if (meHit.createPositionType == eCreatePositionType.WorldPosition)
+		{
+			spawnPosition = offset;
+		}
+		else if (t != null)
 		{
 			if (offset == Vector3.zero)
 				spawnPosition = t.position;

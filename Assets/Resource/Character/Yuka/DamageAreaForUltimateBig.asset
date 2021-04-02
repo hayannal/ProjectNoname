@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 13106c466de56b3409b1cb8980d25ed9, type: 3}
-  m_Name: DamageAreaForUltimate
+  m_Name: DamageAreaForUltimateBig
   m_EditorClassIdentifier: 
   StartTime: 0
   EndTime: 1
@@ -19,11 +19,11 @@ MonoBehaviour:
   multiPresetCount: 0
   ignorePresetHitEffectOnCustomTargetPosition: 0
   presetAnimatorRoot: 0
-  hitObjectPrefab: {fileID: 1529907042512856, guid: 7783b332c24595f41811154804834233,
+  hitObjectPrefab: {fileID: 4687776127979565134, guid: 2e12f58ed6f281d4294e06a03edd7345,
     type: 3}
-  lifeTime: 2
+  lifeTime: 3.5
   areaHitLifeTimeEarlyOffset: 0
-  ignoreAreaHitLifeTimeRange: {x: 0.2, y: 0.5}
+  ignoreAreaHitLifeTimeRange: {x: 1.7, y: 2}
   movable: 0
   moveStartDelay: 0
   maxDistance: 0
@@ -41,7 +41,7 @@ MonoBehaviour:
   useAreaRotationYChange: 0
   targetAreaRotationY: 0
   areaDistanceMin: 0
-  areaDistanceMax: 1.3
+  areaDistanceMax: 1.8
   areaHeightMin: -5
   areaHeightMax: 2
   areaAngle: 360
@@ -94,8 +94,7 @@ MonoBehaviour:
   circularSectorUseWorldSpace: 0
   circularSectorWorldSpaceCenterAngleY: 0
   ignoreMainHitObjectByCircularSector: 0
-  continuousHitObjectGeneratorBaseList:
-  - {fileID: 2608947383521465329, guid: aed11b3b6a0d6474d902143762a073ae, type: 3}
+  continuousHitObjectGeneratorBaseList: []
   contactAll: 0
   monsterThroughCount: 0
   wallThrough: 0
@@ -119,7 +118,7 @@ MonoBehaviour:
   ignoreRemoveColliderAffector: 0
   aliveOnlyOne: 0
   affectorValueIdList:
-  - UltimateAttackBei
+  - UltimateAttackYukaBig
   showHitEffect: 0
   hitEffectObject: {fileID: 0}
   hitEffectLookAtNormal: 0

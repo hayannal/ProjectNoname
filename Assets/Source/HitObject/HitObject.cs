@@ -518,7 +518,7 @@ public class HitObject : MonoBehaviour
 		}
 
 		if (meHit.fixedWorldPositionY)
-			spawnPosition.y = offset.y;
+			spawnPosition.y = meHit.offset.y;
 		return spawnPosition;
 	}
 

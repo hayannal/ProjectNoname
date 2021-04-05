@@ -583,6 +583,12 @@ public class HitObject : MonoBehaviour
 				break;
 			case HitObjectMovement.eStartDirectionType.ToFirstTarget:
 			case HitObjectMovement.eStartDirectionType.ToMultiTarget:
+
+				// 하필 Area 제네레이터를 쓰는 상황에서 ToFirstTarget으로 설정되어있는데 useWorldDirection을 사용해야하는 일이 생겼다.
+				// EarthMage의 궁극기인데 방향이 고정되어야해서 아래처럼 예외처리 하기로 한다.
+				if (meHit.useWorldSpaceDirection)
+					return meHit.startDirection.normalized;
+
 				Vector3 diffToTargetPosition = targetPosition - spawnPosition;
 				// 땅에 쏘는 직사를 구현할땐 이 라인을 패스하면 된다.
 				diffToTargetPosition.y = 0.0f;

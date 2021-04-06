@@ -1,5 +1,21 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8684620302676956577
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 607bb5ed821de264982a3a1a0b6a018b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.01
+  EndTime: 1
+  affectorValueId: UltimateRemoveAkai
+  affectorValueLevel: 0
 --- !u!114 &-6071015916442763107
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -82,7 +98,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0.58
   EndTime: 1
-  effectData: {fileID: 1543153927702632, guid: 7dcda010d0261e2408c4e3b0807874ad, type: 3}
+  effectData: {fileID: 1543153927702632, guid: f4b78f133eaaba24a9d26f75fbbbafc1, type: 3}
   offset: {x: 0, y: 1, z: 0}
   fixedWorldPositionY: 0
   direction: {x: 0, y: 0, z: 1}
@@ -607,6 +623,7 @@ AnimatorState:
   m_Transitions: []
   m_StateMachineBehaviours:
   - {fileID: 6979136866728122545}
+  - {fileID: -8684620302676956577}
   - {fileID: 3169807890485817098}
   - {fileID: -4197689463618190284}
   - {fileID: -3825430725148471266}

@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using ActorStatusDefine;
+using MEC;
 
 public class HealForAttackerAffector : AffectorBase
 {
@@ -51,7 +53,19 @@ public class HealForAttackerAffector : AffectorBase
 			{
 				Transform onStartEffectObject = BattleInstanceManager.instance.GetCachedObject(onStartEffectPrefab, attackerActor.cachedTransform.position, Quaternion.identity).transform;
 				FollowTransform.Follow(onStartEffectObject, attackerActor.cachedTransform, Vector3.zero);
+				Timing.RunCoroutine(ScreenHealEffectProcess());
 			}
 		}
+	}
+
+	IEnumerator<float> ScreenHealEffectProcess()
+	{
+		FadeCanvas.instance.FadeOut(0.2f, 0.6f);
+		yield return Timing.WaitForSeconds(0.2f);
+
+		if (this == null)
+			yield break;
+
+		FadeCanvas.instance.FadeIn(1.0f);
 	}
 }

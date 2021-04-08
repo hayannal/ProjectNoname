@@ -96,6 +96,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.TransportSummon: affectorBase = new TransportSummonAffector(); break;
 			case eAffectorType.TransportAttack: affectorBase = new TransportAttackAffector(); break;
 			case eAffectorType.PaybackSpFull: affectorBase = new PaybackSpFullAffector(); break;
+			case eAffectorType.HealForAttacker: affectorBase = new HealForAttackerAffector(); break;
 			#endregion
 		}
 		return affectorBase;

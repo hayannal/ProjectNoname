@@ -102,5 +102,6 @@ public enum eAffectorType
 	TransportSummon,
 	TransportAttack,
 	PaybackSpFull,
+	HealForAttacker,
 }
 #endregion

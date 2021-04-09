@@ -14,6 +14,8 @@ public class HealAffector : AffectorBase
 		float heal = 0.0f;
 		if (affectorValueLevelTableData.iValue1 == 0)
 		{
+			if (affectorValueLevelTableData.fValue2 != 0.0f)
+				heal += (_actor.actorStatus.GetHP() * affectorValueLevelTableData.fValue2);
 			if (affectorValueLevelTableData.fValue3 > 0.0f)
 				heal += (_actor.actorStatus.GetValue(eActorStatus.MaxHp) * affectorValueLevelTableData.fValue3);
 			if (affectorValueLevelTableData.fValue4 > 0.0f)
@@ -23,6 +25,8 @@ public class HealAffector : AffectorBase
 		}
 		else if (affectorValueLevelTableData.iValue1 == 1)
 		{
+			if (affectorValueLevelTableData.fValue2 != 0.0f)
+				heal += (_actor.actorStatus.GetSP() * affectorValueLevelTableData.fValue2);
 			if (affectorValueLevelTableData.fValue3 > 0.0f)
 				heal += (_actor.actorStatus.GetValue(eActorStatus.MaxSp) * affectorValueLevelTableData.fValue3);
 			if (affectorValueLevelTableData.fValue4 > 0.0f)

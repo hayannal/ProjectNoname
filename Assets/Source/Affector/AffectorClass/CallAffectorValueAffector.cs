@@ -44,6 +44,8 @@ public class CallAffectorValueAffector : AffectorBase
 			return;
 		if (eventType == eEventType.HpRate && argument > _affectorValueLevelTableData.fValue1)
 			return;
+		if (eventType == eEventType.OnDamage && _actor.affectorProcessor.IsContinuousAffectorType(eAffectorType.CannotAction))
+			return;
 
 		bool needFinalize = false;
 		if (_eventRemainCount > 0)

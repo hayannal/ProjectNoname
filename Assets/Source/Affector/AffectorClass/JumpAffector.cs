@@ -60,6 +60,22 @@ public class JumpAffector : AffectorBase
 
 		_diff.y = 0.0f;
 		_diff = _diff.normalized;
+
+		// 점프 시간은 줄어들면 안되기 때문에 _endTime 계산해놓고나서 _targetPosition과 _diff를 새로 계산해야한다.
+		if (_actor.affectorProcessor.IsContinuousAffectorType(eAffectorType.CannotMove))
+		{
+			_diff = _diff.normalized * 0.01f;
+			_targetPosition = _actor.cachedTransform.position + _diff;
+		}
+		else
+		{
+			float moveSpeedAddRate = _actor.actorStatus.GetValue(eActorStatus.MoveSpeedAddRate);
+			if (moveSpeedAddRate < 0.0f)
+			{
+				_diff = _diff.normalized * _diff.magnitude * (1.0f + moveSpeedAddRate);
+				_targetPosition = _actor.cachedTransform.position + _diff;
+			}
+		}
 	}
 
 	public override void OverrideAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)

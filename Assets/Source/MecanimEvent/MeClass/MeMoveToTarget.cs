@@ -129,9 +129,23 @@ public class MeMoveToTarget : MecanimEventBase
 			}
 		}
 
+		if (_actor.affectorProcessor.IsContinuousAffectorType(eAffectorType.CannotMove))
+		{
+			diff = diff.normalized * 0.01f;
+			targetPosition = _actor.cachedTransform.position + diff;
+			return targetPosition;
+		}
+
 		if (maxDistance > 0.0f && diff.magnitude > maxDistance)
 		{
 			diff = diff.normalized * maxDistance;
+			targetPosition = _actor.cachedTransform.position + diff;
+		}
+
+		float moveSpeedAddRate = _actor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MoveSpeedAddRate);
+		if (moveSpeedAddRate < 0.0f)
+		{
+			diff = diff.normalized * diff.magnitude * (1.0f + moveSpeedAddRate);
 			targetPosition = _actor.cachedTransform.position + diff;
 		}
 

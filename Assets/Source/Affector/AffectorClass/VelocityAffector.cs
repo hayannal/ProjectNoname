@@ -76,7 +76,11 @@ public class VelocityAffector : AffectorBase
 			return;
 		}
 
-		_actor.GetRigidbody().velocity = _actor.cachedTransform.TransformDirection(_reservedVelocity);
+		float moveSpeedAddRate = _actor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MoveSpeedAddRate);
+		if (moveSpeedAddRate != 0.0f)
+			_actor.GetRigidbody().velocity = _actor.cachedTransform.TransformDirection(_reservedVelocity * (1.0f + moveSpeedAddRate));
+		else
+			_actor.GetRigidbody().velocity = _actor.cachedTransform.TransformDirection(_reservedVelocity);
 	}
 
 	public override void FinalizeAffector()

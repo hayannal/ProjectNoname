@@ -329,7 +329,11 @@ public class RushAffector : AffectorBase
 				*/
 		}
 
-		_actor.GetRigidbody().velocity = _actor.cachedTransform.forward * _affectorValueLevelTableData.fValue1;
+		float moveSpeedAddRate = _actor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MoveSpeedAddRate);
+		if (moveSpeedAddRate != 0.0f)
+			_actor.GetRigidbody().velocity = _actor.cachedTransform.forward * _affectorValueLevelTableData.fValue1 * (1.0f + moveSpeedAddRate);
+		else
+			_actor.GetRigidbody().velocity = _actor.cachedTransform.forward * _affectorValueLevelTableData.fValue1;
 	}
 
 	public override void FinalizeAffector()

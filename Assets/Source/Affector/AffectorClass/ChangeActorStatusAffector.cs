@@ -62,7 +62,8 @@ public class ChangeActorStatusAffector : AffectorBase
 	{
 		if (CheckEndTime(_endTime) == false)
 		{
-			_actor.actorStatus.OnChangedStatus(_eType);
+			if (_actor != null)
+				_actor.actorStatus.OnChangedStatus(_eType);
 			return;
 		}
 	}

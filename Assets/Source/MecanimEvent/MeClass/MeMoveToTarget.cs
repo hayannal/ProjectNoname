@@ -103,6 +103,11 @@ public class MeMoveToTarget : MecanimEventBase
 			diff = targetPosition - _actor.cachedTransform.position;
 			diff.y = 0.0f;
 			targetPosition += -diff.normalized * distanceOffset;
+
+			// useRegisterdCustomTargetPosition일때는 이미 외부에서 설정된걸 받아 쓰는거기때문에
+			// AttackIndicator 같은데에서 CannotMove등의 처리가 적용된 상태일거다.
+			// 그러니 바로 리턴하면 된다.
+			return targetPosition;
 		}
 		else
 		{

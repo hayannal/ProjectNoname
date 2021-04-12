@@ -117,6 +117,24 @@ public class MeAttackIndicator : MecanimEventBase
 							createRotation = Quaternion.LookRotation(targetTransform.TransformDirection(startDirection));
 							parentTransform = targetTransform;
 
+							// 점프 시간은 줄어들면 안되기 때문에 _endTime 계산해놓고나서 _targetPosition과 _diff를 새로 계산해야한다.
+							if (_actor.affectorProcessor.IsContinuousAffectorType(eAffectorType.CannotMove))
+							{
+								Vector3 diff = createPosition - _actor.cachedTransform.position;
+								diff = diff.normalized * 0.01f;
+								createPosition = _actor.cachedTransform.position + diff;
+							}
+							else
+							{
+								float moveSpeedAddRate = _actor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.MoveSpeedAddRate);
+								if (moveSpeedAddRate < 0.0f)
+								{
+									Vector3 diff = createPosition - _actor.cachedTransform.position;
+									diff = diff.normalized * diff.magnitude * (1.0f + moveSpeedAddRate);
+									createPosition = _actor.cachedTransform.position + diff;
+								}
+							}
+
 							if (registerCustomTargetPosition)
 								_actor.targetingProcessor.SetCustomTargetPosition(createPosition);
 						}

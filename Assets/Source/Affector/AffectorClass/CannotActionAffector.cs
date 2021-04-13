@@ -84,7 +84,7 @@ public class CannotActionAffector : AffectorBase
 			return;
 
 		_actor.actionController.cachedAnimatorTransform.localPosition = _defaultAnimatorLocalPosition;
-		_affectorProcessor.RestorePrevSpeed(_actor.actionController.animator);
+		_affectorProcessor.RestorePrevSpeed(_actor.actionController.animator, _actor.actorStatus.IsDie());
 		_applied = false;
 	}
 

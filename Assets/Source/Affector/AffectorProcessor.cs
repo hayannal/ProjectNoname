@@ -559,6 +559,13 @@ public class AffectorProcessor : MonoBehaviour {
 
 
 	#region CannotAction RefCount
+	// MeAnimatorSpeed 시그널 발동중에 CannotAction이 함께 호출될 경우 제대로 복구가 안되는 현상이 생겨서 이렇게 예외처리 해보기로 한다.
+	bool _animatorSpeedModified;
+	public void OnModifyAnimatorSpeed(bool on)
+	{
+		_animatorSpeedModified = on;
+	}
+
 	// 여러개의 CannotAction 이 중복될때는 해당 액터별로 RefCount로 관리해야해서 이렇게 추가해둔다.
 	int _cannotActionRefCount = 0;
 	float _cannotActionPrevSpeed = 0.0f;
@@ -570,12 +577,22 @@ public class AffectorProcessor : MonoBehaviour {
 		++_cannotActionRefCount;
 	}
 
-	public void RestorePrevSpeed(Animator animator)
+	public void RestorePrevSpeed(Animator animator, bool restoreForDie)
 	{
 		--_cannotActionRefCount;
 		if (_cannotActionRefCount == 0)
 		{
-			animator.speed = _cannotActionPrevSpeed;
+			// 여기서 복구를 해야하는데
+			if (_animatorSpeedModified || restoreForDie)
+			{
+				// MeAnimatorSpeed를 사용중이었다면 뭔가 꼬일 염려가 있어서 디폴트값으로 돌리기로 하고(0이나 1보다 훨씬 큰 값으로 변하기도 한다.)
+				animator.speed = 1.0f;
+			}
+			else
+			{
+				// 사용중이지 않다면 원래대로 복구한다.
+				animator.speed = _cannotActionPrevSpeed;
+			}
 			_cannotActionPrevSpeed = 0.0f;
 		}
 	}

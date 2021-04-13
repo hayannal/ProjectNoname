@@ -29,6 +29,7 @@ public class MeAnimatorSpeed : MecanimEventBase {
 	float _prevSpeed = 0.0f;
 	bool _waitEnd = false;
 	Animator _animator;
+	AffectorProcessor _affectorProcessor;
 	override public void OnRangeSignalStart(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 #if UNITY_EDITOR
@@ -36,11 +37,20 @@ public class MeAnimatorSpeed : MecanimEventBase {
 			return;
 #endif
 
+		if (_affectorProcessor == null)
+		{
+			if (animator.transform.parent != null)
+				_affectorProcessor = animator.transform.parent.GetComponent<AffectorProcessor>();
+		}
+
 		if (_prevSpeed == 0.0f)
 			_prevSpeed = animator.speed;
 		animator.speed = speed;
 		_animator = animator;
 		_waitEnd = true;
+
+		if (_affectorProcessor != null)
+			_affectorProcessor.OnModifyAnimatorSpeed(true);
 	}
 
 	override public void OnRangeSignalEnd(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -52,6 +62,9 @@ public class MeAnimatorSpeed : MecanimEventBase {
 
 		animator.speed = _prevSpeed;
 		_waitEnd = false;
+
+		if (_affectorProcessor != null)
+			_affectorProcessor.OnModifyAnimatorSpeed(false);
 	}
 
 	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

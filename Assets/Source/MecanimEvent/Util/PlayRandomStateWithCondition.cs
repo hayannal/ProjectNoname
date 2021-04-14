@@ -76,6 +76,7 @@ public class PlayRandomStateWithCondition : ControlStateBase
 		[ConditionalHide("useActorCollider", true)]
 		public bool enabledActorColliderParameter;
 		public int actionCountLimit;
+		[NonSerialized] public int actionCountInternalIndex;
 		public float actionCooltime;
 		public bool applyCooltimeOnStart;
 	}
@@ -243,8 +244,12 @@ public class PlayRandomStateWithCondition : ControlStateBase
 					continue;
 			}
 
-			if (randomStateWithConditionInfoList[i].actionCountLimit > 0 && GetActionCount(randomStateWithConditionInfoList[i].stateName) >= randomStateWithConditionInfoList[i].actionCountLimit)
-				continue;
+			if (randomStateWithConditionInfoList[i].actionCountLimit > 0)
+			{
+				randomStateWithConditionInfoList[i].actionCountInternalIndex = i;
+				if (GetActionCount(i) >= randomStateWithConditionInfoList[i].actionCountLimit)
+					continue;
+			}
 
 			if (randomStateWithConditionInfoList[i].actionCooltime > 0.0f && _actor.actionController.cooltimeProcessor.CheckCooltime(randomStateWithConditionInfoList[i].stateName))
 				continue;
@@ -271,7 +276,7 @@ public class PlayRandomStateWithCondition : ControlStateBase
 			{
 				selectedStateName = _listRandomState[i].stateName;
 				if (_listRandomState[i].actionCountLimit > 0)
-					AddActionCount(_listRandomState[i].stateName);
+					AddActionCount(_listRandomState[i].actionCountInternalIndex);
 				if (_listRandomState[i].actionCooltime > 0.0f)
 					_actor.actionController.cooltimeProcessor.ApplyCooltime(_listRandomState[i].stateName, _listRandomState[i].actionCooltime);
 				break;
@@ -285,23 +290,23 @@ public class PlayRandomStateWithCondition : ControlStateBase
 		_listRandomState.Clear();
 	}
 
-	Dictionary<string, int> _dicActionCount;
-	void AddActionCount(string stateName)
+	Dictionary<int, int> _dicActionCount;
+	void AddActionCount(int randomStateIndex)
 	{
 		if (_dicActionCount == null)
-			_dicActionCount = new Dictionary<string, int>();
-		if (_dicActionCount.ContainsKey(stateName))
-			_dicActionCount[stateName] += 1;
+			_dicActionCount = new Dictionary<int, int>();
+		if (_dicActionCount.ContainsKey(randomStateIndex))
+			_dicActionCount[randomStateIndex] += 1;
 		else
-			_dicActionCount.Add(stateName, 1);
+			_dicActionCount.Add(randomStateIndex, 1);
 	}
 
-	int GetActionCount(string stateName)
+	int GetActionCount(int randomStateIndex)
 	{
 		if (_dicActionCount == null)
 			return 0;
-		if (_dicActionCount.ContainsKey(stateName))
-			return _dicActionCount[stateName];
+		if (_dicActionCount.ContainsKey(randomStateIndex))
+			return _dicActionCount[randomStateIndex];
 		return 0;
 	}
 

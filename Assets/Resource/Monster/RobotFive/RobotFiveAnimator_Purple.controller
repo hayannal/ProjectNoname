@@ -65,6 +65,7 @@ MonoBehaviour:
   movable: 1
   moveStartDelay: 0
   maxDistance: 0
+  useDynamicMaxDistanceByTargetDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -85,6 +86,7 @@ MonoBehaviour:
   checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -153,6 +155,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   ignoreRemoveColliderAffector: 0
+  aliveOnlyOne: 0
   affectorValueIdList:
   - NormalAttack01
   showHitEffect: 1
@@ -279,6 +282,7 @@ MonoBehaviour:
   minimumDistance: 0
   lookAtWorldPosition: 0
   worldPosition: {x: 0, y: 0, z: 0}
+  lookAtHighestMonster: 0
   lerpPower: 5
   boneName: 
 --- !u!114 &-8013651558405625216
@@ -408,6 +412,7 @@ MonoBehaviour:
   movable: 0
   moveStartDelay: 0
   maxDistance: 0
+  useDynamicMaxDistanceByTargetDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -428,6 +433,7 @@ MonoBehaviour:
   checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -496,6 +502,7 @@ MonoBehaviour:
   oneHitPerTarget: 1
   useLineRenderer: 0
   ignoreRemoveColliderAffector: 0
+  aliveOnlyOne: 0
   affectorValueIdList:
   - NormalAttack01
   showHitEffect: 0
@@ -643,6 +650,7 @@ MonoBehaviour:
   minimumDistance: 0
   lookAtWorldPosition: 0
   worldPosition: {x: 0, y: 0, z: 0}
+  lookAtHighestMonster: 0
   lerpPower: 5
   boneName: 
 --- !u!114 &-5547705051507436356
@@ -709,6 +717,7 @@ MonoBehaviour:
   movable: 1
   moveStartDelay: 0
   maxDistance: 0
+  useDynamicMaxDistanceByTargetDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -729,6 +738,7 @@ MonoBehaviour:
   checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -796,6 +806,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   ignoreRemoveColliderAffector: 0
+  aliveOnlyOne: 0
   affectorValueIdList:
   - NormalAttack01
   showHitEffect: 1
@@ -888,6 +899,7 @@ MonoBehaviour:
   movable: 1
   moveStartDelay: 0
   maxDistance: 0
+  useDynamicMaxDistanceByTargetDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -908,6 +920,7 @@ MonoBehaviour:
   checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -976,6 +989,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   ignoreRemoveColliderAffector: 0
+  aliveOnlyOne: 0
   affectorValueIdList:
   - NormalAttack01
   showHitEffect: 1
@@ -1028,6 +1042,22 @@ MonoBehaviour:
   StartTime: 0.04
   EndTime: 0.16
   speed: 0.8
+--- !u!114 &-3356070175306126078
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60fa1780ac802fb41a5e009957e39ff3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.2
+  EndTime: 1
+  attackDelay: 0.1
+  overrideRate: 0.75
 --- !u!1102 &-3084041347958377315
 AnimatorState:
   serializedVersion: 5
@@ -1082,6 +1112,7 @@ MonoBehaviour:
   movable: 0
   moveStartDelay: 0
   maxDistance: 0
+  useDynamicMaxDistanceByTargetDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -1102,6 +1133,7 @@ MonoBehaviour:
   checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -1170,6 +1202,7 @@ MonoBehaviour:
   oneHitPerTarget: 1
   useLineRenderer: 0
   ignoreRemoveColliderAffector: 0
+  aliveOnlyOne: 0
   affectorValueIdList:
   - NormalAttack01
   showHitEffect: 0
@@ -1203,6 +1236,7 @@ MonoBehaviour:
   minimumDistance: 0
   lookAtWorldPosition: 0
   worldPosition: {x: 0, y: 0, z: 0}
+  lookAtHighestMonster: 0
   lerpPower: 5
   boneName: 
 --- !u!114 &-2976560173785404311
@@ -1248,6 +1282,7 @@ MonoBehaviour:
   movable: 1
   moveStartDelay: 0
   maxDistance: 0
+  useDynamicMaxDistanceByTargetDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -1268,6 +1303,7 @@ MonoBehaviour:
   checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -1335,6 +1371,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   ignoreRemoveColliderAffector: 0
+  aliveOnlyOne: 0
   affectorValueIdList:
   - NormalAttack1.5
   showHitEffect: 1
@@ -1369,6 +1406,7 @@ MonoBehaviour:
   minimumDistance: 0
   lookAtWorldPosition: 0
   worldPosition: {x: 0, y: 0, z: 0}
+  lookAtHighestMonster: 0
   lerpPower: 5
   boneName: 
 --- !u!114 &-2708250231223147053
@@ -1393,7 +1431,9 @@ MonoBehaviour:
   useWorldSpaceDirection: 0
   parentName: 
   followPosition: 0
-  immediateDisableFollowEffect: 0
+  aliveOnlyOne: 0
+  immediateDisableAliveOnlyOne: 0
+  disableOnMapChanged: 0
 --- !u!1107 &-2689671602183168931
 AnimatorStateMachine:
   serializedVersion: 5
@@ -1532,6 +1572,7 @@ MonoBehaviour:
   movable: 0
   moveStartDelay: 0
   maxDistance: 0
+  useDynamicMaxDistanceByTargetDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -1552,6 +1593,7 @@ MonoBehaviour:
   checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -1620,6 +1662,7 @@ MonoBehaviour:
   oneHitPerTarget: 1
   useLineRenderer: 0
   ignoreRemoveColliderAffector: 0
+  aliveOnlyOne: 0
   affectorValueIdList:
   - NormalAttack01
   showHitEffect: 0
@@ -1653,6 +1696,7 @@ MonoBehaviour:
   minimumDistance: 0
   lookAtWorldPosition: 0
   worldPosition: {x: 0, y: 0, z: 0}
+  lookAtHighestMonster: 0
   lerpPower: 5
   boneName: 
 --- !u!114 &-1760975127026707321
@@ -1880,6 +1924,7 @@ MonoBehaviour:
   movable: 1
   moveStartDelay: 0
   maxDistance: 0
+  useDynamicMaxDistanceByTargetDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -1900,6 +1945,7 @@ MonoBehaviour:
   checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -1968,6 +2014,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   ignoreRemoveColliderAffector: 0
+  aliveOnlyOne: 0
   affectorValueIdList:
   - NormalAttack01
   showHitEffect: 1
@@ -2007,6 +2054,7 @@ MonoBehaviour:
   movable: 1
   moveStartDelay: 0
   maxDistance: 0
+  useDynamicMaxDistanceByTargetDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -2027,6 +2075,7 @@ MonoBehaviour:
   checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -2094,6 +2143,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   ignoreRemoveColliderAffector: 0
+  aliveOnlyOne: 0
   affectorValueIdList:
   - NormalAttack01
   showHitEffect: 1
@@ -2133,6 +2183,7 @@ MonoBehaviour:
   movable: 1
   moveStartDelay: 0
   maxDistance: 0
+  useDynamicMaxDistanceByTargetDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -2153,6 +2204,7 @@ MonoBehaviour:
   checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -2221,6 +2273,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   ignoreRemoveColliderAffector: 0
+  aliveOnlyOne: 0
   affectorValueIdList:
   - NormalAttack01
   showHitEffect: 1
@@ -2358,6 +2411,7 @@ MonoBehaviour:
   minimumDistance: 0
   lookAtWorldPosition: 0
   worldPosition: {x: 0, y: 0, z: 0}
+  lookAtHighestMonster: 0
   lerpPower: 3
   boneName: 
 --- !u!114 &2470180207275556846
@@ -2439,6 +2493,7 @@ MonoBehaviour:
   movable: 1
   moveStartDelay: 0
   maxDistance: 0
+  useDynamicMaxDistanceByTargetDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -2459,6 +2514,7 @@ MonoBehaviour:
   checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -2527,6 +2583,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   ignoreRemoveColliderAffector: 0
+  aliveOnlyOne: 0
   affectorValueIdList:
   - NormalAttack1.25
   showHitEffect: 1
@@ -2693,7 +2750,7 @@ MonoBehaviour:
     useActorCollider: 0
     enabledActorColliderParameter: 0
     actionCountLimit: 0
-    actionCooltime: 0
+    actionCooltime: 5
     applyCooltimeOnStart: 0
   - stateName: Base Layer.AttackGroup.JumpAttack2
     weight: 1.5
@@ -2974,6 +3031,7 @@ MonoBehaviour:
   movable: 0
   moveStartDelay: 0
   maxDistance: 0
+  useDynamicMaxDistanceByTargetDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -2994,6 +3052,7 @@ MonoBehaviour:
   checkRaycastWallInArea: 1
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 1
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -3061,6 +3120,7 @@ MonoBehaviour:
   oneHitPerTarget: 1
   useLineRenderer: 0
   ignoreRemoveColliderAffector: 0
+  aliveOnlyOne: 0
   affectorValueIdList:
   - NormalAttackMelee01
   showHitEffect: 0
@@ -3114,6 +3174,7 @@ MonoBehaviour:
   movable: 1
   moveStartDelay: 0
   maxDistance: 0
+  useDynamicMaxDistanceByTargetDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -3134,6 +3195,7 @@ MonoBehaviour:
   checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -3201,6 +3263,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   ignoreRemoveColliderAffector: 0
+  aliveOnlyOne: 0
   affectorValueIdList:
   - NormalAttack01
   showHitEffect: 1
@@ -3285,6 +3348,7 @@ MonoBehaviour:
   movable: 0
   moveStartDelay: 0
   maxDistance: 0
+  useDynamicMaxDistanceByTargetDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -3305,6 +3369,7 @@ MonoBehaviour:
   checkRaycastWallInArea: 1
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 1
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -3372,6 +3437,7 @@ MonoBehaviour:
   oneHitPerTarget: 1
   useLineRenderer: 0
   ignoreRemoveColliderAffector: 0
+  aliveOnlyOne: 0
   affectorValueIdList:
   - NormalAttackMelee01
   showHitEffect: 0
@@ -3425,6 +3491,7 @@ MonoBehaviour:
   movable: 0
   moveStartDelay: 0
   maxDistance: 0
+  useDynamicMaxDistanceByTargetDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -3445,6 +3512,7 @@ MonoBehaviour:
   checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -3513,6 +3581,7 @@ MonoBehaviour:
   oneHitPerTarget: 1
   useLineRenderer: 0
   ignoreRemoveColliderAffector: 0
+  aliveOnlyOne: 0
   affectorValueIdList:
   - NormalAttack01
   showHitEffect: 0
@@ -3566,6 +3635,7 @@ MonoBehaviour:
   movable: 1
   moveStartDelay: 0
   maxDistance: 0
+  useDynamicMaxDistanceByTargetDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -3586,6 +3656,7 @@ MonoBehaviour:
   checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -3653,6 +3724,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   ignoreRemoveColliderAffector: 0
+  aliveOnlyOne: 0
   affectorValueIdList:
   - NormalAttack01
   showHitEffect: 1
@@ -3694,6 +3766,7 @@ AnimatorState:
   m_StateMachineBehaviours:
   - {fileID: -6961511856446716470}
   - {fileID: -1192475537586910629}
+  - {fileID: -3356070175306126078}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -3750,6 +3823,7 @@ MonoBehaviour:
   movable: 1
   moveStartDelay: 0
   maxDistance: 0
+  useDynamicMaxDistanceByTargetDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -3770,6 +3844,7 @@ MonoBehaviour:
   checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -3838,6 +3913,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   ignoreRemoveColliderAffector: 0
+  aliveOnlyOne: 0
   affectorValueIdList:
   - NormalAttack01
   showHitEffect: 1
@@ -3877,6 +3953,7 @@ MonoBehaviour:
   movable: 0
   moveStartDelay: 0
   maxDistance: 0
+  useDynamicMaxDistanceByTargetDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -3897,6 +3974,7 @@ MonoBehaviour:
   checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -3965,6 +4043,7 @@ MonoBehaviour:
   oneHitPerTarget: 1
   useLineRenderer: 0
   ignoreRemoveColliderAffector: 0
+  aliveOnlyOne: 0
   affectorValueIdList:
   - NormalAttack01
   showHitEffect: 0

@@ -23,10 +23,13 @@ public class UncommonDropObject : MonoBehaviour
 	}
 
 	bool _getable = false;
+	bool _experienceMode = false;
 	void OnEnable()
 	{
 		_getable = false;
 		nameCanvasRectTransform.gameObject.SetActive(false);
+
+		_experienceMode = (ExperienceCanvas.instance != null && ExperienceCanvas.instance.gameObject.activeSelf);
 	}
 
 	void Update()
@@ -51,18 +54,22 @@ public class UncommonDropObject : MonoBehaviour
 
 	void UpdateDistance()
 	{
+		PlayerActor playerActor = BattleInstanceManager.instance.playerActor;
+		if (_experienceMode && CharacterListCanvas.instance.selectedPlayerActor != null)
+			playerActor = CharacterListCanvas.instance.selectedPlayerActor;
+
 		switch (uncommonDropType)
 		{
 			case eUncommonDropType.DroneCore:
-				if (BattleInstanceManager.instance.playerActor.actorStatus.GetSPRatio() >= 1.0f)
+				if (playerActor.actorStatus.GetSPRatio() >= 1.0f)
 					return;
 				break;
 			case eUncommonDropType.PowerLightning:
 				break;
 		}
 
-		Vector3 playerPosition = BattleInstanceManager.instance.playerActor.cachedTransform.position;
-		float playerRadius = BattleInstanceManager.instance.playerActor.actorRadius;
+		Vector3 playerPosition = playerActor.cachedTransform.position;
+		float playerRadius = playerActor.actorRadius;
 		Vector3 position = cachedTransform.position;
 		Vector2 diff;
 		diff.x = playerPosition.x - position.x;
@@ -72,10 +79,10 @@ public class UncommonDropObject : MonoBehaviour
 			switch (uncommonDropType)
 			{
 				case eUncommonDropType.DroneCore:
-					BattleInstanceManager.instance.playerActor.actorStatus.AddSP(BattleInstanceManager.instance.playerActor.actorStatus.GetValue(eActorStatus.MaxSp));
+					playerActor.actorStatus.AddSP(playerActor.actorStatus.GetValue(eActorStatus.MaxSp));
 					break;
 				case eUncommonDropType.PowerLightning:
-					ChangeAttackStateAffector.CheckBulletBoost(BattleInstanceManager.instance.playerActor.affectorProcessor);
+					ChangeAttackStateAffector.CheckBulletBoost(playerActor.affectorProcessor);
 					break;
 			}
 			gameObject.SetActive(false);

@@ -8,6 +8,7 @@ public class ChangeAttackStateByTimeAffector : AffectorBase
 	float _chargingTime = 0.0f;
 	string _onStartStageKey = "";
 	int _actionNameHash = 0;
+	PlayerActor _playerActor;
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
 		if (_actor == null)
@@ -20,6 +21,16 @@ public class ChangeAttackStateByTimeAffector : AffectorBase
 		{
 			finalized = true;
 			return;
+		}
+
+		if (_actor.IsPlayerActor())
+		{
+			_playerActor = _actor as PlayerActor;
+			if (_playerActor == null)
+			{
+				finalized = true;
+				return;
+			}
 		}
 
 		_chargingTime = affectorValueLevelTableData.fValue2;
@@ -62,13 +73,19 @@ public class ChangeAttackStateByTimeAffector : AffectorBase
 		// UI쪽 처리할땐 로컬 플레이어인지 확인해야한다.
 		if (_actor != BattleInstanceManager.instance.playerActor)
 		{
-			//PlayerIgnoreEvadeCanvas.instance.ShowIgnoreEvade(false, null);
-			return;
+			if (ExperienceCanvas.instance != null && ExperienceCanvas.instance.gameObject.activeSelf && _playerActor == CharacterListCanvas.instance.selectedPlayerActor)
+			{
+			}
+			else
+			{
+				//PlayerIgnoreEvadeCanvas.instance.ShowIgnoreEvade(false, null);
+				return;
+			}
 		}
 
 		if (_movedTime > 0.0f && _canvasShowState == false)
 		{
-			PlayerIgnoreEvadeCanvas.instance.ShowIgnoreEvade(true, BattleInstanceManager.instance.playerActor);
+			PlayerIgnoreEvadeCanvas.instance.ShowIgnoreEvade(true, _playerActor);
 			PlayerIgnoreEvadeCanvas.instance.SetImageType(PlayerIgnoreEvadeCanvas.eImageType.Charging);
 			_canvasShowState = true;
 		}
@@ -98,7 +115,7 @@ public class ChangeAttackStateByTimeAffector : AffectorBase
 
 		if (_canvasShowState == false)
 		{
-			PlayerIgnoreEvadeCanvas.instance.ShowIgnoreEvade(true, BattleInstanceManager.instance.playerActor);
+			PlayerIgnoreEvadeCanvas.instance.ShowIgnoreEvade(true, _playerActor);
 			PlayerIgnoreEvadeCanvas.instance.SetImageType(PlayerIgnoreEvadeCanvas.eImageType.Charging);
 			_canvasShowState = true;
 		}

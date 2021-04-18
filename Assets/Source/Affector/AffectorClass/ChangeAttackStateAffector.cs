@@ -9,6 +9,8 @@ public class ChangeAttackStateAffector : AffectorBase
 	int _changeCount = 0;
 	string _onStartStageKey = "";
 	int _actionNameHash = 0;
+	bool _applyUltimate;
+	float _overrideUltimateCooltime;
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
 		if (_actor == null)
@@ -28,11 +30,16 @@ public class ChangeAttackStateAffector : AffectorBase
 			_changeCount = affectorValueLevelTableData.iValue1;
 		_onStartStageKey = affectorValueLevelTableData.sValue2;
 		_actionNameHash = Animator.StringToHash(affectorValueLevelTableData.sValue1);
+		_applyUltimate = (affectorValueLevelTableData.iValue2 == 1);
+		_overrideUltimateCooltime = affectorValueLevelTableData.fValue2;
 	}
 
 	int _count;
 	void OnEventNormalAttack()
 	{
+		if (_applyUltimate)
+			return;
+
 		if (_remainBoostCount > 0)
 		{
 			--_remainBoostCount;
@@ -49,6 +56,9 @@ public class ChangeAttackStateAffector : AffectorBase
 
 	void OnEventStartStage()
 	{
+		if (_applyUltimate)
+			return;
+
 		if (_swapTypeValue == 1)
 		{
 			if (string.IsNullOrEmpty(_onStartStageKey) == false && DefaultContainerAffector.ContainsValue(_affectorProcessor, _onStartStageKey))
@@ -63,6 +73,9 @@ public class ChangeAttackStateAffector : AffectorBase
 
 	bool CheckChange(ref int actionNameHash)
 	{
+		if (_applyUltimate)
+			return false;
+
 		if (_remainBoostCount > 0)
 		{
 			actionNameHash = _actionNameHash;
@@ -83,6 +96,23 @@ public class ChangeAttackStateAffector : AffectorBase
 			return true;
 		}
 		return false;
+	}
+
+	bool CheckChangeUltimate(ref int actionNameHash)
+	{
+		if (_applyUltimate == false)
+			return false;
+
+		actionNameHash = _actionNameHash;
+		return true;
+	}
+
+	void CheckUltimateCooltime(ref float ultimateCooltime)
+	{
+		if (_applyUltimate == false)
+			return;
+
+		ultimateCooltime = _overrideUltimateCooltime;
 	}
 
 	ObscuredInt _remainBoostCount;
@@ -126,5 +156,23 @@ public class ChangeAttackStateAffector : AffectorBase
 			return;
 
 		changeAttackStateAffector.CheckBulletBoost();
+	}
+
+	public static void CheckChangeUltimate(AffectorProcessor affectorProcessor, ref int actionNameHash)
+	{
+		ChangeAttackStateAffector changeAttackStateAffector = (ChangeAttackStateAffector)affectorProcessor.GetFirstContinuousAffector(eAffectorType.ChangeAttackState);
+		if (changeAttackStateAffector == null)
+			return;
+
+		changeAttackStateAffector.CheckChangeUltimate(ref actionNameHash);
+	}
+
+	public static void CheckUltimateCooltime(AffectorProcessor affectorProcessor, ref float ultimateCooltime)
+	{
+		ChangeAttackStateAffector changeAttackStateAffector = (ChangeAttackStateAffector)affectorProcessor.GetFirstContinuousAffector(eAffectorType.ChangeAttackState);
+		if (changeAttackStateAffector == null)
+			return;
+
+		changeAttackStateAffector.CheckUltimateCooltime(ref ultimateCooltime);
 	}
 }

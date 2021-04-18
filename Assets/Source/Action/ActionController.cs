@@ -228,8 +228,10 @@ public class ActionController : MonoBehaviour {
 			if (cooltimeProcessor.CheckCooltime(actionPlayInfo.actionName))
 				return false;
 		}
+		bool ultimateAction = false;
 		if (actionPlayInfo.actionName == "Ultimate")
 		{
+			ultimateAction = true;
 			if (cooltimeProcessor.CheckCooltime(actionPlayInfo.actionName))
 			{
 				BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_ActionCoolDown"), 2.0f);
@@ -272,6 +274,10 @@ public class ActionController : MonoBehaviour {
 			ChangeAttackStateByDistanceAffector.CheckChange(actor.affectorProcessor, ref actionNameHash);
 			ChangeAttackStateByTimeAffector.CheckChange(actor.affectorProcessor, ref actionNameHash);
 		}
+		if (ultimateAction)
+		{
+			ChangeAttackStateAffector.CheckChangeUltimate(actor.affectorProcessor, ref actionNameHash);
+		}
 		bool passiveOrNonAni = false;
 		if (!string.IsNullOrEmpty(actionPlayInfo.skillId) && skillProcessor != null)
 		{
@@ -288,7 +294,7 @@ public class ActionController : MonoBehaviour {
 					if (selectedSkillInfo.skillType == eSkillType.NonAni)
 					{
 						// 궁극기라면 스킬을 실행하기 전에 미리 sp를 차감해야한다.
-						if (actionPlayInfo.actionName == "Ultimate")
+						if (ultimateAction)
 							OnUseUltimate();
 						skillProcessor.ApplyNonAniSkill(selectedSkillInfo);
 					}
@@ -310,7 +316,7 @@ public class ActionController : MonoBehaviour {
 				// 어택 캔슬할땐 빠르게 블렌딩 되어야 시그널 호출이 문제없이 호출되게 된다.
 				animator.CrossFade(actionNameHash, cancelAttack ? 0.02f : actionPlayInfo.fadeDuration);
 
-			if (actionPlayInfo.actionName == "Ultimate")
+			if (ultimateAction)
 			{
 				// 궁극기 사용에 대한 sp 처리 및 이벤트 등을 처리
 				// 궁극기 액티브 스킬은 스킬을 실행시켜놓고 sp제거하니 여기서 호출하면 된다.
@@ -364,7 +370,11 @@ public class ActionController : MonoBehaviour {
 
 		ActionInfo actionPlayInfo = GetActionInfoByName("Ultimate");
 		if (actionPlayInfo != null && actionPlayInfo.actionCooltime > 0.0f)
-			cooltimeProcessor.ApplyCooltime(actionPlayInfo.actionName, actionPlayInfo.actionCooltime);
+		{
+			float ultimateCooltime = actionPlayInfo.actionCooltime;
+			ChangeAttackStateAffector.CheckUltimateCooltime(actor.affectorProcessor, ref ultimateCooltime);
+			cooltimeProcessor.ApplyCooltime(actionPlayInfo.actionName, ultimateCooltime);
+		}
 
 		// 이후 사용 이벤트 체크. 체험모드 안에서 쓸땐 보상 처리를 해줘야한다.
 		if (ExperienceCanvas.instance != null && ExperienceCanvas.instance.gameObject.activeSelf)

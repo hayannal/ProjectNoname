@@ -126,9 +126,19 @@ public class OnMoveBuffAffector : AffectorBase
 			_loopEffectTransform = null;
 		}
 	}
-	
 
-	
+
+
+	public static float GetAttackAddRate(AffectorProcessor affectorProcessor)
+	{
+		OnMoveBuffAffector onMoveBuffAffector = (OnMoveBuffAffector)affectorProcessor.GetFirstContinuousAffector(eAffectorType.OnMoveBuff);
+		if (onMoveBuffAffector == null)
+			return 0.0f;
+		if (affectorProcessor.actor.actionController.mecanimState.IsState((int)eMecanimState.Move) == false)
+			return 0.0f;
+		return onMoveBuffAffector._affectorValueLevelTableData.fValue3;
+	}
+
 	public static float GetEvadeAddRate(AffectorProcessor affectorProcessor)
 	{
 		// PositionBuff때처럼 동시에 하나만 존재하지 않을까.

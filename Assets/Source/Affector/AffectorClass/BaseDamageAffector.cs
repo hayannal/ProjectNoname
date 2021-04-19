@@ -233,15 +233,22 @@ public class BaseDamageAffector : AffectorBase {
 		if (enlargeDamageValue != 0.0f)
 			damage *= (1.0f + enlargeDamageValue);
 
+		if (_actor.IsMonsterActor() && monsterActor != null && _actor.actorStatus.GetHPRatio() < 0.5f)
+		{
+			if (attackerActor == null) attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(hitParameter.statusStructForHitObject.actorInstanceId);
+			if (attackerActor != null)
+			{
+				float addDamageValueByTargetHp = AddAttackByHpAffector.GetValueType2(attackerActor.affectorProcessor, _actor.actorStatus.GetHPRatio());
+				if (addDamageValueByTargetHp != 0.0f)
+					damage *= (1.0f + addDamageValueByTargetHp);
+			}
+		}
+
 		if (_actor.actorStatus.GetHP() == _actor.actorStatus.GetValue(eActorStatus.MaxHp))
 		{
 			if (attackerActor == null) attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(hitParameter.statusStructForHitObject.actorInstanceId);
 			if (attackerActor != null)
 			{
-				float addDamageValueByTargetHp = AddAttackByHpAffector.GetValueType2(attackerActor.affectorProcessor);
-				if (addDamageValueByTargetHp != 0.0f)
-					damage *= (1.0f + addDamageValueByTargetHp);
-
 				if (damage < _actor.actorStatus.GetHP())
 				{
 					// 이렇게 statusStructForHitObject를 통해서 체크하지 않고 직접 어펙터로 체크하는 방식은

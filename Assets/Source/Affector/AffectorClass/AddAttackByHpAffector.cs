@@ -7,6 +7,7 @@ public class AddAttackByHpAffector : AffectorBase
 	float _endTime;
 	float _value;
 	float value { get { return _value; } }
+	float _fValue3;
 
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
@@ -27,6 +28,7 @@ public class AddAttackByHpAffector : AffectorBase
 
 		_value = affectorValueLevelTableData.fValue2;
 		_type = affectorValueLevelTableData.iValue1;
+		_fValue3 = affectorValueLevelTableData.fValue3;
 	}
 
 	public override void OverrideAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
@@ -77,7 +79,7 @@ public class AddAttackByHpAffector : AffectorBase
 		return result;
 	}
 
-	public static float GetValueType2(AffectorProcessor affectorProcessor)
+	public static float GetValueType2(AffectorProcessor affectorProcessor, float defenderActorHpRatio)
 	{
 		List<AffectorBase> listAddAttackByHpAffector = affectorProcessor.GetContinuousAffectorList(eAffectorType.AddAttackByHp);
 		if (listAddAttackByHpAffector == null)
@@ -92,6 +94,8 @@ public class AddAttackByHpAffector : AffectorBase
 			if (addAttackByHpAffector == null)
 				continue;
 			if (addAttackByHpAffector._type != 2)
+				continue;
+			if (defenderActorHpRatio < addAttackByHpAffector._fValue3)
 				continue;
 			result += addAttackByHpAffector.value;
 		}

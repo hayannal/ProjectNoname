@@ -233,7 +233,7 @@ public class BaseDamageAffector : AffectorBase {
 		if (enlargeDamageValue != 0.0f)
 			damage *= (1.0f + enlargeDamageValue);
 
-		if (_actor.IsMonsterActor() && monsterActor != null && _actor.actorStatus.GetHPRatio() < 0.5f)
+		if (_actor.IsMonsterActor() && monsterActor != null && _actor.actorStatus.GetHPRatio() > 0.5f)
 		{
 			if (attackerActor == null) attackerActor = BattleInstanceManager.instance.FindActorByInstanceId(hitParameter.statusStructForHitObject.actorInstanceId);
 			if (attackerActor != null)

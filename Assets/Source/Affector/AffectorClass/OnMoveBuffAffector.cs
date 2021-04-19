@@ -8,6 +8,7 @@ public class OnMoveBuffAffector : AffectorBase
 	float _endTime;
 	bool _applied;
 	GameObject _onStartEffectPrefab;
+	bool _useOnOffLoopEffect;
 	Transform _onOffLoopEffectTransform;
 	List<ParticleSystem> _listOnOffLoopParticleSystem;
 	Transform _loopEffectTransform;
@@ -26,22 +27,28 @@ public class OnMoveBuffAffector : AffectorBase
 
 		// lifeTime
 		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
-		
-		// sValue4 이펙트는 필수
-		GameObject onOffLoopEffectPrefab = FindPreloadObject(affectorValueLevelTableData.sValue4);
-		_onOffLoopEffectTransform = BattleInstanceManager.instance.GetCachedObject(onOffLoopEffectPrefab, _actor.cachedTransform.position, Quaternion.identity).transform;
-		ParticleSystem[] particleSystems = _onOffLoopEffectTransform.GetComponentsInChildren<ParticleSystem>();
-		_listOnOffLoopParticleSystem = new List<ParticleSystem>();
-		for (int i = 0; i < particleSystems.Length; ++i)
-		{
-			// 애초에 꺼있는건 리스트에서 포함시키지 않는다.
-			if (particleSystems[i].emission.enabled == false)
-				continue;
 
-			_listOnOffLoopParticleSystem.Add(particleSystems[i]);
+		// sValue4 이펙트는 필수였다가 선택으로 바뀜
+		_useOnOffLoopEffect = false;
+		if (string.IsNullOrEmpty(affectorValueLevelTableData.sValue4) == false)
+		{
+			_useOnOffLoopEffect = true;
+
+			GameObject onOffLoopEffectPrefab = FindPreloadObject(affectorValueLevelTableData.sValue4);
+			_onOffLoopEffectTransform = BattleInstanceManager.instance.GetCachedObject(onOffLoopEffectPrefab, _actor.cachedTransform.position, Quaternion.identity).transform;
+			ParticleSystem[] particleSystems = _onOffLoopEffectTransform.GetComponentsInChildren<ParticleSystem>();
+			_listOnOffLoopParticleSystem = new List<ParticleSystem>();
+			for (int i = 0; i < particleSystems.Length; ++i)
+			{
+				// 애초에 꺼있는건 리스트에서 포함시키지 않는다.
+				if (particleSystems[i].emission.enabled == false)
+					continue;
+
+				_listOnOffLoopParticleSystem.Add(particleSystems[i]);
+			}
+			LoopEffectOnOff(false);
+			FollowTransform.Follow(_onOffLoopEffectTransform, _actor.cachedTransform, Vector3.zero);
 		}
-		LoopEffectOnOff(false);
-		FollowTransform.Follow(_onOffLoopEffectTransform, _actor.cachedTransform, Vector3.zero);
 
 		if (string.IsNullOrEmpty(affectorValueLevelTableData.sValue3) == false)
 		{
@@ -59,6 +66,8 @@ public class OnMoveBuffAffector : AffectorBase
 
 	void LoopEffectOnOff(bool enabled)
 	{
+		if (_useOnOffLoopEffect == false)
+			return;
 		if (_listOnOffLoopParticleSystem == null)
 			return;
 
@@ -117,7 +126,8 @@ public class OnMoveBuffAffector : AffectorBase
 		else
 		{
 			LoopEffectOnOff(true);
-			_onOffLoopEffectTransform.gameObject.SetActive(false);
+			if (_onOffLoopEffectTransform != null)
+				_onOffLoopEffectTransform.gameObject.SetActive(false);
 		}
 
 		if (_loopEffectTransform != null)

@@ -148,4 +148,8 @@ public class ActorTableData
   int _nodeWarLastCount;
   public int nodeWarLastCount { get { return _nodeWarLastCount; } set { _nodeWarLastCount = value; } }
   
+  [SerializeField]
+  float _aniAdjust;
+  public float aniAdjust { get { return _aniAdjust; } set { _aniAdjust = value; } }
+  
 }

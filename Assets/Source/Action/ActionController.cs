@@ -522,12 +522,22 @@ public class ActionController : MonoBehaviour {
 	#region Attack Ani Speed Ratio
 	int _attackAniSpeedRatioHash = 0;
 	public float attackAniSpeedRatio { get; private set; }
+	bool _cachedAniSpeedRatioAdjust;
+	float _cachedAniSpeedRatioAdjustValue;
 	public void OnChangedAttackSpeedAddRatio(float attackSpeedAddRatio)
 	{
 		if (_attackAniSpeedRatioHash == 0)
 			_attackAniSpeedRatioHash = BattleInstanceManager.instance.GetActionNameHash("AttackAniSpeedRatio");
 
-		attackAniSpeedRatio = 1.0f + attackSpeedAddRatio * 0.3333f;
+		if (_cachedAniSpeedRatioAdjust == false)
+		{
+			ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(actor.actorId);
+			if (actorTableData != null)
+				_cachedAniSpeedRatioAdjustValue = (actorTableData.aniAdjust == 0.0f) ? 0.3333f : actorTableData.aniAdjust;
+			_cachedAniSpeedRatioAdjust = true;
+		}
+
+		attackAniSpeedRatio = 1.0f + attackSpeedAddRatio * _cachedAniSpeedRatioAdjustValue;
 		animator.SetFloat(_attackAniSpeedRatioHash, attackAniSpeedRatio);
 	}
 	#endregion

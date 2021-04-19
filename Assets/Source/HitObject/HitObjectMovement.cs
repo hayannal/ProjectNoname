@@ -251,6 +251,8 @@ public class HitObjectMovement : MonoBehaviour {
 
 		if (_listRicochet != null)
 			_listRicochet.Clear();
+		if (_signal.ricochetCount > 0)		
+			_overrideRicochetDistanceByAffector = RicochetDistanceHitObjectAffector.GetRicochetDistance(parentActor.affectorProcessor);
 		_parentActorSphereCastRadiusForCheckWall = parentActor.targetingProcessor.sphereCastRadiusForCheckWall;
 
 		_origSpeed = _overrideSpeedRemainTime = 0.0f;
@@ -697,6 +699,7 @@ public class HitObjectMovement : MonoBehaviour {
 
 	#region Ricochet
 	const float DefaultRicochetRange = 4.0f;
+	float _overrideRicochetDistanceByAffector;
 	List<Collider> _listRicochet = null;
 	float _parentActorSphereCastRadiusForCheckWall;
 	public void AddRicochet(Collider collider, bool initialize)
@@ -727,8 +730,12 @@ public class HitObjectMovement : MonoBehaviour {
 	List<MonsterActor> _listTimerRicochetMonsterActor = null;
 	public bool IsEnableRicochet(int teamId, Team.eTeamCheckFilter filter)
 	{
+		float overlapSphereDistance = (_signal.overrideRicochetDistance > 0.0f) ? _signal.overrideRicochetDistance : DefaultRicochetRange;  // range * _transform.localScale.x
+		if (_overrideRicochetDistanceByAffector > 0.0f)
+			overlapSphereDistance = _overrideRicochetDistanceByAffector;
+
 		Vector3 position = cachedTransform.position;
-		Collider[] result = Physics.OverlapSphere(position, (_signal.overrideRicochetDistance > 0.0f) ? _signal.overrideRicochetDistance : DefaultRicochetRange); // range * _transform.localScale.x
+		Collider[] result = Physics.OverlapSphere(position, overlapSphereDistance);
 		float nearestDistance = float.MaxValue;
 		Collider nearestCollider = null;
 		float containsNearestDistance = float.MaxValue;
@@ -774,7 +781,7 @@ public class HitObjectMovement : MonoBehaviour {
 				Vector3 targetPosition = listMonsterActor[i].cachedTransform.position;
 				Vector3 diff = targetPosition - cachedTransform.position;
 				diff.y = 0.0f;
-				if (diff.magnitude - colliderRadius > ((_signal.overrideRicochetDistance > 0.0f) ? _signal.overrideRicochetDistance : DefaultRicochetRange)) continue;
+				if (diff.magnitude - colliderRadius > overlapSphereDistance) continue;
 
 				_listTimerRicochetMonsterActor.Add(listMonsterActor[i]);
 			}

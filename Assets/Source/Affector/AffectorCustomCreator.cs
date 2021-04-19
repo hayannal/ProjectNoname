@@ -52,6 +52,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.AddGeneratorCreateCount: affectorBase = new AddGeneratorCreateCountAffector(); break;
 			case eAffectorType.ArcFormHitObject: affectorBase = new ArcFormHitObjectAffector(); break;
 			case eAffectorType.LifeTimeHitObject: affectorBase = new LifeTimeHitObjectAffector(); break;
+			case eAffectorType.RicochetDistanceHitObject: affectorBase = new RicochetDistanceHitObjectAffector(); break;
 			case eAffectorType.Invincible: affectorBase = new InvincibleAffector(); break;
 			case eAffectorType.CountBarrier: affectorBase = new CountBarrierAffector(); break;
 			case eAffectorType.InvincibleTortoise: affectorBase = new InvincibleTortoiseAffector(); break;
@@ -144,6 +145,7 @@ public static class AffectorCustomCreator
 			case eAffectorType.AddGeneratorCreateCount:
 			case eAffectorType.ArcFormHitObject:
 			case eAffectorType.LifeTimeHitObject:
+			case eAffectorType.RicochetDistanceHitObject:
 			case eAffectorType.Invincible:
 			case eAffectorType.CountBarrier:
 			case eAffectorType.InvincibleTortoise:

@@ -52,6 +52,7 @@ public enum eAffectorType
 	AddGeneratorCreateCount,
 	ArcFormHitObject,
 	LifeTimeHitObject,
+	RicochetDistanceHitObject,
 
 	DropItem = 51,
 	Invincible,

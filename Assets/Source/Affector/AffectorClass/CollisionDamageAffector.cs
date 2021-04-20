@@ -17,6 +17,13 @@ public class CollisionDamageAffector : AffectorBase
 		if (StageManager.instance.currentStageTableData == null)
 			return;
 
+		// DemonHuntress 소환 오브젝트가 마인에 죽는걸 방지해야한다.
+		MonsterActor monsterActor = null;
+		if (_actor.IsMonsterActor())
+			monsterActor = _actor as MonsterActor;
+		if (monsterActor != null && monsterActor.excludeMonsterCount)
+			return;
+
 		// 플레이어도 보호막은 안쓰지만 무적은 일시적으로 사용하기로 했다. 무적 검사루틴 추가.
 		if (InvincibleAffector.CheckInvincible(_affectorProcessor))
 			return;

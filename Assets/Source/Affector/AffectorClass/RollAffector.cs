@@ -90,6 +90,13 @@ public class RollAffector : AffectorBase
 		_actor.actionController.animator.CrossFade(_affectorValueLevelTableData.sValue1, 0.05f);
 	}
 
+	public override void DisableAffector()
+	{
+		// 오래가는 버프라서 스왑을 대비해서 Disable처리를 해줘야한다.
+		if (_actor.GetRigidbody() != null)
+			_actor.GetRigidbody().velocity = Vector3.zero;
+	}
+
 
 	// From LocalPlayerController
 	Transform _cameraTransform;

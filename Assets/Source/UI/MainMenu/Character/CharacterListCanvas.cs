@@ -335,6 +335,10 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 		if (_wait)
 			return;
 
+		// back이나 홈키 누르면서 동시에 누르면 이상하게 열리는듯 한데 우선 이렇게라도 체크해본다.
+		if (gameObject.activeSelf == false)
+			return;
+
 		// 캐릭터 교체는 이 캔버스 담당이다.
 		// 액터가 혹시나 미리 만들어져있다면 등록되어있을거니 가져다쓴다.
 		PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(_selectedActorId);

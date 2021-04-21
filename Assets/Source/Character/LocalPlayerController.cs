@@ -352,7 +352,7 @@ public sealed class LocalPlayerController : BaseCharacterController
 		// 메인메뉴 열어놓고 달리면 안되서 이렇게 막아둔다.
 		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby)
 		{
-			if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf == false && StackCanvas.IsInStack(DotMainMenuCanvas.instance.gameObject))
+			if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf && StackCanvas.IsInStack(DotMainMenuCanvas.instance.gameObject))
 			{
 				moveDirection = Vector3.zero;
 				return;

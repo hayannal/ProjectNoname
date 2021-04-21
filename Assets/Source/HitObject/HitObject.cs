@@ -597,8 +597,13 @@ public class HitObject : MonoBehaviour
 				// 플레이어 캐릭터 몸통을 클릭할때 몸 뒤로 쏘는걸 방지하기 위해 체크한다.
 				if (targetingProcessor != null && targetingProcessor.IsRegisteredCustomTargetPosition())
 				{
-					if (result.z < 0.0f)
-						result *= -1.0f;
+					// GatePillar 클릭 후 원래라면 IsRegisteredCustomPosition이 Clear되어있어야하는데 Clear처리가 호출되지 않은채 전투가 진행될때가 있다.
+					// 이때 방향이 뒤집히는 현상이 발생하기 때문에 AutoPlay인지 검사해서 false일때만 적용하기로 한다.
+					if (BattleInstanceManager.instance.playerActor.targetingProcessor == targetingProcessor && BattleManager.instance != null && BattleManager.instance.IsAutoPlay() == false)
+					{
+						if (result.z < 0.0f)
+							result *= -1.0f;
+					}
 				}
 				break;
 		}

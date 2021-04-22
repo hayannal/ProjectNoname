@@ -40,6 +40,7 @@ MonoBehaviour:
   followPosition: 0
   aliveOnlyOne: 0
   immediateDisableAliveOnlyOne: 0
+  disableOnMapChanged: 0
 --- !u!114 &-6792190852366882244
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -184,6 +185,7 @@ MonoBehaviour:
   followPosition: 1
   aliveOnlyOne: 1
   immediateDisableAliveOnlyOne: 1
+  disableOnMapChanged: 0
 --- !u!114 &-2567610659293185601
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -231,6 +233,7 @@ MonoBehaviour:
   checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -301,7 +304,6 @@ MonoBehaviour:
   aliveOnlyOne: 0
   affectorValueIdList:
   - NormalAttackPreSyria
-  - AddForceCommonWeak
   showHitEffect: 0
   hitEffectObject: {fileID: 0}
   hitEffectLookAtNormal: 0
@@ -358,6 +360,7 @@ MonoBehaviour:
   checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -612,6 +615,7 @@ MonoBehaviour:
   followPosition: 0
   aliveOnlyOne: 0
   immediateDisableAliveOnlyOne: 0
+  disableOnMapChanged: 0
 --- !u!114 &1713618744503645604
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -674,6 +678,7 @@ MonoBehaviour:
   checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -744,7 +749,7 @@ MonoBehaviour:
   aliveOnlyOne: 0
   affectorValueIdList:
   - NormalAttackPreSyria
-  - AddForceCommonWeak
+  - AddForcePreSyria
   showHitEffect: 0
   hitEffectObject: {fileID: 0}
   hitEffectLookAtNormal: 0
@@ -858,6 +863,7 @@ MonoBehaviour:
   minimumDistance: 0
   lookAtWorldPosition: 0
   worldPosition: {x: 0, y: 0, z: 0}
+  lookAtHighestMonster: 0
   lerpPower: 5
   boneName: 
 --- !u!114 &6084457509411104580
@@ -882,6 +888,7 @@ MonoBehaviour:
   minimumDistance: 0
   lookAtWorldPosition: 0
   worldPosition: {x: 0, y: 0, z: 0}
+  lookAtHighestMonster: 0
   lerpPower: 5
   boneName: 
 --- !u!114 &7113206148773271481
@@ -974,6 +981,7 @@ MonoBehaviour:
   followPosition: 0
   aliveOnlyOne: 0
   immediateDisableAliveOnlyOne: 0
+  disableOnMapChanged: 0
 --- !u!1102 &8503796429965771016
 AnimatorState:
   serializedVersion: 5

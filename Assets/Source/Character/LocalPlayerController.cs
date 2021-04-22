@@ -354,8 +354,13 @@ public sealed class LocalPlayerController : BaseCharacterController
 		{
 			if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf && StackCanvas.IsInStack(DotMainMenuCanvas.instance.gameObject))
 			{
-				moveDirection = Vector3.zero;
-				return;
+				if (ExperienceCanvas.instance != null && ExperienceCanvas.instance.gameObject.activeSelf)
+				{ }
+				else
+				{
+					moveDirection = Vector3.zero;
+					return;
+				}
 			}
 		}
 

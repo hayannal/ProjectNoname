@@ -36,7 +36,7 @@ public class CallAffectorValueAffector : AffectorBase
 			return;
 	}
 
-	void OnEvent(eEventType eventType, float argument = 0.0f)
+	void OnEvent(eEventType eventType, float argument = 0.0f, HitObject.eTargetDetectType targetDetectType = HitObject.eTargetDetectType.Preset)
 	{
 		if ((eEventType)_affectorValueLevelTableData.iValue3 != eventType)
 			return;
@@ -45,6 +45,8 @@ public class CallAffectorValueAffector : AffectorBase
 		if (eventType == eEventType.HpRate && argument > _affectorValueLevelTableData.fValue1)
 			return;
 		if (eventType == eEventType.OnDamage && _actor.affectorProcessor.IsContinuousAffectorType(eAffectorType.CannotAction))
+			return;
+		if (eventType == eEventType.OnHit && _affectorValueLevelTableData.iValue1 == 1 && targetDetectType != HitObject.eTargetDetectType.Area)
 			return;
 
 		bool needFinalize = false;
@@ -82,7 +84,7 @@ public class CallAffectorValueAffector : AffectorBase
 			finalized = true;
 	}
 
-	public static void OnEvent(AffectorProcessor affectorProcessor, eEventType eventType, float argument = 0.0f)
+	public static void OnEvent(AffectorProcessor affectorProcessor, eEventType eventType, float argument = 0.0f, HitObject.eTargetDetectType targetDetectType = HitObject.eTargetDetectType.Preset)
 	{
 		List<AffectorBase> listCallAffectorValueAffector = affectorProcessor.GetContinuousAffectorList(eAffectorType.CallAffectorValue);
 		if (listCallAffectorValueAffector == null)
@@ -95,7 +97,7 @@ public class CallAffectorValueAffector : AffectorBase
 			CallAffectorValueAffector callAffectorValueAffector = listCallAffectorValueAffector[i] as CallAffectorValueAffector;
 			if (callAffectorValueAffector == null)
 				continue;
-			callAffectorValueAffector.OnEvent(eventType, argument);
+			callAffectorValueAffector.OnEvent(eventType, argument, targetDetectType);
 		}
 	}
 }

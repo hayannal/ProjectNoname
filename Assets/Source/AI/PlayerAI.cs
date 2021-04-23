@@ -209,8 +209,8 @@ public class PlayerAI : MonoBehaviour
 			if (IsTargetColliderInAttackRange(ref diff))
 				attackable = true;
 			
-			// 타겟 몬스터를 공격할 수 없는 상태라면 주변에 공격할 HitObject가 있는지 확인한다.
-			if (attackable == false && CheckAttackableHitObject(ref diff))
+			// 타겟 몬스터를 공격할 수 없는 상태라면 주변에 공격할 HitObject가 있는지 확인한다. 대신 이때 제거할 수 있는지 확인해야한다.
+			if (attackable == false && ChangeAttackStateAffector.CheckBulletRemovable(actor.affectorProcessor) && CheckAttackableHitObject(ref diff))
 				attackable = true;
 
 			// 그래도 공격할게 없다면 리턴.
@@ -305,7 +305,7 @@ public class PlayerAI : MonoBehaviour
 		return false;
 	}
 
-	public bool IsTargetColliderInAttackRange(ref Vector3 diff)
+	public bool IsTargetColliderInAttackRange(ref Vector3 diff, bool onlyCheckDistance = false)
 	{
 		if (targetCollider == null)
 			return false;
@@ -314,13 +314,16 @@ public class PlayerAI : MonoBehaviour
 		if (targetAffectorProcessor == null)
 			return false;
 
-		if (targetAffectorProcessor.IsContinuousAffectorType(eAffectorType.MonsterSleeping))
-			return false;
-
 		Transform targetTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
 		diff = targetTransform.position - actor.cachedTransform.position;
 		diff.y = 0.0f;
 		if (IsInAttackRange(diff) == false)
+			return false;
+
+		if (onlyCheckDistance)
+			return true;
+
+		if (targetAffectorProcessor.IsContinuousAffectorType(eAffectorType.MonsterSleeping))
 			return false;
 
 		if (CheckNavMeshReachable(actor.cachedTransform.position, targetTransform.position) == false)

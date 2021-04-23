@@ -14,6 +14,8 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 	Vector3 _startForward;
 	float _areaAngle;
 
+	PlayerAI _playerAI;
+
 	public static int AnimatorParameterHash;
 
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
@@ -78,12 +80,44 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 		bool removed = false;
 		Remove(_applyFollow ? _actor.cachedTransform.position : _startPosition, _radius, _areaAngle, _applyFollow ? _actor.cachedTransform.forward : _startForward, _actor.team.teamId, ref removed);
 
-		// 1회 공격을 해야만 반격액션을 사용할 수 있는 구조로 바꾼다.
+		// 지웠을때만 아래를 처리
 		if (removed && AnimatorParameterHash != 0)
 		{
-			bool hitted = HitFlagAffector.GetHitted(_affectorProcessor);
-			if (hitted)
-				_actor.actionController.animator.SetBool(AnimatorParameterHash, true);
+			// 이제 더이상 몬스터를 1회 때렸는지는 판단하지 않는다.
+			//bool hitted = HitFlagAffector.GetHitted(_affectorProcessor);
+			//if (hitted == false)
+			//	return;
+
+			// 이거 대신 필요한게 공격이 총알을 벨 수 있는 상태인지를 체크하면 되는데
+			//if (_actor.affectorProcessor.IsContinuousAffectorType(eAffectorType.ChangeAttackState) == false)
+			//	return;
+			// 이미 RemoveColliderHitObjectAffector가 발동되기위해선 액션변경 상태여야 하기때문에 따로 검사하진 않기로 한다.
+
+			// 추가로 조건검사를 해서 안나가도 되는거면 패스하기로 한다.
+			// 1. 타겟이 죽어있을때
+			// 2. 캐릭터 사거리안에 적이 있을때
+			// 3. 캐릭터 사거리안에 벽이 있을때
+			Collider targetCollider = _actor.targetingProcessor.GetTarget();
+			if (targetCollider != null)
+			{
+				AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(targetCollider);
+				if (affectorProcessor.actor.actorStatus.IsDie())
+					return;
+				if (_playerAI == null && _actor.IsPlayerActor())
+				{
+					PlayerActor playerActor = _actor as PlayerActor;
+					_playerAI = playerActor.playerAI;
+				}
+				if (_playerAI != null)
+				{
+					Vector3 diff = Vector3.zero;
+					if (_playerAI.IsTargetColliderInAttackRange(ref diff, true))
+						return;
+					if (TargetingProcessor.CheckWall(_actor.cachedTransform.position, _actor.cachedTransform.position + _actor.cachedTransform.forward * _playerAI.currentAttackRange, 0.1f))
+						return;
+				}
+			}
+			_actor.actionController.animator.SetBool(AnimatorParameterHash, true);
 		}
 	}
 

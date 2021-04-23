@@ -292,7 +292,7 @@ public class BaseDamageAffector : AffectorBase {
 			HealSpOnHitAffector.OnHit(attackerActor.affectorProcessor);
 			HitFlagAffector.OnHit(attackerActor.affectorProcessor, hitParameter.statusStructForHitObject.targetDetectType);
 			ReflectDamageAffector.OnDamage(_affectorProcessor, attackerActor, damage);
-			CallAffectorValueAffector.OnEvent(attackerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnHit, damage);
+			CallAffectorValueAffector.OnEvent(attackerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnHit, damage, hitParameter.statusStructForHitObject.targetDetectType);
 			AttackWeightHitObjectAffector.OnEvent(attackerActor.affectorProcessor, _affectorProcessor, damageRatio);
 			CertainHpHitObjectAffector.OnEvent(attackerActor.affectorProcessor, _affectorProcessor, _actor.actorStatus.GetHPRatio());
 			TeleportingHitObjectAffector.OnEvent(attackerActor.affectorProcessor, _affectorProcessor);

@@ -11,6 +11,8 @@ public class ChangeAttackStateAffector : AffectorBase
 	int _actionNameHash = 0;
 	bool _applyUltimate;
 	float _overrideUltimateCooltime;
+	bool _bulletRemovable;
+	float _endTime;
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
 		if (_actor == null)
@@ -25,6 +27,9 @@ public class ChangeAttackStateAffector : AffectorBase
 			return;
 		}
 
+		// lifeTime
+		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
+
 		_swapTypeValue = affectorValueLevelTableData.iValue3;
 		if (_swapTypeValue == 1)
 			_changeCount = affectorValueLevelTableData.iValue1;
@@ -32,6 +37,18 @@ public class ChangeAttackStateAffector : AffectorBase
 		_actionNameHash = Animator.StringToHash(affectorValueLevelTableData.sValue1);
 		_applyUltimate = (affectorValueLevelTableData.iValue2 == 1);
 		_overrideUltimateCooltime = affectorValueLevelTableData.fValue2;
+		_bulletRemovable = (affectorValueLevelTableData.sValue3 == "1");
+	}
+
+	public override void OverrideAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
+	{
+		_endTime = CalcEndTime(affectorValueLevelTableData.fValue1);
+	}
+
+	public override void UpdateAffector()
+	{
+		if (CheckEndTime(_endTime) == false)
+			return;
 	}
 
 	int _count;
@@ -122,6 +139,11 @@ public class ChangeAttackStateAffector : AffectorBase
 		_remainBoostCount = 5;
 	}
 
+	bool CheckBulletRemovable()
+	{
+		return _bulletRemovable;
+	}
+
 	public static void OnEventNormalAttack(AffectorProcessor affectorProcessor)
 	{
 		ChangeAttackStateAffector changeAttackStateAffector = (ChangeAttackStateAffector)affectorProcessor.GetFirstContinuousAffector(eAffectorType.ChangeAttackState);
@@ -174,5 +196,14 @@ public class ChangeAttackStateAffector : AffectorBase
 			return;
 
 		changeAttackStateAffector.CheckUltimateCooltime(ref ultimateCooltime);
+	}
+
+	public static bool CheckBulletRemovable(AffectorProcessor affectorProcessor)
+	{
+		ChangeAttackStateAffector changeAttackStateAffector = (ChangeAttackStateAffector)affectorProcessor.GetFirstContinuousAffector(eAffectorType.ChangeAttackState);
+		if (changeAttackStateAffector == null)
+			return false;
+
+		return changeAttackStateAffector.CheckBulletRemovable();
 	}
 }

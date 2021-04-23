@@ -13,7 +13,7 @@ public class ChangeAttackStateAffector : AffectorBase
 	float _overrideUltimateCooltime;
 	bool _bulletRemovable;
 	float _endTime;
-	Transform _loopEffectTransform;
+	List<ParticleSystem> _listLoopParticleSystem;
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
 		if (_actor == null)
@@ -42,12 +42,27 @@ public class ChangeAttackStateAffector : AffectorBase
 
 		if (string.IsNullOrEmpty(affectorValueLevelTableData.sValue3) == false)
 		{
-			GameObject loopEffectPrefab = FindPreloadObject(affectorValueLevelTableData.sValue3);
-			if (loopEffectPrefab != null)
+			Transform effectRootTransform = _actor.actionController.dummyFinder.FindTransform(affectorValueLevelTableData.sValue3);
+			if (effectRootTransform != null)
 			{
-				_loopEffectTransform = BattleInstanceManager.instance.GetCachedObject(loopEffectPrefab, _actor.cachedTransform.position, Quaternion.identity).transform;
-				FollowTransform.Follow(_loopEffectTransform, _actor.cachedTransform, Vector3.zero);
+				ParticleSystem[] particleSystems = effectRootTransform.GetComponentsInChildren<ParticleSystem>();
+				_listLoopParticleSystem = new List<ParticleSystem>();
+				for (int i = 0; i < particleSystems.Length; ++i)
+					_listLoopParticleSystem.Add(particleSystems[i]);
 			}
+		}
+		LoopEffectOnOff(true);
+	}
+
+	void LoopEffectOnOff(bool enabled)
+	{
+		if (_listLoopParticleSystem == null)
+			return;
+
+		for (int i = 0; i < _listLoopParticleSystem.Count; ++i)
+		{
+			ParticleSystem.EmissionModule emissionModule = _listLoopParticleSystem[i].emission;
+			emissionModule.enabled = enabled;
 		}
 	}
 
@@ -64,11 +79,7 @@ public class ChangeAttackStateAffector : AffectorBase
 
 	public override void FinalizeAffector()
 	{
-		if (_loopEffectTransform != null)
-		{
-			DisableParticleEmission.DisableEmission(_loopEffectTransform);
-			_loopEffectTransform = null;
-		}
+		LoopEffectOnOff(false);
 	}
 
 	public override void DisableAffector()

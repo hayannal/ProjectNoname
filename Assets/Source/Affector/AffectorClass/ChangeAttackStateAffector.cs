@@ -13,6 +13,7 @@ public class ChangeAttackStateAffector : AffectorBase
 	float _overrideUltimateCooltime;
 	bool _bulletRemovable;
 	float _endTime;
+	Transform _loopEffectTransform;
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
 	{
 		if (_actor == null)
@@ -37,7 +38,17 @@ public class ChangeAttackStateAffector : AffectorBase
 		_actionNameHash = Animator.StringToHash(affectorValueLevelTableData.sValue1);
 		_applyUltimate = (affectorValueLevelTableData.iValue2 == 1);
 		_overrideUltimateCooltime = affectorValueLevelTableData.fValue2;
-		_bulletRemovable = (affectorValueLevelTableData.sValue3 == "1");
+		_bulletRemovable = (affectorValueLevelTableData.sValue4 == "1");
+
+		if (string.IsNullOrEmpty(affectorValueLevelTableData.sValue3) == false)
+		{
+			GameObject loopEffectPrefab = FindPreloadObject(affectorValueLevelTableData.sValue3);
+			if (loopEffectPrefab != null)
+			{
+				_loopEffectTransform = BattleInstanceManager.instance.GetCachedObject(loopEffectPrefab, _actor.cachedTransform.position, Quaternion.identity).transform;
+				FollowTransform.Follow(_loopEffectTransform, _actor.cachedTransform, Vector3.zero);
+			}
+		}
 	}
 
 	public override void OverrideAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
@@ -49,6 +60,21 @@ public class ChangeAttackStateAffector : AffectorBase
 	{
 		if (CheckEndTime(_endTime) == false)
 			return;
+	}
+
+	public override void FinalizeAffector()
+	{
+		if (_loopEffectTransform != null)
+		{
+			DisableParticleEmission.DisableEmission(_loopEffectTransform);
+			_loopEffectTransform = null;
+		}
+	}
+
+	public override void DisableAffector()
+	{
+		// 오래가는 버프라서 스왑을 대비해서 Disable처리를 해줘야한다.
+		FinalizeAffector();
 	}
 
 	int _count;

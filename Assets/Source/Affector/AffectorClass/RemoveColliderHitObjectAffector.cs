@@ -105,8 +105,8 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 			if (targetCollider != null)
 			{
 				AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(targetCollider);
-				if (affectorProcessor.actor.actorStatus.IsDie())
-					return;
+				//if (affectorProcessor.actor.actorStatus.IsDie())
+				//	return;
 				if (_playerAI == null && _actor.IsPlayerActor())
 				{
 					PlayerActor playerActor = _actor as PlayerActor;

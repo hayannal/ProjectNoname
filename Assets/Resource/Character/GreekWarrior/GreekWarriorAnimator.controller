@@ -1,5 +1,22 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7878318136693587054
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fb65b6b0d2204c4eac1fd62dbdc65d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.05
+  EndTime: 1
+  set: 1
+  globalLightIntensityRatio: 0.35
+  resetTimer: 1.5
 --- !u!114 &-7759902132037969125
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -86,7 +103,7 @@ MonoBehaviour:
   minimumDistance: 0
   lookAtWorldPosition: 0
   worldPosition: {x: 0, y: 0, z: 0}
-  lookAtLowestMonster: 0
+  lookAtHighestMonster: 0
   lerpPower: 5
   boneName: 
 --- !u!114 &-2057150615174720581
@@ -367,6 +384,23 @@ AnimatorController:
     m_IKPass: 0
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
+--- !u!114 &166147329077616424
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fb65b6b0d2204c4eac1fd62dbdc65d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.6
+  EndTime: 1
+  set: 0
+  globalLightIntensityRatio: 1
+  resetTimer: 0
 --- !u!1102 &205491906482928572
 AnimatorState:
   serializedVersion: 5
@@ -381,6 +415,7 @@ AnimatorState:
   m_StateMachineBehaviours:
   - {fileID: 2470847125662963185}
   - {fileID: 6668399587334595665}
+  - {fileID: 166147329077616424}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -489,6 +524,7 @@ AnimatorState:
   - {fileID: 4881817642737185617}
   - {fileID: 3931831873074311277}
   - {fileID: 6808352561901318178}
+  - {fileID: -7878318136693587054}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1

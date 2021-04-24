@@ -14,7 +14,7 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 	Vector3 _startForward;
 	float _areaAngle;
 
-	//PlayerAI _playerAI;
+	PlayerAI _playerAI;
 
 	public static int AnimatorParameterHash;
 
@@ -97,7 +97,7 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 			// 0. 타겟이 없을때
 			// 1. 타겟이 죽어있을때
 			// 2. 캐릭터 사거리안에 적이 있을때 - 안하기로 한다.
-			// 3. 캐릭터 사거리안에 벽이 있을때 - 안하기로 한다.
+			// 3. 캐릭터 사거리안에 벽이 있을때
 			Collider targetCollider = _actor.targetingProcessor.GetTarget();
 			if (targetCollider == null)
 				return;
@@ -106,19 +106,19 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 				AffectorProcessor affectorProcessor = BattleInstanceManager.instance.GetAffectorProcessorFromCollider(targetCollider);
 				if (affectorProcessor.actor.actorStatus.IsDie())
 					return;
-				//if (_playerAI == null && _actor.IsPlayerActor())
-				//{
-				//	PlayerActor playerActor = _actor as PlayerActor;
-				//	_playerAI = playerActor.playerAI;
-				//}
-				//if (_playerAI != null)
-				//{
+				if (_playerAI == null && _actor.IsPlayerActor())
+				{
+					PlayerActor playerActor = _actor as PlayerActor;
+					_playerAI = playerActor.playerAI;
+				}
+				if (_playerAI != null)
+				{
 					//Vector3 diff = Vector3.zero;
 					//if (_playerAI.IsTargetColliderInAttackRange(ref diff, true))
 					//	return;
-					//if (TargetingProcessor.CheckWall(_actor.cachedTransform.position, affectorProcessor.cachedTransform.position, 0.1f))
-					//	return;
-				//}
+					if (TargetingProcessor.CheckWall(_actor.cachedTransform.position, _actor.cachedTransform.position + _actor.cachedTransform.forward * _playerAI.currentAttackRange, 0.1f))
+						return;
+				}
 			}
 			_actor.actionController.animator.SetBool(AnimatorParameterHash, true);
 		}

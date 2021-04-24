@@ -110,10 +110,10 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 				}
 				if (_playerAI != null)
 				{
-					Vector3 diff = Vector3.zero;
-					if (_playerAI.IsTargetColliderInAttackRange(ref diff, true))
-						return;
-					if (TargetingProcessor.CheckWall(_actor.cachedTransform.position, _actor.cachedTransform.position + _actor.cachedTransform.forward * _playerAI.currentAttackRange, 0.1f))
+					//Vector3 diff = Vector3.zero;
+					//if (_playerAI.IsTargetColliderInAttackRange(ref diff, true))
+					//	return;
+					if (TargetingProcessor.CheckWall(_actor.cachedTransform.position, affectorProcessor.cachedTransform.position, 0.1f))
 						return;
 				}
 			}

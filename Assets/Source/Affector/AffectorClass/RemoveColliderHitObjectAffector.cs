@@ -97,7 +97,8 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 			// 0. 타겟이 없을때
 			// 1. 타겟이 죽어있을때
 			// 2. 캐릭터 사거리안에 적이 있을때 - 안하기로 한다.
-			// 3. 캐릭터 사거리안에 벽이 있을때
+			// 3. 캐릭터 사거리안에 벽이 있을때 - 안하기로 한다.
+			// 4. 캐릭터 사거리안에 적이 있는데 그 사이에 벽이 있으면 패스
 			Collider targetCollider = _actor.targetingProcessor.GetTarget();
 			if (targetCollider == null)
 				return;
@@ -113,11 +114,12 @@ public class RemoveColliderHitObjectAffector : AffectorBase
 				}
 				if (_playerAI != null)
 				{
-					//Vector3 diff = Vector3.zero;
-					//if (_playerAI.IsTargetColliderInAttackRange(ref diff, true))
-					//	return;
-					if (TargetingProcessor.CheckWall(_actor.cachedTransform.position, _actor.cachedTransform.position + _actor.cachedTransform.forward * _playerAI.currentAttackRange, 0.1f))
-						return;
+					Vector3 diff = Vector3.zero;
+					if (_playerAI.IsTargetColliderInAttackRange(ref diff, true))
+					{
+						if (TargetingProcessor.CheckWall(_actor.cachedTransform.position, affectorProcessor.cachedTransform.position, 0.1f))
+							return;
+					}
 				}
 			}
 			_actor.actionController.animator.SetBool(AnimatorParameterHash, true);

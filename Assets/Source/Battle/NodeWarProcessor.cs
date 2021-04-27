@@ -202,6 +202,9 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		PaybackSpFullAffector.OnEventStartStage(BattleInstanceManager.instance.playerActor.affectorProcessor);
 
 		// 조우시 차징 100% 되는 SciFiWarrior도 추가되었지만 금방 충전되기도 하고 스팀펑크 로봇처럼 필수가 아니라서 패스하기로 한다.
+
+
+		SoundManager.instance.PlayNodeWarBgm();
 	}
 
 	public override NodeWarTableData GetSelectedNodeWarTableData()

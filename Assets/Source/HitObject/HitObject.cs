@@ -1589,6 +1589,8 @@ public class HitObject : MonoBehaviour
 		for (int i = 0; i < _listDisableParticleSystemRendererAfterCollision.Count; ++i)
 			_listDisableParticleSystemRendererAfterCollision[i].enabled = false;
 
+		if (_hitObjectLineRenderer != null)
+			_hitObjectLineRenderer.DisableLineRenderer(false);
 		if (_hitObjectAnimator != null && _hitObjectAnimator.OnFinalizeByDistance())
 			_hitObjectAnimatorStarted = true;
 

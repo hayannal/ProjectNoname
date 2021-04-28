@@ -25,8 +25,8 @@ public class OptionManager : MonoBehaviour
 		LoadPlayerPrefs();
 	}
 
-	float _bgmVolume = 0.5f;
-	float _systemVolume = 0.5f;
+	float _bgmVolume = 0.75f;
+	float _systemVolume = 0.75f;
 	string _language = "KOR";
 #if UNITY_IOS
 	int _frame = 6;

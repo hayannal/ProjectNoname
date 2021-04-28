@@ -99,6 +99,13 @@ public class ExperienceCanvas : MonoBehaviour
 
 		// 메릴 체험모드 끝나고 즉시 복구시키기 위해 호출
 		Time.timeScale = 1.0f;
+
+		// 특수한 어펙터 체크해서 삭제
+		if (ChangeAttackStateAffector.CheckBulletRemovable(CharacterListCanvas.instance.selectedPlayerActor.affectorProcessor))
+		{
+			ChangeAttackStateAffector changeAttackStateAffector = (ChangeAttackStateAffector)CharacterListCanvas.instance.selectedPlayerActor.affectorProcessor.GetFirstContinuousAffector(eAffectorType.ChangeAttackState);
+			changeAttackStateAffector.finalized = true;
+		}
 	}
 
 

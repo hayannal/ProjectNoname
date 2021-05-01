@@ -199,6 +199,14 @@ public class CharacterData
 		return UIString.instance.GetString(actorTableData.nameId);
 	}
 
+	public static string GetLowNameByActorId(string actorId)
+	{
+		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(actorId);
+		if (actorTableData == null)
+			return "";
+		return UIString.instance.GetString(actorTableData.lowNameId);
+	}
+
 	public static bool IsUseLegendWeight(ActorTableData actorTableData)
 	{
 		return actorTableData.grade >= 2;

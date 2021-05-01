@@ -508,7 +508,7 @@ public class SwapCanvas : MonoBehaviour
 		for (int i = 0; i < suggestedActorIdList.Length; ++i)
 		{
 			string actorId = suggestedActorIdList[i];
-			string actorName = CharacterData.GetNameByActorId(actorId);
+			string actorName = CharacterData.GetLowNameByActorId(actorId);
 			if (string.IsNullOrEmpty(actorName))
 				continue;
 
@@ -531,7 +531,7 @@ public class SwapCanvas : MonoBehaviour
 			if (_listCachedPenaltyPowerSource != null && _listCachedPenaltyPowerSource.Contains(actorTableData.powerSource)) applyPenalty = true;
 
 			_stringBuilderActor.Append(applyPenalty ? "<color=#707070>" : "<color=#00AB00>");
-			_stringBuilderActor.Append(CharacterData.GetNameByActorId(suggestedActorIdList[0]));
+			_stringBuilderActor.Append(CharacterData.GetLowNameByActorId(suggestedActorIdList[0]));
 			_stringBuilderActor.Append("</color>");
 		}
 		_stringBuilderFull.AppendFormat(UIString.instance.GetString(descriptionId), _stringBuilderActor.ToString());

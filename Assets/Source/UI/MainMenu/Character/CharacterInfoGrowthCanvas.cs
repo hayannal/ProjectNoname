@@ -256,7 +256,7 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 
 		string story = UIString.instance.GetString(actorTableData.storyId);
 		string desc = UIString.instance.GetString(actorTableData.descId);
-		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, string.Format("{0}\n\n{1}", story, desc), 300, nameText.transform, new Vector2(0.0f, -35.0f));
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.StoryInfo, string.Format("{0}\n\n{1}", story, desc), 400, nameText.transform, new Vector2(0.0f, -35.0f));
 
 		// 뽑기창에서는 이와 다르게
 		// Char CharDesc는 기본으로 나오고 돋보기로만 Story를 본다.

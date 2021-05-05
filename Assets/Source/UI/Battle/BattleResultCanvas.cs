@@ -136,6 +136,19 @@ public class BattleResultCanvas : MonoBehaviour
 			_listGrantItem = TimeSpaceData.instance.DeserializeItemGrantResult(jsonItemGrantResults);
 
 		gameObject.SetActive(true);
+
+		StartCoroutine(BgmProcess());
+	}
+
+	IEnumerator BgmProcess()
+	{
+		yield return new WaitForSecondsRealtime(0.8f);
+
+		SoundManager.instance.PlaySFX(_clear ? "BattleWin" : "BattleEnd");
+
+		yield return new WaitForSecondsRealtime((_clear ? 12.0f : 10.0f) + 3.0f);
+
+		SoundManager.instance.PlayBgm("BGM_BattleEnd", 3.0f);
 	}
 
 	bool _currentChaosMode = false;

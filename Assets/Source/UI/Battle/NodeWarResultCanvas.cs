@@ -102,6 +102,19 @@ public class NodeWarResultCanvas : MonoBehaviour
 		// NodeWarResultCanvas 닫는 타이밍엔 씬이 날아가는 상태니 미리 RandomBoxScreenCanvas는 켤때 닫아두기로 한다.
 		if (clear)
 			RandomBoxScreenCanvas.instance.gameObject.SetActive(false);
+
+		StartCoroutine(BgmProcess());
+	}
+
+	IEnumerator BgmProcess()
+	{
+		yield return new WaitForSecondsRealtime(_clear ? 0.1f : 1.5f);
+
+		SoundManager.instance.PlaySFX(_clear ? "BattleWin" : "BattleLose");
+
+		yield return new WaitForSecondsRealtime((_clear ? 12.0f : 11.0f) + 3.0f);
+
+		SoundManager.instance.PlayBgm("BGM_BattleEnd", 3.0f);
 	}
 
 	#region NodeWar Result

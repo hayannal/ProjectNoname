@@ -576,6 +576,7 @@ public class BattleModeProcessorBase
 			}
 		}
 
+		SoundManager.instance.StopBGM(3.0f);
 		PlayFabApiManager.instance.RequestEndGame(clear, PlayerData.instance.currentChaosMode, StageManager.instance.playChapter, StageManager.instance.playStage - 1,
 			DropManager.instance.GetStackedDropGold(), DropManager.instance.GetStackedDropSeal(), DropManager.instance.GetStackedDropEquipList(), (result, newCharacterId, itemGrantString) =>
 		{

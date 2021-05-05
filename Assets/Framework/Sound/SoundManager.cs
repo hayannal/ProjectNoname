@@ -104,7 +104,7 @@ public partial class SoundManager : MonoBehaviour {
 	{
 		float fadeOutTime = (clip == null) ? fadeTime : fadeTime * 0.75f;
 		FadeOutBGM(fadeOutTime);
-		yield return new WaitForSeconds(fadeOutTime);
+		yield return new WaitForSecondsRealtime(fadeOutTime);
 		_audioSourceForBGM.Stop();
 		_fadeCoroutine = null;
 

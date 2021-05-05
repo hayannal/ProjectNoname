@@ -1043,6 +1043,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 				clear = true;
 		}
 
+		SoundManager.instance.StopBGM(2.0f);
 		if (clear)
 		{
 			PlayFabApiManager.instance.RequestEndNodeWar(clear, _selectedNodeWarTableData.level, DropManager.instance.GetLobbyDropItemInfo(), (result, itemGrantString) =>

@@ -295,6 +295,22 @@ public class DropObject : MonoBehaviour
 				jumpTransform.DOLocalJump(new Vector3(0.0f, jumpEndY, 0.0f), secondJumpPower, 1, secondJumpDuration).SetEase(Ease.Linear);
 				_jumpRemainTime = secondJumpDuration;
 				_lastJump = true;
+
+				switch (_dropType)
+				{
+					case DropProcessor.eDropType.LevelPack:
+					case DropProcessor.eDropType.Heart:
+					case DropProcessor.eDropType.Seal:
+					case DropProcessor.eDropType.Origin:
+					//case DropProcessor.eDropType.PowerPoint:
+					case DropProcessor.eDropType.Balance:
+					case DropProcessor.eDropType.ReturnScroll:
+						SoundManager.instance.PlaySFX("DropObject");
+						break;
+					case DropProcessor.eDropType.Gacha:
+						SoundManager.instance.PlaySFX("DropEquip");
+						break;
+				}
 			}
 		}
 	}
@@ -362,6 +378,22 @@ public class DropObject : MonoBehaviour
 					DropManager.instance.AddDropSeal(1);
 					break;
 			}
+		}
+
+		switch (_dropType)
+		{
+			case DropProcessor.eDropType.LevelPack:
+			case DropProcessor.eDropType.Heart:
+			case DropProcessor.eDropType.Seal:
+			case DropProcessor.eDropType.Origin:
+			//case DropProcessor.eDropType.PowerPoint:
+			case DropProcessor.eDropType.Balance:
+			case DropProcessor.eDropType.ReturnScroll:
+				SoundManager.instance.PlaySFX("DropGainObject");
+				break;
+			case DropProcessor.eDropType.Gacha:
+				SoundManager.instance.PlaySFX("DropGainEquip");
+				break;
 		}
 
 		_initialized = false;

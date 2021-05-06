@@ -247,6 +247,8 @@ public class NodeWarItem : MonoBehaviour
 				break;
 		}
 
+		SoundManager.instance.PlaySFX("NodeWarItem");
+
 		ProcessEndAnimation();
 	}
 

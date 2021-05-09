@@ -113,7 +113,7 @@ public class EffectSoundController : MonoBehaviour
 			}
 		}
 
-		if (checkDuplicate && !string.IsNullOrEmpty(soundName))
+		if (checkDuplicate && !string.IsNullOrEmpty(soundName) && duplicateVolumeRatio == 1.0f)
 			SoundManager.instance.RegisterCharacterSound(soundName);
 	}
 

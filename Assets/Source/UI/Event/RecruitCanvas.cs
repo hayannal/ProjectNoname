@@ -17,6 +17,7 @@ public class RecruitCanvas : CharacterShowCanvasBase
 	public Button characterNameTextButton;
 	public Image characterNameButtonImage;
 	public Text characterDescText;
+	public Text acceptingNoteText;
 	public Transform acceptingDescTransform;
 	public GameObject detailButtonObject;
 	public GameObject effectPrefab;
@@ -102,6 +103,8 @@ public class RecruitCanvas : CharacterShowCanvasBase
 		characterDescText.SetLocalizedText(UIString.instance.GetString(actorTableData.descId));
 
 		acceptingDescTransform.gameObject.SetActive(clearChapter0);
+		if (clearChapter0)
+			acceptingNoteText.SetLocalizedText(UIString.instance.GetString("GameUI_Chp1AcceptingNote", CharacterData.GetLowNameByActorId(actorId)));
 		detailButtonObject.SetActive(clearChapter0);
 	}
 	#endregion

@@ -108,13 +108,13 @@ public class BattleResultCanvas : MonoBehaviour
 
 		if (StageManager.instance.playChapter == 0 && PlayerData.instance.ContainsActor("Actor1002") == false)
 		{
-			clearRewardText.SetLocalizedText(UIString.instance.GetString(_clear ? "GameUI_Chp0ClearRewardGot" : "GameUI_Chp0ClearReward"));
+			clearRewardText.SetLocalizedText(UIString.instance.GetString(_clear ? "GameUI_Chp0ClearRewardGot" : "GameUI_Chp0ClearReward", CharacterData.GetLowNameByActorId("Actor1002")));
 			clearRewardText.gameObject.SetActive(true);
 		}
 
 		if (StageManager.instance.playChapter == 1 && PlayerData.instance.ContainsActor("Actor2103") == false)
 		{
-			clearRewardText.SetLocalizedText(UIString.instance.GetString(_clear ? "GameUI_Chp1ClearRewardGot" : "GameUI_Chp1ClearReward"));
+			clearRewardText.SetLocalizedText(UIString.instance.GetString(_clear ? "GameUI_Chp1ClearRewardGot" : "GameUI_Chp1ClearReward", CharacterData.GetLowNameByActorId("Actor2103")));
 			clearRewardText.gameObject.SetActive(true);
 		}
 

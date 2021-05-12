@@ -284,7 +284,7 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 
 		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Chapter) == false)
 		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_Chp1SwapUnavailable"), 2.0f);
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_Chp1SwapUnavailable", CharacterData.GetLowNameByActorId("Actor1002")), 2.0f);
 			return;
 		}
 

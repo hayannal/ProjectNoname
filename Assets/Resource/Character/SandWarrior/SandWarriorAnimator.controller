@@ -130,6 +130,7 @@ AnimatorState:
   m_StateMachineBehaviours:
   - {fileID: 3413307960762349683}
   - {fileID: 1934512432174511729}
+  - {fileID: 7904123264799034292}
   - {fileID: -1010171531454241321}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -157,14 +158,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTime: 0.4
+  StartTime: 0.43
   EndTime: 1
   effectData: {fileID: 1344824185198126, guid: d45e7dbb4f7496b45972ec3dc99450a0, type: 3}
   offset: {x: 0, y: 1, z: 0.5}
   fixedWorldPositionY: 0
   direction: {x: 0, y: 0, z: 1}
+  useWorldSpaceDirection: 0
   parentName: 
   followPosition: 0
+  aliveOnlyOne: 0
+  immediateDisableAliveOnlyOne: 0
+  disableOnMapChanged: 0
 --- !u!114 &-582037310535030771
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -233,7 +238,9 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 0
+  useDynamicMaxDistanceByTargetDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -252,7 +259,9 @@ MonoBehaviour:
   areaHeightMax: 0
   areaAngle: 0
   checkRaycastWallInArea: 0
+  raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 1
   movementType: 0
@@ -267,11 +276,12 @@ MonoBehaviour:
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
   howitzerRandomPositionRadiusRange: {x: 0, y: 0}
-  speed: 4
+  speed: 6
   useSpeedChange: 1
-  targetSpeed: 7
-  speedChangeTime: 20
+  targetSpeed: 10
+  speedChangeTime: 10
   speedChangeEase: 1
+  repeatSpeedChange: 0
   overrideSpeedOnCollision: 0
   overrideSpeedTimeOnCollision: 0
   curve: 0
@@ -287,6 +297,7 @@ MonoBehaviour:
   useRandomTurn: 0
   accelTurn: 0
   randomTurnRotateYawRange: {x: 0, y: 0}
+  zigZagIntervalTime: 0
   gravity: -9.81
   parallelCount: 2
   parallelDistance: 0.2
@@ -303,10 +314,12 @@ MonoBehaviour:
   quadThrough: 0
   overrideResetIgnoreSqrMagnitude: 0
   bounceWallQuadCount: 7
+  bounceToTarget: 0
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
   overrideRicochetDistance: 0
   overrideRicochetSpeed: 0
+  useTimerRicochet: 0
   useHitStay: 0
   hitStayInterval: 0
   hitStayIgnoreDuplicate: 0
@@ -315,6 +328,8 @@ MonoBehaviour:
   onlyUsedAsTrigger: 0
   oneHitPerTarget: 0
   useLineRenderer: 0
+  ignoreRemoveColliderAffector: 0
+  aliveOnlyOne: 0
   affectorValueIdList:
   - NormalAttackSandWarrior
   showHitEffect: 1
@@ -342,6 +357,21 @@ MonoBehaviour:
   StartTime: 0
   EndTime: 0.7
   state: 3
+--- !u!114 &7904123264799034292
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2e6805f699075e4eae576dc1aabd338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.001
+  EndTime: 0.4
+  speed: 1.2
 --- !u!1102 &8503796429965771016
 AnimatorState:
   serializedVersion: 5

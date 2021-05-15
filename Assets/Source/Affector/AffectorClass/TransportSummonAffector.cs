@@ -82,6 +82,9 @@ public class TransportSummonAffector : AffectorBase
 			if (BattleInstanceManager.instance.currentGround != null)
 				desirePosition = BattleInstanceManager.instance.currentGround.GetRandomPositionInQuadBound(1.0f);
 
+			if (ExperienceCanvas.instance != null && ExperienceCanvas.instance.gameObject.activeSelf)
+				return desirePosition;
+
 			NavMeshHit hit;
 			NavMeshQueryFilter navMeshQueryFilter = new NavMeshQueryFilter();
 			navMeshQueryFilter.areaMask = NavMesh.AllAreas;

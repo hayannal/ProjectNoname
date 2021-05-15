@@ -82,4 +82,10 @@ public class RemoveCannotActionAffector : AffectorBase
 			_loopEffectTransform = null;
 		}
 	}
+
+	public override void DisableAffector()
+	{
+		// 오래가는 버프라서 스왑을 대비해서 Disable처리를 해줘야한다.
+		FinalizeAffector();
+	}
 }

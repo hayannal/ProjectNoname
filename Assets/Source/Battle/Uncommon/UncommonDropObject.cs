@@ -85,7 +85,7 @@ public class UncommonDropObject : MonoBehaviour
 					ChangeAttackStateAffector.CheckBulletBoost(playerActor.affectorProcessor);
 					break;
 			}
-			SoundManager.instance.PlaySFX("DropObject");
+			SoundManager.instance.PlaySFX("DropGainObject");
 			gameObject.SetActive(false);
 		}
 	}

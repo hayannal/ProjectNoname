@@ -342,10 +342,10 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 		if (_exclusiveMode)
 			Timing.RunCoroutine(ExclusiveAppearProcess());
 		else
-			Timing.RunCoroutine(ButtonAppearProcess());
+			Timing.RunCoroutine(ButtonAppearProcess(false));
 	}
 
-	IEnumerator<float> ButtonAppearProcess()
+	IEnumerator<float> ButtonAppearProcess(bool ignoreShowClearPoint)
 	{
 		// preset
 		int snapshotClearPoint = BattleManager.instance.GetClearPoint();
@@ -365,6 +365,8 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 
 		if (ContentsManager.IsTutorialChapter())
 			yield break;
+		if (ignoreShowClearPoint)
+			yield break;
 
 		yield return Timing.WaitForSeconds(0.5f);
 
@@ -372,11 +374,16 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 		if (this == null)
 			yield break;
 
-		currentClearPointText.text = snapshotClearPoint.ToString("N0");
-		refreshPriceText.text = snapshotPrice.ToString();
+		RefreshClearPoint(snapshotClearPoint, snapshotPrice);
+	}
+
+	void RefreshClearPoint(int clearPoint, int refreshPrice)
+	{
+		currentClearPointText.text = clearPoint.ToString("N0");
+		refreshPriceText.text = refreshPrice.ToString();
 		currentClearPointGroupObject.SetActive(true);
 		refreshButtonGroupObject.SetActive(true);
-		bool disablePrice = (snapshotClearPoint < snapshotPrice);
+		bool disablePrice = (clearPoint < refreshPrice);
 		refreshIconImage.color = refreshPriceImage.color = refreshPriceText.color = !disablePrice ? Color.white : Color.gray;
 	}
 
@@ -450,13 +457,10 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 
 			for (int i = 0; i < buttonList.Length; ++i)
 				buttonList[i].gameObject.SetActive(false);
-			OnCompleteLineAnimation();
+			Timing.RunCoroutine(ButtonAppearProcess(true));
 
 			// 아이콘 3개가 보이고 나서 갱신되면 헷갈린다. OnClickRefreshButton에서 처리했던거처럼 바로 갱신해주는게 좋아보인다.
-			refreshPriceText.text = GetRefreshPrice().ToString();
-			currentClearPointText.text = BattleManager.instance.GetClearPoint().ToString("N0");
-			bool disablePrice = (BattleManager.instance.GetClearPoint() < GetRefreshPrice());
-			refreshIconImage.color = refreshPriceImage.color = refreshPriceText.color = !disablePrice ? Color.white : Color.gray;
+			RefreshClearPoint(BattleManager.instance.GetClearPoint(), GetRefreshPrice());
 			return;
 		}
 
@@ -546,15 +550,11 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 
 		for (int i = 0; i < buttonList.Length; ++i)
 			buttonList[i].gameObject.SetActive(false);
-		OnCompleteLineAnimation();
+		Timing.RunCoroutine(ButtonAppearProcess(true));
 
 		++_refreshStackCount;
 		ClientSaveData.instance.OnChangedRefreshStackCount(_refreshStackCount);
-
-		refreshPriceText.text = GetRefreshPrice().ToString();
-		currentClearPointText.text = BattleManager.instance.GetClearPoint().ToString("N0");
-		bool disablePrice = (BattleManager.instance.GetClearPoint() < GetRefreshPrice());
-		refreshIconImage.color = refreshPriceImage.color = refreshPriceText.color = !disablePrice ? Color.white : Color.gray;
+		RefreshClearPoint(BattleManager.instance.GetClearPoint(), GetRefreshPrice());
 	}
 	#endregion
 

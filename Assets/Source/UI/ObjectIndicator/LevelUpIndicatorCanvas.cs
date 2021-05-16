@@ -347,6 +347,10 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 
 	IEnumerator<float> ButtonAppearProcess()
 	{
+		// preset
+		int snapshotClearPoint = BattleManager.instance.GetClearPoint();
+		int snapshotPrice = GetRefreshPrice();
+
 		for (int i = 0; i < buttonList.Length; ++i)
 		{
 			buttonList[i].gameObject.SetActive(true);
@@ -368,11 +372,11 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 		if (this == null)
 			yield break;
 
-		currentClearPointText.text = BattleManager.instance.GetClearPoint().ToString("N0");
-		refreshPriceText.text = GetRefreshPrice().ToString();
+		currentClearPointText.text = snapshotClearPoint.ToString("N0");
+		refreshPriceText.text = snapshotPrice.ToString();
 		currentClearPointGroupObject.SetActive(true);
 		refreshButtonGroupObject.SetActive(true);
-		bool disablePrice = (BattleManager.instance.GetClearPoint() < GetRefreshPrice());
+		bool disablePrice = (snapshotClearPoint < snapshotPrice);
 		refreshIconImage.color = refreshPriceImage.color = refreshPriceText.color = !disablePrice ? Color.white : Color.gray;
 	}
 

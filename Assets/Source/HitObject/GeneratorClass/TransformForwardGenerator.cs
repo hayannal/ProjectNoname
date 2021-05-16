@@ -7,6 +7,7 @@ public class TransformForwardGenerator : ContinuousHitObjectGeneratorBase
 {
 	[Header("TransformForwardGenerator")]
 	public float interval;
+	public bool applyAttackSpeedAddRate;
 
 	int _remainCreateCount;
 	float _remainIntervalTime;
@@ -55,7 +56,15 @@ public class TransformForwardGenerator : ContinuousHitObjectGeneratorBase
 		if (_remainIntervalTime < 0.0f)
 		{
 			_remainCreateCount -= 1;
-			_remainIntervalTime += interval;
+
+			float resultInterval = interval;
+			if (applyAttackSpeedAddRate)
+			{
+				float addRate = _parentActor.actorStatus.GetValue(eActorStatus.AttackSpeedAddRate);
+				if (addRate > 0.0f)
+					resultInterval /= (1.0f + addRate);
+			}
+			_remainIntervalTime += resultInterval;
 
 			Generate(cachedTransform.position, cachedTransform.rotation);
 		}

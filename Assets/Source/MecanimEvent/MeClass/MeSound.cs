@@ -39,6 +39,9 @@ public class MeSound : MecanimEventBase {
 		if (_spawnTransform == null)
 			_spawnTransform = animator.transform;
 
+		if (OptionManager.instance.systemVolume == 0.0f)
+			return;
+
 		if (playAtPoint)
 			SoundManager.instance.PlayClipAtPoint(audio, _spawnTransform.position, volume);
 		else

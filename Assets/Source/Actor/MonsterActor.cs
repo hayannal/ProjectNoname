@@ -453,6 +453,10 @@ public class MonsterActor : Actor
 			if (affectorProcessor.actor.IsMonsterActor())
 				continue;
 
+			// 예외상황 추가. 굴러다닐때는 맞지 않는다.
+			if (affectorProcessor.IsContinuousAffectorType(eAffectorType.Roll))
+				continue;
+
 			if (CheckCollisionStayInterval())
 				ApplyCollisionDamage(affectorProcessor);
 		}

@@ -200,23 +200,22 @@ public class BaseDamageAffector : AffectorBase {
 				damage *= damageRate;
 		}
 
-		float reduceDamageValue = 0.0f;
-		if (affectorValueLevelTableData.fValue4 == 0.0f)
-		{
-			if (hitParameter.statusStructForHitObject.targetDetectType == HitObject.eTargetDetectType.Collider)
-				reduceDamageValue = ReduceDamageAffector.GetValue(_affectorProcessor, ReduceDamageAffector.eReduceDamageType.Collider);
-		}
-		else
-		{
-			int reduceDamageType = Mathf.RoundToInt(affectorValueLevelTableData.fValue4);
-			if (reduceDamageType == 1)
-				reduceDamageValue = ReduceDamageAffector.GetValue(_affectorProcessor, ReduceDamageAffector.eReduceDamageType.Melee);
-		}
-		if (reduceDamageValue != 0.0f)
-			damage *= (1.0f - (reduceDamageValue / (1.0f + reduceDamageValue)));
-
 		if (_actor.IsPlayerActor())
 		{
+			float reduceDamageValue = 0.0f;
+			if (affectorValueLevelTableData.fValue4 == 0.0f)
+			{
+				reduceDamageValue = ReduceDamageAffector.GetValue(_affectorProcessor, ReduceDamageAffector.eReduceDamageType.Collider);
+			}
+			else
+			{
+				int reduceDamageType = Mathf.RoundToInt(affectorValueLevelTableData.fValue4);
+				if (reduceDamageType == 1)
+					reduceDamageValue = ReduceDamageAffector.GetValue(_affectorProcessor, ReduceDamageAffector.eReduceDamageType.Melee);
+			}
+			if (reduceDamageValue != 0.0f)
+				damage *= (1.0f - (reduceDamageValue / (1.0f + reduceDamageValue)));
+
 			// 연타저항 어펙터 처리.
 			float reduceContinuousDamageValue = ReduceContinuousDamageAffector.GetValue(_affectorProcessor);
 			if (reduceContinuousDamageValue != 0.0f)

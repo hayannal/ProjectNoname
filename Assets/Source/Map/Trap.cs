@@ -41,6 +41,10 @@ public class Trap : MonoBehaviour
 		if (damageIncludingFlying == false && playerActor.flying)
 			return;
 
+		// 예외상황 추가. 굴러다닐때는 맞지 않는다.
+		if (affectorProcessor.IsContinuousAffectorType(eAffectorType.Roll))
+			return;
+
 		// check Levitation Character
 
 		if (_dicHitStayTime == null)

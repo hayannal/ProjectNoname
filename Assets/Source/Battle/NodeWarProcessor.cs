@@ -1043,9 +1043,9 @@ public class NodeWarProcessor : BattleModeProcessorBase
 				clear = true;
 		}
 
-		SoundManager.instance.StopBGM(2.0f);
 		if (clear)
 		{
+			// 성공시에는 이미 ExitPortal에서 전멸 이펙트 하기전에 BGM 꺼놨을거다.
 			PlayFabApiManager.instance.RequestEndNodeWar(clear, _selectedNodeWarTableData.level, DropManager.instance.GetLobbyDropItemInfo(), (result, itemGrantString) =>
 			{
 				// 성공시에는 바로 결과창을 띄우는게 아니라 연출처리 하고 결과창을 띄워야한다.
@@ -1054,6 +1054,8 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		}
 		else
 		{
+			// 실패를 했으면 여기서 BGM을 끈다.
+			SoundManager.instance.StopBGM(2.0f);
 			PlayFabApiManager.instance.RequestCancelNodeWar();
 			UIInstanceManager.instance.ShowCanvasAsync("NodeWarResultCanvas", () =>
 			{

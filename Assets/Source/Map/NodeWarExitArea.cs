@@ -322,6 +322,9 @@ public class NodeWarExitArea : MonoBehaviour
 
 		_processing = true;
 
+		// 연출 시작전 BGM 종료
+		SoundManager.instance.StopBGM(1.5f);
+
 		CustomRenderer.instance.bloom.AdjustDirtIntensity(1.5f);
 		EnvironmentSetting.SetGlobalLightIntensityRatio(0.4f, 0.0f, 5);
 		Instantiate<GameObject>(areaActiveEffectPrefab, cachedTransform.position, Quaternion.identity);

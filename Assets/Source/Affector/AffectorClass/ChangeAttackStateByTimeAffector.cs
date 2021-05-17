@@ -52,7 +52,8 @@ public class ChangeAttackStateByTimeAffector : AffectorBase
 	{
 		if (_canvasShowState)
 		{
-			PlayerIgnoreEvadeCanvas.instance.ShowIgnoreEvade(false, null);
+			if (PlayerIgnoreEvadeCanvas.instance != null && PlayerIgnoreEvadeCanvas.instance.gameObject.activeSelf)
+				PlayerIgnoreEvadeCanvas.instance.ShowIgnoreEvade(false, null);
 			_canvasShowState = false;
 			_movedTime = 0.0f;
 		}

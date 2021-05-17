@@ -145,6 +145,7 @@ MonoBehaviour:
   checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -212,6 +213,7 @@ MonoBehaviour:
   oneHitPerTarget: 1
   useLineRenderer: 0
   ignoreRemoveColliderAffector: 0
+  aliveOnlyOne: 0
   affectorValueIdList:
   - UltimateAttackChaosElemental
   - AddForceCommonStrong
@@ -513,7 +515,7 @@ MonoBehaviour:
   presetAnimatorRoot: 0
   hitObjectPrefab: {fileID: 1607489160101874, guid: ffe61663d7ed5d547b2cb343c59420fc,
     type: 3}
-  lifeTime: 0.78
+  lifeTime: 0.48
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
@@ -540,6 +542,7 @@ MonoBehaviour:
   checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -554,7 +557,7 @@ MonoBehaviour:
   upDownRandomAngle: 0
   howitzerTargetPositionOffset: {x: 0, y: 0}
   howitzerRandomPositionRadiusRange: {x: 0, y: 0}
-  speed: 5
+  speed: 6
   useSpeedChange: 0
   targetSpeed: 0
   speedChangeTime: 0
@@ -607,6 +610,7 @@ MonoBehaviour:
   oneHitPerTarget: 0
   useLineRenderer: 0
   ignoreRemoveColliderAffector: 0
+  aliveOnlyOne: 0
   affectorValueIdList:
   - NormalAttackChaosElemental
   showHitEffect: 1
@@ -641,6 +645,7 @@ MonoBehaviour:
   minimumDistance: 0
   lookAtWorldPosition: 0
   worldPosition: {x: 0, y: 0, z: 0}
+  lookAtHighestMonster: 0
   lerpPower: 5
   boneName: 
 --- !u!114 &4225913892842907322
@@ -664,7 +669,9 @@ MonoBehaviour:
   useWorldSpaceDirection: 0
   parentName: ce_bone_index_lower_r
   followPosition: 0
-  immediateDisableFollowEffect: 0
+  aliveOnlyOne: 0
+  immediateDisableAliveOnlyOne: 0
+  disableOnMapChanged: 0
 --- !u!1101 &4451951276357776163
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -709,6 +716,7 @@ MonoBehaviour:
   minimumDistance: 0
   lookAtWorldPosition: 0
   worldPosition: {x: 0, y: 0, z: 0}
+  lookAtHighestMonster: 0
   lerpPower: 5
   boneName: 
 --- !u!1102 &5857428324244562546

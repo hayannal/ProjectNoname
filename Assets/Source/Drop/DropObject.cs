@@ -296,21 +296,22 @@ public class DropObject : MonoBehaviour
 				_jumpRemainTime = secondJumpDuration;
 				_lastJump = true;
 
-				switch (_dropType)
-				{
-					case DropProcessor.eDropType.LevelPack:
-					case DropProcessor.eDropType.Heart:
-					case DropProcessor.eDropType.Seal:
-					case DropProcessor.eDropType.Origin:
-					//case DropProcessor.eDropType.PowerPoint:
-					case DropProcessor.eDropType.Balance:
-					case DropProcessor.eDropType.ReturnScroll:
-						SoundManager.instance.PlaySFX("DropObject");
-						break;
-					case DropProcessor.eDropType.Gacha:
-						SoundManager.instance.PlaySFX("DropEquip");
-						break;
-				}
+				// Gain과 달리 Drop은 종류별로 다르게 가져가기 위해서 프리팹 안에다가 사운드를 넣기로 한다.
+				//switch (_dropType)
+				//{
+				//	case DropProcessor.eDropType.LevelPack:
+				//	case DropProcessor.eDropType.Heart:
+				//	case DropProcessor.eDropType.Seal:
+				//	case DropProcessor.eDropType.Origin:
+				//	//case DropProcessor.eDropType.PowerPoint:
+				//	case DropProcessor.eDropType.Balance:
+				//	case DropProcessor.eDropType.ReturnScroll:
+				//		SoundManager.instance.PlaySFX("DropObject");
+				//		break;
+				//	case DropProcessor.eDropType.Gacha:
+				//		SoundManager.instance.PlaySFX("DropEquip");
+				//		break;
+				//}
 			}
 		}
 	}
@@ -380,20 +381,37 @@ public class DropObject : MonoBehaviour
 			}
 		}
 
+		string soundName = "DropGainObject";
 		switch (_dropType)
 		{
+			case DropProcessor.eDropType.Gold:
+				if (lobby == false)
+					soundName = "";
+				break;
 			case DropProcessor.eDropType.LevelPack:
+				if (_floatValue > 0.0f)
+					soundName = "DropGainNoHitLevelPack";
+				break;
 			case DropProcessor.eDropType.Heart:
-			case DropProcessor.eDropType.Seal:
-			case DropProcessor.eDropType.Origin:
-			//case DropProcessor.eDropType.PowerPoint:
-			case DropProcessor.eDropType.Balance:
-			case DropProcessor.eDropType.ReturnScroll:
-				SoundManager.instance.PlaySFX("DropGainObject");
+				soundName = "DropGainHeart";
 				break;
 			case DropProcessor.eDropType.Gacha:
-				SoundManager.instance.PlaySFX("DropGainEquip");
+				soundName = "DropGainEquip";
 				break;
+			case DropProcessor.eDropType.Diamond:
+				soundName = "DropGainDiamond";
+				break;
+			case DropProcessor.eDropType.Origin:
+				soundName = "DropGainOrigin";
+				break;
+		}
+		if (string.IsNullOrEmpty(soundName) == false)
+		{
+			if (SoundManager.instance.CheckSameFrameSound(soundName) == false)
+			{
+				SoundManager.instance.PlaySFX(soundName);
+				SoundManager.instance.RegisterCharacterSound(soundName);
+			}
 		}
 
 		_initialized = false;

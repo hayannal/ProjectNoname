@@ -56,7 +56,7 @@ MonoBehaviour:
   useAreaRotationYChange: 0
   targetAreaRotationY: 0
   areaDistanceMin: 0
-  areaDistanceMax: 0.75
+  areaDistanceMax: 0.85
   areaHeightMin: -5
   areaHeightMax: 2
   areaAngle: 360
@@ -226,7 +226,7 @@ MonoBehaviour:
   useAreaRotationYChange: 0
   targetAreaRotationY: 0
   areaDistanceMin: 0
-  areaDistanceMax: 0.35
+  areaDistanceMax: 0.85
   areaHeightMin: -5
   areaHeightMax: 2
   areaAngle: 360
@@ -354,11 +354,11 @@ MonoBehaviour:
   useAreaRotationYChange: 0
   targetAreaRotationY: 0
   areaDistanceMin: 0
-  areaDistanceMax: 0.8
+  areaDistanceMax: 1.5
   areaHeightMin: 0
   areaHeightMax: 2
   areaAngle: 360
-  checkRaycastWallInArea: 1
+  checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
   removeColliderArea: 0
@@ -541,11 +541,11 @@ MonoBehaviour:
   useAreaRotationYChange: 0
   targetAreaRotationY: 0
   areaDistanceMin: 0
-  areaDistanceMax: 0.8
+  areaDistanceMax: 1.5
   areaHeightMin: 0
   areaHeightMax: 2
   areaAngle: 360
-  checkRaycastWallInArea: 1
+  checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
   removeColliderArea: 0
@@ -676,6 +676,10 @@ AnimatorState:
   - {fileID: 3290066363302126493}
   - {fileID: 7467032578737823769}
   - {fileID: -5365576085722822818}
+  - {fileID: 1342327325681443558}
+  - {fileID: -3777370834444239589}
+  - {fileID: 1317485643158489084}
+  - {fileID: 8111639419535392310}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -731,11 +735,11 @@ MonoBehaviour:
   useAreaRotationYChange: 0
   targetAreaRotationY: 0
   areaDistanceMin: 0
-  areaDistanceMax: 0.8
+  areaDistanceMax: 1.5
   areaHeightMin: 0
   areaHeightMax: 2
   areaAngle: 360
-  checkRaycastWallInArea: 1
+  checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
   removeColliderArea: 0
@@ -858,11 +862,11 @@ MonoBehaviour:
   useAreaRotationYChange: 0
   targetAreaRotationY: 0
   areaDistanceMin: 0
-  areaDistanceMax: 0.8
+  areaDistanceMax: 1.5
   areaHeightMin: 0
   areaHeightMax: 2
   areaAngle: 360
-  checkRaycastWallInArea: 1
+  checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
   removeColliderArea: 0
@@ -945,6 +949,31 @@ MonoBehaviour:
   hitEffectLineRendererObject: {fileID: 0}
   showHitBlink: 0
   showHitRimBlink: 1
+--- !u!114 &-3777370834444239589
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.3
+  EndTime: 1
+  effectData: {fileID: 3136301650636350254, guid: 56cd8b2dc57131549bd9a7d33610e9e5,
+    type: 3}
+  offset: {x: 0, y: 0, z: 0}
+  fixedWorldPositionY: 0
+  direction: {x: 0, y: 0, z: 1}
+  useWorldSpaceDirection: 0
+  parentName: 
+  followPosition: 0
+  aliveOnlyOne: 0
+  immediateDisableAliveOnlyOne: 0
+  disableOnMapChanged: 0
 --- !u!114 &-3407199196862983319
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1016,11 +1045,11 @@ MonoBehaviour:
   useAreaRotationYChange: 0
   targetAreaRotationY: 0
   areaDistanceMin: 0
-  areaDistanceMax: 0.8
+  areaDistanceMax: 1.5
   areaHeightMin: 0
   areaHeightMax: 2
   areaAngle: 360
-  checkRaycastWallInArea: 1
+  checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
   removeColliderArea: 0
@@ -1580,6 +1609,56 @@ MonoBehaviour:
   aliveOnlyOne: 0
   immediateDisableAliveOnlyOne: 0
   disableOnMapChanged: 0
+--- !u!114 &1317485643158489084
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.55
+  EndTime: 1
+  effectData: {fileID: 3136301650636350254, guid: 56cd8b2dc57131549bd9a7d33610e9e5,
+    type: 3}
+  offset: {x: 0, y: 0, z: 0}
+  fixedWorldPositionY: 0
+  direction: {x: 0, y: 0, z: 1}
+  useWorldSpaceDirection: 0
+  parentName: 
+  followPosition: 0
+  aliveOnlyOne: 0
+  immediateDisableAliveOnlyOne: 0
+  disableOnMapChanged: 0
+--- !u!114 &1342327325681443558
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.05
+  EndTime: 1
+  effectData: {fileID: 3136301650636350254, guid: 56cd8b2dc57131549bd9a7d33610e9e5,
+    type: 3}
+  offset: {x: 0, y: 0, z: 0}
+  fixedWorldPositionY: 0
+  direction: {x: 0, y: 0, z: 1}
+  useWorldSpaceDirection: 0
+  parentName: 
+  followPosition: 0
+  aliveOnlyOne: 0
+  immediateDisableAliveOnlyOne: 0
+  disableOnMapChanged: 0
 --- !u!114 &2132871729513273106
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1678,11 +1757,11 @@ MonoBehaviour:
   useAreaRotationYChange: 0
   targetAreaRotationY: 0
   areaDistanceMin: 0
-  areaDistanceMax: 0.8
+  areaDistanceMax: 1.5
   areaHeightMin: 0
   areaHeightMax: 2
   areaAngle: 360
-  checkRaycastWallInArea: 1
+  checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
   removeColliderArea: 0
@@ -1932,7 +2011,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Ultimate1
-  m_Speed: 1.2
+  m_Speed: 1.5
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 8071793689118408540}
@@ -1998,11 +2077,11 @@ MonoBehaviour:
   useAreaRotationYChange: 0
   targetAreaRotationY: 0
   areaDistanceMin: 0
-  areaDistanceMax: 0.8
+  areaDistanceMax: 1.5
   areaHeightMin: 0
   areaHeightMax: 2
   areaAngle: 360
-  checkRaycastWallInArea: 1
+  checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
   removeColliderArea: 0
@@ -2170,11 +2249,11 @@ MonoBehaviour:
   useAreaRotationYChange: 0
   targetAreaRotationY: 0
   areaDistanceMin: 0
-  areaDistanceMax: 0.8
+  areaDistanceMax: 1.5
   areaHeightMin: 0
   areaHeightMax: 2
   areaAngle: 360
-  checkRaycastWallInArea: 1
+  checkRaycastWallInArea: 0
   raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
   removeColliderArea: 0
@@ -2279,6 +2358,31 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!114 &8111639419535392310
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1e9119015717d468458630af31fe7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartTime: 0.8
+  EndTime: 1
+  effectData: {fileID: 3136301650636350254, guid: 56cd8b2dc57131549bd9a7d33610e9e5,
+    type: 3}
+  offset: {x: 0, y: 0, z: 0}
+  fixedWorldPositionY: 0
+  direction: {x: 0, y: 0, z: 1}
+  useWorldSpaceDirection: 0
+  parentName: 
+  followPosition: 0
+  aliveOnlyOne: 0
+  immediateDisableAliveOnlyOne: 0
+  disableOnMapChanged: 0
 --- !u!1102 &8503796429965771016
 AnimatorState:
   serializedVersion: 5

@@ -201,6 +201,10 @@ public class DailyBoxGaugeCanvas : MonoBehaviour
 		if (GatePillar.instance.gameObject.activeSelf == false)
 			return;
 
+		// DropObjectGroup 이 만들어지지 않으면 dropSealGainPrefab이 존재하지 않는다. LateInitialize에서 만들기때문에 체크해야한다.
+		if (DropObjectGroup.instance == null)
+			return;
+
 		// 전투하고 나서 로비로 돌아온 다음에 진행되기 때문에 로딩 캔버스가 풀리는 타임을 기다려야한다.
 		// 이러려면 특이하게도 인스턴스는 있되 gameObject.activeSelf가 false 인 상태를 기다려야한다.
 		if (LoadingCanvas.instance != null && LoadingCanvas.instance.gameObject.activeSelf == false)

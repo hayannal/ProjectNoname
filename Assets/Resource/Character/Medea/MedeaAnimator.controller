@@ -87,7 +87,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Move
-  m_Speed: 1
+  m_Speed: 0.85
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours:
@@ -334,7 +334,9 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 0
+  useDynamicMaxDistanceByTargetDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -353,7 +355,9 @@ MonoBehaviour:
   areaHeightMax: 0
   areaAngle: 0
   checkRaycastWallInArea: 0
+  raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -373,6 +377,7 @@ MonoBehaviour:
   targetSpeed: 0
   speedChangeTime: 0
   speedChangeEase: 6
+  repeatSpeedChange: 0
   overrideSpeedOnCollision: 1.5
   overrideSpeedTimeOnCollision: 0.3
   curve: 0
@@ -388,6 +393,7 @@ MonoBehaviour:
   useRandomTurn: 0
   accelTurn: 0
   randomTurnRotateYawRange: {x: 0, y: 0}
+  zigZagIntervalTime: 0
   gravity: -9.81
   parallelCount: 0
   parallelDistance: 0
@@ -404,10 +410,12 @@ MonoBehaviour:
   quadThrough: 0
   overrideResetIgnoreSqrMagnitude: 0
   bounceWallQuadCount: 1
+  bounceToTarget: 0
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
   overrideRicochetDistance: 0
   overrideRicochetSpeed: 0
+  useTimerRicochet: 0
   useHitStay: 1
   hitStayInterval: 0.185
   hitStayIgnoreDuplicate: 0
@@ -416,6 +424,8 @@ MonoBehaviour:
   onlyUsedAsTrigger: 0
   oneHitPerTarget: 0
   useLineRenderer: 0
+  ignoreRemoveColliderAffector: 0
+  aliveOnlyOne: 0
   affectorValueIdList:
   - NormalAttackMedea
   showHitEffect: 1
@@ -446,8 +456,12 @@ MonoBehaviour:
   offset: {x: -0.1, y: 1.23, z: 0.8}
   fixedWorldPositionY: 0
   direction: {x: 0, y: 0, z: 1}
+  useWorldSpaceDirection: 0
   parentName: 
   followPosition: 0
+  aliveOnlyOne: 0
+  immediateDisableAliveOnlyOne: 0
+  disableOnMapChanged: 0
 --- !u!1102 &8503796429965771016
 AnimatorState:
   serializedVersion: 5

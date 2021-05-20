@@ -10,7 +10,7 @@ public class HealSpOnHitAffector : AffectorBase
 	static float s_cooltimeValueB = 0.0f;
 	static float s_probValueA = 0.0f;
 	static float s_probValueB = 0.08f;
-	static float s_amountValueA = 0.068f;
+	static float s_amountValueA = 8.5f;
 
 	AffectorValueLevelTableData _affectorValueLevelTableData;
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)
@@ -73,7 +73,7 @@ public class HealSpOnHitAffector : AffectorBase
 
 		if (Random.value > rate)
 			return;
-		affectorProcessor.actor.actorStatus.AddSP(affectorProcessor.actor.actorStatus.GetValue(eActorStatus.MaxSp) * s_amountValueA);
+		affectorProcessor.actor.actorStatus.AddSP(s_amountValueA);
 
 		FloatingDamageTextRootCanvas.instance.ShowText(FloatingDamageText.eFloatingDamageType.HealSpOnAttack, affectorProcessor.actor);
 

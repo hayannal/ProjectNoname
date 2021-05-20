@@ -242,8 +242,8 @@ public class CharacterInfoWingCanvas : MonoBehaviour
 		if (_spGainWingPowerTableData == null)
 			return;
 
-		string firstText = string.Format("{0} {1} : {2:0.##}%", UIString.instance.GetString("GameUI_WingsSpGainMore"),
-			UIString.instance.GetString(_spGainWingPowerTableData.gradeName), _spGainWingPowerTableData.value1 * 100.0f);
+		string firstText = string.Format("{0} {1} : {2:0.##}", UIString.instance.GetString("GameUI_WingsSpGainMore"),
+			UIString.instance.GetString(_spGainWingPowerTableData.gradeName), _spGainWingPowerTableData.value1);
 		string secondText = GetGradeValueText(_spGainWingPowerTableData.wingType);
 		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, string.Format("{0}\n\n{1}", firstText, secondText), 250, spGainTextTransform, new Vector2(30.0f, -35.0f));
 	}
@@ -260,7 +260,10 @@ public class CharacterInfoWingCanvas : MonoBehaviour
 
 			_stringBuilderGrade.Append(UIString.instance.GetString(TableDataManager.instance.wingPowerTable.dataArray[i].gradeName));
 			_stringBuilderGrade.Append(" : ");
-			_stringBuilderGrade.AppendFormat("{0:0.##}%", TableDataManager.instance.wingPowerTable.dataArray[i].value1 * 100.0f);
+			if (wingType == (int)eStatsType.SpGain)
+				_stringBuilderGrade.AppendFormat("{0:0.##}", TableDataManager.instance.wingPowerTable.dataArray[i].value1);
+			else
+				_stringBuilderGrade.AppendFormat("{0:0.##}%", TableDataManager.instance.wingPowerTable.dataArray[i].value1 * 100.0f);
 			if (threeCount < 2)
 			{
 				_stringBuilderGrade.Append(" / ");

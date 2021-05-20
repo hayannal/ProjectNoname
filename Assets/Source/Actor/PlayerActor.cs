@@ -466,7 +466,7 @@ public class PlayerActor : Actor
 		_wingObject.SetActive(!hide);
 	}
 
-	const float SpRegen_Interval = 5.0f;
+	const float SpRegen_Interval = 2.2f;
 	float _spRegenRemainTime = 0.0f;
 	bool _showed = false;
 	void UpdateSpRegenOnBoss()

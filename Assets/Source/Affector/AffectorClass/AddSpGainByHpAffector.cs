@@ -51,9 +51,10 @@ public class AddSpGainByHpAffector : AffectorBase
 				if (_actor.actorStatus.GetHPRatio() >= 1.0f)
 					return _value;
 				break;
-			//case 2:
-				// AddAttackByHpAffector와 달리 2 타입을 사용하지 않는다.
-				//break;
+			case 2:
+				if (_actor.actorStatus.GetHPRatio() >= 0.5f)
+					return _value;
+				break;
 		}
 		return 0.0f;
 	}

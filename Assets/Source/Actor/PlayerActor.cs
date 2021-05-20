@@ -218,6 +218,7 @@ public class PlayerActor : Actor
 	{
 		UpdateUltimateIndicator();
 		UpdateStagePaneltyEffect();
+		UpdateSpRegenOnBoss();
 	}
 
 	#region Stage Penalty Affector
@@ -463,6 +464,38 @@ public class PlayerActor : Actor
 		if (CharacterListCanvas.instance != null && StackCanvas.IsInStack(CharacterListCanvas.instance.gameObject, false) && StackCanvas.IsProcessHome() == false)
 			hide = false;
 		_wingObject.SetActive(!hide);
+	}
+
+	const float SpRegen_Interval = 5.0f;
+	float _spRegenRemainTime = 0.0f;
+	bool _showed = false;
+	void UpdateSpRegenOnBoss()
+	{
+		if (actorStatus.GetValue(eActorStatus.SpRegenOnBoss) <= 0.0f)
+			return;
+		if (BossMonsterGaugeCanvas.IsShow() == false)
+		{
+			_showed = false;
+			return;
+		}
+
+		// 초기화 호출을 받을 곳이 없어서 직접 감지하기로 한다.
+		if (_showed == false)
+		{
+			_showed = true;
+			_spRegenRemainTime = SpRegen_Interval;
+			return;
+		}
+
+		if (_spRegenRemainTime > 0.0f)
+		{
+			_spRegenRemainTime -= Time.deltaTime;
+			if (_spRegenRemainTime <= 0.0f)
+			{
+				_spRegenRemainTime += SpRegen_Interval;
+				actorStatus.AddSP(actorStatus.GetValue(eActorStatus.SpRegenOnBoss));
+			}
+		}
 	}
 	#endregion
 }

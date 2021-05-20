@@ -175,7 +175,7 @@ public class SequentialMonster : MonoBehaviour
 						continue;
 					_sumBossHpPerSpawnSequence += _listAliveMonsterActor[i].actorStatus.GetValue(ActorStatusDefine.eActorStatus.MaxHp);
 				}
-				BossMonsterGaugeCanvas.instance.InitializeSequentialGauge(this);
+				BossMonsterGaugeCanvas.InitializeSequentialGauge(this);
 			}
 		}
 	}

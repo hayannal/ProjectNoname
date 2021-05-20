@@ -18,6 +18,7 @@ namespace ActorStatusDefine {
 
 		MaxSp = MonsterStatusAmount,
 		SpGainAddRate,
+		SpRegenOnBoss,
 		CriticalRate,
 		CriticalDamageAddRate,
 		MoveSpeedAddRate,

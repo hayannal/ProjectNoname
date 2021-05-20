@@ -6,7 +6,7 @@ using DG.Tweening;
 
 public class BossMonsterGaugeCanvas : MonoBehaviour
 {
-	public static BossMonsterGaugeCanvas instance
+	static BossMonsterGaugeCanvas instance
 	{
 		get
 		{
@@ -18,6 +18,44 @@ public class BossMonsterGaugeCanvas : MonoBehaviour
 		}
 	}
 	static BossMonsterGaugeCanvas _instance = null;
+
+	public static bool IsShow()
+	{
+		if (_instance != null && _instance.gameObject.activeSelf)
+			return true;
+		return false;
+	}
+
+	public static void InitializeGauge(MonsterActor monsterActor)
+	{
+		instance.InternalInitializeGauge(monsterActor);
+	}
+
+	public static void InitializeSequentialGauge(SequentialMonster sequentialMonster)
+	{
+		instance.InternalInitializeSequentialGauge(sequentialMonster);
+	}
+
+	public static void OnChangedHP(MonsterActor monsterActor)
+	{
+		if (IsShow() == false)
+			return;
+		_instance.InternalOnChangedHP(monsterActor);
+	}
+
+	public static void OnDie(MonsterActor monsterActor)
+	{
+		if (IsShow() == false)
+			return;
+		_instance.InternalOnDie(monsterActor);
+	}
+
+	public static bool IsLastAliveMonster(MonsterActor monsterActor)
+	{
+		if (IsShow() == false)
+			return false;
+		return _instance.InternalIsLastAliveMonster(monsterActor);
+	}
 
 	public Slider hpRatio1Slider;
 	public RectTransform hpFill1RectTransform;
@@ -38,7 +76,7 @@ public class BossMonsterGaugeCanvas : MonoBehaviour
 	}
 
 	List<MonsterActor> _listMonsterActor = new List<MonsterActor>();
-	public void InitializeGauge(MonsterActor monsterActor)
+	public void InternalInitializeGauge(MonsterActor monsterActor)
 	{
 		if (BattleInstanceManager.instance.bossGaugeSequentialMonster != null)
 			return;
@@ -63,7 +101,7 @@ public class BossMonsterGaugeCanvas : MonoBehaviour
 	}
 
 	bool _initializedSequentialGauge = false;
-	public void InitializeSequentialGauge(SequentialMonster sequentialMonster)
+	public void InternalInitializeSequentialGauge(SequentialMonster sequentialMonster)
 	{
 		if (sequentialMonster != BattleInstanceManager.instance.bossGaugeSequentialMonster)
 			return;
@@ -134,7 +172,7 @@ public class BossMonsterGaugeCanvas : MonoBehaviour
 	}
 
 	float _lastHpLineRatio = 1.0f;
-	public void OnChangedHP(MonsterActor monsterActor)
+	public void InternalOnChangedHP(MonsterActor monsterActor)
 	{
 		float sumHp = 0.0f;
 		if (monsterActor.sequentialMonster != null)
@@ -226,7 +264,7 @@ public class BossMonsterGaugeCanvas : MonoBehaviour
 	}
 
 	int _dieCount = 0;
-	public void OnDie(MonsterActor monsterActor)
+	public void InternalOnDie(MonsterActor monsterActor)
 	{
 		bool allDie = false;
 		if (monsterActor.sequentialMonster != null)
@@ -249,7 +287,7 @@ public class BossMonsterGaugeCanvas : MonoBehaviour
 			gameObject.SetActive(false);
 	}
 
-	public bool IsLastAliveMonster(MonsterActor monsterActor)
+	public bool InternalIsLastAliveMonster(MonsterActor monsterActor)
 	{
 		if (monsterActor.sequentialMonster != null && monsterActor.sequentialMonster == BattleInstanceManager.instance.bossGaugeSequentialMonster)
 			return monsterActor.sequentialMonster.IsLastAliveMonster(monsterActor);

@@ -112,7 +112,7 @@ public class MonsterActor : Actor
 		monsterAI.InitializeAI();
 
 		if (bossMonster && BattleInstanceManager.instance.bossGaugeSequentialMonster == null)
-			BossMonsterGaugeCanvas.instance.InitializeGauge(this);
+			BossMonsterGaugeCanvas.InitializeGauge(this);
 
 		monsterAI.OnEventAnimatorParameter(MonsterAI.eAnimatorParameterForAI.fHpRatio, actorStatus.GetHPRatio());
 
@@ -268,7 +268,7 @@ public class MonsterActor : Actor
 
 		if (bossMonster)
 		{
-			BossMonsterGaugeCanvas.instance.OnChangedHP(this);
+			BossMonsterGaugeCanvas.OnChangedHP(this);
 		}
 		
 		if (bossMonster == false || (groupMonster && group.shareCurrentHp == false))
@@ -298,7 +298,7 @@ public class MonsterActor : Actor
 
 		if (bossMonster)
 		{
-			BossMonsterGaugeCanvas.instance.OnDie(this);
+			BossMonsterGaugeCanvas.OnDie(this);
 		}
 		
 		if (bossMonster == false || (groupMonster && group.shareCurrentHp == false))
@@ -545,7 +545,7 @@ public class MonsterActor : Actor
 		{
 			// 리스트로 들고있는게 이 gaugeCanvas밖에 없어서 여기에 물어본다.
 			// sequentialMonster몬스터의 경우 여기서 Last 체크가 된다. SummonMonster와 달리 총량을 알고있기 때문에 가능하다.
-			if (BossMonsterGaugeCanvas.instance.IsLastAliveMonster(this) == false)
+			if (BossMonsterGaugeCanvas.IsLastAliveMonster(this) == false)
 				return;
 		}
 		else

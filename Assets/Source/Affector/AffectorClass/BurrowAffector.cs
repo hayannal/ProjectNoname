@@ -174,7 +174,7 @@ public class BurrowAffector : AffectorBase
 		{
 			if (this == null)
 				yield break;
-			if (_affectorProcessor.gameObject == null || _affectorProcessor.gameObject.activeSelf == false)
+			if (_affectorProcessor == null || _affectorProcessor.gameObject == null || _affectorProcessor.gameObject.activeSelf == false)
 				yield break;
 
 			if (Mathf.Abs(_actor.actionController.cachedAnimatorTransform.localPosition.y + BurrowAnimationPositionY) < 0.01f && _actor.GetCollider().enabled == true)

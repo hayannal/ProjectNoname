@@ -118,9 +118,42 @@ public class CustomFollowCamera : MonoBehaviour
 
 		// 그나마 이 방법이 기존에 쓰던 Lerp보다 조금은 더 나은거 같아서 쓰기로 한다.
 		cachedTransform.position = Vector3.SmoothDamp(cachedTransform.position, cameraRelativePosition, ref _velocity, smoothTime, Mathf.Infinity, Time.smoothDeltaTime);
+
+		LateUpdateTargetFrameRate();
 	}
 
-	#endregion
+	const int AdjustTargetFrameRate = 50;
+	bool _appliedAdjust = false;
+	void LateUpdateTargetFrameRate()
+	{
+		// 이미 높게 설정되어있는 상태라면 아무것도 하지 않는다.
+#if UNITY_IOS
+		if (OptionManager.instance.frame >= 6)
+			return;
+#else
+		if (OptionManager.instance.frame >= 4)
+			return;
+#endif
+
+		bool applyAdjust = (Mathf.Abs(cachedTransform.position.z - cameraRelativePosition.z) > 0.1f);
+		if (applyAdjust)
+		{
+			if (_appliedAdjust == false)
+			{
+				_appliedAdjust = true;
+				Application.targetFrameRate = AdjustTargetFrameRate;
+			}
+		}
+		else
+		{
+			if (_appliedAdjust)
+			{
+				_appliedAdjust = false;
+				OptionManager.instance.frame = OptionManager.instance.frame;
+			}
+		}
+	}
+#endregion
 
 	const float LEFT_LIMIT = -3.93f;
 	const float RIGHT_LIMIT = 3.93f;

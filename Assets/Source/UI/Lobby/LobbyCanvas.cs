@@ -521,6 +521,8 @@ public class LobbyCanvas : MonoBehaviour
 			return;
 		if (SwapCanvas.instance != null && SwapCanvas.instance.gameObject.activeSelf)
 			return;
+		if (ReturnScrollConfirmCanvas.instance != null && ReturnScrollConfirmCanvas.instance.gameObject.activeSelf)
+			return;
 		if (battlePauseButton.gameObject.activeSelf == false)
 			return;
 		if (battlePauseButton.interactable == false)

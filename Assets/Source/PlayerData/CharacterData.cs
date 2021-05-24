@@ -167,6 +167,8 @@ public class CharacterData
 
 	public bool IsTranscendAlarmState()
 	{
+		if (transcendLevel >= TranscendLevelMax)
+			return false;
 		if (transcendPoint >= CharacterData.GetTranscendPoint(transcendLevel + 1))
 			return true;
 		return false;

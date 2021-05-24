@@ -122,7 +122,11 @@ public class CustomFollowCamera : MonoBehaviour
 		LateUpdateTargetFrameRate();
 	}
 
+#if UNITY_IOS
+	const int AdjustTargetFrameRate = 60;
+#else
 	const int AdjustTargetFrameRate = 50;
+#endif
 	bool _appliedAdjust = false;
 	void LateUpdateTargetFrameRate()
 	{

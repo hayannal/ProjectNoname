@@ -4453,6 +4453,7 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -4465,6 +4466,7 @@ ParticleSystemRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -4540,8 +4542,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8330978538586054843}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 2
+  m_Shape: 0
   m_Color: {r: 0.28676468, g: 0.35070974, b: 1, a: 1}
   m_Intensity: 2
   m_Range: 5
@@ -4696,7 +4699,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: 11f9432fd9e94894883da7801527a8f0, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
-  m_Pitch: 0.8
+  m_Pitch: 0.5
   Loop: 0
   Mute: 0
   Spatialize: 0
@@ -4793,6 +4796,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   multipleComponent: 0
   checkDuplicate: 0
+  pitchRandomMultiplier: 1
+  startDelay: 0
 --- !u!1 &8331450023444192633
 GameObject:
   m_ObjectHideFlags: 0

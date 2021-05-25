@@ -321,7 +321,7 @@ public class NodeWarResultCanvas : MonoBehaviour
 
 		int boostSplitIndex = -1;
 		if (_boostApplied)
-			boostSplitIndex = _listGrantItem.Count - 2;
+			boostSplitIndex = _listGrantItem.Count - 3;
 
 		for (int i = 0; i < _listGrantItem.Count; ++i)
 		{

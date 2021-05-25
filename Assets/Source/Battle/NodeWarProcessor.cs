@@ -914,21 +914,35 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	void PrepareDropProcessor()
 	{
 		// 드랍 아이디 뜯기는걸 방지하기 위해 레벨로부터 아이디를 뽑아내기로 한다.
-		int dropIndex = (_selectedNodeWarTableData.level - 1) / 50;
-
-		// 부스트 중이라면 한단계 업
-		if (PlayerData.instance.nodeWarBoostRemainCount > 0)
-			dropIndex += 1;
+		int dropIndex = 0;
+		if (_selectedNodeWarTableData.level > 40)
+			dropIndex = 2;
+		else if (_selectedNodeWarTableData.level > 10)
+			dropIndex = 1;
 
 		// 오리진 박스와 마찬가지로 먼저 드랍프로세서부터 만들어야한다.
 		string dropId = "";
-		switch (dropIndex)
+
+		// 부스트 중이라면 한단계 업
+		if (PlayerData.instance.nodeWarBoostRemainCount > 0)
 		{
-			case 0: dropId = "Shemwkdt"; break;
-			case 1: dropId = "Shemwkdu"; break;
-			case 2: dropId = "Shemwkdv"; break;
-			default: dropId = "Shemwkdw"; break;
+			switch (dropIndex)
+			{
+				case 0: dropId = "Shemwkdw"; break;
+				case 1: dropId = "Shemwkdx"; break;
+				case 2: dropId = "Shemwkdy"; break;
+			}
 		}
+		else
+		{
+			switch (dropIndex)
+			{
+				case 0: dropId = "Shemwkdt"; break;
+				case 1: dropId = "Shemwkdu"; break;
+				case 2: dropId = "Shemwkdv"; break;
+			}
+		}
+
 		_cachedDropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, dropId, "", true, true);
 		if (dropIndex != 0)
 			_cachedDropProcessor.AdjustDropRange(3.2f);

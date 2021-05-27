@@ -242,6 +242,14 @@ public class EquipOptionCanvas : MonoBehaviour
 
 	void OnClickRandomOptionRect(int randomIndex, bool forceRefresh = false)
 	{
+		if (_selectMain == false && _selectRendomIndex != -1)
+		{
+			EquipData.RandomOptionInfo prevInfo = _equipData.GetOption(_selectRendomIndex);
+			EquipData.RandomOptionInfo info = _equipData.GetOption(randomIndex);
+			if (prevInfo != null && info != null && (prevInfo.GetRandomStatusRatio() == 1.0f || info.GetRandomStatusRatio() == 1.0f))
+				forceRefresh = true;
+		}
+
 		_targetRectTransform = optionRectTransformList[randomIndex];
 		if (_selectMain || forceRefresh)
 		{

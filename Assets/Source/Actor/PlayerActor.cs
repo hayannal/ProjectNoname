@@ -1,4 +1,4 @@
-﻿#define CHEAT_RESURRECT
+﻿//#define CHEAT_RESURRECT
 
 using System.Collections;
 using System.Collections.Generic;

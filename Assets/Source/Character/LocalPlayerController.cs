@@ -164,7 +164,7 @@ public sealed class LocalPlayerController : BaseCharacterController
 				if (animatorStateInfo.loop && animatorStateInfo.IsName("Move"))
 				{
 #if UNITY_EDITOR
-					Debug.LogError("Invalid Move!!!!!");
+					//Debug.LogError("Invalid Move!!!!!");
 #endif
 					actionController.PlayActionByActionName("Idle");
 				}

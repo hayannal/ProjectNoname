@@ -459,6 +459,9 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 				buttonList[i].gameObject.SetActive(false);
 			Timing.RunCoroutine(ButtonAppearProcess(true));
 
+			if (ContentsManager.IsTutorialChapter())
+				return;
+
 			// 아이콘 3개가 보이고 나서 갱신되면 헷갈린다. OnClickRefreshButton에서 처리했던거처럼 바로 갱신해주는게 좋아보인다.
 			RefreshClearPoint(BattleManager.instance.GetClearPoint(), GetRefreshPrice());
 			return;

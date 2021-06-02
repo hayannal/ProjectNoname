@@ -1230,8 +1230,12 @@ public class PlayerData : MonoBehaviour
 	}
 
 	#region Reset LevelPackage
-	public void OnRecvLevelPackageResetInfo(Dictionary<string, string> titleData, Dictionary<string, UserDataRecord> userReadOnlyData)
+	public void OnRecvLevelPackageResetInfo(Dictionary<string, string> titleData, Dictionary<string, UserDataRecord> userReadOnlyData, bool newlyCreated)
 	{
+		// 계정 생성시에는 굳이 할필요가 없다. 패스해보자.
+		if (newlyCreated)
+			return;
+
 		OnRecvLevelPackageResetInfo(titleData);
 
 		_parsedLastLevelPackageResetDateTime = false;

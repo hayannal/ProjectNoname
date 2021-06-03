@@ -195,6 +195,10 @@ public class DailyBoxGaugeCanvas : MonoBehaviour
 		if (_reservedGainCount == 0)
 			return;
 
+		// 카오스 열리는 연출중에는 패스하기로 한다.
+		if (OpenChaosEventGatePillar.instance != null && OpenChaosEventGatePillar.instance.gameObject.activeSelf)
+			return;
+
 		// 그럴리는 없겠지만 게이트 필라가 없다면 진행하면 안될거 같다.
 		if (GatePillar.instance == null)
 			return;

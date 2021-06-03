@@ -25,7 +25,9 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 24
+  useDynamicMaxDistanceByTargetDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -44,7 +46,9 @@ MonoBehaviour:
   areaHeightMax: 0
   areaAngle: 0
   checkRaycastWallInArea: 0
+  raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -64,6 +68,7 @@ MonoBehaviour:
   targetSpeed: 0
   speedChangeTime: 0
   speedChangeEase: 6
+  repeatSpeedChange: 0
   overrideSpeedOnCollision: 0
   overrideSpeedTimeOnCollision: 0
   curve: 0
@@ -79,6 +84,7 @@ MonoBehaviour:
   useRandomTurn: 0
   accelTurn: 0
   randomTurnRotateYawRange: {x: 0, y: 0}
+  zigZagIntervalTime: 0
   gravity: -9.81
   parallelCount: 0
   parallelDistance: 0
@@ -95,10 +101,12 @@ MonoBehaviour:
   quadThrough: 0
   overrideResetIgnoreSqrMagnitude: 0
   bounceWallQuadCount: 0
+  bounceToTarget: 0
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
   overrideRicochetDistance: 0
   overrideRicochetSpeed: 0
+  useTimerRicochet: 0
   useHitStay: 0
   hitStayInterval: 0
   hitStayIgnoreDuplicate: 0
@@ -107,6 +115,8 @@ MonoBehaviour:
   onlyUsedAsTrigger: 0
   oneHitPerTarget: 0
   useLineRenderer: 0
+  ignoreRemoveColliderAffector: 0
+  aliveOnlyOne: 0
   affectorValueIdList:
   - NormalAttack01
   showHitEffect: 1
@@ -160,7 +170,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0.02
   EndTime: 0.15
-  speed: 0.5
+  speed: 0.35
 --- !u!1107 &-6540346028188328965
 AnimatorStateMachine:
   serializedVersion: 5
@@ -233,7 +243,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartTime: 0.2881356
   EndTime: 0.36228812
-  speed: 0.15
+  speed: 0.12
 --- !u!1102 &-1215575675028676736
 AnimatorState:
   serializedVersion: 5
@@ -343,7 +353,9 @@ MonoBehaviour:
   areaHitLifeTimeEarlyOffset: 0
   ignoreAreaHitLifeTimeRange: {x: 0, y: 0}
   movable: 1
+  moveStartDelay: 0
   maxDistance: 24
+  useDynamicMaxDistanceByTargetDistance: 0
   defaultSphereCastDistance: 0
   sphereCastRadius: 0
   teamCheckType: 0
@@ -362,7 +374,9 @@ MonoBehaviour:
   areaHeightMax: 0
   areaAngle: 0
   checkRaycastWallInArea: 0
+  raycastWallHeight: 0.5
   applyCollisionDamageInterval: 0
+  removeColliderArea: 0
   repeatCount: 0
   repeatInterval: 0
   movementType: 0
@@ -382,6 +396,7 @@ MonoBehaviour:
   targetSpeed: 0
   speedChangeTime: 0
   speedChangeEase: 6
+  repeatSpeedChange: 0
   overrideSpeedOnCollision: 0
   overrideSpeedTimeOnCollision: 0
   curve: 0
@@ -397,6 +412,7 @@ MonoBehaviour:
   useRandomTurn: 0
   accelTurn: 0
   randomTurnRotateYawRange: {x: 0, y: 0}
+  zigZagIntervalTime: 0
   gravity: -9.81
   parallelCount: 0
   parallelDistance: 0
@@ -413,10 +429,12 @@ MonoBehaviour:
   quadThrough: 0
   overrideResetIgnoreSqrMagnitude: 0
   bounceWallQuadCount: 0
+  bounceToTarget: 0
   ricochetCount: 0
   ricochetOneHitPerTarget: 0
   overrideRicochetDistance: 0
   overrideRicochetSpeed: 0
+  useTimerRicochet: 0
   useHitStay: 0
   hitStayInterval: 0
   hitStayIgnoreDuplicate: 0
@@ -425,6 +443,8 @@ MonoBehaviour:
   onlyUsedAsTrigger: 0
   oneHitPerTarget: 0
   useLineRenderer: 0
+  ignoreRemoveColliderAffector: 0
+  aliveOnlyOne: 0
   affectorValueIdList:
   - NormalAttack01
   showHitEffect: 1

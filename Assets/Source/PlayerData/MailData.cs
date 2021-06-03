@@ -89,7 +89,7 @@ public class MailData : MonoBehaviour
 		if (newlyCreated)
 		{
 			if (CheckAdd())
-				mailRefreshTime = ServerTime.UtcNow + TimeSpan.FromSeconds(15);
+				mailRefreshTime = ServerTime.UtcNow + TimeSpan.FromMinutes(1);
 			else
 			{
 				mailRefreshTime = ServerTime.UtcNow;

@@ -381,7 +381,8 @@ public class PlayerData : MonoBehaviour
 
 		// 임의로 생성한거라 EntityKey를 만들어둘수가 없다.
 		// 그렇다고 loginned 를 풀어서 통째로 받으면 괜히 커져서 EntityKey 리프레쉬 함수 하나 만들어서 호출하기로 한다.
-		StartCoroutine(DelayedSyncCharacterEntity(5.0f));
+		// 너무 빨리 호출하면 아직 디비에서 만들어지는 도중일수도 있으니 튜토 끝나기 전에만 받으면 되서 30초는 기다렸다가 호출해보기로 한다.
+		StartCoroutine(DelayedSyncCharacterEntity(30.0f));
 
 		// newlyCreated는 새로 생성된 계정에서만 true일거고 재접하거나 로그아웃 할때 false로 돌아와서 유지될거다.
 		newlyCreated = true;

@@ -18,10 +18,10 @@ public class ClearStageSubTrigger : MonoBehaviour
 		if (_checkedTrigger)
 			return;
 
-		UIInstanceManager.instance.ShowCanvasAsync("DragGuideCanvas", () =>
+		AddressableAssetLoadManager.GetAddressableGameObject("DragGuideCanvas", "Canvas", (prefab) =>
 		{
-			_dragGuideCanvasObject = DragGuideCanvas.instance.gameObject;
-		}, false);
+			_dragGuideCanvasObject = Instantiate<GameObject>(prefab);
+		});
 	}
 
 	GameObject _dragGuideCanvasObject;

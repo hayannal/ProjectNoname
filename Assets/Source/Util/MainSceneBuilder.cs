@@ -72,6 +72,8 @@ public class MainSceneBuilder : MonoBehaviour
 			Addressables.Release<GameObject>(_handleTimeSpacePortal);
 		if (_handleNodeWarPortal.IsValid())
 			Addressables.Release<GameObject>(_handleNodeWarPortal);
+		if (_handleEventBoard.IsValid())
+			Addressables.Release<GameObject>(_handleEventBoard);
 
 		// 로딩속도를 위해 배틀매니저는 천천히 로딩한다. 그래서 다른 로딩 오브젝트와 달리 Valid 검사를 해야한다.
 		if (_handleBattleManager.IsValid())
@@ -107,6 +109,7 @@ public class MainSceneBuilder : MonoBehaviour
 	AsyncOperationHandle<GameObject> _handleEventGatePillar;
 	AsyncOperationHandle<GameObject> _handleTimeSpacePortal;
 	AsyncOperationHandle<GameObject> _handleNodeWarPortal;
+	AsyncOperationHandle<GameObject> _handleEventBoard;
 	IEnumerator Start()
     {
 #if !UNITY_EDITOR
@@ -427,6 +430,15 @@ public class MainSceneBuilder : MonoBehaviour
 #if !UNITY_EDITOR
 		Debug.LogWarning("BBBBBBBBB-2");
 #endif
+		bool useEventBoard = false;
+		if (ContentsManager.IsTutorialChapter() == false && PlayerData.instance.lobbyDownloadState == false && CumulativeEventData.instance.disableEvent == false)
+		{
+			_handleEventBoard = Addressables.LoadAssetAsync<GameObject>("EventBoard");
+			useEventBoard = true;
+		}
+#if !UNITY_EDITOR
+		Debug.LogWarning("BBBBBBBBB-3");
+#endif
 		StageManager.instance.InitializeStage(PlayerData.instance.selectedChapter, 0);
 #if !UNITY_EDITOR
 		Debug.LogWarning("CCCCCCCCC");
@@ -521,8 +533,21 @@ public class MainSceneBuilder : MonoBehaviour
 #endif
 		}
 
+		if (useEventBoard)
+		{
+			while (_handleEventBoard.IsValid() && !_handleEventBoard.IsDone)
+				yield return null;
+#if UNITY_EDITOR
+			newObject = Instantiate<GameObject>(_handleEventBoard.Result);
+			if (settings.ActivePlayModeDataBuilderIndex == 2)
+				ObjectUtil.ReloadShader(newObject);
+#else
+			Instantiate<GameObject>(_handleEventBoard.Result);
+#endif
+		}
+
 #if !UNITY_EDITOR
-		Debug.LogWarning("HHHHHHHHH-3");
+		Debug.LogWarning("HHHHHHHHH-4");
 #endif
 		// 현재맵의 로딩이 끝나면 다음맵의 프리팹을 로딩해놔야 게이트 필라로 이동시 곧바로 이동할 수 있게 된다.
 		// 원래라면 몹 다 죽이고 호출되는 함수인데 초기 씬 구축에선 할 타이밍이 로비맵 로딩 직후밖에 없다.
@@ -660,6 +685,7 @@ public class MainSceneBuilder : MonoBehaviour
 			DailyShopData.instance.LateInitialize();
 			TimeSpaceData.instance.LateInitialize();
 			QuestData.instance.LateInitialize();
+			CumulativeEventData.instance.LateInitialize();
 		}
 
 		// 워낙 크기가 작으니 LateInitialize에서 해도 문제없을거다.

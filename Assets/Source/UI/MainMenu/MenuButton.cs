@@ -12,7 +12,8 @@ public class MenuButton : MonoBehaviour
 
 	void Start()
 	{
-		menuText.color = new Color(1.0f, 1.0f, 1.0f, 0.0f);
+		if (menuText != null)
+			menuText.color = new Color(1.0f, 1.0f, 1.0f, 0.0f);
 	}
 
 	void Update()
@@ -48,6 +49,9 @@ public class MenuButton : MonoBehaviour
 
 	void UpdateTextAlpha()
 	{
+		if (menuText == null)
+			return;
+
 		Color transparentColor = new Color(1.0f, 1.0f, 1.0f, 0.0f);
 		if (isOn)
 		{

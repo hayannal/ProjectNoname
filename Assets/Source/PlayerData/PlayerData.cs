@@ -1003,6 +1003,7 @@ public class PlayerData : MonoBehaviour
 					RegisterNodeWarBonusPowerSource();
 					QuestData.instance.ResetQuestStepInfo();
 					CheckLevelPackageResetInfo();
+					CumulativeEventData.instance.ResetEventInfo();
 				}
 				else
 				{

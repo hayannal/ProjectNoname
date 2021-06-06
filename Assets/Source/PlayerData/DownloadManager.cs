@@ -43,7 +43,7 @@ public class DownloadManager : MonoBehaviour
 	// Remote Group이 늘어나면 꼭 여기에 추가해야한다.
 	// TableDataManager는 항상 최신으로 유지하기 때문에 여기에 등록하지 않는다.
 	// StringTable은 번들에 1개만 들어있는 어드레스라서 별도 추가없이 저 어드레스를 그대로 쓰기로 한다.
-	List<string> _listBundleMarkKey = new List<string> { "StringTable", "_ess", "_map", "_spawnFlag", "_power", "_env", "_char", "_ui", "_bossPreview", "_equip", "_wing" };
+	List<string> _listBundleMarkKey = new List<string> { "StringTable", "_ess", "_map", "_spawnFlag", "_power", "_env", "_char", "_ui", "_eventUi", "_bossPreview", "_equip", "_wing", "_sound" };
 
 	// 앱 시작시에 물어보는 번들리소스 체크 프로세스
 	public void CheckDownloadProcess()

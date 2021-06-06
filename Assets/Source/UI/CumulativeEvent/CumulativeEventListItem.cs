@@ -16,13 +16,9 @@ public class CumulativeEventListItem : MonoBehaviour
 	public GameObject goldIconObject;
 	public GameObject diaIconObject;
 	public GameObject energyIconObject;
+	public GameObject returnScrollIconObject;
 	public GameObject equipBoxObject;
-
-	public GameObject equipGroupObject;
-	public GameObject characterGroupObject;
-	public GameObject characterBoxGroupObject;
 	public Image equipIconImage;
-	public Image characterImage;
 
 	public Text countText;
 	public Text nameText;
@@ -32,6 +28,7 @@ public class CumulativeEventListItem : MonoBehaviour
 
 	public GameObject addObject;
 	public Text addText;
+	public GameObject infoButtonObject;
 	public GameObject blackObject;
 	public RectTransform alarmRootTransform;
 
@@ -47,9 +44,13 @@ public class CumulativeEventListItem : MonoBehaviour
 		_slotInfo = eventRewardInfo;
 
 		RefreshClaimState();
+		RefreshInfoButton(eventRewardInfo);
 
 		if (_slotInfo.alreadyDesigned)
+		{
+			RefreshBackground(true);
 			return;
+		}
 
 		if (eventRewardInfo.type == "cu")
 		{
@@ -59,6 +60,7 @@ public class CumulativeEventListItem : MonoBehaviour
 				goldIconObject.SetActive(true);
 				diaIconObject.SetActive(false);
 				energyIconObject.SetActive(false);
+				returnScrollIconObject.SetActive(false);
 				countText.color = DailyFreeItem.GetGoldTextColor();
 			}
 			else if (eventRewardInfo.value == CurrencyData.DiamondCode())
@@ -67,56 +69,117 @@ public class CumulativeEventListItem : MonoBehaviour
 				goldIconObject.SetActive(false);
 				diaIconObject.SetActive(true);
 				energyIconObject.SetActive(false);
+				returnScrollIconObject.SetActive(false);
 				countText.color = DailyFreeItem.GetDiaTextColor();
 			}
-			else
+			else if (eventRewardInfo.value == CurrencyData.EnergyCode())
 			{
 				//_addEnergy = createInfo.cn;
 				goldIconObject.SetActive(false);
 				diaIconObject.SetActive(false);
 				energyIconObject.SetActive(true);
+				returnScrollIconObject.SetActive(false);
+				countText.color = Color.white;
+			}
+			else
+			{
+				goldIconObject.SetActive(false);
+				diaIconObject.SetActive(false);
+				energyIconObject.SetActive(false);
+				returnScrollIconObject.SetActive(true);
 				countText.color = Color.white;
 			}
 			countText.text = eventRewardInfo.count.ToString("N0");
 			countText.gameObject.SetActive(true);
 			equipBoxObject.SetActive(false);
+			equipIconImage.gameObject.SetActive(false);
 			nameText.gameObject.SetActive(false);
 			addObject.SetActive(false);
+			RefreshBackground(false);
 		}
 		else if (eventRewardInfo.type == "be")
 		{
 			goldIconObject.SetActive(false);
 			diaIconObject.SetActive(false);
 			energyIconObject.SetActive(false);
+			returnScrollIconObject.SetActive(false);
 			equipBoxObject.SetActive(true);
+			equipIconImage.gameObject.SetActive(false);
 
 			countText.gameObject.SetActive(false);
 			nameText.gameObject.SetActive(true);
 			nameText.SetLocalizedText(UIString.instance.GetString("MailUI_Equipment"));
 			addObject.SetActive(true);
 			addText.SetLocalizedText(UIString.instance.GetString(string.Format("GameUI_EquipGrade{0}", eventRewardInfo.value)));
+			RefreshBackground(false);
+		}
+		else if (eventRewardInfo.type == "fe")
+		{
+			goldIconObject.SetActive(false);
+			diaIconObject.SetActive(false);
+			energyIconObject.SetActive(false);
+			returnScrollIconObject.SetActive(false);
+			equipBoxObject.SetActive(false);
+			equipIconImage.gameObject.SetActive(true);
+
+			RefreshEquipIconImage(eventRewardInfo.value);
 		}
 	}
 
-	void RefreshCharacterBoxIconImage(string addTextStringId)
+	void RefreshEquipIconImage(string value)
 	{
-		if (equipGroupObject) equipGroupObject.SetActive(false);
-		if (characterGroupObject) characterGroupObject.SetActive(false);
-		if (characterBoxGroupObject) characterBoxGroupObject.SetActive(true);
+		EquipTableData equipTableData = TableDataManager.instance.FindEquipTableData(value);
+		if (equipTableData == null)
+			return;
 
-		RefreshBackground(false);
+		RefreshBackground(equipTableData.grade == 4);
+
+		AddressableAssetLoadManager.GetAddressableSprite(equipTableData.shotAddress, "Icon", (sprite) =>
+		{
+			equipIconImage.sprite = null;
+			equipIconImage.sprite = sprite;
+		});
+
 		countText.gameObject.SetActive(false);
-		nameText.SetLocalizedText(UIString.instance.GetString("ShopUIName_CharacterBox"));
+		nameText.SetLocalizedText(UIString.instance.GetString(equipTableData.nameId));
 		nameText.gameObject.SetActive(true);
-		addText.SetLocalizedText(UIString.instance.GetString(addTextStringId));
-		addObject.SetActive(true);
+		addObject.SetActive(false);
 	}
 
 	void RefreshBackground(bool isLightenBackground)
 	{
-		blurImage.color = isLightenBackground ? new Color(0.945f, 0.945f, 0.094f, 0.42f) : new Color(0.094f, 0.945f, 0.871f, 0.42f);
+		blurImage.color = isLightenBackground ? new Color(0.945f, 0.945f, 0.094f, 0.42f) : new Color(0.258f, 0.905f, 0.650f, 0.42f);
 		backgroundImge.color = isLightenBackground ? new Color(1.0f, 1.0f, 1.0f, 0.42f) : new Color(0.0f, 1.0f, 0.749f, 0.42f);
 		backgroundImge.sprite = backgroundSpriteList[isLightenBackground ? 0 : 1];
+	}
+
+	void RefreshInfoButton(CumulativeEventData.EventRewardInfo eventRewardInfo)
+	{
+		if (eventRewardInfo.type == "cu")
+		{
+			infoButtonObject.SetActive(false);
+			if (eventRewardInfo.value == CurrencyData.GoldCode())
+			{
+			}
+			else if (eventRewardInfo.value == CurrencyData.DiamondCode())
+			{
+			}
+			else if (eventRewardInfo.value == CurrencyData.EnergyCode())
+			{
+			}
+			else
+			{
+				infoButtonObject.SetActive(true);
+			}
+		}
+		else if (eventRewardInfo.type == "be")
+		{
+			infoButtonObject.SetActive(false);
+		}
+		else if (eventRewardInfo.type == "fe")
+		{
+			infoButtonObject.SetActive(true);
+		}
 	}
 
 	void RefreshClaimState()
@@ -169,6 +232,36 @@ public class CumulativeEventListItem : MonoBehaviour
 			completeText.gameObject.SetActive(false);
 			blackObject.gameObject.SetActive(false);
 			AlarmObject.Hide(alarmRootTransform);
+		}
+	}
+
+	public void OnClickInfoButton()
+	{
+		if (_slotInfo == null)
+			return;
+
+		if (_slotInfo.type == "cu")
+		{
+			if (_slotInfo.value == CurrencyData.GoldCode())
+			{
+			}
+			else if (_slotInfo.value == CurrencyData.DiamondCode())
+			{
+			}
+			else if (_slotInfo.value == CurrencyData.EnergyCode())
+			{
+			}
+			else
+			{
+				UIInstanceManager.instance.ShowCanvasAsync("ReturnScrollInfoCanvas", null);
+			}
+		}
+		else if (_slotInfo.type == "fe")
+		{
+			UIInstanceManager.instance.ShowCanvasAsync("CumulativeEventEquipInfoCanvas", () =>
+			{
+				CumulativeEventEquipInfoCanvas.instance.ShowCanvas(true, _slotInfo);
+			});
 		}
 	}
 

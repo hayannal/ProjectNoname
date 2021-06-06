@@ -68,7 +68,7 @@ public class CumulativeEventData : MonoBehaviour
 
 		LoginRepeat,
 		DailyBoxRepeat,
-		//Comeback,
+		Comeback,
 
 		ImageEvent1,
 		ImageEvent2,
@@ -162,7 +162,7 @@ public class CumulativeEventData : MonoBehaviour
 			case eEventType.Clear7Chapter: return "cs";
 			case eEventType.LoginRepeat: return "sl";
 			case eEventType.DailyBoxRepeat: return "so";
-			//case eEventType.Comeback: return "cu";
+			case eEventType.Comeback: return "cu";
 			case eEventType.ImageEvent1: return "ie1";
 			case eEventType.ImageEvent2: return "ie2";
 		}
@@ -245,6 +245,12 @@ public class CumulativeEventData : MonoBehaviour
 			case eEventType.LoginRepeat:
 				break;
 			case eEventType.DailyBoxRepeat:
+				break;
+			case eEventType.Comeback:
+				break;
+			case eEventType.ImageEvent1:
+				break;
+			case eEventType.ImageEvent2:
 				break;
 		}
 		return false;

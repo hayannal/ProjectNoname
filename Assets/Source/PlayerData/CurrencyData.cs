@@ -31,6 +31,7 @@ public class CurrencyData : MonoBehaviour
 
 	public static string DiamondCode() { return "DI"; }
 	public static string GoldCode() { return "GO"; }
+	public static string EnergyCode() { return "EN"; }
 
 	public ObscuredInt gold { get; set; }
 	public ObscuredInt energy { get; set; }

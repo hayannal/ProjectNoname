@@ -13,6 +13,7 @@ public class CumulativeEventCanvas : MonoBehaviour
 	public GameObject[] innerMenuPrefabList;
 	public Transform innerMenuRootTransform;
 	public MenuButton[] menuButtonList;
+	public GridLayoutGroup gridLayoutGroup;
 
 	/*
 	// 5개의 메뉴중에 3개만 알람을 쓰니 따로 관리하도록 한다. 그런데 그림자가 있어야 예뻐져서 각각 그림자도 추가하기로 한다.
@@ -47,11 +48,32 @@ public class CumulativeEventCanvas : MonoBehaviour
 
 	public void RefreshOpenTabSlot()
 	{
+		int activeCount = CumulativeEventData.instance.GetActiveEventCount();
+		if (activeCount <= 1)
+		{
+			for (int i = 0; i < menuButtonList.Length; ++i)
+				menuButtonList[i].gameObject.SetActive(false);
+			return;
+		}
+
 		for (int i = 0; i < menuButtonList.Length; ++i)
 		{
 			bool active = CumulativeEventData.instance.IsActiveEvent((CumulativeEventData.eEventType)i);
 			menuButtonList[i].gameObject.SetActive(active);
 		}
+
+		int space = 0;
+		switch (activeCount)
+		{
+			case 2: space = 20 * 4; break;
+			case 3: space = 20 * 3; break;
+			case 4: space = 20 * 2; break;
+			case 5: space = 20; break;
+			case 6:
+			case 7:
+			case 8: space = 0; break;
+		}
+		gridLayoutGroup.spacing = new Vector2(space, 0);
 	}
 
 	void OnEnable()

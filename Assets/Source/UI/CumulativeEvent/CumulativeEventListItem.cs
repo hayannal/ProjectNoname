@@ -29,24 +29,12 @@ public class CumulativeEventListItem : MonoBehaviour
 
 	public GameObject addObject;
 	public Text addText;
-	public GameObject infoButtonObject;
+	public Image infoButtonImage;
 	public GameObject blackObject;
-	public Canvas blackImageCanvas;
 	public RectTransform alarmRootTransform;
 
-	void Awake()
-	{
-		_parentCanvas = transform.parent.GetComponentInParent<Canvas>();
-	}
-
-	Canvas _parentCanvas;
 	void OnEnable()
 	{
-		if (_parentCanvas != null)
-		{
-			blackImageCanvas.sortingOrder = _parentCanvas.sortingOrder + 1;
-		}
-
 		CumulativeEventData.EventRewardInfo eventRewardInfo = CumulativeEventData.instance.FindRewardInfo(eventType, day);
 		RefreshInfo(eventRewardInfo);
 	}
@@ -173,7 +161,7 @@ public class CumulativeEventListItem : MonoBehaviour
 	{
 		if (eventRewardInfo.type == "cu")
 		{
-			infoButtonObject.SetActive(false);
+			infoButtonImage.gameObject.SetActive(false);
 			if (eventRewardInfo.value == CurrencyData.GoldCode())
 			{
 			}
@@ -185,16 +173,16 @@ public class CumulativeEventListItem : MonoBehaviour
 			}
 			else
 			{
-				infoButtonObject.SetActive(true);
+				infoButtonImage.gameObject.SetActive(true);
 			}
 		}
 		else if (eventRewardInfo.type == "be")
 		{
-			infoButtonObject.SetActive(false);
+			infoButtonImage.gameObject.SetActive(false);
 		}
 		else if (eventRewardInfo.type == "fe")
 		{
-			infoButtonObject.SetActive(true);
+			infoButtonImage.gameObject.SetActive(true);
 		}
 	}
 
@@ -230,6 +218,7 @@ public class CumulativeEventListItem : MonoBehaviour
 			dayText.gameObject.SetActive(false);
 			completeText.gameObject.SetActive(true);
 			blackObject.gameObject.SetActive(true);
+			infoButtonImage.color = Color.gray;
 			AlarmObject.Hide(alarmRootTransform);
 		}
 		else if (recorded == false && day == (count + 1))
@@ -238,6 +227,7 @@ public class CumulativeEventListItem : MonoBehaviour
 			dayText.gameObject.SetActive(false);
 			completeText.gameObject.SetActive(false);
 			blackObject.gameObject.SetActive(false);
+			infoButtonImage.color = Color.white;
 			AlarmObject.Show(alarmRootTransform);
 		}
 		else
@@ -247,6 +237,7 @@ public class CumulativeEventListItem : MonoBehaviour
 			dayText.gameObject.SetActive(true);
 			completeText.gameObject.SetActive(false);
 			blackObject.gameObject.SetActive(false);
+			infoButtonImage.color = Color.white;
 			AlarmObject.Hide(alarmRootTransform);
 		}
 	}

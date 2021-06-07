@@ -2953,6 +2953,65 @@ public class PlayFabApiManager : MonoBehaviour
 	}
 	#endregion
 
+	#region Cumulative Event
+	public void RequestReceiveEventReward(CumulativeEventData.eEventType eventType, string rewardType, int addDia, int addGold, int addEnergy, int addReturnScroll, List<ObscuredString> listDropItemId, Action<bool, string> successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		string eventServerId = CumulativeEventData.EventType2Id(eventType);
+		ExecuteCloudScriptRequest request = null;
+		if (listDropItemId != null)
+		{
+			string checkSum = "";
+			List<TimeSpaceData.ItemGrantRequest> listItemGrantRequest = TimeSpaceData.instance.GenerateGrantRequestInfo(listDropItemId, ref checkSum);
+			request = new ExecuteCloudScriptRequest()
+			{
+				FunctionName = "GetRewardEvent",
+				FunctionParameter = new { Id = eventServerId, Tp = rewardType, EqpLst = listItemGrantRequest, EqpLstCs = checkSum },
+				GeneratePlayStreamEvent = true,
+			};
+		}
+		else
+		{
+			request = new ExecuteCloudScriptRequest()
+			{
+				FunctionName = "GetRewardEvent",
+				FunctionParameter = new { Id = eventServerId, Tp = rewardType },
+				GeneratePlayStreamEvent = true,
+			};
+		}
+
+		PlayFabClientAPI.ExecuteCloudScript(request, (success) =>
+		{
+			PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
+			jsonResult.TryGetValue("retErr", out object retErr);
+			bool failure = ((retErr.ToString()) == "1");
+			if (!failure)
+			{
+				// 성공시에는 서버에서 방금 기록한 마지막 수령 시간이 날아온다.
+				jsonResult.TryGetValue("date", out object date);
+				bool result = CumulativeEventData.instance.OnRecvGetEventReward(eventType, (string)date);
+				if (result)
+				{
+					WaitingNetworkCanvas.Show(false);
+
+					CurrencyData.instance.dia += addDia;
+					CurrencyData.instance.gold += addGold;
+					if (addEnergy > 0)
+						CurrencyData.instance.OnRecvRefillEnergy(addEnergy);
+					CurrencyData.instance.returnScroll += addReturnScroll;
+
+					jsonResult.TryGetValue("itmRet", out object itmRet);
+					if (successCallback != null) successCallback.Invoke(failure, (string)itmRet);
+				}
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+	#endregion
+
 
 
 

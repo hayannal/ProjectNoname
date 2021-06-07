@@ -85,6 +85,7 @@ GameObject:
   - component: {fileID: 9137196643933545280}
   - component: {fileID: 5159732354988088797}
   - component: {fileID: 1487315970630158135}
+  - component: {fileID: 925931300040847998}
   m_Layer: 5
   m_Name: BlackImage
   m_TagString: Untagged
@@ -148,6 +149,27 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!223 &925931300040847998
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 709806664802007165}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 1
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 51
+  m_TargetDisplay: 0
 --- !u!1 &1069272293739145056
 GameObject:
   m_ObjectHideFlags: 0
@@ -1842,6 +1864,7 @@ MonoBehaviour:
   addText: {fileID: 7657480523448335853}
   infoButtonObject: {fileID: 5278266171424617700}
   blackObject: {fileID: 709806664802007165}
+  blackImageCanvas: {fileID: 925931300040847998}
   alarmRootTransform: {fileID: 808684617175324450}
 --- !u!114 &4219475699398148998
 MonoBehaviour:

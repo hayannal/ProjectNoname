@@ -455,6 +455,7 @@ MonoBehaviour:
   addText: {fileID: 4424116802218578685}
   infoButtonObject: {fileID: 2189136600308833268}
   blackObject: {fileID: 6843490504512182125}
+  blackImageCanvas: {fileID: 5491314531144243275}
   alarmRootTransform: {fileID: 6636139135532906546}
 --- !u!114 &7903779925504191638
 MonoBehaviour:
@@ -2369,6 +2370,7 @@ GameObject:
   - component: {fileID: 3020961877678328912}
   - component: {fileID: 1205352819992359629}
   - component: {fileID: 4865377175460800551}
+  - component: {fileID: 5491314531144243275}
   m_Layer: 5
   m_Name: BlackImage
   m_TagString: Untagged
@@ -2432,6 +2434,27 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!223 &5491314531144243275
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6843490504512182125}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 1
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 51
+  m_TargetDisplay: 0
 --- !u!1 &7594391153300857478
 GameObject:
   m_ObjectHideFlags: 0
@@ -3880,15 +3903,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7a8841907f32f2a49854f4f39c4fc8a9, type: 3}
---- !u!224 &7999638481461309916 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 8652484797891476101, guid: 7a8841907f32f2a49854f4f39c4fc8a9,
-    type: 3}
-  m_PrefabInstance: {fileID: 1663976450820279129}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &492132031215576142 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1280085236418359063, guid: 7a8841907f32f2a49854f4f39c4fc8a9,
+    type: 3}
+  m_PrefabInstance: {fileID: 1663976450820279129}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &7999638481461309916 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 8652484797891476101, guid: 7a8841907f32f2a49854f4f39c4fc8a9,
     type: 3}
   m_PrefabInstance: {fileID: 1663976450820279129}
   m_PrefabAsset: {fileID: 0}

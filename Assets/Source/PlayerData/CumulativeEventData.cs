@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using CodeStage.AntiCheat.ObscuredTypes;
 using PlayFab;
 using PlayFab.ClientModels;
@@ -64,6 +66,7 @@ public class CumulativeEventData : MonoBehaviour
 	{
 		NewAccount,
 		DailyBox,
+		OpenChaos,
 		Clear7Chapter,
 
 		LoginRepeat,
@@ -137,20 +140,42 @@ public class CumulativeEventData : MonoBehaviour
 
 		#region NewAccountDailyBoxEvent
 		newAccountDailyBoxRecorded = false;
-		if (userReadOnlyData.ContainsKey("evtNewbDayDat"))
+		if (userReadOnlyData.ContainsKey("evtNewbDbxDat"))
 		{
-			if (string.IsNullOrEmpty(userReadOnlyData["evtNewbDayDat"].Value) == false)
-				OnRecvNewAccountDailyBoxInfo(userReadOnlyData["evtNewbDayDat"].Value);
+			if (string.IsNullOrEmpty(userReadOnlyData["evtNewbDbxDat"].Value) == false)
+				OnRecvNewAccountDailyBoxInfo(userReadOnlyData["evtNewbDbxDat"].Value);
 		}
 
 		newAccountDailyBoxEventCount = 0;
-		if (userReadOnlyData.ContainsKey("evtNewbDayCnt"))
+		if (userReadOnlyData.ContainsKey("evtNewbDbxCnt"))
 		{
 			int intValue = 0;
-			if (int.TryParse(userReadOnlyData["evtNewbDayCnt"].Value, out intValue))
+			if (int.TryParse(userReadOnlyData["evtNewbDbxCnt"].Value, out intValue))
 				newAccountDailyBoxEventCount = intValue;
 		}
 		#endregion
+	}
+
+	public bool OnRecvGetEventReward(eEventType eventType, string lastRecordedTimeString)
+	{
+		switch (eventType)
+		{
+			case eEventType.NewAccount:
+				if (newAccountLoginEventCount >= newAccountLoginEventTotalDays)
+					return false;
+
+				OnRecvNewAccountLoginInfo(lastRecordedTimeString);
+				++newAccountLoginEventCount;
+				break;
+			case eEventType.DailyBox:
+				if (newAccountDailyBoxEventCount >= newAccountDailyBoxEventTotalDays)
+					return false;
+
+				OnRecvNewAccountDailyBoxInfo(lastRecordedTimeString);
+				++newAccountDailyBoxEventCount;
+				break;
+		}
+		return true;
 	}
 
 	public static string EventType2Id(eEventType eventType)
@@ -159,6 +184,7 @@ public class CumulativeEventData : MonoBehaviour
 		{
 			case eEventType.NewAccount: return "na";
 			case eEventType.DailyBox: return "no";
+			case eEventType.OpenChaos: return "co";
 			case eEventType.Clear7Chapter: return "cs";
 			case eEventType.LoginRepeat: return "sl";
 			case eEventType.DailyBoxRepeat: return "so";
@@ -192,6 +218,9 @@ public class CumulativeEventData : MonoBehaviour
 		// 이벤트 타입 역시 로그인만 있는게 아니라 DailyBox 연거 노드워 클리어한거 등등이 추가될 예정이다.
 		// 천천히 보내는거라 Late에서 처리
 		//CheckRepeatCumulativeLEvent();
+
+		// 고정장비 보상 아이콘 리소스 로드
+		StartCoroutine(LoadRewardEquipIconAsync());
 	}
 
 	public void ResetEventInfo()
@@ -205,6 +234,57 @@ public class CumulativeEventData : MonoBehaviour
 			EventBoard.instance.RefreshBoardOnOff();
 		if (CumulativeEventCanvas.instance != null && CumulativeEventCanvas.instance.gameObject.activeSelf)
 			CumulativeEventCanvas.instance.RefreshOpenTabSlot();
+
+		// DailyShopData와 달리 매일 구성품이 바뀌는것도 아니라서 굳이 다음날엔 호출하지 않는다.
+		//StartCoroutine(LoadRewardEquipIconAsync());
+	}
+
+	public void RefreshNewEvent()
+	{
+		// 7챕터 클리어 후 즉시 새 이벤트를 진행하려면 이런식으로 호출이 필요하지 않나
+	}
+
+	List<string> _listLoadKey = new List<string>();
+	IEnumerator LoadRewardEquipIconAsync()
+	{
+		// DailyShopData 의 LoadDailyEquipIconAsync 보고 비슷하게 만들어둔다.
+		_listLoadKey.Clear();
+		if (_listEventRewardInfo != null)
+		{
+			for (int i = 0; i < _listEventRewardInfo.Count; ++i)
+			{
+				if (_listEventRewardInfo[i].type == "fe")
+				{
+					EquipTableData equipTableData = TableDataManager.instance.FindEquipTableData(_listEventRewardInfo[i].value);
+					if (equipTableData == null)
+						continue;
+					_listLoadKey.Add(equipTableData.shotAddress);
+				}
+				if (_listEventRewardInfo[i].type2 == "fe")
+				{
+					EquipTableData equipTableData = TableDataManager.instance.FindEquipTableData(_listEventRewardInfo[i].value2);
+					if (equipTableData == null)
+						continue;
+					_listLoadKey.Add(equipTableData.shotAddress);
+				}
+			}
+		}
+
+		if (_listLoadKey.Count == 0)
+			yield break;
+
+		AsyncOperationHandle<long> handle = Addressables.GetDownloadSizeAsync(_listLoadKey);
+		yield return handle;
+		long downloadSize = handle.Result;
+		Addressables.Release<long>(handle);
+		if (downloadSize > 0)
+		{
+			Debug.LogFormat("EventReward EquipIcon Size = {0}", downloadSize / 1024);
+			yield break;
+		}
+
+		for (int i = 0; i < _listLoadKey.Count; ++i)
+			AddressableAssetLoadManager.GetAddressableSprite(_listLoadKey[i], "Icon", null);
 	}
 
 	public int GetActiveEventCount()
@@ -239,6 +319,8 @@ public class CumulativeEventData : MonoBehaviour
 					return true;
 				if (newAccountDailyBoxEventCount == newAccountDailyBoxEventTotalDays && newAccountDailyBoxRecorded)
 					return true;
+				break;
+			case eEventType.OpenChaos:
 				break;
 			case eEventType.Clear7Chapter:
 				break;

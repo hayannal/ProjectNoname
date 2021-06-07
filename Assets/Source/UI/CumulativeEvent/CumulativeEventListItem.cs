@@ -124,6 +124,8 @@ public class CumulativeEventListItem : MonoBehaviour
 			nameText.SetLocalizedText(UIString.instance.GetString("MailUI_Equipment"));
 			addObject.SetActive(true);
 			addText.SetLocalizedText(UIString.instance.GetString(string.Format("GameUI_EquipGrade{0}", eventRewardInfo.value)));
+			int.TryParse(eventRewardInfo.value, out int grade);
+			addText.color = EquipListStatusInfo.GetGradeDropObjectNameColor(grade);
 			RefreshBackground(false);
 		}
 		else if (eventRewardInfo.type == "fe")

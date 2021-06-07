@@ -126,6 +126,8 @@ public class MailCanvasListItem : MonoBehaviour
 				rewardNameText.gameObject.SetActive(true);
 				addObject.SetActive(true);
 				addText.SetLocalizedText(UIString.instance.GetString(string.Format("GameUI_EquipGrade{0}", createInfo.vl)));
+				int.TryParse(createInfo.vl, out int grade);
+				addText.color = EquipListStatusInfo.GetGradeDropObjectNameColor(grade);
 			}
 			AlarmObject.Show(alarmRootTransform);
 		}

@@ -161,10 +161,11 @@ public class CumulativeEventListItem : MonoBehaviour
 		addObject.SetActive(false);
 	}
 
+	// CumulativeEventEquipInfoCanvas 같이 고쳐야한다.
 	void RefreshBackground(bool isLightenBackground)
 	{
-		blurImage.color = isLightenBackground ? new Color(0.945f, 0.945f, 0.094f, 0.42f) : new Color(0.258f, 0.905f, 0.650f, 0.42f);
-		backgroundImge.color = isLightenBackground ? new Color(1.0f, 1.0f, 1.0f, 0.42f) : new Color(0.0f, 1.0f, 0.749f, 0.42f);
+		blurImage.color = isLightenBackground ? new Color(0.945f, 0.945f, 0.094f, 0.42f) : new Color(1.0f, 1.0f, 1.0f, 0.35f);
+		backgroundImge.color = isLightenBackground ? new Color(1.0f, 1.0f, 1.0f, 0.42f) : new Color(0.829f, 0.915f, 0.514f, 0.604f);
 		backgroundImge.sprite = backgroundSpriteList[isLightenBackground ? 0 : 1];
 	}
 
@@ -374,9 +375,7 @@ public class CumulativeEventListItem : MonoBehaviour
 			{
 				RefreshClaimState();
 				CumulativeEventCanvas.instance.currencySmallInfo.RefreshInfo();
-				//DotMainMenuCanvas.instance.RefreshMailAlarmObject();
-				//EventBoard.instance.RefreshAlarmObject();
-				//CumulativeEventEquipInfoCanvas.instance.RefreshAlarmObject();
+				CumulativeEventCanvas.instance.RefreshAlarmObject(eventType);
 				ToastCanvas.instance.ShowToast(UIString.instance.GetString("ShopUI_GotFreeItem"), 2.0f);
 			});
 		}
@@ -388,6 +387,7 @@ public class CumulativeEventListItem : MonoBehaviour
 			return;
 
 		CumulativeEventCanvas.instance.currencySmallInfo.RefreshInfo();
+		CumulativeEventCanvas.instance.RefreshAlarmObject(eventType);
 
 		// 직접 사는거라 뽑기 연출을 보여줄 순 없고 전용 획득창을 보여준다.
 		if (itemGrantString == "")
@@ -452,6 +452,9 @@ public class CumulativeEventListItem : MonoBehaviour
 			return;
 		if (itemGrantString == "")
 			return;
+
+		CumulativeEventCanvas.instance.currencySmallInfo.RefreshInfo();
+		CumulativeEventCanvas.instance.RefreshAlarmObject(eventType);
 
 		// 캐릭터와 달리 장비는 드랍프로세서에서 정보를 뽑아쓰는게 아니라서 미리 클리어해도 상관없다.
 		DropManager.instance.ClearLobbyDropInfo();

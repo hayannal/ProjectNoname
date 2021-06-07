@@ -681,6 +681,9 @@ public class MainSceneBuilder : MonoBehaviour
 		if (battleScene == false)
 		{
 			LobbyCanvas.instance.RefreshAlarmObject();
+			if (EventBoard.instance != null)
+				EventBoard.instance.RefreshBoardOnOff();
+
 			PlayerData.instance.LateInitialize();
 			DailyShopData.instance.LateInitialize();
 			TimeSpaceData.instance.LateInitialize();

@@ -15,15 +15,9 @@ public class CumulativeEventCanvas : MonoBehaviour
 	public MenuButton[] menuButtonList;
 	public GridLayoutGroup gridLayoutGroup;
 
-	/*
-	// 5개의 메뉴중에 3개만 알람을 쓰니 따로 관리하도록 한다. 그런데 그림자가 있어야 예뻐져서 각각 그림자도 추가하기로 한다.
-	public RectTransform growthAlarmRootTransform;
-	public RectTransform growthShadowAlarmRootTransform;
-	public RectTransform transcendAlarmRootTransform;
-	public RectTransform transcendShadowAlarmRootTransform;
-	public RectTransform potentialAlarmRootTransform;
-	public RectTransform potentialShadowAlarmRootTransform;
-	*/
+	// 캐릭터메뉴와 달리 9개중에 image이벤트 빼고 다 보상이 있기때문에 배열로 처리해본다.
+	public RectTransform[] tabAlarmRootTransformList;
+	public RectTransform[] tabShadowAlarmRootTransformList;
 
 	void Awake()
 	{
@@ -65,15 +59,19 @@ public class CumulativeEventCanvas : MonoBehaviour
 		int space = 0;
 		switch (activeCount)
 		{
-			case 2: space = 20 * 4; break;
-			case 3: space = 20 * 3; break;
-			case 4: space = 20 * 2; break;
-			case 5: space = 20; break;
-			case 6:
-			case 7:
-			case 8: space = 0; break;
+			case 2: space = 70; break;
+			case 3: space = 60; break;
+			case 4: space = 50; break;
+			case 5: space = 40; break;
+			case 6: space = 30; break;
+			case 7: space = 20; break;
+			case 8: space = 10; break;
+			case 9: space = 0; break;
 		}
 		gridLayoutGroup.spacing = new Vector2(space, 0);
+
+		// 탭 구성이 바뀌었을수도 있으니 Alarm도 다시 체크해본다.
+		RefreshAlarmObjectList();
 	}
 
 	void OnEnable()
@@ -108,55 +106,44 @@ public class CumulativeEventCanvas : MonoBehaviour
 		if (DragThresholdController.instance != null)
 			DragThresholdController.instance.ResetUIDragThreshold();
 
-		/*
-		for (int i = 0; i < _listMenuTransform.Count; ++i)
-		{
-			if (_listMenuTransform[i] == null)
-				continue;
-			_listMenuTransform[i].gameObject.SetActive(false);
-		}
-		*/
-
 		StackCanvas.Pop(gameObject);
 	}
 
 	public void RefreshAlarmObjectList()
 	{
-		/*
-		CharacterData characterData = PlayerData.instance.GetCharacterData(CharacterListCanvas.instance.selectedActorId);
-		if (characterData != null && characterData.IsPlusAlarmState())
+		for (int i = 0; i < tabAlarmRootTransformList.Length; ++i)
 		{
-			AlarmObject.Show(growthAlarmRootTransform, false, false, true);
-			AlarmObject.Show(growthShadowAlarmRootTransform, false, false, true, true);
-		}
-		else
-		{
-			AlarmObject.Hide(growthAlarmRootTransform);
-			AlarmObject.Hide(growthShadowAlarmRootTransform);
-		}
+			if (menuButtonList[i].gameObject.activeSelf == false)
+				continue;
 
-		if (characterData != null && characterData.IsTranscendAlarmState())
-		{
-			AlarmObject.Show(transcendAlarmRootTransform);
-			AlarmObject.Show(transcendShadowAlarmRootTransform, true, false, false, true);
+			bool show = CumulativeEventData.instance.IsReceivableEvent((CumulativeEventData.eEventType)i);
+			RefreshAlarmObject(show, i);
 		}
-		else
-		{
-			AlarmObject.Hide(transcendAlarmRootTransform);
-			AlarmObject.Hide(transcendShadowAlarmRootTransform);
-		}
+	}
 
-		if (characterData != null && characterData.IsPotentialAlarmState())
+	public void RefreshAlarmObject(CumulativeEventData.eEventType eventType, bool refreshEventBoard = true)
+	{
+		bool show = CumulativeEventData.instance.IsReceivableEvent(eventType);
+		RefreshAlarmObject(show, (int)eventType);
+		if (refreshEventBoard)
+			EventBoard.instance.RefreshAlarmObject(eventType, show);
+	}
+
+	void RefreshAlarmObject(bool show, int buttonIndex)
+	{
+		if (tabAlarmRootTransformList[buttonIndex] == null || tabShadowAlarmRootTransformList[buttonIndex] == null)
+			return;
+
+		if (show)
 		{
-			AlarmObject.Show(potentialAlarmRootTransform);
-			AlarmObject.Show(potentialShadowAlarmRootTransform, true, false, false, true);
+			AlarmObject.Show(tabAlarmRootTransformList[buttonIndex]);
+			AlarmObject.Show(tabShadowAlarmRootTransformList[buttonIndex], true, false, false, true);
 		}
 		else
 		{
-			AlarmObject.Hide(potentialAlarmRootTransform);
-			AlarmObject.Hide(potentialShadowAlarmRootTransform);
+			AlarmObject.Hide(tabAlarmRootTransformList[buttonIndex]);
+			AlarmObject.Hide(tabShadowAlarmRootTransformList[buttonIndex]);
 		}
-		*/
 	}
 
 	public void OnClickBackButton()
@@ -180,6 +167,10 @@ public class CumulativeEventCanvas : MonoBehaviour
 	public void OnClickMenuButton3() { OnValueChangedToggle(2); }
 	public void OnClickMenuButton4() { OnValueChangedToggle(3); }
 	public void OnClickMenuButton5() { OnValueChangedToggle(4); }
+	public void OnClickMenuButton6() { OnValueChangedToggle(5); }
+	public void OnClickMenuButton7() { OnValueChangedToggle(6); }
+	public void OnClickMenuButton8() { OnValueChangedToggle(7); }
+	public void OnClickMenuButton9() { OnValueChangedToggle(8); }
 
 	List<Transform> _listMenuTransform = new List<Transform>();
 	int _lastIndex = -1;
@@ -209,16 +200,6 @@ public class CumulativeEventCanvas : MonoBehaviour
 		}
 
 		_lastIndex = index;
-
-		switch (index)
-		{
-			case 0:
-				//EquipEnhanceCanvas.instance.RefreshInfo(_equipData);
-				break;
-			case 1:
-				//EquipOptionCanvas.instance.RefreshInfo(_equipData);
-				break;
-		}
 	}
 	#endregion
 }

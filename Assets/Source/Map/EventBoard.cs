@@ -23,11 +23,6 @@ public class EventBoard : MonoBehaviour
 		_position = transform.position;
 	}
 
-	void OnEnable()
-	{
-		RefreshBoardOnOff();
-	}
-
 	void OnDisable()
 	{
 		if (_objectIndicatorCanvas != null)
@@ -99,6 +94,7 @@ public class EventBoard : MonoBehaviour
 
 
 
+	#region AlarmObject
 	public void RefreshBoardOnOff()
 	{
 		bool activeEvent = (CumulativeEventData.instance.GetActiveEventCount() > 0);
@@ -106,5 +102,59 @@ public class EventBoard : MonoBehaviour
 		offObject.SetActive(!activeEvent);
 
 		// 알람 체크
+		for (int i = 0; i < (int)CumulativeEventData.eEventType.Amount; ++i)
+			SetCachedAlarmState((CumulativeEventData.eEventType)i, CumulativeEventData.instance.IsReceivableEvent((CumulativeEventData.eEventType)i));
+
+		bool showAlarm = false;
+		for (int i = 0; i < _listCachedAlarmState.Count; ++i)
+		{
+			if (_listCachedAlarmState[i])
+			{
+				showAlarm = true;
+				break;
+			}
+		}
+		if (ContentsManager.IsTutorialChapter() || PlayerData.instance.lobbyDownloadState) showAlarm = false;
+
+		alarmWorldCanvas.gameObject.SetActive(false);
+		AlarmObject.Hide(alarmRootTransform);
+		if (showAlarm)
+		{
+			alarmWorldCanvas.gameObject.SetActive(true);
+			AlarmObject.Show(alarmRootTransform);
+		}
 	}
+
+	List<bool> _listCachedAlarmState = new List<bool>();
+	void SetCachedAlarmState(CumulativeEventData.eEventType changedType, bool changedValue)
+	{
+		if (_listCachedAlarmState.Count == 0)
+		{
+			for (int i = 0; i < (int)CumulativeEventData.eEventType.Amount; ++i)
+				_listCachedAlarmState.Add(false);
+		}
+		_listCachedAlarmState[(int)changedType] = changedValue;
+	}
+
+	public void RefreshAlarmObject(CumulativeEventData.eEventType changedType, bool changedValue)
+	{
+		// LobbyCanvas의 RefreshAlarmObject(DotMainMenuCanvas.eButtonType changedType, bool changedValue) 함수와 비슷한 구조로 간다. 여기 역시 연산량을 줄인다.
+		SetCachedAlarmState(changedType, changedValue);
+		
+		bool showAlarm = false;
+		for (int i = 0; i < _listCachedAlarmState.Count; ++i)
+		{
+			if (_listCachedAlarmState[i])
+			{
+				showAlarm = true;
+				break;
+			}
+		}
+		if (ContentsManager.IsTutorialChapter() || PlayerData.instance.lobbyDownloadState) showAlarm = false;
+
+		AlarmObject.Hide(alarmRootTransform);
+		if (showAlarm)
+			AlarmObject.Show(alarmRootTransform);
+	}
+	#endregion
 }

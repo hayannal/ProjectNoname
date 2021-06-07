@@ -350,6 +350,41 @@ public class CumulativeEventData : MonoBehaviour
 		return false;
 	}
 
+	public bool IsReceivableEvent(eEventType eventType)
+	{
+		if (disableEvent)
+			return false;
+
+		switch (eventType)
+		{
+			case eEventType.NewAccount:
+				if (newAccountLoginEventCount < newAccountLoginEventTotalDays && newAccountLoginRecorded == false)
+					return true;
+				break;
+			case eEventType.DailyBox:
+				if (newAccountLoginEventCount < newAccountLoginEventTotalDays)
+					return false;
+				if (newAccountDailyBoxEventCount < newAccountDailyBoxEventTotalDays && newAccountDailyBoxRecorded == false && PlayerData.instance.sharedDailyBoxOpened)
+					return true;
+				break;
+			case eEventType.OpenChaos:
+				break;
+			case eEventType.Clear7Chapter:
+				break;
+			case eEventType.LoginRepeat:
+				break;
+			case eEventType.DailyBoxRepeat:
+				break;
+			case eEventType.Comeback:
+				break;
+			case eEventType.ImageEvent1:
+				break;
+			case eEventType.ImageEvent2:
+				break;
+		}
+		return false;
+	}
+
 	void OnRecvNewAccountLoginInfo(DateTime lastNewAccountLoginRecordTime)
 	{
 		if (ServerTime.UtcNow.Year == lastNewAccountLoginRecordTime.Year && ServerTime.UtcNow.Month == lastNewAccountLoginRecordTime.Month && ServerTime.UtcNow.Day == lastNewAccountLoginRecordTime.Day)

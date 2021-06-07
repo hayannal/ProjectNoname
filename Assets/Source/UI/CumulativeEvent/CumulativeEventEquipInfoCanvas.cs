@@ -79,10 +79,11 @@ public class CumulativeEventEquipInfoCanvas : MonoBehaviour
 		nameText.gameObject.SetActive(true);
 	}
 
+	// CumulativeEventListItem 같이 고쳐야한다.
 	void RefreshBackground(bool isLightenBackground)
 	{
-		blurImage.color = isLightenBackground ? new Color(0.945f, 0.945f, 0.094f, 0.42f) : new Color(0.094f, 0.945f, 0.871f, 0.42f);
-		backgroundImge.color = isLightenBackground ? new Color(1.0f, 1.0f, 1.0f, 0.42f) : new Color(0.0f, 1.0f, 0.749f, 0.42f);
+		blurImage.color = isLightenBackground ? new Color(0.945f, 0.945f, 0.094f, 0.42f) : new Color(1.0f, 1.0f, 1.0f, 0.35f);
+		backgroundImge.color = isLightenBackground ? new Color(1.0f, 1.0f, 1.0f, 0.42f) : new Color(0.829f, 0.915f, 0.514f, 0.604f);
 		backgroundImge.sprite = backgroundSpriteList[isLightenBackground ? 0 : 1];
 	}
 

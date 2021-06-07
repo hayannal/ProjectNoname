@@ -64,14 +64,14 @@ public class CumulativeEventData : MonoBehaviour
 
 	public enum eEventType
 	{
-		NewAccount,
-		DailyBox,
-		OpenChaos,
-		Clear7Chapter,
+		NewAccount,		// 신규계정 누적 로그인
+		DailyBox,		// 신규계정 이벤트 후 DailyBox 여는 이벤트
+		OpenChaos,		// 카오스 열렸을때 나오는 누적 로그인 이벤트
+		Clear7Chapter,	// 7챕터 클리어 후 나오는 DailyBox 여는 이벤트
 
-		LoginRepeat,
-		DailyBoxRepeat,
-		Comeback,
+		LoginRepeat,	// 반복용 이벤트
+		DailyBoxRepeat,	// 반복용 DailyBox 이벤트
+		Comeback,		// 복귀 유저
 
 		ImageEvent1,
 		ImageEvent2,
@@ -193,6 +193,18 @@ public class CumulativeEventData : MonoBehaviour
 			case eEventType.ImageEvent2: return "ie2";
 		}
 		return "";
+	}
+
+	public static bool IsDailyBoxEvent(eEventType eventType)
+	{
+		switch (eventType)
+		{
+			case eEventType.DailyBox:
+			case eEventType.Clear7Chapter:
+			case eEventType.DailyBoxRepeat:
+				return true;
+		}
+		return false;
 	}
 
 	public EventRewardInfo FindRewardInfo(eEventType eventType, int day)

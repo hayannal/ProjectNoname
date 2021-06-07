@@ -68,6 +68,12 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		{
 			StackCanvas.Push(gameObject);
 		}
+		else if (CumulativeEventCanvas.instance != null && CumulativeEventCanvas.instance.gameObject.activeSelf)
+		{
+			// 아무래도 이 부분은 뭔가 잘못 만든거 같은데.. 다 뜯을 수 없으니 우선 똑같이 따라해본다.
+			StackCanvas.Push(gameObject);
+			EventBoard.instance.HideIndicator();
+		}
 
 		if (QuestInfoCanvas.instance != null && QuestInfoCanvas.instance.gameObject.activeSelf)
 		{
@@ -113,6 +119,10 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 			StackCanvas.Pop(gameObject);
 		}
 		else if (EquipReconstructCanvas.instance != null && EquipReconstructCanvas.instance.gameObject.activeSelf == false && StackCanvas.IsInStack(EquipReconstructCanvas.instance.gameObject))
+		{
+			StackCanvas.Pop(gameObject);
+		}
+		else if (CumulativeEventCanvas.instance != null && CumulativeEventCanvas.instance.gameObject.activeSelf == false && StackCanvas.IsInStack(CumulativeEventCanvas.instance.gameObject))
 		{
 			StackCanvas.Pop(gameObject);
 		}

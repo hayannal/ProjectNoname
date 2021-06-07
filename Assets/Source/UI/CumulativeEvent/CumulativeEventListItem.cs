@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using DG.Tweening;
+using PlayFab.ClientModels;
+using CodeStage.AntiCheat.ObscuredTypes;
 
 public class CumulativeEventListItem : MonoBehaviour
 {
@@ -277,6 +278,7 @@ public class CumulativeEventListItem : MonoBehaviour
 		}
 	}
 
+	List<ObscuredString> _listEquipIdRequest = null;
 	public void OnClickButton()
 	{
 		if (blackObject.activeSelf)
@@ -291,25 +293,14 @@ public class CumulativeEventListItem : MonoBehaviour
 			return;
 		}
 
-		// 조건을 체크해야하는데 타입에 따라서 체크하는게 달라진다.
-		switch (eventType)
+		// DailyBox 계열에서는 오늘의 일퀘를 완료했는지 체크해야한다.
+		if (CumulativeEventData.IsDailyBoxEvent(eventType))
 		{
-			case CumulativeEventData.eEventType.NewAccount:
-			case CumulativeEventData.eEventType.Clear7Chapter:
-			case CumulativeEventData.eEventType.LoginRepeat:
-			case CumulativeEventData.eEventType.Comeback:
-				// 로그인 계열에서는 체크할게 없지 않나?
-				break;
-			case CumulativeEventData.eEventType.OpenChaos:
-			case CumulativeEventData.eEventType.DailyBox:
-			case CumulativeEventData.eEventType.DailyBoxRepeat:
-				// DailyBox 계열에서는 오늘의 일퀘를 완료했는지 체크해야한다.
-				if (PlayerData.instance.sharedDailyBoxOpened == false)
-				{
-					ToastCanvas.instance.ShowToast(UIString.instance.GetString("LoginUI_CannotClaimOrigin"), 2.0f);
-					return;
-				}
-				break;
+			if (PlayerData.instance.sharedDailyBoxOpened == false)
+			{
+				ToastCanvas.instance.ShowToast(UIString.instance.GetString("LoginUI_CannotClaimOrigin"), 2.0f);
+				return;
+			}
 		}
 
 		// 보상 연출때문에 몇가지 경우의 수로 나눠서 처리하기로 한다.
@@ -324,14 +315,13 @@ public class CumulativeEventListItem : MonoBehaviour
 			}
 
 			// 장비박스 했을때처럼 드랍프로세서로부터 하나 뽑아와야한다.
-			//string equipId = PrepareDropProcessor();
-			//if (equipId == "")
-			//	return;
+			bool result = PrepareDropProcessor(_slotInfo.value, _slotInfo.count);
 			if (CheatingListener.detectedCheatTable)
 				return;
+			if (result == false)
+				return;
 
-			//PlayFabApiManager.instance.RequestReceiveMailPresent(id, receiveDay, _type, 0, 0, 0, equipId, OnRecvEquipBox);
-			//PlayFabApiManager.instance.RequestReceiveEventReward(eventType, _slotInfo.type, 0, 0, 0, 0, DropManager.instance.GetLobbyDropItemInfo(), OnRecvEquipBox);
+			PlayFabApiManager.instance.RequestReceiveEventReward(eventType, _slotInfo.type, 0, 0, 0, 0, DropManager.instance.GetLobbyDropItemInfo(), OnRecvEquipBox);
 		}
 		else if (_slotInfo.type == "fe")
 		{
@@ -341,9 +331,14 @@ public class CumulativeEventListItem : MonoBehaviour
 				return;
 			}
 
+			if (_listEquipIdRequest == null)
+				_listEquipIdRequest = new List<ObscuredString>();
+			_listEquipIdRequest.Clear();
+
+			_listEquipIdRequest.Add(_slotInfo.value);
+
 			// 고정 장비일 경우 단일 획득 연출
-			//PlayFabApiManager.instance.RequestPurchaseDailyShopItem(_slotInfo.slotId, _slotInfo.type, _slotInfo.value, "", priceDia, priceGold, )
-			//PlayFabApiManager.instance.RequestReceiveEventReward(eventType, _slotInfo.type, 0, 0, 0, 0, DropManager.instance.GetLobbyDropItemInfo(), OnRecvPurchaseDailyShopItem);
+			PlayFabApiManager.instance.RequestReceiveEventReward(eventType, _slotInfo.type, 0, 0, 0, 0, _listEquipIdRequest, OnRecvEventReward);
 		}
 		else if (_slotInfo.type == "cu")
 		{
@@ -383,5 +378,105 @@ public class CumulativeEventListItem : MonoBehaviour
 				ToastCanvas.instance.ShowToast(UIString.instance.GetString("ShopUI_GotFreeItem"), 2.0f);
 			});
 		}
+	}
+
+	void OnRecvEventReward(bool serverFailure, string itemGrantString)
+	{
+		if (serverFailure)
+			return;
+
+		CumulativeEventCanvas.instance.currencySmallInfo.RefreshInfo();
+
+		// 직접 사는거라 뽑기 연출을 보여줄 순 없고 전용 획득창을 보여준다.
+		if (itemGrantString == "")
+			return;
+		EquipData grantEquipData = TimeSpaceData.instance.OnRecvGrantEquip(itemGrantString, 1);
+		if (grantEquipData == null)
+			return;
+
+		UIInstanceManager.instance.ShowCanvasAsync("DailyShopEquipShowCanvas", () =>
+		{
+			// CharacterBoxShowCanvas와 비슷한 구조로 가기 위해 여기서 StackCanvas 처리를 한다.
+			StackCanvas.Push(gameObject);
+
+			// DailyShopEquipConfirmCanvas와 달리 이 창은 StackCanvas에 속해있으므로 호출하지 않아도 된다.
+			//gameObject.SetActive(false);
+			DailyShopEquipShowCanvas.instance.ShowCanvas(grantEquipData, () =>
+			{
+				// 확인 누르면 바로 으로 돌아오면 된다.
+				StackCanvas.Pop(gameObject);
+			});
+		});
+	}
+
+	DropProcessor _cachedDropProcessor;
+	bool PrepareDropProcessor(string value, int count)
+	{
+		// 오리진 박스와 마찬가지로 먼저 드랍프로세서부터 만들어야한다.
+		string dropId = "";
+		switch (value)
+		{
+			case "1": dropId = "Dnvuswkdqlu"; break;
+			case "2": dropId = "Dnvuswkdqlv"; break;
+			case "3": dropId = "Dnvuswkdqlw"; break;
+			default:
+				return false;
+		}
+		switch (count)
+		{
+			case 1: break;
+			case 2: dropId = string.Format("{0}{1}", dropId, "w"); break;
+			case 3: dropId = string.Format("{0}{1}", dropId, "e"); break;
+			case 4: dropId = string.Format("{0}{1}", dropId, "r"); break;
+			case 5: dropId = string.Format("{0}{1}", dropId, "t"); break;
+			default:
+				return false;
+		}
+
+		_cachedDropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, dropId, "", true, true);
+		if (CheatingListener.detectedCheatTable)
+			return false;
+		List<ObscuredString> listDropItemId = DropManager.instance.GetLobbyDropItemInfo();
+		if (listDropItemId.Count != count)
+			return false;
+		return true;
+	}
+
+	// MailCanvasListItem의 OnRecvEquipBox에서 가져와서 수정해서 쓴다.
+	void OnRecvEquipBox(bool serverFailure, string itemGrantString)
+	{
+		// 실패했는데 굳이 처리해줄 필요가 없다.
+		if (serverFailure)
+			return;
+		if (itemGrantString == "")
+			return;
+
+		// 캐릭터와 달리 장비는 드랍프로세서에서 정보를 뽑아쓰는게 아니라서 미리 클리어해도 상관없다.
+		DropManager.instance.ClearLobbyDropInfo();
+
+		TimeSpaceData.instance.OnRecvGrantEquip(itemGrantString, _slotInfo.count);
+
+		// 결과창에서 아이콘이 느리게 보이는걸 방지하기 위해 아이콘의 프리로드를 진행한다.
+		List<ItemInstance> listGrantItem = TimeSpaceData.instance.DeserializeItemGrantResult(itemGrantString);
+		for (int i = 0; i < listGrantItem.Count; ++i)
+		{
+			EquipTableData equipTableData = TableDataManager.instance.FindEquipTableData(listGrantItem[i].ItemId);
+			if (equipTableData == null)
+				continue;
+
+			AddressableAssetLoadManager.GetAddressableSprite(equipTableData.shotAddress, "Icon", null);
+		}
+
+		// 연출 및 보상 처리.
+		UIInstanceManager.instance.ShowCanvasAsync("RandomBoxScreenCanvas", () =>
+		{
+			RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Equip1, _cachedDropProcessor, 0, 0, () =>
+			{
+				UIInstanceManager.instance.ShowCanvasAsync("EquipBoxResultCanvas", () =>
+				{
+					EquipBoxResultCanvas.instance.RefreshInfo(listGrantItem);
+				});
+			});
+		});
 	}
 }

@@ -72,6 +72,12 @@ public class EventBoard : MonoBehaviour
 		_spawnedIndicator = true;
 	}
 
+	public void HideIndicator()
+	{
+		_objectIndicatorCanvas.gameObject.SetActive(false);
+		_spawnedIndicator = false;
+	}
+
 	ObjectIndicatorCanvas _objectIndicatorCanvas;
 	bool _spawnedIndicator;
 	void OnTriggerEnter(Collider other)

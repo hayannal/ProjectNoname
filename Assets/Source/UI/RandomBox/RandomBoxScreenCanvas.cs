@@ -75,6 +75,7 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 			EventBoard.instance.HideIndicator();
 		}
 
+		_isShowQuestInfoCanvas = false;
 		if (QuestInfoCanvas.instance != null && QuestInfoCanvas.instance.gameObject.activeSelf)
 		{
 			// 캐시샵과 달리 QuestInfoCanvas에서 굴림을 진행하더라도 다음에 열리는건 QuestSelectCanvas가 되어야한다.

@@ -198,6 +198,8 @@ public class CumulativeEventData : MonoBehaviour
 				{
 					if (CumulativeEventCanvas.instance != null)
 						CumulativeEventCanvas.instance.RefreshOpenTabSlot();
+					if (EventBoard.instance != null)
+						EventBoard.instance.RefreshBoardOnOff();
 				}
 				break;
 			case eEventType.DailyBox:

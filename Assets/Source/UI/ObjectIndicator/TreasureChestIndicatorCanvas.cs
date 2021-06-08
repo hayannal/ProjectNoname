@@ -172,6 +172,10 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 				// TreasureChest는 숨겨도 하단 일퀘 갱신은 즉시 보여준다.
 				DailyBoxGaugeCanvas.instance.RefreshGauge();
 
+				// OriginBox를 열었으면 이에 따라 수령가능한 이벤트가 생길 수 있다.
+				if (EventBoard.instance != null && EventBoard.instance.gameObject.activeSelf)
+					EventBoard.instance.RefreshBoardOnOff();
+
 				UIInstanceManager.instance.ShowCanvasAsync("RandomBoxScreenCanvas", () =>
 				{
 					RandomBoxScreenCanvas.instance.SetInfo(useSecond ? RandomBoxScreenCanvas.eBoxType.Origin_Big : RandomBoxScreenCanvas.eBoxType.Origin, dropProcessor, 0, 0, () =>

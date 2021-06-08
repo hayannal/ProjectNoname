@@ -280,6 +280,7 @@ public class CumulativeEventData : MonoBehaviour
 		// 이벤트 역시 하루단위로 진행되기 때문에 도장찍은 것들을 날짜 갱신에 맞춰서 초기화 해야한다.
 		newAccountLoginRecorded = false;
 		newAccountDailyBoxRecorded = false;
+		openChaosEventRecorded = false;
 
 		// 오브젝트나 UI 스스로 시간을 체크하지 않기 때문에 여기서 대신 호출해야한다.
 		if (EventBoard.instance != null && EventBoard.instance.gameObject != null && EventBoard.instance.gameObject.activeSelf)

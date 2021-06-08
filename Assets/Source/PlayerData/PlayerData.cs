@@ -953,7 +953,7 @@ public class PlayerData : MonoBehaviour
 			}
 			return;
 		}
-		if (_unfixedRefreshRetryRemainCount == 0)
+		if (_unfixedRefreshRetryRemainCount <= 0)
 			return;
 
 		// ServerTime.UtcNow와 비교하는 진짜 의미는 이쯤 보내면 서버의 24:00쯤에 딱 맞춰서 도착하겠지 라는 의미다.

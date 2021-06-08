@@ -804,7 +804,7 @@ public class PlayFabApiManager : MonoBehaviour
 			if (PlayerData.instance.currentChallengeMode && ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Chaos))
 			{
 				PlayerData.instance.chaosMode = true;
-				PlayerData.instance.purifyCount = 0;
+				//PlayerData.instance.purifyCount = 0;
 			}
 			if (successCallback != null) successCallback.Invoke();
 			return;
@@ -823,7 +823,7 @@ public class PlayFabApiManager : MonoBehaviour
 				if (PlayerData.instance.currentChallengeMode && ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Chaos))
 				{
 					PlayerData.instance.chaosMode = true;
-					PlayerData.instance.purifyCount = 0;
+					//PlayerData.instance.purifyCount = 0;
 				}
 				// 도전모드 취소할땐 서버 처리가 다 끝나야지만 재진입 저장 데이터를 초기화 시켜야한다. 이래야 네트워크 상황 안좋아서 재시도할때도 제대로 처리할 수 있게 된다.
 				ClientSaveData.instance.OnEndGame();
@@ -1442,7 +1442,7 @@ public class PlayFabApiManager : MonoBehaviour
 				WaitingNetworkCanvas.Show(false);
 				PlayerData.instance.chaosMode = false;
 				CurrencyData.instance.gold -= priceGold;
-				PlayerData.instance.purifyCount = 0;
+				//PlayerData.instance.purifyCount = 0;
 				jsonResult.TryGetValue("retFre", out object freeApplied);
 				if ((freeApplied.ToString()) == "1")
 				{

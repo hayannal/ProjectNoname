@@ -260,7 +260,7 @@ public class UIString : MonoBehaviour
 		return resultList;
 	}
 
-	StringTableData FindStringTableData(string id)
+	public StringTableData FindStringTableData(string id)
 	{
 		StringTable stringTable = null;
 		if (_useStringTableForLocal)

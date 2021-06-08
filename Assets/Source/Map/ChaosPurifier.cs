@@ -7,17 +7,23 @@ public class ChaosPurifier : MonoBehaviour
 	public static ChaosPurifier instance;
 
 	public Animator leverAnimator;
+	public Canvas worldCanvas;
+	public RectTransform alarmRootTransform;
 
 	void Awake()
 	{
 		instance = this;
 	}
 
-	bool _started = false;
 	void Start()
 	{
+		worldCanvas.worldCamera = UIInstanceManager.instance.GetCachedCameraMain();
 		_position = transform.position;
-		_started = true;
+	}
+
+	void OnEnable()
+	{
+		RefreshAlarmObject();
 	}
 
 	void OnDisable()
@@ -81,4 +87,21 @@ public class ChaosPurifier : MonoBehaviour
 
 		ShowIndicator();
 	}
+
+
+
+
+
+	#region AlarmObject
+	void RefreshAlarmObject()
+	{
+		worldCanvas.gameObject.SetActive(false);
+		AlarmObject.Hide(alarmRootTransform);
+		if (PlayerData.instance.todayFreePurifyApplied == false)
+		{
+			worldCanvas.gameObject.SetActive(true);
+			AlarmObject.Show(alarmRootTransform);
+		}
+	}
+	#endregion
 }

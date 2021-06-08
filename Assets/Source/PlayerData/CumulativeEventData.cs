@@ -130,9 +130,6 @@ public class CumulativeEventData : MonoBehaviour
 			}
 		}
 
-		//newAccountDailyBoxEventTotalDays = 7;
-		//openChaosEventTotalDays = 4;
-
 		#region NewAccountLoginEvent
 		newAccountLoginRecorded = false;
 		if (userReadOnlyData.ContainsKey("evtNewbLogDat"))
@@ -172,7 +169,7 @@ public class CumulativeEventData : MonoBehaviour
 		if (userReadOnlyData.ContainsKey("evtOpnChaDat"))
 		{
 			if (string.IsNullOrEmpty(userReadOnlyData["evtOpnChaDat"].Value) == false)
-				OnRecvNewAccountDailyBoxInfo(userReadOnlyData["evtOpnChaDat"].Value);
+				OnRecvOpenChaosEventRecordInfo(userReadOnlyData["evtOpnChaDat"].Value);
 		}
 
 		openChaosEventCount = 0;

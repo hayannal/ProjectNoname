@@ -199,6 +199,9 @@ public class CumulativeEventListItem : MonoBehaviour
 			case CumulativeEventData.eEventType.DailyBox:
 				count = CumulativeEventData.instance.newAccountDailyBoxEventCount;
 				break;
+			case CumulativeEventData.eEventType.OpenChaos:
+				count = CumulativeEventData.instance.openChaosEventCount;
+				break;
 		}
 
 		bool recorded = false;
@@ -209,6 +212,9 @@ public class CumulativeEventListItem : MonoBehaviour
 				break;
 			case CumulativeEventData.eEventType.DailyBox:
 				recorded = CumulativeEventData.instance.newAccountDailyBoxRecorded;
+				break;
+			case CumulativeEventData.eEventType.OpenChaos:
+				recorded = CumulativeEventData.instance.openChaosEventRecorded;
 				break;
 		}
 
@@ -228,7 +234,17 @@ public class CumulativeEventListItem : MonoBehaviour
 			completeText.gameObject.SetActive(false);
 			blackObject.gameObject.SetActive(false);
 			infoButtonImage.color = Color.white;
-			AlarmObject.Show(alarmRootTransform);
+
+			if (CumulativeEventData.instance.IsReceivableEvent(eventType))
+			{
+				claimText.color = new Color(0.0f, 1.0f, 0.0f);
+				AlarmObject.Show(alarmRootTransform);
+			}
+			else
+			{
+				claimText.color = new Color(0.0f, 0.333f, 0.0f);
+				AlarmObject.Hide(alarmRootTransform);
+			}
 		}
 		else
 		{

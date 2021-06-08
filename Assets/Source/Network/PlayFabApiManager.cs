@@ -532,12 +532,17 @@ public class PlayFabApiManager : MonoBehaviour
 				DateTime endTime = new DateTime();
 				if (DateTime.TryParse(dicInfo["1"], out startTime) && DateTime.TryParse(dicInfo["2"], out endTime))
 				{
-					DateTime localStartTime = startTime.ToLocalTime();
-					DateTime localEndTime = endTime.ToLocalTime();
-					string startArgment = string.Format("{0:00}:{1:00}", localStartTime.Hour, localStartTime.Minute);
-					string endArgment = string.Format("{0:00}:{1:00}", localEndTime.Hour, localEndTime.Minute);
-					StartCoroutine(AuthManager.instance.RestartProcess(null, "SystemUI_ServerDown", startArgment, endArgment));
-					return true;
+					DateTime universalStartTime = startTime.ToUniversalTime();
+					DateTime universalEndTime = endTime.ToUniversalTime();
+					if (universalStartTime < ServerTime.UtcNow && ServerTime.UtcNow < universalEndTime)
+					{
+						DateTime localStartTime = startTime.ToLocalTime();
+						DateTime localEndTime = endTime.ToLocalTime();
+						string startArgment = string.Format("{0:00}:{1:00}", localStartTime.Hour, localStartTime.Minute);
+						string endArgment = string.Format("{0:00}:{1:00}", localEndTime.Hour, localEndTime.Minute);
+						StartCoroutine(AuthManager.instance.RestartProcess(null, "SystemUI_ServerDown", startArgment, endArgment));
+						return true;
+					}
 				}
 			}
 		}

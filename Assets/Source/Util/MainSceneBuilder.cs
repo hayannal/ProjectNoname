@@ -762,6 +762,8 @@ public class MainSceneBuilder : MonoBehaviour
 			NewChapterCanvas.instance.gameObject.SetActive(false);
 		if (BattleInstanceManager.instance.playerActor != null)
 			BattleInstanceManager.instance.playerActor.InitializeCanvas();
+		if (EventBoard.instance != null)
+			EventBoard.instance.gameObject.SetActive(false);
 	}
 
 

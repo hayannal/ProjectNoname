@@ -95,6 +95,13 @@ public class CumulativeEventData : MonoBehaviour
 	public ObscuredInt newAccountDailyBoxEventCount { get; set; }
 	#endregion
 
+	#region OpenChaosEvent
+	public ObscuredInt openChaosEventTotalDays { get; set; }
+
+	public ObscuredBool openChaosEventRecorded { get; set; }
+	public ObscuredInt openChaosEventCount { get; set; }
+	#endregion
+
 	public void OnRecvCumulativeEventData(Dictionary<string, string> titleData, Dictionary<string, UserDataRecord> userReadOnlyData, bool newlyCreated)
 	{
 		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
@@ -114,12 +121,17 @@ public class CumulativeEventData : MonoBehaviour
 		{
 			for (int i = 0; i < _listEventTypeInfo.Count; ++i)
 			{
-				if (_listEventTypeInfo[i].id == "na")
+				if (_listEventTypeInfo[i].id == EventType2Id(eEventType.NewAccount))
 					newAccountLoginEventTotalDays = _listEventTypeInfo[i].td;
-				if (_listEventTypeInfo[i].id == "no")
+				if (_listEventTypeInfo[i].id == EventType2Id(eEventType.DailyBox))
 					newAccountDailyBoxEventTotalDays = _listEventTypeInfo[i].td;
+				if (_listEventTypeInfo[i].id == EventType2Id(eEventType.OpenChaos))
+					openChaosEventTotalDays = _listEventTypeInfo[i].td;
 			}
 		}
+
+		//newAccountDailyBoxEventTotalDays = 7;
+		//openChaosEventTotalDays = 4;
 
 		#region NewAccountLoginEvent
 		newAccountLoginRecorded = false;
@@ -154,6 +166,23 @@ public class CumulativeEventData : MonoBehaviour
 				newAccountDailyBoxEventCount = intValue;
 		}
 		#endregion
+
+		#region OpenChaosEvent
+		openChaosEventRecorded = false;
+		if (userReadOnlyData.ContainsKey("evtOpnChaDat"))
+		{
+			if (string.IsNullOrEmpty(userReadOnlyData["evtOpnChaDat"].Value) == false)
+				OnRecvNewAccountDailyBoxInfo(userReadOnlyData["evtOpnChaDat"].Value);
+		}
+
+		openChaosEventCount = 0;
+		if (userReadOnlyData.ContainsKey("evtOpnChaCnt"))
+		{
+			int intValue = 0;
+			if (int.TryParse(userReadOnlyData["evtOpnChaCnt"].Value, out intValue))
+				openChaosEventCount = intValue;
+		}
+		#endregion
 	}
 
 	public bool OnRecvGetEventReward(eEventType eventType, string lastRecordedTimeString)
@@ -166,6 +195,13 @@ public class CumulativeEventData : MonoBehaviour
 
 				OnRecvNewAccountLoginInfo(lastRecordedTimeString);
 				++newAccountLoginEventCount;
+
+				// DailyBox로 연결되는 이벤트라서 이렇게 호출한다.
+				if (newAccountLoginEventCount >= newAccountLoginEventTotalDays)
+				{
+					if (CumulativeEventCanvas.instance != null)
+						CumulativeEventCanvas.instance.RefreshOpenTabSlot();
+				}
 				break;
 			case eEventType.DailyBox:
 				if (newAccountDailyBoxEventCount >= newAccountDailyBoxEventTotalDays)
@@ -173,6 +209,13 @@ public class CumulativeEventData : MonoBehaviour
 
 				OnRecvNewAccountDailyBoxInfo(lastRecordedTimeString);
 				++newAccountDailyBoxEventCount;
+				break;
+			case eEventType.OpenChaos:
+				if (openChaosEventCount >= openChaosEventTotalDays)
+					return false;
+
+				OnRecvOpenChaosEventRecordInfo(lastRecordedTimeString);
+				++openChaosEventCount;
 				break;
 		}
 		return true;
@@ -249,11 +292,6 @@ public class CumulativeEventData : MonoBehaviour
 
 		// DailyShopData와 달리 매일 구성품이 바뀌는것도 아니라서 굳이 다음날엔 호출하지 않는다.
 		//StartCoroutine(LoadRewardEquipIconAsync());
-	}
-
-	public void RefreshNewEvent()
-	{
-		// 7챕터 클리어 후 즉시 새 이벤트를 진행하려면 이런식으로 호출이 필요하지 않나
 	}
 
 	List<string> _listLoadKey = new List<string>();
@@ -333,8 +371,16 @@ public class CumulativeEventData : MonoBehaviour
 					return true;
 				break;
 			case eEventType.OpenChaos:
+				if (PlayerData.instance.chaosModeOpened == false)
+					return false;
+				if (openChaosEventCount < openChaosEventTotalDays)
+					return true;
+				if (openChaosEventCount == openChaosEventTotalDays && openChaosEventRecorded)
+					return true;
 				break;
 			case eEventType.Clear7Chapter:
+				//if (PlayerData.instance.highestPlayChapter < 7)
+				//	return false;
 				break;
 			case eEventType.LoginRepeat:
 				break;
@@ -355,6 +401,9 @@ public class CumulativeEventData : MonoBehaviour
 		if (disableEvent)
 			return false;
 
+		if (IsDailyBoxEvent(eventType) && PlayerData.instance.sharedDailyBoxOpened == false)
+			return false;
+
 		switch (eventType)
 		{
 			case eEventType.NewAccount:
@@ -364,10 +413,12 @@ public class CumulativeEventData : MonoBehaviour
 			case eEventType.DailyBox:
 				if (newAccountLoginEventCount < newAccountLoginEventTotalDays)
 					return false;
-				if (newAccountDailyBoxEventCount < newAccountDailyBoxEventTotalDays && newAccountDailyBoxRecorded == false && PlayerData.instance.sharedDailyBoxOpened)
+				if (newAccountDailyBoxEventCount < newAccountDailyBoxEventTotalDays && newAccountDailyBoxRecorded == false)
 					return true;
 				break;
 			case eEventType.OpenChaos:
+				if (PlayerData.instance.chaosModeOpened && openChaosEventCount < openChaosEventTotalDays && openChaosEventRecorded == false)
+					return true;
 				break;
 			case eEventType.Clear7Chapter:
 				break;
@@ -421,64 +472,21 @@ public class CumulativeEventData : MonoBehaviour
 		}
 	}
 
-
-
-
-
-
-
-
-
-
-	void CheckRepeatCumulativeLEvent()
+	void OnRecvOpenChaosEventRecordInfo(DateTime lastOpenChaosEventRecordTime)
 	{
-		/*
-		if (_checkedUnfixedNodeWarInfo)
-			return;
-		if (ContentsManager.IsTutorialChapter())
-			return;
-
-		if (disableEvent)
-			return;
-		// 파싱 실패라면
-		if (_newAccountLoginEventTotalDays == 0)
-			return;
-
-		bool needRegister = false;
-		if (_lastUnfixedDateTimeString == "")
-			needRegister = true;
-		if (needRegister == false)
-		{
-			DateTime lastUnfixedItemDateTime = new DateTime();
-			if (DateTime.TryParse(_lastUnfixedDateTimeString, out lastUnfixedItemDateTime))
-			{
-				DateTime universalTime = lastUnfixedItemDateTime.ToUniversalTime();
-				if (ServerTime.UtcNow.Year == universalTime.Year && ServerTime.UtcNow.Month == universalTime.Month && ServerTime.UtcNow.Day == universalTime.Day)
-				{
-					int result = 0;
-					int.TryParse(_nodeWarBonusString, out result);
-					nodeWarBonusPowerSource = result;
-				}
-				else
-					needRegister = true;
-			}
-		}
-		_checkedUnfixedNodeWarInfo = true;
-
-		if (needRegister == false)
-			return;
-		RegisterNodeWarBonusPowerSource();
-		*/
+		if (ServerTime.UtcNow.Year == lastOpenChaosEventRecordTime.Year && ServerTime.UtcNow.Month == lastOpenChaosEventRecordTime.Month && ServerTime.UtcNow.Day == lastOpenChaosEventRecordTime.Day)
+			openChaosEventRecorded = true;
+		else
+			openChaosEventRecorded = false;
 	}
 
-	void RegisterNodeWarBonusPowerSource()
+	public void OnRecvOpenChaosEventRecordInfo(string lastOpenChaosEventRecordTimeString)
 	{
-		/*
-		nodeWarBonusPowerSource = 0;
-		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.NodeWar))
-			nodeWarBonusPowerSource = UnityEngine.Random.Range(0, 4);
-
-		PlayFabApiManager.instance.RequestRegisterNodeWarBonusPowerSource(nodeWarBonusPowerSource);
-		*/
+		DateTime lastOpenChaosEventRecordTime = new DateTime();
+		if (DateTime.TryParse(lastOpenChaosEventRecordTimeString, out lastOpenChaosEventRecordTime))
+		{
+			DateTime universalTime = lastOpenChaosEventRecordTime.ToUniversalTime();
+			OnRecvOpenChaosEventRecordInfo(universalTime);
+		}
 	}
 }

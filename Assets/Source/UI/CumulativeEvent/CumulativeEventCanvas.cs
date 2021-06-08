@@ -27,12 +27,27 @@ public class CumulativeEventCanvas : MonoBehaviour
 	bool _started = false;
 	void Start()
 	{
-		// 최초 시작에는 활성화된 이벤트중에 가장 왼쪽에 있는걸 보여주면 된다.
+		// 최초 시작에는 받을 수 있는 이벤트중 가장 왼쪽에 있는걸 보여주면 된다.
+		// 받을 수 있는게 없다면 활성화된 이벤트중에 가장 왼쪽에 있는걸 보여주면 된다.
 		int openIndex = -1;
-		for (int i = (int)CumulativeEventData.eEventType.Amount - 1; i >= 0; --i)
+		for (int i = 0; i < (int)CumulativeEventData.eEventType.Amount; ++i)
 		{
-			if (CumulativeEventData.instance.IsActiveEvent((CumulativeEventData.eEventType)i))
+			if (CumulativeEventData.instance.IsReceivableEvent((CumulativeEventData.eEventType)i))
+			{
 				openIndex = i;
+				break;
+			}
+		}
+		if (openIndex == -1)
+		{
+			for (int i = 0; i < (int)CumulativeEventData.eEventType.Amount; ++i)
+			{
+				if (CumulativeEventData.instance.IsActiveEvent((CumulativeEventData.eEventType)i))
+				{
+					openIndex = i;
+					break;
+				}
+			}
 		}
 		RefreshOpenTabSlot();
 		OnValueChangedToggle(openIndex);

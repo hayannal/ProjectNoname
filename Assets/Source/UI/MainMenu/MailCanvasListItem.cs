@@ -49,17 +49,21 @@ public class MailCanvasListItem : MonoBehaviour
 		this.id = myMailData.id;
 		this.receiveDay = receiveDay;
 		_addDia = _addGold = _addEnergy = 0;
-
-		nameText.SetLocalizedText(UIString.instance.GetString(createInfo.nm));
-
 		_type = createInfo.tp;
 		_value = createInfo.vl;
 		if (string.IsNullOrEmpty(createInfo.tp))
 		{
 			// 보상이 없는 메일이다. 보통 공지같은데 쓰는 시스템 메일이다.
+			if (UIString.instance.FindStringTableData(createInfo.nm) != null)
+				nameText.SetLocalizedText(UIString.instance.GetString(createInfo.nm));
+			else
+				nameText.SetLocalizedText(UIString.instance.GetString("MailName_None"));
 			rewardRootObject.SetActive(false);
 			descText.gameObject.SetActive(false);
-			noAttachDescText.SetLocalizedText(UIString.instance.GetString(createInfo.de));
+			if (UIString.instance.FindStringTableData(createInfo.de) != null)
+				noAttachDescText.SetLocalizedText(UIString.instance.GetString(createInfo.de));
+			else
+				noAttachDescText.SetLocalizedText(UIString.instance.GetString("MailDesc_None"));
 			noAttachDescText.gameObject.SetActive(true);
 
 			blurImage.color = new Color(1.0f, 0.392f, 0.392f, 0.274f);
@@ -71,6 +75,7 @@ public class MailCanvasListItem : MonoBehaviour
 		}
 		else
 		{
+			nameText.SetLocalizedText(UIString.instance.GetString(createInfo.nm));
 			rewardRootObject.SetActive(true);
 			noAttachDescText.gameObject.SetActive(false);
 			descText.SetLocalizedText(UIString.instance.GetString(createInfo.de));

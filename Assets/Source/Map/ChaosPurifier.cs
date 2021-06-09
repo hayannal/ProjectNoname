@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,6 +25,10 @@ public class ChaosPurifier : MonoBehaviour
 	void OnEnable()
 	{
 		RefreshAlarmObject();
+
+		_needUpdate = PlayerData.instance.todayFreePurifyApplied;
+		if (_needUpdate)
+			_dailyResetTime = new DateTime(ServerTime.UtcNow.Year, ServerTime.UtcNow.Month, ServerTime.UtcNow.Day) + TimeSpan.FromDays(1);
 	}
 
 	void OnDisable()
@@ -39,6 +44,9 @@ public class ChaosPurifier : MonoBehaviour
 	Vector3 _position;
 	void Update()
 	{
+		UpdateRemainTime();
+		UpdateRefresh();
+
 		if (_spawnedIndicator == false)
 			return;
 		if (_objectIndicatorCanvas == null)
@@ -104,4 +112,36 @@ public class ChaosPurifier : MonoBehaviour
 		}
 	}
 	#endregion
+
+
+	DateTime _dailyResetTime;
+	bool _needUpdate = false;
+	void UpdateRemainTime()
+	{
+		if (_needUpdate == false)
+			return;
+
+		if (ServerTime.UtcNow < _dailyResetTime)
+		{
+		}
+		else
+		{
+			_needUpdate = false;
+			_needRefresh = true;
+		}
+	}
+
+	bool _needRefresh = false;
+	int _lastCurrent;
+	void UpdateRefresh()
+	{
+		if (_needRefresh == false)
+			return;
+
+		if (PlayerData.instance.todayFreePurifyApplied == false)
+		{
+			RefreshAlarmObject();
+			_needRefresh = false;
+		}
+	}
 }

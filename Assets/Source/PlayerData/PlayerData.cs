@@ -998,6 +998,8 @@ public class PlayerData : MonoBehaviour
 					// 여기서 각종 갱신 처리 및 패킷들을 보내면 문제없을거다.
 					if (sharedDailyBoxOpened)
 						sharedDailyBoxOpened = false;
+					if (todayFreePurifyApplied)
+						todayFreePurifyApplied = false;
 					DailyShopData.instance.ResetDailyShopSlotPurchaseInfo();
 					DailyShopData.instance.ResetDailyFreeItemInfo();
 					RegisterNodeWarBonusPowerSource();

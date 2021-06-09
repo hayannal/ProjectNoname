@@ -8,6 +8,7 @@ public class MenuButton : MonoBehaviour
 {
 	public RectTransform foregroundTransform;
 	public Text menuText;
+	public RectTransform selectBarImageTransform;
 	public bool isOn { get; set; }
 
 	void Start()
@@ -20,6 +21,7 @@ public class MenuButton : MonoBehaviour
 	{
 		UpdateSelectPosition();
 		UpdateTextAlpha();
+		UpdateSelectBarImageTransform();
 	}
 
 	void UpdateSelectPosition()
@@ -71,6 +73,34 @@ public class MenuButton : MonoBehaviour
 				float diff = menuText.color.a;
 				if (diff < 0.04f)
 					menuText.color = transparentColor;
+			}
+		}
+	}
+
+	void UpdateSelectBarImageTransform()
+	{
+		if (selectBarImageTransform == null)
+			return;
+
+		if (isOn)
+		{
+			if (selectBarImageTransform.localScale.x != 1.0f)
+			{
+				selectBarImageTransform.localScale = new Vector3(selectBarImageTransform.localScale.x + Time.deltaTime * 6.0f, 1.0f, 1.0f);
+				//selectBarImageTransform.localScale = Vector3.Lerp(selectBarImageTransform.localScale, Vector3.one, Time.deltaTime * 15.0f);
+				float diff = 1.0f - selectBarImageTransform.localScale.x;
+				if (diff < 0.01f)
+					selectBarImageTransform.localScale = Vector3.one;
+			}
+		}
+		else
+		{
+			if (selectBarImageTransform.localScale.x != 0.0f)
+			{
+				selectBarImageTransform.localScale = new Vector3(selectBarImageTransform.localScale.x - Time.deltaTime * 6.0f, 1.0f, 1.0f);
+				//selectBarImageTransform.localScale = Vector3.Lerp(selectBarImageTransform.localScale, new Vector3(0.0f, 1.0f, 1.0f), Time.deltaTime * 15.0f);
+				if (selectBarImageTransform.localScale.x < 0.01f)
+					selectBarImageTransform.localScale = new Vector3(0.0f, 1.0f, 1.0f);
 			}
 		}
 	}

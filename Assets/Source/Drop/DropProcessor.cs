@@ -718,8 +718,8 @@ public class DropProcessor : MonoBehaviour
 			}
 		}
 		if (gachaCount == 0)
-			Add(eDropType.Gacha, 0.0f, 1, "Equip0001");
-		else if (gachaCount > 1)
+			Add(eDropType.Gacha, 0.0f, 1, "Equip3302");
+		else if (gachaCount >= 1)
 		{
 			// 최초 드랍이니 한개만 드랍되게 마지막걸 지운다.
 			for (int i = _listDropObjectInfo.Count - 1; i >= 0; --i)
@@ -728,6 +728,8 @@ public class DropProcessor : MonoBehaviour
 				{
 					if (firstGachaIndex != i)
 						_listDropObjectInfo.RemoveAt(i);
+					else
+						_listDropObjectInfo[i].stringValue = "Equip3302";
 				}
 			}
 		}
@@ -741,7 +743,7 @@ public class DropProcessor : MonoBehaviour
 		// 이걸 방지하기 위해 미리 Add시켜놔야하는데,
 		// 문젠 여기서 한번 되고 또 DropObject가 추가될때 한번 더 해서 총 2개가 세이브데이터가 저장되게 된다.
 		// 이걸 막기위해 AdjustDrop이 수행되는 시점의 DropObject는 무시하기로 한다.
-		ClientSaveData.instance.OnAddedDropItemId("Equip0001");
+		ClientSaveData.instance.OnAddedDropItemId("Equip3302");
 	}
 	#endregion
 

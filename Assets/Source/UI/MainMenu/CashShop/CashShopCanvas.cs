@@ -212,7 +212,7 @@ public class CashShopCanvas : MonoBehaviour
 			goldListItemList[i].SetInfo(TableDataManager.instance.shopGoldTable.dataArray[i]);
 		}
 
-		returnScrollRectObject.SetActive(ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.SecondDailyBox));
+		returnScrollRectObject.SetActive(ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Chapter));
 		for (int i = 0; i < returnScrollItemList.Length; ++i)
 		{
 			if (i >= TableDataManager.instance.shopReturnScrollTable.dataArray.Length)

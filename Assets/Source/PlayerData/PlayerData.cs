@@ -27,6 +27,11 @@ public class PlayerData : MonoBehaviour
 	public bool newlyCreated { get; private set; }
 	public bool clientOnly { get; private set; }
 
+#if UNITY_IOS
+	// 심사빌드인지 체크해두는 변수
+	public bool reviewVersion { get; set; }
+#endif
+
 	// 변수 이름이 헷갈릴 수 있는데 로직상 이게 가장 필요한 정보라 그렇다.
 	// 하나는 최대로 플레이한 챕터 번호고 하나는 최대로 클리어한 스테이지 번호다.
 	// 무슨 말이냐 하면

@@ -24,6 +24,7 @@ public class MailCanvasListItem : MonoBehaviour
 	public GameObject goldIconObject;
 	public GameObject diaIconObject;
 	public GameObject energyIconObject;
+	public GameObject returnScrollIconObject;
 	public GameObject equipBoxObject;
 	public Text countText;
 	public Text rewardNameText;
@@ -41,23 +42,25 @@ public class MailCanvasListItem : MonoBehaviour
 
 	public string id { get; set; }
 	public int receiveDay { get; set; }
-	int _addDia, _addGold, _addEnergy;
+	int _addDia, _addGold, _addEnergy, _addReturnScroll;
 	string _type;
 	string _value;
 	public void Initialize(MailData.MailCreateInfo createInfo, MailData.MyMailData myMailData, int receiveDay, DateTime validTime)
 	{
 		this.id = myMailData.id;
 		this.receiveDay = receiveDay;
-		_addDia = _addGold = _addEnergy = 0;
+		_addDia = _addGold = _addEnergy = _addReturnScroll = 0;
 		_type = createInfo.tp;
 		_value = createInfo.vl;
+
+		if (UIString.instance.FindStringTableData(createInfo.nm) != null)
+			nameText.SetLocalizedText(UIString.instance.GetString(createInfo.nm));
+		else
+			nameText.SetLocalizedText(UIString.instance.GetString("MailName_None"));
+
 		if (string.IsNullOrEmpty(createInfo.tp))
 		{
 			// 보상이 없는 메일이다. 보통 공지같은데 쓰는 시스템 메일이다.
-			if (UIString.instance.FindStringTableData(createInfo.nm) != null)
-				nameText.SetLocalizedText(UIString.instance.GetString(createInfo.nm));
-			else
-				nameText.SetLocalizedText(UIString.instance.GetString("MailName_None"));
 			rewardRootObject.SetActive(false);
 			descText.gameObject.SetActive(false);
 			if (UIString.instance.FindStringTableData(createInfo.de) != null)
@@ -75,10 +78,12 @@ public class MailCanvasListItem : MonoBehaviour
 		}
 		else
 		{
-			nameText.SetLocalizedText(UIString.instance.GetString(createInfo.nm));
 			rewardRootObject.SetActive(true);
 			noAttachDescText.gameObject.SetActive(false);
-			descText.SetLocalizedText(UIString.instance.GetString(createInfo.de));
+			if (UIString.instance.FindStringTableData(createInfo.de) != null)
+				descText.SetLocalizedText(UIString.instance.GetString(createInfo.de));
+			else
+				descText.SetLocalizedText(UIString.instance.GetString("MailDesc_None"));
 			descText.gameObject.SetActive(true);
 
 			blurImage.color = new Color(0.896f, 0.896f, 0.452f, 0.274f);
@@ -96,6 +101,7 @@ public class MailCanvasListItem : MonoBehaviour
 					goldIconObject.SetActive(true);
 					diaIconObject.SetActive(false);
 					energyIconObject.SetActive(false);
+					returnScrollIconObject.SetActive(false);
 					countText.color = DailyFreeItem.GetGoldTextColor();
 				}
 				else if (createInfo.vl == CurrencyData.DiamondCode())
@@ -104,14 +110,25 @@ public class MailCanvasListItem : MonoBehaviour
 					goldIconObject.SetActive(false);
 					diaIconObject.SetActive(true);
 					energyIconObject.SetActive(false);
+					returnScrollIconObject.SetActive(false);
 					countText.color = DailyFreeItem.GetDiaTextColor();
 				}
-				else
+				else if (createInfo.vl == CurrencyData.EnergyCode())
 				{
 					_addEnergy = createInfo.cn;
 					goldIconObject.SetActive(false);
 					diaIconObject.SetActive(false);
 					energyIconObject.SetActive(true);
+					returnScrollIconObject.SetActive(false);
+					countText.color = Color.white;
+				}
+				else
+				{
+					_addReturnScroll = createInfo.cn;
+					goldIconObject.SetActive(false);
+					diaIconObject.SetActive(false);
+					energyIconObject.SetActive(false);
+					returnScrollIconObject.SetActive(true);
 					countText.color = Color.white;
 				}
 				countText.text = createInfo.cn.ToString("N0");
@@ -125,6 +142,7 @@ public class MailCanvasListItem : MonoBehaviour
 				goldIconObject.SetActive(false);
 				diaIconObject.SetActive(false);
 				energyIconObject.SetActive(false);
+				returnScrollIconObject.SetActive(false);
 				equipBoxObject.SetActive(true);
 
 				countText.gameObject.SetActive(false);
@@ -260,7 +278,7 @@ public class MailCanvasListItem : MonoBehaviour
 	{
 		if (_type == "cu")
 		{
-			PlayFabApiManager.instance.RequestReceiveMailPresent(id, receiveDay, _type, _addDia, _addGold, _addEnergy, "", (serverFailure, itemGrantString) =>
+			PlayFabApiManager.instance.RequestReceiveMailPresent(id, receiveDay, _type, _addDia, _addGold, _addEnergy, _addReturnScroll, "", (serverFailure, itemGrantString) =>
 			{
 				DotMainMenuCanvas.instance.RefreshMailAlarmObject();
 				ToastCanvas.instance.ShowToast(UIString.instance.GetString("MailUI_AfterClaim"), 2.0f);
@@ -282,7 +300,7 @@ public class MailCanvasListItem : MonoBehaviour
 			if (CheatingListener.detectedCheatTable)
 				return;
 
-			PlayFabApiManager.instance.RequestReceiveMailPresent(id, receiveDay, _type, 0, 0, 0, equipId, OnRecvEquipBox);
+			PlayFabApiManager.instance.RequestReceiveMailPresent(id, receiveDay, _type, 0, 0, 0, 0, equipId, OnRecvEquipBox);
 		}
 	}
 

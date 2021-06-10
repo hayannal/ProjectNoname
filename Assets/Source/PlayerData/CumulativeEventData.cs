@@ -108,6 +108,11 @@ public class CumulativeEventData : MonoBehaviour
 		if (titleData.ContainsKey("newuEvnt") && string.IsNullOrEmpty(titleData["newuEvnt"]) == false)
 			disableEvent = (titleData["newuEvnt"] == "0");
 
+#if UNITY_IOS
+		if (PlayerData.instance.reviewVersion)
+			disableEvent = true;
+#endif
+
 		_listEventTypeInfo = null;
 		if (titleData.ContainsKey("evntTp"))
 			_listEventTypeInfo = serializer.DeserializeObject<List<EventTypeInfo>>(titleData["evntTp"]);

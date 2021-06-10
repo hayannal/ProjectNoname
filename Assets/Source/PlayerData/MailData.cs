@@ -37,6 +37,7 @@ public class MailData : MonoBehaviour
 		public string nm;
 		public string de;
 		public int ti;
+		public int cc;
 	}
 	List<MailCreateInfo> _listMailCreateInfo;
 
@@ -69,9 +70,21 @@ public class MailData : MonoBehaviour
 		UpdateServerMaintenance();
 	}
 
-	public void OnRecvMailData(Dictionary<string, string> titleData, Dictionary<string, UserDataRecord> userReadOnlyData, bool newlyCreated)
+	public void OnRecvMailData(Dictionary<string, string> titleData, Dictionary<string, UserDataRecord> userReadOnlyData, List<StatisticValue> playerStatistics, bool newlyCreated)
 	{
 		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+
+		// 원래는 필요없던 로직이었는데 highestPlayChapter에 따라 메일 받는걸 결정해야하다보니 필요해졌다.
+		// 근데 플레이어의 highestPlayChapter는 OnRecv 의 거의 마지막 순서라서 셋팅이 되기전이라 이렇게 직접 파싱해서 비교하기로 한다.
+		int highestPlayChapter = 0;
+		for (int i = 0; i < playerStatistics.Count; ++i)
+		{
+			if (playerStatistics[i].StatisticName == "highestPlayChapter")
+			{
+				highestPlayChapter = playerStatistics[i].Value;
+				break;
+			}
+		}
 
 		_listMailCreateInfo = null;
 		if (titleData.ContainsKey("mail"))
@@ -88,7 +101,7 @@ public class MailData : MonoBehaviour
 		// 사실 에러가 와도 5분 뒤에 다시 보내니까 문제없긴 한데 그래도 로직상 에러 안나는게 좋을테니 바꿔본다.
 		if (newlyCreated)
 		{
-			if (CheckAdd())
+			if (CheckAdd(highestPlayChapter))
 				mailRefreshTime = ServerTime.UtcNow + TimeSpan.FromMinutes(1);
 			else
 			{
@@ -100,7 +113,7 @@ public class MailData : MonoBehaviour
 		{
 			// 일반적인 로그인시에는 기록된 데이터로 초기화하고 이후 5분마다 서버에서 물어봐서 갱신된 리스트를 받으면 된다.
 			bool needRemove = CheckRemove();
-			bool needAdd = CheckAdd();
+			bool needAdd = CheckAdd(highestPlayChapter);
 			if (needRemove || needAdd)
 			{
 				// 변경해야할 항목이 있다면 서버에 리프레쉬를 알린다.
@@ -116,6 +129,11 @@ public class MailData : MonoBehaviour
 
 	bool CheckRemove()
 	{
+#if UNITY_IOS
+		if (PlayerData.instance.reviewVersion)
+			return false;
+#endif
+
 		// 처음 만든 계정은 null일 수 있다.
 		if (_listMyMailTime == null)
 			return false;
@@ -167,8 +185,13 @@ public class MailData : MonoBehaviour
 		return null;
 	}
 
-	bool CheckAdd()
+	bool CheckAdd(int highestPlayChapter)
 	{
+#if UNITY_IOS
+		if (PlayerData.instance.reviewVersion)
+			return false;
+#endif
+
 		for (int i = 0; i < _listMailCreateInfo.Count; ++i)
 		{
 			// 적혀있는 날짜를 보고 생성해야하는지를 체크
@@ -179,6 +202,8 @@ public class MailData : MonoBehaviour
 				inRange = true;
 
 			if (inRange == false)
+				continue;
+			if (_listMailCreateInfo[i].cc != 0 && highestPlayChapter < _listMailCreateInfo[i].cc)
 				continue;
 
 			// 내 메일리스트를 확인해서 이미 생성한거면 패스. 해야하는거면 리스트에 넣어서 서버로 보낸다.
@@ -341,6 +366,11 @@ public class MailData : MonoBehaviour
 
 	void UpdateRefreshTime()
 	{
+#if UNITY_IOS
+		if (PlayerData.instance.reviewVersion)
+			return;
+#endif
+
 		if (DateTime.Compare(ServerTime.UtcNow, mailRefreshTime) < 0)
 			return;
 

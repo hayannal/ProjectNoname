@@ -277,7 +277,7 @@ public class PlayFabApiManager : MonoBehaviour
 		AuthManager.instance.OnRecvAccountInfo(loginResult.InfoResultPayload.AccountInfo);
 		CurrencyData.instance.OnRecvCurrencyData(loginResult.InfoResultPayload.UserVirtualCurrency, loginResult.InfoResultPayload.UserVirtualCurrencyRechargeTimes);
 		DailyShopData.instance.OnRecvShopData(loginResult.InfoResultPayload.TitleData, loginResult.InfoResultPayload.UserReadOnlyData);
-		MailData.instance.OnRecvMailData(loginResult.InfoResultPayload.TitleData, loginResult.InfoResultPayload.UserReadOnlyData, loginResult.NewlyCreated);
+		MailData.instance.OnRecvMailData(loginResult.InfoResultPayload.TitleData, loginResult.InfoResultPayload.UserReadOnlyData, loginResult.InfoResultPayload.PlayerStatistics, loginResult.NewlyCreated);
 		SupportData.instance.OnRecvSupportData(loginResult.InfoResultPayload.UserReadOnlyData);
 		QuestData.instance.OnRecvQuestData(loginResult.InfoResultPayload.UserReadOnlyData);
 		PlayerData.instance.OnRecvLevelPackageResetInfo(loginResult.InfoResultPayload.TitleData, loginResult.InfoResultPayload.UserReadOnlyData, loginResult.NewlyCreated);
@@ -603,6 +603,13 @@ public class PlayFabApiManager : MonoBehaviour
 				}, "SystemUI_NeedUpdate"));
 				return false;
 			}
+#if UNITY_IOS
+			else if (versionInfo.updateVersion > serverVersion)
+			{
+				// 서버 버전보다 크다면 이건 심사빌드로 봐도 된다.
+				PlayerData.instance.reviewVersion = true;
+			}
+#endif
 		}
 
 		// 빌드 업데이트 확인이 끝나면 리소스 체크를 해야하는데,
@@ -2690,7 +2697,7 @@ public class PlayFabApiManager : MonoBehaviour
 		});
 	}
 
-	public void RequestReceiveMailPresent(string id, int receiveDay, string type, int addDia, int addGold, int addEnergy, string equipId, Action<bool, string> successCallback)
+	public void RequestReceiveMailPresent(string id, int receiveDay, string type, int addDia, int addGold, int addEnergy, int addReturnScroll, string equipId, Action<bool, string> successCallback)
 	{
 		WaitingNetworkCanvas.Show(true);
 
@@ -2732,6 +2739,7 @@ public class PlayFabApiManager : MonoBehaviour
 					CurrencyData.instance.gold += addGold;
 					if (addEnergy > 0)
 						CurrencyData.instance.OnRecvRefillEnergy(addEnergy);
+					CurrencyData.instance.returnScroll += addReturnScroll;
 
 					jsonResult.TryGetValue("dat", out object dat);
 					jsonResult.TryGetValue("itmRet", out object itmRet);

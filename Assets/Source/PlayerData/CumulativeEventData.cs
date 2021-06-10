@@ -137,51 +137,51 @@ public class CumulativeEventData : MonoBehaviour
 
 		#region NewAccountLoginEvent
 		newAccountLoginRecorded = false;
-		if (userReadOnlyData.ContainsKey("evtNewbLogDat"))
+		if (userReadOnlyData.ContainsKey("evtNewbLogDat2"))
 		{
-			if (string.IsNullOrEmpty(userReadOnlyData["evtNewbLogDat"].Value) == false)
-				OnRecvNewAccountLoginInfo(userReadOnlyData["evtNewbLogDat"].Value);
+			if (string.IsNullOrEmpty(userReadOnlyData["evtNewbLogDat2"].Value) == false)
+				OnRecvNewAccountLoginInfo(userReadOnlyData["evtNewbLogDat2"].Value);
 		}
 
 		newAccountLoginEventCount = 0;
-		if (userReadOnlyData.ContainsKey("evtNewbLogCnt"))
+		if (userReadOnlyData.ContainsKey("evtNewbLogCnt2"))
 		{
 			int intValue = 0;
-			if (int.TryParse(userReadOnlyData["evtNewbLogCnt"].Value, out intValue))
+			if (int.TryParse(userReadOnlyData["evtNewbLogCnt2"].Value, out intValue))
 				newAccountLoginEventCount = intValue;
 		}
 		#endregion
 
 		#region NewAccountDailyBoxEvent
 		newAccountDailyBoxRecorded = false;
-		if (userReadOnlyData.ContainsKey("evtNewbDbxDat"))
+		if (userReadOnlyData.ContainsKey("evtNewbDbxDat2"))
 		{
-			if (string.IsNullOrEmpty(userReadOnlyData["evtNewbDbxDat"].Value) == false)
-				OnRecvNewAccountDailyBoxInfo(userReadOnlyData["evtNewbDbxDat"].Value);
+			if (string.IsNullOrEmpty(userReadOnlyData["evtNewbDbxDat2"].Value) == false)
+				OnRecvNewAccountDailyBoxInfo(userReadOnlyData["evtNewbDbxDat2"].Value);
 		}
 
 		newAccountDailyBoxEventCount = 0;
-		if (userReadOnlyData.ContainsKey("evtNewbDbxCnt"))
+		if (userReadOnlyData.ContainsKey("evtNewbDbxCnt2"))
 		{
 			int intValue = 0;
-			if (int.TryParse(userReadOnlyData["evtNewbDbxCnt"].Value, out intValue))
+			if (int.TryParse(userReadOnlyData["evtNewbDbxCnt2"].Value, out intValue))
 				newAccountDailyBoxEventCount = intValue;
 		}
 		#endregion
 
 		#region OpenChaosEvent
 		openChaosEventRecorded = false;
-		if (userReadOnlyData.ContainsKey("evtOpnChaDat"))
+		if (userReadOnlyData.ContainsKey("evtOpnChaDat2"))
 		{
-			if (string.IsNullOrEmpty(userReadOnlyData["evtOpnChaDat"].Value) == false)
-				OnRecvOpenChaosEventRecordInfo(userReadOnlyData["evtOpnChaDat"].Value);
+			if (string.IsNullOrEmpty(userReadOnlyData["evtOpnChaDat2"].Value) == false)
+				OnRecvOpenChaosEventRecordInfo(userReadOnlyData["evtOpnChaDat2"].Value);
 		}
 
 		openChaosEventCount = 0;
-		if (userReadOnlyData.ContainsKey("evtOpnChaCnt"))
+		if (userReadOnlyData.ContainsKey("evtOpnChaCnt2"))
 		{
 			int intValue = 0;
-			if (int.TryParse(userReadOnlyData["evtOpnChaCnt"].Value, out intValue))
+			if (int.TryParse(userReadOnlyData["evtOpnChaCnt2"].Value, out intValue))
 				openChaosEventCount = intValue;
 		}
 		#endregion

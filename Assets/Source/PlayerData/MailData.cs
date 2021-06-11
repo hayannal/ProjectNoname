@@ -459,6 +459,13 @@ public class MailData : MonoBehaviour
 					find = true;
 					break;
 				}
+				_reserveMaintenanceAlarmTime = _serverMaintenanceTime.AddMinutes(-15);
+				if (ServerTime.UtcNow < _reserveMaintenanceAlarmTime)
+				{
+					_serverMaintenanceRemainMinute = 15;
+					find = true;
+					break;
+				}
 				_reserveMaintenanceAlarmTime = _serverMaintenanceTime.AddMinutes(-10);
 				if (ServerTime.UtcNow < _reserveMaintenanceAlarmTime)
 				{

@@ -79,6 +79,7 @@ public class EventManager : MonoBehaviour
 			PlayerData.instance.AddNewCharacter("Actor2103", newCharacterId, 1);
 			PlayerData.instance.mainCharacterId = "Actor2103";
 			PushClientEvent(eClientEvent.GainNewCharacter, "Actor2103");
+			MailData.instance.RefreshMailListImmediate();
 		}
 		else if (chapter == (int)ContentsManager.eOpenContentsByChapter.Research)
 		{

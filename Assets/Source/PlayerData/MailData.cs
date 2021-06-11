@@ -395,6 +395,11 @@ public class MailData : MonoBehaviour
 		mailRefreshTime = new DateTime(mailRefreshTime.Year, mailRefreshTime.Month, mailRefreshTime.Day) + TimeSpan.FromSeconds(3);
 	}
 
+	public void RefreshMailListImmediate()
+	{
+		mailRefreshTime = ServerTime.UtcNow + TimeSpan.FromSeconds(0.5);
+	}
+
 
 
 	#region Server Maintenance

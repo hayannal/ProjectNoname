@@ -156,6 +156,16 @@ public class BattleManager : MonoBehaviour
 		_currentBattleMode.AddClearPoint(add);
 	}
 
+	public int GetAppliedChallengeRetryBonusClearPoint()
+	{
+		return _currentBattleMode.GetAppliedChallengeRetryBonusClearPoint();
+	}
+
+	public void ResetAppliedChallengeRetryBonusClearPoint()
+	{
+		_currentBattleMode.ResetAppliedChallengeRetryBonusClearPoint();
+	}
+
 	#region NodeWar
 	public void OnSelectedNodeWarLevel(int level)
 	{

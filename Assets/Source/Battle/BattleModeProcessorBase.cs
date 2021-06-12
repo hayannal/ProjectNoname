@@ -16,6 +16,7 @@ public class BattleModeProcessorBase
 	int _damageCountInStage = 0;
 	float _spawnFlagStartTime = 0.0f;
 	ObscuredInt _clearPoint;
+	ObscuredInt _appliedChallengeRetryBonusClearPoint;
 
 	public virtual void Update()
 	{
@@ -48,6 +49,14 @@ public class BattleModeProcessorBase
 			changeStatusAffectorValue.fValue2 = 0.2f;
 			changeStatusAffectorValue.iValue1 = (int)ActorStatusDefine.eActorStatus.AttackAddRate;
 			BattleInstanceManager.instance.playerActor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.ChangeActorStatus, changeStatusAffectorValue, BattleInstanceManager.instance.playerActor, true);
+		}
+
+		// 다른 곳과 달리 PlayerData.instance.currentChallengeMode를 사용하면 안되는 곳이다.
+		// 카오스가 열리기 전 챕터도 포함시켜야하므로 직접 검사하기로 한다.
+		if (ContentsManager.IsTutorialChapter() == false && PlayerData.instance.selectedChapter == PlayerData.instance.highestPlayChapter && PlayerData.instance.chaosMode == false && PlayerData.instance.highestClearStage > 0)
+		{
+			if (BattleManager.instance != null && BattleManager.instance.IsNodeWar() == false)
+				_clearPoint = _appliedChallengeRetryBonusClearPoint = PlayerData.instance.highestClearStage;
 		}
 	}
 
@@ -820,6 +829,16 @@ public class BattleModeProcessorBase
 
 		// 값이 변하고 나면 꼭 기록해놔야한다.
 		ClientSaveData.instance.OnChangedClearPoint(_clearPoint);
+	}
+
+	public int GetAppliedChallengeRetryBonusClearPoint()
+	{
+		return _appliedChallengeRetryBonusClearPoint;
+	}
+
+	public void ResetAppliedChallengeRetryBonusClearPoint()
+	{
+		_appliedChallengeRetryBonusClearPoint = 0;
 	}
 
 

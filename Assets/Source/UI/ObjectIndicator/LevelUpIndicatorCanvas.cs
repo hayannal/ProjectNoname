@@ -121,6 +121,8 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 	public GameObject exclusiveOkButtonObject;
 	public GameObject titleTextObject;
 	public Text titleText;
+	public GameObject challengeRetryBonusTextObject;
+	public Text challengeRetryBonusText;
 	public GameObject currentClearPointGroupObject;
 	public Text currentClearPointText;
 	public GameObject refreshButtonGroupObject;
@@ -142,6 +144,7 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 	void OnDisable()
 	{
 		titleTextObject.SetActive(false);
+		challengeRetryBonusTextObject.SetActive(false);
 		buttonRootObject.SetActive(false);
 		for (int i = 0; i < buttonList.Length; ++i)
 			buttonList[i].gameObject.SetActive(false);
@@ -343,6 +346,13 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 			Timing.RunCoroutine(ExclusiveAppearProcess());
 		else
 			Timing.RunCoroutine(ButtonAppearProcess(false));
+
+		if (BattleManager.instance != null && BattleManager.instance.GetAppliedChallengeRetryBonusClearPoint() > 0 && ClientSaveData.instance.inProgressGame == false)
+		{
+			challengeRetryBonusText.SetLocalizedText(UIString.instance.GetString("GameUI_ClearPointBonus", BattleManager.instance.GetAppliedChallengeRetryBonusClearPoint()));
+			challengeRetryBonusTextObject.SetActive(true);
+			BattleManager.instance.ResetAppliedChallengeRetryBonusClearPoint();
+		}
 	}
 
 	IEnumerator<float> ButtonAppearProcess(bool ignoreShowClearPoint)

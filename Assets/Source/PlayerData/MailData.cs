@@ -38,6 +38,7 @@ public class MailData : MonoBehaviour
 		public string de;
 		public int ti;
 		public int cc;
+		public string ci;
 	}
 	List<MailCreateInfo> _listMailCreateInfo;
 
@@ -204,6 +205,8 @@ public class MailData : MonoBehaviour
 			if (inRange == false)
 				continue;
 			if (_listMailCreateInfo[i].cc != 0 && highestPlayChapter < _listMailCreateInfo[i].cc)
+				continue;
+			if (string.IsNullOrEmpty(_listMailCreateInfo[i].ci) == false && PlayFabApiManager.instance.playFabId != _listMailCreateInfo[i].ci)
 				continue;
 
 			// 내 메일리스트를 확인해서 이미 생성한거면 패스. 해야하는거면 리스트에 넣어서 서버로 보낸다.

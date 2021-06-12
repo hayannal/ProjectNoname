@@ -28,7 +28,7 @@ public class PlayFabApiManager : MonoBehaviour
 	}
 	static PlayFabApiManager _instance = null;
 
-	string playFabId { get { return _playFabId; } }
+	public string playFabId { get { return _playFabId; } }
 	ObscuredString _playFabId;
 #if USE_TITLE_PLAYER_ENTITY
 	PlayFab.DataModels.EntityKey _titlePlayerEntityKey;

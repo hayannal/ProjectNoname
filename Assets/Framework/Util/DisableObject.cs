@@ -15,7 +15,7 @@ public class DisableObject : MonoBehaviour {
 	void Start()
 	{
 		started = true;
-#if USE_MEC
+#if USE_MEC && UNITY_ANDROID
 		Timing.RunCoroutine(Disable());
 #else
 		StartCoroutine(Disable(delayTime));
@@ -26,20 +26,20 @@ public class DisableObject : MonoBehaviour {
 	{
 		if (!started)
 			return;
-#if USE_MEC
+#if USE_MEC && UNITY_ANDROID
 		Timing.RunCoroutine(Disable());
 #else
 		StartCoroutine(Disable(delayTime));
 #endif
 	}
 
-#if USE_MEC
+#if USE_MEC && UNITY_ANDROID
 	IEnumerator<float> Disable()
 #else
 	IEnumerator Disable(float delayTime)
 #endif
 	{
-#if USE_MEC
+#if USE_MEC && UNITY_ANDROID
 		yield return Timing.WaitForSeconds(delayTime);
 
 		// avoid gc

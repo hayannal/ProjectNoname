@@ -164,7 +164,6 @@ public class CumulativeEventData : MonoBehaviour
 			_listRepeatEventTypeInfo = new List<RepeatEventTypeInfo>();
 		_listRepeatEventTypeInfo.Clear();
 
-		// 먼저 NewAccount LoginEvent 부분 파싱
 		if (_listEventTypeInfo != null)
 		{
 			for (int i = 0; i < _listEventTypeInfo.Count; ++i)
@@ -175,7 +174,8 @@ public class CumulativeEventData : MonoBehaviour
 					newAccountDailyBoxEventTotalDays = _listEventTypeInfo[i].td;
 				if (_listEventTypeInfo[i].id == EventType2Id(eEventType.OpenChaos))
 					openChaosEventTotalDays = _listEventTypeInfo[i].td;
-				if (_listEventTypeInfo[i].id == EventType2Id(eEventType.LoginRepeat) || _listEventTypeInfo[i].id == EventType2Id(eEventType.DailyBoxRepeat))
+				if (_listEventTypeInfo[i].id == EventType2Id(eEventType.LoginRepeat) || _listEventTypeInfo[i].id == EventType2Id(eEventType.DailyBoxRepeat) ||
+					_listEventTypeInfo[i].id == EventType2Id(eEventType.ImageEvent1) || _listEventTypeInfo[i].id == EventType2Id(eEventType.ImageEvent2))
 				{
 					RepeatEventTypeInfo repeatEventTypeInfo = new RepeatEventTypeInfo();
 					repeatEventTypeInfo.id = _listEventTypeInfo[i].id;
@@ -645,8 +645,14 @@ public class CumulativeEventData : MonoBehaviour
 			case eEventType.Comeback:
 				break;
 			case eEventType.ImageEvent1:
+				info = FindRepeatEventTypeInfo(eventType);
+				if (info != null && info.IsActiveEvent())
+					return true;
 				break;
 			case eEventType.ImageEvent2:
+				info = FindRepeatEventTypeInfo(eventType);
+				if (info != null && info.IsActiveEvent())
+					return true;
 				break;
 		}
 		return false;

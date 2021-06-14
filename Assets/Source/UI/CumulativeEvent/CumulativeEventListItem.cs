@@ -36,6 +36,8 @@ public class CumulativeEventListItem : MonoBehaviour
 	void OnEnable()
 	{
 		CumulativeEventData.EventRewardInfo eventRewardInfo = CumulativeEventData.instance.FindRewardInfo(eventType, day);
+		if (eventRewardInfo == null)
+			return;
 		RefreshInfo(eventRewardInfo);
 	}
 

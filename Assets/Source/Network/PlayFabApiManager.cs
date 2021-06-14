@@ -3023,6 +3023,33 @@ public class PlayFabApiManager : MonoBehaviour
 			HandleCommonError(error);
 		});
 	}
+
+	public void RequestRemoveRepeatEvent(Action<bool, bool> successCallback)
+	{
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "RemoveRepeatEvent",
+			FunctionParameter = new { Etc = 1 },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
+			jsonResult.TryGetValue("delSl", out object delSl);
+			jsonResult.TryGetValue("delSo", out object delSo);
+			bool deleteSl = ((delSl.ToString()) == "1");
+			bool deleteSo = ((delSo.ToString()) == "1");
+			if (successCallback != null) successCallback.Invoke(deleteSl, deleteSo);
+		}, (error) =>
+		{
+			// 유저 인풋 없이 몰래 보낸거니 에러처리는 하지 않는다.
+			// 대신 반복 이벤트를 리셋하는데 문제가 생겼음을 알려서 클라가 잘못된 패킷을 보내지 않도록 한다.
+			// 가짜로지만 리셋은 시켜둔다.
+			CumulativeEventData.instance.removeRepeatServerFailure = true;
+			CumulativeEventData.instance.OnRecvRemoveRepeatEvent(true, true);
+
+			//HandleCommonError(error);
+		});
+	}
 	#endregion
 
 

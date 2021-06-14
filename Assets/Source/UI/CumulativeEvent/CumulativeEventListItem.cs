@@ -202,6 +202,12 @@ public class CumulativeEventListItem : MonoBehaviour
 			case CumulativeEventData.eEventType.OpenChaos:
 				count = CumulativeEventData.instance.openChaosEventCount;
 				break;
+			case CumulativeEventData.eEventType.LoginRepeat:
+				count = CumulativeEventData.instance.repeatLoginEventCount;
+				break;
+			case CumulativeEventData.eEventType.DailyBoxRepeat:
+				count = CumulativeEventData.instance.repeatDailyBoxEventCount;
+				break;
 		}
 
 		bool recorded = false;
@@ -215,6 +221,12 @@ public class CumulativeEventListItem : MonoBehaviour
 				break;
 			case CumulativeEventData.eEventType.OpenChaos:
 				recorded = CumulativeEventData.instance.openChaosEventRecorded;
+				break;
+			case CumulativeEventData.eEventType.LoginRepeat:
+				recorded = CumulativeEventData.instance.repeatLoginEventRecorded;
+				break;
+			case CumulativeEventData.eEventType.DailyBoxRepeat:
+				recorded = CumulativeEventData.instance.repeatDailyBoxEventRecorded;
 				break;
 		}
 
@@ -311,6 +323,12 @@ public class CumulativeEventListItem : MonoBehaviour
 				ToastCanvas.instance.ShowToast(UIString.instance.GetString("LoginUI_CannotClaimOrigin"), 2.0f);
 				return;
 			}
+		}
+
+		if (CumulativeEventData.IsRepeatEvent(eventType) && CumulativeEventData.instance.removeRepeatServerFailure)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("LoginUI_InsufficientInfo"), 2.0f);
+			return;
 		}
 
 		// 보상 연출때문에 몇가지 경우의 수로 나눠서 처리하기로 한다.

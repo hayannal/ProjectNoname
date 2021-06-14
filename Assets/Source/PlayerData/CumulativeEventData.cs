@@ -38,6 +38,34 @@ public class CumulativeEventData : MonoBehaviour
 	}
 	List<EventTypeInfo> _listEventTypeInfo;
 
+	#region Repeat Events
+	// 계속 늘어날수도 있으니 제대로 리스트로 관리하기로 한다.
+	public class RepeatEventTypeInfo
+	{
+		public string id;
+		public ObscuredInt totalDays;
+
+		public DateTime startDateTime { get; set; }
+		public DateTime endDateTime { get; set; }
+		
+		public bool IsActiveEvent()
+		{
+			return (ServerTime.UtcNow > startDateTime && ServerTime.UtcNow < endDateTime);
+		}
+	}
+	List<RepeatEventTypeInfo> _listRepeatEventTypeInfo;
+
+	// 반복퀘 진행도 역시 리스트로 관리하려다가 DB에 저장되어있는게 다 따로 저장되어있기 때문에 이건 리스트로 안하기로 한다.
+	//public class MyRepeatEventData
+	//{
+	//	public string id;
+	//	public string rcvDat;
+	//	public ObscuredBool recorded;
+	//	public ObscuredInt count;
+	//}
+	//List<MyRepeatEventData> _listMyRepeatEventData;
+	#endregion
+
 	public class EventRewardInfo
 	{
 		public string id;
@@ -102,6 +130,17 @@ public class CumulativeEventData : MonoBehaviour
 	public ObscuredInt openChaosEventCount { get; set; }
 	#endregion
 
+	#region Repeat Events
+	public string repeatLoginRcvDat { get; set; }
+	public string repeatDailyBoxRcvDat { get; set; }
+	public ObscuredBool repeatLoginEventRecorded { get; set; }
+	public ObscuredBool repeatDailyBoxEventRecorded { get; set; }
+	public ObscuredInt repeatLoginEventCount { get; set; }
+	public ObscuredInt repeatDailyBoxEventCount { get; set; }
+
+	public ObscuredBool removeRepeatServerFailure { get; set; }
+	#endregion
+
 	public void OnRecvCumulativeEventData(Dictionary<string, string> titleData, Dictionary<string, UserDataRecord> userReadOnlyData, bool newlyCreated)
 	{
 		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
@@ -121,6 +160,10 @@ public class CumulativeEventData : MonoBehaviour
 		if (titleData.ContainsKey("evntRw"))
 			_listEventRewardInfo = serializer.DeserializeObject<List<EventRewardInfo>>(titleData["evntRw"]);
 
+		if (_listRepeatEventTypeInfo == null)
+			_listRepeatEventTypeInfo = new List<RepeatEventTypeInfo>();
+		_listRepeatEventTypeInfo.Clear();
+
 		// 먼저 NewAccount LoginEvent 부분 파싱
 		if (_listEventTypeInfo != null)
 		{
@@ -132,6 +175,15 @@ public class CumulativeEventData : MonoBehaviour
 					newAccountDailyBoxEventTotalDays = _listEventTypeInfo[i].td;
 				if (_listEventTypeInfo[i].id == EventType2Id(eEventType.OpenChaos))
 					openChaosEventTotalDays = _listEventTypeInfo[i].td;
+				if (_listEventTypeInfo[i].id == EventType2Id(eEventType.LoginRepeat) || _listEventTypeInfo[i].id == EventType2Id(eEventType.DailyBoxRepeat))
+				{
+					RepeatEventTypeInfo repeatEventTypeInfo = new RepeatEventTypeInfo();
+					repeatEventTypeInfo.id = _listEventTypeInfo[i].id;
+					repeatEventTypeInfo.totalDays = _listEventTypeInfo[i].td;
+					repeatEventTypeInfo.startDateTime = new DateTime(_listEventTypeInfo[i].sy, _listEventTypeInfo[i].sm, _listEventTypeInfo[i].sd);
+					repeatEventTypeInfo.endDateTime = new DateTime(_listEventTypeInfo[i].ey, _listEventTypeInfo[i].em, _listEventTypeInfo[i].ed);
+					_listRepeatEventTypeInfo.Add(repeatEventTypeInfo);
+				}
 			}
 		}
 
@@ -185,10 +237,44 @@ public class CumulativeEventData : MonoBehaviour
 				openChaosEventCount = intValue;
 		}
 		#endregion
+
+		#region Repeat Events
+		removeRepeatServerFailure = false;
+		repeatLoginEventRecorded = false;
+		repeatDailyBoxEventRecorded = false;
+		repeatLoginRcvDat = "";
+		repeatDailyBoxRcvDat = "";
+		if (userReadOnlyData.ContainsKey("evtRptLogDat"))
+		{
+			if (string.IsNullOrEmpty(userReadOnlyData["evtRptLogDat"].Value) == false)
+				OnRecvRepeatLoginInfo(userReadOnlyData["evtRptLogDat"].Value);
+		}
+		if (userReadOnlyData.ContainsKey("evtRptDbxDat"))
+		{
+			if (string.IsNullOrEmpty(userReadOnlyData["evtRptDbxDat"].Value) == false)
+				OnRecvRepeatDailyBoxInfo(userReadOnlyData["evtRptDbxDat"].Value);
+		}
+
+		repeatLoginEventCount = 0;
+		repeatDailyBoxEventCount = 0;
+		if (userReadOnlyData.ContainsKey("evtRptLogCnt"))
+		{
+			int intValue = 0;
+			if (int.TryParse(userReadOnlyData["evtRptLogCnt"].Value, out intValue))
+				repeatLoginEventCount = intValue;
+		}
+		if (userReadOnlyData.ContainsKey("evtRptDbxCnt"))
+		{
+			int intValue = 0;
+			if (int.TryParse(userReadOnlyData["evtRptDbxCnt"].Value, out intValue))
+				repeatDailyBoxEventCount = intValue;
+		}
+		#endregion
 	}
 
 	public bool OnRecvGetEventReward(eEventType eventType, string lastRecordedTimeString)
 	{
+		RepeatEventTypeInfo info = null;
 		switch (eventType)
 		{
 			case eEventType.NewAccount:
@@ -220,6 +306,26 @@ public class CumulativeEventData : MonoBehaviour
 
 				OnRecvOpenChaosEventRecordInfo(lastRecordedTimeString);
 				++openChaosEventCount;
+				break;
+			case eEventType.LoginRepeat:
+				info = FindRepeatEventTypeInfo(eventType);
+				if (info == null || info.IsActiveEvent() == false)
+					return false;
+				if (repeatLoginEventCount >= info.totalDays)
+					return false;
+
+				OnRecvRepeatLoginInfo(lastRecordedTimeString);
+				++repeatLoginEventCount;
+				break;
+			case eEventType.DailyBoxRepeat:
+				info = FindRepeatEventTypeInfo(eventType);
+				if (info == null || info.IsActiveEvent() == false)
+					return false;
+				if (repeatDailyBoxEventCount >= info.totalDays)
+					return false;
+
+				OnRecvRepeatDailyBoxInfo(lastRecordedTimeString);
+				++repeatDailyBoxEventCount;
 				break;
 		}
 		return true;
@@ -254,6 +360,17 @@ public class CumulativeEventData : MonoBehaviour
 		return false;
 	}
 
+	public static bool IsRepeatEvent(eEventType eventType)
+	{
+		switch (eventType)
+		{
+			case eEventType.LoginRepeat:
+			case eEventType.DailyBoxRepeat:
+				return true;
+		}
+		return false;
+	}
+
 	public EventRewardInfo FindRewardInfo(eEventType eventType, int day)
 	{
 		if (_listEventRewardInfo == null)
@@ -271,15 +388,133 @@ public class CumulativeEventData : MonoBehaviour
 		return null;
 	}
 
+	public RepeatEventTypeInfo FindRepeatEventTypeInfo(eEventType eventType)
+	{
+		if (_listRepeatEventTypeInfo == null)
+			return null;
+
+		string id = EventType2Id(eventType);
+		if (id == "")
+			return null;
+
+		for (int i = 0; i < _listRepeatEventTypeInfo.Count; ++i)
+		{
+			if (_listRepeatEventTypeInfo[i].id == id)
+				return _listRepeatEventTypeInfo[i];
+		}
+		return null;
+	}
+
 	public void LateInitialize()
 	{
 		// 이건 반복 이벤트인데 메일처럼 체크해서 생성하거나 삭제하면서 관리해야한다.
 		// 이벤트 타입 역시 로그인만 있는게 아니라 DailyBox 연거 노드워 클리어한거 등등이 추가될 예정이다.
 		// 천천히 보내는거라 Late에서 처리
-		//CheckRepeatCumulativeLEvent();
+		CheckRepeatCumulativeEvent();
 
 		// 고정장비 보상 아이콘 리소스 로드
 		StartCoroutine(LoadRewardEquipIconAsync());
+	}
+
+	void CheckRepeatCumulativeEvent()
+	{
+		// 메일에서 하던 방식 비슷하지만 간소하다.
+		//
+		// 메일과 다른점은 CheckAdd나 CheckRemove 없이
+		// 기록되어있는 마지막 날짜가 현재 진행중인 이벤트 기간 내의 날짜인지 확인 후
+		// 기간내 기록이 아니라 예전거라면 수치를 0으로 읽고 서버로 리셋을 보내둬야한다. 매일 하나씩 받는 로직이 수치를 +1 하는 구조라서 초기화 해놔야한다.
+		// 기간내 기록이라면 카운트 읽어서 반영해주면 된다.
+		// 메일과 달리 일정 주기로 리프레쉬는 필요없다.
+		if (CheckRemove())
+		{
+			// 하나라도 지울게 있다면 서버보고 체크하라고 보낸다.
+			PlayFabApiManager.instance.RequestRemoveRepeatEvent(OnRecvRemoveRepeatEvent);
+		}
+		else
+		{
+			// 지울게 없다면 현재 들고있는 값이 최신이라는거니 그냥 쓰면 된다.
+		}
+	}
+
+	public void OnRecvRemoveRepeatEvent(bool resetRepeatLogin, bool resetRepeatDailyBox)
+	{
+		if (resetRepeatLogin)
+		{
+			repeatLoginRcvDat = "";
+			repeatLoginEventRecorded = false;
+			repeatLoginEventCount = 0;
+		}
+		if (resetRepeatDailyBox)
+		{
+			repeatDailyBoxRcvDat = "";
+			repeatDailyBoxEventRecorded = false;
+			repeatDailyBoxEventCount = 0;
+		}
+	}
+
+	bool CheckRemove()
+	{
+#if UNITY_IOS
+		if (PlayerData.instance.reviewVersion)
+			return false;
+#endif
+
+		// 마지막 등록일을 셋팅해둔게 있다면 삭제할 필요가 있는지 체크
+		bool deleteRepeatLogin = false;
+		if (repeatLoginRcvDat != "")
+		{
+			RepeatEventTypeInfo info = FindRepeatEventTypeInfo(eEventType.LoginRepeat);
+			// 서버에 정보가 없는 반복퀘면 오래된 이벤트일 가능성이 높다.
+			if (info == null)
+				deleteRepeatLogin = true;
+
+			if (deleteRepeatLogin == false)
+			{
+				bool inRange = false;
+				DateTime lastRecordTime = new DateTime();
+				if (DateTime.TryParse(repeatLoginRcvDat, out lastRecordTime))
+				{
+					if (lastRecordTime > info.startDateTime && lastRecordTime < info.endDateTime)
+						inRange = true;
+				}
+
+				// 만료된 상태라면 기록을 삭제해야한다.
+				if (!inRange)
+					deleteRepeatLogin = true;				
+			}
+		}
+
+		// RepeatDailyBox 역시 같은 방법으로 체크
+		bool deleteRepeatDailyBox = false;
+		if (repeatDailyBoxRcvDat != "")
+		{
+			RepeatEventTypeInfo info = FindRepeatEventTypeInfo(eEventType.DailyBoxRepeat);
+			if (info == null)
+				deleteRepeatDailyBox = true;
+
+			if (deleteRepeatDailyBox == false)
+			{
+				bool inRange = false;
+				DateTime lastRecordTime = new DateTime();
+				if (DateTime.TryParse(repeatDailyBoxRcvDat, out lastRecordTime))
+				{
+					if (lastRecordTime > info.startDateTime && lastRecordTime < info.endDateTime)
+						inRange = true;
+				}
+				if (!inRange)
+					deleteRepeatDailyBox = true;
+			}
+		}
+		if (deleteRepeatLogin || deleteRepeatDailyBox)
+		{
+			// 이렇게 검사해서 하나라도 지워야할게 있으면 서버로 패킷을 보내는데 RefreshMailList 패킷처럼 실패한다면 지워지지 않게된다.
+			// 어차피 서버로부터 받는 테이블값이 이상해질리도 없다면
+			// 클라에서 지워야한다고 판단해서 지우는건 선처리해도 되지 않을까.. 해서 선처리로 지워둘까 하다가
+			//OnRecvRemoveRepeatEvent(deleteRepeatLogin, deleteRepeatDailyBox);
+			// 서버에서 처리가 안되었다면 보상 받는것도 꼬일 수 있기 때문에 선처리 하지 않기로 한다.
+			return true;
+		}
+		return false;
 	}
 
 	public void ResetEventInfo()
@@ -288,12 +523,21 @@ public class CumulativeEventData : MonoBehaviour
 		newAccountLoginRecorded = false;
 		newAccountDailyBoxRecorded = false;
 		openChaosEventRecorded = false;
+		repeatLoginEventRecorded = false;
+		repeatDailyBoxEventRecorded = false;
 
 		// 오브젝트나 UI 스스로 시간을 체크하지 않기 때문에 여기서 대신 호출해야한다.
 		if (EventBoard.instance != null && EventBoard.instance.gameObject != null && EventBoard.instance.gameObject.activeSelf)
 			EventBoard.instance.RefreshBoardOnOff();
 		if (CumulativeEventCanvas.instance != null && CumulativeEventCanvas.instance.gameObject.activeSelf)
+		{
 			CumulativeEventCanvas.instance.RefreshOpenTabSlot();
+			CumulativeEventCanvas.instance.innerMenuRootTransform.gameObject.SetActive(false);
+			CumulativeEventCanvas.instance.innerMenuRootTransform.gameObject.SetActive(true);
+		}
+
+		// RepeatEvent들은 그래도 한번 호출해서 리셋해야 하지 않나.
+		CheckRepeatCumulativeEvent();
 
 		// DailyShopData와 달리 매일 구성품이 바뀌는것도 아니라서 굳이 다음날엔 호출하지 않는다.
 		//StartCoroutine(LoadRewardEquipIconAsync());
@@ -358,6 +602,7 @@ public class CumulativeEventData : MonoBehaviour
 		if (disableEvent)
 			return false;
 
+		RepeatEventTypeInfo info = null;
 		switch (eventType)
 		{
 			case eEventType.NewAccount:
@@ -388,8 +633,14 @@ public class CumulativeEventData : MonoBehaviour
 				//	return false;
 				break;
 			case eEventType.LoginRepeat:
+				info = FindRepeatEventTypeInfo(eventType);
+				if (info != null && info.IsActiveEvent())
+					return true;
 				break;
 			case eEventType.DailyBoxRepeat:
+				info = FindRepeatEventTypeInfo(eventType);
+				if (info != null && info.IsActiveEvent())
+					return true;
 				break;
 			case eEventType.Comeback:
 				break;
@@ -409,6 +660,7 @@ public class CumulativeEventData : MonoBehaviour
 		if (IsDailyBoxEvent(eventType) && PlayerData.instance.sharedDailyBoxOpened == false)
 			return false;
 
+		RepeatEventTypeInfo info = null;
 		switch (eventType)
 		{
 			case eEventType.NewAccount:
@@ -428,8 +680,22 @@ public class CumulativeEventData : MonoBehaviour
 			case eEventType.Clear7Chapter:
 				break;
 			case eEventType.LoginRepeat:
+				if (removeRepeatServerFailure)
+					return false;
+				info = FindRepeatEventTypeInfo(eventType);
+				if (info == null || info.IsActiveEvent() == false)
+					return false;
+				if (repeatLoginEventCount < info.totalDays && repeatLoginEventRecorded == false)
+					return true;
 				break;
 			case eEventType.DailyBoxRepeat:
+				if (removeRepeatServerFailure)
+					return false;
+				info = FindRepeatEventTypeInfo(eventType);
+				if (info == null || info.IsActiveEvent() == false)
+					return false;
+				if (repeatDailyBoxEventCount < info.totalDays && repeatDailyBoxEventRecorded == false)
+					return true;
 				break;
 			case eEventType.Comeback:
 				break;
@@ -494,4 +760,44 @@ public class CumulativeEventData : MonoBehaviour
 			OnRecvOpenChaosEventRecordInfo(universalTime);
 		}
 	}
+
+	#region Repeat Events
+	void OnRecvRepeatLoginInfo(DateTime lastRepeatLoginEventRecordTime)
+	{
+		if (ServerTime.UtcNow.Year == lastRepeatLoginEventRecordTime.Year && ServerTime.UtcNow.Month == lastRepeatLoginEventRecordTime.Month && ServerTime.UtcNow.Day == lastRepeatLoginEventRecordTime.Day)
+			repeatLoginEventRecorded = true;
+		else
+			repeatLoginEventRecorded = false;
+	}
+
+	public void OnRecvRepeatLoginInfo(string lastRepeatLoginEventRecordTimeString)
+	{
+		repeatLoginRcvDat = lastRepeatLoginEventRecordTimeString;
+		DateTime lastRepeatLoginEventRecordTime = new DateTime();
+		if (DateTime.TryParse(lastRepeatLoginEventRecordTimeString, out lastRepeatLoginEventRecordTime))
+		{
+			DateTime universalTime = lastRepeatLoginEventRecordTime.ToUniversalTime();
+			OnRecvRepeatLoginInfo(universalTime);
+		}
+	}
+
+	void OnRecvRepeatDailyBoxInfo(DateTime lastRepeatDailyBoxEventRecordTime)
+	{
+		if (ServerTime.UtcNow.Year == lastRepeatDailyBoxEventRecordTime.Year && ServerTime.UtcNow.Month == lastRepeatDailyBoxEventRecordTime.Month && ServerTime.UtcNow.Day == lastRepeatDailyBoxEventRecordTime.Day)
+			repeatDailyBoxEventRecorded = true;
+		else
+			repeatDailyBoxEventRecorded = false;
+	}
+
+	public void OnRecvRepeatDailyBoxInfo(string lastRepeatDailyBoxEventRecordTimeString)
+	{
+		repeatDailyBoxRcvDat = lastRepeatDailyBoxEventRecordTimeString;
+		DateTime lastRepeatDailyBoxEventRecordTime = new DateTime();
+		if (DateTime.TryParse(lastRepeatDailyBoxEventRecordTimeString, out lastRepeatDailyBoxEventRecordTime))
+		{
+			DateTime universalTime = lastRepeatDailyBoxEventRecordTime.ToUniversalTime();
+			OnRecvRepeatDailyBoxInfo(universalTime);
+		}
+	}
+	#endregion
 }

@@ -30,6 +30,8 @@ public class BattleResultCanvas : MonoBehaviour
 	public Text stageValueMaxText;
 	public Text clearText;
 	public Text clearRewardText;
+	public GameObject newRecordTextObject;
+	public GameObject newRecordBonusTextObject;
 
 	public GameObject goldGroupObject;
 	public DOTweenAnimation goldImageTweenAnimation;
@@ -92,6 +94,7 @@ public class BattleResultCanvas : MonoBehaviour
 	}
 
 	bool _clear = false;
+	bool _newRecord = false;
 	List<ItemInstance> _listGrantItem;
 	public void RefreshChapterInfo(string jsonItemGrantResults)
 	{
@@ -103,6 +106,17 @@ public class BattleResultCanvas : MonoBehaviour
 		int maxStage = StageManager.instance.GetCurrentMaxStage();
 		if (_clear && playStage != maxStage)
 			_clear = false;
+
+		if (_clear == false)
+		{
+			// 다른 곳과 달리 PlayerData.instance.currentChallengeMode를 사용하면 안되는 곳이다.
+			// 카오스가 열리기 전 챕터도 포함시켜야하므로 직접 검사하기로 한다.
+			if (ContentsManager.IsTutorialChapter() == false && PlayerData.instance.selectedChapter == PlayerData.instance.highestPlayChapter && PlayerData.instance.chaosMode == false)
+			{
+				if (PlayerData.instance.highestClearStage < playStage - 1)
+					_newRecord = true;
+			}
+		}
 
 		stageValueMaxText.text = string.Format("/ {0}", maxStage);
 
@@ -187,8 +201,13 @@ public class BattleResultCanvas : MonoBehaviour
 
 		if (_clear)
 			clearText.gameObject.SetActive(true);
+		else if (_newRecord)
+			newRecordTextObject.SetActive(true);
 
 		yield return new WaitForSecondsRealtime(0.2f);
+
+		if (_clear == false && _newRecord && clearRewardText.gameObject.activeSelf == false)
+			newRecordBonusTextObject.SetActive(true);
 
 		goldGroupObject.SetActive(true);
 	}

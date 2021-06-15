@@ -108,6 +108,7 @@ public class CumulativeEventData : MonoBehaviour
 	}
 
 	public ObscuredBool disableEvent { get; set; }
+	public ObscuredString iosUrl { get; set; }
 
 	#region NewAccountLoginEvent
 	public ObscuredInt newAccountLoginEventTotalDays { get; set; }
@@ -146,6 +147,9 @@ public class CumulativeEventData : MonoBehaviour
 		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
 		if (titleData.ContainsKey("newuEvnt") && string.IsNullOrEmpty(titleData["newuEvnt"]) == false)
 			disableEvent = (titleData["newuEvnt"] == "0");
+
+		if (titleData.ContainsKey("iosUrl") && string.IsNullOrEmpty(titleData["iosUrl"]) == false)
+			iosUrl = titleData["iosUrl"];
 
 #if UNITY_IOS
 		if (PlayerData.instance.reviewVersion)

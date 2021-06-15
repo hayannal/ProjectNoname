@@ -6,11 +6,14 @@ using UnityEngine.UI;
 
 public class Image1EventInfo : MonoBehaviour
 {
+	#region RemainTime
 	public bool useRemainTimeText;
 	public Text remainTimeText;
+	#endregion
 
 	void OnEnable()
 	{
+		#region RemainTime
 		if (useRemainTimeText == false)
 		{
 			remainTimeText.gameObject.SetActive(false);
@@ -24,6 +27,7 @@ public class Image1EventInfo : MonoBehaviour
 
 		_eventEndDateTime = info.endDateTime;
 		//_needUpdate = true;
+		#endregion
 	}
 
 	void Update()
@@ -34,6 +38,7 @@ public class Image1EventInfo : MonoBehaviour
 		UpdateRemainTime();
 	}
 
+	#region RemainTime
 	DateTime _eventEndDateTime;
 	int _lastRemainTimeSecond = -1;
 	//bool _needUpdate = false;
@@ -62,4 +67,20 @@ public class Image1EventInfo : MonoBehaviour
 			//_needRefresh = true;
 		}
 	}
+	#endregion
+
+	#region Market
+	public void OnClickMarketButton()
+	{
+		if (Application.platform == RuntimePlatform.IPhonePlayer)
+		{
+			string url = CumulativeEventData.instance.iosUrl;
+			Application.OpenURL(url);
+		}
+		else if (Application.platform == RuntimePlatform.Android)
+		{
+			Application.OpenURL("market://details?id=" + Application.identifier);
+		}
+	}
+	#endregion
 }

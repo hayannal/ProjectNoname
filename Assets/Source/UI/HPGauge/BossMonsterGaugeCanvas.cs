@@ -65,6 +65,7 @@ public class BossMonsterGaugeCanvas : MonoBehaviour
 	public RectTransform lateFill2RectTransform;
 	public Text questionText;
 	public DOTweenAnimation shakeTween;
+	public DOTweenAnimation textShakeTween;
 
 	void OnDisable()
 	{
@@ -129,6 +130,7 @@ public class BossMonsterGaugeCanvas : MonoBehaviour
 			hpRatio1Slider.gameObject.SetActive(false);
 			hpRatio2Slider.gameObject.SetActive(false);
 			questionText.gameObject.SetActive(true);
+			textShakeTween.DORestart();
 		}
 		else
 		{

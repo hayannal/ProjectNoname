@@ -533,11 +533,14 @@ public class CumulativeEventData : MonoBehaviour
 		// 오브젝트나 UI 스스로 시간을 체크하지 않기 때문에 여기서 대신 호출해야한다.
 		if (EventBoard.instance != null && EventBoard.instance.gameObject != null && EventBoard.instance.gameObject.activeSelf)
 			EventBoard.instance.RefreshBoardOnOff();
-		if (CumulativeEventCanvas.instance != null && CumulativeEventCanvas.instance.gameObject.activeSelf)
+		if (CumulativeEventCanvas.instance != null)
 		{
 			CumulativeEventCanvas.instance.RefreshOpenTabSlot();
-			CumulativeEventCanvas.instance.innerMenuRootTransform.gameObject.SetActive(false);
-			CumulativeEventCanvas.instance.innerMenuRootTransform.gameObject.SetActive(true);
+			if (CumulativeEventCanvas.instance.gameObject.activeSelf)
+			{
+				CumulativeEventCanvas.instance.innerMenuRootTransform.gameObject.SetActive(false);
+				CumulativeEventCanvas.instance.innerMenuRootTransform.gameObject.SetActive(true);
+			}
 		}
 
 		// RepeatEvent들은 그래도 한번 호출해서 리셋해야 하지 않나.

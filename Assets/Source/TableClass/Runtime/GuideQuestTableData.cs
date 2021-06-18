@@ -33,6 +33,10 @@ public class GuideQuestTableData
   public int needCount { get { return _needCount; } set { _needCount = value; } }
   
   [SerializeField]
+  string _param;
+  public string param { get { return _param; } set { _param = value; } }
+  
+  [SerializeField]
   string _rewardAdditionalText;
   public string rewardAdditionalText { get { return _rewardAdditionalText; } set { _rewardAdditionalText = value; } }
   

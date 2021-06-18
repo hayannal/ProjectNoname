@@ -102,6 +102,9 @@ public class GuideQuestData : MonoBehaviour
 	ObscuredInt _temporaryAddCount;
 	public void OnQuestEvent(eQuestClearType questClearType)
 	{
+		if (ContentsManager.IsTutorialChapter())
+			return;
+
 		GuideQuestTableData guideQuestTableData = GetCurrentGuideQuestTableData();
 		if (guideQuestTableData == null)
 			return;

@@ -240,8 +240,9 @@ public class GuideQuestInfo : MonoBehaviour
 	{
 		bool isCompleteQuest = GuideQuestData.instance.IsCompleteQuest();
 		bool showAlarm = false;
+		bool onlySmallButtonAlarm = false;
 		if (isCompleteQuest) showAlarm = true;
-		if (showAlarm == false && GuideQuestData.instance.currentGuideQuestIndex == 0) showAlarm = true;
+		if (showAlarm == false && GuideQuestData.instance.currentGuideQuestIndex == 0) onlySmallButtonAlarm = true;
 
 		AlarmObject.Hide(alarmRootTransform);
 		AlarmObject.Hide(infoAlarmRootTransform);
@@ -250,6 +251,8 @@ public class GuideQuestInfo : MonoBehaviour
 			AlarmObject.Show(alarmRootTransform, true, true);
 			AlarmObject.Show(infoAlarmRootTransform, true, true);
 		}
+		if (onlySmallButtonAlarm)
+			AlarmObject.Show(alarmRootTransform, true, true);
 	}
 
 	public void CloseInfo()

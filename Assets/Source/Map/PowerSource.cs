@@ -136,6 +136,7 @@ public class PowerSource : MonoBehaviour
 		ClientSaveData.instance.OnChangedSpRatio(affectorProcessor.actor.actorStatus.GetSPRatio());
 
 		QuestData.instance.OnQuestEvent(QuestData.eQuestClearType.PowerSource);
+		GuideQuestData.instance.OnQuestEvent(GuideQuestData.eQuestClearType.PowerSource);
 
 		Timing.RunCoroutine(ScreenHealEffectProcess());
 	}

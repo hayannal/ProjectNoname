@@ -130,6 +130,7 @@ public class BaseDamageAffector : AffectorBase {
 					damage *= (1.0f + criticalDamageRate);
 					FloatingDamageTextRootCanvas.instance.ShowText(FloatingDamageText.eFloatingDamageType.Critical, _actor);
 					QuestData.instance.OnQuestEvent(QuestData.eQuestClearType.Critical);
+					GuideQuestData.instance.OnQuestEvent(GuideQuestData.eQuestClearType.Critical);
 				}
 			}
 		}

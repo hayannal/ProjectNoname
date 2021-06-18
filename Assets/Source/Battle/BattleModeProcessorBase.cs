@@ -261,6 +261,8 @@ public class BattleModeProcessorBase
 
 		// 퀘스트 관련 정보도 복구
 		QuestData.instance.SetQuestInfoForInProgressGame();
+		// 가이드 퀘스트 역시 복구
+		GuideQuestData.instance.SetGuideQuestInfoForInProgressGame();
 
 		// 기타 정보들도 불러줘야한다.
 		BattleInstanceManager.instance.allyContinuousKillCount = ClientSaveData.instance.GetCachedAllyContinuousKillCount();
@@ -414,11 +416,13 @@ public class BattleModeProcessorBase
 		{
 			_clearPoint += 1;
 			QuestData.instance.OnQuestEvent(QuestData.eQuestClearType.NoHitClear);
+			GuideQuestData.instance.OnQuestEvent(GuideQuestData.eQuestClearType.NoHitClear);
 		}
 		if (fastClear)
 		{
 			_clearPoint += 1;
 			QuestData.instance.OnQuestEvent(QuestData.eQuestClearType.FastClear);
+			GuideQuestData.instance.OnQuestEvent(GuideQuestData.eQuestClearType.FastClear);
 		}
 		ClientSaveData.instance.OnChangedClearPoint(_clearPoint);
 		LobbyCanvas.instance.ShowClearPointInfo(fastClear, noHitClear);
@@ -437,7 +441,10 @@ public class BattleModeProcessorBase
 		_enableTrap = false;
 
 		if (StageManager.instance.bossStage)
+		{
 			QuestData.instance.OnQuestEvent(QuestData.eQuestClearType.ClearBossStage);
+			GuideQuestData.instance.OnQuestEvent(GuideQuestData.eQuestClearType.ClearBossStage);
+		}
 
 #if HUDDPS
 #if UNITY_EDITOR

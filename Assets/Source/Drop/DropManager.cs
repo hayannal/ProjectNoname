@@ -583,7 +583,7 @@ public class DropManager : MonoBehaviour
 		public float sumWeight;
 	}
 	List<RandomGachaActorInfo> _listRandomGachaActorInfo = null;
-	public string GetGachaCharacterId(bool originDrop, bool characterBoxDrop, int grade = -1, bool ignoreCheckLobby = false)
+	public string GetGachaCharacterId(bool originDrop, bool characterBoxDrop, bool questCharacterBoxDrop, int grade = -1, bool ignoreCheckLobby = false)
 	{
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
 		if (lobby == false && ignoreCheckLobby == false)
@@ -640,7 +640,7 @@ public class DropManager : MonoBehaviour
 			}
 
 			// 초월은 초반 굴림에선 나오지 않게 한다.
-			if ((originDrop && PlayerData.instance.originOpenCount <= 10) || (characterBoxDrop && PlayerData.instance.characterBoxOpenCount <= 8))
+			if ((originDrop && PlayerData.instance.originOpenCount <= 10) || (characterBoxDrop && PlayerData.instance.characterBoxOpenCount <= 8) || (questCharacterBoxDrop && PlayerData.instance.questCharacterBoxOpenCount <= 8))
 			{
 				if (PlayerData.instance.ContainsActor(TableDataManager.instance.actorTable.dataArray[i].actorId))
 					continue;
@@ -676,7 +676,7 @@ public class DropManager : MonoBehaviour
 				{
 					// 미보유
 					if (originDrop) adjustWeight *= 3.0f;
-					else if (characterBoxDrop) adjustWeight *= 1.5f;
+					else if (characterBoxDrop || questCharacterBoxDrop) adjustWeight *= 1.5f;
 					adjustWeight += TableDataManager.instance.actorTable.dataArray[i].charGachaWeight * (DropManager.GetGradeAdjust(TableDataManager.instance.actorTable.dataArray[i]) - 1.0f);
 				}
 				else
@@ -857,7 +857,7 @@ public class DropManager : MonoBehaviour
 	#region Gacha PowerPoint
 	List<string> _listDroppedPowerPointId = new List<string>();
 	const float _maxPowerPointRate = 1.5f;
-	public string GetGachaPowerPointId(bool originDrop, bool characterBoxDrop, int grade = -1, bool ignoreCheckLobby = false)
+	public string GetGachaPowerPointId(bool originDrop, bool characterBoxDrop, bool questCharacterBoxDrop, int grade = -1, bool ignoreCheckLobby = false)
 	{
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
 		if (lobby == false && ignoreCheckLobby == false)
@@ -898,10 +898,10 @@ public class DropManager : MonoBehaviour
 			// 초반 플레이 예외처리 두번째. 중복해서 뽑는걸 막는 로직때문에 이렇게 그냥 continue 하면 하나만 남은 상태에서도 continue하게 되면서 뽑을게 없어져버린다.
 			// 
 			const int Actor0201LimitPp = 49;
-			if (originDrop || characterBoxDrop)
+			if (originDrop || characterBoxDrop || questCharacterBoxDrop)
 			{
-				int sum = PlayerData.instance.originOpenCount + PlayerData.instance.characterBoxOpenCount;
-				if (sum <= 5 && actorId == "Actor0201")
+				int sum = PlayerData.instance.originOpenCount + PlayerData.instance.characterBoxOpenCount + PlayerData.instance.questCharacterBoxOpenCount;
+				if (sum <= 6 && actorId == "Actor0201")
 				{
 					bool needContinue = false;
 					if (PlayerData.instance.listCharacterData[i].pp >= Actor0201LimitPp)
@@ -938,7 +938,13 @@ public class DropManager : MonoBehaviour
 
 			float weight = baseWeight - PlayerData.instance.listCharacterData[i].pp;
 			// 초반 플레이 예외처리.
-			if (originDrop && PlayerData.instance.originOpenCount <= 2)
+			bool newbAdjust = false;
+			if (originDrop || questCharacterBoxDrop)
+			{
+				if (PlayerData.instance.originOpenCount + PlayerData.instance.questCharacterBoxOpenCount <= 3)
+					newbAdjust = true;
+			}
+			if (newbAdjust)
 			{
 				if (actorId == "Actor1002" || actorId == "Actor2103") { }
 				else
@@ -953,7 +959,7 @@ public class DropManager : MonoBehaviour
 
 		if (_listRandomGachaActorInfo.Count == 0)
 		{
-			if (originDrop || characterBoxDrop)
+			if (originDrop || characterBoxDrop || questCharacterBoxDrop)
 				Debug.LogError("Invalid Gacha PowerPoint. Nothing has been selected.");
 			return "";
 		}

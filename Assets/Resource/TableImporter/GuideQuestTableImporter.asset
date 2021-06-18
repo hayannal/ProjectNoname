@@ -10,39 +10,64 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 80e14a72067f1ad408ec8d661bc560ce, type: 3}
-  m_Name: SubQuestTableImporter
+  m_Name: GuideQuestTableImporter
   m_EditorClassIdentifier: 
   templatePath: AssetStore/QuickSheet/ExcelPlugin/Templates
   scriptFilePath: Source/TableClass/Runtime
   editorScriptFilePath: Source/TableClass/Editor
   sheetName: Quest.xlsx
-  workSheetName: SubQuestTable
+  workSheetName: GuideQuestTable
   columnHeaderList:
-  - type: 1
-    name: type
+  - type: 3
+    name: id
     isEnable: 0
     isArray: 0
-  - type: 1
-    name: nameId
+  - type: 3
+    name: typeId
+    isEnable: 0
+    isArray: 0
+  - type: 3
+    name: iconId
     isEnable: 0
     isArray: 0
   - type: 1
     name: descriptionId
     isEnable: 0
     isArray: 0
-  - type: 1
-    name: shortDescriptionId
+  - type: 8
+    name: viewInBattle
     isEnable: 0
     isArray: 0
   - type: 3
     name: needCount
     isEnable: 0
-    isArray: 1
-  - type: 3
-    name: rewardGold
+    isArray: 0
+  - type: 1
+    name: rewardAdditionalText
     isEnable: 0
-    isArray: 1
+    isArray: 0
+  - type: 1
+    name: rewardType
+    isEnable: 0
+    isArray: 0
+  - type: 1
+    name: rewardValue
+    isEnable: 0
+    isArray: 0
+  - type: 3
+    name: rewardCount
+    isEnable: 0
+    isArray: 0
+  - type: 3
+    name: nextNoti
+    isEnable: 0
+    isArray: 0
+  - type: 1
+    name: nextParameter
+    isEnable: 0
+    isArray: 0
   excelFilePath: ../Excel/Quest.xlsx
   SheetNames:
   - SubQuestTable
-  currentSelectedSheet: 0
+  - GuideQuestTable
+  currentSelectedSheet: 1

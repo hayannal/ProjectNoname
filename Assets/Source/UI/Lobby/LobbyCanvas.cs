@@ -13,6 +13,7 @@ public class LobbyCanvas : MonoBehaviour
 	public GameObject rightTopRootObject;
 	public Button lobbyOptionButton;
 	public Button timeSpaceHomeButton;
+	public CanvasGroup questInfoCanvasGroup;
 	public Button battlePauseButton;
 	public Text levelText;
 	public Slider expGaugeSlider;
@@ -387,6 +388,12 @@ public class LobbyCanvas : MonoBehaviour
 			AlarmObject.ShowTutorialPlusAlarm(alarmRootTransform);
 		else if (showAlarm)
 			AlarmObject.Show(alarmRootTransform, true, true);
+
+		GuideQuestInfo.instance.RefreshAlarmObject();
+
+		// GuideQuest와 달리 데이터가 유효한지 보고 호출해야한다.
+		if (QuestData.instance.CheckValidQuestList(false) == true)
+			SubQuestInfo.instance.RefreshAlarmObject();
 	}
 
 	public void RefreshAlarmObject(DotMainMenuCanvas.eButtonType changedType, bool changedValue)
@@ -502,6 +509,35 @@ public class LobbyCanvas : MonoBehaviour
 			yield break;
 
 		noHitClearSmallToastObject.SetActive(false);
+	}
+	#endregion
+
+	#region QuestInfo Gruop
+	public void FadeOutQuestInfoGroup(float alpha, float duration, bool disableOnComplete)
+	{
+		DOTween.To(() => questInfoCanvasGroup.alpha, x => questInfoCanvasGroup.alpha = x, alpha, duration).SetEase(Ease.Linear).OnComplete(() =>
+		{
+			// Fade가 끝나고나서 상황에 맞게 초기화 해준다.
+			if (disableOnComplete)
+			{
+				GuideQuestInfo.instance.gameObject.SetActive(false);
+				SubQuestInfo.instance.gameObject.SetActive(false);
+			}
+			else
+			{
+				GuideQuestInfo.instance.CloseInfo();
+				SubQuestInfo.instance.CloseInfo();
+			}
+		});
+	}
+
+	public void FadeInQuestInfoGroup(float alpha, float duration, bool stage)	//, bool bossWar)
+	{
+		// FadeIn이다. 보여지기 전에 상황에 맞게 초기화 해준다.
+		GuideQuestInfo.instance.RefreshCondition(stage);
+		SubQuestInfo.instance.RefreshCondition(stage);
+
+		DOTween.To(() => questInfoCanvasGroup.alpha, x => questInfoCanvasGroup.alpha = x, alpha, duration).SetEase(Ease.Linear);
 	}
 	#endregion
 

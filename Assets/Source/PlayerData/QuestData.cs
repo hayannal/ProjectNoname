@@ -275,6 +275,13 @@ public class QuestData : MonoBehaviour
 		{
 			if (TreasureChest.instance != null && TreasureChest.instance.gameObject.activeSelf && IsCompleteQuest())
 				TreasureChest.instance.SetAutoShowIndicatorRemainTime(0.1f);
+			if (SubQuestInfo.instance != null)
+			{
+				SubQuestInfo.instance.gameObject.SetActive(false);
+				SubQuestInfo.instance.gameObject.SetActive(true);
+			}
+			if (SubQuestInfo.instance != null && IsCompleteQuest())
+				SubQuestInfo.instance.RefreshAlarmObject();
 			_checkIndicatorOnRecvQuestList = false;
 		}
 	}
@@ -449,11 +456,15 @@ public class QuestData : MonoBehaviour
 
 		// 이 변수 역시 서버는 모르는 값이기때문에 재진입에서 복구를 해야하는 점수다.
 		ClientSaveData.instance.OnChangedQuestTemporaryAddCount(_temporaryAddCount);
+
+		// UI
+		SubQuestInfo.instance.OnAddCount(_temporaryAddCount);
 	}
 
 	public void SetQuestInfoForInProgressGame()
 	{
 		_temporaryAddCount = ClientSaveData.instance.GetCachedQuestTemporaryAddCount();
+		SubQuestInfo.instance.OnAddCount(_temporaryAddCount);
 	}
 
 	public void OnEndGame(bool cancelGame = false)

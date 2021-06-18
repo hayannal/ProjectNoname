@@ -58,6 +58,7 @@ public class TableDataManager : MonoBehaviour
 	public NodeWarTrapTable nodeWarTrapTable;
 	public ChapterTrapTable chapterTrapTable;
 	public SubQuestTable subQuestTable;
+	public GuideQuestTable guideQuestTable;
 
 	void Awake()
 	{
@@ -508,6 +509,16 @@ public class TableDataManager : MonoBehaviour
 		{
 			if (subQuestTable.dataArray[i].type == type)
 				return subQuestTable.dataArray[i];
+		}
+		return null;
+	}
+
+	public GuideQuestTableData FindGuideQuestTableData(int index)
+	{
+		for (int i = 0; i < guideQuestTable.dataArray.Length; ++i)
+		{
+			if (guideQuestTable.dataArray[i].id == index)
+				return guideQuestTable.dataArray[i];
 		}
 		return null;
 	}

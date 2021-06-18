@@ -23,7 +23,7 @@ public class QuestInfoItem : MonoBehaviour
 		goldText.color = DailyFreeItem.GetGoldTextColor();
 	}
 
-	string GetConditionText(QuestData.QuestInfo questInfo)
+	public static string GetConditionText(QuestData.QuestInfo questInfo)
 	{
 		string paramName = "";
 		switch (questInfo.cdtn)
@@ -35,7 +35,7 @@ public class QuestInfoItem : MonoBehaviour
 				paramName = UIString.instance.GetString(string.Format("GameUI_CharGrade{0}", questInfo.param));
 				break;
 		}
-		return UIString.instance.GetString("QuestUI_Condition", paramName);
+		return string.Format("<size=16>{0}</size>", UIString.instance.GetString("QuestUI_Condition", paramName));
 	}
 	
 	public void OnClickButton()
@@ -45,6 +45,8 @@ public class QuestInfoItem : MonoBehaviour
 		{
 			QuestSelectCanvas.instance.gameObject.SetActive(false);
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("QuestUI_AcceptQuest"), 2.0f);
+			SubQuestInfo.instance.gameObject.SetActive(false);
+			SubQuestInfo.instance.gameObject.SetActive(true);
 		});
 	}
 }

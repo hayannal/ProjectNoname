@@ -74,6 +74,7 @@ public class PlayerData : MonoBehaviour
 	public ObscuredInt notStreakLegendCharCount { get; set; }
 	public ObscuredInt originOpenCount { get; set; }
 	public ObscuredInt characterBoxOpenCount { get; set; }
+	public ObscuredInt questCharacterBoxOpenCount { get; set; }
 	// pp 총합산 검증을 위해 상점에서 구매한 pp 카운트를 저장해두는 변수
 	public ObscuredInt ppBuyCount { get; set; }
 
@@ -345,6 +346,7 @@ public class PlayerData : MonoBehaviour
 		notStreakLegendCharCount = 0;
 		originOpenCount = 0;
 		characterBoxOpenCount = 0;
+		questCharacterBoxOpenCount = 0;
 		ppBuyCount = 0;
 		_listLevelPackage = null;
 		sharedDailyPackageOpened = false;
@@ -641,6 +643,14 @@ public class PlayerData : MonoBehaviour
 				characterBoxOpenCount = intValue;
 		}
 
+		questCharacterBoxOpenCount = 0;
+		if (userReadOnlyData.ContainsKey("qstChrBxCnt"))
+		{
+			int intValue = 0;
+			if (int.TryParse(userReadOnlyData["qstChrBxCnt"].Value, out intValue))
+				questCharacterBoxOpenCount = intValue;
+		}
+
 		ppBuyCount = 0;
 		if (userReadOnlyData.ContainsKey("ppBuyCnt"))
 		{
@@ -782,7 +792,7 @@ public class PlayerData : MonoBehaviour
 			totalPp += _listCharacterData[i].pp;
 		// balancePp도 합산시켜줘야한다.
 		totalPp += balancePp;
-		if (totalPp > (originOpenCount * PPMaxPerOriginBox + characterBoxOpenCount * PPMaxPerCharacterBox + ppBuyCount + balancePpBuyCount))
+		if (totalPp > (originOpenCount * PPMaxPerOriginBox + characterBoxOpenCount * PPMaxPerCharacterBox + questCharacterBoxOpenCount * PPMaxPerCharacterBox + ppBuyCount + balancePpBuyCount))
 			PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidTotalPp, false, totalPp);
 
 		// 연구레벨 체크

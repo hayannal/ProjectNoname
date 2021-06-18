@@ -666,6 +666,8 @@ public class GatePillar : MonoBehaviour
 				PrepareInProgressGame();
 			else
 				PrepareUseEnergy();
+
+			LobbyCanvas.instance.FadeOutQuestInfoGroup(0.0f, 0.5f, false);
 		}
 
 		yield return Timing.WaitForSeconds(0.2f);
@@ -696,6 +698,7 @@ public class GatePillar : MonoBehaviour
 		if (this == null)
 			yield break;
 
+		bool lobby = MainSceneBuilder.instance.lobby;
 		if (MainSceneBuilder.instance.lobby)
 		{
 			while (_waitEnergyServerResponse)
@@ -752,6 +755,7 @@ public class GatePillar : MonoBehaviour
 		gameObject.SetActive(false);
 
 		FadeCanvas.instance.FadeIn(0.4f);
+		if (lobby) LobbyCanvas.instance.FadeInQuestInfoGroup(1.0f, 0.4f, true);
 
 		_processing = false;
 	}

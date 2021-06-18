@@ -381,6 +381,7 @@ public class ActionController : MonoBehaviour {
 			ExperienceData.instance.OnUseUltimateSkill(actor.actorId);
 
 		QuestData.instance.OnQuestEvent(QuestData.eQuestClearType.Ultimate);
+		GuideQuestData.instance.OnQuestEvent(GuideQuestData.eQuestClearType.Ultimate);
 	}
 
 	void UseUltimateSp()

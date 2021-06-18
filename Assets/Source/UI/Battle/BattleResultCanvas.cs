@@ -126,7 +126,7 @@ public class BattleResultCanvas : MonoBehaviour
 			clearRewardText.gameObject.SetActive(true);
 		}
 
-		if (StageManager.instance.playChapter == 1 && PlayerData.instance.ContainsActor("Actor2103") == false)
+		if (StageManager.instance.playChapter == 1 && PlayerData.instance.ContainsActor("Actor2103") == false && _newRecord == false)
 		{
 			clearRewardText.SetLocalizedText(UIString.instance.GetString(_clear ? "GameUI_Chp1ClearRewardGot" : "GameUI_Chp1ClearReward", CharacterData.GetLowNameByActorId("Actor2103")));
 			clearRewardText.gameObject.SetActive(true);

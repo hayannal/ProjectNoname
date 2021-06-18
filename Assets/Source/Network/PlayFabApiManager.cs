@@ -2979,7 +2979,6 @@ public class PlayFabApiManager : MonoBehaviour
 			FunctionName = "GuideQuestProceedingCount",
 			FunctionParameter = new { Add = addCount, Cs = checkSum },
 			GeneratePlayStreamEvent = true,
-			RevisionSelection = CloudScriptRevisionOption.Latest,
 		}, (success) =>
 		{
 			string resultString = (string)success.FunctionResult;
@@ -3046,7 +3045,6 @@ public class PlayFabApiManager : MonoBehaviour
 				FunctionName = "CompleteGuideQuest",
 				FunctionParameter = new { Tp = rewardType, LstPp = listPpInfo, Bpp = addBalancePp, LstGr = listGrantInfo, LstTrp = listTrpInfo, LstCs = checkSum, InfCs = infoCheckSum },
 				GeneratePlayStreamEvent = true,
-				RevisionSelection = CloudScriptRevisionOption.Latest,
 			};
 		}
 		else if (listDropItemId != null)
@@ -3058,7 +3056,6 @@ public class PlayFabApiManager : MonoBehaviour
 				FunctionName = "CompleteGuideQuest",
 				FunctionParameter = new { Tp = rewardType, EqpLst = listItemGrantRequest, EqpLstCs = checkSum, InfCs = infoCheckSum },
 				GeneratePlayStreamEvent = true,
-				RevisionSelection = CloudScriptRevisionOption.Latest,
 			};
 		}
 		else
@@ -3068,7 +3065,6 @@ public class PlayFabApiManager : MonoBehaviour
 				FunctionName = "CompleteGuideQuest",
 				FunctionParameter = new { Tp = rewardType, InfCs = infoCheckSum },
 				GeneratePlayStreamEvent = true,
-				RevisionSelection = CloudScriptRevisionOption.Latest,
 			};
 		}
 

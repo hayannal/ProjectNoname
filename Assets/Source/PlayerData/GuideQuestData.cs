@@ -100,7 +100,6 @@ public class GuideQuestData : MonoBehaviour
 			case eQuestClearType.ExperienceLevel1:
 			case eQuestClearType.ExperienceLevel2:
 			case eQuestClearType.PowerLevel:
-			case eQuestClearType.ChapterStage:
 			case eQuestClearType.EnterTimeSpace:
 			case eQuestClearType.EquipType:
 			case eQuestClearType.EquipEnhance:
@@ -108,6 +107,7 @@ public class GuideQuestData : MonoBehaviour
 			case eQuestClearType.NodeWarDailyClear:
 			case eQuestClearType.NodeWarLevel:
 			case eQuestClearType.OpenDailyBox:
+			case eQuestClearType.EnergyChargeAlarm:
 				return true;
 		}
 		return false;
@@ -161,6 +161,9 @@ public class GuideQuestData : MonoBehaviour
 	public void OnQuestEvent(eQuestClearType questClearType)
 	{
 		if (ContentsManager.IsTutorialChapter())
+			return;
+
+		if (currentGuideQuestIndex > BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxGuideQuestId"))
 			return;
 
 		GuideQuestTableData guideQuestTableData = GetCurrentGuideQuestTableData();
@@ -272,15 +275,8 @@ public class GuideQuestData : MonoBehaviour
 					processed = true;
 				break;
 			case eQuestClearType.ChapterStage:
-				if (int.TryParse(nextGuideQuestTableData.param, out int paramStage))
-				{
-					int chapter = paramStage / 100;
-					int stage = paramStage % 100;
-					if (PlayerData.instance.highestPlayChapter > chapter)
-						processed = true;
-					else if (PlayerData.instance.highestPlayChapter == chapter && PlayerData.instance.highestClearStage >= stage)
-						processed = true;	
-				}
+				if (CheckChapterStage(PlayerData.instance.highestPlayChapter, PlayerData.instance.highestClearStage, nextGuideQuestTableData))
+					processed = true;
 				break;
 			case eQuestClearType.OpenDailyBox:
 				if (PlayerData.instance.sharedDailyBoxOpened)
@@ -299,4 +295,47 @@ public class GuideQuestData : MonoBehaviour
 		//});
 		return nextGuideQuestTableData.needCount;
 	}
+
+	#region Check Condition Parameter
+	// 파라미터 있는거마다 별도의 체크 함수 적용
+	public bool CheckChapterStage(int playChapter, int playStage, GuideQuestTableData guideQuestTableData = null)
+	{
+		// 인자로 들어오면 인자 들어온거로 체크하고 인자로 안들어오면 현재 진행중인걸 구해와서 체크한다.
+		if (guideQuestTableData == null)
+		{
+			guideQuestTableData = GetCurrentGuideQuestTableData();
+			eQuestClearType questClearType = Type2ClearType(guideQuestTableData.typeId);
+			if (questClearType != eQuestClearType.ChapterStage)
+				return false;
+		}
+
+		if (int.TryParse(guideQuestTableData.param, out int paramStage))
+		{
+			int chapter = paramStage / 100;
+			int stage = paramStage % 100;
+			if (playChapter > chapter)
+				return true;
+			else if (playChapter == chapter && playStage >= stage)
+				return true;
+		}
+		return false;
+	}
+
+	public bool CheckExperienceLevel1(string actorId, GuideQuestTableData guideQuestTableData = null)
+	{
+		if (guideQuestTableData == null)
+		{
+			guideQuestTableData = GetCurrentGuideQuestTableData();
+			eQuestClearType questClearType = Type2ClearType(guideQuestTableData.typeId);
+			if (questClearType != eQuestClearType.ExperienceLevel1)
+				return false;
+		}
+
+		if (string.IsNullOrEmpty(guideQuestTableData.param))
+			return true;
+		else if (actorId == guideQuestTableData.param)
+			return true;
+		return false;
+	}
+	#endregion
 }

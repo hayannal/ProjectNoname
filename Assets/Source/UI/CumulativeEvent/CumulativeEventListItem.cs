@@ -400,6 +400,10 @@ public class CumulativeEventListItem : MonoBehaviour
 			// 나머지는 다 재화 단일이거나 재화 복수다. 이럴땐 그냥 토스트 처리만 하면 된다.
 			PlayFabApiManager.instance.RequestReceiveEventReward(eventType, _slotInfo.type, addDia, addGold, addEnergy, addReturnScroll, null, (serverFailure, itemGrantString) =>
 			{
+				// 누적 로그인 이벤트는 첫날꺼를 가지고 판단하는거라 이 호출에서만 처리해도 괜찮다.
+				if (eventType == CumulativeEventData.eEventType.NewAccount)
+					GuideQuestData.instance.OnQuestEvent(GuideQuestData.eQuestClearType.CumulativeLogin);
+
 				RefreshClaimState();
 				CumulativeEventCanvas.instance.currencySmallInfo.RefreshInfo();
 				CumulativeEventCanvas.instance.RefreshAlarmObject(eventType);

@@ -445,6 +445,8 @@ public class BattleModeProcessorBase
 			QuestData.instance.OnQuestEvent(QuestData.eQuestClearType.ClearBossStage);
 			GuideQuestData.instance.OnQuestEvent(GuideQuestData.eQuestClearType.ClearBossStage);
 		}
+		if (GuideQuestData.instance.CheckChapterStage(StageManager.instance.playChapter, StageManager.instance.playStage))
+			GuideQuestData.instance.OnQuestEvent(GuideQuestData.eQuestClearType.ChapterStage);
 
 #if HUDDPS
 #if UNITY_EDITOR

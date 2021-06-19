@@ -137,6 +137,18 @@ public class SubQuestInfo : MonoBehaviour
 		_questResetTime = QuestData.instance.todayQuestResetTime;
 		_needUpdate = true;
 		UpdateRemainTime();
+
+		// 카오스가 아니면 쌓을 수 없음을 알려야하는데 만약 완료한 상태라면 그냥 두면 된다.
+		if (QuestData.instance.IsCompleteQuest() == false)
+		{
+			if (PlayerData.instance.currentChaosMode)
+			{ }
+			else
+			{
+				contentsRootObject.SetActive(false);
+				disableTextObject.SetActive(true);
+			}
+		}
 	}
 
 	void RefreshCountInfo(int temporaryAddCount)
@@ -185,21 +197,7 @@ public class SubQuestInfo : MonoBehaviour
 			return;
 
 		if (stage)
-		{
 			AlarmObject.Hide(alarmRootTransform);
-
-			// 카오스가 아니면 쌓을 수 없음을 알려야하는데 만약 완료한 상태라면 그냥 두면 된다.
-			if (QuestData.instance.IsCompleteQuest())
-				return;
-
-			if (PlayerData.instance.currentChaosMode)
-			{ }
-			else
-			{
-				contentsRootObject.SetActive(false);
-				disableTextObject.SetActive(true);
-			}
-		}
 	}
 
 	public void OnAddCount(int temporaryAddCount)
@@ -227,6 +225,7 @@ public class SubQuestInfo : MonoBehaviour
 
 		smallButtonRootObject.SetActive(false);
 		infoRootTweenAnimation.gameObject.SetActive(true);
+		smallBackButtonRootObject.SetActive(true);
 		UpdateRemainTime();
 	}
 

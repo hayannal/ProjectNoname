@@ -206,6 +206,18 @@ public class GuideQuestInfo : MonoBehaviour
 			specialRewardText.SetLocalizedText(UIString.instance.GetString("QuestUI_NextSpecialReward", rewardText, countText));
 			specialRewardRootObject.SetActive(true);
 		}
+
+		// 조건이 안맞으면 수행 불가능하다고 알려야하는데 만약 완료한 상태라면 그냥 두면 된다.
+		if (GuideQuestData.instance.IsCompleteQuest() == false)
+		{
+			if (PlayerData.instance.selectedChapter == PlayerData.instance.highestPlayChapter)
+			{ }
+			else
+			{
+				contentsRootObject.SetActive(false);
+				disableTextObject.SetActive(true);
+			}
+		}
 	}
 
 	void RefreshCountInfo(int temporaryAddCount)
@@ -290,17 +302,6 @@ public class GuideQuestInfo : MonoBehaviour
 
 			if (guideQuestTableData.viewInBattle)
 			{
-				// 조건이 안맞으면 수행 불가능하다고 알려야하는데 만약 완료한 상태라면 그냥 두면 된다.
-				if (GuideQuestData.instance.IsCompleteQuest())
-					return;
-
-				if (PlayerData.instance.selectedChapter == PlayerData.instance.highestPlayChapter)
-				{ }
-				else
-				{
-					contentsRootObject.SetActive(false);
-					disableTextObject.SetActive(true);
-				}
 			}
 			else
 			{

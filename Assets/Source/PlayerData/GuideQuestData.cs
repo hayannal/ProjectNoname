@@ -100,6 +100,7 @@ public class GuideQuestData : MonoBehaviour
 			case eQuestClearType.ExperienceLevel1:
 			case eQuestClearType.ExperienceLevel2:
 			case eQuestClearType.PowerLevel:
+			case eQuestClearType.ChangeMainCharacter:
 			case eQuestClearType.EnterTimeSpace:
 			case eQuestClearType.EquipType:
 			case eQuestClearType.EquipEnhance:

@@ -567,6 +567,7 @@ public class GuideQuestInfo : MonoBehaviour
 
 		smallButtonRootObject.SetActive(false);
 		infoRootTweenAnimation.gameObject.SetActive(true);
+		smallBackButtonRootObject.SetActive(true);
 	}
 
 	float _closeRemainTime;

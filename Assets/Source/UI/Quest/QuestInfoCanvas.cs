@@ -174,8 +174,14 @@ public class QuestInfoCanvas : MonoBehaviour
 			// 닫는건 RandomBoxScreenCanvas에서 확인하고 알아서 닫아줄거다.
 			//gameObject.SetActive(false);
 
+			// 서브 퀘스트 정보창은 직접 닫아야한다.
+			SubQuestInfo.instance.CloseInfo();
+
+			RandomBoxScreenCanvas.eBoxType boxType = RandomBoxScreenCanvas.eBoxType.Origin;
+			if (TimeSpaceGround.instance != null && TimeSpaceGround.instance.gameObject.activeSelf)
+				boxType = RandomBoxScreenCanvas.eBoxType.Gold;
 			DropProcessor dropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, "QuestGold", "", true, true);
-			RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Origin, dropProcessor, 0, 0, () =>
+			RandomBoxScreenCanvas.instance.SetInfo(boxType, dropProcessor, 0, 0, () =>
 			{
 				// 다음번 드랍에 영향을 주지 않게 하기위해 미리 클리어해둔다.
 				DropManager.instance.ClearLobbyDropInfo();

@@ -143,7 +143,17 @@ public class GuideQuestInfo : MonoBehaviour
 
 		if (guideQuestTableData.iconId < iconSpriteList.Length)
 			iconImage.sprite = iconSpriteList[guideQuestTableData.iconId];
-		nameText.SetLocalizedText(UIString.instance.GetString(guideQuestTableData.descriptionId, guideQuestTableData.needCount));
+		if (GuideQuestData.Type2ClearType(guideQuestTableData.typeId) == GuideQuestData.eQuestClearType.ChapterStage)
+		{
+			if (int.TryParse(guideQuestTableData.param, out int paramStage))
+			{
+				int chapter = paramStage / 100;
+				int stage = paramStage % 100;
+				nameText.SetLocalizedText(UIString.instance.GetString(guideQuestTableData.descriptionId, chapter, stage));
+			}
+		}
+		else
+			nameText.SetLocalizedText(UIString.instance.GetString(guideQuestTableData.descriptionId, guideQuestTableData.needCount));
 		RefreshCountInfo(0);
 
 		if (string.IsNullOrEmpty(guideQuestTableData.rewardAdditionalText))

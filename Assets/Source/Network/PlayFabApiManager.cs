@@ -2999,7 +2999,10 @@ public class PlayFabApiManager : MonoBehaviour
 	{
 		WaitingNetworkCanvas.Show(true);
 
-		string input = string.Format("{0}_{1}_{2}", currentGuideQuestIndex, rewardType, "zitpnvfwk");
+		// 퀘완료를 보내기전에 다음번에 받을 퀘의 진행상태를 체크
+		int nextInitialProceedingCount = GuideQuestData.instance.CheckNextInitialProceedingCount();
+
+		string input = string.Format("{0}_{1}_{2}_{3}", currentGuideQuestIndex, rewardType, nextInitialProceedingCount, "zitpnvfwk");
 		string infoCheckSum = CheckSum(input);
 		ExecuteCloudScriptRequest request = null;
 		if (characterBox)
@@ -3043,7 +3046,7 @@ public class PlayFabApiManager : MonoBehaviour
 			request = new ExecuteCloudScriptRequest()
 			{
 				FunctionName = "CompleteGuideQuest",
-				FunctionParameter = new { Tp = rewardType, LstPp = listPpInfo, Bpp = addBalancePp, LstGr = listGrantInfo, LstTrp = listTrpInfo, LstCs = checkSum, InfCs = infoCheckSum },
+				FunctionParameter = new { Tp = rewardType, Np = nextInitialProceedingCount, LstPp = listPpInfo, Bpp = addBalancePp, LstGr = listGrantInfo, LstTrp = listTrpInfo, LstCs = checkSum, InfCs = infoCheckSum },
 				GeneratePlayStreamEvent = true,
 			};
 		}
@@ -3054,7 +3057,7 @@ public class PlayFabApiManager : MonoBehaviour
 			request = new ExecuteCloudScriptRequest()
 			{
 				FunctionName = "CompleteGuideQuest",
-				FunctionParameter = new { Tp = rewardType, EqpLst = listItemGrantRequest, EqpLstCs = checkSum, InfCs = infoCheckSum },
+				FunctionParameter = new { Tp = rewardType, Np = nextInitialProceedingCount, EqpLst = listItemGrantRequest, EqpLstCs = checkSum, InfCs = infoCheckSum },
 				GeneratePlayStreamEvent = true,
 			};
 		}
@@ -3063,7 +3066,7 @@ public class PlayFabApiManager : MonoBehaviour
 			request = new ExecuteCloudScriptRequest()
 			{
 				FunctionName = "CompleteGuideQuest",
-				FunctionParameter = new { Tp = rewardType, InfCs = infoCheckSum },
+				FunctionParameter = new { Tp = rewardType, Np = nextInitialProceedingCount, InfCs = infoCheckSum },
 				GeneratePlayStreamEvent = true,
 			};
 		}
@@ -3078,7 +3081,7 @@ public class PlayFabApiManager : MonoBehaviour
 				WaitingNetworkCanvas.Show(false);
 
 				GuideQuestData.instance.currentGuideQuestIndex += 1;
-				GuideQuestData.instance.currentGuideQuestProceedingCount = 0;
+				GuideQuestData.instance.currentGuideQuestProceedingCount = nextInitialProceedingCount;
 
 				CurrencyData.instance.dia += addDia;
 				CurrencyData.instance.gold += addGold;

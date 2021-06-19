@@ -153,6 +153,8 @@ public class DailyFreeItem : MonoBehaviour
 		// 일일 무료아이템 획득 요청
 		PlayFabApiManager.instance.RequestGetFreeItem(_addDia, _addGold, _addEnergy, (serverFailure) =>
 		{
+			GuideQuestData.instance.OnQuestEvent(GuideQuestData.eQuestClearType.FreeItem);
+
 			RefreshInfo();
 			CashShopCanvas.instance.currencySmallInfo.RefreshInfo();
 			DotMainMenuCanvas.instance.RefreshCashShopAlarmObject();

@@ -151,7 +151,7 @@ public class SubQuestInfo : MonoBehaviour
 		else
 			descriptionText.SetLocalizedText(string.Format("{0} {1} / {2}\n{3}", UIString.instance.GetString(subQuestTableData.shortDescriptionId), QuestData.instance.currentQuestProceedingCount + temporaryAddCount, questInfo.cnt, QuestInfoItem.GetConditionText(questInfo)));
 
-		bool isCompleteQuest = QuestData.instance.IsCompleteQuest();
+		bool isCompleteQuest = (QuestData.instance.currentQuestProceedingCount + temporaryAddCount >= questInfo.cnt);
 		blinkObject.SetActive(isCompleteQuest);
 		smallBlinkObject.SetActive(isCompleteQuest);
 	}

@@ -167,6 +167,9 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 			}
 			else
 			{
+				// 가이드 퀘스트 갱신
+				GuideQuestData.instance.OnQuestEvent(GuideQuestData.eQuestClearType.OpenDailyBox);
+
 				// 연출 및 보상 처리.
 
 				// TreasureChest는 숨겨도 하단 일퀘 갱신은 즉시 보여준다.

@@ -33,6 +33,23 @@ public class GuideQuestData : MonoBehaviour
 		Critical,
 		FastClear,
 		Ultimate,
+		IngameLevel,
+		Portal,
+
+		FreeItem,
+		CumulativeLogin,
+		ExperienceLevel1,
+		ExperienceLevel2,
+		PowerLevel,
+		ChapterStage,
+		ChangeMainCharacter,
+		EnterTimeSpace,
+		EquipType,
+		EquipEnhance,
+		ResearchLevel,
+		NodeWarDailyClear,
+		NodeWarLevel,
+		OpenDailyBox,
 	}
 
 	// 현재 진행중인 퀘스트.
@@ -51,8 +68,46 @@ public class GuideQuestData : MonoBehaviour
 			case 6: return eQuestClearType.Critical;
 			case 7: return eQuestClearType.FastClear;
 			case 8: return eQuestClearType.Ultimate;
+			case 9: return eQuestClearType.IngameLevel;
+			case 10: return eQuestClearType.Portal;
+
+			case 11: return eQuestClearType.FreeItem;
+			case 12: return eQuestClearType.CumulativeLogin;
+			case 13: return eQuestClearType.ExperienceLevel1;
+			case 14: return eQuestClearType.ExperienceLevel2;
+			case 15: return eQuestClearType.PowerLevel;
+			case 16: return eQuestClearType.ChapterStage;
+			case 17: return eQuestClearType.EnterTimeSpace;
+			case 18: return eQuestClearType.EquipType;
+			case 19: return eQuestClearType.EquipEnhance;
+			case 20: return eQuestClearType.ResearchLevel;
+			case 21: return eQuestClearType.NodeWarDailyClear;
+			case 22: return eQuestClearType.NodeWarLevel;
+			case 23: return eQuestClearType.OpenDailyBox;
 		}
-		return eQuestClearType.KillMonster;
+		return (eQuestClearType)(typeId - 1);
+	}
+
+	public static bool IsImmediateQuest(eQuestClearType questClearType)
+	{
+		switch (questClearType)
+		{
+			case eQuestClearType.FreeItem:
+			case eQuestClearType.CumulativeLogin:
+			case eQuestClearType.ExperienceLevel1:
+			case eQuestClearType.ExperienceLevel2:
+			case eQuestClearType.PowerLevel:
+			case eQuestClearType.ChapterStage:
+			case eQuestClearType.EnterTimeSpace:
+			case eQuestClearType.EquipType:
+			case eQuestClearType.EquipEnhance:
+			case eQuestClearType.ResearchLevel:
+			case eQuestClearType.NodeWarDailyClear:
+			case eQuestClearType.NodeWarLevel:
+			case eQuestClearType.OpenDailyBox:
+				return true;
+		}
+		return false;
 	}
 
 	public void OnRecvGuideQuestData(Dictionary<string, UserDataRecord> userReadOnlyData)
@@ -132,6 +187,18 @@ public class GuideQuestData : MonoBehaviour
 		if (Type2ClearType(guideQuestTableData.typeId) != questClearType)
 			return;
 
+		if (IsImmediateQuest(questClearType))
+		{
+			// 로비 퀘스트들은 행동 즉시 바로 보내는게 맞다.
+			PlayFabApiManager.instance.RequestGuideQuestProceedingCount(currentGuideQuestIndex, 1, () =>
+			{
+				GuideQuestInfo.instance.OnAddCount(0);
+				if (currentGuideQuestProceedingCount + 1 >= guideQuestTableData.needCount)
+					GuideQuestInfo.instance.RefreshAlarmObject();
+			});
+			return;
+		}
+
 		_temporaryAddCount += 1;
 
 		// 이 변수 역시 서버는 모르는 값이기때문에 재진입에서 복구를 해야하는 점수다.
@@ -175,5 +242,58 @@ public class GuideQuestData : MonoBehaviour
 		{
 			_temporaryAddCount = 0;
 		});
+	}
+
+	public int CheckNextInitialProceedingCount()
+	{
+		int nextGuideQuestIndex = currentGuideQuestIndex + 1;
+		if (nextGuideQuestIndex > BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxGuideQuestId"))
+			return 0;
+
+		GuideQuestTableData nextGuideQuestTableData = TableDataManager.instance.FindGuideQuestTableData(nextGuideQuestIndex);
+		if (nextGuideQuestTableData == null)
+			return 0;
+
+		bool processed = false;
+		eQuestClearType questClearType = Type2ClearType(nextGuideQuestTableData.typeId);
+		switch (questClearType)
+		{
+			case eQuestClearType.FreeItem:
+				// 일일 무료 아이템은 누적을 담당하는게 없으니 오늘 연 기록을 써서라도 해야하고
+				if (DailyShopData.instance.dailyFreeItemReceived)
+					processed = true;
+				break;
+			case eQuestClearType.CumulativeLogin:
+				// 누적 로그인 같은건 기록이 있으니 여기서 조회하는게 안전하다.
+				if (CumulativeEventData.instance.newAccountLoginEventCount >= 1)
+					processed = true;
+				break;
+			case eQuestClearType.ChapterStage:
+				if (int.TryParse(nextGuideQuestTableData.param, out int paramStage))
+				{
+					int chapter = paramStage / 100;
+					int stage = paramStage % 100;
+					if (PlayerData.instance.highestPlayChapter > chapter)
+						processed = true;
+					else if (PlayerData.instance.highestPlayChapter == chapter && PlayerData.instance.highestClearStage >= stage)
+						processed = true;	
+				}
+				break;
+			case eQuestClearType.OpenDailyBox:
+				if (PlayerData.instance.sharedDailyBoxOpened)
+					processed = true;
+				break;
+		}
+		if (processed == false)
+			return 0;
+
+		// 이제 컴플릿 후에 별도 패킷으로 보내는게 아니라 컴플릿 안에다가 실어서 보내는거니 필요없다.
+		//PlayFabApiManager.instance.RequestGuideQuestProceedingCount(currentGuideQuestIndex, 1, () =>
+		//{
+		//	GuideQuestInfo.instance.OnAddCount(0);
+		//	if (currentGuideQuestProceedingCount + 1 >= guideQuestTableData.needCount)
+		//		GuideQuestInfo.instance.RefreshAlarmObject();
+		//});
+		return nextGuideQuestTableData.needCount;
 	}
 }

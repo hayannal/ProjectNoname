@@ -50,6 +50,7 @@ public class GuideQuestData : MonoBehaviour
 		NodeWarDailyClear,
 		NodeWarLevel,
 		OpenDailyBox,
+		EnergyChargeAlarm,
 	}
 
 	// 현재 진행중인 퀘스트.
@@ -77,13 +78,15 @@ public class GuideQuestData : MonoBehaviour
 			case 14: return eQuestClearType.ExperienceLevel2;
 			case 15: return eQuestClearType.PowerLevel;
 			case 16: return eQuestClearType.ChapterStage;
-			case 17: return eQuestClearType.EnterTimeSpace;
-			case 18: return eQuestClearType.EquipType;
-			case 19: return eQuestClearType.EquipEnhance;
-			case 20: return eQuestClearType.ResearchLevel;
-			case 21: return eQuestClearType.NodeWarDailyClear;
-			case 22: return eQuestClearType.NodeWarLevel;
-			case 23: return eQuestClearType.OpenDailyBox;
+			case 17: return eQuestClearType.ChangeMainCharacter;
+			case 18: return eQuestClearType.EnterTimeSpace;
+			case 19: return eQuestClearType.EquipType;
+			case 20: return eQuestClearType.EquipEnhance;
+			case 21: return eQuestClearType.ResearchLevel;
+			case 22: return eQuestClearType.NodeWarDailyClear;
+			case 23: return eQuestClearType.NodeWarLevel;
+			case 24: return eQuestClearType.OpenDailyBox;
+			case 25: return eQuestClearType.EnergyChargeAlarm;
 		}
 		return (eQuestClearType)(typeId - 1);
 	}

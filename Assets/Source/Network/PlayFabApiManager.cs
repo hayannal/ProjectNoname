@@ -280,7 +280,7 @@ public class PlayFabApiManager : MonoBehaviour
 		MailData.instance.OnRecvMailData(loginResult.InfoResultPayload.TitleData, loginResult.InfoResultPayload.UserReadOnlyData, loginResult.InfoResultPayload.PlayerStatistics, loginResult.NewlyCreated);
 		SupportData.instance.OnRecvSupportData(loginResult.InfoResultPayload.UserReadOnlyData);
 		QuestData.instance.OnRecvQuestData(loginResult.InfoResultPayload.UserReadOnlyData);
-		GuideQuestData.instance.OnRecvGuideQuestData(loginResult.InfoResultPayload.UserReadOnlyData);
+		GuideQuestData.instance.OnRecvGuideQuestData(loginResult.InfoResultPayload.UserReadOnlyData, loginResult.InfoResultPayload.PlayerStatistics);
 		PlayerData.instance.OnRecvLevelPackageResetInfo(loginResult.InfoResultPayload.TitleData, loginResult.InfoResultPayload.UserReadOnlyData, loginResult.NewlyCreated);
 		CumulativeEventData.instance.OnRecvCumulativeEventData(loginResult.InfoResultPayload.TitleData, loginResult.InfoResultPayload.UserReadOnlyData, loginResult.NewlyCreated);
 
@@ -2970,9 +2970,9 @@ public class PlayFabApiManager : MonoBehaviour
 	#endregion
 
 	#region Guide Quest
-	public void RequestGuideQuestProceedingCount(int currentGuideQuestIndex, int addCount, Action successCallback)
+	public void RequestGuideQuestProceedingCount(int currentGuideQuestIndex, int addCount, int expectCount, Action successCallback)
 	{
-		string input = string.Format("{0}_{1}_{2}", currentGuideQuestIndex, addCount, "wxiozlmqj");
+		string input = string.Format("{0}_{1}_{2}_{3}", currentGuideQuestIndex, addCount, expectCount, "wxiozlmqj");
 		string checkSum = CheckSum(input);
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{

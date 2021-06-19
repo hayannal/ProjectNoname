@@ -106,15 +106,17 @@ public class GuideQuestData : MonoBehaviour
 		return false;
 	}
 
-	public void OnRecvGuideQuestData(Dictionary<string, UserDataRecord> userReadOnlyData)
+	public void OnRecvGuideQuestData(Dictionary<string, UserDataRecord> userReadOnlyData, List<StatisticValue> playerStatistics)
 	{
 		// 현재 진행중인 퀘스트의 상태. 동시에 1개만 진행가능하다.
 		currentGuideQuestIndex = 0;
-		if (userReadOnlyData.ContainsKey("gQstIdx"))
+		for (int i = 0; i < playerStatistics.Count; ++i)
 		{
-			int intValue = 0;
-			if (int.TryParse(userReadOnlyData["gQstIdx"].Value, out intValue))
-				currentGuideQuestIndex = intValue;			
+			if (playerStatistics[i].StatisticName == "guideQuestIndex")
+			{
+				currentGuideQuestIndex = playerStatistics[i].Value;
+				break;
+			}
 		}
 
 		currentGuideQuestProceedingCount = 0;
@@ -189,7 +191,7 @@ public class GuideQuestData : MonoBehaviour
 		if (IsImmediateQuest(questClearType))
 		{
 			// 로비 퀘스트들은 행동 즉시 바로 보내는게 맞다.
-			PlayFabApiManager.instance.RequestGuideQuestProceedingCount(currentGuideQuestIndex, 1, () =>
+			PlayFabApiManager.instance.RequestGuideQuestProceedingCount(currentGuideQuestIndex, 1, currentGuideQuestProceedingCount + 1, () =>
 			{
 				GuideQuestInfo.instance.OnAddCount(0);
 				if (currentGuideQuestProceedingCount + 1 >= guideQuestTableData.needCount)
@@ -237,7 +239,7 @@ public class GuideQuestData : MonoBehaviour
 		//	return;
 		//}
 
-		PlayFabApiManager.instance.RequestGuideQuestProceedingCount(currentGuideQuestIndex, _temporaryAddCount, () =>
+		PlayFabApiManager.instance.RequestGuideQuestProceedingCount(currentGuideQuestIndex, _temporaryAddCount, currentGuideQuestProceedingCount + _temporaryAddCount, () =>
 		{
 			_temporaryAddCount = 0;
 		});
@@ -297,8 +299,7 @@ public class GuideQuestData : MonoBehaviour
 				}
 				break;
 			case eQuestClearType.ResearchLevel:
-
-				break;
+				return Mathf.Min(PlayerData.instance.researchLevel, nextGuideQuestTableData.needCount);
 			case eQuestClearType.OpenDailyBox:
 				if (PlayerData.instance.sharedDailyBoxOpened)
 					processed = true;

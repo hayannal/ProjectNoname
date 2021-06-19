@@ -373,6 +373,8 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 		priceButtonObject.SetActive(false);
 		PlayFabApiManager.instance.RequestResearchLevelUp(_selectedLevel, _price, _rewardDia, () =>
 		{
+			GuideQuestData.instance.OnQuestEvent(GuideQuestData.eQuestClearType.ResearchLevel);
+
 			// 다이아 보상 받는건 연출 뒤에 반영되게 하려고 예외처리 해둔다.
 			//ResearchCanvas.instance.currencySmallInfo.RefreshInfo();
 			ResearchCanvas.instance.currencySmallInfo.goldText.text = CurrencyData.instance.gold.ToString("N0");

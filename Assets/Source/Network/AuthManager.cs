@@ -223,6 +223,7 @@ public class AuthManager : MonoBehaviour
 		playerStatisticNames.Add("highestPlayChapter");
 		playerStatisticNames.Add("highestClearStage");
 		playerStatisticNames.Add("nodClLv");
+		playerStatisticNames.Add("guideQuestIndex");
 		GetPlayerCombinedInfoRequestParams parameters = new GetPlayerCombinedInfoRequestParams();
 		parameters.GetCharacterList = true;
 		parameters.GetPlayerStatistics = true;

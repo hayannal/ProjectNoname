@@ -80,8 +80,14 @@ public class ExperienceData : MonoBehaviour
 			_dicExperienceState.Add(actorId, onlyRecordPlay ? (int)eExperienceState.Played : (int)eExperienceState.Rewarded);
 		PlayFabApiManager.instance.RequestExperience(actorId, onlyRecordPlay, !onlyRecordPlay, false, () =>
 		{
+			if (GuideQuestData.instance.CheckExperienceLevel(actorId, true))
+				GuideQuestData.instance.OnQuestEvent(GuideQuestData.eQuestClearType.ExperienceLevel1);
+
 			if (onlyRecordPlay == false)
 			{
+				if (GuideQuestData.instance.CheckExperienceLevel(actorId, false))
+					GuideQuestData.instance.OnQuestEvent(GuideQuestData.eQuestClearType.ExperienceLevel2);
+
 				ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_TryRewardToast"), 2.0f);
 				if (CharacterInfoCanvas.instance != null && CharacterInfoCanvas.instance.gameObject.activeSelf)
 					CharacterInfoCanvas.instance.currencySmallInfo.RefreshInfo();
@@ -101,6 +107,9 @@ public class ExperienceData : MonoBehaviour
 		_dicExperienceState[actorId] = (int)eExperienceState.Rewarded;
 		PlayFabApiManager.instance.RequestExperience(actorId, false, true, true, () =>
 		{
+			if (GuideQuestData.instance.CheckExperienceLevel(actorId, false))
+				GuideQuestData.instance.OnQuestEvent(GuideQuestData.eQuestClearType.ExperienceLevel2);
+
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_TryRewardToastAlready"), 2.0f);
 			if (CharacterInfoCanvas.instance != null && CharacterInfoCanvas.instance.gameObject.activeSelf)
 				CharacterInfoCanvas.instance.currencySmallInfo.RefreshInfo();

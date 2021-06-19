@@ -131,6 +131,9 @@ public class CharacterPowerLevelUpCanvas : DetailShowCanvasBase
 		priceButton.gameObject.SetActive(false);
 		PlayFabApiManager.instance.RequestCharacterPowerLevelUp(_characterData, _price, () =>
 		{
+			if (GuideQuestData.instance.CheckPowerLevelUp(_characterData.actorId))
+				GuideQuestData.instance.OnQuestEvent(GuideQuestData.eQuestClearType.PowerLevel);
+
 			CharacterInfoCanvas.instance.currencySmallInfo.RefreshInfo();
 			Timing.RunCoroutine(PowerLevelUpProcess());
 		});

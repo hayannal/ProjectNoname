@@ -299,6 +299,8 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 		ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_MainCharacterChanged"), 2.0f);
 		PlayFabApiManager.instance.RequestSelectMainCharacter(CharacterListCanvas.instance.selectedActorId, () =>
 		{
+			GuideQuestData.instance.OnQuestEvent(GuideQuestData.eQuestClearType.ChangeMainCharacter);
+
 			ChangeMainCharacter(CharacterListCanvas.instance.selectedActorId);
 		});
 	}

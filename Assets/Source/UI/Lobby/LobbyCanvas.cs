@@ -236,6 +236,9 @@ public class LobbyCanvas : MonoBehaviour
 	{
 		lobbyOptionButton.gameObject.SetActive(!enter);
 		timeSpaceHomeButton.gameObject.SetActive(enter);
+
+		if (enter)
+			GuideQuestData.instance.OnQuestEvent(GuideQuestData.eQuestClearType.EnterTimeSpace);
 	}
 
 	#region Home

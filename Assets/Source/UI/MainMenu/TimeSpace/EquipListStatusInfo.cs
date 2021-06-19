@@ -201,6 +201,9 @@ public class EquipListStatusInfo : MonoBehaviour
 
 		PlayFabApiManager.instance.RequestEquip(_equipData, () =>
 		{
+			if (GuideQuestData.instance.CheckEquipType((TimeSpaceData.eEquipSlotType)_equipData.cachedEquipTableData.equipType))
+				GuideQuestData.instance.OnQuestEvent(GuideQuestData.eQuestClearType.EquipType);
+
 			// 대부분 다 EquipList가 해야하는 것들이라 ListCanvas에게 알린다.
 			EquipListCanvas.instance.OnEquip(_equipData);
 		});

@@ -34,7 +34,6 @@ public class GuideQuestData : MonoBehaviour
 		FastClear,
 		Ultimate,
 		IngameLevel,
-		Portal,
 
 		FreeItem,
 		CumulativeLogin,
@@ -47,8 +46,6 @@ public class GuideQuestData : MonoBehaviour
 		EquipType,
 		EquipEnhance,
 		ResearchLevel,
-		NodeWarDailyClear,
-		NodeWarLevel,
 		OpenDailyBox,
 		EnergyChargeAlarm,
 	}
@@ -70,23 +67,20 @@ public class GuideQuestData : MonoBehaviour
 			case 7: return eQuestClearType.FastClear;
 			case 8: return eQuestClearType.Ultimate;
 			case 9: return eQuestClearType.IngameLevel;
-			case 10: return eQuestClearType.Portal;
 
-			case 11: return eQuestClearType.FreeItem;
-			case 12: return eQuestClearType.CumulativeLogin;
-			case 13: return eQuestClearType.ExperienceLevel1;
-			case 14: return eQuestClearType.ExperienceLevel2;
-			case 15: return eQuestClearType.PowerLevel;
-			case 16: return eQuestClearType.ChapterStage;
-			case 17: return eQuestClearType.ChangeMainCharacter;
-			case 18: return eQuestClearType.EnterTimeSpace;
-			case 19: return eQuestClearType.EquipType;
-			case 20: return eQuestClearType.EquipEnhance;
-			case 21: return eQuestClearType.ResearchLevel;
-			case 22: return eQuestClearType.NodeWarDailyClear;
-			case 23: return eQuestClearType.NodeWarLevel;
-			case 24: return eQuestClearType.OpenDailyBox;
-			case 25: return eQuestClearType.EnergyChargeAlarm;
+			case 10: return eQuestClearType.FreeItem;
+			case 11: return eQuestClearType.CumulativeLogin;
+			case 12: return eQuestClearType.ExperienceLevel1;
+			case 13: return eQuestClearType.ExperienceLevel2;
+			case 14: return eQuestClearType.PowerLevel;
+			case 15: return eQuestClearType.ChapterStage;
+			case 16: return eQuestClearType.ChangeMainCharacter;
+			case 17: return eQuestClearType.EnterTimeSpace;
+			case 18: return eQuestClearType.EquipType;
+			case 19: return eQuestClearType.EquipEnhance;
+			case 20: return eQuestClearType.ResearchLevel;
+			case 21: return eQuestClearType.OpenDailyBox;
+			case 22: return eQuestClearType.EnergyChargeAlarm;
 		}
 		return (eQuestClearType)(typeId - 1);
 	}
@@ -105,8 +99,6 @@ public class GuideQuestData : MonoBehaviour
 			case eQuestClearType.EquipType:
 			case eQuestClearType.EquipEnhance:
 			case eQuestClearType.ResearchLevel:
-			case eQuestClearType.NodeWarDailyClear:
-			case eQuestClearType.NodeWarLevel:
 			case eQuestClearType.OpenDailyBox:
 			case eQuestClearType.EnergyChargeAlarm:
 				return true;
@@ -275,12 +267,44 @@ public class GuideQuestData : MonoBehaviour
 				if (CumulativeEventData.instance.newAccountLoginEventCount >= 1)
 					processed = true;
 				break;
+			case eQuestClearType.ExperienceLevel1:
+				// 보상까지 받은 상태라면 플레이도 한거로 쳐준다.
+				if (ExperienceData.instance.IsPlayed(nextGuideQuestTableData.param) || ExperienceData.instance.IsRewarded(nextGuideQuestTableData.param))
+					processed = true;
+				break;
+			case eQuestClearType.ExperienceLevel2:
+				if (ExperienceData.instance.IsRewarded(nextGuideQuestTableData.param))
+					processed = true;
+				break;
+			case eQuestClearType.PowerLevel:
+				CharacterData characterData = PlayerData.instance.GetCharacterData(nextGuideQuestTableData.param);
+				if (characterData != null)
+					return Mathf.Min(characterData.powerLevel, nextGuideQuestTableData.needCount);
+				break;
 			case eQuestClearType.ChapterStage:
 				if (CheckChapterStage(PlayerData.instance.highestPlayChapter, PlayerData.instance.highestClearStage, nextGuideQuestTableData))
 					processed = true;
 				break;
+			case eQuestClearType.EnterTimeSpace:
+				if (TimeSpaceGround.instance != null && TimeSpaceGround.instance.gameObject.activeSelf)
+					processed = true;
+				break;
+			case eQuestClearType.EquipType:
+				if (int.TryParse(nextGuideQuestTableData.param, out int paramEquipType))
+				{
+					if (TimeSpaceData.instance.GetEquippedDataByType((TimeSpaceData.eEquipSlotType)paramEquipType) != null)
+						processed = true;
+				}
+				break;
+			case eQuestClearType.ResearchLevel:
+
+				break;
 			case eQuestClearType.OpenDailyBox:
 				if (PlayerData.instance.sharedDailyBoxOpened)
+					processed = true;
+				break;
+			case eQuestClearType.EnergyChargeAlarm:
+				if (OptionManager.instance.energyAlarm == 1)
 					processed = true;
 				break;
 		}
@@ -305,6 +329,8 @@ public class GuideQuestData : MonoBehaviour
 		if (guideQuestTableData == null)
 		{
 			guideQuestTableData = GetCurrentGuideQuestTableData();
+			if (guideQuestTableData == null)
+				return false;
 			eQuestClearType questClearType = Type2ClearType(guideQuestTableData.typeId);
 			if (questClearType != eQuestClearType.ChapterStage)
 				return false;
@@ -322,20 +348,90 @@ public class GuideQuestData : MonoBehaviour
 		return false;
 	}
 
-	public bool CheckExperienceLevel1(string actorId, GuideQuestTableData guideQuestTableData = null)
+	public bool CheckPowerLevelUp(string actorId, GuideQuestTableData guideQuestTableData = null)
+	{
+		// 인자로 들어오면 인자 들어온거로 체크하고 인자로 안들어오면 현재 진행중인걸 구해와서 체크한다.
+		if (guideQuestTableData == null)
+		{
+			guideQuestTableData = GetCurrentGuideQuestTableData();
+			if (guideQuestTableData == null)
+				return false;
+			eQuestClearType questClearType = Type2ClearType(guideQuestTableData.typeId);
+			if (questClearType != eQuestClearType.PowerLevel)
+				return false;
+		}
+
+		if (guideQuestTableData.param == actorId)
+			return true;
+		return false;
+	}
+
+	public bool CheckExperienceLevel(string actorId, bool onlyPlay, GuideQuestTableData guideQuestTableData = null)
 	{
 		if (guideQuestTableData == null)
 		{
 			guideQuestTableData = GetCurrentGuideQuestTableData();
-			eQuestClearType questClearType = Type2ClearType(guideQuestTableData.typeId);
-			if (questClearType != eQuestClearType.ExperienceLevel1)
+			if (guideQuestTableData == null)
 				return false;
+			eQuestClearType questClearType = Type2ClearType(guideQuestTableData.typeId);
+			if (onlyPlay)
+			{
+				if (questClearType != eQuestClearType.ExperienceLevel1)
+					return false;
+			}
+			else
+			{
+				if (questClearType != eQuestClearType.ExperienceLevel2)
+					return false;
+			}
 		}
 
 		if (string.IsNullOrEmpty(guideQuestTableData.param))
 			return true;
 		else if (actorId == guideQuestTableData.param)
 			return true;
+		return false;
+	}
+
+	public bool CheckIngameLevel(int level, GuideQuestTableData guideQuestTableData = null)
+	{
+		// 인자로 들어오면 인자 들어온거로 체크하고 인자로 안들어오면 현재 진행중인걸 구해와서 체크한다.
+		if (guideQuestTableData == null)
+		{
+			guideQuestTableData = GetCurrentGuideQuestTableData();
+			if (guideQuestTableData == null)
+				return false;
+			eQuestClearType questClearType = Type2ClearType(guideQuestTableData.typeId);
+			if (questClearType != eQuestClearType.IngameLevel)
+				return false;
+		}
+
+		if (int.TryParse(guideQuestTableData.param, out int paramLevel))
+		{
+			if (level >= paramLevel)
+				return true;
+		}
+		return false;
+	}
+
+	public bool CheckEquipType(TimeSpaceData.eEquipSlotType equipSlotType, GuideQuestTableData guideQuestTableData = null)
+	{
+		// 인자로 들어오면 인자 들어온거로 체크하고 인자로 안들어오면 현재 진행중인걸 구해와서 체크한다.
+		if (guideQuestTableData == null)
+		{
+			guideQuestTableData = GetCurrentGuideQuestTableData();
+			if (guideQuestTableData == null)
+				return false;
+			eQuestClearType questClearType = Type2ClearType(guideQuestTableData.typeId);
+			if (questClearType != eQuestClearType.EquipType)
+				return false;
+		}
+
+		if (int.TryParse(guideQuestTableData.param, out int paramEquipType))
+		{
+			if (equipSlotType == (TimeSpaceData.eEquipSlotType)paramEquipType)
+				return true;
+		}
 		return false;
 	}
 	#endregion

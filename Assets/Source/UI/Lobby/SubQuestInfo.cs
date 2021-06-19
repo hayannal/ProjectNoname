@@ -41,6 +41,12 @@ public class SubQuestInfo : MonoBehaviour
 		RefreshInfo();
 	}
 
+	void OnDisable()
+	{
+		infoRootTweenAnimation.gameObject.SetActive(false);
+		smallBackButtonRootObject.SetActive(false);
+	}
+
 	// Update is called once per frame
 	void Update()
 	{
@@ -121,6 +127,13 @@ public class SubQuestInfo : MonoBehaviour
 			show = false;
 
 		smallButtonRootObject.SetActive(show);
+
+		if (show)
+		{
+			infoRootTweenAnimation.gameObject.SetActive(false);
+			smallBackButtonRootObject.SetActive(false);
+			_openRemainTime = _closeRemainTime = 0.0f;
+		}
 	}
 
 	void RefreshInfo()
@@ -245,6 +258,9 @@ public class SubQuestInfo : MonoBehaviour
 	float _openRemainTime;
 	public void OnCompleteInfoRootTweenAnimation()
 	{
+		if (smallButtonRootObject.activeSelf)
+			return;
+
 		smallBackButtonRootObject.SetActive(true);
 		_openRemainTime = 4.0f;
 	}

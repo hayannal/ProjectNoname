@@ -104,7 +104,7 @@ public class GuideQuestInfo : MonoBehaviour
 			if (_claimReopenRemainTime <= 0.0f)
 			{
 				_claimReopenRemainTime = 0.0f;
-				infoRootTweenAnimation.gameObject.SetActive(true);
+				OnClickSmallButton();
 			}
 		}
 	}
@@ -123,6 +123,13 @@ public class GuideQuestInfo : MonoBehaviour
 			show = true;
 
 		smallButtonRootObject.SetActive(show);
+
+		if (show)
+		{
+			infoRootTweenAnimation.gameObject.SetActive(false);
+			smallBackButtonRootObject.SetActive(false);
+			_openRemainTime = _closeRemainTime = 0.0f;
+		}
 	}
 
 	bool _complete = false;
@@ -143,6 +150,7 @@ public class GuideQuestInfo : MonoBehaviour
 
 		if (guideQuestTableData.iconId < iconSpriteList.Length)
 			iconImage.sprite = iconSpriteList[guideQuestTableData.iconId];
+
 		if (GuideQuestData.Type2ClearType(guideQuestTableData.typeId) == GuideQuestData.eQuestClearType.ChapterStage)
 		{
 			if (int.TryParse(guideQuestTableData.param, out int paramStage))
@@ -151,6 +159,21 @@ public class GuideQuestInfo : MonoBehaviour
 				int stage = paramStage % 100;
 				nameText.SetLocalizedText(UIString.instance.GetString(guideQuestTableData.descriptionId, chapter, stage));
 			}
+		}
+		else if (GuideQuestData.Type2ClearType(guideQuestTableData.typeId) == GuideQuestData.eQuestClearType.PowerLevel)
+		{
+			string actorName = CharacterData.GetNameByActorId(guideQuestTableData.param);
+			nameText.SetLocalizedText(UIString.instance.GetString(guideQuestTableData.descriptionId, guideQuestTableData.needCount, actorName));
+		}
+		else if (GuideQuestData.Type2ClearType(guideQuestTableData.typeId) == GuideQuestData.eQuestClearType.ExperienceLevel1 ||
+			GuideQuestData.Type2ClearType(guideQuestTableData.typeId) == GuideQuestData.eQuestClearType.ExperienceLevel2)
+		{
+			string actorName = CharacterData.GetNameByActorId(guideQuestTableData.param);
+			nameText.SetLocalizedText(UIString.instance.GetString(guideQuestTableData.descriptionId, actorName));
+		}
+		else if (GuideQuestData.Type2ClearType(guideQuestTableData.typeId) == GuideQuestData.eQuestClearType.IngameLevel)
+		{
+			nameText.SetLocalizedText(UIString.instance.GetString(guideQuestTableData.descriptionId, guideQuestTableData.param));
 		}
 		else
 			nameText.SetLocalizedText(UIString.instance.GetString(guideQuestTableData.descriptionId, guideQuestTableData.needCount));
@@ -407,7 +430,7 @@ public class GuideQuestInfo : MonoBehaviour
 
 				infoRootTweenAnimation.gameObject.SetActive(false);
 				smallBackButtonRootObject.SetActive(false);
-				_openRemainTime = 0.0f;
+				_openRemainTime = _closeRemainTime = 0.0f;
 
 				RefreshInfo();
 				RefreshAlarmObject();

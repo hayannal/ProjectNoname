@@ -532,6 +532,9 @@ public class StageManager : MonoBehaviour
 			return;
 		_playerLevel = level;
 
+		if (GuideQuestData.instance.CheckIngameLevel(level))
+			GuideQuestData.instance.OnQuestEvent(GuideQuestData.eQuestClearType.IngameLevel);
+
 		AffectorValueLevelTableData healAffectorValue = new AffectorValueLevelTableData();
 		healAffectorValue.fValue3 = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("LevelUpHeal") * needLevelUpCount;
 		healAffectorValue.fValue3 += BattleInstanceManager.instance.playerActor.actorStatus.GetValue(eActorStatus.LevelUpHealAddRate) * needLevelUpCount;

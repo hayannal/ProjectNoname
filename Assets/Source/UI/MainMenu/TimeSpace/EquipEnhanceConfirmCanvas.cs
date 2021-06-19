@@ -175,6 +175,8 @@ public class EquipEnhanceConfirmCanvas : MonoBehaviour
 	bool _waitRecv = false;
 	void OnRecvEnhance()
 	{
+		GuideQuestData.instance.OnQuestEvent(GuideQuestData.eQuestClearType.EquipEnhance);
+
 		_waitRecv = false;
 		EquipInfoGrowthCanvas.instance.currencySmallInfo.RefreshInfo();
 	}

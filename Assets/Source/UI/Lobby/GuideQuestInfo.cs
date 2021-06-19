@@ -208,7 +208,7 @@ public class GuideQuestInfo : MonoBehaviour
 		}
 
 		// 조건이 안맞으면 수행 불가능하다고 알려야하는데 만약 완료한 상태라면 그냥 두면 된다.
-		if (GuideQuestData.instance.IsCompleteQuest() == false)
+		if (guideQuestTableData.viewInBattle && GuideQuestData.instance.IsCompleteQuest() == false)
 		{
 			if (PlayerData.instance.selectedChapter == PlayerData.instance.highestPlayChapter)
 			{ }

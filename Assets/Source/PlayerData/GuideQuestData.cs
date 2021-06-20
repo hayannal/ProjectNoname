@@ -191,7 +191,7 @@ public class GuideQuestData : MonoBehaviour
 		if (IsImmediateQuest(questClearType))
 		{
 			// 로비 퀘스트들은 행동 즉시 바로 보내는게 맞다.
-			PlayFabApiManager.instance.RequestGuideQuestProceedingCount(currentGuideQuestIndex, 1, currentGuideQuestProceedingCount + 1, () =>
+			PlayFabApiManager.instance.RequestGuideQuestProceedingCount(currentGuideQuestIndex, 1, currentGuideQuestProceedingCount + 1, guideQuestTableData.key,() =>
 			{
 				GuideQuestInfo.instance.OnAddCount(0);
 				if (currentGuideQuestProceedingCount + 1 >= guideQuestTableData.needCount)
@@ -239,7 +239,11 @@ public class GuideQuestData : MonoBehaviour
 		//	return;
 		//}
 
-		PlayFabApiManager.instance.RequestGuideQuestProceedingCount(currentGuideQuestIndex, _temporaryAddCount, currentGuideQuestProceedingCount + _temporaryAddCount, () =>
+		GuideQuestTableData guideQuestTableData = GetCurrentGuideQuestTableData();
+		if (guideQuestTableData == null)
+			return;
+
+		PlayFabApiManager.instance.RequestGuideQuestProceedingCount(currentGuideQuestIndex, _temporaryAddCount, currentGuideQuestProceedingCount + _temporaryAddCount, guideQuestTableData.key, () =>
 		{
 			_temporaryAddCount = 0;
 		});

@@ -37,6 +37,10 @@ public class GuideQuestTableData
   public string param { get { return _param; } set { _param = value; } }
   
   [SerializeField]
+  int _key;
+  public int key { get { return _key; } set { _key = value; } }
+  
+  [SerializeField]
   string _rewardAdditionalText;
   public string rewardAdditionalText { get { return _rewardAdditionalText; } set { _rewardAdditionalText = value; } }
   

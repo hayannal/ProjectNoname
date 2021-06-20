@@ -379,7 +379,7 @@ public class GuideQuestInfo : MonoBehaviour
 			if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
 				DotMainMenuCanvas.instance.OnClickBackButton();
 
-			PlayFabApiManager.instance.RequestCompleteGuideQuest(GuideQuestData.instance.currentGuideQuestIndex, guideQuestTableData.rewardType, 0, 0, 0, 0, DropManager.instance.GetLobbyDropItemInfo(), false, OnRecvEquipBox);
+			PlayFabApiManager.instance.RequestCompleteGuideQuest(GuideQuestData.instance.currentGuideQuestIndex, guideQuestTableData.rewardType, guideQuestTableData.key, 0, 0, 0, 0, DropManager.instance.GetLobbyDropItemInfo(), false, OnRecvEquipBox);
 		}
 		else if (guideQuestTableData.rewardType == "bc")
 		{
@@ -392,7 +392,7 @@ public class GuideQuestInfo : MonoBehaviour
 			if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
 				DotMainMenuCanvas.instance.OnClickBackButton();
 
-			PlayFabApiManager.instance.RequestCompleteGuideQuest(GuideQuestData.instance.currentGuideQuestIndex, guideQuestTableData.rewardType, 0, 0, 0, 0, null, true, OnRecvCharacterBox);
+			PlayFabApiManager.instance.RequestCompleteGuideQuest(GuideQuestData.instance.currentGuideQuestIndex, guideQuestTableData.rewardType, guideQuestTableData.key, 0, 0, 0, 0, null, true, OnRecvCharacterBox);
 		}
 		else if (guideQuestTableData.rewardType == "cu")
 		{
@@ -420,7 +420,7 @@ public class GuideQuestInfo : MonoBehaviour
 			if (showCurrencySmallInfo)
 				CurrencySmallInfoCanvas.Show(true);
 
-			PlayFabApiManager.instance.RequestCompleteGuideQuest(GuideQuestData.instance.currentGuideQuestIndex, guideQuestTableData.rewardType, addDia, addGold, addEnergy, addReturnScroll, null, false, (serverFailure, itemGrantString) =>
+			PlayFabApiManager.instance.RequestCompleteGuideQuest(GuideQuestData.instance.currentGuideQuestIndex, guideQuestTableData.rewardType, guideQuestTableData.key, addDia, addGold, addEnergy, addReturnScroll, null, false, (serverFailure, itemGrantString) =>
 			{
 				if (showCurrencySmallInfo)
 				{

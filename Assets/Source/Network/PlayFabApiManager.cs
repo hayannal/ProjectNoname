@@ -2970,9 +2970,9 @@ public class PlayFabApiManager : MonoBehaviour
 	#endregion
 
 	#region Guide Quest
-	public void RequestGuideQuestProceedingCount(int currentGuideQuestIndex, int addCount, int expectCount, Action successCallback)
+	public void RequestGuideQuestProceedingCount(int currentGuideQuestIndex, int addCount, int expectCount, int key, Action successCallback)
 	{
-		string input = string.Format("{0}_{1}_{2}_{3}", currentGuideQuestIndex, addCount, expectCount, "wxiozlmqj");
+		string input = string.Format("{0}_{1}_{2}_{3}_{4}", currentGuideQuestIndex, addCount, expectCount, key, "wxiozlmqj");
 		string checkSum = CheckSum(input);
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
@@ -2995,14 +2995,14 @@ public class PlayFabApiManager : MonoBehaviour
 			HandleCommonError(error);
 		});
 	}
-	public void RequestCompleteGuideQuest(int currentGuideQuestIndex, string rewardType, int addDia, int addGold, int addEnergy, int addReturnScroll, List<ObscuredString> listDropItemId, bool characterBox, Action<bool, string> successCallback)
+	public void RequestCompleteGuideQuest(int currentGuideQuestIndex, string rewardType, int key, int addDia, int addGold, int addEnergy, int addReturnScroll, List<ObscuredString> listDropItemId, bool characterBox, Action<bool, string> successCallback)
 	{
 		WaitingNetworkCanvas.Show(true);
 
 		// 퀘완료를 보내기전에 다음번에 받을 퀘의 진행상태를 체크
 		int nextInitialProceedingCount = GuideQuestData.instance.CheckNextInitialProceedingCount();
 
-		string input = string.Format("{0}_{1}_{2}_{3}", currentGuideQuestIndex, rewardType, nextInitialProceedingCount, "zitpnvfwk");
+		string input = string.Format("{0}_{1}_{2}_{3}_{4}", currentGuideQuestIndex, rewardType, nextInitialProceedingCount, key, "zitpnvfwk");
 		string infoCheckSum = CheckSum(input);
 		ExecuteCloudScriptRequest request = null;
 		if (characterBox)

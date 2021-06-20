@@ -90,6 +90,9 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		playerActor.skillProcessor.AddLevelPack("AtkUpOnLowerHpBetter", false, 0);
 		//playerActor.skillProcessor.AddLevelPack("HealSpOnAttackBetter", false, 0);
 		//playerActor.skillProcessor.AddLevelPack("HealSpOnAttackBetter", false, 0);
+		playerActor.skillProcessor.AddLevelPack("MoveSpeed", false, 0);
+		playerActor.skillProcessor.AddLevelPack("InstantKill", false, 0);
+		playerActor.skillProcessor.AddLevelPack("HitSizeDown", false, 0);
 
 		// powerSource Bonus는 직접 스탯에 적용한다.
 		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(playerActor.actorId);
@@ -628,7 +631,11 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			Vector2 randomOffset = normalizedOffset * Random.Range(1.0f, 1.1f) * SpawnDistance;
 			Vector3 desirePosition = BattleInstanceManager.instance.playerActor.cachedTransform.position + new Vector3(randomOffset.x, 0.0f, randomOffset.y);
 			BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.healOrbPrefab, desirePosition, Quaternion.identity);
-			_healOrbSpawnRemainTime += HealOrbSpawnDelay;
+
+			if (BattleInstanceManager.instance.playerActor.actorStatus.GetHPRatio() > 0.5f)
+				_healOrbSpawnRemainTime += HealOrbSpawnDelay;
+			else
+				_healOrbSpawnRemainTime += HealOrbSpawnDelay * 0.66f;
 		}
 	}
 
@@ -709,7 +716,11 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			Vector2 randomOffset = normalizedOffset * Random.Range(1.0f, 1.1f) * SpawnDistance;
 			Vector3 desirePosition = BattleInstanceManager.instance.playerActor.cachedTransform.position + new Vector3(randomOffset.x, 0.0f, randomOffset.y);
 			BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.boostOrbPrefab, desirePosition, Quaternion.identity);
-			_boostOrbSpawnRemainTime += BoostOrbSpawnDelay;
+			
+			if (BattleInstanceManager.instance.playerActor.actorStatus.GetHPRatio() > 0.5f)
+				_boostOrbSpawnRemainTime += BoostOrbSpawnDelay;
+			else
+				_boostOrbSpawnRemainTime += BoostOrbSpawnDelay * 1.5f;
 		}
 	}
 
@@ -731,8 +742,8 @@ public class NodeWarProcessor : BattleModeProcessorBase
 	// 동시에 하나만 존재해야하며 수집 페이즈가 넘어서면 있던걸 삭제해야하고 더이상 생성하지 말아야한다.
 	NodeWarItem _cachedNodeWarInvincibleOrb;
 	float _invincibleOrbSpawnRemainTime;
-	const float InvincibleOrbSpawnDelayMin = 15.0f;
-	const float InvincibleOrbSpawnDelayMax = 60.0f;
+	const float InvincibleOrbSpawnDelayMin = 10.0f;
+	const float InvincibleOrbSpawnDelayMax = 20.0f;
 	void UpdateSpawnInvincibleOrb()
 	{
 		if (_phase != ePhase.FindSoul)
@@ -778,7 +789,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			Vector3 desirePosition = BattleInstanceManager.instance.playerActor.cachedTransform.position + new Vector3(randomOffset.x, 0.0f, randomOffset.y);
 			GameObject invincibleOrbObject = BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.invincibleOrbPrefab, desirePosition, Quaternion.identity);
 			_cachedNodeWarInvincibleOrb = invincibleOrbObject.GetComponent<NodeWarItem>();
-			_invincibleOrbSpawnRemainTime += (Random.Range(InvincibleOrbSpawnDelayMin, InvincibleOrbSpawnDelayMax) + _invincibleOrbGetCount * 60.0f);
+			_invincibleOrbSpawnRemainTime += (Random.Range(InvincibleOrbSpawnDelayMin, InvincibleOrbSpawnDelayMax) + _invincibleOrbGetCount * 7.0f);
 		}
 	}
 

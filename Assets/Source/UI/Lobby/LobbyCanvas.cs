@@ -516,10 +516,13 @@ public class LobbyCanvas : MonoBehaviour
 	#endregion
 
 	#region QuestInfo Gruop
-	public void FadeOutQuestInfoGroup(float alpha, float duration, bool disableOnComplete)
+	public void FadeOutQuestInfoGroup(float alpha, float duration, bool onlyFade, bool disableOnComplete)
 	{
 		DOTween.To(() => questInfoCanvasGroup.alpha, x => questInfoCanvasGroup.alpha = x, alpha, duration).SetEase(Ease.Linear).OnComplete(() =>
 		{
+			if (onlyFade)
+				return;
+
 			// Fade가 끝나고나서 상황에 맞게 초기화 해준다.
 			if (disableOnComplete)
 			{
@@ -534,11 +537,14 @@ public class LobbyCanvas : MonoBehaviour
 		});
 	}
 
-	public void FadeInQuestInfoGroup(float alpha, float duration, bool stage)	//, bool bossWar)
+	public void FadeInQuestInfoGroup(float alpha, float duration, bool onlyFade, bool stage)	//, bool bossWar)
 	{
-		// FadeIn이다. 보여지기 전에 상황에 맞게 초기화 해준다.
-		GuideQuestInfo.instance.RefreshCondition(stage);
-		SubQuestInfo.instance.RefreshCondition(stage);
+		if (onlyFade == false)
+		{
+			// FadeIn이다. 보여지기 전에 상황에 맞게 초기화 해준다.
+			GuideQuestInfo.instance.RefreshCondition(stage);
+			SubQuestInfo.instance.RefreshCondition(stage);
+		}
 
 		DOTween.To(() => questInfoCanvasGroup.alpha, x => questInfoCanvasGroup.alpha = x, alpha, duration).SetEase(Ease.Linear);
 	}

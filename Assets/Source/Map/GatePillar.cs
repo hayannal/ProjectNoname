@@ -667,8 +667,10 @@ public class GatePillar : MonoBehaviour
 			else
 				PrepareUseEnergy();
 
-			LobbyCanvas.instance.FadeOutQuestInfoGroup(0.0f, 0.5f, false);
+			LobbyCanvas.instance.FadeOutQuestInfoGroup(0.0f, 0.5f, false, false);
 		}
+		else
+			LobbyCanvas.instance.FadeOutQuestInfoGroup(0.0f, 0.5f, true, false);
 
 		yield return Timing.WaitForSeconds(0.2f);
 		changeEffectParticleRootObject.SetActive(true);
@@ -755,7 +757,8 @@ public class GatePillar : MonoBehaviour
 		gameObject.SetActive(false);
 
 		FadeCanvas.instance.FadeIn(0.4f);
-		if (lobby) LobbyCanvas.instance.FadeInQuestInfoGroup(1.0f, 0.4f, true);
+		if (lobby) LobbyCanvas.instance.FadeInQuestInfoGroup(1.0f, 0.4f, false, true);
+		else LobbyCanvas.instance.FadeInQuestInfoGroup(1.0f, 0.4f, true, true);
 
 		_processing = false;
 	}

@@ -206,12 +206,18 @@ public class GuideQuestInfo : MonoBehaviour
 		}
 		else if (guideQuestTableData.rewardType == "be")
 		{
-			equipBoxObject.SetActive(true);
+			if (guideQuestTableData.rewardValue == "3" && guideQuestTableData.rewardCount >= 3)
+				equipBigBoxObject.SetActive(true);
+			else
+				equipBoxObject.SetActive(true);
 			rewardCountText.text = "";
 		}
 		else if (guideQuestTableData.rewardType == "bm")
 		{
-			equipBigBoxObject.SetActive(true);
+			if (guideQuestTableData.rewardCount >= 5)
+				equipBigBoxObject.SetActive(true);
+			else
+				equipBoxObject.SetActive(true);
 			rewardCountText.text = "";
 		}
 		else if (guideQuestTableData.rewardType == "bc")

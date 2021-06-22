@@ -349,7 +349,7 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 
 		if (BattleManager.instance != null && BattleManager.instance.GetAppliedChallengeRetryBonusClearPoint() > 0 && ClientSaveData.instance.inProgressGame == false)
 		{
-			challengeRetryBonusText.SetLocalizedText(UIString.instance.GetString("GameUI_ClearPointBonus", BattleManager.instance.GetAppliedChallengeRetryBonusClearPoint()));
+			challengeRetryBonusText.SetLocalizedText(UIString.instance.GetString(PlayerData.instance.chaosMode ? "GameUI_ClearPointColleagues" : "GameUI_ClearPointBonus", BattleManager.instance.GetAppliedChallengeRetryBonusClearPoint()));
 			challengeRetryBonusTextObject.SetActive(true);
 			BattleManager.instance.ResetAppliedChallengeRetryBonusClearPoint();
 		}

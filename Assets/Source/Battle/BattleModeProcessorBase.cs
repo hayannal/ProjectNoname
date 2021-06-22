@@ -53,9 +53,11 @@ public class BattleModeProcessorBase
 
 		// 다른 곳과 달리 PlayerData.instance.currentChallengeMode를 사용하면 안되는 곳이다.
 		// 카오스가 열리기 전 챕터도 포함시켜야하므로 직접 검사하기로 한다.
-		if (ContentsManager.IsTutorialChapter() == false && PlayerData.instance.selectedChapter == PlayerData.instance.highestPlayChapter && PlayerData.instance.chaosMode == false && PlayerData.instance.highestClearStage > 0)
+		if (ContentsManager.IsTutorialChapter() == false && PlayerData.instance.selectedChapter == PlayerData.instance.highestPlayChapter && BattleManager.instance.IsNodeWar() == false)
 		{
-			if (BattleManager.instance != null && BattleManager.instance.IsNodeWar() == false)
+			if (PlayerData.instance.chaosMode)
+				_clearPoint = _appliedChallengeRetryBonusClearPoint = PlayerData.instance.listCharacterData.Count;
+			else if (PlayerData.instance.highestClearStage > 0)
 				_clearPoint = _appliedChallengeRetryBonusClearPoint = PlayerData.instance.highestClearStage;
 		}
 	}

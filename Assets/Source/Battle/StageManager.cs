@@ -94,6 +94,13 @@ public class StageManager : MonoBehaviour
 		StageDataManager.DestroyInstance();
 		_handleNextPlanePrefab = _handleNextGroundPrefab = _handleNextWallPrefab = _handleNextSpawnFlagPrefab = _handleNextPortalFlagPrefab = _handleEnvironmentSettingPrefab = null;
 		GetStageInfo(playChapter, playStage + 1);
+
+		// 도전모드로 바뀔때 진행중이던 서브퀘가 있었다면
+		if (QuestData.instance.currentQuestStep == QuestData.eQuestStep.Proceeding)
+		{
+			SubQuestInfo.instance.gameObject.SetActive(false);
+			SubQuestInfo.instance.gameObject.SetActive(true);
+		}
 	}
 
 	// for in progress game

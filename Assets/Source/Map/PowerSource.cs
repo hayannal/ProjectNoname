@@ -65,7 +65,7 @@ public class PowerSource : MonoBehaviour
 		}
 
 		// 귀환 주문서를 구입하지 않은 사람도 8챕터 가면 세이브 포인트가 보여야한다. 에서 2챕터로 변경.
-		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Chapter))
+		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.ReturnScroll))
 			_returnScrollPointShowRemainTime = 0.1f;
 	}
 

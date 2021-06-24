@@ -1,0 +1,243 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using MecanimStateDefine;
+using CodeStage.AntiCheat.ObscuredTypes;
+using MEC;
+using DG.Tweening;
+
+public class BossBattleProcessor : BattleModeProcessorBase
+{
+	public override void Update()
+	{
+		UpdateSummonMonsterSpawn();
+		UpdateEndProcess();
+	}
+
+	ObscuredBool _firstClear;
+	ObscuredInt _selectedDifficulty;
+	public override void OnStartBattle()
+	{
+		// base꺼 호출할 필요 없다. startDateTime도 안쓰고 빅뱃 예외처리도 필요없다.
+		//base.OnStartBattle();
+
+		// 이렇게 강제로 셋팅하는 부분이 하나 더 늘었다.
+		StageManager.instance.playerLevel = StageManager.instance.GetMaxStageLevel();
+		ApplyBossBattleLevelPack(BattleInstanceManager.instance.playerActor);
+
+		_selectedDifficulty = PlayerData.instance.GetBossBattleSelectedDifficulty(PlayerData.instance.bossBattleId.ToString());
+		int clearDifficulty = PlayerData.instance.GetBossBattleClearDifficulty(PlayerData.instance.bossBattleId.ToString());
+		_firstClear = false;
+		if (_selectedDifficulty == (clearDifficulty + 1))
+			_firstClear = true;
+	}
+
+	public static void ApplyBossBattleLevelPack(PlayerActor playerActor)
+	{
+		playerActor.skillProcessor.CheckAllExclusiveLevelPack();
+		playerActor.skillProcessor.AddLevelPack("Atk", false, 0);
+		playerActor.skillProcessor.AddLevelPack("AtkSpeed", false, 0);
+		playerActor.skillProcessor.AddLevelPack("AtkSpeed", false, 0);
+
+		LobbyCanvas.instance.RefreshExpPercent(1.0f, 5);
+		LobbyCanvas.instance.RefreshLevelText(StageManager.instance.GetMaxStageLevel());
+	}
+
+	public override void OnLoadedMap()
+	{
+		//base.OnLoadedMap();
+
+		_monsterSpawned = false;
+		_summonMonsterSpawned = false;
+		_monsterSpawnCount = 0;
+	}
+
+	GameObject _powerSourceObject;
+	public override void OnSpawnFlag()
+	{
+		if (BattleInstanceManager.instance.playerActor != null)
+		{
+			string stagePenaltyId = "";
+			if (StageManager.instance.currentStageTableData != null && StageManager.instance.currentStageTableData.stagePenaltyId.Length > 0)
+				stagePenaltyId = StageManager.instance.currentStageTableData.stagePenaltyId[Random.Range(0, StageManager.instance.currentStageTableData.stagePenaltyId.Length)];
+
+			if (string.IsNullOrEmpty(stagePenaltyId) == false)
+				BattleInstanceManager.instance.playerActor.RefreshStagePenaltyAffector(stagePenaltyId, true);
+		}
+
+		if (BattleInstanceManager.instance.playerActor != null)
+		{
+			// NodeWar 했던거처럼.
+			CallAffectorValueAffector.OnEvent(BattleInstanceManager.instance.playerActor.affectorProcessor, CallAffectorValueAffector.eEventType.OnStartStage);
+			ChangeAttackStateAffector.OnEventStartStage(BattleInstanceManager.instance.playerActor.affectorProcessor);
+			ChangeAttackStateByTimeAffector.OnEventStartStage(BattleInstanceManager.instance.playerActor.affectorProcessor);
+			//AutoSideAttackAffector.OnEventStartStage(BattleInstanceManager.instance.playerActor.affectorProcessor);
+			PaybackSpFullAffector.OnEventStartStage(BattleInstanceManager.instance.playerActor.affectorProcessor);
+		}
+	}
+
+	public override void OnSpawnMonster(MonsterActor monsterActor)
+	{
+		if (monsterActor.team.teamId != (int)Team.eTeamID.DefaultMonster || monsterActor.excludeMonsterCount)
+			return;
+
+		_monsterSpawned = true;
+		++_monsterSpawnCount;
+
+		if (monsterActor.summonMonster)
+			_summonMonsterSpawned = true;
+	}
+
+	public override void OnDiePlayer(PlayerActor playerActor)
+	{
+		// 여기서 인풋은 막되
+		LobbyCanvas.instance.battlePauseButton.interactable = false;
+
+		// 챕터에서 했을때와 비슷하게 처리. 패킷 전달시간이 없다보니 1초 더 늘려둔다.
+		_endProcess = true;
+		_endProcessWaitRemainTime = 2.0f;
+	}
+
+	public override void OnDieMonster(MonsterActor monsterActor)
+	{
+		if (monsterActor.team.teamId != (int)Team.eTeamID.DefaultMonster || monsterActor.excludeMonsterCount)
+			return;
+
+		--_monsterSpawnCount;
+		if (_monsterSpawned && _monsterSpawnCount == 0 && BattleInstanceManager.instance.CheckFinishSequentialMonster() && BattleInstanceManager.instance.delayedSummonMonsterRefCount == 0)
+		{
+			OnDieMonsterList();
+		}
+	}
+
+	void OnDieMonsterList()
+	{
+		BattleManager.instance.OnClearStage();
+	}
+
+	public override void OnClearStage()
+	{
+		// boss clear
+		LobbyCanvas.instance.battlePauseButton.interactable = false;
+		_endProcess = true;
+		_endProcessWaitRemainTime = 3.0f;
+	}
+
+	#region EndGame
+	bool _endProcess = false;
+	float _endProcessWaitRemainTime = 0.0f; // 최소 대기타임
+	void UpdateEndProcess()
+	{
+		if (_endProcess == false)
+			return;
+
+		if (_endProcessWaitRemainTime > 0.0f)
+		{
+			_endProcessWaitRemainTime -= Time.deltaTime;
+			if (_endProcessWaitRemainTime <= 0.0f)
+				_endProcessWaitRemainTime = 0.0f;
+			return;
+		}
+
+		// 현재 드랍템 동기화 구조는 템을 먹을때마다 미리 패킷을 보내뒀다가 정산때 쓰는 방식이 아니라
+		// 먹었던걸 기억하고 있다가 마지막 패킷 날릴때 몰아서 보내는 구조다보니
+		// 모든 드랍을 먹고나서 정산 패킷을 보내야만 한다. 안그러면 템을 저장할 수 없게 된다.
+		if (DropManager.instance.IsExistAcquirableDropObject())
+		{
+			// 하나라도 존재하면 waitRemainTime을 늘려서 대기시켰다가 체크한다.
+			_endProcessWaitRemainTime = 0.333f;
+			return;
+		}
+
+		if (CheatingListener.detectedCheatTable)
+		{
+			_endProcess = false;
+			return;
+		}
+
+		bool clear = false;
+		if (BattleInstanceManager.instance.playerActor.actorStatus.IsDie() == false)
+		{
+			HitObject.EnableRigidbodyAndCollider(false, null, BattleInstanceManager.instance.playerActor.GetCollider());
+			clear = true;
+		}
+
+		// 패킷처리 완료 후 나올 결과창에서 아이콘이 느리게 보이는걸 방지하기 위해 아이콘의 프리로드를 진행한다.
+		List<ObscuredString> listDropItemId = DropManager.instance.GetStackedDropEquipList();
+		if (listDropItemId != null)
+		{
+			for (int i = 0; i < listDropItemId.Count; ++i)
+			{
+				EquipTableData equipTableData = TableDataManager.instance.FindEquipTableData(listDropItemId[i]);
+				if (equipTableData == null)
+					continue;
+
+				AddressableAssetLoadManager.GetAddressableSprite(equipTableData.shotAddress, "Icon", null);
+			}
+		}
+
+		SoundManager.instance.StopBGM(3.0f);
+
+		if (clear)
+		{
+			// 클리어 했다면 다음번 보스가 누구일지 미리 굴려서 End패킷에 보내야한다.
+			int nextBossId = PlayerData.instance.GetNextRandomBossId();
+
+			PlayFabApiManager.instance.RequestEndBossBattle(clear, nextBossId, _selectedDifficulty, DropManager.instance.GetStackedDropEquipList(), (result, nextId, itemGrantString) =>
+			{
+				// 정보를 갱신하기 전에 먼저 BattleResult를 보여준다.
+				UIInstanceManager.instance.ShowCanvasAsync("BossBattleResultCanvas", () =>
+				{
+					BossBattleResultCanvas.instance.RefreshInfo(true, _selectedDifficulty, _firstClear, itemGrantString);
+					OnRecvEndBossBattle(result, nextId, itemGrantString);
+				});
+			});
+		}
+		else
+		{
+			PlayFabApiManager.instance.RequestCancelBossBattle();
+			UIInstanceManager.instance.ShowCanvasAsync("BossBattleResultCanvas", () =>
+			{
+				BossBattleResultCanvas.instance.RefreshInfo(false, _selectedDifficulty, _firstClear, "");
+			});
+		}
+
+		_endProcess = false;
+	}
+
+	void OnRecvEndBossBattle(bool clear, int nextBossId, string itemGrantString)
+	{
+		// 반복클리어냐 아니냐에 따라 결과를 나누면 된다.
+		int addDia = 0;
+		int addGold = 0;
+		if (clear)
+		{
+			PlayerData.instance.OnClearBossBattle(nextBossId);
+
+			if (_firstClear)
+			{
+				//PlayerData.instance.nodeWarClearLevel = _selectedNodeWarTableData.level;
+				//addDia += _selectedNodeWarTableData.firstRewardDiamond;
+				//addGold += _selectedNodeWarTableData.firstRewardGold;
+			}
+
+			/*
+			PlayerData.instance.nodeWarCurrentLevel = _selectedNodeWarTableData.level;
+			int rate = 1;
+			if (PlayerData.instance.nodeWarBoostRemainCount > 0)
+			{
+				PlayerData.instance.nodeWarBoostRemainCount -= 1;
+				rate = 3;
+			}
+			addGold += (_selectedNodeWarTableData.repeatRewardGold * rate);
+			*/
+		}
+
+		CurrencyData.instance.gold += addGold;
+		CurrencyData.instance.dia += addDia;
+
+		if (itemGrantString != "")
+			TimeSpaceData.instance.OnRecvGrantEquip(itemGrantString);
+	}
+	#endregion
+}

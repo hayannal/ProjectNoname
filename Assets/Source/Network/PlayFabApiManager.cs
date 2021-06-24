@@ -132,6 +132,8 @@ public class PlayFabApiManager : MonoBehaviour
 			int selected = StageManager.instance.playChapter;
 			if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
 				selected = BattleManager.instance.GetSelectedNodeWarTableData().level;
+			else if (BattleManager.instance != null && BattleManager.instance.IsBossBattle())
+				selected = PlayerData.instance.bossBattleId;
 			param1 = selected * 100 + powerLevel;
 		}
 
@@ -1127,6 +1129,72 @@ public class PlayFabApiManager : MonoBehaviour
 		{
 			HandleCommonError(error);
 		});
+	}
+	#endregion
+
+	#region BossBattle
+	// BossBattle역시 입장시마다 랜덤으로 된 숫자키를 하나 받는다.
+	ObscuredString _serverEnterKeyForBossBattle;
+	public void RequestEnterBossBattle(int selectedDifficulty, Action<bool> successCallback, Action failureCallback)
+	{
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "EnterBossBattle",
+			FunctionParameter = new { Enter = 1, SeLv = selectedDifficulty },
+			GeneratePlayStreamEvent = true,
+			RevisionSelection = CloudScriptRevisionOption.Latest,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			_serverEnterKeyForBossBattle = failure ? "" : resultString;
+			if (successCallback != null) successCallback.Invoke(failure);
+		}, (error) =>
+		{
+			HandleCommonError(error);
+			if (failureCallback != null) failureCallback.Invoke();
+		});
+	}
+
+	public void RequestCancelBossBattle()
+	{
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "CancelBossBattle",
+			GeneratePlayStreamEvent = true,
+			RevisionSelection = CloudScriptRevisionOption.Latest,
+		}, null, null);
+	}
+
+	public void RequestEndBossBattle(bool clear, int nextBossId, int playLevel, List<ObscuredString> listDropItemId, Action<bool, int, string> successCallback)
+	{
+		string checkSum = "";
+		List<TimeSpaceData.ItemGrantRequest> listItemGrantRequest = TimeSpaceData.instance.GenerateGrantRequestInfo(listDropItemId, ref checkSum);
+		ExecuteCloudScriptRequest request = new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "EndBossBattle",
+			FunctionParameter = new { Flg = (string)_serverEnterKeyForBossBattle, Cl = (clear ? 1 : 0), Nb = nextBossId, PlLv = playLevel, Lst = listItemGrantRequest, LstCs = checkSum },
+			GeneratePlayStreamEvent = true,
+			RevisionSelection = CloudScriptRevisionOption.Latest,
+		};
+		Action action = () =>
+		{
+			PlayFabClientAPI.ExecuteCloudScript(request, (success) =>
+			{
+				PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
+				jsonResult.TryGetValue("retErr", out object retErr);
+				jsonResult.TryGetValue("itmRet", out object itmRet);
+				bool failure = ((retErr.ToString()) == "1");
+				_serverEnterKeyForBossBattle = "";
+				if (!failure)
+					RetrySendManager.instance.OnSuccess();
+				if (successCallback != null) successCallback.Invoke(clear, nextBossId, (string)itmRet);
+			}, (error) =>
+			{
+				RetrySendManager.instance.OnFailure();
+			});
+		};
+		RetrySendManager.instance.RequestAction(action, true, true);
 	}
 	#endregion
 

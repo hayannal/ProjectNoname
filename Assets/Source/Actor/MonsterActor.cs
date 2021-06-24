@@ -118,17 +118,17 @@ public class MonsterActor : Actor
 
 		#region Drop SP
 		_dropSpValue = cachedMonsterTableData.initialDropSp;
-		if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
-		{
-			_dropSpRefreshPeriod = 0.0f;
-			_nextDropSpRefreshTime = 0.0f;
-		}
-		else
+		if (BattleManager.instance != null && BattleManager.instance.IsDefaultBattle())
 		{
 			if (StageManager.instance.currentStageTableData != null)
 				_dropSpValue *= StageManager.instance.currentStageTableData.initialDropSpAdjustment;
 			_dropSpRefreshPeriod = (StageManager.instance.currentStageTableData != null) ? StageManager.instance.currentStageTableData.spDecreasePeriod : 0.0f;
 			_nextDropSpRefreshTime = Time.time + _dropSpRefreshPeriod;
+		}
+		else
+		{
+			_dropSpRefreshPeriod = 0.0f;
+			_nextDropSpRefreshTime = 0.0f;
 		}
 		#endregion
 

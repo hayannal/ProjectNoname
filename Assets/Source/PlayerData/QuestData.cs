@@ -411,7 +411,7 @@ public class QuestData : MonoBehaviour
 			return;
 		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby)
 			return;
-		if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+		if (BattleManager.instance != null && BattleManager.instance.IsDefaultBattle() == false)
 			return;
 		if (currentQuestStep != eQuestStep.Proceeding)
 			return;

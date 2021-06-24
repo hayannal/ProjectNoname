@@ -29,6 +29,7 @@ public class EventManager : MonoBehaviour
 		research,
 		balance,
 		reconstruct,
+		boss,
 	}
 
 	// 클라 이벤트는 메모리에만 기억되는 거라서 종료하면 더이상 볼 수 없다. 그래서 중요하지 않은 것들 위주다.
@@ -62,6 +63,7 @@ public class EventManager : MonoBehaviour
 	public bool reservedOpenEquipOptionEvent { get; set; }
 	public bool reservedOpenBalanceEvent { get; set; }
 	public bool reservedOpenReconstructEvent { get; set; }
+	public bool reservedOpenBossBattleEvent { get; set; }
 
 	#region OnEvent
 	public void OnEventClearHighestChapter(int chapter, string newCharacterId)
@@ -80,6 +82,9 @@ public class EventManager : MonoBehaviour
 			PlayerData.instance.mainCharacterId = "Actor2103";
 			PushClientEvent(eClientEvent.GainNewCharacter, "Actor2103");
 			MailData.instance.RefreshMailListImmediate();
+
+			// 이제 2챕터 클리어 후에는 클라이언트 이벤트도 있지만 서버 이벤트도 추가로 생긴다.
+			PushServerEvent(eServerEvent.boss);
 		}
 		else if (chapter == (int)ContentsManager.eOpenContentsByChapter.Research)
 		{
@@ -187,6 +192,18 @@ public class EventManager : MonoBehaviour
 					break;
 			}
 		}
+
+		#region Adjust Contents Open
+		// 이미 기존 유저들이 있는 상태에서 초반 이벤트가 추가될때의 예외처리다.
+		// 미리 시스템을 다 만들었으면 이런 코드가 필요없을텐데 나중에 추가해서 생기게 되었다.
+		// 새 추가 컨텐츠 나올때마다 이 아래에다 붙이면 될거다.
+		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.BossBattle))
+		{
+			// 컨텐츠는 오픈 상태인데 1도 아니고 2도 아니라면 강제로 이벤트를 재생 대기 상태로 설정해야한다.
+			if (IsCompleteServerEvent(eServerEvent.boss) == false && ContainsStandbyServerEvent(eServerEvent.boss) == false)
+				PushServerEvent(eServerEvent.boss);
+		}
+		#endregion
 	}
 
 	string CreateServerEventJson()
@@ -223,6 +240,17 @@ public class EventManager : MonoBehaviour
 		if (_queServerEventInfo.Count == 0)
 			return false;
 		return true;
+	}
+
+	bool ContainsStandbyServerEvent(eServerEvent serverEvent)
+	{
+		Queue<ServerEventInfo>.Enumerator e = _queServerEventInfo.GetEnumerator();
+		while (e.MoveNext())
+		{
+			if (e.Current.eventType == serverEvent)
+				return true;
+		}
+		return false;
 	}
 
 	public void CompleteServerEvent(eServerEvent serverEvent)
@@ -327,6 +355,10 @@ public class EventManager : MonoBehaviour
 				break;
 			case eServerEvent.reconstruct:
 				reservedOpenReconstructEvent = true;
+				OnLobby();
+				break;
+			case eServerEvent.boss:
+				reservedOpenBossBattleEvent = true;
 				OnLobby();
 				break;
 		}

@@ -94,6 +94,7 @@ public class SwapCanvasListItem : MonoBehaviour
 
 		recommandedText.gameObject.SetActive(false);
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
+		if (lobby && BossBattleEnterCanvas.instance != null && BossBattleEnterCanvas.instance.gameObject.activeSelf) lobby = false;
 		if (lobby == false && GatePillar.CheckSuggestedActor(suggestedActorIdList, actorId))
 		{
 			recommandedText.color = (listPenaltyPowerSource != null && listPenaltyPowerSource.Contains(actorTableData.powerSource)) ? new Color(0.831f, 0.831f, 0.831f) : new Color(0.074f, 1.0f, 0.0f);

@@ -10,6 +10,11 @@ public class LobbyCanvas : MonoBehaviour
 	public static LobbyCanvas instance;
 
 	public Button dotMainMenuButton;
+
+	public CanvasGroup subMenuCanvasGroup;
+	public CanvasGroup subMenuHorizontalCanvasGroup;
+	public DOTweenAnimation[] subMenuButtonTweenAnimationList;
+
 	public GameObject rightTopRootObject;
 	public Button lobbyOptionButton;
 	public Button timeSpaceHomeButton;
@@ -38,6 +43,7 @@ public class LobbyCanvas : MonoBehaviour
 	{
 		UpdateExpGauge();
 		UpdateExpGaugeHeight();
+		UpdateSubMenu();
 	}
 
 	void Start()
@@ -171,6 +177,72 @@ public class LobbyCanvas : MonoBehaviour
 		});
 	}
 
+	#region Sub Menu
+	public void OnShowDotMainMenu(bool show)
+	{
+		// 코루틴 Async로딩에 토글로 동작하는거라 동기를 맞추려면 이렇게 해야만 했다.
+		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.BossBattle) == false)
+			return;
+
+		if (show)
+		{
+			if (subMenuButtonTweenAnimationList[0].gameObject.activeSelf)
+			{
+				for (int i = 0; i < subMenuButtonTweenAnimationList.Length; ++i)
+					subMenuButtonTweenAnimationList[i].DOPlayForward();
+				_closeRemainTime = 0.0f;
+			}
+			else
+			{
+				for (int i = 0; i < subMenuButtonTweenAnimationList.Length; ++i)
+					subMenuButtonTweenAnimationList[i].gameObject.SetActive(true);
+				return;
+			}
+		}
+		else
+		{
+			if (subMenuButtonTweenAnimationList[0].gameObject.activeSelf)
+			{
+				if (_closeRemainTime > 0.0f)
+					return;
+
+				for (int i = 0; i < subMenuButtonTweenAnimationList.Length; ++i)
+					subMenuButtonTweenAnimationList[i].DOPlayBackwards();
+				_closeRemainTime = 0.6f;
+			}
+		}
+	}
+
+	float _closeRemainTime;
+	void UpdateSubMenu()
+	{
+		if (_closeRemainTime > 0.0f)
+		{
+			_closeRemainTime -= Time.deltaTime;
+			if (_closeRemainTime <= 0.0f)
+			{
+				_closeRemainTime = 0.0f;
+
+				for (int i = 0; i < subMenuButtonTweenAnimationList.Length; ++i)
+					subMenuButtonTweenAnimationList[i].gameObject.SetActive(false);
+			}
+		}
+	}
+
+	public void OnClickBossBattleButton()
+	{
+		if (_closeRemainTime > 0.0f)
+			return;
+		if (TimeSpaceGround.instance != null && TimeSpaceGround.instance.gameObject.activeSelf)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_CannotGoBattleContents"), 2.0f);
+			return;
+		}
+
+		UIInstanceManager.instance.ShowCanvasAsync("BossBattleEnterCanvas", null);
+	}
+	#endregion
+
 	public void OnClickLobbyOptionButton()
 	{
 		if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby && TitleCanvas.instance != null && TitleCanvas.instance.gameObject.activeSelf)
@@ -230,12 +302,14 @@ public class LobbyCanvas : MonoBehaviour
 	{
 		dotMainMenuButton.gameObject.SetActive(!enter);
 		rightTopRootObject.SetActive(!enter);
+		subMenuCanvasGroup.alpha = enter ? 0.0f : 1.0f;
 	}
 
 	public void OnEnterTimeSpace(bool enter)
 	{
 		lobbyOptionButton.gameObject.SetActive(!enter);
 		timeSpaceHomeButton.gameObject.SetActive(enter);
+		subMenuHorizontalCanvasGroup.alpha = enter ? 0.35f : 1.0f;
 
 		if (enter)
 			GuideQuestData.instance.OnQuestEvent(GuideQuestData.eQuestClearType.EnterTimeSpace);

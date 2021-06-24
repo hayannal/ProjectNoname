@@ -117,6 +117,34 @@ public class StageManager : MonoBehaviour
 		StageManager.instance.GetNextStageInfo();
 		_reloadInProgressGame = false;
 	}
+
+	// for boss battle
+	public void ReloadBossBattle(StageTableData bossStageTableData, MapTableData bossMapTableData)
+	{
+		_handleNextPlanePrefab = _handleNextGroundPrefab = _handleNextWallPrefab = _handleNextSpawnFlagPrefab = _handleNextPortalFlagPrefab = _handleEnvironmentSettingPrefab = null;
+
+		StageTableData bossLobbyStageTableData = BattleInstanceManager.instance.GetCachedStageTableData(bossStageTableData.chapter, 0, false);
+		if (bossLobbyStageTableData == null)
+			return;
+
+		PrepareNextMap(bossMapTableData, bossLobbyStageTableData.environmentSetting);
+	}
+
+	public void MoveToBossBattle(StageTableData bossStageTableData, MapTableData bossMapTableData, int difficulty)
+	{
+		_currentStageTableData = bossStageTableData;
+		StageDataManager.instance.nextStageTableData = null;
+
+		InstantiateMap(bossMapTableData);
+
+		// 맵을 만들고나서 Difficulty에 따라서 난이도를 높여서 해놔야한다.
+		// 난이도 1이 기본이므로 1 빼고 더하기로 한다.
+		int addChapter = difficulty - 1;
+		StageTableData statBossStageTableData = BattleInstanceManager.instance.GetCachedStageTableData(bossStageTableData.chapter + addChapter, bossStageTableData.stage, false);
+		if (statBossStageTableData == null)
+			return;
+		_currentStageTableData = statBossStageTableData;
+	}
 #else
 	void Start()
 	{

@@ -57,6 +57,7 @@ public class BattleManager : MonoBehaviour
 	{
 		DefaultMode,
 		NodeWar,
+		BossBattle,
 	}
 
 	BattleModeProcessorBase _currentBattleMode = null;
@@ -72,13 +73,26 @@ public class BattleManager : MonoBehaviour
 			case eBattleMode.NodeWar:
 				_currentBattleMode = new NodeWarProcessor();
 				break;
+			case eBattleMode.BossBattle:
+				_currentBattleMode = new BossBattleProcessor();
+				break;
 		}
 		_battleMode = battleMode;
+	}
+
+	public bool IsDefaultBattle()
+	{
+		return (_battleMode == eBattleMode.DefaultMode);
 	}
 
 	public bool IsNodeWar()
 	{
 		return (_battleMode == eBattleMode.NodeWar);
+	}
+
+	public bool IsBossBattle()
+	{
+		return (_battleMode == eBattleMode.BossBattle);
 	}
 
 	void Update()

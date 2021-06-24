@@ -8,6 +8,8 @@ public static class ContentsManager
 	public enum eOpenContentsByChapter
 	{
 		Chapter = 2,
+		ReturnScroll = 2,
+		BossBattle = 2,
 		Research = 3,
 		Chaos = 4,
 		NodeWar = 5,

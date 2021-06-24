@@ -99,6 +99,8 @@ public class DotMainMenuCanvas : MonoBehaviour
 		_adjustTargetDirection = Vector3.zero;
 		_immediatelyUpdate = true;
 
+		LobbyCanvas.instance.OnShowDotMainMenu(true);
+
 		// initialize listTransform
 		if (_listElementTransform.Count == _elementCount)
 			return;
@@ -275,6 +277,7 @@ public class DotMainMenuCanvas : MonoBehaviour
 			canvasGroup.DOFade(1.0f, showRemainTime).SetEase(Ease.InQuad);
 			_reservedHide = false;
 			SoundManager.instance.PlaySFX("7DotOpen");
+			LobbyCanvas.instance.OnShowDotMainMenu(true);
 			return;
 		}
 
@@ -286,6 +289,7 @@ public class DotMainMenuCanvas : MonoBehaviour
 		canvasGroup.DOFade(0.0f, remainTime).SetEase(Ease.InQuad);
 		_reservedHide = true;
 		SoundManager.instance.PlaySFX("7DotClose");
+		LobbyCanvas.instance.OnShowDotMainMenu(false);
 	}
 
 	void OnCompleteScaleZero()

@@ -98,6 +98,13 @@ public class PlayerData : MonoBehaviour
 	public ObscuredInt nodeWarBonusPowerSource { get; set; }
 	public ObscuredBool nodeWarAgainOpened { get; set; }
 
+	// BossBattle 관련 변수
+	public ObscuredInt bossBattleId { get; set; }
+	Dictionary<string, int> _dicBossBattleClearDifficulty = new Dictionary<string, int>();
+	Dictionary<string, int> _dicBossBattleSelectedDifficulty = new Dictionary<string, int>();
+	// 클라 전용 변수. 보스가 갱신되었음을 다음번 창 열릴때 알린다.
+	public ObscuredBool newBossRefreshed { get; set; }
+
 	// sealCount 획득 연출용 변수. 클라에만 저장해두고 로비 돌아갈때 보여준다.
 	// 이벤트 처리가 아니라서 PlayerData에 넣어두기로 한다.
 	public ObscuredInt sealGainCount { get; set; }
@@ -360,6 +367,7 @@ public class PlayerData : MonoBehaviour
 		nodeWarBoostRemainCount = 0;
 		nodeWarAgainOpened = false;
 		termsConfirmed = false;
+		bossBattleId = 0;
 
 		// Obscured 아니지만 함께 처리
 		_parsedLastLevelPackageResetDateTime = false;
@@ -373,6 +381,8 @@ public class PlayerData : MonoBehaviour
 		EventManager.instance.OnRecvServerEvent("");
 		ExperienceData.instance.OnRecvData("");
 		TimeSpaceData.instance.ClearInventory();
+		OnRecvBossBattleClearData("");
+		OnRecvBossBattleSelectData("");
 		_listCharacterData.Clear();
 		AddNewCharacter("Actor0201", "", 1);
 		_mainCharacterId = "Actor0201";
@@ -749,6 +759,27 @@ public class PlayerData : MonoBehaviour
 			if (string.IsNullOrEmpty(userReadOnlyData["termsDat"].Value) == false)
 				termsConfirmed = true;
 		}
+
+		#region Boss Battle
+		bossBattleId = 0;
+		if (userReadOnlyData.ContainsKey("bossId"))
+		{
+			int intValue = 0;
+			if (int.TryParse(userReadOnlyData["bossId"].Value, out intValue))
+				bossBattleId = intValue;
+		}
+
+		// difficulty
+		string bossBattleRecord = "";
+		if (userReadOnlyData.ContainsKey("bossClLv"))
+			bossBattleRecord = userReadOnlyData["bossClLv"].Value;
+		OnRecvBossBattleClearData(bossBattleRecord);
+
+		bossBattleRecord = "";
+		if (userReadOnlyData.ContainsKey("bossSeLv"))
+			bossBattleRecord = userReadOnlyData["bossSeLv"].Value;
+		OnRecvBossBattleSelectData(bossBattleRecord);
+		#endregion
 
 		newlyCreated = false;
 		loginned = true;
@@ -1549,6 +1580,130 @@ public class PlayerData : MonoBehaviour
 		// 클라 선처리로 갱신
 		balancePpPurchased = false;
 		balancePpResetTime += TimeSpan.FromDays(1);
+	}
+	#endregion
+
+	#region Boss Battle
+	void OnRecvBossBattleClearData(string json)
+	{
+		_dicBossBattleClearDifficulty.Clear();
+		if (string.IsNullOrEmpty(json))
+			return;
+
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		_dicBossBattleClearDifficulty = serializer.DeserializeObject<Dictionary<string, int>>(json);
+	}
+
+	void OnRecvBossBattleSelectData(string json)
+	{
+		_dicBossBattleSelectedDifficulty.Clear();
+		if (string.IsNullOrEmpty(json))
+			return;
+
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		_dicBossBattleSelectedDifficulty = serializer.DeserializeObject<Dictionary<string, int>>(json);
+	}
+
+	public int GetBossBattleClearDifficulty(string id)
+	{
+		if (_dicBossBattleClearDifficulty.ContainsKey(id))
+			return _dicBossBattleClearDifficulty[id];
+		return 0;
+	}
+
+	public int GetBossBattleSelectedDifficulty(string id)
+	{
+		if (_dicBossBattleSelectedDifficulty.ContainsKey(id))
+			return _dicBossBattleSelectedDifficulty[id];
+
+		// 선택 데이터가 없으면 분명 처음 열린걸꺼다. 이때는 1을 리턴해준다.
+		return 1;
+	}
+
+	public void ClearBossBattleDifficulty(int difficulty)
+	{
+		int id = bossBattleId;
+		if (id == 0) id = 1;
+		string key = id.ToString();
+		if (_dicBossBattleClearDifficulty.ContainsKey(key))
+			_dicBossBattleClearDifficulty[key] = difficulty;
+		else
+			_dicBossBattleClearDifficulty.Add(key, difficulty);
+	}
+
+	public void SelectBossBattleDifficulty(int difficulty)
+	{
+		int id = bossBattleId;
+		if (id == 0) id = 1;
+		string key = id.ToString();
+		if (_dicBossBattleSelectedDifficulty.ContainsKey(key))
+			_dicBossBattleSelectedDifficulty[key] = difficulty;
+		else
+			_dicBossBattleSelectedDifficulty.Add(key, difficulty);
+	}
+
+
+	List<int> _listNextRandomBossId = new List<int>();
+	public int GetNextRandomBossId()
+	{
+		_listNextRandomBossId.Clear();
+
+		// 현재 설정된 보스를 제외한 나머지 중에서 
+		int prevBossBattleId = bossBattleId;
+		if (prevBossBattleId == 0)
+			prevBossBattleId = 1;
+		for (int i = 0; i < TableDataManager.instance.bossBattleTable.dataArray.Length; ++i)
+		{
+			if (TableDataManager.instance.bossBattleTable.dataArray[i].chapter < PlayerData.instance.highestPlayChapter)
+			{
+				if (prevBossBattleId != TableDataManager.instance.bossBattleTable.dataArray[i].num)
+					_listNextRandomBossId.Add(TableDataManager.instance.bossBattleTable.dataArray[i].num);
+			}
+			else
+				break;
+		}
+		if (_listNextRandomBossId.Count == 0)
+			return prevBossBattleId;
+		return _listNextRandomBossId[UnityEngine.Random.Range(0, _listNextRandomBossId.Count)];
+	}
+
+	public void OnClearBossBattle(int nextBossId)
+	{
+		// 현재 선택한 레벨이 최고레벨일때랑 아닐때랑 나뉜다.
+		int clearDifficulty = GetBossBattleClearDifficulty(bossBattleId.ToString());
+		int selectedDifficulty = GetBossBattleSelectedDifficulty(bossBattleId.ToString());
+		if (selectedDifficulty <= clearDifficulty)
+		{
+			// 최고 클리어 난이도보다 낮거나 같은 난이도를 클리어. 이미 클리어한 곳을 클리어하는거니 아무것도 하지 않는다.
+		}
+		else
+		{
+			// 한번에 두 단계를 건너뛰려고 한다. 이상하다고 판단.
+			if (selectedDifficulty > (clearDifficulty + 1))
+				selectedDifficulty = (clearDifficulty + 1);
+
+			ClearBossBattleDifficulty(selectedDifficulty);
+			if (GetBossBattleClearDifficulty(bossBattleId.ToString()) == selectedDifficulty)
+			{
+				// 난이도의 최대 범위를 넘지않는 한도 내에서
+				// 그러나 최대 범위 넘지 않더라도 7챕터를 깨지 않으면 난이도 8 이상으로는 올릴 수 없도록 해야한다.
+				int nextDifficulty = selectedDifficulty + 1;
+				if (nextDifficulty > 14)
+					nextDifficulty = 14;
+				else if (nextDifficulty > 7 && PlayerData.instance.highestPlayChapter <= 7)
+					nextDifficulty = 7;
+
+				if (selectedDifficulty != nextDifficulty)
+				{
+					selectedDifficulty = nextDifficulty;
+					SelectBossBattleDifficulty(selectedDifficulty);
+				}
+			}
+		}
+
+		// 난이도 처리가 다 끝난 후 다음 보스 아이디를 갱신해야한다.
+		bossBattleId = nextBossId;
+		newBossRefreshed = true;
 	}
 	#endregion
 }

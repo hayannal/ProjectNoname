@@ -173,31 +173,45 @@ public class PauseCanvas : MonoBehaviour
 
 	public void OnClickHomeButton()
 	{
-		bool isNodeWar = BattleManager.instance.IsNodeWar();
-		bool needCancelChallengeMode = (PlayerData.instance.currentChallengeMode && EventManager.instance.IsCompleteServerEvent(EventManager.eServerEvent.chaos));
-		if (isNodeWar == false && needCancelChallengeMode)
+		if (BattleManager.instance.IsDefaultBattle())
 		{
-			string message = string.Format("{0}\n{1}", UIString.instance.GetString("GameUI_BackToLobbyDescription"), UIString.instance.GetString("GameUI_BackToLobbyDescriptionChallenge"));
-			YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_BackToLobby"), message, () =>
+			if (PlayerData.instance.currentChallengeMode && EventManager.instance.IsCompleteServerEvent(EventManager.eServerEvent.chaos))
 			{
-				// 도전모드일때는 서버에도 플레이어 데이터를 갱신해야해서 응답을 받고 처리해야한다.
-				PlayFabApiManager.instance.RequestCancelChallenge(() =>
+				string message = string.Format("{0}\n{1}", UIString.instance.GetString("GameUI_BackToLobbyDescription"), UIString.instance.GetString("GameUI_BackToLobbyDescriptionChallenge"));
+				YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_BackToLobby"), message, () =>
 				{
-					SaveOption();
-					SceneManager.LoadScene(0);
+					// 도전모드일때는 서버에도 플레이어 데이터를 갱신해야해서 응답을 받고 처리해야한다.
+					PlayFabApiManager.instance.RequestCancelChallenge(() =>
+					{
+						SaveOption();
+						SceneManager.LoadScene(0);
+					});
 				});
-			});
-			return;
-		}
+				return;
+			}
 
-		YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_BackToLobby"), UIString.instance.GetString(isNodeWar ? "GameUI_CancelNodeWarDescription" : "GameUI_BackToLobbyDescription"), () => {
-			if (isNodeWar)
-				PlayFabApiManager.instance.RequestCancelNodeWar();
-			else
+			YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_BackToLobby"), UIString.instance.GetString("GameUI_BackToLobbyDescription"), () => {
 				PlayFabApiManager.instance.RequestCancelGame();
-			SaveOption();
-			SceneManager.LoadScene(0);
-		});
+				SaveOption();
+				SceneManager.LoadScene(0);
+			});
+		}
+		else if (BattleManager.instance.IsNodeWar())
+		{
+			YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_BackToLobby"), UIString.instance.GetString("GameUI_CancelNodeWarDescription"), () => {
+				PlayFabApiManager.instance.RequestCancelNodeWar();
+				SaveOption();
+				SceneManager.LoadScene(0);
+			});
+		}
+		else if (BattleManager.instance.IsBossBattle())
+		{
+			YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_BackToLobby"), UIString.instance.GetString("GameUI_CancelNodeWarDescription"), () => {
+				PlayFabApiManager.instance.RequestCancelBossBattle();
+				SaveOption();
+				SceneManager.LoadScene(0);
+			});
+		}
 	}
 
 

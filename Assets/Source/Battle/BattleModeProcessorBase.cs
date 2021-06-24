@@ -9,10 +9,10 @@ using CodeStage.AntiCheat.ObscuredTypes;
 
 public class BattleModeProcessorBase
 {
-	bool _mapLoaded = false;
-	bool _monsterSpawned = false;
-	bool _summonMonsterSpawned = false;
-	int _monsterSpawnCount = 0;
+	protected bool _mapLoaded = false;
+	protected bool _monsterSpawned = false;
+	protected bool _summonMonsterSpawned = false;
+	protected int _monsterSpawnCount = 0;
 	int _damageCountInStage = 0;
 	float _spawnFlagStartTime = 0.0f;
 	ObscuredInt _clearPoint;
@@ -53,7 +53,7 @@ public class BattleModeProcessorBase
 
 		// 다른 곳과 달리 PlayerData.instance.currentChallengeMode를 사용하면 안되는 곳이다.
 		// 카오스가 열리기 전 챕터도 포함시켜야하므로 직접 검사하기로 한다.
-		if (ContentsManager.IsTutorialChapter() == false && PlayerData.instance.selectedChapter == PlayerData.instance.highestPlayChapter && BattleManager.instance.IsNodeWar() == false)
+		if (ContentsManager.IsTutorialChapter() == false && PlayerData.instance.selectedChapter == PlayerData.instance.highestPlayChapter && BattleManager.instance.IsDefaultBattle())
 		{
 			if (PlayerData.instance.chaosMode)
 				_clearPoint = _appliedChallengeRetryBonusClearPoint = PlayerData.instance.listCharacterData.Count;
@@ -111,7 +111,7 @@ public class BattleModeProcessorBase
 	}
 
 	GameObject _powerSourceObject;
-	public void OnSpawnFlag()
+	public virtual void OnSpawnFlag()
 	{
 		_damageCountInStage = 0;
 		_spawnFlagStartTime = Time.time;
@@ -457,7 +457,7 @@ public class BattleModeProcessorBase
 #endif
 	}
 
-	public void OnClearStage()
+	public virtual void OnClearStage()
 	{
 		// last stage
 		if (StageManager.instance.playStage == StageManager.instance.GetCurrentMaxStage())
@@ -493,10 +493,10 @@ public class BattleModeProcessorBase
 		Timing.RunCoroutine(DelayedShowGatePillar(0.1f));
 	}
 
-	float SummonMonsterSpawnCheckDelay = 1.0f;
-	float _checkMonsterCountRemainTime;
-	int _monsterCountZeroStreakCount = 0;
-	void UpdateSummonMonsterSpawn()
+	protected float SummonMonsterSpawnCheckDelay = 1.0f;
+	protected float _checkMonsterCountRemainTime;
+	protected int _monsterCountZeroStreakCount = 0;
+	protected void UpdateSummonMonsterSpawn()
 	{
 		// 이상하게 EvilLich같이 몬스터를 소환하는 기능이 있는 판에서 간혹 판의 종료를 체크하지 못하는 경우가 나온다.
 		// 몹이 생성되는 프레임에 마인이나 날아오던 볼에 맞아서 죽으면 몬스터 카운트가 꼬이는건가 해서 테스트도 해봤는데

@@ -176,7 +176,7 @@ public class GuideQuestData : MonoBehaviour
 
 			if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby)
 				return;
-			if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
+			if (BattleManager.instance != null && BattleManager.instance.IsDefaultBattle() == false)
 				return;
 		}
 		

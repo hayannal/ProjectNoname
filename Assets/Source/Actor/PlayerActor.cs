@@ -114,7 +114,7 @@ public class PlayerActor : Actor
 						// 바꾼 캐릭터에도 NodeWar용 레벨팩 적용
 						NodeWarProcessor.ApplyNodeWarLevelPack(this);
 					}
-					else
+					else if (BattleManager.instance != null && BattleManager.instance.IsDefaultBattle())
 					{
 						// 한번이라도 썼던 캐릭터인지 확인
 						bool firstEnter = !BattleInstanceManager.instance.IsInBattlePlayerList(actorId);
@@ -191,7 +191,7 @@ public class PlayerActor : Actor
 	public void OnChangedMainCharacter()
 	{
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
-		if (lobby == false)
+		if (lobby == false && BattleManager.instance != null && BattleManager.instance.IsDefaultBattle())
 			BattleInstanceManager.instance.AddBattlePlayer(actorId);
 
 		BattleInstanceManager.instance.playerActor = this;

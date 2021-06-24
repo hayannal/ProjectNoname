@@ -59,6 +59,7 @@ public class TableDataManager : MonoBehaviour
 	public ChapterTrapTable chapterTrapTable;
 	public SubQuestTable subQuestTable;
 	public GuideQuestTable guideQuestTable;
+	public BossBattleTable bossBattleTable;
 
 	void Awake()
 	{
@@ -519,6 +520,16 @@ public class TableDataManager : MonoBehaviour
 		{
 			if (guideQuestTable.dataArray[i].id == index)
 				return guideQuestTable.dataArray[i];
+		}
+		return null;
+	}
+
+	public BossBattleTableData FindBossBattleData(int id)
+	{
+		for (int i = 0; i < bossBattleTable.dataArray.Length; ++i)
+		{
+			if (bossBattleTable.dataArray[i].num == id)
+				return bossBattleTable.dataArray[i];
 		}
 		return null;
 	}

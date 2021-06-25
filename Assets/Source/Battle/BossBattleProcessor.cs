@@ -37,6 +37,16 @@ public class BossBattleProcessor : BattleModeProcessorBase
 			_firstClear = true;
 		if (_selectedDifficulty == (_clearDifficulty + 1))
 			_firstClear = true;
+
+		// 초반 플레이 보정. 
+		if (currentBossId <= 5 && _selectedDifficulty == 1)
+		{
+			AffectorValueLevelTableData changeStatusAffectorValue = new AffectorValueLevelTableData();
+			changeStatusAffectorValue.fValue1 = -1.0f; // duration
+			changeStatusAffectorValue.fValue2 = 0.2f;
+			changeStatusAffectorValue.iValue1 = (int)ActorStatusDefine.eActorStatus.AttackAddRate;
+			BattleInstanceManager.instance.playerActor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.ChangeActorStatus, changeStatusAffectorValue, BattleInstanceManager.instance.playerActor, true);
+		}
 	}
 
 	public static void ApplyBossBattleLevelPack(PlayerActor playerActor)

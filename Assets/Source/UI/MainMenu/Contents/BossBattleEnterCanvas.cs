@@ -16,9 +16,12 @@ public class BossBattleEnterCanvas : MonoBehaviour
 
 	public Transform titleTextTransform;
 	public Text levelText;
+	public GameObject newObject;
+	public GameObject changeDifficultyButtonObject;
 	public Transform previewRootTransform;
 	public Text bossNameText;
 	public Button bossInfoButton;
+	public Transform xpLevelButtonTransform;
 
 	public Text suggestPowerLevelText;
 	public Text stagePenaltyText;
@@ -27,7 +30,11 @@ public class BossBattleEnterCanvas : MonoBehaviour
 	public Text priceText;
 	public GameObject buttonObject;
 	public Image priceButtonImage;
+	public GameObject priceOnIconImageObject;
+	public GameObject priceOffIconImageObject;
 	//public Coffee.UIExtensions.UIEffect priceGrayscaleEffect;
+
+	public Text remainEnergyText;
 
 	public SortButton sortButton;
 	SortButton.eSortType _currentSortType;
@@ -149,7 +156,9 @@ public class BossBattleEnterCanvas : MonoBehaviour
 		_bossMapTableData = bossMapTableData;
 		_bossChapterTableData = chapterTableData;
 
-		levelText.text = string.Format("<size=24>DIFFICULTY</size> {0}", _selectedDifficulty);
+		levelText.text = string.Format("<size=24>DIFFICULTY</size> {0}", GetVisualDifficulty(_selectedDifficulty, bossBattleTableData));
+		changeDifficultyButtonObject.SetActive(clearDifficulty >= 1);
+		newObject.SetActive(_selectedDifficulty > clearDifficulty);
 
 		if (string.IsNullOrEmpty(bossMapTableData.bossName) == false)
 		{
@@ -178,6 +187,12 @@ public class BossBattleEnterCanvas : MonoBehaviour
 		RefreshPrice();
 	}
 
+	public static int GetVisualDifficulty(int selectedDifficulty, BossBattleTableData bossBattleTableData)
+	{
+		// 최초로 등장하는 챕터를 바탕으로 새로 구해야한다.
+		return selectedDifficulty + (bossBattleTableData.chapter - 1);
+	}
+
 	void RefreshPrice()
 	{
 		// 가격
@@ -187,7 +202,16 @@ public class BossBattleEnterCanvas : MonoBehaviour
 		priceButtonImage.color = !disablePrice ? Color.white : ColorUtil.halfGray;
 		priceText.color = !disablePrice ? Color.white : Color.gray;
 		//priceGrayscaleEffect.enabled = disablePrice;
+		priceOnIconImageObject.SetActive(!disablePrice);
+		priceOffIconImageObject.SetActive(disablePrice);
 		_price = price;
+	}
+
+	public void OnChangeDifficulty(int difficulty)
+	{
+		ToastCanvas.instance.ShowToast(UIString.instance.GetString("BossUI_ChangeDifficulty"), 2.0f);
+		PlayerData.instance.SelectBossBattleDifficulty(difficulty);
+		RefreshInfo();
 	}
 
 
@@ -372,6 +396,32 @@ public class BossBattleEnterCanvas : MonoBehaviour
 		_stringBuilderFull.AppendFormat(UIString.instance.GetString(descriptionId), _stringBuilderActor.ToString());
 		return _stringBuilderFull.ToString();
 	}
+
+	#region Sub Menu
+	public void OnClickRefreshButton()
+	{
+		if (CurrencyData.instance.energy == 0)
+		{
+			ShowRefillEnergyCanvas();
+			return;
+		}
+
+		UIInstanceManager.instance.ShowCanvasAsync("BossBattleRefreshCanvas", null);
+	}
+
+	public void OnClickChangeDifficultyButton()
+	{
+		UIInstanceManager.instance.ShowCanvasAsync("ChangeDifficultyCanvas", null);
+	}
+
+	public void OnClickXpLevelInfoButton()
+	{
+		string xpLevelString = "";
+
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, xpLevelString, 200, xpLevelButtonTransform, new Vector2(0.0f, -35.0f));
+	}
+	#endregion
+
 
 
 

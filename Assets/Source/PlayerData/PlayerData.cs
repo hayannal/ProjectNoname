@@ -1616,8 +1616,8 @@ public class PlayerData : MonoBehaviour
 		if (_dicBossBattleSelectedDifficulty.ContainsKey(id))
 			return _dicBossBattleSelectedDifficulty[id];
 
-		// 선택 데이터가 없으면 분명 처음 열린걸꺼다. 이때는 1을 리턴해준다.
-		return 1;
+		// 선택 데이터가 없으면 분명 처음 열린걸꺼다. 이때는 0을 리턴해준다.
+		return 0;
 	}
 
 	public void ClearBossBattleDifficulty(int difficulty)
@@ -1667,36 +1667,44 @@ public class PlayerData : MonoBehaviour
 		return _listNextRandomBossId[UnityEngine.Random.Range(0, _listNextRandomBossId.Count)];
 	}
 
-	public void OnClearBossBattle(int nextBossId)
+	public void OnClearBossBattle(int selectedDifficulty, int clearDifficulty, int nextBossId)
 	{
 		// 현재 선택한 레벨이 최고레벨일때랑 아닐때랑 나뉜다.
-		int clearDifficulty = GetBossBattleClearDifficulty(bossBattleId.ToString());
-		int selectedDifficulty = GetBossBattleSelectedDifficulty(bossBattleId.ToString());
 		if (selectedDifficulty <= clearDifficulty)
 		{
 			// 최고 클리어 난이도보다 낮거나 같은 난이도를 클리어. 이미 클리어한 곳을 클리어하는거니 아무것도 하지 않는다.
 		}
 		else
 		{
-			// 한번에 두 단계를 건너뛰려고 한다. 이상하다고 판단.
-			if (selectedDifficulty > (clearDifficulty + 1))
-				selectedDifficulty = (clearDifficulty + 1);
+			// record
+			bool firstClear = false;
+			if (clearDifficulty == 0)
+				firstClear = true;
+			else if (selectedDifficulty == (clearDifficulty + 1))
+				firstClear = true;
 
-			ClearBossBattleDifficulty(selectedDifficulty);
-			if (GetBossBattleClearDifficulty(bossBattleId.ToString()) == selectedDifficulty)
+			if (firstClear)
 			{
-				// 난이도의 최대 범위를 넘지않는 한도 내에서
-				// 그러나 최대 범위 넘지 않더라도 7챕터를 깨지 않으면 난이도 8 이상으로는 올릴 수 없도록 해야한다.
-				int nextDifficulty = selectedDifficulty + 1;
-				if (nextDifficulty > 14)
-					nextDifficulty = 14;
-				else if (nextDifficulty > 7 && PlayerData.instance.highestPlayChapter <= 7)
-					nextDifficulty = 7;
+				ClearBossBattleDifficulty(selectedDifficulty);
 
-				if (selectedDifficulty != nextDifficulty)
+				int currentBossId = bossBattleId;
+				if (currentBossId == 0)
+					currentBossId = 1;
+				if (GetBossBattleClearDifficulty(currentBossId.ToString()) == selectedDifficulty)
 				{
-					selectedDifficulty = nextDifficulty;
-					SelectBossBattleDifficulty(selectedDifficulty);
+					// 난이도의 최대 범위를 넘지않는 한도 내에서
+					// 그러나 최대 범위 넘지 않더라도 7챕터를 깨지 않으면 난이도 8 이상으로는 올릴 수 없도록 해야한다.
+					int nextDifficulty = selectedDifficulty + 1;
+					if (nextDifficulty > 14)
+						nextDifficulty = 14;
+					else if (nextDifficulty > 7 && highestPlayChapter <= 7)
+						nextDifficulty = 7;
+
+					if (selectedDifficulty != nextDifficulty)
+					{
+						selectedDifficulty = nextDifficulty;
+						SelectBossBattleDifficulty(selectedDifficulty);
+					}
 				}
 			}
 		}

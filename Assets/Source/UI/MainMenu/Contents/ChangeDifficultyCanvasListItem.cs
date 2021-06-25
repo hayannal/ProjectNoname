@@ -10,10 +10,10 @@ public class ChangeDifficultyCanvasListItem : MonoBehaviour
 	public GameObject clearObject;
 
 	int _difficulty;
-	public void Initialize(int difficulty, int visualDifficulty, bool showClear, bool selected)
+	public void Initialize(int difficulty, bool showClear, bool selected)
 	{
 		_difficulty = difficulty;
-		difficultyText.text = string.Format("<size=14>DIFFICULTY</size> {0}", visualDifficulty);
+		difficultyText.text = string.Format("<size=14>DIFFICULTY</size> {0}", _difficulty);
 		difficultyButton.interactable = !selected;
 		clearObject.SetActive(showClear);
 	}

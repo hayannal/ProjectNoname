@@ -26,28 +26,24 @@ public class ChangeDifficultyCanvas : MonoBehaviour
 	}
 
 	List<ChangeDifficultyCanvasListItem> _listChangeDifficultyCanvasListItem = new List<ChangeDifficultyCanvasListItem>();
-	void OnEnable()
+	public void RefreshInfo(int startChapter, int selectedDifficulty, int clearDifficulty)
 	{
 		for (int i = 0; i < _listChangeDifficultyCanvasListItem.Count; ++i)
 			_listChangeDifficultyCanvasListItem[i].gameObject.SetActive(false);
 		_listChangeDifficultyCanvasListItem.Clear();
+		
 
-
-		int currentBossId = PlayerData.instance.bossBattleId;
-		int clearDifficulty = PlayerData.instance.GetBossBattleClearDifficulty(currentBossId.ToString());
-		int selectedDifficulty = PlayerData.instance.GetBossBattleSelectedDifficulty(currentBossId.ToString());
-		if (selectedDifficulty > (clearDifficulty + 1))
-			selectedDifficulty = (clearDifficulty + 1);
-
-		BossBattleTableData bossBattleTableData = TableDataManager.instance.FindBossBattleData(currentBossId);
-		if (bossBattleTableData == null)
+		if (clearDifficulty == 0)
+		{
+			// 클리어 기록이 없다면 이쪽으로 들어오지 않았을거다.
 			return;
+		}
 
 		// 클리어 한거에서 1개까지만 추가해서 표기
-		for (int i = 0; i < clearDifficulty + 1; ++i)
+		for (int i = startChapter; i <= clearDifficulty + 1; ++i)
 		{
 			ChangeDifficultyCanvasListItem changeDifficultyCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
-			changeDifficultyCanvasListItem.Initialize(1 + i, BossBattleEnterCanvas.GetVisualDifficulty(1 + i, bossBattleTableData), (i < clearDifficulty), (1 + i) == selectedDifficulty);
+			changeDifficultyCanvasListItem.Initialize(i, (i <= clearDifficulty), i == selectedDifficulty);
 			_listChangeDifficultyCanvasListItem.Add(changeDifficultyCanvasListItem);
 		}
 	}

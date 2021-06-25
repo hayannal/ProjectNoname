@@ -1137,10 +1137,12 @@ public class PlayFabApiManager : MonoBehaviour
 	ObscuredString _serverEnterKeyForBossBattle;
 	public void RequestEnterBossBattle(int selectedDifficulty, Action<bool> successCallback, Action failureCallback)
 	{
+		string input = string.Format("{0}_{1}", selectedDifficulty, "qimzkria");
+		string checkSum = CheckSum(input);
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
 			FunctionName = "EnterBossBattle",
-			FunctionParameter = new { Enter = 1, SeLv = selectedDifficulty },
+			FunctionParameter = new { Enter = 1, SeLv = selectedDifficulty, Cs = checkSum },
 			GeneratePlayStreamEvent = true,
 			RevisionSelection = CloudScriptRevisionOption.Latest,
 		}, (success) =>

@@ -122,6 +122,7 @@ public class BossBattleEnterCanvas : MonoBehaviour
 	MapTableData _bossMapTableData;
 	ChapterTableData _bossChapterTableData;
 	ObscuredInt _selectedDifficulty;
+	ObscuredInt _clearDifficulty;
 	void RefreshInfo()
 	{
 		if (_cachedPreviewObject != null)
@@ -138,32 +139,43 @@ public class BossBattleEnterCanvas : MonoBehaviour
 			currentBossId = 1;
 		}
 
-		int clearDifficulty = PlayerData.instance.GetBossBattleClearDifficulty(currentBossId.ToString());
-		_selectedDifficulty = PlayerData.instance.GetBossBattleSelectedDifficulty(currentBossId.ToString());
-		// 선택한게 클리어난이도+1 보다 크면 뭔가 이상한거다. 조정해준다.
-		if (_selectedDifficulty > (clearDifficulty + 1))
-			_selectedDifficulty = (clearDifficulty + 1);
-
 		BossBattleTableData bossBattleTableData = TableDataManager.instance.FindBossBattleData(currentBossId);
 		if (bossBattleTableData == null)
 			return;
+
+		int clearDifficulty = PlayerData.instance.GetBossBattleClearDifficulty(currentBossId.ToString());
+		_selectedDifficulty = PlayerData.instance.GetBossBattleSelectedDifficulty(currentBossId.ToString());
+		if (_selectedDifficulty == 0)
+		{
+			// _selectedDifficulty이면 한번도 플레이 안했다는거니 bossBattleTable에서 시작 챕터를 가져와야한다.
+			_selectedDifficulty = bossBattleTableData.chapter;
+		}
+		// 선택한게 클리어난이도+1 보다 크면 뭔가 이상한거다. 조정해준다.
+		// 이제 챕터의 난이도에서 시작하게 되면서 이 로직을 사용할 수 없게 되었다.
+		//if (_selectedDifficulty > (clearDifficulty + 1))
+		//	_selectedDifficulty = (clearDifficulty + 1);
+
+		
 		StageTableData bossStageTableData = BattleInstanceManager.instance.GetCachedStageTableData(bossBattleTableData.chapter, bossBattleTableData.stage, false);
 		if (bossStageTableData == null)
 			return;
 		MapTableData bossMapTableData = BattleInstanceManager.instance.GetCachedMapTableData(bossStageTableData.firstFixedMap);
 		if (bossMapTableData == null)
 			return;
-		ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(bossBattleTableData.chapter + _selectedDifficulty - 1);
+		// 챕터 테이블은 권장 레벨 표기를 위한거라 선택된 난이도로 구해오는게 맞다.
+		ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(_selectedDifficulty);
 		if (chapterTableData == null)
 			return;
 
 		_bossStageTableData = bossStageTableData;
 		_bossMapTableData = bossMapTableData;
 		_bossChapterTableData = chapterTableData;
-
-		levelText.text = string.Format("<size=24>DIFFICULTY</size> {0}", GetVisualDifficulty(_selectedDifficulty, bossBattleTableData));
-		changeDifficultyButtonObject.SetActive(clearDifficulty >= 1);
+		levelText.text = string.Format("<size=24>DIFFICULTY</size> {0}", _selectedDifficulty);
 		newObject.SetActive(_selectedDifficulty > clearDifficulty);
+
+		int selectableDifficultyCount = clearDifficulty - bossBattleTableData.chapter + 2;
+		changeDifficultyButtonObject.SetActive(selectableDifficultyCount > 1);
+		_clearDifficulty = clearDifficulty;
 
 		if (string.IsNullOrEmpty(bossMapTableData.bossName) == false)
 		{
@@ -174,9 +186,13 @@ public class BossBattleEnterCanvas : MonoBehaviour
 		}
 		bossNameText.SetLocalizedText(UIString.instance.GetString(bossMapTableData.nameId));
 
-		// 패널티도 우선은 그대로 가져와본다.
+		// 패널티를 구할땐 그냥 스테이지 테이블에서 구해오면 안되고 선택된 난이도의 1층을 구해와서 처리해야한다.
+		StageTableData penaltyStageTableData = BattleInstanceManager.instance.GetCachedStageTableData(_selectedDifficulty, 1, false);
+		if (penaltyStageTableData == null)
+			return;
+
 		stagePenaltyText.gameObject.SetActive(false);
-		string penaltyString = ChapterCanvas.GetPenaltyString(bossStageTableData);
+		string penaltyString = ChapterCanvas.GetPenaltyString(penaltyStageTableData);
 		if (string.IsNullOrEmpty(penaltyString) == false)
 		{
 			stagePenaltyText.SetLocalizedText(penaltyString);
@@ -191,12 +207,6 @@ public class BossBattleEnterCanvas : MonoBehaviour
 
 		RefreshEnergy();
 		RefreshPrice();
-	}
-
-	public static int GetVisualDifficulty(int selectedDifficulty, BossBattleTableData bossBattleTableData)
-	{
-		// 최초로 등장하는 챕터를 바탕으로 새로 구해야한다.
-		return selectedDifficulty + (bossBattleTableData.chapter - 1);
 	}
 
 	void RefreshPrice()
@@ -218,6 +228,8 @@ public class BossBattleEnterCanvas : MonoBehaviour
 		ToastCanvas.instance.ShowToast(UIString.instance.GetString("BossUI_ChangeDifficulty"), 2.0f);
 		PlayerData.instance.SelectBossBattleDifficulty(difficulty);
 		RefreshInfo();
+		RefreshGrid(false);
+		OnClickListItem(_selectedActorId);
 	}
 
 
@@ -285,29 +297,46 @@ public class BossBattleEnterCanvas : MonoBehaviour
 
 		// 이미 랜덤하게 부여받은 패널티를 바탕으로 스왑창에서 패널티 부여받은 상태니 고를때 조심해라 띄우는 처리인데
 		// 아직 로비에 있는 상태라 결정이 안된 상태다.
-		/*
-		StagePenaltyTableData stagePenaltyTableData = BattleInstanceManager.instance.playerActor.currentStagePenaltyTableData;
-		for (int i = 0; i < stagePenaltyTableData.affectorValueId.Length; ++i)
+
+		StageTableData penaltyStageTableData = BattleInstanceManager.instance.GetCachedStageTableData(_selectedDifficulty, 1, false);
+		if (penaltyStageTableData == null)
+			return;
+
+		stagePenaltyText.gameObject.SetActive(false);
+		string penaltyString = ChapterCanvas.GetPenaltyString(penaltyStageTableData);
+		if (string.IsNullOrEmpty(penaltyString) == false)
 		{
-			AffectorValueLevelTableData affectorValueLevelTableData = TableDataManager.instance.FindAffectorValueLevelTableData(stagePenaltyTableData.affectorValueId[i], 1);
-			if (affectorValueLevelTableData == null)
+			stagePenaltyText.SetLocalizedText(penaltyString);
+			stagePenaltyText.gameObject.SetActive(true);
+		}
+
+		for (int k = 0; k < penaltyStageTableData.stagePenaltyId.Length; ++k)
+		{
+			StagePenaltyTableData stagePenaltyTableData = TableDataManager.instance.FindStagePenaltyTableData(penaltyStageTableData.stagePenaltyId[k]);
+			if (stagePenaltyTableData == null)
 				continue;
 
-			for (int j = 0; j < affectorValueLevelTableData.conditionValueId.Length; ++j)
+			for (int i = 0; i < stagePenaltyTableData.affectorValueId.Length; ++i)
 			{
-				ConditionValueTableData conditionValueTableData = TableDataManager.instance.FindConditionValueTableData(affectorValueLevelTableData.conditionValueId[j]);
-				if (conditionValueTableData == null)
+				AffectorValueLevelTableData affectorValueLevelTableData = TableDataManager.instance.FindAffectorValueLevelTableData(stagePenaltyTableData.affectorValueId[i], 1);
+				if (affectorValueLevelTableData == null)
 					continue;
 
-				if ((Condition.eConditionType)conditionValueTableData.conditionId == Condition.eConditionType.DefenderPowerSource && (Condition.eCompareType)conditionValueTableData.compareType == Condition.eCompareType.Equal)
+				for (int j = 0; j < affectorValueLevelTableData.conditionValueId.Length; ++j)
 				{
-					int.TryParse(conditionValueTableData.value, out int intValue);
-					if (_listCachedPenaltyPowerSource.Contains(intValue) == false)
-						_listCachedPenaltyPowerSource.Add(intValue);
+					ConditionValueTableData conditionValueTableData = TableDataManager.instance.FindConditionValueTableData(affectorValueLevelTableData.conditionValueId[j]);
+					if (conditionValueTableData == null)
+						continue;
+
+					if ((Condition.eConditionType)conditionValueTableData.conditionId == Condition.eConditionType.DefenderPowerSource && (Condition.eCompareType)conditionValueTableData.compareType == Condition.eCompareType.Equal)
+					{
+						int.TryParse(conditionValueTableData.value, out int intValue);
+						if (_listCachedPenaltyPowerSource.Contains(intValue) == false)
+							_listCachedPenaltyPowerSource.Add(intValue);
+					}
 				}
 			}
 		}
-		*/
 	}
 
 	public void OnClickListItem(string actorId)
@@ -434,7 +463,7 @@ public class BossBattleEnterCanvas : MonoBehaviour
 	{
 		if (CurrencyData.instance.energy == 0)
 		{
-			ShowRefillEnergyCanvas();
+			ShowRefillEnergyCanvas("BossUI_RefillEnergy");
 			return;
 		}
 
@@ -443,7 +472,10 @@ public class BossBattleEnterCanvas : MonoBehaviour
 
 	public void OnClickChangeDifficultyButton()
 	{
-		UIInstanceManager.instance.ShowCanvasAsync("ChangeDifficultyCanvas", null);
+		UIInstanceManager.instance.ShowCanvasAsync("ChangeDifficultyCanvas", () =>
+		{
+			ChangeDifficultyCanvas.instance.RefreshInfo(_bossStageTableData.chapter, _selectedDifficulty, _clearDifficulty);
+		});
 	}
 
 	public void OnClickXpLevelInfoButton()
@@ -572,7 +604,7 @@ public class BossBattleEnterCanvas : MonoBehaviour
 		return true;
 	}
 
-	void ShowRefillEnergyCanvas()
+	void ShowRefillEnergyCanvas(string overrideStringId = "")
 	{
 		UIInstanceManager.instance.ShowCanvasAsync("ConfirmSpendCanvas", () => {
 
@@ -582,7 +614,11 @@ public class BossBattleEnterCanvas : MonoBehaviour
 
 			string title = UIString.instance.GetString("SystemUI_Info");
 			int energyToPlay = BattleInstanceManager.instance.GetCachedGlobalConstantInt("RequiredEnergyToPlay");
-			string message = UIString.instance.GetString("GameUI_RefillEnergy", energyToPlay, energyToPlay);
+			string message = "";
+			if (string.IsNullOrEmpty(overrideStringId))
+				message = UIString.instance.GetString("GameUI_RefillEnergy", energyToPlay, energyToPlay);
+			else
+				message = UIString.instance.GetString(overrideStringId, energyToPlay, energyToPlay);
 			int price = BattleInstanceManager.instance.GetCachedGlobalConstantInt("RefillEnergyDiamond");
 			ConfirmSpendCanvas.instance.ShowCanvas(true, title, message, CurrencyData.eCurrencyType.Diamond, price, true, () =>
 			{

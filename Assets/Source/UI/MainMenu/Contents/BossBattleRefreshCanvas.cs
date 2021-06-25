@@ -44,7 +44,7 @@ public class BossBattleRefreshCanvas : MonoBehaviour
 		int nextId = PlayerData.instance.GetNextRandomBossId();
 		PlayFabApiManager.instance.RequestRefreshBoss(nextId, 1, () =>
 		{
-			PlayerData.instance.newBossRefreshed = true;
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("BossUI_NewAppear"), 2.0f);
 			BossBattleEnterCanvas.instance.gameObject.SetActive(false);
 			BossBattleEnterCanvas.instance.gameObject.SetActive(true);
 			gameObject.SetActive(false);

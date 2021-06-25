@@ -16,6 +16,7 @@ public class BossBattleProcessor : BattleModeProcessorBase
 
 	ObscuredBool _firstClear;
 	ObscuredInt _selectedDifficulty;
+	ObscuredInt _clearDifficulty;
 	public override void OnStartBattle()
 	{
 		// base꺼 호출할 필요 없다. startDateTime도 안쓰고 빅뱃 예외처리도 필요없다.
@@ -25,10 +26,16 @@ public class BossBattleProcessor : BattleModeProcessorBase
 		StageManager.instance.playerLevel = StageManager.instance.GetMaxStageLevel();
 		ApplyBossBattleLevelPack(BattleInstanceManager.instance.playerActor);
 
-		_selectedDifficulty = PlayerData.instance.GetBossBattleSelectedDifficulty(PlayerData.instance.bossBattleId.ToString());
-		int clearDifficulty = PlayerData.instance.GetBossBattleClearDifficulty(PlayerData.instance.bossBattleId.ToString());
+		// Enter 패킷에서 저장해놨으니 불러올 수 있다.
+		int currentBossId = PlayerData.instance.bossBattleId;
+		if (currentBossId == 0)
+			currentBossId = 1;
+		_selectedDifficulty = PlayerData.instance.GetBossBattleSelectedDifficulty(currentBossId.ToString());
+		_clearDifficulty = PlayerData.instance.GetBossBattleClearDifficulty(currentBossId.ToString());
 		_firstClear = false;
-		if (_selectedDifficulty == (clearDifficulty + 1))
+		if (_clearDifficulty == 0)
+			_firstClear = true;
+		if (_selectedDifficulty == (_clearDifficulty + 1))
 			_firstClear = true;
 	}
 
@@ -57,9 +64,12 @@ public class BossBattleProcessor : BattleModeProcessorBase
 	{
 		if (BattleInstanceManager.instance.playerActor != null)
 		{
+			// 보스전에서의 패널티는 같은 스테이지 테이블의 1층꺼를 구해와서 적용해야 제대로 된다.
+			StageTableData penaltyStageTableData = BattleInstanceManager.instance.GetCachedStageTableData(StageManager.instance.currentStageTableData.chapter, 1, false);
+
 			string stagePenaltyId = "";
-			if (StageManager.instance.currentStageTableData != null && StageManager.instance.currentStageTableData.stagePenaltyId.Length > 0)
-				stagePenaltyId = StageManager.instance.currentStageTableData.stagePenaltyId[Random.Range(0, StageManager.instance.currentStageTableData.stagePenaltyId.Length)];
+			if (penaltyStageTableData != null && penaltyStageTableData.stagePenaltyId.Length > 0)
+				stagePenaltyId = penaltyStageTableData.stagePenaltyId[Random.Range(0, StageManager.instance.currentStageTableData.stagePenaltyId.Length)];
 
 			if (string.IsNullOrEmpty(stagePenaltyId) == false)
 				BattleInstanceManager.instance.playerActor.RefreshStagePenaltyAffector(stagePenaltyId, true);
@@ -212,7 +222,7 @@ public class BossBattleProcessor : BattleModeProcessorBase
 		int addGold = 0;
 		if (clear)
 		{
-			PlayerData.instance.OnClearBossBattle(nextBossId);
+			PlayerData.instance.OnClearBossBattle(_selectedDifficulty, _clearDifficulty, nextBossId);
 
 			if (_firstClear)
 			{

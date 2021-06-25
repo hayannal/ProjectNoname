@@ -41,6 +41,13 @@ public class BossBattleRefreshCanvas : MonoBehaviour
 
 	public void OnClickButton()
 	{
-
+		int nextId = PlayerData.instance.GetNextRandomBossId();
+		PlayFabApiManager.instance.RequestRefreshBoss(nextId, 1, () =>
+		{
+			PlayerData.instance.newBossRefreshed = true;
+			BossBattleEnterCanvas.instance.gameObject.SetActive(false);
+			BossBattleEnterCanvas.instance.gameObject.SetActive(true);
+			gameObject.SetActive(false);
+		});
 	}
 }

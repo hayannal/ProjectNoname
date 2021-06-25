@@ -112,6 +112,11 @@ public class BossBattleEnterCanvas : MonoBehaviour
 		StackCanvas.Pop(gameObject);
 	}
 
+	void Update()
+	{
+		UpdateEnergy();
+	}
+
 	GameObject _cachedPreviewObject;
 	StageTableData _bossStageTableData;
 	MapTableData _bossMapTableData;
@@ -148,7 +153,7 @@ public class BossBattleEnterCanvas : MonoBehaviour
 		MapTableData bossMapTableData = BattleInstanceManager.instance.GetCachedMapTableData(bossStageTableData.firstFixedMap);
 		if (bossMapTableData == null)
 			return;
-		ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(bossBattleTableData.chapter);
+		ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(bossBattleTableData.chapter + _selectedDifficulty - 1);
 		if (chapterTableData == null)
 			return;
 
@@ -184,6 +189,7 @@ public class BossBattleEnterCanvas : MonoBehaviour
 		string rangeString = UIString.instance.GetString("GameUI_NumberRange", chapterTableData.suggestedPowerLevel, chapterTableData.suggestedMaxPowerLevel);
 		suggestPowerLevelText.SetLocalizedText(string.Format("{0} {1}", UIString.instance.GetString("GameUI_SuggestedPowerLevel"), rangeString));
 
+		RefreshEnergy();
 		RefreshPrice();
 	}
 
@@ -397,6 +403,32 @@ public class BossBattleEnterCanvas : MonoBehaviour
 		return _stringBuilderFull.ToString();
 	}
 
+	#region Energy
+	void RefreshEnergy()
+	{
+		remainEnergyText.text = CurrencyData.instance.energy.ToString();
+		_updateEnergy = false;
+		if (CurrencyData.instance.energy < CurrencyData.instance.energyMax)
+			_updateEnergy = true;
+	}
+
+	bool _updateEnergy = false;
+	float _remainEnergyTime = 0.0f;
+	void UpdateEnergy()
+	{
+		if (_updateEnergy == false)
+			return;
+
+		// 밖에 게이트필라가 있다보니 1초에 한번씩만 갱신시켜주기로 한다.
+		_remainEnergyTime -= Time.deltaTime;
+		if (_remainEnergyTime < 0.0f)
+		{
+			_remainEnergyTime = 1.0f;
+			RefreshEnergy();
+		}
+	}
+	#endregion
+
 	#region Sub Menu
 	public void OnClickRefreshButton()
 	{
@@ -416,9 +448,10 @@ public class BossBattleEnterCanvas : MonoBehaviour
 
 	public void OnClickXpLevelInfoButton()
 	{
-		string xpLevelString = "";
+		string xpLevelString1 = UIString.instance.GetString("BossBattleUI_XpLevelMore1");
+		string xpLevelString2 = UIString.instance.GetString("BossBattleUI_XpLevelMore2", 1);
 
-		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, xpLevelString, 200, xpLevelButtonTransform, new Vector2(0.0f, -35.0f));
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, string.Format("{0}\n\n{1}", xpLevelString1, xpLevelString2), 300, xpLevelButtonTransform, new Vector2(0.0f, -35.0f));
 	}
 	#endregion
 

@@ -1196,6 +1196,40 @@ public class PlayFabApiManager : MonoBehaviour
 		};
 		RetrySendManager.instance.RequestAction(action, true, true);
 	}
+
+	public void RequestRefreshBoss(int nextBossId, int price, Action successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+		string input = string.Format("{0}_{1}", nextBossId, "vizlqwmi");
+		string checkSum = CheckSum(input);
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "RefreshBoss",
+			FunctionParameter = new { Nb = nextBossId, Cs = checkSum },
+			GeneratePlayStreamEvent = true,
+			RevisionSelection = CloudScriptRevisionOption.Latest,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+
+				PlayerData.instance.bossBattleId = nextBossId;
+
+				// 클라이언트에서 먼저 삭제한 다음
+				CurrencyData.instance.UseEnergy(price);
+				if (EnergyGaugeCanvas.instance != null)
+					EnergyGaugeCanvas.instance.RefreshEnergy();
+
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
 	#endregion
 
 

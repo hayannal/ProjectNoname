@@ -321,7 +321,7 @@ public class NodeWarResultCanvas : MonoBehaviour
 
 		int boostSplitIndex = -1;
 		if (_boostApplied)
-			boostSplitIndex = _listGrantItem.Count - 3;
+			boostSplitIndex = 1;
 
 		for (int i = 0; i < _listGrantItem.Count; ++i)
 		{
@@ -336,7 +336,7 @@ public class NodeWarResultCanvas : MonoBehaviour
 			if (i == boostSplitIndex)
 			{
 				yield return new WaitForSecondsRealtime(0.1f);
-				itemBoostText.text = UIString.instance.GetString("GameUI_NodeWarBoostPlus");
+				itemBoostText.text = UIString.instance.GetString("GameUI_NodeWarBoostPlus", _listGrantItem.Count - 2);
 				itemBoostText.gameObject.SetActive(true);
 				yield return new WaitForSecondsRealtime(0.6f);
 			}

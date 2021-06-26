@@ -632,6 +632,7 @@ public class BossBattleEnterCanvas : MonoBehaviour
 					CurrencySmallInfoCanvas.RefreshInfo();
 					ConfirmSpendCanvas.instance.gameObject.SetActive(false);
 					RefreshPrice();
+					RefreshEnergy();
 				});
 			});
 		});

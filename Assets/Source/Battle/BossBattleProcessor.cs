@@ -10,6 +10,7 @@ public class BossBattleProcessor : BattleModeProcessorBase
 {
 	public override void Update()
 	{
+		UpdateTimer();
 		UpdateSummonMonsterSpawn();
 		UpdateEndProcess();
 	}
@@ -143,6 +144,43 @@ public class BossBattleProcessor : BattleModeProcessorBase
 		_endProcessWaitRemainTime = 3.0f;
 	}
 
+	#region Timer
+	bool _timerStarted = false;
+	float _timerRemainTime;
+	bool _timeOut = false;
+	public float remainTime { get { return _timerRemainTime; } }
+	void UpdateTimer()
+	{
+		if (_timerStarted == false)
+		{
+			_timerStarted = true;
+			_timerRemainTime = 90.0f;
+			UIInstanceManager.instance.ShowCanvasAsync("BossBattleTimerCanvas", () =>
+			{
+				BossBattleTimerCanvas.instance.Initialize(this);
+			}, false);
+			return;
+		}
+
+		if (_timerStarted == false)
+			return;
+
+		if (_endProcess)
+			return;
+
+		if (_timerRemainTime <= 0.0f)
+			return;
+
+		_timerRemainTime -= Time.deltaTime;
+		if (_timerRemainTime <= 0.0f)
+		{
+			_timeOut = true;
+			_endProcess = true;
+			_endProcessWaitRemainTime = 1.5f;
+		}
+	}
+	#endregion
+
 	#region EndGame
 	bool _endProcess = false;
 	float _endProcessWaitRemainTime = 0.0f; // 최소 대기타임
@@ -176,7 +214,7 @@ public class BossBattleProcessor : BattleModeProcessorBase
 		}
 
 		bool clear = false;
-		if (BattleInstanceManager.instance.playerActor.actorStatus.IsDie() == false)
+		if (BattleInstanceManager.instance.playerActor.actorStatus.IsDie() == false && _timeOut == false)
 		{
 			HitObject.EnableRigidbodyAndCollider(false, null, BattleInstanceManager.instance.playerActor.GetCollider());
 			clear = true;

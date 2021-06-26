@@ -288,6 +288,7 @@ public class LobbyCanvas : MonoBehaviour
 	{
 		dotMainMenuButton.gameObject.SetActive(false);
 		lobbyOptionButton.gameObject.SetActive(false);
+		subMenuCanvasGroup.gameObject.SetActive(false);
 		battlePauseButton.gameObject.SetActive(true);
 		expGaugeSlider.value = 0.0f;
 		expGaugeSlider.gameObject.SetActive(true);

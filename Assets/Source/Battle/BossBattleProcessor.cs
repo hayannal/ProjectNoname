@@ -52,9 +52,9 @@ public class BossBattleProcessor : BattleModeProcessorBase
 	public static void ApplyBossBattleLevelPack(PlayerActor playerActor)
 	{
 		playerActor.skillProcessor.CheckAllExclusiveLevelPack();
-		playerActor.skillProcessor.AddLevelPack("Atk", false, 0);
-		playerActor.skillProcessor.AddLevelPack("AtkSpeed", false, 0);
-		playerActor.skillProcessor.AddLevelPack("AtkSpeed", false, 0);
+		//playerActor.skillProcessor.AddLevelPack("Atk", false, 0);
+		//playerActor.skillProcessor.AddLevelPack("AtkSpeed", false, 0);
+		//playerActor.skillProcessor.AddLevelPack("AtkSpeed", false, 0);
 
 		LobbyCanvas.instance.RefreshExpPercent(1.0f, 5);
 		LobbyCanvas.instance.RefreshLevelText(StageManager.instance.GetMaxStageLevel());

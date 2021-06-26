@@ -47,18 +47,23 @@ public class BossBattleTimerCanvas : MonoBehaviour
 
 				if (_lastRemainTimeSecond > 0 && _lastRemainTimeSecond < 10)
 				{
-					tweenAnimation.DORestart();
+					TweenRestart();
 					remainTimeText.color = new Color(0.925f, 0.52f, 0.52f);
-					remainTimeText.transform.localScale = new Vector3(1.7f, 1.7f, 1.7f);
-					remainTimeText.transform.DOScale(1.0f, 0.5f);
 				}
 			}
 		}
 		else
 		{
-			tweenAnimation.DORestart();
+			TweenRestart();
 			remainTimeText.text = string.Format("{0:00}:{1:00}", 0, 0);
 			_processor = null;
 		}
+	}
+
+	void TweenRestart()
+	{
+		tweenAnimation.DORestart();
+		remainTimeText.transform.localScale = new Vector3(1.7f, 1.7f, 1.7f);
+		remainTimeText.transform.DOScale(1.0f, 0.5f);
 	}
 }

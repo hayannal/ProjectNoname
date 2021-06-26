@@ -463,7 +463,7 @@ public class BossBattleEnterCanvas : MonoBehaviour
 	{
 		if (CurrencyData.instance.energy == 0)
 		{
-			ShowRefillEnergyCanvas("BossUI_RefillEnergy");
+			ShowRefillEnergyCanvas(true);
 			return;
 		}
 
@@ -604,7 +604,7 @@ public class BossBattleEnterCanvas : MonoBehaviour
 		return true;
 	}
 
-	void ShowRefillEnergyCanvas(string overrideStringId = "")
+	void ShowRefillEnergyCanvas(bool refreshRefill = false)
 	{
 		UIInstanceManager.instance.ShowCanvasAsync("ConfirmSpendCanvas", () => {
 
@@ -613,13 +613,13 @@ public class BossBattleEnterCanvas : MonoBehaviour
 			if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby == false) return;
 
 			string title = UIString.instance.GetString("SystemUI_Info");
-			int energyToPlay = BattleInstanceManager.instance.GetCachedGlobalConstantInt("RequiredEnergyToPlay");
 			string message = "";
-			if (string.IsNullOrEmpty(overrideStringId))
-				message = UIString.instance.GetString("GameUI_RefillEnergy", energyToPlay, energyToPlay);
-			else
-				message = UIString.instance.GetString(overrideStringId, energyToPlay, energyToPlay);
 			int price = BattleInstanceManager.instance.GetCachedGlobalConstantInt("RefillEnergyDiamond");
+			int energyToPlay = BattleInstanceManager.instance.GetCachedGlobalConstantInt("RequiredEnergyToBoss");
+			if (refreshRefill)
+				message = UIString.instance.GetString("BossUI_RefillEnergy", 1, energyToPlay);
+			else
+				message = UIString.instance.GetString("GameUI_RefillEnergy", energyToPlay, energyToPlay);
 			ConfirmSpendCanvas.instance.ShowCanvas(true, title, message, CurrencyData.eCurrencyType.Diamond, price, true, () =>
 			{
 				if (CurrencyData.instance.dia < price)
@@ -713,8 +713,9 @@ public class BossBattleEnterCanvas : MonoBehaviour
 		if (_enterBossBattleServerFailure || _networkFailure)
 		{
 			FadeCanvas.instance.FadeIn(0.4f);
+			// 서버 에러 오면 안된다. 뭔가 잘못된거다.
 			if (_enterBossBattleServerFailure)
-				ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarDone"), 2.0f);
+				ToastCanvas.instance.ShowToast(UIString.instance.GetString("BossBattleUI_Wrong"), 2.0f);
 			_enterBossBattleServerFailure = false;
 			_networkFailure = false;
 			// 알파가 어느정도 빠지면 _processing을 풀어준다.

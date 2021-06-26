@@ -14,6 +14,8 @@ public class BossBattleRefreshCanvas : MonoBehaviour
 	public GameObject priceOffIconImageObject;
 	//public Coffee.UIExtensions.UIEffect priceGrayscaleEffect;
 
+	public static int REFRESH_PRICE = 1;
+
 	void Awake()
 	{
 		instance = this;
@@ -28,7 +30,7 @@ public class BossBattleRefreshCanvas : MonoBehaviour
 	void RefreshPrice()
 	{
 		// 가격
-		int price = 1;
+		int price = REFRESH_PRICE;
 		priceText.text = price.ToString("N0");
 		bool disablePrice = (CurrencyData.instance.energy < price);
 		priceButtonImage.color = !disablePrice ? Color.white : ColorUtil.halfGray;
@@ -42,7 +44,7 @@ public class BossBattleRefreshCanvas : MonoBehaviour
 	public void OnClickButton()
 	{
 		int nextId = PlayerData.instance.GetNextRandomBossId();
-		PlayFabApiManager.instance.RequestRefreshBoss(nextId, 1, () =>
+		PlayFabApiManager.instance.RequestRefreshBoss(nextId, REFRESH_PRICE, () =>
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("BossUI_NewAppear"), 2.0f);
 			BossBattleEnterCanvas.instance.gameObject.SetActive(false);

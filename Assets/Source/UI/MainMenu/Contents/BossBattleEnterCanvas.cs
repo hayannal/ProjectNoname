@@ -617,7 +617,7 @@ public class BossBattleEnterCanvas : MonoBehaviour
 			int price = BattleInstanceManager.instance.GetCachedGlobalConstantInt("RefillEnergyDiamond");
 			int energyToPlay = BattleInstanceManager.instance.GetCachedGlobalConstantInt("RequiredEnergyToBoss");
 			if (refreshRefill)
-				message = UIString.instance.GetString("BossUI_RefillEnergy", 1, energyToPlay);
+				message = UIString.instance.GetString("BossUI_RefillEnergy", BossBattleRefreshCanvas.REFRESH_PRICE, energyToPlay);
 			else
 				message = UIString.instance.GetString("GameUI_RefillEnergy", energyToPlay, energyToPlay);
 			ConfirmSpendCanvas.instance.ShowCanvas(true, title, message, CurrencyData.eCurrencyType.Diamond, price, true, () =>

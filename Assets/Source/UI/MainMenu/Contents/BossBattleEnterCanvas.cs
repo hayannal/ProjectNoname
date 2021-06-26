@@ -39,6 +39,8 @@ public class BossBattleEnterCanvas : MonoBehaviour
 	public SortButton sortButton;
 	SortButton.eSortType _currentSortType;
 
+	public RectTransform alarmRootTransform;
+
 	public GameObject contentItemPrefab;
 	public RectTransform contentRootRectTransform;
 
@@ -176,6 +178,12 @@ public class BossBattleEnterCanvas : MonoBehaviour
 		int selectableDifficultyCount = clearDifficulty - bossBattleTableData.chapter + 2;
 		changeDifficultyButtonObject.SetActive(selectableDifficultyCount > 1);
 		_clearDifficulty = clearDifficulty;
+		if (changeDifficultyButtonObject.activeSelf)
+		{
+			AlarmObject.Hide(alarmRootTransform);
+			if (_selectedDifficulty != (clearDifficulty + 1) && ChangeDifficultyCanvasListItem.CheckSelectable(_clearDifficulty + 1) == 0)
+				AlarmObject.Show(alarmRootTransform, false, false, true);
+		}
 
 		if (string.IsNullOrEmpty(bossMapTableData.bossName) == false)
 		{

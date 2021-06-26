@@ -20,23 +20,39 @@ public class ChangeDifficultyCanvasListItem : MonoBehaviour
 
 	public void OnClickButton()
 	{
-		if (_difficulty > 14 && PlayerData.instance.highestPlayChapter > 14)
+		int result = CheckSelectable(_difficulty);
+		switch (result)
 		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("BossUI_NotDeveloped"), 2.0f);
-			return;
-		}
-		else if (_difficulty > 14 && PlayerData.instance.highestPlayChapter <= 14)
-		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("BossUI_SevenLimit", 14), 2.0f);
-			return;
-		}
-		else if (_difficulty > 7 && PlayerData.instance.highestPlayChapter <= 7)
-		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("BossUI_SevenLimit", 7), 2.0f);
-			return;
+			case -1:
+				ToastCanvas.instance.ShowToast(UIString.instance.GetString("BossUI_NotDeveloped"), 2.0f);
+				return;
+			case -2:
+				ToastCanvas.instance.ShowToast(UIString.instance.GetString("BossUI_SevenLimit", 14), 2.0f);
+				return;
+			case -3:
+				ToastCanvas.instance.ShowToast(UIString.instance.GetString("BossUI_SevenLimit", 7), 2.0f);
+				return;
 		}
 
 		ChangeDifficultyCanvas.instance.gameObject.SetActive(false);
 		BossBattleEnterCanvas.instance.OnChangeDifficulty(_difficulty);
+	}
+
+	public static int CheckSelectable(int targetDifficulty)
+	{
+		int highestPlayChapter = PlayerData.instance.highestPlayChapter;
+		if (targetDifficulty > 14 && highestPlayChapter > 14)
+		{
+			return -1;
+		}
+		else if (targetDifficulty > 14 && highestPlayChapter <= 14)
+		{
+			return -2;
+		}
+		else if (targetDifficulty > 7 && highestPlayChapter <= 7)
+		{
+			return -3;
+		}
+		return 0;
 	}
 }

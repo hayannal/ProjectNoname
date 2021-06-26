@@ -138,9 +138,8 @@ public class StageManager : MonoBehaviour
 		InstantiateMap(bossMapTableData);
 
 		// 맵을 만들고나서 Difficulty에 따라서 난이도를 높여서 해놔야한다.
-		// 난이도 1이 기본이므로 1 빼고 더하기로 한다.
-		int addChapter = difficulty - 1;
-		StageTableData statBossStageTableData = BattleInstanceManager.instance.GetCachedStageTableData(bossStageTableData.chapter + addChapter, bossStageTableData.stage, false);
+		// 인자로 오는 Difficulty가 곧 실제 Difficulty니 chapter 자리에 넣으면 된다.
+		StageTableData statBossStageTableData = BattleInstanceManager.instance.GetCachedStageTableData(difficulty, bossStageTableData.stage, false);
 		if (statBossStageTableData == null)
 			return;
 		_currentStageTableData = statBossStageTableData;

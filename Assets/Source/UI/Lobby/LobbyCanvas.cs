@@ -178,6 +178,19 @@ public class LobbyCanvas : MonoBehaviour
 	}
 
 	#region Sub Menu
+	bool IsActiveSubMenu(int index)
+	{
+		// 현재 개방된 컨텐츠에 따라 보일지 말지 결정해야하는데 0번 토벌전은 최초에 등장하는거라 항상 Active로 처리해야한다.
+		if (index == 0)
+			return true;
+
+		switch (index)
+		{
+			//case 1: if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Research)) return true; break;
+		}
+		return false;
+	}
+
 	// 코루틴 Async로딩에 토글로 동작하는거라 동기를 맞추려면 이렇게 해야만 했다.
 	public void OnShowDotMainMenu(bool show)
 	{
@@ -190,13 +203,21 @@ public class LobbyCanvas : MonoBehaviour
 			if (subMenuButtonTweenAnimationList[0].gameObject.activeSelf)
 			{
 				for (int i = 0; i < subMenuButtonTweenAnimationList.Length; ++i)
+				{
+					if (IsActiveSubMenu(i) == false)
+						continue;
 					subMenuButtonTweenAnimationList[i].DOPlayForward();
+				}
 				_closeRemainTime = 0.0f;
 			}
 			else
 			{
 				for (int i = 0; i < subMenuButtonTweenAnimationList.Length; ++i)
+				{
+					if (IsActiveSubMenu(i) == false)
+						continue;
 					subMenuButtonTweenAnimationList[i].gameObject.SetActive(true);
+				}
 				return;
 			}
 		}
@@ -208,7 +229,11 @@ public class LobbyCanvas : MonoBehaviour
 					return;
 
 				for (int i = 0; i < subMenuButtonTweenAnimationList.Length; ++i)
+				{
+					if (IsActiveSubMenu(i) == false)
+						continue;
 					subMenuButtonTweenAnimationList[i].DOPlayBackwards();
+				}
 				_closeRemainTime = 0.6f;
 			}
 		}

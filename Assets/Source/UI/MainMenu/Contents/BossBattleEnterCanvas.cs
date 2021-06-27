@@ -229,9 +229,12 @@ public class BossBattleEnterCanvas : MonoBehaviour
 
 	ObscuredInt _xpLevel = 1;
 	public int GetXpLevel() { return _xpLevel; }
+	ObscuredInt _xp = 0;
+	public int GetXp() { return _xp; }
 	void RefreshBossBattleCount(int count)
 	{
 		// 현재 카운트가 속하는 테이블 구해와서 레벨 및 경험치로 표시.
+		_xp = count;
 		_xpLevel = 1;
 		int maxXpLevel = BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxBossBattleLevel");
 		int level = 0;

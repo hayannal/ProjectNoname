@@ -25,7 +25,10 @@ public class BossBattleResultCanvas : MonoBehaviour
 	public DOTweenAnimation goldImageTweenAnimation;
 	public Text goldValueText;
 
-	
+	public Text xpLevelText;
+	public Text xpLevelExpText;
+	public Image xpLevelExpImage;
+	public GameObject xpLevelUpInfoObject;
 
 	public GameObject itemGroupObject;
 	public Slider itemLineSlider;
@@ -202,11 +205,68 @@ public class BossBattleResultCanvas : MonoBehaviour
 	}
 	#endregion
 
+	#region Xp
+	bool _maxXpLevel = false;
+	float _nextPercent = 0.0f;
+	bool _nextIsLevelUp = false;
+	int _current = 0;
+	int _max = 0;
+	void RefreshBossBattleCount(int count)
+	{
+		// 현재 카운트가 속하는 테이블 구해와서 레벨 및 경험치로 표시.
+		int maxXpLevel = BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxBossBattleLevel");
+		int level = 0;
+		float percent = 0.0f;
+		int currentPeriodExp = 0;
+		int currentPeriodExpMax = 0;
+		for (int i = 1; i < TableDataManager.instance.bossExpTable.dataArray.Length; ++i)
+		{
+			if (count < TableDataManager.instance.bossExpTable.dataArray[i].requiredAccumulatedExp)
+			{
+				currentPeriodExp = count - TableDataManager.instance.bossExpTable.dataArray[i - 1].requiredAccumulatedExp;
+				currentPeriodExpMax = TableDataManager.instance.bossExpTable.dataArray[i].requiredExp;
+				percent = (float)currentPeriodExp / (float)currentPeriodExpMax;
+				level = TableDataManager.instance.bossExpTable.dataArray[i].xpLevel - 1;
+				break;
+			}
+			if (TableDataManager.instance.bossExpTable.dataArray[i].xpLevel >= maxXpLevel)
+			{
+				currentPeriodExp = count - TableDataManager.instance.bossExpTable.dataArray[i - 1].requiredAccumulatedExp;
+				currentPeriodExpMax = TableDataManager.instance.bossExpTable.dataArray[i].requiredExp;
+				level = maxXpLevel;
+				percent = 1.0f;
+				break;
+			}
+		}
+		_current = currentPeriodExp;
+		_max = currentPeriodExpMax;
+
+		string xpLevelString = "";
+		if (level == maxXpLevel)
+		{
+			_maxXpLevel = true;
+			xpLevelString = UIString.instance.GetString("GameUI_Lv", "Max");
+			xpLevelExpImage.color = DailyFreeItem.GetGoldTextColor();
+		}
+		else
+		{
+			xpLevelString = UIString.instance.GetString("GameUI_Lv", level);
+			xpLevelExpImage.color = Color.white;
+			_nextPercent = (float)(currentPeriodExp + 1) / currentPeriodExpMax;
+			_nextIsLevelUp = (currentPeriodExp + 1) == currentPeriodExpMax;
+		}
+		xpLevelText.text = string.Format("XP {0}", xpLevelString);
+		xpLevelExpText.text = string.Format("{0} / {1}", currentPeriodExp, currentPeriodExpMax);
+		xpLevelExpImage.fillAmount = percent;
+	}
+	#endregion
+
 	#region Gold
 	int _repeatRewardAmount;
 	void SetRepeatRewardInfo()
 	{
 		_repeatRewardAmount = BattleManager.instance.GetCachedBossRewardTableData().enterGold;
+		RefreshBossBattleCount(BossBattleEnterCanvas.instance.GetXp());
 	}
 
 	public void OnEventIncreaseGold()
@@ -227,6 +287,23 @@ public class BossBattleResultCanvas : MonoBehaviour
 
 		// Exp Process
 		yield return new WaitForSecondsRealtime(0.2f);
+
+		if (_maxXpLevel == false)
+		{
+			DOTween.To(() => xpLevelExpImage.fillAmount, x => xpLevelExpImage.fillAmount = x, _nextPercent, 0.4f).SetEase(Ease.Linear).SetUpdate(true);
+
+			yield return new WaitForSecondsRealtime(0.4f);
+
+			if (_nextIsLevelUp)
+			{
+				RefreshBossBattleCount(BossBattleEnterCanvas.instance.GetXp() + 1);
+				xpLevelUpInfoObject.SetActive(true);
+			}
+			else
+				xpLevelExpText.text = string.Format("{0} / {1}", _current + 1, _max);
+
+			yield return new WaitForSecondsRealtime(0.2f);
+		}
 
 		itemGroupObject.SetActive(true);
 		StartCoroutine(DropItemProcess());

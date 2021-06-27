@@ -60,6 +60,7 @@ public class TableDataManager : MonoBehaviour
 	public SubQuestTable subQuestTable;
 	public GuideQuestTable guideQuestTable;
 	public BossBattleTable bossBattleTable;
+	public BossExpTable bossExpTable;
 
 	void Awake()
 	{

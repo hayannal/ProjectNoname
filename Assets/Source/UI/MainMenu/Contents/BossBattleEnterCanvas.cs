@@ -22,6 +22,9 @@ public class BossBattleEnterCanvas : MonoBehaviour
 	public Text bossNameText;
 	public Button bossInfoButton;
 	public Transform xpLevelButtonTransform;
+	public Text xpLevelText;
+	public Text xpLevelExpText;
+	public Image xpLevelExpImage;
 
 	public Text suggestPowerLevelText;
 	public Text stagePenaltyText;
@@ -157,7 +160,9 @@ public class BossBattleEnterCanvas : MonoBehaviour
 		//if (_selectedDifficulty > (clearDifficulty + 1))
 		//	_selectedDifficulty = (clearDifficulty + 1);
 
-		
+		int bossBattleCount = PlayerData.instance.GetBossBattleCount(currentBossId.ToString());
+
+
 		StageTableData bossStageTableData = BattleInstanceManager.instance.GetCachedStageTableData(bossBattleTableData.chapter, bossBattleTableData.stage, false);
 		if (bossStageTableData == null)
 			return;
@@ -194,6 +199,8 @@ public class BossBattleEnterCanvas : MonoBehaviour
 		}
 		bossNameText.SetLocalizedText(UIString.instance.GetString(bossMapTableData.nameId));
 
+		RefreshBossBattleCount(bossBattleCount);
+
 		// 패널티를 구할땐 그냥 스테이지 테이블에서 구해오면 안되고 선택된 난이도의 1층을 구해와서 처리해야한다.
 		StageTableData penaltyStageTableData = BattleInstanceManager.instance.GetCachedStageTableData(_selectedDifficulty, 1, false);
 		if (penaltyStageTableData == null)
@@ -215,6 +222,44 @@ public class BossBattleEnterCanvas : MonoBehaviour
 
 		RefreshEnergy();
 		RefreshPrice();
+	}
+
+	ObscuredInt _xpLevel = 1;
+	public int GetXpLevel() { return _xpLevel; }
+	void RefreshBossBattleCount(int count)
+	{
+		// 현재 카운트가 속하는 테이블 구해와서 레벨 및 경험치로 표시.
+		int maxXpLevel = BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxBossBattleLevel");
+		int level = 0;
+		float percent = 0.0f;
+		int currentPeriodExp = 0;
+		int currentPeriodExpMax = 0;
+		for (int i = _xpLevel; i < TableDataManager.instance.bossExpTable.dataArray.Length; ++i)
+		{
+			if (count < TableDataManager.instance.bossExpTable.dataArray[i].requiredAccumulatedExp)
+			{
+				currentPeriodExp = count - TableDataManager.instance.bossExpTable.dataArray[i - 1].requiredAccumulatedExp;
+				currentPeriodExpMax = TableDataManager.instance.bossExpTable.dataArray[i].requiredExp;
+				percent = (float)currentPeriodExp / (float)currentPeriodExpMax;
+				level = TableDataManager.instance.bossExpTable.dataArray[i].xpLevel - 1;
+				break;
+			}
+			if (TableDataManager.instance.bossExpTable.dataArray[i].xpLevel >= maxXpLevel)
+			{
+				level = maxXpLevel;
+				percent = 1.0f;
+				break;
+			}
+		}
+
+		string xpLevelString = "";
+		if (level == maxXpLevel)
+			xpLevelString = UIString.instance.GetString("GameUI_Lv", "Max");
+		else
+			xpLevelString = UIString.instance.GetString("GameUI_Lv", level);
+		xpLevelText.text = string.Format("XP {0}", xpLevelString);
+		xpLevelExpText.text = string.Format("{0} / {1}", currentPeriodExp, currentPeriodExpMax);
+		xpLevelExpImage.fillAmount = percent;
 	}
 
 	void RefreshPrice()
@@ -370,7 +415,7 @@ public class BossBattleEnterCanvas : MonoBehaviour
 		{
 			CharacterData characterData = PlayerData.instance.GetCharacterData(actorId);
 			if (characterData.powerLevel > _bossChapterTableData.suggestedMaxPowerLevel)
-				secondText = UIString.instance.GetString("GameUI_TooPowerfulToReward");
+				secondText = UIString.instance.GetString("BossUI_TooPowerfulToReward"); // GameUI_TooPowerfulToReward
 			else if (characterData.powerLevel < _bossChapterTableData.suggestedPowerLevel && recommanded)
 				secondText = UIString.instance.GetString("GameUI_TooWeakToBoss");
 		}
@@ -489,7 +534,7 @@ public class BossBattleEnterCanvas : MonoBehaviour
 	public void OnClickXpLevelInfoButton()
 	{
 		string xpLevelString1 = UIString.instance.GetString("BossBattleUI_XpLevelMore1");
-		string xpLevelString2 = UIString.instance.GetString("BossBattleUI_XpLevelMore2", 1);
+		string xpLevelString2 = UIString.instance.GetString("BossBattleUI_XpLevelMore2", _xpLevel);
 
 		TooltipCanvas.Show(true, TooltipCanvas.eDirection.CharacterInfo, string.Format("{0}\n\n{1}", xpLevelString1, xpLevelString2), 300, xpLevelButtonTransform, new Vector2(0.0f, -35.0f));
 	}

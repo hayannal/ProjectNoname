@@ -77,13 +77,18 @@ public class BaseDamageAffector : AffectorBase {
 		// 그래서 이 BaseDamageAffector에서만 처리하기로 한다.
 		float adjustStandardPowerLevelDiffValue = 0.0f;
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
-		// NodeWar는 적용받지 않도록 lobby인거처럼 처리
-		if (lobby == false && BattleManager.instance != null && BattleManager.instance.IsNodeWar())
-			lobby = true;
 		if (lobby == false)
 		{
-			ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
-			adjustStandardPowerLevelDiffValue = chapterTableData.standardPowerLevel - BattleInstanceManager.instance.playerActor.actorStatus.powerLevel;
+			if (BattleManager.instance != null && BattleManager.instance.IsDefaultBattle())
+			{
+				ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
+				adjustStandardPowerLevelDiffValue = chapterTableData.standardPowerLevel - BattleInstanceManager.instance.playerActor.actorStatus.powerLevel;
+			}
+			else if (BattleManager.instance != null && BattleManager.instance.IsBossBattle())
+			{
+				ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.currentStageTableData.chapter);
+				adjustStandardPowerLevelDiffValue = chapterTableData.standardPowerLevel - BattleInstanceManager.instance.playerActor.actorStatus.powerLevel;
+			}
 		}
 
 		// Calc Damage

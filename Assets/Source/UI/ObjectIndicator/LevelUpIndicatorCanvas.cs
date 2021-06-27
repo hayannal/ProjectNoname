@@ -254,7 +254,7 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 
 		_listSelectedIndex.Clear();
 		_listRandomLevelPackId.Clear();
-		List<LevelPackDataManager.RandomLevelPackInfo> listRandomLevelPackInfo = LevelPackDataManager.instance.GetRandomLevelPackTableDataList(BattleInstanceManager.instance.playerActor, _levelUpType == (int)eLevelUpType.NoHitLevelPack);
+		List<LevelPackDataManager.RandomLevelPackInfo> listRandomLevelPackInfo = LevelPackDataManager.instance.GetRandomLevelPackTableDataList(BattleInstanceManager.instance.playerActor, _levelUpType == (int)eLevelUpType.NoHitLevelPack, StageManager.instance.playChapter);
 		for (int i = 0; i < buttonList.Length; ++i)
 		{
 			int index = SelectRandomIndex(listRandomLevelPackInfo);

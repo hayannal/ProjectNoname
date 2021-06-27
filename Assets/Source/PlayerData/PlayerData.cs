@@ -102,6 +102,7 @@ public class PlayerData : MonoBehaviour
 	public ObscuredInt bossBattleId { get; set; }
 	Dictionary<string, int> _dicBossBattleClearDifficulty = new Dictionary<string, int>();
 	Dictionary<string, int> _dicBossBattleSelectedDifficulty = new Dictionary<string, int>();
+	Dictionary<string, int> _dicBossBattleCount = new Dictionary<string, int>();
 	// 클라 전용 변수. 보스가 갱신되었음을 다음번 창 열릴때 알린다.
 	public ObscuredBool newBossRefreshed { get; set; }
 
@@ -383,6 +384,7 @@ public class PlayerData : MonoBehaviour
 		TimeSpaceData.instance.ClearInventory();
 		OnRecvBossBattleClearData("");
 		OnRecvBossBattleSelectData("");
+		OnRecvBossBattleCountData("");
 		_listCharacterData.Clear();
 		AddNewCharacter("Actor0201", "", 1);
 		_mainCharacterId = "Actor0201";
@@ -779,6 +781,11 @@ public class PlayerData : MonoBehaviour
 		if (userReadOnlyData.ContainsKey("bossSeLv"))
 			bossBattleRecord = userReadOnlyData["bossSeLv"].Value;
 		OnRecvBossBattleSelectData(bossBattleRecord);
+
+		bossBattleRecord = "";
+		if (userReadOnlyData.ContainsKey("bossCnt"))
+			bossBattleRecord = userReadOnlyData["bossCnt"].Value;
+		OnRecvBossBattleCountData(bossBattleRecord);
 		#endregion
 
 		newlyCreated = false;
@@ -1604,6 +1611,16 @@ public class PlayerData : MonoBehaviour
 		_dicBossBattleSelectedDifficulty = serializer.DeserializeObject<Dictionary<string, int>>(json);
 	}
 
+	void OnRecvBossBattleCountData(string json)
+	{
+		_dicBossBattleCount.Clear();
+		if (string.IsNullOrEmpty(json))
+			return;
+
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		_dicBossBattleCount = serializer.DeserializeObject<Dictionary<string, int>>(json);
+	}
+
 	public int GetBossBattleClearDifficulty(string id)
 	{
 		if (_dicBossBattleClearDifficulty.ContainsKey(id))
@@ -1617,6 +1634,13 @@ public class PlayerData : MonoBehaviour
 			return _dicBossBattleSelectedDifficulty[id];
 
 		// 선택 데이터가 없으면 분명 처음 열린걸꺼다. 이때는 0을 리턴해준다.
+		return 0;
+	}
+
+	public int GetBossBattleCount(string id)
+	{
+		if (_dicBossBattleCount.ContainsKey(id))
+			return _dicBossBattleCount[id];
 		return 0;
 	}
 
@@ -1640,6 +1664,17 @@ public class PlayerData : MonoBehaviour
 			_dicBossBattleSelectedDifficulty[key] = difficulty;
 		else
 			_dicBossBattleSelectedDifficulty.Add(key, difficulty);
+	}
+
+	public void AddBossBattleCount()
+	{
+		int id = bossBattleId;
+		if (id == 0) id = 1;
+		string key = id.ToString();
+		if (_dicBossBattleCount.ContainsKey(key))
+			_dicBossBattleCount[key]++;
+		else
+			_dicBossBattleCount.Add(key, 1);
 	}
 
 

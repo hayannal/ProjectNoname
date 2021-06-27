@@ -201,6 +201,10 @@ public class MonsterActor : Actor
 		if (needEliteMonster == false)
 			return;
 
+		// 21챕터 이후에는 개발할지도 모르겠으나 우선은 보스배틀일때 쓰이지 않도록 한다.
+		if (BattleManager.instance != null && BattleManager.instance.IsBossBattle())
+			return;
+
 		// 엘리트 몬스터가 필요한 상황이라면
 		// 새로 스테이지를 진입해서 생성된 몬스터인지 혹은 강종으로 인한 재진입인지를 판단해서 처리해야한다.
 		// Start에서 호출될때는 이미 IsLoadingInProgressGame가 끝나있는 상태일테니 별도로 기억해둔 값으로 판단해야한다.

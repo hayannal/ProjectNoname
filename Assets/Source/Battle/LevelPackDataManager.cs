@@ -40,7 +40,7 @@ public class LevelPackDataManager : MonoBehaviour
 	}
 	List<RandomLevelPackInfo> _listRandomLevelPackInfo = new List<RandomLevelPackInfo>();
 
-	public List<RandomLevelPackInfo> GetRandomLevelPackTableDataList(PlayerActor playerActor, bool onlyNoHitLevelPack)
+	public List<RandomLevelPackInfo> GetRandomLevelPackTableDataList(PlayerActor playerActor, bool onlyNoHitLevelPack, int playChapter)
 	{
 		_listRandomLevelPackInfo.Clear();
 		List<LevelPackTableData> listLevelPackTableData = GetAcquirableActorLevelPackList();
@@ -51,7 +51,7 @@ public class LevelPackDataManager : MonoBehaviour
 				continue;
 			if (listLevelPackTableData[i].dropWeight == 0.0f)
 				continue;
-			if (StageManager.instance.playChapter < listLevelPackTableData[i].openChapter)
+			if (playChapter < listLevelPackTableData[i].openChapter)
 				continue;
 			if (onlyNoHitLevelPack && listLevelPackTableData[i].noHit == false)
 				continue;

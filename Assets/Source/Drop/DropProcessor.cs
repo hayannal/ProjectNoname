@@ -63,10 +63,7 @@ public class DropProcessor : MonoBehaviour
 		}
 
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
-		// NodeWar 드랍은 lobby드랍처럼 처리해줘야한다.
-		if (lobby == false && BattleManager.instance != null && BattleManager.instance.IsNodeWar())
-			lobby = true;
-		if (lobby == false)
+		if (lobby == false && BattleManager.instance != null && BattleManager.instance.IsDefaultBattle())
 		{
 			// drop event
 			if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapterStage.TimeSpace) == false && ContentsManager.IsDropChapterStage(StageManager.instance.playChapter, StageManager.instance.playStage))
@@ -146,9 +143,17 @@ public class DropProcessor : MonoBehaviour
 				{
 					case eDropType.Gold:
 					case eDropType.Gacha:
-						ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
+						int suggestedMaxPowerLevel = 0;
+						if (BattleManager.instance != null && BattleManager.instance.IsBossBattle())
+							suggestedMaxPowerLevel = StageManager.instance.currentStageTableData.chapter;
+						else
+						{
+							ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(StageManager.instance.playChapter);
+							if (chapterTableData != null)
+								suggestedMaxPowerLevel = chapterTableData.suggestedMaxPowerLevel;
+						}
 						CharacterData mainCharacterData = PlayerData.instance.GetCharacterData(BattleInstanceManager.instance.playerActor.actorId);
-						if (chapterTableData != null && mainCharacterData != null && mainCharacterData.powerLevel > chapterTableData.suggestedMaxPowerLevel)
+						if (mainCharacterData != null && mainCharacterData.powerLevel > suggestedMaxPowerLevel)
 							continue;
 						break;
 				}
@@ -175,6 +180,13 @@ public class DropProcessor : MonoBehaviour
 						if (heartDropAdjust != 0.0f)
 							probability *= (1.0f + heartDropAdjust);
 						break;
+				}
+				if (BattleManager.instance != null && BattleManager.instance.IsBossBattle())
+				{
+					if (dropType == eDropType.Exp || dropType == eDropType.Gacha)
+					{ }
+					else
+						probability = 0.0f;
 				}
 			}
 			if (Random.value > probability)

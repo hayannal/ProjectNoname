@@ -123,6 +123,7 @@ public class BossBattleEnterCanvas : MonoBehaviour
 	}
 
 	GameObject _cachedPreviewObject;
+	BossBattleTableData _bossBattleTableData;
 	StageTableData _bossStageTableData;
 	MapTableData _bossMapTableData;
 	ChapterTableData _bossChapterTableData;
@@ -144,8 +145,8 @@ public class BossBattleEnterCanvas : MonoBehaviour
 			currentBossId = 1;
 		}
 
-		BossBattleTableData bossBattleTableData = TableDataManager.instance.FindBossBattleData(currentBossId);
-		if (bossBattleTableData == null)
+		_bossBattleTableData = TableDataManager.instance.FindBossBattleData(currentBossId);
+		if (_bossBattleTableData == null)
 			return;
 
 		int clearDifficulty = PlayerData.instance.GetBossBattleClearDifficulty(currentBossId.ToString());
@@ -153,7 +154,7 @@ public class BossBattleEnterCanvas : MonoBehaviour
 		if (_selectedDifficulty == 0)
 		{
 			// _selectedDifficulty이면 한번도 플레이 안했다는거니 bossBattleTable에서 시작 챕터를 가져와야한다.
-			_selectedDifficulty = bossBattleTableData.chapter;
+			_selectedDifficulty = _bossBattleTableData.chapter;
 		}
 		// 선택한게 클리어난이도+1 보다 크면 뭔가 이상한거다. 조정해준다.
 		// 이제 챕터의 난이도에서 시작하게 되면서 이 로직을 사용할 수 없게 되었다.
@@ -163,7 +164,7 @@ public class BossBattleEnterCanvas : MonoBehaviour
 		int bossBattleCount = PlayerData.instance.GetBossBattleCount(currentBossId.ToString());
 
 
-		StageTableData bossStageTableData = BattleInstanceManager.instance.GetCachedStageTableData(bossBattleTableData.chapter, bossBattleTableData.stage, false);
+		StageTableData bossStageTableData = BattleInstanceManager.instance.GetCachedStageTableData(_bossBattleTableData.chapter, _bossBattleTableData.stage, false);
 		if (bossStageTableData == null)
 			return;
 		MapTableData bossMapTableData = BattleInstanceManager.instance.GetCachedMapTableData(bossStageTableData.firstFixedMap);
@@ -180,7 +181,7 @@ public class BossBattleEnterCanvas : MonoBehaviour
 		levelText.text = string.Format("<size=24>DIFFICULTY</size> {0}", _selectedDifficulty);
 		newObject.SetActive(_selectedDifficulty > clearDifficulty);
 
-		int selectableDifficultyCount = clearDifficulty - bossBattleTableData.chapter + 2;
+		int selectableDifficultyCount = clearDifficulty - _bossBattleTableData.chapter + 2;
 		changeDifficultyButtonObject.SetActive(selectableDifficultyCount > 1);
 		_clearDifficulty = clearDifficulty;
 		if (changeDifficultyButtonObject.activeSelf)
@@ -335,7 +336,13 @@ public class BossBattleEnterCanvas : MonoBehaviour
 		}
 
 		if (onEnable)
-			OnClickListItem(BattleInstanceManager.instance.playerActor.actorId);
+		{
+			string cachedLastCharacter = GetCachedLastCharacter();
+			if (string.IsNullOrEmpty(cachedLastCharacter))
+				OnClickListItem(BattleInstanceManager.instance.playerActor.actorId);
+			else
+				OnClickListItem(cachedLastCharacter);
+		}
 		else
 			OnClickListItem(_selectedActorId);
 	}
@@ -802,6 +809,7 @@ public class BossBattleEnterCanvas : MonoBehaviour
 		BattleManager.instance.Initialize(BattleManager.eBattleMode.BossBattle);
 		BattleManager.instance.OnStartBattle();
 		SoundManager.instance.PlayBattleBgm(BattleInstanceManager.instance.playerActor.actorId);
+		RecordLastCharacter();
 
 		while (StageManager.instance.IsDoneLoadAsyncNextStage() == false)
 			yield return Timing.WaitForOneFrame;
@@ -836,4 +844,19 @@ public class BossBattleEnterCanvas : MonoBehaviour
 
 		_processing = false;
 	}
+
+	#region Record Last Character
+	void RecordLastCharacter()
+	{
+		string key = _bossBattleTableData.num.ToString();
+		string value = _selectedActorId;
+		ObscuredPrefs.SetString(string.Format("_bbEnterCanvas_{0}___{1}", key, PlayFabApiManager.instance.playFabId), value);
+	}
+
+	string GetCachedLastCharacter()
+	{
+		string key = _bossBattleTableData.num.ToString();
+		return ObscuredPrefs.GetString(string.Format("_bbEnterCanvas_{0}___{1}", key, PlayFabApiManager.instance.playFabId));
+	}
+	#endregion
 }

@@ -226,7 +226,8 @@ public class DropProcessor : MonoBehaviour
 						case "e": stringValue = DropManager.instance.GetStageDropEquipId(); break;
 						case "g": stringValue = DropManager.instance.GetGachaEquipId(); break;
 						case "o": stringValue = DropManager.instance.GetGachaEquipIdByGrade(); break;
-						case "r": stringValue = DropManager.instance.GetBossDropEquipId(); break;	// 토벌전 드랍보상. 레전드키 변형.
+						case "r": stringValue = DropManager.instance.GetBossDropEquipId(); break;   // 토벌전 드랍보상. 레전드키 변형.
+						case "ez": stringValue = DropManager.instance.GetBossEquipIdByGrade(0); lobby = true; break;    // 토벌전 최초보상.
 						case "en": stringValue = DropManager.instance.GetBossEquipIdByGrade(1); lobby = true; break;	// 토벌전 최초보상.
 						case "ej": stringValue = DropManager.instance.GetBossEquipIdByGrade(2); lobby = true; break;	// 토벌전 최초보상.
 						case "eq": stringValue = DropManager.instance.GetBossEquipIdByGrade(3); lobby = true; break;	// 토벌전 최초보상. 스테이지에서만 나오는거 중에서 등급으로 고른다. 레전드키 영향 없음.

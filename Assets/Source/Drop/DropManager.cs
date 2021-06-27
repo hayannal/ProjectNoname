@@ -424,7 +424,7 @@ public class DropManager : MonoBehaviour
 			}
 			else
 			{
-				if (grade == 1 || grade == 2 || grade == 3)
+				if (grade == 0 || grade == 1 || grade == 2 || grade == 3)
 				{
 					if (TableDataManager.instance.equipTable.dataArray[i].grade != grade)
 						continue;

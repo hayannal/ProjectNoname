@@ -126,7 +126,7 @@ public class StageManager : MonoBehaviour
 		// 보스전만큼은 랜덤 조명을 써보기 위해서 별도로 셋팅된 카오스 1챕터꺼를 쓰기로 한다.
 		string[] environmentSettingList = null;
 		StageTableData bossEnvStageTableData = BattleInstanceManager.instance.GetCachedStageTableData(1, 1, true);
-		if (bossEnvStageTableData == null)
+		if (bossEnvStageTableData != null)
 			environmentSettingList = bossEnvStageTableData.environmentSetting;
 
 		PrepareNextMap(bossMapTableData, environmentSettingList);

@@ -8,12 +8,12 @@ using UnityQuickSheet;
 /// 
 public partial class ExcelDataAssetUtility
 {
-    [MenuItem("Assets/Create/QuickSheet/ExcelData/BossExpTable", false, 500)]
-    public static void CreateBossExpTableAssetFile()
+    [MenuItem("Assets/Create/QuickSheet/ExcelData/BossRewardTable", false, 500)]
+    public static void CreateBossRewardTableAssetFile()
     {
-        BossExpTable asset = CustomAssetUtility.CreateAsset<BossExpTable>();
+        BossRewardTable asset = CustomAssetUtility.CreateAsset<BossRewardTable>();
         asset.SheetName = "../Excel/BossBattle.xlsx";
-        asset.WorksheetName = "BossExpTable";
+        asset.WorksheetName = "BossRewardTable";
         EditorUtility.SetDirty(asset);        
     }
     

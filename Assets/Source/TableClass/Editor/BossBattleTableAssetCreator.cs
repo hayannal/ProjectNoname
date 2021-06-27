@@ -12,7 +12,7 @@ public partial class ExcelDataAssetUtility
     public static void CreateBossBattleTableAssetFile()
     {
         BossBattleTable asset = CustomAssetUtility.CreateAsset<BossBattleTable>();
-        asset.SheetName = "../Excel/Stage.xlsx";
+        asset.SheetName = "../Excel/BossBattle.xlsx";
         asset.WorksheetName = "BossBattleTable";
         EditorUtility.SetDirty(asset);        
     }

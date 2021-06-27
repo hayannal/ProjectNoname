@@ -10,24 +10,36 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 80e14a72067f1ad408ec8d661bc560ce, type: 3}
-  m_Name: BossExpTableImporter
+  m_Name: BossRewardTableImporter
   m_EditorClassIdentifier: 
   templatePath: AssetStore/QuickSheet/ExcelPlugin/Templates
   scriptFilePath: Source/TableClass/Runtime
   editorScriptFilePath: Source/TableClass/Editor
   sheetName: BossBattle.xlsx
-  workSheetName: BossExpTable
+  workSheetName: BossRewardTable
   columnHeaderList:
   - type: 3
-    name: xpLevel
+    name: num
     isEnable: 0
     isArray: 0
   - type: 3
-    name: requiredExp
+    name: difficulty
     isEnable: 0
     isArray: 0
   - type: 3
-    name: requiredAccumulatedExp
+    name: firstEnergy
+    isEnable: 0
+    isArray: 0
+  - type: 3
+    name: enterGold
+    isEnable: 0
+    isArray: 0
+  - type: 1
+    name: firstDropId
+    isEnable: 0
+    isArray: 0
+  - type: 1
+    name: bossDropId
     isEnable: 0
     isArray: 0
   excelFilePath: ../Excel/BossBattle.xlsx
@@ -35,4 +47,4 @@ MonoBehaviour:
   - BossBattleTable
   - BossExpTable
   - BossRewardTable
-  currentSelectedSheet: 1
+  currentSelectedSheet: 2

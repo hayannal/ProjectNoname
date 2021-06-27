@@ -125,7 +125,7 @@ public class DropObject : MonoBehaviour
 				// 예외처리. TimeSpace 이벤트 템의 경우 AdjustDrop호출과 동시에 클라이언트 세이브로 저장해놨으니 여기서는 추가하면 안된다.
 				// 혹시 빠르게 넘어갈걸 대비해서 다음 스테이지까지도 검사하기로 한다.
 				bool ignoreSave = false;
-				if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapterStage.TimeSpace) == false && stringValue == "Equip3302")
+				if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapterStage.TimeSpace) == false && stringValue == "Equip0001")
 				{
 					if (ContentsManager.IsDropChapterStage(StageManager.instance.playChapter, StageManager.instance.playStage) ||
 						ContentsManager.IsDropChapterStage(StageManager.instance.playChapter, StageManager.instance.playStage - 1))

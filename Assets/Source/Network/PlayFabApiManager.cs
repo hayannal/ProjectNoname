@@ -1144,7 +1144,6 @@ public class PlayFabApiManager : MonoBehaviour
 			FunctionName = "EnterBossBattle",
 			FunctionParameter = new { Enter = 1, SeLv = selectedDifficulty, Cs = checkSum },
 			GeneratePlayStreamEvent = true,
-			RevisionSelection = CloudScriptRevisionOption.Latest,
 		}, (success) =>
 		{
 			string resultString = (string)success.FunctionResult;
@@ -1164,7 +1163,6 @@ public class PlayFabApiManager : MonoBehaviour
 		{
 			FunctionName = "CancelBossBattle",
 			GeneratePlayStreamEvent = true,
-			RevisionSelection = CloudScriptRevisionOption.Latest,
 		}, null, null);
 	}
 
@@ -1184,7 +1182,6 @@ public class PlayFabApiManager : MonoBehaviour
 			FunctionName = "EndBossBattle",
 			FunctionParameter = new { Flg = (string)_serverEnterKeyForBossBattle, Cl = (clear ? 1 : 0), Nb = nextBossId, PlLv = playLevel, Lst = listFirstItemGrantRequest, LstCs = checkSum, Lst2 = listItemGrantRequest, LstCs2 = checkSum2 },
 			GeneratePlayStreamEvent = true,
-			RevisionSelection = CloudScriptRevisionOption.Latest,
 		};
 		Action action = () =>
 		{
@@ -1217,7 +1214,6 @@ public class PlayFabApiManager : MonoBehaviour
 			FunctionName = "RefreshBoss",
 			FunctionParameter = new { Nb = nextBossId, Cs = checkSum },
 			GeneratePlayStreamEvent = true,
-			RevisionSelection = CloudScriptRevisionOption.Latest,
 		}, (success) =>
 		{
 			string resultString = (string)success.FunctionResult;

@@ -178,10 +178,11 @@ public class LobbyCanvas : MonoBehaviour
 	}
 
 	#region Sub Menu
+	// 코루틴 Async로딩에 토글로 동작하는거라 동기를 맞추려면 이렇게 해야만 했다.
 	public void OnShowDotMainMenu(bool show)
 	{
-		// 코루틴 Async로딩에 토글로 동작하는거라 동기를 맞추려면 이렇게 해야만 했다.
-		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.BossBattle) == false)
+		// 장비보상이기 때문에 TimeSpace로 체크한다.
+		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapterStage.TimeSpace) == false)
 			return;
 
 		if (show)

@@ -197,7 +197,7 @@ public class EventManager : MonoBehaviour
 		// 이미 기존 유저들이 있는 상태에서 초반 이벤트가 추가될때의 예외처리다.
 		// 미리 시스템을 다 만들었으면 이런 코드가 필요없을텐데 나중에 추가해서 생기게 되었다.
 		// 새 추가 컨텐츠 나올때마다 이 아래에다 붙이면 될거다.
-		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.BossBattle))
+		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapterStage.TimeSpace))
 		{
 			// 컨텐츠는 오픈 상태인데 1도 아니고 2도 아니라면 강제로 이벤트를 재생 대기 상태로 설정해야한다.
 			if (IsCompleteServerEvent(eServerEvent.boss) == false && ContainsStandbyServerEvent(eServerEvent.boss) == false)

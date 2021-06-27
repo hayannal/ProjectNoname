@@ -145,7 +145,7 @@ public class DropProcessor : MonoBehaviour
 					case eDropType.Gacha:
 
 						// 첫클리어 보상이라면 suggestedMaxPowerLevel을 검사하지 않는다.
-						if (dropTableData.subValue[i] == "en" || dropTableData.subValue[i] == "ej" || dropTableData.subValue[i] == "eq")
+						if (dropTableData.subValue[i] == "ez" || dropTableData.subValue[i] == "en" || dropTableData.subValue[i] == "ej" || dropTableData.subValue[i] == "eq")
 							break;
 
 						int suggestedMaxPowerLevel = 0;

@@ -59,6 +59,20 @@ public class BossBattleProcessor : BattleModeProcessorBase
 
 		LobbyCanvas.instance.RefreshExpPercent(1.0f, 5);
 		LobbyCanvas.instance.RefreshLevelText(StageManager.instance.GetMaxStageLevel());
+
+		// 이거 하나만큼은 BattleEnterCanvas로부터 가져오기로 한다.
+		int bossOpenChapter = BossBattleEnterCanvas.instance.GetBossBattleTableData().chapter;
+		int packCount = BossBattleEnterCanvas.instance.GetXpLevel();
+		for (int i = 0; i < packCount; ++i)
+		{
+			// 팩의 등장은 현재 선택된 difficulty에 따라 나오는게 아니라 보스의 원래 등장 챕터 기반으로 나와야한다.
+			List<LevelPackDataManager.RandomLevelPackInfo> listRandomLevelPackInfo = LevelPackDataManager.instance.GetRandomLevelPackTableDataList(BattleInstanceManager.instance.playerActor, false, bossOpenChapter);
+			int index = LevelUpIndicatorCanvas.FindIndex(listRandomLevelPackInfo, Random.value);
+			if (index == -1)
+				continue;
+
+			playerActor.skillProcessor.AddLevelPack(listRandomLevelPackInfo[index].levelPackTableData.levelPackId, false, 0);
+		}
 	}
 
 	public override void OnLoadedMap()

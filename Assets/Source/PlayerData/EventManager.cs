@@ -84,6 +84,8 @@ public class EventManager : MonoBehaviour
 			MailData.instance.RefreshMailListImmediate();
 
 			// 이제 2챕터 클리어 후에는 클라이언트 이벤트도 있지만 서버 이벤트도 추가로 생긴다.
+			// 사실은 클라이언트상에서의 보스전 메뉴 오픈을 2-10으로 옮겼지만 디비에서 boss이벤트 설정하는건 여전히 2챕터 도착 시점으로 처리하기때문에
+			// 동기를 맞추기 위해 클라 역시 이벤트만 이 시점에 설정한다.
 			PushServerEvent(eServerEvent.boss);
 		}
 		else if (chapter == (int)ContentsManager.eOpenContentsByChapter.Research)

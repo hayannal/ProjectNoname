@@ -298,7 +298,7 @@ public class LevelUpIndicatorCanvas : ObjectIndicatorCanvas
 		}
 	}
 
-	int FindIndex(List<LevelPackDataManager.RandomLevelPackInfo> listRandomLevelPackInfo, float random)
+	public static int FindIndex(List<LevelPackDataManager.RandomLevelPackInfo> listRandomLevelPackInfo, float random)
 	{
 		for (int i = 0; i < listRandomLevelPackInfo.Count; ++i)
 		{

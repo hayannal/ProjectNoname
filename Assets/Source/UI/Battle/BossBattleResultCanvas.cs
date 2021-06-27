@@ -13,23 +13,24 @@ public class BossBattleResultCanvas : MonoBehaviour
 	public Text difficultyText;
 	public Text resultText;
 
-	public GameObject noRewardGroupObject;
-
 	public GameObject firstRewardGroupObject;
-	public Text firstRewardTypeText;
-	public GameObject[] firstRewardTypeObjectList;
-	public DOTweenAnimation[] firstRewardTweenAnimation;
+	public DOTweenAnimation firstRewardTweenAnimation;
 	public Text firstRewardValueText;
 
+	public GameObject firstRewardContentItemPrefab;
+	public RectTransform firstRewardContentRootRectTransform;
+
+	public GameObject repeatOnlyRectObject;
 	public GameObject goldGroupObject;
 	public DOTweenAnimation goldImageTweenAnimation;
 	public Text goldValueText;
-	public Text goldBoostText;
+
+	
 
 	public GameObject itemGroupObject;
 	public Slider itemLineSlider;
 	public GameObject gainItemTextObject;
-	public Text itemBoostText;
+
 	public GameObject itemScrollViewObject;
 	public GameObject contentItemPrefab;
 	public RectTransform contentRootRectTransform;
@@ -38,6 +39,11 @@ public class BossBattleResultCanvas : MonoBehaviour
 	public RectTransform smallStatusBackBlurImage;
 
 	public GameObject exitGroupObject;
+
+	public class CustomItemFirstRewardContainer : CachedItemHave<EquipCanvasListItem>
+	{
+	}
+	CustomItemContainer _firstRewardContainer = new CustomItemContainer();
 
 	public class CustomItemContainer : CachedItemHave<EquipCanvasListItem>
 	{
@@ -51,6 +57,7 @@ public class BossBattleResultCanvas : MonoBehaviour
 
 	void Start()
 	{
+		firstRewardContentItemPrefab.SetActive(false);
 		contentItemPrefab.SetActive(false);
 		smallStatusBackBlurImage.SetAsFirstSibling();
 	}
@@ -75,14 +82,15 @@ public class BossBattleResultCanvas : MonoBehaviour
 	{
 		UpdateFirstRewardText();
 		UpdateGoldText();
-		//UpdateEquipSmallStatusInfo();
+		UpdateEquipSmallStatusInfo();
 	}
 
 	bool _clear = false;
 	int _selectedDifficulty;
 	bool _firstClear;
-	List<ItemInstance> _listGrantItem;
-	public void RefreshInfo(bool clear, int selectedDifficulty, bool firstClear, string jsonItemGrantResults)
+	List<ItemInstance> _listFirstGrantItem;
+	List<ItemInstance> _listDropGrantItem;
+	public void RefreshInfo(bool clear, int selectedDifficulty, bool firstClear, string jsonFirstItemGrantResults, string jsonDropItemGrantResults)
 	{
 		_clear = clear;
 		_selectedDifficulty = selectedDifficulty;
@@ -92,8 +100,10 @@ public class BossBattleResultCanvas : MonoBehaviour
 		resultText.text = UIString.instance.GetString(clear ? "GameUI_Success" : "GameUI_Failure");
 		resultText.color = clear ? new Color(0.0f, 0.733f, 0.792f) : new Color(0.792f, 0.152f, 0.0f);
 
-		if (jsonItemGrantResults != "")
-			_listGrantItem = TimeSpaceData.instance.DeserializeItemGrantResult(jsonItemGrantResults);
+		if (jsonFirstItemGrantResults != "")
+			_listFirstGrantItem = TimeSpaceData.instance.DeserializeItemGrantResult(jsonFirstItemGrantResults);
+		if (jsonDropItemGrantResults != "")
+			_listDropGrantItem = TimeSpaceData.instance.DeserializeItemGrantResult(jsonDropItemGrantResults);
 
 		gameObject.SetActive(true);
 
@@ -112,41 +122,20 @@ public class BossBattleResultCanvas : MonoBehaviour
 	}
 
 	#region NodeWar Result
-	int _firstRewardAmount;
+	int _firstRewardAmount = 0;
 	public void OnEventSuccessResult()
 	{
-		if (_clear)
+		if (_clear && _firstClear)
 		{
-			if (_firstClear)
-			{
-				/*
-				CurrencyData.eCurrencyType currencyType = CurrencyData.eCurrencyType.Diamond;
-				int amount = _currentNodeWarTableData.firstRewardDiamond;
-				if (_currentNodeWarTableData.firstRewardGold > 0)
-				{
-					currencyType = CurrencyData.eCurrencyType.Gold;
-					amount = _currentNodeWarTableData.firstRewardGold;
-				}
-				_firstRewardAmount = amount;
-				for (int i = 0; i < firstRewardTypeObjectList.Length; ++i)
-					firstRewardTypeObjectList[i].SetActive((int)currencyType == i);
-				firstRewardTypeText.SetLocalizedText(UIString.instance.GetString((currencyType == CurrencyData.eCurrencyType.Diamond) ? "ShopUI_DiamondReward" : "ShopUI_GoldReward"));
-				firstRewardGroupObject.SetActive(true);
-				*/
-				firstRewardGroupObject.SetActive(true);
-			}
-			else
-			{
-				// 첫 클리어 보상이 없을땐 repeat보상만 켜면 된다.
-				SetRepeatRewardInfo();
-				goldGroupObject.SetActive(true);
-			}
+			_firstRewardAmount = BattleManager.instance.GetCachedBossRewardTableData().firstEnergy;
+			firstRewardGroupObject.SetActive(true);
+			return;
 		}
-		else
-		{
-			// 실패했다면 보상 없음 표시를 켜고
-			noRewardGroupObject.SetActive(true);
-		}
+
+		// 첫 클리어 보상이 없을땐 일반보상만 켜면 된다.
+		SetRepeatRewardInfo();
+		repeatOnlyRectObject.SetActive(true);
+		goldGroupObject.SetActive(true);
 	}
 	#endregion
 
@@ -157,12 +146,7 @@ public class BossBattleResultCanvas : MonoBehaviour
 		_firstRewardChangeSpeed = _firstRewardAmount / _firstRewardChangeRemainTime;
 		_currentFirstReward = 0.0f;
 		_updateFirstRewardText = true;
-
-		for (int i = 0; i < firstRewardTypeObjectList.Length; ++i)
-		{
-			if (firstRewardTypeObjectList[i].activeSelf)
-				firstRewardTweenAnimation[i].DOPlay();
-		}
+		firstRewardTweenAnimation.DOPlay();
 
 		StartCoroutine(FirstRewardProcess());
 	}
@@ -171,11 +155,28 @@ public class BossBattleResultCanvas : MonoBehaviour
 	{
 		yield return new WaitForSecondsRealtime(firstRewardChangeTime);
 
+		// 없을리는 없겠지만 체크
+		if (_listFirstGrantItem != null || _listFirstGrantItem.Count > 0)
+		{
+			yield return new WaitForSecondsRealtime(0.2f);
+
+			for (int i = 0; i < _listFirstGrantItem.Count; ++i)
+			{
+				EquipData newEquipData = new EquipData();
+				newEquipData.equipId = _listFirstGrantItem[i].ItemId;
+				newEquipData.Initialize(_listFirstGrantItem[i].CustomData);
+
+				EquipCanvasListItem equipCanvasListItem = _firstRewardContainer.GetCachedItem(firstRewardContentItemPrefab, firstRewardContentRootRectTransform);
+				equipCanvasListItem.Initialize(newEquipData, OnClickListItem);
+				yield return new WaitForSecondsRealtime(0.2f);
+			}
+		}
+
 		SetRepeatRewardInfo();
 		goldGroupObject.SetActive(true);
 	}
 
-	const float firstRewardChangeTime = 0.4f;
+	const float firstRewardChangeTime = 0.2f;
 	float _firstRewardChangeRemainTime;
 	float _firstRewardChangeSpeed;
 	float _currentFirstReward;
@@ -205,7 +206,7 @@ public class BossBattleResultCanvas : MonoBehaviour
 	int _repeatRewardAmount;
 	void SetRepeatRewardInfo()
 	{
-		//_repeatRewardAmount = _currentNodeWarTableData.repeatRewardGold;
+		_repeatRewardAmount = BattleManager.instance.GetCachedBossRewardTableData().enterGold;
 	}
 
 	public void OnEventIncreaseGold()
@@ -223,11 +224,12 @@ public class BossBattleResultCanvas : MonoBehaviour
 	IEnumerator GoldProcess()
 	{
 		yield return new WaitForSecondsRealtime(goldChangeTime);
-		yield return new WaitForSecondsRealtime(0.2f);
-		itemGroupObject.SetActive(true);
-		//StartCoroutine(ItemProcess());
 
-		exitGroupObject.SetActive(true);
+		// Exp Process
+		yield return new WaitForSecondsRealtime(0.2f);
+
+		itemGroupObject.SetActive(true);
+		StartCoroutine(DropItemProcess());
 	}
 
 	const float goldChangeTime = 0.4f;
@@ -252,6 +254,66 @@ public class BossBattleResultCanvas : MonoBehaviour
 		{
 			_lastGold = currentGoldInt;
 			goldValueText.text = _lastGold.ToString("N0");
+		}
+	}
+	#endregion
+
+	#region Drop Item
+	IEnumerator DropItemProcess()
+	{
+		DOTween.To(() => itemLineSlider.value, x => itemLineSlider.value = x, 1.0f, 0.4f).SetEase(Ease.Linear).SetUpdate(true);
+
+		yield return new WaitForSecondsRealtime(0.3f);
+
+		gainItemTextObject.SetActive(true);
+
+		yield return new WaitForSecondsRealtime(0.1f);
+
+		// 아이템이 없으면 바로 exitGroupObject
+		if (_listDropGrantItem == null || _listDropGrantItem.Count == 0)
+		{
+			yield return new WaitForSecondsRealtime(0.2f);
+			exitGroupObject.SetActive(true);
+			yield break;
+		}
+
+		itemScrollViewObject.SetActive(true);
+
+		for (int i = 0; i < _listDropGrantItem.Count; ++i)
+		{
+			EquipData newEquipData = new EquipData();
+			newEquipData.equipId = _listDropGrantItem[i].ItemId;
+			newEquipData.Initialize(_listDropGrantItem[i].CustomData);
+
+			EquipCanvasListItem equipCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
+			equipCanvasListItem.Initialize(newEquipData, OnClickListItem);
+			yield return new WaitForSecondsRealtime(0.2f);
+		}
+
+		exitGroupObject.SetActive(true);
+	}
+	#endregion
+
+	#region Item Common
+	public void OnClickListItem(EquipData equipData)
+	{
+		equipSmallStatusInfo.RefreshInfo(equipData, false);
+		equipSmallStatusInfo.gameObject.SetActive(false);
+		equipSmallStatusInfo.gameObject.SetActive(true);
+		_materialSmallStatusInfoShowRemainTime = 2.0f;
+	}
+
+	float _materialSmallStatusInfoShowRemainTime;
+	void UpdateEquipSmallStatusInfo()
+	{
+		if (_materialSmallStatusInfoShowRemainTime > 0.0f)
+		{
+			_materialSmallStatusInfoShowRemainTime -= Time.unscaledDeltaTime;
+			if (_materialSmallStatusInfoShowRemainTime <= 0.0f)
+			{
+				_materialSmallStatusInfoShowRemainTime = 0.0f;
+				equipSmallStatusInfo.gameObject.SetActive(false);
+			}
 		}
 	}
 	#endregion

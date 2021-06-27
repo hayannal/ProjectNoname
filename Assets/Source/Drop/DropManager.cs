@@ -304,6 +304,160 @@ public class DropManager : MonoBehaviour
 	}
 	#endregion
 
+	#region BossBattle
+	List<RandomDropEquipInfo> _listBossDropEquipInfo = null;
+	public string GetBossDropEquipId()
+	{
+		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
+		if (lobby)
+			return "";
+
+		// 위에 있는 기본 스테이지 드랍인 GetStageDropEquipId와 비슷하지만 전설키 처리만 조금 다른 함수다.
+		// 보스한테 한번 굴리는거라 _last 체크없이 항상 굴리기로 한다.
+
+		if (_listBossDropEquipInfo == null)
+			_listBossDropEquipInfo = new List<RandomDropEquipInfo>();
+		_listBossDropEquipInfo.Clear();
+
+		float sumWeight = 0.0f;
+		for (int i = 0; i < TableDataManager.instance.equipTable.dataArray.Length; ++i)
+		{
+			float weight = TableDataManager.instance.equipTable.dataArray[i].stageDropWeight;
+			if (weight <= 0.0f)
+				continue;
+
+			bool add = false;
+			int playChapter = StageManager.instance.currentStageTableData.chapter;
+			// Difficulty 1이어도 2인거처럼 해야 드랍템을 구할 수 있어서 예외처리.
+			if (playChapter == 1) playChapter = 2;
+			if (playChapter >= TableDataManager.instance.equipTable.dataArray[i].startingDropChapter)
+				add = true;
+			
+			if (add == false)
+				continue;
+
+			if (EquipData.IsUseLegendKey(TableDataManager.instance.equipTable.dataArray[i]))
+			{
+				float adjustWeight = 0.0f;
+				int tempKey = GetRemainLegendKey();
+				if (tempKey > 10) tempKey = 10;
+				RemainTableData remainTableData = TableDataManager.instance.FindRemainTableData(tempKey);
+				if (remainTableData != null)
+					adjustWeight = remainTableData.adjustWeight;
+				// adjustWeight 검증
+				if (adjustWeight > 1.0f)
+					CheatingListener.OnDetectCheatTable();
+				weight *= adjustWeight;
+				if (weight <= 0.0f)
+					continue;
+			}
+
+			sumWeight += weight;
+			RandomDropEquipInfo newInfo = new RandomDropEquipInfo();
+			newInfo.equipTableData = TableDataManager.instance.equipTable.dataArray[i];
+			newInfo.sumWeight = sumWeight;
+			_listBossDropEquipInfo.Add(newInfo);
+		}
+
+		if (_listBossDropEquipInfo.Count == 0)
+			return "";
+
+		int index = -1;
+		float random = Random.Range(0.0f, _listBossDropEquipInfo[_listBossDropEquipInfo.Count - 1].sumWeight);
+		for (int i = 0; i < _listBossDropEquipInfo.Count; ++i)
+		{
+			if (random <= _listBossDropEquipInfo[i].sumWeight)
+			{
+				index = i;
+				break;
+			}
+		}
+		if (index == -1)
+			return "";
+
+		++droppedStageItemCount;
+
+		// 바로 감소시켜놔야 다음번 드랍될때 _lastLegendKey가 달라지면서 드랍 리스트를 리프레쉬 하게 된다.
+		// 인게임에서만 적용되는 수치로 장비뽑기할때는 적용받지 않는다.
+		if (EquipData.IsUseLegendKey(_listBossDropEquipInfo[index].equipTableData))
+			++droppedLengendItemCount;
+		return _listBossDropEquipInfo[index].equipTableData.equipId;
+	}
+
+	// not streak에 영향주지 않는 보스 첫클리어 보상용이다.
+	List<RandomDropEquipInfo> _listBossFirstDropEquipInfo = null;
+	public string GetBossEquipIdByGrade(int grade = -1)
+	{
+		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
+		if (lobby)
+			return "";
+
+		if (_listBossFirstDropEquipInfo == null)
+			_listBossFirstDropEquipInfo = new List<RandomDropEquipInfo>();
+		_listBossFirstDropEquipInfo.Clear();
+
+		float sumWeight = 0.0f;
+		for (int i = 0; i < TableDataManager.instance.equipTable.dataArray.Length; ++i)
+		{
+			float weight = TableDataManager.instance.equipTable.dataArray[i].equipGachaWeight;
+			if (weight <= 0.0f)
+				continue;
+
+			// 보스드랍이기 때문에 캐시 장비들은 다 빼야한다.
+			switch ((TimeSpaceData.eEquipSlotType)TableDataManager.instance.equipTable.dataArray[i].equipType)
+			{
+				case TimeSpaceData.eEquipSlotType.Gun:
+				case TimeSpaceData.eEquipSlotType.Shield:
+				case TimeSpaceData.eEquipSlotType.TwoHanded:
+					continue;
+			}
+
+			if (grade == -1)
+			{
+				// 전설뽑기니 나머지 제외
+				if (EquipData.IsUseLegendKey(TableDataManager.instance.equipTable.dataArray[i]) == false)
+					continue;
+
+				// equipGachaWeight 검증
+				if (weight > 1.0f)
+					CheatingListener.OnDetectCheatTable();
+			}
+			else
+			{
+				if (grade == 1 || grade == 2 || grade == 3)
+				{
+					if (TableDataManager.instance.equipTable.dataArray[i].grade != grade)
+						continue;
+				}
+				else
+					continue;
+			}
+
+			sumWeight += weight;
+			RandomDropEquipInfo newInfo = new RandomDropEquipInfo();
+			newInfo.equipTableData = TableDataManager.instance.equipTable.dataArray[i];
+			newInfo.sumWeight = sumWeight;
+			_listBossFirstDropEquipInfo.Add(newInfo);
+		}
+		if (_listBossFirstDropEquipInfo.Count == 0)
+			return "";
+
+		int index = -1;
+		float random = Random.Range(0.0f, _listBossFirstDropEquipInfo[_listBossFirstDropEquipInfo.Count - 1].sumWeight);
+		for (int i = 0; i < _listBossFirstDropEquipInfo.Count; ++i)
+		{
+			if (random <= _listBossFirstDropEquipInfo[i].sumWeight)
+			{
+				index = i;
+				break;
+			}
+		}
+		if (index == -1)
+			return "";
+		return _listBossFirstDropEquipInfo[index].equipTableData.equipId;
+	}
+	#endregion
+
 	List<RandomDropEquipInfo> _listFullChaosRevertDropEquipInfo = null;
 	public string GetFullChaosRevertDropEquipId()
 	{

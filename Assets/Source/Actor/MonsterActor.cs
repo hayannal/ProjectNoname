@@ -590,10 +590,18 @@ public class MonsterActor : Actor
 		}
 
 		string dropId = "";
-		if (cachedMonsterTableData.defaultDropUse && StageManager.instance.currentStageTableData != null)
+		if (cachedMonsterTableData.defaultDropUse)
 		{
-			if (bossMonster) dropId = StageManager.instance.currentStageTableData.defaultBossDropId;
-			else dropId = StageManager.instance.currentStageTableData.defaultNormalDropId;
+			if (BattleManager.instance != null && BattleManager.instance.IsBossBattle())
+			{
+				if (bossMonster) dropId = BattleManager.instance.GetCachedBossRewardTableData().bossDropId;
+				else dropId = "";
+			}
+			else if (StageManager.instance.currentStageTableData != null)
+			{
+				if (bossMonster) dropId = StageManager.instance.currentStageTableData.defaultBossDropId;
+				else dropId = StageManager.instance.currentStageTableData.defaultNormalDropId;
+			}
 		}
 		string addDropId = cachedMonsterTableData.addDropId;
 		DropProcessor.Drop(cachedTransform, dropId, addDropId, lastMonsterInStage, false);

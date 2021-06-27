@@ -247,4 +247,11 @@ public class BattleManager : MonoBehaviour
 		_currentBattleMode.OnSuccessExitArea();
 	}
 	#endregion
+
+	#region BossBattle
+	public BossRewardTableData GetCachedBossRewardTableData()
+	{
+		return _currentBattleMode.GetCachedBossRewardTableData();
+	}
+	#endregion
 }

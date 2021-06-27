@@ -911,4 +911,11 @@ public class BattleModeProcessorBase
 	public virtual void OnSuccessExitArea()
 	{
 	}
+
+	#region BossBattle
+	public virtual BossRewardTableData GetCachedBossRewardTableData()
+	{
+		return null;
+	}
+	#endregion
 }

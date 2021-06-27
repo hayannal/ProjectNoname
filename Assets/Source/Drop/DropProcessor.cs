@@ -143,6 +143,11 @@ public class DropProcessor : MonoBehaviour
 				{
 					case eDropType.Gold:
 					case eDropType.Gacha:
+
+						// 첫클리어 보상이라면 suggestedMaxPowerLevel을 검사하지 않는다.
+						if (dropTableData.subValue[i] == "en" || dropTableData.subValue[i] == "ej" || dropTableData.subValue[i] == "eq")
+							break;
+
 						int suggestedMaxPowerLevel = 0;
 						if (BattleManager.instance != null && BattleManager.instance.IsBossBattle())
 							suggestedMaxPowerLevel = StageManager.instance.currentStageTableData.chapter;
@@ -170,9 +175,12 @@ public class DropProcessor : MonoBehaviour
 						float itemDropAdjust = DropAdjustAffector.GetValue(BattleInstanceManager.instance.playerActor.affectorProcessor, DropAdjustAffector.eDropAdjustType.ItemDropRate);
 						if (itemDropAdjust != 0.0f)
 							probability *= (1.0f + itemDropAdjust);
-						// 초반 플레이 예외처리.
-						if (PlayerData.instance.highestPlayChapter <= 3 && PlayerData.instance.highestPlayChapter == PlayerData.instance.selectedChapter && DropManager.instance.droppedStageItemCount == 0)
-							probability *= 2.3f;
+						if (BattleManager.instance != null && BattleManager.instance.IsDefaultBattle())
+						{
+							// 초반 플레이 예외처리.
+							if (PlayerData.instance.highestPlayChapter <= 3 && PlayerData.instance.highestPlayChapter == PlayerData.instance.selectedChapter && DropManager.instance.droppedStageItemCount == 0)
+								probability *= 2.3f;
+						}
 						break;
 					case eDropType.Heart:
 						probability *= StageManager.instance.currentStageTableData.dropHeartAdjustment;
@@ -218,6 +226,10 @@ public class DropProcessor : MonoBehaviour
 						case "e": stringValue = DropManager.instance.GetStageDropEquipId(); break;
 						case "g": stringValue = DropManager.instance.GetGachaEquipId(); break;
 						case "o": stringValue = DropManager.instance.GetGachaEquipIdByGrade(); break;
+						case "r": stringValue = DropManager.instance.GetBossDropEquipId(); break;	// 토벌전 드랍보상. 레전드키 변형.
+						case "en": stringValue = DropManager.instance.GetBossEquipIdByGrade(1); lobby = true; break;	// 토벌전 최초보상.
+						case "ej": stringValue = DropManager.instance.GetBossEquipIdByGrade(2); lobby = true; break;	// 토벌전 최초보상.
+						case "eq": stringValue = DropManager.instance.GetBossEquipIdByGrade(3); lobby = true; break;	// 토벌전 최초보상. 스테이지에서만 나오는거 중에서 등급으로 고른다. 레전드키 영향 없음.
 						case "n": stringValue = DropManager.instance.GetGachaEquipIdByGrade(1); break;
 						case "j": stringValue = DropManager.instance.GetGachaEquipIdByGrade(2); break;
 						case "q": stringValue = DropManager.instance.GetGachaEquipIdByGrade(3); break;

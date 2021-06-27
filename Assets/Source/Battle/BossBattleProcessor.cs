@@ -18,6 +18,7 @@ public class BossBattleProcessor : BattleModeProcessorBase
 	ObscuredBool _firstClear;
 	ObscuredInt _selectedDifficulty;
 	ObscuredInt _clearDifficulty;
+	BossRewardTableData _bossRewardTableData;
 	public override void OnStartBattle()
 	{
 		// base꺼 호출할 필요 없다. startDateTime도 안쓰고 빅뱃 예외처리도 필요없다.
@@ -48,6 +49,13 @@ public class BossBattleProcessor : BattleModeProcessorBase
 			changeStatusAffectorValue.iValue1 = (int)ActorStatusDefine.eActorStatus.AttackAddRate;
 			BattleInstanceManager.instance.playerActor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.ChangeActorStatus, changeStatusAffectorValue, BattleInstanceManager.instance.playerActor, true);
 		}
+
+		_bossRewardTableData = TableDataManager.instance.FindBossRewardData(currentBossId, _selectedDifficulty);
+	}
+
+	public override BossRewardTableData GetCachedBossRewardTableData()
+	{
+		return _bossRewardTableData;
 	}
 
 	public static void ApplyBossBattleLevelPack(PlayerActor playerActor)
@@ -255,61 +263,64 @@ public class BossBattleProcessor : BattleModeProcessorBase
 			// 클리어 했다면 다음번 보스가 누구일지 미리 굴려서 End패킷에 보내야한다.
 			int nextBossId = PlayerData.instance.GetNextRandomBossId();
 
-			PlayFabApiManager.instance.RequestEndBossBattle(clear, nextBossId, _selectedDifficulty, DropManager.instance.GetStackedDropEquipList(), (result, nextId, itemGrantString) =>
+			// 첫 클리어라면 첫클리어 드랍 보상도 굴려야한다. 드랍 정보만 필요하고 연출은 필요없기때문에 간단하게 처리한다.
+			if (_firstClear)
+			{
+				DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, _bossRewardTableData.firstDropId, "", true, true);
+				if (CheatingListener.detectedCheatTable)
+					return;
+			}
+
+			PlayFabApiManager.instance.RequestEndBossBattle(clear, nextBossId, _selectedDifficulty, DropManager.instance.GetLobbyDropItemInfo(), DropManager.instance.GetStackedDropEquipList(), (result, nextId, firstItemGrantString, itemGrantString) =>
 			{
 				// 정보를 갱신하기 전에 먼저 BattleResult를 보여준다.
 				UIInstanceManager.instance.ShowCanvasAsync("BossBattleResultCanvas", () =>
 				{
-					BossBattleResultCanvas.instance.RefreshInfo(true, _selectedDifficulty, _firstClear, itemGrantString);
-					OnRecvEndBossBattle(result, nextId, itemGrantString);
+					BossBattleResultCanvas.instance.RefreshInfo(true, _selectedDifficulty, _firstClear, firstItemGrantString, itemGrantString);
+					OnRecvEndBossBattle(result, _firstClear, nextId, firstItemGrantString, itemGrantString);
 				});
 			});
 		}
 		else
 		{
-			PlayFabApiManager.instance.RequestCancelBossBattle();
-			UIInstanceManager.instance.ShowCanvasAsync("BossBattleResultCanvas", () =>
+			PlayFabApiManager.instance.RequestEndBossBattle(false, 0, _selectedDifficulty, null, null, (result, nextId, firstItemGrantString, itemGrantString) =>
 			{
-				BossBattleResultCanvas.instance.RefreshInfo(false, _selectedDifficulty, _firstClear, "");
+				// 정보를 갱신하기 전에 먼저 BattleResult를 보여준다.
+				UIInstanceManager.instance.ShowCanvasAsync("BossBattleResultCanvas", () =>
+				{
+					BossBattleResultCanvas.instance.RefreshInfo(false, _selectedDifficulty, false, firstItemGrantString, itemGrantString);
+					OnRecvEndBossBattle(result, false, nextId, firstItemGrantString, itemGrantString);
+				});
 			});
 		}
 
 		_endProcess = false;
 	}
 
-	void OnRecvEndBossBattle(bool clear, int nextBossId, string itemGrantString)
+	void OnRecvEndBossBattle(bool clear, bool firstClear, int nextBossId, string firstItemGrantString, string itemGrantString)
 	{
 		// 반복클리어냐 아니냐에 따라 결과를 나누면 된다.
-		int addDia = 0;
-		int addGold = 0;
+		CurrencyData.instance.gold += _bossRewardTableData.enterGold;
+		PlayerData.instance.AddBossBattleCount();
+
 		if (clear)
 		{
 			PlayerData.instance.OnClearBossBattle(_selectedDifficulty, _clearDifficulty, nextBossId);
 
 			if (_firstClear)
 			{
-				//PlayerData.instance.nodeWarClearLevel = _selectedNodeWarTableData.level;
-				//addDia += _selectedNodeWarTableData.firstRewardDiamond;
-				//addGold += _selectedNodeWarTableData.firstRewardGold;
+				if (_bossRewardTableData.firstEnergy > 0)
+					CurrencyData.instance.OnRecvRefillEnergy(_bossRewardTableData.firstEnergy);
+
+				// 확정보상으로 굴리는거라 로비에서 쓰던 함수로 쓴다.
+				if (firstItemGrantString != "")
+					TimeSpaceData.instance.OnRecvGrantEquip(firstItemGrantString, 0);
 			}
 
-			/*
-			PlayerData.instance.nodeWarCurrentLevel = _selectedNodeWarTableData.level;
-			int rate = 1;
-			if (PlayerData.instance.nodeWarBoostRemainCount > 0)
-			{
-				PlayerData.instance.nodeWarBoostRemainCount -= 1;
-				rate = 3;
-			}
-			addGold += (_selectedNodeWarTableData.repeatRewardGold * rate);
-			*/
+			// 이건 레전드키까지 써서 굴리는 진짜 드랍이므로 OnRecvItemGrantResult를 쓴다.
+			if (itemGrantString != "")
+				TimeSpaceData.instance.OnRecvItemGrantResult(itemGrantString, true);
 		}
-
-		CurrencyData.instance.gold += addGold;
-		CurrencyData.instance.dia += addDia;
-
-		if (itemGrantString != "")
-			TimeSpaceData.instance.OnRecvGrantEquip(itemGrantString);
 	}
 	#endregion
 }

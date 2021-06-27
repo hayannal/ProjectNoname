@@ -1168,14 +1168,21 @@ public class PlayFabApiManager : MonoBehaviour
 		}, null, null);
 	}
 
-	public void RequestEndBossBattle(bool clear, int nextBossId, int playLevel, List<ObscuredString> listDropItemId, Action<bool, int, string> successCallback)
+	public void RequestEndBossBattle(bool clear, int nextBossId, int playLevel, List<ObscuredString> listFirstDropItemId, List<ObscuredString> listDropItemId, Action<bool, int, string, string> successCallback)
 	{
 		string checkSum = "";
-		List<TimeSpaceData.ItemGrantRequest> listItemGrantRequest = TimeSpaceData.instance.GenerateGrantRequestInfo(listDropItemId, ref checkSum);
+		List<TimeSpaceData.ItemGrantRequest> listFirstItemGrantRequest = TimeSpaceData.instance.GenerateGrantRequestInfo(listFirstDropItemId, ref checkSum);
+		// 지금은 한번에 두개를 못기억하게 되어있으므로 리스트를 복제해서 보내기로 한다.
+		List<TimeSpaceData.ItemGrantRequest> listFirstItemGrantRequest2 = new List<TimeSpaceData.ItemGrantRequest>();
+		for (int i = 0; i < listFirstItemGrantRequest.Count; ++i)
+			listFirstItemGrantRequest2.Add(listFirstItemGrantRequest[i]);
+		listFirstItemGrantRequest = listFirstItemGrantRequest2;
+		string checkSum2 = "";
+		List<TimeSpaceData.ItemGrantRequest> listItemGrantRequest = TimeSpaceData.instance.GenerateGrantRequestInfo(listDropItemId, ref checkSum2);
 		ExecuteCloudScriptRequest request = new ExecuteCloudScriptRequest()
 		{
 			FunctionName = "EndBossBattle",
-			FunctionParameter = new { Flg = (string)_serverEnterKeyForBossBattle, Cl = (clear ? 1 : 0), Nb = nextBossId, PlLv = playLevel, Lst = listItemGrantRequest, LstCs = checkSum },
+			FunctionParameter = new { Flg = (string)_serverEnterKeyForBossBattle, Cl = (clear ? 1 : 0), Nb = nextBossId, PlLv = playLevel, Lst = listFirstItemGrantRequest, LstCs = checkSum, Lst2 = listItemGrantRequest, LstCs2 = checkSum2 },
 			GeneratePlayStreamEvent = true,
 			RevisionSelection = CloudScriptRevisionOption.Latest,
 		};
@@ -1186,11 +1193,12 @@ public class PlayFabApiManager : MonoBehaviour
 				PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
 				jsonResult.TryGetValue("retErr", out object retErr);
 				jsonResult.TryGetValue("itmRet", out object itmRet);
+				jsonResult.TryGetValue("itmRet2", out object itmRet2);
 				bool failure = ((retErr.ToString()) == "1");
 				_serverEnterKeyForBossBattle = "";
 				if (!failure)
 					RetrySendManager.instance.OnSuccess();
-				if (successCallback != null) successCallback.Invoke(clear, nextBossId, (string)itmRet);
+				if (successCallback != null) successCallback.Invoke(clear, nextBossId, (string)itmRet, (string)itmRet2);
 			}, (error) =>
 			{
 				RetrySendManager.instance.OnFailure();

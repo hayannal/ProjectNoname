@@ -232,6 +232,7 @@ public class BossBattleEnterCanvas : MonoBehaviour
 	void RefreshBossBattleCount(int count)
 	{
 		// 현재 카운트가 속하는 테이블 구해와서 레벨 및 경험치로 표시.
+		_xpLevel = 1;
 		int maxXpLevel = BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxBossBattleLevel");
 		int level = 0;
 		float percent = 0.0f;
@@ -249,17 +250,26 @@ public class BossBattleEnterCanvas : MonoBehaviour
 			}
 			if (TableDataManager.instance.bossExpTable.dataArray[i].xpLevel >= maxXpLevel)
 			{
+				currentPeriodExp = count - TableDataManager.instance.bossExpTable.dataArray[i - 1].requiredAccumulatedExp;
+				currentPeriodExpMax = TableDataManager.instance.bossExpTable.dataArray[i].requiredExp;
 				level = maxXpLevel;
 				percent = 1.0f;
 				break;
 			}
 		}
 
+		_xpLevel = level;
 		string xpLevelString = "";
 		if (level == maxXpLevel)
+		{
 			xpLevelString = UIString.instance.GetString("GameUI_Lv", "Max");
+			xpLevelExpImage.color = DailyFreeItem.GetGoldTextColor();
+		}
 		else
+		{
 			xpLevelString = UIString.instance.GetString("GameUI_Lv", level);
+			xpLevelExpImage.color = Color.white;
+		}
 		xpLevelText.text = string.Format("XP {0}", xpLevelString);
 		xpLevelExpText.text = string.Format("{0} / {1}", currentPeriodExp, currentPeriodExpMax);
 		xpLevelExpImage.fillAmount = percent;

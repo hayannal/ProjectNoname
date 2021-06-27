@@ -1672,9 +1672,23 @@ public class PlayerData : MonoBehaviour
 		if (id == 0) id = 1;
 		string key = id.ToString();
 		if (_dicBossBattleCount.ContainsKey(key))
-			_dicBossBattleCount[key]++;
+		{
+			int value = _dicBossBattleCount[key];
+			if (value < GetMaxXpExp())
+				_dicBossBattleCount[key]++;
+		}
 		else
 			_dicBossBattleCount.Add(key, 1);
+	}
+
+	int GetMaxXpExp()
+	{
+		for (int i = 1; i < TableDataManager.instance.bossExpTable.dataArray.Length; ++i)
+		{
+			if (TableDataManager.instance.bossExpTable.dataArray[i].xpLevel >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxBossBattleLevel"))
+				return TableDataManager.instance.bossExpTable.dataArray[i].requiredAccumulatedExp;
+		}
+		return 0;
 	}
 
 

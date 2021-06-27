@@ -123,22 +123,23 @@ public class StageManager : MonoBehaviour
 	{
 		_handleNextPlanePrefab = _handleNextGroundPrefab = _handleNextWallPrefab = _handleNextSpawnFlagPrefab = _handleNextPortalFlagPrefab = _handleEnvironmentSettingPrefab = null;
 
-		StageTableData bossLobbyStageTableData = BattleInstanceManager.instance.GetCachedStageTableData(bossStageTableData.chapter, 0, false);
-		if (bossLobbyStageTableData == null)
-			return;
+		// 보스전만큼은 랜덤 조명을 써보기 위해서 별도로 셋팅된 카오스 1챕터꺼를 쓰기로 한다.
+		string[] environmentSettingList = null;
+		StageTableData bossEnvStageTableData = BattleInstanceManager.instance.GetCachedStageTableData(1, 1, true);
+		if (bossEnvStageTableData == null)
+			environmentSettingList = bossEnvStageTableData.environmentSetting;
 
-		PrepareNextMap(bossMapTableData, bossLobbyStageTableData.environmentSetting);
+		PrepareNextMap(bossMapTableData, environmentSettingList);
 	}
 
 	public void MoveToBossBattle(StageTableData bossStageTableData, MapTableData bossMapTableData, int difficulty)
 	{
+		// 맵을 로드할때는 보스 등장시점의 스테이지 테이블을 사용하고
 		_currentStageTableData = bossStageTableData;
 		StageDataManager.instance.nextStageTableData = null;
-
 		InstantiateMap(bossMapTableData);
 
-		// 맵을 만들고나서 Difficulty에 따라서 난이도를 높여서 해놔야한다.
-		// 인자로 오는 Difficulty가 곧 실제 Difficulty니 chapter 자리에 넣으면 된다.
+		// 7챕터같은 경우에는 스테이지가 50개 있지 않고 일부만 있으니 재연결 시켜줘야한다.
 		int stage = bossStageTableData.stage;
 		switch (bossStageTableData.stage)
 		{
@@ -162,6 +163,9 @@ public class StageManager : MonoBehaviour
 				stage = 50;
 				break;
 		}
+
+		// 맵을 만들고나서 Difficulty에 따라서 챕터 난이도를 높여야한다.
+		// 인자로 오는 Difficulty가 곧 실제 Difficulty니 chapter 자리에 넣으면 된다.
 		StageTableData statBossStageTableData = BattleInstanceManager.instance.GetCachedStageTableData(difficulty, stage, true);
 		if (statBossStageTableData == null)
 			return;
@@ -324,7 +328,7 @@ public class StageManager : MonoBehaviour
 		}
 
 		// 환경은 위의 맵 정보와 달리 들어오면 설정하고 아니면 패스하는 형태다. 그래서 없을땐 null로 한다.
-		if (environmentSettingList.Length == 0)
+		if (environmentSettingList == null || environmentSettingList.Length == 0)
 		{
 			_handleEnvironmentSettingPrefab = null;
 			_environmentSettingAddress = "";

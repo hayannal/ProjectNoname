@@ -123,7 +123,6 @@ public class BossBattleEnterCanvas : MonoBehaviour
 	}
 
 	GameObject _cachedPreviewObject;
-	BossBattleTableData _bossBattleTableData;
 	StageTableData _bossStageTableData;
 	MapTableData _bossMapTableData;
 	ChapterTableData _bossChapterTableData;
@@ -224,6 +223,9 @@ public class BossBattleEnterCanvas : MonoBehaviour
 		RefreshEnergy();
 		RefreshPrice();
 	}
+
+	BossBattleTableData _bossBattleTableData;
+	public BossBattleTableData GetBossBattleTableData() { return _bossBattleTableData; }
 
 	ObscuredInt _xpLevel = 1;
 	public int GetXpLevel() { return _xpLevel; }

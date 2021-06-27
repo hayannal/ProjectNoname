@@ -23,7 +23,7 @@ public class BossBattleProcessor : BattleModeProcessorBase
 		// base꺼 호출할 필요 없다. startDateTime도 안쓰고 빅뱃 예외처리도 필요없다.
 		//base.OnStartBattle();
 
-		// 이렇게 강제로 셋팅하는 부분이 하나 더 늘었다.
+		// 노드워때처럼 강제로 셋팅.
 		StageManager.instance.playerLevel = StageManager.instance.GetMaxStageLevel();
 		ApplyBossBattleLevelPack(BattleInstanceManager.instance.playerActor);
 

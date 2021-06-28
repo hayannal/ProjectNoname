@@ -319,6 +319,8 @@ public class GuideQuestInfo : MonoBehaviour
 		// 업뎃 필요하다는 문구 예외처리.
 		if (stage && needUpdateTextObject.activeSelf)
 			gameObject.SetActive(false);
+		if (ContentsManager.IsTutorialChapter())
+			gameObject.SetActive(false);
 
 		GuideQuestTableData guideQuestTableData = GuideQuestData.instance.GetCurrentGuideQuestTableData();
 		if (guideQuestTableData == null)

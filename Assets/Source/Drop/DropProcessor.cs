@@ -144,14 +144,14 @@ public class DropProcessor : MonoBehaviour
 					case eDropType.Gold:
 					case eDropType.Gacha:
 
-						// 다른 장비 굴림들은 다 로비에서 처리라서 인벤검사를 하지 않는데 보스전 첫클리어 보상만 전투중에 굴리게 되어있다.
-						// 첫클리어 보상이라면 suggestedMaxPowerLevel을 검사하지 않는다. 인벤 검사도 안해야한다.
-						if (dropTableData.subValue[i] == "ez" || dropTableData.subValue[i] == "en" || dropTableData.subValue[i] == "ej" || dropTableData.subValue[i] == "eq")
-							break;
-
 						// 스테이지 드랍은 항상 인벤 수량을 체크해야한다.
 						if (dropType == eDropType.Gacha)
 						{
+							// 다른 장비 굴림들은 다 로비에서 처리라서 인벤검사를 하지 않는데 보스전 첫클리어 보상만 전투중에 굴리게 되어있다.
+							// 첫클리어 보상이라면 suggestedMaxPowerLevel을 검사하지 않는다. 인벤 검사도 안해야한다.
+							if (dropTableData.subValue[i] == "ez" || dropTableData.subValue[i] == "en" || dropTableData.subValue[i] == "ej" || dropTableData.subValue[i] == "eq")
+								break;
+
 							// 최대량을 넘지 못하게 처리
 							if (TimeSpaceData.instance.inventoryItemCount + DropManager.instance.droppedStageItemCount >= TimeSpaceData.InventoryRealMax)
 								continue;

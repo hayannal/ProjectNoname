@@ -15,6 +15,8 @@ public class GatePillar : MonoBehaviour
 	public GameObject meshColliderObject;
 	public GameObject particleRootObject;
 	public GameObject changeEffectParticleRootObject;
+	public GameObject whiteEffectObject;
+	public GameObject darkEffectObject;
 
 	// 동적 로드하는 것들을 외부로 뺄까 했는데 크기가 크지 않고 자주 쓰이는거라면 굳이 뺄필요가 없어서 안빼기로 한다.
 	ObjectIndicatorCanvas _objectIndicatorCanvas;
@@ -674,6 +676,8 @@ public class GatePillar : MonoBehaviour
 
 		yield return Timing.WaitForSeconds(0.2f);
 		changeEffectParticleRootObject.SetActive(true);
+		whiteEffectObject.SetActive(OptionManager.instance.darkMode == 0);
+		darkEffectObject.SetActive(OptionManager.instance.darkMode == 1);
 		SoundManager.instance.PlaySFX("GatePillar");
 
 		// avoid gc
@@ -687,13 +691,16 @@ public class GatePillar : MonoBehaviour
 #endif
 		CustomRenderer.instance.bloom.AdjustDirtIntensity(1.5f);
 
+		if (OptionManager.instance.darkMode == 1)
+			FadeCanvas.instance.FadeOut(0.5f, 1.0f, true);
 		yield return Timing.WaitForSeconds(0.5f);
 
 		// avoid gc
 		if (this == null)
 			yield break;
 
-		FadeCanvas.instance.FadeOut(0.2f);
+		if (OptionManager.instance.darkMode == 0)
+			FadeCanvas.instance.FadeOut(0.2f);
 		yield return Timing.WaitForSeconds(0.2f);
 
 		// avoid gc

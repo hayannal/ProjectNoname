@@ -368,7 +368,10 @@ public class NodeWarPortal : MonoBehaviour
 		yield return Timing.WaitForSeconds(0.5f);
 
 		LobbyCanvas.instance.FadeOutQuestInfoGroup(0.0f, 0.2f, false, true);
-		FadeCanvas.instance.FadeOut(0.2f);
+		if (OptionManager.instance.darkMode == 1)
+			FadeCanvas.instance.FadeOut(0.2f, 1.0f, true);
+		else
+			FadeCanvas.instance.FadeOut(0.2f);
 		yield return Timing.WaitForSeconds(0.2f);
 
 		while (_waitEnterServerResponse)

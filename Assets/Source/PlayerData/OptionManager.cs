@@ -36,6 +36,7 @@ public class OptionManager : MonoBehaviour
 	int _useDoubleTab = 1;
 	int _lockIcon = 0;
 	int _energyAlarm = 0;
+	int _darkMode = 0;
 
 	string OPTION_SYSTEM_LANGUAGE_KEY = "_option_system_language_key";
 	string OPTION_BGM_VOLUME_KEY = "_option_bgm_volume_key";
@@ -45,6 +46,7 @@ public class OptionManager : MonoBehaviour
 	string OPTION_DOUBLE_TAB_KEY = "_option_double_tab_key";
 	string OPTION_LOCK_ICON_KEY = "_option_lock_icon_key";
 	string OPTION_ENERGY_ALARM = "_option_energy_alarm_key";
+	string OPTION_DARK_MODE_KEY = "_option_dark_mode_key";
 
 	void LoadSystemLanguage()
 	{
@@ -100,6 +102,11 @@ public class OptionManager : MonoBehaviour
 		{
 			_energyAlarm = PlayerPrefs.GetInt(OPTION_ENERGY_ALARM);
 		}
+
+		if (PlayerPrefs.HasKey(OPTION_DARK_MODE_KEY))
+		{
+			_darkMode = PlayerPrefs.GetInt(OPTION_DARK_MODE_KEY);
+		}
 	}
 
 	public void SavePlayerPrefs()
@@ -111,6 +118,7 @@ public class OptionManager : MonoBehaviour
 		PlayerPrefs.SetInt(OPTION_DOUBLE_TAB_KEY, _useDoubleTab);
 		PlayerPrefs.SetInt(OPTION_LOCK_ICON_KEY, _lockIcon);
 		PlayerPrefs.SetInt(OPTION_ENERGY_ALARM, _energyAlarm);
+		PlayerPrefs.SetInt(OPTION_DARK_MODE_KEY, _darkMode);
 	}
 
 	public void SaveLanguagePlayerPref()
@@ -266,6 +274,18 @@ public class OptionManager : MonoBehaviour
 		set
 		{
 			_energyAlarm = value;
+		}
+	}
+
+	public int darkMode
+	{
+		get
+		{
+			return _darkMode;
+		}
+		set
+		{
+			_darkMode = value;
 		}
 	}
 }

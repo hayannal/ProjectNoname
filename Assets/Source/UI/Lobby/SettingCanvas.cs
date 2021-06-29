@@ -28,6 +28,8 @@ public class SettingCanvas : MonoBehaviour
 	public Text frameRateText;
 	public SwitchAnim energyAlarmSwitch;
 	public Text energyAlarmOnOffText;
+	public SwitchAnim darkModeSwitch;
+	public Text darkModeOnOffText;
 
 	public Text termsText;
 	public Text policyText;
@@ -99,6 +101,8 @@ public class SettingCanvas : MonoBehaviour
 		_notUserSetting = true;
 		energyAlarmSwitch.isOn = (OptionManager.instance.energyAlarm == 1);
 		_notUserSetting = false;
+
+		darkModeSwitch.isOn = (OptionManager.instance.darkMode == 1);
 	}
 
 	public void SaveOption()
@@ -380,6 +384,22 @@ public class SettingCanvas : MonoBehaviour
 		}
 
 		CurrencyData.instance.CancelEnergyNotification();
+	}
+	#endregion
+
+	#region Dark Mode
+	public void OnSwitchOnDarkMode()
+	{
+		OptionManager.instance.darkMode = 1;
+		darkModeOnOffText.text = "ON";
+		darkModeOnOffText.color = Color.white;
+	}
+
+	public void OnSwitchOffDarkMode()
+	{
+		OptionManager.instance.darkMode = 0;
+		darkModeOnOffText.text = "OFF";
+		darkModeOnOffText.color = new Color(0.176f, 0.176f, 0.176f);
 	}
 	#endregion
 

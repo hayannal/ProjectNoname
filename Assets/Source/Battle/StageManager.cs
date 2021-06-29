@@ -166,6 +166,9 @@ public class StageManager : MonoBehaviour
 
 		// 맵을 만들고나서 Difficulty에 따라서 챕터 난이도를 높여야한다.
 		// 인자로 오는 Difficulty가 곧 실제 Difficulty니 chapter 자리에 넣으면 된다.
+		// 그냥 스테이지를 부르니 중간보스들이 너무 약해지는 경향이 있는거 마지막 보스를 제외하곤 40을 불러본다.
+		if (stage == 50) stage = 50;
+		else stage = 40;
 		StageTableData statBossStageTableData = BattleInstanceManager.instance.GetCachedStageTableData(difficulty, stage, true);
 		if (statBossStageTableData == null)
 			return;

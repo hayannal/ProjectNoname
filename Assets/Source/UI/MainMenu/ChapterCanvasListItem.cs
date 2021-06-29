@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class ChapterCanvasListItem : MonoBehaviour
 {
+	public LayoutElement layoutElement;
 	public RectTransform contentRectTransform;
 	public Image blurImage;
 	public Coffee.UIExtensions.UIGradient gradient;
@@ -15,10 +16,24 @@ public class ChapterCanvasListItem : MonoBehaviour
 	public GameObject selectObject;
 	public GameObject blackObject;
 
+	public Transform descRootTransform;
+	public CanvasGroup descObjectCanvasGroup;
+	public Text descText;
+
+	float _defaultLayoutPreferredHeightMin;
+	float _defaultLayoutPreferredHeightMax;
+	void Awake()
+	{
+		_defaultLayoutPreferredHeightMin = layoutElement.minHeight;
+		_defaultLayoutPreferredHeightMax = layoutElement.preferredHeight;
+	}
+
 	public int chapter { get; set; }
-	public void Initialize(int chapter)
+	string _notiId = "";
+	public void Initialize(int chapter, string notiId)
 	{
 		this.chapter = chapter;
+		_notiId = notiId;
 
 		string romanNumberString = UIString.instance.GetString(string.Format("GameUI_RomanNumber{0}", chapter));
 		chapterText.text = UIString.instance.GetString("GameUI_MenuChapter", romanNumberString);
@@ -65,6 +80,9 @@ public class ChapterCanvasListItem : MonoBehaviour
 			gradient.color2 = new Color(0.8f, 0.8f, 0.8f);
 		}
 
+		if (string.IsNullOrEmpty(notiId) == false)
+			descText.SetLocalizedText(UIString.instance.GetString(notiId));
+
 		selectObject.SetActive(false);
 	}
 
@@ -96,6 +114,7 @@ public class ChapterCanvasListItem : MonoBehaviour
 	void Update()
 	{
 		UpdateSelectPosition();
+		UpdateDescTransform();
 	}
 
 	void UpdateSelectPosition()
@@ -119,6 +138,44 @@ public class ChapterCanvasListItem : MonoBehaviour
 				Vector2 diff = contentRectTransform.anchoredPosition;
 				if (diff.sqrMagnitude < 0.001f)
 					contentRectTransform.anchoredPosition = Vector2.zero;
+			}
+		}
+	}
+
+	void UpdateDescTransform()
+	{
+		if (selectObject.activeSelf && string.IsNullOrEmpty(_notiId) == false)
+		{
+			if (layoutElement.preferredHeight != _defaultLayoutPreferredHeightMax)
+			{
+				layoutElement.preferredHeight = Mathf.Lerp(layoutElement.preferredHeight, _defaultLayoutPreferredHeightMax, Time.deltaTime * 15.0f);
+				float diff = layoutElement.preferredHeight - _defaultLayoutPreferredHeightMax;
+				if (Mathf.Abs(diff) < 0.1f)
+					layoutElement.preferredHeight = _defaultLayoutPreferredHeightMax;
+
+				float ratio = (layoutElement.preferredHeight - _defaultLayoutPreferredHeightMin) / (_defaultLayoutPreferredHeightMax - _defaultLayoutPreferredHeightMin);
+				descRootTransform.localScale = new Vector3(1.0f, ratio, 1.0f);
+				ratio -= 0.9f;
+				if (ratio < 0.0f) ratio = 0.0f;
+				ratio *= (1.0f / 0.1f);
+				descObjectCanvasGroup.alpha = ratio;
+			}
+		}
+		else
+		{
+			if (layoutElement.preferredHeight != _defaultLayoutPreferredHeightMin)
+			{
+				layoutElement.preferredHeight = Mathf.Lerp(layoutElement.preferredHeight, _defaultLayoutPreferredHeightMin, Time.deltaTime * 15.0f);
+				float diff = layoutElement.preferredHeight - _defaultLayoutPreferredHeightMin;
+				if (Mathf.Abs(diff) < 0.1f)
+					layoutElement.preferredHeight = _defaultLayoutPreferredHeightMin;
+
+				float ratio = (layoutElement.preferredHeight - _defaultLayoutPreferredHeightMin) / (_defaultLayoutPreferredHeightMax - _defaultLayoutPreferredHeightMin);
+				descRootTransform.localScale = new Vector3(1.0f, ratio, 1.0f);
+				ratio -= 0.9f;
+				if (ratio < 0.0f) ratio = 0.0f;
+				ratio *= (1.0f / 0.1f);
+				descObjectCanvasGroup.alpha = ratio;
 			}
 		}
 	}

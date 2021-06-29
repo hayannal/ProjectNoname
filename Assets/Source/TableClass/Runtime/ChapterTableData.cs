@@ -64,4 +64,8 @@ public class ChapterTableData
   float _bossEliteHpRate;
   public float bossEliteHpRate { get { return _bossEliteHpRate; } set { _bossEliteHpRate = value; } }
   
+  [SerializeField]
+  string _notiId;
+  public string notiId { get { return _notiId; } set { _notiId = value; } }
+  
 }

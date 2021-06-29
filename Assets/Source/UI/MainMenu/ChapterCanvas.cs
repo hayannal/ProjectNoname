@@ -68,17 +68,18 @@ public class ChapterCanvas : MonoBehaviour
 		_listChapterCanvasListItem.Clear();
 
 		int chapterLimit = BattleInstanceManager.instance.GetCachedGlobalConstantInt("ChaosChapterLimit");
-		for (int i = 0; i < TableDataManager.instance.chapterTable.dataArray.Length; ++i)
+		for (int i = TableDataManager.instance.chapterTable.dataArray.Length - 1; i >= 0; --i)
 		{
-			ChapterCanvasListItem chapterCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
-			chapterCanvasListItem.Initialize(TableDataManager.instance.chapterTable.dataArray[i].chapter);
-			_listChapterCanvasListItem.Add(chapterCanvasListItem);
+			if (TableDataManager.instance.chapterTable.dataArray[i].chapter > chapterLimit)
+				continue;
 
-			// 현재 챕터 넘어서는거 1개까지만 표기하고 break
-			if (TableDataManager.instance.chapterTable.dataArray[i].chapter > PlayerData.instance.highestPlayChapter)
-				break;
-			if (TableDataManager.instance.chapterTable.dataArray[i].chapter >= chapterLimit)
-				break;
+			// 현재 챕터 넘어서는거 1개까지만 표기
+			if (TableDataManager.instance.chapterTable.dataArray[i].chapter > (PlayerData.instance.highestPlayChapter + 1))
+				continue;
+
+			ChapterCanvasListItem chapterCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
+			chapterCanvasListItem.Initialize(TableDataManager.instance.chapterTable.dataArray[i].chapter, TableDataManager.instance.chapterTable.dataArray[i].notiId);
+			_listChapterCanvasListItem.Add(chapterCanvasListItem);
 		}
 		_selectedChapter = PlayerData.instance.selectedChapter;
 		OnClickListItem(_selectedChapter);

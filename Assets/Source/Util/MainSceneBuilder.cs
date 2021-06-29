@@ -691,6 +691,12 @@ public class MainSceneBuilder : MonoBehaviour
 			CumulativeEventData.instance.LateInitialize();
 		}
 
+		if (PlayerData.instance.readyToReopenBossEnterCanvas)
+		{
+			AddressableAssetLoadManager.GetAddressableGameObject("BossBattleEnterCanvas", "Canvas");
+			PlayerData.instance.readyToReopenBossEnterCanvas = false;
+		}
+
 		// 워낙 크기가 작으니 LateInitialize에서 해도 문제없을거다.
 		SoundManager.instance.LoadInApkSFXContainer();
 

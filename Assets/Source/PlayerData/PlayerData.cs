@@ -105,6 +105,8 @@ public class PlayerData : MonoBehaviour
 	Dictionary<string, int> _dicBossBattleCount = new Dictionary<string, int>();
 	// 클라 전용 변수. 보스가 갱신되었음을 다음번 창 열릴때 알린다.
 	public ObscuredBool newBossRefreshed { get; set; }
+	// 보스전 결과창 후 로비로 되돌아올때 로딩을 위한 변수
+	public ObscuredBool readyToReopenBossEnterCanvas { get; set; }
 
 	// sealCount 획득 연출용 변수. 클라에만 저장해두고 로비 돌아갈때 보여준다.
 	// 이벤트 처리가 아니라서 PlayerData에 넣어두기로 한다.
@@ -369,6 +371,8 @@ public class PlayerData : MonoBehaviour
 		nodeWarAgainOpened = false;
 		termsConfirmed = false;
 		bossBattleId = 0;
+		newBossRefreshed = false;
+		readyToReopenBossEnterCanvas = false;
 
 		// Obscured 아니지만 함께 처리
 		_parsedLastLevelPackageResetDateTime = false;
@@ -763,6 +767,9 @@ public class PlayerData : MonoBehaviour
 		}
 
 		#region Boss Battle
+		newBossRefreshed = false;
+		readyToReopenBossEnterCanvas = false;
+
 		bossBattleId = 0;
 		if (userReadOnlyData.ContainsKey("bossId"))
 		{

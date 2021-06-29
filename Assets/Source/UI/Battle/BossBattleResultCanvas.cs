@@ -294,7 +294,8 @@ public class BossBattleResultCanvas : MonoBehaviour
 
 			yield return new WaitForSecondsRealtime(0.4f);
 
-			if (_nextIsLevelUp)
+			// _nextIsLevelUp 플래그가 간혹 동작하지 않는 버그가 있어서 fillAmount도 추가로 검사하기로 해본다.
+			if (_nextIsLevelUp || xpLevelExpImage.fillAmount >= 1.0f)
 			{
 				RefreshBossBattleCount(BossBattleEnterCanvas.instance.GetXp() + 1);
 				xpLevelUpInfoObject.SetActive(true);

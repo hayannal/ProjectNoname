@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
 using PlayFab.ClientModels;
 
 public class BossBattleResultCanvas : MonoBehaviour
@@ -290,9 +292,12 @@ public class BossBattleResultCanvas : MonoBehaviour
 
 		if (_maxXpLevel == false)
 		{
-			DOTween.To(() => xpLevelExpImage.fillAmount, x => xpLevelExpImage.fillAmount = x, _nextPercent, 0.4f).SetEase(Ease.Linear).SetUpdate(true);
+			TweenerCore<float, float, FloatOptions> tweenRef = DOTween.To(() => xpLevelExpImage.fillAmount, x => xpLevelExpImage.fillAmount = x, _nextPercent, 0.4f).SetEase(Ease.Linear).SetUpdate(true);
 
 			yield return new WaitForSecondsRealtime(0.4f);
+
+			if (tweenRef != null)
+				tweenRef.Kill();
 
 			// _nextIsLevelUp 플래그가 간혹 동작하지 않는 버그가 있어서 fillAmount도 추가로 검사하기로 해본다.
 			if (_nextIsLevelUp || xpLevelExpImage.fillAmount >= 1.0f)

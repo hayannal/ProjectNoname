@@ -228,7 +228,11 @@ public class ScrollSnap : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDr
 		float xOffset = (movementAxis == MovementAxis.Horizontal || movementType == MovementType.Free) ? Viewport.rect.width / 2f : 0f;
 		float yOffset = (movementAxis == MovementAxis.Vertical || movementType == MovementType.Free) ? Viewport.rect.height / 2f : 0f;
 		Vector2 offset = new Vector2(xOffset, yOffset);
-		previousContentAnchoredPosition = Content.anchoredPosition = -PanelsRT[startingPanel].anchoredPosition + offset;
+		//previousContentAnchoredPosition = Content.anchoredPosition = -PanelsRT[startingPanel].anchoredPosition + offset;
+		previousContentAnchoredPosition = -PanelsRT[startingPanel].anchoredPosition + offset;
+		if (movementAxis == MovementAxis.Horizontal) previousContentAnchoredPosition.y = Content.anchoredPosition.y;
+		if (movementAxis == MovementAxis.Vertical) previousContentAnchoredPosition.x = Content.anchoredPosition.x;
+		Content.anchoredPosition = previousContentAnchoredPosition;
 		CurrentPanel = TargetPanel = NearestPanel = startingPanel;
 
 		if (panelGraphics == null)
@@ -247,7 +251,10 @@ public class ScrollSnap : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDr
 
 	private Vector2 DisplacementFromCenter(int index)
 	{
-		return PanelsRT[index].anchoredPosition + Content.anchoredPosition - new Vector2(Viewport.rect.width * (0.5f - Content.anchorMin.x), Viewport.rect.height * (0.5f - Content.anchorMin.y));
+		Vector2 center = PanelsRT[index].anchoredPosition + Content.anchoredPosition - new Vector2(Viewport.rect.width * (0.5f - Content.anchorMin.x), Viewport.rect.height * (0.5f - Content.anchorMin.y));
+		if (movementAxis == MovementAxis.Horizontal) center.y = Content.anchoredPosition.y;
+		if (movementAxis == MovementAxis.Vertical) center.x = Content.anchoredPosition.x;
+		return center;
 	}
 	private int DetermineNearestPanel()
 	{

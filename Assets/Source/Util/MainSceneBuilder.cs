@@ -693,12 +693,9 @@ public class MainSceneBuilder : MonoBehaviour
 
 		if (PlayerData.instance.readyToReopenBossEnterCanvas)
 		{
-			AddressableAssetLoadManager.GetAddressableGameObject("BossBattleEnterCanvas", "Canvas");
+			BossBattleEnterCanvas.PreloadReadyToReopen();
 			PlayerData.instance.readyToReopenBossEnterCanvas = false;
 		}
-
-		// 워낙 크기가 작으니 LateInitialize에서 해도 문제없을거다.
-		SoundManager.instance.LoadInApkSFXContainer();
 
 		// 캐릭터는 언제나 같은 번들안에 있을테니 마지막 번호 하나만 검사하기로 한다.
 		// 다운로드 되어있어서 캐싱할 수 있을때만 프리로드를 걸어둔다.
@@ -714,6 +711,9 @@ public class MainSceneBuilder : MonoBehaviour
 		}
 		else
 			Debug.LogFormat("Actor Portrait pIcon Size = {0}", downloadSize / 1024);
+
+		// 워낙 크기가 작으니 LateInitialize에서 해도 문제없을거다.
+		SoundManager.instance.LoadInApkSFXContainer();
 
 		// DropObject의 크기도 커지고 로비뽑기에서 써야해서 BattleManager에서 분리한다.
 		_handleDropObjectGroup = Addressables.LoadAssetAsync<GameObject>("DropObjectGroup");

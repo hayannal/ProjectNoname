@@ -227,6 +227,28 @@ public class BossBattleEnterCanvas : MonoBehaviour
 	BossBattleTableData _bossBattleTableData;
 	public BossBattleTableData GetBossBattleTableData() { return _bossBattleTableData; }
 
+	#region Preload Reopen
+	public static void PreloadReadyToReopen()
+	{
+		// 보스전 하고와서 되돌아오자마자 바로 보스전 열때 끊기는거 같아서 넣는 프리로드
+		// 위 RefreshInfo에서 하는 코드와 비슷해서 근처에 둔다.
+		AddressableAssetLoadManager.GetAddressableGameObject("BossBattleEnterCanvas", "Canvas");
+
+		int currentBossId = PlayerData.instance.bossBattleId;
+		BossBattleTableData bossBattleTableData = TableDataManager.instance.FindBossBattleData(currentBossId);
+		if (bossBattleTableData == null)
+			return;
+		StageTableData bossStageTableData = BattleInstanceManager.instance.GetCachedStageTableData(bossBattleTableData.chapter, bossBattleTableData.stage, false);
+		if (bossStageTableData == null)
+			return;
+		MapTableData bossMapTableData = BattleInstanceManager.instance.GetCachedMapTableData(bossStageTableData.firstFixedMap);
+		if (bossMapTableData == null)
+			return;
+		if (string.IsNullOrEmpty(bossMapTableData.bossName) == false)
+			AddressableAssetLoadManager.GetAddressableGameObject(string.Format("Preview_{0}", bossMapTableData.bossName), "Preview");
+	}
+	#endregion
+
 	ObscuredInt _xpLevel = 1;
 	public int GetXpLevel() { return _xpLevel; }
 	ObscuredInt _xp = 0;
@@ -619,6 +641,9 @@ public class BossBattleEnterCanvas : MonoBehaviour
 			}
 		}
 
+		// 한가지 추가로 해줄게 있는데 레벨팩 관련 이펙트다.
+		PreloadLevelPackOnStartStageEffect();
+
 		// 이동 프로세스
 		Timing.RunCoroutine(MoveProcess());
 	}
@@ -664,6 +689,36 @@ public class BossBattleEnterCanvas : MonoBehaviour
 		standbySwapBattleActor = false;
 	}
 
+	List<string> _listCachedLevelPackForEffectPreload = null;
+	void PreloadLevelPackOnStartStageEffect()
+	{
+		// 다른 전투들과 달리 보스전에서는 레벨팩을 랜덤으로 부여받게 되는데 부여받는 시점이 하필 OnStartBattle 시점이라서
+		// OnSpawnFlag랑 거의 비슷하게 호출되면서 레벨팩 어펙터 적용되기 전에 이펙트가 로딩되지 않는 문제가 발생했다.
+		// 그렇다고 이제와서 랜덤으로 부여받는걸 바꾸기도 뭐하고
+		// 랜덤으로 부여받는 시점을 땡겨서 미리 정해놓고 들어가려면 또 로직에 손대야해서
+		// 차라리 스테이지 시작 조건으로 되어있는 레벨팩(현재는 두개뿐이다. 조우시 힐장판, 조우시 공속업)의 이펙트만 미리 선별해서 프리로드 해두기로 한다.
+
+		if (_listCachedLevelPackForEffectPreload != null)
+			return;
+
+		_listCachedLevelPackForEffectPreload = new List<string>();
+		_listCachedLevelPackForEffectPreload.Add("HealAreaOnEncounter");
+		_listCachedLevelPackForEffectPreload.Add("AtkSpeedUpOnEncounter");
+		for (int i = 0; i < _listCachedLevelPackForEffectPreload.Count; ++i)
+		{
+			LevelPackTableData levelPackTableData = TableDataManager.instance.FindLevelPackTableData(_listCachedLevelPackForEffectPreload[i]);
+			if (levelPackTableData == null)
+				continue;
+
+			for (int j = 0; j < levelPackTableData.effectAddress.Length; ++j)
+			{
+				AddressableAssetLoadManager.GetAddressableGameObject(levelPackTableData.effectAddress[j], "CommonEffect", (prefab) =>
+				{
+					BattleInstanceManager.instance.AddCommonPoolPreloadObjectList(prefab);
+				});
+			}
+		}
+	}
 
 
 

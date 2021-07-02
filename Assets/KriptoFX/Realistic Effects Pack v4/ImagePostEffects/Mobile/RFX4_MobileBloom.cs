@@ -160,7 +160,11 @@ public class RFX4_MobileBloom : MonoBehaviour
         var last = prefiltered;
         for (var level = 0; level < iterations; level++)
         {
-            m_blurBuffer1[level] = RenderTexture.GetTemporary(last.width / 2, last.height / 2, 0, rtFormat);
+			int rtWidth = last.width / 2;
+			if (rtWidth == 0) rtWidth = 1;
+			int rtHeight = last.height / 2;
+			if (rtHeight == 0) rtHeight = 1;
+			m_blurBuffer1[level] = RenderTexture.GetTemporary(rtWidth, rtHeight, 0, rtFormat);
             Graphics.Blit(last, m_blurBuffer1[level], bloomMaterial, 1);
             last = m_blurBuffer1[level];
         }
@@ -223,7 +227,8 @@ public class RFX4_MobileBloom : MonoBehaviour
 			++_adjustDirtIntensityRefCount;
 
 		DirtIntensity = _defaultDirtIntensity + adjust;
-		_bloomMaterial.SetFloat("_DirtIntensity", DirtIntensity);
+		if (_bloomMaterial != null)
+			_bloomMaterial.SetFloat("_DirtIntensity", DirtIntensity);
 	}
 
 	public void ResetDirtIntensity(bool useRefCount = true)
@@ -236,7 +241,8 @@ public class RFX4_MobileBloom : MonoBehaviour
 		}
 
 		DirtIntensity = _defaultDirtIntensity;
-		_bloomMaterial.SetFloat("_DirtIntensity", DirtIntensity);
+		if (_bloomMaterial != null)
+			_bloomMaterial.SetFloat("_DirtIntensity", DirtIntensity);
 	}
 #endif
 }

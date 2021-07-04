@@ -443,6 +443,10 @@ public class PlayerData : MonoBehaviour
 			PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(actorId);
 			if (playerActor != null)
 				playerActor.actorStatus.InitializeActorStatus();
+
+			// 이 타이밍에 맞춰서 가이드 퀘스트 검사할게 생겼다. 파워레벨 달성퀘면 여기서 1로 해줘야한다.
+			if (GuideQuestData.instance.CheckPowerLevelUp(actorId))
+				GuideQuestData.instance.OnQuestEvent(GuideQuestData.eQuestClearType.PowerLevel);
 		}
 	}
 

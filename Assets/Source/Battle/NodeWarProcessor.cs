@@ -42,6 +42,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		UpdateTrap();
 		//UpdateSpawnSoul();
 		UpdateGetSoulText();
+		UpdateFindPortalText();
 		UpdateSpawnHealOrb();
 		UpdateSpawnSpHealOrb();
 		UpdateSpawnBoostOrb();
@@ -536,6 +537,19 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		}
 	}
 
+	float _lastFindPortalTime;
+	void UpdateFindPortalText()
+	{
+		if (_phase != ePhase.FindPortal)
+			return;
+
+		if (Time.time > _lastFindPortalTime + 12.0f)
+		{
+			BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarFindPannel"), 2.5f);
+			_lastFindPortalTime = Time.time;
+		}
+	}
+
 	const float SoulNoDropRange = 24.0f;
 	List<Vector3> _listSoulGetPosition = new List<Vector3>();
 	bool GetSoulSpawnPosition(ref Vector3 resultPosition)
@@ -591,6 +605,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 			
 			_phase = ePhase.FindPortal;
 			_phaseStartTime = Time.time;
+			_lastFindPortalTime = Time.time;
 			BattleToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NodeWarActivateMovePannel"), 3.5f);
 
 			// 두번째 Step으로 넘어갈때 Trap 생성 딜레이를 재갱신 해둔다.

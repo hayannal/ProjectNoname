@@ -628,6 +628,9 @@ public class PlayFabApiManager : MonoBehaviour
 					review = true;
 				}
 
+				// 심사버전으로 체크가 되면 뻑나지 말라고 메일과 이벤트가 돌지 않게 되는데
+				// 만약 메일과 이벤트에 별다른 추가 구현상황이 없어서 뻑날게 없는 상황이면 딱히 리뷰버전 체크 안하고 넘겨도 되긴 하다.
+				// 그러니 평소에 안써도 되는 상황이라면 upVrIph_review를 0으로 냅둬도 상관없을거다.
 				if (review)
 					PlayerData.instance.reviewVersion = true;
 			}

@@ -609,8 +609,27 @@ public class PlayFabApiManager : MonoBehaviour
 #if UNITY_IOS
 			else if (versionInfo.updateVersion > serverVersion)
 			{
-				// 서버 버전보다 크다면 이건 심사빌드로 봐도 된다.
-				PlayerData.instance.reviewVersion = true;
+				// 심사버전을 명시하는 항목이 있다면 해당 값에서 뽑아와서 처리하고
+				bool review = false;
+				string reviewKeyName = string.Format("{0}_review", versionInfo.serverKeyName);
+				if (titleData.ContainsKey(reviewKeyName))
+				{
+					if (string.IsNullOrEmpty(titleData[reviewKeyName]) == false)
+					{
+						int reviewVersion = 0;
+						int.TryParse(titleData[reviewKeyName], out reviewVersion);
+						if (reviewVersion == versionInfo.updateVersion)
+							review = true;
+					}
+				}
+				else
+				{
+					// 아니면 버전큰걸 심사로 처리한다.
+					review = true;
+				}
+
+				if (review)
+					PlayerData.instance.reviewVersion = true;
 			}
 #endif
 		}

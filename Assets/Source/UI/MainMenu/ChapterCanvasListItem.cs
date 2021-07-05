@@ -33,7 +33,18 @@ public class ChapterCanvasListItem : MonoBehaviour
 	public void Initialize(int chapter, string notiId)
 	{
 		this.chapter = chapter;
-		_notiId = notiId;
+
+		// 4, 6, 7 챕터에 한해서 카오스가 열리지 않았다면
+		bool hideNotiId = false;
+		if (chapter == 4 || chapter == 6 || chapter == 7)
+		{
+			if (PlayerData.instance.chaosModeOpened == false)
+				hideNotiId = true;
+		}
+		if (hideNotiId)
+			_notiId = "";
+		else
+			_notiId = notiId;
 
 		string romanNumberString = UIString.instance.GetString(string.Format("GameUI_RomanNumber{0}", chapter));
 		chapterText.text = UIString.instance.GetString("GameUI_MenuChapter", romanNumberString);

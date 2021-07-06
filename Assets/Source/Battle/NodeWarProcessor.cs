@@ -1024,7 +1024,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 				else
 				{
 					if (BattleInstanceManager.instance.playerActor.affectorProcessor.IsContinuousAffectorType(eAffectorType.Invincible))
-						rate *= 1.5f;
+						rate *= 1.25f;
 
 					bool specialMonster = false;
 					for (int i = 0; i < _listCurrentNodeWarSpawnTableData.Count; ++i)
@@ -1036,7 +1036,12 @@ public class NodeWarProcessor : BattleModeProcessorBase
 						break;
 					}
 					if (specialMonster)
-						rate *= 2.0f;
+					{
+						// 특수몹이라고 판단되는 애들도 한번더 검사해야한다.
+						MonsterTableData monsterTableData = TableDataManager.instance.FindMonsterTableData(monsterActor.actorId);
+						if (monsterTableData != null && monsterTableData.multiHp > 4.0f)
+							rate *= 4.0f;
+					}
 				}
 				if (Random.value <= rate)
 					BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.soulPrefab, dropPosition, Quaternion.identity);

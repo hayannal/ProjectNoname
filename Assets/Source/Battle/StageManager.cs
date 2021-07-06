@@ -654,7 +654,21 @@ public class StageManager : MonoBehaviour
 
 	public bool IsUsableReturnScroll()
 	{
-		return (CurrencyData.instance.returnScroll > 0 && returnScrollUsed == false);
+		if (returnScrollUsed)
+			return false;
+
+		// 챕터1 플레이하는 초보자 유저들한테 주는 보너스. 스크롤이 없을테지만 1회 부활시켜준다.
+		if (IsChapter1NewbieUser())
+			return true;
+
+		return (CurrencyData.instance.returnScroll > 0);
+	}
+
+	public static bool IsChapter1NewbieUser()
+	{
+		if (PlayerData.instance.highestPlayChapter == 1 && StageManager.instance.playChapter == 1 && PlayerData.instance.selectedChapter == 1)
+			return true;
+		return false;
 	}
 
 	public void UseReturnScroll()

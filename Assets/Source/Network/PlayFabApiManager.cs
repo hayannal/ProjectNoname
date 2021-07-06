@@ -970,7 +970,8 @@ public class PlayFabApiManager : MonoBehaviour
 			if (!failure)
 			{
 				WaitingNetworkCanvas.Show(false);
-				CurrencyData.instance.returnScroll -= 1;
+				if (StageManager.IsChapter1NewbieUser() == false)
+					CurrencyData.instance.returnScroll -= 1;
 				if (successCallback != null) successCallback.Invoke();
 			}
 		}, (error) =>

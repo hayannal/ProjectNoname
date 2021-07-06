@@ -50,6 +50,9 @@ public class PowerSource : MonoBehaviour
 		{
 			// 귀환중이라면 예외처리
 			_spawnedGatePillar = true;
+
+			// 초보자 특전으로 귀환한거라면 메세지박스를 띄워서 알려줘야한다.
+			OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_ReturnForChapter1"));
 		}
 		else if (ClientSaveData.instance.IsLoadingInProgressGame())
 		{
@@ -67,6 +70,10 @@ public class PowerSource : MonoBehaviour
 		// 귀환 주문서를 구입하지 않은 사람도 8챕터 가면 세이브 포인트가 보여야한다. 에서 2챕터로 변경.
 		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.ReturnScroll))
 			_returnScrollPointShowRemainTime = 0.1f;
+
+		// 초보자 특전
+		if (StageManager.IsChapter1NewbieUser() && StageManager.instance.returnScrollUsed == false)
+			StageManager.instance.SaveReturnScrollPoint();
 	}
 
 	void OnDisable()

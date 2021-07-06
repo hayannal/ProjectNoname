@@ -186,7 +186,7 @@ public class LobbyCanvas : MonoBehaviour
 
 		switch (index)
 		{
-			//case 1: if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Research)) return true; break;
+			case 1: if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Invasion)) return true; break;
 		}
 		return false;
 	}
@@ -266,6 +266,19 @@ public class LobbyCanvas : MonoBehaviour
 		}
 
 		UIInstanceManager.instance.ShowCanvasAsync("BossBattleEnterCanvas", null);
+	}
+
+	public void OnClickInvasionButton()
+	{
+		if (_closeRemainTime > 0.0f)
+			return;
+		if (TimeSpaceGround.instance != null && TimeSpaceGround.instance.gameObject.activeSelf)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_CannotGoBattleContents"), 2.0f);
+			return;
+		}
+
+		UIInstanceManager.instance.ShowCanvasAsync("InvasionEnterCanvas", null);
 	}
 	#endregion
 

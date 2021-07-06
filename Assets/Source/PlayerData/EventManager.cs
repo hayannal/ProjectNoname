@@ -30,6 +30,7 @@ public class EventManager : MonoBehaviour
 		balance,
 		reconstruct,
 		boss,
+		invasion,
 	}
 
 	// 클라 이벤트는 메모리에만 기억되는 거라서 종료하면 더이상 볼 수 없다. 그래서 중요하지 않은 것들 위주다.
@@ -64,6 +65,7 @@ public class EventManager : MonoBehaviour
 	public bool reservedOpenBalanceEvent { get; set; }
 	public bool reservedOpenReconstructEvent { get; set; }
 	public bool reservedOpenBossBattleEvent { get; set; }
+	public bool reservedOpenInvasionEvent { get; set; }
 
 	#region OnEvent
 	public void OnEventClearHighestChapter(int chapter, string newCharacterId)
@@ -93,6 +95,9 @@ public class EventManager : MonoBehaviour
 			// Research와 Balance는 메뉴를 추가한거니 서버 이벤트로 변경하기로 한다.
 			//reservedOpenResearchEvent = true;
 			PushServerEvent(eServerEvent.research);
+
+			// 3챕터에 추가되는게 침공
+			PushServerEvent(eServerEvent.invasion);
 		}
 		else if (chapter == (int)ContentsManager.eOpenContentsByChapter.NodeWar)
 		{
@@ -204,6 +209,12 @@ public class EventManager : MonoBehaviour
 			// 컨텐츠는 오픈 상태인데 1도 아니고 2도 아니라면 강제로 이벤트를 재생 대기 상태로 설정해야한다.
 			if (IsCompleteServerEvent(eServerEvent.boss) == false && ContainsStandbyServerEvent(eServerEvent.boss) == false)
 				PushServerEvent(eServerEvent.boss);
+		}
+		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Invasion))
+		{
+			// 컨텐츠는 오픈 상태인데 1도 아니고 2도 아니라면 강제로 이벤트를 재생 대기 상태로 설정해야한다.
+			if (IsCompleteServerEvent(eServerEvent.invasion) == false && ContainsStandbyServerEvent(eServerEvent.invasion) == false)
+				PushServerEvent(eServerEvent.invasion);
 		}
 		#endregion
 	}
@@ -361,6 +372,10 @@ public class EventManager : MonoBehaviour
 				break;
 			case eServerEvent.boss:
 				reservedOpenBossBattleEvent = true;
+				OnLobby();
+				break;
+			case eServerEvent.invasion:
+				reservedOpenInvasionEvent = true;
 				OnLobby();
 				break;
 		}

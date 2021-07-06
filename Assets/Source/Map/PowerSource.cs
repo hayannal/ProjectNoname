@@ -84,6 +84,13 @@ public class PowerSource : MonoBehaviour
 			_returnScrollObject.SetActive(false);
 			_returnScrollObject = null;
 		}
+
+		// 튜토리얼 스킵할때 힐 안받고 넘어갈때가 있어서 직접 없애줘야한다.
+		if (_objectIndicatorCanvas != null)
+		{
+			_objectIndicatorCanvas.gameObject.SetActive(false);
+			_objectIndicatorCanvas = null;
+		}
 	}
 
 	bool _spawnedGatePillar;

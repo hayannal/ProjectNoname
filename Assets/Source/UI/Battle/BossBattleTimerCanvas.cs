@@ -39,13 +39,15 @@ public class BossBattleTimerCanvas : MonoBehaviour
 		{
 			if (_lastRemainTimeSecond != (int)remainTime)
 			{
-				int minutes = _lastRemainTimeSecond / 60;
-				int seconds = _lastRemainTimeSecond % 60;
+				int visualTime = (int)remainTime + 1;
+
+				int minutes = visualTime / 60;
+				int seconds = visualTime % 60;
 				remainTimeText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
 
 				_lastRemainTimeSecond = (int)remainTime;
 
-				if (_lastRemainTimeSecond > 0 && _lastRemainTimeSecond < 10)
+				if (_lastRemainTimeSecond >= 0 && _lastRemainTimeSecond < 10)
 				{
 					TweenRestart();
 					remainTimeText.color = new Color(0.925f, 0.52f, 0.52f);

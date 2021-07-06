@@ -1021,6 +1021,23 @@ public class NodeWarProcessor : BattleModeProcessorBase
 				Vector3 diff = BattleInstanceManager.instance.playerActor.cachedTransform.position - dropPosition;
 				if (diff.sqrMagnitude > ((SpawnDistance * 0.5f) * (SpawnDistance * 0.5f)))
 					rate *= 0.5f;
+				else
+				{
+					if (BattleInstanceManager.instance.playerActor.affectorProcessor.IsContinuousAffectorType(eAffectorType.Invincible))
+						rate *= 1.5f;
+
+					bool specialMonster = false;
+					for (int i = 0; i < _listCurrentNodeWarSpawnTableData.Count; ++i)
+					{
+						if (_listCurrentNodeWarSpawnTableData[i].monsterId != monsterActor.actorId)
+							continue;
+
+						specialMonster = (_listCurrentNodeWarSpawnTableData[i].totalMax == false);
+						break;
+					}
+					if (specialMonster)
+						rate *= 2.0f;
+				}
 				if (Random.value <= rate)
 					BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.soulPrefab, dropPosition, Quaternion.identity);
 			}

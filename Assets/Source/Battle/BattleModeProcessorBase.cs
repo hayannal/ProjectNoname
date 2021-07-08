@@ -15,8 +15,8 @@ public class BattleModeProcessorBase
 	protected int _monsterSpawnCount = 0;
 	int _damageCountInStage = 0;
 	float _spawnFlagStartTime = 0.0f;
-	ObscuredInt _clearPoint;
-	ObscuredInt _appliedChallengeRetryBonusClearPoint;
+	protected ObscuredInt _clearPoint;
+	protected ObscuredInt _appliedChallengeRetryBonusClearPoint;
 
 	public virtual void Update()
 	{

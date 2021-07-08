@@ -174,6 +174,23 @@ public class StageManager : MonoBehaviour
 			return;
 		_currentStageTableData = statBossStageTableData;
 	}
+
+	public void MoveToInvasion(StageTableData invasionStageTableData, MapTableData invasionMapTableData)
+	{
+		_currentStageTableData = invasionStageTableData;
+		StageDataManager.instance.nextStageTableData = null;
+		InstantiateMap(invasionMapTableData, true);
+	}
+
+	public void InstantiateInvasionSpawnFlag()
+	{
+		// 이미 위 호출로 로드되어있을거다. 아래 라인들만 실행하면 끝
+		_currentWallObject = BattleInstanceManager.instance.GetCachedObject(_handleNextWallPrefab.Result, Vector3.zero, Quaternion.identity);
+
+		if (_currentSpawnFlagObject != null)
+			_currentSpawnFlagObject.SetActive(false);
+		_currentSpawnFlagObject = Instantiate<GameObject>(_handleNextSpawnFlagPrefab.Result);
+	}
 #else
 	void Start()
 	{
@@ -382,7 +399,7 @@ public class StageManager : MonoBehaviour
 	GameObject _currentSpawnFlagObject;
 	GameObject _currentPortalFlagObject;
 	GameObject _currentEnvironmentSettingObject;
-	void InstantiateMap(MapTableData mapTableData)
+	void InstantiateMap(MapTableData mapTableData, bool ignoreSpawnFlag = false)
 	{
 #if USE_MAIN_SCENE
 		if (_currentPlaneObject != null)
@@ -396,11 +413,15 @@ public class StageManager : MonoBehaviour
 
 		if (_currentWallObject != null)
 			_currentWallObject.SetActive(false);
-		_currentWallObject = BattleInstanceManager.instance.GetCachedObject(_handleNextWallPrefab.Result, Vector3.zero, Quaternion.identity);
+		if (ignoreSpawnFlag == false)
+			_currentWallObject = BattleInstanceManager.instance.GetCachedObject(_handleNextWallPrefab.Result, Vector3.zero, Quaternion.identity);
 
-		if (_currentSpawnFlagObject != null)
-			_currentSpawnFlagObject.SetActive(false);
-		_currentSpawnFlagObject = Instantiate<GameObject>(_handleNextSpawnFlagPrefab.Result);
+		if (ignoreSpawnFlag == false)
+		{
+			if (_currentSpawnFlagObject != null)
+				_currentSpawnFlagObject.SetActive(false);
+			_currentSpawnFlagObject = Instantiate<GameObject>(_handleNextSpawnFlagPrefab.Result);
+		}
 
 		if (_currentPortalFlagObject != null)
 			_currentPortalFlagObject.SetActive(false);

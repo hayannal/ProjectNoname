@@ -41,6 +41,9 @@ public class InvasionEnterCanvas : MonoBehaviour
 	public Text enterCountText;
 	public GameObject oneMoreChanceTextObject;
 
+	// 로드해줄 곳이 없다. 여기에 둔다.
+	public GameObject nodeWarEndPortalEffectPrefab;
+
 	public GameObject contentItemPrefab;
 	public RectTransform contentRootRectTransform;
 
@@ -62,7 +65,7 @@ public class InvasionEnterCanvas : MonoBehaviour
 		{
 			UIInstanceManager.instance.ShowCanvasAsync("EventInfoCanvas", () =>
 			{
-				EventInfoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("InvasionUI_PopupName"), UIString.instance.GetString("InvasionUI_PopupMore"), UIString.instance.GetString("InvasionUI_PopupDesc"), null, 0.785f);
+				EventInfoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("InvasionUI_PopupName"), UIString.instance.GetString("InvasionUI_PopupDesc"), UIString.instance.GetString("InvasionUI_PopupMore"), null, 0.785f);
 			});
 			EventManager.instance.reservedOpenInvasionEvent = false;
 			EventManager.instance.CompleteServerEvent(EventManager.eServerEvent.invasion);
@@ -186,6 +189,15 @@ public class InvasionEnterCanvas : MonoBehaviour
 		}
 		else
 			OnClickListItem(_selectedActorId);
+	}
+
+	public int GetTodayClearPoint()
+	{
+		// 오늘 출전가능한 멤버들의 파워레벨 합산이 클리어포인트다.
+		int sumLevel = 0;
+		for (int i = 0; i < _listCharacterData.Count; ++i)
+			sumLevel += _listCharacterData[i].powerLevel;
+		return sumLevel;
 	}
 
 	ObscuredInt _highestDifficulty = 1;
@@ -370,7 +382,7 @@ public class InvasionEnterCanvas : MonoBehaviour
 
 	public void OnClickRewardInfoButton()
 	{
-		TooltipCanvas.Show(true, TooltipCanvas.eDirection.InvasionRewardInfo, UIString.instance.GetString(_invasionTableData.rewardMore), 300, goldIconObject.transform, new Vector2(0.0f, -40.0f));
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, UIString.instance.GetString(_invasionTableData.rewardMore), 150, goldIconObject.transform, new Vector2(0.0f, -40.0f));
 	}
 
 	const int ENTER_COUNT_MAX = 3;
@@ -511,10 +523,17 @@ public class InvasionEnterCanvas : MonoBehaviour
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("InvasionUI_CannotEnterPowerToast"), 2.0f);
 			return;
 		}
-		// check lobby energy
-		//if (CheckEnergy() == false)
-		//	return;
-
+		int currentEnterCount = PlayerData.instance.listInvasionEnteredActorId.Count;
+		if (currentEnterCount == ENTER_COUNT_MAX && CurrencyData.instance.dia < _price)
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughDiamond"), 2.0f);
+			return;
+		}
+		if (currentEnterCount == (ENTER_COUNT_MAX + 1))
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("InvasionUI_ThreeDone"), 2.0f);
+			return;
+		}
 
 
 		if (string.IsNullOrEmpty(_selectedActorId))
@@ -527,17 +546,12 @@ public class InvasionEnterCanvas : MonoBehaviour
 		// 입장 패킷 보내기전에 필수로 해야하는 것들 위주로 셋팅한다.
 		// 나머진 패킷 받고 재진입 다 완료한 후에 셋팅하는거로 한다.
 
-		// 이동해야할 스테이지의 로비를 미리 로드
-		//StageManager.instance.ReloadBossBattle(_bossStageTableData, _bossMapTableData);
+		// 이동해야할 스테이지의 로비를 미리 로드. 보스 배틀때 썼던 함수와 동일하다.
+		StageManager.instance.ReloadBossBattle(_invasionStageTableData, _invasionMapTableData);
 
-		// 선택한 캐릭이 현재 캐릭터와 다르다면 바꾸는 작업을 수행해야하는데
-		// 이미 만들었던 플레이어 캐릭터라면 다시 만들필요 없으니 가져다쓰고 없으면 어드레스 로딩을 시작해야한다.
-		// 재진입과는 달리 캐릭터가 이미 만들었다가 꺼있을수도 있으니 로드하기전에 확인해야한다.
 		if (BattleInstanceManager.instance.playerActor.actorId != _selectedActorId)
 		{
 			standbySwapBattleActor = true;
-
-			// 생성할 필요가 없을땐
 			PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(_selectedActorId);
 			if (playerActor != null)
 				_cachedPlayerActorForChange = playerActor;
@@ -548,11 +562,8 @@ public class InvasionEnterCanvas : MonoBehaviour
 			}
 		}
 
-		// 한가지 추가로 해줄게 있는데 레벨팩 관련 이펙트다.
-		PreloadLevelPackOnStartStageEffect();
-
 		// 이동 프로세스
-		//Timing.RunCoroutine(MoveProcess());
+		Timing.RunCoroutine(MoveProcess());
 	}
 
 	bool IsLoadedPlayerActor { get { return _playerActorPrefab != null; } }
@@ -596,73 +607,21 @@ public class InvasionEnterCanvas : MonoBehaviour
 		standbySwapBattleActor = false;
 	}
 
-	List<string> _listCachedLevelPackForEffectPreload = null;
-	void PreloadLevelPackOnStartStageEffect()
-	{
-		// 다른 전투들과 달리 보스전에서는 레벨팩을 랜덤으로 부여받게 되는데 부여받는 시점이 하필 OnStartBattle 시점이라서
-		// OnSpawnFlag랑 거의 비슷하게 호출되면서 레벨팩 어펙터 적용되기 전에 이펙트가 로딩되지 않는 문제가 발생했다.
-		// 그렇다고 이제와서 랜덤으로 부여받는걸 바꾸기도 뭐하고
-		// 랜덤으로 부여받는 시점을 땡겨서 미리 정해놓고 들어가려면 또 로직에 손대야해서
-		// 차라리 스테이지 시작 조건으로 되어있는 레벨팩(현재는 두개뿐이다. 조우시 힐장판, 조우시 공속업)의 이펙트만 미리 선별해서 프리로드 해두기로 한다.
-
-		if (_listCachedLevelPackForEffectPreload != null)
-			return;
-
-		_listCachedLevelPackForEffectPreload = new List<string>();
-		_listCachedLevelPackForEffectPreload.Add("HealAreaOnEncounter");
-		_listCachedLevelPackForEffectPreload.Add("AtkSpeedUpOnEncounter");
-		for (int i = 0; i < _listCachedLevelPackForEffectPreload.Count; ++i)
-		{
-			LevelPackTableData levelPackTableData = TableDataManager.instance.FindLevelPackTableData(_listCachedLevelPackForEffectPreload[i]);
-			if (levelPackTableData == null)
-				continue;
-
-			for (int j = 0; j < levelPackTableData.effectAddress.Length; ++j)
-			{
-				AddressableAssetLoadManager.GetAddressableGameObject(levelPackTableData.effectAddress[j], "CommonEffect", (prefab) =>
-				{
-					BattleInstanceManager.instance.AddCommonPoolPreloadObjectList(prefab);
-				});
-			}
-		}
-	}
-
-	/*
-
-	bool CheckEnergy()
-	{
-		// GatePillar에서 했던거 가져와서 쓴다.
-		if (CurrencyData.instance.energy < BattleInstanceManager.instance.GetCachedGlobalConstantInt("RequiredEnergyToPlay"))
-		{
-			ShowRefillEnergyCanvas();
-			return false;
-		}
-
-		return true;
-	}
-
 	// 패킷을 날려놓고 페이드아웃쯤에 오는 서버 응답에 따라 처리가 나뉜다. 
 	bool _waitEnterServerResponse;
-	bool _enterBossBattleServerFailure;
+	bool _enterInvasionServerFailure;
 	bool _networkFailure;
-	void PrepareBossBattle()
+	void PrepareInvasion()
 	{
-		int useAmount = BattleInstanceManager.instance.GetCachedGlobalConstantInt("RequiredEnergyToPlay");
-		// 클라이언트에서 먼저 삭제한 다음
-		CurrencyData.instance.UseEnergy(useAmount);
-		if (EnergyGaugeCanvas.instance != null)
-			EnergyGaugeCanvas.instance.RefreshEnergy();
-
 		// 입장패킷 보내서 서버로부터 제대로 응답오는지 기다려야한다.
-		PlayFabApiManager.instance.RequestEnterBossBattle(_selectedDifficulty, (serverFailure) =>
+		PlayFabApiManager.instance.RequestEnterInvasion(_selectedDifficulty, (serverFailure) =>
 		{
 			DelayedLoadingCanvas.Show(false);
 			if (_waitEnterServerResponse)
 			{
-				// 에너지가 없는데 도전
-				_enterBossBattleServerFailure = serverFailure;
+				// 제한 횟수 넘어서 도전
+				_enterInvasionServerFailure = serverFailure;
 				_waitEnterServerResponse = false;
-				PlayerData.instance.SelectBossBattleDifficulty(_selectedDifficulty);
 			}
 		}, () =>
 		{
@@ -690,7 +649,7 @@ public class InvasionEnterCanvas : MonoBehaviour
 		_processing = true;
 
 		// 보안 이슈로 Enter Flag는 받아둔다. 기존꺼랑 겹치지 않게 별도의 enterFlag다.
-		PrepareBossBattle();
+		PrepareInvasion();
 
 #if UNITY_EDITOR
 		AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
@@ -717,13 +676,13 @@ public class InvasionEnterCanvas : MonoBehaviour
 
 		while (_waitEnterServerResponse)
 			yield return Timing.WaitForOneFrame;
-		if (_enterBossBattleServerFailure || _networkFailure)
+		if (_enterInvasionServerFailure || _networkFailure)
 		{
 			FadeCanvas.instance.FadeIn(0.4f);
 			// 서버 에러 오면 안된다. 뭔가 잘못된거다.
-			if (_enterBossBattleServerFailure)
-				ToastCanvas.instance.ShowToast(UIString.instance.GetString("BossBattleUI_Wrong"), 2.0f);
-			_enterBossBattleServerFailure = false;
+			if (_enterInvasionServerFailure)
+				ToastCanvas.instance.ShowToast(UIString.instance.GetString("InvasionUI_Wrong"), 2.0f);
+			_enterInvasionServerFailure = false;
 			_networkFailure = false;
 			// 알파가 어느정도 빠지면 _processing을 풀어준다.
 			yield return Timing.WaitForSeconds(0.2f);
@@ -738,11 +697,8 @@ public class InvasionEnterCanvas : MonoBehaviour
 					yield return Timing.WaitForOneFrame;
 			}
 			ChangeBattleActor();
-			// 한번도 여기서 캐릭터를 바꾼적이 없어서 그동안은 필요없던 코드긴 한데
-			// 처음 캐릭을 생성하고나서 Start가 호출되고 나야 ActorStatus를 사용할 수 있다. 그러기 위해서 생성하고나서 한프레임 쉬고 가도록 한다.
 			yield return Timing.WaitForOneFrame;
 		}
-		Timing.RunCoroutine(CurrencyData.instance.DelayedSyncEnergyRechargeTime(5.0f));
 		while (MainSceneBuilder.instance.IsDoneLateInitialized() == false)
 			yield return Timing.WaitForOneFrame;
 		if (TitleCanvas.instance != null)
@@ -752,16 +708,15 @@ public class InvasionEnterCanvas : MonoBehaviour
 		if (NodeWarPortal.instance != null && NodeWarPortal.instance.gameObject.activeSelf)
 			NodeWarPortal.instance.gameObject.SetActive(false);
 		MainSceneBuilder.instance.OnExitLobby();
-		BattleManager.instance.Initialize(BattleManager.eBattleMode.BossBattle);
+		BattleManager.instance.Initialize(BattleManager.eBattleMode.Invasion);
 		BattleManager.instance.OnStartBattle();
 		SoundManager.instance.PlayBattleBgm(BattleInstanceManager.instance.playerActor.actorId);
-		RecordLastCharacter();
 
 		while (StageManager.instance.IsDoneLoadAsyncNextStage() == false)
 			yield return Timing.WaitForOneFrame;
 		CustomRenderer.instance.bloom.ResetDirtIntensity();
 		StageManager.instance.DeactiveCurrentMap();
-		StageManager.instance.MoveToBossBattle(_bossStageTableData, _bossMapTableData, _selectedDifficulty);
+		StageManager.instance.MoveToInvasion(_invasionStageTableData, _invasionMapTableData);
 
 		#region Effect Preload
 		// 캐릭터를 바꿔서 들어가면 프리로딩이 필요하다. 프레임 끊기는 경험이 좋지 않으니 막아야한다.
@@ -772,6 +727,8 @@ public class InvasionEnterCanvas : MonoBehaviour
 			_listCachingObject = new List<GameObject>();
 			for (int i = 0; i < BattleInstanceManager.instance.playerActor.cachingObjectList.Length; ++i)
 				_listCachingObject.Add(BattleInstanceManager.instance.GetCachedObject(BattleInstanceManager.instance.playerActor.cachingObjectList[i], Vector3.right, Quaternion.identity));
+
+			_listCachingObject.Add(BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.portalMoveEffectPrefab, BattleInstanceManager.instance.playerActor.cachedTransform.position + new Vector3(100.0f, 0.0f, 0.0f), Quaternion.identity));
 		}
 		yield return Timing.WaitForOneFrame;
 		yield return Timing.WaitForOneFrame;
@@ -790,7 +747,6 @@ public class InvasionEnterCanvas : MonoBehaviour
 
 		_processing = false;
 	}
-	*/
 
 	#region Record Last Character
 	void RecordLastDifficulty()

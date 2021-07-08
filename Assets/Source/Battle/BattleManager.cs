@@ -77,6 +77,9 @@ public class BattleManager : MonoBehaviour
 			case eBattleMode.BossBattle:
 				_currentBattleMode = new BossBattleProcessor();
 				break;
+			case eBattleMode.Invasion:
+				_currentBattleMode = new InvasionProcessor();
+				break;
 		}
 		_battleMode = battleMode;
 	}

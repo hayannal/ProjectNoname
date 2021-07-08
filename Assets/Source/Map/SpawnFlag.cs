@@ -109,7 +109,14 @@ public class SpawnFlag : MonoBehaviour
 			if (ClientSaveData.instance.GetCachedMonsterAllKill() || ClientSaveData.instance.GetCachedGatePillar())
 				spawnTransform = playerClearSpawnTransform;
 
-			if (MainSceneBuilder.instance == null || MainSceneBuilder.instance.mainSceneBuilding == false)
+			bool showSpawnEffect = true;
+			if (MainSceneBuilder.instance != null && MainSceneBuilder.instance.mainSceneBuilding) showSpawnEffect = false;
+			if (BattleManager.instance != null && BattleManager.instance.IsInvasion())
+			{
+				showSpawnEffect = false;
+				BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.portalMoveEffectPrefab, spawnTransform.position, Quaternion.identity);
+			}
+			if (showSpawnEffect)
 				BattleInstanceManager.instance.GetCachedObject(BattleManager.instance.playerSpawnEffectPrefab, spawnTransform.position, Quaternion.identity);
 			if (BattleInstanceManager.instance.playerActor != null)
 				BattleInstanceManager.instance.playerActor.cachedTransform.position = spawnTransform.position;

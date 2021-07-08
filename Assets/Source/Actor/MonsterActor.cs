@@ -201,8 +201,8 @@ public class MonsterActor : Actor
 		if (needEliteMonster == false)
 			return;
 
-		// 21챕터 이후에는 개발할지도 모르겠으나 우선은 보스배틀일때 쓰이지 않도록 한다.
-		if (BattleManager.instance != null && BattleManager.instance.IsBossBattle())
+		// 21챕터 이후에는 개발할지도 모르겠으나 우선은 기본 전투 빼고는 비활성화 시키기로 한다.
+		if (BattleManager.instance != null && BattleManager.instance.IsDefaultBattle() == false)
 			return;
 
 		// 엘리트 몬스터가 필요한 상황이라면

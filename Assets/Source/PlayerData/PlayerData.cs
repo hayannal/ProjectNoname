@@ -108,6 +108,10 @@ public class PlayerData : MonoBehaviour
 	// 보스전 결과창 후 로비로 되돌아올때 로딩을 위한 변수
 	public ObscuredBool readyToReopenBossEnterCanvas { get; set; }
 
+	// Invasion 관련 변수
+	List<ObscuredString> _listInvasionEnteredActorId = new List<ObscuredString>();
+	public List<ObscuredString> listInvasionEnteredActorId { get { return _listInvasionEnteredActorId; } }
+
 	// sealCount 획득 연출용 변수. 클라에만 저장해두고 로비 돌아갈때 보여준다.
 	// 이벤트 처리가 아니라서 PlayerData에 넣어두기로 한다.
 	public ObscuredInt sealGainCount { get; set; }

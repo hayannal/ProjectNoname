@@ -653,7 +653,7 @@ public class PlayFabApiManager : MonoBehaviour
 		// 정말 이상하게도 갑자기 PlayFab로그인은 되는데 그 뒤 모든 패킷을 보내봐도(클라이언트측 함수나 클라우드 스크립트 둘다) 503 에러를 뱉어냈다.
 		// 이때는 PlayFab 서버가 동작 안하는 상태라 종료시간같은걸 정할수도 없으니 전용 스트링 하나 만들어서 보여주기로 한다.
 		string stringId = "SystemUI_DisconnectServer";
-		if (error.Error == PlayFabErrorCode.ServiceUnavailable)
+		if (error.Error == PlayFabErrorCode.ServiceUnavailable || error.Error == PlayFabErrorCode.DownstreamServiceUnavailable)
 			stringId = "SystemUI_Error503";
 
 		// 로그인이 성공한 이상 실패할거 같진 않지만 그래도 혹시 모르니 해둔다.
@@ -1258,6 +1258,41 @@ public class PlayFabApiManager : MonoBehaviour
 		{
 			HandleCommonError(error);
 		});
+	}
+	#endregion
+
+	#region Invasion
+	// 역시 입장시마다 랜덤으로 된 숫자키를 하나 받는다.
+	ObscuredString _serverEnterKeyForInvasion;
+	public void RequestEnterInvasion(int selectedDifficulty, Action<bool> successCallback, Action failureCallback)
+	{
+		string input = string.Format("{0}_{1}", selectedDifficulty, "qimzkria");
+		string checkSum = CheckSum(input);
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "EnterInvasion",
+			FunctionParameter = new { Enter = 1, SeLv = selectedDifficulty, Cs = checkSum },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			_serverEnterKeyForBossBattle = failure ? "" : resultString;
+			if (successCallback != null) successCallback.Invoke(failure);
+		}, (error) =>
+		{
+			HandleCommonError(error);
+			if (failureCallback != null) failureCallback.Invoke();
+		});
+	}
+
+	public void RequestCancelInvasion()
+	{
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "CancelInvasion",
+			GeneratePlayStreamEvent = true,
+		}, null, null);
 	}
 	#endregion
 

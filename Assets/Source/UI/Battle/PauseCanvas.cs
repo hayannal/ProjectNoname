@@ -196,18 +196,17 @@ public class PauseCanvas : MonoBehaviour
 				SceneManager.LoadScene(0);
 			});
 		}
-		else if (BattleManager.instance.IsNodeWar())
+		else if (BattleManager.instance.IsNodeWar() || BattleManager.instance.IsBossBattle() || BattleManager.instance.IsInvasion())
 		{
 			YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_BackToLobby"), UIString.instance.GetString("GameUI_CancelNodeWarDescription"), () => {
-				PlayFabApiManager.instance.RequestCancelNodeWar();
-				SaveOption();
-				SceneManager.LoadScene(0);
-			});
-		}
-		else if (BattleManager.instance.IsBossBattle())
-		{
-			YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_BackToLobby"), UIString.instance.GetString("GameUI_CancelNodeWarDescription"), () => {
-				PlayFabApiManager.instance.RequestCancelBossBattle();
+
+				if (BattleManager.instance.IsNodeWar())
+					PlayFabApiManager.instance.RequestCancelNodeWar();
+				else if (BattleManager.instance.IsNodeWar())
+					PlayFabApiManager.instance.RequestCancelBossBattle();
+				else if (BattleManager.instance.IsInvasion())
+					PlayFabApiManager.instance.RequestCancelInvasion();
+
 				SaveOption();
 				SceneManager.LoadScene(0);
 			});

@@ -35,6 +35,7 @@ public class TooltipCanvas : MonoBehaviour
 		LeftBottom,
 		CharacterInfo,
 		StoryInfo,
+		InvasionRewardInfo,
 	}
 
 	public static void Show(bool show, eDirection direction, string text, float textWidth, Transform targetTransform, Vector2 offset)

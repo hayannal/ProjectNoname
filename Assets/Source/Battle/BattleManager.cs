@@ -58,6 +58,7 @@ public class BattleManager : MonoBehaviour
 		DefaultMode,
 		NodeWar,
 		BossBattle,
+		Invasion,
 	}
 
 	BattleModeProcessorBase _currentBattleMode = null;
@@ -93,6 +94,11 @@ public class BattleManager : MonoBehaviour
 	public bool IsBossBattle()
 	{
 		return (_battleMode == eBattleMode.BossBattle);
+	}
+
+	public bool IsInvasion()
+	{
+		return (_battleMode == eBattleMode.Invasion);
 	}
 
 	void Update()

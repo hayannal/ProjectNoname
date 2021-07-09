@@ -218,10 +218,10 @@ public class InvasionProcessor : BattleModeProcessorBase
 		if (clear)
 		{
 			// 성공시에는 패킷 보내고 통과해야 연출을 진행. 노드워와 동일하다.
-			//PlayFabApiManager.instance.RequestEndInvasion(clear, _selectedNodeWarTableData.level, DropManager.instance.GetLobbyDropItemInfo(), (result, itemGrantString) =>
-			//{
-			//	Timing.RunCoroutine(ClearProcess(result, itemGrantString));
-			//});
+			PlayFabApiManager.instance.RequestEndInvasion(BattleInstanceManager.instance.playerActor.actorId, 1, DropManager.instance.GetLobbyDropItemInfo(), (itemGrantString) =>
+			{
+				//Timing.RunCoroutine(ClearProcess(result, itemGrantString));
+			});
 
 			/*
 			// 클리어 했다면 다음번 보스가 누구일지 미리 굴려서 End패킷에 보내야한다.

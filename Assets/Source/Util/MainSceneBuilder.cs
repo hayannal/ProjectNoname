@@ -691,10 +691,10 @@ public class MainSceneBuilder : MonoBehaviour
 			CumulativeEventData.instance.LateInitialize();
 		}
 
-		if (PlayerData.instance.readyToReopenBossEnterCanvas)
+		if (ContentsData.instance.readyToReopenBossEnterCanvas)
 		{
 			BossBattleEnterCanvas.PreloadReadyToReopen();
-			PlayerData.instance.readyToReopenBossEnterCanvas = false;
+			ContentsData.instance.readyToReopenBossEnterCanvas = false;
 		}
 
 		// 캐릭터는 언제나 같은 번들안에 있을테니 마지막 번호 하나만 검사하기로 한다.

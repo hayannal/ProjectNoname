@@ -133,7 +133,7 @@ public class PlayFabApiManager : MonoBehaviour
 			if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
 				selected = BattleManager.instance.GetSelectedNodeWarTableData().level;
 			else if (BattleManager.instance != null && BattleManager.instance.IsBossBattle())
-				selected = PlayerData.instance.bossBattleId;
+				selected = ContentsData.instance.bossBattleId;
 			param1 = selected * 100 + powerLevel;
 		}
 
@@ -1245,7 +1245,7 @@ public class PlayFabApiManager : MonoBehaviour
 			{
 				WaitingNetworkCanvas.Show(false);
 
-				PlayerData.instance.bossBattleId = nextBossId;
+				ContentsData.instance.bossBattleId = nextBossId;
 
 				// 클라이언트에서 먼저 삭제한 다음
 				CurrencyData.instance.UseEnergy(price);
@@ -1264,20 +1264,20 @@ public class PlayFabApiManager : MonoBehaviour
 	#region Invasion
 	// 역시 입장시마다 랜덤으로 된 숫자키를 하나 받는다.
 	ObscuredString _serverEnterKeyForInvasion;
-	public void RequestEnterInvasion(int selectedDifficulty, Action<bool> successCallback, Action failureCallback)
+	public void RequestEnterInvasion(string selectedActorId, int selectedDifficulty, Action<bool> successCallback, Action failureCallback)
 	{
-		string input = string.Format("{0}_{1}", selectedDifficulty, "qimzkria");
+		string input = string.Format("{0}_{1}_{2}", selectedActorId, selectedDifficulty, "vizjapwkq");
 		string checkSum = CheckSum(input);
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
 			FunctionName = "EnterInvasion",
-			FunctionParameter = new { Enter = 1, SeLv = selectedDifficulty, Cs = checkSum },
+			FunctionParameter = new { Enter = 1, ActId = selectedActorId, SeLv = selectedDifficulty, Cs = checkSum },
 			GeneratePlayStreamEvent = true,
 		}, (success) =>
 		{
 			string resultString = (string)success.FunctionResult;
 			bool failure = (resultString == "1");
-			_serverEnterKeyForBossBattle = failure ? "" : resultString;
+			_serverEnterKeyForInvasion = failure ? "" : resultString;
 			if (successCallback != null) successCallback.Invoke(failure);
 		}, (error) =>
 		{
@@ -1293,6 +1293,42 @@ public class PlayFabApiManager : MonoBehaviour
 			FunctionName = "CancelInvasion",
 			GeneratePlayStreamEvent = true,
 		}, null, null);
+	}
+
+	public void RequestEndInvasion(string selectedActorId, int selectedDifficulty, List<ObscuredString> listDropItemId, Action<string> successCallback)
+	{
+		string checkSum = "";
+		List<TimeSpaceData.ItemGrantRequest> listItemGrantRequest = TimeSpaceData.instance.GenerateGrantRequestInfo(listDropItemId, ref checkSum);
+		ExecuteCloudScriptRequest request = new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "EndInvasion",
+			FunctionParameter = new { Flg = (string)_serverEnterKeyForInvasion, ActId = selectedActorId, Lst = listItemGrantRequest, LstCs = checkSum },
+			GeneratePlayStreamEvent = true,
+		};
+		Action action = () =>
+		{
+			PlayFabClientAPI.ExecuteCloudScript(request, (success) =>
+			{
+				PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
+				jsonResult.TryGetValue("retErr", out object retErr);
+				jsonResult.TryGetValue("itmRet", out object itmRet);
+				bool failure = ((retErr.ToString()) == "1");
+				_serverEnterKeyForInvasion = "";
+				if (!failure)
+				{
+					RetrySendManager.instance.OnSuccess();
+
+					// 성공시에만 date파싱을 한다.
+					jsonResult.TryGetValue("date", out object date);
+					ContentsData.instance.OnRecvInvasionClearDateTime((string)date, selectedActorId);
+				}
+				if (successCallback != null) successCallback.Invoke((string)itmRet);
+			}, (error) =>
+			{
+				RetrySendManager.instance.OnFailure();
+			});
+		};
+		RetrySendManager.instance.RequestAction(action, true, true);
 	}
 	#endregion
 

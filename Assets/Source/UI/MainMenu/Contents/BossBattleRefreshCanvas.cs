@@ -43,7 +43,7 @@ public class BossBattleRefreshCanvas : MonoBehaviour
 
 	public void OnClickButton()
 	{
-		int nextId = PlayerData.instance.GetNextRandomBossId();
+		int nextId = ContentsData.instance.GetNextRandomBossId();
 		PlayFabApiManager.instance.RequestRefreshBoss(nextId, REFRESH_PRICE, () =>
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("BossUI_NewAppear"), 2.0f);

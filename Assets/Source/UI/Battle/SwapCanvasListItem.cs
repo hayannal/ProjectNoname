@@ -101,7 +101,10 @@ public class SwapCanvasListItem : MonoBehaviour
 			recommandedText.SetLocalizedText(UIString.instance.GetString("GameUI_Suggested"));
 			recommandedText.gameObject.SetActive(true);
 		}
-		blackObject.SetActive(lobby && powerLevel == 0);
+		bool showBlackObject = false;
+		if (lobby && powerLevel == 0) showBlackObject = true;
+		if (InvasionEnterCanvas.instance != null && InvasionEnterCanvas.instance.gameObject.activeSelf && ContentsData.instance.listInvasionEnteredActorId.Contains(actorId)) showBlackObject = true;
+		blackObject.SetActive(showBlackObject);
 		
 		selectObject.SetActive(false);
 		_clickAction = clickCallback;

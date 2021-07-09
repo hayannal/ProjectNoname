@@ -29,11 +29,11 @@ public class BossBattleProcessor : BattleModeProcessorBase
 		ApplyBossBattleLevelPack(BattleInstanceManager.instance.playerActor);
 
 		// Enter 패킷에서 저장해놨으니 불러올 수 있다.
-		int currentBossId = PlayerData.instance.bossBattleId;
+		int currentBossId = ContentsData.instance.bossBattleId;
 		if (currentBossId == 0)
 			currentBossId = 1;
-		_selectedDifficulty = PlayerData.instance.GetBossBattleSelectedDifficulty(currentBossId.ToString());
-		_clearDifficulty = PlayerData.instance.GetBossBattleClearDifficulty(currentBossId.ToString());
+		_selectedDifficulty = ContentsData.instance.GetBossBattleSelectedDifficulty(currentBossId.ToString());
+		_clearDifficulty = ContentsData.instance.GetBossBattleClearDifficulty(currentBossId.ToString());
 		_firstClear = false;
 		if (_clearDifficulty == 0)
 			_firstClear = true;
@@ -261,7 +261,7 @@ public class BossBattleProcessor : BattleModeProcessorBase
 		if (clear)
 		{
 			// 클리어 했다면 다음번 보스가 누구일지 미리 굴려서 End패킷에 보내야한다.
-			int nextBossId = PlayerData.instance.GetNextRandomBossId();
+			int nextBossId = ContentsData.instance.GetNextRandomBossId();
 
 			// 첫 클리어라면 첫클리어 드랍 보상도 굴려야한다. 드랍 정보만 필요하고 연출은 필요없기때문에 간단하게 처리한다.
 			if (_firstClear)
@@ -301,11 +301,11 @@ public class BossBattleProcessor : BattleModeProcessorBase
 	{
 		// 반복클리어냐 아니냐에 따라 결과를 나누면 된다.
 		CurrencyData.instance.gold += _bossRewardTableData.enterGold;
-		PlayerData.instance.AddBossBattleCount();
+		ContentsData.instance.AddBossBattleCount();
 
 		if (clear)
 		{
-			PlayerData.instance.OnClearBossBattle(_selectedDifficulty, _clearDifficulty, nextBossId);
+			ContentsData.instance.OnClearBossBattle(_selectedDifficulty, _clearDifficulty, nextBossId);
 
 			if (_firstClear)
 			{

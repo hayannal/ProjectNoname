@@ -404,7 +404,7 @@ public class BossBattleResultCanvas : MonoBehaviour
 	public void OnClickExitButton()
 	{
 		// PlayerData에 기록을 남겨둔다.
-		PlayerData.instance.readyToReopenBossEnterCanvas = true;
+		ContentsData.instance.readyToReopenBossEnterCanvas = true;
 
 		SceneManager.LoadScene(0);
 	}

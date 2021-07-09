@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,6 +15,8 @@ public class InvasionEnterCanvas : MonoBehaviour
 	public static InvasionEnterCanvas instance;
 
 	public Transform titleTextTransform;
+	public Text remainTimeText;
+
 	public Text difficultyText;
 	public GameObject changeDifficultyButtonObject;
 	public Transform previewRootTransform;
@@ -104,6 +107,13 @@ public class InvasionEnterCanvas : MonoBehaviour
 		StackCanvas.Pop(gameObject);
 	}
 
+	void Update()
+	{
+		// 날짜가 지나는 타이밍에는 캐릭터 사용 내역이 초기화 되었는지 확인하고 날짜를 갱신시켜야한다.
+		UpdateRemainTime();
+		UpdateRefresh();
+	}
+
 
 
 	List<CharacterData> _listCharacterData = new List<CharacterData>();
@@ -131,7 +141,8 @@ public class InvasionEnterCanvas : MonoBehaviour
 		_listCharacterData.Sort(delegate (CharacterData x, CharacterData y)
 		{
 			// 제일 먼저 오늘 출전한 캐릭터인지를 
-
+			if (ContentsData.instance.listInvasionEnteredActorId.Contains(x.actorId) == false && ContentsData.instance.listInvasionEnteredActorId.Contains(y.actorId)) return -1;
+			else if (ContentsData.instance.listInvasionEnteredActorId.Contains(x.actorId) && ContentsData.instance.listInvasionEnteredActorId.Contains(y.actorId) == false) return 1;
 
 			// 이후 검사는 기본적인 파워레벨 순서로 한다.
 			if (x.powerLevel > y.powerLevel) return -1;
@@ -183,7 +194,7 @@ public class InvasionEnterCanvas : MonoBehaviour
 		if (onEnable)
 		{
 			if (string.IsNullOrEmpty(firstSelectableActorId))
-			{ }
+				selectResultText.text = "";
 			else
 				OnClickListItem(firstSelectableActorId);
 		}
@@ -231,6 +242,11 @@ public class InvasionEnterCanvas : MonoBehaviour
 	ObscuredInt _limitPowerLevel;
 	void RefreshInfo()
 	{
+		// 요일별 타이머가 떠야하는거라서 일일 상점처럼 처리한다.
+		_dailyResetTime = DailyShopData.instance.dailyShopSlotPurchasedResetTime;
+		_lastDayOfWeek = ServerTime.UtcNow.DayOfWeek;
+		_needUpdate = true;
+
 		// RefreshGrid(true)를 통해 진입해야할 캐릭터들이 골라진 상태일거다.
 		// 두번째 할일은 현재 가지고 있는 캐릭터들 중 최고레벨을 골라서 어느 난이도까지 표시할지 정해야한다.
 		RefreshHighestPowerLevel();
@@ -356,24 +372,20 @@ public class InvasionEnterCanvas : MonoBehaviour
 			else
 				returnScrollIconObject.SetActive(true);
 		}
-		/*
 		else if (_invasionTableData.rewardType == "be")
 		{
-			if (guideQuestTableData.rewardValue == "3" && guideQuestTableData.rewardCount >= 3)
+			if (_invasionTableData.rewardValue == "3")
 				equipBigBoxObject.SetActive(true);
 			else
 				equipBoxObject.SetActive(true);
-			rewardCountText.text = "";
 		}
-		else if (guideQuestTableData.rewardType == "bm")
+		else if (_invasionTableData.rewardType == "bm")
 		{
-			if (guideQuestTableData.rewardCount >= 5)
-				equipBigBoxObject.SetActive(true);
-			else
+			//if (_invasionTableData.rewardCount >= 5)
+			//	equipBigBoxObject.SetActive(true);
+			//else
 				equipBoxObject.SetActive(true);
-			rewardCountText.text = "";
 		}
-		*/
 		else if (_invasionTableData.rewardType == "bc")
 		{
 			characterBoxObject.SetActive(true);
@@ -382,19 +394,19 @@ public class InvasionEnterCanvas : MonoBehaviour
 
 	public void OnClickRewardInfoButton()
 	{
-		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, UIString.instance.GetString(_invasionTableData.rewardMore), 150, goldIconObject.transform, new Vector2(0.0f, -40.0f));
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.InvasionRewardInfo, UIString.instance.GetString(_invasionTableData.rewardMore), 290, goldIconObject.transform, new Vector2(0.0f, -40.0f));
 	}
 
 	const int ENTER_COUNT_MAX = 3;
 	void RefreshEnterCount()
 	{
 		// 오늘 입장한 캐릭터 리스트를 구해오면 입장 횟수를 구할 수 있다.
-		int currentEnterCount = PlayerData.instance.listInvasionEnteredActorId.Count;
+		int currentEnterCount = ContentsData.instance.listInvasionEnteredActorId.Count;
 		if (currentEnterCount < ENTER_COUNT_MAX)
 		{
 			enterButtonObject.SetActive(true);
 			priceButtonObject.SetActive(false);
-			bool disablePrice = (_selectedActorPowerLevel < _limitPowerLevel);
+			bool disablePrice = (_selectedActorPowerLevel < _limitPowerLevel || string.IsNullOrEmpty(_selectedActorId));
 			enterButtonImage.color = !disablePrice ? Color.white : ColorUtil.halfGray;
 			enterText.color = !disablePrice ? Color.white : Color.gray;
 			enterCountText.text = string.Format("{0} / {1}", currentEnterCount, ENTER_COUNT_MAX);
@@ -426,7 +438,7 @@ public class InvasionEnterCanvas : MonoBehaviour
 		// 가격
 		int price = BattleInstanceManager.instance.GetCachedGlobalConstantInt("InvasionDiamond");
 		priceText.text = price.ToString("N0");
-		bool disablePrice = (CurrencyData.instance.dia < price || _selectedActorPowerLevel < _limitPowerLevel);
+		bool disablePrice = (CurrencyData.instance.dia < price || _selectedActorPowerLevel < _limitPowerLevel || string.IsNullOrEmpty(_selectedActorId));
 		priceButtonImage.color = !disablePrice ? Color.white : ColorUtil.halfGray;
 		priceText.color = !disablePrice ? Color.white : Color.gray;
 		priceGrayscaleEffect.enabled = disablePrice;
@@ -456,7 +468,7 @@ public class InvasionEnterCanvas : MonoBehaviour
 		}
 
 		// 이미 출전했던 캐릭터라면
-		if (PlayerData.instance.listInvasionEnteredActorId.Contains(actorId))
+		if (ContentsData.instance.listInvasionEnteredActorId.Contains(actorId))
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("InvasionUI_AlreadyEntered"), 2.0f);
 			return;
@@ -518,12 +530,17 @@ public class InvasionEnterCanvas : MonoBehaviour
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_ManageInventory"), 2.0f);
 			return;
 		}
+		if (string.IsNullOrEmpty(_selectedActorId))
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("InvasionUI_NoOneSelected"), 2.0f);
+			return;
+		}
 		if (_selectedActorPowerLevel < _limitPowerLevel)
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("InvasionUI_CannotEnterPowerToast"), 2.0f);
 			return;
 		}
-		int currentEnterCount = PlayerData.instance.listInvasionEnteredActorId.Count;
+		int currentEnterCount = ContentsData.instance.listInvasionEnteredActorId.Count;
 		if (currentEnterCount == ENTER_COUNT_MAX && CurrencyData.instance.dia < _price)
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughDiamond"), 2.0f);
@@ -536,8 +553,7 @@ public class InvasionEnterCanvas : MonoBehaviour
 		}
 
 
-		if (string.IsNullOrEmpty(_selectedActorId))
-			return;
+		
 
 		// 진입처리
 		// 인풋부터 막고
@@ -614,7 +630,7 @@ public class InvasionEnterCanvas : MonoBehaviour
 	void PrepareInvasion()
 	{
 		// 입장패킷 보내서 서버로부터 제대로 응답오는지 기다려야한다.
-		PlayFabApiManager.instance.RequestEnterInvasion(_selectedDifficulty, (serverFailure) =>
+		PlayFabApiManager.instance.RequestEnterInvasion(_selectedActorId, _selectedDifficulty, (serverFailure) =>
 		{
 			DelayedLoadingCanvas.Show(false);
 			if (_waitEnterServerResponse)
@@ -746,6 +762,58 @@ public class InvasionEnterCanvas : MonoBehaviour
 		FadeCanvas.instance.FadeIn(0.8f);
 
 		_processing = false;
+	}
+
+
+
+
+
+	DateTime _dailyResetTime;
+	DayOfWeek _lastDayOfWeek;
+	int _lastRemainTimeSecond = -1;
+	bool _needUpdate = false;
+	void UpdateRemainTime()
+	{
+		if (_needUpdate == false)
+			return;
+
+		if (ServerTime.UtcNow < _dailyResetTime)
+		{
+			TimeSpan remainTime = _dailyResetTime - ServerTime.UtcNow;
+			if (_lastRemainTimeSecond != (int)remainTime.TotalSeconds)
+			{
+				if (remainTime.Days > 0)
+					remainTimeText.text = string.Format("{0}d {1:00}:{2:00}:{3:00}", remainTime.Days, remainTime.Hours, remainTime.Minutes, remainTime.Seconds);
+				else
+					remainTimeText.text = string.Format("{0:00}:{1:00}:{2:00}", remainTime.Hours, remainTime.Minutes, remainTime.Seconds);
+				_lastRemainTimeSecond = (int)remainTime.TotalSeconds;
+			}
+		}
+		else
+		{
+			_needUpdate = false;
+			remainTimeText.text = "00:00:00";
+			_needRefresh = true;
+
+			if (ChangeInvasionDifficultyCanvas.instance != null && ChangeInvasionDifficultyCanvas.instance.gameObject.activeSelf)
+				ChangeInvasionDifficultyCanvas.instance.gameObject.SetActive(false);
+		}
+	}
+
+	bool _needRefresh = false;
+	int _lastCurrent;
+	void UpdateRefresh()
+	{
+		if (_needRefresh == false)
+			return;
+
+		if (ContentsData.instance.listInvasionEnteredActorId.Count == 0 && ServerTime.UtcNow.DayOfWeek != _lastDayOfWeek)
+		{
+			RefreshGrid(true);
+			RefreshInfo();
+
+			_needRefresh = false;
+		}
 	}
 
 	#region Record Last Character

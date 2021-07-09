@@ -96,10 +96,10 @@ public class BossBattleEnterCanvas : MonoBehaviour
 		if (DragThresholdController.instance != null)
 			DragThresholdController.instance.ApplyUIDragThreshold();
 
-		if (PlayerData.instance.newBossRefreshed)
+		if (ContentsData.instance.newBossRefreshed)
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("BossUI_NewAppear"), 3.0f);
-			PlayerData.instance.newBossRefreshed = false;
+			ContentsData.instance.newBossRefreshed = false;
 		}
 	}
 
@@ -136,7 +136,7 @@ public class BossBattleEnterCanvas : MonoBehaviour
 			_cachedPreviewObject = null;
 		}
 
-		int currentBossId = PlayerData.instance.bossBattleId;
+		int currentBossId = ContentsData.instance.bossBattleId;
 		if (currentBossId == 0)
 		{
 			// 0이라면 처음 보스배틀을 시작하는 유저일거다.
@@ -148,8 +148,8 @@ public class BossBattleEnterCanvas : MonoBehaviour
 		if (_bossBattleTableData == null)
 			return;
 
-		int clearDifficulty = PlayerData.instance.GetBossBattleClearDifficulty(currentBossId.ToString());
-		_selectedDifficulty = PlayerData.instance.GetBossBattleSelectedDifficulty(currentBossId.ToString());
+		int clearDifficulty = ContentsData.instance.GetBossBattleClearDifficulty(currentBossId.ToString());
+		_selectedDifficulty = ContentsData.instance.GetBossBattleSelectedDifficulty(currentBossId.ToString());
 		if (_selectedDifficulty == 0)
 		{
 			// _selectedDifficulty이면 한번도 플레이 안했다는거니 bossBattleTable에서 시작 챕터를 가져와야한다.
@@ -160,7 +160,7 @@ public class BossBattleEnterCanvas : MonoBehaviour
 		//if (_selectedDifficulty > (clearDifficulty + 1))
 		//	_selectedDifficulty = (clearDifficulty + 1);
 
-		int bossBattleCount = PlayerData.instance.GetBossBattleCount(currentBossId.ToString());
+		int bossBattleCount = ContentsData.instance.GetBossBattleCount(currentBossId.ToString());
 
 
 		StageTableData bossStageTableData = BattleInstanceManager.instance.GetCachedStageTableData(_bossBattleTableData.chapter, _bossBattleTableData.stage, false);
@@ -234,7 +234,7 @@ public class BossBattleEnterCanvas : MonoBehaviour
 		// 위 RefreshInfo에서 하는 코드와 비슷해서 근처에 둔다.
 		AddressableAssetLoadManager.GetAddressableGameObject("BossBattleEnterCanvas", "Canvas");
 
-		int currentBossId = PlayerData.instance.bossBattleId;
+		int currentBossId = ContentsData.instance.bossBattleId;
 		BossBattleTableData bossBattleTableData = TableDataManager.instance.FindBossBattleData(currentBossId);
 		if (bossBattleTableData == null)
 			return;
@@ -317,7 +317,7 @@ public class BossBattleEnterCanvas : MonoBehaviour
 	public void OnChangeDifficulty(int difficulty)
 	{
 		ToastCanvas.instance.ShowToast(UIString.instance.GetString("BossUI_ChangeDifficulty"), 2.0f);
-		PlayerData.instance.SelectBossBattleDifficulty(difficulty);
+		ContentsData.instance.SelectBossBattleDifficulty(difficulty);
 		RefreshInfo();
 		RefreshGrid(false);
 		OnClickListItem(_selectedActorId);
@@ -789,7 +789,7 @@ public class BossBattleEnterCanvas : MonoBehaviour
 				// 에너지가 없는데 도전
 				_enterBossBattleServerFailure = serverFailure;
 				_waitEnterServerResponse = false;
-				PlayerData.instance.SelectBossBattleDifficulty(_selectedDifficulty);
+				ContentsData.instance.SelectBossBattleDifficulty(_selectedDifficulty);
 			}
 		}, () =>
 		{

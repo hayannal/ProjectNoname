@@ -121,6 +121,8 @@ public class MercenaryData : MonoBehaviour
 		{
 			if (_listMercenarySlotInfo[i].dy != ServerTime.UtcNow.Day)
 				continue;
+			if (string.IsNullOrEmpty(_listMercenarySlotInfo[i].id))
+				continue;
 
 			CharacterData newCharacterData = new CharacterData();
 			newCharacterData.actorId = _listMercenarySlotInfo[i].id;

@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿//#define DELETE_MASTER_ACCOUNT
+
+using UnityEngine;
 using UnityEditor;
 using UnityEditor.Animations;
 using System.Collections;
@@ -6,6 +8,10 @@ using System.Collections.Generic;
 using ECM.Controllers;
 using UnityEngine.SceneManagement;
 using ActorStatusDefine;
+#if DELETE_MASTER_ACCOUNT
+using PlayFab;
+using MEC;
+#endif
 
 public class AccountTool : EditorWindow
 {
@@ -38,11 +44,42 @@ public class AccountTool : EditorWindow
 			//EditorApplication.isPlaying = true;
 			EditorGUILayout.HelpBox(_notificationMsg, MessageType.Info);
 			ShowNotification(_notification);
+
+#if DELETE_MASTER_ACCOUNT
+			_masterIdList = EditorGUILayout.TextField("Delete Master Id :", _masterIdList);
+			if (GUILayout.Button("Delete Master Account"))
+			{
+				Timing.RunCoroutine(DeleteProcess());
+				//PlayFabApiManager.RequestDeleteAccount(_masterIdList);
+			}
+#endif
 			return;
 		}
 
 		OnGUI_Guest();
 	}
+
+#if DELETE_MASTER_ACCOUNT
+	string _masterIdList;
+	IEnumerator<float> DeleteProcess()
+	{
+		string[] split = _masterIdList.Split(' ');
+		for (int i = 0; i < split.Length; ++i)
+		{
+			PlayFabAdminAPI.DeleteMasterPlayerAccount(new PlayFab.AdminModels.DeleteMasterPlayerAccountRequest()
+			{
+				PlayFabId = split[i],
+			}, null, null);
+
+			yield return Timing.WaitForSeconds(0.3f);
+			Debug.LogFormat("{0} / {1} complete {2}", i + 1, split.Length, split[i]);
+		}
+
+		_masterIdList = "";
+		Debug.LogFormat("complete!!");
+		yield break;
+	}
+#endif
 
 	string _guestCustomId;
 	void OnGUI_Guest()

@@ -94,8 +94,12 @@ public class ClientSaveData : MonoBehaviour
 		{
 			// 불러와야할 캐릭터가 용병 캐릭터인데 오늘의 무료 용병이 바뀌어서 불러올 수 없다면 교체하지 않아야한다.
 			bool ignoreChange = false;
-			if (MercenaryData.IsMercenaryActor(battleActorId) && MercenaryData.instance.GetCharacterData(battleActorId) == null)
-				ignoreChange = true;
+			if (MercenaryData.IsMercenaryActor(battleActorId))
+			{
+				MercenaryData.instance.RefreshCharacterDataList();
+				if (MercenaryData.instance.GetCharacterData(battleActorId) == null)
+					ignoreChange = true;
+			}
 
 			if (ignoreChange == false)
 			{

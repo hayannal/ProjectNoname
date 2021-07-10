@@ -60,6 +60,10 @@ public class BattleModeProcessorBase
 			else if (PlayerData.instance.highestClearStage > 0)
 				_clearPoint = _appliedChallengeRetryBonusClearPoint = PlayerData.instance.highestClearStage;
 		}
+
+		// 기본적으로는 여기서 카오스 체크해서 용병 캐릭터를 초기화 하기로 한다. 이러면 전투 중간에 초기화 될일도 없고 레벨업 다 반영된채로 초기화하게 된다.
+		if (PlayerData.instance.currentChaosMode)
+			MercenaryData.instance.RefreshCharacterDataList();
 	}
 
 	public void OnPreInstantiateMap()

@@ -72,10 +72,10 @@ public class MercenaryData : MonoBehaviour
 		return null;
 	}
 
-	void Update()
-	{
-		UpdateRefreshCharacterDataList();
-	}
+	//void Update()
+	//{
+	//	UpdateRefreshCharacterDataList();
+	//}
 
 	public void OnRecvMercenaryData(Dictionary<string, string> titleData, bool refreshCharacterData)
 	{
@@ -86,20 +86,23 @@ public class MercenaryData : MonoBehaviour
 		if (titleData.ContainsKey("mcLst"))
 			_listMercenarySlotInfo = serializer.DeserializeObject<List<MercenarySlotInfo>>(titleData["mcLst"]);
 
-		characterDataRefreshTime = new DateTime(ServerTime.UtcNow.Year, ServerTime.UtcNow.Month, ServerTime.UtcNow.Day) + TimeSpan.FromDays(1);
+		//characterDataRefreshTime = new DateTime(ServerTime.UtcNow.Year, ServerTime.UtcNow.Month, ServerTime.UtcNow.Day) + TimeSpan.FromDays(1);
+		//if (refreshCharacterData == false)
+		//	return;
 
-		if (refreshCharacterData == false)
-			return;
-		RefreshCharacterDataList();
+		// 이렇게 로그인 시점에만 호출해두면 문제가 있는게 로그인 후 리스트 구축해둔담에 캐릭터들 레벨업 하면 그 레벨업이 반영되어야하기 때문에
+		// 아예 들어가자마자 리스트 구축을 하지 않고 카오스 전투를 시작할때 구축하기로 한다.
+		// 여기서 초기화 안하게되면서 UpdateRefreshCharacterDataList도 호출하지 않기로 한다.
+		//RefreshCharacterDataList();
+
+		// 대신 재로그인등으로 OnRecv호출될때에는 초기화하고 다시 만들기로 한다.
+		_lastValue = "";
+		_listCharacterData.Clear();
 	}
 
-	void RefreshCharacterDataList()
+	string _lastValue = "";
+	public void RefreshCharacterDataList()
 	{
-		_listCharacterData.Clear();
-
-		if (_listMercenarySlotInfo == null)
-			return;
-
 		// powerLevel과 pp는 최고레벨 캐릭터꺼를 가져와야하므로 PlayerData.instance.listCharacterData를 돌려서 찾아야한다.
 		int highestPowerLevel = 0;
 		int highestPp = 0;
@@ -116,6 +119,15 @@ public class MercenaryData : MonoBehaviour
 				highestPp = PlayerData.instance.listCharacterData[i].pp;
 			}
 		}
+
+		string newValue = string.Format("{0}_{1}_{2}", ServerTime.UtcNow.Day, highestPowerLevel, highestPp);
+		if (newValue == _lastValue)
+			return;
+
+		_listCharacterData.Clear();
+
+		if (_listMercenarySlotInfo == null)
+			return;
 
 		for (int i = 0; i < _listMercenarySlotInfo.Count; ++i)
 		{
@@ -142,10 +154,19 @@ public class MercenaryData : MonoBehaviour
 			newCharacterData.Initialize(_listMercenarySlotInfo[i].stats, null);
 			_listCharacterData.Add(newCharacterData);
 		}
+
+		// 매번 갱신할 필요는 없기때문에 highest정보와 날짜 정보를 조합해서 캐시값을 만들어두기로 한다.
+		_lastValue = string.Format("{0}_{1}_{2}", ServerTime.UtcNow.Day, highestPowerLevel, highestPp);
 	}
 
 	void UpdateRefreshCharacterDataList()
 	{
+		// 다른 항목들과 달리 다음날 되었다고 바로 갱신하면 안되는 이유가 있다.
+		// 카오스 전투중에서 지우면 캐릭터 정보가 날아가기 때문. 그러나 전투를 안하면 또 호출해도 되긴 하다.
+		// 그래서 전투중에는 갱신로직을 돌리지 않다가 전투가 끝나면 호출하기로 한다.
+		if (IsUsableMercenary())
+			return;
+
 		if (DateTime.Compare(ServerTime.UtcNow, characterDataRefreshTime) < 0)
 			return;
 

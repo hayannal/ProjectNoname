@@ -427,7 +427,7 @@ public class PlayerActor : Actor
 	public void RefreshWing()
 	{
 		CharacterData characterData = null;
-		if (MercenaryData.IsUsableMercenary() && mercenary)
+		if (mercenary)
 			characterData = MercenaryData.instance.GetCharacterData(actorId, true);
 		else
 			characterData = PlayerData.instance.GetCharacterData(actorId);

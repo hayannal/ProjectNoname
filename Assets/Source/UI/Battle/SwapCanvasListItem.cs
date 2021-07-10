@@ -104,7 +104,7 @@ public class SwapCanvasListItem : MonoBehaviour
 		}
 		if (lobby == false && mercenary)
 		{
-			recommandedText.color = new Color(0.95f, 0.9f, 0.05f);
+			recommandedText.color = new Color(0.074f, 1.0f, 0.0f);
 			recommandedText.SetLocalizedText(UIString.instance.GetString("GameUI_TodayMercenary"));
 			recommandedText.gameObject.SetActive(true);
 		}

@@ -313,6 +313,16 @@ public class AuthManager : MonoBehaviour
 #endif
 			}
 		}
+		else if (error.Error == PlayFabErrorCode.AccountNotFound)
+		{
+			if (GetLastLoginType() == eAuthType.Guest)
+			{
+				// 게스트인데 계정이 날아갔으면 불필요한 계정이라 날린걸수도 있으니 정보를 초기화 하고 다시 시도하도록 한다.
+				DeleteCachedLastLoginInfo();
+				SceneManager.LoadScene(0);
+				return;
+			}
+		}
 
 		//PlayFabApiManager.instance.HandleCommonError(error); 호출하는 대신
 		// 로딩 구조 및 sortOrder를 바꿔야해서 직접 처리한다.

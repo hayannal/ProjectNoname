@@ -755,6 +755,8 @@ public class DropManager : MonoBehaviour
 			float weight = TableDataManager.instance.actorTable.dataArray[i].charGachaWeight;
 			if (weight <= 0.0f)
 				continue;
+			if (MercenaryData.IsMercenaryActor(TableDataManager.instance.actorTable.dataArray[i].actorId))
+				continue;
 
 			bool ignoreFixedCharacterGroup = false;
 			if (grade == 0 || grade == 1)
@@ -894,6 +896,9 @@ public class DropManager : MonoBehaviour
 		//if (actorId != "Actor0201")
 		//	return false;
 
+		if (MercenaryData.IsMercenaryActor(actorId))
+			return false;
+
 		if (_listDroppedActorId != null && _listDroppedActorId.Contains(actorId))
 		{
 			// 이번 드랍으로 결정된거면 두번 나오지는 않게 한다.
@@ -928,6 +933,8 @@ public class DropManager : MonoBehaviour
 		{
 			if (TableDataManager.instance.actorTable.dataArray[i].grade != actorTableData.grade)
 				continue;
+			if (MercenaryData.IsMercenaryActor(TableDataManager.instance.actorTable.dataArray[i].actorId))
+				continue;
 
 			bool useAdjustWeight = false;
 			if (DropManager.instance.GetableOrigin(TableDataManager.instance.actorTable.dataArray[i].actorId, ref useAdjustWeight) == false)
@@ -952,6 +959,9 @@ public class DropManager : MonoBehaviour
 		int count = 0;
 		for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)
 		{
+			if (MercenaryData.IsMercenaryActor(TableDataManager.instance.actorTable.dataArray[i].actorId))
+				continue;
+
 			if (TableDataManager.instance.actorTable.dataArray[i].grade == grade)
 				++count;
 		}

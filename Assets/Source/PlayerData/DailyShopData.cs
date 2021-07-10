@@ -492,6 +492,9 @@ public class DailyShopData : MonoBehaviour
 
 			// 테이블 받는 로직이 이미 구현되어있어서 레벨팩 리셋 타이머도 같이 처리해주기로 한다.
 			PlayerData.instance.OnRecvLevelPackageResetInfo(dicData);
+
+			// 머셔너리 데이터도 같이 포함
+			MercenaryData.instance.OnRecvMercenaryData(dicData, false);
 		});
 	}
 

@@ -9,6 +9,7 @@ using MEC;
 public class PlayerActor : Actor
 {
 	public override bool IsPlayerActor() { return true; }
+	public override bool IsMercenary() { return mercenary; }
 
 	public GameObject[] cachingObjectList;
 	public Transform wingRootTransform;
@@ -18,6 +19,8 @@ public class PlayerActor : Actor
 	//public CastingProcessor castingProcessor { get; private set; }
 	public float actorRadius { get; private set; }
 	public bool flying { get; private set; }
+
+	public bool mercenary { get; set; }
 
 	void Awake()
 	{
@@ -192,7 +195,11 @@ public class PlayerActor : Actor
 	{
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
 		if (lobby == false && BattleManager.instance != null && BattleManager.instance.IsDefaultBattle())
-			BattleInstanceManager.instance.AddBattlePlayer(actorId);
+		{
+			string addActorId = actorId;
+			if (mercenary) addActorId = MercenaryData.ToMercenaryActorId(actorId);
+			BattleInstanceManager.instance.AddBattlePlayer(addActorId);
+		}
 
 		BattleInstanceManager.instance.playerActor = this;
 		CustomFollowCamera.instance.targetTransform = cachedTransform;
@@ -419,7 +426,11 @@ public class PlayerActor : Actor
 
 	public void RefreshWing()
 	{
-		CharacterData characterData = PlayerData.instance.GetCharacterData(actorId);
+		CharacterData characterData = null;
+		if (MercenaryData.IsUsableMercenary() && mercenary)
+			characterData = MercenaryData.instance.GetCharacterData(actorId, true);
+		else
+			characterData = PlayerData.instance.GetCharacterData(actorId);
 		if (characterData == null || characterData.HasWing() == false || wingRootTransform == null)
 		{
 			DisableWing();

@@ -92,8 +92,16 @@ public class ClientSaveData : MonoBehaviour
 		string battleActorId = GetCachedBattleActor();
 		if (string.IsNullOrEmpty(battleActorId) == false && BattleInstanceManager.instance.playerActor.actorId != battleActorId)
 		{
-			standbySwapBattleActor = true;
-			AddressableAssetLoadManager.GetAddressableGameObject(CharacterData.GetAddressByActorId(battleActorId), "Character", OnLoadedPlayerActor);
+			// 불러와야할 캐릭터가 용병 캐릭터인데 오늘의 무료 용병이 바뀌어서 불러올 수 없다면 교체하지 않아야한다.
+			bool ignoreChange = false;
+			if (MercenaryData.IsMercenaryActor(battleActorId) && MercenaryData.instance.GetCharacterData(battleActorId) == null)
+				ignoreChange = true;
+
+			if (ignoreChange == false)
+			{
+				standbySwapBattleActor = true;
+				AddressableAssetLoadManager.GetAddressableGameObject(CharacterData.GetAddressByActorId(battleActorId), "Character", OnLoadedPlayerActor);
+			}
 		}
 
 		// GatePillar를 통해 이동해야한다.
@@ -122,6 +130,10 @@ public class ClientSaveData : MonoBehaviour
 		PlayerActor playerActor = newObject.GetComponent<PlayerActor>();
 		if (playerActor == null)
 			return;
+
+		string battleActorId = GetCachedBattleActor();
+		if (MercenaryData.IsMercenaryActor(battleActorId))
+			playerActor.mercenary = true;
 
 		BattleInstanceManager.instance.playerActor.gameObject.SetActive(false);
 		playerActor.OnChangedMainCharacter();

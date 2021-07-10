@@ -225,6 +225,8 @@ public class CharacterData
 		{
 			if (IsUseLegendWeight(TableDataManager.instance.actorTable.dataArray[i]) == false)
 				continue;
+			if (MercenaryData.IsMercenaryActor(TableDataManager.instance.actorTable.dataArray[i].actorId))
+				continue;
 			sumWeight += TableDataManager.instance.actorTable.dataArray[i].charGachaWeight;
 		}
 		s_legendAdjustWeightByCount = 12.0f / sumWeight;

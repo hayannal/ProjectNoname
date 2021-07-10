@@ -70,6 +70,8 @@ public class CharacterBoxConfirmCanvas : MonoBehaviour
 			float weight = TableDataManager.instance.actorTable.dataArray[i].charGachaWeight;
 			if (weight <= 0.0f)
 				continue;
+			if (MercenaryData.IsMercenaryActor(TableDataManager.instance.actorTable.dataArray[i].actorId))
+				continue;
 
 			// LegendAdjustWeightByCount는 sumWeight에 반영되어야한다.
 			float weightForSum = TableDataManager.instance.actorTable.dataArray[i].charGachaWeight;

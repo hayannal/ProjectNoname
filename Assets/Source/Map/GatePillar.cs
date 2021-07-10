@@ -735,6 +735,7 @@ public class GatePillar : MonoBehaviour
 				_processing = false;				
 				yield break;
 			}
+			string addActorId = BattleInstanceManager.instance.playerActor.actorId;
 			if (ClientSaveData.instance.IsLoadingInProgressGame() && ClientSaveData.instance.standbySwapBattleActor)
 			{
 				while (ClientSaveData.instance.IsLoadedPlayerActor == false)
@@ -743,6 +744,11 @@ public class GatePillar : MonoBehaviour
 				// 한번도 여기서 캐릭터를 바꾼적이 없어서 그동안은 필요없던 코드긴 한데
 				// 처음 캐릭을 생성하고나서 Start가 호출되고 나야 ActorStatus를 사용할 수 있다. 그러기 위해서 생성하고나서 한프레임 쉬고 가도록 한다.
 				yield return Timing.WaitForOneFrame;
+
+				addActorId = BattleInstanceManager.instance.playerActor.actorId;
+				// 용병 캐릭터라면 아이디 변환
+				if (BattleInstanceManager.instance.playerActor.mercenary)
+					addActorId = MercenaryData.ToMercenaryActorId(addActorId);
 			}
 			if (PlayerData.instance.clientOnly == false)
 				Timing.RunCoroutine(CurrencyData.instance.DelayedSyncEnergyRechargeTime(5.0f));
@@ -754,7 +760,7 @@ public class GatePillar : MonoBehaviour
 				NodeWarPortal.instance.gameObject.SetActive(false);
 			MainSceneBuilder.instance.OnExitLobby();
 			BattleManager.instance.OnStartBattle();
-			BattleInstanceManager.instance.AddBattlePlayer(BattleInstanceManager.instance.playerActor.actorId);
+			BattleInstanceManager.instance.AddBattlePlayer(addActorId);
 			SoundManager.instance.PlayBattleBgm(BattleInstanceManager.instance.playerActor.actorId);
 		}
 		while (StageManager.instance.IsDoneLoadAsyncNextStage() == false)

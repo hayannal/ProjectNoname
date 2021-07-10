@@ -35,7 +35,11 @@ public class ActorStatus : MonoBehaviour
 		else
 			_statusBase.ClearValue();
 
-		CharacterData characterData = PlayerData.instance.GetCharacterData(actor.actorId);
+		CharacterData characterData = null;
+		if (actor.IsMercenary())
+			characterData = MercenaryData.instance.GetCharacterData(actor.actorId, true);
+		else
+			characterData = PlayerData.instance.GetCharacterData(actor.actorId);
 		if (overridePowerLevel == -1)
 		{
 			powerLevel = 1;
@@ -53,7 +57,7 @@ public class ActorStatus : MonoBehaviour
 		_statusBase.valueList[(int)eActorStatus.MaxSp] = actorTableData.sp;
 
 		// 보유한 캐릭터들 처리
-		if (PlayerData.instance.ContainsActor(actor.actorId))
+		if (PlayerData.instance.ContainsActor(actor.actorId) || actor.IsMercenary())
 		{
 			// 내가 가지고 있는 캐릭터들에 한해서만 장비 계산을 적용한다.
 			// _statusBase 에 로비에서의 스탯을 caching해둔다.

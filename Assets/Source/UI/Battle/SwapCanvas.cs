@@ -220,6 +220,20 @@ public class SwapCanvas : MonoBehaviour
 		if (chapterTableData == null)
 			return;
 
+		List<CharacterData> listCharacterData = null;
+		int mercenaryActorCount = 0;
+		if (MercenaryData.IsUsableMercenary())
+		{
+			listCharacterData = MercenaryData.instance.listCharacterData;
+			for (int i = 0; i < listCharacterData.Count; ++i)
+			{
+				SwapCanvasListItem swapCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
+				swapCanvasListItem.Initialize(listCharacterData[i].actorId, listCharacterData[i].powerLevel, SwapCanvasListItem.GetPowerLevelColorState(listCharacterData[i]), listCharacterData[i].transcendLevel, chapterTableData.suggestedPowerLevel, null, _listCachedPenaltyPowerSource, OnClickListItem);
+				_listSwapCanvasListItem.Add(swapCanvasListItem);
+			}
+			mercenaryActorCount = listCharacterData.Count;
+		}
+
 		string[] suggestedActorIdList = null;
 		if (BattleManager.instance != null && BattleManager.instance.IsNodeWar()) { }
 		else if (MainSceneBuilder.instance.lobby == false)
@@ -234,7 +248,7 @@ public class SwapCanvas : MonoBehaviour
 			}
 		}
 
-		List<CharacterData> listCharacterData = PlayerData.instance.listCharacterData;
+		listCharacterData = PlayerData.instance.listCharacterData;
 		switch (_currentSortType)
 		{
 			case SortButton.eSortType.PowerLevel:
@@ -262,7 +276,7 @@ public class SwapCanvas : MonoBehaviour
 			_listSwapCanvasListItem.Add(swapCanvasListItem);
 
 			if (firstIndex == -1 && listCharacterData[i].actorId != BattleInstanceManager.instance.playerActor.actorId)
-				firstIndex = i;
+				firstIndex = i + mercenaryActorCount;
 		}
 		if (onEnable && firstIndex != -1)
 			OnClickListItem(_listSwapCanvasListItem[firstIndex].actorId);
@@ -318,7 +332,9 @@ public class SwapCanvas : MonoBehaviour
 
 	public void OnClickListItem(string actorId)
 	{
-		if (BattleInstanceManager.instance.playerActor.actorId == actorId)
+		string currentActorId = BattleInstanceManager.instance.playerActor.actorId;
+		if (BattleInstanceManager.instance.playerActor.mercenary) currentActorId = MercenaryData.ToMercenaryActorId(currentActorId);
+		if (currentActorId == actorId)
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NowPlayingCharacter"), 1.0f);
 			return;
@@ -332,7 +348,7 @@ public class SwapCanvas : MonoBehaviour
 			bool showSelectObject = (_listSwapCanvasListItem[i].actorId == actorId);
 			_listSwapCanvasListItem[i].ShowSelectObject(showSelectObject);
 			if (showSelectObject)
-				recommanded = _listSwapCanvasListItem[i].recommandedText.gameObject.activeSelf;
+				recommanded = (_listSwapCanvasListItem[i].recommandedText.gameObject.activeSelf && MercenaryData.IsMercenaryActor(_listSwapCanvasListItem[i].actorId) == false);
 		}
 
 		string firstText = "";
@@ -344,7 +360,12 @@ public class SwapCanvas : MonoBehaviour
 		if (BattleManager.instance != null && BattleManager.instance.IsNodeWar()) { }
 		else if (chapterTableData != null)
 		{
-			CharacterData characterData = PlayerData.instance.GetCharacterData(actorId);
+			CharacterData characterData = null;
+			if (MercenaryData.IsUsableMercenary() && MercenaryData.IsMercenaryActor(actorId))
+				characterData = MercenaryData.instance.GetCharacterData(actorId);
+			else
+				characterData = PlayerData.instance.GetCharacterData(actorId);
+
 			if (characterData.powerLevel > chapterTableData.suggestedMaxPowerLevel)
 				secondText = UIString.instance.GetString("GameUI_TooPowerfulToReward");
 			else if (characterData.powerLevel < chapterTableData.suggestedPowerLevel && recommanded)
@@ -439,6 +460,10 @@ public class SwapCanvas : MonoBehaviour
 		PlayerActor playerActor = newObject.GetComponent<PlayerActor>();
 		if (playerActor == null)
 			return;
+
+		// 용병 캐릭터라면 PlayerActor에 표식을 해둔다. 같은 프리팹을 사용하기 때문에 이렇게 표시를 해두어야한다.
+		if (MercenaryData.IsMercenaryActor(_selectedActorId))
+			playerActor.mercenary = true;
 
 		SwapCharacter(playerActor);
 	}

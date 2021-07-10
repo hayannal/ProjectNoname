@@ -49,6 +49,7 @@ public class SwapCanvasListItem : MonoBehaviour
 	{
 		this.actorId = actorId;
 
+		bool mercenary = MercenaryData.IsMercenaryActor(actorId);
 		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(actorId);
 		AddressableAssetLoadManager.GetAddressableSprite(actorTableData.portraitAddress, "Icon", (sprite) =>
 		{
@@ -99,6 +100,12 @@ public class SwapCanvasListItem : MonoBehaviour
 		{
 			recommandedText.color = (listPenaltyPowerSource != null && listPenaltyPowerSource.Contains(actorTableData.powerSource)) ? new Color(0.831f, 0.831f, 0.831f) : new Color(0.074f, 1.0f, 0.0f);
 			recommandedText.SetLocalizedText(UIString.instance.GetString("GameUI_Suggested"));
+			recommandedText.gameObject.SetActive(true);
+		}
+		if (lobby == false && mercenary)
+		{
+			recommandedText.color = new Color(0.95f, 0.9f, 0.05f);
+			recommandedText.SetLocalizedText(UIString.instance.GetString("GameUI_TodayMercenary"));
 			recommandedText.gameObject.SetActive(true);
 		}
 		bool showBlackObject = false;

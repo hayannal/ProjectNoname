@@ -450,8 +450,8 @@ public class BossBattleEnterCanvas : MonoBehaviour
 		}
 
 		string firstText = "";
-		if (MainSceneBuilder.instance.lobby == false && BattleInstanceManager.instance.IsInBattlePlayerList(actorId))
-			firstText = UIString.instance.GetString("GameUI_FirstSwapHealNotApplied");
+		//if (MainSceneBuilder.instance.lobby == false && BattleInstanceManager.instance.IsInBattlePlayerList(actorId))
+		//	firstText = UIString.instance.GetString("GameUI_FirstSwapHealNotApplied");
 
 		string secondText = "";
 		if (BattleManager.instance != null && BattleManager.instance.IsNodeWar()) { }

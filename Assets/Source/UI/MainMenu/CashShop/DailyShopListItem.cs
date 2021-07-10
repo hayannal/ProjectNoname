@@ -410,6 +410,8 @@ public class DailyShopListItem : MonoBehaviour
 				{
 					if (TableDataManager.instance.actorTable.dataArray[i].grade != 0)
 						continue;
+					if (MercenaryData.IsMercenaryActor(TableDataManager.instance.actorTable.dataArray[i].actorId))
+						continue;
 					if (PlayerData.instance.ContainsActor(TableDataManager.instance.actorTable.dataArray[i].actorId) == false)
 					{
 						canPurchase = true;
@@ -422,6 +424,8 @@ public class DailyShopListItem : MonoBehaviour
 				for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)
 				{
 					if (TableDataManager.instance.actorTable.dataArray[i].grade != 1)
+						continue;
+					if (MercenaryData.IsMercenaryActor(TableDataManager.instance.actorTable.dataArray[i].actorId))
 						continue;
 					if (PlayerData.instance.ContainsActor(TableDataManager.instance.actorTable.dataArray[i].actorId) == false)
 					{

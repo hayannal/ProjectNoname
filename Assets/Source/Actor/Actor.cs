@@ -17,6 +17,7 @@ public class Actor : MonoBehaviour {
 
 	public virtual bool IsMonsterActor() { return false; }
 	public virtual bool IsPlayerActor() { return false; }
+	public virtual bool IsMercenary() { return false; }
 
 	public string actorId;
 	public GameObject[] commonPoolPreloadObjectList;

@@ -707,7 +707,11 @@ public class MainSceneBuilder : MonoBehaviour
 		if (downloadSize == 0)
 		{
 			for (int i = 0; i < TableDataManager.instance.actorTable.dataArray.Length; ++i)
+			{
+				if (MercenaryData.IsMercenaryActor(TableDataManager.instance.actorTable.dataArray[i].actorId))
+					continue;
 				AddressableAssetLoadManager.GetAddressableSprite(TableDataManager.instance.actorTable.dataArray[i].portraitAddress, "Icon", null);
+			}
 		}
 		else
 			Debug.LogFormat("Actor Portrait pIcon Size = {0}", downloadSize / 1024);

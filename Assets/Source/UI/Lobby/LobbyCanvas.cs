@@ -239,6 +239,12 @@ public class LobbyCanvas : MonoBehaviour
 		}
 	}
 
+	void HideSubMenuButtonList()
+	{
+		for (int i = 0; i < subMenuButtonTweenAnimationList.Length; ++i)
+			subMenuButtonTweenAnimationList[i].gameObject.SetActive(false);
+	}
+
 	float _closeRemainTime;
 	void UpdateSubMenu()
 	{
@@ -248,9 +254,7 @@ public class LobbyCanvas : MonoBehaviour
 			if (_closeRemainTime <= 0.0f)
 			{
 				_closeRemainTime = 0.0f;
-
-				for (int i = 0; i < subMenuButtonTweenAnimationList.Length; ++i)
-					subMenuButtonTweenAnimationList[i].gameObject.SetActive(false);
+				HideSubMenuButtonList();
 			}
 		}
 	}
@@ -359,6 +363,9 @@ public class LobbyCanvas : MonoBehaviour
 	public static void Home()
 	{
 		StackCanvas.Home();
+
+		if (instance != null)
+			instance.HideSubMenuButtonList();
 
 		// 하필 홈을 눌렀는데 서브 로비인 시공간에 가있었다면 예외처리.
 		// StackCanvas 안에 하려다가 프레임워크기도 하고

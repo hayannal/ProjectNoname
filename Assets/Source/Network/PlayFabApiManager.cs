@@ -2832,6 +2832,32 @@ public class PlayFabApiManager : MonoBehaviour
 		});
 	}
 
+#if UNITY_EDITOR
+	public void RequestResetDailyShopUnfixedInfo(Action successCallback)
+	{
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "ResetUnfixed",
+			FunctionParameter = new { Inf = 1, Tx = "qizlrpkldj" },
+			GeneratePlayStreamEvent = true,
+			RevisionSelection = CloudScriptRevisionOption.Specific,
+			SpecificRevision = 475,
+		}, (success) =>
+		{
+			PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
+			jsonResult.TryGetValue("retErr", out object retErr);
+			bool failure = ((retErr.ToString()) == "1");
+			if (failure)
+				HandleCommonError();
+			else
+				if (successCallback != null) successCallback.Invoke();
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+#endif
+
 	public void RequestPurchaseDailyShopSlot(int price, Action successCallback)
 	{
 		WaitingNetworkCanvas.Show(true);

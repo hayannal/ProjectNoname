@@ -46,6 +46,7 @@ public class BattleTestTool : EditorWindow
 		OnGUI_Player();
 		OnGUI_Stage();
 		OnGUI_Monster();
+		OnGUI_Day();
 		OnGUI_Map();
 		OnGUI_Capture();
 	}
@@ -583,6 +584,40 @@ public class BattleTestTool : EditorWindow
 
 		for (int i = 0; i < childAnimatorStateMachine.stateMachine.stateMachines.Length; ++i)
 			RecursiveDraw(childAnimatorStateMachine.stateMachine.stateMachines[i]);
+	}
+
+	int day = 0;
+	void OnGUI_Day()
+	{
+		GUILayout.BeginVertical("box");
+		{
+			Color defaultColor = GUI.color;
+			GUI.color = Color.cyan;
+			string szDesc = string.Format("Daily Shop");
+			EditorGUILayout.LabelField(szDesc, EditorStyles.textField);
+			GUI.color = defaultColor;
+
+			day = EditorGUILayout.IntField("Day :", day);
+
+			GUILayout.BeginHorizontal();
+			{
+				if (GUILayout.Button("Get Day"))
+				{
+					day = ServerTime.UtcNow.Day;
+				}
+				if (GUILayout.Button("Set Day"))
+				{
+					DailyShopData.instance.overrideDay = day;
+					PlayFabApiManager.instance.RequestResetDailyShopUnfixedInfo(() =>
+					{
+						DailyShopData.instance.RegisterUnfixedInfo();
+						Debug.Log("Reset Finish!!!");
+					});
+				}
+			}
+			GUILayout.EndHorizontal();
+		}
+		GUILayout.EndVertical();
 	}
 
 	void OnGUI_Map()

@@ -69,6 +69,10 @@ public class DailyShopData : MonoBehaviour
 	// 유료 슬롯 언락단계. 계정 생성하면 0으로 시작해서 세번 다 오픈해야 3으로 되는 구조다.
 	public ObscuredInt unlockLevel { get; set; }
 
+#if UNITY_EDITOR
+	public int overrideDay;
+#endif
+
 	void Update()
 	{
 		UpdateDailyShopRefreshTime();
@@ -218,7 +222,11 @@ public class DailyShopData : MonoBehaviour
 
 	public DailyShopSlotInfo GetTodayShopData(int slotId)
 	{
+#if UNITY_EDITOR
+		return GetShopSlotData((overrideDay != 0) ? overrideDay : ServerTime.UtcNow.Day, slotId);
+#else
 		return GetShopSlotData(ServerTime.UtcNow.Day, slotId);
+#endif
 	}
 
 	public DailyShopSlotInfo GetShopSlotData(int day, int slotId)
@@ -330,7 +338,11 @@ public class DailyShopData : MonoBehaviour
 	}
 
 	Dictionary<string, string> _dicUnfixedData;
+#if UNITY_EDITOR
+	public void RegisterUnfixedInfo()
+#else
 	void RegisterUnfixedInfo()
+#endif
 	{
 		if (_dicUnfixedData == null)
 			_dicUnfixedData = new Dictionary<string, string>();
@@ -587,7 +599,12 @@ public class DailyShopData : MonoBehaviour
 		if (_listDailyFreeItemInfo == null)
 			return null;
 
+#if UNITY_EDITOR
+		int serverDay = (overrideDay != 0) ? overrideDay : ServerTime.UtcNow.Day;
+#else
 		int serverDay = ServerTime.UtcNow.Day;
+#endif
+
 		for (int i = 0; i < _listDailyFreeItemInfo.Count; ++i)
 		{
 			if (_listDailyFreeItemInfo[i].dy == serverDay)

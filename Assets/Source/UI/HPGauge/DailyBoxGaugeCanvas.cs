@@ -55,7 +55,18 @@ public class DailyBoxGaugeCanvas : MonoBehaviour
 		bool opened = PlayerData.instance.sharedDailyBoxOpened;
 
 		// 이벤트를 진행해야한다면 GainProcess를 돌리지 않기로 한다.
-		if (EventManager.instance.IsStandbyClientEvent(EventManager.eClientEvent.OpenSecondDailyBox) || EventManager.instance.IsStandbyServerEvent(EventManager.eServerEvent.chaos))
+		//if (EventManager.instance.IsStandbyClientEvent(EventManager.eClientEvent.OpenSecondDailyBox) || EventManager.instance.IsStandbyServerEvent(EventManager.eServerEvent.chaos))
+		//	applyGainProcess = false;
+		// 원래는 위 코드로 체크했었는데 유니티에서는 문제없지만 디바이스에서 번들로 로드할때는 캔버스가 늦게 로딩되면서 IsStandby에서 걸러지는 경우가 생겼다.
+		// 그래서 체크를 다르게 해보기로 한다.
+		bool waitSecondDailyBoxEvent = false;
+		bool waitChaosEvent = false;
+		// 기존 방식으로도 유니티에서는 잘 되니 체크하고 추가로 이벤트 플레이중인지 확인한다.
+		if (EventManager.instance.IsStandbyClientEvent(EventManager.eClientEvent.OpenSecondDailyBox) || EventManager.instance.secondDailyBoxEventPlaying)
+			waitSecondDailyBoxEvent = true;
+		if (EventManager.instance.IsStandbyServerEvent(EventManager.eServerEvent.chaos) || EventManager.instance.chaosEventEventPlaying)
+			waitChaosEvent = true;
+		if (waitSecondDailyBoxEvent || waitChaosEvent)
 			applyGainProcess = false;
 
 		// opened가 아니면서 sealGainCount가 0보다 클때는 획득 연출이 발생하는 타이밍일거다.
@@ -91,7 +102,7 @@ public class DailyBoxGaugeCanvas : MonoBehaviour
 				gaugeList[i].color = highlightColor;
 		}
 
-		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.SecondDailyBox) && EventManager.instance.IsStandbyClientEvent(EventManager.eClientEvent.OpenSecondDailyBox) == false)
+		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.SecondDailyBox) && waitSecondDailyBoxEvent == false)
 		{
 			// 오리진 상자를 받을때 한칸을 채우느냐 혹은 인장을 8개 채울때 한칸을 채우느냐에서 후자를 선택하기로 했다.
 			// 대신 서버에서 +1을 하는 시점은 오리진 상자를 받을때 처리하는거라 표시할때는

@@ -418,6 +418,7 @@ public class EventManager : MonoBehaviour
 	bool _waitCompleteAnimation;
 	IEnumerator ChaosProcess()
 	{
+		chaosEventEventPlaying = true;
 		_waitTouch = true;
 		UIInstanceManager.instance.ShowCanvasAsync("EventInputLockCanvas", null);
 
@@ -450,6 +451,7 @@ public class EventManager : MonoBehaviour
 
 			EventInfoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_OpenChaosName"), UIString.instance.GetString("GameUI_OpenChaosDesc"), UIString.instance.GetString("GameUI_OpenChaosMore"), () =>
 			{
+				chaosEventEventPlaying = false;
 				CompleteServerEvent(eServerEvent.chaos);
 
 				// 카오스는 챕터 클리어 실패시 뜨는거라 이벤트 연속처리를 하지 않아도 된다.
@@ -499,8 +501,14 @@ public class EventManager : MonoBehaviour
 		});
 	}
 
+	// 데일리박스가 이벤트 중인지를 판단해야해서 추가한 프로퍼티
+	// EventInputLockCanvas로는 어느 이벤트인지를 몰라서 판단할 수 없어서 이렇게 두개만 추가했다.
+	public bool chaosEventEventPlaying { get; set; }
+	public bool secondDailyBoxEventPlaying { get; set; }
 	IEnumerator OpenSecondDailyBoxProcess()
 	{
+		secondDailyBoxEventPlaying = true;
+
 		// 게이트필라나 TimeSpacePortal 이벤트에선 매번 새 프리팹 만들어서 했었는데
 		// 이번 오리진 박스 표기는 이미 캔버스 자체가 보여주는 기능을 가지고 있어서 나눌 필요도 없었고,
 		// 이펙트만 추가로 담는 Open용 스크립트 만드는게 번거로워서 이펙트만 어드레서블로 로딩해서 쓰기로 한다.
@@ -541,6 +549,7 @@ public class EventManager : MonoBehaviour
 			EventInputLockCanvas.instance.gameObject.SetActive(false);
 			EventInfoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_OriginBigName"), text, UIString.instance.GetString("GameUI_OriginBigMore"), () =>
 			{
+				secondDailyBoxEventPlaying = false;
 				OnCompleteLobbyEvent();
 			});
 		});

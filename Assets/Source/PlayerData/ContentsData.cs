@@ -186,6 +186,15 @@ public class ContentsData : MonoBehaviour
 		return 0;
 	}
 
+	public int GetBossBattleTotalCount()
+	{
+		int totalCount = 0;
+		Dictionary<string, int>.Enumerator e = _dicBossBattleCount.GetEnumerator();
+		while (e.MoveNext())
+			totalCount += e.Current.Value;
+		return totalCount;
+	}
+
 	public void ClearBossBattleDifficulty(int difficulty)
 	{
 		int id = bossBattleId;

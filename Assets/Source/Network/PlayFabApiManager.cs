@@ -3409,7 +3409,7 @@ public class PlayFabApiManager : MonoBehaviour
 		});
 	}
 
-	public void RequestRemoveRepeatEvent(Action<bool, bool> successCallback)
+	public void RequestRemoveRepeatEvent(Action<bool, bool, bool> successCallback)
 	{
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
@@ -3421,17 +3421,43 @@ public class PlayFabApiManager : MonoBehaviour
 			PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
 			jsonResult.TryGetValue("delSl", out object delSl);
 			jsonResult.TryGetValue("delSo", out object delSo);
+			jsonResult.TryGetValue("delRv", out object delRv);
 			bool deleteSl = ((delSl.ToString()) == "1");
 			bool deleteSo = ((delSo.ToString()) == "1");
-			if (successCallback != null) successCallback.Invoke(deleteSl, deleteSo);
+			bool deleteRv = ((delRv.ToString()) == "1");
+			if (successCallback != null) successCallback.Invoke(deleteSl, deleteSo, deleteRv);
 		}, (error) =>
 		{
 			// 유저 인풋 없이 몰래 보낸거니 에러처리는 하지 않는다.
 			// 대신 반복 이벤트를 리셋하는데 문제가 생겼음을 알려서 클라가 잘못된 패킷을 보내지 않도록 한다.
 			// 가짜로지만 리셋은 시켜둔다.
 			CumulativeEventData.instance.removeRepeatServerFailure = true;
-			CumulativeEventData.instance.OnRecvRemoveRepeatEvent(true, true);
+			CumulativeEventData.instance.OnRecvRemoveRepeatEvent(true, true, true);
 
+			//HandleCommonError(error);
+		});
+	}
+
+	public void RequestReviewEvent(Action successCallback)
+	{
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "ReviewEvent",
+			FunctionParameter = new { Tp = "Rv" },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
+			jsonResult.TryGetValue("retErr", out object retErr);
+			bool failure = ((retErr.ToString()) == "1");
+			if (!failure)
+			{
+				jsonResult.TryGetValue("date", out object date);
+				CumulativeEventData.instance.OnRecvReviewInfo((string)date);
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
 			//HandleCommonError(error);
 		});
 	}

@@ -55,7 +55,7 @@ public class CumulativeEventData : MonoBehaviour
 	}
 	List<RepeatEventTypeInfo> _listRepeatEventTypeInfo;
 
-	// 반복퀘 진행도 역시 리스트로 관리하려다가 DB에 저장되어있는게 다 따로 저장되어있기 때문에 이건 리스트로 안하기로 한다.
+	// RepeatEvent들의 달성도 역시 리스트로 관리하려다가 DB에 저장할때 각각 따로 저장하는 구조이기 때문에 리스트로 안하기로 한다.
 	//public class MyRepeatEventData
 	//{
 	//	public string id;
@@ -104,6 +104,8 @@ public class CumulativeEventData : MonoBehaviour
 		ImageEvent1,
 		ImageEvent2,
 
+		Review,			// 리뷰 요청 이벤트
+
 		Amount,
 	}
 
@@ -140,6 +142,11 @@ public class CumulativeEventData : MonoBehaviour
 	public ObscuredInt repeatDailyBoxEventCount { get; set; }
 
 	public ObscuredBool removeRepeatServerFailure { get; set; }
+	#endregion
+
+	#region Review Events
+	public string reviewRcvDat { get; set; }
+	public ObscuredBool reviewEventChecked { get; set; }
 	#endregion
 
 	public void OnRecvCumulativeEventData(Dictionary<string, string> titleData, Dictionary<string, UserDataRecord> userReadOnlyData, bool newlyCreated)
@@ -179,7 +186,9 @@ public class CumulativeEventData : MonoBehaviour
 				if (_listEventTypeInfo[i].id == EventType2Id(eEventType.OpenChaos))
 					openChaosEventTotalDays = _listEventTypeInfo[i].td;
 				if (_listEventTypeInfo[i].id == EventType2Id(eEventType.LoginRepeat) || _listEventTypeInfo[i].id == EventType2Id(eEventType.DailyBoxRepeat) ||
-					_listEventTypeInfo[i].id == EventType2Id(eEventType.ImageEvent1) || _listEventTypeInfo[i].id == EventType2Id(eEventType.ImageEvent2))
+					// 기간제 형태로 날짜 검사해서 IsActiveEvent 로 보여질지 체크하는 항목들은 다 이 listRepeatEventTypeInfo에 넣어둔다.
+					_listEventTypeInfo[i].id == EventType2Id(eEventType.ImageEvent1) || _listEventTypeInfo[i].id == EventType2Id(eEventType.ImageEvent2) ||
+					_listEventTypeInfo[i].id == EventType2Id(eEventType.Review))
 				{
 					RepeatEventTypeInfo repeatEventTypeInfo = new RepeatEventTypeInfo();
 					repeatEventTypeInfo.id = _listEventTypeInfo[i].id;
@@ -274,6 +283,15 @@ public class CumulativeEventData : MonoBehaviour
 				repeatDailyBoxEventCount = intValue;
 		}
 		#endregion
+
+		#region Review Events
+		reviewRcvDat = "";
+		if (userReadOnlyData.ContainsKey("evtRvDat"))
+		{
+			if (string.IsNullOrEmpty(userReadOnlyData["evtRvDat"].Value) == false)
+				OnRecvReviewInfo(userReadOnlyData["evtRvDat"].Value);
+		}
+		#endregion
 	}
 
 	public bool OnRecvGetEventReward(eEventType eventType, string lastRecordedTimeString)
@@ -348,6 +366,7 @@ public class CumulativeEventData : MonoBehaviour
 			case eEventType.Comeback: return "cu";
 			case eEventType.ImageEvent1: return "ie1";
 			case eEventType.ImageEvent2: return "ie2";
+			case eEventType.Review: return "rv";
 		}
 		return "";
 	}
@@ -440,7 +459,7 @@ public class CumulativeEventData : MonoBehaviour
 		}
 	}
 
-	public void OnRecvRemoveRepeatEvent(bool resetRepeatLogin, bool resetRepeatDailyBox)
+	public void OnRecvRemoveRepeatEvent(bool resetRepeatLogin, bool resetRepeatDailyBox, bool resetReview)
 	{
 		if (resetRepeatLogin)
 		{
@@ -453,6 +472,11 @@ public class CumulativeEventData : MonoBehaviour
 			repeatDailyBoxRcvDat = "";
 			repeatDailyBoxEventRecorded = false;
 			repeatDailyBoxEventCount = 0;
+		}
+		if (resetReview)
+		{
+			reviewRcvDat = "";
+			reviewEventChecked = false;
 		}
 	}
 
@@ -509,7 +533,29 @@ public class CumulativeEventData : MonoBehaviour
 					deleteRepeatDailyBox = true;
 			}
 		}
-		if (deleteRepeatLogin || deleteRepeatDailyBox)
+
+		// Review 역시 같은 방법으로 체크
+		bool deleteReviewEvent = false;
+		if (reviewRcvDat != "")
+		{
+			RepeatEventTypeInfo info = FindRepeatEventTypeInfo(eEventType.Review);
+			if (info == null)
+				deleteReviewEvent = true;
+
+			if (deleteReviewEvent == false)
+			{
+				bool inRange = false;
+				DateTime lastRecordTime = new DateTime();
+				if (DateTime.TryParse(reviewRcvDat, out lastRecordTime))
+				{
+					if (lastRecordTime > info.startDateTime && lastRecordTime < info.endDateTime)
+						inRange = true;
+				}
+				if (!inRange)
+					deleteReviewEvent = true;
+			}
+		}
+		if (deleteRepeatLogin || deleteRepeatDailyBox || deleteReviewEvent)
 		{
 			// 이렇게 검사해서 하나라도 지워야할게 있으면 서버로 패킷을 보내는데 RefreshMailList 패킷처럼 실패한다면 지워지지 않게된다.
 			// 어차피 서버로부터 받는 테이블값이 이상해질리도 없다면
@@ -661,6 +707,13 @@ public class CumulativeEventData : MonoBehaviour
 				if (info != null && info.IsActiveEvent())
 					return true;
 				break;
+			case eEventType.Review:
+				if (ContentsData.instance.GetBossBattleTotalCount() < 2)
+					return false;
+				info = FindRepeatEventTypeInfo(eventType);
+				if (info != null && info.IsActiveEvent())
+					return true;
+				break;
 		}
 		return false;
 	}
@@ -715,6 +768,15 @@ public class CumulativeEventData : MonoBehaviour
 			case eEventType.ImageEvent1:
 				break;
 			case eEventType.ImageEvent2:
+				break;
+			case eEventType.Review:
+				if (removeRepeatServerFailure)
+					return false;
+				info = FindRepeatEventTypeInfo(eventType);
+				if (info == null || info.IsActiveEvent() == false)
+					return false;
+				if (reviewEventChecked == false)
+					return true;
 				break;
 		}
 		return false;
@@ -810,6 +872,32 @@ public class CumulativeEventData : MonoBehaviour
 		{
 			DateTime universalTime = lastRepeatDailyBoxEventRecordTime.ToUniversalTime();
 			OnRecvRepeatDailyBoxInfo(universalTime);
+		}
+	}
+	#endregion
+
+	#region Review Event
+	void OnRecvReviewInfo(DateTime lastReviewEventRecordTime)
+	{
+		// 여기가 다른 항목들과 다른점인데
+		// 이벤트 기간내에 있는 날짜라면 한번 본거니 봤음으로 체크해두면 된다.
+		RepeatEventTypeInfo info = FindRepeatEventTypeInfo(eEventType.Review);
+		if (info == null)
+			return;
+		if (lastReviewEventRecordTime > info.startDateTime && lastReviewEventRecordTime < info.endDateTime)
+			reviewEventChecked = true;
+		else
+			reviewEventChecked = false;
+	}
+
+	public void OnRecvReviewInfo(string lastReviewEventRecordTimeString)
+	{
+		reviewRcvDat = lastReviewEventRecordTimeString;
+		DateTime lastReviewEventRecordTime = new DateTime();
+		if (DateTime.TryParse(lastReviewEventRecordTimeString, out lastReviewEventRecordTime))
+		{
+			DateTime universalTime = lastReviewEventRecordTime.ToUniversalTime();
+			OnRecvReviewInfo(universalTime);
 		}
 	}
 	#endregion

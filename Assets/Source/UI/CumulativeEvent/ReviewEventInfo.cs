@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Image1EventInfo : MonoBehaviour
+public class ReviewEventInfo : MonoBehaviour
 {
 	#region RemainTime
 	public bool useRemainTimeText;
@@ -21,21 +21,46 @@ public class Image1EventInfo : MonoBehaviour
 		}
 
 		// 정보가 없다면 창을 열수가 없었을거다.
-		CumulativeEventData.RepeatEventTypeInfo info = CumulativeEventData.instance.FindRepeatEventTypeInfo(CumulativeEventData.eEventType.ImageEvent1);
+		CumulativeEventData.RepeatEventTypeInfo info = CumulativeEventData.instance.FindRepeatEventTypeInfo(CumulativeEventData.eEventType.Review);
 		if (info == null)
 			return;
 
 		_eventEndDateTime = info.endDateTime;
 		//_needUpdate = true;
 		#endregion
+
+		if (CumulativeEventData.instance.reviewEventChecked == false)
+			_viewCheckRemainTime = 0.5f;
 	}
 
 	void Update()
 	{
+		#region RemainTime
 		if (useRemainTimeText == false)
 			return;
 
 		UpdateRemainTime();
+		#endregion
+
+		Update5Second();
+	}
+
+	float _viewCheckRemainTime;
+	void Update5Second()
+	{
+		// 창을 열어서 0.5초 이상 봤으면 몰래 봤다는 패킷을 날려서 다음에 느낌표가 안뜨게 해준다.
+		if (_viewCheckRemainTime > 0.0f)
+		{
+			_viewCheckRemainTime -= Time.deltaTime;
+			if (_viewCheckRemainTime <= 0.0f)
+			{
+				_viewCheckRemainTime = 0.0f;
+				PlayFabApiManager.instance.RequestReviewEvent(() =>
+				{
+					CumulativeEventCanvas.instance.RefreshAlarmObject(CumulativeEventData.eEventType.Review);
+				});
+			}
+		}
 	}
 
 	#region RemainTime
@@ -65,6 +90,21 @@ public class Image1EventInfo : MonoBehaviour
 			//_needUpdate = false;
 			//remainTimeText.text = "00:00:00";
 			//_needRefresh = true;
+		}
+	}
+	#endregion
+
+	#region Market
+	public void OnClickMarketButton()
+	{
+		if (Application.platform == RuntimePlatform.IPhonePlayer)
+		{
+			string url = CumulativeEventData.instance.iosUrl;
+			Application.OpenURL(url);
+		}
+		else if (Application.platform == RuntimePlatform.Android)
+		{
+			Application.OpenURL("market://details?id=" + Application.identifier);
 		}
 	}
 	#endregion

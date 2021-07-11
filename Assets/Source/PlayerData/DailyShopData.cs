@@ -349,22 +349,49 @@ public class DailyShopData : MonoBehaviour
 			switch (info.type)
 			{
 				case "uch":
-					int.TryParse(info.value, out seed);
-					UnityEngine.Random.InitState(seed);
-					actorId = DropManager.instance.GetGachaCharacterId(false, false, false, 1, true);
 					unfixed = true;
+					int.TryParse(info.value, out seed);
+					for (int j = 0; j < 10; ++j)
+					{
+						UnityEngine.Random.InitState(seed + j);
+						actorId = DropManager.instance.GetGachaCharacterId(false, false, false, 1, true);
+						if (actorId == "")
+							break;
+						if (actorId != "" && CheckDuplicate(i, info.type, actorId) == false)
+							break;
+					}
 					break;
 				case "upn":
-					int.TryParse(info.value, out seed);
-					UnityEngine.Random.InitState(seed);
-					actorId = DropManager.instance.GetGachaPowerPointId(false, false, false, 0, true);
 					unfixed = true;
+					int.TryParse(info.value, out seed);
+					for (int j = 0; j < 10; ++j)
+					{
+						UnityEngine.Random.InitState(seed + j);
+						actorId = DropManager.instance.GetGachaPowerPointId(false, false, false, 0, true);
+						if (actorId == "")
+							break;
+						if (actorId != "" && CheckDuplicate(i, info.type, actorId) == false)
+							break;
+					}
 					break;
 				case "uph":
-					int.TryParse(info.value, out seed);
-					UnityEngine.Random.InitState(seed);
-					actorId = DropManager.instance.GetGachaPowerPointId(false, false, false, 1, true);
 					unfixed = true;
+					int.TryParse(info.value, out seed);
+					for (int j = 0; j < 10; ++j)
+					{
+						UnityEngine.Random.InitState(seed + j);
+						actorId = DropManager.instance.GetGachaPowerPointId(false, false, false, 1, true);
+
+						// 비어있으면 언제나 break
+						if (actorId == "")
+							break;
+
+						// 결과가 나왔는데 중복이 아니어도 break
+						if (actorId != "" && CheckDuplicate(i, info.type, actorId) == false)
+							break;
+
+						// 결과가 나왔는데 중복이라면 다시 돌려본다.
+					}
 					break;
 			}
 			if (unfixed)

@@ -128,7 +128,7 @@ public class PowerSource : MonoBehaviour
 			PlayerActor playerActor = affectorProcessor.actor as PlayerActor;
 			if (playerActor != null)
 			{
-				LevelPackDataManager.instance.AddLevelPack(playerActor.actorId, "MaxHpPowerSource");
+				LevelPackDataManager.instance.AddLevelPack(playerActor, "MaxHpPowerSource");
 				playerActor.skillProcessor.AddLevelPack("MaxHpPowerSource", false, 0);
 				ClientSaveData.instance.OnChangedLevelPackData(LevelPackDataManager.instance.GetCachedLevelPackData());
 			}

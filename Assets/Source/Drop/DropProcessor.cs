@@ -163,7 +163,11 @@ public class DropProcessor : MonoBehaviour
 						else
 							playChapter = StageManager.instance.playChapter;
 
-						CharacterData mainCharacterData = PlayerData.instance.GetCharacterData(BattleInstanceManager.instance.playerActor.actorId);
+						CharacterData mainCharacterData = null;
+						if (BattleInstanceManager.instance.playerActor.mercenary)
+							mainCharacterData = MercenaryData.instance.GetCharacterData(BattleInstanceManager.instance.playerActor.GetActorIdWithMercenary());
+						else
+							mainCharacterData = PlayerData.instance.GetCharacterData(BattleInstanceManager.instance.playerActor.actorId);
 						ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(playChapter);
 						if (chapterTableData != null && mainCharacterData != null && mainCharacterData.powerLevel > chapterTableData.suggestedMaxPowerLevel)
 							continue;

@@ -127,7 +127,11 @@ public class PlayFabApiManager : MonoBehaviour
 		if (sendBattleInfo)
 		{
 			int powerLevel = 1;
-			CharacterData characterData = PlayerData.instance.GetCharacterData(BattleInstanceManager.instance.playerActor.actorId);
+			CharacterData characterData = null;
+			if (BattleInstanceManager.instance.playerActor.mercenary)
+				characterData = MercenaryData.instance.GetCharacterData(BattleInstanceManager.instance.playerActor.GetActorIdWithMercenary());
+			else
+				characterData = PlayerData.instance.GetCharacterData(BattleInstanceManager.instance.playerActor.actorId);
 			if (characterData != null) powerLevel = characterData.powerLevel;
 			int selected = StageManager.instance.playChapter;
 			if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())

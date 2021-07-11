@@ -37,16 +37,24 @@ public class ActorStatus : MonoBehaviour
 
 		CharacterData characterData = null;
 		if (actor.IsMercenary())
-			characterData = MercenaryData.instance.GetCharacterData(actor.actorId, true);
-		else
-			characterData = PlayerData.instance.GetCharacterData(actor.actorId);
-		if (overridePowerLevel == -1)
 		{
+			characterData = MercenaryData.instance.GetCharacterData(actor.actorId, true);
+
+			// 용병캐릭터는 override를 적용하지 않는다.
 			powerLevel = 1;
 			if (characterData != null) powerLevel = characterData.powerLevel;
 		}
 		else
-			powerLevel = overridePowerLevel;
+		{
+			characterData = PlayerData.instance.GetCharacterData(actor.actorId);
+			if (overridePowerLevel == -1)
+			{
+				powerLevel = 1;
+				if (characterData != null) powerLevel = characterData.powerLevel;
+			}
+			else
+				powerLevel = overridePowerLevel;
+		}
 
 		ActorTableData actorTableData = TableDataManager.instance.FindActorTableData(actor.actorId);
 		PowerLevelTableData powerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(powerLevel);
@@ -57,7 +65,7 @@ public class ActorStatus : MonoBehaviour
 		_statusBase.valueList[(int)eActorStatus.MaxSp] = actorTableData.sp;
 
 		// 보유한 캐릭터들 처리
-		if (PlayerData.instance.ContainsActor(actor.actorId) || actor.IsMercenary())
+		if (characterData != null)
 		{
 			// 내가 가지고 있는 캐릭터들에 한해서만 장비 계산을 적용한다.
 			// _statusBase 에 로비에서의 스탯을 caching해둔다.
@@ -118,7 +126,7 @@ public class ActorStatus : MonoBehaviour
 			}
 
 			// over max pp
-			attackAddRate += GetAttackAddRateByOverPP();
+			attackAddRate += GetAttackAddRateByOverPP(characterData);
 
 			_statusBase.valueList[(int)eActorStatus.MaxHp] *= maxHpAddRate;
 			_statusBase.valueList[(int)eActorStatus.Attack] *= attackAddRate;
@@ -373,10 +381,9 @@ public class ActorStatus : MonoBehaviour
 	static float yAdjust_OverPp = -0.0301f;
 	static float aAdjust_OverPp = 0.005f;
 	static float bAdjust_OverPp = 0.13f;
-	public float GetAttackAddRateByOverPP()
+	public float GetAttackAddRateByOverPP(CharacterData characterData)
 	{
 		int overMaxPp = 0;
-		CharacterData characterData = PlayerData.instance.GetCharacterData(actor.actorId);
 		if (characterData != null)
 		{
 			// 캐릭터의 파워레벨 대신 저장되어있는 powerLevel을 써도 된다.

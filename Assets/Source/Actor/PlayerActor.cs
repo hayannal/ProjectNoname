@@ -21,6 +21,12 @@ public class PlayerActor : Actor
 	public bool flying { get; private set; }
 
 	public bool mercenary { get; set; }
+	public string GetActorIdWithMercenary()
+	{
+		if (mercenary == false)
+			return actorId;
+		return MercenaryData.ToMercenaryActorId(actorId);
+	}
 
 	void Awake()
 	{
@@ -99,7 +105,8 @@ public class PlayerActor : Actor
 
 	void RegisterBattleInstance()
 	{
-		BattleInstanceManager.instance.OnInitializePlayerActor(this);
+		string addActorId = GetActorIdWithMercenary();
+		BattleInstanceManager.instance.OnInitializePlayerActor(this, addActorId);
 
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
 
@@ -120,7 +127,7 @@ public class PlayerActor : Actor
 					else if (BattleManager.instance != null && BattleManager.instance.IsDefaultBattle())
 					{
 						// 한번이라도 썼던 캐릭터인지 확인
-						bool firstEnter = !BattleInstanceManager.instance.IsInBattlePlayerList(actorId);
+						bool firstEnter = !BattleInstanceManager.instance.IsInBattlePlayerList(addActorId);
 
 						// 레벨팩 이전
 						LevelPackDataManager.instance.TransferLevelPackList(BattleInstanceManager.instance.playerActor, this);
@@ -195,11 +202,7 @@ public class PlayerActor : Actor
 	{
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
 		if (lobby == false && BattleManager.instance != null && BattleManager.instance.IsDefaultBattle())
-		{
-			string addActorId = actorId;
-			if (mercenary) addActorId = MercenaryData.ToMercenaryActorId(actorId);
-			BattleInstanceManager.instance.AddBattlePlayer(addActorId);
-		}
+			BattleInstanceManager.instance.AddBattlePlayer(GetActorIdWithMercenary());
 
 		BattleInstanceManager.instance.playerActor = this;
 		CustomFollowCamera.instance.targetTransform = cachedTransform;
@@ -428,7 +431,7 @@ public class PlayerActor : Actor
 	{
 		CharacterData characterData = null;
 		if (mercenary)
-			characterData = MercenaryData.instance.GetCharacterData(actorId, true);
+			characterData = MercenaryData.instance.GetCharacterData(GetActorIdWithMercenary());
 		else
 			characterData = PlayerData.instance.GetCharacterData(actorId);
 		if (characterData == null || characterData.HasWing() == false || wingRootTransform == null)
@@ -460,7 +463,11 @@ public class PlayerActor : Actor
 	{
 		if (_wingObject == null)
 			return;
-		CharacterData characterData = PlayerData.instance.GetCharacterData(actorId);
+		CharacterData characterData = null;
+		if (mercenary)
+			characterData = MercenaryData.instance.GetCharacterData(GetActorIdWithMercenary());
+		else
+			characterData = PlayerData.instance.GetCharacterData(actorId);
 		if (characterData == null || characterData.HasWing() == false)
 			return;
 

@@ -86,7 +86,7 @@ public class LevelPackDataManager : MonoBehaviour
 
 	#region LevelPack List for Swap Character
 	Dictionary<string, List<string>> _dicPlayerAcquiredLevelPack = new Dictionary<string, List<string>>();
-	public void AddLevelPack(string playerActorId, string levelPackId)
+	public void AddLevelPack(PlayerActor playerActor, string levelPackId)
 	{
 #if UNITY_EDITOR
 		LevelPackTableData levelPackTableData = TableDataManager.instance.FindLevelPackTableData(levelPackId);
@@ -97,15 +97,15 @@ public class LevelPackDataManager : MonoBehaviour
 		}
 #endif
 
-		if (_dicPlayerAcquiredLevelPack.ContainsKey(playerActorId))
+		if (_dicPlayerAcquiredLevelPack.ContainsKey(playerActor.GetActorIdWithMercenary()))
 		{
-			_dicPlayerAcquiredLevelPack[playerActorId].Add(levelPackId);
+			_dicPlayerAcquiredLevelPack[playerActor.GetActorIdWithMercenary()].Add(levelPackId);
 			return;
 		}
 
 		List<string> listPlayerAcquiredLevelPack = new List<string>();
 		listPlayerAcquiredLevelPack.Add(levelPackId);
-		_dicPlayerAcquiredLevelPack.Add(playerActorId, listPlayerAcquiredLevelPack);
+		_dicPlayerAcquiredLevelPack.Add(playerActor.GetActorIdWithMercenary(), listPlayerAcquiredLevelPack);
 	}
 
 	public void TransferLevelPackList(PlayerActor prevPlayerActor, PlayerActor nextPlayerActor)
@@ -113,13 +113,13 @@ public class LevelPackDataManager : MonoBehaviour
 		// 이전하기 전에 먼저 레벨에 따라 자동으로 획득되는 팩부터 체크한다.
 		nextPlayerActor.skillProcessor.CheckAllExclusiveLevelPack();
 
-		if (_dicPlayerAcquiredLevelPack.ContainsKey(prevPlayerActor.actorId) == false)
+		if (_dicPlayerAcquiredLevelPack.ContainsKey(prevPlayerActor.GetActorIdWithMercenary()) == false)
 			return;
 
-		List<string> listPrevPlayerAcquiredLevelPack = _dicPlayerAcquiredLevelPack[prevPlayerActor.actorId];
+		List<string> listPrevPlayerAcquiredLevelPack = _dicPlayerAcquiredLevelPack[prevPlayerActor.GetActorIdWithMercenary()];
 		int currentPlayerAcquiredLevelPackCount = 0;
-		if (_dicPlayerAcquiredLevelPack.ContainsKey(nextPlayerActor.actorId))
-			currentPlayerAcquiredLevelPackCount = _dicPlayerAcquiredLevelPack[nextPlayerActor.actorId].Count;
+		if (_dicPlayerAcquiredLevelPack.ContainsKey(nextPlayerActor.GetActorIdWithMercenary()))
+			currentPlayerAcquiredLevelPackCount = _dicPlayerAcquiredLevelPack[nextPlayerActor.GetActorIdWithMercenary()].Count;
 		for (int i = 0; i < listPrevPlayerAcquiredLevelPack.Count; ++i)
 		{
 			if (i < currentPlayerAcquiredLevelPackCount)
@@ -132,7 +132,7 @@ public class LevelPackDataManager : MonoBehaviour
 			if (levelPackTableData.exclusive == false)
 			{
 				// 이어받을 수 있는건 이어받으면 된다. 이어받지 못하는건 레벨에 따라 획득되는 전용레벨팩일거라 위에서 이미 얻어둔 상태일거다.
-				AddLevelPack(nextPlayerActor.actorId, levelPackId);
+				AddLevelPack(nextPlayerActor, levelPackId);
 				nextPlayerActor.skillProcessor.AddLevelPack(levelPackId, false, 0);
 			}
 		}
@@ -143,7 +143,7 @@ public class LevelPackDataManager : MonoBehaviour
 	#region InProgressGame
 	public string GetCachedLevelPackData()
 	{
-		List<string> listCachedLevelPack = _dicPlayerAcquiredLevelPack[BattleInstanceManager.instance.playerActor.actorId];
+		List<string> listCachedLevelPack = _dicPlayerAcquiredLevelPack[BattleInstanceManager.instance.playerActor.GetActorIdWithMercenary()];
 		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
 		return serializer.SerializeObject(listCachedLevelPack);
 	}
@@ -154,7 +154,7 @@ public class LevelPackDataManager : MonoBehaviour
 		List<string> listCachedLevelPack = serializer.DeserializeObject<List<string>>(jsonCachedLevelPackData);
 		for (int i = 0; i < listCachedLevelPack.Count; ++i)
 		{
-			AddLevelPack(BattleInstanceManager.instance.playerActor.actorId, listCachedLevelPack[i]);
+			AddLevelPack(BattleInstanceManager.instance.playerActor, listCachedLevelPack[i]);
 			BattleInstanceManager.instance.playerActor.skillProcessor.AddLevelPack(listCachedLevelPack[i], false, 0);
 		}
 	}

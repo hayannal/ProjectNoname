@@ -362,7 +362,11 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 			{
 				PlayerActor playerActor = BattleInstanceManager.instance.GetCachedPlayerActor(_actorId);
 				if (playerActor != null)
-					percent = playerActor.actorStatus.GetAttackAddRateByOverPP() * 100.0f;
+				{
+					CharacterData characterData = PlayerData.instance.GetCharacterData(_actorId);
+					if (characterData != null)
+						percent = playerActor.actorStatus.GetAttackAddRateByOverPP(characterData) * 100.0f;
+				}
 			}
 			text = UIString.instance.GetString("GameUI_OverMaxDesc", percent);
 		}

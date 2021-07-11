@@ -706,12 +706,12 @@ public class StageManager : MonoBehaviour
 		// 먼저 스테이지 매니저 안에다가 기록해두고
 		_lastPowerSourceSaved = true;
 		_lastPowerSourceStage = playStage;
-		_lastPowerSourceActorId = BattleInstanceManager.instance.playerActor.actorId;
+		_lastPowerSourceActorId = BattleInstanceManager.instance.playerActor.GetActorIdWithMercenary();
 
 		// 재접시 복구해야하니 ClientSaveData에도 저장해둔다. 서버에 저장하는 방법은 전투 중간에 패킷을 보내야하는 경우가 생겨버리기땜에 하지 않기로 한다.
 		ClientSaveData.instance.OnChangedLastPowerSourceSaved(true);
 		ClientSaveData.instance.OnChangedLastPowerSourceStage(playStage);
-		ClientSaveData.instance.OnChangedLastPowerSourceActorId(BattleInstanceManager.instance.playerActor.actorId);
+		ClientSaveData.instance.OnChangedLastPowerSourceActorId(BattleInstanceManager.instance.playerActor.GetActorIdWithMercenary());
 
 		// 한가지 문제가 있는데 일반적인 PowerSource 나오는 층에서는 환경셋팅이 비어져있는게 보통인데
 		// 로비를 들리지 않고 씬을 구축해야하기때문에 환경셋팅을 어딘가 저장해놓을 필요가 생겼다.

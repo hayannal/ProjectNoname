@@ -533,6 +533,9 @@ public class EventManager : MonoBehaviour
 		BattleInstanceManager.instance.GetCachedObject(effectPrefab, new Vector3(-2.0f, 0.0f, 4.0f), Quaternion.identity);
 		yield return new WaitForSeconds(1.3f);
 
+		// 캔버스 리프레쉬 하기전에 풀어야한다. 그래야 연출타이밍에 제대로 갱신된다.
+		secondDailyBoxEventPlaying = false;
+
 		// 가장 밝아졌을때 캔버스 리프레쉬
 		DailyBoxGaugeCanvas.instance.RefreshGauge();
 
@@ -549,7 +552,6 @@ public class EventManager : MonoBehaviour
 			EventInputLockCanvas.instance.gameObject.SetActive(false);
 			EventInfoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_OriginBigName"), text, UIString.instance.GetString("GameUI_OriginBigMore"), () =>
 			{
-				secondDailyBoxEventPlaying = false;
 				OnCompleteLobbyEvent();
 			});
 		});

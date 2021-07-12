@@ -272,7 +272,12 @@ public class EquipEnhanceConfirmCanvas : MonoBehaviour
 
 			string text = UIString.instance.GetString("GameUI_TouchToExit");
 			if (returnForMax)
-				text = string.Format("{0}\n\n<size=16>{1}</size>", text, UIString.instance.GetString("EquipUI_ReturnForMax"));
+			{
+				if (enhanceLevel >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxEquipLevel"))
+					text = string.Format("{0}\n\n<size=16>{1}</size>", text, UIString.instance.GetString("EquipUI_ReturnForMax"));
+				else
+					text = string.Format("{0}\n\n<size=16>{1}</size>", text, UIString.instance.GetString("EquipUI_ReturnForLimit"));
+			}
 			exitText.SetLocalizedText(text);
 		}
 		else

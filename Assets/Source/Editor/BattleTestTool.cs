@@ -262,6 +262,7 @@ public class BattleTestTool : EditorWindow
 	GroupMonster groupMonster;
 	bool useGroupMonsterAI = false;
 	RailMonster railMonster;
+	Vector2 _statePanelScrollPos;
 
 	void OnGUI_Monster()
 	{
@@ -312,6 +313,7 @@ public class BattleTestTool : EditorWindow
 					targetStateMachine = null;
 					monsterAnimator = null;
 					monsterInstance = null;
+					_statePanelScrollPos = Vector2.zero;
 				}
 
 				GUILayout.BeginVertical("box");
@@ -342,6 +344,7 @@ public class BattleTestTool : EditorWindow
 						else
 						{
 							targetStateMachine = null;
+							_statePanelScrollPos = Vector2.zero;
 						}
 						useMonsterAI = false;
 						monsterAI.enabled = false;
@@ -394,6 +397,8 @@ public class BattleTestTool : EditorWindow
 							if (loopMonsterState == false)
 								loopTargetState = null;
 
+							//GUILayout.BeginVertical("Box");
+							_statePanelScrollPos = GUILayout.BeginScrollView(_statePanelScrollPos);
 							for (int i = 0; i < targetStateMachine.states.Length; ++i)
 							{
 								if (targetStateMachine.states[i].state.name == "Idle" || targetStateMachine.states[i].state.name == "Move" || targetStateMachine.states[i].state.name == "Die")
@@ -424,6 +429,8 @@ public class BattleTestTool : EditorWindow
 								RecursiveDraw(targetStateMachine.stateMachines[i]);
 
 							GUI.color = defaultColor;
+							GUILayout.EndScrollView();
+							//GUILayout.EndVertical();
 						}
 					}
 					else

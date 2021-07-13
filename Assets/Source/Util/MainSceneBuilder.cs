@@ -877,8 +877,15 @@ public class MainSceneBuilder : MonoBehaviour
 		if (settings.ActivePlayModeDataBuilderIndex == 2)
 			ObjectUtil.ReloadShader(newObject);
 #else
-		Instantiate<GameObject>(_handleStartCharacter.Result);
+		GameObject newObject = Instantiate<GameObject>(_handleStartCharacter.Result);
 #endif
+		// 부활 복구씬에서도 Mercenary 검사는 해야한다.
+		PlayerActor playerActor = newObject.GetComponent<PlayerActor>();
+		if (playerActor != null)
+		{
+			if (MercenaryData.IsMercenaryActor(ClientSaveData.instance.GetCachedBattleActor()))
+				playerActor.mercenary = true;
+		}
 
 		// 로딩 자체를 안해버리면 handle없어서 오류 날 수 있으니 Instantiate는 안해도 로딩은 해두자.
 		LoadingCanvas.instance.SetProgressBarPoint(0.9f);

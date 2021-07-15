@@ -202,7 +202,10 @@ public class PlayerActor : Actor
 	{
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
 		if (lobby == false && BattleManager.instance != null && BattleManager.instance.IsDefaultBattle())
+		{
 			BattleInstanceManager.instance.AddBattlePlayer(GetActorIdWithMercenary());
+			SoundManager.instance.PlayBattleBgm(GetActorIdWithMercenary());
+		}
 
 		BattleInstanceManager.instance.playerActor = this;
 		CustomFollowCamera.instance.targetTransform = cachedTransform;

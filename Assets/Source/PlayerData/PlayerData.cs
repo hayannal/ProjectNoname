@@ -1006,7 +1006,12 @@ public class PlayerData : MonoBehaviour
 
 				// 혹시 여러개 보낸거로 인해서 중복 처리 될 샹황이라면 그냥 리턴
 				if (_lastRefreshedUniversalTimeDay == universalTime.Day)
+				{
+					_unfixedRefreshRetryRemainCount--;
+					if (_unfixedRefreshRetryRemainCount <= 0)
+						PlayFabApiManager.instance.HandleCommonError();
 					return;
+				}
 
 				if (universalTime.Year == unfixedResetTime.Year && universalTime.Month == unfixedResetTime.Month && universalTime.Day == unfixedResetTime.Day)
 				{
@@ -1014,7 +1019,7 @@ public class PlayerData : MonoBehaviour
 					Debug.Log("Daily Unfixed Refreshed Start");
 					refreshed = true;
 					_lastRefreshedUniversalTimeDay = universalTime.Day;
-					unfixedResetTime = new DateTime(serverUtcTime.Year, serverUtcTime.Month, serverUtcTime.Day) + TimeSpan.FromDays(1);
+					unfixedResetTime = new DateTime(universalTime.Year, universalTime.Month, universalTime.Day) + TimeSpan.FromDays(1);
 					_unfixedRefreshRetryRemainCount = 30;
 
 					// 여기서 각종 갱신 처리 및 패킷들을 보내면 문제없을거다.

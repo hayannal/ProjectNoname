@@ -129,6 +129,16 @@ public class BalanceCanvas : MonoBehaviour
 		UpdatePpText();
 	}
 
+	public int highestPpCharacterBaseLevel { get; private set; }
+	public string highestPpCharacterId
+	{
+		get
+		{
+			if (_highestPpCharacter != null)
+				return _highestPpCharacter.actorId;
+			return "";
+		}
+	}
 	CharacterData _highestPpCharacter;
 	CharacterData _targetPpCharacter;
 	int _priceOnce;
@@ -170,6 +180,7 @@ public class BalanceCanvas : MonoBehaviour
 		}
 
 		_highestPpCharacter = highestPpCharacter;
+		highestPpCharacterBaseLevel = GetReachablePowerLevel(highestPpCharacter.pp, 0);
 		highestCharacterListItem.Initialize(highestPpCharacter.actorId, highestPpCharacter.powerLevel, SwapCanvasListItem.GetPowerLevelColorState(highestPpCharacter), highestPpCharacter.transcendLevel, 0, null, null, null);
 		highestCharacterPpValueText.text = highestPpCharacter.pp.ToString("N0");
 
@@ -226,7 +237,7 @@ public class BalanceCanvas : MonoBehaviour
 			RefreshSliderPrice();
 	}
 
-	int GetReachablePowerLevel(int pp, int defaultLevel)
+	public static int GetReachablePowerLevel(int pp, int defaultLevel)
 	{
 		int powerLevel = defaultLevel;
 		for (int i = TableDataManager.instance.powerLevelTable.dataArray.Length - 1; i >= 0; --i)
@@ -244,6 +255,22 @@ public class BalanceCanvas : MonoBehaviour
 			}
 		}
 		return powerLevel;
+	}
+
+	// 등록된 캐릭터의 현재 찍어둔 레벨 말고 pp로 가능한 레벨에서 다음 레벨업으로 올라갈때 필요한 pp를 리턴한다. 정렬용 함수.
+	public static int GetNeedPpOfNextReachablePowerLevel(int pp)
+	{
+		int currentReachablePowerLevel = GetReachablePowerLevel(pp, 0);
+		if (currentReachablePowerLevel >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxPowerLevel"))
+			return int.MaxValue;
+		else
+		{
+			PowerLevelTableData powerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(currentReachablePowerLevel);
+			PowerLevelTableData nextPowerLevelTableData = TableDataManager.instance.FindPowerLevelTableData(currentReachablePowerLevel + 1);
+			int current = pp - powerLevelTableData.requiredAccumulatedPowerPoint;
+			int max = nextPowerLevelTableData.requiredPowerPoint;
+			return max - current;
+		}
 	}
 
 	void RefreshSliderPrice(bool resetUseCount = true)
@@ -291,6 +318,13 @@ public class BalanceCanvas : MonoBehaviour
 
 	public void OnClickBackButton()
 	{
+		if (emptySlotObject.activeSelf == false && targetCharacterListItem.gameObject.activeSelf)
+		{
+			RefreshTargetActor("");
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("BalanceUI_ReleasedChar"), 2.0f);
+			return;
+		}
+
 		gameObject.SetActive(false);
 		//StackCanvas.Back();
 	}

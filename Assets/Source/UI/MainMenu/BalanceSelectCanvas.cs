@@ -8,6 +8,9 @@ public class BalanceSelectCanvas : MonoBehaviour
 {
 	public static BalanceSelectCanvas instance;
 
+	public BalanceSortButton balanceSortButton;
+	BalanceSortButton.eSortType _currentSortType;
+
 	public GameObject contentItemPrefab;
 	public RectTransform contentRootRectTransform;
 
@@ -28,6 +31,14 @@ public class BalanceSelectCanvas : MonoBehaviour
 
 	void OnEnable()
 	{
+		if (balanceSortButton.onChangedCallback == null)
+		{
+			int sortType = PlayerPrefs.GetInt("_BalanceListSort", 0);
+			_currentSortType = (BalanceSortButton.eSortType)sortType;
+			balanceSortButton.SetSortType(_currentSortType);
+			balanceSortButton.onChangedCallback = OnChangedSortType;
+		}
+
 		StackCanvas.Push(gameObject);
 
 		if (DragThresholdController.instance != null)
@@ -46,28 +57,15 @@ public class BalanceSelectCanvas : MonoBehaviour
 		StackCanvas.Pop(gameObject);
 	}
 
-	public Comparison<CharacterData> comparisonPp = delegate (CharacterData x, CharacterData y)
+	void OnChangedSortType(BalanceSortButton.eSortType sortType)
 	{
-		if (x.pp > y.pp) return 1;
-		else if (x.pp < y.pp) return -1;
-		if (x.powerLevel > y.powerLevel) return 1;
-		else if (x.powerLevel < y.powerLevel) return -1;
-		ActorTableData xActorTableData = TableDataManager.instance.FindActorTableData(x.actorId);
-		ActorTableData yActorTableData = TableDataManager.instance.FindActorTableData(y.actorId);
-		if (xActorTableData != null && yActorTableData != null)
-		{
-			if (xActorTableData.grade > yActorTableData.grade) return 1;
-			else if (xActorTableData.grade < yActorTableData.grade) return -1;
-		}
-		if (x.transcendLevel > y.transcendLevel) return 1;
-		else if (x.transcendLevel < y.transcendLevel) return -1;
-		if (xActorTableData != null && yActorTableData != null)
-		{
-			if (xActorTableData.orderIndex < yActorTableData.orderIndex) return 1;
-			else if (xActorTableData.orderIndex > yActorTableData.orderIndex) return -1;
-		}
-		return 0;
-	};
+		_currentSortType = sortType;
+		int sortTypeValue = (int)sortType;
+		PlayerPrefs.SetInt("_BalanceListSort", sortTypeValue);
+
+		// 여기서는 정렬 바꿀때 새로 선택되는 캐릭터가 뒤죽박죽 바뀔 수 있으므로 제일 위에있는 캐릭터가 선택되도록 해준다.
+		RefreshGrid("");
+	}
 
 	string _highestActorId;
 	int _highestPp;
@@ -77,10 +75,20 @@ public class BalanceSelectCanvas : MonoBehaviour
 		for (int i = 0; i < _listSwapCanvasListItem.Count; ++i)
 			_listSwapCanvasListItem[i].gameObject.SetActive(false);
 		_listSwapCanvasListItem.Clear();
-		
-		List<CharacterData> listCharacterData = PlayerData.instance.listCharacterData;
-		listCharacterData.Sort(comparisonPp);
 
+		List<CharacterData> listCharacterData = PlayerData.instance.listCharacterData;
+		switch (_currentSortType)
+		{
+			case BalanceSortButton.eSortType.Pp:
+				listCharacterData.Sort(balanceSortButton.comparisonPp);
+				break;
+			case BalanceSortButton.eSortType.Up:
+				listCharacterData.Sort(balanceSortButton.comparisonUp);
+				break;
+		}
+
+		_highestActorId = "";
+		_highestPp = 0;
 		for (int i = 0; i < listCharacterData.Count; ++i)
 		{
 			SwapCanvasListItem swapCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
@@ -93,15 +101,26 @@ public class BalanceSelectCanvas : MonoBehaviour
 
 			_listSwapCanvasListItem.Add(swapCanvasListItem);
 
-			if (i == (listCharacterData.Count - 1))
+			if (listCharacterData[i].pp > _highestPp)
 			{
 				_highestActorId = listCharacterData[i].actorId;
 				_highestPp = listCharacterData[i].pp;
 			}
 		}
 
-		// 적어도 캐릭터는 셋 이상 있을테니 첫번째꺼 선택하게 하면 된다.
-		OnClickListItem(string.IsNullOrEmpty(selectActorId) ? _listSwapCanvasListItem[0].actorId : selectActorId);
+		string currentSelectActorId = selectActorId;
+		if (string.IsNullOrEmpty(currentSelectActorId))
+		{
+			for (int i = 0; i < listCharacterData.Count; ++i)
+			{
+				if (listCharacterData[i].actorId != _highestActorId)
+				{
+					currentSelectActorId = listCharacterData[i].actorId;
+					break;
+				}
+			}
+		}
+		OnClickListItem(currentSelectActorId);
 	}
 
 	public void OnClickListItem(string actorId)

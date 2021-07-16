@@ -77,7 +77,7 @@ public class MercenaryData : MonoBehaviour
 	//	UpdateRefreshCharacterDataList();
 	//}
 
-	public void OnRecvMercenaryData(Dictionary<string, string> titleData, bool refreshCharacterData)
+	public void OnRecvMercenaryData(Dictionary<string, string> titleData, bool onlyRefreshTitleData)
 	{
 		_listMercenarySlotInfo = null;
 
@@ -85,6 +85,10 @@ public class MercenaryData : MonoBehaviour
 
 		if (titleData.ContainsKey("mcLst"))
 			_listMercenarySlotInfo = serializer.DeserializeObject<List<MercenarySlotInfo>>(titleData["mcLst"]);
+
+		// 하루 갱신 5분전에 미리 데이터를 받아둘땐 서버 데이터 정보만 초기화 하면 된다.
+		if (onlyRefreshTitleData)
+			return;
 
 		//characterDataRefreshTime = new DateTime(ServerTime.UtcNow.Year, ServerTime.UtcNow.Month, ServerTime.UtcNow.Day) + TimeSpan.FromDays(1);
 		//if (refreshCharacterData == false)
@@ -95,7 +99,7 @@ public class MercenaryData : MonoBehaviour
 		// 여기서 초기화 안하게되면서 UpdateRefreshCharacterDataList도 호출하지 않기로 한다.
 		//RefreshCharacterDataList();
 
-		// 대신 재로그인등으로 OnRecv호출될때에는 초기화하고 다시 만들기로 한다.
+		// 로그인을 할때는 정보 초기화가 맞다.
 		_lastValue = "";
 		_listCharacterData.Clear();
 	}

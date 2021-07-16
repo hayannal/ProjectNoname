@@ -689,7 +689,7 @@ public class PlayFabApiManager : MonoBehaviour
 		TimeSpaceData.instance.OnRecvEquipInventory(_loginResult.InfoResultPayload.UserInventory, _loginResult.InfoResultPayload.UserData, _loginResult.InfoResultPayload.UserReadOnlyData);
 		PlayerData.instance.OnRecvPlayerData(_loginResult.InfoResultPayload.UserData, _loginResult.InfoResultPayload.UserReadOnlyData, _loginResult.InfoResultPayload.CharacterList);
 		PlayerData.instance.OnRecvCharacterList(_loginResult.InfoResultPayload.CharacterList, _dicCharacterStatisticsResult, _listCharacterEntityObject);
-		MercenaryData.instance.OnRecvMercenaryData(_loginResult.InfoResultPayload.TitleData, true);
+		MercenaryData.instance.OnRecvMercenaryData(_loginResult.InfoResultPayload.TitleData, false);
 		enableCliSusQueue = false;
 
 		_loginResult = null;

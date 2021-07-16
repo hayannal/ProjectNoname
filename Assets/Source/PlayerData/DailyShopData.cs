@@ -537,7 +537,7 @@ public class DailyShopData : MonoBehaviour
 			PlayerData.instance.OnRecvLevelPackageResetInfo(dicData);
 
 			// 머셔너리 데이터도 같이 포함
-			MercenaryData.instance.OnRecvMercenaryData(dicData, false);
+			MercenaryData.instance.OnRecvMercenaryData(dicData, true);
 		});
 	}
 

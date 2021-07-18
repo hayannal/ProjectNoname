@@ -393,6 +393,13 @@ public class AuthManager : MonoBehaviour
 	{
 		Debug.LogError(error.GenerateErrorReport());
 
+		// 에러의 이유가 하필 NotLinked라면 이미 해제된거라고 봐야한다. 
+		if (error.Error == PlayFabErrorCode.AccountNotLinked)
+		{
+			OnUnlinkSuccess(null);
+			return;
+		}
+
 		// 왜 실패한거지? 다시 보내보자.
 		retryRequestUnlinkCustomId = true;
 	}

@@ -626,7 +626,8 @@ public class BalanceCanvas : MonoBehaviour
 		FadeCanvas.instance.FadeOut(0.3f, 1, true);
 		yield return Timing.WaitForSeconds(0.3f);
 
-		OnClickBackButton();
+		// 캐릭터 해제 스탭이 추가되면서 직접 SetActive(false)하기로 한다.
+		gameObject.SetActive(false);
 
 		while (BalanceCanvas.instance.gameObject.activeSelf)
 			yield return Timing.WaitForOneFrame;

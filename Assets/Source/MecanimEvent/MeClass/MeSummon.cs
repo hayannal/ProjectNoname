@@ -43,6 +43,11 @@ public class MeSummon : MecanimEventBase
 	// 데몬 헌트리스와 스팀펑크 로봇의 소환에서 사용된다.
 	public float spawnDelay;
 
+	// 요일던전 보스때문에 추가한 기능. 0.0f 보다 클때는 굴려서 통과해야만 소환을 수행한다.
+	public float randomSummonRate;
+	// 마찬가지로 요일던전 보스 때문에 추가한 기능. 고정몬스터의 경우 랜덤포지션으로 찾은 위치에 이미 몬스터가 있을 경우 소환을 수행하지 않고 패스하도록 한다.
+	public bool checkOverlapPosition;
+
 #if UNITY_EDITOR
 	override public void OnGUI_PropertyWindow()
 	{
@@ -74,6 +79,9 @@ public class MeSummon : MecanimEventBase
 		if (activeMaxCount > 0)
 			prevObjectDisableEffectPrefab = (GameObject)EditorGUILayout.ObjectField("Prev Object Disable Effect :", prevObjectDisableEffectPrefab, typeof(GameObject), false);
 		spawnDelay = EditorGUILayout.FloatField("Spawn Delay :", spawnDelay);
+
+		randomSummonRate = EditorGUILayout.FloatField("Random Rate :", randomSummonRate);
+		checkOverlapPosition = EditorGUILayout.Toggle("Check Overlap Position! :", checkOverlapPosition);
 	}
 #endif
 
@@ -81,6 +89,8 @@ public class MeSummon : MecanimEventBase
 	Vector3 _createPosition;
 	Quaternion _createRotation;
 	Transform _castingLoopEffectTransform;
+	bool _ignoreSummonByRandomResult;
+	bool _ignoreSummonByOverlap;
 	Actor _actor;
 	override public void OnRangeSignalStart(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
@@ -90,6 +100,16 @@ public class MeSummon : MecanimEventBase
 				_actor = animator.transform.parent.GetComponent<Actor>();
 			if (_actor == null)
 				_actor = animator.GetComponent<Actor>();
+		}
+
+		if (randomSummonRate > 0.0f)
+		{
+			// 0.8f 가 적혀있으면 80% 확률로 소환하는거다.
+			if (Random.value > randomSummonRate)
+			{
+				_ignoreSummonByRandomResult = true;
+				return;
+			}
 		}
 
 		if (calcCreatePositionInEndSignal == false)
@@ -131,6 +151,25 @@ public class MeSummon : MecanimEventBase
 					firstObject.SetActive(false);
 					if (prevObjectDisableEffectPrefab != null)
 						BattleInstanceManager.instance.GetCachedObject(prevObjectDisableEffectPrefab, firstObject.transform.position, Quaternion.identity);
+				}
+			}
+		}
+
+		if (checkOverlapPosition && createPositionType == eCreatePositionType.WorldPosition && calcCreatePositionInEndSignal == false)
+		{
+			// _createPosition에 위치가 저장되어있을텐데 여기에 몬스터가 이미 있다고 판단될 경우
+			// 하필 근데 시그널이 동시에 실행되다보니 시그널끼리 겹치는건 막을수가 없다.
+			// 결국 랜덤포지션일때도 못쓰고 월드 포지션이면서 calcCreatePositionInEndSignal값이 false인 경우에만 쓸 수 있는 한정적인 기능이 되었다.
+			List<MonsterActor> listMonsterActor = BattleInstanceManager.instance.GetLiveMonsterList();
+			for (int i = 0; i < listMonsterActor.Count; ++i)
+			{
+				// x z 만 검사해야한다. 지하에 있는 경우에도 생성하면 안되니 y는 검사하지 않는다.
+				Vector3 diff = listMonsterActor[i].cachedTransform.position - _createPosition;
+				diff.y = 0.0f;
+				if (diff.sqrMagnitude < 0.5f * 0.5f)
+				{
+					_ignoreSummonByOverlap = true;
+					return;
 				}
 			}
 		}
@@ -279,7 +318,7 @@ public class MeSummon : MecanimEventBase
 				Vector3 diff = hit.position - BattleInstanceManager.instance.playerActor.cachedTransform.position;
 				diff.y = 0.0f;
 				if (diff.sqrMagnitude > (1.5f * 1.5f))
-					return hit.position;
+					return new Vector3(hit.position.x, 0.0f, hit.position.z);
 			}
 
 			// exception handling
@@ -305,6 +344,20 @@ public class MeSummon : MecanimEventBase
 				_actor = animator.transform.parent.GetComponent<Actor>();
 			if (_actor == null)
 				_actor = animator.GetComponent<Actor>();
+		}
+
+		// 랜덤을 굴려야하는 상황이라면 Start에서 굴렸을거다. 그 결과값이 false면 소환하지 않고 리턴한다. 해당 값은 1회 쓰고 초기화한다.
+		if (randomSummonRate > 0.0f && _ignoreSummonByRandomResult)
+		{
+			_ignoreSummonByRandomResult = false;
+			return;
+		}
+
+		// 위와 마찬가지로 플래그 걸려있으면 패스하고 초기화 시켜둔다.
+		if (checkOverlapPosition && _ignoreSummonByOverlap)
+		{
+			_ignoreSummonByOverlap = false;
+			return;
 		}
 
 		if (spawnDelay == 0.0f)

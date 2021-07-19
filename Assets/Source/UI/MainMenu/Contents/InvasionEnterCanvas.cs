@@ -95,6 +95,12 @@ public class InvasionEnterCanvas : MonoBehaviour
 
 	void OnDisable()
 	{
+		if (CurrencySmallInfoCanvas.IsShow())
+		{
+			CurrencySmallInfoCanvas.Show(false);
+			_showCurrencySmallInfoCanvas = false;
+		}
+
 		if (LobbyCanvas.instance != null)
 		{
 			LobbyCanvas.instance.subMenuCanvasGroup.alpha = 1.0f;
@@ -397,7 +403,8 @@ public class InvasionEnterCanvas : MonoBehaviour
 		TooltipCanvas.Show(true, TooltipCanvas.eDirection.InvasionRewardInfo, UIString.instance.GetString(_invasionTableData.rewardMore), 290, goldIconObject.transform, new Vector2(0.0f, -40.0f));
 	}
 
-	const int ENTER_COUNT_MAX = 3;
+	bool _showCurrencySmallInfoCanvas = false;
+	public static int ENTER_COUNT_MAX = 3;
 	void RefreshEnterCount()
 	{
 		// 오늘 입장한 캐릭터 리스트를 구해오면 입장 횟수를 구할 수 있다.
@@ -412,6 +419,12 @@ public class InvasionEnterCanvas : MonoBehaviour
 			enterCountText.text = string.Format("{0} / {1}", currentEnterCount, ENTER_COUNT_MAX);
 			enterCountText.color = !disablePrice ? Color.white : Color.gray;
 			oneMoreChanceTextObject.SetActive(false);
+
+			if (CurrencySmallInfoCanvas.IsShow())
+			{
+				CurrencySmallInfoCanvas.Show(false);
+				_showCurrencySmallInfoCanvas = false;
+			}
 		}
 		else if (currentEnterCount == ENTER_COUNT_MAX)
 		{
@@ -420,8 +433,14 @@ public class InvasionEnterCanvas : MonoBehaviour
 			enterCountText.text = "";
 			oneMoreChanceTextObject.SetActive(true);
 			RefreshPrice();
+
+			if (CurrencySmallInfoCanvas.IsShow() == false && _showCurrencySmallInfoCanvas == false)
+			{
+				CurrencySmallInfoCanvas.Show(true);
+				_showCurrencySmallInfoCanvas = true;
+			}
 		}
-		else if ((currentEnterCount + 1) == ENTER_COUNT_MAX)
+		else if (currentEnterCount == (ENTER_COUNT_MAX + 1))
 		{
 			enterButtonObject.SetActive(true);
 			priceButtonObject.SetActive(false);
@@ -430,6 +449,12 @@ public class InvasionEnterCanvas : MonoBehaviour
 			enterCountText.text = string.Format("{0} / {1}", ENTER_COUNT_MAX, ENTER_COUNT_MAX);
 			enterCountText.color = Color.gray;
 			oneMoreChanceTextObject.SetActive(false);
+
+			if (CurrencySmallInfoCanvas.IsShow())
+			{
+				CurrencySmallInfoCanvas.Show(false);
+				_showCurrencySmallInfoCanvas = false;
+			}
 		}
 	}
 
@@ -461,6 +486,12 @@ public class InvasionEnterCanvas : MonoBehaviour
 
 	public void OnClickListItem(string actorId)
 	{
+		if (string.IsNullOrEmpty(actorId))
+		{
+			// null이란건 아예 선택조차 안됐을 경우다. 이때는 합류하지 않았다고 뜨기보다 메세지 없는게 더 나아보인다.
+			return;
+		}
+
 		if (PlayerData.instance.ContainsActor(actorId) == false)
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("InvasionUI_NotJoin"), 2.0f);
@@ -525,9 +556,10 @@ public class InvasionEnterCanvas : MonoBehaviour
 	{
 		if (DelayedLoadingCanvas.IsShow())
 			return;
-		if (TimeSpaceData.instance.IsInventoryVisualMax())
+		int currentEnterCount = ContentsData.instance.listInvasionEnteredActorId.Count;
+		if (currentEnterCount == (ENTER_COUNT_MAX + 1))
 		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_ManageInventory"), 2.0f);
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("InvasionUI_ThreeDone"), 2.0f);
 			return;
 		}
 		if (string.IsNullOrEmpty(_selectedActorId))
@@ -540,20 +572,28 @@ public class InvasionEnterCanvas : MonoBehaviour
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("InvasionUI_CannotEnterPowerToast"), 2.0f);
 			return;
 		}
-		int currentEnterCount = ContentsData.instance.listInvasionEnteredActorId.Count;
+		if (TimeSpaceData.instance.IsInventoryVisualMax())
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_ManageInventory"), 2.0f);
+			return;
+		}
 		if (currentEnterCount == ENTER_COUNT_MAX && CurrencyData.instance.dia < _price)
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughDiamond"), 2.0f);
 			return;
 		}
-		if (currentEnterCount == (ENTER_COUNT_MAX + 1))
+		if (currentEnterCount < (ENTER_COUNT_MAX + 1))
 		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("InvasionUI_ThreeDone"), 2.0f);
-			return;
+			TimeSpan remainTimeSpan = _dailyResetTime - ServerTime.UtcNow;
+			if (remainTimeSpan < TimeSpan.FromSeconds(30.0))
+			{
+				ToastCanvas.instance.ShowToast(UIString.instance.GetString("InvasionUI_TooSoonInit"), 2.0f);
+				return;
+			}
 		}
 
 
-		
+
 
 		// 진입처리
 		// 인풋부터 막고
@@ -819,6 +859,9 @@ public class InvasionEnterCanvas : MonoBehaviour
 	#region Record Last Character
 	void RecordLastDifficulty()
 	{
+		if (string.IsNullOrEmpty(_selectedActorId))
+			return;
+
 		string key = string.Format("{0}_{1}", (int)ServerTime.UtcNow.DayOfWeek, _selectedActorId);
 		int value = _selectedDifficulty;
 		ObscuredPrefs.SetInt(string.Format("_ivEnterCanvas_{0}___{1}", key, PlayFabApiManager.instance.playFabId), value);
@@ -826,12 +869,18 @@ public class InvasionEnterCanvas : MonoBehaviour
 
 	int GetCachedLastDifficulty()
 	{
+		if (string.IsNullOrEmpty(_selectedActorId))
+			return 0;
+
 		string key = string.Format("{0}_{1}", (int)ServerTime.UtcNow.DayOfWeek, _selectedActorId);
 		return ObscuredPrefs.GetInt(string.Format("_ivEnterCanvas_{0}___{1}", key, PlayFabApiManager.instance.playFabId));
 	}
 
 	void DeleteLastDifficulty()
 	{
+		if (string.IsNullOrEmpty(_selectedActorId))
+			return;
+
 		string key = string.Format("{0}_{1}", (int)ServerTime.UtcNow.DayOfWeek, _selectedActorId);
 		ObscuredPrefs.DeleteKey(string.Format("_ivEnterCanvas_{0}___{1}", key, PlayFabApiManager.instance.playFabId));
 	}

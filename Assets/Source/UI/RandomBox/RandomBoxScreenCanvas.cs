@@ -162,6 +162,8 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 			targetPosition = TimeSpaceGround.instance.cachedTransform.position;
 		else if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
 			targetPosition = BattleInstanceManager.instance.playerActor.cachedTransform.position + new Vector3(0.0f, 0.0f, 2.0f);
+		else if (BattleManager.instance != null && BattleManager.instance.IsInvasion())
+			targetPosition = new Vector3(0.0f, 0.0f, 0.5f);
 
 		// 플레이어가 상자 떨어질 자리에 너무 가까이에 있다면 아래로 내려준다
 		bool needMove = false;
@@ -278,8 +280,11 @@ public class RandomBoxScreenCanvas : MonoBehaviour
 		ResetObject();
 
 		// 섬멸전 보상이라면 타임스케일 0으로 만들거라서 조금만 더 기다리기로 한다.
-		if (BattleManager.instance != null && BattleManager.instance.IsNodeWar())
-			yield return Timing.WaitForSeconds(0.8f);
+		if (BattleManager.instance != null)
+		{
+			if (BattleManager.instance.IsNodeWar() || BattleManager.instance.IsInvasion())
+				yield return Timing.WaitForSeconds(0.8f);
+		}
 
 		// 획득 결과 캔버스를 띄우면 된다.
 		// 각자 패킷처리하는 곳에서 할테니 completeAction을 실행시키면 될거다.

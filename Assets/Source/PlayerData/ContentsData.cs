@@ -326,6 +326,10 @@ public class ContentsData : MonoBehaviour
 			{
 				lastInvasionEnteredTime = universalTime;
 				invasionTodayEntered = true;
+
+				if (_listInvasionEnteredActorId.Count == InvasionEnterCanvas.ENTER_COUNT_MAX)
+					CurrencyData.instance.dia -= BattleInstanceManager.instance.GetCachedGlobalConstantInt("InvasionDiamond");
+
 				if (_listInvasionEnteredActorId.Contains(selectedActorId) == false)
 					_listInvasionEnteredActorId.Add(selectedActorId);
 			}

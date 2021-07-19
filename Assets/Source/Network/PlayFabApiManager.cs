@@ -1300,14 +1300,33 @@ public class PlayFabApiManager : MonoBehaviour
 		}, null, null);
 	}
 
-	public void RequestEndInvasion(string selectedActorId, int selectedDifficulty, List<ObscuredString> listDropItemId, Action<string> successCallback)
+	public void RequestEndInvasion(int dayOfWeek, string selectedActorId, int selectedDifficulty, Action<string> successCallback)
 	{
+		// 이 패킷이야말로 제일 다양하게 보낸다. 캐릭터 pp부터 장비 재화까지.
+		// 대신 하루에 저게 다 들어있는건 아니고 특정 요일마다 특정 항목들만 채워서 보내게 될거다.
+		int addGold = DropManager.instance.GetLobbyGoldAmount();
+		int addDia = DropManager.instance.GetLobbyDiaAmount();
+		List<DropManager.CharacterPpRequest> listPpInfo = DropManager.instance.GetPowerPointInfo();
+		List<ObscuredString> listDropItemId = DropManager.instance.GetLobbyDropItemInfo();
+
+		if (listPpInfo.Count > 3)
+		{
+			// 수량 에러
+			CheatingListener.OnDetectCheatTable();
+			return;
+		}
+
 		string checkSum = "";
-		List<TimeSpaceData.ItemGrantRequest> listItemGrantRequest = TimeSpaceData.instance.GenerateGrantRequestInfo(listDropItemId, ref checkSum);
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		string jsonListPp = serializer.SerializeObject(listPpInfo);
+		checkSum = CheckSum(string.Format("{0}_{1}_{2}_{3}", jsonListPp, addGold, addDia, "eqpzvjarw"));
+
+		string checkSum2 = "";
+		List<TimeSpaceData.ItemGrantRequest> listItemGrantRequest = TimeSpaceData.instance.GenerateGrantRequestInfo(listDropItemId, ref checkSum2);
 		ExecuteCloudScriptRequest request = new ExecuteCloudScriptRequest()
 		{
 			FunctionName = "EndInvasion",
-			FunctionParameter = new { Flg = (string)_serverEnterKeyForInvasion, ActId = selectedActorId, Lst = listItemGrantRequest, LstCs = checkSum },
+			FunctionParameter = new { Flg = (string)_serverEnterKeyForInvasion, ActId = selectedActorId, DayWk = dayOfWeek, Go = addGold, Di = addDia, LstPp = listPpInfo, LstPpCs = checkSum, Lst = listItemGrantRequest, LstCs = checkSum2 },
 			GeneratePlayStreamEvent = true,
 		};
 		Action action = () =>
@@ -1326,6 +1345,9 @@ public class PlayFabApiManager : MonoBehaviour
 					// 성공시에만 date파싱을 한다.
 					jsonResult.TryGetValue("date", out object date);
 					ContentsData.instance.OnRecvInvasionClearDateTime((string)date, selectedActorId);
+
+					// pp는 미리 넣어놔도 되지 않을까.
+					PlayerData.instance.OnRecvUpdateCharacterStatistics(listPpInfo, DropManager.instance.GetTranscendPointInfo(), 0);
 				}
 				if (successCallback != null) successCallback.Invoke((string)itmRet);
 			}, (error) =>

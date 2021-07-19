@@ -28,6 +28,10 @@ public class ChangeInvasionDifficultyCanvas : MonoBehaviour
 	List<ChangeInvasionDifficultyCanvasListItem> _listChangeInvasionDifficultyCanvasListItem = new List<ChangeInvasionDifficultyCanvasListItem>();
 	public void RefreshInfo(int highestDifficulty, int selectedDifficulty, int selectedActorPowerLevel)
 	{
+		// 선택한 캐릭터가 없을땐 1이라도 표시해둔다.
+		if (selectedActorPowerLevel == 0)
+			selectedActorPowerLevel = 1;
+
 		for (int i = 0; i < _listChangeInvasionDifficultyCanvasListItem.Count; ++i)
 			_listChangeInvasionDifficultyCanvasListItem[i].gameObject.SetActive(false);
 		_listChangeInvasionDifficultyCanvasListItem.Clear();

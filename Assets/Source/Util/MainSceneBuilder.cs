@@ -696,6 +696,11 @@ public class MainSceneBuilder : MonoBehaviour
 			BossBattleEnterCanvas.PreloadReadyToReopen();
 			ContentsData.instance.readyToReopenBossEnterCanvas = false;
 		}
+		if (ContentsData.instance.readyToReopenInvasionEnterCanvas)
+		{
+			InvasionEnterCanvas.PreloadReadyToReopen();
+			ContentsData.instance.readyToReopenInvasionEnterCanvas = false;
+		}
 
 		// 캐릭터는 언제나 같은 번들안에 있을테니 마지막 번호 하나만 검사하기로 한다.
 		// 다운로드 되어있어서 캐싱할 수 있을때만 프리로드를 걸어둔다.

@@ -1,8 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PlayFab.ClientModels;
 using CodeStage.AntiCheat.ObscuredTypes;
 using MEC;
+using DG.Tweening;
 
 public class InvasionProcessor : BattleModeProcessorBase
 {
@@ -10,6 +13,7 @@ public class InvasionProcessor : BattleModeProcessorBase
 	{
 		UpdatePortal();
 		UpdateSummonMonsterSpawn();
+		UpdateTimer();
 		UpdateEndProcess();
 	}
 
@@ -17,6 +21,9 @@ public class InvasionProcessor : BattleModeProcessorBase
 	{
 		// base꺼 호출할 필요 없다. startDateTime도 안쓰고 빅뱃 예외처리도 필요없다.
 		//base.OnStartBattle();
+
+		// 시작위치는 좌측이 레벨팩 선택하기 편하다.
+		BattleInstanceManager.instance.playerActor.cachedTransform.position = new Vector3(-3.0f, 0.0f, -1.0f);
 
 		// 미리 클리어 포인트를 셋팅.
 		if (InvasionEnterCanvas.instance != null)
@@ -160,6 +167,58 @@ public class InvasionProcessor : BattleModeProcessorBase
 		}
 	}
 
+	DropProcessor _cachedDropProcessor;
+	void PrepareDropProcessor()
+	{
+		_cachedDropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, InvasionEnterCanvas.instance.GetInvasionTableData().dropId, "", true, true);
+		_cachedDropProcessor.AdjustDropRange(3.2f);
+		if (CheatingListener.detectedCheatTable)
+			return;
+
+		// 연출 끝나고 나올 결과창에서 아이콘이 느리게 보이는걸 방지하기 위해 아이콘의 프리로드를 진행한다.
+		List<ObscuredString> listDropItemId = DropManager.instance.GetLobbyDropItemInfo();
+		for (int i = 0; i < listDropItemId.Count; ++i)
+		{
+			EquipTableData equipTableData = TableDataManager.instance.FindEquipTableData(listDropItemId[i]);
+			if (equipTableData == null)
+				continue;
+
+			AddressableAssetLoadManager.GetAddressableSprite(equipTableData.shotAddress, "Icon", null);
+		}
+	}
+
+	#region Timer
+	bool _timerStarted = false;
+	DateTime _dailyResetTime;
+	bool _timeOut = false;
+	void UpdateTimer()
+	{
+		if (_timerStarted == false)
+		{
+			_timerStarted = true;
+			_dailyResetTime = DailyShopData.instance.dailyShopSlotPurchasedResetTime;
+			UIInstanceManager.instance.ShowCanvasAsync("InvasionTimerCanvas", null, false);
+			return;
+		}
+
+		if (_timerStarted == false)
+			return;
+
+		if (_endProcess)
+			return;
+
+		if (ServerTime.UtcNow < _dailyResetTime)
+		{
+		}
+		else
+		{
+			_timeOut = true;
+			_endProcess = true;
+			_endProcessWaitRemainTime = 0.5f;
+		}
+	}
+	#endregion
+
 	#region EndGame
 	bool _endProcess = false;
 	float _endProcessWaitRemainTime = 0.0f; // 최소 대기타임
@@ -193,24 +252,10 @@ public class InvasionProcessor : BattleModeProcessorBase
 		}
 
 		bool clear = false;
-		if (BattleInstanceManager.instance.playerActor.actorStatus.IsDie() == false)
+		if (BattleInstanceManager.instance.playerActor.actorStatus.IsDie() == false && _timeOut == false)
 		{
 			HitObject.EnableRigidbodyAndCollider(false, null, BattleInstanceManager.instance.playerActor.GetCollider());
 			clear = true;
-		}
-
-		// 패킷처리 완료 후 나올 결과창에서 아이콘이 느리게 보이는걸 방지하기 위해 아이콘의 프리로드를 진행한다.
-		List<ObscuredString> listDropItemId = DropManager.instance.GetStackedDropEquipList();
-		if (listDropItemId != null)
-		{
-			for (int i = 0; i < listDropItemId.Count; ++i)
-			{
-				EquipTableData equipTableData = TableDataManager.instance.FindEquipTableData(listDropItemId[i]);
-				if (equipTableData == null)
-					continue;
-
-				AddressableAssetLoadManager.GetAddressableSprite(equipTableData.shotAddress, "Icon", null);
-			}
 		}
 
 		SoundManager.instance.StopBGM(3.0f);
@@ -218,73 +263,104 @@ public class InvasionProcessor : BattleModeProcessorBase
 		if (clear)
 		{
 			// 성공시에는 패킷 보내고 통과해야 연출을 진행. 노드워와 동일하다.
-			PlayFabApiManager.instance.RequestEndInvasion(BattleInstanceManager.instance.playerActor.actorId, 1, DropManager.instance.GetLobbyDropItemInfo(), (itemGrantString) =>
+			// 그전에 드랍부터 굴려서 결과를 패킷으로 보내야 한다.
+			PrepareDropProcessor();
+			if (CheatingListener.detectedCheatTable)
+				return;
+
+			string playerActorId = BattleInstanceManager.instance.playerActor.actorId;
+			int difficulty = InvasionEnterCanvas.instance.GetInvasionTableData().hard;
+			int dayWeek = InvasionEnterCanvas.instance.GetInvasionTableData().dayWeek;
+			PlayFabApiManager.instance.RequestEndInvasion(dayWeek, playerActorId, difficulty, (itemGrantString) =>
 			{
-				//Timing.RunCoroutine(ClearProcess(result, itemGrantString));
+				Timing.RunCoroutine(ClearProcess(itemGrantString));
 			});
-
-			/*
-			// 클리어 했다면 다음번 보스가 누구일지 미리 굴려서 End패킷에 보내야한다.
-			int nextBossId = PlayerData.instance.GetNextRandomBossId();
-
-			// 첫 클리어라면 첫클리어 드랍 보상도 굴려야한다. 드랍 정보만 필요하고 연출은 필요없기때문에 간단하게 처리한다.
-			if (_firstClear)
-			{
-				DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, _bossRewardTableData.firstDropId, "", true, true);
-				if (CheatingListener.detectedCheatTable)
-					return;
-			}
-
-			PlayFabApiManager.instance.RequestEndBossBattle(clear, nextBossId, _selectedDifficulty, DropManager.instance.GetLobbyDropItemInfo(), DropManager.instance.GetStackedDropEquipList(), (result, nextId, firstItemGrantString, itemGrantString) =>
-			{
-				// 정보를 갱신하기 전에 먼저 BattleResult를 보여준다.
-				UIInstanceManager.instance.ShowCanvasAsync("BossBattleResultCanvas", () =>
-				{
-					BossBattleResultCanvas.instance.RefreshInfo(true, _selectedDifficulty, _firstClear, firstItemGrantString, itemGrantString);
-					OnRecvEndBossBattle(result, _firstClear, nextId, firstItemGrantString, itemGrantString);
-				});
-			});
-			*/
 		}
 		else
 		{
 			// 보스전과 달리 질때는 쌓이는게 없으니 End패킷 대신 캔슬로 처리
 			PlayFabApiManager.instance.RequestCancelInvasion();
-			//UIInstanceManager.instance.ShowCanvasAsync("InvasionResultCanvas", () =>
-			//{
-			//	NodeWarResultCanvas.instance.RefreshInfo(false, _selectedNodeWarTableData, _firstClear, "");
-			//});
+			UIInstanceManager.instance.ShowCanvasAsync("InvasionResultCanvas", () =>
+			{
+				InvasionResultCanvas.instance.RefreshInfo(false, InvasionEnterCanvas.instance.GetInvasionTableData().hard, "");
+			});
 		}
 
 		_endProcess = false;
 	}
 
-	void OnRecvEndBossBattle(bool clear, bool firstClear, int nextBossId, string firstItemGrantString, string itemGrantString)
+	IEnumerator<float> ClearProcess(string itemGrantString)
 	{
-		/*
-		// 반복클리어냐 아니냐에 따라 결과를 나누면 된다.
-		CurrencyData.instance.gold += _bossRewardTableData.enterGold;
-		PlayerData.instance.AddBossBattleCount();
+		// 인풋 막는처리 NodeWar때 쓰던거 가져와서 쓴다.
+		LocalPlayerController localPlayerController = BattleInstanceManager.instance.playerActor.baseCharacterController as LocalPlayerController;
+		localPlayerController.dontMove = true;
+		localPlayerController.enabled = false;
 
-		if (clear)
+		// avoid gc
+		if (this == null)
+			yield break;
+
+		// 연출이 끝나면 결과창을 띄울건데 요일던전은 요일마다 나오는 템이 달라서 요일별로 나눠서 처리해야한다.
+		bool usePp = false;
+		bool useEquip = false;
+		bool useCurrency = false;
+		switch ((DayOfWeek)InvasionEnterCanvas.instance.GetInvasionTableData().dayWeek)
 		{
-			PlayerData.instance.OnClearBossBattle(_selectedDifficulty, _clearDifficulty, nextBossId);
-
-			if (_firstClear)
-			{
-				if (_bossRewardTableData.firstEnergy > 0)
-					CurrencyData.instance.OnRecvRefillEnergy(_bossRewardTableData.firstEnergy);
-
-				// 확정보상으로 굴리는거라 로비에서 쓰던 함수로 쓴다.
-				if (firstItemGrantString != "")
-					TimeSpaceData.instance.OnRecvGrantEquip(firstItemGrantString, 0);
-			}
-
-			// 이건 레전드키까지 써서 굴리는 진짜 드랍이므로 OnRecvItemGrantResult를 쓴다.
-			if (itemGrantString != "")
-				TimeSpaceData.instance.OnRecvItemGrantResult(itemGrantString, true);
+			case DayOfWeek.Sunday: useCurrency = true; break;
+			case DayOfWeek.Monday: useEquip = true; break;
+			case DayOfWeek.Tuesday: usePp = true; break;
+			case DayOfWeek.Wednesday: useCurrency = true; break;
+			case DayOfWeek.Thursday: usePp = true; break;
+			case DayOfWeek.Friday: useEquip = true; break;
+			case DayOfWeek.Saturday: usePp = true; break;
 		}
-		*/
+
+		// 선처리 할것들 해둔다.
+		List<ItemInstance> listGrantItem = null;
+		if (useEquip && itemGrantString != "")
+		{
+			listGrantItem = TimeSpaceData.instance.DeserializeItemGrantResult(itemGrantString);
+			for (int i = 0; i < listGrantItem.Count; ++i)
+			{
+				EquipTableData equipTableData = TableDataManager.instance.FindEquipTableData(listGrantItem[i].ItemId);
+				if (equipTableData == null)
+					continue;
+
+				AddressableAssetLoadManager.GetAddressableSprite(equipTableData.shotAddress, "Icon", null);
+			}
+		}
+
+		// 이후 바로 뽑기 연출 진행
+		UIInstanceManager.instance.ShowCanvasAsync("RandomBoxScreenCanvas", () =>
+		{
+			RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.NodeWar, _cachedDropProcessor, 0, 0, () =>
+			{
+				UIInstanceManager.instance.ShowCanvasAsync("InvasionResultCanvas", () =>
+				{
+					InvasionResultCanvas.instance.RefreshInfo(true, InvasionEnterCanvas.instance.GetInvasionTableData().hard, itemGrantString);
+					OnRecvEndInvasion(usePp, useEquip, useCurrency, itemGrantString);
+				});
+			});
+		});
+	}
+
+	void OnRecvEndInvasion(bool usePp, bool useEquip, bool useCurrency, string itemGrantString)
+	{
+		// 요일에 따라 얻을거만 체크
+		if (usePp)
+		{
+
+		}
+		else if (useEquip)
+		{
+			if (itemGrantString != "")
+				TimeSpaceData.instance.OnRecvGrantEquip(itemGrantString, 0);
+		}
+		else if (useCurrency)
+		{
+			CurrencyData.instance.gold += DropManager.instance.GetLobbyGoldAmount();
+			CurrencyData.instance.dia += DropManager.instance.GetLobbyDiaAmount();
+		}
 	}
 	#endregion
 }

@@ -80,9 +80,12 @@ public class DropProcessor : MonoBehaviour
 	{
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
 
-		// NodeWar 드랍은 lobby드랍처럼 처리해줘야한다.
-		if (lobby == false && BattleManager.instance != null && BattleManager.instance.IsNodeWar())
-			lobby = true;
+		// NodeWar 드랍은 lobby드랍처럼 처리해줘야한다. 이제 Invasion도 추가되었다.
+		if (lobby == false && BattleManager.instance != null)
+		{
+			if (BattleManager.instance.IsNodeWar() || BattleManager.instance.IsInvasion())
+				lobby = true;
+		}
 
 		for (int i = 0; i < dropTableData.dropEnum.Length; ++i)
 		{
@@ -116,7 +119,8 @@ public class DropProcessor : MonoBehaviour
 						break;
 					case eDropType.PowerPoint:
 						// 천칭 메뉴가 열리고나서부터는 PowerPoint 마지막꺼 뽑을때 예외처리를 한다.
-						if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Balance))
+						bool invasion = (BattleManager.instance && BattleManager.instance.IsInvasion());
+						if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Balance) && invasion == false)
 						{
 							// 연속으로 붙어있는걸 고려해서 마지막인지 판단한다.
 							bool lastPowerPoint = false;

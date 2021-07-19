@@ -32,11 +32,12 @@ public class CurrencySmallInfoCanvas : MonoBehaviour
 		}
 		else
 		{
-			if (_instance == null)
-				return;
 			--s_refCount;
 			if (s_refCount <= 0)
-				_instance.HideWithTween();
+			{
+				if (_instance != null)
+					_instance.HideWithTween();
+			}
 		}
 	}
 

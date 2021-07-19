@@ -220,7 +220,7 @@ public class TeleportTargetPositionAffector : AffectorBase
 				Vector3 diff = hit.position - BattleInstanceManager.instance.playerActor.cachedTransform.position;
 				diff.y = 0.0f;
 				if (diff.sqrMagnitude > (_affectorValueLevelTableData.fValue2 * _affectorValueLevelTableData.fValue2))
-					return hit.position;
+					return new Vector3(hit.position.x, 0.0f, hit.position.z);
 			}
 
 			// exception handling

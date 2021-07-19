@@ -9,6 +9,9 @@ public partial class SoundManager : MonoBehaviour
 	float _fadeTime;
 	public void PlayBgm(string address, float fadeTime)
 	{
+		if (_reservedBGMAddress == address)
+			return;
+
 		_reservedBGMAddress = address;
 		_fadeTime = fadeTime;
 		AddressableAssetLoadManager.GetAddressableGameObject(address, "Sound", OnLoadedBGM);

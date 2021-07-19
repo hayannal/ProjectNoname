@@ -75,6 +75,9 @@ public partial class SoundManager : MonoBehaviour {
 	{
 		if (_audioSourceForBGM.isPlaying)
 		{
+			if (_audioSourceForBGM.clip == clip)
+				return;
+
 			if (_fadeCoroutine != null)
 				StopCoroutine(_fadeCoroutine);
 			

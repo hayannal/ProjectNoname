@@ -66,6 +66,10 @@ public class DailyShopData : MonoBehaviour
 	List<ObscuredBool> _listShopSlotPurchased;
 	public DateTime dailyShopSlotPurchasedResetTime { get; private set; }
 
+	// 구매 날짜를 직접 저장하고 있는 리스트. DailyShopMainInfo의 3일 연속판매 기록때문에 들고있기로 했다. 다른건 들고있을 필요가 없어서 10번 11번만 들고있기로 한다.
+	DateTime _shopSlot10PurchasedTime;
+	DateTime _shopSlot11PurchasedTime;
+
 	// 유료 슬롯 언락단계. 계정 생성하면 0으로 시작해서 세번 다 오픈해야 3으로 되는 구조다.
 	public ObscuredInt unlockLevel { get; set; }
 
@@ -266,6 +270,64 @@ public class DailyShopData : MonoBehaviour
 
 	public bool IsPurchasedTodayShopData(int slotId)
 	{
+		#region Slot10Slot11
+		// 특이케이스가 있는데 10번 11번은 여러날 파는거처럼 되어있다.
+		// 그러니 오늘의 구매가 아니더라도 어제나 그제 샀으면 산거로 체크해줘야한다.
+		if (slotId == 10 || slotId == 11)
+		{
+			DailyShopSlotInfo selectedSlotInfo = GetTodayShopData(slotId);
+			int sameDayCount = 0;
+			for (int i = 1; i < 30; ++i)
+			{
+				DailyShopSlotInfo info = GetShopSlotData(ServerTime.UtcNow.Day - i, slotId);
+				if (info == null)
+					break;
+				if (selectedSlotInfo.type != info.type || selectedSlotInfo.value != info.value)
+					break;
+				++sameDayCount;
+			}
+			if (sameDayCount > 0)
+			{
+				// 어제 혹은 그제부터 팔기 시작했을거다. _listShopSlotPurchased로는 판단할 수 없으니 구매한 날짜를 봐야한다.
+				if (slotId == 10)
+				{
+					if (ServerTime.UtcNow.Year == _shopSlot10PurchasedTime.Year && ServerTime.UtcNow.Month == _shopSlot10PurchasedTime.Month)
+					{
+						// 오늘날짜에 구매한건 하단에서 체크하고 있으니 여기서는 어제 날짜 혹은 그제 날짜만 확인하면 된다.
+						bool find = false;
+						for (int i = 0; i < sameDayCount; ++i)
+						{
+							if ((ServerTime.UtcNow.Day - i - 1) == _shopSlot10PurchasedTime.Day)
+							{
+								find = true;
+								break;
+							}
+						}
+						if (find)
+							return true;
+					}
+				}
+				else if (slotId == 11)
+				{
+					if (ServerTime.UtcNow.Year == _shopSlot11PurchasedTime.Year && ServerTime.UtcNow.Month == _shopSlot11PurchasedTime.Month)
+					{
+						bool find = false;
+						for (int i = 0; i < sameDayCount; ++i)
+						{
+							if ((ServerTime.UtcNow.Day - i - 1) == _shopSlot11PurchasedTime.Day)
+							{
+								find = true;
+								break;
+							}
+						}
+						if (find)
+							return true;
+					}
+				}
+			}
+		}
+		#endregion
+
 		if (_listShopSlotPurchased == null)
 			return false;
 
@@ -288,6 +350,12 @@ public class DailyShopData : MonoBehaviour
 			_listShopSlotPurchased[index] = true;
 		else
 			_listShopSlotPurchased[index] = false;
+
+		// 기억만 시켜둔다.
+		if (index == 10)
+			_shopSlot10PurchasedTime = lastDailyShopSlotPurchasedTime;
+		else if (index == 11)
+			_shopSlot11PurchasedTime = lastDailyShopSlotPurchasedTime;
 	}
 
 	public void OnRecvDailyShopSlotInfo(string lastDailyShopSlotPurchasedTimeString, int index)

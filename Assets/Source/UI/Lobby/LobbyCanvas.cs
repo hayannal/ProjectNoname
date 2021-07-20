@@ -14,6 +14,7 @@ public class LobbyCanvas : MonoBehaviour
 	public CanvasGroup subMenuCanvasGroup;
 	public CanvasGroup subMenuHorizontalCanvasGroup;
 	public DOTweenAnimation[] subMenuButtonTweenAnimationList;
+	public RectTransform[] subMenuAlarmRootTransformList;
 
 	public GameObject rightTopRootObject;
 	public Button lobbyOptionButton;
@@ -191,6 +192,21 @@ public class LobbyCanvas : MonoBehaviour
 		return false;
 	}
 
+	bool IsShowAlarmSubMenu(int index)
+	{
+		switch (index)
+		{
+			case 0: if (EventManager.instance.reservedOpenBossBattleEvent) return true; break;
+			case 1: if (EventManager.instance.reservedOpenInvasionEvent) return true; break;
+		}
+		return false;
+	}
+
+	public void HideSubMenuAlarmObject(int i)
+	{
+		AlarmObject.Hide(subMenuAlarmRootTransformList[i]);
+	}
+
 	// 코루틴 Async로딩에 토글로 동작하는거라 동기를 맞추려면 이렇게 해야만 했다.
 	public void OnShowDotMainMenu(bool show)
 	{
@@ -217,6 +233,10 @@ public class LobbyCanvas : MonoBehaviour
 					if (IsActiveSubMenu(i) == false)
 						continue;
 					subMenuButtonTweenAnimationList[i].gameObject.SetActive(true);
+
+					AlarmObject.Hide(subMenuAlarmRootTransformList[i]);
+					if (IsShowAlarmSubMenu(i))
+						AlarmObject.Show(subMenuAlarmRootTransformList[i], true, true);
 				}
 				return;
 			}

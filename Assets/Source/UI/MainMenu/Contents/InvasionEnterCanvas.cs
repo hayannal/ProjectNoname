@@ -72,6 +72,7 @@ public class InvasionEnterCanvas : MonoBehaviour
 			});
 			EventManager.instance.reservedOpenInvasionEvent = false;
 			EventManager.instance.CompleteServerEvent(EventManager.eServerEvent.invasion);
+			LobbyCanvas.instance.HideSubMenuAlarmObject(1);
 		}
 	}
 

@@ -69,6 +69,7 @@ public class BossBattleEnterCanvas : MonoBehaviour
 			});
 			EventManager.instance.reservedOpenBossBattleEvent = false;
 			EventManager.instance.CompleteServerEvent(EventManager.eServerEvent.boss);
+			LobbyCanvas.instance.HideSubMenuAlarmObject(0);
 		}
 	}
 

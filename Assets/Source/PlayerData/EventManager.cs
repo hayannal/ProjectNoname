@@ -226,6 +226,19 @@ public class EventManager : MonoBehaviour
 		Queue<ServerEventInfo>.Enumerator e = _queServerEventInfo.GetEnumerator();
 		while (e.MoveNext())
 			dicEventState.Add(e.Current.eventType.ToString(), 1);
+
+		// 이미 큐에서 빼내서 플래그로 가지고 있는 경우도 있으니 queue만 검사할 순 없다. 이젠 챕터 클리어시 두세개씩 열리는게 생겨서 이렇게 처리해줘야한다.
+		if (reservedOpenResearchEvent && dicEventState.ContainsKey(eServerEvent.research.ToString()) == false)
+			dicEventState.Add(eServerEvent.research.ToString(), 1);
+		if (reservedOpenBalanceEvent && dicEventState.ContainsKey(eServerEvent.balance.ToString()) == false)
+			dicEventState.Add(eServerEvent.balance.ToString(), 1);
+		if (reservedOpenReconstructEvent && dicEventState.ContainsKey(eServerEvent.reconstruct.ToString()) == false)
+			dicEventState.Add(eServerEvent.reconstruct.ToString(), 1);
+		if (reservedOpenBossBattleEvent && dicEventState.ContainsKey(eServerEvent.boss.ToString()) == false)
+			dicEventState.Add(eServerEvent.boss.ToString(), 1);
+		if (reservedOpenInvasionEvent && dicEventState.ContainsKey(eServerEvent.invasion.ToString()) == false)
+			dicEventState.Add(eServerEvent.invasion.ToString(), 1);
+
 		for (int i = 0; i < _listCompleteServerEvent.Count; ++i)
 			dicEventState.Add(_listCompleteServerEvent[i].ToString(), 2);
 

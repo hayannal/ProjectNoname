@@ -248,8 +248,8 @@ public class InvasionEnterCanvas : MonoBehaviour
 	ObscuredInt _limitPowerLevel;
 	void RefreshInfo()
 	{
-		// 요일별 타이머가 떠야하는거라서 일일 상점처럼 처리한다.
-		_dailyResetTime = DailyShopData.instance.dailyShopSlotPurchasedResetTime;
+		// 요일별 타이머가 떠야하는거라서 직접 이렇게 설정
+		_dailyResetTime = new DateTime(ServerTime.UtcNow.Year, ServerTime.UtcNow.Month, ServerTime.UtcNow.Day) + TimeSpan.FromDays(1);
 		_lastDayOfWeek = ServerTime.UtcNow.DayOfWeek;
 		_needUpdate = true;
 

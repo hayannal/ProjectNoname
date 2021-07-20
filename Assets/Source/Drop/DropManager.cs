@@ -462,6 +462,9 @@ public class DropManager : MonoBehaviour
 	public string GetFullChaosRevertDropEquipId()
 	{
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
+		// Invasion 예외처리.
+		if (lobby == false && BattleManager.instance != null && BattleManager.instance.IsInvasion())
+			lobby = true;
 		if (lobby == false)
 			return "";
 
@@ -1024,6 +1027,12 @@ public class DropManager : MonoBehaviour
 	public string GetGachaPowerPointId(bool originDrop, bool characterBoxDrop, bool questCharacterBoxDrop, int grade = -1, bool ignoreCheckLobby = false)
 	{
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
+		// Invasion 예외처리.
+		if (lobby == false && BattleManager.instance != null)
+		{
+			if (BattleManager.instance.IsInvasion())
+				lobby = true;
+		}
 		if (lobby == false && ignoreCheckLobby == false)
 			return "";
 

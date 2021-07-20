@@ -100,11 +100,16 @@ public class TeleportTargetPositionAffector : AffectorBase
 					Transform targetTransform = BattleInstanceManager.instance.GetTransformFromCollider(targetCollider);
 					if (targetTransform != null)
 					{
+						findTargetTransform = true;
 						Vector3 teleportPosition = GetNearestTeleportPosition(targetTransform.position, _affectorValueLevelTableData.iValue1 == 2);
+						if (BattleInstanceManager.instance.currentGround.IsInQuadBound(teleportPosition) == false)
+							teleportPosition = (Random.value > 0.5f ? new Vector3(0.0f, 0.0f, 3.5f) : new Vector3(0.0f, 0.0f, -4.5f));
 						_actor.cachedTransform.position = teleportPosition;
 						_actor.cachedTransform.rotation = Quaternion.LookRotation(targetTransform.position - teleportPosition);
 					}
 				}
+				if (findTargetTransform == false)
+					_actor.cachedTransform.position = _origPosition;
 				break;
 			case 4:
 				_actor.cachedTransform.position = GetRandomWorldPosition();

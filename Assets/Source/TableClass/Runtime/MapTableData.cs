@@ -37,6 +37,10 @@ public class MapTableData
   public string portalFlag { get { return _portalFlag; } set { _portalFlag = value; } }
   
   [SerializeField]
+  float _bossHpRatioPer1Line;
+  public float bossHpRatioPer1Line { get { return _bossHpRatioPer1Line; } set { _bossHpRatioPer1Line = value; } }
+  
+  [SerializeField]
   string _bossName;
   public string bossName { get { return _bossName; } set { _bossName = value; } }
   

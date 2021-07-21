@@ -63,6 +63,9 @@ public class BossMonsterGaugeCanvas : MonoBehaviour
 	public Slider hpRatio2Slider;
 	public RectTransform hpFill2RectTransform;
 	public RectTransform lateFill2RectTransform;
+	public Slider hpRatio3Slider;
+	public RectTransform hpFill3RectTransform;
+	public RectTransform lateFill3RectTransform;
 	public Text questionText;
 	public DOTweenAnimation shakeTween;
 	public DOTweenAnimation textShakeTween;
@@ -125,10 +128,11 @@ public class BossMonsterGaugeCanvas : MonoBehaviour
 
 	void RefreshBossHpGauge(float hpLineRatio, bool immediatelyUpdateLateFill)
 	{
-		if (hpLineRatio > 2.0f)
+		if (hpLineRatio > 3.0f)
 		{
 			hpRatio1Slider.gameObject.SetActive(false);
 			hpRatio2Slider.gameObject.SetActive(false);
+			hpRatio3Slider.gameObject.SetActive(false);
 			questionText.gameObject.SetActive(true);
 			textShakeTween.DORestart();
 		}
@@ -136,27 +140,39 @@ public class BossMonsterGaugeCanvas : MonoBehaviour
 		{
 			hpRatio1Slider.gameObject.SetActive(true);
 			hpRatio2Slider.gameObject.SetActive(true);
+			hpRatio3Slider.gameObject.SetActive(true);
 			questionText.gameObject.SetActive(false);
 
-			if (hpLineRatio > 1.0f)
+			if (hpLineRatio > 2.0f)
+			{
+				hpRatio1Slider.value = 1.0f;
+				hpRatio2Slider.value = 1.0f;
+				float line3Ratio = hpLineRatio - 2.0f;
+				hpRatio3Slider.value = line3Ratio;
+			}
+			else if (hpLineRatio > 1.0f)
 			{
 				hpRatio1Slider.value = 1.0f;
 				float line2Ratio = hpLineRatio - 1.0f;
 				hpRatio2Slider.value = line2Ratio;
+				hpRatio3Slider.value = 0.0f;
 			}
 			else
 			{
 				hpRatio1Slider.value = hpLineRatio;
 				float line2Ratio = 0.0f;
 				hpRatio2Slider.value = line2Ratio;
+				hpRatio3Slider.value = line2Ratio;
 			}
 
 			lateFill1RectTransform.anchorMin = new Vector2(hpFill1RectTransform.anchorMax.x, 0.0f);
 			lateFill2RectTransform.anchorMin = new Vector2(hpFill2RectTransform.anchorMax.x, 0.0f);
+			lateFill3RectTransform.anchorMin = new Vector2(hpFill3RectTransform.anchorMax.x, 0.0f);
 			if (immediatelyUpdateLateFill)
 			{
 				lateFill1RectTransform.anchorMax = hpFill1RectTransform.anchorMax;
 				lateFill2RectTransform.anchorMax = hpFill2RectTransform.anchorMax;
+				lateFill3RectTransform.anchorMax = hpFill3RectTransform.anchorMax;
 			}
 			else
 			{
@@ -205,6 +221,7 @@ public class BossMonsterGaugeCanvas : MonoBehaviour
 				// 물음표 상태였다가 진입할땐 맥스치로 고정시켜준다.
 				lateFill1RectTransform.anchorMax = new Vector2(1.0f, lateFill1RectTransform.anchorMax.y);
 				lateFill2RectTransform.anchorMax = new Vector2(1.0f, lateFill1RectTransform.anchorMax.y);
+				lateFill3RectTransform.anchorMax = new Vector2(1.0f, lateFill1RectTransform.anchorMax.y);
 			}
 
 			if (hpRatio1Slider.gameObject.activeSelf && _lateFillLerpStarted == false && _lateFillDelayRemainTime == 0.0f)
@@ -217,7 +234,7 @@ public class BossMonsterGaugeCanvas : MonoBehaviour
 		_lastHpLineRatio = hpLineRatio;
 	}
 
-	// 보스는 두줄을 한번에 처리해야 자연스럽게 된다.
+	// 보스는 세줄을 한번에 처리해야 자연스럽게 된다.
 	float _lastLateHpLineRatio;
 
 	const float LateFillDelay = 0.9f;
@@ -248,21 +265,31 @@ public class BossMonsterGaugeCanvas : MonoBehaviour
 
 		float value1 = 0.0f;
 		float value2 = 0.0f;
-		if (_lastLateHpLineRatio > 1.0f)
+		float value3 = 0.0f;
+		if (_lastLateHpLineRatio > 2.0f)
+		{
+			value1 = 1.0f;
+			value2 = 1.0f;
+			value3 = _lastLateHpLineRatio - 2.0f;
+
+			// 4줄 넘게 있다가 한번에 3줄 이하로 진입할때를 대비해서 맥스 처리
+			if (value3 > 1.0f) value3 = 1.0f;
+		}
+		else if (_lastLateHpLineRatio > 1.0f)
 		{
 			value1 = 1.0f;
 			value2 = _lastLateHpLineRatio - 1.0f;
-
-			// 3줄 넘게 있다가 한번에 2줄 이하로 진입할때를 대비해서 맥스 처리
-			if (value2 > 1.0f) value2 = 1.0f;
+			value3 = 0.0f;
 		}
 		else
 		{
 			value1 = _lastLateHpLineRatio;
 			value2 = 0.0f;
+			value3 = 0.0f;
 		}
 		lateFill1RectTransform.anchorMax = new Vector2(value1, lateFill1RectTransform.anchorMax.y);
 		lateFill2RectTransform.anchorMax = new Vector2(value2, lateFill1RectTransform.anchorMax.y);
+		lateFill3RectTransform.anchorMax = new Vector2(value3, lateFill1RectTransform.anchorMax.y);
 	}
 
 	int _dieCount = 0;

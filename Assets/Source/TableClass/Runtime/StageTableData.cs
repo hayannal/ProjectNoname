@@ -85,10 +85,6 @@ public class StageTableData
   public string defaultBossDropId { get { return _defaultBossDropId; } set { _defaultBossDropId = value; } }
   
   [SerializeField]
-  float _bossHpRatioPer1Line;
-  public float bossHpRatioPer1Line { get { return _bossHpRatioPer1Line; } set { _bossHpRatioPer1Line = value; } }
-  
-  [SerializeField]
   float _spDecreasePeriod;
   public float spDecreasePeriod { get { return _spDecreasePeriod; } set { _spDecreasePeriod = value; } }
   

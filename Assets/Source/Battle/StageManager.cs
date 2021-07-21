@@ -273,8 +273,8 @@ public class StageManager : MonoBehaviour
 
 	public float currentMonstrStandardHp { get { return _currentStageTableData.standardHp; } }
 	public float currentMonstrStandardAtk { get { return _currentStageTableData.standardAtk; } }
-	public float currentBossHpPer1Line { get { return _currentStageTableData.standardHp * _currentStageTableData.bossHpRatioPer1Line; } }
-	public bool bossStage { get { return currentBossHpPer1Line != 0.0f; } }
+	public float currentBossHpPer1Line { get { return _currentStageTableData.standardHp * currentMapBossHpRatioPer1Line; } }
+	public bool bossStage { get { return currentMapBossHpRatioPer1Line != 0.0f; } }
 	public int addDropExp { get; private set; }
 	StageTableData _currentStageTableData = null;
 	public StageTableData currentStageTableData { get { return _currentStageTableData; } set { _currentStageTableData = value; } }
@@ -399,9 +399,13 @@ public class StageManager : MonoBehaviour
 	GameObject _currentSpawnFlagObject;
 	GameObject _currentPortalFlagObject;
 	GameObject _currentEnvironmentSettingObject;
+	float currentMapBossHpRatioPer1Line = 0.0f;
 	void InstantiateMap(MapTableData mapTableData, bool ignoreSpawnFlag = false)
 	{
 #if USE_MAIN_SCENE
+		if (mapTableData != null)
+			currentMapBossHpRatioPer1Line = mapTableData.bossHpRatioPer1Line;
+
 		if (_currentPlaneObject != null)
 			_currentPlaneObject.SetActive(false);
 		_currentPlaneObject = BattleInstanceManager.instance.GetCachedObject(_handleNextPlanePrefab.Result, Vector3.zero, Quaternion.identity);

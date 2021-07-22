@@ -9,8 +9,12 @@ public partial class SoundManager : MonoBehaviour
 	float _fadeTime;
 	public void PlayBgm(string address, float fadeTime)
 	{
-		if (_reservedBGMAddress == address)
-			return;
+		// 내부 클래스에서 이미 검사하고 있고
+		// 이 아래에서 비교해서 체크하게 될 경우 문제가 발생할 수 있는데..
+		// 여기서는 AddressableAssetLoadManager 를 사용해서 로드하기 때문에 씬 이동등으로 리소스 날아가고나도 호출하지 않게 된다.
+		// 그래서 아래 체크는 빼기로 한다.
+		//if (_reservedBGMAddress == address)
+		//	return;
 
 		_reservedBGMAddress = address;
 		_fadeTime = fadeTime;

@@ -772,8 +772,8 @@ public class CumulativeEventData : MonoBehaviour
 			case eEventType.Review:
 				if (removeRepeatServerFailure)
 					return false;
-				info = FindRepeatEventTypeInfo(eventType);
-				if (info == null || info.IsActiveEvent() == false)
+				// BossBattleTotalCount 까지 검사하려면 아래 IsActiveEvent 함수로 체크하는게 코드 중복도 없다. 초반 유저들은 보이지 않으니 느낌표도 뜨면 안된다.
+				if (IsActiveEvent(eventType) == false)
 					return false;
 				if (reviewEventChecked == false)
 					return true;

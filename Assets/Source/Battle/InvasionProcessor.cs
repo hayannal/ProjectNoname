@@ -9,6 +9,8 @@ using DG.Tweening;
 
 public class InvasionProcessor : BattleModeProcessorBase
 {
+	float _spOnkillNormalMonster = 0.0f;
+
 	public override void Update()
 	{
 		UpdatePortal();
@@ -24,10 +26,13 @@ public class InvasionProcessor : BattleModeProcessorBase
 
 		// 시작위치는 좌측이 레벨팩 선택하기 편하다.
 		BattleInstanceManager.instance.playerActor.cachedTransform.position = new Vector3(-3.0f, 0.0f, -1.0f);
+		CustomFollowCamera.instance.immediatelyUpdate = true;
 
 		// 미리 클리어 포인트를 셋팅.
 		if (InvasionEnterCanvas.instance != null)
 			_clearPoint = _appliedChallengeRetryBonusClearPoint = InvasionEnterCanvas.instance.GetTodayClearPoint();
+
+		_spOnkillNormalMonster = InvasionEnterCanvas.instance.GetInvasionTableData().killSp;
 
 		// 노드워때처럼 강제로 셋팅.
 		StageManager.instance.playerLevel = StageManager.instance.GetMaxStageLevel();
@@ -109,6 +114,15 @@ public class InvasionProcessor : BattleModeProcessorBase
 	{
 		if (monsterActor.team.teamId != (int)Team.eTeamID.DefaultMonster || monsterActor.excludeMonsterCount)
 			return;
+
+		if (monsterActor.bossMonster == false)
+		{
+			float dropSpValue = _spOnkillNormalMonster;
+			PlayerActor playerActor = BattleInstanceManager.instance.playerActor;
+			float spGainAddRate = playerActor.actorStatus.GetValue(ActorStatusDefine.eActorStatus.SpGainAddRate);
+			if (spGainAddRate != 0.0f) dropSpValue *= (1.0f + spGainAddRate);
+			playerActor.actorStatus.AddSP(dropSpValue);
+		}
 
 		--_monsterSpawnCount;
 		if (_monsterSpawned && _monsterSpawnCount == 0 && BattleInstanceManager.instance.CheckFinishSequentialMonster() && BattleInstanceManager.instance.delayedSummonMonsterRefCount == 0)
@@ -295,6 +309,11 @@ public class InvasionProcessor : BattleModeProcessorBase
 		LocalPlayerController localPlayerController = BattleInstanceManager.instance.playerActor.baseCharacterController as LocalPlayerController;
 		localPlayerController.dontMove = true;
 		localPlayerController.enabled = false;
+
+		AffectorValueLevelTableData invincibleAffectorValue = new AffectorValueLevelTableData();
+		invincibleAffectorValue.fValue1 = -1.0f;
+		invincibleAffectorValue.iValue3 = 1;    // noText
+		BattleInstanceManager.instance.playerActor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Invincible, invincibleAffectorValue, BattleInstanceManager.instance.playerActor, false);
 
 		// avoid gc
 		if (this == null)

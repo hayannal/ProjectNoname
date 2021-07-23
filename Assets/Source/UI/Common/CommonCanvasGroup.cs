@@ -10,6 +10,7 @@ public class CommonCanvasGroup : MonoBehaviour
 	public GameObject fullscreenYesNoCanvasPrefab;
 	public GameObject yesNoCanvasPrefab;
 	public GameObject okCanvasPrefab;
+	public GameObject okBigCanvasPrefab;
 	public GameObject delayedLoadingCanvasPrefab;
 	public GameObject waitingNetworkCanvasPrefab;
 	public GameObject tooltipCanvasPrefab;

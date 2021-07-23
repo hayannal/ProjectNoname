@@ -547,7 +547,7 @@ public class PlayFabApiManager : MonoBehaviour
 						DateTime localEndTime = endTime.ToLocalTime();
 						string startArgment = string.Format("{0:00}:{1:00}", localStartTime.Hour, localStartTime.Minute);
 						string endArgment = string.Format("{0:00}:{1:00}", localEndTime.Hour, localEndTime.Minute);
-						StartCoroutine(AuthManager.instance.RestartProcess(null, "SystemUI_ServerDown", startArgment, endArgment));
+						StartCoroutine(AuthManager.instance.RestartProcess(null, false, "SystemUI_ServerDown", startArgment, endArgment));
 						return true;
 					}
 				}
@@ -556,6 +556,7 @@ public class PlayFabApiManager : MonoBehaviour
 		return false;
 	}
 
+	int _marketCanvasShowCount = 0;
 	bool CheckVersion(Dictionary<string, string> titleData, List<StatisticValue> playerStatistics, out bool needCheckResourceVersion)
 	{
 		needCheckResourceVersion = false;
@@ -592,6 +593,18 @@ public class PlayFabApiManager : MonoBehaviour
 			int.TryParse(titleData[versionInfo.serverKeyName], out serverVersion);
 			if (versionInfo.updateVersion < serverVersion)
 			{
+				bool useOkBigCanvas = false;
+				string updateMessageId = "SystemUI_NeedUpdate";
+				if (_marketCanvasShowCount > 0)
+				{
+					useOkBigCanvas = true;
+#if UNITY_ANDROID
+					updateMessageId = "SystemUI_NeedUpdateRetryAnd";
+#elif UNITY_IOS
+					updateMessageId = "SystemUI_NeedUpdateRetryiOS";
+#endif
+				}
+
 				// 업데이트가 있음을 알려야한다.
 				StartCoroutine(AuthManager.instance.RestartProcess(() =>
 				{
@@ -607,7 +620,10 @@ public class PlayFabApiManager : MonoBehaviour
 					{
 						Application.OpenURL("market://details?id=" + Application.identifier);
 					}
-				}, "SystemUI_NeedUpdate"));
+				}, useOkBigCanvas, updateMessageId));
+
+				// 횟수를 세서 업데이트 못하고 되돌아오면 다른 안내메세지를 띄우기로 한다.
+				++_marketCanvasShowCount;
 				return false;
 			}
 #if UNITY_IOS
@@ -662,7 +678,7 @@ public class PlayFabApiManager : MonoBehaviour
 
 		// 로그인이 성공한 이상 실패할거 같진 않지만 그래도 혹시 모르니 해둔다.
 		Debug.LogError(error.GenerateErrorReport());
-		StartCoroutine(AuthManager.instance.RestartProcess(null, stringId));
+		StartCoroutine(AuthManager.instance.RestartProcess(null, false, stringId));
 	}
 
 	void CheckCompleteRecvPlayerData()

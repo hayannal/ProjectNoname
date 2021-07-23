@@ -326,12 +326,12 @@ public class AuthManager : MonoBehaviour
 
 		//PlayFabApiManager.instance.HandleCommonError(error); 호출하는 대신
 		// 로딩 구조 및 sortOrder를 바꿔야해서 직접 처리한다.
-		StartCoroutine(RestartProcess(null, stringId));
+		StartCoroutine(RestartProcess(null, false, stringId));
 	}
 
 	// 여러 패킷이 동시에 실패하면 여러개의 RestartProcess가 만들어질 수도 있어서 플래그를 걸어서 체크하기로 한다.
 	bool _restartProcessed = false;
-	public IEnumerator RestartProcess(Action callback, string stringId = "SystemUI_DisconnectServer", params object[] arg)
+	public IEnumerator RestartProcess(Action callback, bool useBigCanvas, string stringId = "SystemUI_DisconnectServer", params object[] arg)
 	{
 		if (_restartProcessed)
 			yield break;
@@ -350,7 +350,8 @@ public class AuthManager : MonoBehaviour
 		while (handleCommonCanvasGroup.IsValid() && !handleCommonCanvasGroup.IsDone)
 			yield return null;
 		Instantiate<GameObject>(handleCommonCanvasGroup.Result);
-		OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString(stringId, arg), () =>
+
+		Action action = () =>
 		{
 			_restartProcessed = false;
 			Addressables.Release<GameObject>(handleCommonCanvasGroup);
@@ -360,6 +361,19 @@ public class AuthManager : MonoBehaviour
 				callback();
 
 			SceneManager.LoadScene(0);
+		};
+		if (useBigCanvas)
+		{
+			OkBigCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString(stringId, arg), () =>
+			{
+				action.Invoke();
+			}, 100);
+			yield break;
+		}
+
+		OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString(stringId, arg), () =>
+		{
+			action.Invoke();
 		}, 100);
 	}
 

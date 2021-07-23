@@ -52,4 +52,8 @@ public class InvasionTableData
   string _dropId;
   public string dropId { get { return _dropId; } set { _dropId = value; } }
   
+  [SerializeField]
+  float _killSp;
+  public float killSp { get { return _killSp; } set { _killSp = value; } }
+  
 }

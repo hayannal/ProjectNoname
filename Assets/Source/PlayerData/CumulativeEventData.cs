@@ -478,6 +478,13 @@ public class CumulativeEventData : MonoBehaviour
 			reviewRcvDat = "";
 			reviewEventChecked = false;
 		}
+
+		if (resetRepeatLogin || resetRepeatDailyBox || resetReview)
+		{
+			// 반복이벤트가 삭제되었다면 갱신해서 느낌표 표시 역시 바뀔 수 있으므로 갱신시켜줘야한다.
+			if (EventBoard.instance != null && EventBoard.instance.gameObject != null && EventBoard.instance.gameObject.activeSelf)
+				EventBoard.instance.RefreshBoardOnOff();
+		}
 	}
 
 	bool CheckRemove()
@@ -504,11 +511,13 @@ public class CumulativeEventData : MonoBehaviour
 				{
 					if (lastRecordTime > info.startDateTime && lastRecordTime < info.endDateTime)
 						inRange = true;
+					if (inRange && ServerTime.UtcNow > info.startDateTime && ServerTime.UtcNow > info.endDateTime)
+						inRange = false;
 				}
 
 				// 만료된 상태라면 기록을 삭제해야한다.
 				if (!inRange)
-					deleteRepeatLogin = true;				
+					deleteRepeatLogin = true;
 			}
 		}
 
@@ -528,6 +537,8 @@ public class CumulativeEventData : MonoBehaviour
 				{
 					if (lastRecordTime > info.startDateTime && lastRecordTime < info.endDateTime)
 						inRange = true;
+					if (inRange && ServerTime.UtcNow > info.startDateTime && ServerTime.UtcNow > info.endDateTime)
+						inRange = false;
 				}
 				if (!inRange)
 					deleteRepeatDailyBox = true;
@@ -550,6 +561,8 @@ public class CumulativeEventData : MonoBehaviour
 				{
 					if (lastRecordTime > info.startDateTime && lastRecordTime < info.endDateTime)
 						inRange = true;
+					if (inRange && ServerTime.UtcNow > info.startDateTime && ServerTime.UtcNow > info.endDateTime)
+						inRange = false;
 				}
 				if (!inRange)
 					deleteReviewEvent = true;

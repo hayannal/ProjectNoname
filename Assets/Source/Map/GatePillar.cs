@@ -347,6 +347,8 @@ public class GatePillar : MonoBehaviour
 			return false;
 		if (TimeSpacePortal.instance != null && TimeSpacePortal.instance.processing)
 			return false;
+		if (TimeSpaceGround.instance != null && TimeSpaceGround.instance.gameObject.activeSelf)
+			return false;
 		if (NodeWarPortal.instance != null && NodeWarPortal.instance.processing)
 			return false;
 		if (RandomBoxScreenCanvas.instance != null && RandomBoxScreenCanvas.instance.gameObject.activeSelf)

@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 8055722536605666061}
   - component: {fileID: 2524813319625212177}
   m_Layer: 0
-  m_Name: LichBlood
+  m_Name: LichBlood_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -179,9 +179,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be6d548a09164c64eb8e5ab315bdae7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actorId: LichBlood
+  actorId: LichBlood_0
   commonPoolPreloadObjectList: []
-  selfPassivePreloadObjectList: []
+  selfPassivePreloadObjectList:
+  - {fileID: 1961478501609223962, guid: 256189656cab2ea46a0ac087f3ac5d7c, type: 3}
   gaugeOffsetY: 1
   monsterHpGaugeWidth: 1
 --- !u!114 &2524813319625212177
@@ -199,9 +200,9 @@ MonoBehaviour:
   startDelayRange: {x: 0, y: 0}
   startState: 3
   useStateList: 010001010100
-  moveTimeRange: {x: 1, y: 1}
+  moveTimeRange: {x: 0.5, y: 1}
   refreshTickTimeRange: {x: 2, y: 2}
-  desireDistance: 5
+  desireDistance: 3
   straightMoveTimeRange: {x: 0, y: 0}
   straightRefreshTickTimeRange: {x: 0, y: 0}
   straightRefreshTickWaitTime: 0
@@ -209,7 +210,7 @@ MonoBehaviour:
   customActionPlayType: 1
   customActionName: 
   customActionFadeDuration: 0.05
-  chaseDistanceRange: {x: 8, y: 10}
+  chaseDistanceRange: {x: 6.5, y: 10}
   chaseCancelTimeRange: {x: 0, y: 0}
   cancelLeadsToAttack: 0
   useFarawayMode: 0
@@ -219,7 +220,7 @@ MonoBehaviour:
   attackActionName: AttackGroup
   attackActionFadeDuration: 0.05
   lookAtTargetBeforeAttack: 1
-  attackDelayTimeRange: {x: 0.1, y: 0.5}
+  attackDelayTimeRange: {x: 0.1, y: 0.3}
   useAnimatorParameterForAI: 0
   listAnimatorParameterForAI: 
 --- !u!1001 &3037144510188918571
@@ -233,17 +234,17 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: c3f6eaac7d3d9aa458a45624ee7a94ab, type: 2}
+      objectReference: {fileID: 2100000, guid: 53d8052a54d7e5d41962e7bcc7ce90b7, type: 2}
     - target: {fileID: -8250559170200734288, guid: 5b89cb20a5732d34cb32fcd8e49be8ef,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: c3f6eaac7d3d9aa458a45624ee7a94ab, type: 2}
+      objectReference: {fileID: 2100000, guid: 53d8052a54d7e5d41962e7bcc7ce90b7, type: 2}
     - target: {fileID: -6057140222963153312, guid: 5b89cb20a5732d34cb32fcd8e49be8ef,
         type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: aefe5464cdb948b4f9f763169621797a, type: 2}
+      objectReference: {fileID: 9100000, guid: 7b3cebd41f4b48f4fb754747214cf8f7, type: 2}
     - target: {fileID: -4216859302048453862, guid: 5b89cb20a5732d34cb32fcd8e49be8ef,
         type: 3}
       propertyPath: m_RootOrder
@@ -303,12 +304,12 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: c3f6eaac7d3d9aa458a45624ee7a94ab, type: 2}
+      objectReference: {fileID: 2100000, guid: 53d8052a54d7e5d41962e7bcc7ce90b7, type: 2}
     - target: {fileID: -2050006980461810219, guid: 5b89cb20a5732d34cb32fcd8e49be8ef,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: c3f6eaac7d3d9aa458a45624ee7a94ab, type: 2}
+      objectReference: {fileID: 2100000, guid: 53d8052a54d7e5d41962e7bcc7ce90b7, type: 2}
     - target: {fileID: -927199367670048503, guid: 5b89cb20a5732d34cb32fcd8e49be8ef,
         type: 3}
       propertyPath: m_Name
@@ -318,12 +319,12 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: c3f6eaac7d3d9aa458a45624ee7a94ab, type: 2}
+      objectReference: {fileID: 2100000, guid: 53d8052a54d7e5d41962e7bcc7ce90b7, type: 2}
     - target: {fileID: 1651062367082650294, guid: 5b89cb20a5732d34cb32fcd8e49be8ef,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: c3f6eaac7d3d9aa458a45624ee7a94ab, type: 2}
+      objectReference: {fileID: 2100000, guid: 53d8052a54d7e5d41962e7bcc7ce90b7, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5b89cb20a5732d34cb32fcd8e49be8ef, type: 3}
 --- !u!4 &8024480061364059185 stripped

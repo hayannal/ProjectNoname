@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6699489699744693081}
   - component: {fileID: 7660070715464286253}
-  - component: {fileID: 2158341606061142439}
+  - component: {fileID: 3727889847743806304}
   - component: {fileID: 4715554835474121878}
   m_Layer: 0
   m_Name: TransparentHitObject
@@ -49,8 +49,8 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 2
---- !u!135 &2158341606061142439
-SphereCollider:
+--- !u!136 &3727889847743806304
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -59,9 +59,10 @@ SphereCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
   m_Radius: 0.15
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Height: 7
+  m_Direction: 1
+  m_Center: {x: 0, y: -3.5, z: 0}
 --- !u!95 &4715554835474121878
 Animator:
   serializedVersion: 3

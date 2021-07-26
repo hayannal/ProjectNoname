@@ -76,10 +76,13 @@ public class InvasionEnterCanvas : MonoBehaviour
 		}
 	}
 
+	bool _onEnable = false;
 	void OnEnable()
 	{
+		_onEnable = true;
+
 		// RefreshGrid를 먼저 호출해서 현재 진입할 수 있는 캐릭터들을 추려야한다. 나머지는 그 이후에 가능.
-		RefreshGrid(true);
+		RefreshGrid();
 		RefreshInfo();
 
 		if (LobbyCanvas.instance != null)
@@ -92,6 +95,8 @@ public class InvasionEnterCanvas : MonoBehaviour
 
 		if (DragThresholdController.instance != null)
 			DragThresholdController.instance.ApplyUIDragThreshold();
+
+		_onEnable = false;
 	}
 
 	void OnDisable()
@@ -125,7 +130,7 @@ public class InvasionEnterCanvas : MonoBehaviour
 
 	List<CharacterData> _listCharacterData = new List<CharacterData>();
 	List<SwapCanvasListItem> _listSwapCanvasListItem = new List<SwapCanvasListItem>();
-	void RefreshGrid(bool onEnable)
+	void RefreshGrid()
 	{
 		for (int i = 0; i < _listSwapCanvasListItem.Count; ++i)
 			_listSwapCanvasListItem[i].gameObject.SetActive(false);
@@ -198,15 +203,10 @@ public class InvasionEnterCanvas : MonoBehaviour
 			_listSwapCanvasListItem.Add(swapCanvasListItem);
 		}
 
-		if (onEnable)
-		{
-			if (string.IsNullOrEmpty(firstSelectableActorId))
-				selectResultText.text = "";
-			else
-				OnClickListItem(firstSelectableActorId);
-		}
+		if (string.IsNullOrEmpty(firstSelectableActorId))
+			selectResultText.text = "";
 		else
-			OnClickListItem(_selectedActorId);
+			OnClickListItem(firstSelectableActorId);
 	}
 
 	public int GetTodayClearPoint()
@@ -233,16 +233,18 @@ public class InvasionEnterCanvas : MonoBehaviour
 
 	int GetHighestPlayableDifficulty(int powerLevel)
 	{
-		if (powerLevel < 3)
-			return 1;
-		else if (powerLevel < 5)
-			return 2;
-		else if (powerLevel < 7)
-			return 3;
-		else if (powerLevel < 9)
-			return 4;
-		else
-			return 5;
+		//if (powerLevel < 3)
+		//	return 1;
+		//else if (powerLevel < 5)
+		//	return 2;
+		//else if (powerLevel < 7)
+		//	return 3;
+		//else if (powerLevel < 9)
+		//	return 4;
+		//else
+		//	return 5;
+		// 이제 파워레벨과 difficulty가 1:1로 매칭되면서 그냥 리턴하면 된다.
+		return powerLevel;
 	}
 
 	ObscuredInt _selectedDifficulty;
@@ -258,6 +260,18 @@ public class InvasionEnterCanvas : MonoBehaviour
 		// 두번째 할일은 현재 가지고 있는 캐릭터들 중 최고레벨을 골라서 어느 난이도까지 표시할지 정해야한다.
 		RefreshHighestPowerLevel();
 
+		// EnterCount
+		RefreshEnterCount();
+
+		// Difficulty
+		RefreshDifficultyInfo();
+	}
+
+	GameObject _cachedPreviewObject;
+	StageTableData _invasionStageTableData;
+	MapTableData _invasionMapTableData;
+	void RefreshDifficultyInfo()
+	{
 		// 만약 하나도 진입할 수 없는 상태라면 _selectedActorId가 빈 상태일테니 예외처리 해주면 된다.
 		if (string.IsNullOrEmpty(_selectedActorId))
 		{
@@ -280,17 +294,6 @@ public class InvasionEnterCanvas : MonoBehaviour
 			}
 		}
 
-		// EnterCount
-		RefreshEnterCount();
-
-		RefreshDifficultyInfo();
-	}
-
-	GameObject _cachedPreviewObject;
-	StageTableData _invasionStageTableData;
-	MapTableData _invasionMapTableData;
-	void RefreshDifficultyInfo()
-	{
 		difficultyText.text = ChangeInvasionDifficultyCanvasListItem.GetDifficultyText(_selectedDifficulty);
 
 		// 난이도까지 선택이 됐다면 이제 나머지 정보들을 불러올 수 있다.
@@ -300,7 +303,7 @@ public class InvasionEnterCanvas : MonoBehaviour
 
 		// 파워레벨은 제한으로 표시
 		_limitPowerLevel = _invasionTableData.limitPower;
-		limitPowerLevelText.SetLocalizedText(string.Format("{0} {1}", UIString.instance.GetString("InvasionUI_LimitedPowerLevel"), _limitPowerLevel));
+		limitPowerLevelText.SetLocalizedText(string.Format("{0} {1}", UIString.instance.GetString("InvasionUI_EntryPowerLevel"), _limitPowerLevel));
 
 		// Reward 표기
 		RefreshReward();
@@ -482,7 +485,10 @@ public class InvasionEnterCanvas : MonoBehaviour
 			DeleteLastDifficulty();
 		RefreshDifficultyInfo();
 		//RefreshGrid(false);
-		OnClickListItem(_selectedActorId);
+		//OnClickListItem(_selectedActorId);
+
+		RefreshSelectResultText();
+		RefreshEnterCount();
 	}
 
 	public void OnClickListItem(string actorId)
@@ -514,6 +520,12 @@ public class InvasionEnterCanvas : MonoBehaviour
 			bool showSelectObject = (_listSwapCanvasListItem[i].actorId == actorId);
 			_listSwapCanvasListItem[i].ShowSelectObject(showSelectObject);
 		}
+
+		// 캐릭터에 맞는 난이도를 자동으로 선택해줘야하는데 이때 난이도가 변경된다면 난이도 변경 메세지를 표시해야한다.
+		int selectedDifficulty = _selectedDifficulty;
+		RefreshDifficultyInfo();
+		if (_onEnable == false && selectedDifficulty != _selectedDifficulty)
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("BossUI_ChangeDifficulty"), 2.0f);
 
 		RefreshSelectResultText();
 		RefreshEnterCount();
@@ -850,7 +862,7 @@ public class InvasionEnterCanvas : MonoBehaviour
 
 		if (ContentsData.instance.listInvasionEnteredActorId.Count == 0 && ServerTime.UtcNow.DayOfWeek != _lastDayOfWeek)
 		{
-			RefreshGrid(true);
+			RefreshGrid();
 			RefreshInfo();
 
 			_needRefresh = false;

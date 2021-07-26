@@ -383,6 +383,8 @@ public class AuthManager : MonoBehaviour
 		// 원래는 연동 즉시 보낼텐데 혹시 강종이나 다른 이슈로 처리 안될까봐 여기서 안전하게 한번 더 체크하는거다.
 		if (userAccountInfo.GoogleInfo != null && userAccountInfo.CustomIdInfo != null)
 			SetNeedUnlinkCustomId();
+		if (userAccountInfo.FacebookInfo != null && userAccountInfo.CustomIdInfo != null)
+			SetNeedUnlinkCustomId();
 	}
 
 	public void SetNeedUnlinkCustomId()

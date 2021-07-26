@@ -247,6 +247,8 @@ public class DropProcessor : MonoBehaviour
 						case "k": stringValue = DropManager.instance.GetGachaEquipIdByType(8); break;
 						case "w": stringValue = DropManager.instance.GetFullChaosRevertDropEquipId(); break;
 						case "i": stringValue = DropManager.instance.GetGachaEquipIdByType(-1); break;
+						case "st": stringValue = DropManager.instance.GetInvasionEquipIdByType(0, 1, 2, 3, 4, 5); break;
+						case "gs": stringValue = DropManager.instance.GetInvasionEquipIdByType(6, 7); break;
 					}
 				}
 				else if (dropType == eDropType.Origin)

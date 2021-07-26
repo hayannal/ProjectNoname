@@ -729,6 +729,67 @@ public class DropManager : MonoBehaviour
 			return "";
 		return _listRandomDropEquipInfoByType[index].equipTableData.equipId;
 	}
+
+	List<RandomDropEquipInfo> _listRandomInvasionEquipInfoByType = null;
+	public string GetInvasionEquipIdByType(params int[] typeList)
+	{
+		// Invasion 전용 드랍이라서 Invasion 만 체크.
+		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
+		if (lobby == false && BattleManager.instance != null && BattleManager.instance.IsInvasion()) { }
+		else return "";
+
+		if (_listRandomInvasionEquipInfoByType == null)
+			_listRandomInvasionEquipInfoByType = new List<RandomDropEquipInfo>();
+		_listRandomInvasionEquipInfoByType.Clear();
+
+		float sumWeight = 0.0f;
+		for (int i = 0; i < TableDataManager.instance.equipTable.dataArray.Length; ++i)
+		{
+			// invasion은 gachaWeight를 사용
+			float weight = TableDataManager.instance.equipTable.dataArray[i].equipGachaWeight;
+			if (weight <= 0.0f)
+				continue;
+
+			// Invasion 보상에서는 전설 아이템이 나오지 않는다.
+			if (EquipData.IsUseLegendKey(TableDataManager.instance.equipTable.dataArray[i]))
+				continue;
+
+			// 인자로 들어오는 값이 포함되는 타입이다.
+			bool find = false;
+			for (int j = 0; j < typeList.Length; ++j)
+			{
+				if (TableDataManager.instance.equipTable.dataArray[i].equipType == typeList[j])
+				{
+					find = true;
+					break;
+				}
+			}
+			if (find == false)
+				continue;
+
+			sumWeight += weight;
+			RandomDropEquipInfo newInfo = new RandomDropEquipInfo();
+			newInfo.equipTableData = TableDataManager.instance.equipTable.dataArray[i];
+			newInfo.sumWeight = sumWeight;
+			_listRandomInvasionEquipInfoByType.Add(newInfo);
+		}
+		if (_listRandomInvasionEquipInfoByType.Count == 0)
+			return "";
+
+		int index = -1;
+		float random = Random.Range(0.0f, _listRandomInvasionEquipInfoByType[_listRandomInvasionEquipInfoByType.Count - 1].sumWeight);
+		for (int i = 0; i < _listRandomInvasionEquipInfoByType.Count; ++i)
+		{
+			if (random <= _listRandomInvasionEquipInfoByType[i].sumWeight)
+			{
+				index = i;
+				break;
+			}
+		}
+		if (index == -1)
+			return "";
+		return _listRandomInvasionEquipInfoByType[index].equipTableData.equipId;
+	}
 	#endregion
 
 

@@ -549,6 +549,9 @@ public class InvasionEnterCanvas : MonoBehaviour
 	#region Sub Menu
 	public void OnClickChangeDifficultyButton()
 	{
+		if (string.IsNullOrEmpty(_selectedActorId))
+			return;
+
 		UIInstanceManager.instance.ShowCanvasAsync("ChangeInvasionDifficultyCanvas", () =>
 		{
 			ChangeInvasionDifficultyCanvas.instance.RefreshInfo(_highestDifficulty, _selectedDifficulty, _selectedActorPowerLevel);

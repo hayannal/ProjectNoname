@@ -268,6 +268,7 @@ public class InvasionEnterCanvas : MonoBehaviour
 	}
 
 	GameObject _cachedPreviewObject;
+	bool _previewCachingProceed = false;
 	StageTableData _invasionStageTableData;
 	MapTableData _invasionMapTableData;
 	void RefreshDifficultyInfo()
@@ -315,20 +316,22 @@ public class InvasionEnterCanvas : MonoBehaviour
 		if (invasionMapTableData == null)
 			return;
 
+		_invasionStageTableData = invasionStageTableData;
+		_invasionMapTableData = invasionMapTableData;
+
 		if (_cachedPreviewObject != null)
 		{
 			_cachedPreviewObject.SetActive(false);
 			_cachedPreviewObject = null;
 		}
 
-		_invasionStageTableData = invasionStageTableData;
-		_invasionMapTableData = invasionMapTableData;
-
-		if (string.IsNullOrEmpty(invasionMapTableData.bossName) == false)
+		if (string.IsNullOrEmpty(invasionMapTableData.bossName) == false && _previewCachingProceed == false)
 		{
+			_previewCachingProceed = true;
 			AddressableAssetLoadManager.GetAddressableGameObject(string.Format("Preview_{0}", invasionMapTableData.bossName), "Preview", (prefab) =>
 			{
 				_cachedPreviewObject = UIInstanceManager.instance.GetCachedObject(prefab, previewRootTransform);
+				_previewCachingProceed = false;
 			});
 		}
 	}

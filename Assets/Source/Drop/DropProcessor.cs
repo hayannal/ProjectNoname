@@ -524,6 +524,8 @@ public class DropProcessor : MonoBehaviour
 				break;
 			case eDropType.Gold:
 				int randomCount = Random.Range(4, 7);
+				if (dropType == DropProcessor.eDropType.Gold && BattleManager.instance != null && BattleManager.instance.IsDefaultBattle() && MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby == false)
+					randomCount = Random.Range(2, 5);
 				if (_adjustDropDelay > 0.0f) randomCount = Random.Range(20, 30);
 				float goldDropAdjust = DropAdjustAffector.GetValue(BattleInstanceManager.instance.playerActor.affectorProcessor, DropAdjustAffector.eDropAdjustType.GoldDropAmount);
 				if (goldDropAdjust > 0.0f) randomCount += 1;

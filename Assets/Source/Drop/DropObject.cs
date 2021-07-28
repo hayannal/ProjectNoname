@@ -41,6 +41,11 @@ public class DropObject : MonoBehaviour
 	public RectTransform nameCanvasRectTransform;
 	public Text nameText;
 
+	[Space(10)]
+	public float smallRotateTransformPositionY;
+	public Transform smallMeshTransform;
+	public Vector3 smallOverrideScale;
+
 	float _defaultRotateTransformPositionY;
 	private void Awake()
 	{
@@ -160,12 +165,28 @@ public class DropObject : MonoBehaviour
 		if (nameCanvasRectTransform != null)
 			nameCanvasRectTransform.gameObject.SetActive(false);
 
-		jumpTransform.localPosition = new Vector3(0.0f, jumpStartY, 0.0f);
-		jumpTransform.DOLocalJump(new Vector3(0.0f, jumpEndY, 0.0f), jumpPower, 1, jumpDuration).SetEase(Ease.Linear);
+		if (dropType == DropProcessor.eDropType.Gold && BattleManager.instance != null && BattleManager.instance.IsDefaultBattle() && MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby == false)
+		{
+			jumpTransform.localPosition = new Vector3(0.0f, jumpStartY * 0.75f, 0.0f);
+			jumpTransform.DOLocalJump(new Vector3(0.0f, jumpEndY, 0.0f), jumpPower * 0.75f, 1, jumpDuration).SetEase(Ease.Linear);
+		}
+		else
+		{
+			jumpTransform.localPosition = new Vector3(0.0f, jumpStartY, 0.0f);
+			jumpTransform.DOLocalJump(new Vector3(0.0f, jumpEndY, 0.0f), jumpPower, 1, jumpDuration).SetEase(Ease.Linear);
+		}
 		_lastJump = (secondJumpPower == 0.0f || secondJumpDuration == 0.0f) ? true : false;
 		_jumpRemainTime = jumpDuration;
 		_rotateEuler.x = Random.Range(360.0f, 720.0f) * (Random.value > 0.5f ? 1.0f : -1.0f);
 		_rotateEuler.z = Random.Range(360.0f, 720.0f) * (Random.value > 0.5f ? 1.0f : -1.0f);
+
+		if (dropType == DropProcessor.eDropType.Gold && BattleManager.instance != null && BattleManager.instance.IsDefaultBattle() && MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby == false)
+		{
+			rotateTransform.localPosition = new Vector3(rotateTransform.localPosition.x, smallRotateTransformPositionY, rotateTransform.localPosition.y);
+			trailTransform.localPosition = new Vector3(trailTransform.localPosition.x, smallRotateTransformPositionY, trailTransform.localPosition.y);
+			if (smallMeshTransform != null)
+				smallMeshTransform.localScale = smallOverrideScale;
+		}
 
 		_initialized = true;
 		DropManager.instance.OnInitializeDropObject(this);

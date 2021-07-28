@@ -339,6 +339,8 @@ public class BattleResultCanvas : MonoBehaviour
 		if (sealImageGroupObject.activeSelf)
 		{
 			int sealCount = DropManager.instance.GetStackedDropSeal();
+			if (sealCount > sealCountImageList.Length)
+				sealCount = sealCountImageList.Length;
 			for (int i = 0; i < sealCount; ++i)
 			{
 				sealCountImageList[i].SetActive(true);

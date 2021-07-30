@@ -553,7 +553,10 @@ public class InvasionEnterCanvas : MonoBehaviour
 	public void OnClickChangeDifficultyButton()
 	{
 		if (string.IsNullOrEmpty(_selectedActorId))
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("InvasionUI_NoOneSelected"), 2.0f);
 			return;
+		}
 
 		UIInstanceManager.instance.ShowCanvasAsync("ChangeInvasionDifficultyCanvas", () =>
 		{

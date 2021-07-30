@@ -116,6 +116,8 @@ public class DropProcessor : MonoBehaviour
 							dropProcessor.AdjustDropDelay(0.05f);
 						else if (dropTableData.dropId.Contains("Daily"))
 							dropProcessor.AdjustDropDelay(0.1f);
+						if (BattleManager.instance != null && BattleManager.instance.IsInvasion())
+							dropProcessor.AdjustDropDelay(0.05f);
 						break;
 					case eDropType.PowerPoint:
 						// 천칭 메뉴가 열리고나서부터는 PowerPoint 마지막꺼 뽑을때 예외처리를 한다.
@@ -527,6 +529,7 @@ public class DropProcessor : MonoBehaviour
 				if (dropType == DropProcessor.eDropType.Gold && BattleManager.instance != null && BattleManager.instance.IsDefaultBattle() && MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby == false)
 					randomCount = Random.Range(2, 5);
 				if (_adjustDropDelay > 0.0f) randomCount = Random.Range(20, 30);
+				if (_adjustDropDelay > 0.0f && BattleManager.instance != null && BattleManager.instance.IsInvasion()) randomCount = Random.Range(15, 20);
 				float goldDropAdjust = DropAdjustAffector.GetValue(BattleInstanceManager.instance.playerActor.affectorProcessor, DropAdjustAffector.eDropAdjustType.GoldDropAmount);
 				if (goldDropAdjust > 0.0f) randomCount += 1;
 				for (int i = 0; i < randomCount; ++i)

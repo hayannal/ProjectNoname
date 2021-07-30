@@ -11,6 +11,7 @@ public static class ContentsManager
 		ReturnScroll = 2,
 		Research = 3,
 		Invasion = 3,
+		Analysis = 3,
 		Chaos = 4,
 		NodeWar = 5,
 		EquipOption = 6,

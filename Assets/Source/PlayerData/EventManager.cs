@@ -31,6 +31,7 @@ public class EventManager : MonoBehaviour
 		reconstruct,
 		boss,
 		invasion,
+		analysis,
 	}
 
 	// 클라 이벤트는 메모리에만 기억되는 거라서 종료하면 더이상 볼 수 없다. 그래서 중요하지 않은 것들 위주다.
@@ -66,6 +67,7 @@ public class EventManager : MonoBehaviour
 	public bool reservedOpenReconstructEvent { get; set; }
 	public bool reservedOpenBossBattleEvent { get; set; }
 	public bool reservedOpenInvasionEvent { get; set; }
+	public bool reservedOpenAnalysisEvent { get; set; }
 
 	#region OnEvent
 	public void OnEventClearHighestChapter(int chapter, string newCharacterId)
@@ -95,6 +97,7 @@ public class EventManager : MonoBehaviour
 			// Research와 Balance는 메뉴를 추가한거니 서버 이벤트로 변경하기로 한다.
 			//reservedOpenResearchEvent = true;
 			PushServerEvent(eServerEvent.research);
+			PushServerEvent(eServerEvent.analysis);
 
 			// 3챕터에 추가되는게 침공
 			PushServerEvent(eServerEvent.invasion);
@@ -212,9 +215,13 @@ public class EventManager : MonoBehaviour
 		}
 		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Invasion))
 		{
-			// 컨텐츠는 오픈 상태인데 1도 아니고 2도 아니라면 강제로 이벤트를 재생 대기 상태로 설정해야한다.
 			if (IsCompleteServerEvent(eServerEvent.invasion) == false && ContainsStandbyServerEvent(eServerEvent.invasion) == false)
 				PushServerEvent(eServerEvent.invasion);
+		}
+		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Analysis))
+		{
+			if (IsCompleteServerEvent(eServerEvent.analysis) == false && ContainsStandbyServerEvent(eServerEvent.analysis) == false)
+				PushServerEvent(eServerEvent.analysis);
 		}
 		#endregion
 	}
@@ -238,6 +245,8 @@ public class EventManager : MonoBehaviour
 			dicEventState.Add(eServerEvent.boss.ToString(), 1);
 		if (reservedOpenInvasionEvent && dicEventState.ContainsKey(eServerEvent.invasion.ToString()) == false)
 			dicEventState.Add(eServerEvent.invasion.ToString(), 1);
+		if (reservedOpenAnalysisEvent && dicEventState.ContainsKey(eServerEvent.analysis.ToString()) == false)
+			dicEventState.Add(eServerEvent.analysis.ToString(), 1);
 
 		for (int i = 0; i < _listCompleteServerEvent.Count; ++i)
 			dicEventState.Add(_listCompleteServerEvent[i].ToString(), 2);
@@ -389,6 +398,10 @@ public class EventManager : MonoBehaviour
 				break;
 			case eServerEvent.invasion:
 				reservedOpenInvasionEvent = true;
+				OnLobby();
+				break;
+			case eServerEvent.analysis:
+				reservedOpenAnalysisEvent = true;
 				OnLobby();
 				break;
 		}

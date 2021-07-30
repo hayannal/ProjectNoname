@@ -63,6 +63,7 @@ public class TableDataManager : MonoBehaviour
 	public BossExpTable bossExpTable;
 	public BossRewardTable bossRewardTable;
 	public InvasionTable invasionTable;
+	public AnalysisTable analysisTable;
 
 	void Awake()
 	{
@@ -553,6 +554,16 @@ public class TableDataManager : MonoBehaviour
 		{
 			if (invasionTable.dataArray[i].dayWeek == dayOfWeek && invasionTable.dataArray[i].hard == difficulty)
 				return invasionTable.dataArray[i];
+		}
+		return null;
+	}
+
+	public AnalysisTableData FindAnalysisTableData(int level)
+	{
+		for (int i = 0; i < analysisTable.dataArray.Length; ++i)
+		{
+			if (analysisTable.dataArray[i].level == level)
+				return analysisTable.dataArray[i];
 		}
 		return null;
 	}

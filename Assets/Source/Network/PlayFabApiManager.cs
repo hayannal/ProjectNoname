@@ -289,6 +289,7 @@ public class PlayFabApiManager : MonoBehaviour
 		GuideQuestData.instance.OnRecvGuideQuestData(loginResult.InfoResultPayload.UserReadOnlyData, loginResult.InfoResultPayload.PlayerStatistics);
 		PlayerData.instance.OnRecvLevelPackageResetInfo(loginResult.InfoResultPayload.TitleData, loginResult.InfoResultPayload.UserReadOnlyData, loginResult.NewlyCreated);
 		CumulativeEventData.instance.OnRecvCumulativeEventData(loginResult.InfoResultPayload.TitleData, loginResult.InfoResultPayload.UserReadOnlyData, loginResult.NewlyCreated);
+		AnalysisData.instance.OnRecvAnalysisData(loginResult.InfoResultPayload.UserReadOnlyData);
 
 		if (loginResult.NewlyCreated)
 		{
@@ -3497,6 +3498,33 @@ public class PlayFabApiManager : MonoBehaviour
 		}, (error) =>
 		{
 			//HandleCommonError(error);
+		});
+	}
+	#endregion
+
+	#region Analysis
+	public void RequestStartAnalysis(Action successCallback)
+	{
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "StartAnalysis",
+			FunctionParameter = new { Inf = 1 },
+			GeneratePlayStreamEvent = true,
+			RevisionSelection = CloudScriptRevisionOption.Latest,
+		}, (success) =>
+		{
+			PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
+			jsonResult.TryGetValue("retErr", out object retErr);
+			bool failure = ((retErr.ToString()) == "1");
+			if (!failure)
+			{
+				jsonResult.TryGetValue("date", out object date);
+				AnalysisData.instance.OnRecvAnalysisStartInfo((string)date);
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
 		});
 	}
 	#endregion

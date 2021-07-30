@@ -59,6 +59,16 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 	bool _started = false;
 	void Start()
     {
+		if (EventManager.instance.reservedOpenResearchEvent)
+		{
+			UIInstanceManager.instance.ShowCanvasAsync("EventInfoCanvas", () =>
+			{
+				EventInfoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_ResearchName"), UIString.instance.GetString("GameUI_ResearchDesc"), UIString.instance.GetString("GameUI_ResearchMore"), null, 0.785f);
+			});
+			EventManager.instance.reservedOpenResearchEvent = false;
+			EventManager.instance.CompleteServerEvent(EventManager.eServerEvent.research);
+		}
+
 		GetComponent<Canvas>().worldCamera = UIInstanceManager.instance.GetCachedCameraMain();
 		_started = true;
 	}

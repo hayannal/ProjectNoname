@@ -483,12 +483,14 @@ public class DotMainMenuCanvas : MonoBehaviour
 	{
 		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Research) == false)
 			return false;
-		ResearchTableData researchTableData = TableDataManager.instance.FindResearchTableData(PlayerData.instance.researchLevel + 1);
-		if (researchTableData == null)
-			return false;
-		if (ResearchInfoGrowthCanvas.CheckResearch(PlayerData.instance.researchLevel + 1) == false)
-			return false;
-		return true;
+
+		// Research 안에 Research와 Analysis 두개로 나뉘니 둘다 검사해야한다. 둘중 하나라도 true면 true다.
+		if (ResearchInfoGrowthCanvas.CheckResearch(PlayerData.instance.researchLevel + 1))
+			return true;
+		if (ResearchInfoAnalysisCanvas.CheckAnalysis())
+			return true;
+
+		return false;
 	}
 
 	public void RefreshResearchAlarmObject(bool refreshLobbyAlarm = true)

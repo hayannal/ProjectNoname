@@ -7,7 +7,16 @@ public class ResearchCanvas : MonoBehaviour
 	public static ResearchCanvas instance;
 
 	public CurrencySmallInfo currencySmallInfo;
-	public GameObject screenSpaceCanvasPrefab;
+	public GameObject[] innerMenuPrefabList;
+	public MenuButton[] menuButtonList;
+	public GameObject menuRootObject;
+
+	// 2개의 메뉴 다 알람을 쓰니 CharacterInfoCanvas 에서 했던거처럼 관리
+	public RectTransform researchAlarmRootTransform;
+	public RectTransform researchShadowAlarmRootTransform;
+	public RectTransform analysisAlarmRootTransform;
+	public RectTransform analysisShadowAlarmRootTransform;
+
 	public GameObject researchGroundObjectPrefab;
 	public GameObject inputLockObject;
 
@@ -16,30 +25,28 @@ public class ResearchCanvas : MonoBehaviour
 		instance = this;
 	}
 
-	GameObject _screenSpaceCanvasObject;
 	GameObject _researchGroundObject;
 	void Start()
 	{
-		_screenSpaceCanvasObject = Instantiate<GameObject>(screenSpaceCanvasPrefab);
 		_researchGroundObject = Instantiate<GameObject>(researchGroundObjectPrefab, _rootOffsetPosition, Quaternion.identity);
 
-		if (EventManager.instance.reservedOpenResearchEvent)
-		{
-			UIInstanceManager.instance.ShowCanvasAsync("EventInfoCanvas", () =>
-			{
-				EventInfoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("GameUI_ResearchName"), UIString.instance.GetString("GameUI_ResearchDesc"), UIString.instance.GetString("GameUI_ResearchMore"), null, 0.785f);
-			});
-			EventManager.instance.reservedOpenResearchEvent = false;
-			EventManager.instance.CompleteServerEvent(EventManager.eServerEvent.research);
-		}
+		// 항상 게임을 처음 켤땐 0번탭을 보게 해준다.
+		OnValueChangedToggle(0);
 	}
 
 	void OnEnable()
 	{
-		if (_screenSpaceCanvasObject != null)
-			_screenSpaceCanvasObject.SetActive(true);
+		for (int i = 0; i < _listMenuTransform.Count; ++i)
+		{
+			if (_listMenuTransform[i] == null)
+				continue;
+			_listMenuTransform[i].gameObject.SetActive(_lastIndex == i);
+		}
+
 		if (_researchGroundObject != null)
 			_researchGroundObject.SetActive(true);
+
+		RefreshAlarmObjectList();
 
 		bool restore = StackCanvas.Push(gameObject, false, null, OnPopStack);
 		
@@ -51,7 +58,12 @@ public class ResearchCanvas : MonoBehaviour
 
 	void OnDisable()
 	{
-		_screenSpaceCanvasObject.SetActive(false);
+		for (int i = 0; i < _listMenuTransform.Count; ++i)
+		{
+			if (_listMenuTransform[i] == null)
+				continue;
+			_listMenuTransform[i].gameObject.SetActive(false);
+		}
 		_researchGroundObject.SetActive(false);
 
 		if (StackCanvas.Pop(gameObject))
@@ -70,6 +82,31 @@ public class ResearchCanvas : MonoBehaviour
 		SetInfoCameraMode(false);
 	}
 
+	public void RefreshAlarmObjectList()
+	{
+		if (ResearchInfoGrowthCanvas.CheckResearch(PlayerData.instance.researchLevel + 1))
+		{
+			AlarmObject.Show(researchAlarmRootTransform);
+			AlarmObject.Show(researchShadowAlarmRootTransform, true, false, false, true);
+		}
+		else
+		{
+			AlarmObject.Hide(researchAlarmRootTransform);
+			AlarmObject.Hide(researchShadowAlarmRootTransform);
+		}
+
+		if (ResearchInfoAnalysisCanvas.CheckAnalysis())
+		{
+			AlarmObject.Show(analysisAlarmRootTransform);
+			AlarmObject.Show(analysisShadowAlarmRootTransform, true, false, false, true);
+		}
+		else
+		{
+			AlarmObject.Hide(analysisAlarmRootTransform);
+			AlarmObject.Hide(analysisShadowAlarmRootTransform);
+		}
+	}
+
 	public void OnClickBackButton()
 	{
 		gameObject.SetActive(false);
@@ -81,6 +118,42 @@ public class ResearchCanvas : MonoBehaviour
 		// 현재 상태에 따라
 		LobbyCanvas.Home();
 	}
+
+
+	#region Menu Button
+	public void OnClickMenuButton1() { OnValueChangedToggle(0); }
+	public void OnClickMenuButton2() { OnValueChangedToggle(1); }
+
+	List<Transform> _listMenuTransform = new List<Transform>();
+	int _lastIndex = -1;
+	void OnValueChangedToggle(int index)
+	{
+		if (index == _lastIndex)
+			return;
+
+		if (_listMenuTransform.Count == 0)
+		{
+			for (int i = 0; i < menuButtonList.Length; ++i)
+				_listMenuTransform.Add(null);
+		}
+
+		if (_listMenuTransform[index] == null && innerMenuPrefabList[index] != null)
+		{
+			GameObject newObject = Instantiate<GameObject>(innerMenuPrefabList[index]);
+			_listMenuTransform[index] = newObject.transform;
+		}
+
+		for (int i = 0; i < _listMenuTransform.Count; ++i)
+		{
+			menuButtonList[i].isOn = (index == i);
+			if (_listMenuTransform[i] == null)
+				continue;
+			_listMenuTransform[i].gameObject.SetActive(index == i);
+		}
+
+		_lastIndex = index;
+	}
+	#endregion
 
 
 

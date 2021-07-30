@@ -367,6 +367,7 @@ public class LobbyCanvas : MonoBehaviour
 		dotMainMenuButton.gameObject.SetActive(!enter);
 		rightTopRootObject.SetActive(!enter);
 		subMenuCanvasGroup.alpha = enter ? 0.0f : 1.0f;
+		subMenuCanvasGroup.blocksRaycasts = !enter;
 	}
 
 	public void OnEnterTimeSpace(bool enter)

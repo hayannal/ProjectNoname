@@ -118,6 +118,10 @@ public class DailyShopListItem : MonoBehaviour
 
 	public static bool CheckVisible(DailyShopData.DailyShopSlotInfo dailyShopSlotInfo)
 	{
+		// 데이터중에 day만 적혀있고 type이 null로 되어있는게 있어서 예외처리 추가해둔다.
+		if (dailyShopSlotInfo.type == null)
+			return false;
+
 		// 예외상황이 하나 있는데 영입하지 않은 노멀 캐릭터가 하나 남은 상태에서 bn 상품으로 마지막 노멀 캐릭터를 영입하면
 		// 구매완료 대신 아예 Visible에서 false가 되면서 항목 자체가 사라져버린다.
 		// 이걸 방지하기 위해 오늘 구매한거라면 강제로 visible true로 리턴하게 한다.

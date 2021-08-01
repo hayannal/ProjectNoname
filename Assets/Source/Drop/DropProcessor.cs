@@ -122,8 +122,9 @@ public class DropProcessor : MonoBehaviour
 						break;
 					case eDropType.PowerPoint:
 						// 천칭 메뉴가 열리고나서부터는 PowerPoint 마지막꺼 뽑을때 예외처리를 한다.
-						bool invasion = (BattleManager.instance && BattleManager.instance.IsInvasion());
-						if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Balance) && invasion == false)
+						bool noBalance = dropTableData.subValue[i] == "m";
+						if (BattleManager.instance && BattleManager.instance.IsInvasion()) noBalance = true;
+						if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Balance) && noBalance == false)
 						{
 							// 연속으로 붙어있는걸 고려해서 마지막인지 판단한다.
 							bool lastPowerPoint = false;

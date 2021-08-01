@@ -898,7 +898,7 @@ public class PlayFabApiManager : MonoBehaviour
 		RetrySendManager.instance.RequestAction(action, true, true);
 	}
 	
-	public void RequestEndGame(bool clear, bool currentChaos, int playChapter, int stage, int addGold, int addSeal, List<ObscuredString> listDropItemId, Action<bool, string, string> successCallback)    // List<Item>
+	public void RequestEndGame(bool clear, bool currentChaos, int playChapter, int stage, int addGold, int addSeal, int addChaosFragment, List<ObscuredString> listDropItemId, Action<bool, string, string> successCallback)    // List<Item>
 	{
 		// 인게임 플레이 하고 정산할때 호출되는 함수인데
 		// Statistics 갱신과 인벤획득처리 골드 갱신 등으로 나뉘어져있다.
@@ -941,11 +941,15 @@ public class PlayFabApiManager : MonoBehaviour
 		// 다른 정보와 달리 아이템은 리스트를 구축해서 서버로 넘겨야한다. 공용 로직.
 		string checkSum = "";
 		List<TimeSpaceData.ItemGrantRequest> listItemGrantRequest = TimeSpaceData.instance.GenerateGrantRequestInfo(listDropItemId, ref checkSum);
+
+		// 카오스 파편의 경우 뜯을 염려가 있으니 한번 더 별도로 감싸기로 한다.
+		string input = string.Format("{0}_{1}_{2}", (string)_serverEnterKey, addChaosFragment, "pzmraqlj");
+		string checkSum2 = CheckSum(input);
 		ExecuteCloudScriptRequest request = new ExecuteCloudScriptRequest()
 		{
 			FunctionName = "EndGame",
 			// playChapter와 currentChaos는 서버 검증용이다.
-			FunctionParameter = new { Flg = (string)_serverEnterKey, Cl = (clear ? 1 : 0), Cha = currentChaos ? "1" : "0", Plch = playChapter, St = stage, Go = addGold, Se = addSeal, Lst = listItemGrantRequest, LstCs = checkSum },
+			FunctionParameter = new { Flg = (string)_serverEnterKey, Cl = (clear ? 1 : 0), Cha = currentChaos ? "1" : "0", Plch = playChapter, St = stage, Go = addGold, Se = addSeal, Cf = addChaosFragment, CfCs = checkSum2, Lst = listItemGrantRequest, LstCs = checkSum },
 			GeneratePlayStreamEvent = true,
 		};
 		Action action = () =>
@@ -1710,6 +1714,55 @@ public class PlayFabApiManager : MonoBehaviour
 					jsonResult.TryGetValue("date", out object date);
 					PlayerData.instance.OnRecvFreePurifyInfo((string)date);
 				}
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+
+	public void RequestTransformChaosFragment(int chaosSlotIndex, int price, Action successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		// 카오스 파편으로 pp를 얻는 함수
+		List<DropManager.CharacterPpRequest> listPpInfo = DropManager.instance.GetPowerPointInfo();
+		if (listPpInfo.Count > 1)
+		{
+			// 수량 에러
+			CheatingListener.OnDetectCheatTable();
+			return;
+		}
+
+		string checkSum = "";
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		string jsonListPp = serializer.SerializeObject(listPpInfo);
+		checkSum = CheckSum(string.Format("{0}_{1}_{2}", chaosSlotIndex, jsonListPp, "qizkvjrau"));
+
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "ChaosFragment",
+			FunctionParameter = new { Sl = chaosSlotIndex, LstPp = listPpInfo, LstPpCs = checkSum },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
+			jsonResult.TryGetValue("retErr", out object retErr);
+			bool failure = ((retErr.ToString()) == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+
+				PlayerData.instance.chaosFragmentCount -= price;
+
+				// 성공시에만 date파싱을 한다
+				jsonResult.TryGetValue("date", out object date);
+				DailyShopData.instance.OnRecvChaosSlotInfo((string)date, chaosSlotIndex);
+
+				// pp는 미리 넣어둔다.
+				PlayerData.instance.OnRecvUpdateCharacterStatistics(listPpInfo, DropManager.instance.GetTranscendPointInfo(), 0);
+
 				if (successCallback != null) successCallback.Invoke();
 			}
 		}, (error) =>
@@ -2915,6 +2968,32 @@ public class PlayFabApiManager : MonoBehaviour
 				WaitingNetworkCanvas.Show(false);
 				CurrencyData.instance.dia -= price;
 				DailyShopData.instance.unlockLevel += 1;
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+
+	public void RequestPurchaseChaosSlot(int price, Action successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "BuyChaosSlot",
+			FunctionParameter = new { Lv = 1 },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+				CurrencyData.instance.gold -= price;
+				DailyShopData.instance.chaosSlotUnlockLevel += 1;
 				if (successCallback != null) successCallback.Invoke();
 			}
 		}, (error) =>

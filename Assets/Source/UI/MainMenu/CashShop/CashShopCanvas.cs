@@ -31,6 +31,8 @@ public class CashShopCanvas : MonoBehaviour
 	public RectTransform equipBox8IconRectTransform;
 	public Text equipBox8AddText;
 
+	public GameObject dailyShopChaosInfo;
+
 	public DiaListItem[] diaListItemList;
 	public GoldListItem[] goldListItemList;
 
@@ -197,6 +199,8 @@ public class CashShopCanvas : MonoBehaviour
 				_equipBox8Price = equipBox8TableData.requiredDiamond;
 			}
 		}
+
+		dailyShopChaosInfo.SetActive(PlayerData.instance.chaosModeOpened);
 
 		for (int i = 0; i < diaListItemList.Length; ++i)
 		{

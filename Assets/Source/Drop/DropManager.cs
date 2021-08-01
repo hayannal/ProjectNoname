@@ -93,6 +93,26 @@ public class DropManager : MonoBehaviour
 	#endregion
 
 
+	#region
+	// Seal이랑 거의 비슷한 구조로 추가해둔다.
+	ObscuredInt _dropChaosFragment;
+
+	public void AddDropChaosFragment(int amount)
+	{
+		_dropChaosFragment += amount;
+		if (ClientSaveData.instance.IsLoadingInProgressGame() == false)
+			ClientSaveData.instance.OnChangedDropChaosFragment(_dropChaosFragment);
+	}
+
+	public int GetStackedDropChaosFragment()
+	{
+		return _dropChaosFragment;
+	}
+
+	public int droppedChaosFragmentCount { get; set; }
+	#endregion
+
+
 	public int stackDropExp { get { return _stackDropExp; } }
 	int _stackDropExp = 0;
 	public void StackDropExp(int exp)

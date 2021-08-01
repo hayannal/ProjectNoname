@@ -53,6 +53,10 @@ public class ChapterTableData
   public int purifyGold { get { return _purifyGold; } set { _purifyGold = value; } }
   
   [SerializeField]
+  string _chaosFragmentDropId;
+  public string chaosFragmentDropId { get { return _chaosFragmentDropId; } set { _chaosFragmentDropId = value; } }
+  
+  [SerializeField]
   string _chapterMusic;
   public string chapterMusic { get { return _chapterMusic; } set { _chapterMusic = value; } }
   

@@ -46,6 +46,10 @@ public class BattleResultCanvas : MonoBehaviour
 	public GameObject[] sealCountImageList;
 	public GameObject sealUnacquiredTextObject;
 
+	public GameObject chaosFragmentGroupObject;
+	public RectTransform chaosFragmentInfoButtonTransform;
+	public Text chaosFragmentValueText;
+
 	public GameObject itemGroupObject;
 	public Slider itemLineSlider;
 	public GameObject gainItemTextObject;
@@ -90,6 +94,7 @@ public class BattleResultCanvas : MonoBehaviour
 	{
 		UpdateStageText();
 		UpdateGoldText();
+		UpdateChaosFragmentText();
 		UpdateEquipSmallStatusInfo();
 	}
 
@@ -328,15 +333,14 @@ public class BattleResultCanvas : MonoBehaviour
 
 	IEnumerator SealProcess()
 	{
+		bool nextStep = false;
 		if (sealCompletedText.gameObject.activeSelf || sealUnacquiredTextObject.activeSelf)
 		{
 			yield return new WaitForSecondsRealtime(0.2f);
-			itemGroupObject.SetActive(true);
-			StartCoroutine(ItemProcess());
-			yield break;
+			nextStep = true;
 		}
 
-		if (sealImageGroupObject.activeSelf)
+		if (sealImageGroupObject.activeSelf && nextStep == false)
 		{
 			int sealCount = DropManager.instance.GetStackedDropSeal();
 			if (sealCount > sealCountImageList.Length)
@@ -346,9 +350,25 @@ public class BattleResultCanvas : MonoBehaviour
 				sealCountImageList[i].SetActive(true);
 				yield return new WaitForSecondsRealtime(0.2f);
 			}
+		}
 
-			itemGroupObject.SetActive(true);
-			StartCoroutine(ItemProcess());
+		if (nextStep)
+		{
+			if (_currentChaosMode)
+			{
+				chaosFragmentGroupObject.SetActive(true);
+
+				yield return null;
+				yield return null;
+
+				chaosFragmentInfoButtonTransform.pivot = new Vector2(0.5f, chaosFragmentInfoButtonTransform.pivot.y);
+				chaosFragmentInfoButtonTransform.anchoredPosition = new Vector2(chaosFragmentInfoButtonTransform.sizeDelta.x * 0.5f, chaosFragmentInfoButtonTransform.anchoredPosition.y);
+			}
+			else
+			{
+				itemGroupObject.SetActive(true);
+				StartCoroutine(ItemProcess());
+			}
 		}
 	}
 
@@ -361,6 +381,57 @@ public class BattleResultCanvas : MonoBehaviour
 			text = string.Format("{0}.\n\n{1}.", text, UIString.instance.GetString("GameUI_SealAddedDesc"));
 
 		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, text, 200, sealInfoButtonTransform, new Vector2(25.0f, -35.0f));
+	}
+	#endregion
+
+	#region Chaos Fragment
+	public void OnEventIncreaseChaosFragment()
+	{
+		_chaosFragmentChangeRemainTime = chaosFragmentChangeTime;
+		_chaosFragmentChangeSpeed = DropManager.instance.GetStackedDropChaosFragment() / _chaosFragmentChangeRemainTime;
+		_currentChaosFragment = 0.0f;
+		_updateChaosFragmentText = true;
+
+		StartCoroutine(ChaosFragmentProcess());
+	}
+
+	IEnumerator ChaosFragmentProcess()
+	{
+		yield return new WaitForSecondsRealtime(chaosFragmentChangeTime);
+
+		itemGroupObject.SetActive(true);
+		StartCoroutine(ItemProcess());
+	}
+
+	const float chaosFragmentChangeTime = 0.4f;
+	float _chaosFragmentChangeRemainTime;
+	float _chaosFragmentChangeSpeed;
+	float _currentChaosFragment;
+	int _lastChaosFragment;
+	bool _updateChaosFragmentText;
+	void UpdateChaosFragmentText()
+	{
+		if (_updateChaosFragmentText == false)
+			return;
+
+		_currentChaosFragment += _chaosFragmentChangeSpeed * Time.unscaledDeltaTime;
+		int currentChaosFragmentInt = (int)_currentChaosFragment;
+		if (currentChaosFragmentInt >= DropManager.instance.GetStackedDropChaosFragment())
+		{
+			currentChaosFragmentInt = DropManager.instance.GetStackedDropChaosFragment();
+			_updateChaosFragmentText = false;
+		}
+		if (currentChaosFragmentInt != _lastChaosFragment)
+		{
+			_lastChaosFragment = currentChaosFragmentInt;
+			chaosFragmentValueText.text = _lastChaosFragment.ToString("N0");
+		}
+	}
+
+	public void OnClickChaosFragmentInfoButton()
+	{
+		string text = UIString.instance.GetString("GameUI_ChaosFragmentDesc");
+		TooltipCanvas.Show(true, TooltipCanvas.eDirection.Bottom, text, 200, chaosFragmentInfoButtonTransform, new Vector2(25.0f, -35.0f));
 	}
 	#endregion
 

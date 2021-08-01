@@ -399,6 +399,9 @@ public class DropObject : MonoBehaviour
 				case DropProcessor.eDropType.Seal:
 					DropManager.instance.AddDropSeal(1);
 					break;
+				case DropProcessor.eDropType.ChaosFragment:
+					DropManager.instance.AddDropChaosFragment(1);
+					break;
 			}
 		}
 

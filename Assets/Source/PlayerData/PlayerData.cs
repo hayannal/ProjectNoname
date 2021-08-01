@@ -98,6 +98,9 @@ public class PlayerData : MonoBehaviour
 	public ObscuredInt nodeWarBonusPowerSource { get; set; }
 	public ObscuredBool nodeWarAgainOpened { get; set; }
 
+	// 카오스 파편
+	public ObscuredInt chaosFragmentCount { get; set; }
+
 	// sealCount 획득 연출용 변수. 클라에만 저장해두고 로비 돌아갈때 보여준다.
 	// 이벤트 처리가 아니라서 PlayerData에 넣어두기로 한다.
 	public ObscuredInt sealGainCount { get; set; }
@@ -359,6 +362,7 @@ public class PlayerData : MonoBehaviour
 		nodeWarCurrentLevel = 0;
 		nodeWarBoostRemainCount = 0;
 		nodeWarAgainOpened = false;
+		chaosFragmentCount = 0;
 		termsConfirmed = false;
 
 		// Obscured 아니지만 함께 처리
@@ -468,6 +472,7 @@ public class PlayerData : MonoBehaviour
 	{
 		// nodeWarClearLevel은 디비에 없을 수 있으므로 초기화가 필요.
 		nodeWarClearLevel = 0;
+		chaosFragmentCount = 0;
 		for (int i = 0; i < playerStatistics.Count; ++i)
 		{
 			switch (playerStatistics[i].StatisticName)
@@ -475,6 +480,7 @@ public class PlayerData : MonoBehaviour
 				case "highestPlayChapter": highestPlayChapter = playerStatistics[i].Value; break;
 				case "highestClearStage": highestClearStage = playerStatistics[i].Value; break;
 				case "nodClLv": nodeWarClearLevel = playerStatistics[i].Value; break;
+				case "chaosFragment": chaosFragmentCount = playerStatistics[i].Value; break;
 			}
 		}
 	}

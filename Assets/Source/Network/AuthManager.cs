@@ -224,6 +224,7 @@ public class AuthManager : MonoBehaviour
 		playerStatisticNames.Add("highestClearStage");
 		playerStatisticNames.Add("nodClLv");
 		playerStatisticNames.Add("guideQuestIndex");
+		playerStatisticNames.Add("chaosFragment");
 		GetPlayerCombinedInfoRequestParams parameters = new GetPlayerCombinedInfoRequestParams();
 		parameters.GetCharacterList = true;
 		parameters.GetPlayerStatistics = true;

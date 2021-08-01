@@ -261,6 +261,8 @@ public class BattleModeProcessorBase
 		DropManager.instance.AddDropGold(dropGold);
 		int dropSeal = ClientSaveData.instance.GetCachedDropSeal();
 		DropManager.instance.AddDropSeal(dropSeal);
+		int dropChaosFragment = ClientSaveData.instance.GetCachedDropChaosFragment();
+		DropManager.instance.AddDropChaosFragment(dropChaosFragment);
 
 		// 레벨팩 리프레쉬에 쓰이는 배틀 클리어 포인트도 로드
 		_clearPoint = ClientSaveData.instance.GetCachedClearPoint();
@@ -602,7 +604,8 @@ public class BattleModeProcessorBase
 
 		SoundManager.instance.StopBGM(3.0f);
 		PlayFabApiManager.instance.RequestEndGame(clear, PlayerData.instance.currentChaosMode, StageManager.instance.playChapter, StageManager.instance.playStage - 1,
-			DropManager.instance.GetStackedDropGold(), DropManager.instance.GetStackedDropSeal(), DropManager.instance.GetStackedDropEquipList(), (result, newCharacterId, itemGrantString) =>
+			DropManager.instance.GetStackedDropGold(), DropManager.instance.GetStackedDropSeal(), DropManager.instance.GetStackedDropChaosFragment(),
+			DropManager.instance.GetStackedDropEquipList(), (result, newCharacterId, itemGrantString) =>
 		{
 			// 정보를 갱신하기 전에 먼저 BattleResult를 보여준다.
 			BattleResultCanvas.instance.RefreshChapterInfo(itemGrantString);
@@ -618,6 +621,9 @@ public class BattleModeProcessorBase
 		{
 			// 클리어 여부에 상관없이 purify를 채워야한다. 어차피 최대가 되면 로비에서 알아서 최대치 표시로 넘어갈테니 여기선 수량증가만 해둔다.
 			++PlayerData.instance.purifyCount;
+
+			// 카오스 파편은 카오스모드에서만 얻을 수 있다.
+			PlayerData.instance.chaosFragmentCount += DropManager.instance.GetStackedDropChaosFragment();
 		}
 		if (PlayerData.instance.currentChaosMode == false && PlayerData.instance.highestPlayChapter == PlayerData.instance.selectedChapter)
 		{

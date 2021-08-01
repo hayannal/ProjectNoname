@@ -25,6 +25,7 @@ public class DailyShopData : MonoBehaviour
 	static DailyShopData _instance = null;
 
 	public const int ShopSlotMax = 11;
+	public const int ChaosSlotMax = 2;
 
 	public class DailyShopSlotInfo
 	{
@@ -72,6 +73,16 @@ public class DailyShopData : MonoBehaviour
 
 	// 유료 슬롯 언락단계. 계정 생성하면 0으로 시작해서 세번 다 오픈해야 3으로 되는 구조다.
 	public ObscuredInt unlockLevel { get; set; }
+
+
+	#region Chaos Fragment
+	// 카오스 조각으로 살 수 있는 항아리 구매 내역
+	List<ObscuredBool> _listChaosSlotPurchased;
+
+	// 상점 슬롯과 마찬가지로 유료 슬롯 언락단계. 계정 생성하면 0으로 시작해서 두번 다 오픈해야 2로 되는 구조다.
+	public ObscuredInt chaosSlotUnlockLevel { get; set; }
+	#endregion
+
 
 #if UNITY_EDITOR
 	public int overrideDay;
@@ -178,6 +189,34 @@ public class DailyShopData : MonoBehaviour
 			if (int.TryParse(userReadOnlyData["shpUnlckLv"].Value, out intValue))
 				unlockLevel = intValue;
 		}
+
+
+		#region Chaos Fragment
+		// 카오스 조각으로 살 수 있는 항아리 구매 내역
+		if (_listChaosSlotPurchased == null)
+			_listChaosSlotPurchased = new List<ObscuredBool>();
+		_listChaosSlotPurchased.Clear();
+		for (int i = 0; i <= ChaosSlotMax; ++i)
+			_listChaosSlotPurchased.Add(false);
+
+		for (int i = 0; i <= ChaosSlotMax; ++i)
+		{
+			string key = string.Format("lasChaShpDat{0}", i);
+			if (userReadOnlyData.ContainsKey(key))
+			{
+				if (string.IsNullOrEmpty(userReadOnlyData[key].Value) == false)
+					OnRecvChaosSlotInfo(userReadOnlyData[key].Value, i);
+			}
+		}
+
+		chaosSlotUnlockLevel = 0;
+		if (userReadOnlyData.ContainsKey("chaShpUnlckLv"))
+		{
+			int intValue = 0;
+			if (int.TryParse(userReadOnlyData["chaShpUnlckLv"].Value, out intValue))
+				chaosSlotUnlockLevel = intValue;
+		}
+		#endregion
 	}
 
 	List<string> _listLoadKey = new List<string>();
@@ -367,6 +406,35 @@ public class DailyShopData : MonoBehaviour
 			OnRecvDailyShopSlotInfo(universalTime, index);
 		}
 	}
+
+	#region Chaos Fragment
+	public bool IsPurchasedTodayChaosData(int index)
+	{
+		if (_listChaosSlotPurchased == null)
+			return false;
+
+		if (index < _listChaosSlotPurchased.Count)
+			return _listChaosSlotPurchased[index];
+		return false;
+	}
+	void OnRecvChaosSlotInfo(DateTime lastChaosSlotPurchasedTime, int index)
+	{
+		if (ServerTime.UtcNow.Year == lastChaosSlotPurchasedTime.Year && ServerTime.UtcNow.Month == lastChaosSlotPurchasedTime.Month && ServerTime.UtcNow.Day == lastChaosSlotPurchasedTime.Day)
+			_listChaosSlotPurchased[index] = true;
+		else
+			_listChaosSlotPurchased[index] = false;
+	}
+
+	public void OnRecvChaosSlotInfo(string lastChaosSlotPurchasedTimeString, int index)
+	{
+		DateTime lastChaosSlotPurchasedTime = new DateTime();
+		if (DateTime.TryParse(lastChaosSlotPurchasedTimeString, out lastChaosSlotPurchasedTime))
+		{
+			DateTime universalTime = lastChaosSlotPurchasedTime.ToUniversalTime();
+			OnRecvChaosSlotInfo(universalTime, index);
+		}
+	}
+	#endregion
 
 	#region Unifxed Item Info
 	string _lastUnfixedDateTimeString = "";
@@ -636,6 +704,13 @@ public class DailyShopData : MonoBehaviour
 				_listShopSlotPurchased[i] = false;
 		}
 
+		// 카오스 항아리 역시 똑같이 초기화
+		if (_listChaosSlotPurchased != null)
+		{
+			for (int i = 0; i < _listChaosSlotPurchased.Count; ++i)
+				_listChaosSlotPurchased[i] = false;
+		}
+
 		// 이 타이밍에 unfixed 갱신처리도 해줘야한다.
 		RegisterUnfixedInfo();
 
@@ -650,6 +725,13 @@ public class DailyShopData : MonoBehaviour
 		{
 			for (int i = 0; i < _listShopSlotPurchased.Count; ++i)
 				if (_listShopSlotPurchased[i])
+					return false;
+		}
+
+		if (_listChaosSlotPurchased != null)
+		{
+			for (int i = 0; i < _listChaosSlotPurchased.Count; ++i)
+				if (_listChaosSlotPurchased[i])
 					return false;
 		}
 

@@ -396,6 +396,14 @@ public class DotMainMenuCanvas : MonoBehaviour
 			result = true;
 		if (CurrencyData.instance.dailyDiaRemainCount > 0 && PlayerData.instance.sharedDailyPackageOpened == false)
 			result = true;
+		if (PlayerData.instance.chaosFragmentCount >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("ChaosPowerPointsCost"))
+		{
+			for (int i = 0; i <= DailyShopData.ChaosSlotMax; ++i)
+			{
+				if (i <= DailyShopData.instance.chaosSlotUnlockLevel && DailyShopData.instance.IsPurchasedTodayChaosData(i) == false)
+					return true;
+			}
+		}
 		return result;
 	}
 

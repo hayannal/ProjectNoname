@@ -21,6 +21,7 @@ public class DropProcessor : MonoBehaviour
 		PowerPoint,
 		Balance,
 		ReturnScroll,
+		ChaosFragment,
 	}
 
 	#region Static Fuction
@@ -149,6 +150,7 @@ public class DropProcessor : MonoBehaviour
 				{
 					case eDropType.Gold:
 					case eDropType.Gacha:
+					case eDropType.ChaosFragment:
 
 						// 스테이지 드랍은 항상 인벤 수량을 체크해야한다.
 						if (dropType == eDropType.Gacha)
@@ -160,6 +162,13 @@ public class DropProcessor : MonoBehaviour
 
 							// 최대량을 넘지 못하게 처리
 							if (TimeSpaceData.instance.inventoryItemCount + DropManager.instance.droppedStageItemCount >= TimeSpaceData.InventoryRealMax)
+								continue;
+						}
+
+						// 카오스 조각 역시 풀인지 봐야한다.
+						if (dropType == eDropType.ChaosFragment)
+						{
+							if (PlayerData.instance.chaosFragmentCount + DropManager.instance.droppedChaosFragmentCount >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("ChaosFragmentMax"))
 								continue;
 						}
 
@@ -376,6 +385,12 @@ public class DropProcessor : MonoBehaviour
 				case eDropType.ReturnScroll:
 					dropProcessor.Add(dropType, floatValue, intValue, stringValue);
 					break;
+				case eDropType.ChaosFragment:
+					if (PlayerData.instance.currentChaosMode == false)
+						break;
+					DropManager.instance.droppedChaosFragmentCount += intValue;
+					dropProcessor.Add(dropType, floatValue, intValue, stringValue);
+					break;
 			}
 		}
 	}
@@ -546,6 +561,7 @@ public class DropProcessor : MonoBehaviour
 			case eDropType.Seal:
 			case eDropType.Origin:
 			case eDropType.ReturnScroll:
+			case eDropType.ChaosFragment:
 				for (int i = 0; i < intValue; ++i)
 				{
 					newInfo = new DropObjectInfo();

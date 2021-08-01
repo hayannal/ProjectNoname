@@ -200,6 +200,7 @@ public class ClientSaveData : MonoBehaviour
 		ClearDropItemList();
 		OnChangedDropGold(0.0f);
 		OnChangedDropSeal(0);
+		OnChangedDropChaosFragment(0);
 		ClearEliteMonsterIndexList();
 		OnChangedClearPoint(0);
 		OnChangedLastPowerSourceSaved(false);
@@ -231,6 +232,7 @@ public class ClientSaveData : MonoBehaviour
 		string jsonDropItemData = GetCachedDropItemData();
 		float dropGold = GetCachedDropGold();
 		int dropSeal = GetCachedDropSeal();
+		int dropChaosFragment = GetCachedDropChaosFragment();
 		string stagePenaltyId = GetCachedStagePenalty();
 		string jsonEliteMonsterData = GetCachedEliteMonsterData();
 		int clearPoint = GetCachedClearPoint();
@@ -269,6 +271,7 @@ public class ClientSaveData : MonoBehaviour
 		OnChangedDropItemData(jsonDropItemData);
 		OnChangedDropGold(dropGold);
 		OnChangedDropSeal(dropSeal);
+		OnChangedDropChaosFragment(dropChaosFragment);
 		if (string.IsNullOrEmpty(stagePenaltyId) == false) OnChangedStagePenalty(stagePenaltyId);
 		if (string.IsNullOrEmpty(jsonEliteMonsterData) == false) OnChangedEliteMonsterData(jsonEliteMonsterData);
 		OnChangedClearPoint(clearPoint);
@@ -402,6 +405,8 @@ public class ClientSaveData : MonoBehaviour
 	public float GetCachedDropGold() { return GetCachedFloat("cachedDropGold"); }
 	public void OnChangedDropSeal(int dropSeal) { SetCachedInt("cachedDropSeal", dropSeal); }
 	public int GetCachedDropSeal() { return GetCachedInt("cachedDropSeal"); }
+	public void OnChangedDropChaosFragment(int dropChaosFragment) { SetCachedInt("cachedChaosFragment", dropChaosFragment); }
+	public int GetCachedDropChaosFragment() { return GetCachedInt("cachedChaosFragment"); }
 
 	// 패널티 버프 디버프
 	public void OnChangedStagePenalty(string stagePenaltyId) { SetCachedString("cachedStagePenalty", stagePenaltyId); }

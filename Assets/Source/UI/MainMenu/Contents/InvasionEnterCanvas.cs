@@ -416,6 +416,8 @@ public class InvasionEnterCanvas : MonoBehaviour
 	{
 		// 오늘 입장한 캐릭터 리스트를 구해오면 입장 횟수를 구할 수 있다.
 		int currentEnterCount = ContentsData.instance.listInvasionEnteredActorId.Count;
+		if (currentEnterCount == ENTER_COUNT_MAX && _lastDayOfWeek == DayOfWeek.Sunday)
+			currentEnterCount = ENTER_COUNT_MAX + 1;
 		if (currentEnterCount < ENTER_COUNT_MAX)
 		{
 			enterButtonObject.SetActive(true);
@@ -579,6 +581,8 @@ public class InvasionEnterCanvas : MonoBehaviour
 		if (DelayedLoadingCanvas.IsShow())
 			return;
 		int currentEnterCount = ContentsData.instance.listInvasionEnteredActorId.Count;
+		if (currentEnterCount == ENTER_COUNT_MAX && _lastDayOfWeek == DayOfWeek.Sunday)
+			currentEnterCount = ENTER_COUNT_MAX + 1;
 		if (currentEnterCount == (ENTER_COUNT_MAX + 1))
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("InvasionUI_ThreeDone"), 2.0f);

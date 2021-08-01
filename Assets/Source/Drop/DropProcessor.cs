@@ -117,7 +117,7 @@ public class DropProcessor : MonoBehaviour
 							dropProcessor.AdjustDropDelay(0.05f);
 						else if (dropTableData.dropId.Contains("Daily"))
 							dropProcessor.AdjustDropDelay(0.1f);
-						if (BattleManager.instance != null && BattleManager.instance.IsInvasion())
+						if (BattleManager.instance != null && BattleManager.instance.IsInvasion() && dropType == eDropType.Gold)
 							dropProcessor.AdjustDropDelay(0.05f);
 						break;
 					case eDropType.PowerPoint:
@@ -544,7 +544,7 @@ public class DropProcessor : MonoBehaviour
 				if (dropType == DropProcessor.eDropType.Gold && BattleManager.instance != null && BattleManager.instance.IsDefaultBattle() && MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby == false)
 					randomCount = Random.Range(2, 5);
 				if (_adjustDropDelay > 0.0f) randomCount = Random.Range(20, 30);
-				if (_adjustDropDelay > 0.0f && BattleManager.instance != null && BattleManager.instance.IsInvasion()) randomCount = Random.Range(15, 20);
+				if (_adjustDropDelay > 0.0f && BattleManager.instance != null && BattleManager.instance.IsInvasion()) randomCount = Random.Range(10, 15);
 				float goldDropAdjust = DropAdjustAffector.GetValue(BattleInstanceManager.instance.playerActor.affectorProcessor, DropAdjustAffector.eDropAdjustType.GoldDropAmount);
 				if (goldDropAdjust > 0.0f) randomCount += 1;
 				for (int i = 0; i < randomCount; ++i)

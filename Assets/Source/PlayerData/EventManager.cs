@@ -97,7 +97,9 @@ public class EventManager : MonoBehaviour
 			// Research와 Balance는 메뉴를 추가한거니 서버 이벤트로 변경하기로 한다.
 			//reservedOpenResearchEvent = true;
 			PushServerEvent(eServerEvent.research);
-			PushServerEvent(eServerEvent.analysis);
+
+			// temp
+			//PushServerEvent(eServerEvent.analysis);
 
 			// 3챕터에 추가되는게 침공
 			PushServerEvent(eServerEvent.invasion);
@@ -218,11 +220,12 @@ public class EventManager : MonoBehaviour
 			if (IsCompleteServerEvent(eServerEvent.invasion) == false && ContainsStandbyServerEvent(eServerEvent.invasion) == false)
 				PushServerEvent(eServerEvent.invasion);
 		}
-		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Analysis))
-		{
-			if (IsCompleteServerEvent(eServerEvent.analysis) == false && ContainsStandbyServerEvent(eServerEvent.analysis) == false)
-				PushServerEvent(eServerEvent.analysis);
-		}
+		// temp
+		//if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Analysis))
+		//{
+		//	if (IsCompleteServerEvent(eServerEvent.analysis) == false && ContainsStandbyServerEvent(eServerEvent.analysis) == false)
+		//		PushServerEvent(eServerEvent.analysis);
+		//}
 		#endregion
 	}
 

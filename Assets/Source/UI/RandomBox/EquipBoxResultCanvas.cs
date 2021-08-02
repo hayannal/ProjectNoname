@@ -19,6 +19,7 @@ public class EquipBoxResultCanvas : MonoBehaviour
 	public GameObject contentItemPrefab;
 	public RectTransform contentRootRectTransform;
 	public GridLayoutGroup contentGridLayoutGroup;
+	public RectTransform scrollRectTransform;
 
 	public GameObject exitGroupObject;
 
@@ -93,6 +94,8 @@ public class EquipBoxResultCanvas : MonoBehaviour
 			TimeSpacePortal.instance.RefreshAlarmObject();
 		if (TimeSpaceGround.instance != null && TimeSpaceGround.instance.gameObject.activeSelf)
 			TimeSpaceGround.instance.RefreshAlarmObjectList();
+
+		scrollRectTransform.sizeDelta = new Vector2(scrollRectTransform.sizeDelta.x, (goldDia == false && listGrantItem.Count > 10) ? 340.0f : 180.0f);
 
 		contentGridLayoutGroup.childAlignment = (listGrantItem.Count == 1) ? TextAnchor.MiddleCenter : TextAnchor.UpperLeft;
 		Timing.RunCoroutine(ItemProcess(listGrantItem));

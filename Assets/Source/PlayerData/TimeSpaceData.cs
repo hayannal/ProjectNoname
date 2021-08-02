@@ -36,7 +36,7 @@ public class TimeSpaceData
 	}
 
 	public const int InventoryVisualMax = 200;
-	public const int InventoryRealMax = 212;
+	public const int InventoryRealMax = 249;
 
 	EquipStatusList _cachedEquipStatusList = new EquipStatusList();
 	public EquipStatusList cachedEquipStatusList { get { return _cachedEquipStatusList; } }

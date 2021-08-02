@@ -31,6 +31,13 @@ public class CashShopCanvas : MonoBehaviour
 	public RectTransform equipBox8IconRectTransform;
 	public Text equipBox8AddText;
 
+	public GameObject equipBox45GroupObject;
+	public Text equipBox45NameText;
+	public Text equipBox45PriceText;
+	public Image equipBox45IconImage;
+	public RectTransform equipBox45IconRectTransform;
+	public Text equipBox45AddText;
+
 	public GameObject dailyShopChaosInfo;
 
 	public DiaListItem[] diaListItemList;
@@ -200,6 +207,20 @@ public class CashShopCanvas : MonoBehaviour
 			}
 		}
 
+		equipBox45GroupObject.SetActive(false);
+		ShopBoxTableData equipBox45TableData = TableDataManager.instance.FindShopBoxTableData("EquipmentBox45");
+		if (equipBox45TableData != null)
+		{
+			equipBox45GroupObject.SetActive(CurrencyData.instance.dia >= equipBox45TableData.requiredDiamond);
+			if (equipBox45GroupObject.activeSelf)
+			{
+				equipBox45NameText.SetLocalizedText(UIString.instance.GetString(equipBox45TableData.boxName));
+				equipBox45PriceText.text = equipBox45TableData.requiredDiamond.ToString("N0");
+				equipBox45AddText.text = UIString.instance.GetString(equipBox45TableData.addText);
+				_equipBox45Price = equipBox45TableData.requiredDiamond;
+			}
+		}
+
 		dailyShopChaosInfo.SetActive(PlayerData.instance.chaosModeOpened);
 
 		for (int i = 0; i < diaListItemList.Length; ++i)
@@ -244,7 +265,7 @@ public class CashShopCanvas : MonoBehaviour
 		}
 
 		UIInstanceManager.instance.ShowCanvasAsync("EquipBoxConfirmCanvas", () => {
-			EquipBoxConfirmCanvas.instance.ShowCanvas(true, true, _equipBox1Price, equipBox1NameText.text, "", equipBox1IconImage.sprite, equipBox1IconRectTransform.anchoredPosition, equipBox1IconRectTransform.sizeDelta);
+			EquipBoxConfirmCanvas.instance.ShowCanvas(true, 1, _equipBox1Price, equipBox1NameText.text, "", equipBox1IconImage.sprite, equipBox1IconRectTransform.anchoredPosition, equipBox1IconRectTransform.sizeDelta);
 		});
 	}
 
@@ -258,7 +279,21 @@ public class CashShopCanvas : MonoBehaviour
 		}
 
 		UIInstanceManager.instance.ShowCanvasAsync("EquipBoxConfirmCanvas", () => {
-			EquipBoxConfirmCanvas.instance.ShowCanvas(true, false, _equipBox8Price, equipBox8NameText.text, equipBox8AddText.text, equipBox8IconImage.sprite, equipBox8IconRectTransform.anchoredPosition, equipBox8IconRectTransform.sizeDelta);
+			EquipBoxConfirmCanvas.instance.ShowCanvas(true, 8, _equipBox8Price, equipBox8NameText.text, equipBox8AddText.text, equipBox8IconImage.sprite, equipBox8IconRectTransform.anchoredPosition, equipBox8IconRectTransform.sizeDelta);
+		});
+	}
+
+	int _equipBox45Price;
+	public void OnClickEquipBox45()
+	{
+		if (TimeSpaceData.instance.IsInventoryVisualMax())
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_ManageInventory"), 2.0f);
+			return;
+		}
+
+		UIInstanceManager.instance.ShowCanvasAsync("EquipBoxConfirmCanvas", () => {
+			EquipBoxConfirmCanvas.instance.ShowCanvas(true, 45, _equipBox45Price, equipBox45NameText.text, equipBox45AddText.text, equipBox45IconImage.sprite, equipBox45IconRectTransform.anchoredPosition, equipBox45IconRectTransform.sizeDelta);
 		});
 	}
 }

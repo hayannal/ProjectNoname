@@ -29,15 +29,15 @@ public class EquipBoxConfirmCanvas : MonoBehaviour
 		buttonObject.SetActive(true);
 	}
 
-	bool _miniBox;
+	int _contentsCount;
 	int _price;
-	public void ShowCanvas(bool show, bool miniBox, int price, string name, string addText, Sprite equipBoxSprite, Vector2 anchoredPosition, Vector2 sizeDelta)
+	public void ShowCanvas(bool show, int contentsCount, int price, string name, string addText, Sprite equipBoxSprite, Vector2 anchoredPosition, Vector2 sizeDelta)
 	{
 		gameObject.SetActive(show);
 		if (show == false)
 			return;
 
-		_miniBox = miniBox;
+		_contentsCount = contentsCount;
 		_price = price;
 
 		// 하단 다이아 영역이 36이었는데 잘려나가면서 강제로 offset처리를 해줘야한다.
@@ -61,7 +61,7 @@ public class EquipBoxConfirmCanvas : MonoBehaviour
 	Dictionary<int, float> _dicGradeWeight;
 	public void OnClickInfoButton()
 	{
-		string detailText = UIString.instance.GetString(_miniBox ? "ShopUIMore_EquipmentBox1" : "ShopUIMore_EquipmentBox8");
+		string detailText = UIString.instance.GetString(string.Format("ShopUIMore_EquipmentBox{0}", _contentsCount));
 
 		if (_dicGradeWeight == null)
 			_dicGradeWeight = new Dictionary<int, float>();
@@ -132,9 +132,17 @@ public class EquipBoxConfirmCanvas : MonoBehaviour
 			return;
 		}
 
+		string dropId = "";
+		switch (_contentsCount)
+		{
+			case 1: dropId = "Wkdql"; break;
+			case 8: dropId = "Wkdwkdql"; break;
+			case 45: dropId = "Wkdwkdqlql"; break;
+		}
+
 		// 오리진 박스와 마찬가지로 먼저 드랍프로세서부터 만들어야한다.
-		_cachedDropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, _miniBox ? "Wkdql" : "Wkdwkdql", "", true, true);
-		if (_miniBox == false)
+		_cachedDropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, dropId, "", true, true);
+		if (_contentsCount > 5)
 			_cachedDropProcessor.AdjustDropRange(3.7f);
 		if (CheatingListener.detectedCheatTable)
 			return;

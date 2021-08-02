@@ -495,8 +495,9 @@ public class DotMainMenuCanvas : MonoBehaviour
 		// Research 안에 Research와 Analysis 두개로 나뉘니 둘다 검사해야한다. 둘중 하나라도 true면 true다.
 		if (ResearchInfoGrowthCanvas.CheckResearch(PlayerData.instance.researchLevel + 1))
 			return true;
-		if (ResearchInfoAnalysisCanvas.CheckAnalysis())
-			return true;
+		// temp hide
+		//if (ResearchInfoAnalysisCanvas.CheckAnalysis())
+		//	return true;
 
 		return false;
 	}

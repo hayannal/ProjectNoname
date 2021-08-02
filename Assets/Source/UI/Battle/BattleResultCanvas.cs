@@ -350,7 +350,12 @@ public class BattleResultCanvas : MonoBehaviour
 				sealCountImageList[i].SetActive(true);
 				yield return new WaitForSecondsRealtime(0.2f);
 			}
+			nextStep = true;
 		}
+
+		// 인장 모여주고나서 다음 스텝으로 넘어가지 않는 유저들이 생겨서 강제로 켜기로 해본다.
+		if (nextStep == false)
+			nextStep = true;
 
 		if (nextStep)
 		{

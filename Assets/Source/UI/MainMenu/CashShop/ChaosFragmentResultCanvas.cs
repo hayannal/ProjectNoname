@@ -52,7 +52,11 @@ public class ChaosFragmentResultCanvas : MonoBehaviour
 			yield break;
 		}
 
-		
+
+		// 컨텐츠로 얻은 pp는 별도로 추가해야한다.
+		PlayerData.instance.ppContentsAddCount += listPpInfo[0].add;
+
+
 		// 0번꺼 가져와서 셋팅한다.
 		bool levelUpPossible = false;
 		int powerLevel = 0;

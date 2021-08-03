@@ -77,6 +77,8 @@ public class PlayerData : MonoBehaviour
 	public ObscuredInt questCharacterBoxOpenCount { get; set; }
 	// pp 총합산 검증을 위해 상점에서 구매한 pp 카운트를 저장해두는 변수
 	public ObscuredInt ppBuyCount { get; set; }
+	// 컨텐츠 등에서 제공하는 pp추가 수량 총합. 서버에선 클라가 주는대로 합산해둔다.
+	public ObscuredInt ppContentsAddCount { get; set; }
 
 	// 인앱결제 상품 관련 변수
 	List<int> _listLevelPackage;    // 레벨패키지 구매했음을 알리는 용도인데 어차피 일반 플레이어 데이터에 저장하는거라 Obscured도 안쓰기로 한다.
@@ -351,6 +353,7 @@ public class PlayerData : MonoBehaviour
 		characterBoxOpenCount = 0;
 		questCharacterBoxOpenCount = 0;
 		ppBuyCount = 0;
+		ppContentsAddCount = 0;
 		_listLevelPackage = null;
 		sharedDailyPackageOpened = false;
 		secondDailyBoxFillCount = 0;
@@ -670,6 +673,14 @@ public class PlayerData : MonoBehaviour
 				ppBuyCount = intValue;
 		}
 
+		ppContentsAddCount = 0;
+		if (userReadOnlyData.ContainsKey("ppCtsAddCnt"))
+		{
+			int intValue = 0;
+			if (int.TryParse(userReadOnlyData["ppCtsAddCnt"].Value, out intValue))
+				ppContentsAddCount = intValue;
+		}
+
 		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
 		_listLevelPackage = null;
 		if (userData.ContainsKey("lvPckLst"))
@@ -805,7 +816,7 @@ public class PlayerData : MonoBehaviour
 			totalPp += _listCharacterData[i].pp;
 		// balancePp도 합산시켜줘야한다.
 		totalPp += balancePp;
-		if (totalPp > (originOpenCount * PPMaxPerOriginBox + characterBoxOpenCount * PPMaxPerCharacterBox + questCharacterBoxOpenCount * PPMaxPerCharacterBox + ppBuyCount + balancePpBuyCount))
+		if (totalPp > (originOpenCount * PPMaxPerOriginBox + characterBoxOpenCount * PPMaxPerCharacterBox + questCharacterBoxOpenCount * PPMaxPerCharacterBox + ppBuyCount + balancePpBuyCount + ppContentsAddCount))
 			PlayFabApiManager.instance.RequestIncCliSus(ClientSuspect.eClientSuspectCode.InvalidTotalPp, false, totalPp);
 
 		// 연구레벨 체크

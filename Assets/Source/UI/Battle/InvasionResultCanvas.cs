@@ -336,6 +336,9 @@ public class InvasionResultCanvas : MonoBehaviour
 		bool levelUpPossible = false;
 		for (int i = 0; i < listPpInfo.Count; ++i)
 		{
+			// 컨텐츠로 얻은 pp는 별도로 추가해야한다.
+			PlayerData.instance.ppContentsAddCount += listPpInfo[i].add;
+
 			CharacterBoxResultListItem resultListItem = _ppContainer.GetCachedItem(ppContentItemPrefab, ppContentRootRectTransform);
 			int powerLevel = 0;
 			int transcendLevel = 0;

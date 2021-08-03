@@ -121,7 +121,7 @@ public class EquipBoxResultCanvas : MonoBehaviour
 			EquipCanvasListItem equipCanvasListItem = _container.GetCachedItem(contentItemPrefab, contentRootRectTransform);
 			equipCanvasListItem.Initialize(newEquipData, OnClickListItem);
 			_listEquipCanvasListItem.Add(equipCanvasListItem);
-			yield return Timing.WaitForSeconds(0.2f);
+			yield return Timing.WaitForSeconds((listGrantItem.Count > 10) ? 0.08f : 0.2f);
 		}
 
 		exitGroupObject.SetActive(true);

@@ -35,6 +35,10 @@ public class ChaosFragmentResultCanvas : MonoBehaviour
 		CashShopCanvas.instance.dailyShopChaosInfo.gameObject.SetActive(false);
 		CashShopCanvas.instance.dailyShopChaosInfo.gameObject.SetActive(true);
 
+		// 이때 DotMainMenu꺼도 같이 해둔다.
+		if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
+			DotMainMenuCanvas.instance.RefreshCashShopAlarmObject();
+
 		// 0.15초 초기화 대기 후 시작
 		yield return Timing.WaitForSeconds(0.15f);
 		toastBackImageRectTransform.gameObject.SetActive(true);

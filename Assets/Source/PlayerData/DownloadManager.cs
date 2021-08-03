@@ -116,6 +116,21 @@ public class DownloadManager : MonoBehaviour
 		//yield return handleCommonCanvasGroup;
 		while (_handleCommonCanvasGroup.IsValid() && !_handleCommonCanvasGroup.IsDone)
 			yield return null;
+
+		#region Download Error
+		if (s_forceReloadSceneCount == 1 || s_forceReloadSceneCount == 2)
+		{
+			// 다운로드 에러로 인해 강제로 재시작하는거라면 그것도 두번째 재시작까지는 확인코드 없이 바로 다운로드를 진행하기로 한다.
+			_totalDownloadSize = (totalDownloadSize * 1.0f);
+#if USE_MARK_KEY
+			StartCoroutine(ClearAndDownloadProcess(_listBundleMarkKey));
+#else
+			StartCoroutine(ClearAndDownloadProcess(keys));
+#endif
+			yield break;
+		}
+		#endregion
+
 		Instantiate<GameObject>(_handleCommonCanvasGroup.Result);
 		OkCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("SystemUI_ForceDownloadBeginning", dataSizeString), () =>
 		{
@@ -158,7 +173,7 @@ public class DownloadManager : MonoBehaviour
 			if (handle.Result > 0 && AddressableResourceExists(key, typeof(GameObject)))
 			{
 				listClearKey.Add(key.ToString());
-				//Debug.LogFormat("total clear key count = {0} / add key name = {1}", listClearKey.Count, key.ToString());
+				Debug.LogFormat("clear key name = {0}", key.ToString());
 			}
 			Addressables.Release<long>(handle);
 		}
@@ -200,8 +215,57 @@ public class DownloadManager : MonoBehaviour
 			LoadingCanvas.instance.progressText.text = progressString;
 
 			yield return new WaitForSeconds(.1f);
+
+			#region Download Error
+			if (CheckDownloadError(status.DownloadedBytes))
+				yield break;
+			#endregion
 		}
 	}
+
+	#region Download Error
+	int _downloadErrorCount;
+	long _lastDownloadedBytes;
+	int _holdCount;
+	bool CheckDownloadError(long bytes)
+	{
+		// 다운로드 에러가 한번이라도 발생했다면 DownloadedBytes가 멈추는지 확인해야한다.
+		// 만약 멈추지 않고 그냥 진행된다면 알아서 씬 재시작하면서 객체 사라질테니 신경 안써도 된다.
+		// 이 절차는 로비 다운로드에서는 하지 않는다.
+		if (_downloadErrorCount == 0)
+			return false;
+
+		if (_lastDownloadedBytes == bytes)
+		{
+			++_holdCount;
+
+			// 0.1초당 호출되고 있는거니 10회 누적되면 1초고 50회 누적되면 5초동안 아무런 진전이 없었던거다.
+			if (_holdCount > 50)
+			{
+				// 강재 재시작 횟수를 증가시켜놓는다. 이 값으로 다운로드 할거냐는 질문 없이 다운로드를 하게될거다.
+				ForceReloadScene();
+				return true;
+			}
+		}
+		else
+		{
+			_lastDownloadedBytes = bytes;
+			_holdCount = 0;
+		}
+		return false;
+	}
+
+	static int s_forceReloadSceneCount;
+	void ForceReloadScene()
+	{
+		++s_forceReloadSceneCount;
+		Screen.sleepTimeout = SleepTimeout.SystemSetting;
+		UIString.instance.currentRegion = "";
+		Addressables.Release(_totalDownloadHandle);
+		Addressables.Release<GameObject>(_handleCommonCanvasGroup);
+		SceneManager.LoadScene(0);
+	}
+	#endregion
 
 	AsyncOperationHandle<GameObject> _handleCommonCanvasGroup;
 	void DownloadComplete(AsyncOperationHandle handle)
@@ -213,6 +277,8 @@ public class DownloadManager : MonoBehaviour
 		var status = handle.Status;
 		if (status == AsyncOperationStatus.Succeeded)
 		{
+			s_forceReloadSceneCount = 0;
+
 			// 패치를 받고 씬을 재시작할때는 스트링을 다시 로드하기 위해서 현재 region값에 빈값을 넣어둔다.
 			// 패치 목록에 스트링이 껴있는지는 판단하지 않고 그냥 처리한다. 어차피 재로딩도 빠르다.
 			UIString.instance.currentRegion = "";
@@ -224,6 +290,7 @@ public class DownloadManager : MonoBehaviour
 		else
 		{
 			Debug.LogFormat("Download failed with reason: {0}", handle.OperationException.Message);
+			++_downloadErrorCount;
 		}
 	}
 

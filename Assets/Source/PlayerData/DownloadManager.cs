@@ -224,20 +224,17 @@ public class DownloadManager : MonoBehaviour
 	}
 
 	#region Download Error
-	int _downloadErrorCount;
 	long _lastDownloadedBytes;
 	int _holdCount;
 	bool CheckDownloadError(long bytes)
 	{
-		// 다운로드 에러가 한번이라도 발생했다면 DownloadedBytes가 멈추는지 확인해야한다.
+		// DownloadedBytes가 멈추는지 확인해야한다.
 		// 만약 멈추지 않고 그냥 진행된다면 알아서 씬 재시작하면서 객체 사라질테니 신경 안써도 된다.
 		// 이 절차는 로비 다운로드에서는 하지 않는다.
-		if (_downloadErrorCount == 0)
-			return false;
-
 		if (_lastDownloadedBytes == bytes)
 		{
 			++_holdCount;
+			//Debug.LogErrorFormat("hold count {0}", _holdCount);
 
 			// 0.1초당 호출되고 있는거니 10회 누적되면 1초고 50회 누적되면 5초동안 아무런 진전이 없었던거다.
 			if (_holdCount > 50)
@@ -251,6 +248,7 @@ public class DownloadManager : MonoBehaviour
 		{
 			_lastDownloadedBytes = bytes;
 			_holdCount = 0;
+			//Debug.LogErrorFormat("clear hold count");
 		}
 		return false;
 	}
@@ -277,7 +275,9 @@ public class DownloadManager : MonoBehaviour
 		var status = handle.Status;
 		if (status == AsyncOperationStatus.Succeeded)
 		{
+			#region Download Error
 			s_forceReloadSceneCount = 0;
+			#endregion
 
 			// 패치를 받고 씬을 재시작할때는 스트링을 다시 로드하기 위해서 현재 region값에 빈값을 넣어둔다.
 			// 패치 목록에 스트링이 껴있는지는 판단하지 않고 그냥 처리한다. 어차피 재로딩도 빠르다.
@@ -290,7 +290,14 @@ public class DownloadManager : MonoBehaviour
 		else
 		{
 			Debug.LogFormat("Download failed with reason: {0}", handle.OperationException.Message);
-			++_downloadErrorCount;
+
+			#region Download Error
+			if (handle.OperationException.Message.Contains("ChainOperation of Type"))
+			{
+				// 마지막에 에러가 오면 뭔가 잘못된거다. 이대로 대기해봤자 아무것도 진행이 안되니 재시작해본다.
+				ForceReloadScene();
+			}
+			#endregion
 		}
 	}
 

@@ -3025,12 +3025,14 @@ public class PlayFabApiManager : MonoBehaviour
 	#endregion
 
 	#region Mail
-	public void RequestRefreshMailList(int mailTableDataCount, Action<bool, bool, bool, string, string> successCallback)
+	public void RequestRefreshMailList(int mailTableDataCount, string osCode, int clientVersion, Action<bool, bool, bool, string, string> successCallback)
 	{
+		string input = string.Format("{0}_{1}_{2}", osCode, clientVersion, "ziqjrnoi");
+		string checkSum = CheckSum(input);
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
 			FunctionName = "RefreshMail",
-			FunctionParameter = new { Mtc = mailTableDataCount },
+			FunctionParameter = new { Mtc = mailTableDataCount, Os = osCode, CltVer = clientVersion, Cs = checkSum },
 			GeneratePlayStreamEvent = true
 		}, (success) =>
 		{

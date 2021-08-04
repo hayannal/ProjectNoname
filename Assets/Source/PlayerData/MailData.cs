@@ -39,6 +39,8 @@ public class MailData : MonoBehaviour
 		public int ti;
 		public int cc;
 		public string ci;
+		public string ca;
+		public string co;
 	}
 	List<MailCreateInfo> _listMailCreateInfo;
 
@@ -87,6 +89,18 @@ public class MailData : MonoBehaviour
 			}
 		}
 
+		// 서버 업데이트 버전에 따라 표시 유무를 결정하는 기능이 추가되면서 버전을 기억해두기로 한다.
+		BuildVersionInfo versionInfo = null;
+#if UNITY_ANDROID
+		_osCode = "and";
+		versionInfo = Resources.Load<BuildVersionInfo>("Build/BuildVersionInfo_Android");
+#elif UNITY_IOS
+		_osCode = "ios";
+		versionInfo = Resources.Load<BuildVersionInfo>("Build/BuildVersionInfo_iOS");
+#endif
+		_clientUpdateVersion = versionInfo.updateVersion;
+		_clientUpdateVersion = 23;
+
 		_listMailCreateInfo = null;
 		if (titleData.ContainsKey("mail"))
 			_listMailCreateInfo = serializer.DeserializeObject<List<MailCreateInfo>>(titleData["mail"]);
@@ -118,7 +132,7 @@ public class MailData : MonoBehaviour
 			if (needRemove || needAdd)
 			{
 				// 변경해야할 항목이 있다면 서버에 리프레쉬를 알린다.
-				PlayFabApiManager.instance.RequestRefreshMailList(_listMailCreateInfo.Count, OnRecvRefreshMail);
+				PlayFabApiManager.instance.RequestRefreshMailList(_listMailCreateInfo.Count, _osCode, _clientUpdateVersion, OnRecvRefreshMail);
 			}
 			mailRefreshTime = ServerTime.UtcNow;
 			CalcNextRefreshTime();
@@ -208,6 +222,13 @@ public class MailData : MonoBehaviour
 				continue;
 			if (string.IsNullOrEmpty(_listMailCreateInfo[i].ci) == false && PlayFabApiManager.instance.playFabId != _listMailCreateInfo[i].ci)
 				continue;
+#if UNITY_ANDROID
+			if (CheckVersionMail(_listMailCreateInfo[i].ca) == false)
+				continue;
+#elif UNITY_IOS
+			if (CheckVersionMail(_listMailCreateInfo[i].co) == false)
+				continue;
+#endif
 
 			// 내 메일리스트를 확인해서 이미 생성한거면 패스. 해야하는거면 리스트에 넣어서 서버로 보낸다.
 			// 하나 예외 상황이 있는데 id가 "ev"면 매일 생성해야하는 메일이라서
@@ -222,6 +243,45 @@ public class MailData : MonoBehaviour
 				return true;
 		}
 		return false;
+	}
+
+	string _osCode;
+	int _clientUpdateVersion;
+	bool CheckVersionMail(string checkVersionString)
+	{
+		// 비어있는건 항상 보이는 메일이다. 검사하지 않는다.
+		if (string.IsNullOrEmpty(checkVersionString))
+			return true;
+
+		// parse
+		int version = 0;
+		Condition.eCompareType compareType = Condition.eCompareType.Equal;
+		if (checkVersionString.StartsWith("<=") || checkVersionString.StartsWith(">="))
+		{
+			if (checkVersionString.StartsWith("<="))
+				compareType = Condition.eCompareType.LittleOrEqual;
+			if (checkVersionString.StartsWith(">="))
+				compareType = Condition.eCompareType.GreaterOrEqual;
+
+			string versionString = checkVersionString.Substring(2);
+			if (int.TryParse(versionString, out version) == false)
+				return true;
+		}
+		else if (checkVersionString.StartsWith("<") || checkVersionString.StartsWith(">"))
+		{
+			if (checkVersionString.StartsWith("<"))
+				compareType = Condition.eCompareType.Little;
+			if (checkVersionString.StartsWith(">"))
+				compareType = Condition.eCompareType.Greater;
+
+			string versionString = checkVersionString.Substring(1);
+			if (int.TryParse(versionString, out version) == false)
+				return true;
+		}
+		if (Condition.CompareValue(compareType, _clientUpdateVersion, version) == false)
+			return false;
+
+		return true;
 	}
 
 	bool FindMyMail(string id, DateTime startDateTime, DateTime endDateTime)
@@ -380,7 +440,7 @@ public class MailData : MonoBehaviour
 		CalcNextRefreshTime();
 
 		// WaitNetwork 없이 패킷 보내서 응답이 오면 갱신해둔다.
-		PlayFabApiManager.instance.RequestRefreshMailList(_listMailCreateInfo.Count, OnRecvRefreshMail);
+		PlayFabApiManager.instance.RequestRefreshMailList(_listMailCreateInfo.Count, _osCode, _clientUpdateVersion, OnRecvRefreshMail);
 	}
 
 	void CalcNextRefreshTime()

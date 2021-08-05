@@ -285,6 +285,8 @@ public class LevelPackageBox : MonoBehaviour
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("ShopUI_UserCancel"), 2.0f);
 		else if (reason == PurchaseFailureReason.DuplicateTransaction)
 		{
+			WaitingNetworkCanvas.Show(true);
+			RequestServerPacket(product);
 		}
 		else
 		{

@@ -155,7 +155,12 @@ public class DiaListItem : MonoBehaviour
 			// OnPurchaseFailed 를 PurchaseFailureReason.DuplicateTransaction 인자와 호출함과 동시에
 			// 곧바로 OnPurchaseComplete 함수도 호출해서 어떤 상품을 구매했었는지 보내온다.
 			// 즉 Failed함수와 Complete함수가 동시에 실행되는 것.
-			// 예전 IAP 버전초기때는 이 Failed함수만 호출되었던거 같은데 이렇게 Complete도 오다보니 굳이 여기서 예외처리를 할 필요가 없게 되었다.
+			// 예전 IAP 버전초기때는 이 Failed함수만 호출되었던거 같은데 이렇게 Complete도 오다보니 굳이 여기서 예외처리를 할 필요가 없게 되었다
+			//
+			// IAP 버전을 3.0.3으로 올리고나서 테스트해보니 다시 예전처럼 Failed함수만 호출된다.
+			// 버전이 바뀌면서 정책이 바뀐듯 하여 직접 컴플릿 된거처럼 처리하기로 한다.
+			WaitingNetworkCanvas.Show(true);
+			RequestServerPacket(product);
 		}
 		else
 		{

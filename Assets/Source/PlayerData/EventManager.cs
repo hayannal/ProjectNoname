@@ -98,8 +98,8 @@ public class EventManager : MonoBehaviour
 			//reservedOpenResearchEvent = true;
 			PushServerEvent(eServerEvent.research);
 
-			// temp
-			//PushServerEvent(eServerEvent.analysis);
+			// temp analy
+			PushServerEvent(eServerEvent.analysis);
 
 			// 3챕터에 추가되는게 침공
 			PushServerEvent(eServerEvent.invasion);
@@ -220,12 +220,12 @@ public class EventManager : MonoBehaviour
 			if (IsCompleteServerEvent(eServerEvent.invasion) == false && ContainsStandbyServerEvent(eServerEvent.invasion) == false)
 				PushServerEvent(eServerEvent.invasion);
 		}
-		// temp
-		//if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Analysis))
-		//{
-		//	if (IsCompleteServerEvent(eServerEvent.analysis) == false && ContainsStandbyServerEvent(eServerEvent.analysis) == false)
-		//		PushServerEvent(eServerEvent.analysis);
-		//}
+		// temp analy
+		if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Analysis))
+		{
+			if (IsCompleteServerEvent(eServerEvent.analysis) == false && ContainsStandbyServerEvent(eServerEvent.analysis) == false)
+				PushServerEvent(eServerEvent.analysis);
+		}
 		#endregion
 	}
 

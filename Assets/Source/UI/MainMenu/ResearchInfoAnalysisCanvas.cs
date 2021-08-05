@@ -21,7 +21,11 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 	public RectTransform positionRectTransform;
 	public Text levelText;
 	public GameObject levelUpButtonObject;
-	public Slider expSlider;
+
+	public Slider expGaugeSlider;
+	public Image expGaugeImage;
+	public DOTweenAnimation expGaugeColorTween;
+	public Image expGaugeEndPointImage;
 
 	public GameObject switchGroupObject;
 	public SwitchAnim alarmSwitch;
@@ -58,6 +62,8 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 			});
 			EventManager.instance.reservedOpenAnalysisEvent = false;
 			EventManager.instance.CompleteServerEvent(EventManager.eServerEvent.analysis);
+			ResearchCanvas.instance.RefreshAlarmObjectList();
+			DotMainMenuCanvas.instance.RefreshResearchAlarmObject();
 		}
 
 		// 처음이라면 분석시작을 서버에 알려서 기록해야한다. 딱 한번만 날리는 패킷
@@ -71,6 +77,7 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 
 		GetComponent<Canvas>().worldCamera = UIInstanceManager.instance.GetCachedCameraMain();
 		_ignoreStartEvent = true;
+		_defaultExpGaugeColor = expGaugeImage.color;
 	}
 
 	Vector2 _leftTweenPosition = new Vector2(-150.0f, 0.0f);
@@ -101,6 +108,13 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 			AlarmObject.Show(alarmRootTransform);
 		else
 			AlarmObject.Hide(alarmRootTransform);
+
+		// 화면 전환이 없다보니 제대로 캐싱할 시간은 없고 오브젝트만 만들었다가 꺼두는 캐싱이라도 해둔다.
+		if (_disableButton == false)
+		{
+			GameObject effectObject = BattleInstanceManager.instance.GetCachedObject(effectPrefab, ResearchObjects.instance.effectRootTransform);
+			effectObject.SetActive(false);
+		}
 	}
 
 	void OnDisable()
@@ -111,9 +125,12 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 	void Update()
 	{
 		UpdateRemainTime();
+		UpdatePercentText();
+		UpdateExpGauge();
 	}
 
 	int _currentLevel;
+	float _currentExpPercent;
 	public void RefreshInfo()
 	{
 		analysisText.text = UIString.instance.GetString("AnalysisUI_Analysis");
@@ -145,21 +162,24 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 		_analysisTableData = analysisTableData;
 
 		bool hideLevelUpButton = false;
-		bool maxReached = (_currentLevel == BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxAnalysisLevel"));
-		if (maxReached) hideLevelUpButton = true;
+		//bool maxReached = (_currentLevel == BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxAnalysisLevel"));
+		//if (maxReached) hideLevelUpButton = true;
 		if (AnalysisData.instance.analysisStarted == false) hideLevelUpButton = true;
 		levelUpButtonObject.SetActive(!hideLevelUpButton);
 
 		// exp는 누적된 시간을 구해와서 현재 Required 에 맞게 변환해서 표시하면 된다.
-		expSlider.value = 0.0f;
+		CalcExpPercent();
+		expGaugeSlider.value = _currentExpPercent;
+		expGaugeEndPointImage.gameObject.SetActive(false);
 
-		if (analysisTableData.maxTime < 60)
-			maxTimeText.text = string.Format("Max {0}m", analysisTableData.maxTime);
+		int maxTimeMinute = analysisTableData.maxTime / 60;
+		if (maxTimeMinute < 60)
+			maxTimeText.text = string.Format("Max {0}m", maxTimeMinute);
 		else
-			maxTimeText.text = string.Format("Max {0}h", analysisTableData.maxTime / 60);
+			maxTimeText.text = string.Format("Max {0}h", maxTimeMinute / 60);
 
-		RefreshGetButton();
 		RefreshProcessGauge();
+		RefreshGetButton();
 
 		_needUpdate = false;
 		_maxTimeReached = false;
@@ -167,11 +187,11 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 		{
 			analyzingText.text = "";
 			completeText.text = "";
-			remainTimeText.text = string.Format("{0:00}:{1:00}:{2:00}", analysisTableData.maxTime / 60, analysisTableData.maxTime % 60, 0);
+			remainTimeText.text = string.Format("{0:00}:{1:00}:{2:00}", maxTimeMinute / 60, maxTimeMinute % 60, 0);
 			return;
 		}
 
-		DateTime finishTime = AnalysisData.instance.analysisStartedTime + TimeSpan.FromMinutes(_analysisTableData.maxTime);
+		DateTime finishTime = AnalysisData.instance.analysisStartedTime + TimeSpan.FromSeconds(_analysisTableData.maxTime);
 		if (ServerTime.UtcNow < finishTime)
 		{
 			analyzingText.text = "";
@@ -182,20 +202,63 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 		else
 		{
 			analyzingText.text = "";
-			completeText.text = UIString.instance.GetString("QuestUI_QuestCompleteNoti");
-			remainTimeText.text = string.Format("{0:00}:{1:00}:{2:00}", 0, 0, 0);
+			completeText.text = UIString.instance.GetString("AnalysisUI_ProgressFull");
+			remainTimeText.text = "00:00:00";
 			_maxTimeReached = true;
 		}
 	}
 
+	void CalcExpPercent()
+	{
+		int level = 0;
+		float percent = 0.0f;
+		int maxLevel = BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxAnalysisLevel");
+		for (int i = _currentLevel; i < TableDataManager.instance.analysisTable.dataArray.Length; ++i)
+		{
+			if (AnalysisData.instance.analysisExp < TableDataManager.instance.analysisTable.dataArray[i].requiredAccumulatedTime)
+			{
+				int currentPeriodExp = AnalysisData.instance.analysisExp - TableDataManager.instance.analysisTable.dataArray[i - 1].requiredAccumulatedTime;
+				percent = (float)currentPeriodExp / (float)TableDataManager.instance.analysisTable.dataArray[i].requiredTime;
+				level = TableDataManager.instance.analysisTable.dataArray[i].level - 1;
+				break;
+			}
+			if (TableDataManager.instance.analysisTable.dataArray[i].level >= maxLevel)
+			{
+				level = maxLevel;
+				percent = 1.0f;
+				break;
+			}
+		}
+
+		_currentExpPercent = percent;
+	}
+
+	bool _disableButton = false;
 	void RefreshGetButton()
 	{
+		_disableButton = false;
+
 		if (AnalysisData.instance.analysisStarted == false)
 		{
 			getButtonImage.color = ColorUtil.halfGray;
 			getButtonText.color = ColorUtil.halfGray;
+			_disableButton = true;
 			return;
 		}
+
+		bool confirmable = false;
+		if (_analysisTableData != null)
+		{
+			if (centerGaugeSlider.value >= 0.5f)
+				confirmable = true;
+			TimeSpan diffTime = ServerTime.UtcNow - AnalysisData.instance.analysisStartedTime;
+			if (diffTime.TotalMinutes > 30)
+				confirmable = true;
+		}
+
+		_disableButton = !confirmable;
+		getButtonImage.color = _disableButton ? ColorUtil.halfGray : Color.white;
+		getButtonText.color = _disableButton ? ColorUtil.halfGray : Color.white;
 	}
 
 	void RefreshProcessGauge()
@@ -208,7 +271,7 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 			TimeSpan timeSpan = ServerTime.UtcNow - AnalysisData.instance.analysisStartedTime;
 			totalSeconds = (int)timeSpan.TotalSeconds;
 		}
-		float processRatio = (float)totalSeconds / (_analysisTableData.maxTime * 60);
+		float processRatio = (float)totalSeconds / _analysisTableData.maxTime;
 		if (processRatio > 1.0f) processRatio = 1.0f;
 		centerGaugeSlider.value = processRatio;
 		percentText.text = string.Format("{0:0.00}%", processRatio * 100.0f);
@@ -228,7 +291,7 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 			return;
 
 		// 매프레임 계산하기엔 너무 부하가 심할수도 있으니 1초에 한번만 하기로 한다.
-		DateTime finishTime = AnalysisData.instance.analysisStartedTime + TimeSpan.FromMinutes(_analysisTableData.maxTime);
+		DateTime finishTime = AnalysisData.instance.analysisStartedTime + TimeSpan.FromSeconds(_analysisTableData.maxTime);
 		if (ServerTime.UtcNow < finishTime)
 		{
 			TimeSpan remainTime = finishTime - ServerTime.UtcNow;
@@ -238,6 +301,9 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 				remainTimeText.text = string.Format("{0:00}:{1:00}:{2:00}", remainTime.Hours, remainTime.Minutes, remainTime.Seconds);
 				analyzingText.text = string.Format("{0}{1}", _progressOngoingString, GetDotString(_lastRemainTimeSecond));
 				_lastRemainTimeSecond = (int)remainTime.TotalSeconds;
+
+				if (_disableButton)
+					RefreshGetButton();
 			}
 		}
 		else
@@ -246,7 +312,7 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 			_maxTimeReached = true;
 			RefreshProcessGauge();
 			analyzingText.text = "";
-			completeText.text = UIString.instance.GetString("QuestUI_QuestCompleteNoti");
+			completeText.text = UIString.instance.GetString("AnalysisUI_ProgressFull");
 			remainTimeText.text = "00:00:00";
 			AlarmObject.Show(alarmRootTransform);
 			ResearchCanvas.instance.RefreshAlarmObjectList();
@@ -263,6 +329,22 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 			case 2: return ".";
 		}
 		return ".";
+	}
+
+	float _percentTextZeroRemainTime = 0.0f;
+	void UpdatePercentText()
+	{
+		if (_percentTextZeroRemainTime > 0.0f)
+		{
+			_percentTextZeroRemainTime -= Time.deltaTime;
+			percentText.text = string.Format("{0:0.00}%", centerGaugeSlider.value * 100.0f);
+
+			if (_percentTextZeroRemainTime <= 0.0f)
+			{
+				_percentTextZeroRemainTime = 0.0f;
+				percentText.text = "0.00%";
+			}
+		}
 	}
 
 	#region Alarm
@@ -291,11 +373,11 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 		}
 
 #if UNITY_ANDROID
-		//CurrencyData.instance.ReserveEnergyNotification();
+		AnalysisData.instance.ReserveAnalysisNotification();
 #elif UNITY_IOS
 		MobileNotificationWrapper.instance.CheckAuthorization(() =>
 		{
-			//CurrencyData.instance.ReserveEnergyNotification();
+			AnalysisData.instance.ReserveAnalysisNotification();
 		}, () =>
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_EnergyNotiAppleLast"), 2.0f);
@@ -324,19 +406,21 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 			return;
 		}
 
-		//CurrencyData.instance.CancelEnergyNotification();
+		AnalysisData.instance.CancelAnalysisNotification();
 	}
 	#endregion
 
 	public static bool CheckAnalysis()
 	{
+		if (EventManager.instance.reservedOpenAnalysisEvent)
+			return true;
 		if (AnalysisData.instance.analysisStarted == false)
 			return false;
 		AnalysisTableData analysisTableData = TableDataManager.instance.FindAnalysisTableData(AnalysisData.instance.analysisLevel);
 		if (analysisTableData == null)
 			return false;
 
-		DateTime completeTime = AnalysisData.instance.analysisStartedTime + TimeSpan.FromMinutes(analysisTableData.maxTime);
+		DateTime completeTime = AnalysisData.instance.analysisStartedTime + TimeSpan.FromSeconds(analysisTableData.maxTime);
 		if (ServerTime.UtcNow < completeTime)
 		{
 		}
@@ -353,7 +437,13 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 
 	public void OnClickLevelUpButton()
 	{
+		if (_currentLevel == BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxAnalysisLevel"))
+		{
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_MaxReachToast"), 2.0f);
+			return;
+		}
 
+		UIInstanceManager.instance.ShowCanvasAsync("AnalysisLevelUpCanvas", null);
 	}
 
 	public void OnClickRemainTimeButton()
@@ -363,38 +453,106 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 
 	public void OnClickButton()
 	{
-		/*
-		if (_notEnough)
+		if (AnalysisData.instance.analysisStarted == false)
 		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString(conditionSumLevelGroupObject.activeSelf ? "ResearchUI_NotEnoughLevel" : "ResearchUI_NotEnoughCharacter"), 2.0f);
 			return;
 		}
 
-		if (CurrencyData.instance.gold < _price)
+		if (_disableButton)
 		{
-			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_NotEnoughGold"), 2.0f);
+			ToastCanvas.instance.ShowToast(UIString.instance.GetString("AnalysisUI_NotEnoughCondition"), 2.0f);
 			return;
 		}
 
-		priceButtonObject.SetActive(false);
-		PlayFabApiManager.instance.RequestResearchLevelUp(_selectedLevel, _price, _rewardDia, () =>
+		PlayFabApiManager.instance.RequestAnalysis(() =>
 		{
-			GuideQuestData.instance.OnQuestEvent(GuideQuestData.eQuestClearType.ResearchLevel);
-
-			// 다이아 보상 받는건 연출 뒤에 반영되게 하려고 예외처리 해둔다.
-			//ResearchCanvas.instance.currencySmallInfo.RefreshInfo();
-			ResearchCanvas.instance.currencySmallInfo.goldText.text = CurrencyData.instance.gold.ToString("N0");
-
-			DotMainMenuCanvas.instance.RefreshResearchAlarmObject();
-			Timing.RunCoroutine(ResearchLevelUpProcess());
+			OnAnalysisResult();
+			Timing.RunCoroutine(AnalysisResultProcess());
 		});
-		*/
 	}
 
-	IEnumerator<float> ResearchLevelUpProcess()
+	public void OnAnalysisResult()
+	{
+		if (_maxTimeReached)
+		{
+			AlarmObject.Hide(alarmRootTransform);
+			ResearchCanvas.instance.RefreshAlarmObjectList();
+			DotMainMenuCanvas.instance.RefreshResearchAlarmObject();
+		}
+		else
+		{
+			if (_onCompleteAlarmState)
+				AnalysisData.instance.CancelAnalysisNotification();
+		}
+	}
+
+	#region Exp Percent Gauge
+	public void RefreshExpPercent(float targetPercent, int levelUpCount)
+	{
+		_targetPercent = targetPercent;
+		_levelUpCount = levelUpCount;
+
+		float totalDiff = levelUpCount;
+		totalDiff += (targetPercent - expGaugeSlider.value);
+		_fillSpeed = totalDiff / LevelUpExpFillTime;
+		_fillRemainTime = LevelUpExpFillTime;
+		
+		expGaugeColorTween.DORestart();
+		expGaugeEndPointImage.color = new Color(expGaugeEndPointImage.color.r, expGaugeEndPointImage.color.g, expGaugeEndPointImage.color.b, _defaultExpGaugeColor.a);
+		expGaugeEndPointImage.gameObject.SetActive(true);
+	}
+
+	Color _defaultExpGaugeColor;
+	const float LevelUpExpFillTime = 0.6f;
+	float _fillRemainTime;
+	float _fillSpeed;
+	float _targetPercent;
+	int _levelUpCount;
+	void UpdateExpGauge()
+	{
+		if (_fillRemainTime > 0.0f)
+		{
+			_fillRemainTime -= Time.deltaTime;
+			expGaugeSlider.value += _fillSpeed * Time.deltaTime;
+			if (expGaugeSlider.value >= 1.0f && _levelUpCount > 0)
+			{
+				expGaugeSlider.value -= 1.0f;
+				_levelUpCount -= 1;
+			}
+
+			if (_fillRemainTime <= 0.0f)
+			{
+				_fillRemainTime = 0.0f;
+				expGaugeSlider.value = _targetPercent;
+
+				expGaugeColorTween.DOPause();
+				expGaugeImage.color = _defaultExpGaugeColor;
+				expGaugeEndPointImage.DOFade(0.0f, 1.0f).SetEase(Ease.OutQuad);
+			}
+		}
+	}
+	#endregion
+
+	IEnumerator<float> AnalysisResultProcess()
 	{
 		// 인풋 차단
 		ResearchCanvas.instance.inputLockObject.SetActive(true);
+		getButtonImage.color = ColorUtil.halfGray;
+		getButtonText.color = ColorUtil.halfGray;
+
+		// 시간 업뎃을 멈추고 게이지부터 내린다.
+		_needUpdate = false;
+		completeText.text = "";
+		analyzingText.text = "";
+		_percentTextZeroRemainTime = LevelUpExpFillTime;
+		DOTween.To(() => centerGaugeSlider.value, x => centerGaugeSlider.value = x, 0.0f, LevelUpExpFillTime).SetEase(Ease.Linear);
+
+		// 경험치 슬라이더도 함께 움직여야한다.
+		bool showLevelUp = (AnalysisData.instance.analysisLevel - _currentLevel > 0);
+		CalcExpPercent();
+		RefreshExpPercent(_currentExpPercent, AnalysisData.instance.analysisLevel - _currentLevel);
+		//yield return Timing.WaitForSeconds(LevelUpExpFillTime - 0.3f);
+
 
 		// 오브젝트 정지
 		ResearchObjects.instance.objectTweenAnimation.DOTogglePause();
@@ -404,32 +562,98 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 		BattleInstanceManager.instance.GetCachedObject(effectPrefab, ResearchObjects.instance.effectRootTransform);
 		yield return Timing.WaitForSeconds(2.0f);
 
-		// 여기서 다이아 갱신까지 다시 되게 한다.
-		ResearchCanvas.instance.currencySmallInfo.RefreshInfo();
 
-		/*
-		// Toast 알림
-		string stringId = diaObject.activeSelf ? "ResearchUI_RewardedCurrency" : "ResearchUI_RewardedStat";
-		ToastCanvas.instance.ShowToast(UIString.instance.GetString(stringId), 3.0f);
-		yield return Timing.WaitForSeconds(1.0f);
+		// 마지막에 알람도 다시 예약. 이 잠깐의 연출이 나오는동안 앱을 종료시키면 예약이 안될수도 있는데 이런 경우는 패스하기로 한다.
+		if (_onCompleteAlarmState)
+			AnalysisData.instance.ReserveAnalysisNotification();
 
-		// nextInfo
-		priceButtonObject.SetActive(true);
-		if (rightButton.gameObject.activeSelf)
+
+		// 결과창 로딩 후 열리는 타이밍에 마지막 처리를 전달
+		Action action = () =>
 		{
-			OnClickRightButton();
-			yield return Timing.WaitForSeconds(0.4f);
+			// 여기서 다이아 갱신까지 다시 되게 한다.
+			ResearchCanvas.instance.currencySmallInfo.RefreshInfo();
+			RefreshGetButton();
+			RefreshLevelInfo();
+
+			// 토글 복구
+			ResearchObjects.instance.objectTweenAnimation.DOTogglePause();
+
+			// 인풋 복구
+			ResearchCanvas.instance.inputLockObject.SetActive(false);
+		};
+
+
+		// 보상 연출을 시작해야하는데 오리진이 있을때와 없을때로 구분된다.
+		List<string> listGrantInfo = DropManager.instance.GetGrantCharacterInfo();
+		List<DropManager.CharacterTrpRequest> listTrpInfo = DropManager.instance.GetTranscendPointInfo();
+		if (showLevelUp || listGrantInfo.Count + listTrpInfo.Count > 0)
+		{
+			// 이때는 풀스크린 결과창을 띄운다
+			UIInstanceManager.instance.ShowCanvasAsync("AnalysisResultCanvas", () =>
+			{
+				action.Invoke();
+			});
 		}
 		else
 		{
-			RefreshLevelInfo();
+			// 이때는 심플 결과창을 띄운다. 평소에는 이걸 제일 많이 보게될거다.
+			UIInstanceManager.instance.ShowCanvasAsync("AnalysisSimpleResultCanvas", () =>
+			{
+				action.Invoke();
+			});
 		}
+	}
 
-		// 토글 복구
+	// UI는 다 여기있으니 여기서 처리하는게 맞다.
+	public IEnumerator<float> LevelUpAnalysisProcess()
+	{
+		// 인풋 차단
+		ResearchCanvas.instance.inputLockObject.SetActive(true);
+		getButtonImage.color = ColorUtil.halfGray;
+		getButtonText.color = ColorUtil.halfGray;
+
+		// 시간 업뎃을 멈추고 여기선 게이지 내릴 필요 없으니 바로 퍼센트만 처리한다.
+		_needUpdate = false;
+		bool showLevelUp = (AnalysisData.instance.analysisLevel - _currentLevel > 0);
+		CalcExpPercent();
+		RefreshExpPercent(_currentExpPercent, AnalysisData.instance.analysisLevel - _currentLevel);
+		//yield return Timing.WaitForSeconds(LevelUpExpFillTime - 0.3f);
+
+
+		// 오브젝트 정지
 		ResearchObjects.instance.objectTweenAnimation.DOTogglePause();
+		yield return Timing.WaitForSeconds(0.3f);
 
-		// 인풋 복구
-		ResearchCanvas.instance.inputLockObject.SetActive(false);
-		*/
+		// 이펙트
+		BattleInstanceManager.instance.GetCachedObject(effectPrefab, ResearchObjects.instance.effectRootTransform);
+		yield return Timing.WaitForSeconds(2.0f);
+
+
+		// 마지막에 알람도 다시 예약. 이 잠깐의 연출이 나오는동안 앱을 종료시키면 예약이 안될수도 있는데 이런 경우는 패스하기로 한다.
+		if (_onCompleteAlarmState)
+			AnalysisData.instance.ReserveAnalysisNotification();
+
+
+		// 결과창 로딩 후 열리는 타이밍에 마지막 처리를 전달
+		Action action = () =>
+		{
+			RefreshGetButton();
+			RefreshLevelInfo();
+
+			// 토글 복구
+			ResearchObjects.instance.objectTweenAnimation.DOTogglePause();
+
+			// 인풋 복구
+			ResearchCanvas.instance.inputLockObject.SetActive(false);
+		};
+
+
+		// 보상 연출을 시작해야하는데 오리진이 있을때와 없을때로 구분된다.
+		// 이때는 풀스크린 결과창을 띄운다
+		UIInstanceManager.instance.ShowCanvasAsync("AnalysisResultCanvas", () =>
+		{
+			action.Invoke();
+		});
 	}
 }

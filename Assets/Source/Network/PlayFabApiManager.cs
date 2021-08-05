@@ -3608,6 +3608,106 @@ public class PlayFabApiManager : MonoBehaviour
 			HandleCommonError(error);
 		});
 	}
+
+	public void RequestAnalysis(Action successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		// 쌓아둔 게이지를 초로 환산해서 누적할 준비를 한다.
+		// 최초에 2분 30초 돌리자마자 쌓으면 150 쌓게될거다.
+		AnalysisData.instance.PrepareAnalysis();
+
+		// 이 패킷 역시 Invasion 했던거처럼 다양하게 보낸다. 오리진 재화 등등
+		int addExp = AnalysisData.instance.cachedExpSecond;
+		int currentExp = AnalysisData.instance.analysisExp;
+		int addEnergy = AnalysisData.instance.cachedDropEnergy;
+		int randomGold = AnalysisData.instance.cachedRandomGold;
+		int addGold = DropManager.instance.GetLobbyGoldAmount();
+		int addDia = DropManager.instance.GetLobbyDiaAmount();
+		List<string> listGrantInfo = DropManager.instance.GetGrantCharacterInfo();
+		List<DropManager.CharacterTrpRequest> listTrpInfo = DropManager.instance.GetTranscendPointInfo();
+
+		string checkSum = "";
+		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
+		string jsonListGr = serializer.SerializeObject(listGrantInfo);
+		string jsonListTrp = serializer.SerializeObject(listTrpInfo);
+		checkSum = CheckSum(string.Format("{0}_{1}_{2}_{3}_{4}_{5}_{6}_{7}_{8}", addExp, currentExp, addEnergy, randomGold, addGold, addDia, jsonListGr, jsonListTrp, "vzdliroa"));
+		
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "Analysis",
+			FunctionParameter = new { Xp = addExp, CurXp = currentExp, En = addEnergy, RaGo = randomGold, Go = addGold, Di = addDia, LstGr = listGrantInfo, LstTrp = listTrpInfo, LstCs = checkSum },
+			GeneratePlayStreamEvent = true,
+			RevisionSelection = CloudScriptRevisionOption.Latest,
+		}, (success) =>
+		{
+			PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
+			jsonResult.TryGetValue("retErr", out object retErr);
+			bool failure = ((retErr.ToString()) == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+
+				// 레벨업이 있다면 먼저 레벨업을 적용시키고나서
+				AnalysisData.instance.AddExp(addExp);
+
+
+				// 재화
+				CurrencyData.instance.dia += addDia;
+				CurrencyData.instance.gold += addGold;
+				CurrencyData.instance.gold += randomGold;
+				if (addEnergy > 0)
+					CurrencyData.instance.OnRecvRefillEnergy(addEnergy);
+
+				// 시간을 셋팅해야 새 레벨에 맞는 CompleteTime으로 갱신이 제대로 된다.
+				// 성공시에만 date파싱을 한다.
+				jsonResult.TryGetValue("date", out object date);
+				AnalysisData.instance.OnRecvAnalysisStartInfo((string)date);
+
+				// 캐릭터랑 초월은 미리 넣어놔도 되지 않을까.
+				jsonResult.TryGetValue("adChrIdPay", out object adChrIdPayload);
+				PlayerData.instance.OnRecvUpdateCharacterStatistics(DropManager.instance.GetPowerPointInfo(), listTrpInfo, 0);
+				PlayerData.instance.OnRecvGrantCharacterList(adChrIdPayload);
+
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
+
+	public void RequestLevelUpAnalysis(int currentLevel, int targetLevel, int price, Action successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		int currentExp = AnalysisData.instance.analysisExp;
+		string input = string.Format("{0}_{1}_{2}_{3}", currentLevel, targetLevel, currentExp, "ieuzvjqa");
+		string checkSum = CheckSum(input);
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "LevelUpAnalysis",
+			FunctionParameter = new { CurXp = currentExp, Cur = currentLevel, Ta = targetLevel, Cs = checkSum },
+			GeneratePlayStreamEvent = true,
+			RevisionSelection = CloudScriptRevisionOption.Latest,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+
+				AnalysisData.instance.OnLevelUp(targetLevel);
+				CurrencyData.instance.dia -= price;
+
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
+		});
+	}
 	#endregion
 
 

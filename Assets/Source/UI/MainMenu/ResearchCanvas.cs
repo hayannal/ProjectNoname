@@ -32,10 +32,6 @@ public class ResearchCanvas : MonoBehaviour
 
 		// 항상 게임을 처음 켤땐 0번탭을 보게 해준다.
 		OnValueChangedToggle(0);
-
-		// temp
-		for (int i = 0; i < menuButtonList.Length; ++i)
-			menuButtonList[i].gameObject.SetActive(false);
 	}
 
 	void OnEnable()

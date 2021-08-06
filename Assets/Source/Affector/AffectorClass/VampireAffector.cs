@@ -6,9 +6,9 @@ using ActorStatusDefine;
 public class VampireAffector : AffectorBase
 {
 	float _endTime;
-	static float s_f2Constant = 65.0f;
-	static float s_f3Constant = 35.0f;
-	static float s_f4Constant = 50.0f;
+	static float s_f2Constant = 40.625f;
+	static float s_f3Constant = 21.875f;
+	static float s_f4Constant = 31.25f;
 
 	AffectorValueLevelTableData _affectorValueLevelTableData;
 	public override void ExecuteAffector(AffectorValueLevelTableData affectorValueLevelTableData, HitParameter hitParameter)

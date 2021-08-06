@@ -12,10 +12,10 @@ public class ResearchCanvas : MonoBehaviour
 	public GameObject menuRootObject;
 
 	// 2개의 메뉴 다 알람을 쓰니 CharacterInfoCanvas 에서 했던거처럼 관리
-	public RectTransform researchAlarmRootTransform;
-	public RectTransform researchShadowAlarmRootTransform;
 	public RectTransform analysisAlarmRootTransform;
 	public RectTransform analysisShadowAlarmRootTransform;
+	public RectTransform researchAlarmRootTransform;
+	public RectTransform researchShadowAlarmRootTransform;
 
 	public GameObject researchGroundObjectPrefab;
 	public GameObject inputLockObject;
@@ -84,17 +84,6 @@ public class ResearchCanvas : MonoBehaviour
 
 	public void RefreshAlarmObjectList()
 	{
-		if (ResearchInfoGrowthCanvas.CheckResearch(PlayerData.instance.researchLevel + 1))
-		{
-			AlarmObject.Show(researchAlarmRootTransform);
-			AlarmObject.Show(researchShadowAlarmRootTransform, true, false, false, true);
-		}
-		else
-		{
-			AlarmObject.Hide(researchAlarmRootTransform);
-			AlarmObject.Hide(researchShadowAlarmRootTransform);
-		}
-
 		if (ResearchInfoAnalysisCanvas.CheckAnalysis())
 		{
 			AlarmObject.Show(analysisAlarmRootTransform);
@@ -104,6 +93,17 @@ public class ResearchCanvas : MonoBehaviour
 		{
 			AlarmObject.Hide(analysisAlarmRootTransform);
 			AlarmObject.Hide(analysisShadowAlarmRootTransform);
+		}
+
+		if (ResearchInfoGrowthCanvas.CheckResearch(PlayerData.instance.researchLevel + 1))
+		{
+			AlarmObject.Show(researchAlarmRootTransform);
+			AlarmObject.Show(researchShadowAlarmRootTransform, true, false, false, true);
+		}
+		else
+		{
+			AlarmObject.Hide(researchAlarmRootTransform);
+			AlarmObject.Hide(researchShadowAlarmRootTransform);
 		}
 	}
 

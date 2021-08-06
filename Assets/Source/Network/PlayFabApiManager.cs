@@ -3671,6 +3671,9 @@ public class PlayFabApiManager : MonoBehaviour
 				PlayerData.instance.OnRecvUpdateCharacterStatistics(DropManager.instance.GetPowerPointInfo(), listTrpInfo, 0);
 				PlayerData.instance.OnRecvGrantCharacterList(adChrIdPayload);
 
+				if (listGrantInfo.Count + listTrpInfo.Count > 0)
+					AnalysisData.instance.OnApplyRemainAnalysisKey();
+
 				if (successCallback != null) successCallback.Invoke();
 			}
 		}, (error) =>

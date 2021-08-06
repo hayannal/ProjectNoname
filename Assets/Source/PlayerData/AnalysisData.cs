@@ -172,17 +172,6 @@ public class AnalysisData : MonoBehaviour
 	}
 
 
-	int GetRemainAnalysisKey()
-	{
-		// legend key와 달리 테이블에 따라 감소수치가 달라진다.
-		int defaultDecreaseValue = 30;
-		AnalysisTableData analysisTableData = TableDataManager.instance.FindAnalysisTableData(analysisLevel);
-		if (analysisTableData != null)
-			defaultDecreaseValue = analysisTableData.keySubtract;
-		return CurrencyData.instance.analysisKey - DropManager.instance.droppedAnalysisOriginCount * defaultDecreaseValue;
-	}
-
-
 
 	const string OriginDropId = "Qnstjrdhfl";
 	const string DiamondDropId = "Qnstjrqhtjr";
@@ -369,6 +358,27 @@ public class AnalysisData : MonoBehaviour
 			_cachedSecond = maxAnalysisExp - analysisExp;
 
 		// 패킷 전달한 준비는 끝.
+	}
+
+	int GetRemainAnalysisKey()
+	{
+		// legend key와 달리 테이블에 따라 감소수치가 달라진다.
+		int defaultDecreaseValue = 30;
+		AnalysisTableData analysisTableData = TableDataManager.instance.FindAnalysisTableData(analysisLevel);
+		if (analysisTableData != null)
+			defaultDecreaseValue = analysisTableData.keySubtract;
+		return CurrencyData.instance.analysisKey - DropManager.instance.droppedAnalysisOriginCount * defaultDecreaseValue;
+	}
+
+	public void OnApplyRemainAnalysisKey()
+	{
+		// 결과창 보일때까진 droppedAnalysisOriginCount 값이 살아있을테니
+		// listGrantInfo 나 listTrpInfo 구해오지 않아도 된다.
+		int defaultDecreaseValue = 30;
+		AnalysisTableData analysisTableData = TableDataManager.instance.FindAnalysisTableData(analysisLevel);
+		if (analysisTableData != null)
+			defaultDecreaseValue = analysisTableData.keySubtract;
+		CurrencyData.instance.analysisKey -= (DropManager.instance.droppedAnalysisOriginCount * defaultDecreaseValue);
 	}
 
 	public void ClearCachedInfo()

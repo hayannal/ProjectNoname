@@ -240,6 +240,7 @@ public class AnalysisResultCanvas : MonoBehaviour
 				resultListItem.characterListItem.Initialize(listGrantInfo[i], powerLevel, SwapCanvasListItem.GetPowerLevelColorState(characterData), transcendLevel, 0, null, null, null);
 				resultListItem.Initialize("ShopUI_NewCharacter", 0);
 				_listResultListItem.Add(resultListItem);
+				yield return Timing.WaitForSeconds(0.2f);
 			}
 
 			for (int i = 0; i < listTrpInfo.Count; ++i)
@@ -258,6 +259,7 @@ public class AnalysisResultCanvas : MonoBehaviour
 				resultListItem.characterListItem.Initialize(listTrpInfo[i].actorId, powerLevel, SwapCanvasListItem.GetPowerLevelColorState(characterData), transcendLevel, 0, null, null, null);
 				resultListItem.Initialize(transcendCondition ? "ShopUI_TranscendReward" : "", 0);
 				_listResultListItem.Add(resultListItem);
+				yield return Timing.WaitForSeconds(0.2f);
 			}
 
 			// pp 뿐만 아니라 transcendPoint도 획득 가능한 곳이다. 알람 갱신

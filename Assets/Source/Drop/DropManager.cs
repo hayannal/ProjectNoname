@@ -549,6 +549,7 @@ public class DropManager : MonoBehaviour
 		droppedNotStreakLegendCharCount = 0;
 		_listDroppedActorId.Clear();
 		_listDroppedPowerPointId.Clear();
+		droppedAnalysisOriginCount = 0;
 
 		// 위와 별개로 패킷으로 보낼때 쓴 정보도 초기화 해줘야한다.
 		ClearLobbyDropPacketInfo();
@@ -821,7 +822,7 @@ public class DropManager : MonoBehaviour
 		public float sumWeight;
 	}
 	List<RandomGachaActorInfo> _listRandomGachaActorInfo = null;
-	public string GetGachaCharacterId(bool originDrop, bool characterBoxDrop, bool questCharacterBoxDrop, int grade = -1, bool ignoreCheckLobby = false)
+	public string GetGachaCharacterId(bool originDrop, bool characterBoxDrop, bool questCharacterBoxDrop, bool analysisDrop, int grade = -1, bool ignoreCheckLobby = false)
 	{
 		bool lobby = (MainSceneBuilder.instance != null && MainSceneBuilder.instance.lobby);
 		if (lobby == false && ignoreCheckLobby == false)
@@ -862,6 +863,10 @@ public class DropManager : MonoBehaviour
 				// 획득가능한지 물어봐야한다.
 				if (GetableOrigin(TableDataManager.instance.actorTable.dataArray[i].actorId, ref useAdjustWeight) == false)
 					continue;
+
+				// analysisDrop 예외처리.
+				if (useAdjustWeight == false && analysisDrop)
+					useAdjustWeight = true;
 			}
 			else
 			{
@@ -917,6 +922,7 @@ public class DropManager : MonoBehaviour
 					// 미보유
 					if (originDrop) adjustWeight *= 3.0f;
 					else if (characterBoxDrop || questCharacterBoxDrop) adjustWeight *= 1.5f;
+					else if (analysisDrop) adjustWeight *= 2.5f;
 					adjustWeight += TableDataManager.instance.actorTable.dataArray[i].charGachaWeight * (DropManager.GetGradeAdjust(TableDataManager.instance.actorTable.dataArray[i]) - 1.0f);
 				}
 				else
@@ -958,6 +964,8 @@ public class DropManager : MonoBehaviour
 		string result = _listRandomGachaActorInfo[index].actorId;
 		_listRandomGachaActorInfo.Clear();
 		_listDroppedActorId.Add(result);
+		if (analysisDrop)
+			++droppedAnalysisOriginCount;
 		return result;
 	}
 	public int droppedNotStreakCharCount { get; set; }
@@ -973,6 +981,10 @@ public class DropManager : MonoBehaviour
 		// 위와 마찬가지로 전설용 Streak도 굴리는 중간에 개수 합산하는게 필요하다.
 		return PlayerData.instance.notStreakLegendCharCount + droppedNotStreakLegendCharCount;
 	}
+
+	#region Analysis Origin Key
+	public int droppedAnalysisOriginCount { get; set; }
+	#endregion
 
 	List<string> _listDroppedActorId = new List<string>();
 	public bool GetableOrigin(string actorId, ref bool useAdjustWeight)

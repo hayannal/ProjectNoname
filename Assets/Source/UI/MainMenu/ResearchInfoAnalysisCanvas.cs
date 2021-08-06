@@ -49,6 +49,9 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 	void Awake()
 	{
 		instance = this;
+
+		// caching
+		_defaultExpGaugeColor = expGaugeImage.color;
 	}
 
 	// Start is called before the first frame update
@@ -77,7 +80,6 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 
 		GetComponent<Canvas>().worldCamera = UIInstanceManager.instance.GetCachedCameraMain();
 		_ignoreStartEvent = true;
-		_defaultExpGaugeColor = expGaugeImage.color;
 	}
 
 	Vector2 _leftTweenPosition = new Vector2(-150.0f, 0.0f);
@@ -162,7 +164,7 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 		_analysisTableData = analysisTableData;
 
 		bool hideLevelUpButton = false;
-		//bool maxReached = (_currentLevel == BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxAnalysisLevel"));
+		bool maxReached = (_currentLevel == BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxAnalysisLevel"));
 		//if (maxReached) hideLevelUpButton = true;
 		if (AnalysisData.instance.analysisStarted == false) hideLevelUpButton = true;
 		levelUpButtonObject.SetActive(!hideLevelUpButton);
@@ -170,6 +172,7 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 		// exp는 누적된 시간을 구해와서 현재 Required 에 맞게 변환해서 표시하면 된다.
 		CalcExpPercent();
 		expGaugeSlider.value = _currentExpPercent;
+		expGaugeImage.color = maxReached ? new Color(1.0f, 1.0f, 0.25f, 1.0f) : _defaultExpGaugeColor;
 		expGaugeEndPointImage.gameObject.SetActive(false);
 
 		int maxTimeMinute = analysisTableData.maxTime / 60;
@@ -213,7 +216,7 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 		int level = 0;
 		float percent = 0.0f;
 		int maxLevel = BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxAnalysisLevel");
-		for (int i = _currentLevel; i < TableDataManager.instance.analysisTable.dataArray.Length; ++i)
+		for (int i = _currentLevel - 1; i < TableDataManager.instance.analysisTable.dataArray.Length; ++i)
 		{
 			if (AnalysisData.instance.analysisExp < TableDataManager.instance.analysisTable.dataArray[i].requiredAccumulatedTime)
 			{
@@ -298,7 +301,7 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 			if (_lastRemainTimeSecond != (int)remainTime.TotalSeconds)
 			{
 				RefreshProcessGauge();
-				remainTimeText.text = string.Format("{0:00}:{1:00}:{2:00}", remainTime.Hours, remainTime.Minutes, remainTime.Seconds);
+				remainTimeText.text = string.Format("{0:00}:{1:00}:{2:00}", remainTime.Hours + ((remainTime.Days > 0) ? remainTime.Days * 24 : 0), remainTime.Minutes, remainTime.Seconds);
 				analyzingText.text = string.Format("{0}{1}", _progressOngoingString, GetDotString(_lastRemainTimeSecond));
 				_lastRemainTimeSecond = (int)remainTime.TotalSeconds;
 
@@ -496,7 +499,13 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 		totalDiff += (targetPercent - expGaugeSlider.value);
 		_fillSpeed = totalDiff / LevelUpExpFillTime;
 		_fillRemainTime = LevelUpExpFillTime;
-		
+		_changeCount = 0;
+		_targetLevel = _currentLevel + levelUpCount;
+
+		// 이미 맥스라면
+		if (expGaugeSlider.value >= 1.0f)
+			return;
+
 		expGaugeColorTween.DORestart();
 		expGaugeEndPointImage.color = new Color(expGaugeEndPointImage.color.r, expGaugeEndPointImage.color.g, expGaugeEndPointImage.color.b, _defaultExpGaugeColor.a);
 		expGaugeEndPointImage.gameObject.SetActive(true);
@@ -508,6 +517,8 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 	float _fillSpeed;
 	float _targetPercent;
 	int _levelUpCount;
+	int _changeCount;
+	int _targetLevel;
 	void UpdateExpGauge()
 	{
 		if (_fillRemainTime > 0.0f)
@@ -518,15 +529,20 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 			{
 				expGaugeSlider.value -= 1.0f;
 				_levelUpCount -= 1;
+
+				++_changeCount;
+				levelText.text = UIString.instance.GetString("GameUI_Lv", _currentLevel + _changeCount);
 			}
 
 			if (_fillRemainTime <= 0.0f)
 			{
 				_fillRemainTime = 0.0f;
 				expGaugeSlider.value = _targetPercent;
+				levelText.text = UIString.instance.GetString("GameUI_Lv", _targetLevel);
 
 				expGaugeColorTween.DOPause();
-				expGaugeImage.color = _defaultExpGaugeColor;
+				bool maxReached = (_targetLevel == BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxAnalysisLevel"));
+				expGaugeImage.color = maxReached ? EquipListStatusInfo.GetGaugeColor(true) : _defaultExpGaugeColor;
 				expGaugeEndPointImage.DOFade(0.0f, 1.0f).SetEase(Ease.OutQuad);
 			}
 		}
@@ -592,6 +608,7 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 			// 이때는 풀스크린 결과창을 띄운다
 			UIInstanceManager.instance.ShowCanvasAsync("AnalysisResultCanvas", () =>
 			{
+				AnalysisResultCanvas.instance.RefreshInfo(showLevelUp, _currentLevel, true);
 				action.Invoke();
 			});
 		}
@@ -653,6 +670,7 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 		// 이때는 풀스크린 결과창을 띄운다
 		UIInstanceManager.instance.ShowCanvasAsync("AnalysisResultCanvas", () =>
 		{
+			AnalysisResultCanvas.instance.RefreshInfo(true, _currentLevel, false);
 			action.Invoke();
 		});
 	}

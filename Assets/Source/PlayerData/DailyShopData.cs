@@ -502,7 +502,7 @@ public class DailyShopData : MonoBehaviour
 					for (int j = 0; j < 10; ++j)
 					{
 						UnityEngine.Random.InitState(seed + j);
-						actorId = DropManager.instance.GetGachaCharacterId(false, false, false, 1, true);
+						actorId = DropManager.instance.GetGachaCharacterId(false, false, false, false, 1, true);
 						if (actorId == "")
 							break;
 						if (actorId != "" && CheckDuplicate(i, info.type, actorId) == false)

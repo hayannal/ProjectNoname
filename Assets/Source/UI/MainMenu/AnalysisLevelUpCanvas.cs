@@ -133,7 +133,7 @@ public class AnalysisLevelUpCanvas : MonoBehaviour
 		tenPriceGrayscaleEffect.enabled = disablePrice;
 	}
 
-	string GetMaxTimeText(int tableMaxTime)
+	public static string GetMaxTimeText(int tableMaxTime)
 	{
 		int maxTimeMinute = tableMaxTime / 60;
 		if (maxTimeMinute < 60)

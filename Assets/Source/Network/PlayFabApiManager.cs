@@ -289,7 +289,7 @@ public class PlayFabApiManager : MonoBehaviour
 		GuideQuestData.instance.OnRecvGuideQuestData(loginResult.InfoResultPayload.UserReadOnlyData, loginResult.InfoResultPayload.PlayerStatistics);
 		PlayerData.instance.OnRecvLevelPackageResetInfo(loginResult.InfoResultPayload.TitleData, loginResult.InfoResultPayload.UserReadOnlyData, loginResult.NewlyCreated);
 		CumulativeEventData.instance.OnRecvCumulativeEventData(loginResult.InfoResultPayload.TitleData, loginResult.InfoResultPayload.UserReadOnlyData, loginResult.NewlyCreated);
-		AnalysisData.instance.OnRecvAnalysisData(loginResult.InfoResultPayload.UserReadOnlyData);
+		AnalysisData.instance.OnRecvAnalysisData(loginResult.InfoResultPayload.UserReadOnlyData, loginResult.InfoResultPayload.PlayerStatistics);
 
 		if (loginResult.NewlyCreated)
 		{
@@ -3616,6 +3616,8 @@ public class PlayFabApiManager : MonoBehaviour
 		// 쌓아둔 게이지를 초로 환산해서 누적할 준비를 한다.
 		// 최초에 2분 30초 돌리자마자 쌓으면 150 쌓게될거다.
 		AnalysisData.instance.PrepareAnalysis();
+		if (CheatingListener.detectedCheatTable)
+			return;
 
 		// 이 패킷 역시 Invasion 했던거처럼 다양하게 보낸다. 오리진 재화 등등
 		int addExp = AnalysisData.instance.cachedExpSecond;

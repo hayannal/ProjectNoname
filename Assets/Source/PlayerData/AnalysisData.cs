@@ -38,18 +38,19 @@ public class AnalysisData : MonoBehaviour
 		UpdateRemainTime();
 	}
 
-	public void OnRecvAnalysisData(Dictionary<string, UserDataRecord> userReadOnlyData)
+	public void OnRecvAnalysisData(Dictionary<string, UserDataRecord> userReadOnlyData, List<StatisticValue> playerStatistics)
 	{
-		// 연구와 달리 1부터 시작하는 구조다.
 		analysisExp = 0;
-		if (userReadOnlyData.ContainsKey("anlyExp"))
+		for (int i = 0; i < playerStatistics.Count; ++i)
 		{
-			int intValue = 0;
-			if (int.TryParse(userReadOnlyData["anlyExp"].Value, out intValue))
-				analysisExp = intValue;
+			if (playerStatistics[i].StatisticName == "analysisExp")
+			{
+				analysisExp = playerStatistics[i].Value;
+				break;
+			}
 		}
 
-		// 경험치를 받는 곳에서 미리 레벨을 계산해둔다.
+		// 경험치를 받는 곳에서 미리 레벨을 계산해둔다. 연구와 달리 1부터 시작하는 구조다.
 		analysisLevel = 0;
 		RefreshAnalysisLevel();
 
@@ -82,6 +83,9 @@ public class AnalysisData : MonoBehaviour
 
 	public void AddExp(int addExp)
 	{
+		if (addExp == 0)
+			return;
+
 		// 일반적인 분석 후 경험치 쌓이는 곳에서 호출된다.
 		analysisExp += addExp;
 		RefreshAnalysisLevel();
@@ -168,6 +172,17 @@ public class AnalysisData : MonoBehaviour
 	}
 
 
+	int GetRemainAnalysisKey()
+	{
+		// legend key와 달리 테이블에 따라 감소수치가 달라진다.
+		int defaultDecreaseValue = 30;
+		AnalysisTableData analysisTableData = TableDataManager.instance.FindAnalysisTableData(analysisLevel);
+		if (analysisTableData != null)
+			defaultDecreaseValue = analysisTableData.keySubtract;
+		return CurrencyData.instance.analysisKey - DropManager.instance.droppedAnalysisOriginCount * defaultDecreaseValue;
+	}
+
+
 
 	const string OriginDropId = "Qnstjrdhfl";
 	const string DiamondDropId = "Qnstjrqhtjr";
@@ -216,9 +231,6 @@ public class AnalysisData : MonoBehaviour
 		// 이게 점점 줄어들수록 이 확률 역시 줄어들어야한다.
 		if (originDropRate > 0.0f)
 		{
-			// analysis key
-			float adjustByKey = 1.0f;
-			originDropRate *= adjustByKey;
 			if (UnityEngine.Random.value <= originDropRate)
 			{
 				// 확률 검사를 통과하면 dropCount를 1회 올린다.
@@ -227,6 +239,18 @@ public class AnalysisData : MonoBehaviour
 		}
 		for (int i = 0; i < originDropCount; ++i)
 		{
+			float adjustWeight = 0.0f;
+			AnalysisKeyTableData analysisKeyTableData = TableDataManager.instance.FindAnalysisKeyTableData(GetRemainAnalysisKey());
+			if (analysisKeyTableData != null)
+				adjustWeight = analysisKeyTableData.adjustWeight;
+			// adjustWeight 검증
+			if (adjustWeight > 1.0f)
+				CheatingListener.OnDetectCheatTable();
+			if (adjustWeight <= 0.0f)
+				continue;
+			if (UnityEngine.Random.value > adjustWeight)
+				continue;
+
 			DropProcessor dropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, OriginDropId, "", true, true);
 			_listCachedDropProcessor.Add(dropProcessor);
 		}
@@ -245,8 +269,31 @@ public class AnalysisData : MonoBehaviour
 		}
 		for (int i = 0; i < energyDropCount; ++i)
 		{
+			if (UnityEngine.Random.value < 0.5f)
+				continue;
+			if (CurrencyData.instance.energy + _cachedDropEnergy >= 30)
+			{
+				if (UnityEngine.Random.value < 0.4f)
+					continue;
+			}
+			if (CurrencyData.instance.energy + _cachedDropEnergy >= 40)
+			{
+				if (UnityEngine.Random.value < 0.3f)
+					continue;
+			}
+			if (CurrencyData.instance.energy + _cachedDropEnergy >= 50)
+			{
+				if (UnityEngine.Random.value < 0.2f)
+					continue;
+			}
+			if (CurrencyData.instance.energy + _cachedDropEnergy >= 60)
+			{
+				if (UnityEngine.Random.value < 0.1f)
+					continue;
+			}
+
 			// 4 ~ 6 랜덤 범위
-			_cachedDropEnergy += UnityEngine.Random.Range(4, 7);
+			_cachedDropEnergy += UnityEngine.Random.Range(3, 8);
 		}
 
 		// 대신 에너지는 한가지 예외처리가 있는데, 최대치를 넘으면 골드로 환원해줘야한다. 환원 골드는 랜덤골드에 포함시켜둔다.
@@ -315,6 +362,11 @@ public class AnalysisData : MonoBehaviour
 		//DropManager.instance.AddLobbyDia
 
 
+		// 이렇게 계산된 second를 그냥 보내면 안되고 최고레벨 검사는 해놓고 보내야한다.
+		AnalysisTableData maxAnalysisTableData = TableDataManager.instance.FindAnalysisTableData(BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxAnalysisLevel"));
+		int maxAnalysisExp = maxAnalysisTableData.requiredAccumulatedTime;
+		if (analysisExp + _cachedSecond > maxAnalysisExp)
+			_cachedSecond = maxAnalysisExp - analysisExp;
 
 		// 패킷 전달한 준비는 끝.
 	}

@@ -104,7 +104,7 @@ public class DropProcessor : MonoBehaviour
 							break;
 
 						// Origin의 경우 probability를 적혀있는대로 쓰면 안되고 현재 상황에 맞춰서 가공해야한다.
-						probability = AdjustOriginDropProbability(probability, dropTableData.subValue[i] == "x", dropTableData.subValue[i] == "s", dropTableData.subValue[i] == "t");
+						probability = AdjustOriginDropProbability(probability, dropTableData.subValue[i] == "x", dropTableData.subValue[i] == "s", dropTableData.subValue[i] == "t", dropTableData.subValue[i] == "z");
 						float weight = TableDataManager.instance.FindNotCharAdjustProb(DropManager.instance.GetCurrentNotSteakCharCount());
 						// NotCharTable Adjust Prob 검증
 						if (weight > 1.7f)
@@ -267,11 +267,12 @@ public class DropProcessor : MonoBehaviour
 				{
 					switch (dropTableData.subValue[i])
 					{
-						case "s": stringValue = DropManager.instance.GetGachaCharacterId(false, true, false); break;
-						case "x": stringValue = DropManager.instance.GetGachaCharacterId(true, false, false); break;
-						case "t": stringValue = DropManager.instance.GetGachaCharacterId(false, false, true); break;
-						case "l": stringValue = DropManager.instance.GetGachaCharacterId(false, false, false, 0); break;
-						case "u": stringValue = DropManager.instance.GetGachaCharacterId(false, false, false, 1); break;
+						case "s": stringValue = DropManager.instance.GetGachaCharacterId(false, true, false, false); break;
+						case "x": stringValue = DropManager.instance.GetGachaCharacterId(true, false, false, false); break;
+						case "t": stringValue = DropManager.instance.GetGachaCharacterId(false, false, true, false); break;
+						case "l": stringValue = DropManager.instance.GetGachaCharacterId(false, false, false, false, 0); break;
+						case "u": stringValue = DropManager.instance.GetGachaCharacterId(false, false, false, false, 1); break;
+						case "z": stringValue = DropManager.instance.GetGachaCharacterId(false, false, false, true); break;		// analysis drop
 					}
 					// Origin이나 아래 PowerPoint는 특정 조건에 의해(중복 방지라던지 등등) 안나올 수 있다. 이땐 건너뛰어야한다.
 					if (stringValue == "")
@@ -419,7 +420,7 @@ public class DropProcessor : MonoBehaviour
 		DropManager.instance.StackDropExp(dropExpValue);
 	}
 
-	static float AdjustOriginDropProbability(float tableProbability, bool originDrop, bool characterBoxDrop, bool questCharacterBoxDrop)
+	static float AdjustOriginDropProbability(float tableProbability, bool originDrop, bool characterBoxDrop, bool questCharacterBoxDrop, bool analysisDrop)
 	{
 		// 최초 1회는 무조건 캐릭터가 나와야한다. 이래야 간파울은 2렙에 제한걸릴테니 킵과 다른 일반캐릭터 1개가 pp를 나눠서 얻을 수 있게된다.
 		int sum = PlayerData.instance.originOpenCount + PlayerData.instance.characterBoxOpenCount + PlayerData.instance.questCharacterBoxOpenCount;
@@ -464,7 +465,10 @@ public class DropProcessor : MonoBehaviour
 			else
 			{
 				if (characterData != null && characterData.transcendPoint < CharacterData.GetTranscendPoint(CharacterData.TranscendLevelMax))
-				{ }
+				{
+					if (analysisDrop)
+						useAdjustWeight = true;
+				}
 				else
 					weight = 0.0f;
 			}
@@ -486,6 +490,7 @@ public class DropProcessor : MonoBehaviour
 					// 미보유
 					if (originDrop) adjustWeight *= 3.0f;
 					else if (characterBoxDrop || questCharacterBoxDrop) adjustWeight *= 1.5f;
+					else if (analysisDrop) adjustWeight *= 2.5f;
 					adjustWeight += TableDataManager.instance.actorTable.dataArray[i].charGachaWeight * (DropManager.GetGradeAdjust(TableDataManager.instance.actorTable.dataArray[i]) - 1.0f);
 				}
 				else

@@ -64,6 +64,7 @@ public class TableDataManager : MonoBehaviour
 	public BossRewardTable bossRewardTable;
 	public InvasionTable invasionTable;
 	public AnalysisTable analysisTable;
+	public AnalysisKeyTable analysisKeyTable;
 
 	void Awake()
 	{
@@ -564,6 +565,16 @@ public class TableDataManager : MonoBehaviour
 		{
 			if (analysisTable.dataArray[i].level == level)
 				return analysisTable.dataArray[i];
+		}
+		return null;
+	}
+
+	public AnalysisKeyTableData FindAnalysisKeyTableData(int remain)
+	{
+		for (int i = 0; i < analysisKeyTable.dataArray.Length; ++i)
+		{
+			if (analysisKeyTable.dataArray[i].remainMin == remain)
+				return analysisKeyTable.dataArray[i];
 		}
 		return null;
 	}

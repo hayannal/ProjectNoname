@@ -37,6 +37,10 @@ public class AnalysisTableData
   public int originPeriod { get { return _originPeriod; } set { _originPeriod = value; } }
   
   [SerializeField]
+  int _keySubtract;
+  public int keySubtract { get { return _keySubtract; } set { _keySubtract = value; } }
+  
+  [SerializeField]
   int _diamondPeriod;
   public int diamondPeriod { get { return _diamondPeriod; } set { _diamondPeriod = value; } }
   

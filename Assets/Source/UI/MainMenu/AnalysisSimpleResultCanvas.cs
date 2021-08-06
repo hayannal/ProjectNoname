@@ -125,7 +125,7 @@ public class AnalysisSimpleResultCanvas : MonoBehaviour
 		{
 			energyValueText.text = "0";
 			_energyChangeRemainTime = energyChangeTime;
-			_energyChangeSpeed = _addDia / _energyChangeRemainTime;
+			_energyChangeSpeed = _addEnergy / _energyChangeRemainTime;
 			_currentEnergy = 0.0f;
 			_updateEnergyText = true;
 		}

@@ -616,7 +616,7 @@ public class StageManager : MonoBehaviour
 			percent = 1.0f;
 		}
 		needLevelUpCount = level - _playerLevel;
-		LobbyCanvas.instance.RefreshExpPercent(percent, needLevelUpCount);
+		LobbyCanvas.instance.RefreshExpPercent(percent, needLevelUpCount, (level == maxStageLevel));
 		if (needLevelUpCount == 0)
 			return;
 		_playerLevel = level;

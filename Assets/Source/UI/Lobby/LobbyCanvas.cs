@@ -408,7 +408,7 @@ public class LobbyCanvas : MonoBehaviour
 			levelText.text = UIString.instance.GetString("GameUI_Lv", level);
 	}
 
-	public void RefreshExpPercent(float targetPercent, int levelUpCount)
+	public void RefreshExpPercent(float targetPercent, int levelUpCount, bool toMax = false)
 	{
 		if (levelText.gameObject.activeSelf == false)
 			levelText.gameObject.SetActive(true);
@@ -426,6 +426,10 @@ public class LobbyCanvas : MonoBehaviour
 		expGaugeColorTween.DORestart();
 		expGaugeEndPointImage.color = new Color(expGaugeEndPointImage.color.r, expGaugeEndPointImage.color.g, expGaugeEndPointImage.color.b, _defaultExpGaugeColor.a);
 		expGaugeEndPointImage.gameObject.SetActive(true);
+
+		// 최대레벨로 되는 연출상황일땐 1을 빼놔야 괜히 한바퀴 돌아서 게이지가 차지 않고 최대치에 닿았을때 한번에 끝나게 된다.
+		if (toMax)
+			_levelUpCount -= 1;
 	}
 
 	float _defaultExpGaugeHeight;

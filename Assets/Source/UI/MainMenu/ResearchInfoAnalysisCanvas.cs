@@ -102,14 +102,8 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 		if (ObscuredPrefs.HasKey(OPTION_COMPLETE_ALARM))
 			_onCompleteAlarmState = ObscuredPrefs.GetInt(OPTION_COMPLETE_ALARM) == 1;
 
-		RefreshInfo();
 		MoveTween(true);
-
-		// Refresh AlarmObject
-		if (_maxTimeReached)
-			AlarmObject.Show(alarmRootTransform);
-		else
-			AlarmObject.Hide(alarmRootTransform);
+		RefreshInfo();
 
 		// 화면 전환이 없다보니 제대로 캐싱할 시간은 없고 오브젝트만 만들었다가 꺼두는 캐싱이라도 해둔다.
 		if (_disableButton == false)
@@ -186,6 +180,7 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 
 		_needUpdate = false;
 		_maxTimeReached = false;
+		AlarmObject.Hide(alarmRootTransform);
 		if (AnalysisData.instance.analysisStarted == false)
 		{
 			analyzingText.text = "";
@@ -208,6 +203,7 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 			completeText.text = UIString.instance.GetString("AnalysisUI_ProgressFull");
 			remainTimeText.text = "00:00:00";
 			_maxTimeReached = true;
+			AlarmObject.Show(alarmRootTransform);
 		}
 	}
 
@@ -509,6 +505,10 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 		expGaugeColorTween.DORestart();
 		expGaugeEndPointImage.color = new Color(expGaugeEndPointImage.color.r, expGaugeEndPointImage.color.g, expGaugeEndPointImage.color.b, _defaultExpGaugeColor.a);
 		expGaugeEndPointImage.gameObject.SetActive(true);
+
+		// 최대레벨로 되는 연출상황일땐 1을 빼놔야 괜히 한바퀴 돌아서 게이지가 차지 않고 최대치에 닿았을때 한번에 끝나게 된다.
+		if (targetPercent >= 1.0f && _targetLevel >= BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxAnalysisLevel"))
+			_levelUpCount -= 1;
 	}
 
 	Color _defaultExpGaugeColor;
@@ -542,7 +542,7 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 
 				expGaugeColorTween.DOPause();
 				bool maxReached = (_targetLevel == BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxAnalysisLevel"));
-				expGaugeImage.color = maxReached ? EquipListStatusInfo.GetGaugeColor(true) : _defaultExpGaugeColor;
+				expGaugeImage.color = maxReached ? new Color(1.0f, 1.0f, 0.25f, 1.0f) : _defaultExpGaugeColor;
 				expGaugeEndPointImage.DOFade(0.0f, 1.0f).SetEase(Ease.OutQuad);
 			}
 		}

@@ -20,6 +20,7 @@ public class AnalysisResultCanvas : MonoBehaviour
 	public RectTransform timeGroupRectTransform;
 	public Text timeValueText;
 	public DOTweenAnimation timeValueTweenAnimation;
+	public GameObject levelUpEffectTextObject;
 
 	public RectTransform goldGroupRectTransform;
 	public Text goldValueText;
@@ -134,6 +135,7 @@ public class AnalysisResultCanvas : MonoBehaviour
 				timeValueText.text = AnalysisLevelUpCanvas.GetMaxTimeText(prevAnalysisTableData.maxTime);
 				prevMaxTime = prevAnalysisTableData.maxTime;
 			}
+			levelUpEffectTextObject.SetActive(false);
 			levelUpRootRectTransform.gameObject.SetActive(true);
 			AnalysisTableData analysisTableData = TableDataManager.instance.FindAnalysisTableData(AnalysisData.instance.analysisLevel);
 			timeGroupRectTransform.gameObject.SetActive(analysisTableData != null && prevMaxTime != analysisTableData.maxTime);
@@ -158,6 +160,8 @@ public class AnalysisResultCanvas : MonoBehaviour
 			levelValueTweenAnimation.DORestart();
 			timeValueTweenAnimation.DORestart();
 			yield return Timing.WaitForSeconds(0.6f);
+
+			levelUpEffectTextObject.SetActive(true);
 		}
 		
 		if (_showAnalysisResult)

@@ -35,14 +35,14 @@ public class ReviewEventInfo : MonoBehaviour
 
 	void Update()
 	{
+		Update5Second();
+
 		#region RemainTime
 		if (useRemainTimeText == false)
 			return;
 
 		UpdateRemainTime();
 		#endregion
-
-		Update5Second();
 	}
 
 	float _viewCheckRemainTime;

@@ -33,6 +33,9 @@ public class AnalysisData : MonoBehaviour
 	public DateTime analysisStartedTime { get; private set; }
 	public DateTime analysisCompleteTime { get; private set; }
 
+	// 한번이라도 오리진이 나왔는지를 판단하는 값. 최초로 뽑을때 시간을 적어둔다.
+	public ObscuredBool originBonusApplied { get; set; }
+
 	void Update()
 	{
 		UpdateRemainTime();
@@ -59,6 +62,13 @@ public class AnalysisData : MonoBehaviour
 		{
 			if (string.IsNullOrEmpty(userReadOnlyData["anlyStrDat"].Value) == false)
 				OnRecvAnalysisStartInfo(userReadOnlyData["anlyStrDat"].Value);
+		}
+
+		originBonusApplied = false;
+		if (userReadOnlyData.ContainsKey("anlyBnsDat"))
+		{
+			if (string.IsNullOrEmpty(userReadOnlyData["anlyBnsDat"].Value) == false)
+				originBonusApplied = true;
 		}
 	}
 
@@ -226,19 +236,29 @@ public class AnalysisData : MonoBehaviour
 				++originDropCount;
 			}
 		}
+		if (originBonusApplied == false && originDropCount == 0)
+			originDropCount = 1;
 		for (int i = 0; i < originDropCount; ++i)
 		{
-			float adjustWeight = 0.0f;
-			AnalysisKeyTableData analysisKeyTableData = TableDataManager.instance.FindAnalysisKeyTableData(GetRemainAnalysisKey());
-			if (analysisKeyTableData != null)
-				adjustWeight = analysisKeyTableData.adjustWeight;
-			// adjustWeight 검증
-			if (adjustWeight > 1.0f)
-				CheatingListener.OnDetectCheatTable();
-			if (adjustWeight <= 0.0f)
-				continue;
-			if (UnityEngine.Random.value > adjustWeight)
-				continue;
+			bool bonusDrop = (originBonusApplied == false && i == 0);
+			if (bonusDrop)
+			{
+				// 보너스 드랍일때는 확률 검사를 하지 않는다.
+			}
+			else
+			{
+				float adjustWeight = 0.0f;
+				AnalysisKeyTableData analysisKeyTableData = TableDataManager.instance.FindAnalysisKeyTableData(GetRemainAnalysisKey());
+				if (analysisKeyTableData != null)
+					adjustWeight = analysisKeyTableData.adjustWeight;
+				// adjustWeight 검증
+				if (adjustWeight > 1.0f)
+					CheatingListener.OnDetectCheatTable();
+				if (adjustWeight <= 0.0f)
+					continue;
+				if (UnityEngine.Random.value > adjustWeight)
+					continue;
+			}
 
 			DropProcessor dropProcessor = DropProcessor.Drop(BattleInstanceManager.instance.cachedTransform, OriginDropId, "", true, true);
 			_listCachedDropProcessor.Add(dropProcessor);
@@ -379,6 +399,9 @@ public class AnalysisData : MonoBehaviour
 		if (analysisTableData != null)
 			defaultDecreaseValue = analysisTableData.keySubtract;
 		CurrencyData.instance.analysisKey -= (DropManager.instance.droppedAnalysisOriginCount * defaultDecreaseValue);
+
+		// 키를 감소시킨다는건 오리진을 뽑았단 얘기니까
+		originBonusApplied = true;
 	}
 
 	public void ClearCachedInfo()

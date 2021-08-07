@@ -100,7 +100,7 @@ public class DropProcessor : MonoBehaviour
 				switch (dropType)
 				{
 					case eDropType.Origin:
-						if (dropTableData.subValue[i] != "s" && dropTableData.subValue[i] != "x" && dropTableData.subValue[i] != "t")
+						if (dropTableData.subValue[i] != "s" && dropTableData.subValue[i] != "x" && dropTableData.subValue[i] != "t" && dropTableData.subValue[i] != "z")
 							break;
 
 						// Origin의 경우 probability를 적혀있는대로 쓰면 안되고 현재 상황에 맞춰서 가공해야한다.

@@ -240,7 +240,7 @@ public class AnalysisData : MonoBehaviour
 			originDropCount = 1;
 		for (int i = 0; i < originDropCount; ++i)
 		{
-			bool bonusDrop = (originBonusApplied == false && i == 0);
+			bool bonusDrop = (originBonusApplied == false && i == 0 && GetRemainAnalysisKey() > 30);
 			if (bonusDrop)
 			{
 				// 보너스 드랍일때는 확률 검사를 하지 않는다.

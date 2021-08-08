@@ -603,9 +603,48 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 		// 보상 연출을 시작해야하는데 오리진이 있을때와 없을때로 구분된다.
 		List<string> listGrantInfo = DropManager.instance.GetGrantCharacterInfo();
 		List<DropManager.CharacterTrpRequest> listTrpInfo = DropManager.instance.GetTranscendPointInfo();
-		if (showLevelUp || listGrantInfo.Count + listTrpInfo.Count > 0)
+		if (listGrantInfo.Count + listTrpInfo.Count > 0)
 		{
-			// 이때는 풀스크린 결과창을 띄운다
+			_listGrantInfo = listGrantInfo;
+			_listTrpInfo = listTrpInfo;
+			// 캐릭터 연출이 다 끝나고 나서 실행할 액션을 _resultAction에 저장해두고 연출을 진행
+			_resultAction = () =>
+			{
+				UIInstanceManager.instance.ShowCanvasAsync("AnalysisResultCanvas", () =>
+				{
+					// 여기서 꺼야 제일 자연스럽다. 결과창이 로딩되서 보여지는 동시에 Show모드에서 돌아온다.
+					if (CharacterBoxShowCanvas.instance != null && CharacterBoxShowCanvas.instance.gameObject.activeSelf)
+						CharacterBoxShowCanvas.instance.gameObject.SetActive(false);
+
+					// CharacterBoxShowCanvas가 닫아지면서 InfoCameraMode가 해제될테고
+					// Stack되어있던 CharacterBoxShowCanvas를 Pop시키면 ResearchCanvas가 복구될거다.
+					// 그리고 직접 InfoCameraMode 해제한거 역시 복구해줘야한다.
+					StackCanvas.Pop(CharacterBoxShowCanvas.instance.gameObject);
+					ResearchCanvas.instance.SetInfoCameraMode(true);
+
+					AnalysisResultCanvas.instance.RefreshInfo(showLevelUp, _currentLevel, true);
+					action.Invoke();
+				});
+			};
+
+			UIInstanceManager.instance.ShowCanvasAsync("CharacterBoxShowCanvas", () =>
+			{
+				// 이미 ResearchCanvas에 의해 InfoCameraMode로 전환되어있는 상태라서 CharacterBoxShowCanvas가 생성되면 중복호출되게 된다.
+				// 그렇다고 ResearchCanvas를 닫으면 DotMainMenu만 남기때문에 전역 라이트가 어두워진 상태가 된다.
+				//ResearchCanvas.instance.gameObject.SetActive(false);
+				// 그래서 차라리 StackCanvas사용해서 하나 더 Stack시키면서 ResearchCanvas를 닫는 동시에
+				// 직접 InfoCameraMode를 해제한 후 CharacterBoxShowCanvas가 보여지게 한다.
+				StackCanvas.Push(CharacterBoxShowCanvas.instance.gameObject);
+				ResearchCanvas.instance.SetInfoCameraMode(false);
+
+				// 여러개 있을거 대비해서 순차적으로 넣어야한다.
+				_grant = listGrantInfo.Count > 0;
+				_index = 0;
+				CharacterBoxShowCanvas.instance.ShowCanvas(_grant ? listGrantInfo[0] : listTrpInfo[0].actorId, OnConfirmCharacterShow);
+			});
+		}
+		else if (showLevelUp)
+		{
 			UIInstanceManager.instance.ShowCanvasAsync("AnalysisResultCanvas", () =>
 			{
 				AnalysisResultCanvas.instance.RefreshInfo(showLevelUp, _currentLevel, true);
@@ -619,6 +658,40 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 			{
 				action.Invoke();
 			});
+		}
+	}
+
+	List<string> _listGrantInfo;
+	List<DropManager.CharacterTrpRequest> _listTrpInfo;
+	bool _grant;
+	int _index;
+	Action _resultAction;
+	void OnConfirmCharacterShow()
+	{
+		++_index;
+		if (_grant)
+		{
+			if (_index < _listGrantInfo.Count)
+				CharacterBoxShowCanvas.instance.ShowCanvas(_listGrantInfo[_index], OnConfirmCharacterShow);
+			else
+			{
+				_grant = false;
+				_index = 0;
+			}
+		}
+		if (_grant == false)
+		{
+			if (_index < _listTrpInfo.Count)
+				CharacterBoxShowCanvas.instance.ShowCanvas(_listTrpInfo[_index].actorId, OnConfirmCharacterShow);
+			else
+			{
+				_listGrantInfo = null;
+				_listTrpInfo = null;
+
+				if (_resultAction != null)
+					_resultAction();
+				_resultAction = null;
+			}
 		}
 	}
 
@@ -666,8 +739,7 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 		};
 
 
-		// 보상 연출을 시작해야하는데 오리진이 있을때와 없을때로 구분된다.
-		// 이때는 풀스크린 결과창을 띄운다
+		// 레벨업 결과만 보여주는거니 풀스크린 결과창을 띄운다
 		UIInstanceManager.instance.ShowCanvasAsync("AnalysisResultCanvas", () =>
 		{
 			AnalysisResultCanvas.instance.RefreshInfo(true, _currentLevel, false);

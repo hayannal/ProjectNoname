@@ -16,6 +16,9 @@ public class CharacterBoxShowCanvas : CharacterShowCanvasBase
 	public GameObject effectPrefab;
 
 	GameObject _effectObject;
+	bool _forResearchCanvas;
+	Vector3 _playerPrevPosition;
+	Quaternion _playerPrevRotation;
 
 	void Awake()
 	{
@@ -24,6 +27,18 @@ public class CharacterBoxShowCanvas : CharacterShowCanvasBase
 
 	void OnEnable()
 	{
+		// 분석에서 오리진을 뽑아서 연출을 보여줘야하는 상황이 생겨서 예외처리 해둔다.
+		if (ResearchCanvas.instance != null && ResearchCanvas.instance.gameObject.activeSelf)
+		{
+			_playerActor = BattleInstanceManager.instance.playerActor;
+			_playerActor.gameObject.SetActive(false);
+			_playerPrevPosition = _playerActor.cachedTransform.position;
+			_playerPrevRotation = _playerActor.cachedTransform.rotation;
+			_playerActor = null;
+			_forResearchCanvas = true;
+			return;
+		}
+
 		// CharacterShowCanvasBase 클래스를 기반으로 만들어져있는데 이게 사실은 CharacterListCanvas에 맞춰서 만들어진건데
 		// CharacterListCanvas뿐만 아니라 ExperienceCanvas까지 다 엮여있어서 이제와서 고치기가 너무 어렵다.
 		// 그래서 CharacterShowCanvasBase를 수정하지 않는 선에서 어떤식으로 호출되어도 캐릭터가 잘 보여지도록 처리해보기로 한다.
@@ -54,6 +69,15 @@ public class CharacterBoxShowCanvas : CharacterShowCanvasBase
 		}
 
 		SetInfoCameraMode(false, "");
+
+		// SetInfoCameraMode 까지 해제하고 나면 혹시 메인캐릭터 위치가 변경되었을 수도 있으니 복구해둔다. 분석에서 자기 자신 뽑을때의 예외처리다.
+		if (_forResearchCanvas)
+		{
+			_playerActor.cachedTransform.position = _playerPrevPosition;
+			_playerActor.cachedTransform.rotation = _playerPrevRotation;
+			TailAnimatorUpdater.UpdateAnimator(_playerActor.cachedTransform, 15);
+			_forResearchCanvas = false;
+		}
 	}
 
 	string _actorId;

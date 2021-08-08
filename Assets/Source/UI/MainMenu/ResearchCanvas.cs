@@ -175,7 +175,7 @@ public class ResearchCanvas : MonoBehaviour
 	
 	Transform _groundTransform;
 	GameObject _prevEnvironmentSettingObject;
-	protected void SetInfoCameraMode(bool enable)
+	public void SetInfoCameraMode(bool enable)
 	{
 		if (_infoCameraMode == enable)
 			return;

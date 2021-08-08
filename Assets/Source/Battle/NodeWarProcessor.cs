@@ -746,7 +746,7 @@ public class NodeWarProcessor : BattleModeProcessorBase
 		// OverrideAffector가 제대로 호출되기 위해서 임시 아이디를 지정해줘야한다.
 		boostAffectorValue.affectorValueId = s_generatedBoostId;
 		boostAffectorValue.fValue1 = 4.5f; // duration
-		boostAffectorValue.fValue2 = 1.25f;
+		boostAffectorValue.fValue2 = 1.875f;
 		boostAffectorValue.iValue1 = (int)ActorStatusDefine.eActorStatus.MoveSpeed;
 		BattleInstanceManager.instance.playerActor.affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.ChangeActorStatus, boostAffectorValue, BattleInstanceManager.instance.playerActor, false);
 		BattleInstanceManager.instance.GetCachedObject(NodeWarGround.instance.boostOrbGetEffectPrefab, getPosition, Quaternion.identity);

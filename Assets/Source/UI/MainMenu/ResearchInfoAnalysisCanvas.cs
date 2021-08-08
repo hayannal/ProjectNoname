@@ -310,6 +310,7 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 			_needUpdate = false;
 			_maxTimeReached = true;
 			RefreshProcessGauge();
+			RefreshGetButton();
 			analyzingText.text = "";
 			completeText.text = UIString.instance.GetString("AnalysisUI_ProgressFull");
 			remainTimeText.text = "00:00:00";
@@ -589,7 +590,6 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 		{
 			// 여기서 다이아 갱신까지 다시 되게 한다.
 			ResearchCanvas.instance.currencySmallInfo.RefreshInfo();
-			RefreshGetButton();
 			RefreshLevelInfo();
 
 			// 토글 복구
@@ -728,7 +728,6 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 		// 결과창 로딩 후 열리는 타이밍에 마지막 처리를 전달
 		Action action = () =>
 		{
-			RefreshGetButton();
 			RefreshLevelInfo();
 
 			// 토글 복구

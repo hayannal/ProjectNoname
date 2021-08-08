@@ -3591,7 +3591,6 @@ public class PlayFabApiManager : MonoBehaviour
 			FunctionName = "StartAnalysis",
 			FunctionParameter = new { Inf = 1 },
 			GeneratePlayStreamEvent = true,
-			RevisionSelection = CloudScriptRevisionOption.Latest,
 		}, (success) =>
 		{
 			PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
@@ -3640,7 +3639,6 @@ public class PlayFabApiManager : MonoBehaviour
 			FunctionName = "Analysis",
 			FunctionParameter = new { Xp = addExp, CurXp = currentExp, En = addEnergy, RaGo = randomGold, Go = addGold, Di = addDia, LstGr = listGrantInfo, LstTrp = listTrpInfo, LstCs = checkSum },
 			GeneratePlayStreamEvent = true,
-			RevisionSelection = CloudScriptRevisionOption.Latest,
 		}, (success) =>
 		{
 			PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
@@ -3694,7 +3692,6 @@ public class PlayFabApiManager : MonoBehaviour
 			FunctionName = "LevelUpAnalysis",
 			FunctionParameter = new { CurXp = currentExp, Cur = currentLevel, Ta = targetLevel, Cs = checkSum },
 			GeneratePlayStreamEvent = true,
-			RevisionSelection = CloudScriptRevisionOption.Latest,
 		}, (success) =>
 		{
 			string resultString = (string)success.FunctionResult;

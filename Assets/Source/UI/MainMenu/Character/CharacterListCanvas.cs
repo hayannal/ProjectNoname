@@ -305,7 +305,9 @@ public class CharacterListCanvas : CharacterShowCanvasBase
 				continue;
 
 			// 알람 우선순위가 더 높다.
-			if (_listAllCharacterInfo[i].characterData.IsAlarmState())
+			if (_listAllCharacterInfo[i].characterData.IsAlarmState() && _listAllCharacterInfo[i].characterData.IsPlusAlarmState())
+				_listSwapCanvasListItem[i].ShowAlarm(true, true, true);
+			else if (_listAllCharacterInfo[i].characterData.IsAlarmState())
 				_listSwapCanvasListItem[i].ShowAlarm(true);
 			else if (_listAllCharacterInfo[i].characterData.IsPlusAlarmState())
 				_listSwapCanvasListItem[i].ShowAlarm(true, true);

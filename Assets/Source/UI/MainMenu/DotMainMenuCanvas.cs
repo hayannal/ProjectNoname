@@ -140,6 +140,7 @@ public class DotMainMenuCanvas : MonoBehaviour
 		EnvironmentSetting.ResetGlobalLightIntensityRatio();
 		_reservedHide = false;
 		_reserveCharacterPlusAlarm = false;
+		_reserveCharacterPlusAlarmOffset = false;
 		StackCanvas.Pop(gameObject);
 	}
 
@@ -471,18 +472,34 @@ public class DotMainMenuCanvas : MonoBehaviour
 
 		// 다른 DotMainMenu와 달리 Character버튼에서는 기본적인 느낌표 알람이 안뜨는 때에도 Plus알람을 체크해야한다.
 		_reserveCharacterPlusAlarm = false;
+		_reserveCharacterPlusAlarmOffset = false;
 		if (show == false && showTutorialPlusAlarm == false && IsPlusAlarmCharacter())
 			_reserveCharacterPlusAlarm = true;
+
+		if (show && showTutorialPlusAlarm == false && IsPlusAlarmCharacter())
+		{
+			_reserveCharacterPlusAlarm = true;
+			_reserveCharacterPlusAlarmOffset = true;
+		}
 	}
 
 	bool _reserveCharacterPlusAlarm = false;
+	bool _reserveCharacterPlusAlarmOffset = false;
 	void UpdateCharacterPlusAlarm()
 	{
 		// DotMainMenuCanvas 생성될때 같은 프레임에 호출하면 tweenAnimation이 발동된채로 보여서 Update문에서 처리하게 해둔다.
 		if (_reserveCharacterPlusAlarm)
 		{
-			// CharacterListCanvas에서 했던거처럼 tweenAnimation은 안쓰지만 ignoreAutoDisable은 굳이 할 필요 없어서 false로 해둔다.
-			AlarmObject.Show(alarmRootTransformList[(int)eButtonType.Character], false, false, true);
+			if (_reserveCharacterPlusAlarmOffset)
+			{
+				AlarmObject.Show(alarmRootTransformList[(int)eButtonType.Character], false, false, true, false, null, true);
+				_reserveCharacterPlusAlarmOffset = false;
+			}
+			else
+			{
+				// CharacterListCanvas에서 했던거처럼 tweenAnimation은 안쓰지만 ignoreAutoDisable은 굳이 할 필요 없어서 false로 해둔다.
+				AlarmObject.Show(alarmRootTransformList[(int)eButtonType.Character], false, false, true);
+			}
 			_reserveCharacterPlusAlarm = false;
 		}
 	}

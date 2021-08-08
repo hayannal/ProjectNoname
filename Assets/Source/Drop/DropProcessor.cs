@@ -490,7 +490,13 @@ public class DropProcessor : MonoBehaviour
 					// 미보유
 					if (originDrop) adjustWeight *= 3.0f;
 					else if (characterBoxDrop || questCharacterBoxDrop) adjustWeight *= 1.5f;
-					else if (analysisDrop) adjustWeight *= 2.5f;
+					else if (analysisDrop)
+					{
+						if (TableDataManager.instance.actorTable.dataArray[i].grade == 0)
+							adjustWeight *= 2.5f;
+						else if (TableDataManager.instance.actorTable.dataArray[i].grade == 1)
+							adjustWeight *= 1.5f;
+					}
 					adjustWeight += TableDataManager.instance.actorTable.dataArray[i].charGachaWeight * (DropManager.GetGradeAdjust(TableDataManager.instance.actorTable.dataArray[i]) - 1.0f);
 				}
 				else

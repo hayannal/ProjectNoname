@@ -278,26 +278,26 @@ public class AnalysisData : MonoBehaviour
 		}
 		for (int i = 0; i < energyDropCount; ++i)
 		{
-			if (UnityEngine.Random.value < 0.5f)
+			if (UnityEngine.Random.value > 0.5f)
 				continue;
 			if (CurrencyData.instance.energy + _cachedDropEnergy >= 30)
 			{
-				if (UnityEngine.Random.value < 0.4f)
+				if (UnityEngine.Random.value > 0.4f)
 					continue;
 			}
 			if (CurrencyData.instance.energy + _cachedDropEnergy >= 40)
 			{
-				if (UnityEngine.Random.value < 0.3f)
+				if (UnityEngine.Random.value > 0.3f)
 					continue;
 			}
 			if (CurrencyData.instance.energy + _cachedDropEnergy >= 50)
 			{
-				if (UnityEngine.Random.value < 0.2f)
+				if (UnityEngine.Random.value > 0.2f)
 					continue;
 			}
 			if (CurrencyData.instance.energy + _cachedDropEnergy >= 60)
 			{
-				if (UnityEngine.Random.value < 0.1f)
+				if (UnityEngine.Random.value > 0.1f)
 					continue;
 			}
 

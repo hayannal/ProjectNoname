@@ -263,6 +263,7 @@ public class BattleModeProcessorBase
 		DropManager.instance.AddDropSeal(dropSeal);
 		int dropChaosFragment = ClientSaveData.instance.GetCachedDropChaosFragment();
 		DropManager.instance.AddDropChaosFragment(dropChaosFragment);
+		DropManager.instance.droppedChaosFragmentCount = dropChaosFragment;
 
 		// 레벨팩 리프레쉬에 쓰이는 배틀 클리어 포인트도 로드
 		_clearPoint = ClientSaveData.instance.GetCachedClearPoint();

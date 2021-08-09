@@ -288,7 +288,7 @@ public class PlayFabApiManager : MonoBehaviour
 		QuestData.instance.OnRecvQuestData(loginResult.InfoResultPayload.UserReadOnlyData);
 		GuideQuestData.instance.OnRecvGuideQuestData(loginResult.InfoResultPayload.UserReadOnlyData, loginResult.InfoResultPayload.PlayerStatistics);
 		PlayerData.instance.OnRecvLevelPackageResetInfo(loginResult.InfoResultPayload.TitleData, loginResult.InfoResultPayload.UserReadOnlyData, loginResult.NewlyCreated);
-		CumulativeEventData.instance.OnRecvCumulativeEventData(loginResult.InfoResultPayload.TitleData, loginResult.InfoResultPayload.UserReadOnlyData, loginResult.NewlyCreated);
+		CumulativeEventData.instance.OnRecvCumulativeEventData(loginResult.InfoResultPayload.TitleData, loginResult.InfoResultPayload.UserReadOnlyData, loginResult.InfoResultPayload.PlayerStatistics, loginResult.NewlyCreated);
 		AnalysisData.instance.OnRecvAnalysisData(loginResult.InfoResultPayload.UserReadOnlyData, loginResult.InfoResultPayload.PlayerStatistics);
 
 		if (loginResult.NewlyCreated)
@@ -3529,7 +3529,7 @@ public class PlayFabApiManager : MonoBehaviour
 		});
 	}
 
-	public void RequestRemoveRepeatEvent(Action<bool, bool, bool> successCallback)
+	public void RequestRemoveRepeatEvent(Action<bool, bool, bool, bool> successCallback)
 	{
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
@@ -3545,14 +3545,15 @@ public class PlayFabApiManager : MonoBehaviour
 			bool deleteSl = ((delSl.ToString()) == "1");
 			bool deleteSo = ((delSo.ToString()) == "1");
 			bool deleteRv = ((delRv.ToString()) == "1");
-			if (successCallback != null) successCallback.Invoke(deleteSl, deleteSo, deleteRv);
+			bool deletePs = false;
+			if (successCallback != null) successCallback.Invoke(deleteSl, deleteSo, deleteRv, deletePs);
 		}, (error) =>
 		{
 			// 유저 인풋 없이 몰래 보낸거니 에러처리는 하지 않는다.
 			// 대신 반복 이벤트를 리셋하는데 문제가 생겼음을 알려서 클라가 잘못된 패킷을 보내지 않도록 한다.
 			// 가짜로지만 리셋은 시켜둔다.
 			CumulativeEventData.instance.removeRepeatServerFailure = true;
-			CumulativeEventData.instance.OnRecvRemoveRepeatEvent(true, true, true);
+			CumulativeEventData.instance.OnRecvRemoveRepeatEvent(true, true, true, true);
 
 			//HandleCommonError(error);
 		});
@@ -3579,6 +3580,80 @@ public class PlayFabApiManager : MonoBehaviour
 		}, (error) =>
 		{
 			//HandleCommonError(error);
+		});
+	}
+
+	public void RequestGetPointShopPoint(Action successCallback)
+	{
+		GetPlayerStatisticsRequest request = new GetPlayerStatisticsRequest() { StatisticNames = new List<string> { "pointShopPoint" } };
+		PlayFabClientAPI.GetPlayerStatistics(request, (success) =>
+		{
+			for (int i = 0; i < success.Statistics.Count; ++i)
+			{
+				if (success.Statistics[i].StatisticName == "pointShopPoint")
+				{
+					CumulativeEventData.instance.pointShopPoint = success.Statistics[i].Value;
+					if (successCallback != null) successCallback.Invoke();
+					break;
+				}
+			}
+		}, (error) =>
+		{
+			//HandleCommonError(error);
+		});
+	}
+
+	public void RequestCheckPointShopEvent(Action successCallback)
+	{
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "CheckPointShopEvent",
+			FunctionParameter = new { Tp = "Ps" },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			PlayFab.Json.JsonObject jsonResult = (PlayFab.Json.JsonObject)success.FunctionResult;
+			jsonResult.TryGetValue("retErr", out object retErr);
+			bool failure = ((retErr.ToString()) == "1");
+			if (!failure)
+			{
+				jsonResult.TryGetValue("date", out object date);
+				CumulativeEventData.instance.OnRecvPointShopInfo((string)date);
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			//HandleCommonError(error);
+		});
+	}
+
+	public void RequestBuyPointShopItem(int day, string rewardType, int price, int dropGold, Action successCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		string eventServerId = CumulativeEventData.EventType2Id(CumulativeEventData.eEventType.PointShop);
+		string input = string.Format("{0}_{1}_{2}_{3}_{4}_{5}_{6}", eventServerId, day, rewardType, price, dropGold, CumulativeEventData.instance.pointShopPoint, "qizvjrejls");
+		string checkSum = CheckSum(input);
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "BuyPointShopItem",
+			FunctionParameter = new { Id = eventServerId, Dy = day, Tp = rewardType, Pr = price, Go = dropGold, Cs = checkSum },
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			if (!failure)
+			{
+				WaitingNetworkCanvas.Show(false);
+
+				CumulativeEventData.instance.pointShopPoint -= price;
+				CurrencyData.instance.gold += dropGold;
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, (error) =>
+		{
+			HandleCommonError(error);
 		});
 	}
 	#endregion

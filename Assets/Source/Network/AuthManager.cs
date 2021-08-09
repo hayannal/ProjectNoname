@@ -226,6 +226,7 @@ public class AuthManager : MonoBehaviour
 		playerStatisticNames.Add("guideQuestIndex");
 		playerStatisticNames.Add("chaosFragment");
 		playerStatisticNames.Add("analysisExp");
+		playerStatisticNames.Add("pointShopPoint");
 		GetPlayerCombinedInfoRequestParams parameters = new GetPlayerCombinedInfoRequestParams();
 		parameters.GetCharacterList = true;
 		parameters.GetPlayerStatistics = true;

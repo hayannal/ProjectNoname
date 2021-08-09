@@ -83,6 +83,7 @@ public class CumulativeEventCanvas : MonoBehaviour
 			case 8: space = 10; break;
 			case 9: space = 0; break;
 			case 10: space = 0; break;
+			case 11: space = 0; break;
 		}
 		gridLayoutGroup.spacing = new Vector2(space, 0);
 
@@ -188,6 +189,7 @@ public class CumulativeEventCanvas : MonoBehaviour
 	public void OnClickMenuButton8() { OnValueChangedToggle(7); }
 	public void OnClickMenuButton9() { OnValueChangedToggle(8); }
 	public void OnClickMenuButton10() { OnValueChangedToggle(9); }
+	public void OnClickMenuButton11() { OnValueChangedToggle(10); }
 
 	List<Transform> _listMenuTransform = new List<Transform>();
 	int _lastIndex = -1;

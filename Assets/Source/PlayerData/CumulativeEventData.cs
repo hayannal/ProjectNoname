@@ -35,6 +35,8 @@ public class CumulativeEventData : MonoBehaviour
 		public int ey;
 		public int em;
 		public int ed;
+
+		public int cc;
 	}
 	List<EventTypeInfo> _listEventTypeInfo;
 
@@ -44,6 +46,7 @@ public class CumulativeEventData : MonoBehaviour
 	{
 		public string id;
 		public ObscuredInt totalDays;
+		public int cc;
 
 		public DateTime startDateTime { get; set; }
 		public DateTime endDateTime { get; set; }
@@ -104,6 +107,7 @@ public class CumulativeEventData : MonoBehaviour
 		ImageEvent1,
 		ImageEvent2,
 
+		PointShop,      // 포인트 상점 이벤트
 		Review,			// 리뷰 요청 이벤트
 
 		Amount,
@@ -149,7 +153,13 @@ public class CumulativeEventData : MonoBehaviour
 	public ObscuredBool reviewEventChecked { get; set; }
 	#endregion
 
-	public void OnRecvCumulativeEventData(Dictionary<string, string> titleData, Dictionary<string, UserDataRecord> userReadOnlyData, bool newlyCreated)
+	#region Point Shop
+	public string pointShopRcvDat { get; set; }	
+	public ObscuredBool pointShopChecked { get; set; }  // 최초 확인용. 포인트 샵이 생겼음을 알려야한다. 리뷰처럼 최초로 열때 확인했다고 패킷 보내는 용도다.
+	public ObscuredInt pointShopPoint { get; set; }		// 잔여 포인트. 기간 끝나면 리셋된다.
+	#endregion
+
+	public void OnRecvCumulativeEventData(Dictionary<string, string> titleData, Dictionary<string, UserDataRecord> userReadOnlyData, List<StatisticValue> playerStatistics, bool newlyCreated)
 	{
 		var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
 		if (titleData.ContainsKey("newuEvnt") && string.IsNullOrEmpty(titleData["newuEvnt"]) == false)
@@ -188,11 +198,12 @@ public class CumulativeEventData : MonoBehaviour
 				if (_listEventTypeInfo[i].id == EventType2Id(eEventType.LoginRepeat) || _listEventTypeInfo[i].id == EventType2Id(eEventType.DailyBoxRepeat) ||
 					// 기간제 형태로 날짜 검사해서 IsActiveEvent 로 보여질지 체크하는 항목들은 다 이 listRepeatEventTypeInfo에 넣어둔다.
 					_listEventTypeInfo[i].id == EventType2Id(eEventType.ImageEvent1) || _listEventTypeInfo[i].id == EventType2Id(eEventType.ImageEvent2) ||
-					_listEventTypeInfo[i].id == EventType2Id(eEventType.Review))
+					_listEventTypeInfo[i].id == EventType2Id(eEventType.Review) || _listEventTypeInfo[i].id == EventType2Id(eEventType.PointShop))
 				{
 					RepeatEventTypeInfo repeatEventTypeInfo = new RepeatEventTypeInfo();
 					repeatEventTypeInfo.id = _listEventTypeInfo[i].id;
 					repeatEventTypeInfo.totalDays = _listEventTypeInfo[i].td;
+					repeatEventTypeInfo.cc = _listEventTypeInfo[i].cc;
 					repeatEventTypeInfo.startDateTime = new DateTime(_listEventTypeInfo[i].sy, _listEventTypeInfo[i].sm, _listEventTypeInfo[i].sd);
 					repeatEventTypeInfo.endDateTime = new DateTime(_listEventTypeInfo[i].ey, _listEventTypeInfo[i].em, _listEventTypeInfo[i].ed);
 					_listRepeatEventTypeInfo.Add(repeatEventTypeInfo);
@@ -292,6 +303,24 @@ public class CumulativeEventData : MonoBehaviour
 				OnRecvReviewInfo(userReadOnlyData["evtRvDat"].Value);
 		}
 		#endregion
+
+		#region Point Shop
+		pointShopRcvDat = "";
+		if (userReadOnlyData.ContainsKey("evtPsDat"))
+		{
+			if (string.IsNullOrEmpty(userReadOnlyData["evtPsDat"].Value) == false)
+				OnRecvPointShopInfo(userReadOnlyData["evtPsDat"].Value);
+		}
+		pointShopPoint = 0;
+		for (int i = 0; i < playerStatistics.Count; ++i)
+		{
+			if (playerStatistics[i].StatisticName == "pointShopPoint")
+			{
+				pointShopPoint = playerStatistics[i].Value;
+				break;
+			}
+		}
+		#endregion
 	}
 
 	public bool OnRecvGetEventReward(eEventType eventType, string lastRecordedTimeString)
@@ -366,6 +395,7 @@ public class CumulativeEventData : MonoBehaviour
 			case eEventType.Comeback: return "cu";
 			case eEventType.ImageEvent1: return "ie1";
 			case eEventType.ImageEvent2: return "ie2";
+			case eEventType.PointShop: return "ps";
 			case eEventType.Review: return "rv";
 		}
 		return "";
@@ -435,6 +465,9 @@ public class CumulativeEventData : MonoBehaviour
 		// 천천히 보내는거라 Late에서 처리
 		CheckRepeatCumulativeEvent();
 
+		// 포인트 상점은 조금 특별하다.
+		CheckPointShopEvent();
+
 		// 고정장비 보상 아이콘 리소스 로드
 		StartCoroutine(LoadRewardEquipIconAsync());
 	}
@@ -459,7 +492,26 @@ public class CumulativeEventData : MonoBehaviour
 		}
 	}
 
-	public void OnRecvRemoveRepeatEvent(bool resetRepeatLogin, bool resetRepeatDailyBox, bool resetReview)
+	void CheckPointShopEvent()
+	{
+		// 포인트 상점은 개별 컨텐츠에 점수 올리고 연동하는 로직을 넣었다 뺐다 할 수 없어서
+		// 차라리 로비 올때마다 한번씩 서버에 물어봐서 점수를 받고 표시하는 형태로 가기로 했다.
+		// 
+		RepeatEventTypeInfo pointShopEventInfo = FindRepeatEventTypeInfo(eEventType.PointShop);
+		if (pointShopEventInfo == null)
+			return;
+		if (pointShopEventInfo.IsActiveEvent() == false)
+			return;
+
+		PlayFabApiManager.instance.RequestGetPointShopPoint(() =>
+		{
+			// 포인트를 받으면 느낌표를 띄울 수 있는지 확인해야한다.
+			if (EventBoard.instance != null && EventBoard.instance.gameObject != null && EventBoard.instance.gameObject.activeSelf)
+				EventBoard.instance.RefreshBoardOnOff();
+		});
+	}
+
+	public void OnRecvRemoveRepeatEvent(bool resetRepeatLogin, bool resetRepeatDailyBox, bool resetReview, bool resetPointShop)
 	{
 		if (resetRepeatLogin)
 		{
@@ -478,8 +530,14 @@ public class CumulativeEventData : MonoBehaviour
 			reviewRcvDat = "";
 			reviewEventChecked = false;
 		}
+		if (resetPointShop)
+		{
+			pointShopRcvDat = "";
+			pointShopChecked = false;
+			pointShopPoint = 0;
+		}
 
-		if (resetRepeatLogin || resetRepeatDailyBox || resetReview)
+		if (resetRepeatLogin || resetRepeatDailyBox || resetReview || resetPointShop)
 		{
 			// 반복이벤트가 삭제되었다면 갱신해서 느낌표 표시 역시 바뀔 수 있으므로 갱신시켜줘야한다.
 			if (EventBoard.instance != null && EventBoard.instance.gameObject != null && EventBoard.instance.gameObject.activeSelf)
@@ -568,7 +626,31 @@ public class CumulativeEventData : MonoBehaviour
 					deleteReviewEvent = true;
 			}
 		}
-		if (deleteRepeatLogin || deleteRepeatDailyBox || deleteReviewEvent)
+
+		// Review 같은 방법으로 체크
+		bool deletePointShopEvent = false;
+		if (pointShopRcvDat != "")
+		{
+			RepeatEventTypeInfo info = FindRepeatEventTypeInfo(eEventType.PointShop);
+			if (info == null)
+				deletePointShopEvent = true;
+
+			if (deletePointShopEvent == false)
+			{
+				bool inRange = false;
+				DateTime lastRecordTime = new DateTime();
+				if (DateTime.TryParse(pointShopRcvDat, out lastRecordTime))
+				{
+					if (lastRecordTime > info.startDateTime && lastRecordTime < info.endDateTime)
+						inRange = true;
+					if (inRange && ServerTime.UtcNow > info.startDateTime && ServerTime.UtcNow > info.endDateTime)
+						inRange = false;
+				}
+				if (!inRange)
+					deletePointShopEvent = true;
+			}
+		}
+		if (deleteRepeatLogin || deleteRepeatDailyBox || deleteReviewEvent || deletePointShopEvent)
 		{
 			// 이렇게 검사해서 하나라도 지워야할게 있으면 서버로 패킷을 보내는데 RefreshMailList 패킷처럼 실패한다면 지워지지 않게된다.
 			// 어차피 서버로부터 받는 테이블값이 이상해질리도 없다면
@@ -604,6 +686,9 @@ public class CumulativeEventData : MonoBehaviour
 
 		// RepeatEvent들은 그래도 한번 호출해서 리셋해야 하지 않나.
 		CheckRepeatCumulativeEvent();
+
+		// 포인트샵의 포인트가 갑자기 바뀔일은 없을테니 딱히 호출할 필요 없을듯
+		//CheckPointShopEvent();
 
 		// DailyShopData와 달리 매일 구성품이 바뀌는것도 아니라서 굳이 다음날엔 호출하지 않는다.
 		//StartCoroutine(LoadRewardEquipIconAsync());
@@ -727,6 +812,16 @@ public class CumulativeEventData : MonoBehaviour
 				if (info != null && info.IsActiveEvent())
 					return true;
 				break;
+			case eEventType.PointShop:
+				info = FindRepeatEventTypeInfo(eventType);
+				if (info == null)
+					return false;
+				// 다른 이벤트와 달리 유일하게 cc 체크한다.
+				if (info.cc != 0 && PlayerData.instance.highestPlayChapter < info.cc)
+					return false;
+				if (info.IsActiveEvent())
+					return true;
+				break;
 		}
 		return false;
 	}
@@ -789,6 +884,35 @@ public class CumulativeEventData : MonoBehaviour
 				if (IsActiveEvent(eventType) == false)
 					return false;
 				if (reviewEventChecked == false)
+					return true;
+				break;
+			case eEventType.PointShop:
+				if (removeRepeatServerFailure)
+					return false;
+				if (IsActiveEvent(eventType) == false)
+					return false;
+				if (pointShopChecked == false)
+					return true;
+				// 추가로 구매 가능한지도 확인해야한다.
+				// 그런데 이 항목이 규격이 없어서
+				bool buyable = false;
+				for (int i = 1; i <= 10; ++i)
+				{
+					EventRewardInfo pointShopRewardInfo = FindRewardInfo(eEventType.PointShop, i);
+					if (pointShopRewardInfo == null)
+					{
+						// 순서대로 돌다가 null나오면 break;
+						break;
+					}
+
+					// 하나라도 살 수 있으면 가능으로 판단.
+					if (pointShopPoint >= pointShopRewardInfo.cn1)
+					{
+						buyable = true;
+						break;
+					}
+				}
+				if (buyable)
 					return true;
 				break;
 		}
@@ -911,6 +1035,31 @@ public class CumulativeEventData : MonoBehaviour
 		{
 			DateTime universalTime = lastReviewEventRecordTime.ToUniversalTime();
 			OnRecvReviewInfo(universalTime);
+		}
+	}
+	#endregion
+
+	#region Point Shop
+	void OnRecvPointShopInfo(DateTime lastPointShopEventRecordTime)
+	{
+		// 리뷰와 동일한 기능을 한다. 처음 확인하는 날짜 기록용
+		RepeatEventTypeInfo info = FindRepeatEventTypeInfo(eEventType.PointShop);
+		if (info == null)
+			return;
+		if (lastPointShopEventRecordTime > info.startDateTime && lastPointShopEventRecordTime < info.endDateTime)
+			pointShopChecked = true;
+		else
+			pointShopChecked = false;
+	}
+
+	public void OnRecvPointShopInfo(string lastPointShopEventRecordTimeString)
+	{
+		pointShopRcvDat = lastPointShopEventRecordTimeString;
+		DateTime lastPointShopEventRecordTime = new DateTime();
+		if (DateTime.TryParse(lastPointShopEventRecordTimeString, out lastPointShopEventRecordTime))
+		{
+			DateTime universalTime = lastPointShopEventRecordTime.ToUniversalTime();
+			OnRecvPointShopInfo(universalTime);
 		}
 	}
 	#endregion

@@ -39,6 +39,8 @@ public class CashShopCanvas : MonoBehaviour
 	public Text equipBox45AddText;
 
 	public GameObject dailyShopChaosInfo;
+	public GameObject dailyShopChaosCountRootObject;
+	public Text dailyShopChaosCountText;
 
 	public DiaListItem[] diaListItemList;
 	public GoldListItem[] goldListItemList;

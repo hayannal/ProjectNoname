@@ -56,6 +56,31 @@ public class DailyShopChaosInfo : MonoBehaviour
 		}
 		else
 			slotAddItemTransform.gameObject.SetActive(false);
+
+		RefreshCountInfo();
+	}
+
+	void RefreshCountInfo()
+	{
+		bool allPurchased = true;
+		for (int i = 0; i < chaosSlotListItemList.Length; ++i)
+		{
+			if (chaosSlotListItemList[i].gameObject.activeSelf == false)
+				continue;
+			if (DailyShopData.instance.IsPurchasedTodayChaosData(i) == false)
+			{
+				allPurchased = false;
+				break;
+			}
+		}
+		CashShopCanvas.instance.dailyShopChaosCountRootObject.SetActive(allPurchased);
+		if (allPurchased)
+		{
+			string text = string.Format("{0} {1} / {2}", UIString.instance.GetString("GameUI_ChaosFragments"),
+				UIString.instance.GetString("GameUI_ReturnScrollCount", PlayerData.instance.chaosFragmentCount),
+				BattleInstanceManager.instance.GetCachedGlobalConstantInt("ChaosFragmentMax"));
+			CashShopCanvas.instance.dailyShopChaosCountText.SetLocalizedText(text);
+		}
 	}
 
 	public void OnClickDailySlotAddButton()

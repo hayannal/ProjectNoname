@@ -607,6 +607,8 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 		{
 			_listGrantInfo = listGrantInfo;
 			_listTrpInfo = listTrpInfo;
+			int currentLevel = _currentLevel;
+
 			// 캐릭터 연출이 다 끝나고 나서 실행할 액션을 _resultAction에 저장해두고 연출을 진행
 			_resultAction = () =>
 			{
@@ -622,7 +624,7 @@ public class ResearchInfoAnalysisCanvas : MonoBehaviour
 					StackCanvas.Pop(CharacterBoxShowCanvas.instance.gameObject);
 					ResearchCanvas.instance.SetInfoCameraMode(true);
 
-					AnalysisResultCanvas.instance.RefreshInfo(showLevelUp, _currentLevel, true);
+					AnalysisResultCanvas.instance.RefreshInfo(showLevelUp, currentLevel, true);
 					action.Invoke();
 				});
 			};

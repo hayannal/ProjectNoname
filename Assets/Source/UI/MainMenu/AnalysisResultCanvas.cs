@@ -23,6 +23,7 @@ public class AnalysisResultCanvas : MonoBehaviour
 	public GameObject levelUpEffectTextObject;
 
 	public RectTransform goldGroupRectTransform;
+	public DOTweenAnimation goldGroupTweenAnimation;
 	public Text goldValueText;
 	public GameObject goldBigSuccessObject;
 	public RectTransform diaGroupRectTransform;
@@ -119,8 +120,6 @@ public class AnalysisResultCanvas : MonoBehaviour
 	int _addEnergy;
 	IEnumerator<float> RewardProcess()
 	{
-		_processed = true;
-
 		// 0.1초 초기화 대기 후 시작
 		yield return Timing.WaitForSeconds(0.1f);
 
@@ -211,7 +210,10 @@ public class AnalysisResultCanvas : MonoBehaviour
 				_currentEnergy = 0.0f;
 			}
 
+			goldDiaRootRectTransform.localScale = Vector3.zero;
 			goldDiaRootRectTransform.gameObject.SetActive(true);
+			yield return Timing.WaitForOneFrame;
+			goldGroupTweenAnimation.DORestart();
 			yield return Timing.WaitForSeconds(0.4f);
 
 			if (_addGold > 0) _updateGoldText = true;
@@ -286,16 +288,10 @@ public class AnalysisResultCanvas : MonoBehaviour
 		// 모든 표시가 끝나면 DropManager에 있는 정보를 강제로 초기화 시켜줘야한다.
 		// DropManager.instance.ClearLobbyDropInfo(); 대신 
 		AnalysisData.instance.ClearCachedInfo();
-
-		_processed = false;
 	}
 
-	bool _processed = false;
 	public void OnClickExitButton()
 	{
-		if (_processed)
-			return;
-
 		emptyRootRectTransform.gameObject.SetActive(false);
 		levelUpRootRectTransform.gameObject.SetActive(false);
 		goldDiaRootRectTransform.gameObject.SetActive(false);

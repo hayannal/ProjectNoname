@@ -3542,10 +3542,11 @@ public class PlayFabApiManager : MonoBehaviour
 			jsonResult.TryGetValue("delSl", out object delSl);
 			jsonResult.TryGetValue("delSo", out object delSo);
 			jsonResult.TryGetValue("delRv", out object delRv);
+			jsonResult.TryGetValue("delPs", out object delPs);
 			bool deleteSl = ((delSl.ToString()) == "1");
 			bool deleteSo = ((delSo.ToString()) == "1");
 			bool deleteRv = ((delRv.ToString()) == "1");
-			bool deletePs = false;
+			bool deletePs = ((delPs.ToString()) == "1");
 			if (successCallback != null) successCallback.Invoke(deleteSl, deleteSo, deleteRv, deletePs);
 		}, (error) =>
 		{

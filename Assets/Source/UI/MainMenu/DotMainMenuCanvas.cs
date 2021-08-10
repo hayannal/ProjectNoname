@@ -563,7 +563,7 @@ public class DotMainMenuCanvas : MonoBehaviour
 		}
 		else
 		{
-			AlarmObject.Hide(alarmRootTransformList[buttonIndex], (buttonIndex == (int)eButtonType.Chapter));
+			AlarmObject.Hide(alarmRootTransformList[buttonIndex], (buttonIndex == (int)eButtonType.Character));
 		}
 	}
 	#endregion

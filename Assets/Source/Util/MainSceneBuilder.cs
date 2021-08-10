@@ -460,7 +460,7 @@ public class MainSceneBuilder : MonoBehaviour
 #endif
 		SoundManager.instance.PlayLobbyBgm();
 
-		if (EventManager.instance.IsStandbyServerEvent(EventManager.eServerEvent.chaos))
+		if (EventManager.instance.IsStandbyOpenChaosEvent())
 		{
 			_handleEventGatePillar = Addressables.LoadAssetAsync<GameObject>("OpenChaosGatePillar");
 #if !UNITY_EDITOR

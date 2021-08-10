@@ -273,6 +273,28 @@ public class EventManager : MonoBehaviour
 		return (serverEventInfo.eventType == serverEvent);
 	}
 
+	public bool IsStandbyOpenChaosEvent()
+	{
+		if (IsStandbyServerEvent(eServerEvent.chaos))
+			return true;
+
+		// 원래는 제일 위에있는거 Peek으로만 체크하면 됐었는데
+		// 이후에 플래그형 서버 이벤트들도 많이 생기면서 chaos 이벤트가 큐 중간에 껴있는 경우가 발생했다.
+		// PlayEventProcess로 수행해보면 플래그형 이벤트들은 계속해서 다음걸 호출하기 때문에 중간에 껴있는 chaos까지 감지하려면 Peek만으로는 불가능해서
+		// 이렇게 별도 함수를 만들어서 처리하기로 한다.
+		//
+		// 카오스 제외하고 노드워나 세컨드데일리박스는 이 과정이 필요없는데
+		// 이벤트 진행도중에 이펙트를 로드하고 보여주는거로 끝나는 형태라서 문제가 발생하지 않았다.
+		//
+		// 클라 이벤트중에 TimeSpace가 카오스처럼 별도의 프리팹을 로딩하는 구조였는데
+		// 클라 이벤트라서 어차피 진행에 문제가 없어서 또 상관 없었다.
+		//
+		// 그래서 카오스만 이렇게 예외처리 해두기로 한다.
+		if (ContainsStandbyServerEvent(eServerEvent.chaos))
+			return true;
+		return false;
+	}
+
 	public bool IsStandbyServerEvent()
 	{
 		if (_queServerEventInfo.Count == 0)
@@ -447,6 +469,11 @@ public class EventManager : MonoBehaviour
 	bool _waitCompleteAnimation;
 	IEnumerator ChaosProcess()
 	{
+		// 예외처리 해놔서 그럴일은 없겠지만 
+		// 그래도 혹시 null이면 진행이 안될테니 이벤트를 취소한다.
+		if (OpenChaosEventGatePillar.instance == null)
+			yield break;
+
 		chaosEventEventPlaying = true;
 		_waitTouch = true;
 		UIInstanceManager.instance.ShowCanvasAsync("EventInputLockCanvas", null);

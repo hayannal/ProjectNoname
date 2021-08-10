@@ -193,7 +193,7 @@ public class PointShopEventListItem : MonoBehaviour
 			return;
 
 		// cn1 이 여기서는 가격으로 쓰인다.
-		priceText.text = string.Format("{0:N0} P", _slotInfo.cn1);
+		priceText.text = string.Format("{0:N0} p", _slotInfo.cn1);
 
 		bool disablePrice = (CumulativeEventData.instance.pointShopPoint < _slotInfo.cn1);
 		if (disablePrice)

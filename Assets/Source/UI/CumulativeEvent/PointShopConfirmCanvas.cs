@@ -46,7 +46,7 @@ public class PointShopConfirmCanvas : MonoBehaviour
 		_slotInfo = eventRewardInfo;
 		_price = _slotInfo.cn1;
 
-		priceText.text = string.Format("{0:N0} <size=30>P</size>", _price);
+		priceText.text = string.Format("{0:N0} p", _price);
 		bool disablePrice = (CumulativeEventData.instance.pointShopPoint < _price);
 		priceButtonImage.color = !disablePrice ? Color.white : ColorUtil.halfGray;
 		priceText.color = !disablePrice ? Color.white : Color.gray;

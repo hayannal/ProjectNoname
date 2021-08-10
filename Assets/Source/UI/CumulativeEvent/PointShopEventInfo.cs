@@ -23,7 +23,7 @@ public class PointShopEventInfo : MonoBehaviour
 		if (CumulativeEventData.instance.pointShopChecked == false)
 			_viewCheckRemainTime = 0.5f;
 
-		pointText.text = "0";
+		pointText.text = "0 p";
 		_addPoint = CumulativeEventData.instance.pointShopPoint;
 		if (_addPoint > 0)
 		{
@@ -62,7 +62,7 @@ public class PointShopEventInfo : MonoBehaviour
 		if (currentPointInt != _lastPoint)
 		{
 			_lastPoint = currentPointInt;
-			pointText.text = _lastPoint.ToString("N0");
+			pointText.text = string.Format("{0:N0} p", _lastPoint);
 		}
 	}
 

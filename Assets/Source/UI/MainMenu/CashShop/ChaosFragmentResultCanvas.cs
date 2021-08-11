@@ -84,12 +84,14 @@ public class ChaosFragmentResultCanvas : MonoBehaviour
 		exitObject.SetActive(true);
 		levelUpPossibleTextObject.SetActive(levelUpPossible);
 
-		DotMainMenuCanvas.instance.RefreshCharacterAlarmObject();
+		// 변환서도 안닫힌다는 버그 제보가 있어서 바꿔둔다.
+		_processed = false;
+
+		if (DotMainMenuCanvas.instance != null && DotMainMenuCanvas.instance.gameObject.activeSelf)
+			DotMainMenuCanvas.instance.RefreshCharacterAlarmObject();
 
 		// 모든 표시가 끝나면 DropManager에 있는 정보를 강제로 초기화 시켜줘야한다.
 		DropManager.instance.ClearLobbyDropInfo();
-
-		_processed = false;
 	}
 
 	bool _processed = false;
@@ -98,6 +100,11 @@ public class ChaosFragmentResultCanvas : MonoBehaviour
 		if (_processed)
 			return;
 
+		OnClickExitButton();
+	}
+
+	public void OnClickExitButton()
+	{
 		toastBackImageRectTransform.gameObject.SetActive(false);
 		characterBoxResultListItem.gameObject.SetActive(false);
 		exitObject.SetActive(false);

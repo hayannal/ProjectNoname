@@ -52,11 +52,12 @@ public class AnalysisSimpleResultCanvas : MonoBehaviour
 
 		exitObject.SetActive(true);
 
+		// 자꾸 exit가 보이는데도 안눌러진다고 해서 위로 올려둔다.
+		_processed = false;
+
 		// 모든 표시가 끝나면 DropManager에 있는 정보를 강제로 초기화 시켜줘야한다.
 		// DropManager.instance.ClearLobbyDropInfo(); 대신 
 		AnalysisData.instance.ClearCachedInfo();
-
-		_processed = false;
 	}
 
 	bool _processed = false;
@@ -65,6 +66,11 @@ public class AnalysisSimpleResultCanvas : MonoBehaviour
 		if (_processed)
 			return;
 
+		OnClickExitButton();
+	}
+
+	public void OnClickExitButton()
+	{
 		toastBackImageRectTransform.gameObject.SetActive(false);
 		titleLineObject.SetActive(false);
 		goldGroupRectTransform.gameObject.SetActive(false);

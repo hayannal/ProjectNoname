@@ -102,6 +102,7 @@ public class CumulativeEventData : MonoBehaviour
 
 		LoginRepeat,	// 반복용 이벤트
 		DailyBoxRepeat,	// 반복용 DailyBox 이벤트
+		NodeWarRepeat,	// 반복용 NodeWar 이벤트
 		Comeback,		// 복귀 유저
 
 		ImageEvent1,
@@ -140,10 +141,13 @@ public class CumulativeEventData : MonoBehaviour
 	#region Repeat Events
 	public string repeatLoginRcvDat { get; set; }
 	public string repeatDailyBoxRcvDat { get; set; }
+	public string repeatNodeWarRcvDat { get; set; }
 	public ObscuredBool repeatLoginEventRecorded { get; set; }
 	public ObscuredBool repeatDailyBoxEventRecorded { get; set; }
+	public ObscuredBool repeatNodeWarEventRecorded { get; set; }
 	public ObscuredInt repeatLoginEventCount { get; set; }
 	public ObscuredInt repeatDailyBoxEventCount { get; set; }
+	public ObscuredInt repeatNodeWarEventCount { get; set; }
 
 	public ObscuredBool removeRepeatServerFailure { get; set; }
 	#endregion
@@ -196,6 +200,7 @@ public class CumulativeEventData : MonoBehaviour
 				if (_listEventTypeInfo[i].id == EventType2Id(eEventType.OpenChaos))
 					openChaosEventTotalDays = _listEventTypeInfo[i].td;
 				if (_listEventTypeInfo[i].id == EventType2Id(eEventType.LoginRepeat) || _listEventTypeInfo[i].id == EventType2Id(eEventType.DailyBoxRepeat) ||
+					_listEventTypeInfo[i].id == EventType2Id(eEventType.NodeWarRepeat) ||
 					// 기간제 형태로 날짜 검사해서 IsActiveEvent 로 보여질지 체크하는 항목들은 다 이 listRepeatEventTypeInfo에 넣어둔다.
 					_listEventTypeInfo[i].id == EventType2Id(eEventType.ImageEvent1) || _listEventTypeInfo[i].id == EventType2Id(eEventType.ImageEvent2) ||
 					_listEventTypeInfo[i].id == EventType2Id(eEventType.Review) || _listEventTypeInfo[i].id == EventType2Id(eEventType.PointShop))
@@ -266,8 +271,10 @@ public class CumulativeEventData : MonoBehaviour
 		removeRepeatServerFailure = false;
 		repeatLoginEventRecorded = false;
 		repeatDailyBoxEventRecorded = false;
+		repeatNodeWarEventRecorded = false;
 		repeatLoginRcvDat = "";
 		repeatDailyBoxRcvDat = "";
+		repeatNodeWarRcvDat = "";
 		if (userReadOnlyData.ContainsKey("evtRptLogDat"))
 		{
 			if (string.IsNullOrEmpty(userReadOnlyData["evtRptLogDat"].Value) == false)
@@ -278,9 +285,15 @@ public class CumulativeEventData : MonoBehaviour
 			if (string.IsNullOrEmpty(userReadOnlyData["evtRptDbxDat"].Value) == false)
 				OnRecvRepeatDailyBoxInfo(userReadOnlyData["evtRptDbxDat"].Value);
 		}
+		if (userReadOnlyData.ContainsKey("evtRptNdwDat"))
+		{
+			if (string.IsNullOrEmpty(userReadOnlyData["evtRptNdwDat"].Value) == false)
+				OnRecvRepeatNodeWarInfo(userReadOnlyData["evtRptNdwDat"].Value);
+		}
 
 		repeatLoginEventCount = 0;
 		repeatDailyBoxEventCount = 0;
+		repeatNodeWarEventCount = 0;
 		if (userReadOnlyData.ContainsKey("evtRptLogCnt"))
 		{
 			int intValue = 0;
@@ -292,6 +305,12 @@ public class CumulativeEventData : MonoBehaviour
 			int intValue = 0;
 			if (int.TryParse(userReadOnlyData["evtRptDbxCnt"].Value, out intValue))
 				repeatDailyBoxEventCount = intValue;
+		}
+		if (userReadOnlyData.ContainsKey("evtRptNdwCnt"))
+		{
+			int intValue = 0;
+			if (int.TryParse(userReadOnlyData["evtRptNdwCnt"].Value, out intValue))
+				repeatNodeWarEventCount = intValue;
 		}
 		#endregion
 
@@ -378,6 +397,16 @@ public class CumulativeEventData : MonoBehaviour
 				OnRecvRepeatDailyBoxInfo(lastRecordedTimeString);
 				++repeatDailyBoxEventCount;
 				break;
+			case eEventType.NodeWarRepeat:
+				info = FindRepeatEventTypeInfo(eventType);
+				if (info == null || info.IsActiveEvent() == false)
+					return false;
+				if (repeatNodeWarEventCount >= info.totalDays)
+					return false;
+
+				OnRecvRepeatNodeWarInfo(lastRecordedTimeString);
+				++repeatNodeWarEventCount;
+				break;
 		}
 		return true;
 	}
@@ -392,6 +421,7 @@ public class CumulativeEventData : MonoBehaviour
 			case eEventType.Clear7Chapter: return "cs";
 			case eEventType.LoginRepeat: return "sl";
 			case eEventType.DailyBoxRepeat: return "so";
+			case eEventType.NodeWarRepeat: return "sn";
 			case eEventType.Comeback: return "cu";
 			case eEventType.ImageEvent1: return "ie1";
 			case eEventType.ImageEvent2: return "ie2";
@@ -399,6 +429,16 @@ public class CumulativeEventData : MonoBehaviour
 			case eEventType.Review: return "rv";
 		}
 		return "";
+	}
+
+	public static bool IsNodeWarEvent(eEventType eventType)
+	{
+		switch (eventType)
+		{
+			case eEventType.NodeWarRepeat:
+				return true;
+		}
+		return false;
 	}
 
 	public static bool IsDailyBoxEvent(eEventType eventType)
@@ -419,6 +459,8 @@ public class CumulativeEventData : MonoBehaviour
 		{
 			case eEventType.LoginRepeat:
 			case eEventType.DailyBoxRepeat:
+			case eEventType.NodeWarRepeat:
+			case eEventType.PointShop:
 				return true;
 		}
 		return false;
@@ -511,7 +553,7 @@ public class CumulativeEventData : MonoBehaviour
 		});
 	}
 
-	public void OnRecvRemoveRepeatEvent(bool resetRepeatLogin, bool resetRepeatDailyBox, bool resetReview, bool resetPointShop)
+	public void OnRecvRemoveRepeatEvent(bool resetRepeatLogin, bool resetRepeatDailyBox, bool resetRepeatNodeWar, bool resetReview, bool resetPointShop)
 	{
 		if (resetRepeatLogin)
 		{
@@ -525,6 +567,12 @@ public class CumulativeEventData : MonoBehaviour
 			repeatDailyBoxEventRecorded = false;
 			repeatDailyBoxEventCount = 0;
 		}
+		if (resetRepeatNodeWar)
+		{
+			repeatNodeWarRcvDat = "";
+			repeatNodeWarEventRecorded = false;
+			repeatNodeWarEventCount = 0;
+		}
 		if (resetReview)
 		{
 			reviewRcvDat = "";
@@ -537,7 +585,7 @@ public class CumulativeEventData : MonoBehaviour
 			pointShopPoint = 0;
 		}
 
-		if (resetRepeatLogin || resetRepeatDailyBox || resetReview || resetPointShop)
+		if (resetRepeatLogin || resetRepeatDailyBox || resetRepeatNodeWar || resetReview || resetPointShop)
 		{
 			// 반복이벤트가 삭제되었다면 갱신해서 느낌표 표시 역시 바뀔 수 있으므로 갱신시켜줘야한다.
 			if (EventBoard.instance != null && EventBoard.instance.gameObject != null && EventBoard.instance.gameObject.activeSelf)
@@ -603,6 +651,30 @@ public class CumulativeEventData : MonoBehaviour
 			}
 		}
 
+		// RepeatDailyBox 역시 같은 방법으로 체크
+		bool deleteRepeatNodeWar = false;
+		if (repeatNodeWarRcvDat != "")
+		{
+			RepeatEventTypeInfo info = FindRepeatEventTypeInfo(eEventType.NodeWarRepeat);
+			if (info == null)
+				deleteRepeatNodeWar = true;
+
+			if (deleteRepeatNodeWar == false)
+			{
+				bool inRange = false;
+				DateTime lastRecordTime = new DateTime();
+				if (DateTime.TryParse(repeatNodeWarRcvDat, out lastRecordTime))
+				{
+					if (lastRecordTime > info.startDateTime && lastRecordTime < info.endDateTime)
+						inRange = true;
+					if (inRange && ServerTime.UtcNow > info.startDateTime && ServerTime.UtcNow > info.endDateTime)
+						inRange = false;
+				}
+				if (!inRange)
+					deleteRepeatNodeWar = true;
+			}
+		}
+
 		// Review 역시 같은 방법으로 체크
 		bool deleteReviewEvent = false;
 		if (reviewRcvDat != "")
@@ -650,7 +722,7 @@ public class CumulativeEventData : MonoBehaviour
 					deletePointShopEvent = true;
 			}
 		}
-		if (deleteRepeatLogin || deleteRepeatDailyBox || deleteReviewEvent || deletePointShopEvent)
+		if (deleteRepeatLogin || deleteRepeatDailyBox || deleteRepeatNodeWar || deleteReviewEvent || deletePointShopEvent)
 		{
 			// 이렇게 검사해서 하나라도 지워야할게 있으면 서버로 패킷을 보내는데 RefreshMailList 패킷처럼 실패한다면 지워지지 않게된다.
 			// 어차피 서버로부터 받는 테이블값이 이상해질리도 없다면
@@ -670,6 +742,7 @@ public class CumulativeEventData : MonoBehaviour
 		openChaosEventRecorded = false;
 		repeatLoginEventRecorded = false;
 		repeatDailyBoxEventRecorded = false;
+		repeatNodeWarEventRecorded = false;
 
 		// 오브젝트나 UI 스스로 시간을 체크하지 않기 때문에 여기서 대신 호출해야한다.
 		if (EventBoard.instance != null && EventBoard.instance.gameObject != null && EventBoard.instance.gameObject.activeSelf)
@@ -784,22 +857,10 @@ public class CumulativeEventData : MonoBehaviour
 				//	return false;
 				break;
 			case eEventType.LoginRepeat:
-				info = FindRepeatEventTypeInfo(eventType);
-				if (info != null && info.IsActiveEvent())
-					return true;
-				break;
 			case eEventType.DailyBoxRepeat:
-				info = FindRepeatEventTypeInfo(eventType);
-				if (info != null && info.IsActiveEvent())
-					return true;
-				break;
+			case eEventType.NodeWarRepeat:
 			case eEventType.Comeback:
-				break;
 			case eEventType.ImageEvent1:
-				info = FindRepeatEventTypeInfo(eventType);
-				if (info != null && info.IsActiveEvent())
-					return true;
-				break;
 			case eEventType.ImageEvent2:
 				info = FindRepeatEventTypeInfo(eventType);
 				if (info != null && info.IsActiveEvent())
@@ -832,6 +893,9 @@ public class CumulativeEventData : MonoBehaviour
 			return false;
 
 		if (IsDailyBoxEvent(eventType) && PlayerData.instance.sharedDailyBoxOpened == false)
+			return false;
+
+		if (IsNodeWarEvent(eventType) && PlayerData.instance.nodeWarCleared == false)
 			return false;
 
 		RepeatEventTypeInfo info = null;
@@ -869,6 +933,15 @@ public class CumulativeEventData : MonoBehaviour
 				if (info == null || info.IsActiveEvent() == false)
 					return false;
 				if (repeatDailyBoxEventCount < info.totalDays && repeatDailyBoxEventRecorded == false)
+					return true;
+				break;
+			case eEventType.NodeWarRepeat:
+				if (removeRepeatServerFailure)
+					return false;
+				info = FindRepeatEventTypeInfo(eventType);
+				if (info == null || info.IsActiveEvent() == false)
+					return false;
+				if (repeatNodeWarEventCount < info.totalDays && repeatNodeWarEventRecorded == false)
 					return true;
 				break;
 			case eEventType.Comeback:
@@ -1009,6 +1082,25 @@ public class CumulativeEventData : MonoBehaviour
 		{
 			DateTime universalTime = lastRepeatDailyBoxEventRecordTime.ToUniversalTime();
 			OnRecvRepeatDailyBoxInfo(universalTime);
+		}
+	}
+
+	void OnRecvRepeatNodeWarInfo(DateTime lastRepeatNodeWarEventRecordTime)
+	{
+		if (ServerTime.UtcNow.Year == lastRepeatNodeWarEventRecordTime.Year && ServerTime.UtcNow.Month == lastRepeatNodeWarEventRecordTime.Month && ServerTime.UtcNow.Day == lastRepeatNodeWarEventRecordTime.Day)
+			repeatNodeWarEventRecorded = true;
+		else
+			repeatNodeWarEventRecorded = false;
+	}
+
+	public void OnRecvRepeatNodeWarInfo(string lastRepeatNodeWarEventRecordTimeString)
+	{
+		repeatNodeWarRcvDat = lastRepeatNodeWarEventRecordTimeString;
+		DateTime lastRepeatNodeWarEventRecordTime = new DateTime();
+		if (DateTime.TryParse(lastRepeatNodeWarEventRecordTimeString, out lastRepeatNodeWarEventRecordTime))
+		{
+			DateTime universalTime = lastRepeatNodeWarEventRecordTime.ToUniversalTime();
+			OnRecvRepeatNodeWarInfo(universalTime);
 		}
 	}
 	#endregion

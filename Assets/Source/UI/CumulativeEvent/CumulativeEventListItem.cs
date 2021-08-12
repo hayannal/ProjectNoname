@@ -210,6 +210,9 @@ public class CumulativeEventListItem : MonoBehaviour
 			case CumulativeEventData.eEventType.DailyBoxRepeat:
 				count = CumulativeEventData.instance.repeatDailyBoxEventCount;
 				break;
+			case CumulativeEventData.eEventType.NodeWarRepeat:
+				count = CumulativeEventData.instance.repeatNodeWarEventCount;
+				break;
 		}
 
 		bool recorded = false;
@@ -229,6 +232,9 @@ public class CumulativeEventListItem : MonoBehaviour
 				break;
 			case CumulativeEventData.eEventType.DailyBoxRepeat:
 				recorded = CumulativeEventData.instance.repeatDailyBoxEventRecorded;
+				break;
+			case CumulativeEventData.eEventType.NodeWarRepeat:
+				recorded = CumulativeEventData.instance.repeatNodeWarEventRecorded;
 				break;
 		}
 
@@ -323,6 +329,19 @@ public class CumulativeEventListItem : MonoBehaviour
 			if (PlayerData.instance.sharedDailyBoxOpened == false)
 			{
 				ToastCanvas.instance.ShowToast(UIString.instance.GetString("LoginUI_CannotClaimOrigin"), 2.0f);
+				return;
+			}
+		}
+
+		// NodeWar 역시 체크
+		if (CumulativeEventData.IsNodeWarEvent(eventType))
+		{
+			if (PlayerData.instance.nodeWarCleared == false)
+			{
+				if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.NodeWar))
+					ToastCanvas.instance.ShowToast(UIString.instance.GetString("LoginUI_CannotClaimNodeWar"), 2.0f);
+				else
+					ToastCanvas.instance.ShowToast(UIString.instance.GetString("LoginUI_CannotClaimNodeWarNotOpen"), 2.0f);
 				return;
 			}
 		}

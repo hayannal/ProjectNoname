@@ -519,6 +519,8 @@ public class CharacterInfoGrowthCanvas : MonoBehaviour
 
 			while ((ResearchCanvas.instance != null && ResearchCanvas.instance.gameObject.activeSelf) == false)
 				yield return Timing.WaitForOneFrame;
+
+			ResearchCanvas.instance.OnClickMenuButton2();
 		}
 		else
 		{

@@ -389,6 +389,7 @@ public class ResearchInfoGrowthCanvas : MonoBehaviour
 			//ResearchCanvas.instance.currencySmallInfo.RefreshInfo();
 			ResearchCanvas.instance.currencySmallInfo.goldText.text = CurrencyData.instance.gold.ToString("N0");
 
+			ResearchCanvas.instance.RefreshAlarmObjectList();
 			DotMainMenuCanvas.instance.RefreshResearchAlarmObject();
 			Timing.RunCoroutine(ResearchLevelUpProcess());
 		});

@@ -119,7 +119,8 @@ public class TreasureChestIndicatorCanvas : ObjectIndicatorCanvas
 
 	void OnClickOpenShop()
 	{
-		Timing.RunCoroutine(ShowCashShopAsync());
+		//Timing.RunCoroutine(ShowCashShopAsync());
+		UIInstanceManager.instance.ShowCanvasAsync("CashShopCanvas", null);
 	}
 
 	IEnumerator<float> ShowCashShopAsync()

@@ -311,7 +311,9 @@ public class DotMainMenuCanvas : MonoBehaviour
 		if (_reservedHide)
 			return;
 
-		Timing.RunCoroutine(ShowCashShopAsync());
+		//Timing.RunCoroutine(ShowCashShopAsync());
+		// IAP 초기화에 실패하더라도 캐시샵은 열리게 수정하면서 호출 구조 바꿔둔다.
+		UIInstanceManager.instance.ShowCanvasAsync("CashShopCanvas", null);
 	}
 
 	IEnumerator<float> ShowCashShopAsync()

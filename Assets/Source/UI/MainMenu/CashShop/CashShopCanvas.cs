@@ -10,6 +10,8 @@ public class CashShopCanvas : MonoBehaviour
 
 	public CurrencySmallInfo currencySmallInfo;
 
+	public GameObject iapInitializeFailedRectObject;
+
 	public LevelPackageInfo levelPackageInfo;
 	public DailyPackageInfo dailyPackageInfo;
 	public DailyShopMainInfo dailyShopMainInfo;
@@ -42,6 +44,7 @@ public class CashShopCanvas : MonoBehaviour
 	public GameObject dailyShopChaosCountRootObject;
 	public Text dailyShopChaosCountText;
 
+	public GameObject diaRectObject;
 	public DiaListItem[] diaListItemList;
 	public GoldListItem[] goldListItemList;
 
@@ -117,6 +120,10 @@ public class CashShopCanvas : MonoBehaviour
 
 	void CheckIAPListener()
 	{
+		// 초기화가 안되어도 캐시샵이 열리는 구조로 바꾸면서 체크
+		if (CodelessIAPStoreListener.initializationComplete == false)
+			return;
+
 		if (IAPListenerWrapper.instance.pendingProduct == null)
 			return;
 
@@ -175,8 +182,15 @@ public class CashShopCanvas : MonoBehaviour
 
 	void RefreshInfo()
 	{
-		levelPackageInfo.RefreshInfo();
-		dailyPackageInfo.RefreshInfo();
+		iapInitializeFailedRectObject.SetActive(!CodelessIAPStoreListener.initializationComplete);
+
+		if (CodelessIAPStoreListener.initializationComplete)
+		{
+			levelPackageInfo.RefreshInfo();
+			dailyPackageInfo.RefreshInfo();
+		}
+		levelPackageInfo.gameObject.SetActive(CodelessIAPStoreListener.initializationComplete);
+		dailyPackageInfo.gameObject.SetActive(CodelessIAPStoreListener.initializationComplete);
 		RefreshDailyShopInfo();
 
 		ShopBoxTableData characterBoxTableData = TableDataManager.instance.FindShopBoxTableData("CharacterBox");
@@ -225,12 +239,16 @@ public class CashShopCanvas : MonoBehaviour
 
 		dailyShopChaosInfo.SetActive(PlayerData.instance.chaosModeOpened);
 
-		for (int i = 0; i < diaListItemList.Length; ++i)
+		if (CodelessIAPStoreListener.initializationComplete)
 		{
-			if (i >= TableDataManager.instance.shopDiamondTable.dataArray.Length)
-				break;
-			diaListItemList[i].SetInfo(TableDataManager.instance.shopDiamondTable.dataArray[i]);
+			for (int i = 0; i < diaListItemList.Length; ++i)
+			{
+				if (i >= TableDataManager.instance.shopDiamondTable.dataArray.Length)
+					break;
+				diaListItemList[i].SetInfo(TableDataManager.instance.shopDiamondTable.dataArray[i]);
+			}
 		}
+		diaRectObject.SetActive(CodelessIAPStoreListener.initializationComplete);
 
 		for (int i = 0; i < goldListItemList.Length; ++i)
 		{
@@ -239,13 +257,17 @@ public class CashShopCanvas : MonoBehaviour
 			goldListItemList[i].SetInfo(TableDataManager.instance.shopGoldTable.dataArray[i]);
 		}
 
-		returnScrollRectObject.SetActive(ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.ReturnScroll));
-		for (int i = 0; i < returnScrollItemList.Length; ++i)
+		bool showReturnScroll = (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.ReturnScroll) && CodelessIAPStoreListener.initializationComplete);
+		if (showReturnScroll)
 		{
-			if (i >= TableDataManager.instance.shopReturnScrollTable.dataArray.Length)
-				break;
-			returnScrollItemList[i].SetInfo(TableDataManager.instance.shopReturnScrollTable.dataArray[i]);
+			for (int i = 0; i < returnScrollItemList.Length; ++i)
+			{
+				if (i >= TableDataManager.instance.shopReturnScrollTable.dataArray.Length)
+					break;
+				returnScrollItemList[i].SetInfo(TableDataManager.instance.shopReturnScrollTable.dataArray[i]);
+			}
 		}
+		returnScrollRectObject.SetActive(showReturnScroll);
 	}
 
 	int _characterBoxPrice;

@@ -99,7 +99,6 @@ public class MailData : MonoBehaviour
 		versionInfo = Resources.Load<BuildVersionInfo>("Build/BuildVersionInfo_iOS");
 #endif
 		_clientUpdateVersion = versionInfo.updateVersion;
-		_clientUpdateVersion = 23;
 
 		_listMailCreateInfo = null;
 		if (titleData.ContainsKey("mail"))

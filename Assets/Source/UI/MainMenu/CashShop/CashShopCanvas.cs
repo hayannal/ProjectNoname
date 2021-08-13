@@ -185,11 +185,12 @@ public class CashShopCanvas : MonoBehaviour
 		iapInitializeFailedRectObject.SetActive(!CodelessIAPStoreListener.initializationComplete);
 
 		if (CodelessIAPStoreListener.initializationComplete)
-		{
 			levelPackageInfo.RefreshInfo();
+		else
+			levelPackageInfo.gameObject.SetActive(false);
+
+		if (CodelessIAPStoreListener.initializationComplete)
 			dailyPackageInfo.RefreshInfo();
-		}
-		levelPackageInfo.gameObject.SetActive(CodelessIAPStoreListener.initializationComplete);
 		dailyPackageInfo.gameObject.SetActive(CodelessIAPStoreListener.initializationComplete);
 		RefreshDailyShopInfo();
 

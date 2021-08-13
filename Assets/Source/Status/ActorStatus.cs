@@ -176,8 +176,8 @@ public class ActorStatus : MonoBehaviour
 				standardAtk = nodeWarTableData.standardAtk;
 				if (BattleManager.instance.IsFirstClearNodeWar() == false)
 				{
-					standardHp *= 0.8f;
-					standardAtk *= 0.8f;
+					standardHp *= 0.7f;
+					standardAtk *= 0.7f;
 				}
 			}
 			else

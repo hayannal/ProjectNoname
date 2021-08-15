@@ -72,4 +72,8 @@ public class ChapterTableData
   string _notiId;
   public string notiId { get { return _notiId; } set { _notiId = value; } }
   
+  [SerializeField]
+  float _chaosMulti;
+  public float chaosMulti { get { return _chaosMulti; } set { _chaosMulti = value; } }
+  
 }

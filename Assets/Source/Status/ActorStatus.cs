@@ -185,6 +185,15 @@ public class ActorStatus : MonoBehaviour
 				nodeWarCachingMonster = true;
 			}
 		}
+		else if (BattleManager.instance != null && BattleManager.instance.IsDefaultBattle() && PlayerData.instance.currentChaosMode)
+		{
+			ChapterTableData chapterTableData = TableDataManager.instance.FindChapterTableData(PlayerData.instance.selectedChapter);
+			if (chapterTableData != null && chapterTableData.chaosMulti != 0.0f)
+			{
+				standardHp *= chapterTableData.chaosMulti;
+				standardAtk *= chapterTableData.chaosMulti;
+			}
+		}
 		_statusBase.valueList[(int)eActorStatus.MaxHp] = standardHp * monsterTableData.multiHp;
 		_statusBase.valueList[(int)eActorStatus.Attack] = standardAtk * monsterTableData.multiAtk;
 		_statusBase.valueList[(int)eActorStatus.AttackDelay] = monsterTableData.attackDelay;

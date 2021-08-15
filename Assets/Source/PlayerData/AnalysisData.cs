@@ -214,7 +214,7 @@ public class AnalysisData : MonoBehaviour
 		// 시간당 골드로 적혀있으니 초로 변환해서 계산하면 된다.
 		float goldPerSec = analysisTableData.goldPerTime / 60.0f / 60.0f;
 		float maxGold = goldPerSec * totalSeconds;
-		_cachedResultGold = (int)UnityEngine.Random.Range(0.0f, maxGold);
+		_cachedResultGold = (int)UnityEngine.Random.Range(maxGold * 0.2f, maxGold);
 		if (_cachedResultGold < 1)
 			_cachedResultGold = 1;
 

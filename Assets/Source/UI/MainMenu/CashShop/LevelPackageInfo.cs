@@ -63,6 +63,7 @@ public class LevelPackageInfo : MonoBehaviour
 		// 다 구성하고나서 이렇게 Setup 호출해주면 된다.
 		scrollSnap.Setup();
 		scrollSnap.GoToLastPanel();
+		gameObject.SetActive(true);
 	}
 
 

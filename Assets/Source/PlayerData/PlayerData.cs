@@ -42,6 +42,7 @@ public class PlayerData : MonoBehaviour
 	// 이래야 깔끔하게 두개만 저장해서 모든걸 처리할 수 있다.
 	public ObscuredInt highestPlayChapter { get; set; }
 	public ObscuredInt highestClearStage { get; set; }
+	public ObscuredInt highestValue { get; set; }
 	public ObscuredInt selectedChapter { get; set; }
 	// 이 카오스는 마지막 챕터의 카오스 상태를 저장하는 값이다. 이건 4챕터 이후에 도전모드 상태에서 질때 바뀌며 유저가 선택으로 바꾸는 값이 아니다.
 	public ObscuredBool chaosMode { get; set; }
@@ -482,6 +483,7 @@ public class PlayerData : MonoBehaviour
 			{
 				case "highestPlayChapter": highestPlayChapter = playerStatistics[i].Value; break;
 				case "highestClearStage": highestClearStage = playerStatistics[i].Value; break;
+				case "highestValue": highestValue = playerStatistics[i].Value; break;
 				case "nodClLv": nodeWarClearLevel = playerStatistics[i].Value; break;
 				case "chaosFragment": chaosFragmentCount = playerStatistics[i].Value; break;
 			}
@@ -1142,6 +1144,21 @@ public class PlayerData : MonoBehaviour
 		unfixedResetInitialized = true;
 
 		CheckUnfixedNodeWarInfo();
+		CheckHighestValue();
+	}
+
+	void CheckHighestValue()
+	{
+		if (highestPlayChapter > 0 || highestClearStage > 0)
+		{
+			if (highestValue == 0)
+			{
+				PlayFabApiManager.instance.RequestRegisterHighestValue(() =>
+				{
+					highestValue = highestPlayChapter * 100 + highestClearStage;
+				});
+			}
+		}
 	}
 
 	#region Unifxed NodeWar Bonus Info

@@ -290,6 +290,7 @@ public class PlayFabApiManager : MonoBehaviour
 		PlayerData.instance.OnRecvLevelPackageResetInfo(loginResult.InfoResultPayload.TitleData, loginResult.InfoResultPayload.UserReadOnlyData, loginResult.NewlyCreated);
 		CumulativeEventData.instance.OnRecvCumulativeEventData(loginResult.InfoResultPayload.TitleData, loginResult.InfoResultPayload.UserReadOnlyData, loginResult.InfoResultPayload.PlayerStatistics, loginResult.NewlyCreated);
 		AnalysisData.instance.OnRecvAnalysisData(loginResult.InfoResultPayload.UserReadOnlyData, loginResult.InfoResultPayload.PlayerStatistics);
+		RankingData.instance.OnRecvRankingData(loginResult.InfoResultPayload.TitleData);
 
 		if (loginResult.NewlyCreated)
 		{
@@ -978,6 +979,23 @@ public class PlayFabApiManager : MonoBehaviour
 			});
 		};
 		RetrySendManager.instance.RequestAction(action, true, true);
+	}
+
+	public void RequestRegisterHighestValue(Action successCallback)
+	{
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+		{
+			FunctionName = "RegisterHightestValue",
+			GeneratePlayStreamEvent = true,
+		}, (success) =>
+		{
+			string resultString = (string)success.FunctionResult;
+			bool failure = (resultString == "1");
+			if (!failure)
+			{
+				if (successCallback != null) successCallback.Invoke();
+			}
+		}, null);
 	}
 
 	public void RequestUseReturnScroll(Action successCallback)
@@ -3787,6 +3805,75 @@ public class PlayFabApiManager : MonoBehaviour
 		{
 			HandleCommonError(error);
 		});
+	}
+	#endregion
+
+	#region Ranking
+	public void RequestGetRanking(Action<List<PlayerLeaderboardEntry>> successCallback)
+	{
+		// 두번으로 나눠받아야하니 이렇게 처리한다.
+		_leaderboardStageIndex = 0;
+		_leaderboardStageSuccessCallback = successCallback;
+
+		PlayerProfileViewConstraints playerProfileViewConstraints = new PlayerProfileViewConstraints();
+		playerProfileViewConstraints.ShowDisplayName = true;
+
+		PlayFabClientAPI.GetLeaderboard(new GetLeaderboardRequest()
+		{
+			MaxResultsCount = 100,
+			ProfileConstraints = playerProfileViewConstraints,
+			StartPosition = 0,
+			StatisticName = "highestValue",
+		}, (success) =>
+		{
+			OnRecvGetLeaderboard(success.Leaderboard);
+		}, (error) =>
+		{
+			// wait 캔버스 없이 하는거니 에러처리 하지 않기로 한다.
+			//HandleCommonError(error);
+		});
+
+		PlayFabClientAPI.GetLeaderboard(new GetLeaderboardRequest()
+		{
+			MaxResultsCount = 100,
+			ProfileConstraints = playerProfileViewConstraints,
+			StartPosition = 100,
+			StatisticName = "highestValue",
+		}, (success) =>
+		{
+			OnRecvGetLeaderboard(success.Leaderboard);
+		}, (error) =>
+		{
+			//HandleCommonError(error);
+		});
+	}
+
+	int _leaderboardStageIndex = 0;
+	Action<List<PlayerLeaderboardEntry>> _leaderboardStageSuccessCallback;
+	List<PlayerLeaderboardEntry> _listResultLeaderboardStage;
+	void OnRecvGetLeaderboard(List<PlayerLeaderboardEntry> leaderboard)
+	{
+		if (_leaderboardStageIndex == 0)
+		{
+			if (_listResultLeaderboardStage == null)
+				_listResultLeaderboardStage = new List<PlayerLeaderboardEntry>();
+			_listResultLeaderboardStage.Clear();
+
+			_listResultLeaderboardStage.AddRange(leaderboard);
+			++_leaderboardStageIndex;
+		}
+		else if (_leaderboardStageIndex == 1)
+		{
+			_listResultLeaderboardStage.AddRange(leaderboard);
+			++_leaderboardStageIndex;
+
+			if (_leaderboardStageSuccessCallback != null)
+				_leaderboardStageSuccessCallback.Invoke(_listResultLeaderboardStage);
+		}
+		else if (_leaderboardStageIndex == 2)
+		{
+			// something wrong
+		}
 	}
 	#endregion
 

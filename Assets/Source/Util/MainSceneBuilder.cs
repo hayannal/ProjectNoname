@@ -689,6 +689,7 @@ public class MainSceneBuilder : MonoBehaviour
 			TimeSpaceData.instance.LateInitialize();
 			QuestData.instance.LateInitialize();
 			CumulativeEventData.instance.LateInitialize();
+			RankingData.instance.LateInitialize();
 		}
 
 		if (ContentsData.instance.readyToReopenBossEnterCanvas)

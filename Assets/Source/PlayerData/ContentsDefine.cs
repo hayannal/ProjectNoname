@@ -13,6 +13,7 @@ public static class ContentsManager
 		Invasion = 3,
 		Analysis = 3,
 		Chaos = 4,
+		Ranking = 4,
 		NodeWar = 5,
 		EquipOption = 6,
 		Balance = 7,

@@ -222,6 +222,7 @@ public class AuthManager : MonoBehaviour
 		List<string> playerStatisticNames = new List<string>();
 		playerStatisticNames.Add("highestPlayChapter");
 		playerStatisticNames.Add("highestClearStage");
+		playerStatisticNames.Add("highestValue");
 		playerStatisticNames.Add("nodClLv");
 		playerStatisticNames.Add("guideQuestIndex");
 		playerStatisticNames.Add("chaosFragment");

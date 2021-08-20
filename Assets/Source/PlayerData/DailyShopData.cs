@@ -658,6 +658,8 @@ public class DailyShopData : MonoBehaviour
 			// 데일리 샵 관련 테이블 말고도 아래에서 추가로 받아야하는 것들도 포함시켜야한다.
 			_listTitleKey.Add("lvRst");
 			_listTitleKey.Add("mcLst");
+			_listTitleKey.Add("rnkSt");
+			_listTitleKey.Add("rnkBan");
 		}
 
 		// 패킷을 보내서 새 정보를 받아와야한다.
@@ -674,6 +676,9 @@ public class DailyShopData : MonoBehaviour
 
 			// 머셔너리 데이터도 같이 포함
 			MercenaryData.instance.OnRecvMercenaryData(dicData, true);
+
+			// 랭킹 예비 추가삭제 리스트도 포함
+			RankingData.instance.OnRecvRankingData(dicData);
 		});
 	}
 

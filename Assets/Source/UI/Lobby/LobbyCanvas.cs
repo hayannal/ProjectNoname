@@ -188,6 +188,7 @@ public class LobbyCanvas : MonoBehaviour
 		switch (index)
 		{
 			case 1: if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Invasion)) return true; break;
+			case 2: if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Ranking)) return true; break;
 		}
 		return false;
 	}
@@ -303,6 +304,14 @@ public class LobbyCanvas : MonoBehaviour
 		}
 
 		UIInstanceManager.instance.ShowCanvasAsync("InvasionEnterCanvas", null);
+	}
+
+	public void OnClickRankingButton()
+	{
+		if (_closeRemainTime > 0.0f)
+			return;
+
+		UIInstanceManager.instance.ShowCanvasAsync("RankingCanvas", null);
 	}
 	#endregion
 

@@ -705,7 +705,7 @@ public class PlayFabApiManager : MonoBehaviour
 		enableCliSusQueue = true;
 		PlayerData.instance.OnRecvPlayerStatistics(_loginResult.InfoResultPayload.PlayerStatistics);
 		TimeSpaceData.instance.OnRecvEquipInventory(_loginResult.InfoResultPayload.UserInventory, _loginResult.InfoResultPayload.UserData, _loginResult.InfoResultPayload.UserReadOnlyData);
-		PlayerData.instance.OnRecvPlayerData(_loginResult.InfoResultPayload.UserData, _loginResult.InfoResultPayload.UserReadOnlyData, _loginResult.InfoResultPayload.CharacterList);
+		PlayerData.instance.OnRecvPlayerData(_loginResult.InfoResultPayload.UserData, _loginResult.InfoResultPayload.UserReadOnlyData, _loginResult.InfoResultPayload.CharacterList, _loginResult.InfoResultPayload.PlayerProfile);
 		PlayerData.instance.OnRecvCharacterList(_loginResult.InfoResultPayload.CharacterList, _dicCharacterStatisticsResult, _listCharacterEntityObject);
 		MercenaryData.instance.OnRecvMercenaryData(_loginResult.InfoResultPayload.TitleData, false);
 		enableCliSusQueue = false;
@@ -3809,6 +3809,32 @@ public class PlayFabApiManager : MonoBehaviour
 	#endregion
 
 	#region Ranking
+	public void RequestRegisterName(string name, Action successCallback, Action<PlayFabError> failureCallback)
+	{
+		WaitingNetworkCanvas.Show(true);
+
+		PlayFabClientAPI.UpdateUserTitleDisplayName(new UpdateUserTitleDisplayNameRequest()
+		{
+			DisplayName = name,
+		}, (success) =>
+		{
+			WaitingNetworkCanvas.Show(false);
+
+			PlayerData.instance.displayName = name;
+			if (successCallback != null) successCallback.Invoke();
+		}, (error) =>
+		{
+			WaitingNetworkCanvas.Show(false);
+
+			if (error.Error == PlayFabErrorCode.InvalidParams || error.Error == PlayFabErrorCode.NameNotAvailable)
+			{
+				if (failureCallback != null) failureCallback.Invoke(error);
+				return;
+			}
+			HandleCommonError(error);
+		});
+	}
+
 	public void RequestGetRanking(Action<List<PlayerLeaderboardEntry>> successCallback)
 	{
 		// 두번으로 나눠받아야하니 이렇게 처리한다.

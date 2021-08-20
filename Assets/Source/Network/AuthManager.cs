@@ -246,6 +246,8 @@ public class AuthManager : MonoBehaviour
 		parameters.GetTitleData = true;
 		// 구글 로그인 연동시 CustomId를 해제해줘야해서 받아야한다.
 		parameters.GetUserAccountInfo = true;
+		// 이름때문에 받아야한다.
+		parameters.GetPlayerProfile = true;
 		return parameters;
 	}
 

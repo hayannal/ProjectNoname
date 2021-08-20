@@ -111,6 +111,9 @@ public class PlayerData : MonoBehaviour
 	// 이용약관 확인용 변수. 값이 있으면 기록된거로 간주하고 true로 해둔다.
 	public ObscuredBool termsConfirmed { get; set; }
 
+	// 디스플레이 네임
+	public string displayName { get; set; }
+
 	// 이 카오스가 현재 카오스 상태로 스테이지가 셋팅되어있는지를 알려주는 값이다.
 	// 이전 챕터로 내려갈 경우 서버에 저장된 chaosMode는 1이더라도 스테이지 구성은 도전모드로 셋팅하게 되며
 	// 이땐 false를 리턴하게 될 것이다.
@@ -385,6 +388,7 @@ public class PlayerData : MonoBehaviour
 		_listCharacterData.Clear();
 		AddNewCharacter("Actor0201", "", 1);
 		_mainCharacterId = "Actor0201";
+		displayName = "";
 
 		if (newPlayerAddKeep)
 		{
@@ -490,7 +494,7 @@ public class PlayerData : MonoBehaviour
 		}
 	}
 
-	public void OnRecvPlayerData(Dictionary<string, UserDataRecord> userData, Dictionary<string, UserDataRecord> userReadOnlyData, List<CharacterResult> characterList)
+	public void OnRecvPlayerData(Dictionary<string, UserDataRecord> userData, Dictionary<string, UserDataRecord> userReadOnlyData, List<CharacterResult> characterList, PlayerProfileModel playerProfile)
 	{
 		if (userData.ContainsKey("mainCharacterId"))
 		{
@@ -775,6 +779,10 @@ public class PlayerData : MonoBehaviour
 		}
 
 		ContentsData.instance.OnRecvContentsData(userData, userReadOnlyData);
+
+		displayName = "";
+		if (string.IsNullOrEmpty(playerProfile.DisplayName) == false)
+			displayName = playerProfile.DisplayName;
 
 		newlyCreated = false;
 		loginned = true;

@@ -14,6 +14,7 @@ public class RankingCanvas : MonoBehaviour
 	public GameObject myOutOfRankTextObject;
 
 	public GameObject editButtonObject;
+	public RectTransform alarmRootTransform;
 
 	public GameObject contentItemPrefab;
 	public RectTransform contentRootRectTransform;
@@ -68,7 +69,7 @@ public class RankingCanvas : MonoBehaviour
 	}
 
 	List<RankingCanvasListItem> _listRankingCanvasListItem = new List<RankingCanvasListItem>();
-	void RefreshGrid()
+	public void RefreshGrid()
 	{
 		for (int i = 0; i < _listRankingCanvasListItem.Count; ++i)
 			_listRankingCanvasListItem[i].gameObject.SetActive(false);
@@ -89,9 +90,21 @@ public class RankingCanvas : MonoBehaviour
 		}
 	}
 
-	void RefreshInfo()
+	public void RefreshInfo()
 	{
-		myNameText.text = "";
+		bool noName = string.IsNullOrEmpty(PlayerData.instance.displayName);
+		//noName = true;
+		editButtonObject.SetActive(noName);
+		if (noName)
+		{
+			myNameText.text = string.Format("Nameless_{0}", PlayFabApiManager.instance.playFabId.Substring(0, 5));
+			AlarmObject.Show(alarmRootTransform);
+		}
+		else
+		{
+			myNameText.text = PlayerData.instance.displayName;
+			AlarmObject.Hide(alarmRootTransform);
+		}
 
 		if (RankingData.instance.listDisplayStageRankingInfo.Count == 0)
 		{
@@ -142,6 +155,6 @@ public class RankingCanvas : MonoBehaviour
 
 	public void OnClickEditButton()
 	{
-
+		UIInstanceManager.instance.ShowCanvasAsync("InputNameCanvas", null);
 	}
 }

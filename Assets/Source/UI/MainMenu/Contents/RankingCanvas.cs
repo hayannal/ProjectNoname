@@ -12,6 +12,7 @@ public class RankingCanvas : MonoBehaviour
 	public Text myNameText;
 	public Text myRankText;
 	public GameObject myOutOfRankTextObject;
+	public GameObject rankSusTextObject;
 
 	public GameObject editButtonObject;
 	public RectTransform alarmRootTransform;
@@ -114,6 +115,14 @@ public class RankingCanvas : MonoBehaviour
 			return;
 		}
 
+		if (PlayerData.instance.cheatRankSus > 0)
+		{
+			myRankText.text = "";
+			myOutOfRankTextObject.SetActive(false);
+			rankSusTextObject.SetActive(true);
+			return;
+		}
+
 		int myRanking = 0;
 		for (int i = 0; i < RankingData.instance.listDisplayStageRankingInfo.Count; ++i)
 		{
@@ -127,10 +136,12 @@ public class RankingCanvas : MonoBehaviour
 		{
 			myRankText.text = "";
 			myOutOfRankTextObject.SetActive(true);
+			rankSusTextObject.SetActive(false);
 			return;
 		}
 		myRankText.text = myRanking.ToString();
 		myOutOfRankTextObject.SetActive(false);
+		rankSusTextObject.SetActive(false);
 
 		int fontSize = _defaultFontSize;
 		Color fontColor = _defaultFontColor;

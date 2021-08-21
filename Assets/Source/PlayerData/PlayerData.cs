@@ -43,6 +43,7 @@ public class PlayerData : MonoBehaviour
 	public ObscuredInt highestPlayChapter { get; set; }
 	public ObscuredInt highestClearStage { get; set; }
 	public ObscuredInt highestValue { get; set; }
+	public ObscuredInt cheatRankSus { get; set; }
 	public ObscuredInt selectedChapter { get; set; }
 	// 이 카오스는 마지막 챕터의 카오스 상태를 저장하는 값이다. 이건 4챕터 이후에 도전모드 상태에서 질때 바뀌며 유저가 선택으로 바꾸는 값이 아니다.
 	public ObscuredBool chaosMode { get; set; }
@@ -340,6 +341,7 @@ public class PlayerData : MonoBehaviour
 		highestPlayChapter = 0;
 		highestClearStage = 0;
 		selectedChapter = 0;
+		cheatRankSus = 0;
 		chaosMode = false;
 		chaosModeOpened = false;
 		sealCount = 0;
@@ -490,6 +492,7 @@ public class PlayerData : MonoBehaviour
 				case "highestValue": highestValue = playerStatistics[i].Value; break;
 				case "nodClLv": nodeWarClearLevel = playerStatistics[i].Value; break;
 				case "chaosFragment": chaosFragmentCount = playerStatistics[i].Value; break;
+				case "chtRnkSus": cheatRankSus = playerStatistics[i].Value; break;
 			}
 		}
 	}

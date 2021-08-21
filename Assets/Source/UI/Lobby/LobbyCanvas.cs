@@ -188,7 +188,7 @@ public class LobbyCanvas : MonoBehaviour
 		switch (index)
 		{
 			case 1: if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Invasion)) return true; break;
-			case 2: if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Ranking)) return true; break;
+			case 2: if (ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapter.Ranking) && RankingData.instance.disableRanking == false) return true; break;
 		}
 		return false;
 	}

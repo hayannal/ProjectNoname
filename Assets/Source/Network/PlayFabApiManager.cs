@@ -123,6 +123,9 @@ public class PlayFabApiManager : MonoBehaviour
 	int lastSendFrameCount { get; set; }
 	public void RequestIncCliSus(eClientSuspectCode clientSuspectCode, bool sendBattleInfo = false, int param2 = 0)
 	{
+		if (clientSuspectCode == eClientSuspectCode.OneShotKillBoss)
+			PlayerData.instance.cheatRankSus += 1;
+
 		int param1 = 0;
 		if (sendBattleInfo)
 		{
@@ -3835,10 +3838,11 @@ public class PlayFabApiManager : MonoBehaviour
 		});
 	}
 
-	public void RequestGetRanking(Action<List<PlayerLeaderboardEntry>> successCallback)
+	public void RequestGetRanking(Action<List<PlayerLeaderboardEntry>, List<PlayerLeaderboardEntry>> successCallback)
 	{
 		// 두번으로 나눠받아야하니 이렇게 처리한다.
 		_leaderboardStageIndex = 0;
+		_leaderboardStageCheatIndex = 0;
 		_leaderboardStageSuccessCallback = successCallback;
 
 		PlayerProfileViewConstraints playerProfileViewConstraints = new PlayerProfileViewConstraints();
@@ -3872,10 +3876,24 @@ public class PlayFabApiManager : MonoBehaviour
 		{
 			//HandleCommonError(error);
 		});
+
+		PlayFabClientAPI.GetLeaderboard(new GetLeaderboardRequest()
+		{
+			MaxResultsCount = 100,
+			ProfileConstraints = playerProfileViewConstraints,
+			StartPosition = 0,
+			StatisticName = "chtRnkSus",
+		}, (success) =>
+		{
+			OnRecvGetCheatLeaderboard(success.Leaderboard);
+		}, (error) =>
+		{
+			//HandleCommonError(error);
+		});
 	}
 
 	int _leaderboardStageIndex = 0;
-	Action<List<PlayerLeaderboardEntry>> _leaderboardStageSuccessCallback;
+	Action<List<PlayerLeaderboardEntry>, List<PlayerLeaderboardEntry>> _leaderboardStageSuccessCallback;
 	List<PlayerLeaderboardEntry> _listResultLeaderboardStage;
 	void OnRecvGetLeaderboard(List<PlayerLeaderboardEntry> leaderboard)
 	{
@@ -3893,12 +3911,33 @@ public class PlayFabApiManager : MonoBehaviour
 			_listResultLeaderboardStage.AddRange(leaderboard);
 			++_leaderboardStageIndex;
 
-			if (_leaderboardStageSuccessCallback != null)
-				_leaderboardStageSuccessCallback.Invoke(_listResultLeaderboardStage);
+			CheckRecvLeaderboard();
 		}
 		else if (_leaderboardStageIndex == 2)
 		{
 			// something wrong
+		}
+	}
+
+	int _leaderboardStageCheatIndex = 0;
+	List<PlayerLeaderboardEntry> _listCheatLeaderboardStage;
+	void OnRecvGetCheatLeaderboard(List<PlayerLeaderboardEntry> leaderboard)
+	{
+		if (_listCheatLeaderboardStage == null)
+			_listCheatLeaderboardStage = new List<PlayerLeaderboardEntry>();
+		_listCheatLeaderboardStage.Clear();
+		_listCheatLeaderboardStage.AddRange(leaderboard);
+		++_leaderboardStageCheatIndex;
+
+		CheckRecvLeaderboard();
+	}
+
+	void CheckRecvLeaderboard()
+	{
+		if (_leaderboardStageCheatIndex == 1 && _leaderboardStageIndex == 2)
+		{
+			if (_leaderboardStageSuccessCallback != null)
+				_leaderboardStageSuccessCallback.Invoke(_listResultLeaderboardStage, _listCheatLeaderboardStage);
 		}
 	}
 	#endregion

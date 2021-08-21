@@ -21,6 +21,8 @@ public class RankingData : MonoBehaviour
 	}
 	static RankingData _instance = null;
 
+	public bool disableRanking { get; set; }
+
 	public class RankingStageAddInfo
 	{
 		public string disNa;
@@ -59,6 +61,9 @@ public class RankingData : MonoBehaviour
 
 		if (titleData.ContainsKey("rnkBan"))
 			_listRankingStageDelInfo = serializer.DeserializeObject<List<string>>(titleData["rnkBan"]);
+
+		if (titleData.ContainsKey("useRank") && string.IsNullOrEmpty(titleData["useRank"]) == false)
+			disableRanking = (titleData["useRank"] == "0");
 	}
 
 	bool _lateInitialized = false;
@@ -78,13 +83,13 @@ public class RankingData : MonoBehaviour
 		rankingRefreshTime = ServerTime.UtcNow + TimeSpan.FromMinutes(5);
 
 		// WaitNetwork 없이 패킷 보내서 응답이 오면 갱신해둔다.
-		PlayFabApiManager.instance.RequestGetRanking((leaderboard) =>
+		PlayFabApiManager.instance.RequestGetRanking((rankLeaderboard, cheatLeaderboard) =>
 		{
-			RecreateRankingData(leaderboard);
+			RecreateRankingData(rankLeaderboard, cheatLeaderboard);
 		});
 	}
 
-	void RecreateRankingData(List<PlayerLeaderboardEntry> listPlayerLeaderboardEntry)
+	void RecreateRankingData(List<PlayerLeaderboardEntry> listPlayerLeaderboardEntry, List<PlayerLeaderboardEntry> listCheatRankSusEntry)
 	{
 		// 100개씩 받을 수 있기 때문에 0 ~ 99 그룹과 100 ~ 199 그룹으로 받아서 합쳐놨을텐데 어느거가 앞에 있을진 모르니 리스트 구축하면서 찾아볼 것.
 		_listDisplayStageRankingInfo.Clear();
@@ -93,6 +98,21 @@ public class RankingData : MonoBehaviour
 		for (int i = 0; i < listPlayerLeaderboardEntry.Count; ++i)
 		{
 			if (_listRankingStageDelInfo.Contains(listPlayerLeaderboardEntry[i].PlayFabId))
+				continue;
+
+			bool cheatRankSus = false;
+			if (listCheatRankSusEntry != null)
+			{
+				for (int j = 0; j < listCheatRankSusEntry.Count; ++j)
+				{
+					if (listCheatRankSusEntry[j].StatValue > 0 && listCheatRankSusEntry[j].PlayFabId == listPlayerLeaderboardEntry[i].PlayFabId)
+					{
+						cheatRankSus = true;
+						break;
+					}
+				}
+			}
+			if (cheatRankSus)
 				continue;
 
 			DisplayStageRankingInfo info = new DisplayStageRankingInfo();

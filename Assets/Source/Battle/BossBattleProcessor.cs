@@ -199,6 +199,18 @@ public class BossBattleProcessor : BattleModeProcessorBase
 			_timeOut = true;
 			_endProcess = true;
 			_endProcessWaitRemainTime = 1.5f;
+
+			// 몬스터들이 timeOut 후 죽었더니 불공정하다고 느끼는 사람들이 있다
+			AffectorValueLevelTableData invincibleAffectorValue = new AffectorValueLevelTableData();
+			invincibleAffectorValue.fValue1 = -1.0f;
+			invincibleAffectorValue.iValue3 = 1;    // noText
+			List<MonsterActor> listMonsterActor = BattleInstanceManager.instance.GetLiveMonsterList();
+			for (int i = 0; i < listMonsterActor.Count; ++i)
+			{
+				if (listMonsterActor[i].team.teamId != (int)Team.eTeamID.DefaultMonster || listMonsterActor[i].excludeMonsterCount)
+					continue;
+				listMonsterActor[i].affectorProcessor.ExecuteAffectorValueWithoutTable(eAffectorType.Invincible, invincibleAffectorValue, listMonsterActor[i], false);
+			}
 		}
 	}
 	#endregion

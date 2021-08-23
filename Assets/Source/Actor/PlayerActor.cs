@@ -132,6 +132,9 @@ public class PlayerActor : Actor
 						// 레벨팩 이전
 						LevelPackDataManager.instance.TransferLevelPackList(BattleInstanceManager.instance.playerActor, this);
 
+						// 액터가 비활성화 될땐 항상 attackAniSpeedRatio값이 초기화 되니 재설정을 레벨팩 복구 직후 해준다.
+						actorStatus.OnChangedStatus(eActorStatus.AttackSpeedAddRate);
+
 						// Hp비율 Sp비율 이전
 						float hpRatio = BattleInstanceManager.instance.playerActor.actorStatus.GetHPRatio();
 						actorStatus.SetHpRatio(hpRatio);

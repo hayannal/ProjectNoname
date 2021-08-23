@@ -360,6 +360,14 @@ public class MeSummon : MecanimEventBase
 			return;
 		}
 
+
+		// IgnoreUseUltimate 가 붙어있을땐 State에서 UseUltimate를 처리하지 않고 Summon에서 처리하기로 한다.
+		if (stateInfo.IsTag("IgnoreUseUltimate"))
+		{
+			if (_actor != null && _actor.actionController != null)
+				_actor.actionController.OnUseUltimate();
+		}
+
 		if (spawnDelay == 0.0f)
 			Summon();
 		else

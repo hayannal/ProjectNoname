@@ -185,6 +185,14 @@ public class MailData : MonoBehaviour
 			}
 			else
 				return true;
+
+#if UNITY_ANDROID
+			if (CheckVersionMailDelete(info.ca))
+				return true;
+#elif UNITY_IOS
+			if (CheckVersionMailDelete(info.co))
+				return true;
+#endif
 		}
 		return false;
 	}
@@ -281,6 +289,40 @@ public class MailData : MonoBehaviour
 			return false;
 
 		return true;
+	}
+
+	bool CheckVersionMailDelete(string checkVersionString)
+	{
+		// 비어있는건 삭제할 필요도 없는 일반 메일
+		if (string.IsNullOrEmpty(checkVersionString))
+			return false;
+
+		// 생성때와 달리 낮은 버전에 대해서만 체크하면 된다. 버전은 항상 올라가기 때문.
+		int version = 0;
+		Condition.eCompareType compareType = Condition.eCompareType.Equal;
+		if (checkVersionString.StartsWith("<="))
+		{
+			// 지우는걸 체크하는거니 부등호 반대로 해서 검사한다.
+			compareType = Condition.eCompareType.Greater;
+
+			string versionString = checkVersionString.Substring(2);
+
+			// 파싱이 실패하면 뭔가 이상한거다.
+			if (int.TryParse(versionString, out version) == false)
+				return false;
+		}
+		else if (checkVersionString.StartsWith("<"))
+		{
+			compareType = Condition.eCompareType.GreaterOrEqual;
+
+			string versionString = checkVersionString.Substring(1);
+			if (int.TryParse(versionString, out version) == false)
+				return false;
+		}
+		if (version != 0 && Condition.CompareValue(compareType, _clientUpdateVersion, version))
+			return true;
+
+		return false;
 	}
 
 	bool FindMyMail(string id, DateTime startDateTime, DateTime endDateTime)

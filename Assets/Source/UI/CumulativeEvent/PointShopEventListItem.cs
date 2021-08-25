@@ -53,7 +53,8 @@ public class PointShopEventListItem : MonoBehaviour
 		// 아마 포인트샵 상품들은 거의 다 alreadyDesigned를 쓸 것이다.
 		if (_slotInfo.alreadyDesigned)
 		{
-			RefreshBackground(true);
+			if (gameObject.name.Contains("_Dia") == false)
+				RefreshBackground(true);
 			return;
 		}
 

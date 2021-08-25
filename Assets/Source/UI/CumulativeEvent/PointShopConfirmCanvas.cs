@@ -69,7 +69,8 @@ public class PointShopConfirmCanvas : MonoBehaviour
 			return;
 
 		int dropGold = DropManager.instance.GetLobbyGoldAmount();
-		PlayFabApiManager.instance.RequestBuyPointShopItem(_slotInfo.day, _slotInfo.type, _price, dropGold, () =>
+		int dropDia = DropManager.instance.GetLobbyDiaAmount();
+		PlayFabApiManager.instance.RequestBuyPointShopItem(_slotInfo.day, _slotInfo.type, _price, dropGold, dropDia, () =>
 		{
 			// 뽑기 후 새로 창이 열릴테니 미리 갱신하지 않는다.
 			//CumulativeEventCanvas.instance.currencySmallInfo.RefreshInfo();
@@ -83,12 +84,14 @@ public class PointShopConfirmCanvas : MonoBehaviour
 				// 연출에 의해 캐시샵 가려질때 같이 하이드 시켜야한다.
 				gameObject.SetActive(false);
 
-				RandomBoxScreenCanvas.instance.SetInfo(RandomBoxScreenCanvas.eBoxType.Gold, _cachedDropProcessor, 0, 0, () =>
+				RandomBoxScreenCanvas.eBoxType boxType = RandomBoxScreenCanvas.eBoxType.Gold;
+				if (dropDia > 0) boxType = RandomBoxScreenCanvas.eBoxType.Dia1_3;
+				RandomBoxScreenCanvas.instance.SetInfo(boxType, _cachedDropProcessor, 0, 0, () =>
 				{
 					// 결과로는 공용 재화 획득창을 띄워준다.
 					UIInstanceManager.instance.ShowCanvasAsync("CurrencyBoxResultCanvas", () =>
 					{
-						CurrencyBoxResultCanvas.instance.RefreshInfo(dropGold, 0, 0);
+						CurrencyBoxResultCanvas.instance.RefreshInfo(dropGold, dropDia, 0);
 					});
 				});
 			});

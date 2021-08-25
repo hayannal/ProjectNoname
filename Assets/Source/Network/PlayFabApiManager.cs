@@ -3651,17 +3651,17 @@ public class PlayFabApiManager : MonoBehaviour
 		});
 	}
 
-	public void RequestBuyPointShopItem(int day, string rewardType, int price, int dropGold, Action successCallback)
+	public void RequestBuyPointShopItem(int day, string rewardType, int price, int dropGold, int dropDia, Action successCallback)
 	{
 		WaitingNetworkCanvas.Show(true);
 
 		string eventServerId = CumulativeEventData.EventType2Id(CumulativeEventData.eEventType.PointShop);
-		string input = string.Format("{0}_{1}_{2}_{3}_{4}_{5}_{6}", eventServerId, day, rewardType, price, dropGold, CumulativeEventData.instance.pointShopPoint, "qizvjrejls");
+		string input = string.Format("{0}_{1}_{2}_{3}_{4}_{5}_{6}_{7}", eventServerId, day, rewardType, price, dropGold, dropDia, CumulativeEventData.instance.pointShopPoint, "qizvjrejls");
 		string checkSum = CheckSum(input);
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
 		{
 			FunctionName = "BuyPointShopItem",
-			FunctionParameter = new { Id = eventServerId, Dy = day, Tp = rewardType, Pr = price, Go = dropGold, Cs = checkSum },
+			FunctionParameter = new { Id = eventServerId, Dy = day, Tp = rewardType, Pr = price, Go = dropGold, Di = dropDia, Cs = checkSum },
 			GeneratePlayStreamEvent = true,
 		}, (success) =>
 		{
@@ -3673,6 +3673,7 @@ public class PlayFabApiManager : MonoBehaviour
 
 				CumulativeEventData.instance.pointShopPoint -= price;
 				CurrencyData.instance.gold += dropGold;
+				CurrencyData.instance.dia += dropDia;
 				if (successCallback != null) successCallback.Invoke();
 			}
 		}, (error) =>

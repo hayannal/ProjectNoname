@@ -261,10 +261,10 @@ public class CharacterInfoTrainingCanvas : MonoBehaviour
 			{
 				int addTrainingPoint = 0;
 				addTrainingPoint = UnityEngine.Random.Range(actorTableData.trainingMin, actorTableData.trainingMax + 1);
-				if (_characterData.trainingValue + addTrainingPoint > TrainingMax)
-					addTrainingPoint = TrainingMax - _characterData.trainingValue;
 				if (priceDia > 0)
 					addTrainingPoint *= BattleInstanceManager.instance.GetCachedGlobalConstantInt("TrainingMulti");
+				if (_characterData.trainingValue + addTrainingPoint > TrainingMax)
+					addTrainingPoint = TrainingMax - _characterData.trainingValue;
 
 				PlayFabApiManager.instance.RequestCharacterTraining(_characterData, addTrainingPoint, priceGold, priceDia, () =>
 				{

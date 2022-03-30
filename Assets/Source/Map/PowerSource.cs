@@ -160,7 +160,10 @@ public class PowerSource : MonoBehaviour
 
 	IEnumerator<float> ScreenHealEffectProcess()
 	{
-		FadeCanvas.instance.FadeOut(0.2f, 0.8f);
+		float endValue = 0.8f;
+		if (OptionManager.instance.darkMode == 1)
+			endValue = BattleInstanceManager.instance.GetCachedGlobalConstantFloat("DarkModeHealScreenLight");
+		FadeCanvas.instance.FadeOut(0.2f, endValue);
 		yield return Timing.WaitForSeconds(0.2f);
 
 		if (this == null)

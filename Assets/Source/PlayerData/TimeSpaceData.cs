@@ -67,13 +67,13 @@ public class TimeSpaceData
 			_lastHighestPlayChapter = PlayerData.instance.highestPlayChapter;
 
 			// 먼저 챕터 도달 수치에 따라서 뽑아온다.
-			int enhanceLevel = 5;
+			int enhanceLevel = BattleInstanceManager.instance.GetCachedGlobalConstantInt("DefaultEnhanceLimit");
 			if (_lastHighestPlayChapter > 21)
-				enhanceLevel = 30;
+				enhanceLevel = BattleInstanceManager.instance.GetCachedGlobalConstantInt("Over21EnhanceLimit");
 			else if (_lastHighestPlayChapter > 14)
-				enhanceLevel = 20;
+				enhanceLevel = BattleInstanceManager.instance.GetCachedGlobalConstantInt("Over14EnhanceLimit");
 			else if (_lastHighestPlayChapter > 7)
-				enhanceLevel = 10;
+				enhanceLevel = BattleInstanceManager.instance.GetCachedGlobalConstantInt("Over7EnhanceLimit");
 
 			// 이후 기획에서 제한된 값을 뽑아와서 비교
 			int tableMaxEnhance = BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxEquipLevel");
@@ -92,17 +92,17 @@ public class TimeSpaceData
 		else if (highestPlayChapter > 14)
 		{
 			nextLimitChapter = 21;
-			nextLimitEnhance = 30;
+			nextLimitEnhance = BattleInstanceManager.instance.GetCachedGlobalConstantInt("Over21EnhanceLimit");
 		}
 		else if (highestPlayChapter > 7)
 		{
 			nextLimitChapter = 14;
-			nextLimitEnhance = 20;
+			nextLimitEnhance = BattleInstanceManager.instance.GetCachedGlobalConstantInt("Over14EnhanceLimit");
 		}
 		else
 		{
 			nextLimitChapter = 7;
-			nextLimitEnhance = 10;
+			nextLimitEnhance = BattleInstanceManager.instance.GetCachedGlobalConstantInt("Over7EnhanceLimit");
 		}
 
 		int tableMaxEnhance = BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxEquipLevel");

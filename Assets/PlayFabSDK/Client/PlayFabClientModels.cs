@@ -32,6 +32,14 @@ namespace PlayFab.ClientModels
         public TradeInfo Trade;
     }
 
+    public enum AdActivity
+    {
+        Opened,
+        Closed,
+        Start,
+        End
+    }
+
     [Serializable]
     public class AdCampaignAttributionModel : PlayFabBaseModel
     {
@@ -101,6 +109,10 @@ namespace PlayFab.ClientModels
     public class AddOrUpdateContactEmailRequest : PlayFabRequestCommon
     {
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// The new contact email to associate with the player.
         /// </summary>
         public string EmailAddress;
@@ -132,6 +144,10 @@ namespace PlayFab.ClientModels
     [Serializable]
     public class AddUsernamePasswordRequest : PlayFabRequestCommon
     {
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// User email address attached to their account
         /// </summary>
@@ -172,9 +188,97 @@ namespace PlayFab.ClientModels
         /// </summary>
         public int Amount;
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// Name of the virtual currency which is to be incremented.
         /// </summary>
         public string VirtualCurrency;
+    }
+
+    /// <summary>
+    /// A single ad placement details including placement and reward information
+    /// </summary>
+    [Serializable]
+    public class AdPlacementDetails : PlayFabBaseModel
+    {
+        /// <summary>
+        /// Placement unique ID
+        /// </summary>
+        public string PlacementId;
+        /// <summary>
+        /// Placement name
+        /// </summary>
+        public string PlacementName;
+        /// <summary>
+        /// If placement has viewing limits indicates how many views are left
+        /// </summary>
+        public int? PlacementViewsRemaining;
+        /// <summary>
+        /// If placement has viewing limits indicates when they will next reset
+        /// </summary>
+        public double? PlacementViewsResetMinutes;
+        /// <summary>
+        /// Optional URL to a reward asset
+        /// </summary>
+        public string RewardAssetUrl;
+        /// <summary>
+        /// Reward description
+        /// </summary>
+        public string RewardDescription;
+        /// <summary>
+        /// Reward unique ID
+        /// </summary>
+        public string RewardId;
+        /// <summary>
+        /// Reward name
+        /// </summary>
+        public string RewardName;
+    }
+
+    /// <summary>
+    /// Details for each item granted
+    /// </summary>
+    [Serializable]
+    public class AdRewardItemGranted : PlayFabBaseModel
+    {
+        /// <summary>
+        /// Catalog ID
+        /// </summary>
+        public string CatalogId;
+        /// <summary>
+        /// Catalog item display name
+        /// </summary>
+        public string DisplayName;
+        /// <summary>
+        /// Inventory instance ID
+        /// </summary>
+        public string InstanceId;
+        /// <summary>
+        /// Item ID
+        /// </summary>
+        public string ItemId;
+    }
+
+    /// <summary>
+    /// Details on what was granted to the player
+    /// </summary>
+    [Serializable]
+    public class AdRewardResults : PlayFabBaseModel
+    {
+        /// <summary>
+        /// Array of the items granted to the player
+        /// </summary>
+        public List<AdRewardItemGranted> GrantedItems;
+        /// <summary>
+        /// Dictionary of virtual currencies that were granted to the player
+        /// </summary>
+        public Dictionary<string,int> GrantedVirtualCurrencies;
+        /// <summary>
+        /// Dictionary of statistics that were modified for the player
+        /// </summary>
+        public Dictionary<string,int> IncrementedStatistics;
     }
 
     /// <summary>
@@ -540,6 +644,10 @@ namespace PlayFab.ClientModels
     public class ConfirmPurchaseRequest : PlayFabRequestCommon
     {
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// Purchase order identifier returned from StartPurchase.
         /// </summary>
         public string OrderId;
@@ -579,6 +687,10 @@ namespace PlayFab.ClientModels
         /// </summary>
         public int ConsumeCount;
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// Unique instance identifier of the item to be consumed.
         /// </summary>
         public string ItemInstanceId;
@@ -598,12 +710,68 @@ namespace PlayFab.ClientModels
     }
 
     [Serializable]
+    public class ConsumeMicrosoftStoreEntitlementsRequest : PlayFabRequestCommon
+    {
+        /// <summary>
+        /// Catalog version to use
+        /// </summary>
+        public string CatalogVersion;
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
+        /// Marketplace specific payload containing details to fetch in app purchase transactions
+        /// </summary>
+        public MicrosoftStorePayload MarketplaceSpecificData;
+    }
+
+    [Serializable]
+    public class ConsumeMicrosoftStoreEntitlementsResponse : PlayFabResultCommon
+    {
+        /// <summary>
+        /// Details for the items purchased.
+        /// </summary>
+        public List<ItemInstance> Items;
+    }
+
+    [Serializable]
+    public class ConsumePS5EntitlementsRequest : PlayFabRequestCommon
+    {
+        /// <summary>
+        /// Catalog version to use
+        /// </summary>
+        public string CatalogVersion;
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
+        /// Marketplace specific payload containing details to fetch in app purchase transactions
+        /// </summary>
+        public PlayStation5Payload MarketplaceSpecificData;
+    }
+
+    [Serializable]
+    public class ConsumePS5EntitlementsResult : PlayFabResultCommon
+    {
+        /// <summary>
+        /// Details for the items purchased.
+        /// </summary>
+        public List<ItemInstance> Items;
+    }
+
+    [Serializable]
     public class ConsumePSNEntitlementsRequest : PlayFabRequestCommon
     {
         /// <summary>
         /// Which catalog to match granted entitlements against. If null, defaults to title default catalog
         /// </summary>
         public string CatalogVersion;
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// Id of the PSN service label to consume entitlements from
         /// </summary>
@@ -626,6 +794,10 @@ namespace PlayFab.ClientModels
         /// Catalog version to use
         /// </summary>
         public string CatalogVersion;
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// Token provided by the Xbox Live SDK/XDK method GetTokenAndSignatureAsync("POST", "https://playfabapi.com/", "").
         /// </summary>
@@ -1230,6 +1402,10 @@ namespace PlayFab.ClientModels
     public class ExecuteCloudScriptRequest : PlayFabRequestCommon
     {
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// The name of the CloudScript function to execute
         /// </summary>
         public string FunctionName;
@@ -1552,6 +1728,34 @@ namespace PlayFab.ClientModels
         public UserAccountInfo AccountInfo;
     }
 
+    /// <summary>
+    /// Using an AppId to return a list of valid ad placements for a player.
+    /// </summary>
+    [Serializable]
+    public class GetAdPlacementsRequest : PlayFabRequestCommon
+    {
+        /// <summary>
+        /// The current AppId to use
+        /// </summary>
+        public string AppId;
+        /// <summary>
+        /// Using the name or unique identifier, filter the result for get a specific placement.
+        /// </summary>
+        public NameIdentifier Identifier;
+    }
+
+    /// <summary>
+    /// Array of AdPlacementDetails
+    /// </summary>
+    [Serializable]
+    public class GetAdPlacementsResult : PlayFabResultCommon
+    {
+        /// <summary>
+        /// Array of results
+        /// </summary>
+        public List<AdPlacementDetails> AdPlacements;
+    }
+
     [Serializable]
     public class GetCatalogItemsRequest : PlayFabRequestCommon
     {
@@ -1634,6 +1838,10 @@ namespace PlayFab.ClientModels
         /// Unique PlayFab assigned ID for a specific character owned by a user
         /// </summary>
         public string CharacterId;
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
     }
 
     [Serializable]
@@ -1742,6 +1950,10 @@ namespace PlayFab.ClientModels
     public class GetFriendLeaderboardAroundPlayerRequest : PlayFabRequestCommon
     {
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// Indicates whether Facebook friends should be included in the response. Default is true.
         /// </summary>
         public bool? IncludeFacebookFriends;
@@ -1780,7 +1992,8 @@ namespace PlayFab.ClientModels
     /// <summary>
     /// Note: When calling 'GetLeaderboardAround...' APIs, the position of the user defaults to 0 when the user does not have
     /// the corresponding statistic.If Facebook friends are included, make sure the access token from previous LoginWithFacebook
-    /// call is still valid and not expired.
+    /// call is still valid and not expired. If Xbox Live friends are included, make sure the access token from the previous
+    /// LoginWithXbox call is still valid and not expired.
     /// </summary>
     [Serializable]
     public class GetFriendLeaderboardAroundPlayerResult : PlayFabResultCommon
@@ -1802,6 +2015,10 @@ namespace PlayFab.ClientModels
     [Serializable]
     public class GetFriendLeaderboardRequest : PlayFabRequestCommon
     {
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// Indicates whether Facebook friends should be included in the response. Default is true.
         /// </summary>
@@ -1842,6 +2059,10 @@ namespace PlayFab.ClientModels
     public class GetFriendsListRequest : PlayFabRequestCommon
     {
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// Indicates whether Facebook friends should be included in the response. Default is true.
         /// </summary>
         public bool? IncludeFacebookFriends;
@@ -1864,7 +2085,8 @@ namespace PlayFab.ClientModels
     /// <summary>
     /// If any additional services are queried for the user's friends, those friends who also have a PlayFab account registered
     /// for the title will be returned in the results. For Facebook, user has to have logged into the title's Facebook app
-    /// recently, and only friends who also plays this game will be included.
+    /// recently, and only friends who also plays this game will be included. For Xbox Live, user has to have logged into the
+    /// Xbox Live recently, and only friends who also play this game will be included.
     /// </summary>
     [Serializable]
     public class GetFriendsListResult : PlayFabResultCommon
@@ -1912,6 +2134,10 @@ namespace PlayFab.ClientModels
     [Serializable]
     public class GetLeaderboardAroundPlayerRequest : PlayFabRequestCommon
     {
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// Maximum number of entries to retrieve. Default 10, maximum 100.
         /// </summary>
@@ -1961,10 +2187,6 @@ namespace PlayFab.ClientModels
     public class GetLeaderboardForUsersCharactersRequest : PlayFabRequestCommon
     {
         /// <summary>
-        /// Maximum number of entries to retrieve.
-        /// </summary>
-        public int MaxResultsCount;
-        /// <summary>
         /// Unique identifier for the title-specific statistic for the leaderboard.
         /// </summary>
         public string StatisticName;
@@ -1987,6 +2209,10 @@ namespace PlayFab.ClientModels
     [Serializable]
     public class GetLeaderboardRequest : PlayFabRequestCommon
     {
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// Maximum number of entries to retrieve. Default 10, maximum 100.
         /// </summary>
@@ -2012,7 +2238,9 @@ namespace PlayFab.ClientModels
     }
 
     /// <summary>
-    /// Note: the user's Position is relative to the overall leaderboard.
+    /// Note that the Position of the user in the results is for the overall leaderboard. If Facebook friends are included, make
+    /// sure the access token from previous LoginWithFacebook call is still valid and not expired. If Xbox Live friends are
+    /// included, make sure the access token from the previous LoginWithXbox call is still valid and not expired.
     /// </summary>
     [Serializable]
     public class GetLeaderboardResult : PlayFabResultCommon
@@ -2074,6 +2302,10 @@ namespace PlayFab.ClientModels
     [Serializable]
     public class GetPlayerCombinedInfoRequest : PlayFabRequestCommon
     {
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// Flags for which pieces of info to return for the user.
         /// </summary>
@@ -2236,6 +2468,10 @@ namespace PlayFab.ClientModels
     public class GetPlayerProfileRequest : PlayFabRequestCommon
     {
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// Unique PlayFab assigned ID of the user on whom the operation will be performed.
         /// </summary>
         public string PlayFabId;
@@ -2275,6 +2511,10 @@ namespace PlayFab.ClientModels
     public class GetPlayerStatisticsRequest : PlayFabRequestCommon
     {
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// statistics to return (current version will be returned for each)
         /// </summary>
         public List<string> StatisticNames;
@@ -2301,6 +2541,10 @@ namespace PlayFab.ClientModels
     public class GetPlayerStatisticVersionsRequest : PlayFabRequestCommon
     {
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// unique name of the statistic
         /// </summary>
         public string StatisticName;
@@ -2323,6 +2567,10 @@ namespace PlayFab.ClientModels
     [Serializable]
     public class GetPlayerTagsRequest : PlayFabRequestCommon
     {
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// Optional namespace to filter results by
         /// </summary>
@@ -2520,7 +2768,7 @@ namespace PlayFab.ClientModels
     public class GetPlayFabIDsFromPSNAccountIDsRequest : PlayFabRequestCommon
     {
         /// <summary>
-        /// Id of the PSN issuer environment. If null, defaults to 256 (production)
+        /// Id of the PSN issuer environment. If null, defaults to production environment.
         /// </summary>
         public int? IssuerId;
         /// <summary>
@@ -2611,8 +2859,8 @@ namespace PlayFab.ClientModels
     /// <summary>
     /// This API is designed to return publisher-specific values which can be read, but not written to, by the client. This data
     /// is shared across all titles assigned to a particular publisher, and can be used for cross-game coordination. Only titles
-    /// assigned to a publisher can use this API. For more information email devrel@playfab.com. Note that there may up to a
-    /// minute delay in between updating title data and this API call returning the newest value.
+    /// assigned to a publisher can use this API. For more information email helloplayfab@microsoft.com. Note that there may up
+    /// to a minute delay in between updating title data and this API call returning the newest value.
     /// </summary>
     [Serializable]
     public class GetPublisherDataRequest : PlayFabRequestCommon
@@ -2788,8 +3036,9 @@ namespace PlayFab.ClientModels
     /// This API is designed to return title specific values which can be read, but not written to, by the client. For example,
     /// a developer could choose to store values which modify the user experience, such as enemy spawn rates, weapon strengths,
     /// movement speeds, etc. This allows a developer to update the title without the need to create, test, and ship a new
-    /// build. Note that there may up to a minute delay in between updating title data and this API call returning the newest
-    /// value.
+    /// build. If the player belongs to an experiment variant that uses title data overrides, the overrides are applied
+    /// automatically and returned with the title data. Note that there may up to a minute delay in between updating title data
+    /// and this API call returning the newest value.
     /// </summary>
     [Serializable]
     public class GetTitleDataRequest : PlayFabRequestCommon
@@ -2798,6 +3047,11 @@ namespace PlayFab.ClientModels
         /// Specific keys to search for in the title data (leave null to get all keys)
         /// </summary>
         public List<string> Keys;
+        /// <summary>
+        /// Optional field that specifies the name of an override. This value is ignored when used by the game client; otherwise,
+        /// the overrides are applied automatically to the title data.
+        /// </summary>
+        public string OverrideLabel;
     }
 
     [Serializable]
@@ -2923,6 +3177,10 @@ namespace PlayFab.ClientModels
     [Serializable]
     public class GetUserInventoryRequest : PlayFabRequestCommon
     {
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
     }
 
     /// <summary>
@@ -2945,32 +3203,6 @@ namespace PlayFab.ClientModels
         /// Array of remaining times and timestamps for virtual currencies.
         /// </summary>
         public Dictionary<string,VirtualCurrencyRechargeTime> VirtualCurrencyRechargeTimes;
-    }
-
-    /// <summary>
-    /// Requires the SHA256 hash of the user's public key.
-    /// </summary>
-    [Serializable]
-    public class GetWindowsHelloChallengeRequest : PlayFabRequestCommon
-    {
-        /// <summary>
-        /// SHA256 hash of the PublicKey generated by Windows Hello.
-        /// </summary>
-        public string PublicKeyHint;
-        /// <summary>
-        /// Unique identifier for the title, found in the Settings > Game Properties section of the PlayFab developer site when a
-        /// title has been selected.
-        /// </summary>
-        public string TitleId;
-    }
-
-    [Serializable]
-    public class GetWindowsHelloChallengeResponse : PlayFabResultCommon
-    {
-        /// <summary>
-        /// Server generated challenge to be signed by the user.
-        /// </summary>
-        public string Challenge;
     }
 
     [Serializable]
@@ -3002,6 +3234,10 @@ namespace PlayFab.ClientModels
         /// Non-unique display name of the character being granted (1-40 characters in length).
         /// </summary>
         public string CharacterName;
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// Catalog item identifier of the item in the user's inventory that corresponds to the character in the catalog to be
         /// created.
@@ -3146,6 +3382,10 @@ namespace PlayFab.ClientModels
         /// </summary>
         public string AndroidDeviceId;
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// If another user is already linked to the device, unlink the other user and re-link.
         /// </summary>
         public bool? ForceLink;
@@ -3161,12 +3401,34 @@ namespace PlayFab.ClientModels
     }
 
     [Serializable]
+    public class LinkAppleRequest : PlayFabRequestCommon
+    {
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
+        /// If another user is already linked to a specific Apple account, unlink the other user and re-link.
+        /// </summary>
+        public bool? ForceLink;
+        /// <summary>
+        /// The JSON Web token (JWT) returned by Apple after login. Represented as the identityToken field in the authorization
+        /// credential payload. Used to validate the request and find the user ID (Apple subject) to link with.
+        /// </summary>
+        public string IdentityToken;
+    }
+
+    [Serializable]
     public class LinkCustomIDRequest : PlayFabRequestCommon
     {
         /// <summary>
         /// Custom unique identifier for the user, generated by the title.
         /// </summary>
         public string CustomId;
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// If another user is already linked to the custom ID, unlink the other user and re-link.
         /// </summary>
@@ -3216,6 +3478,10 @@ namespace PlayFab.ClientModels
         /// </summary>
         public string AccessToken;
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// If another user is already linked to the account, unlink the other user and re-link.
         /// </summary>
         public bool? ForceLink;
@@ -3229,6 +3495,10 @@ namespace PlayFab.ClientModels
     [Serializable]
     public class LinkFacebookInstantGamesIdRequest : PlayFabRequestCommon
     {
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// Facebook Instant Games signature for the user.
         /// </summary>
@@ -3248,7 +3518,12 @@ namespace PlayFab.ClientModels
     public class LinkGameCenterAccountRequest : PlayFabRequestCommon
     {
         /// <summary>
-        /// If another user is already linked to the account, unlink the other user and re-link.
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
+        /// If another user is already linked to the account, unlink the other user and re-link. If the current user is already
+        /// linked, link both accounts
         /// </summary>
         public bool? ForceLink;
         /// <summary>
@@ -3287,7 +3562,12 @@ namespace PlayFab.ClientModels
     public class LinkGoogleAccountRequest : PlayFabRequestCommon
     {
         /// <summary>
-        /// If another user is already linked to the account, unlink the other user and re-link.
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
+        /// If another user is already linked to the account, unlink the other user and re-link. If the current user is already
+        /// linked, link both accounts
         /// </summary>
         public bool? ForceLink;
         /// <summary>
@@ -3305,6 +3585,10 @@ namespace PlayFab.ClientModels
     [Serializable]
     public class LinkIOSDeviceIDRequest : PlayFabRequestCommon
     {
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// Vendor-specific iOS identifier for the user's device.
         /// </summary>
@@ -3336,6 +3620,10 @@ namespace PlayFab.ClientModels
         /// </summary>
         public string AuthTicket;
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// If another user is already linked to the account, unlink the other user and re-link.
         /// </summary>
         public bool? ForceLink;
@@ -3351,8 +3639,30 @@ namespace PlayFab.ClientModels
     }
 
     [Serializable]
+    public class LinkNintendoServiceAccountRequest : PlayFabRequestCommon
+    {
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
+        /// If another user is already linked to a specific Nintendo Switch account, unlink the other user and re-link.
+        /// </summary>
+        public bool? ForceLink;
+        /// <summary>
+        /// The JSON Web token (JWT) returned by Nintendo after login. Used to validate the request and find the user ID (Nintendo
+        /// Switch subject) to link with.
+        /// </summary>
+        public string IdentityToken;
+    }
+
+    [Serializable]
     public class LinkNintendoSwitchDeviceIdRequest : PlayFabRequestCommon
     {
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// If another user is already linked to the Nintendo Switch Device ID, unlink the other user and re-link.
         /// </summary>
@@ -3376,6 +3686,10 @@ namespace PlayFab.ClientModels
         /// </summary>
         public string ConnectionId;
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// If another user is already linked to a specific OpenId Connect user, unlink the other user and re-link.
         /// </summary>
         public bool? ForceLink;
@@ -3394,11 +3708,15 @@ namespace PlayFab.ClientModels
         /// </summary>
         public string AuthCode;
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// If another user is already linked to the account, unlink the other user and re-link.
         /// </summary>
         public bool? ForceLink;
         /// <summary>
-        /// Id of the PSN issuer environment. If null, defaults to 256 (production)
+        /// Id of the PSN issuer environment. If null, defaults to production environment.
         /// </summary>
         public int? IssuerId;
         /// <summary>
@@ -3423,6 +3741,10 @@ namespace PlayFab.ClientModels
     public class LinkSteamAccountRequest : PlayFabRequestCommon
     {
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// If another user is already linked to the account, unlink the other user and re-link.
         /// </summary>
         public bool? ForceLink;
@@ -3446,6 +3768,10 @@ namespace PlayFab.ClientModels
         /// </summary>
         public string AccessToken;
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// If another user is already linked to the account, unlink the other user and re-link.
         /// </summary>
         public bool? ForceLink;
@@ -3456,38 +3782,13 @@ namespace PlayFab.ClientModels
     {
     }
 
-    /// <summary>
-    /// PublicKey must be generated using the Windows Hello Passport service.
-    /// </summary>
-    [Serializable]
-    public class LinkWindowsHelloAccountRequest : PlayFabRequestCommon
-    {
-        /// <summary>
-        /// Device name.
-        /// </summary>
-        public string DeviceName;
-        /// <summary>
-        /// If another user is already linked to the account, unlink the other user and re-link.
-        /// </summary>
-        public bool? ForceLink;
-        /// <summary>
-        /// PublicKey generated by Windows Hello.
-        /// </summary>
-        public string PublicKey;
-        /// <summary>
-        /// Player's user named used by Windows Hello.
-        /// </summary>
-        public string UserName;
-    }
-
-    [Serializable]
-    public class LinkWindowsHelloAccountResponse : PlayFabResultCommon
-    {
-    }
-
     [Serializable]
     public class LinkXboxAccountRequest : PlayFabRequestCommon
     {
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// If another user is already linked to the account, unlink the other user and re-link.
         /// </summary>
@@ -3569,7 +3870,9 @@ namespace PlayFab.ClientModels
         CustomServer,
         NintendoSwitch,
         FacebookInstantGames,
-        OpenIdConnect
+        OpenIdConnect,
+        Apple,
+        NintendoSwitchAccount
     }
 
     [Serializable]
@@ -3638,6 +3941,10 @@ namespace PlayFab.ClientModels
         /// </summary>
         public bool? CreateAccount;
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// Base64 encoded body that is encrypted with the Title's public RSA key (Enterprise Only).
         /// </summary>
         public string EncryptedRequest;
@@ -3649,6 +3956,41 @@ namespace PlayFab.ClientModels
         /// Specific Operating System version for the user's device.
         /// </summary>
         public string OS;
+        /// <summary>
+        /// Player secret that is used to verify API request signatures (Enterprise Only).
+        /// </summary>
+        public string PlayerSecret;
+        /// <summary>
+        /// Unique identifier for the title, found in the Settings > Game Properties section of the PlayFab developer site when a
+        /// title has been selected.
+        /// </summary>
+        public string TitleId;
+    }
+
+    [Serializable]
+    public class LoginWithAppleRequest : PlayFabRequestCommon
+    {
+        /// <summary>
+        /// Automatically create a PlayFab account if one is not currently linked to this ID.
+        /// </summary>
+        public bool? CreateAccount;
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
+        /// Base64 encoded body that is encrypted with the Title's public RSA key (Enterprise Only).
+        /// </summary>
+        public string EncryptedRequest;
+        /// <summary>
+        /// The JSON Web token (JWT) returned by Apple after login. Represented as the identityToken field in the authorization
+        /// credential payload.
+        /// </summary>
+        public string IdentityToken;
+        /// <summary>
+        /// Flags for which pieces of info to return for the user.
+        /// </summary>
+        public GetPlayerCombinedInfoRequestParams InfoRequestParameters;
         /// <summary>
         /// Player secret that is used to verify API request signatures (Enterprise Only).
         /// </summary>
@@ -3679,6 +4021,10 @@ namespace PlayFab.ClientModels
         /// </summary>
         public string CustomId;
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// Base64 encoded body that is encrypted with the Title's public RSA key (Enterprise Only).
         /// </summary>
         public string EncryptedRequest;
@@ -3706,6 +4052,10 @@ namespace PlayFab.ClientModels
     public class LoginWithEmailAddressRequest : PlayFabRequestCommon
     {
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// Email address for the account.
         /// </summary>
         public string Email;
@@ -3731,6 +4081,10 @@ namespace PlayFab.ClientModels
         /// Automatically create a PlayFab account if one is not currently linked to this ID.
         /// </summary>
         public bool? CreateAccount;
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// Base64 encoded body that is encrypted with the Title's public RSA key (Enterprise Only).
         /// </summary>
@@ -3779,6 +4133,10 @@ namespace PlayFab.ClientModels
         /// </summary>
         public bool? CreateAccount;
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// Base64 encoded body that is encrypted with the Title's public RSA key (Enterprise Only).
         /// </summary>
         public string EncryptedRequest;
@@ -3814,6 +4172,10 @@ namespace PlayFab.ClientModels
         /// Automatically create a PlayFab account if one is not currently linked to this ID.
         /// </summary>
         public bool? CreateAccount;
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// Base64 encoded body that is encrypted with the Title's public RSA key (Enterprise Only).
         /// </summary>
@@ -3878,6 +4240,10 @@ namespace PlayFab.ClientModels
         /// </summary>
         public bool? CreateAccount;
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// Base64 encoded body that is encrypted with the Title's public RSA key (Enterprise Only).
         /// </summary>
         public string EncryptedRequest;
@@ -3920,6 +4286,10 @@ namespace PlayFab.ClientModels
         /// Automatically create a PlayFab account if one is not currently linked to this ID.
         /// </summary>
         public bool? CreateAccount;
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// Vendor-specific iOS identifier for the user's device.
         /// </summary>
@@ -3972,6 +4342,10 @@ namespace PlayFab.ClientModels
         /// </summary>
         public bool? CreateAccount;
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// Base64 encoded body that is encrypted with the Title's public RSA key (Enterprise Only).
         /// </summary>
         public string EncryptedRequest;
@@ -3995,12 +4369,50 @@ namespace PlayFab.ClientModels
     }
 
     [Serializable]
+    public class LoginWithNintendoServiceAccountRequest : PlayFabRequestCommon
+    {
+        /// <summary>
+        /// Automatically create a PlayFab account if one is not currently linked to this ID.
+        /// </summary>
+        public bool? CreateAccount;
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
+        /// Base64 encoded body that is encrypted with the Title's public RSA key (Enterprise Only).
+        /// </summary>
+        public string EncryptedRequest;
+        /// <summary>
+        /// The JSON Web token (JWT) returned by Nintendo after login.
+        /// </summary>
+        public string IdentityToken;
+        /// <summary>
+        /// Flags for which pieces of info to return for the user.
+        /// </summary>
+        public GetPlayerCombinedInfoRequestParams InfoRequestParameters;
+        /// <summary>
+        /// Player secret that is used to verify API request signatures (Enterprise Only).
+        /// </summary>
+        public string PlayerSecret;
+        /// <summary>
+        /// Unique identifier for the title, found in the Settings > Game Properties section of the PlayFab developer site when a
+        /// title has been selected.
+        /// </summary>
+        public string TitleId;
+    }
+
+    [Serializable]
     public class LoginWithNintendoSwitchDeviceIdRequest : PlayFabRequestCommon
     {
         /// <summary>
         /// Automatically create a PlayFab account if one is not currently linked to this ID.
         /// </summary>
         public bool? CreateAccount;
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// Base64 encoded body that is encrypted with the Title's public RSA key (Enterprise Only).
         /// </summary>
@@ -4036,6 +4448,10 @@ namespace PlayFab.ClientModels
         /// </summary>
         public bool? CreateAccount;
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// Base64 encoded body that is encrypted with the Title's public RSA key (Enterprise Only).
         /// </summary>
         public string EncryptedRequest;
@@ -4067,6 +4483,10 @@ namespace PlayFab.ClientModels
     [Serializable]
     public class LoginWithPlayFabRequest : PlayFabRequestCommon
     {
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// Flags for which pieces of info to return for the user.
         /// </summary>
@@ -4104,6 +4524,10 @@ namespace PlayFab.ClientModels
         /// </summary>
         public bool? CreateAccount;
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// Base64 encoded body that is encrypted with the Title's public RSA key (Enterprise Only).
         /// </summary>
         public string EncryptedRequest;
@@ -4112,7 +4536,7 @@ namespace PlayFab.ClientModels
         /// </summary>
         public GetPlayerCombinedInfoRequestParams InfoRequestParameters;
         /// <summary>
-        /// Id of the PSN issuer environment. If null, defaults to 256 (production)
+        /// Id of the PSN issuer environment. If null, defaults to production environment.
         /// </summary>
         public int? IssuerId;
         /// <summary>
@@ -4148,6 +4572,10 @@ namespace PlayFab.ClientModels
         /// Automatically create a PlayFab account if one is not currently linked to this ID.
         /// </summary>
         public bool? CreateAccount;
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// Base64 encoded body that is encrypted with the Title's public RSA key (Enterprise Only).
         /// </summary>
@@ -4193,6 +4621,10 @@ namespace PlayFab.ClientModels
         /// </summary>
         public bool? CreateAccount;
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// Base64 encoded body that is encrypted with the Title's public RSA key (Enterprise Only).
         /// </summary>
         public string EncryptedRequest;
@@ -4204,31 +4636,6 @@ namespace PlayFab.ClientModels
         /// Player secret that is used to verify API request signatures (Enterprise Only).
         /// </summary>
         public string PlayerSecret;
-        /// <summary>
-        /// Unique identifier for the title, found in the Settings > Game Properties section of the PlayFab developer site when a
-        /// title has been selected.
-        /// </summary>
-        public string TitleId;
-    }
-
-    /// <summary>
-    /// Requires both the SHA256 hash of the user's public key as well as the signed response from GetWindowsHelloChallenge
-    /// </summary>
-    [Serializable]
-    public class LoginWithWindowsHelloRequest : PlayFabRequestCommon
-    {
-        /// <summary>
-        /// The signed response from the user for the Challenge.
-        /// </summary>
-        public string ChallengeSignature;
-        /// <summary>
-        /// Flags for which pieces of info to return for the user.
-        /// </summary>
-        public GetPlayerCombinedInfoRequestParams InfoRequestParameters;
-        /// <summary>
-        /// SHA256 hash of the PublicKey generated by Windows Hello.
-        /// </summary>
-        public string PublicKeyHint;
         /// <summary>
         /// Unique identifier for the title, found in the Settings > Game Properties section of the PlayFab developer site when a
         /// title has been selected.
@@ -4249,6 +4656,10 @@ namespace PlayFab.ClientModels
         /// Automatically create a PlayFab account if one is not currently linked to this ID.
         /// </summary>
         public bool? CreateAccount;
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// Base64 encoded body that is encrypted with the Title's public RSA key (Enterprise Only).
         /// </summary>
@@ -4297,6 +4708,10 @@ namespace PlayFab.ClientModels
         /// Character to use for stats based matching. Leave null to use account stats.
         /// </summary>
         public string CharacterId;
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// Game mode to match make against. [Note: Required if LobbyId is not specified]
         /// </summary>
@@ -4400,6 +4815,24 @@ namespace PlayFab.ClientModels
     }
 
     [Serializable]
+    public class MicrosoftStorePayload : PlayFabBaseModel
+    {
+        /// <summary>
+        /// Microsoft store ID key. This is optional. Alternatively you can use XboxToken
+        /// </summary>
+        public string CollectionsMsIdKey;
+        /// <summary>
+        /// If collectionsMsIdKey is provided, this will verify the user id in the collectionsMsIdKey is the same.
+        /// </summary>
+        public string UserId;
+        /// <summary>
+        /// Token provided by the Xbox Live SDK/XDK method GetTokenAndSignatureAsync("POST", "https://playfabapi.com/", ""). This is
+        /// optional. Alternatively can use CollectionsMsIdKey
+        /// </summary>
+        public string XboxToken;
+    }
+
+    [Serializable]
     public class ModifyUserVirtualCurrencyResult : PlayFabResultCommon
     {
         /// <summary>
@@ -4419,6 +4852,23 @@ namespace PlayFab.ClientModels
         /// Name of the virtual currency which was modified.
         /// </summary>
         public string VirtualCurrency;
+    }
+
+    /// <summary>
+    /// Identifier by either name or ID. Note that a name may change due to renaming, or reused after being deleted. ID is
+    /// immutable and unique.
+    /// </summary>
+    [Serializable]
+    public class NameIdentifier : PlayFabBaseModel
+    {
+        /// <summary>
+        /// Id Identifier, if present
+        /// </summary>
+        public string Id;
+        /// <summary>
+        /// Name Identifier, if present
+        /// </summary>
+        public string Name;
     }
 
     [Serializable]
@@ -4474,6 +4924,10 @@ namespace PlayFab.ClientModels
         /// Currency to use to fund the purchase.
         /// </summary>
         public string Currency;
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// Purchase order identifier returned from StartPurchase.
         /// </summary>
@@ -4611,7 +5065,9 @@ namespace PlayFab.ClientModels
         /// </summary>
         public string DisplayName;
         /// <summary>
-        /// List of experiment variants for the player.
+        /// List of experiment variants for the player. Note that these variants are not guaranteed to be up-to-date when returned
+        /// during login because the player profile is updated only after login. Instead, use the LoginResult.TreatmentAssignment
+        /// property during login to get the correct variants and variables.
         /// </summary>
         public List<string> ExperimentVariants;
         /// <summary>
@@ -4772,6 +5228,19 @@ namespace PlayFab.ClientModels
     }
 
     [Serializable]
+    public class PlayStation5Payload : PlayFabBaseModel
+    {
+        /// <summary>
+        /// An optional list of entitlement ids to query against PSN
+        /// </summary>
+        public List<string> Ids;
+        /// <summary>
+        /// Id of the PSN service label to consume entitlements from
+        /// </summary>
+        public string ServiceLabel;
+    }
+
+    [Serializable]
     public class PSNAccountPlayFabIdPair : PlayFabBaseModel
     {
         /// <summary>
@@ -4799,6 +5268,10 @@ namespace PlayFab.ClientModels
         /// Unique PlayFab assigned ID for a specific character owned by a user
         /// </summary>
         public string CharacterId;
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// Unique identifier of the item to purchase.
         /// </summary>
@@ -4889,6 +5362,10 @@ namespace PlayFab.ClientModels
         /// Generated coupon code to redeem.
         /// </summary>
         public string CouponCode;
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
     }
 
     [Serializable]
@@ -4908,7 +5385,7 @@ namespace PlayFab.ClientModels
         /// </summary>
         public string AuthCode;
         /// <summary>
-        /// Id of the PSN issuer environment. If null, defaults to 256 (production)
+        /// Id of the PSN issuer environment. If null, defaults to production environment.
         /// </summary>
         public int? IssuerId;
         /// <summary>
@@ -4978,6 +5455,10 @@ namespace PlayFab.ClientModels
     [Serializable]
     public class RegisterPlayFabUserRequest : PlayFabRequestCommon
     {
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// An optional parameter for setting the display name for this title (3-25 characters).
         /// </summary>
@@ -5051,48 +5532,15 @@ namespace PlayFab.ClientModels
     }
 
     /// <summary>
-    /// PublicKey must be generated using the Windows Hello Passport service.
-    /// </summary>
-    [Serializable]
-    public class RegisterWithWindowsHelloRequest : PlayFabRequestCommon
-    {
-        /// <summary>
-        /// Device name.
-        /// </summary>
-        public string DeviceName;
-        /// <summary>
-        /// Base64 encoded body that is encrypted with the Title's public RSA key (Enterprise Only).
-        /// </summary>
-        public string EncryptedRequest;
-        /// <summary>
-        /// Flags for which pieces of info to return for the user.
-        /// </summary>
-        public GetPlayerCombinedInfoRequestParams InfoRequestParameters;
-        /// <summary>
-        /// Player secret that is used to verify API request signatures (Enterprise Only).
-        /// </summary>
-        public string PlayerSecret;
-        /// <summary>
-        /// PublicKey generated by Windows Hello.
-        /// </summary>
-        public string PublicKey;
-        /// <summary>
-        /// Unique identifier for the title, found in the Settings > Game Properties section of the PlayFab developer site when a
-        /// title has been selected.
-        /// </summary>
-        public string TitleId;
-        /// <summary>
-        /// Player's user name used by Windows Hello.
-        /// </summary>
-        public string UserName;
-    }
-
-    /// <summary>
     /// This API removes an existing contact email from the player's profile.
     /// </summary>
     [Serializable]
     public class RemoveContactEmailRequest : PlayFabRequestCommon
     {
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
     }
 
     [Serializable]
@@ -5146,6 +5594,38 @@ namespace PlayFab.ClientModels
     {
     }
 
+    /// <summary>
+    /// Report ad activity
+    /// </summary>
+    [Serializable]
+    public class ReportAdActivityRequest : PlayFabRequestCommon
+    {
+        /// <summary>
+        /// Type of activity, may be Opened, Closed, Start or End
+        /// </summary>
+        public AdActivity Activity;
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
+        /// Unique ID of the placement to report for
+        /// </summary>
+        public string PlacementId;
+        /// <summary>
+        /// Unique ID of the reward the player was offered
+        /// </summary>
+        public string RewardId;
+    }
+
+    /// <summary>
+    /// Report ad activity response has no body
+    /// </summary>
+    [Serializable]
+    public class ReportAdActivityResult : PlayFabResultCommon
+    {
+    }
+
     [Serializable]
     public class ReportPlayerClientRequest : PlayFabRequestCommon
     {
@@ -5153,6 +5633,10 @@ namespace PlayFab.ClientModels
         /// Optional additional comment by reporting player.
         /// </summary>
         public string Comment;
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// Unique PlayFab identifier of the reported player.
         /// </summary>
@@ -5186,13 +5670,18 @@ namespace PlayFab.ClientModels
         /// </summary>
         public string CatalogVersion;
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// Base64 encoded receipt data, passed back by the App Store as a result of a successful purchase.
         /// </summary>
         public string ReceiptData;
     }
 
     /// <summary>
-    /// Once verified, the valid items will be restored into the user's inventory.
+    /// Once verified, the valid items will be restored into the user's inventory. This result should be used for immediate
+    /// updates to the local client game state as opposed to the GetUserInventory API which can have an up to half second delay.
     /// </summary>
     [Serializable]
     public class RestoreIOSPurchasesResult : PlayFabResultCommon
@@ -5201,6 +5690,62 @@ namespace PlayFab.ClientModels
         /// Fulfilled inventory items and recorded purchases in fulfillment of the validated receipt transactions.
         /// </summary>
         public List<PurchaseReceiptFulfillment> Fulfillments;
+    }
+
+    /// <summary>
+    /// Details on which placement and reward to perform a grant on
+    /// </summary>
+    [Serializable]
+    public class RewardAdActivityRequest : PlayFabRequestCommon
+    {
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
+        /// Placement unique ID
+        /// </summary>
+        public string PlacementId;
+        /// <summary>
+        /// Reward unique ID
+        /// </summary>
+        public string RewardId;
+    }
+
+    /// <summary>
+    /// Result for rewarding an ad activity
+    /// </summary>
+    [Serializable]
+    public class RewardAdActivityResult : PlayFabResultCommon
+    {
+        /// <summary>
+        /// PlayStream Event ID that was generated by this reward (all subsequent events are associated with this event identifier)
+        /// </summary>
+        public string AdActivityEventId;
+        /// <summary>
+        /// Debug results from the grants
+        /// </summary>
+        public List<string> DebugResults;
+        /// <summary>
+        /// Id of the placement the reward was for
+        /// </summary>
+        public string PlacementId;
+        /// <summary>
+        /// Name of the placement the reward was for
+        /// </summary>
+        public string PlacementName;
+        /// <summary>
+        /// If placement has viewing limits indicates how many views are left
+        /// </summary>
+        public int? PlacementViewsRemaining;
+        /// <summary>
+        /// If placement has viewing limits indicates when they will next reset
+        /// </summary>
+        public double? PlacementViewsResetMinutes;
+        /// <summary>
+        /// Reward results
+        /// </summary>
+        public AdRewardResults RewardResults;
     }
 
     [Serializable]
@@ -5229,6 +5774,10 @@ namespace PlayFab.ClientModels
     [Serializable]
     public class SendAccountRecoveryEmailRequest : PlayFabRequestCommon
     {
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// User email address attached to their account
         /// </summary>
@@ -5331,75 +5880,6 @@ namespace PlayFab.ClientModels
     }
 
     /// <summary>
-    /// This API must be enabled for use as an option in the game manager website. It is disabled by default.
-    /// </summary>
-    [Serializable]
-    public class StartGameRequest : PlayFabRequestCommon
-    {
-        /// <summary>
-        /// version information for the build of the game server which is to be started
-        /// </summary>
-        public string BuildVersion;
-        /// <summary>
-        /// character to use for stats based matching. Leave null to use account stats
-        /// </summary>
-        public string CharacterId;
-        /// <summary>
-        /// custom command line argument when starting game server process
-        /// </summary>
-        public string CustomCommandLineData;
-        /// <summary>
-        /// the title-defined game mode this server is to be running (defaults to 0 if there is only one mode)
-        /// </summary>
-        public string GameMode;
-        /// <summary>
-        /// the region to associate this server with for match filtering
-        /// </summary>
-        public Region Region;
-        /// <summary>
-        /// player statistic for others to use in finding this game. May be null for no stat-based matching
-        /// </summary>
-        public string StatisticName;
-    }
-
-    [Serializable]
-    public class StartGameResult : PlayFabResultCommon
-    {
-        /// <summary>
-        /// timestamp for when the server should expire, if applicable
-        /// </summary>
-        public string Expires;
-        /// <summary>
-        /// unique identifier for the lobby of the server started
-        /// </summary>
-        public string LobbyID;
-        /// <summary>
-        /// password required to log into the server
-        /// </summary>
-        public string Password;
-        /// <summary>
-        /// server IPV4 address
-        /// </summary>
-        public string ServerIPV4Address;
-        /// <summary>
-        /// server IPV6 address
-        /// </summary>
-        public string ServerIPV6Address;
-        /// <summary>
-        /// port on the server to be used for communication
-        /// </summary>
-        public int? ServerPort;
-        /// <summary>
-        /// server public DNS name
-        /// </summary>
-        public string ServerPublicDNSName;
-        /// <summary>
-        /// unique identifier for the server
-        /// </summary>
-        public string Ticket;
-    }
-
-    /// <summary>
     /// This is the first step in the purchasing process. For security purposes, once the order (or "cart") has been created,
     /// additional inventory objects may no longer be added. In addition, inventory objects will be locked to the current
     /// prices, regardless of any subsequent changes at the catalog level which may occur during the next two steps.
@@ -5411,6 +5891,10 @@ namespace PlayFab.ClientModels
         /// Catalog version for the items to be purchased. Defaults to most recent catalog.
         /// </summary>
         public string CatalogVersion;
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// Array of items to purchase.
         /// </summary>
@@ -5625,6 +6109,10 @@ namespace PlayFab.ClientModels
         /// </summary>
         public int Amount;
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// Name of the virtual currency which is to be decremented.
         /// </summary>
         public string VirtualCurrency;
@@ -5788,15 +6276,6 @@ namespace PlayFab.ClientModels
     }
 
     [Serializable]
-    public class UninkOpenIdConnectRequest : PlayFabRequestCommon
-    {
-        /// <summary>
-        /// A name that identifies which configured OpenID Connect provider relationship to use. Maximum 100 characters.
-        /// </summary>
-        public string ConnectionId;
-    }
-
-    [Serializable]
     public class UnlinkAndroidDeviceIDRequest : PlayFabRequestCommon
     {
         /// <summary>
@@ -5804,11 +6283,24 @@ namespace PlayFab.ClientModels
         /// used.
         /// </summary>
         public string AndroidDeviceId;
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
     }
 
     [Serializable]
     public class UnlinkAndroidDeviceIDResult : PlayFabResultCommon
     {
+    }
+
+    [Serializable]
+    public class UnlinkAppleRequest : PlayFabRequestCommon
+    {
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
     }
 
     [Serializable]
@@ -5819,6 +6311,10 @@ namespace PlayFab.ClientModels
         /// will be used.
         /// </summary>
         public string CustomId;
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
     }
 
     [Serializable]
@@ -5829,6 +6325,10 @@ namespace PlayFab.ClientModels
     [Serializable]
     public class UnlinkFacebookAccountRequest : PlayFabRequestCommon
     {
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
     }
 
     [Serializable]
@@ -5839,6 +6339,10 @@ namespace PlayFab.ClientModels
     [Serializable]
     public class UnlinkFacebookInstantGamesIdRequest : PlayFabRequestCommon
     {
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// Facebook Instant Games identifier for the user. If not specified, the most recently signed in ID will be used.
         /// </summary>
@@ -5853,6 +6357,10 @@ namespace PlayFab.ClientModels
     [Serializable]
     public class UnlinkGameCenterAccountRequest : PlayFabRequestCommon
     {
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
     }
 
     [Serializable]
@@ -5863,6 +6371,10 @@ namespace PlayFab.ClientModels
     [Serializable]
     public class UnlinkGoogleAccountRequest : PlayFabRequestCommon
     {
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
     }
 
     [Serializable]
@@ -5873,6 +6385,10 @@ namespace PlayFab.ClientModels
     [Serializable]
     public class UnlinkIOSDeviceIDRequest : PlayFabRequestCommon
     {
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// Vendor-specific iOS identifier for the user's device. If not specified, the most recently signed in iOS Device ID will
         /// be used.
@@ -5888,6 +6404,10 @@ namespace PlayFab.ClientModels
     [Serializable]
     public class UnlinkKongregateAccountRequest : PlayFabRequestCommon
     {
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
     }
 
     [Serializable]
@@ -5896,8 +6416,21 @@ namespace PlayFab.ClientModels
     }
 
     [Serializable]
+    public class UnlinkNintendoServiceAccountRequest : PlayFabRequestCommon
+    {
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+    }
+
+    [Serializable]
     public class UnlinkNintendoSwitchDeviceIdRequest : PlayFabRequestCommon
     {
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// Nintendo Switch Device identifier for the user. If not specified, the most recently signed in device ID will be used.
         /// </summary>
@@ -5910,8 +6443,25 @@ namespace PlayFab.ClientModels
     }
 
     [Serializable]
+    public class UnlinkOpenIdConnectRequest : PlayFabRequestCommon
+    {
+        /// <summary>
+        /// A name that identifies which configured OpenID Connect provider relationship to use. Maximum 100 characters.
+        /// </summary>
+        public string ConnectionId;
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+    }
+
+    [Serializable]
     public class UnlinkPSNAccountRequest : PlayFabRequestCommon
     {
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
     }
 
     [Serializable]
@@ -5922,6 +6472,10 @@ namespace PlayFab.ClientModels
     [Serializable]
     public class UnlinkSteamAccountRequest : PlayFabRequestCommon
     {
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
     }
 
     [Serializable]
@@ -5932,6 +6486,15 @@ namespace PlayFab.ClientModels
     [Serializable]
     public class UnlinkTwitchAccountRequest : PlayFabRequestCommon
     {
+        /// <summary>
+        /// Valid token issued by Twitch. Used to specify which twitch account to unlink from the profile. By default it uses the
+        /// one that is present on the profile.
+        /// </summary>
+        public string AccessToken;
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
     }
 
     [Serializable]
@@ -5939,30 +6502,13 @@ namespace PlayFab.ClientModels
     {
     }
 
-    /// <summary>
-    /// Must include the Public Key Hint
-    /// </summary>
-    [Serializable]
-    public class UnlinkWindowsHelloAccountRequest : PlayFabRequestCommon
-    {
-        /// <summary>
-        /// SHA256 hash of the PublicKey generated by Windows Hello.
-        /// </summary>
-        public string PublicKeyHint;
-    }
-
-    [Serializable]
-    public class UnlinkWindowsHelloAccountResponse : PlayFabResultCommon
-    {
-    }
-
     [Serializable]
     public class UnlinkXboxAccountRequest : PlayFabRequestCommon
     {
         /// <summary>
-        /// Token provided by the Xbox Live SDK/XDK method GetTokenAndSignatureAsync("POST", "https://playfabapi.com/", "").
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
         /// </summary>
-        public string XboxToken;
+        public Dictionary<string,string> CustomTags;
     }
 
     [Serializable]
@@ -5990,6 +6536,10 @@ namespace PlayFab.ClientModels
         /// </summary>
         public string ContainerItemInstanceId;
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// ItemInstanceId of the key that will be consumed by unlocking this container. If the container requires a key, this
         /// parameter is required.
         /// </summary>
@@ -6015,6 +6565,10 @@ namespace PlayFab.ClientModels
         /// Catalog ItemId of the container type to unlock.
         /// </summary>
         public string ContainerItemId;
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
     }
 
     /// <summary>
@@ -6064,6 +6618,10 @@ namespace PlayFab.ClientModels
         /// </summary>
         public string CharacterId;
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// Key-value pairs to be written to the custom data. Note that keys are trimmed of whitespace, are limited in size, and may
         /// not begin with a '!' character or be null.
         /// </summary>
@@ -6107,6 +6665,10 @@ namespace PlayFab.ClientModels
         /// Statistics to be updated with the provided values, in the Key(string), Value(int) pattern.
         /// </summary>
         public Dictionary<string,int> CharacterStatistics;
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
     }
 
     [Serializable]
@@ -6127,6 +6689,10 @@ namespace PlayFab.ClientModels
     public class UpdatePlayerStatisticsRequest : PlayFabRequestCommon
     {
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// Statistics to be updated with the provided values
         /// </summary>
         public List<StatisticUpdate> Statistics;
@@ -6146,6 +6712,10 @@ namespace PlayFab.ClientModels
     [Serializable]
     public class UpdateSharedGroupDataRequest : PlayFabRequestCommon
     {
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// Key-value pairs to be written to the custom data. Note that keys are trimmed of whitespace, are limited in size, and may
         /// not begin with a '!' character or be null.
@@ -6181,6 +6751,10 @@ namespace PlayFab.ClientModels
     public class UpdateUserDataRequest : PlayFabRequestCommon
     {
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// Key-value pairs to be written to the custom data. Note that keys are trimmed of whitespace, are limited in size, and may
         /// not begin with a '!' character or be null.
         /// </summary>
@@ -6215,6 +6789,10 @@ namespace PlayFab.ClientModels
     public class UpdateUserTitleDisplayNameRequest : PlayFabRequestCommon
     {
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// New title display name for the user - must be between 3 and 25 characters.
         /// </summary>
         public string DisplayName;
@@ -6236,6 +6814,10 @@ namespace PlayFab.ClientModels
         /// User Android device information, if an Android device has been linked
         /// </summary>
         public UserAndroidDeviceInfo AndroidDeviceInfo;
+        /// <summary>
+        /// Sign in with Apple account information, if an Apple account has been linked
+        /// </summary>
+        public UserAppleIdInfo AppleAccountInfo;
         /// <summary>
         /// Timestamp indicating when the user account was created
         /// </summary>
@@ -6271,6 +6853,10 @@ namespace PlayFab.ClientModels
         /// <summary>
         /// Nintendo Switch account information, if a Nintendo Switch account has been linked
         /// </summary>
+        public UserNintendoSwitchAccountIdInfo NintendoSwitchAccountInfo;
+        /// <summary>
+        /// Nintendo Switch device information, if a Nintendo Switch device has been linked
+        /// </summary>
         public UserNintendoSwitchDeviceIdInfo NintendoSwitchDeviceIdInfo;
         /// <summary>
         /// OpenID Connect information, if any OpenID Connect accounts have been linked
@@ -6305,10 +6891,6 @@ namespace PlayFab.ClientModels
         /// </summary>
         public string Username;
         /// <summary>
-        /// Windows Hello account information, if a Windows Hello account has been linked
-        /// </summary>
-        public UserWindowsHelloInfo WindowsHelloInfo;
-        /// <summary>
         /// User XBox account information, if a XBox account has been linked
         /// </summary>
         public UserXboxInfo XboxInfo;
@@ -6321,6 +6903,15 @@ namespace PlayFab.ClientModels
         /// Android device ID
         /// </summary>
         public string AndroidDeviceId;
+    }
+
+    [Serializable]
+    public class UserAppleIdInfo : PlayFabBaseModel
+    {
+        /// <summary>
+        /// Apple subject ID
+        /// </summary>
+        public string AppleSubjectId;
     }
 
     [Serializable]
@@ -6439,6 +7030,15 @@ namespace PlayFab.ClientModels
     }
 
     [Serializable]
+    public class UserNintendoSwitchAccountIdInfo : PlayFabBaseModel
+    {
+        /// <summary>
+        /// Nintendo Switch account subject ID
+        /// </summary>
+        public string NintendoSwitchAccountSubjectId;
+    }
+
+    [Serializable]
     public class UserNintendoSwitchDeviceIdInfo : PlayFabBaseModel
     {
         /// <summary>
@@ -6483,11 +7083,12 @@ namespace PlayFab.ClientModels
         XboxLive,
         Parse,
         Twitch,
-        WindowsHello,
         ServerCustomId,
         NintendoSwitchDeviceId,
         FacebookInstantGamesId,
-        OpenIdConnect
+        OpenIdConnect,
+        Apple,
+        NintendoSwitchAccount
     }
 
     [Serializable]
@@ -6607,19 +7208,6 @@ namespace PlayFab.ClientModels
     }
 
     [Serializable]
-    public class UserWindowsHelloInfo : PlayFabBaseModel
-    {
-        /// <summary>
-        /// Windows Hello Device Name
-        /// </summary>
-        public string WindowsHelloDeviceName;
-        /// <summary>
-        /// Windows Hello Public Key Hash
-        /// </summary>
-        public string WindowsHelloPublicKeyHash;
-    }
-
-    [Serializable]
     public class UserXboxInfo : PlayFabBaseModel
     {
         /// <summary>
@@ -6640,6 +7228,10 @@ namespace PlayFab.ClientModels
         /// </summary>
         public string CurrencyCode;
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// Amount of the stated currency paid, in centesimal units.
         /// </summary>
         public int PurchasePrice;
@@ -6654,7 +7246,9 @@ namespace PlayFab.ClientModels
     }
 
     /// <summary>
-    /// Once verified, the catalog item matching the Amazon item name will be added to the user's inventory.
+    /// Once verified, the catalog item matching the Amazon item name will be added to the user's inventory. This result should
+    /// be used for immediate updates to the local client game state as opposed to the GetUserInventory API which can have an up
+    /// to half second delay.
     /// </summary>
     [Serializable]
     public class ValidateAmazonReceiptResult : PlayFabResultCommon
@@ -6684,6 +7278,10 @@ namespace PlayFab.ClientModels
         /// </summary>
         public string CurrencyCode;
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// Amount of the stated currency paid, in centesimal units.
         /// </summary>
         public uint? PurchasePrice;
@@ -6699,7 +7297,8 @@ namespace PlayFab.ClientModels
 
     /// <summary>
     /// Once verified, the catalog item (ItemId) matching the GooglePlay store item (productId) will be added to the user's
-    /// inventory.
+    /// inventory. This result should be used for immediate updates to the local client game state as opposed to the
+    /// GetUserInventory API which can have an up to half second delay.
     /// </summary>
     [Serializable]
     public class ValidateGooglePlayPurchaseResult : PlayFabResultCommon
@@ -6729,6 +7328,10 @@ namespace PlayFab.ClientModels
         /// </summary>
         public string CurrencyCode;
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// Amount of the stated currency paid, in centesimal units.
         /// </summary>
         public int PurchasePrice;
@@ -6739,7 +7342,9 @@ namespace PlayFab.ClientModels
     }
 
     /// <summary>
-    /// Once verified, the catalog item matching the iTunes item name will be added to the user's inventory.
+    /// Once verified, the catalog item matching the iTunes item name will be added to the user's inventory. This result should
+    /// be used for immediate updates to the local client game state as opposed to the GetUserInventory API which can have an up
+    /// to half second delay.
     /// </summary>
     [Serializable]
     public class ValidateIOSReceiptResult : PlayFabResultCommon
@@ -6762,6 +7367,10 @@ namespace PlayFab.ClientModels
         /// </summary>
         public string CurrencyCode;
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// Amount of the stated currency paid, in centesimal units.
         /// </summary>
         public uint PurchasePrice;
@@ -6772,7 +7381,9 @@ namespace PlayFab.ClientModels
     }
 
     /// <summary>
-    /// Once verified, the catalog item matching the Product name will be added to the user's inventory.
+    /// Once verified, the catalog item matching the Product name will be added to the user's inventory. This result should be
+    /// used for immediate updates to the local client game state as opposed to the GetUserInventory API which can have an up to
+    /// half second delay.
     /// </summary>
     [Serializable]
     public class ValidateWindowsReceiptResult : PlayFabResultCommon
@@ -6851,6 +7462,10 @@ namespace PlayFab.ClientModels
         /// </summary>
         public string CharacterId;
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// The name of the event, within the namespace scoped to the title. The naming convention is up to the caller, but it
         /// commonly follows the subject_verb_object pattern (e.g. player_logged_in).
         /// </summary>
@@ -6873,6 +7488,10 @@ namespace PlayFab.ClientModels
         /// Custom data properties associated with the event. Each property consists of a name (string) and a value (JSON object).
         /// </summary>
         public Dictionary<string,object> Body;
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// The name of the event, within the namespace scoped to the title. The naming convention is up to the caller, but it
         /// commonly follows the subject_verb_object pattern (e.g. player_logged_in).
@@ -6906,6 +7525,10 @@ namespace PlayFab.ClientModels
         /// Custom event properties. Each property consists of a name (string) and a value (JSON object).
         /// </summary>
         public Dictionary<string,object> Body;
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// The name of the event, within the namespace scoped to the title. The naming convention is up to the caller, but it
         /// commonly follows the subject_verb_object pattern (e.g. player_logged_in).

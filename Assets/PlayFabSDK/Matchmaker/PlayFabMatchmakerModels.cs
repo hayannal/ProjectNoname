@@ -110,6 +110,10 @@ namespace PlayFab.MatchmakerModels
     public class PlayerJoinedRequest : PlayFabRequestCommon
     {
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// Unique identifier of the Game Server Instance the user is joining. This must be a Game Server Instance started with the
         /// Matchmaker/StartGame API.
         /// </summary>
@@ -129,6 +133,10 @@ namespace PlayFab.MatchmakerModels
     public class PlayerLeftRequest : PlayFabRequestCommon
     {
         /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
+        /// <summary>
         /// Unique identifier of the Game Server Instance the user is leaving. This must be a Game Server Instance started with the
         /// Matchmaker/StartGame API.
         /// </summary>
@@ -144,72 +152,13 @@ namespace PlayFab.MatchmakerModels
     {
     }
 
-    public enum Region
-    {
-        USCentral,
-        USEast,
-        EUWest,
-        Singapore,
-        Japan,
-        Brazil,
-        Australia
-    }
-
-    [Serializable]
-    public class StartGameRequest : PlayFabRequestCommon
-    {
-        /// <summary>
-        /// Unique identifier of the previously uploaded build executable which is to be started.
-        /// </summary>
-        public string Build;
-        /// <summary>
-        /// Custom command line argument when starting game server process.
-        /// </summary>
-        public string CustomCommandLineData;
-        /// <summary>
-        /// HTTP endpoint URL for receiving game status events, if using an external matchmaker. When the game ends, PlayFab will
-        /// make a POST request to this URL with the X-SecretKey header set to the value of the game's secret and an
-        /// application/json body of { "EventName": "game_ended", "GameID": "<gameid>" }.
-        /// </summary>
-        public string ExternalMatchmakerEventEndpoint;
-        /// <summary>
-        /// Game mode for this Game Server Instance.
-        /// </summary>
-        public string GameMode;
-        /// <summary>
-        /// Region with which to associate the server, for filtering.
-        /// </summary>
-        public Region Region;
-    }
-
-    [Serializable]
-    public class StartGameResponse : PlayFabResultCommon
-    {
-        /// <summary>
-        /// Unique identifier for the game/lobby in the new Game Server Instance.
-        /// </summary>
-        public string GameID;
-        /// <summary>
-        /// IPV4 address of the server
-        /// </summary>
-        public string ServerIPV4Address;
-        /// <summary>
-        /// IPV6 address of the new Game Server Instance.
-        /// </summary>
-        public string ServerIPV6Address;
-        /// <summary>
-        /// Port number for communication with the Game Server Instance.
-        /// </summary>
-        public uint ServerPort;
-        /// <summary>
-        /// Public DNS name (if any) of the server
-        /// </summary>
-        public string ServerPublicDNSName;
-    }
-
     [Serializable]
     public class UserInfoRequest : PlayFabRequestCommon
     {
+        /// <summary>
+        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
+        /// </summary>
+        public Dictionary<string,string> CustomTags;
         /// <summary>
         /// Minimum catalog version for which data is requested (filters the results to only contain inventory items which have a
         /// catalog version of this or higher).

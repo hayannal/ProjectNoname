@@ -20,11 +20,12 @@ namespace PlayFab.PfEditor
 
         public enum WebRequestType
         {
+#if !UNITY_2018_2_OR_NEWER // Unity has deprecated Www
             UnityWww, // High compatability Unity api calls
-            HttpWebRequest, // High performance multi-threaded api calls
-#if UNITY_2017_2_OR_NEWER
-            UnityWebRequest, // Modern unity HTTP component
 #endif
+            UnityWebRequest, // Modern unity HTTP component
+            HttpWebRequest, // High performance multi-threaded api calls
+            CustomHttp //If this is used, you must set the Http to an IPlayFabHttp object.
         }
 
         private static float LABEL_WIDTH = 180;
@@ -297,12 +298,6 @@ namespace PlayFab.PfEditor
                     GUILayout.Space(labelWidth - fwl.fieldWidth);
                     PlayFabEditorDataService.SharedSettings.KeepAlive = EditorGUILayout.Toggle(PlayFabEditorDataService.SharedSettings.KeepAlive, PlayFabEditorHelper.uiStyle.GetStyle("Toggle"), GUILayout.MinHeight(25));
                 }
-            }
-
-            using (new UnityHorizontal(PlayFabEditorHelper.uiStyle.GetStyle("gpStyleClear")))
-            {
-                EditorGUILayout.LabelField("COMPRESS API DATA: ", PlayFabEditorHelper.uiStyle.GetStyle("labelStyle"), GUILayout.MaxWidth(labelWidth));
-                PlayFabEditorDataService.SharedSettings.CompressApiData = EditorGUILayout.Toggle(PlayFabEditorDataService.SharedSettings.CompressApiData, PlayFabEditorHelper.uiStyle.GetStyle("Toggle"), GUILayout.MinHeight(25));
             }
         }
         #endregion

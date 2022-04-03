@@ -1039,6 +1039,20 @@ public class AuthManager : MonoBehaviour
 			{
 				var authorizationErrorCode = error.GetAuthorizationErrorCode();
 				Debug.LogWarning("Sign in with Apple failed " + authorizationErrorCode.ToString() + " " + error.ToString());
+
+				if (_waitForLinkApple)
+				{
+					_waitForLinkApple = false;
+					WaitingNetworkCanvas.Show(false);
+
+					if (_onLinkFailure != null)
+						_onLinkFailure(true, PlayFabErrorCode.Unknown);
+				}
+				else
+				{
+					// 구글과 마찬가지
+					_retryLoginRemainTime = 0.2f;
+				}
 			});
 	}
 

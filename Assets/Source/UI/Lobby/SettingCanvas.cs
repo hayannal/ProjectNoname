@@ -277,6 +277,13 @@ public class SettingCanvas : MonoBehaviour
 		}
 	}
 
+	public void OnClickAppleButton()
+	{
+#if UNITY_IOS
+		OnAppleButton();
+#endif
+	}
+
 #if UNITY_IOS
 	// 아이폰에서는 페이스북쪽으로 처리해준다.
 	void OnClickFacebookButton()
@@ -328,7 +335,7 @@ public class SettingCanvas : MonoBehaviour
 		}
 	}
 
-	void OnClickAppleButton()
+	void OnAppleButton()
 	{
 		AuthManager.eAuthType lastAuthType = AuthManager.instance.GetLastLoginType();
 		switch (lastAuthType)

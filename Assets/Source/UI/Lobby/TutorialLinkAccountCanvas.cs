@@ -53,7 +53,7 @@ public class TutorialLinkAccountCanvas : MonoBehaviour
 	void OnClickLinkFacebookButton()
 	{
 		// 구글때와 비슷하게
-		AuthManager.instance.LinkFacebookAccount(() =>
+		AuthManager.instance.LinkAppleAccount(() =>
 		{
 			ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_SignInDone"), 2.0f);
 			AuthManager.instance.SetNeedUnlinkCustomId();
@@ -66,14 +66,14 @@ public class TutorialLinkAccountCanvas : MonoBehaviour
 			if (failure == PlayFab.PlayFabErrorCode.Unknown)
 				return;
 
-			if (failure == PlayFab.PlayFabErrorCode.LinkedAccountAlreadyClaimed)
+			if (failure == PlayFab.PlayFabErrorCode.LinkedIdentifierAlreadyClaimed)
 			{
 				YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_SignInAlready"), () =>
 				{
-					AuthManager.instance.RestartWithFacebook();
+					AuthManager.instance.RestartWithApple();
 				}, () =>
 				{
-					AuthManager.instance.LogoutWithFacebook(true);
+					AuthManager.instance.LogoutWithApple(true);
 				});
 			}
 		});

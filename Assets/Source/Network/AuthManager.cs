@@ -447,16 +447,30 @@ public class AuthManager : MonoBehaviour
 		}, 100);
 	}
 
+	public bool googleLinked { get; set; }
+	public bool facebookLinked { get; set; }
+	public bool appleLinked { get; set; }
 	public void OnRecvAccountInfo(UserAccountInfo userAccountInfo)
 	{
+		googleLinked = facebookLinked = appleLinked = false;
+
 		// 평소에는 할 필요 없는데 구글 로그인 연동 후에 CustomId가 해제되어있지 않다면 해제 처리를 해줘야한다.
 		// 원래는 연동 즉시 보낼텐데 혹시 강종이나 다른 이슈로 처리 안될까봐 여기서 안전하게 한번 더 체크하는거다.
 		if (userAccountInfo.GoogleInfo != null && userAccountInfo.CustomIdInfo != null)
+		{
 			SetNeedUnlinkCustomId();
+			googleLinked = true;
+		}
 		if (userAccountInfo.FacebookInfo != null && userAccountInfo.CustomIdInfo != null)
+		{
 			SetNeedUnlinkCustomId();
+			facebookLinked = true;
+		}
 		if (userAccountInfo.AppleAccountInfo != null && userAccountInfo.CustomIdInfo != null)
+		{
 			SetNeedUnlinkCustomId();
+			appleLinked = true;
+		}
 	}
 
 	public void SetNeedUnlinkCustomId()

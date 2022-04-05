@@ -182,6 +182,23 @@ public class SettingCanvas : MonoBehaviour
 	#region Auth
 	void RefreshAccount()
 	{
+#if UNITY_IOS
+		bool facebookLinked = false;
+		if (AuthManager.instance.GetLastLoginType() == AuthManager.eAuthType.Facebook)
+			facebookLinked = true;
+		if (AuthManager.instance.facebookLinked)
+			facebookLinked = true;
+		accountButtonText.SetLocalizedText(UIString.instance.GetString(facebookLinked ? "GameUI_SignIn" : "GameUI_LogOut"));
+
+		bool appleLinked = false;
+		if (AuthManager.instance.GetLastLoginType() == AuthManager.eAuthType.Apple)
+			appleLinked = true;
+		if (AuthManager.instance.appleLinked)
+			appleLinked = true;
+		appleAccountButtonText.SetLocalizedText(UIString.instance.GetString(appleLinked ? "GameUI_SignIn" : "GameUI_LogOut"));
+		return;
+#endif
+
 		AuthManager.eAuthType lastAuthType = AuthManager.instance.GetLastLoginType();
 		switch (lastAuthType)
 		{
@@ -190,12 +207,9 @@ public class SettingCanvas : MonoBehaviour
 				break;
 			case AuthManager.eAuthType.Google:
 			case AuthManager.eAuthType.Facebook:
-			
 				accountButtonText.SetLocalizedText(UIString.instance.GetString("GameUI_LogOut"));
 				break;
 		}
-
-
 	}
 
 	public void OnClickAccountMoreButton()
@@ -368,18 +382,9 @@ public class SettingCanvas : MonoBehaviour
 				});
 				break;
 			case AuthManager.eAuthType.Apple:
-				// 로그아웃 예외처리는 구글과 마찬가지로 처리
-				if (AuthManager.instance.needUnlinkCustomId)
-				{
-					ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_LogOutException"), 2.0f);
-					return;
-				}
-
-				// 이미 연동되어있는 상태라면 확인창을 띄우고 로그아웃을 해야한다.
-				YesNoCanvas.instance.ShowCanvas(true, UIString.instance.GetString("SystemUI_Info"), UIString.instance.GetString("GameUI_LogOutConfirm"), () =>
-				{
-					AuthManager.instance.LogoutWithApple();
-				});
+				// 애플은 기기 외부에서 로그아웃 해야하므로 안내메세지만 보여준다.
+				ToastCanvas.instance.ShowToast(UIString.instance.GetString("GameUI_LogOutAppleToast"), 2.0f);
+				return;
 				break;
 		}
 	}

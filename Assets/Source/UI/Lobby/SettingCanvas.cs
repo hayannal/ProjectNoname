@@ -188,14 +188,14 @@ public class SettingCanvas : MonoBehaviour
 			facebookLinked = true;
 		if (AuthManager.instance.facebookLinked)
 			facebookLinked = true;
-		accountButtonText.SetLocalizedText(UIString.instance.GetString(facebookLinked ? "GameUI_SignIn" : "GameUI_LogOut"));
+		accountButtonText.SetLocalizedText(UIString.instance.GetString(facebookLinked ? "GameUI_LogOut" : "GameUI_SignIn"));
 
 		bool appleLinked = false;
 		if (AuthManager.instance.GetLastLoginType() == AuthManager.eAuthType.Apple)
 			appleLinked = true;
 		if (AuthManager.instance.appleLinked)
 			appleLinked = true;
-		appleAccountButtonText.SetLocalizedText(UIString.instance.GetString(appleLinked ? "GameUI_SignIn" : "GameUI_LogOut"));
+		appleAccountButtonText.SetLocalizedText(UIString.instance.GetString(appleLinked ? "GameUI_LogOut" : "GameUI_SignIn"));
 		return;
 #endif
 

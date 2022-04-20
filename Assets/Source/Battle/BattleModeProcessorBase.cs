@@ -687,7 +687,7 @@ public class BattleModeProcessorBase
 				}
 				else
 				{
-					if (timeSpan < TimeSpan.FromMinutes(10))
+					if (timeSpan < TimeSpan.FromMinutes(5))
 						sus = true;
 				}
 			}

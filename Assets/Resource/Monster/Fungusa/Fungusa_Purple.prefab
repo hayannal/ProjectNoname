@@ -4669,6 +4669,7 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -4681,6 +4682,7 @@ ParticleSystemRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -4912,17 +4914,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16c7fbc98e43a374b85a6a2909d657eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startDelayRange: {x: 0, y: 0}
+  startDelayRange: {x: 0.75, y: 0.75}
   startState: 3
-  useStateList: 0100000100
+  useStateList: 010000010000
   moveTimeRange: {x: 4, y: 4}
   refreshTickTimeRange: {x: 2, y: 2}
   desireDistance: 5
+  straightMoveTimeRange: {x: 0, y: 0}
+  straightRefreshTickTimeRange: {x: 0, y: 0}
+  straightMoveType: 0
   customActionPlayType: 1
   customActionName: 
   customActionFadeDuration: 0.05
   chaseDistanceRange: {x: 0, y: 0}
   chaseCancelTimeRange: {x: 0, y: 0}
+  cancelLeadsToAttack: 0
+  useFarawayMode: 0
+  chaseTryCountChangeFaraway: 0
+  farawayModeChangeRate: 0
   attackActionPlayType: 0
   attackActionName: Attack
   attackActionFadeDuration: 0.05
@@ -4942,6 +4951,22 @@ PrefabInstance:
       value: Fungusa
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: ef49f3dbd1f47c54884b41300dc7e083, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400004, guid: ef49f3dbd1f47c54884b41300dc7e083, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 400004, guid: ef49f3dbd1f47c54884b41300dc7e083, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 400004, guid: ef49f3dbd1f47c54884b41300dc7e083, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 400004, guid: ef49f3dbd1f47c54884b41300dc7e083, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -4952,6 +4977,10 @@ PrefabInstance:
     - target: {fileID: 400004, guid: ef49f3dbd1f47c54884b41300dc7e083, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400004, guid: ef49f3dbd1f47c54884b41300dc7e083, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: ef49f3dbd1f47c54884b41300dc7e083, type: 3}
       propertyPath: m_LocalRotation.x
@@ -4966,14 +4995,6 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: ef49f3dbd1f47c54884b41300dc7e083, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 400004, guid: ef49f3dbd1f47c54884b41300dc7e083, type: 3}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400004, guid: ef49f3dbd1f47c54884b41300dc7e083, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
@@ -4984,18 +5005,6 @@ PrefabInstance:
     - target: {fileID: 400004, guid: ef49f3dbd1f47c54884b41300dc7e083, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400004, guid: ef49f3dbd1f47c54884b41300dc7e083, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 400004, guid: ef49f3dbd1f47c54884b41300dc7e083, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 400004, guid: ef49f3dbd1f47c54884b41300dc7e083, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: 9500000, guid: ef49f3dbd1f47c54884b41300dc7e083, type: 3}
       propertyPath: m_Controller

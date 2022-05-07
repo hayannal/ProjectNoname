@@ -228,7 +228,7 @@ public class CashShopCanvas : MonoBehaviour
 		ShopBoxTableData equipBox45TableData = TableDataManager.instance.FindShopBoxTableData("EquipmentBox45");
 		if (equipBox45TableData != null)
 		{
-			equipBox45GroupObject.SetActive(CurrencyData.instance.dia >= equipBox45TableData.requiredDiamond);
+			equipBox45GroupObject.SetActive(CurrencyData.instance.dia >= equipBox45TableData.requiredDiamond && ContentsManager.IsOpen(ContentsManager.eOpenContentsByChapterStage.TimeSpace));
 			if (equipBox45GroupObject.activeSelf)
 			{
 				equipBox45NameText.SetLocalizedText(UIString.instance.GetString(equipBox45TableData.boxName));

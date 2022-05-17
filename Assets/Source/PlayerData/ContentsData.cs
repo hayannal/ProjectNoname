@@ -295,7 +295,11 @@ public class ContentsData : MonoBehaviour
 					// 난이도의 최대 범위를 넘지않는 한도 내에서
 					// 그러나 최대 범위 넘지 않더라도 7챕터를 깨지 않으면 난이도 8 이상으로는 올릴 수 없도록 해야한다.
 					int nextDifficulty = selectedDifficulty + 1;
-					if (nextDifficulty > 14)
+					if (nextDifficulty > 28)
+						nextDifficulty = 28;
+					else if (nextDifficulty > 21 && PlayerData.instance.highestPlayChapter <= 21)
+						nextDifficulty = 21;
+					else if (nextDifficulty > 14 && PlayerData.instance.highestPlayChapter <= 14)
 						nextDifficulty = 14;
 					else if (nextDifficulty > 7 && PlayerData.instance.highestPlayChapter <= 7)
 						nextDifficulty = 7;

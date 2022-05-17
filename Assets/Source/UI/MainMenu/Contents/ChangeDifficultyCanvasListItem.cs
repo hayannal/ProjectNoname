@@ -27,9 +27,12 @@ public class ChangeDifficultyCanvasListItem : MonoBehaviour
 				ToastCanvas.instance.ShowToast(UIString.instance.GetString("BossUI_NotDeveloped"), 2.0f);
 				return;
 			case -2:
-				ToastCanvas.instance.ShowToast(UIString.instance.GetString("BossUI_SevenLimit", 14), 2.0f);
+				ToastCanvas.instance.ShowToast(UIString.instance.GetString("BossUI_SevenLimit", 21), 2.0f);
 				return;
 			case -3:
+				ToastCanvas.instance.ShowToast(UIString.instance.GetString("BossUI_SevenLimit", 14), 2.0f);
+				return;
+			case -4:
 				ToastCanvas.instance.ShowToast(UIString.instance.GetString("BossUI_SevenLimit", 7), 2.0f);
 				return;
 		}
@@ -41,17 +44,21 @@ public class ChangeDifficultyCanvasListItem : MonoBehaviour
 	public static int CheckSelectable(int targetDifficulty)
 	{
 		int highestPlayChapter = PlayerData.instance.highestPlayChapter;
-		if (targetDifficulty > 14 && highestPlayChapter > 14)
+		if (targetDifficulty > 28 && highestPlayChapter <= 28)
 		{
 			return -1;
 		}
-		else if (targetDifficulty > 14 && highestPlayChapter <= 14)
+		else if (targetDifficulty > 21 && highestPlayChapter <= 21)
 		{
 			return -2;
 		}
-		else if (targetDifficulty > 7 && highestPlayChapter <= 7)
+		else if (targetDifficulty > 14 && highestPlayChapter <= 14)
 		{
 			return -3;
+		}
+		else if (targetDifficulty > 7 && highestPlayChapter <= 7)
+		{
+			return -4;
 		}
 		return 0;
 	}

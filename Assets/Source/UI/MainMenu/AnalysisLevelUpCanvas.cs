@@ -91,6 +91,14 @@ public class AnalysisLevelUpCanvas : MonoBehaviour
 			jumpLevel = 90;
 		else if (currentLevel >= 89 && currentLevel <= 98)
 			jumpLevel = 100;
+		else if (currentLevel >= 99 && currentLevel <= 108)
+			jumpLevel = 110;
+		else if (currentLevel >= 109 && currentLevel <= 118)
+			jumpLevel = 120;
+		else if (currentLevel >= 119 && currentLevel <= 128)
+			jumpLevel = 130;
+		else if (currentLevel >= 129 && currentLevel <= 138)
+			jumpLevel = 140;
 
 		int maxLevel = BattleInstanceManager.instance.GetCachedGlobalConstantInt("MaxAnalysisLevel");
 		if (jumpLevel > maxLevel)
